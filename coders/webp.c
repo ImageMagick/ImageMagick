@@ -1069,6 +1069,17 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
 }
 #endif
 
+static inline void SetBooleanOption(const ImageInfo *image_info,
+  const char *option,int *setting)
+{
+  const char
+    *value;
+
+  value=GetImageOption(image_info,option);
+  if (value != (char *) NULL)
+    *setting=(int) ParseCommandOption(MagickBooleanOptions,MagickFalse,value);
+}
+
 static inline void SetIntegerOption(const ImageInfo *image_info,
   const char *option,int *setting)
 {
@@ -1115,10 +1126,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     configure.quality=(float) image->quality;
   if (image->quality >= 100)
     configure.lossless=1;
-  value=GetImageOption(image_info,"webp:lossless");
-  if (value != (char *) NULL)
-    configure.lossless=(int) ParseCommandOption(MagickBooleanOptions,
-      MagickFalse,value);
+  SetBooleanOption(image_info,"webp:lossless",&configure.lossless);
   value=GetImageOption(image_info,"webp:image-hint");
   if (value != (char *) NULL)
     {
@@ -1133,10 +1141,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
         configure.image_hint=WEBP_HINT_GRAPH;
 #endif
     }
-  value=GetImageOption(image_info,"webp:auto-filter");
-  if (value != (char *) NULL)
-    configure.autofilter=(int) ParseCommandOption(MagickBooleanOptions,
-      MagickFalse,value);
+  SetBooleanOption(image_info,"webp:auto-filter",&configure.autofilter);
   value=GetImageOption(image_info,"webp:target-psnr");
   if (value != (char *) NULL)
     configure.target_PSNR=(float) StringToDouble(value,(char **) NULL);
@@ -1163,14 +1168,9 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   SetIntegerOption(image_info,"webp:sns-strength",&configure.sns_strength);
   SetIntegerOption(image_info,"webp:target-size",&configure.target_size);
 #if WEBP_ENCODER_ABI_VERSION >= 0x0201
-  value=GetImageOption(image_info,"webp:emulate-jpeg-size");
-  if (value != (char *) NULL)
-    configure.emulate_jpeg_size=(int) ParseCommandOption(MagickBooleanOptions,
-      MagickFalse,value);
-  value=GetImageOption(image_info,"webp:low-memory");
-  if (value != (char *) NULL)
-    configure.low_memory=(int) ParseCommandOption(MagickBooleanOptions,
-      MagickFalse,value);
+  SetBooleanOption(image_info,"webp:emulate-jpeg-size",
+    &configure.emulate_jpeg_size);
+  SetBooleanOption(image_info,"webp:low-memory",&configure.low_memory);
   SetIntegerOption(image_info,"webp:thread-level",&configure.thread_level);
 #endif
 #if WEBP_ENCODER_ABI_VERSION >= 0x020e
