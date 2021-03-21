@@ -1244,7 +1244,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           length=(size_t) parse8BIM(image, buff);
           if (length == 0)
             {
-              blob=DetachBlob(buff->blob);
+              blob=(unsigned char *) DetachBlob(buff->blob);
               blob=(unsigned char *) RelinquishMagickMemory(blob);
               buff=DestroyImage(buff);
               ThrowReaderException(CorruptImageError,"CorruptImage");
@@ -1257,7 +1257,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           length=(size_t) parse8BIMW(image, buff);
           if (length == 0)
             {
-              blob=DetachBlob(buff->blob);
+              blob=(unsigned char *) DetachBlob(buff->blob);
               blob=(unsigned char *) RelinquishMagickMemory(blob);
               buff=DestroyImage(buff);
               ThrowReaderException(CorruptImageError,"CorruptImage");
@@ -1271,14 +1271,14 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
         {
-          blob=DetachBlob(buff->blob);
+          blob=(unsigned char *) DetachBlob(buff->blob);
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           buff=DestroyImage(buff);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       status=SetImageProfile(image,"8bim",profile,exception);
       profile=DestroyStringInfo(profile);
-      blob=DetachBlob(buff->blob);
+      blob=(unsigned char *) DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       buff=DestroyImage(buff);
       if (status == MagickFalse)
@@ -1310,7 +1310,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
 
           if (image_info->profile == (void *) NULL)
             {
-              blob=DetachBlob(buff->blob);
+              blob=(unsigned char *) DetachBlob(buff->blob);
               blob=(unsigned char *) RelinquishMagickMemory(blob);
               buff=DestroyImage(buff);
               ThrowReaderException(CoderError,"NoIPTCProfileAvailable");
@@ -1319,7 +1319,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           iptc=AcquireImage((ImageInfo *) NULL,exception);
           if (iptc == (Image *) NULL)
             {
-              blob=DetachBlob(buff->blob);
+              blob=(unsigned char *) DetachBlob(buff->blob);
               blob=(unsigned char *) RelinquishMagickMemory(blob);
               buff=DestroyImage(buff);
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1327,7 +1327,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           AttachBlob(iptc->blob,GetStringInfoDatum(profile),
             GetStringInfoLength(profile));
           result=jpeg_embed(image,buff,iptc);
-          blob=DetachBlob(iptc->blob);
+          blob=(unsigned char *) DetachBlob(iptc->blob);
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           iptc=DestroyImage(iptc);
           if (result == 0)
@@ -1342,14 +1342,14 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
         {
-          blob=DetachBlob(buff->blob);
+          blob=(unsigned char *) DetachBlob(buff->blob);
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           buff=DestroyImage(buff);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       status=SetImageProfile(image,name,profile,exception);
       profile=DestroyStringInfo(profile);
-      blob=DetachBlob(buff->blob);
+      blob=(unsigned char *) DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       buff=DestroyImage(buff);
       if (status == MagickFalse)
@@ -1373,14 +1373,14 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
         {
-          blob=DetachBlob(buff->blob);
+          blob=(unsigned char *) DetachBlob(buff->blob);
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           buff=DestroyImage(buff);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       (void) SetImageProfile(image,"icc",profile,exception);
       profile=DestroyStringInfo(profile);
-      blob=DetachBlob(buff->blob);
+      blob=(unsigned char *) DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       buff=DestroyImage(buff);
     }
@@ -1401,14 +1401,14 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
         {
-          blob=DetachBlob(buff->blob);
+          blob=(unsigned char *) DetachBlob(buff->blob);
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           buff=DestroyImage(buff);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       (void) SetImageProfile(image,"iptc",profile,exception);
       profile=DestroyStringInfo(profile);
-      blob=DetachBlob(buff->blob);
+      blob=(unsigned char *) DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       buff=DestroyImage(buff);
     }
@@ -1429,14 +1429,14 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         GetBlobSize(buff));
       if (profile == (StringInfo *) NULL)
         {
-          blob=DetachBlob(buff->blob);
+          blob=(unsigned char *) DetachBlob(buff->blob);
           blob=(unsigned char *) RelinquishMagickMemory(blob);
           buff=DestroyImage(buff);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       (void) SetImageProfile(image,"xmp",profile,exception);
       profile=DestroyStringInfo(profile);
-      blob=DetachBlob(buff->blob);
+      blob=(unsigned char *) DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       buff=DestroyImage(buff);
     }
