@@ -1151,7 +1151,6 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     &configure.alpha_filtering);
   SetIntegerOption(image_info,"webp:alpha-quality",
     &configure.alpha_quality);
-  SetBooleanOption(image_info,"webp:exact",&configure.exact);
   SetIntegerOption(image_info,"webp:filter-strength",
     &configure.filter_strength);
   SetIntegerOption(image_info,"webp:filter-sharpness",
@@ -1173,6 +1172,9 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     &configure.emulate_jpeg_size);
   SetBooleanOption(image_info,"webp:low-memory",&configure.low_memory);
   SetIntegerOption(image_info,"webp:thread-level",&configure.thread_level);
+#endif
+#if WEBP_ENCODER_ABI_VERSION >= 0x0209
+  SetBooleanOption(image_info,"webp:exact",&configure.exact);
 #endif
 #if WEBP_ENCODER_ABI_VERSION >= 0x020e
   SetIntegerOption(image_info,"webp:near-lossless",&configure.near_lossless);
