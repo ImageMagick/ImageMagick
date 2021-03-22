@@ -2978,12 +2978,12 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
         }
       else
         {
-          SetPixelRed(image,(Quantum) (((ssize_t) pixel.red) |
-            (((ssize_t) GetPixelRed(image,q)) << 8)),q);
-          SetPixelGreen(image,(Quantum) (((ssize_t) pixel.green) |
-            (((ssize_t) GetPixelGreen(image,q)) << 8)),q);
-          SetPixelBlue(image,(Quantum) (((ssize_t) pixel.blue) |
-            (((ssize_t) GetPixelBlue(image,q)) << 8)),q);
+          SetPixelRed(image,(Quantum) (((size_t) pixel.red) |
+            (((size_t) GetPixelRed(image,q)) << 8)),q);
+          SetPixelGreen(image,(Quantum) (((size_t) pixel.green) |
+            (((size_t) GetPixelGreen(image,q)) << 8)),q);
+          SetPixelBlue(image,(Quantum) (((size_t) pixel.blue) |
+            (((size_t) GetPixelBlue(image,q)) << 8)),q);
         }
       q+=GetPixelChannels(image);
     }
