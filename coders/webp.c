@@ -1151,6 +1151,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     &configure.alpha_filtering);
   SetIntegerOption(image_info,"webp:alpha-quality",
     &configure.alpha_quality);
+  SetBooleanOption(image_info,"webp:exact",&configure.exact);
   SetIntegerOption(image_info,"webp:filter-strength",
     &configure.filter_strength);
   SetIntegerOption(image_info,"webp:filter-sharpness",
