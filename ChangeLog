@@ -1,3 +1,10 @@
+2021-03-24  7.0.11-5  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.11-5 GIT revision 18...
+
+2021-03-24  7.0.11-5  <quetzlzacatenango@image...>
+  * eliminate extraneous spaces in AC_PATH_PROG (reference
+    https://github.com/ImageMagick/ImageMagick/issues/3428).
+
 2021-03-20  7.0.11-4  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-4 GIT revision 18551:474c73cba:20210320
 
