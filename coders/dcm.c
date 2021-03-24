@@ -3058,6 +3058,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     use_explicit;
 
   MagickOffsetType
+    blob_size,
     offset;
 
   unsigned char
@@ -3115,7 +3116,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   bluemap=(int *) NULL;
   stream_info=(DCMStreamInfo *) AcquireMagickMemory(sizeof(*stream_info));
   sequence_depth=0;
-  stack = NewLinkedList(256);
+  stack=NewLinkedList(256);
   if (stream_info == (DCMStreamInfo *) NULL)
     ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
   (void) memset(stream_info,0,sizeof(*stream_info));
@@ -3152,8 +3153,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   graymap=(int *) NULL;
   number_scenes=1;
   use_explicit=MagickFalse;
-  explicit_retry = MagickFalse;
-  while (TellBlob(image) < (MagickOffsetType) GetBlobSize(image))
+  explicit_retry=MagickFalse;
+  blob_size=(MagickOffsetType) GetBlobSize(image);
+  while (TellBlob(image) < blob_size)
   {
     for (group=0; (group != 0x7FE0) || (element != 0x0010) ; )
     {
@@ -3978,6 +3980,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (redmap != (int *) NULL)
           redmap=(int *) RelinquishMagickMemory(redmap);
         image=DestroyImageList(image);
+        if ((status == MagickFalse) && (exception->severity < ErrorException))
+          ThrowReaderException(CorruptImageError,"CorruptImageError");
         return(GetFirstImageInList(images));
       }
     if (info.depth != (1UL*MAGICKCORE_QUANTUM_DEPTH))
