@@ -626,10 +626,11 @@ static MagickCLEnv AcquireMagickCLEnv(void)
     (void) memset(clEnv,0,sizeof(*clEnv));
     ActivateSemaphoreInfo(&clEnv->lock);
     clEnv->cpu_score=MAGICKCORE_OPENCL_UNDEFINED_SCORE;
-    clEnv->enabled=MagickTrue;
+    clEnv->enabled=MagickFalse;
     option=getenv("MAGICK_OCL_DEVICE");
-    if (IsStringFalse(option) != MagickFalse)
-      clEnv->enabled=MagickFalse;
+    if ((IsStringTrue(option) != MagickFalse) || (strcmp(option,"GPU") == 0) ||
+        (strcmp(option,"CPU") == 0))
+      clEnv->enabled=MagickTrue;
   }
   return clEnv;
 }
@@ -985,12 +986,6 @@ static void AutoSelectOpenCLDevices(MagickCLEnv clEnv)
         SelectOpenCLDevice(clEnv,CL_DEVICE_TYPE_GPU);
       else if (strcmp(option,"CPU") == 0)
         SelectOpenCLDevice(clEnv,CL_DEVICE_TYPE_CPU);
-      else if (IsStringFalse(option) != MagickFalse)
-        {
-          for (i = 0; i < clEnv->number_devices; i++)
-            clEnv->devices[i]->enabled=MagickFalse;
-          clEnv->enabled=MagickFalse;
-        }
     }
 
   if (LoadOpenCLBenchmarks(clEnv) == MagickFalse)
