@@ -97,6 +97,8 @@ typedef struct _FourierInfo
     height;
 
   ssize_t
+    x,
+    y,
     center;
 } FourierInfo;
 
@@ -740,8 +742,8 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
-    p=GetCacheViewVirtualPixels(image_view,0L,y,fourier_info->width,1UL,
-      exception);
+    p=GetCacheViewVirtualPixels(image_view,-fourier_info->x,y-fourier_info->y,
+      fourier_info->width,1UL,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0L; x < (ssize_t) fourier_info->width; x++)
@@ -869,9 +871,16 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   if ((image->columns != image->rows) || ((image->columns % 2) != 0) ||
       ((image->rows % 2) != 0))
     {
-      size_t extent=image->columns < image->rows ? image->rows : image->columns;
-      fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
+      size_t extent = image->columns < image->rows ? image->rows :
+        image->columns;
+      fourier_info.width=(extent & 0x01) != 0 ? extent+1UL : extent;
     }
+  fourier_info.x=0;
+  fourier_info.y=0;
+  if (image->columns > image->rows)
+    fourier_info.y=(image->columns-image->rows)/2;
+  else
+    fourier_info.x=(image->rows-image->columns)/2;
   fourier_info.height=fourier_info.width;
   fourier_info.center=(ssize_t) (fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
@@ -930,9 +939,9 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
     if ((image->columns != image->rows) || ((image->columns % 2) != 0) ||
         ((image->rows % 2) != 0))
       {
-        size_t extent=image->columns < image->rows ? image->rows :
+        size_t extent = image->columns < image->rows ? image->rows :
           image->columns;
-        width=(extent & 0x01) == 1 ? extent+1UL : extent;
+        width=(extent & 0x01) != 0 ? extent+1UL : extent;
       }
     height=width;
     magnitude_image=CloneImage(image,width,height,MagickTrue,exception);
@@ -1166,8 +1175,8 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   magnitude_view=AcquireVirtualCacheView(magnitude_image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
-    p=GetCacheViewVirtualPixels(magnitude_view,0L,y,fourier_info->width,1UL,
-      exception);
+    p=GetCacheViewVirtualPixels(magnitude_view,-fourier_info->x,y-
+      fourier_info->y,fourier_info->width,1UL,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0L; x < (ssize_t) fourier_info->width; x++)
@@ -1214,8 +1223,8 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   phase_view=AcquireVirtualCacheView(phase_image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
-    p=GetCacheViewVirtualPixels(phase_view,0,y,fourier_info->width,1,
-      exception);
+    p=GetCacheViewVirtualPixels(phase_view,-fourier_info->x,y-fourier_info->y,
+      fourier_info->width,1,exception);
     if (p == (const Quantum *) NULL)
       break;
     for (x=0L; x < (ssize_t) fourier_info->width; x++)
@@ -1454,10 +1463,16 @@ static MagickBooleanType InverseFourierTransformChannel(
       ((magnitude_image->columns % 2) != 0) ||
       ((magnitude_image->rows % 2) != 0))
     {
-      size_t extent=magnitude_image->columns < magnitude_image->rows ?
+      size_t extent = magnitude_image->columns < magnitude_image->rows ?
         magnitude_image->rows : magnitude_image->columns;
-      fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
+      fourier_info.width=(extent & 0x01) != 0 ? extent+1UL : extent;
     }
+  fourier_info.x=0;
+  fourier_info.y=0;
+  if (magnitude_image->columns > magnitude_image->rows)
+    fourier_info.y=(magnitude_image->columns-magnitude_image->rows)/2;
+  else
+    fourier_info.x=(magnitude_image->rows-magnitude_image->columns)/2;
   fourier_info.height=fourier_info.width;
   fourier_info.center=(ssize_t) (fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
