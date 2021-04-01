@@ -628,9 +628,13 @@ static MagickCLEnv AcquireMagickCLEnv(void)
     clEnv->cpu_score=MAGICKCORE_OPENCL_UNDEFINED_SCORE;
     clEnv->enabled=MagickFalse;
     option=getenv("MAGICK_OCL_DEVICE");
-    if ((IsStringTrue(option) != MagickFalse) || (strcmp(option,"GPU") == 0) ||
-        (strcmp(option,"CPU") == 0))
-      clEnv->enabled=MagickTrue;
+    if (option != (const char *) NULL)
+      {
+        if ((IsStringTrue(option) != MagickFalse) ||
+            (strcmp(option,"GPU") == 0) ||
+            (strcmp(option,"CPU") == 0))
+          clEnv->enabled=MagickTrue;
+      }
   }
   return clEnv;
 }
