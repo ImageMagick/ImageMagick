@@ -692,7 +692,9 @@ ModuleExport size_t RegisterHEICImage(void)
 */
 ModuleExport void UnregisterHEICImage(void)
 {
+#if LIBHEIF_NUMERIC_VERSION > 0x01060200
   (void) UnregisterMagickInfo("AVIF");
+#endif
   (void) UnregisterMagickInfo("HEIC");
   (void) UnregisterMagickInfo("HEIF");
 }
