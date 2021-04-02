@@ -24,6 +24,7 @@
 
 #define MagickSVGAliases \
   MagickCoderAlias("SVG", "SVGZ") \
+  MagickCoderAlias("SVG", "RSVG") \
   MagickCoderAlias("SVG", "MSVG")
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -355,6 +355,293 @@ static Image *RenderSVGImage(const ImageInfo *image_info,Image *image,
   return((Image *) NULL);
 }
 
+#if defined(MAGICKCORE_RSVG_DELEGATE)
+static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
+{
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+  cairo_surface_t
+    *cairo_surface;
+
+  cairo_t
+    *cairo_image;
+
+  MagickBooleanType
+    apply_density;
+
+  MemoryInfo
+    *pixel_info;
+
+  unsigned char
+    *p;
+
+  RsvgDimensionData
+    dimension_info;
+
+  unsigned char
+    *pixels;
+
+#else
+  GdkPixbuf
+    *pixel_buffer;
+
+  const guchar
+    *p;
+#endif
+
+  const char
+    *option;
+
+  GError
+    *error;
+
+  Image
+    *next;
+
+  MagickBooleanType
+    status;
+
+  PixelInfo
+    fill_color;
+
+  ssize_t
+    x,
+    n;
+
+  Quantum
+    *q;
+
+  RsvgHandle
+    *svg_handle;
+
+  ssize_t
+    y;
+
+  unsigned char
+    *buffer;
+
+  buffer=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
+    sizeof(*buffer));
+  if (buffer == (unsigned char *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+#if LIBRSVG_CHECK_VERSION(2,40,3)
+  option=GetImageOption(image_info,"svg:xml-parse-huge");
+  if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
+    svg_handle=rsvg_handle_new_with_flags(RSVG_HANDLE_FLAG_UNLIMITED);
+  else
+#endif
+    svg_handle=rsvg_handle_new();
+  if (svg_handle == (RsvgHandle *) NULL)
+    {
+      buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  rsvg_handle_set_base_uri(svg_handle,image_info->filename);
+  if ((fabs(image->resolution.x) > MagickEpsilon) &&
+      (fabs(image->resolution.y) > MagickEpsilon))
+    rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
+      image->resolution.y);
+  while ((n=ReadBlob(image,MagickMaxBufferExtent-1,buffer)) != 0)
+  {
+    buffer[n]='\0';
+    error=(GError *) NULL;
+    (void) rsvg_handle_write(svg_handle,buffer,n,&error);
+    if (error != (GError *) NULL)
+      g_error_free(error);
+  }
+  buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+  error=(GError *) NULL;
+  rsvg_handle_close(svg_handle,&error);
+  if (error != (GError *) NULL)
+    g_error_free(error);
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+  apply_density=MagickTrue;
+  rsvg_handle_get_dimensions(svg_handle,&dimension_info);
+  if ((image->resolution.x > 0.0) && (image->resolution.y > 0.0))
+    {
+      RsvgDimensionData
+        dpi_dimension_info;
+
+      /*
+        We should not apply the density when the internal 'factor' is 'i'.
+        This can be checked by using the trick below.
+      */
+      rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x*256,
+        image->resolution.y*256);
+      rsvg_handle_get_dimensions(svg_handle,&dpi_dimension_info);
+      if ((fabs(dpi_dimension_info.width-dimension_info.width) >= MagickEpsilon) ||
+          (fabs(dpi_dimension_info.height-dimension_info.height) >= MagickEpsilon))
+        apply_density=MagickFalse;
+      rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
+        image->resolution.y);
+    }
+  if (image_info->size != (char *) NULL)
+    {
+      (void) GetGeometry(image_info->size,(ssize_t *) NULL,
+        (ssize_t *) NULL,&image->columns,&image->rows);
+      if ((image->columns != 0) || (image->rows != 0))
+        {
+          image->resolution.x=DefaultSVGDensity*image->columns/
+            dimension_info.width;
+          image->resolution.y=DefaultSVGDensity*image->rows/
+            dimension_info.height;
+          if (fabs(image->resolution.x) < MagickEpsilon)
+            image->resolution.x=image->resolution.y;
+          else
+            if (fabs(image->resolution.y) < MagickEpsilon)
+              image->resolution.y=image->resolution.x;
+            else
+              image->resolution.x=image->resolution.y=MagickMin(
+                image->resolution.x,image->resolution.y);
+          apply_density=MagickTrue;
+        }
+    }
+  if (apply_density != MagickFalse)
+    {
+      image->columns=image->resolution.x*dimension_info.width/
+        DefaultSVGDensity;
+      image->rows=image->resolution.y*dimension_info.height/
+        DefaultSVGDensity;
+    }
+  else
+    {
+      image->columns=dimension_info.width;
+      image->rows=dimension_info.height;
+    }
+  pixel_info=(MemoryInfo *) NULL;
+#else
+  pixel_buffer=rsvg_handle_get_pixbuf(svg_handle);
+  rsvg_handle_free(svg_handle);
+  image->columns=gdk_pixbuf_get_width(pixel_buffer);
+  image->rows=gdk_pixbuf_get_height(pixel_buffer);
+#endif
+  image->alpha_trait=BlendPixelTrait;
+  if (image_info->ping == MagickFalse)
+    {
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+      size_t
+        stride;
+#endif
+
+      status=SetImageExtent(image,image->columns,image->rows,exception);
+      if (status == MagickFalse)
+        {
+#if !defined(MAGICKCORE_CAIRO_DELEGATE)
+          g_object_unref(G_OBJECT(pixel_buffer));
+#endif
+          g_object_unref(svg_handle);
+          ThrowReaderException(MissingDelegateError,
+            "NoDecodeDelegateForThisImageFormat");
+        }
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+      stride=4*image->columns;
+#if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
+      stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
+        (int) image->columns);
+#endif
+      pixel_info=AcquireVirtualMemory(stride,image->rows*sizeof(*pixels));
+      if (pixel_info == (MemoryInfo *) NULL)
+        {
+          g_object_unref(svg_handle);
+          ThrowReaderException(ResourceLimitError,
+            "MemoryAllocationFailed");
+        }
+      pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
+#endif
+      (void) SetImageBackgroundColor(image,exception);
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+      cairo_surface=cairo_image_surface_create_for_data(pixels,
+        CAIRO_FORMAT_ARGB32,(int) image->columns,(int) image->rows,(int)
+        stride);
+      if ((cairo_surface == (cairo_surface_t *) NULL) ||
+          (cairo_surface_status(cairo_surface) != CAIRO_STATUS_SUCCESS))
+        {
+          if (cairo_surface != (cairo_surface_t *) NULL)
+            cairo_surface_destroy(cairo_surface);
+          pixel_info=RelinquishVirtualMemory(pixel_info);
+          g_object_unref(svg_handle);
+          ThrowReaderException(ResourceLimitError,
+            "MemoryAllocationFailed");
+        }
+      cairo_image=cairo_create(cairo_surface);
+      cairo_set_operator(cairo_image,CAIRO_OPERATOR_CLEAR);
+      cairo_paint(cairo_image);
+      cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
+      if (apply_density != MagickFalse)
+        cairo_scale(cairo_image,image->resolution.x/DefaultSVGDensity,
+          image->resolution.y/DefaultSVGDensity);
+      rsvg_handle_render_cairo(svg_handle,cairo_image);
+      cairo_destroy(cairo_image);
+      cairo_surface_destroy(cairo_surface);
+      g_object_unref(svg_handle);
+      p=pixels;
+#else
+      p=gdk_pixbuf_get_pixels(pixel_buffer);
+#endif
+      GetPixelInfo(image,&fill_color);
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+        if (q == (Quantum *) NULL)
+          break;
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+          fill_color.blue=ScaleCharToQuantum(*p++);
+          fill_color.green=ScaleCharToQuantum(*p++);
+          fill_color.red=ScaleCharToQuantum(*p++);
+#else
+          fill_color.red=ScaleCharToQuantum(*p++);
+          fill_color.green=ScaleCharToQuantum(*p++);
+          fill_color.blue=ScaleCharToQuantum(*p++);
+#endif
+          fill_color.alpha=ScaleCharToQuantum(*p++);
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+          {
+            double
+              gamma;
+
+            gamma=QuantumScale*fill_color.alpha;
+            gamma=PerceptibleReciprocal(gamma);
+            fill_color.blue*=gamma;
+            fill_color.green*=gamma;
+            fill_color.red*=gamma;
+          }
+#endif
+          CompositePixelOver(image,&fill_color,fill_color.alpha,q,(double)
+            GetPixelAlpha(image,q),q);
+          q+=GetPixelChannels(image);
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+        if (image->previous == (Image *) NULL)
+          {
+            status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+              image->rows);
+            if (status == MagickFalse)
+              break;
+          }
+      }
+    }
+#if defined(MAGICKCORE_CAIRO_DELEGATE)
+  else
+    g_object_unref(svg_handle);
+  if (pixel_info != (MemoryInfo *) NULL)
+    pixel_info=RelinquishVirtualMemory(pixel_info);
+#else
+  g_object_unref(G_OBJECT(pixel_buffer));
+#endif
+  (void) CloseBlob(image);
+  for (next=GetFirstImageInList(image); next != (Image *) NULL; )
+  {
+    (void) CopyMagickString(next->filename,image->filename,MaxTextExtent);
+    (void) CopyMagickString(next->magick,image->magick,MaxTextExtent);
+    next=GetNextImageInList(next);
+  }
+  return(GetFirstImageInList(image));
+}
+#endif
+
 #if defined(MAGICKCORE_XML_DELEGATE)
 static SVGInfo *AcquireSVGInfo(void)
 {
@@ -3245,286 +3532,23 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Image
         *svg_image;
 
+#if defined(MAGICKCORE_RSVG_DELEGATE)
+      if (LocaleCompare(image_info->magick,"RSVG") == 0)
+        {
+          svg_image=RenderRSVGImage(image_info,image,exception);
+          return(svg_image);
+        }
+#endif
       svg_image=RenderSVGImage(image_info,image,exception);
       if (svg_image != (Image *) NULL)
         {
           image=DestroyImageList(image);
           return(svg_image);
         }
-      {
 #if defined(MAGICKCORE_RSVG_DELEGATE)
-#if defined(MAGICKCORE_CAIRO_DELEGATE)
-        cairo_surface_t
-          *cairo_surface;
-
-        cairo_t
-          *cairo_image;
-
-        MagickBooleanType
-          apply_density;
-
-        MemoryInfo
-          *pixel_info;
-
-        unsigned char
-          *p;
-
-        RsvgDimensionData
-          dimension_info;
-
-        unsigned char
-          *pixels;
-
-#else
-        GdkPixbuf
-          *pixel_buffer;
-
-        const guchar
-          *p;
+      svg_image=RenderRSVGImage(image_info,image,exception);
+      return(svg_image);
 #endif
-
-        GError
-          *error;
-
-        PixelInfo
-          fill_color;
-
-        ssize_t
-          x;
-
-        Quantum
-          *q;
-
-        RsvgHandle
-          *svg_handle;
-
-        ssize_t
-          y;
-
-        unsigned char
-          *buffer;
-
-        buffer=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
-          sizeof(*buffer));
-        if (buffer == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-#if LIBRSVG_CHECK_VERSION(2,40,3)
-        option=GetImageOption(image_info,"svg:xml-parse-huge");
-        if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
-          svg_handle=rsvg_handle_new_with_flags(RSVG_HANDLE_FLAG_UNLIMITED);
-        else
-#endif
-          svg_handle=rsvg_handle_new();
-        if (svg_handle == (RsvgHandle *) NULL)
-          {
-            buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-            ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-          }
-        rsvg_handle_set_base_uri(svg_handle,image_info->filename);
-        if ((fabs(image->resolution.x) > MagickEpsilon) &&
-            (fabs(image->resolution.y) > MagickEpsilon))
-          rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
-            image->resolution.y);
-        while ((n=ReadBlob(image,MagickMaxBufferExtent-1,buffer)) != 0)
-        {
-          buffer[n]='\0';
-          error=(GError *) NULL;
-          (void) rsvg_handle_write(svg_handle,buffer,n,&error);
-          if (error != (GError *) NULL)
-            g_error_free(error);
-        }
-        buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-        error=(GError *) NULL;
-        rsvg_handle_close(svg_handle,&error);
-        if (error != (GError *) NULL)
-          g_error_free(error);
-#if defined(MAGICKCORE_CAIRO_DELEGATE)
-        apply_density=MagickTrue;
-        rsvg_handle_get_dimensions(svg_handle,&dimension_info);
-        if ((image->resolution.x > 0.0) && (image->resolution.y > 0.0))
-          {
-            RsvgDimensionData
-              dpi_dimension_info;
-
-            /*
-              We should not apply the density when the internal 'factor' is 'i'.
-              This can be checked by using the trick below.
-            */
-            rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x*256,
-              image->resolution.y*256);
-            rsvg_handle_get_dimensions(svg_handle,&dpi_dimension_info);
-            if ((fabs(dpi_dimension_info.width-dimension_info.width) >= MagickEpsilon) ||
-                (fabs(dpi_dimension_info.height-dimension_info.height) >= MagickEpsilon))
-              apply_density=MagickFalse;
-            rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
-              image->resolution.y);
-          }
-        if (image_info->size != (char *) NULL)
-          {
-            (void) GetGeometry(image_info->size,(ssize_t *) NULL,
-              (ssize_t *) NULL,&image->columns,&image->rows);
-            if ((image->columns != 0) || (image->rows != 0))
-              {
-                image->resolution.x=DefaultSVGDensity*image->columns/
-                  dimension_info.width;
-                image->resolution.y=DefaultSVGDensity*image->rows/
-                  dimension_info.height;
-                if (fabs(image->resolution.x) < MagickEpsilon)
-                  image->resolution.x=image->resolution.y;
-                else
-                  if (fabs(image->resolution.y) < MagickEpsilon)
-                    image->resolution.y=image->resolution.x;
-                  else
-                    image->resolution.x=image->resolution.y=MagickMin(
-                      image->resolution.x,image->resolution.y);
-                apply_density=MagickTrue;
-              }
-          }
-        if (apply_density != MagickFalse)
-          {
-            image->columns=image->resolution.x*dimension_info.width/
-              DefaultSVGDensity;
-            image->rows=image->resolution.y*dimension_info.height/
-              DefaultSVGDensity;
-          }
-        else
-          {
-            image->columns=dimension_info.width;
-            image->rows=dimension_info.height;
-          }
-        pixel_info=(MemoryInfo *) NULL;
-#else
-        pixel_buffer=rsvg_handle_get_pixbuf(svg_handle);
-        rsvg_handle_free(svg_handle);
-        image->columns=gdk_pixbuf_get_width(pixel_buffer);
-        image->rows=gdk_pixbuf_get_height(pixel_buffer);
-#endif
-        image->alpha_trait=BlendPixelTrait;
-        if (image_info->ping == MagickFalse)
-          {
-#if defined(MAGICKCORE_CAIRO_DELEGATE)
-            size_t
-              stride;
-#endif
-
-            status=SetImageExtent(image,image->columns,image->rows,exception);
-            if (status == MagickFalse)
-              {
-#if !defined(MAGICKCORE_CAIRO_DELEGATE)
-                g_object_unref(G_OBJECT(pixel_buffer));
-#endif
-                g_object_unref(svg_handle);
-                ThrowReaderException(MissingDelegateError,
-                  "NoDecodeDelegateForThisImageFormat");
-              }
-#if defined(MAGICKCORE_CAIRO_DELEGATE)
-            stride=4*image->columns;
-#if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
-            stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
-              (int) image->columns);
-#endif
-            pixel_info=AcquireVirtualMemory(stride,image->rows*sizeof(*pixels));
-            if (pixel_info == (MemoryInfo *) NULL)
-              {
-                g_object_unref(svg_handle);
-                ThrowReaderException(ResourceLimitError,
-                  "MemoryAllocationFailed");
-              }
-            pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-#endif
-            (void) SetImageBackgroundColor(image,exception);
-#if defined(MAGICKCORE_CAIRO_DELEGATE)
-            cairo_surface=cairo_image_surface_create_for_data(pixels,
-              CAIRO_FORMAT_ARGB32,(int) image->columns,(int) image->rows,(int)
-              stride);
-            if ((cairo_surface == (cairo_surface_t *) NULL) ||
-                (cairo_surface_status(cairo_surface) != CAIRO_STATUS_SUCCESS))
-              {
-                if (cairo_surface != (cairo_surface_t *) NULL)
-                  cairo_surface_destroy(cairo_surface);
-                pixel_info=RelinquishVirtualMemory(pixel_info);
-                g_object_unref(svg_handle);
-                ThrowReaderException(ResourceLimitError,
-                  "MemoryAllocationFailed");
-              }
-            cairo_image=cairo_create(cairo_surface);
-            cairo_set_operator(cairo_image,CAIRO_OPERATOR_CLEAR);
-            cairo_paint(cairo_image);
-            cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
-            if (apply_density != MagickFalse)
-              cairo_scale(cairo_image,image->resolution.x/DefaultSVGDensity,
-                image->resolution.y/DefaultSVGDensity);
-            rsvg_handle_render_cairo(svg_handle,cairo_image);
-            cairo_destroy(cairo_image);
-            cairo_surface_destroy(cairo_surface);
-            g_object_unref(svg_handle);
-            p=pixels;
-#else
-            p=gdk_pixbuf_get_pixels(pixel_buffer);
-#endif
-            GetPixelInfo(image,&fill_color);
-            for (y=0; y < (ssize_t) image->rows; y++)
-            {
-              q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
-              if (q == (Quantum *) NULL)
-                break;
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-#if defined(MAGICKCORE_CAIRO_DELEGATE)
-                fill_color.blue=ScaleCharToQuantum(*p++);
-                fill_color.green=ScaleCharToQuantum(*p++);
-                fill_color.red=ScaleCharToQuantum(*p++);
-#else
-                fill_color.red=ScaleCharToQuantum(*p++);
-                fill_color.green=ScaleCharToQuantum(*p++);
-                fill_color.blue=ScaleCharToQuantum(*p++);
-#endif
-                fill_color.alpha=ScaleCharToQuantum(*p++);
-#if defined(MAGICKCORE_CAIRO_DELEGATE)
-                {
-                  double
-                    gamma;
-
-                  gamma=QuantumScale*fill_color.alpha;
-                  gamma=PerceptibleReciprocal(gamma);
-                  fill_color.blue*=gamma;
-                  fill_color.green*=gamma;
-                  fill_color.red*=gamma;
-                }
-#endif
-                CompositePixelOver(image,&fill_color,fill_color.alpha,q,(double)
-                  GetPixelAlpha(image,q),q);
-                q+=GetPixelChannels(image);
-              }
-              if (SyncAuthenticPixels(image,exception) == MagickFalse)
-                break;
-              if (image->previous == (Image *) NULL)
-                {
-                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                    y,image->rows);
-                  if (status == MagickFalse)
-                    break;
-                }
-            }
-          }
-#if defined(MAGICKCORE_CAIRO_DELEGATE)
-        else
-          g_object_unref(svg_handle);
-        if (pixel_info != (MemoryInfo *) NULL)
-          pixel_info=RelinquishVirtualMemory(pixel_info);
-#else
-        g_object_unref(G_OBJECT(pixel_buffer));
-#endif
-        (void) CloseBlob(image);
-        for (next=GetFirstImageInList(image); next != (Image *) NULL; )
-        {
-          (void) CopyMagickString(next->filename,image->filename,MaxTextExtent);
-          (void) CopyMagickString(next->magick,image->magick,MaxTextExtent);
-          next=GetNextImageInList(next);
-        }
-        return(GetFirstImageInList(image));
-#endif
-      }
     }
   /*
     Open draw file.
@@ -3790,6 +3814,17 @@ ModuleExport size_t RegisterSVGImage(void)
     entry->version=ConstantString(version);
   entry->magick=(IsImageFormatHandler *) IsSVG;
   (void) RegisterMagickInfo(entry);
+#if defined(MAGICKCORE_RSVG_DELEGATE)
+  entry=AcquireMagickInfo("SVG","RSVG","Librsvg SVG renderer");
+  entry->decoder=(DecodeImageHandler *) ReadSVGImage;
+  entry->encoder=(EncodeImageHandler *) WriteSVGImage;
+  entry->flags^=CoderDecoderThreadSupportFlag;
+  entry->mime_type=ConstantString("image/svg+xml");
+  if (*version != '\0')
+    entry->version=ConstantString(version);
+  entry->magick=(IsImageFormatHandler *) IsSVG;
+  (void) RegisterMagickInfo(entry);
+#endif
   entry=AcquireMagickInfo("SVG","MSVG",
     "ImageMagick's own SVG internal renderer");
 #if defined(MAGICKCORE_XML_DELEGATE)
@@ -3827,6 +3862,9 @@ ModuleExport void UnregisterSVGImage(void)
 {
   (void) UnregisterMagickInfo("SVGZ");
   (void) UnregisterMagickInfo("SVG");
+#if defined(MAGICKCORE_RSVG_DELEGATE)
+  (void) UnregisterMagickInfo("RSVG");
+#endif
   (void) UnregisterMagickInfo("MSVG");
 }
 
