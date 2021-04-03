@@ -2196,11 +2196,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     error_info;
 
   png_bytep
-     ping_trans_alpha;
+     ping_trans_alpha = NULL;
 
   png_color_16p
-     ping_background,
-     ping_trans_color;
+     ping_background = (png_color_16p) NULL,
+     ping_trans_color = (png_color_16p) NULL;
 
   png_info
     *end_info,
@@ -3106,7 +3106,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
 #endif /* PNG_READ_bKGD_SUPPORTED */
 
-  if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
+  if ((png_get_valid(ping,ping_info,PNG_INFO_tRNS)) &&
+      (ping_trans_color != (png_color_16p) NULL))
     {
       /*
         Image has a tRNS chunk.
