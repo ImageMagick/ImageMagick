@@ -810,10 +810,10 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             width;
 
           width=tile_width;
-          if ((tile_x+(ssize_t) tile_width) > (ssize_t) image->columns)
+          if ((tile_width+tile_x) > image->columns)
             width=(size_t) (tile_width-(tile_x+tile_width-image->columns));
           height=tile_height;
-          if ((tile_y+(ssize_t) tile_height) > (ssize_t) image->rows)
+          if ((tile_height+tile_y) > image->rows)
             height=(size_t) (tile_height-(tile_y+tile_height-image->rows));
           p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,width,height,
             exception);
