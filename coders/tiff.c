@@ -3285,7 +3285,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 
   MagickBooleanType
     adjoin,
-    debug,
     preserve_compression,
     status;
 
@@ -3368,8 +3367,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     }
   (void) DeleteImageProfile(image,"tiff:37724");
   scene=0;
-  debug=IsEventLogging();
-  (void) debug;
   adjoin=image_info->adjoin;
   imageListLength=GetImageListLength(image);
   option=GetImageOption(image_info,"tiff:preserve-compression");
