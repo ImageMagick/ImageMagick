@@ -219,7 +219,7 @@ static inline MagickBooleanType MagickCreateDirectory(const char *path)
 #ifdef MAGICKCORE_WINDOWS_SUPPORT
   status=mkdir(path);
 #else
-  status=mkdir(path, 0777);
+  status=mkdir(path,0777);
 #endif
   return(status == 0 ? MagickTrue : MagickFalse);
 }
@@ -825,7 +825,7 @@ static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
       {
         if (device_benchmark->score != MAGICKCORE_OPENCL_UNDEFINED_SCORE)
           {
-            if (LocaleCompare(device_benchmark->name, "CPU") == 0)
+            if (LocaleCompare(device_benchmark->name,"CPU") == 0)
               clEnv->cpu_score=device_benchmark->score;
             else
               {
@@ -2249,7 +2249,7 @@ static cl_uint GetOpenCLDeviceCount(MagickCLEnv clEnv,cl_platform_id platform)
   if (clEnv->library->clGetPlatformInfo(platform,CL_PLATFORM_VERSION,
         MagickPathExtent,version,NULL) != CL_SUCCESS)
     return(0);
-  if (strncmp(version, "OpenCL 1.0 ", 11) == 0)
+  if (strncmp(version,"OpenCL 1.0 ",11) == 0)
     return(0);
   if (clEnv->library->clGetDeviceIDs(platform,
         CL_DEVICE_TYPE_CPU|CL_DEVICE_TYPE_GPU,0,NULL,&num) != CL_SUCCESS)
@@ -2508,7 +2508,7 @@ static MagickBooleanType BindOpenCLFunctions()
 #ifdef MAGICKCORE_WINDOWS_SUPPORT
   openCL_library->library=(void *)LoadLibraryA("OpenCL.dll");
 #else
-  openCL_library->library=(void *)dlopen("libOpenCL.so", RTLD_NOW);
+  openCL_library->library=(void *)dlopen("libOpenCL.so",RTLD_NOW);
 #endif
 #define BIND(X) \
   if ((openCL_library->X=(MAGICKpfn_##X)OsLibraryGetFunctionAddress(openCL_library->library,#X)) == NULL) \
@@ -2675,7 +2675,7 @@ MagickPrivate MagickBooleanType OpenCLThrowMagickException(
     {
       /* Workaround for Intel OpenCL CPU runtime bug */
       /* Turn off OpenCL when a problem is detected! */
-      if (strncmp(device->platform_name, "Intel",5) == 0)
+      if (strncmp(device->platform_name,"Intel",5) == 0)
         default_CLEnv->enabled=MagickFalse;
     }
   }
