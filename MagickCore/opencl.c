@@ -2257,6 +2257,36 @@ static cl_uint GetOpenCLDeviceCount(MagickCLEnv clEnv,cl_platform_id platform)
   return(num);
 }
 
+static inline char *GetOpenCLPlatformString(cl_platform_id platform,
+  cl_platform_info param_name)
+{
+  char
+    *value;
+
+  size_t
+    length;
+
+  openCL_library->clGetPlatformInfo(platform,param_name,0,NULL,&length);
+  value=AcquireCriticalMemory(length*sizeof(*value));
+  openCL_library->clGetPlatformInfo(platform,param_name,length,value,NULL);
+  return(value);
+}
+
+static inline char *GetOpenCLDeviceString(cl_device_id device,
+  cl_device_info param_name)
+{
+  char
+    *value;
+
+  size_t
+    length;
+
+  openCL_library->clGetDeviceInfo(device,param_name,0,NULL,&length);
+  value=AcquireCriticalMemory(length*sizeof(*value));
+  openCL_library->clGetDeviceInfo(device,param_name,length,value,NULL);
+  return(value);
+}
+
 static void LoadOpenCLDevices(MagickCLEnv clEnv)
 {
   cl_context_properties
@@ -2297,11 +2327,20 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
     }
   for (i = 0; i < number_platforms; i++)
   {
-    number_devices=GetOpenCLDeviceCount(clEnv,platforms[i]);
+    char
+      *platform_name;
+
+    number_devices=0;
+    platform_name=GetOpenCLPlatformString(platforms[i],CL_PLATFORM_NAME);
+    /* NVIDIA is disabled by default due to reported access violation */
+    if (strncmp(platform_name,"NVIDIA",6) != 0)
+      {
+        number_devices=GetOpenCLDeviceCount(clEnv,platforms[i]);
+        clEnv->number_devices+=number_devices;
+      }
+    platform_name=(char *) RelinquishMagickMemory(platform_name);
     if (number_devices == 0)
       platforms[i]=(cl_platform_id) NULL;
-    else
-      clEnv->number_devices+=number_devices;
   }
   if (clEnv->number_devices == 0)
     {
@@ -2367,31 +2406,15 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
       device->context=clEnv->contexts[i];
       device->deviceID=devices[j];
 
-      openCL_library->clGetPlatformInfo(platforms[i],CL_PLATFORM_NAME,0,NULL,
-        &length);
-      device->platform_name=AcquireCriticalMemory(length*
-        sizeof(*device->platform_name));
-      openCL_library->clGetPlatformInfo(platforms[i],CL_PLATFORM_NAME,length,
-        device->platform_name,NULL);
+      device->platform_name=GetOpenCLPlatformString(platforms[i],
+        CL_PLATFORM_NAME);
 
-      openCL_library->clGetPlatformInfo(platforms[i],CL_PLATFORM_VENDOR,0,NULL,
-        &length);
-      device->vendor_name=AcquireCriticalMemory(length*
-        sizeof(*device->vendor_name));
-      openCL_library->clGetPlatformInfo(platforms[i],CL_PLATFORM_VENDOR,length,
-        device->vendor_name,NULL);
+      device->vendor_name=GetOpenCLPlatformString(platforms[i],
+        CL_PLATFORM_VENDOR);
 
-      openCL_library->clGetDeviceInfo(devices[j],CL_DEVICE_NAME,0,NULL,
-        &length);
-      device->name=AcquireCriticalMemory(length*sizeof(*device->name));
-      openCL_library->clGetDeviceInfo(devices[j],CL_DEVICE_NAME,length,
-        device->name,NULL);
+      device->name=GetOpenCLDeviceString(devices[j],CL_DEVICE_NAME);
 
-      openCL_library->clGetDeviceInfo(devices[j],CL_DRIVER_VERSION,0,NULL,
-        &length);
-      device->version=AcquireCriticalMemory(length*sizeof(*device->version));
-      openCL_library->clGetDeviceInfo(devices[j],CL_DRIVER_VERSION,length,
-        device->version,NULL);
+      device->version=GetOpenCLDeviceString(devices[j],CL_DRIVER_VERSION);
 
       openCL_library->clGetDeviceInfo(devices[j],CL_DEVICE_MAX_CLOCK_FREQUENCY,
         sizeof(cl_uint),&device->max_clock_frequency,NULL);
