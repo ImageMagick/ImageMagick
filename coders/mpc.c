@@ -10,7 +10,7 @@
 %                            M   M  P       CCCC                              %
 %                                                                             %
 %                                                                             %
-%              Read/Write Magick Persistant Cache Image Format                %
+%                 Read/Write Magick Pixel Cache Image Format                  %
 %                                                                             %
 %                              Software Design                                %
 %                                   Cristy                                    %
@@ -75,6 +75,11 @@
 #include "MagickCore/version-private.h"
 
 /*
+  Define declarations.
+*/
+#define MagickPixelCacheNonce  "MagickPixelCache"
+
+/*
   Forward declarations.
 */
 static MagickBooleanType
@@ -92,7 +97,7 @@ static MagickBooleanType
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsMPC() returns MagickTrue if the image format type, identified by the
-%  magick string, is an Magick Persistent Cache image.
+%  magick string, is an Magick Pixel Cache image.
 %
 %  The format of the IsMPC method is:
 %
@@ -125,7 +130,7 @@ static MagickBooleanType IsMPC(const unsigned char *magick,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadMPCImage() reads an Magick Persistent Cache image file and returns
+%  ReadMPCImage() reads an Magick Pixel Cache image file and returns
 %  it.  It allocates the memory necessary for the new Image structure and
 %  returns a pointer to the new image.
 %
@@ -185,6 +190,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     count;
 
+  StringInfo
+    *nonce;
+
   unsigned int
     signature;
 
@@ -225,7 +233,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     profiles=(LinkedListInfo *) NULL;
     length=MagickPathExtent;
     options=AcquireString((char *) NULL);
-    signature=GetMagickSignature((const StringInfo *) NULL);
+    nonce=StringToStringInfo(MagickPixelCacheNonce);
+    signature=GetMagickSignature(nonce);
+    nonce=DestroyStringInfo(nonce);
     image->depth=8;
     image->compression=NoCompression;
     while ((isgraph((int) ((unsigned char) c)) != 0) && (c != (int) ':'))
@@ -796,12 +806,15 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
-    if (signature != GetMagickSignature((const StringInfo *) NULL))
+    nonce=StringToStringInfo(MagickPixelCacheNonce);
+    if (signature != GetMagickSignature(nonce))
       {
+        nonce=DestroyStringInfo(nonce);
         if (profiles != (LinkedListInfo *) NULL)
           profiles=DestroyLinkedList(profiles,RelinquishMagickMemory);
         ThrowReaderException(CacheError,"IncompatibleAPI");
       }
+    nonce=DestroyStringInfo(nonce);
     if (image->montage != (char *) NULL)
       {
         char
@@ -1059,11 +1072,10 @@ ModuleExport size_t RegisterMPCImage(void)
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("MPC","CACHE",
-    "Magick Persistent Cache image format");
+  entry=AcquireMagickInfo("MPC","CACHE","Magick Pixel Cache image format");
   entry->flags|=CoderStealthFlag;
   (void) RegisterMagickInfo(entry);
-  entry=AcquireMagickInfo("MPC","MPC","Magick Persistent Cache image format");
+  entry=AcquireMagickInfo("MPC","MPC","Magick Pixel Cache image format");
   entry->decoder=(DecodeImageHandler *) ReadMPCImage;
   entry->encoder=(EncodeImageHandler *) WriteMPCImage;
   entry->magick=(IsImageFormatHandler *) IsMPC;
@@ -1108,7 +1120,7 @@ ModuleExport void UnregisterMPCImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteMPCImage() writes an Magick Persistent Cache image to a file.
+%  WriteMPCImage() writes an Magick Pixel Cache image to a file.
 %
 %  The format of the WriteMPCImage method is:
 %
@@ -1170,8 +1182,11 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
   imageListLength=GetImageListLength(image);
   do
   {
+    StringInfo
+      *nonce;
+
     /*
-      Write persistent cache meta-information.
+      Write cache meta-information.
 
       SetImageStorageClass() required to sync pixel cache.
     */
@@ -1181,8 +1196,10 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
         (image->colors > (size_t) (GetQuantumRange(image->depth)+1)))
       (void) SetImageStorageClass(image,DirectClass,exception);
     (void) WriteBlobString(image,"id=MagickPixelCache\n");
+    nonce=StringToStringInfo(MagickPixelCacheNonce);
     (void) FormatLocaleString(buffer,MagickPathExtent,"magick-signature=%u\n",
-      GetMagickSignature((const StringInfo *) NULL));
+      GetMagickSignature(nonce));
+    nonce=DestroyStringInfo(nonce);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "class=%s  colors=%.20g  alpha-trait=%s\n",CommandOptionToMnemonic(
