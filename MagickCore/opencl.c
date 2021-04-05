@@ -2355,8 +2355,7 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
       platforms=(cl_platform_id *) RelinquishMagickMemory(platforms);
       return;
     }
-  (void) memset(clEnv->devices,0,clEnv->number_devices*
-    sizeof(MagickCLDevice));
+  (void) memset(clEnv->devices,0,clEnv->number_devices*sizeof(MagickCLDevice));
   devices=(cl_device_id *) AcquireQuantumMemory(clEnv->number_devices,
     sizeof(cl_device_id));
   if (devices == (cl_device_id *) NULL)
@@ -2365,6 +2364,7 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
       RelinquishMagickCLDevices(clEnv);
       return;
     }
+  (void) memset(devices,0,clEnv->number_devices*sizeof(cl_device_id));
   clEnv->number_contexts=(size_t) number_platforms;
   clEnv->contexts=(cl_context *) AcquireQuantumMemory(clEnv->number_contexts,
     sizeof(cl_context));
@@ -2375,11 +2375,10 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
       RelinquishMagickCLDevices(clEnv);
       return;
     }
+  (void) memset(clEnv->contexts,0,clEnv->number_contexts*sizeof(cl_context));
   next=0;
   for (i = 0; i < number_platforms; i++)
   {
-    clEnv->contexts[i]=(cl_context) NULL;
-
     if (platforms[i] == (cl_platform_id) NULL)
       continue;
 
