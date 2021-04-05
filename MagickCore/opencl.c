@@ -2378,6 +2378,8 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
   next=0;
   for (i = 0; i < number_platforms; i++)
   {
+    clEnv->contexts[i]=(cl_context) NULL;
+
     if (platforms[i] == (cl_platform_id) NULL)
       continue;
 
