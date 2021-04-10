@@ -46,4 +46,4 @@ body:
 - type: textarea
   attributes:
     label: Images
-    value: Please upload images that can be used to reproduce issues in the area below. If the file type is not supported the file can be zipped and then uploaded instead.
+    description: Please upload images that can be used to reproduce issues in the area below. If the file type is not supported the file can be zipped and then uploaded instead.
