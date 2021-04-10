@@ -2273,20 +2273,20 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
     Check if there is enough storage for drawing pimitives.
   */
   quantum=sizeof(**mvg_info->primitive_info);
-  extent=(double) mvg_info->offset+pad+PrimitiveExtentPad*quantum+1.0;
+  extent=(double) mvg_info->offset+pad+(PrimitiveExtentPad+1)*quantum;
   if (extent <= (double) *mvg_info->extent)
     return(MagickTrue);
   if (extent == (double) CastDoubleToLong(extent))
     {
       *mvg_info->primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(
-        *mvg_info->primitive_info,(size_t) extent,quantum);
+        *mvg_info->primitive_info,(size_t) (extent+1),quantum);
       if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
         {
           ssize_t
             i;
 
           *mvg_info->extent=(size_t) extent;
-          for (i=mvg_info->offset+1; i < (ssize_t) extent; i++)
+          for (i=mvg_info->offset+1; i <= (ssize_t) extent; i++)
             (*mvg_info->primitive_info)[i].primitive=UndefinedPrimitive;
           return(MagickTrue);
         }
@@ -2300,8 +2300,8 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
     *mvg_info->primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(
       *mvg_info->primitive_info);
   *mvg_info->primitive_info=(PrimitiveInfo *) AcquireCriticalMemory((size_t) (
-    PrimitiveExtentPad*quantum));
-  (void) memset(*mvg_info->primitive_info,0,(size_t) (PrimitiveExtentPad*
+    (PrimitiveExtentPad+1)*quantum));
+  (void) memset(*mvg_info->primitive_info,0,(size_t) ((PrimitiveExtentPad+1)*
     quantum));
   *mvg_info->extent=1;
   mvg_info->offset=0;
@@ -2573,8 +2573,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
         image->filename);
     }
   number_points=(size_t) PrimitiveExtentPad;
-  primitive_info=(PrimitiveInfo *) AcquireQuantumMemory((size_t) number_points,
-    sizeof(*primitive_info));
+  primitive_info=(PrimitiveInfo *) AcquireQuantumMemory((size_t)
+    (number_points+1),sizeof(*primitive_info));
   if (primitive_info == (PrimitiveInfo *) NULL)
     {
       primitive=DestroyString(primitive);
@@ -2584,7 +2584,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  (void) memset(primitive_info,0,(size_t) number_points*
+  (void) memset(primitive_info,0,(size_t) (number_points+1)*
     sizeof(*primitive_info));
   (void) memset(&mvg_info,0,sizeof(mvg_info));
   mvg_info.primitive_info=(&primitive_info);
