@@ -39,6 +39,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/artifact.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/channel.h"
 #include "MagickCore/color.h"
@@ -1574,10 +1575,9 @@ MagickExport void OptimizeImageTransparency(const Image *image,
       Optimize Transparency of the next frame (if present)
     */
     next=GetNextImageInList(next);
-    if (next != (Image *) NULL) {
+    if ((next != (Image *) NULL) && (next->next != (Image *) NULL))
       (void) CompositeImage(next,dispose_image,ChangeMaskCompositeOp,
         MagickTrue,-(next->page.x),-(next->page.y),exception);
-    }
   }
   dispose_image=DestroyImage(dispose_image);
   return;
