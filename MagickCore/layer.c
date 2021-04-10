@@ -1575,7 +1575,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
       Optimize Transparency of the next frame (if present)
     */
     next=GetNextImageInList(next);
-    if ((next != (Image *) NULL) && (next->next != (Image *) NULL))
+    if (next != (Image *) NULL)
       (void) CompositeImage(next,dispose_image,ChangeMaskCompositeOp,
         MagickTrue,-(next->page.x),-(next->page.y),exception);
   }
