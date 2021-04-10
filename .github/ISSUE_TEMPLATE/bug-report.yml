@@ -43,6 +43,7 @@ body:
     description: List of steps, sample code, failing test or link to a project that reproduces the behavior. Make sure you place a stack trace inside a code (```) block to avoid linking unrelated issues.
   validations:
     required: true
-- type: markdown
+- type: textarea
   attributes:
+    label: Images
     value: Please upload images that can be used to reproduce issues in the area below. If the file type is not supported the file can be zipped and then uploaded instead.
