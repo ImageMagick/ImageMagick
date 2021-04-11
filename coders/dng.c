@@ -163,12 +163,12 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   ExceptionInfo *exception)
 {
   char
-    timestamp[MagickPathExtent];
+    timestamp[MagickTimeExtent];
 
   (void) SetImageProperty(image,"dng:make",raw_info->idata.make,exception);
   (void) SetImageProperty(image,"dng:camera.model.name",raw_info->idata.model,
     exception);
-  (void) FormatMagickTime(raw_info->other.timestamp,MagickPathExtent,timestamp);
+  (void) FormatMagickTime(raw_info->other.timestamp,sizeof(timestamp),timestamp);
   (void) SetImageProperty(image,"dng:create.date",timestamp,exception);
   (void) FormatImageProperty(image,"dng:iso.setting","%0.1f",
     raw_info->other.iso_speed);

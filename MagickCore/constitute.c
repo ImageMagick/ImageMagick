@@ -661,7 +661,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     char
       magick_path[MagickPathExtent],
       *property,
-      timestamp[MagickPathExtent];
+      timestamp[MagickTimeExtent];
 
     const char
       *option;
@@ -815,10 +815,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     if (source_date_epoch == (const char *) NULL)
       {
         (void) FormatMagickTime((time_t) GetBlobProperties(next)->st_mtime,
-          MagickPathExtent,timestamp);
+          sizeof(timestamp),timestamp);
         (void) SetImageProperty(next,"date:modify",timestamp,exception);
         (void) FormatMagickTime((time_t) GetBlobProperties(next)->st_ctime,
-          MagickPathExtent,timestamp);
+          sizeof(timestamp),timestamp);
         (void) SetImageProperty(next,"date:create",timestamp,exception);
       }
     option=GetImageOption(image_info,"delay");

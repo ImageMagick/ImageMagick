@@ -813,7 +813,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
 
   char
     buffer[MagickPathExtent],
-    date[MagickPathExtent],
+    date[MagickTimeExtent],
     **labels,
     page_geometry[MagickPathExtent];
 
@@ -1016,7 +1016,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
           image->filename);
         (void) WriteBlobString(image,buffer);
         timer=GetMagickTime();
-        (void) FormatMagickTime(timer,MagickPathExtent,date);
+        (void) FormatMagickTime(timer,sizeof(date),date);
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "%%%%CreationDate: %s\n",date);
         (void) WriteBlobString(image,buffer);

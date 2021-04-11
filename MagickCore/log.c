@@ -1231,12 +1231,12 @@ static char *TranslateEvent(const char *module,const char *function,
   if (LocaleCompare(log_info->format,"xml") == 0)
     {
       char
-        timestamp[MagickPathExtent];
+        timestamp[MagickTimeExtent];
 
       /*
         Translate event in "XML" format.
       */
-      (void) FormatMagickTime(seconds,extent,timestamp);
+      (void) FormatMagickTime(seconds,sizeof(timestamp),timestamp);
       (void) FormatLocaleString(text,extent,
         "<entry>\n"
         "  <timestamp>%s</timestamp>\n"

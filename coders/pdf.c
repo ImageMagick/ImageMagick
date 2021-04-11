@@ -1402,9 +1402,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     {
       char
-        create_date[MagickPathExtent],
-        modify_date[MagickPathExtent],
-        timestamp[MagickPathExtent],
+        create_date[MagickTimeExtent],
+        modify_date[MagickTimeExtent],
+        timestamp[MagickTimeExtent],
         xmp_profile[MagickPathExtent];
 
       /*
@@ -1419,12 +1419,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       *modify_date='\0';
       value=GetImageProperty(image,"date:modify",exception);
       if (value != (const char *) NULL)
-        (void) CopyMagickString(modify_date,value,MagickPathExtent);
+        (void) CopyMagickString(modify_date,value,sizeof(modify_date));
       *create_date='\0';
       value=GetImageProperty(image,"date:create",exception);
       if (value != (const char *) NULL)
-        (void) CopyMagickString(create_date,value,MagickPathExtent);
-      (void) FormatMagickTime(GetMagickTime(),MagickPathExtent,timestamp);
+        (void) CopyMagickString(create_date,value,sizeof(create_date));
+      (void) FormatMagickTime(GetMagickTime(),sizeof(timestamp),timestamp);
       url=(char *) MagickAuthoritativeURL;
       escape=EscapeParenthesis(basename);
       i=FormatLocaleString(xmp_profile,MagickPathExtent,XMPProfile,
