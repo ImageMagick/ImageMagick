@@ -919,7 +919,7 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
-        MaxTextExtent,sizeof(*interpret_text)); \
+        MagickPathExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
         return((char *) NULL); \
       q=interpret_text+strlen(interpret_text); \
@@ -933,7 +933,7 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
-        MaxTextExtent,sizeof(*interpret_text)); \
+        MagickPathExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
         return((char *) NULL); \
       q=interpret_text+strlen(interpret_text); \
@@ -948,7 +948,7 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
-        MaxTextExtent,sizeof(*interpret_text)); \
+        MagickPathExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
         return((char *) NULL); \
       q=interpret_text+strlen(interpret_text); \

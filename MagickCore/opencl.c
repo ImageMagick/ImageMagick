@@ -2169,7 +2169,7 @@ static MagickBooleanType HasOpenCLDevices(MagickCLEnv clEnv,
     return(MagickTrue);
 
   /* Get additional options */
-  (void) FormatLocaleString(options,MaxTextExtent,CLOptions,
+  (void) FormatLocaleString(options,MagickPathExtent,CLOptions,
     (float)QuantumRange,(float)QuantumScale,(float)CLCharQuantumScale,
     (float)MagickEpsilon,(float)MagickPI,(unsigned int)MaxMap,
     (unsigned int)MAGICKCORE_QUANTUM_DEPTH);

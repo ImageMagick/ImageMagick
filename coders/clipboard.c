@@ -200,7 +200,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   p[5]=(unsigned char) (total_size >> 24);
   p[10]=offset;
   read_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(read_info->magick,"BMP",MaxTextExtent);
+  (void) CopyMagickString(read_info->magick,"BMP",MagickPathExtent);
   image=BlobToImage(read_info,clip_data,total_size,exception);
   read_info=DestroyImageInfo(read_info);
   clip_data=RelinquishMagickMemory(clip_data);
@@ -330,9 +330,9 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
     ThrowWriterException(CoderError,"UnableToWriteImageData");
   write_info=CloneImageInfo(image_info);
   if (image->alpha_trait == UndefinedPixelTrait)
-    (void) CopyMagickString(write_info->magick,"BMP3",MaxTextExtent);
+    (void) CopyMagickString(write_info->magick,"BMP3",MagickPathExtent);
   else
-    (void) CopyMagickString(write_info->magick,"BMP",MaxTextExtent);
+    (void) CopyMagickString(write_info->magick,"BMP",MagickPathExtent);
   clip_data=ImageToBlob(write_info,image,&length,exception);
   write_info=DestroyImageInfo(write_info);
   if (clip_data == (void *) NULL)

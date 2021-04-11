@@ -2893,7 +2893,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           image->colors=GetNumberColors(image,(FILE *) NULL,exception);
-          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+          (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
             image->colors);
           break;
         }
@@ -3192,7 +3192,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
                 page;
 
               (void) ParseAbsoluteGeometry(papersize,&page);
-              (void) FormatLocaleString(value,MaxTextExtent,"%.20gx%.20g",
+              (void) FormatLocaleString(value,MagickPathExtent,"%.20gx%.20g",
                 (double) page.width,(double) page.height);
             }
           break;
@@ -3522,7 +3522,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
-        MaxTextExtent,sizeof(*interpret_text)); \
+        MagickPathExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
         { \
           if (property_image != image) \
@@ -3542,7 +3542,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
-        MaxTextExtent,sizeof(*interpret_text)); \
+        MagickPathExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
         { \
           if (property_image != image) \
@@ -3563,7 +3563,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
-        MaxTextExtent,sizeof(*interpret_text)); \
+        MagickPathExtent,sizeof(*interpret_text)); \
       if (interpret_text == (char *) NULL) \
         { \
           if (property_image != image) \

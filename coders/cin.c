@@ -996,7 +996,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   seconds=GetMagickTime();
   GetMagickUTCtime(&seconds,&utc_time);
   (void) memset(timestamp,0,sizeof(timestamp));
-  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%SUTC",&utc_time);
+  (void) strftime(timestamp,MagickPathExtent,"%Y:%m:%d:%H:%M:%SUTC",&utc_time);
   (void) memset(cin.file.create_date,0,sizeof(cin.file.create_date));
   (void) CopyMagickString(cin.file.create_date,timestamp,11);
   offset+=WriteBlob(image,sizeof(cin.file.create_date),(unsigned char *)
@@ -1093,7 +1093,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   offset+=WriteBlob(image,sizeof(cin.origination.filename),(unsigned char *)
     cin.origination.filename);
   (void) memset(timestamp,0,sizeof(timestamp));
-  (void) strftime(timestamp,MaxTextExtent,"%Y:%m:%d:%H:%M:%SUTC",&utc_time);
+  (void) strftime(timestamp,MagickPathExtent,"%Y:%m:%d:%H:%M:%SUTC",&utc_time);
   (void) memset(cin.origination.create_date,0,
     sizeof(cin.origination.create_date));
   (void) CopyMagickString(cin.origination.create_date,timestamp,11);

@@ -462,14 +462,14 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
     };
 
   char
-    page[MaxTextExtent];
+    page[MagickPathExtent];
 
   ssize_t
     i;
 
   assert(page_geometry != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",page_geometry);
-  (void) CopyMagickString(page,page_geometry,MaxTextExtent);
+  (void) CopyMagickString(page,page_geometry,MagickPathExtent);
   for (i=0; i < (ssize_t) (sizeof(PageSizes)/sizeof(PageSizes[0])); i++)
   {
     int
@@ -487,12 +487,12 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
         /*
           Replace mneumonic with the equivalent size in dots-per-inch.
         */
-        (void) FormatLocaleString(page,MaxTextExtent,"%s%.80s",
+        (void) FormatLocaleString(page,MagickPathExtent,"%s%.80s",
           PageSizes[i].geometry,page_geometry+PageSizes[i].extent);
         flags=GetGeometry(page,&geometry.x,&geometry.y,&geometry.width,
           &geometry.height);
         if ((flags & GreaterValue) == 0)
-          (void) ConcatenateMagickString(page,">",MaxTextExtent);
+          (void) ConcatenateMagickString(page,">",MagickPathExtent);
         break;
       }
   }

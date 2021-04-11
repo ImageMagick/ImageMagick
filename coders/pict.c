@@ -1495,7 +1495,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 ThrowPICTException(CorruptImageError,"ImproperImageHeader");
               }
             read_info=AcquireImageInfo();
-            (void) FormatLocaleString(read_info->filename,MaxTextExtent,
+            (void) FormatLocaleString(read_info->filename,MagickPathExtent,
               "jpeg:%s",image_info->filename);
             tile_image=BlobToImage(read_info,stream,count,exception);
             pixels=(unsigned char *) RelinquishMagickMemory(pixels);

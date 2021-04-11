@@ -130,7 +130,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    client_name[MaxTextExtent],
+    client_name[MagickPathExtent],
     *option;
 
   double

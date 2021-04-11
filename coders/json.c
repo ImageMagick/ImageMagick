@@ -998,7 +998,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       if (LocaleCompare(image->magick_filename,image->filename) != 0)
         {   
           char
-            filename[MaxTextExtent];
+            filename[MagickPathExtent];
           
           GetPathComponent(image->magick_filename,TailPath,filename);
           JSONFormatLocaleFile(file,"    \"baseName\": %s,\n",filename);

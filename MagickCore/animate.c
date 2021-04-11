@@ -1981,7 +1981,7 @@ MagickExport Image *XAnimateImages(Display *display,
     else
       {
         char
-          window_name[MaxTextExtent];
+          window_name[MagickPathExtent];
 
         p=image_list[scene]->magick_filename+
           strlen(image_list[scene]->magick_filename)-1;
@@ -2101,7 +2101,7 @@ MagickExport Image *XAnimateImages(Display *display,
               (resource_info->title != (char *) NULL))
             {
               char
-                name[MaxTextExtent];
+                name[MagickPathExtent];
 
               /*
                 Update window title.

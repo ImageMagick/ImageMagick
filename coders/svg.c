@@ -344,8 +344,9 @@ static Image *RenderSVGImage(const ImageInfo *image_info,Image *image,
           for (next=GetFirstImageInList(svg_image); next != (Image *) NULL; )
           {
             (void) CopyMagickString(next->filename,image->filename,
-              MaxTextExtent);
-            (void) CopyMagickString(next->magick,image->magick,MaxTextExtent);
+              MagickPathExtent);
+            (void) CopyMagickString(next->magick,image->magick,
+              MagickPathExtent);
             next=GetNextImageInList(next);
           }
           return(svg_image);
@@ -634,8 +635,8 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   (void) CloseBlob(image);
   for (next=GetFirstImageInList(image); next != (Image *) NULL; )
   {
-    (void) CopyMagickString(next->filename,image->filename,MaxTextExtent);
-    (void) CopyMagickString(next->magick,image->magick,MaxTextExtent);
+    (void) CopyMagickString(next->filename,image->filename,MagickPathExtent);
+    (void) CopyMagickString(next->magick,image->magick,MagickPathExtent);
     next=GetNextImageInList(next);
   }
   return(GetFirstImageInList(image));
@@ -3694,8 +3695,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   for (next=GetFirstImageInList(image); next != (Image *) NULL; )
   {
-    (void) CopyMagickString(next->filename,image->filename,MaxTextExtent);
-    (void) CopyMagickString(next->magick,"SVG",MaxTextExtent);
+    (void) CopyMagickString(next->filename,image->filename,MagickPathExtent);
+    (void) CopyMagickString(next->magick,"SVG",MagickPathExtent);
     next=GetNextImageInList(next);
   }
   svg_info=DestroySVGInfo(svg_info);
