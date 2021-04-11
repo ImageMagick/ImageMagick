@@ -130,8 +130,6 @@ static void GetFTPData(void *userdata,const char *data,int size)
 
 static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define MaxBufferExtent  8192
-
   char
     filename[MagickPathExtent];
 
@@ -241,7 +239,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (LocaleCompare(read_info->magick,"http") == 0)
     {
       char
-        buffer[MaxBufferExtent],
+        buffer[8192],
         *type;
 
       int
@@ -258,7 +256,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ssize_t
             count;
 
-          while ((bytes=xmlNanoHTTPRead(context,buffer,MaxBufferExtent)) > 0)
+          while ((bytes=xmlNanoHTTPRead(context,buffer,sizeof(buffer))) > 0)
             count=(ssize_t) fwrite(buffer,bytes,1,file);
           (void) count;
           xmlNanoHTTPClose(context);
