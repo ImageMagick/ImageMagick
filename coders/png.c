@@ -3823,9 +3823,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               for (x=0; x < ping_num_trans; x++)
               {
                  image->colormap[x].alpha_trait=BlendPixelTrait;
+                 image->colormap[x].alpha=OpaqueAlpha;
                  if (ping_trans_alpha != (png_bytep) NULL)
-                   image->colormap[x].alpha = ScaleCharToQuantum(
-                     (unsigned char)ping_trans_alpha[x]);
+                   image->colormap[x].alpha=ScaleCharToQuantum(
+                     (unsigned char) ping_trans_alpha[x]);
               }
             }
 
