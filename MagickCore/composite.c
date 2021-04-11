@@ -1562,9 +1562,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 MagickBooleanType
                   equivalent;
 
-                if (fabs((double) (QuantumRange*Da-OpaqueAlpha)) < MagickEpsilon)
+                if (Da < 0.5)
                   {
-                    pixel=(MagickRealType) OpaqueAlpha;
+                    pixel=(MagickRealType) TransparentAlpha;
                     break;
                   }
                 equivalent=IsFuzzyEquivalencePixel(source_image,p,image,q);
