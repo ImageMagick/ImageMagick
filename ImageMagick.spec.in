@@ -6,25 +6,30 @@ Name:           @PACKAGE_NAME@
 Version:        %{VERSION}
 Release:        %{Patchlevel}
 Summary:        Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images.
-Group:          Applications/Multimedia
 License:        https://imagemagick.org/script/license.php
 Url:            https://imagemagick.org/
 Source0:        https://imagemagick.org/download/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.bz2
-
-Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
 BuildRequires:  libtiff-devel, giflib-devel, zlib-devel, perl-devel >= 5.8.1
 BuildRequires:  perl-generators
-BuildRequires:  ghostscript-devel, djvulibre-devel
-BuildRequires:  libwmf-devel
+BuildRequires:  ghostscript-devel
+BuildRequires:  djvulibre-devel
+BuildRequires:  libwmf-devel, jasper-devel, libtool-ltdl-devel
 BuildRequires:  libX11-devel, libXext-devel, libXt-devel
-BuildRequires:  lcms2-devel, libxml2-devel, librsvg2-devel, OpenEXR-devel
-BuildRequires:  fftw-devel, OpenEXR-devel, libwebp-devel
+BuildRequires:  lcms2-devel, libxml2-devel, librsvg2-devel
+BuildRequires:  fftw-devel, ilmbase-devel, OpenEXR-devel, libwebp-devel
 BuildRequires:  jbigkit-devel
 BuildRequires:  openjpeg2-devel >= 2.1.0
-BuildRequires:  autoconf automake libtool-ltdl-devel
+BuildRequires:  graphviz-devel >= 2.9.0
+BuildRequires:  libraqm-devel
+BuildRequires:  liblqr-1-devel
+BuildRequires:  LibRaw-devel >= 0.14.8
+BuildRequires:  autoconf automake gcc gcc-c++
+BuildRequires: make
+
+Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
 %description
 ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, TIFF, DPX, EXR, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
@@ -41,11 +46,7 @@ The authoritative ImageMagick web site is https://imagemagick.org. The authorita
 
 %package devel
 Summary: Library links and header files for ImageMagick application development
-Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: libX11-devel, libXext-devel, libXt-devel, ghostscript-devel
-Requires: bzip2-devel, freetype-devel, libtiff-devel, libjpeg-devel, lcms2-devel
-Requires: libwebp-devel, OpenEXR-devel, openjpeg2-devel, pkgconfig
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 
 %description devel
@@ -60,14 +61,12 @@ however.
 
 %package libs
 Summary: ImageMagick libraries to link with
-Group: Applications/Multimedia
 
 %description libs
 This packages contains a shared libraries to use within other applications.
 
 %package djvu
 Summary: DjVu plugin for ImageMagick
-Group: Applications/Multimedia
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 
 %description djvu
@@ -77,7 +76,6 @@ save and load DjvU files from ImageMagick and libMagickCore using applications.
 
 %package doc
 Summary: ImageMagick HTML documentation
-Group: Documentation
 
 %description doc
 ImageMagick documentation, this package contains usage (for the
@@ -88,7 +86,6 @@ https://imagemagick.org/.
 
 %package perl
 Summary: ImageMagick perl bindings
-Group: System Environment/Libraries
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
@@ -102,7 +99,6 @@ ImageMagick.
 
 %package c++
 Summary: ImageMagick Magick++ library (C++ bindings)
-Group: System Environment/Libraries
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 
 %description c++
@@ -114,7 +110,6 @@ Install ImageMagick-c++ if you want to use any applications that use Magick++.
 
 %package c++-devel
 Summary: C++ bindings for the ImageMagick library
-Group: Development/Libraries
 Requires: %{name}-c++%{?_isa} = %{version}-%{release}
 Requires: %{name}-devel%{?_isa} = %{version}-%{release}
 
@@ -140,6 +135,8 @@ mkdir Magick++/examples
 cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
 
 %build
+autoconf -f -i
+export CFLAGS="%{optflags} -DIMPNG_SETJMP_IS_THREAD_SAFE"
 %configure --enable-shared \
         --disable-static \
         --with-modules \
@@ -147,17 +144,21 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
         --with-x \
         --with-threads \
         --with-magick_plus_plus \
+        --with-gslib \
         --with-wmf \
         --with-webp \
         --with-openexr \
-        --with-gslib \
         --with-rsvg \
         --with-xml \
         --with-perl-options="INSTALLDIRS=vendor %{?perl_prefix} CC='%__cc -L$PWD/MagickCore/.libs' LDDLFLAGS='-shared -L$PWD/MagickCore/.libs'" \
         --without-dps \
         --without-gcc-arch \
         --with-jbig \
-        --with-openjp2
+        --with-openjp2 \
+        --with-raw \
+        --with-lqr \
+        --with-gvc \
+        --with-raqm
 
 # Do *NOT* use %%{?_smp_mflags}, this causes PerlMagick to be silently misbuild
 make
@@ -167,9 +168,6 @@ make
 make %{?_smp_mflags} install DESTDIR=%{buildroot} INSTALL="install -p"
 cp -a www/source %{buildroot}%{_datadir}/doc/%{name}-%{VERSION}
 rm %{buildroot}%{_libdir}/*.la
-
-# fix weird perl Magick.so permissions
-chmod -f 755 %{buildroot}%{perl_vendorarch}/auto/Image/Magick/*/*.so
 
 # perlmagick: fix perl path of demo files
 %{__perl} -MExtUtils::MakeMaker -e 'MY->fixin(@ARGV)' PerlMagick/demo/*.pl
@@ -220,15 +218,10 @@ multilibFileVersions %{buildroot}%{_includedir}/%{name}-7/MagickCore/version.h
 
 %check
 export LD_LIBRARY_PATH=%{buildroot}/%{_libdir}
-make %{?_smp_mflags} check
+%make_build check
 
-%post libs -p /sbin/ldconfig
-
-%post c++ -p /sbin/ldconfig
-
-%postun libs -p /sbin/ldconfig
-
-%postun c++ -p /sbin/ldconfig
+%ldconfig_scriptlets libs
+%ldconfig_scriptlets c++
 
 %files
 %doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt ChangeLog
