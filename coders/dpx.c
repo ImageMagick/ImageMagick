@@ -562,9 +562,9 @@ static inline MagickBooleanType IsFloatDefined(const float value)
       float_value;
   } quantum;
 
-  quantum.unsigned_value=0U;
+  quantum.unsigned_value=(~0U);
   quantum.float_value=(float) value;
-  if (quantum.unsigned_value == 0U)
+  if (quantum.unsigned_value == ~0U)
     return(MagickFalse);
   return(MagickTrue);
 }
