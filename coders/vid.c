@@ -168,7 +168,6 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"name: %s",
         filelist[i]);
     (void) CopyMagickString(read_info->filename,filelist[i],MagickPathExtent);
-    filelist[i]=DestroyString(filelist[i]);
     *read_info->magick='\0';
     next_image=ReadImage(read_info,exception);
     CatchException(exception);
@@ -205,6 +204,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   read_info=DestroyImageInfo(read_info);
+  for (i=0; i < (ssize_t) number_files; i++)
+    filelist[i]=DestroyString(filelist[i]);
   filelist=(char **) RelinquishMagickMemory(filelist);
   if (images == (Image *) NULL)
     ThrowReaderException(CorruptImageError,

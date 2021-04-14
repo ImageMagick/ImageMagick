@@ -5538,7 +5538,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               MagickPathExtent);
             status&=SetImageInfo(clone_info,0,exception);
             if ((LocaleNCompare(clone_info->magick,"http",4) == 0) ||
-                (LocaleCompare(clone_info->magick,"mpri") == 0))
+                (LocaleCompare(clone_info->magick,"mpri") == 0) ||
+                (LocaleCompare(clone_info->magick,"*") == 0))
               (void) CopyMagickString(clone_info->filename,primitive_info->text,
                 MagickPathExtent);
             if (clone_info->size != (char *) NULL)
