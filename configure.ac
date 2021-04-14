@@ -2419,7 +2419,7 @@ if test "$with_jxl" != 'no'; then
           AC_MSG_RESULT([no -- some components failed test])
           have_jxl='no (failed tests)'
       else
-          JXL_LIBS='-ljxl'
+          JXL_LIBS='-ljxl -ljxl_threads'
           LIBS="$JXL_LIBS $LIBS"
           AC_DEFINE([JXL_DELEGATE],[1],[Define if you have jpeg-xl library])
           AC_MSG_RESULT([yes])
