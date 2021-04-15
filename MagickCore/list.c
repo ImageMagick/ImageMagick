@@ -248,12 +248,26 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
 
     while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
       p++;
-    first=(ssize_t) strtol(p,&p,10) % (length << 1);
+    first=(ssize_t) strtol(p,&p,10);
+    if (first < 0)
+      first+=(ssize_t) length;
+    else
+      if (first > (ssize_t) length)
+        first=(ssize_t) length;
+    first%=(length << 1);
     last=first;
     while (isspace((int) ((unsigned char) *p)) != 0)
       p++;
     if (*p == '-')
-      last=(ssize_t) strtol(p+1,&p,10) % (length << 1);
+      {
+        last=(ssize_t) strtol(p+1,&p,10);
+        if (last < 0)
+          last+=(ssize_t) length;
+        else
+          if (last > (ssize_t) length)
+            last=(ssize_t) length;
+      }
+    last%=(length << 1);
     match=MagickFalse;
     step=1;
     if (artifact != (const char *) NULL)
