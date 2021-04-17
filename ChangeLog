@@ -5,6 +5,9 @@
   * added support for pdf:author, pdf:producer and pdf:title when writing a
     PDF file.
 
+2021-04-10  7.0.11-7  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.11-7 GIT revision 18617:2a0925961:20210411
+
 2021-04-09  7.0.11-7  <quetzlzacatenango@image...>
   * constrain sub-image list.
   * -layers optimize no longer produces broken output (reference
