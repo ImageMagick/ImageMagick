@@ -306,11 +306,7 @@ MagickPrivate char *CanonicalXMLContent(const char *content,
   const unsigned char
     *p;
 
-  ssize_t
-    i;
-
   size_t
-    extent,
     length;
 
   unsigned char
@@ -337,77 +333,7 @@ MagickPrivate char *CanonicalXMLContent(const char *content,
       (void) ConcatenateString(&canonical_content,"</base64>");
       return(canonical_content);
     }
-  /*
-    Substitute predefined entities.
-  */
-  i=0;
-  canonical_content=AcquireString((char *) NULL);
-  extent=MagickPathExtent;
-  for (p=utf8; *p != '\0'; p++)
-  {
-    if ((i+MagickPathExtent) > (ssize_t) extent)
-      {
-        extent+=MagickPathExtent;
-        canonical_content=(char *) ResizeQuantumMemory(canonical_content,extent,
-          sizeof(*canonical_content));
-        if (canonical_content == (char *) NULL)
-          return(canonical_content);
-      }
-    switch (*p)
-    {
-      case '&':
-      {
-        i+=FormatLocaleString(canonical_content+i,extent,"&amp;");
-        break;
-      }
-      case '<':
-      {
-        i+=FormatLocaleString(canonical_content+i,extent,"&lt;");
-        break;
-      }
-      case '>':
-      {
-        i+=FormatLocaleString(canonical_content+i,extent,"&gt;");
-        break;
-      }
-      case '"':
-      {
-        i+=FormatLocaleString(canonical_content+i,extent,"&quot;");
-        break;
-      }
-      case '\n':
-      {
-        if (pedantic == MagickFalse)
-          {
-            canonical_content[i++]=(char) (*p);
-            break;
-          }
-        i+=FormatLocaleString(canonical_content+i,extent,"&#xA;");
-        break;
-      }
-      case '\t':
-      {
-        if (pedantic == MagickFalse)
-          {
-            canonical_content[i++]=(char) (*p);
-            break;
-          }
-        i+=FormatLocaleString(canonical_content+i,extent,"&#x9;");
-        break;
-      }
-      case '\r':
-      {
-        i+=FormatLocaleString(canonical_content+i,extent,"&#xD;");
-        break;
-      }
-      default:
-      {
-        canonical_content[i++]=(char) (*p);
-        break;
-      }
-    }
-  }
-  canonical_content[i]='\0';
+  canonical_content=SubstituteXMLEntities((const char *) utf8,pedantic);
   utf8=(unsigned char *) RelinquishMagickMemory(utf8);
   return(canonical_content);
 }
