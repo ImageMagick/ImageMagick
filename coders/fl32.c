@@ -192,6 +192,7 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  (void) ResetImagePixels(image,exception);
   switch (image->number_channels)
   {
     case 1:
