@@ -1559,19 +1559,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case ChangeMaskCompositeOp:
               {
-                MagickBooleanType
-                  equivalent;
-
-                if (Da < 0.5)
-                  {
-                    pixel=(MagickRealType) TransparentAlpha;
-                    break;
-                  }
-                equivalent=IsFuzzyEquivalencePixel(source_image,p,image,q);
-                if (equivalent != MagickFalse)
+                if (IsFuzzyEquivalencePixel(source_image,p,image,q) != MagickFalse)
                   pixel=(MagickRealType) TransparentAlpha;
                 else
-                  pixel=(MagickRealType) OpaqueAlpha;
+                  pixel=QuantumRange*Da;
                 break;
               }
               case ClearCompositeOp:
