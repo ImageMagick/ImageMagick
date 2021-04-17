@@ -3584,7 +3584,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                   SetImageMonochrome(image,exception);
               }
             else
-              if (image->storage_class == PseudoClass)
+              if ((image->storage_class == PseudoClass) &&
+                  (image->alpha_trait == UndefinedPixelTrait))
                 {
                   size_t
                     depth;
