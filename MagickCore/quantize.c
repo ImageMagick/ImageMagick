@@ -741,7 +741,7 @@ static inline void SetAssociatedAlpha(const Image *image,CubeInfo *cube_info)
   MagickBooleanType
     associate_alpha;
 
-  associate_alpha=image->alpha_trait == BlendPixelTrait ? MagickTrue :
+  associate_alpha=image->alpha_trait != UndefinedPixelTrait ? MagickTrue :
     MagickFalse;
   if ((cube_info->quantize_info->number_colors == 2) &&
       ((cube_info->quantize_info->colorspace == LinearGRAYColorspace) ||
@@ -1114,8 +1114,6 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
         pixel;
 
       double
-        alpha,
-        beta,
         distance;
 
       DoublePixelPacket
@@ -1129,22 +1127,15 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
       */
       p=image->colormap+node_info->color_number;
       q=(&cube_info->target);
-      alpha=1.0;
-      beta=1.0;
-      if (cube_info->associate_alpha != MagickFalse)
-        {
-          alpha=(double) (QuantumScale*p->alpha);
-          beta=(double) (QuantumScale*q->alpha);
-        }
-      pixel=alpha*p->red-beta*q->red;
+      pixel=p->red-q->red;
       distance=pixel*pixel;
       if (distance <= cube_info->distance)
         {
-          pixel=alpha*p->green-beta*q->green;
+          pixel=p->green-q->green;
           distance+=pixel*pixel;
           if (distance <= cube_info->distance)
             {
-              pixel=alpha*p->blue-beta*q->blue;
+              pixel=p->blue-q->blue;
               distance+=pixel*pixel;
               if (distance <= cube_info->distance)
                 {
@@ -2233,7 +2224,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       index=(ssize_t) GetPixelIndex(image,p);
-      if (image->alpha_trait == BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         {
           alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
           beta=(double) (QuantumScale*image->colormap[index].alpha);
@@ -2557,7 +2548,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
             image->colormap[n].red=RandomColorComponent(random_info);
             image->colormap[n].green=RandomColorComponent(random_info);
             image->colormap[n].blue=RandomColorComponent(random_info);
-            if (image->alpha_trait != BlendPixelTrait)
+            if (image->alpha_trait != UndefinedPixelTrait)
               image->colormap[n].alpha=RandomColorComponent(random_info);
             if (image->colorspace == CMYKColorspace)
               image->colormap[n].black=RandomColorComponent(random_info);
@@ -2645,7 +2636,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         kmeans_pixels[id][j].red+=QuantumScale*GetPixelRed(image,q);
         kmeans_pixels[id][j].green+=QuantumScale*GetPixelGreen(image,q);
         kmeans_pixels[id][j].blue+=QuantumScale*GetPixelBlue(image,q);
-        if (image->alpha_trait != BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           kmeans_pixels[id][j].alpha+=QuantumScale*GetPixelAlpha(image,q);
         if (image->colorspace == CMYKColorspace)
           kmeans_pixels[id][j].black+=QuantumScale*GetPixelBlack(image,q);
@@ -2672,7 +2663,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         kmeans_pixels[0][j].red+=kmeans_pixels[i][j].red;
         kmeans_pixels[0][j].green+=kmeans_pixels[i][j].green;
         kmeans_pixels[0][j].blue+=kmeans_pixels[i][j].blue;
-        if (image->alpha_trait != BlendPixelTrait)
+        if (image->alpha_trait != UndefinedPixelTrait)
           kmeans_pixels[0][j].alpha+=kmeans_pixels[i][j].alpha;
         if (image->colorspace == CMYKColorspace)
           kmeans_pixels[0][j].black+=kmeans_pixels[i][j].black;
@@ -2693,7 +2684,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       image->colormap[i].red=gamma*QuantumRange*kmeans_pixels[0][i].red;
       image->colormap[i].green=gamma*QuantumRange*kmeans_pixels[0][i].green;
       image->colormap[i].blue=gamma*QuantumRange*kmeans_pixels[0][i].blue;
-      if (image->alpha_trait != BlendPixelTrait)
+      if (image->alpha_trait != UndefinedPixelTrait)
         image->colormap[i].alpha=gamma*QuantumRange*kmeans_pixels[0][i].alpha;
       if (image->colorspace == CMYKColorspace)
         image->colormap[i].black=gamma*QuantumRange*kmeans_pixels[0][i].black;
@@ -2862,7 +2853,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,PosterizePixel(GetPixelBlack(image,q)),q);
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->alpha_trait == BlendPixelTrait))
+          (image->alpha_trait != UndefinedPixelTrait))
         SetPixelAlpha(image,PosterizePixel(GetPixelAlpha(image,q)),q);
       q+=GetPixelChannels(image);
     }
@@ -3094,7 +3085,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     maximum_colors=MaxColormapSize;
   if (maximum_colors > MaxColormapSize)
     maximum_colors=MaxColormapSize;
-  if (image->alpha_trait != BlendPixelTrait)
+  if (image->alpha_trait == UndefinedPixelTrait)
     {
       if (SetImageGray(image,exception) != MagickFalse)
         (void) SetGrayscaleImage(image,exception);
@@ -3113,7 +3104,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         colors>>=2;
       if ((quantize_info->dither_method != NoDitherMethod) && (depth > 2))
         depth--;
-      if ((image->alpha_trait == BlendPixelTrait) && (depth > 5))
+      if ((image->alpha_trait != UndefinedPixelTrait) && (depth > 5))
         depth--;
       if (SetImageGray(image,exception) != MagickFalse)
         depth=MaxTreeDepth;
