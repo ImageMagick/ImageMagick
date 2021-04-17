@@ -84,7 +84,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
-#include "MagickCore/module.h"
+#include "MagickCore/xml-tree-private.h"
 #include "coders/bytebuffer-private.h"
 #include "coders/ghostscript-private.h"
 
@@ -1423,11 +1423,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       if (value != (const char *) NULL)
         (void) CopyMagickString(create_date,value,sizeof(create_date));
       (void) FormatMagickTime(GetMagickTime(),sizeof(timestamp),timestamp);
-      url=(char *) MagickAuthoritativeURL;
-      escape=EscapeParenthesis(basename);
+      url=SubstituteXMLEntities(MagickAuthoritativeURL,MagickFalse);
+      escape=SubstituteXMLEntities(basename,MagickFalse);
       i=FormatLocaleString(temp,MagickPathExtent,XMPProfile,
         XMPProfileMagick,modify_date,create_date,timestamp,url,escape,url);
       escape=DestroyString(escape);
+      url=DestroyString(url);
       (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g\n",
         (double) i);
       (void) WriteBlobString(image,buffer);
@@ -3003,8 +3004,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,buffer);
   (void) FormatLocaleString(buffer,MagickPathExtent,"/ModDate (%s)\n",temp);
   (void) WriteBlobString(image,buffer);
-  url=(char *) MagickAuthoritativeURL;
-  escape=EscapeParenthesis(url);
+  escape=EscapeParenthesis(MagickAuthoritativeURL);
   (void) FormatLocaleString(buffer,MagickPathExtent,"/Producer (%s)\n",escape);
   escape=DestroyString(escape);
   (void) WriteBlobString(image,buffer);
