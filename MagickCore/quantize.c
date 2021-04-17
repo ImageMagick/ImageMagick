@@ -340,6 +340,8 @@ static MagickBooleanType
   AssignImageColors(Image *,CubeInfo *,ExceptionInfo *),
   ClassifyImageColors(CubeInfo *,const Image *,ExceptionInfo *),
   DitherImage(Image *,CubeInfo *,ExceptionInfo *),
+  RiemersmaDither(Image *,CacheView *,CubeInfo *,const unsigned int,
+    ExceptionInfo *),
   SetGrayscaleImage(Image *,ExceptionInfo *),
   SetImageColormap(Image *,CubeInfo *,ExceptionInfo *);
 
@@ -1682,10 +1684,6 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
   pixels=DestroyPixelThreadSet(pixels);
   return(MagickTrue);
 }
-
-static MagickBooleanType
-  RiemersmaDither(Image *,CacheView *,CubeInfo *,const unsigned int,
-    ExceptionInfo *);
 
 static void Riemersma(Image *image,CacheView *image_view,CubeInfo *cube_info,
   const size_t level,const unsigned int direction,ExceptionInfo *exception)
