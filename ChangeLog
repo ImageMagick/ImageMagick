@@ -1,5 +1,5 @@
-2021-04-10  7.0.11-7  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.11-7 GIT revision 18636:53a252607:20210417
+2021-04-17  7.0.11-8  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.11-8 GIT revision 18636:53a252607:20210417
 
 2021-04-17  7.0.11-8  Dirk Lemstra <dirk@lem.....org>
   * added support for pdf:author, pdf:producer and pdf:title when writing a
