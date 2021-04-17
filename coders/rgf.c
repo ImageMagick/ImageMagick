@@ -351,7 +351,8 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
   /*
     Convert MIFF to bit pixels.
   */
-  (void) SetImageType(image,BilevelType,exception);
+  if (IsImageMonochrome(image) == MagickFalse)
+    (void) SetImageType(image,BilevelType,exception);
   x=0;
   y=0;
   for (y=0; y < (ssize_t) image->rows; y++)
