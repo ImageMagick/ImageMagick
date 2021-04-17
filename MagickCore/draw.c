@@ -5537,16 +5537,17 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
             status&=SetImageInfo(clone_info,0,exception);
-            if ((LocaleNCompare(clone_info->magick,"http",4) == 0) ||
-                (LocaleCompare(clone_info->magick,"mpri") == 0) ||
-                (LocaleCompare(clone_info->magick,"*") == 0))
-              (void) CopyMagickString(clone_info->filename,primitive_info->text,
-                MagickPathExtent);
+            (void) CopyMagickString(clone_info->filename,primitive_info->text,
+              MagickPathExtent);
             if (clone_info->size != (char *) NULL)
               clone_info->size=DestroyString(clone_info->size);
             if (clone_info->extract != (char *) NULL)
               clone_info->extract=DestroyString(clone_info->extract);
-            if (*clone_info->filename != '\0')
+            if ((LocaleCompare(clone_info->magick,"file") == 0) ||
+                (LocaleCompare(clone_info->magick,"https") == 0) ||
+                (LocaleCompare(clone_info->magick,"http") == 0) ||
+                (LocaleCompare(clone_info->magick,"mpri") == 0) ||
+                (IsPathAccessible(clone_info->filename) != MagickFalse))
               composite_images=ReadImage(clone_info,exception);
           }
       clone_info=DestroyImageInfo(clone_info);

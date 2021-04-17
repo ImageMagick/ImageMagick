@@ -164,7 +164,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   packet_size=(size_t) (depth/8);
   pixels=(unsigned char *) AcquireQuantumMemory(image->columns,packet_size*
     sizeof(*pixels));
-  packet_size=(size_t) (image->colors > 256 ? 6UL : 3UL);
+  packet_size=(size_t) (depth > 8 ? 6UL : 3UL);
   colormap=(unsigned char *) AcquireQuantumMemory(image->colors,packet_size*
     sizeof(*colormap));
   if ((pixels == (unsigned char *) NULL) ||
