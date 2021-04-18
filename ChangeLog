@@ -29,7 +29,7 @@
   * Release ImageMagick version 7.0.11-5 GIT revision 18569:b934dca6b:20210328
 
 2021-03-25  7.0.11-5  Dirk Lemstra <dirk@lem.....org>
-  * OpenCL will be disable by default, use the environment variable
+  * OpenCL will be disabled by default, use the environment variable
     MAGICK_OCL_DEVICE to turn it on or select the device to use.
 
 2021-03-24  7.0.11-5  <quetzlzacatenango@image...>
