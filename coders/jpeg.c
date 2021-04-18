@@ -125,7 +125,7 @@ typedef struct _DestinationManager
     *buffer;
 } DestinationManager;
 
-typedef struct _ErrorManager
+typedef struct _JPEGClientInfo
 {
   jmp_buf
     error_recovery;
@@ -141,7 +141,7 @@ typedef struct _ErrorManager
 
   ExceptionInfo
     *exception;
-} ErrorManager;
+} JPEGClientInfo;
 
 typedef struct _SourceManager
 {
@@ -254,19 +254,19 @@ static MagickBooleanType IsJPEG(const unsigned char *magick,const size_t length)
 %
 */
 
-static boolean FillInputBuffer(j_decompress_ptr cinfo)
+static boolean FillInputBuffer(j_decompress_ptr compress_info)
 {
   SourceManager
     *source;
 
-  source=(SourceManager *) cinfo->src;
+  source=(SourceManager *) compress_info->src;
   source->manager.bytes_in_buffer=(size_t) ReadBlob(source->image,
     MagickMinBufferExtent,source->buffer);
   if (source->manager.bytes_in_buffer == 0)
     {
       if (source->start_of_blob != FALSE)
-        ERREXIT(cinfo,JERR_INPUT_EMPTY);
-      WARNMS(cinfo,JWRN_JPEG_EOF);
+        ERREXIT(compress_info,JERR_INPUT_EMPTY);
+      WARNMS(compress_info,JWRN_JPEG_EOF);
       source->buffer[0]=(JOCTET) 0xff;
       source->buffer[1]=(JOCTET) JPEG_EOI;
       source->manager.bytes_in_buffer=2;
@@ -288,12 +288,12 @@ static int GetCharacter(j_decompress_ptr jpeg_info)
   return((int) GETJOCTET(*jpeg_info->src->next_input_byte++));
 }
 
-static void InitializeSource(j_decompress_ptr cinfo)
+static void InitializeSource(j_decompress_ptr compress_info)
 {
   SourceManager
     *source;
 
-  source=(SourceManager *) cinfo->src;
+  source=(SourceManager *) compress_info->src;
   source->start_of_blob=TRUE;
 }
 
@@ -322,53 +322,53 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
   char
     message[JMSG_LENGTH_MAX];
 
-  ErrorManager
-    *error_manager;
-
   ExceptionInfo
     *exception;
 
   Image
     *image;
 
+  JPEGClientInfo
+    *client_info;
+
   *message='\0';
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  image=error_manager->image;
-  exception=error_manager->exception;
+  client_info=(JPEGClientInfo *) jpeg_info->client_data;
+  image=client_info->image;
+  exception=client_info->exception;
   (jpeg_info->err->format_message)(jpeg_info,message);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "[%s] JPEG Trace: \"%s\"",image->filename,message);
-  if (error_manager->finished != MagickFalse)
+  if (client_info->finished != MagickFalse)
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
       (char *) message,"`%s'",image->filename);
   else
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
       (char *) message,"`%s'",image->filename);
-  longjmp(error_manager->error_recovery,1);
+  longjmp(client_info->error_recovery,1);
 }
 
 static void JPEGProgressHandler(j_common_ptr jpeg_info)
 {
-  ErrorManager
-    *error_manager;
-
   ExceptionInfo
     *exception;
 
   Image
     *image;
 
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  image=error_manager->image;
-  exception=error_manager->exception;
+  JPEGClientInfo
+    *client_info;
+
+  client_info=(JPEGClientInfo *) jpeg_info->client_data;
+  image=client_info->image;
+  exception=client_info->exception;
   if (jpeg_info->is_decompressor == 0)
     return;
   if (((j_decompress_ptr) jpeg_info)->input_scan_number < MaxJPEGScans)
     return;
   (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
     "too many scans","`%s'",image->filename);
-  longjmp(error_manager->error_recovery,1);
+  longjmp(client_info->error_recovery,1);
 }
 
 static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
@@ -378,19 +378,19 @@ static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
   char
     message[JMSG_LENGTH_MAX];
 
-  ErrorManager
-    *error_manager;
-
   ExceptionInfo
     *exception;
 
   Image
     *image;
 
+  JPEGClientInfo
+    *client_info;
+
   *message='\0';
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  exception=error_manager->exception;
-  image=error_manager->image;
+  client_info=(JPEGClientInfo *) jpeg_info->client_data;
+  exception=client_info->exception;
+  image=client_info->image;
   if (level < 0)
     {
       /*
@@ -418,14 +418,14 @@ static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
 static boolean ReadProfileData(j_decompress_ptr jpeg_info,const size_t index,
   const size_t length)
 {
-  ErrorManager
-    *error_manager;
-
   ExceptionInfo
     *exception;
 
   Image
     *image;
+
+  JPEGClientInfo
+    *client_info;
 
   unsigned char
     *p;
@@ -433,31 +433,31 @@ static boolean ReadProfileData(j_decompress_ptr jpeg_info,const size_t index,
   ssize_t
     i;
 
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  exception=error_manager->exception;
-  image=error_manager->image;
-  if (error_manager->profiles[index] == (StringInfo *) NULL)
+  client_info=(JPEGClientInfo *) jpeg_info->client_data;
+  exception=client_info->exception;
+  image=client_info->image;
+  if (client_info->profiles[index] == (StringInfo *) NULL)
     {
-      error_manager->profiles[index]=BlobToStringInfo((const void *) NULL,
+      client_info->profiles[index]=BlobToStringInfo((const void *) NULL,
         length);
-      if (error_manager->profiles[index] == (StringInfo *) NULL)
+      if (client_info->profiles[index] == (StringInfo *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","`%s'",
             image->filename);
           return(FALSE);
         }
-      p=GetStringInfoDatum(error_manager->profiles[index]);
+      p=GetStringInfoDatum(client_info->profiles[index]);
     }
   else
     {
       size_t
         current_length;
 
-      current_length=GetStringInfoLength(error_manager->profiles[index]);
-      SetStringInfoLength(error_manager->profiles[index],current_length+
+      current_length=GetStringInfoLength(client_info->profiles[index]);
+      SetStringInfoLength(client_info->profiles[index],current_length+
         length);
-      p=GetStringInfoDatum(error_manager->profiles[index])+current_length;
+      p=GetStringInfoDatum(client_info->profiles[index])+current_length;
     }
   for (i=0; i < (ssize_t) length; i++)
   {
@@ -631,14 +631,14 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
 
 static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
 {
-  ErrorManager
-    *error_manager;
-
   ExceptionInfo
     *exception;
 
   Image
     *image;
+
+  JPEGClientInfo
+    *client_info;
 
   MagickBooleanType
     status;
@@ -658,10 +658,10 @@ static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
   length-=2;
   if (ReadProfileData(jpeg_info,XML_INDEX,length) == FALSE)
     return(FALSE);
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  exception=error_manager->exception;
-  image=error_manager->image;
-  profile=error_manager->profiles[XML_INDEX];
+  client_info=(JPEGClientInfo *) jpeg_info->client_data;
+  exception=client_info->exception;
+  image=client_info->image;
+  profile=client_info->profiles[XML_INDEX];
   p=GetStringInfoDatum(profile);
   length=GetStringInfoLength(profile);
   status=MagickTrue;
@@ -695,44 +695,45 @@ static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
       }
     else
       status=SetImageProfile(image,"app1",profile,exception);
-  error_manager->profiles[XML_INDEX]=DestroyStringInfo(
-    error_manager->profiles[XML_INDEX]);
+  client_info->profiles[XML_INDEX]=DestroyStringInfo(
+    client_info->profiles[XML_INDEX]);
   return(status != MagickFalse ? TRUE : FALSE);
 }
 
-static void SkipInputData(j_decompress_ptr cinfo,long number_bytes)
+static void SkipInputData(j_decompress_ptr compress_info,long number_bytes)
 {
   SourceManager
     *source;
 
   if (number_bytes <= 0)
     return;
-  source=(SourceManager *) cinfo->src;
+  source=(SourceManager *) compress_info->src;
   while (number_bytes > (long) source->manager.bytes_in_buffer)
   {
     number_bytes-=(long) source->manager.bytes_in_buffer;
-    (void) FillInputBuffer(cinfo);
+    (void) FillInputBuffer(compress_info);
   }
   source->manager.next_input_byte+=number_bytes;
   source->manager.bytes_in_buffer-=number_bytes;
 }
 
-static void TerminateSource(j_decompress_ptr cinfo)
+static void TerminateSource(j_decompress_ptr compress_info)
 {
-  (void) cinfo;
+  (void) compress_info;
 }
 
-static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
+static void JPEGSourceManager(j_decompress_ptr compress_info,Image *image)
 {
   SourceManager
     *source;
 
-  cinfo->src=(struct jpeg_source_mgr *) (*cinfo->mem->alloc_small)
-    ((j_common_ptr) cinfo,JPOOL_IMAGE,sizeof(SourceManager));
-  source=(SourceManager *) cinfo->src;
-  source->buffer=(JOCTET *) (*cinfo->mem->alloc_small)
-    ((j_common_ptr) cinfo,JPOOL_IMAGE,MagickMinBufferExtent*sizeof(JOCTET));
-  source=(SourceManager *) cinfo->src;
+  compress_info->src=(struct jpeg_source_mgr *) (*
+    compress_info->mem->alloc_small) ((j_common_ptr) compress_info,JPOOL_IMAGE,
+    sizeof(SourceManager));
+  source=(SourceManager *) compress_info->src;
+  source->buffer=(JOCTET *) (*compress_info->mem->alloc_small) ((j_common_ptr)
+    compress_info,JPOOL_IMAGE,MagickMinBufferExtent*sizeof(JOCTET));
+  source=(SourceManager *) compress_info->src;
   source->manager.init_source=InitializeSource;
   source->manager.fill_input_buffer=FillInputBuffer;
   source->manager.skip_input_data=SkipInputData;
@@ -944,22 +945,22 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
 
 static void JPEGDestroyDecompress(j_decompress_ptr jpeg_info)
 {
-  ErrorManager
-    *error_manager;
+  JPEGClientInfo
+    *client_info;
 
   size_t
     i;
 
-  error_manager=(ErrorManager *) jpeg_info->client_data;
+  client_info=(JPEGClientInfo *) jpeg_info->client_data;
   for (i=0; i < 16; i++)
   {
-    if (error_manager->profiles[i] != (StringInfo *) NULL)
-      error_manager->profiles[i]=DestroyStringInfo(error_manager->profiles[i]);
+    if (client_info->profiles[i] != (StringInfo *) NULL)
+      client_info->profiles[i]=DestroyStringInfo(client_info->profiles[i]);
   }
   jpeg_destroy_decompress(jpeg_info);
 }
 
-static MagickBooleanType JPEGSetImageProfiles(ErrorManager *error_manager)
+static MagickBooleanType JPEGSetImageProfiles(JPEGClientInfo *client_info)
 {
   ExceptionInfo
     *exception;
@@ -979,12 +980,12 @@ static MagickBooleanType JPEGSetImageProfiles(ErrorManager *error_manager)
   StringInfo
     *profile;
 
-  exception=error_manager->exception;
-  image=error_manager->image;
+  exception=client_info->exception;
+  image=client_info->image;
   status=MagickTrue;
   for (i=0; i < 16; i++)
   {
-    profile=error_manager->profiles[i];
+    profile=client_info->profiles[i];
     if (profile == (StringInfo *) NULL)
       continue;
     switch (i)
@@ -1018,7 +1019,7 @@ static MagickBooleanType JPEGSetImageProfiles(ErrorManager *error_manager)
         break;
       }
     }
-    error_manager->profiles[i]=DestroyStringInfo(error_manager->profiles[i]);
+    client_info->profiles[i]=DestroyStringInfo(client_info->profiles[i]);
     if (status == MagickFalse)
       break;
   }
@@ -1035,11 +1036,11 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     *dct_method,
     *option;
 
-  ErrorManager
-    *error_manager;
-
   Image
     *image;
+
+  JPEGClientInfo
+    *client_info;
 
   JSAMPLE
     *volatile jpeg_pixels;
@@ -1105,10 +1106,10 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   /*
     Initialize JPEG parameters.
   */
-  error_manager=(ErrorManager *) AcquireMagickMemory(sizeof(*error_manager));
-  if (error_manager == (ErrorManager *) NULL)
+  client_info=(JPEGClientInfo *) AcquireMagickMemory(sizeof(*client_info));
+  if (client_info == (JPEGClientInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) memset(error_manager,0,sizeof(*error_manager));
+  (void) memset(client_info,0,sizeof(*client_info));
   (void) memset(jpeg_info,0,sizeof(*jpeg_info));
   (void) memset(&jpeg_error,0,sizeof(jpeg_error));
   (void) memset(&jpeg_progress,0,sizeof(jpeg_progress));
@@ -1116,18 +1117,18 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   jpeg_info->err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info->err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   memory_info=(MemoryInfo *) NULL;
-  error_manager->exception=exception;
-  error_manager->image=image;
-  if (setjmp(error_manager->error_recovery) != 0)
+  client_info->exception=exception;
+  client_info->image=image;
+  if (setjmp(client_info->error_recovery) != 0)
     {
       JPEGDestroyDecompress(jpeg_info);
-      error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       (void) CloseBlob(image);
       if (exception->severity < ErrorException)
         return(GetFirstImageInList(image));
       return(DestroyImage(image));
     }
-  jpeg_info->client_data=(void *) error_manager;
+  jpeg_info->client_data=(void *) client_info;
   jpeg_create_decompress(jpeg_info);
   if (GetMaxMemoryRequest() != ~0UL)
     jpeg_info->mem->max_memory_to_use=(long) GetMaxMemoryRequest();
@@ -1307,7 +1308,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     if (AcquireImageColormap(image,StringToUnsignedLong(option),exception) == MagickFalse)
       {
         JPEGDestroyDecompress(jpeg_info);
-        error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+        client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
   if ((jpeg_info->output_components == 1) && (jpeg_info->quantize_colors == 0))
@@ -1319,7 +1320,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
       if (AcquireImageColormap(image,colors,exception) == MagickFalse)
         {
           JPEGDestroyDecompress(jpeg_info);
-          error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+          client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
     }
@@ -1345,16 +1346,16 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   if (jpeg_info->arith_code == TRUE)
     (void) SetImageProperty(image,"jpeg:coding","arithmetic",exception);
 #endif
-  if (JPEGSetImageProfiles(error_manager) == MagickFalse)
+  if (JPEGSetImageProfiles(client_info) == MagickFalse)
     {
       JPEGDestroyDecompress(jpeg_info);
-      error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       return(DestroyImageList(image));
     }
   if (image_info->ping != MagickFalse)
     {
       JPEGDestroyDecompress(jpeg_info);
-      error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
@@ -1362,7 +1363,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   if (status == MagickFalse)
     {
       JPEGDestroyDecompress(jpeg_info);
-      error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       return(DestroyImageList(image));
     }
   (void) jpeg_start_decompress(jpeg_info);
@@ -1370,7 +1371,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
       (jpeg_info->output_components != 3) && (jpeg_info->output_components != 4))
     {
       JPEGDestroyDecompress(jpeg_info);
-      error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
     }
   memory_info=AcquireVirtualMemory((size_t) image->columns,
@@ -1378,7 +1379,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   if (memory_info == (MemoryInfo *) NULL)
     {
       JPEGDestroyDecompress(jpeg_info);
-      error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
@@ -1387,12 +1388,12 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   /*
     Convert JPEG pixels to pixel packets.
   */
-  if (setjmp(error_manager->error_recovery) != 0)
+  if (setjmp(client_info->error_recovery) != 0)
     {
       if (memory_info != (MemoryInfo *) NULL)
         memory_info=RelinquishVirtualMemory(memory_info);
       JPEGDestroyDecompress(jpeg_info);
-      error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       (void) CloseBlob(image);
       number_pixels=(MagickSizeType) image->columns*image->rows;
       if (number_pixels != 0)
@@ -1543,15 +1544,15 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   }
   if (status != MagickFalse)
     {
-      error_manager->finished=MagickTrue;
-      if (setjmp(error_manager->error_recovery) == 0)
+      client_info->finished=MagickTrue;
+      if (setjmp(client_info->error_recovery) == 0)
         (void) jpeg_finish_decompress(jpeg_info);
     }
   /*
     Free jpeg resources.
   */
   JPEGDestroyDecompress(jpeg_info);
-  error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+  client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
   memory_info=RelinquishVirtualMemory(memory_info);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
@@ -1761,16 +1762,16 @@ static QuantizationTable *DestroyQuantizationTable(QuantizationTable *table)
   return(table);
 }
 
-static boolean EmptyOutputBuffer(j_compress_ptr cinfo)
+static boolean EmptyOutputBuffer(j_compress_ptr compress_info)
 {
   DestinationManager
     *destination;
 
-  destination=(DestinationManager *) cinfo->dest;
+  destination=(DestinationManager *) compress_info->dest;
   destination->manager.free_in_buffer=(size_t) WriteBlob(destination->image,
     MagickMinBufferExtent,destination->buffer);
   if (destination->manager.free_in_buffer != MagickMinBufferExtent)
-    ERREXIT(cinfo,JERR_FILE_WRITE);
+    ERREXIT(compress_info,JERR_FILE_WRITE);
   destination->manager.next_output_byte=destination->buffer;
   return(TRUE);
 }
@@ -1969,24 +1970,25 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   return(table);
 }
 
-static void InitializeDestination(j_compress_ptr cinfo)
+static void InitializeDestination(j_compress_ptr compress_info)
 {
   DestinationManager
     *destination;
 
-  destination=(DestinationManager *) cinfo->dest;
-  destination->buffer=(JOCTET *) (*cinfo->mem->alloc_small)
-    ((j_common_ptr) cinfo,JPOOL_IMAGE,MagickMinBufferExtent*sizeof(JOCTET));
+  destination=(DestinationManager *) compress_info->dest;
+  destination->buffer=(JOCTET *) (*compress_info->mem->alloc_small) (
+    (j_common_ptr) compress_info,JPOOL_IMAGE,MagickMinBufferExtent*
+    sizeof(JOCTET));
   destination->manager.next_output_byte=destination->buffer;
   destination->manager.free_in_buffer=MagickMinBufferExtent;
 }
 
-static void TerminateDestination(j_compress_ptr cinfo)
+static void TerminateDestination(j_compress_ptr compress_info)
 {
   DestinationManager
     *destination;
 
-  destination=(DestinationManager *) cinfo->dest;
+  destination=(DestinationManager *) compress_info->dest;
   if ((MagickMinBufferExtent-(int) destination->manager.free_in_buffer) > 0)
     {
       ssize_t
@@ -1996,7 +1998,7 @@ static void TerminateDestination(j_compress_ptr cinfo)
         destination->manager.free_in_buffer,destination->buffer);
       if (count != (ssize_t)
           (MagickMinBufferExtent-destination->manager.free_in_buffer))
-        ERREXIT(cinfo,JERR_FILE_WRITE);
+        ERREXIT(compress_info,JERR_FILE_WRITE);
     }
 }
 
@@ -2138,14 +2140,15 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
   custom_profile=DestroyStringInfo(custom_profile);
 }
 
-static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
+static void JPEGDestinationManager(j_compress_ptr compress_info,Image * image)
 {
   DestinationManager
     *destination;
 
-  cinfo->dest=(struct jpeg_destination_mgr *) (*cinfo->mem->alloc_small)
-    ((j_common_ptr) cinfo,JPOOL_IMAGE,sizeof(DestinationManager));
-  destination=(DestinationManager *) cinfo->dest;
+  compress_info->dest=(struct jpeg_destination_mgr *) (*
+    compress_info->mem->alloc_small) ((j_common_ptr) compress_info,JPOOL_IMAGE,
+    sizeof(DestinationManager));
+  destination=(DestinationManager *) compress_info->dest;
   destination->manager.init_destination=InitializeDestination;
   destination->manager.empty_output_buffer=EmptyOutputBuffer;
   destination->manager.term_destination=TerminateDestination;
@@ -2206,15 +2209,15 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     *sampling_factor,
     *value;
 
-  ErrorManager
-    *error_manager;
-
   Image
     *volatile volatile_image;
 
   int
     colorspace,
     quality;
+
+  JPEGClientInfo
+    *client_info;
 
   JSAMPLE
     *volatile jpeg_pixels;
@@ -2263,10 +2266,10 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   /*
     Initialize JPEG parameters.
   */
-  error_manager=(ErrorManager *) AcquireMagickMemory(sizeof(*error_manager));
-  if (error_manager == (ErrorManager *) NULL)
+  client_info=(JPEGClientInfo *) AcquireMagickMemory(sizeof(*client_info));
+  if (client_info == (JPEGClientInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) memset(error_manager,0,sizeof(*error_manager));
+  (void) memset(client_info,0,sizeof(*client_info));
   (void) memset(jpeg_info,0,sizeof(*jpeg_info));
   (void) memset(&jpeg_error,0,sizeof(jpeg_error));
   volatile_image=image;
@@ -2274,17 +2277,17 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   jpeg_info->err=jpeg_std_error(&jpeg_error);
   jpeg_info->err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_info->err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
-  error_manager->exception=exception;
-  error_manager->image=volatile_image;
+  client_info->exception=exception;
+  client_info->image=volatile_image;
   memory_info=(MemoryInfo *) NULL;
-  if (setjmp(error_manager->error_recovery) != 0)
+  if (setjmp(client_info->error_recovery) != 0)
     {
       jpeg_destroy_compress(jpeg_info);
-      error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       (void) CloseBlob(volatile_image);
       return(MagickFalse);
     }
-  jpeg_info->client_data=(void *) error_manager;
+  jpeg_info->client_data=(void *) client_info;
   jpeg_create_compress(jpeg_info);
   JPEGDestinationManager(jpeg_info,image);
   if ((image->columns != (unsigned int) image->columns) ||
@@ -2806,10 +2809,10 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   if (memory_info == (MemoryInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
-  if (setjmp(error_manager->error_recovery) != 0)
+  if (setjmp(client_info->error_recovery) != 0)
     {
       jpeg_destroy_compress(jpeg_info);
-      error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       if (memory_info != (MemoryInfo *) NULL)
         memory_info=RelinquishVirtualMemory(memory_info);
       (void) CloseBlob(image);
@@ -3004,7 +3007,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     Relinquish resources.
   */
   jpeg_destroy_compress(jpeg_info);
-  error_manager=(ErrorManager *) RelinquishMagickMemory(error_manager);
+  client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
   memory_info=RelinquishVirtualMemory(memory_info);
   (void) CloseBlob(image);
   return(MagickTrue);
