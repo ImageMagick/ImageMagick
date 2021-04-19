@@ -1029,6 +1029,14 @@ static MagickBooleanType JPEGSetImageProfiles(JPEGClientInfo *client_info)
 static Image *ReadJPEGImage_(const ImageInfo *image_info,
   struct jpeg_decompress_struct *jpeg_info,ExceptionInfo *exception)
 {
+#define ThrowJPEGReaderException(exception,message) \
+{ \
+  JPEGDestroyDecompress(jpeg_info); \
+  if (client_info != (JPEGClientInfo *) NULL) \
+    client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info); \
+  ThrowReaderException((exception),(message)); \
+}
+
   char
     value[MagickPathExtent];
 
@@ -1040,7 +1048,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     *image;
 
   JPEGClientInfo
-    *client_info;
+    *client_info = (JPEGClientInfo *) NULL;
 
   JSAMPLE
     *volatile jpeg_pixels;
@@ -1102,13 +1110,13 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     Verify that file size large enough to contain a JPEG datastream.
   */
   if (GetBlobSize(image) < 107)
-    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    ThrowJPEGReaderException(CorruptImageError,"InsufficientImageDataInFile");
   /*
     Initialize JPEG parameters.
   */
   client_info=(JPEGClientInfo *) AcquireMagickMemory(sizeof(*client_info));
   if (client_info == (JPEGClientInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
   (void) memset(client_info,0,sizeof(*client_info));
   (void) memset(jpeg_info,0,sizeof(*jpeg_info));
   (void) memset(&jpeg_error,0,sizeof(jpeg_error));
@@ -1306,11 +1314,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   option=GetImageOption(image_info,"jpeg:colors");
   if (option != (const char *) NULL)
     if (AcquireImageColormap(image,StringToUnsignedLong(option),exception) == MagickFalse)
-      {
-        JPEGDestroyDecompress(jpeg_info);
-        client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      }
+      ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if ((jpeg_info->output_components == 1) && (jpeg_info->quantize_colors == 0))
     {
       size_t
@@ -1318,11 +1322,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
 
       colors=(size_t) GetQuantumRange(image->depth)+1;
       if (AcquireImageColormap(image,colors,exception) == MagickFalse)
-        {
-          JPEGDestroyDecompress(jpeg_info);
-          client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        }
+        ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   if (image->debug != MagickFalse)
     {
@@ -1369,19 +1369,11 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   (void) jpeg_start_decompress(jpeg_info);
   if ((jpeg_info->output_components != 1) &&
       (jpeg_info->output_components != 3) && (jpeg_info->output_components != 4))
-    {
-      JPEGDestroyDecompress(jpeg_info);
-      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
-      ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
-    }
+    ThrowJPEGReaderException(CorruptImageError,"ImageTypeNotSupported");
   memory_info=AcquireVirtualMemory((size_t) image->columns,
     jpeg_info->output_components*sizeof(*jpeg_pixels));
   if (memory_info == (MemoryInfo *) NULL)
-    {
-      JPEGDestroyDecompress(jpeg_info);
-      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
+    ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
   (void) memset(jpeg_pixels,0,image->columns*
     jpeg_info->output_components*sizeof(*jpeg_pixels));
@@ -2203,6 +2195,13 @@ static char **SamplingFactorToList(const char *text)
 static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   Image *image,struct jpeg_compress_struct *jpeg_info,ExceptionInfo *exception)
 {
+#define ThrowJPEGWriterException(exception,message) \
+{ \
+  if (client_info != (JPEGClientInfo *) NULL) \
+    client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info); \
+  ThrowWriterException((exception),(message)); \
+}
+
   const char
     *dct_method,
     *option,
@@ -2217,7 +2216,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     quality;
 
   JPEGClientInfo
-    *client_info;
+    *client_info = (JPEGClientInfo *) NULL;
 
   JSAMPLE
     *volatile jpeg_pixels;
@@ -2268,7 +2267,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   */
   client_info=(JPEGClientInfo *) AcquireMagickMemory(sizeof(*client_info));
   if (client_info == (JPEGClientInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    ThrowJPEGWriterException(ResourceLimitError,"MemoryAllocationFailed");
   (void) memset(client_info,0,sizeof(*client_info));
   (void) memset(jpeg_info,0,sizeof(*jpeg_info));
   (void) memset(&jpeg_error,0,sizeof(jpeg_error));
@@ -2292,7 +2291,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   JPEGDestinationManager(jpeg_info,image);
   if ((image->columns != (unsigned int) image->columns) ||
       (image->rows != (unsigned int) image->rows))
-    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+    ThrowJPEGWriterException(ImageError,"WidthOrHeightExceedsLimit");
   jpeg_info->image_width=(unsigned int) image->columns;
   jpeg_info->image_height=(unsigned int) image->rows;
   jpeg_info->input_components=3;
@@ -2807,7 +2806,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   memory_info=AcquireVirtualMemory((size_t) image->columns,
     jpeg_info->input_components*sizeof(*jpeg_pixels));
   if (memory_info == (MemoryInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    ThrowJPEGWriterException(ResourceLimitError,"MemoryAllocationFailed");
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
   if (setjmp(client_info->error_recovery) != 0)
     {
