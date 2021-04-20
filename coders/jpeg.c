@@ -1031,7 +1031,6 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
 {
 #define ThrowJPEGReaderException(exception,message) \
 { \
-  JPEGDestroyDecompress(jpeg_info); \
   if (client_info != (JPEGClientInfo *) NULL) \
     client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info); \
   ThrowReaderException((exception),(message)); \
@@ -1314,7 +1313,10 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   option=GetImageOption(image_info,"jpeg:colors");
   if (option != (const char *) NULL)
     if (AcquireImageColormap(image,StringToUnsignedLong(option),exception) == MagickFalse)
-      ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      {
+        JPEGDestroyDecompress(jpeg_info);
+        ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
   if ((jpeg_info->output_components == 1) && (jpeg_info->quantize_colors == 0))
     {
       size_t
@@ -1322,7 +1324,10 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
 
       colors=(size_t) GetQuantumRange(image->depth)+1;
       if (AcquireImageColormap(image,colors,exception) == MagickFalse)
-        ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        {
+          JPEGDestroyDecompress(jpeg_info);
+          ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
     }
   if (image->debug != MagickFalse)
     {
@@ -1369,11 +1374,17 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   (void) jpeg_start_decompress(jpeg_info);
   if ((jpeg_info->output_components != 1) &&
       (jpeg_info->output_components != 3) && (jpeg_info->output_components != 4))
-    ThrowJPEGReaderException(CorruptImageError,"ImageTypeNotSupported");
+    {
+      JPEGDestroyDecompress(jpeg_info);
+      ThrowJPEGReaderException(CorruptImageError,"ImageTypeNotSupported");
+    }
   memory_info=AcquireVirtualMemory((size_t) image->columns,
     jpeg_info->output_components*sizeof(*jpeg_pixels));
   if (memory_info == (MemoryInfo *) NULL)
-    ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      JPEGDestroyDecompress(jpeg_info);
+      ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
   (void) memset(jpeg_pixels,0,image->columns*
     jpeg_info->output_components*sizeof(*jpeg_pixels));
