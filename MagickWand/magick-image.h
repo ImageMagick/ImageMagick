@@ -289,6 +289,7 @@ extern WandExport MagickBooleanType
   MagickSetImageInterlaceScheme(MagickWand *,const InterlaceType),
   MagickSetImageInterpolateMethod(MagickWand *,const PixelInterpolateMethod),
   MagickSetImageIterations(MagickWand *,const size_t),
+  MagickSetImageMask(MagickWand *,const PixelMask,const MagickWand *),
   MagickSetImageMatte(MagickWand *,const MagickBooleanType),
   MagickSetImageMatteColor(MagickWand *,const PixelWand *),
   MagickSetImageOrientation(MagickWand *,const OrientationType),
