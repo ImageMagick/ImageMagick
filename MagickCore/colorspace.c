@@ -610,9 +610,10 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           MagickRealType
             gray;
 
-          gray=0.212656*GetPixelRed(image,q)+0.715158*GetPixelGreen(image,q)+
-            0.072186*GetPixelBlue(image,q);
-          SetPixelGray(image,ClampToQuantum(DecodePixelGamma(gray)),q);
+          gray=0.212656*DecodePixelGamma(GetPixelRed(image,q))+0.715158*
+            DecodePixelGamma(GetPixelGreen(image,q))+0.072186*
+            DecodePixelGamma(GetPixelBlue(image,q));
+          SetPixelGray(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
