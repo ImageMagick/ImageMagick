@@ -1,8 +1,10 @@
 2021-04-17  7.0.11-9  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-9 GIT revision 18...
 
-2021-04-17  7.0.11-8  <quetzlzacatenango@image...>
+2021-04-17  7.0.11-9  <quetzlzacatenango@image...>
   * eliminate uninitialized value
+  * Differences in computing linear gray (reference
+    https://github.com/ImageMagick/ImageMagick/issues/3571).
 
 2021-04-17  7.0.11-8  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-8 GIT revision 18636:53a252607:20210417
