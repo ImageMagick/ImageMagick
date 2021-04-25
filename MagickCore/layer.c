@@ -63,6 +63,7 @@
 #include "MagickCore/resize.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/thread-private.h"
 #include "MagickCore/transform.h"
 
 /*
@@ -610,118 +611,134 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
 %
 */
 
-static RectangleInfo CompareImagesBounds(const Image *image1,
-  const Image *image2,const LayerMethod method,ExceptionInfo *exception)
+static RectangleInfo CompareImagesBounds(const Image *alpha_image,
+  const Image *beta_image,const LayerMethod method,ExceptionInfo *exception)
 {
-  RectangleInfo
-    bounds;
+  CacheView
+    *alpha_view,
+    *beta_view;
+
+  MagickBooleanType
+    status;
 
   PixelInfo
-    pixel1,
-    pixel2;
+    zero;
 
-  const Quantum
-    *p,
-    *q;
-
-  ssize_t
-    x;
+  RectangleInfo
+    bounds;
 
   ssize_t
     y;
 
-  /*
-    Set bounding box of the differences between images.
-  */
-  GetPixelInfo(image1,&pixel1);
-  GetPixelInfo(image2,&pixel2);
-  for (x=0; x < (ssize_t) image1->columns; x++)
+  assert(alpha_image != (Image *) NULL);
+  assert(alpha_image->signature == MagickCoreSignature);
+  assert(beta_image != (Image *) NULL);
+  assert(beta_image->signature == MagickCoreSignature);
+  if (alpha_image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      alpha_image->filename);
+  SetGeometry(alpha_image,&bounds);
+  bounds.x=(ssize_t) bounds.width;
+  bounds.y=(ssize_t) bounds.height;
+  bounds.width=0;
+  bounds.height=0;
+  alpha_view=AcquireVirtualCacheView(alpha_image,exception);
+  beta_view=AcquireVirtualCacheView(beta_image,exception);
+  GetPixelInfo(alpha_image,&zero);
+  status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(alpha_image,alpha_image,alpha_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) alpha_image->rows; y++)
   {
-    p=GetVirtualPixels(image1,x,0,1,image1->rows,exception);
-    q=GetVirtualPixels(image2,x,0,1,image2->rows,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      break;
-    for (y=0; y < (ssize_t) image1->rows; y++)
+    const Quantum
+      *magick_restrict p,
+      *magick_restrict q;
+
+    PixelInfo
+      alpha_pixel,
+      beta_pixel;
+
+    RectangleInfo
+      bounding_box;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#   pragma omp critical (MagickCore_CompareImagesBound)
+#endif
+    bounding_box=bounds;
+    p=GetCacheViewVirtualPixels(alpha_view,0,y,alpha_image->columns,1,
+      exception);
+    q=GetCacheViewVirtualPixels(beta_view,0,y,beta_image->columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    alpha_pixel=zero;
+    beta_pixel=zero;
+    for (x=0; x < (ssize_t) alpha_image->columns; x++)
     {
-      GetPixelInfoPixel(image1,p,&pixel1);
-      GetPixelInfoPixel(image2,q,&pixel2);
-      if (ComparePixels(method,&pixel1,&pixel2) != MagickFalse)
-        break;
-      p+=GetPixelChannels(image1);
-      q+=GetPixelChannels(image2);
+      GetPixelInfoPixel(alpha_image,p,&alpha_pixel);
+      GetPixelInfoPixel(beta_image,q,&beta_pixel);
+      if ((x < bounding_box.x) &&
+          (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse))
+        bounding_box.x=x;
+      if ((x > (ssize_t) bounding_box.width) &&
+          (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse))
+        bounding_box.width=(size_t) x;
+      if ((y < bounding_box.y) &&
+          (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse))
+        bounding_box.y=y;
+      if ((y > (ssize_t) bounding_box.height) &&
+          (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse))
+        bounding_box.height=(size_t) y;
+      if ((x < (ssize_t) bounding_box.width) &&
+          (y > (ssize_t) bounding_box.height) &&
+          (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse))
+        {
+          bounding_box.width=(size_t) x;
+          bounding_box.height=(size_t) y;
+        }
+      p+=GetPixelChannels(alpha_image);
+      q+=GetPixelChannels(beta_image);
     }
-    if (y < (ssize_t) image1->rows)
-      break;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#   pragma omp critical (MagickCore_CompareImagesBound)
+#endif
+    {
+      if (bounding_box.x < bounds.x)
+        bounds.x=bounding_box.x;
+      if (bounding_box.y < bounds.y)
+        bounds.y=bounding_box.y;
+      if (bounding_box.width > bounds.width)
+        bounds.width=bounding_box.width;
+      if (bounding_box.height > bounds.height)
+        bounds.height=bounding_box.height;
+    }
   }
-  if (x >= (ssize_t) image1->columns)
+  beta_view=DestroyCacheView(beta_view);
+  alpha_view=DestroyCacheView(alpha_view);
+  if ((bounds.width != 0) && (bounds.height != 0))
+    {
+      bounds.width-=(bounds.x-1);
+      bounds.height-=(bounds.y-1);
+    }
+  else
     {
       /*
-        Images are identical, return a null image.
+        Images are identical.
       */
-      bounds.x=-1;
-      bounds.y=-1;
+      bounds.x=(-1);
+      bounds.y=(-1);
       bounds.width=1;
       bounds.height=1;
-      return(bounds);
     }
-  bounds.x=x;
-  for (x=(ssize_t) image1->columns-1; x >= 0; x--)
-  {
-    p=GetVirtualPixels(image1,x,0,1,image1->rows,exception);
-    q=GetVirtualPixels(image2,x,0,1,image2->rows,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      break;
-    for (y=0; y < (ssize_t) image1->rows; y++)
-    {
-      GetPixelInfoPixel(image1,p,&pixel1);
-      GetPixelInfoPixel(image2,q,&pixel2);
-      if (ComparePixels(method,&pixel1,&pixel2) != MagickFalse)
-        break;
-      p+=GetPixelChannels(image1);
-      q+=GetPixelChannels(image2);
-    }
-    if (y < (ssize_t) image1->rows)
-      break;
-  }
-  bounds.width=(size_t) (x-bounds.x+1);
-  for (y=0; y < (ssize_t) image1->rows; y++)
-  {
-    p=GetVirtualPixels(image1,0,y,image1->columns,1,exception);
-    q=GetVirtualPixels(image2,0,y,image2->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      break;
-    for (x=0; x < (ssize_t) image1->columns; x++)
-    {
-      GetPixelInfoPixel(image1,p,&pixel1);
-      GetPixelInfoPixel(image2,q,&pixel2);
-      if (ComparePixels(method,&pixel1,&pixel2) != MagickFalse)
-        break;
-      p+=GetPixelChannels(image1);
-      q+=GetPixelChannels(image2);
-    }
-    if (x < (ssize_t) image1->columns)
-      break;
-  }
-  bounds.y=y;
-  for (y=(ssize_t) image1->rows-1; y >= 0; y--)
-  {
-    p=GetVirtualPixels(image1,0,y,image1->columns,1,exception);
-    q=GetVirtualPixels(image2,0,y,image2->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      break;
-    for (x=0; x < (ssize_t) image1->columns; x++)
-    {
-      GetPixelInfoPixel(image1,p,&pixel1);
-      GetPixelInfoPixel(image2,q,&pixel2);
-      if (ComparePixels(method,&pixel1,&pixel2) != MagickFalse)
-        break;
-      p+=GetPixelChannels(image1);
-      q+=GetPixelChannels(image2);
-    }
-    if (x < (ssize_t) image1->columns)
-      break;
-  }
-  bounds.height=(size_t) (y-bounds.y+1);
   return(bounds);
 }
 
