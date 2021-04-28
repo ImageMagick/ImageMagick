@@ -402,15 +402,15 @@ static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
           image->filename);
     }
   else
-    if ((image->debug != MagickFalse) &&
-        (level >= jpeg_info->err->trace_level))
+    if (level >= jpeg_info->err->trace_level)
       {
         /*
           Process trace message.
         */
         (jpeg_info->err->format_message)(jpeg_info,message);
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "[%s] JPEG Trace: \"%s\"",image->filename,message);
+        if ((image != (Image *) NULL) && (image->debug != MagickFalse))
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "[%s] JPEG Trace: \"%s\"",image->filename,message);
       }
   return(MagickTrue);
 }

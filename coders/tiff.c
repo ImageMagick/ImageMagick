@@ -1770,7 +1770,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     quantum_info->endian=LSBEndian;
     if (TIFFScanlineSize(tiff) <= 0)
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-    if ((1.0*TIFFScanlineSize(tiff)) > (2.53*GetBlobSize(image)))
+    if ((1.0*TIFFScanlineSize(tiff)) > (2.55*GetBlobSize(image)))
       ThrowTIFFException(CorruptImageError,"InsufficientImageDataInFile");
     number_pixels=MagickMax(TIFFScanlineSize(tiff),MagickMax((ssize_t)
       image->columns*samples_per_pixel*pow(2.0,ceil(log(bits_per_sample)/

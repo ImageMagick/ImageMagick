@@ -1,8 +1,9 @@
-2021-04-25  7.0.11-10  <quetzlzacatenango@image...>
+2021-04-28  7.0.11-10  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-9 GIT revision 18...
 
 2021-04-25  7.0.11-10  <quetzlzacatenango@image...>
   * Optimize CompareImageBounds().
+  * Check image is not NULL before dereferencing.
 
 2021-04-25  7.0.11-9  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-9 GIT revision 18...
