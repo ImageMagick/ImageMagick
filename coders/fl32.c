@@ -192,7 +192,6 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
-  (void) ResetImagePixels(image,exception);
   switch (image->number_channels)
   {
     case 1:
@@ -229,6 +228,7 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  (void) ResetImagePixels(image,exception);
   /*
     Convert FL32 image to pixel packets.
   */
