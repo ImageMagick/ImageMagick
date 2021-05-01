@@ -608,10 +608,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   (void) CopyMagickString(coalesce_image->magick_filename,basename,
     MagickPathExtent);
   (void) CopyMagickString(coalesce_image->filename,basename,MagickPathExtent);
-  GetPathComponent(image_info->filename,ExtensionPath,coalesce_image->magick);
-  if (*coalesce_image->magick == '\0')
-    (void) CopyMagickString(coalesce_image->magick,image->magick,
-      MagickPathExtent);
+  (void) CopyMagickString(coalesce_image->magick,image_info->magick,
+    MagickPathExtent);
   status=InvokeDelegate(write_info,coalesce_image,(char *) NULL,"video:encode",
     exception);
   (void) FormatLocaleString(write_info->filename,MagickPathExtent,"%s.%s",
