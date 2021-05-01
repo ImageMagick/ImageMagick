@@ -446,8 +446,7 @@ static MagickBooleanType RollFourier(const size_t width,const size_t height,
       source_pixels[v*width+u]=roll_pixels[i++];
     }
   }
-  (void) memcpy(roll_pixels,source_pixels,height*width*
-    sizeof(*source_pixels));
+  (void) memcpy(roll_pixels,source_pixels,height*width*sizeof(*source_pixels));
   source_info=RelinquishVirtualMemory(source_info);
   return(MagickTrue);
 }
