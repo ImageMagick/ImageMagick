@@ -13613,7 +13613,7 @@ uninstall-man: uninstall-man1
 
 @MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@$(libMagickCore_threshold_target): MagickCore/threshold-map.h
 @MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@MagickCore/threshold-map.h: config/thresholds.xml Makefile
-@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@	$(AM_V_GEN){ printf '%s\n  %s=\n' 'static const char *const' BuiltinMap; sed -e 's/"/\\"/g; s/^.*$$/    "&\\n"/; $$s/$$/;/' $<; } >$@
+@MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@  $(AM_V_GEN){ printf '%s\n  %s=\n' 'static const char *const' BuiltinMap; sed -e 's/"/\\"/g; s/^.*$$/    "&\\n"/; $$s/$$/;/' $<; } >$@
 install-exec-local-utilities:
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
 	cd $(DESTDIR)$(bindir) ; \
