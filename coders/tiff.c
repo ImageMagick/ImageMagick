@@ -1234,9 +1234,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     quantum_type;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
+    scanline_size,
     y;
 
   TIFF
@@ -1768,13 +1767,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
     quantum_info->endian=LSBEndian;
-    if (TIFFScanlineSize(tiff) <= 0)
+    scanline_size=TIFFScanlineSize(tiff);
+    if (scanline_size <= 0)
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-    if ((1.0*TIFFScanlineSize(tiff)) > (2.55*GetBlobSize(image)))
-      ThrowTIFFException(CorruptImageError,"InsufficientImageDataInFile");
-    number_pixels=MagickMax(TIFFScanlineSize(tiff),MagickMax((ssize_t)
-      image->columns*samples_per_pixel*pow(2.0,ceil(log(bits_per_sample)/
-      log(2.0))),image->columns*rows_per_strip));
+    number_pixels=MagickMax((MagickSizeType) image->columns*samples_per_pixel*
+      pow(2.0,ceil(log(bits_per_sample)/log(2.0))),image->columns*
+      rows_per_strip);
+    if ((double) scanline_size > 1.5*number_pixels)
+      ThrowTIFFException(CorruptImageError,"CorruptImage");
+    number_pixels=MagickMax((MagickSizeType) scanline_size,number_pixels);
     pixel_info=AcquireVirtualMemory(number_pixels,sizeof(uint32));
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
