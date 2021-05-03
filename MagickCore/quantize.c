@@ -1114,6 +1114,8 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
         pixel;
 
       double
+        alpha,
+        beta,
         distance;
 
       DoublePixelPacket
@@ -1127,7 +1129,14 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
       */
       p=image->colormap+node_info->color_number;
       q=(&cube_info->target);
-      pixel=p->red-q->red;
+      alpha=1.0;
+      beta=1.0;
+      if (cube_info->associate_alpha != MagickFalse)
+        {
+          alpha=(MagickRealType) (QuantumScale*p->alpha);
+          beta=(MagickRealType) (QuantumScale*q->alpha);
+        }
+      pixel=alpha*p->red-beta*q->red;
       distance=pixel*pixel;
       if (distance <= cube_info->distance)
         {
@@ -1135,7 +1144,7 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
           distance+=pixel*pixel;
           if (distance <= cube_info->distance)
             {
-              pixel=p->blue-q->blue;
+              pixel=alpha*p->blue-beta*q->blue;
               distance+=pixel*pixel;
               if (distance <= cube_info->distance)
                 {
