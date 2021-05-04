@@ -1111,12 +1111,10 @@ static void ClosestColor(const Image *image,CubeInfo *cube_info,
   if (node_info->number_unique != 0)
     {
       double
-        pixel;
-
-      double
         alpha,
         beta,
-        distance;
+        distance,
+        pixel;
 
       DoublePixelPacket
         *magick_restrict q;
