@@ -548,9 +548,6 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
       geometry.height=(size_t) geometry.height/7;
       geometry.x=(ssize_t) pow((double) geometry.width,0.25);
       geometry.y=(ssize_t) pow((double) geometry.height,0.25);
-      value=GetImageOption(image_info,"label");
-      if (value != (const char *) NULL)
-        geometry.height+=1.8*geometry.y;
     }
   /*
     Initialize image tiles.
@@ -660,8 +657,8 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
       }
     if ((tiles[i].width+tiles[i].x) > extent.width)
       extent.width=(size_t) (tiles[i].width+tiles[i].x);
-    if ((tiles[i].height+tiles[i].y) > extent.height)
-      extent.height=(size_t) (tiles[i].height+tiles[i].y);
+    if ((tiles[i].height+tiles[i].y+geometry.y+2) > extent.height)
+      extent.height=(size_t) (tiles[i].height+tiles[i].y+geometry.y+2);
     tile_image=DestroyImage(tile_image);
   }
   (void) SetImageExtent(ashlar_image,extent.width,extent.height,exception);
