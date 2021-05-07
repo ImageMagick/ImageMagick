@@ -53,6 +53,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/option.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
@@ -614,7 +615,11 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
         message[MagickPathExtent];
 
       char
-        *options;
+        *options,
+        *sanitized_option;
+
+      const char
+        *option;
 
       int
         exit_code;
@@ -622,6 +627,15 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
       options=AcquireString("");
       (void) FormatLocaleString(options,MagickPathExtent,"-plays %i",
         (int) coalesce_image->iterations);
+      option=GetImageOption(image_info,"video:pixel-format");
+      if (option != (const char *) NULL)
+        {
+          sanitized_option=SanitizeDelegateString(option);
+          (void) FormatLocaleString(command,MagickPathExtent," -pix_fmt %s",
+            sanitized_option);
+          DestroyString(sanitized_option);
+          (void) ConcatenateMagickString(options,command,MagickPathExtent);
+        }
       AcquireUniqueFilename(filename);
       (void) FormatLocaleString(command,MagickPathExtent,
         GetDelegateCommands(delegate_info),basename,options,filename,
