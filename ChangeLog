@@ -1,5 +1,5 @@
 2021-05-07  7.0.11-12  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.0.11-12 GIT revision 18...
+  * Release ImageMagick version 7.0.11-12 GIT revision 18694:beecc7821:20210507
 
 2021-05-07  7.0.11-12  Dirk Lemstra <dirk@lem.....org>
   * The HEIC depth image will now only be read when the define heic:depth-image
