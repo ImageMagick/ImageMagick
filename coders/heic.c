@@ -367,6 +367,9 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
 static void ReadHEICDepthImage(const ImageInfo *image_info,Image *image,
   struct heif_image_handle *image_handle,ExceptionInfo *exception)
 {
+  const char
+    *option;
+
   heif_item_id
     depth_id;
 
@@ -378,12 +381,15 @@ static void ReadHEICDepthImage(const ImageInfo *image_info,Image *image,
 
   struct heif_image_handle
     *depth_handle;
-  
+
+  option=GetImageOption(image_info,"heic:depth-image");
+  if (IsStringTrue(option) == MagickFalse)
+    return;
   if (heif_image_handle_has_depth_image(image_handle) == 0)
     return;
   number_images=heif_image_handle_get_list_of_depth_image_IDs(image_handle,
     &depth_id,1);
-  if (number_images < 1)
+  if (number_images != 1)
     return;
   error=heif_image_handle_get_depth_image_handle(image_handle,depth_id,
     &depth_handle);
