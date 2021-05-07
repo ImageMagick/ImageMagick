@@ -364,6 +364,40 @@ static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
   return(MagickTrue);
 }
 
+static void ReadHEICDepthImage(const ImageInfo *image_info,Image *image,
+  struct heif_image_handle *image_handle,ExceptionInfo *exception)
+{
+  heif_item_id
+    depth_id;
+
+  int
+    number_images;
+
+  struct heif_error
+    error;
+
+  struct heif_image_handle
+    *depth_handle;
+  
+  if (heif_image_handle_has_depth_image(image_handle) == 0)
+    return;
+  number_images=heif_image_handle_get_list_of_depth_image_IDs(image_handle,
+    &depth_id,1);
+  if (number_images < 1)
+    return;
+  error=heif_image_handle_get_depth_image_handle(image_handle,depth_id,
+    &depth_handle);
+  if (IsHeifSuccess(image,&error,exception) == MagickFalse)
+    return;
+  AcquireNextImage(image_info,image,exception);
+  if (GetNextImageInList(image) != (Image *) NULL)
+    {
+      image=SyncNextImageInList(image);
+      (void) ReadHEICImageByID(image_info,image,depth_handle,exception);
+    }
+  heif_image_handle_release(depth_handle);
+}
+
 static Image *ReadHEICImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -506,38 +540,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       file_data=RelinquishMagickMemory(file_data);
       return(DestroyImageList(image));
     }
-  if (heif_image_handle_has_depth_image(image_handle) != 0)
-    {
-      heif_item_id
-        depth_id;
-
-      int
-        number_images;
-
-      /*
-        Read depth image.
-      */
-      number_images=heif_image_handle_get_list_of_depth_image_IDs(image_handle,
-        &depth_id,1);
-      if (number_images > 0)
-        {
-          struct heif_image_handle
-            *depth_handle;
-
-          error=heif_image_handle_get_depth_image_handle(image_handle,depth_id,
-            &depth_handle);
-          if (IsHeifSuccess(image,&error,exception) != MagickFalse)
-            {
-              AcquireNextImage(image_info,image,exception);
-              if (GetNextImageInList(image) == (Image *) NULL)
-                status=MagickFalse;
-              image=SyncNextImageInList(image);
-              status=ReadHEICImageByID(image_info,image,depth_handle,
-                exception);
-              heif_image_handle_release(depth_handle);
-            }
-       }
-    }
+  ReadHEICDepthImage(image_info,image,image_handle,exception);
   heif_image_handle_release(image_handle);
   if (image_ids != (heif_item_id *) NULL)
     (void) RelinquishMagickMemory(image_ids);
