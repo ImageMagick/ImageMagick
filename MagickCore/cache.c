@@ -3683,8 +3683,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         }
       value=DestroyString(value);
     }
-  if ((image->columns == 0) || (image->rows == 0) ||
-      (image->number_channels == 0))
+  if ((image->columns == 0) || (image->rows == 0))
     ThrowBinaryException(CacheError,"NoPixelsDefinedInCache",image->filename);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
@@ -3716,7 +3715,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->metacontent_extent=image->metacontent_extent;
   cache_info->mode=mode;
   number_pixels=(MagickSizeType) cache_info->columns*cache_info->rows;
-  packet_size=cache_info->number_channels*sizeof(Quantum);
+  packet_size=MagickMax(cache_info->number_channels,1)*sizeof(Quantum);
   if (image->metacontent_extent != 0)
     packet_size+=cache_info->metacontent_extent;
   length=number_pixels*packet_size;
