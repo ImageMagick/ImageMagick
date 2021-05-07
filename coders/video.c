@@ -521,7 +521,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   /*
-    Write empty file to make sure that ffmpeg will overwrite the file.
+    Write empty file to make sure that the file will be overwritten.
   */
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
