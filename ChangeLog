@@ -9,10 +9,10 @@
   * Release ImageMagick version 7.0.11-11 GIT revision 18678:5d4dc32ea:20210504
 
 2021-05-04  7.0.11-11  <quetzlzacatenango@image...>
-	* FL32 no longer returns scambled results (reference
-	  https://github.com/ImageMagick/ImageMagick/issues/3614).
+  * FL32 no longer returns scambled results (reference
+    https://github.com/ImageMagick/ImageMagick/issues/3614).
   * Ashlar pseudo-image format no longer crops labels in last row of tiles by
-	  default (reference https://github.com/ImageMagick/ImageMagick/issues/3618).
+    default (reference https://github.com/ImageMagick/ImageMagick/issues/3618).
 
 2021-04-28  7.0.11-10  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-10 GIT revision 18658:ffe570952:20210428
