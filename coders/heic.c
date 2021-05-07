@@ -252,7 +252,7 @@ static inline MagickBooleanType HEICSkipImage(const ImageInfo *image_info,
   return(MagickFalse);
 }
 
-static MagickBooleanType ReadHEICImageByID(const ImageInfo *image_info,
+static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
   Image *image,struct heif_image_handle *image_handle,
   ExceptionInfo *exception)
 {
@@ -399,7 +399,7 @@ static void ReadHEICDepthImage(const ImageInfo *image_info,Image *image,
   if (GetNextImageInList(image) != (Image *) NULL)
     {
       image=SyncNextImageInList(image);
-      (void) ReadHEICImageByID(image_info,image,depth_handle,exception);
+      (void) ReadHEICImageHandle(image_info,image,depth_handle,exception);
     }
   heif_image_handle_release(depth_handle);
 }
@@ -489,7 +489,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       file_data=RelinquishMagickMemory(file_data);
       return(DestroyImageList(image));
     }
-  status=ReadHEICImageByID(image_info,image,image_handle,exception);
+  status=ReadHEICImageHandle(image_info,image,image_handle,exception);
   image_ids=(heif_item_id *) NULL;
   count=(size_t) heif_context_get_number_of_top_level_images(heif_context);
   if ((status != MagickFalse) && (count > 1))
@@ -529,7 +529,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
             status=MagickFalse;
             break;
           }
-        status=ReadHEICImageByID(image_info,image,image_handle,exception);
+        status=ReadHEICImageHandle(image_info,image,image_handle,exception);
         if (status == MagickFalse)
           break;
         if (image_info->number_scenes != 0)
