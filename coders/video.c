@@ -476,6 +476,9 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     basename[MagickPathExtent],
     filename[MagickPathExtent];
 
+  const DelegateInfo
+    *delegate_info;
+
   double
     delay;
 
@@ -516,10 +519,6 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    return(status);
-  (void) CloseBlob(image);
   /*
     Write intermediate files.
   */
@@ -534,6 +533,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   count=0;
   write_info=CloneImageInfo(image_info);
   *write_info->magick='\0';
+  status=MagickTrue;
   for (p=coalesce_image; p != (Image *) NULL; p=GetNextImageInList(p))
   {
     char
@@ -602,21 +602,47 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
+  write_info=DestroyImageInfo(write_info);
   /*
     Convert PAM to VIDEO.
   */
-  (void) CopyMagickString(coalesce_image->magick_filename,basename,
-    MagickPathExtent);
-  (void) CopyMagickString(coalesce_image->filename,basename,MagickPathExtent);
-  (void) CopyMagickString(coalesce_image->magick,image_info->magick,
-    MagickPathExtent);
-  status=InvokeDelegate(write_info,coalesce_image,(char *) NULL,"video:encode",
-    exception);
-  (void) FormatLocaleString(write_info->filename,MagickPathExtent,"%s.%s",
-    write_info->unique,coalesce_image->magick);
-  status=CopyDelegateFile(write_info->filename,image->filename);
-  (void) RelinquishUniqueFileResource(write_info->filename);
-  write_info=DestroyImageInfo(write_info);
+  delegate_info=GetDelegateInfo((char *) NULL,"video:encode",exception);
+  if (delegate_info != (const DelegateInfo *) NULL)
+    {
+      char
+        command[MagickPathExtent],
+        message[MagickPathExtent];
+
+      char
+        *options;
+
+      int
+        exit_code;
+
+      options=AcquireString("");
+      (void) FormatLocaleString(options,MagickPathExtent,"-plays %i",
+        (int) coalesce_image->iterations);
+      AcquireUniqueFilename(filename);
+      (void) FormatLocaleString(command,MagickPathExtent,
+        GetDelegateCommands(delegate_info),basename,options,filename,
+        image_info->magick);
+      options=DestroyString(options);
+      exit_code=ExternalDelegateCommand(MagickFalse,image_info->verbose,
+        command,message,exception);
+      status=exit_code == 0 ? MagickTrue : MagickFalse;
+      if (status != MagickFalse)
+        {
+          (void) FormatLocaleString(filename,MagickPathExtent,"%s.%s",filename,
+            image_info->magick);
+          status=CopyDelegateFile(filename,image->filename);
+        }
+      else if (*message != '\0')
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            DelegateError,"VideoDelegateFailed","`%s'",message);
+        }
+      (void) RelinquishUniqueFileResource(filename);
+  }
   /*
     Relinquish resources.
   */
@@ -634,7 +660,5 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   }
   (void) RelinquishUniqueFileResource(basename);
   coalesce_image=DestroyImageList(coalesce_image);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit");
   return(status);
 }
