@@ -490,7 +490,7 @@ static inline size_t ColorToNodeId(const CubeInfo *cube_info,
     ((ScaleQuantumToChar(ClampPixel(pixel->green)) >> index) & 0x01) << 1 |
     ((ScaleQuantumToChar(ClampPixel(pixel->blue)) >> index) & 0x01) << 2);
   if (cube_info->associate_alpha != MagickFalse)
-    id|=((ScaleQuantumToChar(ClampPixel(pixel->alpha)) >> index) & 0x1) << 3;
+    id|=((size_t) (ScaleQuantumToChar(ClampPixel(pixel->alpha)) >> index) & 0x1) << 3;
   return(id);
 }
 
@@ -1480,7 +1480,7 @@ static inline ssize_t CacheOffset(CubeInfo *cube_info,
     GreenShift(ScaleQuantumToChar(ClampPixel(pixel->green))) |
     BlueShift(ScaleQuantumToChar(ClampPixel(pixel->blue))));
   if (cube_info->associate_alpha != MagickFalse)
-    offset|=AlphaShift(ScaleQuantumToChar(ClampPixel(pixel->alpha)));
+    offset|=AlphaShift((ssize_t) ScaleQuantumToChar(ClampPixel(pixel->alpha)));
   return(offset);
 }
 
@@ -1955,7 +1955,7 @@ static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info,
   i=MagickMax((ssize_t) image->columns,(ssize_t) image->rows);
   for (depth=1; i != 0; depth++)
     i>>=1;
-  if ((ssize_t) (1L << depth) < MagickMax((ssize_t) image->columns,(ssize_t) image->rows))
+  if (((ssize_t) 1L << depth) < MagickMax((ssize_t) image->columns,(ssize_t) image->rows))
     depth++;
   cube_info->offset=0;
   cube_info->span=(MagickSizeType) image->columns*image->rows;
