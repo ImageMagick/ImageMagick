@@ -521,6 +521,13 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   /*
+    Write empty file to make sure that ffmpeg will overwrite the file.
+  */
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    return(status);
+  (void) CloseBlob(image);
+  /*
     Write intermediate files.
   */
   coalesce_image=CoalesceImages(image,exception);
@@ -534,7 +541,6 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   count=0;
   write_info=CloneImageInfo(image_info);
   *write_info->magick='\0';
-  status=MagickTrue;
   for (p=coalesce_image; p != (Image *) NULL; p=GetNextImageInList(p))
   {
     char
