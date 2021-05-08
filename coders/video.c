@@ -609,7 +609,6 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
-  write_info=DestroyImageInfo(write_info);
   /*
     Convert PAM to VIDEO.
   */
@@ -642,9 +641,9 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
           DestroyString(sanitized_option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
-      AcquireUniqueFilename(filename);
+      AcquireUniqueFilename(write_info->unique);
       (void) FormatLocaleString(command,MagickPathExtent,
-        GetDelegateCommands(delegate_info),basename,options,filename,
+        GetDelegateCommands(delegate_info),basename,options,write_info->unique,
         image_info->magick);
       options=DestroyString(options);
       exit_code=ExternalDelegateCommand(MagickFalse,image_info->verbose,
@@ -652,8 +651,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
       status=exit_code == 0 ? MagickTrue : MagickFalse;
       if (status != MagickFalse)
         {
-          (void) FormatLocaleString(filename,MagickPathExtent,"%s.%s",filename,
-            image_info->magick);
+          (void) FormatLocaleString(filename,MagickPathExtent,"%s.%s",
+            write_info->unique,image_info->magick);
           status=CopyDelegateFile(filename,image->filename);
         }
       else if (*message != '\0')
@@ -663,6 +662,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
         }
       (void) RelinquishUniqueFileResource(filename);
   }
+  write_info=DestroyImageInfo(write_info);
   /*
     Relinquish resources.
   */
