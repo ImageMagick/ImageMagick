@@ -396,9 +396,6 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     destination_file,
     source_file;
 
-  MagickBooleanType
-    status;
-
   size_t
     i;
 
@@ -415,22 +412,16 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   unsigned char
     *buffer;
 
-  /*
-    Return if destination file already exists and is not empty.
-  */
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
-  status=GetPathAttributes(destination,&attributes);
-  if ((status != MagickFalse) && (attributes.st_size > 0))
-    return(MagickTrue);
   /*
     Copy source file to destination.
   */
   if (strcmp(destination,"-") == 0)
     destination_file=fileno(stdout);
   else
-    destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,
-      S_MODE);
+    destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT |
+      O_TRUNC,S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
   source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
@@ -521,13 +512,6 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   /*
-    Write empty file to make sure that the file will be overwritten.
-  */
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    return(status);
-  (void) CloseBlob(image);
-  /*
     Write intermediate files.
   */
   coalesce_image=CoalesceImages(image,exception);
@@ -541,6 +525,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   count=0;
   write_info=CloneImageInfo(image_info);
   *write_info->magick='\0';
+  status=MagickTrue;
   for (p=coalesce_image; p != (Image *) NULL; p=GetNextImageInList(p))
   {
     char
