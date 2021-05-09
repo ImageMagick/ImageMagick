@@ -433,6 +433,9 @@ MagickExport Image *AppendImages(const Image *images,
   Image
     *append_image;
 
+  ImageType
+    image_type;
+
   MagickBooleanType
     homogeneous_colorspace,
     status;
@@ -474,12 +477,15 @@ MagickExport Image *AppendImages(const Image *images,
   width=images->columns;
   height=images->rows;
   depth=images->depth;
+  image_type=images->type;
   homogeneous_colorspace=MagickTrue;
   next=GetNextImageInList(images);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     if (next->depth > depth)
       depth=next->depth;
+    if (next->type != images->type)
+      image_type=UndefinedType;
     if (next->colorspace != images->colorspace)
       homogeneous_colorspace=MagickFalse;
     if (next->alpha_trait != UndefinedPixelTrait)
@@ -502,13 +508,16 @@ MagickExport Image *AppendImages(const Image *images,
   append_image=CloneImage(images,width,height,MagickTrue,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(append_image,DirectClass,exception) == MagickFalse)
+  if (image_type != BilevelType)
     {
-      append_image=DestroyImage(append_image);
-      return((Image *) NULL);
+      if (SetImageStorageClass(append_image,DirectClass,exception) == MagickFalse)
+        {
+          append_image=DestroyImage(append_image);
+          return((Image *) NULL);
+        }
+      if (homogeneous_colorspace == MagickFalse)
+        (void) SetImageColorspace(append_image,sRGBColorspace,exception);
     }
-  if (homogeneous_colorspace == MagickFalse)
-    (void) SetImageColorspace(append_image,sRGBColorspace,exception);
   append_image->depth=depth;
   append_image->alpha_trait=alpha_trait;
   append_image->page=images->page;
