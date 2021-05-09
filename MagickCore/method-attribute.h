@@ -85,7 +85,7 @@ extern "C" {
 
 #define MagickCoreSignature  0xabacadabUL
 #if !defined(MagickPathExtent)
-#  define MagickPathExtent  4096  /* always >= 4096 */
+#  define MagickPathExtent  4096  /* always >= max(PATH_MAX,4096) */
 #endif
 #define MaxTextExtent  MagickPathExtent
 #define MagickTimeExtent  26
