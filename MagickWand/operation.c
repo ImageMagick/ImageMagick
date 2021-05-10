@@ -2072,6 +2072,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
              FUTURE: also provide 'plus version with image 'color counts'
           */
           _quantize_info->number_colors=StringToUnsignedLong(arg1);
+          _quantize_info->measure_error=_image_info->verbose;
           if (_quantize_info->number_colors == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((_image->storage_class == DirectClass) ||
