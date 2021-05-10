@@ -429,7 +429,7 @@ ModuleExport size_t RegisterJXLImage(void)
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("JXL", "JXL", "JPEG XL Lossless JPEG1 Recompression");
+  entry=AcquireMagickInfo("JXL", "JXL", "JPEG XL (ISO/IEC 18181)");
 #if defined(MAGICKCORE_JXL_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJXLImage;
   entry->encoder=(EncodeImageHandler *) WriteJXLImage;
