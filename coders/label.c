@@ -135,7 +135,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     return(DestroyImageList(image));
   (void) SetImageProperty(image,"label",label,exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  width=(size_t) floor(draw_info->pointsize*strlen(label)+0.5);
+  width=(size_t) floor(0.5*draw_info->pointsize*strlen(label)+0.5);
   if (AcquireMagickResource(WidthResource,width) == MagickFalse)
     {
       label=DestroyString(label);
