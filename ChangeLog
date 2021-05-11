@@ -1,3 +1,9 @@
+2021-05-11  7.0.11-13  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.0.11-13 GIT revision 18...
+
+2021-05-09  7.0.11-13  <quetzlzacatenango@image...>
+  * label and caption sanity check is too conservative.
+
 2021-05-09  7.0.11-12  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-12 GIT revision 18703:04c9de9b0:20210509
 
