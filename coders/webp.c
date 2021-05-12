@@ -358,10 +358,10 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
     content.size=length;
     mux=WebPMuxCreate(&content,0);
     (void) memset(&chunk,0,sizeof(chunk));
-    WebPMuxGetFeatures(mux,&webp_flags);
-    if (webp_flags & ICCP_FLAG)
+    (void) WebPMuxGetFeatures(mux,&webp_flags);
+    if ((webp_flags & ICCP_FLAG) &&
+        (WebPMuxGetChunk(mux,"ICCP",&chunk) == WEBP_MUX_OK))
       {
-        WebPMuxGetChunk(mux,"ICCP",&chunk);
         profile=BlobToStringInfo(chunk.bytes,chunk.size);
         if (profile != (StringInfo *) NULL)
           {
@@ -369,9 +369,9 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
             profile=DestroyStringInfo(profile);
           }
       }
-    if (webp_flags & EXIF_FLAG)
+    if ((webp_flags & EXIF_FLAG) &&
+        (WebPMuxGetChunk(mux,"EXIF",&chunk) == WEBP_MUX_OK))
       {
-        WebPMuxGetChunk(mux,"EXIF",&chunk);
         profile=BlobToStringInfo(chunk.bytes,chunk.size);
         if (profile != (StringInfo *) NULL)
           {
@@ -379,9 +379,9 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
             profile=DestroyStringInfo(profile);
           }
       }
-    if (webp_flags & XMP_FLAG)
+    if ((webp_flags & XMP_FLAG) &&
+        (WebPMuxGetChunk(mux,"XMP",&chunk) == WEBP_MUX_OK))
       {
-        WebPMuxGetChunk(mux,"XMP",&chunk);
         profile=BlobToStringInfo(chunk.bytes,chunk.size);
         if (profile != (StringInfo *) NULL)
           {
