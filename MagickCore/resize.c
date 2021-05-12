@@ -2513,8 +2513,8 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
 #undef Line
 }
 
-static void Xbr2X(const Image *source,const Quantum *pixels,Quantum *result,
-  const size_t channels)
+static void Xbr2X(const Image *magick_unused(source),const Quantum *pixels,
+  Quantum *result,const size_t channels)
 {
 #define WeightVar(M,N) const int w_##M##_##N = \
   PixelsEqual(pixels,M,pixels,N,channels) ? 0 : 1;
@@ -2548,6 +2548,8 @@ static void Xbr2X(const Image *source,const Quantum *pixels,Quantum *result,
   WeightVar(17,23)
   WeightVar(17,19)
 #undef WeightVar
+
+  magick_unreferenced(source);
 
   if (
     w_12_16 + w_12_8 + w_6_10 + w_6_2 + (4 * w_11_7) <
@@ -2583,9 +2585,11 @@ static void Xbr2X(const Image *source,const Quantum *pixels,Quantum *result,
     CopyPixels(pixels,12,result,3,channels);
 }
 
-static void Scale2X(const Image *source,const Quantum *pixels,Quantum *result,
-  const size_t channels)
+static void Scale2X(const Image *magick_unused(source),const Quantum *pixels,
+  Quantum *result,const size_t channels)
 {
+  magick_unreferenced(source);
+
   if (PixelsEqual(pixels,1,pixels,7,channels) ||
       PixelsEqual(pixels,3,pixels,5,channels))
     {
@@ -2614,7 +2618,7 @@ static void Scale2X(const Image *source,const Quantum *pixels,Quantum *result,
       CopyPixels(pixels,4,result,3,channels);
 }
 
-static void Epbx2X(const Image *source,const Quantum *pixels,
+static void Epbx2X(const Image *magick_unused(source),const Quantum *pixels,
   Quantum *result,const size_t channels)
 {
 #define HelperCond(a,b,c,d,e,f,g) ( \
@@ -2628,6 +2632,8 @@ static void Epbx2X(const Image *source,const Quantum *pixels,
 
   ssize_t
     i;
+
+  magick_unreferenced(source);
 
   for (i=0; i < 4; i++)
     CopyPixels(pixels,4,result,i,channels);
@@ -2667,14 +2673,16 @@ static void Epbx2X(const Image *source,const Quantum *pixels,
 #undef HelperCond
 }
 
-static inline void Eagle3X(const Image *source,const Quantum *pixels,
-  Quantum *result,const size_t channels)
+static inline void Eagle3X(const Image *magick_unused(source),
+  const Quantum *pixels,Quantum *result,const size_t channels)
 {
   ssize_t
     corner_tl,
     corner_tr,
     corner_bl,
     corner_br;
+
+  magick_unreferenced(source);
 
   corner_tl=PixelsEqual(pixels,0,pixels,1,channels) &&
     PixelsEqual(pixels,0,pixels,3,channels);
@@ -2707,14 +2715,16 @@ static inline void Eagle3X(const Image *source,const Quantum *pixels,
   CopyPixels(pixels,(ssize_t) (corner_br ? 5 : 4),result,8,channels);
 }
 
-static inline void Eagle3XB(const Image *source,const Quantum *pixels,
-  Quantum *result,const size_t channels)
+static inline void Eagle3XB(const Image *magick_unused(source),
+  const Quantum *pixels,Quantum *result,const size_t channels)
 {
   ssize_t
     corner_tl,
     corner_tr,
     corner_bl,
     corner_br;
+
+  magick_unreferenced(source);
 
   corner_tl=PixelsEqual(pixels,0,pixels,1,channels) &&
     PixelsEqual(pixels,0,pixels,3,channels);
@@ -2735,9 +2745,11 @@ static inline void Eagle3XB(const Image *source,const Quantum *pixels,
   CopyPixels(pixels,(ssize_t) (corner_br ? 5 : 4),result,8,channels);
 }
 
-static inline void Scale3X(const Image *source,const Quantum *pixels,
-  Quantum *result,const size_t channels)
+static inline void Scale3X(const Image *magick_unused(source),
+  const Quantum *pixels,Quantum *result,const size_t channels)
 {
+  magick_unreferenced(source);
+
   if (!PixelsEqual(pixels,1,pixels,7,channels) &&
       !PixelsEqual(pixels,3,pixels,5,channels))
     {
