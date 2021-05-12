@@ -1,6 +1,10 @@
 2021-05-11  7.0.11-13  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-13 GIT revision 18...
 
+2021-05-12  7.0.11-13  Dirk Lemstra <dirk@lem.....org>
+  * Fixed reading and writing the XMP chunk in a WebP image (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/3617).
+
 2021-05-09  7.0.11-13  <quetzlzacatenango@image...>
   * label and caption sanity check is too conservative.
 

@@ -380,7 +380,7 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
           }
       }
     if ((webp_flags & XMP_FLAG) &&
-        (WebPMuxGetChunk(mux,"XMP",&chunk) == WEBP_MUX_OK))
+        (WebPMuxGetChunk(mux,"XMP ",&chunk) == WEBP_MUX_OK))
       {
         profile=BlobToStringInfo(chunk.bytes,chunk.size);
         if (profile != (StringInfo *) NULL)
@@ -1056,7 +1056,7 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
     {
       chunk.bytes=GetStringInfoDatum(xmp_profile);
       chunk.size=GetStringInfoLength(xmp_profile);
-      mux_error=WebPMuxSetChunk(mux,"XMP",&chunk,0);
+      mux_error=WebPMuxSetChunk(mux,"XMP ",&chunk,0);
     }
   if (mux_error == WEBP_MUX_OK)
       mux_error=WebPMuxAssemble(mux,webp_data);
