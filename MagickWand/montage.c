@@ -1466,7 +1466,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
               ThrowMontageInvalidArgumentException(option,argv[i]);
-            first_scene=(int) StringToLong(argv[i]);
+            first_scene=StringToLong(argv[i]);
             last_scene=first_scene;
             (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
             break;
