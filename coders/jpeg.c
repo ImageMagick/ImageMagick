@@ -1237,7 +1237,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
         Let the JPEG library quantize the image.
       */
       jpeg_info->quantize_colors=TRUE;
-      jpeg_info->desired_number_of_colors=(int) StringToUnsignedLong(option);
+      jpeg_info->desired_number_of_colors=StringToInteger(option);
     }
   option=GetImageOption(image_info,"jpeg:block-smoothing");
   if (option != (const char *) NULL)
