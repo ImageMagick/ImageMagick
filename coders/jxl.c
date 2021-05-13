@@ -52,17 +52,18 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/option.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 #if defined(MAGICKCORE_JXL_DELEGATE)
 #include <jxl/decode.h>
 #include <jxl/encode.h>
 #include <jxl/thread_parallel_runner.h>
 #endif
-
-
+
 /*
   Typedef declarations.
 */
@@ -495,6 +496,9 @@ ModuleExport void UnregisterJXLImage(void)
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
+  const char
+    *option;
+
   JxlBasicInfo
     basic_info;
 
@@ -600,6 +604,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         5.0f)/6.25f;
       JxlEncoderOptionsSetDistance(encoder_options,distance);
     }
+  option=GetImageOption(image_info,"jxl:effort");
+  if (option != (const char *) NULL)
+    JxlEncoderOptionsSetEffort(encoder_options,StringToInteger(option));
   bytes_per_row=image->columns*
     ((image->alpha_trait == BlendPixelTrait) ? 4 : 3)*
     ((format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) : sizeof(char));
