@@ -10,7 +10,7 @@
 %                             JJ    X   X  LLLLL                              %
 %                                                                             %
 %                                                                             %
-%               Read/Write JPEG XL Lossless JPEG1 Recompression               %
+%                          JPEG XL (ISO/IEC 18181)                            %
 %                                                                             %
 %                               Dirk Lemstra                                  %
 %                               December 2020                                 %
