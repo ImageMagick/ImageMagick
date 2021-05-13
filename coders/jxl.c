@@ -589,6 +589,15 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     }
   if (image->quality == 100)
     JxlEncoderOptionsSetLossless(encoder_options,JXL_TRUE);
+  else
+    {
+      float
+        distance;
+
+      distance=(image->quality >= 30) ? 0.1f+(100-MagickMin(100,image->quality))*
+        0.09f : 6.4f+pow(2.5f,(30-image->quality)/5.0f)/6.25f;
+      JxlEncoderOptionsSetDistance(encoder_options,distance);
+    }
   bytes_per_row=image->columns*
     ((image->alpha_trait == BlendPixelTrait) ? 4 : 3)*
     ((format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) : sizeof(char));
