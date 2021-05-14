@@ -58,7 +58,6 @@ jobs:
     - name: Create ImageMagick AppImage
       run: |
         set -e
-        set -x
         mkdir -p /appdir/usr/share/applications/
         cp ./app-image/imagemagick.desktop /appdir/usr/share/applications/
         mkdir -p /appdir/usr/share/icons/hicolor/128x128/apps/
