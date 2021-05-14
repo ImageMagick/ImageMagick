@@ -36,8 +36,8 @@ jobs:
         fi
 
     - name: Install ${{ matrix.compiler }}
+      if: matrix.compiler == 'clang'
       run: apt-get install -y ${{ matrix.compiler }}
-      if: '${{ matrix.compiler }}' == 'clang'
 
     - name: Download AppImage
       run: |
