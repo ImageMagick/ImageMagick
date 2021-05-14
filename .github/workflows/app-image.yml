@@ -7,7 +7,7 @@ on:
 name: app image
 jobs:
   build:
-    name: 'Verify Linux'
+    name: 'Create AppImage'
     runs-on: ubuntu-latest
     container:
       image: ubuntu:18.04
@@ -36,7 +36,7 @@ jobs:
         fi
 
     - name: Download AppImage
-      run:
+      run: |
         mkdir /app-image
         cd /app-image
         wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
