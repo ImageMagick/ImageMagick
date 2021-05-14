@@ -656,7 +656,8 @@ MagickPrivate void ExpandFilename(char *path)
         *p;
 
       struct passwd
-        *entry;
+        *entry,
+        pwd;
 
       /*
         Substitute ~ with home directory from password file.
@@ -668,9 +669,6 @@ MagickPrivate void ExpandFilename(char *path)
 #if !defined(MAGICKCORE_HAVE_GETPWNAM_R)
       entry=getpwnam(username);
 #else
-      struct passwd
-        pwd;
-
       entry=(struct passwd *) NULL;
       if (getpwnam_r(username,&pwd,buffer,sizeof(buffer),&entry) < 0)
         return;
