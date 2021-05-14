@@ -1,8 +1,7 @@
 on:
   workflow_dispatch:
-  push:
-    branches:
-    - main
+  schedule:
+  - cron: 0 6 * * *
 
 name: app image
 jobs:
