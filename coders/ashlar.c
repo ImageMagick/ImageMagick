@@ -213,7 +213,7 @@ typedef struct _TileInfo
     **previous;
 } TileInfo;
 
-static ssize_t FindMinimumTileLocation(NodeInfo *first,const ssize_t x,
+static inline ssize_t FindMinimumTileLocation(NodeInfo *first,const ssize_t x,
   const size_t width,ssize_t *excess)
 {
   NodeInfo
@@ -254,8 +254,8 @@ static ssize_t FindMinimumTileLocation(NodeInfo *first,const ssize_t x,
   return(y);
 }
 
-static TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
-  size_t width,size_t height)
+static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
+  const size_t width,size_t const height)
 {
   NodeInfo
     *node,
@@ -265,6 +265,9 @@ static TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
   ssize_t
     min_excess;
 
+  size_t
+    ashlar_width;
+
   TileInfo
     tile;
 
@@ -272,9 +275,9 @@ static TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
     Align along left edge.
   */
   tile.previous=(NodeInfo **) NULL;
-  width=(width+ashlar_info->align-1);
-  width-=width % ashlar_info->align;
-  if ((width > ashlar_info->width) || (height > ashlar_info->height))
+  ashlar_width=(width+ashlar_info->align-1);
+  ashlar_width-=ashlar_width % ashlar_info->align;
+  if ((ashlar_width > ashlar_info->width) || (height > ashlar_info->height))
     {
       /*
         Tile can't fit, bail.
@@ -288,13 +291,13 @@ static TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
   min_excess=(ssize_t) MAGICK_SSIZE_MAX;
   node=ashlar_info->current;
   previous=(&ashlar_info->current);
-  while ((width+node->x) <= ashlar_info->width)
+  while ((ashlar_width+node->x) <= ashlar_info->width)
   {
     ssize_t
       excess,
       y;
 
-    y=FindMinimumTileLocation(node,node->x,width,&excess);
+    y=FindMinimumTileLocation(node,node->x,ashlar_width,&excess);
     if (ashlar_info->best_fit == MagickFalse)
       {
         if (y < tile.y)
@@ -325,7 +328,7 @@ static TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
       tail=ashlar_info->current;
       node=ashlar_info->current;
       previous=(&ashlar_info->current);
-      while (tail->x < (ssize_t) width)
+      while (tail->x < (ssize_t) ashlar_width)
         tail=tail->next;
       while (tail != (NodeInfo *) NULL)
       {
@@ -334,13 +337,13 @@ static TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
           x,
           y;
 
-        x=tail->x-width;
+        x=tail->x-ashlar_width;
         while (node->next->x <= x)
         {
           previous=(&node->next);
           node=node->next;
         }
-        y=FindMinimumTileLocation(node,x,width,&excess);
+        y=FindMinimumTileLocation(node,x,ashlar_width,&excess);
         if ((height+y) <= ashlar_info->height)
           {
             if (y <= tile.y)
@@ -359,8 +362,8 @@ static TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
   return(tile);
 }
 
-static TileInfo AssignTileLocation(AshlarInfo *ashlar_info,const size_t width,
-  const size_t height)
+static inline TileInfo AssignTileLocation(AshlarInfo *ashlar_info,
+  const size_t width,const size_t height)
 {
   NodeInfo
     *current,
@@ -416,7 +419,7 @@ static TileInfo AssignTileLocation(AshlarInfo *ashlar_info,const size_t width,
    return(tile);
 }
 
-static int CompareTileHeight(const void *p_tile,const void *q_tile)
+static inline int CompareTileHeight(const void *p_tile,const void *q_tile)
 {
   const CanvasInfo
     *p,
@@ -431,7 +434,7 @@ static int CompareTileHeight(const void *p_tile,const void *q_tile)
   return((p->width > q->width) ? -1 : (p->width < q->width) ? 1 : 0);
 }
 
-static int RestoreTileOrder(const void *p_tile,const void *q_tile)
+static inline int RestoreTileOrder(const void *p_tile,const void *q_tile)
 {
   const CanvasInfo
     *p,
@@ -442,8 +445,8 @@ static int RestoreTileOrder(const void *p_tile,const void *q_tile)
   return((p->order < q->order) ? -1 : (p->order > q->order) ? 1 : 0);
 }
 
-static MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
-  CanvasInfo *tiles,const size_t number_tiles)
+static inline MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
+  const size_t number_tiles,CanvasInfo *tiles)
 {
   MagickBooleanType
     status;
@@ -608,7 +611,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
     ashlar_info.sentinal.x=(ssize_t) geometry.width;
     ashlar_info.sentinal.y=(ssize_t) MAGICK_SSIZE_MAX;
     ashlar_info.sentinal.next=(NodeInfo *) NULL;
-    status=PackAshlarTiles(&ashlar_info,tiles,(size_t) n);
+    status=PackAshlarTiles(&ashlar_info,(size_t) n,tiles);
     if (status != MagickFalse)
       break;
   }
