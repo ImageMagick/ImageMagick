@@ -4896,14 +4896,11 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
       (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",arg1);
       (void) DeleteImageRegistry(key);
-      write_images=_images;
-      if (IfPlusOp)
-        write_images=CloneImageList(_images,_exception);
+      write_images=CloneImageList(_images,_exception);
       write_info=CloneImageInfo(_image_info);
       (void) WriteImages(write_info,write_images,arg1,_exception);
       write_info=DestroyImageInfo(write_info);
-      if (IfPlusOp)
-        write_images=DestroyImageList(write_images);
+      write_images=DestroyImageList(write_images);
       break;
     }
     /*

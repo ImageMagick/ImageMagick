@@ -9022,14 +9022,11 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             (void) FormatLocaleString(key,MagickPathExtent,"cache:%s",
               argv[i+1]);
             (void) DeleteImageRegistry(key);
-            write_images=(*images);
-            if (*option == '+')
-              write_images=CloneImageList(*images,exception);
+            write_images=CloneImageList(*images,exception);
             write_info=CloneImageInfo(mogrify_info);
             status&=WriteImages(write_info,write_images,argv[i+1],exception);
             write_info=DestroyImageInfo(write_info);
-            if (*option == '+')
-              write_images=DestroyImageList(write_images);
+            write_images=DestroyImageList(write_images);
             break;
           }
         break;
