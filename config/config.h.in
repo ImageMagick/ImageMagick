@@ -408,9 +408,6 @@
 /* Define to 1 if you have the `rand_r' function. */
 #undef HAVE_RAND_R
 
-/* Define to 1 if you have the `readdir_r' function. */
-#undef HAVE_READDIR_R
-
 /* Define to 1 if you have the `readlink' function. */
 #undef HAVE_READLINK
 

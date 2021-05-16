@@ -4564,7 +4564,7 @@ MAGICK_PATCHLEVEL_VERSION=13
 
 MAGICK_VERSION=7.0.11-13
 
-MAGICK_GIT_REVISION=18717:d7c72d7d1:20210512
+MAGICK_GIT_REVISION=18743:2c063a3a7:20210516
 
 
 # Substitute library versioning
@@ -4594,7 +4594,7 @@ PACKAGE_LIB_VERSION=0x70B
 
 PACKAGE_LIB_VERSION_NUMBER=7,0,11,13
 
-PACKAGE_RELEASE_DATE=2021-05-12
+PACKAGE_RELEASE_DATE=2021-05-16
 
 
 # Ensure that make can run correctly
@@ -32477,19 +32477,19 @@ if test "x$with_webp" = "xyes"; then
 $as_echo "-------------------------------------------------------------" >&6; }
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libwebp" >&5
-$as_echo_n "checking for libwebp... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libwebp >= 0.4.1" >&5
+$as_echo_n "checking for libwebp >= 0.4.1... " >&6; }
 
 if test -n "$WEBP_CFLAGS"; then
     pkg_cv_WEBP_CFLAGS="$WEBP_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebp\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libwebp") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebp >= 0.4.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libwebp >= 0.4.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_WEBP_CFLAGS=`$PKG_CONFIG --cflags "libwebp" 2>/dev/null`
+  pkg_cv_WEBP_CFLAGS=`$PKG_CONFIG --cflags "libwebp >= 0.4.1" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -32501,12 +32501,12 @@ if test -n "$WEBP_LIBS"; then
     pkg_cv_WEBP_LIBS="$WEBP_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebp\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libwebp") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libwebp >= 0.4.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libwebp >= 0.4.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_WEBP_LIBS=`$PKG_CONFIG --libs "libwebp" 2>/dev/null`
+  pkg_cv_WEBP_LIBS=`$PKG_CONFIG --libs "libwebp >= 0.4.1" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -32527,9 +32527,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        WEBP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libwebp" 2>&1`
+	        WEBP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libwebp >= 0.4.1" 2>&1`
         else
-	        WEBP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libwebp" 2>&1`
+	        WEBP_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libwebp >= 0.4.1" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$WEBP_PKG_ERRORS" >&5
