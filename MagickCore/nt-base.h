@@ -247,6 +247,7 @@ extern "C" {
 #endif
 #if !defined(sysconf)
 #  define sysconf(name)  NTSystemConfiguration(name)
+#  define MAGICKCORE_HAVE_SYSCONF 1
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
