@@ -2,6 +2,9 @@ on:
   workflow_dispatch:
   schedule:
   - cron: 0 6 * * *
+  push:
+    tags:
+    - '*'
 
 name: app image
 jobs:
@@ -24,7 +27,7 @@ jobs:
       run: |
         set -e
         apt-get update -y
-        apt-get install -y autoconf fuse git kmod libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev liblcms-dev libopenexr-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libx11-dev libxml2-dev liblzma-dev software-properties-common wget
+        apt-get install -y autoconf curl fuse git kmod libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev liblcms-dev libopenexr-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libx11-dev libxml2-dev liblzma-dev software-properties-common wget
         add-apt-repository ppa:git-core/ppa -y
         apt-get install -y git
 
@@ -51,7 +54,7 @@ jobs:
         CC: ${{ matrix.compiler }}
       run: |
         set -e
-        ./configure --with-quantum-depth=16 --without-perl --prefix=/usr
+        ./configure --with-quantum-depth=16 --without-magick-plus-plus --without-perl --prefix=/usr
         make
         make install DESTDIR=$(readlink -f /appdir)
 
@@ -76,7 +79,17 @@ jobs:
         cp ImageMagick-$VERSION-x86_64.AppImage artifacts
         find /appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
 
+    - name: Create release
+      if: contains(github.ref, 'tags')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        set -e
+        # wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+        bash ./app-image/upload.sh ImageMagick*AppImage*
+
     - name: Upload ImageMagick AppImage
+      if: "!contains(github.ref, 'tags')"
       uses: actions/upload-artifact@v1
       with:
         name: AppImage-${{ matrix.compiler }}
