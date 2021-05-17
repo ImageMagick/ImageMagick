@@ -162,7 +162,7 @@ double Magick::Options::colorFuzz(void) const
 
 void Magick::Options::debug(const bool flag_)
 {
-  if  (flag_)
+  if (flag_)
     SetLogEventMask("All");
   else
     SetLogEventMask("None");
@@ -180,7 +180,7 @@ void Magick::Options::density(const Point &density_)
   if (!density_.isValid())
     _imageInfo->density=(char *) RelinquishMagickMemory(_imageInfo->density);
   else
-   CloneString(&_imageInfo->density,density_);
+    CloneString(&_imageInfo->density,density_);
 }
 
 Magick::Point Magick::Options::density(void) const
@@ -255,7 +255,7 @@ Magick::Color Magick::Options::fillColor(void) const
 void Magick::Options::fillPattern(const MagickCore::Image *fillPattern_)
 {
   if (_drawInfo->fill_pattern)
-      _drawInfo->fill_pattern=DestroyImageList(_drawInfo->fill_pattern);
+    _drawInfo->fill_pattern=DestroyImageList(_drawInfo->fill_pattern);
 
   if (fillPattern_)
     {
