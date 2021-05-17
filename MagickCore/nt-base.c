@@ -1800,16 +1800,13 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
     MagickPathExtent);
   if (length == 0)
     return((DIR *) NULL);
-  if (wcsncat(file_specification,(const wchar_t*) DirectorySeparator,
-        MagickPathExtent-wcslen(file_specification)-1) == (wchar_t *) NULL)
-    return((DIR *) NULL);
   entry=(DIR *) AcquireCriticalMemory(sizeof(DIR));
   entry->firsttime=TRUE;
   entry->hSearch=FindFirstFileW(file_specification,&entry->Win32FindData);
   if (entry->hSearch == INVALID_HANDLE_VALUE)
     {
-      if(wcsncat(file_specification,L"*.*",
-        MagickPathExtent-wcslen(file_specification)-1) == (wchar_t *) NULL)
+      if(wcsncat(file_specification,L"\\*.*",MagickPathExtent-wcslen(
+          file_specification)-1) == (wchar_t *) NULL)
         {
           entry=(DIR *) RelinquishMagickMemory(entry);
           return((DIR *) NULL);
