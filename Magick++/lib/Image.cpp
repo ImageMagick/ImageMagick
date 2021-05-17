@@ -3122,10 +3122,11 @@ void Magick::Image::fontTypeMetrics(const std::string &text_,
     *drawInfo;
 
   drawInfo=options()->drawInfo();
+  drawInfo->text=DestroyString(drawInfo->text);
   drawInfo->text=const_cast<char *>(text_.c_str());
   GetPPException;
   GetTypeMetrics(image(),drawInfo,&(metrics->_typeMetric),exceptionInfo);
-  drawInfo->text=0;
+  drawInfo->text=(char *) NULL;
   ThrowImageException;
 }
 
@@ -3136,10 +3137,11 @@ void Magick::Image::fontTypeMetricsMultiline(const std::string &text_,
     *drawInfo;
 
   drawInfo=options()->drawInfo();
+  drawInfo->text=DestroyString(drawInfo->text);
   drawInfo->text=const_cast<char *>(text_.c_str());
   GetPPException;
   GetMultilineTypeMetrics(image(),drawInfo,&(metrics->_typeMetric),exceptionInfo);
-  drawInfo->text=0;
+  drawInfo->text=(char *) NULL;
   ThrowImageException;
 }
 
@@ -5149,8 +5151,7 @@ void Magick::Image::mask(const Magick::Image &mask_,const PixelMask type)
   if (mask_.isValid())
     SetImageMask(image(),type,mask_.constImage(),exceptionInfo);
   else
-    SetImageMask(image(),type,(MagickCore::Image *) NULL,
-      exceptionInfo);
+    SetImageMask(image(),type,(MagickCore::Image *) NULL,exceptionInfo);
   ThrowImageException;
 }
 
