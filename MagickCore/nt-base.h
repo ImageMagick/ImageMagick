@@ -29,7 +29,9 @@ extern "C" {
 
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
-#define _CRT_SECURE_NO_DEPRECATE  1
+#if !defined(_CRT_SECURE_NO_DEPRECATE)
+#  define _CRT_SECURE_NO_DEPRECATE  1
+#endif
 #include <windows.h>
 #include <wchar.h>
 #include <winuser.h>
@@ -99,7 +101,9 @@ extern "C" {
 #if !defined(closedir)
 #  define closedir(directory)  NTCloseDirectory(directory)
 #endif
-#define MAGICKCORE_HAVE_ERF
+#if !defined(MAGICKCORE_HAVE_ERF)
+#  define MAGICKCORE_HAVE_ERF
+#endif
 #if defined(_VISUALC_) && (_MSC_VER < 1700)
 #  define erf(x)  NTErf(x)
 #endif
