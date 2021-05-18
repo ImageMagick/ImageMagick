@@ -599,11 +599,11 @@ MagickPrivate double NTElapsedTime(void)
 %
 %  The format of the NTErf method is:
 %
-%      double NTCloseDirectory(DIR *entry)
+%      double NTErf(double x)
 %
 %  A description of each parameter follows:
 %
-%    o x: Specifies a pointer to a DIR structure.
+%    o x: The value to compute the error function for.
 %
 */
 MagickPrivate double NTErf(double x)
