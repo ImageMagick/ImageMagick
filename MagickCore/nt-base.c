@@ -2308,9 +2308,6 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
   PROCESS_INFORMATION
     process_info;
 
-  SECURITY_ATTRIBUTES
-    sa;
-
   size_t
     output_offset;
 
@@ -2340,9 +2337,6 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
       read_output=(HANDLE) NULL;
       if (output != (char *) NULL)
         {
-          sa.nLength=sizeof(SECURITY_ATTRIBUTES);
-          sa.bInheritHandle=TRUE;
-          sa.lpSecurityDescriptor=NULL;
           if (CreatePipe(&read_output,&write_output,NULL,0))
             {
               if (SetHandleInformation(write_output,HANDLE_FLAG_INHERIT,
