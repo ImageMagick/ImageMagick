@@ -177,6 +177,21 @@ static inline OrientationType JXLOrientationToOrientation(
   }
 }
 
+static inline StorageType JXLDataTypeToStorageType(const JxlDataType data_type)
+{
+  switch (data_type)
+  {
+    case JXL_TYPE_FLOAT:
+      return FloatPixel;
+    case JXL_TYPE_UINT16:
+      return ShortPixel;
+    case JXL_TYPE_UINT8:
+      return CharPixel;
+    default:
+      return UndefinedPixel;
+  }
+}
+
 static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
@@ -372,15 +387,24 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       case JXL_DEC_FULL_IMAGE:
       {
+        StorageType
+          type;
+
         if (output_buffer == (unsigned char *) NULL)
           {
             ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
               "UnableToReadImageData","`%s'",image->filename);
             break;
           }
+        type=JXLDataTypeToStorageType(format.data_type);
+        if (type == UndefinedPixel)
+          {
+            ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+              "Unsupported data type","`%s'",image->filename);
+            break;
+          }
         status=ImportImagePixels(image,0,0,image->columns,image->rows,
-          image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
-          format.data_type == JXL_TYPE_FLOAT ? FloatPixel : CharPixel,
+          image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",type,
           output_buffer,exception);
         if (status == MagickFalse)
           decoder_status=JXL_DEC_ERROR;
@@ -625,9 +649,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     }
   status=ExportImagePixels(image,0,0,image->columns,image->rows,
     image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
-    format.data_type == JXL_TYPE_FLOAT ? FloatPixel :
-    format.data_type == JXL_TYPE_UINT16 ? ShortPixel : CharPixel,
-    input_buffer,exception);
+    JXLDataTypeToStorageType(format.data_type),input_buffer,exception);
   if (status == MagickFalse)
     {
       input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
