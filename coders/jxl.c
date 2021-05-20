@@ -121,7 +121,8 @@ static inline void JXLSetMemoryManager(JxlMemoryManager *memory_manager,
 static inline void JXLSetFormat(Image *image,JxlPixelFormat *format)
 {
   format->num_channels=(image->alpha_trait == BlendPixelTrait) ? 4 : 3;
-  format->data_type=(image->depth > 8) ? JXL_TYPE_FLOAT : JXL_TYPE_UINT8;
+  format->data_type=(image->depth > 16) ? JXL_TYPE_FLOAT : (image->depth > 8) ?
+   JXL_TYPE_UINT16 : JXL_TYPE_UINT8;
 }
 
 /*
@@ -571,7 +572,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   basic_info.xsize=(uint32_t) image->columns;
   basic_info.ysize=(uint32_t) image->rows;
   basic_info.bits_per_sample=8;
-  if (format.data_type == JXL_TYPE_FLOAT)
+  if (format.data_type == JXL_TYPE_UINT16)
+    basic_info.bits_per_sample=16;
+  else if (format.data_type == JXL_TYPE_FLOAT)
     {
       basic_info.bits_per_sample=32;
       basic_info.exponent_bits_per_sample=8;
@@ -609,7 +612,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     JxlEncoderOptionsSetEffort(encoder_options,StringToInteger(option));
   bytes_per_row=image->columns*
     ((image->alpha_trait == BlendPixelTrait) ? 4 : 3)*
-    ((format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) : sizeof(char));
+    ((format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
+     (format.data_type == JXL_TYPE_UINT16) ? sizeof(short) : sizeof(char));
   input_buffer=AcquireQuantumMemory(bytes_per_row,image->rows*
     sizeof(*input_buffer));
   if (input_buffer == (unsigned char *) NULL)
@@ -620,7 +624,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     }
   status=ExportImagePixels(image,0,0,image->columns,image->rows,
     image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
-    format.data_type == JXL_TYPE_FLOAT ? FloatPixel : CharPixel,
+    format.data_type == JXL_TYPE_FLOAT ? FloatPixel :
+    format.data_type == JXL_TYPE_UINT16 ? ShortPixel : CharPixel,
     input_buffer,exception);
   if (status == MagickFalse)
     {
