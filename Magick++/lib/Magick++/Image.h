@@ -397,6 +397,10 @@ namespace Magick
     // The number of pixel rows in the image
     size_t rows(void) const;
 
+    // Image sampling factor
+    void samplingFactor(const std::string &samplingFactor_);
+    std::string samplingFactor(void) const;
+
     // Image scene number
     void scene(const size_t scene_);
     size_t scene(void) const;

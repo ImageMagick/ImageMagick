@@ -1352,6 +1352,17 @@ size_t Magick::Image::rows(void) const
   return(constImage()->rows);
 }
 
+void Magick::Image::samplingFactor(const std::string &samplingFactor_)
+{
+  modifyImage();
+  options()->samplingFactor(samplingFactor_);
+}
+
+std::string Magick::Image::samplingFactor(void) const
+{
+  return(constOptions()->samplingFactor());
+}
+
 void Magick::Image::scene(const size_t scene_)
 {
   modifyImage();
