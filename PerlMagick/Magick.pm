@@ -124,7 +124,7 @@ It was originally developed to be used by CGI scripts for Web pages.
 
 A web page has been set up for this extension. See:
 
-	 file:///usr/local/share/doc/ImageMagick-7/www/perl-magick.html
+	 https://github.com/ImageMagick/ImageMagick/blob/main/www/perl-magick.html
 	 https://imagemagick.org/script/perl-magick.php
 
 If you have problems, go to
