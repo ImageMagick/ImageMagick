@@ -129,7 +129,7 @@ A web page has been set up for this extension. See:
 
 If you have problems, go to
 
-   https://github.com/ImageMagick/ImageMagick/issue
+   https://github.com/ImageMagick/ImageMagick/issues
 
 =head1 AUTHOR
 
