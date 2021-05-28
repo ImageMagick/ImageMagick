@@ -112,9 +112,9 @@ static MagickBooleanType
 */
 static MagickBooleanType IsMPC(const unsigned char *magick,const size_t length)
 {
-  if (length < 14)
+  if (length < 19)
     return(MagickFalse);
-  if (LocaleNCompare((const char *) magick,"id=MagickPixelCache",14) == 0)
+  if (LocaleNCompare((const char *) magick,"id=MagickPixelCache",19) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
