@@ -80,9 +80,6 @@ static inline MagickBooleanType InvokeGhostscriptDelegate(
   const MagickBooleanType verbose,const char *command,char *message,
   ExceptionInfo *exception)
 {
-  int
-    status;
-
 #if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
 #define SetArgsStart(command,args_start) \
   if (args_start == (const char *) NULL) \
@@ -112,7 +109,8 @@ static inline MagickBooleanType InvokeGhostscriptDelegate(
 
   int
     argc,
-    code;
+    code,
+    status;
 
   ssize_t
     i;
