@@ -522,7 +522,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
             break;
           }
         image=SyncNextImageInList(image);
-        error=heif_context_get_image_handle(heif_context,primary_image_id,
+        error=heif_context_get_image_handle(heif_context,image_ids[i],
           &image_handle);
         if (IsHeifSuccess(image,&error,exception) == MagickFalse)
           {
@@ -1057,7 +1057,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     colorspace=heif_colorspace_YCbCr;
     lossless=image_info->quality == 100 ? MagickTrue : MagickFalse;
     chroma=lossless ? heif_chroma_444 : heif_chroma_420;
-
 
     /*
       Get encoder for the specified format.
