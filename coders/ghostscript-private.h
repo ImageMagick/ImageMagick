@@ -195,9 +195,7 @@ static inline MagickBooleanType InvokeGhostscriptDelegate(
     errors=DestroyString(errors);
   return(MagickTrue);
 #else
-  status=ExternalDelegateCommand(MagickFalse,verbose,command,(char *) NULL,
-    exception);
-  return(status == 0 ? MagickTrue : MagickFalse);
+  return(ExecuteGhostscriptCommand(verbose,command,message,exception));
 #endif
 }
 
