@@ -1824,41 +1824,37 @@ MagickExport StringInfo *SplitStringInfo(StringInfo *string_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t r i n g I n f o T o S t r i n g                                       %
+%   S t r i n g I n f o T o D i g e s t                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StringInfoToString() converts a string info string to a C string.
+%  StringInfoToDigest() converts a string info string to a hex digest.
 %
 %  The format of the StringInfoToString method is:
 %
-%      char *StringInfoToString(const StringInfo *string_info)
+%      char *StringInfoToDigest(const StringInfo *signature)
 %
 %  A description of each parameter follows:
 %
 %    o string_info: the string.
 %
 */
-MagickExport char *StringInfoToString(const StringInfo *string_info)
+MagickExport char *StringInfoToDigest(const StringInfo *signature)
 {
   char
-    *string;
+    *digest;
 
-  size_t
-    length;
+  SignatureInfo
+   *signature_info;
 
-  string=(char *) NULL;
-  length=string_info->length;
-  if (~length >= (MagickPathExtent-1))
-    string=(char *) AcquireQuantumMemory(length+MagickPathExtent,
-      sizeof(*string));
-  if (string == (char *) NULL)
-    return((char *) NULL);
-  (void) memcpy(string,(char *) string_info->datum,length*sizeof(*string));
-  string[length]='\0';
-  return(string);
+  signature_info=AcquireSignatureInfo();
+  UpdateSignature(signature_info,signature);
+  FinalizeSignature(signature_info);
+  digest=StringInfoToHexString(GetSignatureDigest(signature_info));
+  signature_info=DestroySignatureInfo(signature_info);
+  return(digest);
 }
 
 /*
@@ -1935,6 +1931,48 @@ MagickExport char *StringInfoToHexString(const StringInfo *string_info)
     p++;
   }
   *q='\0';
+  return(string);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S t r i n g I n f o T o S t r i n g                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  StringInfoToString() converts a string info string to a C string.
+%
+%  The format of the StringInfoToString method is:
+%
+%      char *StringInfoToString(const StringInfo *string_info)
+%
+%  A description of each parameter follows:
+%
+%    o string_info: the string.
+%
+*/
+MagickExport char *StringInfoToString(const StringInfo *string_info)
+{
+  char
+    *string;
+
+  size_t
+    length;
+
+  string=(char *) NULL;
+  length=string_info->length;
+  if (~length >= (MagickPathExtent-1))
+    string=(char *) AcquireQuantumMemory(length+MagickPathExtent,
+      sizeof(*string));
+  if (string == (char *) NULL)
+    return((char *) NULL);
+  (void) memcpy(string,(char *) string_info->datum,length*sizeof(*string));
+  string[length]='\0';
   return(string);
 }
 
