@@ -7391,7 +7391,7 @@ static void MSLEndElement(void *context,const xmlChar *tag)
           (void) DeleteImageProperty(msl_info->image[n],"comment");
           if (msl_info->content == (char *) NULL)
             break;
-          StripString(msl_info->content);
+          (void) StripMagickString(msl_info->content);
           (void) SetImageProperty(msl_info->image[n],"comment",
             msl_info->content,msl_info->exception);
           break;
@@ -7438,7 +7438,7 @@ static void MSLEndElement(void *context,const xmlChar *tag)
           (void) DeleteImageProperty(msl_info->image[n],"label");
           if (msl_info->content == (char *) NULL)
             break;
-          StripString(msl_info->content);
+          (void) StripMagickString(msl_info->content);
           (void) SetImageProperty(msl_info->image[n],"label",
             msl_info->content,msl_info->exception);
           break;

@@ -393,7 +393,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         value=ConstantString(name);
         (void) SubstituteString(&value,"(","");
         (void) SubstituteString(&value,")","");
-        (void) StripString(value);
+        (void) StripMagickString(value);
         if (*value != '\0')
           (void) SetImageProperty(image,property,value,exception);
         value=DestroyString(value);

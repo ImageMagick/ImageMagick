@@ -2483,25 +2483,31 @@ MagickExport StringInfo *StringToStringInfo(const char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t r i p S t r i n g                                                     %
+%   S t r i p M a g i c k S t r i n g                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StripString() strips any whitespace or quotes from the beginning and end of
-%  a string of characters.
+%  StripMagickString() strips any whitespace or quotes from the beginning and
+%  end of a string of characters. It returns the stripped string length.
 %
-%  The format of the StripString method is:
+%  The format of the StripMagickString method is:
 %
-%      void StripString(char *message)
+%      size_t StripMagickString(char *message)
 %
 %  A description of each parameter follows:
 %
 %    o message: Specifies an array of characters.
 %
 */
+
 MagickExport void StripString(char *message)
+{
+  (void) StripMagickString(message);
+}
+
+MagickExport size_t StripMagickString(char *message)
 {
   char
     *p,
@@ -2512,8 +2518,10 @@ MagickExport void StripString(char *message)
 
   assert(message != (char *) NULL);
   if (*message == '\0')
-    return;
+    return(0);
   length=strlen(message);
+  if (length == 1)
+    return(1);
   p=message;
   while (isspace((int) ((unsigned char) *p)) != 0)
     p++;
@@ -2530,6 +2538,7 @@ MagickExport void StripString(char *message)
   for (p=message; *p != '\0'; p++)
     if (*p == '\n')
       *p=' ';
+  return((size_t) (q-p+1));
 }
 
 /*

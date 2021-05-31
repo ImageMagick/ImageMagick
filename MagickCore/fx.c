@@ -771,7 +771,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
         }
     }
   (void) CopyMagickString(symbol,p,MagickPathExtent);
-  StripString(symbol);
+  (void) StripMagickString(symbol);
   if (*symbol == '\0')
     {
       switch (channel)

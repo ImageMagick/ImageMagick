@@ -80,7 +80,8 @@ extern MagickExport size_t
     const size_t) magick_attribute((__nonnull__)),
   CopyMagickString(char *magick_restrict,const char *magick_restrict,
     const size_t) magick_attribute((__nonnull__)),
-  GetStringInfoLength(const StringInfo *);
+  GetStringInfoLength(const StringInfo *),
+  StripMagickString(char *);
 
 extern MagickExport ssize_t
   FormatMagickSize(const MagickSizeType,const MagickBooleanType,const char *,

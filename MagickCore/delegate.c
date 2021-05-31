@@ -2003,11 +2003,11 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
     (void) FormatLocaleFile(file,"%11s%c=%c%s  ",delegate_info[i]->decode ?
       delegate_info[i]->decode : "",delegate_info[i]->mode <= 0 ? '<' : ' ',
       delegate_info[i]->mode >= 0 ? '>' : ' ',delegate);
-    StripString(commands[0]);
+    (void) StripMagickString(commands[0]);
     (void) FormatLocaleFile(file,"\"%s\"\n",commands[0]);
     for (j=1; commands[j] != (char *) NULL; j++)
     {
-      StripString(commands[j]);
+      (void) StripMagickString(commands[j]);
       (void) FormatLocaleFile(file,"                     \"%s\"\n",commands[j]);
     }
     for (j=0; commands[j] != (char *) NULL; j++)

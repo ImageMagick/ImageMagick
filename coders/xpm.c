@@ -432,7 +432,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (q != (char *) NULL)
           *q='\0';
       }
-    StripString(target);
+    (void) StripMagickString(target);
     if (*symbolic != '\0')
       (void) AddValueToSplayTree(xpm_symbolic,ConstantString(target),
         ConstantString(symbolic));

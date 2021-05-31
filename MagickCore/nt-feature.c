@@ -376,7 +376,7 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
           }
 
         (void) CopyMagickString(buffer,value_name,family_extent-value_name+1);
-        StripString(buffer);
+        (void) StripMagickString(buffer);
         type_info->family=ConstantString(buffer);
 
         list_entries++;

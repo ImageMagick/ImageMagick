@@ -291,7 +291,7 @@ static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
                 (void) FormatLocaleString(property,MagickPathExtent,"dng:%s",
                   tag);
                 content=ConstantString(GetXMLTreeContent(next));
-                StripString(content);
+                (void) StripMagickString(content);
                 if ((LocaleCompare(tag,"log") != 0) &&
                     (LocaleCompare(tag,"InputFilename") != 0) &&
                     (LocaleCompare(tag,"OutputFilename") != 0) &&

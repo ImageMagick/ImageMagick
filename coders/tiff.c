@@ -801,14 +801,14 @@ static MagickBooleanType TIFFSetImageProperties(TIFF *tiff,Image *image,
       property[MagickPathExtent],
       value[MagickPathExtent];
 
-    StripString(buffer);
+    (void) StripMagickString(buffer);
     p=strchr(buffer,':');
     if (p == (char *) NULL)
       continue;
     *p='\0';
     (void) sprintf(property,"%s%.1024s",tag,buffer);
     (void) sprintf(value,"%s",p+1);
-    StripString(value);
+    (void) StripMagickString(value);
     (void) SetImageProperty(image,property,value,exception);
   }
   (void) fclose(file);
