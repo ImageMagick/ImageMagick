@@ -1,12 +1,17 @@
 2021-05-31  7.0.11-14  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-14 GIT revision 18775:354f421e4:20210531
 
+2021-05-20  7.0.11-14  Dirk Lemstra <dirk@lem.....org>
+  * Added support for reading and writing 16-bit jxl images.
+
 2021-05-17  7.0.11-13  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-13 GIT revision 18751:0365211b2:20210517
 
 2021-05-12  7.0.11-13  Dirk Lemstra <dirk@lem.....org>
   * Fixed reading and writing the XMP chunk in a WebP image (reference
     https://github.com/ImageMagick/ImageMagick/discussions/3617).
+  * Added support to set the jpeg-xl encoding effort with
+    -define jxl:effort=<number>
 
 2021-05-09  7.0.11-13  <quetzlzacatenango@image...>
   * label and caption sanity check is too conservative.
