@@ -1847,7 +1847,7 @@ MagickExport char *StringInfoToDigest(const StringInfo *signature)
     *digest;
 
   SignatureInfo
-   *signature_info;
+    *signature_info;
 
   signature_info=AcquireSignatureInfo();
   UpdateSignature(signature_info,signature);
