@@ -1,3 +1,7 @@
+2021-06-02  7.0.11-15  <quetzlzacatenango@image...>
+  * Raise exception for invalid compose:args geometry (reference
+    https://github.com/ImageMagick/ImageMagick/issues/3765).
+
 2021-05-31  7.0.11-14  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.0.11-14 GIT revision 18775:354f421e4:20210531
 
