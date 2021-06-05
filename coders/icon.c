@@ -819,7 +819,7 @@ static Image *AutoResizeImage(const Image *image,const char *option,
     i;
 
   size_t
-    sizes[MAX_SIZES] ={ 256, 192, 128, 96, 64, 48, 40, 32, 24, 16};
+    sizes[MAX_SIZES]={256, 192, 128, 96, 64, 48, 40, 32, 24, 16};
 
   images=NULL;
   *count=0;
