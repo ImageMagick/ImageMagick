@@ -1259,7 +1259,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     *value;
 
   const StringInfo
-    *profile;
+    *icc_profile;
 
   double
     pointsize,
@@ -1365,8 +1365,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     (void) SetImageGray(next,exception);
-    profile=GetImageProfile(next,"icc");
-    if (profile != (StringInfo *) NULL)
+    icc_profile=GetImageProfile(next,"icc");
+    if (icc_profile != (StringInfo *) NULL)
       {
         (void) SetImageStorageClass(next,DirectClass,exception);
         version=1.7;
@@ -1494,8 +1494,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       for ( ; GetNextImageInList(kid_image) != (Image *) NULL; count+=ObjectsPerImage)
       {
         page_count++;
-        profile=GetImageProfile(kid_image,"icc");
-        if (profile != (StringInfo *) NULL)
+        icc_profile=GetImageProfile(kid_image,"icc");
+        if (icc_profile != (StringInfo *) NULL)
           count+=2;
         (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 R ",(double)
           count);
@@ -1521,11 +1521,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       *tile_image;
 
     MagickBooleanType
-      has_icc_profile,
       thumbnail;
 
-    profile=GetImageProfile(image,"icc");
-    has_icc_profile=profile != (StringInfo *) NULL ? MagickTrue : MagickFalse;
+    icc_profile=GetImageProfile(image,"icc");
     compression=image->compression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
@@ -1696,7 +1694,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       (double) object+1);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,"/Thumb %.20g 0 R\n",
-      (double) object+(has_icc_profile != MagickFalse ? 10 : 8));
+      (double) object+(icc_profile != (StringInfo *) NULL ? 10 : 8));
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"endobj\n");
@@ -1879,7 +1877,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if (image->alpha_trait != UndefinedPixelTrait)
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,"/SMask %.20g 0 R\n",
-          (double) object+(has_icc_profile != MagickFalse ? 9 : 7));
+          (double) object+(icc_profile != (StringInfo *) NULL ? 9 : 7));
         (void) WriteBlobString(image,buffer);
       }
     (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g 0 R\n",
@@ -2270,7 +2268,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             device="DeviceRGB";
             channels=3;
           }
-    if (has_icc_profile == MagickFalse)
+    if (icc_profile == (StringInfo *) NULL)
       {
         if (channels != 0)
           (void) FormatLocaleString(buffer,MagickPathExtent,"/%s\n",device);
@@ -2302,8 +2300,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobString(image,buffer);
         offset=TellBlob(image);
         Ascii85Initialize(image);
-        p=GetStringInfoDatum(profile);
-        for (i=0; i < (ssize_t) GetStringInfoLength(profile); i++)
+        p=GetStringInfoDatum(icc_profile);
+        for (i=0; i < (ssize_t) GetStringInfoLength(icc_profile); i++)
           Ascii85Encode(image,(unsigned char) *p++);
         Ascii85Flush(image);
         offset=TellBlob(image)-offset;
@@ -2405,7 +2403,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "/ColorSpace %.20g 0 R\n",(double) object-
-      (has_icc_profile != MagickFalse ? 3 : 1));
+      (icc_profile != (StringInfo *) NULL ? 3 : 1));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "/BitsPerComponent %d\n",(compression == FaxCompression) ||
