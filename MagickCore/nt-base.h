@@ -276,6 +276,7 @@ extern "C" {
 #if !defined(unlink)
 #  define unlink  _unlink
 #endif
+#define MAGICKCORE_HAVE_UTIME 1
 #if !defined(utime)
 #  define utime(filename,time)  _utime(filename,(struct _utimbuf*) time)
 #endif
