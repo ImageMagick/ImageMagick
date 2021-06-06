@@ -254,7 +254,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (runner == (void *) NULL)
     {
       JxlDecoderDestroy(decoder);
-      ThrowWriterException(CoderError,"MemoryAllocationFailed");
+      ThrowReaderException(CoderError,"MemoryAllocationFailed");
     }
   decoder_status=JxlDecoderSetParallelRunner(decoder,JxlThreadParallelRunner,
     runner);
@@ -262,7 +262,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       JxlThreadParallelRunnerDestroy(runner);
       JxlDecoderDestroy(decoder);
-      ThrowWriterException(CoderError,"MemoryAllocationFailed");
+      ThrowReaderException(CoderError,"MemoryAllocationFailed");
     }
   events_wanted=JXL_DEC_BASIC_INFO;
   if (image_info->ping == MagickFalse)
