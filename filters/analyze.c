@@ -91,6 +91,7 @@ typedef struct _StatisticsInfo
     skewness;
 } StatisticsInfo;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
 static inline int GetMagickNumberThreads(const Image *source,
   const Image *destination,const size_t chunk,int multithreaded)
 {
@@ -112,6 +113,7 @@ static inline int GetMagickNumberThreads(const Image *source,
   return(MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),
     (ssize_t) (chunk)/64),1));
 }
+#endif
 
 ModuleExport size_t analyzeImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
