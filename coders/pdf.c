@@ -1195,6 +1195,22 @@ static const char *GetPDFTitle(const ImageInfo *image_info,
   return(default_title);
 }
 
+static size_t GetColorProfileChannelCount(const StringInfo *profile)
+{
+  if (GetStringInfoLength(profile) > 20)
+    {
+      const char
+        *p;
+
+      p=(const char *) GetStringInfoDatum(profile)+16;
+      if (strncmp(p,"GRAY",4) == 0)
+        return(1);
+      if (strncmp(p,"CMYK",4) == 0)
+        return(4);
+    }
+  return(3);
+}
+
 static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -2296,7 +2312,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,"<<\n/N %.20g\n"
           "/Filter /ASCII85Decode\n/Length %.20g 0 R\n/Alternate /%s\n>>\n"
-          "stream\n",(double) channels,(double) object+1,device);
+          "stream\n",(double) GetColorProfileChannelCount(icc_profile),
+          (double) object+1,device);
         (void) WriteBlobString(image,buffer);
         offset=TellBlob(image);
         Ascii85Initialize(image);
