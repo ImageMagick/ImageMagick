@@ -1023,14 +1023,18 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
         cms_exception.exception=exception;
         cms_context=cmsCreateContext(NULL,&cms_exception);
         if (cms_context == (cmsContext) NULL)
-          ThrowBinaryException(ResourceLimitError,
-            "ColorspaceColorProfileMismatch",name);
+          {
+            profile=DestroyStringInfo(profile);
+            ThrowBinaryException(ResourceLimitError,
+              "ColorspaceColorProfileMismatch",name);
+          }
         cmsSetLogErrorHandlerTHR(cms_context,CMSExceptionHandler);
         source_info.profile=cmsOpenProfileFromMemTHR(cms_context,
           GetStringInfoDatum(profile),(cmsUInt32Number)
           GetStringInfoLength(profile));
         if (source_info.profile == (cmsHPROFILE) NULL)
           {
+            profile=DestroyStringInfo(profile);
             cmsDeleteContext(cms_context);
             ThrowBinaryException(ResourceLimitError,
               "ColorspaceColorProfileMismatch",name);
