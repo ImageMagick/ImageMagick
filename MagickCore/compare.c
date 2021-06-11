@@ -1557,9 +1557,12 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         channel_distortion[i]+=ssim;
         channel_distortion[CompositePixelChannel]+=ssim;
       }
-      area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp atomic
+#endif
+      area++;
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp critical (MagickCore_GetStructuralSimilarityDistortion)
