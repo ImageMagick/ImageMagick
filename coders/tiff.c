@@ -1474,7 +1474,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image->colorspace=CMYKColorspace;
     if (photometric == PHOTOMETRIC_CIELAB)
       image->colorspace=LabColorspace;
-    if ((photometric == PHOTOMETRIC_YCBCR) && (compress_tag != COMPRESSION_JPEG))
+    if ((photometric == PHOTOMETRIC_YCBCR) &&
+        (compress_tag != COMPRESSION_OJPEG) &&
+        (compress_tag != COMPRESSION_JPEG))
       image->colorspace=YCbCrColorspace;
     status=TIFFGetProfiles(tiff,image,exception);
     if (status == MagickFalse)
