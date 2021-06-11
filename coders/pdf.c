@@ -1195,20 +1195,67 @@ static const char *GetPDFTitle(const ImageInfo *image_info,
   return(default_title);
 }
 
-static size_t GetColorProfileChannelCount(const StringInfo *profile)
+static const StringInfo* GetCompatibleColorProfile(const Image* image)
 {
-  if (GetStringInfoLength(profile) > 20)
+  ColorspaceType
+    colorspace;
+
+  const StringInfo
+    *icc_profile;
+
+  colorspace=UndefinedColorspace;
+  icc_profile=GetImageProfile(image,"icc");
+  if (icc_profile == (const StringInfo *) NULL)
+    return((const StringInfo *) NULL);
+  if (GetStringInfoLength(icc_profile) > 20)
     {
       const char
         *p;
 
-      p=(const char *) GetStringInfoDatum(profile)+16;
-      if (strncmp(p,"GRAY",4) == 0)
-        return(1);
-      if (strncmp(p,"CMYK",4) == 0)
-        return(4);
+      unsigned int
+        value;
+
+      p=(const char *) GetStringInfoDatum(icc_profile)+16;
+      value=(unsigned int) (*p++) << 24;
+      value|=(unsigned int) (*p++) << 16;
+      value|=(unsigned int) (*p++) << 8;
+      value|=(unsigned int) *p;
+      switch (value)
+      {
+        case 0x58595a20:
+          colorspace=XYZColorspace;
+          break;
+        case 0x4c616220:
+          colorspace=LabColorspace;
+          break;
+        case 0x4c757620:
+          colorspace=LuvColorspace;
+          break;
+        case 0x59436272:
+          colorspace=YCbCrColorspace;
+          break;
+        case 0x52474220:
+          if ((image->colorspace == sRGBColorspace) ||
+              (image->colorspace == RGBColorspace))
+            return(icc_profile);
+          break;
+        case 0x47524159:
+          colorspace=GRAYColorspace;
+          break;
+        case 0x48535620:
+          colorspace=HSVColorspace;
+          break;
+        case 0x434D594B:
+          colorspace=CMYKColorspace;
+          break;
+        case 0x434D5920:
+          colorspace=CMYColorspace;
+          break;
+      }
     }
-  return(3);
+  if (image->colorspace == colorspace)
+    return(icc_profile);
+  return((const StringInfo *) NULL);
 }
 
 static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
@@ -1381,7 +1428,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     (void) SetImageGray(next,exception);
-    icc_profile=GetImageProfile(next,"icc");
+    icc_profile=GetCompatibleColorProfile(next);
     if (icc_profile != (StringInfo *) NULL)
       {
         (void) SetImageStorageClass(next,DirectClass,exception);
@@ -1510,7 +1557,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       for ( ; GetNextImageInList(kid_image) != (Image *) NULL; count+=ObjectsPerImage)
       {
         page_count++;
-        icc_profile=GetImageProfile(kid_image,"icc");
+        icc_profile=GetCompatibleColorProfile(kid_image);
         if (icc_profile != (StringInfo *) NULL)
           count+=2;
         (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 R ",(double)
@@ -1539,7 +1586,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     MagickBooleanType
       thumbnail;
 
-    icc_profile=GetImageProfile(image,"icc");
+    icc_profile=GetCompatibleColorProfile(image);
     compression=image->compression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
@@ -2312,8 +2359,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,"<<\n/N %.20g\n"
           "/Filter /ASCII85Decode\n/Length %.20g 0 R\n/Alternate /%s\n>>\n"
-          "stream\n",(double) GetColorProfileChannelCount(icc_profile),
-          (double) object+1,device);
+          "stream\n",(double) channels,(double) object+1,device);
         (void) WriteBlobString(image,buffer);
         offset=TellBlob(image);
         Ascii85Initialize(image);
