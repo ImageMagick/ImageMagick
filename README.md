@@ -45,6 +45,7 @@ Here are just a few examples of what ImageMagick can do:
 * [Morphology of shapes](https://legacy.imagemagick.org/Usage/morphology/): extract features, describe shapes and recognize patterns in images.
 * [Delineate image features](https://legacy.imagemagick.org/Usage/transform/#vision): Canny edge detection, mean-shift, Hough lines.
 * [Motion picture support](https://imagemagick.org/script/motion-picture.php): read and write the common image formats used in digital film work.
+* [Image cache](https://imagemagick.org/script/magick-cache.php): methods and tools to cache images, image sequences, video, audio or metadata in a local folder.
 * [Image calculator](https://imagemagick.org/script/fx.php): apply a mathematical expression to an image or image channels.
 * [Connected component labeling](https://imagemagick.org/script/connected-components.php): uniquely label connected regions in an image.
 * [Discrete Fourier transform](https://legacy.imagemagick.org/Usage/fourier/): implements the forward and inverse [DFT](http://en.wikipedia.org/wiki/Discrete_Fourier_transform).
