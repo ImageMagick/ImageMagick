@@ -1726,6 +1726,29 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobByte(image,(unsigned char) (opacity >= 0 ? opacity :
           0));
         (void) WriteBlobByte(image,(unsigned char) 0x00);
+        if ((image->gamma != 1.0f/2.2f))
+          {
+            char
+              attributes[MagickPathExtent];
+
+            ssize_t
+              count;
+
+            /*
+              Write ImageMagick extension.
+            */
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "  Writing GIF Extension %s","ImageMagick");
+            (void) WriteBlobByte(image,(unsigned char) 0x21);
+            (void) WriteBlobByte(image,(unsigned char) 0xff);
+            (void) WriteBlobByte(image,(unsigned char) 0x0b);
+            (void) WriteBlob(image,11,(unsigned char *) "ImageMagick");
+            count=FormatLocaleString(attributes,MagickPathExtent,"gamma=%g",
+              image->gamma);
+            (void) WriteBlobByte(image,(unsigned char) count);
+            (void) WriteBlob(image,(size_t) count,(unsigned char *) attributes);
+            (void) WriteBlobByte(image,(unsigned char) 0x00);
+          }
         value=GetImageProperty(image,"comment",exception);
         if (value != (const char *) NULL)
           {
@@ -1766,29 +1789,6 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
             (void) WriteBlobByte(image,(unsigned char) 0x01);
             (void) WriteBlobLSBShort(image,(unsigned short) (image->iterations ?
               image->iterations-1 : 0));
-            (void) WriteBlobByte(image,(unsigned char) 0x00);
-          }
-        if ((image->gamma != 1.0f/2.2f))
-          {
-            char
-              attributes[MagickPathExtent];
-
-            ssize_t
-              count;
-
-            /*
-              Write ImageMagick extension.
-            */
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "  Writing GIF Extension %s","ImageMagick");
-            (void) WriteBlobByte(image,(unsigned char) 0x21);
-            (void) WriteBlobByte(image,(unsigned char) 0xff);
-            (void) WriteBlobByte(image,(unsigned char) 0x0b);
-            (void) WriteBlob(image,11,(unsigned char *) "ImageMagick");
-            count=FormatLocaleString(attributes,MagickPathExtent,"gamma=%g",
-              image->gamma);
-            (void) WriteBlobByte(image,(unsigned char) count);
-            (void) WriteBlob(image,(size_t) count,(unsigned char *) attributes);
             (void) WriteBlobByte(image,(unsigned char) 0x00);
           }
         ResetImageProfileIterator(image);
