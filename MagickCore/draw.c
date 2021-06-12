@@ -2742,7 +2742,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 (void) ConcatenateString(&elements,q);
                 primitive=DestroyString(primitive);
                 primitive=elements;
-                q=primitive+offset;
+                q=primitive+offset+1;
               }
             break;
           }
