@@ -1,7 +1,7 @@
-2021-06-11  7.1.0-0  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-0 GIT revision 18...
+2021-06-12  7.1.0-0  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-0 GIT revision 18801:59b1d3fe2:20210612.
 
-2021-06-02  7.0.11-15  <quetzlzacatenango@image...>
+2021-06-02  7.1.0-0  <quetzlzacatenango@image...>
   * SVG no longer hangs when handling class in <defs> (reference
     https://github.com/ImageMagick/ImageMagick/issues/3818).
   * Bump minor version (reference
