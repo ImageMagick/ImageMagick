@@ -1049,15 +1049,27 @@ static char **SVGKeyValuePairs(void *context,const int key_sentinel,
             return((char **) NULL);
           }
       }
-    tokens[i]=AcquireString(p);
+    tokens[i]=(char *) AcquireMagickMemory((size_t) (q-p+2));
+    if (tokens[i] == (char *) NULL)
+      {
+        (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",text);
+        break;
+      }
     (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
     SVGStripString(MagickTrue,tokens[i]);
     i++;
     p=q+1;
   }
-  tokens[i]=AcquireString(p);
-  (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
-  SVGStripString(MagickTrue,tokens[i++]);
+  tokens[i]=(char *) AcquireMagickMemory((size_t) (q-p+2));
+  if (tokens[i] == (char *) NULL)
+    (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",text);
+  else
+    {
+      (void) CopyMagickString(tokens[i],p,(size_t) (q-p+1));
+      SVGStripString(MagickTrue,tokens[i++]);
+    }
   tokens[i]=(char *) NULL;
   *number_tokens=(size_t) i;
   return(tokens);
