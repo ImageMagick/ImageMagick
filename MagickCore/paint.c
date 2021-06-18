@@ -118,7 +118,13 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 #define PushSegmentStack(up,left,right,delta) \
 { \
   if (s >= (segment_stack+MaxStacksize)) \
-    ThrowBinaryException(DrawError,"SegmentStackOverflow",image->filename) \
+    { \
+      segment_info=RelinquishVirtualMemory(segment_info); \
+      image_view=DestroyCacheView(image_view); \
+      floodplane_view=DestroyCacheView(floodplane_view); \
+      floodplane_image=DestroyImage(floodplane_image); \
+      ThrowBinaryException(DrawError,"SegmentStackOverflow",image->filename) \
+    } \
   else \
     { \
       if ((((up)+(delta)) >= 0) && (((up)+(delta)) < (ssize_t) image->rows)) \
@@ -208,11 +214,11 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   status=MagickTrue;
   start=0;
   s=segment_stack;
-  PushSegmentStack(y_offset,x_offset,x_offset,1);
-  PushSegmentStack(y_offset+1,x_offset,x_offset,-1);
   GetPixelInfo(image,&pixel);
   image_view=AcquireVirtualCacheView(image,exception);
   floodplane_view=AcquireAuthenticCacheView(floodplane_image,exception);
+  PushSegmentStack(y_offset,x_offset,x_offset,1);
+  PushSegmentStack(y_offset+1,x_offset,x_offset,-1);
   while (s > segment_stack)
   {
     const Quantum
