@@ -577,8 +577,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 *p='\0';
                 length<<=1;
-                comment=(char *) ResizeQuantumMemory(comment,length+
-                  MagickPathExtent,sizeof(*comment));
+                comment=(char *) ResizeQuantumMemory(comment,
+                  OverAllocateMemory(length+MagickPathExtent),sizeof(*comment));
                 if (comment == (char *) NULL)
                   break;
                 p=comment+strlen(comment);
