@@ -888,14 +888,15 @@ static MagickBooleanType WriteSingleWEBPImage(const ImageInfo *image_info,
 
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
 static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
-  Image *image,const WebPConfig *configure,WebPData *webp_data,
+  const Image *image,const WebPConfig *configure,WebPData *webp_data,
   ExceptionInfo *exception)
 {
   int
     webp_status;
 
   Image
-    *first_image;
+    *coalesce_image,
+    *frame;
 
   size_t
     effective_delta,
@@ -910,21 +911,21 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   WebPPicture
     picture;
 
-  first_image=CoalesceImages(image,exception);
-  if (first_image == (Image *) NULL)
+  coalesce_image=CoalesceImages(image,exception);
+  if (coalesce_image == (Image *) NULL)
     return(MagickFalse);
-  image=first_image;
-  effective_delta=0;
-  frame_timestamp=0;
+  frame=coalesce_image;
 
   (void) WebPAnimEncoderOptionsInit(&enc_options);
   if (image_info->verbose)
     enc_options.verbose=1;
-  enc=WebPAnimEncoderNew((int) image->page.width,(int) image->page.height,
+  enc=WebPAnimEncoderNew((int) frame->page.width,(int) frame->page.height,
     &enc_options);
 
   webp_status=1;
-  while (image != NULL)
+  effective_delta=0;
+  frame_timestamp=0;
+  while (frame != NULL)
   {
     webp_status=WebPPictureInit(&picture);
     if (webp_status == 0)
@@ -934,7 +935,7 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
         break;
       }
 
-    webp_status=WriteSingleWEBPPicture(image_info,image,configure,&picture,
+    webp_status=WriteSingleWEBPPicture(image_info,frame,configure,&picture,
       exception);
     if (webp_status != 0)
       webp_status=WebPAnimEncoderAdd(enc,&picture,(int) frame_timestamp,
@@ -947,13 +948,13 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
         break;
       }
 
-    effective_delta=image->delay*1000*PerceptibleReciprocal(
-      image->ticks_per_second);
+    effective_delta=frame->delay*1000*PerceptibleReciprocal(
+      frame->ticks_per_second);
     if (effective_delta < 10)
       effective_delta=100; /* Consistent with gif2webp */
     frame_timestamp+=effective_delta;
 
-    image=GetNextImageInList(image);
+    frame=GetNextImageInList(frame);
   }
 
   if (webp_status != 0)
@@ -966,12 +967,11 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
 
       if (webp_status == 0)
           (void) ThrowMagickException(exception,GetMagickModule(),
-            CoderError,WebPAnimEncoderGetError(enc),"`%s'",
-            first_image->filename);
+            CoderError,WebPAnimEncoderGetError(enc),"`%s'",image->filename);
     }
 
   WebPAnimEncoderDelete(enc);
-  DestroyImageList(first_image);
+  DestroyImageList(coalesce_image);
   return(webp_status != 0 ? MagickTrue : MagickFalse);
 }
 
