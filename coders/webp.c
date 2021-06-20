@@ -786,7 +786,8 @@ static const char * WebPErrorCodeMessage(WebPEncodingError error_code)
 }
 
 static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
-  Image *image,WebPConfig *configure,WebPPicture *picture,ExceptionInfo *exception)
+  Image *image,const WebPConfig *configure,WebPPicture *picture,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -887,7 +888,7 @@ static MagickBooleanType WriteSingleWEBPImage(const ImageInfo *image_info,
 
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
 static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
-  Image *image,WebPConfig *configure,WebPData *webp_data,
+  Image *image,const WebPConfig *configure,WebPData *webp_data,
   ExceptionInfo *exception)
 {
   Image
