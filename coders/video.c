@@ -200,7 +200,11 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
         message[MagickPathExtent];
 
       char
-        *options;
+        *options,
+        *sanitized_option;
+
+      const char
+        *option;
 
       int
         exit_code;
@@ -209,6 +213,15 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
       if (image_info->number_scenes > 0)
         (void) FormatLocaleString(options,MagickPathExtent,"-vframes %i",
           (int) image_info->number_scenes);
+      option=GetImageOption(image_info,"video:vsync");
+      if (option != (const char *) NULL)
+        {
+          sanitized_option=SanitizeDelegateString(option);
+          (void) FormatLocaleString(command,MagickPathExtent," -vsync %s",
+            sanitized_option);
+          DestroyString(sanitized_option);
+          (void) ConcatenateMagickString(options,command,MagickPathExtent);
+        }
       AcquireUniqueFilename(read_info->unique);
       (void) FormatLocaleString(command,MagickPathExtent,
         GetDelegateCommands(delegate_info),read_info->filename,options,
