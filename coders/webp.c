@@ -379,8 +379,9 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
             profile=DestroyStringInfo(profile);
           }
       }
-    if ((webp_flags & XMP_FLAG) &&
-        (WebPMuxGetChunk(mux,"XMP ",&chunk) == WEBP_MUX_OK))
+    if (((webp_flags & XMP_FLAG) &&
+         (WebPMuxGetChunk(mux,"XMP ",&chunk) == WEBP_MUX_OK)) ||
+         (WebPMuxGetChunk(mux,"XMP\0",&chunk) == WEBP_MUX_OK))
       {
         profile=BlobToStringInfo(chunk.bytes,chunk.size);
         if (profile != (StringInfo *) NULL)
