@@ -889,6 +889,11 @@ static MagickBooleanType WriteSingleWEBPImage(const ImageInfo *image_info,
 }
 
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
+static void *WebPDestroyMemoryInfo(void *memory_info)
+{
+  return((void *) RelinquishVirtualMemory((MemoryInfo *) memory_info));
+}
+
 static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   const Image *image,const WebPConfig *configure,WebPData *webp_data,
   ExceptionInfo *exception)
@@ -981,7 +986,7 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
             CoderError,WebPAnimEncoderGetError(enc),"`%s'",image->filename);
     }
 
-  memory_info_list=DestroyLinkedList(memory_info_list,RelinquishVirtualMemory);
+  memory_info_list=DestroyLinkedList(memory_info_list,WebPDestroyMemoryInfo);
   WebPAnimEncoderDelete(enc);
   DestroyImageList(coalesce_image);
   return(webp_status != 0 ? MagickTrue : MagickFalse);
