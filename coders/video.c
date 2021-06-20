@@ -154,7 +154,8 @@ static MagickBooleanType IsVIDEO(const unsigned char *magick,
 static Image *ReadVIDEOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define ReadVIDEOIntermediateFormat "pam"
+  const DelegateInfo
+    *delegate_info;
 
   Image
     *image,
@@ -191,25 +192,49 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
   */
   images=(Image *) NULL;
   read_info=CloneImageInfo(image_info);
-  image=AcquireImage(image_info,exception);
-  status=InvokeDelegate(read_info,image,"video:decode",(char *) NULL,exception);
-  if (status != MagickFalse)
+  delegate_info=GetDelegateInfo("video:decode",(char *) NULL,exception);
+  if (delegate_info != (const DelegateInfo *) NULL)
     {
-      (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.%s",
-        read_info->unique,ReadVIDEOIntermediateFormat);
-      *read_info->magick='\0';
-      images=ReadImage(read_info,exception);
+      char
+        command[MagickPathExtent],
+        message[MagickPathExtent];
+
+      char
+        *options;
+
+      int
+        exit_code;
+
+      options=AcquireString("");
+      if (image_info->number_scenes > 0)
+        (void) FormatLocaleString(options,MagickPathExtent,"-vframes %i",
+          (int) image_info->number_scenes);
+      AcquireUniqueFilename(read_info->unique);
+      (void) FormatLocaleString(command,MagickPathExtent,
+        GetDelegateCommands(delegate_info),read_info->filename,options,
+        read_info->unique);
+      options=DestroyString(options);
+      (void) CopyMagickString(read_info->magick,"pam",MagickPathExtent);
+      (void) CopyMagickString(read_info->filename,read_info->unique,
+        MagickPathExtent);
+      exit_code=ExternalDelegateCommand(MagickFalse,image_info->verbose,
+        command,message,exception);
+      if (exit_code == 0)
+        images=ReadImage(read_info,exception);
+      else if (*message != '\0')
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          DelegateError,"VideoDelegateFailed","`%s'",message);
+      (void) RelinquishUniqueFileResource(read_info->unique);
       if (images != (Image *) NULL)
         for (next=images; next != (Image *) NULL; next=next->next)
         {
-          (void) CopyMagickString(next->filename,image->filename,
+          (void) CopyMagickString(next->filename,image_info->filename,
             MagickPathExtent);
-          (void) CopyMagickString(next->magick,image->magick,MagickPathExtent);
+          (void) CopyMagickString(next->magick,image_info->magick,
+            MagickPathExtent);
         }
-      (void) RelinquishUniqueFileResource(read_info->filename);
     }
   read_info=DestroyImageInfo(read_info);
-  image=DestroyImage(image);
   return(images);
 }
 
