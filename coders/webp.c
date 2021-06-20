@@ -852,7 +852,7 @@ static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
   }
 
   if (status != MagickFalse)
-    status=(MagickBooleanType) WebPEncode(configure, picture);
+    status=(MagickBooleanType) WebPEncode(configure,picture);
 
   RelinquishVirtualMemory(pixel_info);
 
@@ -891,6 +891,9 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   Image *image,const WebPConfig *configure,WebPData *webp_data,
   ExceptionInfo *exception)
 {
+  int
+    webp_status;
+
   Image
     *first_image;
 
@@ -907,9 +910,6 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   WebPPicture
     picture;
 
-  MagickBooleanType
-    status;
-
   first_image=CoalesceImages(image,exception);
   if (first_image == (Image *) NULL)
     return(MagickFalse);
@@ -923,26 +923,24 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   enc=WebPAnimEncoderNew((int) image->page.width,(int) image->page.height,
     &enc_options);
 
-  status=MagickTrue;
+  webp_status=1;
   while (image != NULL)
   {
-    status=(MagickBooleanType) WebPPictureInit(&picture);
-    if (status == MagickFalse)
+    webp_status=WebPPictureInit(&picture);
+    if (webp_status == 0)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitError,"UnableToEncodeImageFile","`%s'",image->filename);
         break;
       }
 
-    status=WriteSingleWEBPPicture(image_info,image,configure,&picture,
+    webp_status=WriteSingleWEBPPicture(image_info,image,configure,&picture,
       exception);
-    if (status == MagickFalse)
-      break;
-
-    status=(MagickBooleanType) WebPAnimEncoderAdd(enc,&picture,
-      (int) frame_timestamp,configure);
+    if (webp_status != 0)
+      webp_status=WebPAnimEncoderAdd(enc,&picture,(int) frame_timestamp,
+        configure);
     WebPPictureFree(&picture);
-    if (status == MagickFalse)
+    if (webp_status == 0)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
           CoderError,WebPAnimEncoderGetError(enc),"`%s'",image->filename);
@@ -958,15 +956,15 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
     image=GetNextImageInList(image);
   }
 
-  if (status != MagickFalse)
+  if (webp_status != 0)
     {
       // add last null frame and assemble picture.
-      status=(MagickBooleanType) WebPAnimEncoderAdd(enc,(WebPPicture *) NULL,
+      webp_status=WebPAnimEncoderAdd(enc,(WebPPicture *) NULL,
         (int) frame_timestamp,configure);
-      if (status != MagickFalse)
-        status=(MagickBooleanType) WebPAnimEncoderAssemble(enc,webp_data);
+      if (webp_status != 0)
+        webp_status=WebPAnimEncoderAssemble(enc,webp_data);
 
-      if (status == MagickFalse)
+      if (webp_status == 0)
           (void) ThrowMagickException(exception,GetMagickModule(),
             CoderError,WebPAnimEncoderGetError(enc),"`%s'",
             first_image->filename);
@@ -974,11 +972,11 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
 
   WebPAnimEncoderDelete(enc);
   DestroyImageList(first_image);
-  return(status);
+  return(webp_status != 0 ? MagickTrue : MagickFalse);
 }
 
 static MagickBooleanType WriteWEBPImageProfile(Image *image,
-  WebPData *webp_data,ExceptionInfo *exception) 
+  WebPData *webp_data,ExceptionInfo *exception)
 {
   const StringInfo
     *icc_profile,
