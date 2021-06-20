@@ -498,7 +498,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               pixel.alpha=(MagickRealType) ((k & 0x80) == 0 ? (Quantum)
                 TransparentAlpha : (Quantum) OpaqueAlpha);
             if (image->storage_class == PseudoClass)
-              index=(Quantum) ConstrainColormapIndex(image,((ssize_t) (k << 8))+
+              index=(Quantum) ConstrainColormapIndex(image,((ssize_t) k << 8)+
                 j,exception);
             break;
           }
