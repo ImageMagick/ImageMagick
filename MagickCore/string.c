@@ -530,7 +530,6 @@ MagickExport void ConcatenateStringInfo(StringInfo *string_info,
   length+=source->length;
   if (~length < MagickPathExtent)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  string_info->length=length;
   if (string_info->datum == (unsigned char *) NULL)
     string_info->datum=(unsigned char *) AcquireQuantumMemory(length+
       MagickPathExtent,sizeof(*string_info->datum));
@@ -540,7 +539,8 @@ MagickExport void ConcatenateStringInfo(StringInfo *string_info,
       sizeof(*string_info->datum));
   if (string_info->datum == (unsigned char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) memcpy(string_info->datum+length,source->datum,source->length);
+  (void) memcpy(string_info->datum+string_info->length,source->datum,source->length);
+  string_info->length=length;
 }
 
 /*
