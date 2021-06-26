@@ -17,7 +17,7 @@
 #  Convenience script to verify the ImageMagick build before you install.  For
 #  example:
 #
-#    magick.sh convert -size 640x480 gradient:black-yellow gradient.png
+#    magick.sh magick -size 640x480 gradient:black-yellow gradient.png
 
 top_srcdir='@abs_top_srcdir@'
 top_builddir='@abs_top_builddir@'
