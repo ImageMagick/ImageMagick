@@ -222,7 +222,17 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
           DestroyString(sanitized_option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
-      if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
+      option=GetImageOption(image_info,"video:pixel-format");
+      if (option != (const char *) NULL)
+        {
+          sanitized_option=SanitizeDelegateString(option);
+          (void) FormatLocaleString(command,MagickPathExtent," -pix_fmt %s",
+            sanitized_option);
+          DestroyString(sanitized_option);
+          (void) ConcatenateMagickString(options,command,MagickPathExtent);
+        }
+      else
+        if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
           (void) ConcatenateMagickString(options," -pix_fmt rgba",
             MagickPathExtent);
       AcquireUniqueFilename(read_info->unique);
