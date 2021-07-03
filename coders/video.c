@@ -222,6 +222,9 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
           DestroyString(sanitized_option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
+      if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
+          (void) ConcatenateMagickString(options," -pix_fmt rgba",
+            MagickPathExtent);
       AcquireUniqueFilename(read_info->unique);
       (void) FormatLocaleString(command,MagickPathExtent,
         GetDelegateCommands(delegate_info),read_info->filename,options,
