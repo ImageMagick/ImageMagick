@@ -1,13 +1,6 @@
 name: Bug report
 description: Create a report to help us improve
 body:
-- type: markdown
-    attributes:
-      value: |
-        ### Prerequisites
-        I have written a descriptive issue title
-        I have searched [open](https://github.com/ImageMagick/ImageMagick/issues) and [closed](https://github.com/ImageMagick/ImageMagick/issues?q=is%3Aissue+is%3Aclosed) issues to ensure it has not already been reported
-        I have verified that I am using the latest version of ImageMagick
 - type: input
   attributes:
     label: ImageMagick version
