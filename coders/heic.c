@@ -138,13 +138,13 @@ static MagickBooleanType IsHeifSuccess(Image *image,struct heif_error *error,
 static MagickBooleanType ReadHEICColorProfile(Image *image,
   struct heif_image_handle *image_handle,ExceptionInfo *exception)
 {
+#if LIBHEIF_NUMERIC_VERSION >= 0x01040000
   size_t
     length;
 
   /*
     Read color profile.
   */
-#if LIBHEIF_NUMERIC_VERSION >= 0x01040000
   length=heif_image_handle_get_raw_color_profile_size(image_handle);
   if (length > 0)
     {
