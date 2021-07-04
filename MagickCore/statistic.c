@@ -2068,6 +2068,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 
   double
     area,
+    channels,
     *histogram,
     standard_deviation;
 
@@ -2332,14 +2333,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     channel_statistics[CompositePixelChannel].entropy+=
       channel_statistics[i].entropy;
   }
-  channel_statistics[CompositePixelChannel].mean/=(double)
-    GetImageChannels(image);
-  channel_statistics[CompositePixelChannel].median/=(double)
-    GetImageChannels(image);
-  channel_statistics[CompositePixelChannel].standard_deviation/=(double)
-    GetImageChannels(image);
-  channel_statistics[CompositePixelChannel].entropy/=(double)
-    GetImageChannels(image);
+  channels=(double) GetImageChannels(image);
+  channel_statistics[CompositePixelChannel].mean/=channels;
+  channel_statistics[CompositePixelChannel].median/=channels;
+  channel_statistics[CompositePixelChannel].standard_deviation/=channels;
+  channel_statistics[CompositePixelChannel].entropy/=channels;
   if (y < (ssize_t) image->rows)
     channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
       channel_statistics);
