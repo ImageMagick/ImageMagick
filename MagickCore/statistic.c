@@ -651,7 +651,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           }
           q+=GetPixelChannels(image);
         }
-        p=(const Quantum **) RelinquishMagickMemory(p);
+        p=(const Quantum **) RelinquishMagickMemory((void *) p);
         if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
           status=MagickFalse;
         if (images->progress_monitor != (MagickProgressMonitor) NULL)
@@ -802,7 +802,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           }
           q+=GetPixelChannels(image);
         }
-        p=(const Quantum **) RelinquishMagickMemory(p);
+        p=(const Quantum **) RelinquishMagickMemory((void *) p);
         if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
           status=MagickFalse;
         if (images->progress_monitor != (MagickProgressMonitor) NULL)
