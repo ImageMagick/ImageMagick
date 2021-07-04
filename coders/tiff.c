@@ -3825,13 +3825,17 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    if (quantum_info->format == FloatingPointQuantumFormat)
-      predictor=PREDICTOR_FLOATINGPOINT;
-    option=GetImageOption(image_info,"tiff:predictor");
-    if (option != (const char * ) NULL)
-      predictor=(uint16) strtol(option,(char **) NULL,10);
-    if (predictor != 0)
-      (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,predictor);
+    if ((compress_tag == COMPRESSION_LZW) ||
+        (compress_tag == COMPRESSION_ADOBE_DEFLATE))
+      {
+        if (quantum_info->format == FloatingPointQuantumFormat)
+          predictor=PREDICTOR_FLOATINGPOINT;
+        option=GetImageOption(image_info,"tiff:predictor");
+        if (option != (const char * ) NULL)
+          predictor=(uint16) strtol(option,(char **) NULL,10);
+        if (predictor != 0)
+          (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,predictor);
+      }
     if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
       {
         unsigned short
