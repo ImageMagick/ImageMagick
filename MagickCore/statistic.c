@@ -651,7 +651,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           }
           q+=GetPixelChannels(image);
         }
-        p=(const Quantum **) RelinquishMagickMemory(p);
+        p=(const Quantum **) RelinquishMagickMemory((void *) p);
         if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
           status=MagickFalse;
         if (images->progress_monitor != (MagickProgressMonitor) NULL)
@@ -802,7 +802,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           }
           q+=GetPixelChannels(image);
         }
-        p=(const Quantum **) RelinquishMagickMemory(p);
+        p=(const Quantum **) RelinquishMagickMemory((void *) p);
         if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
           status=MagickFalse;
         if (images->progress_monitor != (MagickProgressMonitor) NULL)
@@ -1472,6 +1472,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     *channel_moments;
 
   double
+    channels,
     M00[MaxPixelChannels+1],
     M01[MaxPixelChannels+1],
     M02[MaxPixelChannels+1],
@@ -1622,17 +1623,18 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       p+=GetPixelChannels(image);
     }
   }
-  M00[MaxPixelChannels]/=GetImageChannels(image);
-  M01[MaxPixelChannels]/=GetImageChannels(image);
-  M02[MaxPixelChannels]/=GetImageChannels(image);
-  M03[MaxPixelChannels]/=GetImageChannels(image);
-  M10[MaxPixelChannels]/=GetImageChannels(image);
-  M11[MaxPixelChannels]/=GetImageChannels(image);
-  M12[MaxPixelChannels]/=GetImageChannels(image);
-  M20[MaxPixelChannels]/=GetImageChannels(image);
-  M21[MaxPixelChannels]/=GetImageChannels(image);
-  M22[MaxPixelChannels]/=GetImageChannels(image);
-  M30[MaxPixelChannels]/=GetImageChannels(image);
+  channels=(double) GetImageChannels(image);
+  M00[MaxPixelChannels]/=channels;
+  M01[MaxPixelChannels]/=channels;
+  M02[MaxPixelChannels]/=channels;
+  M03[MaxPixelChannels]/=channels;
+  M10[MaxPixelChannels]/=channels;
+  M11[MaxPixelChannels]/=channels;
+  M12[MaxPixelChannels]/=channels;
+  M20[MaxPixelChannels]/=channels;
+  M21[MaxPixelChannels]/=channels;
+  M22[MaxPixelChannels]/=channels;
+  M30[MaxPixelChannels]/=channels;
   for (channel=0; channel <= MaxPixelChannels; channel++)
   {
     /*
@@ -2076,6 +2078,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 
   double
     area,
+    channels,
     *histogram,
     standard_deviation;
 
@@ -2340,14 +2343,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     channel_statistics[CompositePixelChannel].entropy+=
       channel_statistics[i].entropy;
   }
-  channel_statistics[CompositePixelChannel].mean/=(double)
-    GetImageChannels(image);
-  channel_statistics[CompositePixelChannel].median/=(double)
-    GetImageChannels(image);
-  channel_statistics[CompositePixelChannel].standard_deviation/=(double)
-    GetImageChannels(image);
-  channel_statistics[CompositePixelChannel].entropy/=(double)
-    GetImageChannels(image);
+  channels=(double) GetImageChannels(image);
+  channel_statistics[CompositePixelChannel].mean/=channels;
+  channel_statistics[CompositePixelChannel].median/=channels;
+  channel_statistics[CompositePixelChannel].standard_deviation/=channels;
+  channel_statistics[CompositePixelChannel].entropy/=channels;
   if (y < (ssize_t) image->rows)
     channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
       channel_statistics);
