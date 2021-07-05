@@ -920,7 +920,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
         result=ApplyEvaluateOperator(random_info[id],q[i],op,value);
         if (op == MeanEvaluateOperator)
           result/=2.0;
-        q[i]=clamp != MagickFalse ? ClampPixel(result) : ClampToQuantum(result);
+        q[i]=clamp == MagickFalse ? ClampPixel(result) : ClampToQuantum(result);
       }
       q+=GetPixelChannels(image);
     }
