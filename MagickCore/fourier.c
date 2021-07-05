@@ -294,7 +294,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
           default:
           {
             Cr[i]=Ar[i];
-            Ci[i]=(-Bi[i]);
+            Ci[i]=(-Ai[i]);
             break;
           }
           case DivideComplexOperator:
