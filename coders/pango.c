@@ -371,6 +371,9 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
           error->message,"`%s'",image_info->filename);
       pango_layout_set_markup(layout,caption,-1);
     }
+  if (draw_info->interline_spacing > 0)
+    pango_layout_set_spacing(layout,ScalePangoValue(
+      draw_info->interline_spacing,image->resolution.x));
   pango_layout_context_changed(layout);
   page.x=0;
   page.y=0;
