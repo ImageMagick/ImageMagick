@@ -103,7 +103,7 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static inline int ScalePangoValue(size_t value,double resolution)
+static inline int ScalePangoValue(double value,double resolution)
 {
   return((int) ((value*(resolution == 0.0 ? DefaultSVGDensity : resolution)*
     PANGO_SCALE+DefaultSVGDensity/2)/DefaultSVGDensity+0.5));
@@ -317,8 +317,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"pango:indent");
   if (option != (const char *) NULL)
-    pango_layout_set_indent(layout,ScalePangoValue((size_t) StringToLong(
-      option),image->resolution.x));
+    pango_layout_set_indent(layout,ScalePangoValue(StringToDouble(option,
+      (char **) NULL),image->resolution.x));
   switch (draw_info->align)
   {
     case CenterAlign: align=PANGO_ALIGN_CENTER; break;
@@ -384,7 +384,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   else
     {
       image->columns-=2*page.x;
-      pango_layout_set_width(layout,ScalePangoValue(image->columns,
+      pango_layout_set_width(layout,ScalePangoValue((double) image->columns,
         image->resolution.x));
     }
   if (image->rows == 0)
@@ -395,7 +395,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   else
     {
       image->rows-=2*page.y;
-      pango_layout_set_height(layout,ScalePangoValue(image->rows,
+      pango_layout_set_height(layout,ScalePangoValue((double) image->rows,
         image->resolution.y));
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
