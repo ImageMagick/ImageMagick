@@ -228,13 +228,15 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       if (LocaleCompare(option,"full") != 0)
         cairo_font_options_set_hint_style(font_options,CAIRO_HINT_STYLE_FULL);
     }
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  if (draw_info->text_antialias == MagickFalse)
+    cairo_font_options_set_antialias(font_options,CAIRO_ANTIALIAS_NONE);
   context=pango_font_map_create_context(fontmap);
   pango_cairo_context_set_font_options(context,font_options);
   cairo_font_options_destroy(font_options);
   option=GetImageOption(image_info,"pango:language");
   if (option != (const char *) NULL)
     pango_context_set_language(context,pango_language_from_string(option));
-  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   pango_context_set_base_dir(context,draw_info->direction ==
     RightToLeftDirection ? PANGO_DIRECTION_RTL : PANGO_DIRECTION_LTR);
   switch (draw_info->gravity)
