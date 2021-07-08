@@ -103,6 +103,12 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static inline int ScalePangoValue(size_t value,double resolution)
+{
+  return((int) ((value*(resolution == 0.0 ? DefaultSVGDensity : resolution)*
+    PANGO_SCALE+DefaultSVGDensity/2)/DefaultSVGDensity+0.5));
+}
+
 static Image *ReadPANGOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -311,9 +317,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"pango:indent");
   if (option != (const char *) NULL)
-    pango_layout_set_indent(layout,(int) ((StringToLong(option)*
-      (image->resolution.x == 0.0 ? DefaultSVGDensity : image->resolution.x)*
-      PANGO_SCALE+DefaultSVGDensity/2)/DefaultSVGDensity+0.5));
+    pango_layout_set_indent(layout,ScalePangoValue((size_t) StringToLong(
+      option),image->resolution.x));
   switch (draw_info->align)
   {
     case CenterAlign: align=PANGO_ALIGN_CENTER; break;
@@ -379,21 +384,19 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   else
     {
       image->columns-=2*page.x;
-      pango_layout_set_width(layout,(int) ((PANGO_SCALE*image->columns*
-        (image->resolution.x == 0.0 ? DefaultSVGDensity : image->resolution.x)+
-        DefaultSVGDensity/2)/DefaultSVGDensity+0.5));
+      pango_layout_set_width(layout,ScalePangoValue(image->columns,
+        image->resolution.x));
     }
   if (image->rows == 0)
-    {
+    { 
       pango_layout_get_extents(layout,NULL,&extent);
       image->rows=(extent.y+extent.height+PANGO_SCALE/2)/PANGO_SCALE+2*page.y;
     }
   else
     {
       image->rows-=2*page.y;
-      pango_layout_set_height(layout,(int) ((PANGO_SCALE*image->rows*
-        (image->resolution.y == 0.0 ? DefaultSVGDensity : image->resolution.y)+
-        DefaultSVGDensity/2)/DefaultSVGDensity+0.5));
+      pango_layout_set_height(layout,ScalePangoValue(image->rows,
+        image->resolution.y));
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
