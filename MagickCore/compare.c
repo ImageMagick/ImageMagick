@@ -54,6 +54,8 @@
 #include "MagickCore/composite-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/enhance.h"
+#include "MagickCore/fourier.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
@@ -64,6 +66,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/property.h"
+#include "MagickCore/registry.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/statistic.h"
@@ -682,7 +685,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=QuantumScale*fabs((double) (p[i]-(double) 
+          distance=QuantumScale*fabs((double) (p[i]-(double)
             GetPixelChannel(reconstruct_image,channel,q)));
         else
           distance=QuantumScale*fabs((double) (Sa*p[i]-Da*
@@ -2145,6 +2148,732 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
 %
 */
 
+#if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
+static Image *CrossCorrelationImage(const Image *alpha_image,
+  const Image *beta_image,ExceptionInfo *exception)
+{
+  Image
+    *clone_image,
+    *complex_conjugate,
+    *complex_multiplication,
+    *cross_correlation,
+    *fft_images;
+
+  /*
+    Take the FFT of beta image.
+  */
+  clone_image=CloneImage(beta_image,0,0,MagickTrue,exception);
+  if (clone_image == (Image *) NULL)
+    return(clone_image);
+  (void) SetImageArtifact(clone_image,"fourier:normalize","inverse");
+  fft_images=ForwardFourierTransformImage(clone_image,MagickFalse,
+    exception);
+  clone_image=DestroyImageList(clone_image);
+  if (fft_images == (Image *) NULL)
+    return(fft_images);
+  /*
+    Take the complex conjugate of beta image.
+  */
+  complex_conjugate=ComplexImages(fft_images,ConjugateComplexOperator,
+    exception);
+  fft_images=DestroyImageList(fft_images);
+  if (complex_conjugate == (Image *) NULL)
+    return(complex_conjugate);
+  /*
+    Take the FFT of the alpha image.
+  */
+  clone_image=CloneImage(alpha_image,0,0,MagickTrue,exception);
+  if (clone_image == (Image *) NULL)
+    {
+      complex_conjugate=DestroyImageList(complex_conjugate);
+      return(clone_image);
+    }
+  (void) SetImageArtifact(clone_image,"fourier:normalize","inverse");
+  fft_images=ForwardFourierTransformImage(clone_image,MagickFalse,
+    exception);
+  clone_image=DestroyImageList(clone_image);
+  if (fft_images == (Image *) NULL)
+    {
+      complex_conjugate=DestroyImageList(complex_conjugate);
+      return(fft_images);
+    }
+  complex_conjugate->next->next=fft_images;
+  /*
+    Do complex multiplication.
+  */
+  (void) SetImageArtifact(complex_conjugate,"compose:clamp","false");
+  complex_multiplication=ComplexImages(complex_conjugate,
+    MultiplyComplexOperator,exception);
+  complex_conjugate=DestroyImageList(complex_conjugate);
+  if (fft_images == (Image *) NULL)
+    return(fft_images);
+  /*
+    Do the IFT and return the cross-correlation result.
+  */
+  cross_correlation=InverseFourierTransformImage(complex_multiplication,
+    complex_multiplication->next,MagickFalse,exception);
+  complex_multiplication=DestroyImageList(complex_multiplication);
+  return(cross_correlation);
+}
+
+static Image *NCCDivideImage(const Image *alpha_image,const Image *beta_image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *alpha_view,
+    *beta_view;
+
+  Image
+    *divide_image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Divide one image into another.
+  */
+  divide_image=CloneImage(alpha_image,0,0,MagickTrue,exception);
+  if (divide_image == (Image *) NULL)
+    return(divide_image);
+  status=MagickTrue;
+  alpha_view=AcquireAuthenticCacheView(divide_image,exception);
+  beta_view=AcquireVirtualCacheView(beta_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(beta_image,divide_image,divide_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) divide_image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(beta_view,0,y,beta_image->columns,1,
+      exception);
+    q=GetCacheViewAuthenticPixels(alpha_view,0,y,divide_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) divide_image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(divide_image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(divide_image,i);
+        PixelTrait traits = GetPixelChannelTraits(divide_image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]*=PerceptibleReciprocal(QuantumScale*p[i]);
+      }
+      p+=GetPixelChannels(beta_image);
+      q+=GetPixelChannels(divide_image);
+    }
+    if (SyncCacheViewAuthenticPixels(alpha_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  beta_view=DestroyCacheView(beta_view);
+  alpha_view=DestroyCacheView(alpha_view);
+  if (status == MagickFalse)
+    divide_image=DestroyImage(divide_image);
+  return(divide_image);
+}
+
+static MagickBooleanType NCCMaximaImage(const Image *image,double *maxima,
+  RectangleInfo *offset,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Identify the maxima value in the image and its location.
+  */
+  status=MagickTrue;
+  *maxima=0.0;
+  offset->x=0;
+  offset->y=0;
+  image_view=AcquireVirtualCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      double
+        sum = 0.0;
+
+      ssize_t
+        channels = 0,
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        sum+=p[i];
+        channels++;
+      }
+      if (((sum/channels) > *maxima) || ((y == 0) && (x == 0)))
+        {
+          *maxima=sum/channels;
+          offset->x=x;
+          offset->y=y;
+        }
+      p+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
+static MagickBooleanType NCCMultiplyImage(Image *image,const double factor,
+  const ChannelStatistics *channel_statistics,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Multiply each pixel by a factor.
+  */
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        if (channel_statistics != (const ChannelStatistics *) NULL)
+          q[i]*=QuantumScale*channel_statistics[channel].standard_deviation;
+        q[i]*=factor;
+      }
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
+static Image *NCCSquareImage(const Image *image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  Image
+    *square_image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Square each pixel in the image.
+  */
+  square_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (square_image == (Image *) NULL)
+    return(square_image);
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(square_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(square_image,square_image,square_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) square_image->rows; y++)
+  {
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,square_image->columns,1,
+      exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) square_image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(square_image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(square_image,i);
+        PixelTrait traits = GetPixelChannelTraits(square_image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]*=QuantumScale*q[i];
+      }
+      q+=GetPixelChannels(square_image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    square_image=DestroyImage(square_image);
+  return(square_image);
+}
+
+static Image *NCCSubtractImageMean(const Image *alpha_image,
+  const Image *beta_image,const ChannelStatistics *channel_statistics,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *beta_view,
+    *image_view;
+
+  Image
+    *gamma_image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Subtract the image mean and pad.
+  */
+  gamma_image=CloneImage(beta_image,alpha_image->columns,alpha_image->rows,
+    MagickTrue,exception);
+  if (gamma_image == (Image *) NULL)
+    return(gamma_image);
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(gamma_image,exception);
+  beta_view=AcquireVirtualCacheView(beta_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(beta_image,gamma_image,gamma_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) gamma_image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(beta_view,0,y,beta_image->columns,1,
+      exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,gamma_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) gamma_image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(gamma_image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(gamma_image,i);
+        PixelTrait traits = GetPixelChannelTraits(gamma_image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        if ((x >= (ssize_t) beta_image->columns) ||
+            (y >= (ssize_t) beta_image->rows))
+          q[i]=(Quantum) 0;
+        else
+          q[i]=p[i]-channel_statistics[channel].mean;
+      }
+      p+=GetPixelChannels(beta_image);
+      q+=GetPixelChannels(gamma_image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  beta_view=DestroyCacheView(beta_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    gamma_image=DestroyImage(gamma_image);
+  return(gamma_image);
+}
+
+static Image *NCCUnityImage(const Image *alpha_image,const Image *beta_image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  Image
+    *unity_image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Create a padded unity image.
+  */
+  unity_image=CloneImage(alpha_image,alpha_image->columns,alpha_image->rows,
+    MagickTrue,exception);
+  if (unity_image == (Image *) NULL)
+    return(unity_image);
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(unity_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(unity_image,unity_image,unity_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) unity_image->rows; y++)
+  {
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,unity_image->columns,1,
+      exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) unity_image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(unity_image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(unity_image,i);
+        PixelTrait traits = GetPixelChannelTraits(unity_image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=QuantumRange;
+        if ((x >= (ssize_t) beta_image->columns) ||
+            (y >= (ssize_t) beta_image->rows))
+          q[i]=(Quantum) 0;
+      }
+      q+=GetPixelChannels(unity_image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    unity_image=DestroyImage(unity_image);
+  return(unity_image);
+}
+
+static Image *NCCVarianceImage(Image *alpha_image,const Image *beta_image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *beta_view,
+    *image_view;
+
+  Image
+    *variance_image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Compute the variance of the two images.
+  */
+  variance_image=CloneImage(alpha_image,0,0,MagickTrue,exception);
+  if (variance_image == (Image *) NULL)
+    return(variance_image);
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(variance_image,exception);
+  beta_view=AcquireVirtualCacheView(beta_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(beta_image,variance_image,variance_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) variance_image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(beta_view,0,y,beta_image->columns,1,
+      exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,variance_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) variance_image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(variance_image); i++)
+      {
+        double
+          pixel;
+
+        PixelChannel channel = GetPixelChannelChannel(variance_image,i);
+        PixelTrait traits = GetPixelChannelTraits(variance_image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        pixel=q[i]-p[i];
+        q[i]=ClampToQuantum((QuantumRange*sqrt(fabs((double) QuantumScale*
+          pixel))))/sqrt((double) QuantumRange);
+      }
+      p+=GetPixelChannels(beta_image);
+      q+=GetPixelChannels(variance_image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  beta_view=DestroyCacheView(beta_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    variance_image=DestroyImage(variance_image);
+  return(variance_image);
+}
+
+static Image *NCCSimilarityImage(const Image *image,const Image *reference,
+  const MetricType metric,const double similarity_threshold,
+  RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
+{
+#define DestroySimilarityResources() \
+{ \
+  if (channel_statistics != (ChannelStatistics *) NULL) \
+    channel_statistics=(ChannelStatistics *) \
+      RelinquishMagickMemory(channel_statistics); \
+  if (beta_image != (Image *) NULL) \
+    beta_image=DestroyImage(beta_image); \
+  if (gamma_image != (Image *) NULL) \
+    gamma_image=DestroyImage(gamma_image); \
+  if (ncc_image != (Image *) NULL) \
+    ncc_image=DestroyImage(ncc_image); \
+  if (normalize_image != (Image *) NULL) \
+    normalize_image=DestroyImage(normalize_image); \
+  if (square_image != (Image *) NULL) \
+    square_image=DestroyImage(square_image); \
+  if (unity_image != (Image *) NULL) \
+    unity_image=DestroyImage(unity_image); \
+}
+#define ThrowSimilarityException() \
+{ \
+  DestroySimilarityResources() \
+  return((Image *) NULL); \
+}
+
+  ChannelStatistics
+    *channel_statistics = (ChannelStatistics *) NULL;
+
+  double
+    maxima = 0.0;
+
+  Image
+    *beta_image = (Image *) NULL,
+    *correlation_image = (Image *) NULL,
+    *gamma_image = (Image *) NULL,
+    *ncc_image = (Image *) NULL,
+    *normalize_image = (Image *) NULL,
+    *square_image = (Image *) NULL,
+    *unity_image = (Image *) NULL;
+
+  MagickBooleanType
+    status;
+
+  RectangleInfo
+    geometry;
+
+  /*
+    Accelerated correlation-based image similary using FFT local statistics.
+    Contributed by Fred Weinhaus.
+  */
+  square_image=NCCSquareImage(image,exception);
+  if (square_image == (Image *) NULL)
+    ThrowSimilarityException();
+  unity_image=NCCUnityImage(image,reference,exception);
+  if (unity_image == (Image *) NULL)
+    ThrowSimilarityException();
+  /*
+    Compute the cross correlation of the square and unity images.
+  */
+  ncc_image=CrossCorrelationImage(square_image,unity_image,exception);
+  square_image=DestroyImage(square_image); \
+  if (ncc_image == (Image *) NULL)
+    ThrowSimilarityException();
+  status=NCCMultiplyImage(ncc_image,(double) QuantumRange*reference->columns*
+    reference->rows,(const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowSimilarityException();
+  /*
+    Compute the cross correlation of the source and unity images.
+  */
+  gamma_image=CrossCorrelationImage(image,unity_image,exception);
+  unity_image=DestroyImage(unity_image);
+  if (gamma_image == (Image *) NULL)
+    ThrowSimilarityException();
+  square_image=NCCSquareImage(gamma_image,exception);
+  gamma_image=DestroyImage(gamma_image);
+  status=NCCMultiplyImage(square_image,(double) QuantumRange,
+    (const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowSimilarityException();
+  /*
+    Compute the variance of the two images.
+  */
+  gamma_image=NCCVarianceImage(ncc_image,square_image,exception);
+  square_image=DestroyImage(square_image);
+  ncc_image=DestroyImage(ncc_image);
+  if (gamma_image == (Image *) NULL)
+    ThrowSimilarityException();
+  channel_statistics=GetImageStatistics(reference,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    ThrowSimilarityException();
+  /*
+    Subtract the image mean.
+  */
+  status=NCCMultiplyImage(gamma_image,1.0,channel_statistics,exception);
+  if (status == MagickFalse)
+    ThrowSimilarityException();
+  normalize_image=NCCSubtractImageMean(image,reference,channel_statistics,
+    exception);
+  if (normalize_image == (Image *) NULL)
+    ThrowSimilarityException();
+  ncc_image=CrossCorrelationImage(image,normalize_image,exception);
+  normalize_image=DestroyImage(normalize_image);
+  if (ncc_image == (Image *) NULL)
+    ThrowSimilarityException();
+  /*
+    Divide the two images.
+  */
+  beta_image=NCCDivideImage(ncc_image,gamma_image,exception);
+  ncc_image=DestroyImage(ncc_image);
+  gamma_image=DestroyImage(gamma_image);
+  if (beta_image == (Image *) NULL)
+    ThrowSimilarityException();
+  (void) ResetImagePage(beta_image,"0x0+0+0"); 
+  SetGeometry(image,&geometry);
+  geometry.width=image->columns-reference->columns;
+  geometry.height=image->rows-reference->rows;
+  /*
+    Crop padding.
+  */
+  correlation_image=CropImage(beta_image,&geometry,exception);
+  beta_image=DestroyImage(beta_image);
+  if (correlation_image == (Image *) NULL)
+    ThrowSimilarityException();
+  (void) ResetImagePage(correlation_image,"0x0+0+0"); 
+  /*
+    Identify the maxima value in the image and its location.
+  */
+  status=GrayscaleImage(correlation_image,AveragePixelIntensityMethod,
+    exception);
+  if (status == MagickFalse)
+    ThrowSimilarityException();
+  status=NCCMaximaImage(correlation_image,&maxima,offset,exception);
+  if (status == MagickFalse)
+    {
+      correlation_image=DestroyImage(correlation_image);
+      ThrowSimilarityException();
+    }
+  *similarity_metric=1.0-QuantumScale*maxima;
+  DestroySimilarityResources();
+  return(correlation_image);
+}
+#endif
+
 static double GetSimilarityMetric(const Image *image,const Image *reference,
   const MetricType metric,const ssize_t x_offset,const ssize_t y_offset,
   ExceptionInfo *exception)
@@ -2206,6 +2935,20 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
   assert(offset != (RectangleInfo *) NULL);
   SetGeometry(reference,offset);
   *similarity_metric=MagickMaximumValue;
+#if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
+  {
+    const char *artifact = GetImageArtifact(image,"compare:accelerate-ncc");
+    MagickBooleanType accelerate = (artifact == (const char *) NULL) ||
+      (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
+    if ((accelerate != MagickFalse) &&
+        (metric == NormalizedCrossCorrelationErrorMetric))
+      {
+        similarity_image=NCCSimilarityImage(image,reference,metric,
+          similarity_threshold,offset,similarity_metric,exception);
+        return(similarity_image);
+      }
+  }
+#endif
   similarity_image=CloneImage(image,image->columns-reference->columns+1,
     image->rows-reference->rows+1,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
