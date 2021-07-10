@@ -314,9 +314,6 @@ process_message(ddjvu_message_t *message)
 }
 #endif
 
-
-#define RGB 1
-
 /*
  * DjVu advertised readiness to provide bitmap: So get it!
  * we use the RGB format!
@@ -458,6 +455,9 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
 #if defined(MAGICKCORE_DJVU_DELEGATE)
 
 #if 0
+
+#define RGB 1
+
 static int
 get_page_line(LoadContext *lc, int row, QuantumInfo* quantum_info)
 {
