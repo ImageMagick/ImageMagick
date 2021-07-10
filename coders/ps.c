@@ -230,7 +230,8 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
 
   MagickBooleanType
     new_line,
-    skip;
+    skip,
+    spot_color;
 
   MagickByteBuffer
     buffer;
@@ -367,10 +368,32 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
       ps_info->cmyk=MagickTrue;
     if (CompareMagickByteBuffer(&buffer,CMYKProcessColor,strlen(CMYKProcessColor)) != MagickFalse)
       ps_info->cmyk=MagickTrue;
+    spot_color=MagickFalse;
     length=strlen(DocumentCustomColors);
-    if ((CompareMagickByteBuffer(&buffer,DocumentCustomColors,length) != MagickFalse) ||
-        (CompareMagickByteBuffer(&buffer,CMYKCustomColor,strlen(CMYKCustomColor)) != MagickFalse) ||
-        (CompareMagickByteBuffer(&buffer,SpotColor,strlen(SpotColor)) != MagickFalse))
+    if (CompareMagickByteBuffer(&buffer,DocumentCustomColors,length) != MagickFalse)
+      {
+        spot_color=MagickTrue;
+        SkipMagickByteBuffer(&buffer,length+1);
+      }
+    if (spot_color == MagickFalse)
+      {
+        length=strlen(CMYKCustomColor);
+        if (CompareMagickByteBuffer(&buffer,CMYKCustomColor,length) != MagickFalse)
+          {
+            spot_color=MagickTrue;
+            SkipMagickByteBuffer(&buffer,length+1);
+          }
+      }
+    if (spot_color == MagickFalse)
+      {
+        length=strlen(SpotColor);
+        if (CompareMagickByteBuffer(&buffer,SpotColor,length) != MagickFalse)
+          {
+            spot_color=MagickTrue;
+            SkipMagickByteBuffer(&buffer,length+1);
+          }
+      }
+    if (spot_color != MagickFalse)
       {
         char
           name[MagickPathExtent],
@@ -383,16 +406,14 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         (void) FormatLocaleString(property,MagickPathExtent,
           "pdf:SpotColor-%.20g",(double) spotcolor++);
         i=0;
-        for (c=ReadMagickByteBuffer(&buffer); c != EOF; c=ReadMagickByteBuffer(&buffer))
+        for (c=PeekMagickByteBuffer(&buffer); c != EOF; c=PeekMagickByteBuffer(&buffer))
         {
-          if ((isspace((int) ((unsigned char) c)) != 0) || ((i+1) == sizeof(name)))
+          if ((c == '\r') || (c == '\n') || ((i+1) == MagickPathExtent))
             break;
-          name[i++]=(char) c;
+          name[i++]=(char) ReadMagickByteBuffer(&buffer);
         }
         name[i]='\0';
         value=ConstantString(name);
-        (void) SubstituteString(&value,"(","");
-        (void) SubstituteString(&value,")","");
         (void) StripMagickString(value);
         if (*value != '\0')
           (void) SetImageProperty(image,property,value,exception);
