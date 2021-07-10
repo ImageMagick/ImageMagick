@@ -1147,7 +1147,7 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
         &breaker,&next,&quote);
       while (status_token == 0)
       {
-        raqm_add_font_feature(rq,token,strlen(token));
+        raqm_add_font_feature(rq,token,(int) strlen(token));
         status_token=Tokenizer(token_info,0,token,50,features,"",",","",'\0',
           &breaker,&next,&quote);
       }
