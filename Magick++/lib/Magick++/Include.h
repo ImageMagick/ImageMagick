@@ -172,6 +172,9 @@ namespace MagickCore
 #        if defined(MAGICKCORE_PNG_DELEGATE)
 #          pragma comment(lib, "CORE_DB_png_.lib")
 #        endif
+#        if defined(MAGICKCORE_RAQM_DELEGATE)
+#          pragma comment(lib, "CORE_DB_raqm_.lib")
+#        endif
 #        if defined(MAGICKCORE_TIFF_DELEGATE)
 #          pragma comment(lib, "CORE_DB_tiff_.lib")
 #        endif
@@ -257,6 +260,9 @@ namespace MagickCore
 #        endif
 #        if defined(MAGICKCORE_PNG_DELEGATE)
 #          pragma comment(lib, "CORE_RL_png_.lib")
+#        endif
+#        if defined(MAGICKCORE_RAQM_DELEGATE)
+#          pragma comment(lib, "CORE_RL_raqm_.lib")
 #        endif
 #        if defined(MAGICKCORE_TIFF_DELEGATE)
 #          pragma comment(lib, "CORE_RL_tiff_.lib")
