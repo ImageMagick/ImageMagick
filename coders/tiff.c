@@ -110,11 +110,15 @@
 #   include <zstd.h>
 # endif
 
-#if defined(MAGICKCORE_HAVE_STDINT_H) && (TIFFLIB_VERSION >= 20201219)
+#if (TIFFLIB_VERSION >= 20201219)
+#if defined(MAGICKCORE_HAVE_STDINT_H) || defined(MAGICKCORE_WINDOWS_SUPPORT)
 #  undef uint16
 #  define uint16  uint16_t
 #  undef uint32
 #  define uint32  uint32_t
+#  undef uint64
+#  define uint64  uint64_t
+#endif
 #endif
 
 /*
@@ -607,7 +611,7 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
   MagickBooleanType
     status;
 
-  uint32_t
+  uint32
     length = 0;
 
   unsigned char
@@ -635,7 +639,7 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
       if (TIFFFieldDataType(field) == TIFF_LONG)
         {
           if (TIFFIsByteSwapped(tiff) != 0)
-            TIFFSwabArrayOfLong((uint32_t *) profile,(size_t) length);
+            TIFFSwabArrayOfLong((uint32 *) profile,(size_t) length);
           status=ReadProfile(image,"iptc",profile,4L*length,exception);
         }
       else
@@ -682,7 +686,7 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
   MagickBooleanType
     status;
 
-  uint32_t
+  uint32
     count,
     type;
 
@@ -827,9 +831,9 @@ static MagickBooleanType TIFFGetEXIFProperties(TIFF *tiff,Image *image,
     directory;
 
 #if defined(TIFF_VERSION_BIG)
-  uint64_t
+  uint64
 #else
-  uint32_t
+  uint32
 #endif
     offset;
 
@@ -866,9 +870,9 @@ static MagickBooleanType TIFFGetGPSProperties(TIFF *tiff,Image *image,
     directory;
 
 #if defined(TIFF_VERSION_BIG)
-  uint64_t
+  uint64
 #else
-  uint32_t
+  uint32
 #endif
     offset;
 
@@ -915,13 +919,13 @@ static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
   return(count);
 }
 
-static int32_t TIFFReadPixels(TIFF *tiff,const tsample_t sample,
+static int TIFFReadPixels(TIFF *tiff,const tsample_t sample,
   const ssize_t row,tdata_t scanline)
 {
-  int32_t
+  int
     status;
 
-  status=TIFFReadScanline(tiff,scanline,(uint32_t) row,sample);
+  status=TIFFReadScanline(tiff,scanline,(uint32) row,sample);
   return(status);
 }
 
