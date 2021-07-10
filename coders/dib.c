@@ -152,16 +152,13 @@ static MagickBooleanType DecodeImage(Image *image,
   const MagickBooleanType compression,unsigned char *pixels,
   const size_t number_pixels)
 {
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__MINGW32__)
-#define BI_RGB  0
-#define BI_RLE8  1
-#define BI_RLE4  2
-#define BI_BITFIELDS  3
-#undef BI_JPEG
-#define BI_JPEG  4
-#undef BI_PNG
-#define BI_PNG  5
-#endif
+
+#define DibRgbCompression  0
+#define DibRle8Compression  1
+#define DibRle4Compression  2
+#define DibBitfieldsCompression  3
+#define DibJpegCompression  4
+#define DibPngCompression  5
 
   int
     byte,
@@ -571,14 +568,14 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
   switch (dib_info.compression)
   {
-    case BI_RGB:
-    case BI_RLE8:
-    case BI_RLE4:
-    case BI_BITFIELDS:
+    case DibRgbCompression:
+    case DibRle8Compression:
+    case DibRle4Compression:
+    case DibBitfieldsCompression:
       break;
-    case BI_JPEG:
+    case DibJpegCompression:
       ThrowReaderException(CoderError,"JPEGCompressNotSupported");
-    case BI_PNG:
+    case DibPngCompression:
       ThrowReaderException(CoderError,"PNGCompressNotSupported");
     default:
       ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression");
@@ -674,8 +671,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (pixel_info == (MemoryInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-  if ((dib_info.compression == BI_RGB) ||
-      (dib_info.compression == BI_BITFIELDS))
+  if ((dib_info.compression == DibRgbCompression) ||
+      (dib_info.compression == DibBitfieldsCompression))
     {
       count=ReadBlob(image,length,pixels);
       if (count != (ssize_t) (length))
@@ -1165,7 +1162,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
   dib_info.height=(int) image->rows;
   dib_info.planes=1;
   dib_info.compression=(unsigned int) (dib_info.bits_per_pixel == 16 ?
-    BI_BITFIELDS : BI_RGB);
+    DibBitfieldsCompression : DibRgbCompression);
   dib_info.image_size=(unsigned int) (bytes_per_line*image->rows);
   dib_info.x_pixels=75*39;
   dib_info.y_pixels=75*39;
