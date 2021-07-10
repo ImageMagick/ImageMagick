@@ -607,7 +607,7 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
   MagickBooleanType
     status;
 
-  uint32
+  TIFF_UINT32_T
     length = 0;
 
   unsigned char
@@ -635,7 +635,7 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
       if (TIFFFieldDataType(field) == TIFF_LONG)
         {
           if (TIFFIsByteSwapped(tiff) != 0)
-            TIFFSwabArrayOfLong((uint32 *) profile,(size_t) length);
+            TIFFSwabArrayOfLong((TIFF_UINT32_T *) profile,(size_t) length);
           status=ReadProfile(image,"iptc",profile,4L*length,exception);
         }
       else
@@ -682,7 +682,7 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
   MagickBooleanType
     status;
 
-  uint32
+  TIFF_UINT32_T
     count,
     type;
 
@@ -827,9 +827,9 @@ static MagickBooleanType TIFFGetEXIFProperties(TIFF *tiff,Image *image,
     directory;
 
 #if defined(TIFF_VERSION_BIG)
-  uint64
+  TIFF_UINT64_T
 #else
-  uint32
+  TIFF_UINT32_T
 #endif
     offset;
 
@@ -866,9 +866,9 @@ static MagickBooleanType TIFFGetGPSProperties(TIFF *tiff,Image *image,
     directory;
 
 #if defined(TIFF_VERSION_BIG)
-  uint64
+  TIFF_UINT64_T
 #else
-  uint32
+  TIFF_UINT32_T
 #endif
     offset;
 
@@ -915,13 +915,13 @@ static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
   return(count);
 }
 
-static int32 TIFFReadPixels(TIFF *tiff,const tsample_t sample,const ssize_t row,
-  tdata_t scanline)
+static TIFF_INT32_T TIFFReadPixels(TIFF *tiff,const tsample_t sample,
+  const ssize_t row,tdata_t scanline)
 {
-  int32
+  TIFF_INT32_T
     status;
 
-  status=TIFFReadScanline(tiff,scanline,(uint32) row,sample);
+  status=TIFFReadScanline(tiff,scanline,(TIFF_UINT32_T) row,sample);
   return(status);
 }
 
