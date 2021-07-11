@@ -12881,9 +12881,13 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   /* To do: check bit depth of PNG alpha channel */
 
   /* Check if image is grayscale. */
-  if (image_info->type != TrueColorAlphaType && image_info->type !=
-    TrueColorType && SetImageGray(image,exception))
-    jng_color_type-=2;
+  if ((image_info->type != TrueColorAlphaType) &&
+      (image_info->type != TrueColorType))
+    {
+      ImageType type = IdentifyImageType(image,exception);
+      if ((type == GrayscaleType) || (type == BilevelType))
+        jng_color_type-=2;
+    }
 
   if (logging != MagickFalse)
     {
@@ -13663,7 +13667,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
 
         if (need_local_plte == 0)
           {
-            if (SetImageGray(image,exception) == MagickFalse)
+            ImageType type = IdentifyImageType(image,exception);
+            if ((type != GrayscaleType) && (type != BilevelType))
               all_images_are_gray=MagickFalse;
             mng_info->equal_palettes=PalettesAreEqual(image,next_image);
             if (use_global_plte == 0)

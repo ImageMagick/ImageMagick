@@ -3580,16 +3580,17 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if ((image_info->type != TrueColorType) &&
             (image_info->type != TrueColorAlphaType))
           {
+            ImageType
+              type;
+
+            type=IdentifyImageType(image,exception);
             if ((image_info->type != PaletteType) &&
-                (SetImageGray(image,exception) != MagickFalse))
+                ((type == GrayscaleType) || (type == BilevelType)))
               {
                 photometric=(uint16) (quantum_info->min_is_white !=
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :
                   PHOTOMETRIC_MINISBLACK);
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                if ((image->depth == 1) &&
-                    (image->alpha_trait == UndefinedPixelTrait))
-                  SetImageMonochrome(image,exception);
               }
             else
               if ((image->storage_class == PseudoClass) &&
