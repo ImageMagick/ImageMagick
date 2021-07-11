@@ -116,17 +116,19 @@ extern "C" {
 #if !defined(freelocale)
 #  define freelocale  _free_locale
 #endif
-#if !defined(fseek) && !defined(__MINGW32__)
+#if !defined(fseek)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
+  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
+  !(defined(__MINGW32__))
 #  define fseek  _fseeki64
 #endif
 #endif
 #if !defined(fstat) && !defined(__BORLANDC__)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
+  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
+  !(defined(__MINGW32__))
 #  define fstat  _fstati64
 #else
 #  define fstat  _fstat
@@ -138,7 +140,8 @@ extern "C" {
 #if !defined(ftell) && !defined(__MINGW32__)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
+  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
+  !(defined(__MINGW32__))
 #  define ftell  _ftelli64
 #endif
 #endif
@@ -162,7 +165,8 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
+  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
+  !(defined(__MINGW32__))
 #if !defined(lseek)
 #  define lseek  _lseeki64
 #endif
@@ -238,7 +242,8 @@ extern "C" {
 #if !defined(stat) && !defined(__BORLANDC__)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
+  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
+  !(defined(__MINGW32__))
 #  define stat  _stati64
 #else
 #  define stat  _stat
@@ -256,7 +261,8 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
+  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
+  !(defined(__MINGW32__))
 #  define tell  _telli64
 #else
 #  define tell  _tell
@@ -297,7 +303,8 @@ extern "C" {
 #if !defined(wstat) && !defined(__BORLANDC__)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
+  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
+  !(defined(__MINGW32__))
 #  define wstat  _wstati64
 #else
 #  define wstat  _wstat
