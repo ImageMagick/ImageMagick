@@ -953,6 +953,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     progress;
 
   ssize_t
+    channels,
     i;
 
   size_t
@@ -1060,19 +1061,13 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          {
-            distortion[i]+=area*QuantumScale*(p[i]-
-              image_statistics[channel].mean)*(GetPixelChannel(
-              reconstruct_image,channel,q)-
-              reconstruct_statistics[channel].mean);
-          }
+          distortion[i]+=area*QuantumScale*((double) p[i]-
+            image_statistics[channel].mean)*(GetPixelChannel(reconstruct_image,
+            channel,q)-reconstruct_statistics[channel].mean);
         else
-          {
-            distortion[i]+=area*QuantumScale*(Sa*p[i]-
-              image_statistics[channel].mean)*(Da*GetPixelChannel(
-              reconstruct_image,channel,q)-
-              reconstruct_statistics[channel].mean);
-          }
+          distortion[i]+=area*QuantumScale*(Sa*p[i]-
+            image_statistics[channel].mean)*(Da*GetPixelChannel(
+            reconstruct_image,channel,q)-reconstruct_statistics[channel].mean);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
@@ -1099,6 +1094,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   /*
     Divide by the standard deviation.
   */
+  channels=0;
   distortion[CompositePixelChannel]=0.0;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
@@ -1113,10 +1109,11 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         gamma=PerceptibleReciprocal(gamma);
         distortion[i]=QuantumRange*gamma*distortion[i];
         distortion[CompositePixelChannel]+=distortion[i]*distortion[i];
+        channels++;
       }
   }
   distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]/
-    GetImageChannels(image));
+    channels);
   /*
     Free resources.
   */
@@ -2945,6 +2942,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
       {
         similarity_image=NCCSimilarityImage(image,reference,metric,
           similarity_threshold,offset,similarity_metric,exception);
+printf("db: %.20f\n",*similarity_metric);
         return(similarity_image);
       }
   }
@@ -3053,6 +3051,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
           status=MagickFalse;
       }
   }
+printf("db: %.20f\n",*similarity_metric);
   similarity_view=DestroyCacheView(similarity_view);
   if (status == MagickFalse)
     similarity_image=DestroyImage(similarity_image);
