@@ -246,19 +246,19 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(__BORLANDC__)) && \
-  !(!defined(__MINGW32__) && defined(_MSC_VER) && (_MSC_VER < 1400)) && \
+  !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
   !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
 #  if !defined(fseek)
 #    define fseek  _fseeki64
-#  endif
-#  if !defined(fstat)
-#    define fstat  _fstati64
 #  endif
 #  if !defined(ftell)
 #    define ftell  _ftelli64
 #  endif
 #  if !defined(lseek)
 #    define lseek  _lseeki64
+#  endif
+#  if !defined(fstat)
+#    define fstat  _fstati64
 #  endif
 #  if !defined(stat)
 #    define stat  _stati64
@@ -270,17 +270,19 @@ extern "C" {
 #    define wstat  _wstati64
 #  endif
 #else
-#  if !defined(fseek)
-#    define fseek  _fseek
-#  endif
-#  if !defined(fstat)
-#    define fstat  _fstat
-#  endif
-#  if !defined(ftell)
-#    define ftell  _ftell
+#  if !defined(__MINGW32__)
+#    if !defined(fseek)
+#      define fseek  _fseek
+#    endif
+#    if !defined(ftell)
+#      define ftell  _ftell
+#    endif
 #  endif
 #  if !defined(lseek)
 #    define lseek  _lseek
+#  endif
+#  if !defined(fstat)
+#    define fstat  _fstat
 #  endif
 #  if !defined(stat)
 #    define stat  _stat
