@@ -116,34 +116,8 @@ extern "C" {
 #if !defined(freelocale)
 #  define freelocale  _free_locale
 #endif
-#if !defined(fseek)
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
-  !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
-  !(defined(__MINGW32__))
-#  define fseek  _fseeki64
-#endif
-#endif
-#if !defined(fstat) && !defined(__BORLANDC__)
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
-  !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
-  !(defined(__MINGW32__))
-#  define fstat  _fstati64
-#else
-#  define fstat  _fstat
-#endif
-#endif
 #if !defined(fsync)
 #  define fsync  _commit
-#endif
-#if !defined(ftell) && !defined(__MINGW32__)
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
-  !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
-  !(defined(__MINGW32__))
-#  define ftell  _ftelli64
-#endif
 #endif
 #if !defined(ftruncate)
 #  define ftruncate(file,length)  NTTruncateFile(file,length)
@@ -162,18 +136,6 @@ extern "C" {
 #endif
 #if !defined(locale_t)
 #define locale_t _locale_t
-#endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
-  !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
-  !(defined(__MINGW32__))
-#if !defined(lseek)
-#  define lseek  _lseeki64
-#endif
-#else
-#if !defined(lseek)
-#  define lseek  _lseek
-#endif
 #endif
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
 #if !defined(lt_dlclose)
@@ -239,16 +201,6 @@ extern "C" {
 #if !defined(strtod_l)
 #define strtod_l  _strtod_l
 #endif
-#if !defined(stat) && !defined(__BORLANDC__)
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
-  !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
-  !(defined(__MINGW32__))
-#  define stat  _stati64
-#else
-#  define stat  _stat
-#endif
-#endif
 #if !defined(strcasecmp)
 #  define strcasecmp  _stricmp
 #endif
@@ -258,14 +210,6 @@ extern "C" {
 #if !defined(sysconf)
 #  define sysconf(name)  NTSystemConfiguration(name)
 #  define MAGICKCORE_HAVE_SYSCONF 1
-#endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
-  !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
-  !(defined(__MINGW32__))
-#  define tell  _telli64
-#else
-#  define tell  _tell
 #endif
 #if !defined(tempnam)
 #  define tempnam  _tempnam_s
@@ -300,15 +244,54 @@ extern "C" {
 #if !defined(write)
 #  define write(fd,buffer,count)  _write(fd,buffer,(unsigned int) count)
 #endif
-#if !defined(wstat) && !defined(__BORLANDC__)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
+  !(defined(__BORLANDC__)) && \
   !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
   !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
   !(defined(__MINGW32__))
-#  define wstat  _wstati64
+#  if !defined(fseek)
+#    define fseek  _fseeki64
+#  endif
+#  if !defined(fstat)
+#    define fstat  _fstati64
+#  endif
+#  if !defined(ftell)
+#    define ftell  _ftelli64
+#  endif
+#  if !defined(lseek)
+#    define lseek  _lseeki64
+#  endif
+#  if !defined(stat)
+#    define stat  _stati64
+#  endif
+#  if !defined(tell)
+#    define tell  _telli64
+#  endif
+#  if !defined(wstat)
+#    define wstat  _wstati64
+#  endif
 #else
-#  define wstat  _wstat
-#endif
+#  if !defined(fseek)
+#    define fstat  _fseek
+#  endif
+#  if !defined(fstat)
+#    define fstat  _fstat
+#  endif
+#  if !defined(ftell)
+#    define ftell  _ftell
+#  endif
+#  if !defined(lseek)
+#    define lseek  _lseek
+#  endif
+#  if !defined(stat)
+#    define stat  _stat
+#  endif
+#  if !defined(tell)
+#    define tell  _tell
+#  endif
+#  if !defined(wstat)
+#    define wstat  _wstat
+#  endif
 #endif
 
 #if defined(__BORLANDC__)
