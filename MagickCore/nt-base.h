@@ -246,9 +246,8 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(__BORLANDC__)) && \
-  !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800)) && \
-  !(defined(__MINGW32__))
+  !(!defined(__MINGW32__) && defined(_MSC_VER) && (_MSC_VER < 1400)) && \
+  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
 #  if !defined(fseek)
 #    define fseek  _fseeki64
 #  endif
