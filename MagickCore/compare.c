@@ -2278,7 +2278,8 @@ static Image *NCCDivideImage(const Image *alpha_image,const Image *beta_image,
         PixelTrait traits = GetPixelChannelTraits(divide_image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]*=PerceptibleReciprocal(QuantumScale*p[i]);
+        if (fabs(p[i]) >= MagickEpsilon)
+          q[i]*=PerceptibleReciprocal(QuantumScale*p[i]);
       }
       p+=GetPixelChannels(beta_image);
       q+=GetPixelChannels(divide_image);
@@ -2347,7 +2348,7 @@ static MagickBooleanType NCCMaximaImage(const Image *image,double *maxima,
         sum+=p[i];
         channels++;
       }
-      if (((sum/channels) > *maxima) || ((y == 0) && (x == 0)))
+      if ((channels != 0) && ((sum/channels) > *maxima))
         {
           *maxima=sum/channels;
           offset->x=x;
@@ -2703,16 +2704,12 @@ static Image *NCCVarianceImage(Image *alpha_image,const Image *beta_image,
 
       for (i=0; i < (ssize_t) GetPixelChannels(variance_image); i++)
       {
-        double
-          pixel;
-
         PixelChannel channel = GetPixelChannelChannel(variance_image,i);
         PixelTrait traits = GetPixelChannelTraits(variance_image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        pixel=q[i]-p[i];
         q[i]=ClampToQuantum((QuantumRange*sqrt(fabs((double) QuantumScale*
-          pixel))))/sqrt((double) QuantumRange);
+          (q[i]-p[i])))))/sqrt((double) QuantumRange);
       }
       p+=GetPixelChannels(beta_image);
       q+=GetPixelChannels(variance_image);
