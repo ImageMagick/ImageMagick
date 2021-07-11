@@ -271,7 +271,7 @@ extern "C" {
 #  endif
 #else
 #  if !defined(fseek)
-#    define fstat  _fseek
+#    define fseek  _fseek
 #  endif
 #  if !defined(fstat)
 #    define fstat  _fstat
