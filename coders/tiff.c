@@ -2938,10 +2938,10 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
   return(MagickTrue);
 }
 
-static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
+static tmsize_t TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
   tsample_t sample,Image *image)
 {
-  int32
+  tmsize_t
     status;
 
   ssize_t
