@@ -930,9 +930,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
 }
 
 static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
-  const Image *image,const ChannelStatistics *image_statistics,
-  const Image *reconstruct_image,
-  const ChannelStatistics *reconstruct_statistics,double *distortion,
+  const Image *image,const Image *reconstruct_image,double *distortion,
   ExceptionInfo *exception)
 {
 #define SimilarityImageTag  "Similarity/Image"
@@ -940,6 +938,10 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   CacheView
     *image_view,
     *reconstruct_view;
+
+  ChannelStatistics
+    *image_statistics,
+    *reconstruct_statistics;
 
   double
     area;
@@ -963,6 +965,19 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   /*
     Normalize to account for variation due to lighting and exposure condition.
   */
+  image_statistics=GetImageStatistics(image,exception);
+  reconstruct_statistics=GetImageStatistics(reconstruct_image,exception);
+  if ((image_statistics == (ChannelStatistics *) NULL) ||
+      (reconstruct_statistics == (ChannelStatistics *) NULL))
+    {
+      if (image_statistics != (ChannelStatistics *) NULL)
+        image_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+          image_statistics);
+      if (reconstruct_statistics != (ChannelStatistics *) NULL)
+        reconstruct_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+          reconstruct_statistics);
+      return(MagickFalse);
+    }
   status=MagickTrue;
   progress=0;
   for (i=0; i <= MaxPixelChannels; i++)
@@ -1099,6 +1114,13 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   }
   distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]/
     GetImageChannels(image));
+  /*
+    Free resources.
+  */
+  reconstruct_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    reconstruct_statistics);
+  image_statistics=(ChannelStatistics *) RelinquishMagickMemory(
+    image_statistics);
   return(status);
 }
 
@@ -1587,10 +1609,6 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   const Image *reconstruct_image,const MetricType metric,double *distortion,
   ExceptionInfo *exception)
 {
-  ChannelStatistics
-    *image_statistics = (ChannelStatistics *) NULL,
-    *reconstruct_statistics = (ChannelStatistics *) NULL;
-
   double
     *channel_distortion;
 
@@ -1610,25 +1628,6 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   *distortion=0.0;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (metric ==  NormalizedCrossCorrelationErrorMetric)
-    {
-      /*
-        Get image statistics.
-      */
-      image_statistics=GetImageStatistics(image,exception);
-      reconstruct_statistics=GetImageStatistics(reconstruct_image,exception);
-      if ((image_statistics == (ChannelStatistics *) NULL) ||
-          (reconstruct_statistics == (ChannelStatistics *) NULL))
-        {
-          if (image_statistics != (ChannelStatistics *) NULL)
-            image_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-              image_statistics);
-          if (reconstruct_statistics != (ChannelStatistics *) NULL)
-            reconstruct_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-              reconstruct_statistics);
-          return(MagickFalse);
-        }
-    }
   /*
     Get image distortion.
   */
@@ -1674,8 +1673,8 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     case NormalizedCrossCorrelationErrorMetric:
     default:
     {
-      status=GetNormalizedCrossCorrelationDistortion(image,image_statistics,
-        reconstruct_image,reconstruct_statistics,channel_distortion,exception);
+      status=GetNormalizedCrossCorrelationDistortion(image,reconstruct_image,
+        channel_distortion,exception);
       break;
     }
     case PeakAbsoluteErrorMetric:
@@ -1719,15 +1718,6 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   channel_distortion=(double *) RelinquishMagickMemory(channel_distortion);
   (void) FormatImageProperty(image,"distortion","%.*g",GetMagickPrecision(),
     *distortion);
-  /*
-    Free resources.
-  */
-  if (reconstruct_statistics != (ChannelStatistics *) NULL)
-    reconstruct_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-      reconstruct_statistics);
-  if (image_statistics != (ChannelStatistics *) NULL)
-    image_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-      image_statistics);
   return(status);
 }
 
@@ -1767,10 +1757,6 @@ MagickExport double *GetImageDistortions(Image *image,
   const Image *reconstruct_image,const MetricType metric,
   ExceptionInfo *exception)
 {
-  ChannelStatistics
-    *image_statistics = (ChannelStatistics *) NULL,
-    *reconstruct_statistics = (ChannelStatistics *) NULL;
-
   double
     *channel_distortion;
 
@@ -1788,25 +1774,6 @@ MagickExport double *GetImageDistortions(Image *image,
   assert(reconstruct_image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (metric ==  NormalizedCrossCorrelationErrorMetric)
-    {
-      /*
-        Get image statistics.
-      */
-      image_statistics=GetImageStatistics(image,exception);
-      reconstruct_statistics=GetImageStatistics(reconstruct_image,exception);
-      if ((image_statistics == (ChannelStatistics *) NULL) ||
-          (reconstruct_statistics == (ChannelStatistics *) NULL))
-        {
-          if (image_statistics != (ChannelStatistics *) NULL)
-            image_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-              image_statistics);
-          if (reconstruct_statistics != (ChannelStatistics *) NULL)
-            reconstruct_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-              reconstruct_statistics);
-          return(MagickFalse);
-        }
-    }
   /*
     Get image distortion.
   */
@@ -1853,8 +1820,8 @@ MagickExport double *GetImageDistortions(Image *image,
     case NormalizedCrossCorrelationErrorMetric:
     default:
     {
-      status=GetNormalizedCrossCorrelationDistortion(image,image_statistics,
-        reconstruct_image,reconstruct_statistics,channel_distortion,exception);
+      status=GetNormalizedCrossCorrelationDistortion(image,reconstruct_image,
+        channel_distortion,exception);
       break;
     }
     case PeakAbsoluteErrorMetric:
@@ -1894,15 +1861,6 @@ MagickExport double *GetImageDistortions(Image *image,
       break;
     }
   }
-  /*
-    Free resources.
-  */
-  if (reconstruct_statistics != (ChannelStatistics *) NULL)
-    reconstruct_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-      reconstruct_statistics);
-  if (image_statistics != (ChannelStatistics *) NULL)
-    image_statistics=(ChannelStatistics *) RelinquishMagickMemory(
-      image_statistics);
   if (status == MagickFalse)
     {
       channel_distortion=(double *) RelinquishMagickMemory(channel_distortion);
