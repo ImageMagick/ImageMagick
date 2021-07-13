@@ -3050,7 +3050,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
           status=MagickFalse;
       }
   }
-printf("db: %.20f\n",*similarity_metric);
   similarity_view=DestroyCacheView(similarity_view);
   if (status == MagickFalse)
     similarity_image=DestroyImage(similarity_image);
