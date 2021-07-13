@@ -2942,7 +2942,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
       {
         similarity_image=NCCSimilarityImage(image,reference,metric,
           similarity_threshold,offset,similarity_metric,exception);
-printf("db: %.20f\n",*similarity_metric);
         return(similarity_image);
       }
   }
