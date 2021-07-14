@@ -2189,8 +2189,7 @@ static Image *CrossCorrelationImage(const Image *alpha_image,
       return(clone_image);
     }
   (void) SetImageArtifact(clone_image,"fourier:normalize","inverse");
-  fft_images=ForwardFourierTransformImage(clone_image,MagickFalse,
-    exception);
+  fft_images=ForwardFourierTransformImage(clone_image,MagickFalse,exception);
   clone_image=DestroyImageList(clone_image);
   if (fft_images == (Image *) NULL)
     {
@@ -2935,7 +2934,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
   {
     const char *artifact = GetImageArtifact(image,"compare:accelerate-ncc");
-    MagickBooleanType accelerate = (artifact == (const char *) NULL) ||
+    MagickBooleanType accelerate = (artifact != (const char *) NULL) && 
       (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
     if ((accelerate != MagickFalse) &&
         (metric == NormalizedCrossCorrelationErrorMetric))
