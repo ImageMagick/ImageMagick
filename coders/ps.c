@@ -755,8 +755,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     resolution.y);
   if (image_info->ping != MagickFalse)
     (void) FormatLocaleString(density,MagickPathExtent,"2.0x2.0");
-  (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",(double)
-    page.width,(double) page.height);
+  else
+    (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",(double)
+      page.width,(double) page.height);
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
   if (read_info->number_scenes != 0)
@@ -888,6 +889,13 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (info.rows != 0)
       postscript_image->magick_rows=info.rows;
     postscript_image->page=page;
+    if (image_info->ping != MagickFalse)
+      {
+        postscript_image->magick_columns=page.width;
+        postscript_image->magick_rows=page.width;
+        postscript_image->columns=page.width;
+        postscript_image->rows=page.height;
+      }
     (void) CloneImageProfiles(postscript_image,image);
     (void) CloneImageProperties(postscript_image,image);
     next=SyncNextImageInList(postscript_image);
