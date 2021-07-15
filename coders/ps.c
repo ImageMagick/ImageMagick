@@ -892,7 +892,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->ping != MagickFalse)
       {
         postscript_image->magick_columns=page.width;
-        postscript_image->magick_rows=page.width;
+        postscript_image->magick_rows=page.height;
         postscript_image->columns=page.width;
         postscript_image->rows=page.height;
       }

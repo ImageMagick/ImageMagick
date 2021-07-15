@@ -726,7 +726,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->ping != MagickFalse)
       {
         pdf_image->magick_columns=page.width;
-        pdf_image->magick_rows=page.width;
+        pdf_image->magick_rows=page.height;
         pdf_image->columns=page.width;
         pdf_image->rows=page.height;
       }
