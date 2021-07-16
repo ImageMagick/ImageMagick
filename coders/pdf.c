@@ -248,6 +248,8 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
               version[i++]=(char) c;
             }
             version[i]='\0';
+            if (c == EOF)
+              break;
           }
         continue;
       }
@@ -261,6 +263,8 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
       default:
         continue;
     }
+    if (c == EOF)
+      break;
     if (CompareMagickByteBuffer(&buffer,PDFRotate,strlen(PDFRotate)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
