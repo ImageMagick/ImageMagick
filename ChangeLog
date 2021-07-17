@@ -1,5 +1,5 @@
-2021-06-26  7.1.0-3  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-3 GIT revision 18...
+2021-07-17  7.1.0-3  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-3 GIT revision 18901:692e6e059:20210717
 
 2021-06-26  7.1.0-3  <quetzlzacatenango@image...>
   * system() is not supported under IOS.
