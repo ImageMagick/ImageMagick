@@ -1,3 +1,10 @@
+2021-07-17  7.1.0-4  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-4 GIT revision 18...
+
+2021-07-17  7.1.0-4  <quetzlzacatenango@image...>
+  * trim no longer returns an empty image on 1-pixel width input (reference
+    https://github.com/ImageMagick/ImageMagick/issues/3896).
+
 2021-07-17  7.1.0-3  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-3 GIT revision 18901:692e6e059:20210717
 
