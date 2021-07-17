@@ -854,8 +854,7 @@ static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
 
   if (status == MagickFalse)
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-      WebPErrorCodeMessage(picture->error_code),"`%s'",
-      image->filename);
+      WebPErrorCodeMessage(picture->error_code),"`%s'",image->filename);
 
   return(status);
 }
