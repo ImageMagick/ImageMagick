@@ -757,7 +757,7 @@ static const char * WebPErrorCodeMessage(WebPEncodingError error_code)
   switch (error_code)
   {
     case VP8_ENC_OK:
-      return NULL;
+      return "";
     case VP8_ENC_ERROR_OUT_OF_MEMORY:
       return "out of memory";
     case VP8_ENC_ERROR_BITSTREAM_OUT_OF_MEMORY:
