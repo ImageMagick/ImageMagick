@@ -118,7 +118,7 @@ static int MagickMain(int argc,char **argv)
   size_t
     number_commands;
 
-  MagickWandGenesis();
+  MagickCoreGenesis(*argv,MagickTrue);
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
   GetPathComponent(argv[0],TailPath,client_name);
@@ -170,7 +170,8 @@ static int MagickMain(int argc,char **argv)
     }
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
-  MagickWandTerminus();
+  DestroyWandIds();
+  MagickCoreTerminus();
   return(exit_code);
 }
 
