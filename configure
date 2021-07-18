@@ -2036,7 +2036,7 @@ Optional Packages:
   --without-dps           disable Display Postscript support
   --with-dejavu-font-dir=DIR
                           DejaVu font directory
-  --without-fftw          disable FFTW support
+  --with-fftw             enable FFTW support
   --without-flif          disable FLIF support
   --without-fpx           disable FlashPIX support
   --without-djvu          disable DjVu support
@@ -4564,7 +4564,7 @@ MAGICK_PATCHLEVEL_VERSION=4
 
 MAGICK_VERSION=7.1.0-4
 
-MAGICK_GIT_REVISION=18908:5bd18b518:20210717
+MAGICK_GIT_REVISION=18912:9f44f1eb6:20210718
 
 
 # Substitute library versioning
@@ -29123,7 +29123,7 @@ fi
 if test "${with_fftw+set}" = set; then :
   withval=$with_fftw; with_fftw=$withval
 else
-  with_fftw='yes'
+  with_fftw='no'
 fi
 
 
