@@ -98,6 +98,7 @@ MAGICKWAND_INCLUDE_HDRS = \
   MagickWand/pixel-iterator.h \
   MagickWand/pixel-wand.h \
   MagickWand/stream.h \
+  MagickWand/wand.h \
   MagickWand/wandcli.h \
   MagickWand/wand-view.h
 
@@ -108,7 +109,6 @@ MAGICKWAND_NOINST_HDRS = \
   MagickWand/pixel-wand-private.h \
   MagickWand/script-token.h \
   MagickWand/studio.h \
-  MagickWand/wand.h \
   MagickWand/wandcli-private.h
 
 # Headers which are installed
