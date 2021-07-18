@@ -1823,10 +1823,10 @@ dnl ===========================================================================
 # Check for FFTW delegate library.
 #
 AC_ARG_WITH([fftw],
-    [AC_HELP_STRING([--with-fftw],
-                    [enable FFTW support])],
+    [AC_HELP_STRING([--without-fftw],
+                    [disable FFTW support])],
     [with_fftw=$withval],
-    [with_fftw='no'])
+    [with_fftw='yes'])
 
 if test "$with_fftw" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fftw=$with_fftw "
