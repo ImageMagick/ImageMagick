@@ -696,7 +696,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
           (void) ThrowMagickException(exception,GetMagickModule(),
             DelegateError,"VideoDelegateFailed","`%s'",message);
         }
-      (void) RelinquishUniqueFileResource(filename);
+      (void) RelinquishUniqueFileResource(write_info->unique);
   }
   write_info=DestroyImageInfo(write_info);
   /*
