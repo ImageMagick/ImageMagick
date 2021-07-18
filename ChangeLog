@@ -10,8 +10,8 @@
   * Release ImageMagick version 7.1.0-3 GIT revision 18901:692e6e059:20210717
 
 2021-07-03  7.1.0-3  Dirk Lemstra <dirk@lem.....org>
-  * Added option to set the pixel format option of ffmpeg when reading a
-    video file with -define video:pixel-format=<value>.
+  * Added option to set the pixel format option of ffmpeg when reading or
+    writing a video file with -define video:pixel-format=<value>.
 
 2021-06-26  7.1.0-3  <quetzlzacatenango@image...>
   * system() is not supported under IOS.
