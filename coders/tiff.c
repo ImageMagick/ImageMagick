@@ -3177,6 +3177,9 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
 #endif
     if (LocaleCompare(name,"iptc") == 0)
       {
+        const TIFFField
+          *field;
+
         size_t
           length;
 
@@ -3187,11 +3190,20 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
         length=GetStringInfoLength(profile)+4-(GetStringInfoLength(profile) &
           0x03);
         SetStringInfoLength(iptc_profile,length);
-        if (TIFFIsByteSwapped(tiff))
-          TIFFSwabArrayOfLong((uint32 *) GetStringInfoDatum(iptc_profile),
-            (unsigned long) (length/4));
-        (void) TIFFSetField(tiff,TIFFTAG_RICHTIFFIPTC,(uint32)
-          GetStringInfoLength(iptc_profile)/4,GetStringInfoDatum(iptc_profile));
+        field=TIFFFieldWithTag(tiff,TIFFTAG_RICHTIFFIPTC);
+        if (TIFFFieldDataType(field) == TIFF_LONG)
+          {
+            if (TIFFIsByteSwapped(tiff))
+              TIFFSwabArrayOfLong((uint32 *) GetStringInfoDatum(iptc_profile),
+                (unsigned long) (length/4));
+            (void) TIFFSetField(tiff,TIFFTAG_RICHTIFFIPTC,(uint32)
+              GetStringInfoLength(iptc_profile)/4,GetStringInfoDatum(
+                iptc_profile));
+          }
+        else
+          (void) TIFFSetField(tiff,TIFFTAG_RICHTIFFIPTC,(uint32)
+            GetStringInfoLength(iptc_profile),GetStringInfoDatum(
+              iptc_profile));
         iptc_profile=DestroyStringInfo(iptc_profile);
       }
 #if defined(TIFFTAG_PHOTOSHOP)
