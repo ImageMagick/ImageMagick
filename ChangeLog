@@ -9,6 +9,10 @@
 2021-07-17  7.1.0-3  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-3 GIT revision 18901:692e6e059:20210717
 
+2021-07-03  7.1.0-3  Dirk Lemstra <dirk@lem.....org>
+  * Added option to set the pixel format option of ffmpeg when reading a
+    video file with -define video:pixel-format=<value>.
+
 2021-06-26  7.1.0-3  <quetzlzacatenango@image...>
   * system() is not supported under IOS.
   * accelerate subimage-search with FFT's (contributed by Fred).
@@ -23,9 +27,9 @@
 2021-06-20  7.1.0-1  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-1 GIT revision 18826:1f1b43ea7:20210620
 
-2021-06-19  7.1.0-1  <quetzlzacatenango@image...>
-  * Correct TGA orientation (reference
-    https://github.com/ImageMagick/ImageMagick/issues/3844).
+2021-06-19  7.1.0-1  Dirk Lemstra <dirk@lem.....org>
+  * Added option to set the vsync option of ffmpeg when reading or writing a
+    video file with -define video:vsync=<value>.
 
 2021-06-12  7.1.0-0  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-0 GIT revision 18806:d64f1bb3a:20210612
