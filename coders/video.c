@@ -691,6 +691,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
           (void) FormatLocaleString(filename,MagickPathExtent,"%s.%s",
             write_info->unique,image_info->magick);
           status=CopyDelegateFile(filename,image->filename);
+          (void) RelinquishUniqueFileResource(filename);
         }
       else if (*message != '\0')
         {
