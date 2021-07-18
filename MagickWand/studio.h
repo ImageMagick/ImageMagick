@@ -165,9 +165,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #if defined(MAGICKWAND_WINDOWS_SUPPORT) || defined(MAGICKWAND_POSIX_SUPPORT)
 # include <sys/types.h>
 # include <sys/stat.h>
-# if defined(MAGICKCORE_HAVE_SYS_TIMEB_H)
-# include <sys/timeb.h>
-# endif
 # if defined(MAGICKWAND_POSIX_SUPPORT)
 #  if defined(MAGICKCORE_HAVE_SYS_NDIR_H) || defined(MAGICKCORE_HAVE_SYS_DIR_H) || defined(MAGICKCORE_HAVE_NDIR_H)
 #   define dirent direct

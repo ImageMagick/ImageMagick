@@ -588,9 +588,6 @@
 /* Define to 1 if you have the <sys/syslimits.h> header file. */
 #undef HAVE_SYS_SYSLIMITS_H
 
-/* Define to 1 if you have the <sys/timeb.h> header file. */
-#undef HAVE_SYS_TIMEB_H
-
 /* Define to 1 if you have the <sys/times.h> header file. */
 #undef HAVE_SYS_TIMES_H
 
