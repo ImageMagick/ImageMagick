@@ -118,7 +118,7 @@ static int MagickMain(int argc,char **argv)
   size_t
     number_commands;
 
-  MagickCoreGenesis(*argv,MagickTrue);
+  MagickWandGenesis();
   exception=AcquireExceptionInfo();
   image_info=AcquireImageInfo();
   GetPathComponent(argv[0],TailPath,client_name);
