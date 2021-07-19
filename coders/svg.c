@@ -470,16 +470,16 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
       rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x*256,
         image->resolution.y*256);
       rsvg_handle_get_dimensions(svg_handle,&dpi_dimension_info);
-      if ((fabs(dpi_dimension_info.width-dimension_info.width) >= MagickEpsilon) ||
-          (fabs(dpi_dimension_info.height-dimension_info.height) >= MagickEpsilon))
+      if ((fabs((double) dpi_dimension_info.width-dimension_info.width) >= MagickEpsilon) ||
+          (fabs((double) dpi_dimension_info.height-dimension_info.height) >= MagickEpsilon))
         apply_density=MagickFalse;
       rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
         image->resolution.y);
     }
   if (image_info->size != (char *) NULL)
     {
-      (void) GetGeometry(image_info->size,(ssize_t *) NULL,
-        (ssize_t *) NULL,&image->columns,&image->rows);
+      (void) GetGeometry(image_info->size,(ssize_t *) NULL,(ssize_t *) NULL,
+        &image->columns,&image->rows);
       if ((image->columns != 0) || (image->rows != 0))
         {
           image->resolution.x=DefaultSVGDensity*image->columns/
