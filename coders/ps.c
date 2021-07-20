@@ -341,7 +341,8 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,
         i=0;
         for (c=ReadMagickByteBuffer(&buffer); c != EOF; c=ReadMagickByteBuffer(&buffer))
         {
-          if ((c == '\r') || (c == '\n') || ((i+1) == sizeof(version)))
+          if ((c == '\r') || (c == '\n') ||
+              ((i+1) == (ssize_t) sizeof(version)))
             break;
           version[i++]=(char) c;
         }
@@ -1457,6 +1458,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
   imageListLength=GetImageListLength(image);
   do
   {
+    ImageType
+      type = UndefinedType;
+
     /*
       Scale relative to dots-per-inch.
     */
@@ -1738,8 +1742,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     /*
       Output image data.
     */
-    (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g\n%g %g\n%g\n",
-      (double) geometry.x,(double) geometry.y,scale.x,scale.y,pointsize);
+    (void) FormatLocaleString(buffer,MagickPathExtent,
+      "%.20g %.20g\n%g %g\n%g\n",(double) geometry.x,(double) geometry.y,
+      scale.x,scale.y,pointsize);
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
     value=GetImageProperty(image,"label",exception);
@@ -1760,10 +1765,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     pixel.alpha=(MagickRealType) TransparentAlpha;
     index=(Quantum) 0;
     x=0;
-    if ((image_info->type != TrueColorType) &&
-        (SetImageGray(image,exception) != MagickFalse))
+    if (image_info->type != TrueColorType)
+      type=IdentifyImageType(image,exception);
+    if ((type == GrayscaleType) || (type == BilevelType))
       {
-        if (SetImageMonochrome(image,exception) == MagickFalse)
+        if (type == GrayscaleType)
           {
             Quantum
               pixel;
