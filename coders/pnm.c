@@ -65,6 +65,7 @@
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
+#include "coders/coders-private.h"
 
 /*
   Typedef declarations.
@@ -1710,7 +1711,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='F';
         if (image_info->type == TrueColorType)
           break;
-        if (IdentifyImageType(image,exception) == GrayscaleType)
+        if (IdentifyImageCoderType(image,exception) == GrayscaleType)
           format='f';
         break;
       }
@@ -1728,7 +1729,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='H';
         if (image_info->type == TrueColorType)
           break;
-        if (IdentifyImageType(image,exception) == GrayscaleType)
+        if (IdentifyImageCoderType(image,exception) == GrayscaleType)
           format='h';
         break;
       }
@@ -1741,7 +1742,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='6';
         if (image_info->type == TrueColorType)
           break;
-        type=IdentifyImageType(image,exception);
+        type=IdentifyImageCoderType(image,exception);
         if (type == GrayscaleType)
           {
             format='5';

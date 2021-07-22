@@ -74,6 +74,7 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
 #include "MagickCore/module.h"
+#include "coders/coders-private.h"
 
 /*
   Typedef declarations.
@@ -1039,7 +1040,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
     }
   JSONFormatLocaleFile(file,"    \"units\": %s,\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));
-  type=IdentifyImageType(image,exception);
+  type=IdentifyImageCoderType(image,exception);
   JSONFormatLocaleFile(file,"    \"type\": %s,\n",CommandOptionToMnemonic(
     MagickTypeOptions,(ssize_t) type));
   if (image->type != type)

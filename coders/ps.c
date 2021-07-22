@@ -79,6 +79,7 @@
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "coders/bytebuffer-private.h"
+#include "coders/coders-private.h"
 #include "coders/ghostscript-private.h"
 
 /*
@@ -1766,7 +1767,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     index=(Quantum) 0;
     x=0;
     if (image_info->type != TrueColorType)
-      type=IdentifyImageType(image,exception);
+      type=IdentifyImageCoderType(image,exception);
     if ((type == GrayscaleType) || (type == BilevelType))
       {
         if (type == GrayscaleType)

@@ -87,7 +87,8 @@
 #include "MagickCore/thread_.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
-#include "psd-private.h"
+#include "coders/coders-private.h"
+#include "coders/psd-private.h"
 #if defined(MAGICKCORE_TIFF_DELEGATE)
 # if defined(MAGICKCORE_HAVE_TIFFCONF_H)
 #  include <tiffconf.h>
@@ -3595,7 +3596,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             ImageType
               type;
 
-            type=IdentifyImageType(image,exception);
+            type=IdentifyImageCoderType(image,exception);
             if ((image_info->type != PaletteType) &&
                 ((type == GrayscaleType) || (type == BilevelType)))
               {

@@ -85,6 +85,7 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
+#include "coders/coders-private.h"
 #include <setjmp.h>
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #define JPEG_INTERNAL_OPTIONS
@@ -340,8 +341,8 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "[%s] JPEG Trace: \"%s\"",image->filename,message);
   if (client_info->finished != MagickFalse)
-    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
-      (char *) message,"`%s'",image->filename);
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      CorruptImageWarning,(char *) message,"`%s'",image->filename);
   else
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
       (char *) message,"`%s'",image->filename);
@@ -2340,7 +2341,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
       if (image_info->type == TrueColorType)
         break;
-      type=IdentifyImageType(image,exception);
+      type=IdentifyImageCoderType(image,exception);
       if ((type == GrayscaleType) || (type == BilevelType))
         {
           jpeg_info->input_components=1;

@@ -90,6 +90,7 @@
 #include "MagickCore/timer-private.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
+#include "coders/coders-private.h"
 #if defined(MAGICKCORE_PNG_DELEGATE)
 
 /* Suppress libpng pedantic warnings that were added in
@@ -12884,7 +12885,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   if ((image_info->type != TrueColorAlphaType) &&
       (image_info->type != TrueColorType))
     {
-      ImageType type = IdentifyImageType(image,exception);
+      ImageType type = IdentifyImageCoderType(image,exception);
       if ((type == GrayscaleType) || (type == BilevelType))
         jng_color_type-=2;
     }
@@ -13667,7 +13668,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
 
         if (need_local_plte == 0)
           {
-            ImageType type = IdentifyImageType(image,exception);
+            ImageType type = IdentifyImageCoderType(image,exception);
             if ((type != GrayscaleType) && (type != BilevelType))
               all_images_are_gray=MagickFalse;
             mng_info->equal_palettes=PalettesAreEqual(image,next_image);

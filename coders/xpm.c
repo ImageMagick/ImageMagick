@@ -44,6 +44,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/coder-private.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
@@ -70,6 +71,7 @@
 #include "MagickCore/module.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/utility.h"
+#include "coders/coders-private.h"
 
 /*
   Global declarations.
@@ -730,7 +732,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   blob_info=CloneImageInfo(image_info);
   *blob_info->magick='\0';
   (void) AcquireUniqueFilename(blob_info->filename);
-  type=IdentifyImageType(image,exception);
+  type=IdentifyImageCoderType(image,exception);
   if ((image_info->type != TrueColorType) &&
       ((type == GrayscaleType) || (type == BilevelType)))
     affinity_image=BlobToImage(blob_info,Graymap,GraymapExtent,exception);
