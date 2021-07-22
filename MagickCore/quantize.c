@@ -3094,6 +3094,9 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
   CubeInfo
     *cube_info;
 
+  ImageType
+    type;
+
   MagickBooleanType
     status;
 
@@ -3114,11 +3117,9 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     maximum_colors=MaxColormapSize;
   if (maximum_colors > MaxColormapSize)
     maximum_colors=MaxColormapSize;
-  if (image->alpha_trait == UndefinedPixelTrait)
-    {
-      if (SetImageGray(image,exception) != MagickFalse)
-        (void) SetGrayscaleImage(image,exception);
-    }
+  type=IdentifyImageType(image,exception)
+  if ((type == GrayscaleType) || (type == BilevelType))
+    (void) SetGrayscaleImage(image,exception);
   depth=quantize_info->tree_depth;
   if (depth == 0)
     {
@@ -3135,7 +3136,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         depth--;
       if ((image->alpha_trait != UndefinedPixelTrait) && (depth > 5))
         depth--;
-      if (SetImageGray(image,exception) != MagickFalse)
+      if ((type == GrayscaleType) || (type == BilevelType))
         depth=MaxTreeDepth;
     }
   /*
