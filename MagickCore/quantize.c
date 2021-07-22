@@ -3117,7 +3117,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     maximum_colors=MaxColormapSize;
   if (maximum_colors > MaxColormapSize)
     maximum_colors=MaxColormapSize;
-  type=IdentifyImageType(image,exception)
+  type=IdentifyImageType(image,exception);
   if ((type == GrayscaleType) || (type == BilevelType))
     (void) SetGrayscaleImage(image,exception);
   depth=quantize_info->tree_depth;
