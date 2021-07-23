@@ -1727,6 +1727,9 @@ MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
 MagickExport ImageType IdentifyImageType(const Image *image,
   ExceptionInfo *exception)
 {
+  ImageType
+    type;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
@@ -1737,14 +1740,10 @@ MagickExport ImageType IdentifyImageType(const Image *image,
         return(ColorSeparationType);
       return(ColorSeparationAlphaType);
     }
-  if (IdentifyImageMonochrome(image,exception) != MagickFalse)
-    return(BilevelType);
-  if (IdentifyImageGray(image,exception) != UndefinedType)
-    {
-      if (image->alpha_trait != UndefinedPixelTrait)
-        return(GrayscaleAlphaType);
-      return(GrayscaleType);
-    }
+  type=IdentifyImageGray(image,exception);
+  if ((type == BilevelType) || (type == GrayscaleType) ||
+      (type == GrayscaleAlphaType))
+    return(type);
   if (IdentifyPaletteImage(image,exception) != MagickFalse)
     {
       if (image->alpha_trait != UndefinedPixelTrait)
