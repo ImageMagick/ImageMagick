@@ -67,6 +67,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/timer-private.h"
+#include "coders/coders-private.h"
 
 /*
   Define declaration.
@@ -1664,12 +1665,18 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
         }
         default:
         {
+          ImageType
+            type;
+
           dpx.image.image_element[i].descriptor=RGBComponentType;
           if (image->alpha_trait != UndefinedPixelTrait)
             dpx.image.image_element[i].descriptor=RGBAComponentType;
+          type=UndefinedType;
+           if (image_info->type != TrueColorType)
+             type=IdentifyImageCoderType(image,exception);
           if ((image_info->type != TrueColorType) &&
               (image->alpha_trait == UndefinedPixelTrait) &&
-              (SetImageGray(image,exception) != MagickFalse))
+              ((type == GrayscaleType) || (type == BilevelType)))
             dpx.image.image_element[i].descriptor=LumaComponentType;
           break;
         }

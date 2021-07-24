@@ -75,6 +75,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "coders/coders-private.h"
 
 #if defined(MAGICKCORE_XML_DELEGATE)
 #  if defined(MAGICKCORE_WINDOWS_SUPPORT)
@@ -4018,10 +4019,9 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     */
     fitting_options=at_fitting_opts_new();
     output_options=at_output_opts_new();
-    (void) SetImageGray(image,exception);
-    type=GetImageType(image);
     number_planes=3;
-    if ((type == BilevelType) || (type == GrayscaleType))
+    type=IdentifyImageCoderType(image,exception);
+    if ((type == GrayscaleType) || (type == BilevelType))
       number_planes=1;
     trace=at_bitmap_new(image->columns,image->rows,number_planes);
     i=0;

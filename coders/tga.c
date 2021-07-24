@@ -57,6 +57,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
@@ -65,7 +66,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "coders/coders-private.h"
 
 /*
   Enumerated declaractions.
@@ -728,23 +729,23 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   const double
     midpoint = QuantumRange/2.0;
 
+  const Quantum
+    *p;
+
+  ImageType
+    type;
+
   MagickBooleanType
     status;
 
   QuantumAny
     range;
 
-  const Quantum
-    *p;
-
   ssize_t
     x;
 
   ssize_t
     i;
-
-  unsigned char
-    *q;
 
   size_t
     channels;
@@ -757,6 +758,9 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
 
   TGAInfo
     tga_info;
+
+  unsigned char
+    *q;
 
   /*
     Open output image file.
@@ -796,11 +800,14 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   tga_info.height=(unsigned short) image->rows;
   tga_info.bits_per_pixel=8;
   tga_info.attributes=0;
+  type=UndefinedType;
+  if (image_info->type != TrueColorType)
+    type=IdentifyImageCoderType(image,exception);
   if ((image_info->type != TrueColorType) &&
       (image_info->type != TrueColorAlphaType) &&
       (image_info->type != PaletteType) &&
       (image->alpha_trait == UndefinedPixelTrait) &&
-      (SetImageGray(image,exception) != MagickFalse))
+      ((type == GrayscaleType) || (type == BilevelType)))
     tga_info.image_type=compression == RLECompression ? TGARLEMonochrome :
       TGAMonochrome;
   else

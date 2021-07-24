@@ -57,6 +57,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
@@ -64,7 +65,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "coders/coders-private.h"
 
 /*
   Forward declarations.
@@ -993,6 +994,9 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
   imageListLength=GetImageListLength(image);
   do
   {
+    ImageType
+      type;
+
     /*
       Initialize VIFF image structure.
     */
@@ -1026,6 +1030,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     viff_info.map_enable=1;  /* no colormap */
     viff_info.maps_per_cycle=0;
     number_pixels=(MagickSizeType) image->columns*image->rows;
+    type=IdentifyImageCoderType(image,exception);
     if (image->storage_class == DirectClass)
       {
         /*
@@ -1042,7 +1047,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
         viff_info.color_space_model=VFF_CM_NONE;
         viff_info.data_storage_type=VFF_TYP_1_BYTE;
         packets=number_pixels;
-        if (SetImageGray(image,exception) == MagickFalse)
+        if ((type != GrayscaleType) && (type != BilevelType))
           {
             /*
               Colormapped VIFF raster.
@@ -1143,7 +1148,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
         }
       }
     else
-      if (SetImageGray(image,exception) == MagickFalse)
+      if ((type != GrayscaleType) && (type != BilevelType))
         {
           unsigned char
             *viff_colormap;

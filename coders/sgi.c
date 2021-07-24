@@ -56,6 +56,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
@@ -63,7 +64,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "coders/coders-private.h"
 
 /*
   Typedef declaractions.
@@ -987,8 +988,13 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
       iris_info.depth=4;
     else
       {
-        if ((image_info->type != TrueColorType) &&
-            (SetImageGray(image,exception) != MagickFalse))
+        ImageType
+          type;
+
+        type=UndefinedType;
+        if (image_info->type != TrueColorType)
+          type=IdentifyImageCoderType(image,exception);
+        if ((type == GrayscaleType) || (type == BilevelType))
           {
             iris_info.dimension=2;
             iris_info.depth=1;

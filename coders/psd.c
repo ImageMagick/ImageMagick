@@ -78,6 +78,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
+#include "coders/coders-private.h"
 #ifdef MAGICKCORE_ZLIB_DELEGATE
 #include <zlib.h>
 #endif
@@ -3770,6 +3771,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   const StringInfo
     *icc_profile;
 
+  ImageType
+    type;
+
   MagickBooleanType
     status;
 
@@ -3813,12 +3817,14 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   for (i=1; i <= 6; i++)
     (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
   /* When the image has a color profile it won't be converted to gray scale */
+  type=IdentifyImageCoderType(image,exception);
   if ((GetImageProfile(image,"icc") == (StringInfo *) NULL) &&
-      (SetImageGray(image,exception) != MagickFalse))
+      ((type == GrayscaleType) || (type == BilevelType)))
     num_channels=(image->alpha_trait != UndefinedPixelTrait ? 2UL : 1UL);
   else
-    if ((image_info->type != TrueColorType) && (image_info->type !=
-         TrueColorAlphaType) && (image->storage_class == PseudoClass))
+    if ((image_info->type != TrueColorType) &&
+        (image_info->type != TrueColorAlphaType) &&
+        (image->storage_class == PseudoClass))
       num_channels=(image->alpha_trait != UndefinedPixelTrait ? 2UL : 1UL);
     else
       {
@@ -3832,7 +3838,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   (void) WriteBlobMSBShort(image,(unsigned short) num_channels);
   (void) WriteBlobMSBLong(image,(unsigned int) image->rows);
   (void) WriteBlobMSBLong(image,(unsigned int) image->columns);
-  if (IsImageGray(image) != MagickFalse)
+  if ((type == GrayscaleType) || (type == BilevelType))
     {
       MagickBooleanType
         monochrome;
@@ -3851,7 +3857,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     {
       (void) WriteBlobMSBShort(image,(unsigned short) (image->storage_class ==
         PseudoClass ? 8 : image->depth > 8 ? 16 : 8));
-
       if (((image_info->colorspace != UndefinedColorspace) ||
            (image->colorspace != CMYKColorspace)) &&
           (image_info->colorspace != CMYKColorspace))
@@ -3867,7 +3872,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
           (void) WriteBlobMSBShort(image,CMYKMode);
         }
     }
-  if ((IsImageGray(image) != MagickFalse) ||
+  if (((type == GrayscaleType) || (type == BilevelType)) ||
       (image->storage_class == DirectClass) || (image->colors > 256))
     (void) WriteBlobMSBLong(image,0);
   else

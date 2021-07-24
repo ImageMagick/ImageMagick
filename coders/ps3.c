@@ -74,6 +74,7 @@
 #include "MagickCore/timer-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
+#include "coders/coders-private.h"
 
 /*
   Define declarations.
@@ -933,6 +934,9 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
   imageListLength=GetImageListLength(image);
   do
   {
+    ImageType
+      type;
+
     /*
       Scale relative to dots-per-inch.
     */
@@ -998,6 +1002,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     if (value != (const char *) NULL)
       text_size=(size_t) (MultilineCensus(value)*pointsize+12);
     page++;
+    type=IdentifyImageCoderType(image,exception);
     if (page == 1)
       {
         /*
@@ -1044,7 +1049,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               (void) WriteBlobString(image,
                 "%%DocumentProcessColors: Cyan Magenta Yellow Black\n");
             else
-              if (SetImageGray(image,exception) != MagickFalse)
+              if ((type == GrayscaleType) || (type == BilevelType))
                 (void) WriteBlobString(image,
                   "%%DocumentProcessColors: Black\n");
           }
@@ -1122,7 +1127,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       (void) WriteBlobString(image,
         "%%PageProcessColors: Cyan Magenta Yellow Black\n");
     else
-      if (SetImageGray(image,exception) != MagickFalse)
+      if ((type == GrayscaleType) || (type == BilevelType))
         (void) WriteBlobString(image,"%%PageProcessColors: Black\n");
     /*
       Adjust document bounding box to bound page bounding box.
@@ -1263,8 +1268,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
         (image_info->type != ColorSeparationType) &&
         (image_info->type != ColorSeparationAlphaType) &&
         (image->colorspace != CMYKColorspace) &&
-        ((SetImageGray(image,exception) != MagickFalse) ||
-         (SetImageMonochrome(image,exception) != MagickFalse)))
+        ((type == GrayscaleType) || (type == BilevelType)))
       {
         /*
           Gray images.

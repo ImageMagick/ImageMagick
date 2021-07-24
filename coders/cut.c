@@ -70,6 +70,7 @@
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
+#include "coders/coders-private.h"
 
 typedef struct
 {
@@ -611,8 +612,12 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if(palette==NULL)
     {    /*attempt to detect binary (black&white) images*/
+      ImageType
+        type;
+
+      type=IdentifyImageCoderType(image,exception);
       if ((image->storage_class == PseudoClass) &&
-          (SetImageGray(image,exception) != MagickFalse))
+          ((type == GrayscaleType) || (type == BilevelType)))
         {
           if(GetCutColors(image,exception)==2)
             {

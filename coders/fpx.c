@@ -59,6 +59,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
@@ -68,7 +69,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "coders/coders-private.h"
 #if defined(MAGICKCORE_FPX_DELEGATE)
 #if !defined(vms) && !defined(macintosh) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <fpxlib.h>
@@ -766,6 +767,9 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
     *label,
     *option;
 
+  const Quantum
+    *p;
+
   FPXCompressionOption
     compression;
 
@@ -781,6 +785,9 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
   FPXSummaryInformation
     summary_info;
 
+  ImageType
+    type;
+
   MagickBooleanType
     status;
 
@@ -789,9 +796,6 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
 
   QuantumType
     quantum_type;
-
-  const Quantum
-    *p;
 
   ssize_t
     i;
@@ -839,8 +843,10 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
   colorspace.numberOfComponents=3;
   if (image->alpha_trait != UndefinedPixelTrait)
     colorspace.numberOfComponents=4;
-  if ((image_info->type != TrueColorType) &&
-      (SetImageGray(image,exception) != MagickFalse))
+  type=UndefinedType;
+  if (image_info->type != TrueColorType)
+    type=IdentifyImageCoderType(image,exception);
+  if ((type == GrayscaleType) || (type == BilevelType))
     {
       colorspace.numberOfComponents=1;
       colorspace.theComponents[0].myColor=MONOCHROME;

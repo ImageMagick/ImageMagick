@@ -58,6 +58,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
@@ -68,7 +69,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
-#include "MagickCore/module.h"
+#include "coders/coders-private.h"
 
 /*
   Dicom medical image declarations.
@@ -4057,6 +4058,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     for (scene=0; scene < (ssize_t) number_scenes; scene++)
     {
+      ImageType
+        type;
+
       image->columns=info.width;
       image->rows=info.height;
       image->depth=info.depth;
@@ -4162,13 +4166,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       if ((info.samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
         {
-          ssize_t
-            x;
-
           Quantum
             *q;
 
           ssize_t
+            x,
             y;
 
           /*
@@ -4271,7 +4273,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 exception);
             }
         }
-      if (SetImageGray(image,exception) != MagickFalse)
+      type=IdentifyImageCoderType(image,exception);
+      if ((type == GrayscaleType) || (type == BilevelType))
         (void) SetImageColorspace(image,GRAYColorspace,exception);
       if (EOFBlob(image) != MagickFalse)
         {

@@ -53,6 +53,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
@@ -60,7 +61,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "coders/coders-private.h"
 
 /*
   Define declaractions.
@@ -322,7 +323,7 @@ static MagickBooleanType ReadVIPSPixelsNONE(Image *image,
   {
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
-      return MagickFalse;
+      return(MagickFalse);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       pixel=ReadVIPSPixelNONE(image,format,type);
@@ -345,16 +346,17 @@ static MagickBooleanType ReadVIPSPixelsNONE(Image *image,
               else
                 SetPixelAlpha(image,ReadVIPSPixelNONE(image,format,type),q);
             }
-          else if (channels == 5)
-            {
-              SetPixelIndex(image,ReadVIPSPixelNONE(image,format,type),q);
-              SetPixelAlpha(image,ReadVIPSPixelNONE(image,format,type),q);
-            }
+          else
+            if (channels == 5)
+              {
+                SetPixelIndex(image,ReadVIPSPixelNONE(image,format,type),q);
+                SetPixelAlpha(image,ReadVIPSPixelNONE(image,format,type),q);
+              }
         }
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
-      return MagickFalse;
+      return(MagickFalse);
   }
   return(MagickTrue);
 }
@@ -395,7 +397,6 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -406,10 +407,11 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
   marker=ReadBlobLSBLong(image);
   if (marker == VIPS_MAGIC_LSB)
     image->endian=LSBEndian;
-  else if (marker == VIPS_MAGIC_MSB)
-    image->endian=MSBEndian;
   else
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    if (marker == VIPS_MAGIC_MSB)
+      image->endian=MSBEndian;
+    else
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   image->columns=(size_t) ReadBlobLong(image);
   image->rows=(size_t) ReadBlobLong(image);
   status=SetImageExtent(image,image->columns,image->rows,exception);
@@ -512,7 +514,7 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
       (void) ConcatenateString(&metadata,buffer);
   }
   if (metadata != (char *) NULL)
-    { 
+    {
       SetImageProperty(image,"vips:metadata",metadata,exception);
       metadata=(char *) RelinquishMagickMemory(metadata);
     }
@@ -621,11 +623,14 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   const char
     *metadata;
 
-  MagickBooleanType
-    status;
-
   const Quantum
     *p;
+
+  ImageType
+    type;
+
+  MagickBooleanType
+    status;
 
   ssize_t
     x;
@@ -642,7 +647,6 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
@@ -654,10 +658,15 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   (void) WriteBlobLong(image,(unsigned int) image->rows);
   (void) SetImageStorageClass(image,DirectClass,exception);
   channels=image->alpha_trait != UndefinedPixelTrait ? 4 : 3;
-  if (SetImageGray(image,exception) != MagickFalse)
-    channels=image->alpha_trait != UndefinedPixelTrait ? 2 : 1;
-  else if (image->colorspace == CMYKColorspace)
-    channels=image->alpha_trait != UndefinedPixelTrait ? 5 : 4;
+  type=IdentifyImageCoderType(image,exception);
+  if ((type == GrayscaleType) || (type == BilevelType))
+    {
+      channels=image->alpha_trait != UndefinedPixelTrait ? 2 : 1;
+      image->colorspace=GRAYColorspace;
+    }
+  else
+    if (image->colorspace == CMYKColorspace)
+      channels=image->alpha_trait != UndefinedPixelTrait ? 5 : 4;
   (void) WriteBlobLong(image,channels);
   (void) WriteBlobLong(image,0);
   if (image->depth == 16)
@@ -668,16 +677,16 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
       (void) WriteBlobLong(image,(unsigned int) VIPSBandFormatUCHAR);
     }
   (void) WriteBlobLong(image,VIPSCodingNONE);
-  switch(image->colorspace)
+  switch (image->colorspace)
   {
     case CMYKColorspace:
       (void) WriteBlobLong(image,VIPSTypeCMYK);
       break;
     case GRAYColorspace:
       if (image->depth == 16)
-        (void) WriteBlobLong(image, VIPSTypeGREY16);
+        (void) WriteBlobLong(image,VIPSTypeGREY16);
       else
-        (void) WriteBlobLong(image, VIPSTypeB_W);
+        (void) WriteBlobLong(image,VIPSTypeB_W);
       break;
     case LabColorspace:
       (void) WriteBlobLong(image,VIPSTypeLAB);
@@ -687,36 +696,37 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
       break;
     case RGBColorspace:
       if (image->depth == 16)
-        (void) WriteBlobLong(image, VIPSTypeRGB16);
+        (void) WriteBlobLong(image,VIPSTypeRGB16);
       else
-        (void) WriteBlobLong(image, VIPSTypeRGB);
+        (void) WriteBlobLong(image,VIPSTypeRGB);
       break;
     case XYZColorspace:
       (void) WriteBlobLong(image,VIPSTypeXYZ);
       break;
-    default:
     case sRGBColorspace:
+    default:
       (void) SetImageColorspace(image,sRGBColorspace,exception);
       (void) WriteBlobLong(image,VIPSTypesRGB);
       break;
   }
   if (image->units == PixelsPerCentimeterResolution)
     {
-      (void) WriteBlobFloat(image,(image->resolution.x / 10));
-      (void) WriteBlobFloat(image,(image->resolution.y / 10));
-    }
-  else if (image->units == PixelsPerInchResolution)
-    {
-      (void) WriteBlobFloat(image,(image->resolution.x / 25.4));
-      (void) WriteBlobFloat(image,(image->resolution.y / 25.4));
+      (void) WriteBlobFloat(image,(image->resolution.x/10));
+      (void) WriteBlobFloat(image,(image->resolution.y/10));
     }
   else
-    {
-      (void) WriteBlobLong(image,0);
-      (void) WriteBlobLong(image,0);
-    }
+    if (image->units == PixelsPerInchResolution)
+      {
+        (void) WriteBlobFloat(image,(image->resolution.x/25.4));
+        (void) WriteBlobFloat(image,(image->resolution.y/25.4));
+      }
+    else
+      {
+        (void) WriteBlobLong(image,0);
+        (void) WriteBlobLong(image,0);
+      }
   /*
-    Legacy, Offsets, Future
+    Legacy, offsets, future.
   */
   for (y=0; y < 24; y++)
     (void) WriteBlobByte(image,0);
@@ -741,11 +751,12 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
               else
                 WriteVIPSPixel(image,GetPixelAlpha(image,p));
             }
-          else if (channels == 5)
-            {
-               WriteVIPSPixel(image,GetPixelIndex(image,p));
-               WriteVIPSPixel(image,GetPixelAlpha(image,p));
-            }
+          else
+            if (channels == 5)
+              {
+                 WriteVIPSPixel(image,GetPixelIndex(image,p));
+                 WriteVIPSPixel(image,GetPixelAlpha(image,p));
+              }
         }
       p+=GetPixelChannels(image);
     }
