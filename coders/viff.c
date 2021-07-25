@@ -1000,8 +1000,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     /*
       Initialize VIFF image structure.
     */
-    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
     viff_info.identifier=(char) -85;
     viff_info.file_type=1;
     viff_info.release=1;
