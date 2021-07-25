@@ -1057,7 +1057,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     colorspace=heif_colorspace_YCbCr;
     lossless=image_info->quality == 100 ? MagickTrue : MagickFalse;
     chroma=lossless ? heif_chroma_444 : heif_chroma_420;
-
     /*
       Get encoder for the specified format.
     */
@@ -1095,7 +1094,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     status=IsHeifSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
-
 #if LIBHEIF_NUMERIC_VERSION >= 0x01040000
     profile=GetImageProfile(image,"icc");
     if (profile != (StringInfo *) NULL)
@@ -1108,7 +1106,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       status=WriteHEICImageRGBA(image,heif_image,exception);
     if (status == MagickFalse)
       break;
-
     /*
       Code and actually write the HEIC image
     */
@@ -1117,11 +1114,9 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     else if (image_info->quality != UndefinedCompressionQuality)
       error=heif_encoder_set_lossy_quality(heif_encoder,(int)
         image_info->quality);
-
     status=IsHeifSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
-
 #if LIBHEIF_NUMERIC_VERSION > 0x01060200
     if (encode_avif != MagickFalse)
       {
@@ -1136,7 +1131,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
           }
-
         option=GetImageOption(image_info,"heic:chroma");
         if (option != (char *) NULL)
           {
@@ -1147,14 +1141,12 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
           }
       }
 #endif
-
     error=heif_context_encode_image(heif_context,heif_image,heif_encoder,
       (const struct heif_encoding_options *) NULL,
       (struct heif_image_handle **) NULL);
     status=IsHeifSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
-
 #if LIBHEIF_NUMERIC_VERSION >= 0x01030000
     if (image->profiles != (void *) NULL)
       WriteProfile(heif_context,image,exception);
