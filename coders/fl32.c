@@ -192,17 +192,20 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   switch (image->number_channels)
   {
     case 1:
     {
-      image->colorspace=GRAYColorspace;
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       quantum_type=GrayQuantum;
       break;
     }
     case 2:
     {
-      image->colorspace=GRAYColorspace;
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       image->alpha_trait=BlendPixelTrait;
       quantum_type=GrayAlphaQuantum;
       break;
@@ -225,9 +228,6 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
       break;
     }
   }
-  status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse)
-    return(DestroyImageList(image));
   (void) ResetImagePixels(image,exception);
   /*
     Convert FL32 image to pixel packets.

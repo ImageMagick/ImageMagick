@@ -1201,7 +1201,7 @@ static const char *GetPDFTitle(const ImageInfo *image_info,
   return(default_title);
 }
 
-static const StringInfo* GetCompatibleColorProfile(const Image* image)
+static const StringInfo *GetCompatibleColorProfile(const Image* image)
 {
   ColorspaceType
     colorspace;

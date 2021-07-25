@@ -662,7 +662,7 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   if ((type == GrayscaleType) || (type == BilevelType))
     {
       channels=image->alpha_trait != UndefinedPixelTrait ? 2 : 1;
-      image->colorspace=GRAYColorspace;
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
     }
   else
     if (image->colorspace == CMYKColorspace)

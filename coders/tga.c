@@ -258,10 +258,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->storage_class=PseudoClass;
   if ((tga_info.image_type == TGAMonochrome) ||
       (tga_info.image_type == TGARLEMonochrome))
-    {
-      image->type=GrayscaleType;
-      image->colorspace=GRAYColorspace;
-    }
+    (void) SetImageColorspace(image,GRAYColorspace,exception);
   image->compression=NoCompression;
   if ((tga_info.image_type == TGARLEColormap) ||
       (tga_info.image_type == TGARLEMonochrome) ||

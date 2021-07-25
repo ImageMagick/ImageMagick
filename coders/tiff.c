@@ -1474,15 +1474,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 #endif
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
-      image->colorspace=GRAYColorspace;
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
     if (photometric == PHOTOMETRIC_SEPARATED)
-      image->colorspace=CMYKColorspace;
+      (void) SetImageColorspace(image,CMYKColorspace,exception);
     if (photometric == PHOTOMETRIC_CIELAB)
-      image->colorspace=LabColorspace;
+      (void) SetImageColorspace(image,LabColorspace,exception);
     if ((photometric == PHOTOMETRIC_YCBCR) &&
         (compress_tag != COMPRESSION_OJPEG) &&
         (compress_tag != COMPRESSION_JPEG))
-      image->colorspace=YCbCrColorspace;
+      (void) SetImageColorspace(image,YCbCrColorspace,exception);
     status=TIFFGetProfiles(tiff,image,exception);
     if (status == MagickFalse)
       {
