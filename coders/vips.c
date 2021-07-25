@@ -609,7 +609,7 @@ ModuleExport void UnregisterVIPSImage(void)
 %
 */
 
-static inline void WriteVIPSPixel(Image *image, const Quantum value)
+static inline void WriteVIPSPixel(Image *image,const Quantum value)
 {
   if (image->depth == 16)
     (void) WriteBlobShort(image,ScaleQuantumToShort(value));
@@ -742,8 +742,11 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
         WriteVIPSPixel(image,GetPixelAlpha(image,p));
       else
         {
-          WriteVIPSPixel(image,GetPixelGreen(image,p));
-          WriteVIPSPixel(image,GetPixelBlue(image,p));
+          if (channels >= 3)
+            {
+              WriteVIPSPixel(image,GetPixelGreen(image,p));
+              WriteVIPSPixel(image,GetPixelBlue(image,p));
+            }
           if (channels >= 4)
             {
               if (image->colorspace == CMYKColorspace)
@@ -754,8 +757,8 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
           else
             if (channels == 5)
               {
-                 WriteVIPSPixel(image,GetPixelIndex(image,p));
-                 WriteVIPSPixel(image,GetPixelAlpha(image,p));
+                WriteVIPSPixel(image,GetPixelIndex(image,p));
+                WriteVIPSPixel(image,GetPixelAlpha(image,p));
               }
         }
       p+=GetPixelChannels(image);
