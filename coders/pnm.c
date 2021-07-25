@@ -1140,8 +1140,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     {
                       unsigned char
                         pixel;
-  
-                        for (x=0; x < (ssize_t) image->columns; x++)
+ 
+                      for (x=0; x < (ssize_t) image->columns; x++)
                       {
                         p=PushCharPixel(p,&pixel);
                         SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),
