@@ -968,7 +968,8 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
     */
     if ((image->columns > 65535UL) || (image->rows > 65535UL))
       ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+      (void) TransformImageColorspace(image,sRGBColorspace,exception);
     (void) memset(&iris_info,0,sizeof(iris_info));
     iris_info.magic=0x01DA;
     compression=image->compression;

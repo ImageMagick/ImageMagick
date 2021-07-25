@@ -226,7 +226,8 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(buffer,MagickPathExtent,"<Depth>2</Depth>\n");
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<Data>");
-  (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

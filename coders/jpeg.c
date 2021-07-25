@@ -2338,7 +2338,8 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
       ImageType
         type;
 
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
+      if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+        (void) TransformImageColorspace(image,sRGBColorspace,exception);
       if (image_info->type == TrueColorType)
         break;
       type=IdentifyImageCoderType(image,exception);

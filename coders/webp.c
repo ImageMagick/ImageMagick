@@ -811,7 +811,8 @@ static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
   /*
     Allocate memory for pixels.
   */
-  (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   *memory_info=AcquireVirtualMemory(image->columns,image->rows*
     sizeof(*(picture->argb)));
 

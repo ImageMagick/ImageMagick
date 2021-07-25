@@ -340,8 +340,9 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
   return(status);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  if((image->columns > 255L) || (image->rows > 255L))
+  if ((image->columns > 255L) || (image->rows > 255L))
     ThrowWriterException(ImageError,"Dimensions must be less than 255x255");
   /*
     Write header (just the image dimensions)

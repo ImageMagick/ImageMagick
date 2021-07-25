@@ -181,7 +181,8 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
   /*
     Write KERNEL header.
   */
-  (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   (void) FormatLocaleString(buffer,MagickPathExtent,"%gx%g:",(double)
     image->columns,(double) image->rows);
   (void) WriteBlobString(image,buffer);

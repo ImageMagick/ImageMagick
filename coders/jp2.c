@@ -986,7 +986,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
           jp2_colorspace=OPJ_CLRSPC_GRAY;
         }
       else
-        (void) TransformImageColorspace(image,sRGBColorspace,exception);
+        if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+          (void) TransformImageColorspace(image,sRGBColorspace,exception);
       if (image->alpha_trait != UndefinedPixelTrait)
         channels++;
     }

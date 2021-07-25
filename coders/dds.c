@@ -3461,7 +3461,8 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   pixelFormat=DDPF_FOURCC;
   compression=FOURCC_DXT5;
   if (image->alpha_trait == UndefinedPixelTrait)

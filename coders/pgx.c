@@ -369,7 +369,8 @@ static MagickBooleanType WritePGXImage(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(buffer,MagickPathExtent,"PG ML + %g %g %g\n",
     (double) image->depth,(double) image->columns,(double) image->rows);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
-  (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
