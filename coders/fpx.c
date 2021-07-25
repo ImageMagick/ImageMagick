@@ -442,7 +442,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         {
           index=ScaleCharToQuantum(*r);
-          SetPixelBlack(image,index,q);
+          SetPixelIndex(image,index,q);
           SetPixelRed(image,index,q);
           SetPixelGreen(image,index,q);
           SetPixelBlue(image,index,q);
