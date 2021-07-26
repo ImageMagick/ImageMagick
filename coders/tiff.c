@@ -2003,9 +2003,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         extent=TIFFTileSize(tiff);
 #if defined(TIFF_VERSION_BIG)
-        extent+=columns*sizeof(uint64);
+        extent=MagickMax(rows*columns*sizeof(uint64),extent);
 #else
-        extent+=columns*sizeof(uint32);
+        extent=MagickMax(rows*columns*sizeof(uint32),extent);
 #endif
         tile_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*tile_pixels));
