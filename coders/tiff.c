@@ -2049,7 +2049,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               columns_remaining=image->columns-x;
               if ((ssize_t) (x+columns) < (ssize_t) image->columns)
                 columns_remaining=columns;
-              if (TIFFReadTile(tiff,tile_pixels,(uint32) x,(uint32) y,0,i) == 0)
+              if (TIFFReadTile(tiff,tile_pixels,(uint32) x,(uint32) y,0,i) == -1)
                 break;
               p=tile_pixels;
               for (row=0; row < rows_remaining; row++)
@@ -2109,8 +2109,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (generic_info == (MemoryInfo *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         pixels=(uint32 *) GetVirtualMemoryBlob(generic_info);
-        (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,(uint32)
+        status=TIFFReadRGBAImage(tiff,(uint32) image->columns,(uint32)
           image->rows,(uint32 *) pixels,0);
+        if (status == -1)
+          {
+            generic_info=RelinquishVirtualMemory(generic_info);
+            break;
+          }
         p=pixels+(image->columns*image->rows)-1;
         for (y=0; y < (ssize_t) image->rows; y++)
         {

@@ -1,3 +1,10 @@
+2021-07-26  7.1.0-5  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-5 GIT revision 18
+
+2021-07-26  7.1.0-5  <quetzlzacatenango@image...>
+  * heap-based buffer overflow in TIFF coder (alert from Hunter Mitchell).
+  * grayscale image write optimization.
+
 2021-07-18  7.1.0-4  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-4 GIT revision 18926:8eb9c6c48:20210718
 
