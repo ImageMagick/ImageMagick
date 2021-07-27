@@ -3819,7 +3819,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   /* When the image has a color profile it won't be converted to gray scale */
   type=IdentifyImageCoderType(image,exception);
   if ((GetImageProfile(image,"icc") == (StringInfo *) NULL) &&
-      ((type == GrayscaleType) || (type == BilevelType)))
+      (SetImageGray(image,exception) != MagickFalse))
     num_channels=(image->alpha_trait != UndefinedPixelTrait ? 2UL : 1UL);
   else
     if ((image_info->type != TrueColorType) &&
@@ -3838,7 +3838,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   (void) WriteBlobMSBShort(image,(unsigned short) num_channels);
   (void) WriteBlobMSBLong(image,(unsigned int) image->rows);
   (void) WriteBlobMSBLong(image,(unsigned int) image->columns);
-  if ((type == GrayscaleType) || (type == BilevelType))
+  if (IsImageGray(image) != MagickFalse)
     {
       MagickBooleanType
         monochrome;
@@ -3857,12 +3857,12 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     {
       (void) WriteBlobMSBShort(image,(unsigned short) (image->storage_class ==
         PseudoClass ? 8 : image->depth > 8 ? 16 : 8));
+
       if (((image_info->colorspace != UndefinedColorspace) ||
            (image->colorspace != CMYKColorspace)) &&
           (image_info->colorspace != CMYKColorspace))
         {
-          if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-            (void) TransformImageColorspace(image,sRGBColorspace,exception);
+          (void) TransformImageColorspace(image,sRGBColorspace,exception);
           (void) WriteBlobMSBShort(image,(unsigned short)
             (image->storage_class == PseudoClass ? IndexedMode : RGBMode));
         }
@@ -3873,7 +3873,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
           (void) WriteBlobMSBShort(image,CMYKMode);
         }
     }
-  if (((type == GrayscaleType) || (type == BilevelType)) ||
+  if ((IsImageGray(image) != MagickFalse) ||
       (image->storage_class == DirectClass) || (image->colors > 256))
     (void) WriteBlobMSBLong(image,0);
   else
