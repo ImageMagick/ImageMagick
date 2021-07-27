@@ -49,6 +49,7 @@
 #include "MagickCore/channel.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/compress.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/draw.h"
@@ -1049,7 +1050,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               (void) WriteBlobString(image,
                 "%%DocumentProcessColors: Cyan Magenta Yellow Black\n");
             else
-              if ((type == GrayscaleType) || (type == BilevelType))
+              if (IsGrayImageType(type) != MagickFalse)
                 (void) WriteBlobString(image,
                   "%%DocumentProcessColors: Black\n");
           }
@@ -1127,7 +1128,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       (void) WriteBlobString(image,
         "%%PageProcessColors: Cyan Magenta Yellow Black\n");
     else
-      if ((type == GrayscaleType) || (type == BilevelType))
+      if (IsGrayImageType(type) != MagickFalse)
         (void) WriteBlobString(image,"%%PageProcessColors: Black\n");
     /*
       Adjust document bounding box to bound page bounding box.
@@ -1268,7 +1269,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
         (image_info->type != ColorSeparationType) &&
         (image_info->type != ColorSeparationAlphaType) &&
         (image->colorspace != CMYKColorspace) &&
-        ((type == GrayscaleType) || (type == BilevelType)))
+        (IsGrayImageType(type) != MagickFalse))
       {
         /*
           Gray images.

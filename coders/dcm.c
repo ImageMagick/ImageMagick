@@ -49,6 +49,7 @@
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colormap-private.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/enhance.h"
 #include "MagickCore/exception.h"
@@ -4274,7 +4275,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
         }
       type=IdentifyImageCoderType(image,exception);
-      if ((type == GrayscaleType) || (type == BilevelType))
+      if (IsGrayImageType(type) != MagickFalse)
         (void) SetImageColorspace(image,GRAYColorspace,exception);
       if (EOFBlob(image) != MagickFalse)
         {

@@ -56,6 +56,7 @@
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colormap-private.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -617,7 +618,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       type=IdentifyImageCoderType(image,exception);
       if ((image->storage_class == PseudoClass) &&
-          ((type == GrayscaleType) || (type == BilevelType)))
+          (IsGrayImageType(type) != MagickFalse))
         {
           if(GetCutColors(image,exception)==2)
             {

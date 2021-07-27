@@ -4021,7 +4021,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     output_options=at_output_opts_new();
     number_planes=3;
     type=IdentifyImageCoderType(image,exception);
-    if ((type == GrayscaleType) || (type == BilevelType))
+    if (IsGrayImageType(type) != MagickFalse)
       number_planes=1;
     trace=at_bitmap_new(image->columns,image->rows,number_planes);
     i=0;

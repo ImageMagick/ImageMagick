@@ -1676,7 +1676,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
              type=IdentifyImageCoderType(image,exception);
           if ((image_info->type != TrueColorType) &&
               (image->alpha_trait == UndefinedPixelTrait) &&
-              ((type == GrayscaleType) || (type == BilevelType)))
+              (IsGrayImageType(type) != MagickFalse))
             dpx.image.image_element[i].descriptor=LumaComponentType;
           break;
         }

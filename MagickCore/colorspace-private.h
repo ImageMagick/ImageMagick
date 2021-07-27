@@ -101,6 +101,14 @@ static inline MagickBooleanType IsGrayColorspace(
   return(MagickFalse);
 }
 
+static inline MagickBooleanType IsGrayImageType(const ImageType type)
+{
+  if ((type == GrayscaleType) || (type == GrayscaleAlphaType) ||
+      (type == BilevelType))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static inline MagickBooleanType IsHueCompatibleColorspace(
   const ColorspaceType colorspace)
 {

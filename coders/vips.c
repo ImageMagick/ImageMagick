@@ -659,7 +659,7 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   (void) SetImageStorageClass(image,DirectClass,exception);
   channels=image->alpha_trait != UndefinedPixelTrait ? 4 : 3;
   type=IdentifyImageCoderType(image,exception);
-  if ((type == GrayscaleType) || (type == BilevelType))
+  if (IsGrayImageType(type) != MagickFalse)
     {
       channels=image->alpha_trait != UndefinedPixelTrait ? 2 : 1;
       (void) SetImageColorspace(image,GRAYColorspace,exception);

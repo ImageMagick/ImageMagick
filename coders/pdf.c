@@ -1436,7 +1436,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     ImageType type = UndefinedType;
     if (image_info->type != TrueColorType)
       type=IdentifyImageCoderType(next,exception);
-    if ((type == GrayscaleType) || (type == BilevelType))
+    if (IsGrayImageType(type) != MagickFalse)
       SetImageColorspace(next,GRAYColorspace,exception);
     icc_profile=GetCompatibleColorProfile(next);
     if (icc_profile != (StringInfo *) NULL)
@@ -1970,7 +1970,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if (image_info->type != TrueColorType)
       type=IdentifyImageCoderType(image,exception);
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
-        ((type == GrayscaleType) || (type == BilevelType)))
+        (IsGrayImageType(type) != MagickFalse))
       {
         switch (compression)
         {
@@ -2336,7 +2336,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     else
       if ((compression == FaxCompression) ||
           (compression == Group4Compression) ||
-          ((type == GrayscaleType) || (type == BilevelType)))
+          (IsGrayImageType(type) != MagickFalse))
         {
           device="DeviceGray";
           channels=1;
@@ -2502,7 +2502,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       type=IdentifyImageCoderType(tile_image,exception);
     if ((compression == FaxCompression) ||
         (compression == Group4Compression) ||
-        ((type == GrayscaleType) || (type == BilevelType)))
+        (IsGrayImageType(type) != MagickFalse))
       {
         switch (compression)
         {

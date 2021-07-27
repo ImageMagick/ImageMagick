@@ -735,7 +735,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   (void) AcquireUniqueFilename(blob_info->filename);
   type=IdentifyImageCoderType(image,exception);
   if ((image_info->type != TrueColorType) &&
-      ((type == GrayscaleType) || (type == BilevelType)))
+      (IsGrayImageType(type) != MagickFalse))
     affinity_image=BlobToImage(blob_info,Graymap,GraymapExtent,exception);
   else
     affinity_image=BlobToImage(blob_info,Colormap,ColormapExtent,exception);

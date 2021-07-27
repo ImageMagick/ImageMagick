@@ -755,7 +755,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     Convert image to fits scale PseudoColor class.
   */
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
-  if ((type == GrayscaleType) || (type == BilevelType))
+  if (IsGrayImageType(type) != MagickFalse)
     {
       length=GetQuantumExtent(image,quantum_info,GrayQuantum);
       for (y=(ssize_t) image->rows-1; y >= 0; y--)

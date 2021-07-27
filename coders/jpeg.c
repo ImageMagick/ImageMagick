@@ -2343,7 +2343,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
       if (image_info->type == TrueColorType)
         break;
       type=IdentifyImageCoderType(image,exception);
-      if ((type == GrayscaleType) || (type == BilevelType))
+      if (IsGrayImageType(type) != MagickFalse)
         {
           jpeg_info->input_components=1;
           jpeg_info->in_color_space=JCS_GRAYSCALE;

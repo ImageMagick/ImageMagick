@@ -1586,7 +1586,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   type=IdentifyImageType(image,exception);
-  if ((type == GrayscaleType) || (type == BilevelType))
+  if (IsGrayImageType(type) != MagickFalse)
     (void) SetImageColorspace(image,GRAYColorspace,exception);
   black=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*black));
   white=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*white));

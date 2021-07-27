@@ -3818,6 +3818,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
     (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
   /* When the image has a color profile it won't be converted to gray scale */
   type=IdentifyImageCoderType(image,exception);
+  (void) type;
   if ((GetImageProfile(image,"icc") == (StringInfo *) NULL) &&
       (SetImageGray(image,exception) != MagickFalse))
     num_channels=(image->alpha_trait != UndefinedPixelTrait ? 2UL : 1UL);

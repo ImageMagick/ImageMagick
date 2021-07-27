@@ -46,6 +46,7 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/compress.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/draw.h"
@@ -731,7 +732,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     if (image_info->type != TrueColorType)
       type=IdentifyImageCoderType(image,exception);
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
-        ((type == GrayscaleType) || (type == BilevelType)))
+        (IsGrayImageType(type) != MagickFalse))
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "%.20g %.20g\n1\n%d\n",(double) image->columns,(double) image->rows,

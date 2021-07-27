@@ -12887,7 +12887,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       (image_info->type != TrueColorType))
     {
       ImageType type = IdentifyImageCoderType(image,exception);
-      if ((type == GrayscaleType) || (type == BilevelType))
+      if (IsGrayImageType(type) != MagickFalse)
         jng_color_type-=2;
     }
 
