@@ -1500,6 +1500,9 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
 MagickExport MagickBooleanType SetImageGray(Image *image,
   ExceptionInfo *exception)
 {
+  const char
+    *value;
+
   ImageType
     type;
 
@@ -1510,6 +1513,9 @@ MagickExport MagickBooleanType SetImageGray(Image *image,
   if (IsImageGray(image) != MagickFalse)
     return(MagickTrue);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    return(MagickFalse);
+  value=GetImageProperty(image,"colorspace:auto-grayscale",exception);
+  if (IsStringFalse(value) != MagickFalse)
     return(MagickFalse);
   type=IdentifyImageGray(image,exception);
   if (type == UndefinedType)
