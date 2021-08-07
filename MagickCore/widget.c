@@ -7873,6 +7873,8 @@ MagickPrivate int XMenuWidget(Display *display,XWindows *windows,
             break;
           }
         state&=(~InactiveWidgetState);
+        if (selection_info.height == 0)
+          break;
         id=(event.xbutton.y-top_offset)/(int) selection_info.height;
         selection_info.id=id;
         if ((id < 0) || (id >= (int) number_selections))
@@ -7926,6 +7928,8 @@ MagickPrivate int XMenuWidget(Display *display,XWindows *windows,
         if (event.xcrossing.state == 0)
           break;
         state&=(~InactiveWidgetState);
+        if (selection_info.height == 0)
+          break;
         id=((event.xcrossing.y-top_offset)/(int) selection_info.height);
         if ((selection_info.id >= 0) &&
             (selection_info.id < (int) number_selections))
@@ -8011,6 +8015,8 @@ MagickPrivate int XMenuWidget(Display *display,XWindows *windows,
         if (event.xmotion.window != windows->widget.id)
           break;
         if (state & InactiveWidgetState)
+          break;
+        if (selection_info.height == 0)
           break;
         id=(event.xmotion.y-top_offset)/(int) selection_info.height;
         if ((selection_info.id >= 0) &&
