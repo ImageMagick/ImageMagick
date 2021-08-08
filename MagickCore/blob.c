@@ -2576,7 +2576,6 @@ MagickExport void ImagesToCustomStream(const ImageInfo *image_info,
   assert(images->signature == MagickCoreSignature);
   assert(image_info->custom_stream != (CustomStreamInfo *) NULL);
   assert(image_info->custom_stream->signature == MagickCoreSignature);
-  assert(image_info->custom_stream->reader != (CustomStreamHandler) NULL);
   assert(image_info->custom_stream->writer != (CustomStreamHandler) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   clone_info=CloneImageInfo(image_info);
