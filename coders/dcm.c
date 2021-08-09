@@ -3024,7 +3024,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (stream_info != (DCMStreamInfo *) NULL) \
     stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info); \
   if (stack != (LinkedListInfo *) NULL) \
-    DestroyLinkedList(stack,RelinquishMagickMemory); \
+    stack=DestroyLinkedList(stack,RelinquishMagickMemory); \
   ThrowReaderException((exception),(message)); \
 }
 
