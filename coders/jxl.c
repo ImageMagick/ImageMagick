@@ -519,6 +519,60 @@ ModuleExport void UnregisterJXLImage(void)
 %    o image:  The image.
 %
 */
+static MagickBooleanType WriteMetadata(const ImageInfo *image_info,Image *image,
+  JxlEncoder *encoder,const JxlPixelFormat *format,ExceptionInfo *exception)
+{
+  const char
+    *name;
+
+  const StringInfo
+    *profile;
+
+  JxlEncoderStatus
+    encoder_status;
+
+  JxlColorEncoding
+    color_encoding;
+
+  MagickBooleanType
+    color_set;
+
+  color_set=MagickFalse;
+  ResetImageProfileIterator(image);
+  for (name=GetNextImageProfile(image); name != (const char *) NULL; )
+  {
+    profile=GetImageProfile(image,name);
+
+    if (LocaleCompare(name,"ICC") == 0 && color_set == MagickFalse)
+      {
+        encoder_status=JxlEncoderSetICCProfile(encoder,
+          (void*) GetStringInfoDatum(profile),GetStringInfoLength(profile));
+        if (encoder_status != JXL_ENC_SUCCESS)
+          ThrowWriterException(CoderError,"UnableToWriteBlob");
+        color_set=MagickTrue;
+      }
+
+    if (image->debug != MagickFalse)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "%s profile: %.20g bytes",name,(double) GetStringInfoLength(profile));
+    name=GetNextImageProfile(image);
+  }
+  /*
+   * JXL stores images in absolute color space (unless uses_original_profile
+   * is true) so it is required to always set the color encoding.
+   */
+  if (color_set == MagickFalse)
+    {
+      memset(&color_encoding,0,sizeof(color_encoding));
+      JxlColorEncodingSetToSRGB(&color_encoding,
+        /*is_gray=*/format->num_channels < 3);
+      encoder_status=JxlEncoderSetColorEncoding(encoder,&color_encoding);
+      if (encoder_status != JXL_ENC_SUCCESS)
+        ThrowWriterException(CoderError,"UnableToWriteImageData");
+    }
+  return(MagickTrue);
+}
+
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -657,6 +711,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(encoder);
       ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
+  status=WriteMetadata(image_info,image,encoder,&format,exception);
+  if (status == MagickFalse)
+    return(status);
   encoder_status=JxlEncoderAddImageFrame(encoder_options,&format,input_buffer,
     bytes_per_row*image->rows);
   if (encoder_status == JXL_ENC_SUCCESS)
