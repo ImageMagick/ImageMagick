@@ -472,8 +472,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   const MagickBooleanType verbose,ExceptionInfo *exception)
 {
   char
-    color[MagickPathExtent],
     buffer[MagickPathExtent],
+    color[MagickPathExtent],
     key[MagickPathExtent];
 
   ChannelFeatures
