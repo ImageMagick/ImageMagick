@@ -539,7 +539,7 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
   else
     {
       memset(&color_encoding,0,sizeof(color_encoding));
-      JxlColorEncodingSetToSRGB(&color_encoding,
+      JxlColorEncodingSetToLinearSRGB(&color_encoding,
         IsImageGray(image) == GRAYColorspace ? JXL_TRUE : JXL_FALSE);
       encoder_status=JxlEncoderSetColorEncoding(encoder,&color_encoding);
     }
