@@ -1109,7 +1109,7 @@ static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
   dds_info->flags = ReadBlobLSBLong(image);
 
   /* Check required flags */
-  required=(size_t) (DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT);
+  required=(size_t) (DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT);
   if ((dds_info->flags & required) != required)
     return MagickFalse;
 
