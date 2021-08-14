@@ -520,7 +520,7 @@ ModuleExport void UnregisterJXLImage(void)
 %
 */
 
-static JxlEncoderStatus WriteJXLMetadata(const Image *image,
+static JxlEncoderStatus JXLWriteMetadata(const Image *image,
   JxlEncoder *encoder)
 {
   const StringInfo
@@ -662,7 +662,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
     JxlEncoderOptionsSetEffort(encoder_options,StringToInteger(option));
-  encoder_status=WriteJXLMetadata(image,encoder);
+  encoder_status=JXLWriteMetadata(image,encoder);
   if (encoder_status != JXL_ENC_SUCCESS)
     {
       JxlThreadParallelRunnerDestroy(runner);
