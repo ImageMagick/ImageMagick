@@ -62,9 +62,6 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/timer-private.h"
 #include "MagickCore/utility-private.h"
-#if defined(MAGICKCORE_HAVE_UTIME_H)
-#include <utime.h>
-#endif
 
 /*
   Constant declaration.
