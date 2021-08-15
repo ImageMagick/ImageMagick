@@ -304,7 +304,7 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
   wchar_t
     *path_wide;
 
-  status=-1;
+  status=(-1);
   path_wide=create_wchar_path(path);
   if (path_wide == (WCHAR *) NULL)
     return(status);
