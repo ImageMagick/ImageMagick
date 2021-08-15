@@ -21,6 +21,9 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/nt-base.h"
 #include "MagickCore/nt-base-private.h"
+#if defined(MAGICKCORE_HAVE_UTIME_H)
+#include <utime.h>
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
