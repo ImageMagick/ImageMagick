@@ -293,6 +293,56 @@ static inline int stat_utf8(const char *path,struct stat *attributes)
 #endif
 }
 
+#if defined(MAGICKCORE_HAVE_UTIME)
+static inline void copy_attributes_utf8(const char *path,
+  struct stat *attributes)
+{
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
+  struct utimbuf
+    timestamp;
+
+  timestamp.actime=attributes->st_atime;
+  timestamp.modtime=attributes->st_mtime;
+  (void) utime(path,&timestamp);
+#else
+  HANDLE
+    handle;
+
+  wchar_t
+    *path_wide;
+
+  path_wide=create_wchar_path(path);
+  if (path_wide == (WCHAR *) NULL)
+    return;
+  handle=CreateFileW(path_wide,FILE_WRITE_ATTRIBUTES,FILE_SHARE_WRITE|
+    FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL);
+  if (handle != (HANDLE) NULL)
+    {
+      FILETIME
+        creationTime,
+        lastAccessTime,
+        lastWriteTime;
+
+      LONGLONG
+        dateTime;
+
+      dateTime=Int32x32To64(attributes->st_ctime,10000000)+116444736000000000;
+      creationTime.dwLowDateTime=(DWORD) dateTime;
+      creationTime.dwHighDateTime=dateTime>>32;
+      dateTime=Int32x32To64(attributes->st_atime,10000000)+116444736000000000;
+      lastAccessTime.dwLowDateTime=(DWORD) dateTime;
+      lastAccessTime.dwHighDateTime=dateTime>>32;
+      dateTime=Int32x32To64(attributes->st_mtime,10000000)+116444736000000000;
+      lastWriteTime.dwLowDateTime=(DWORD) dateTime;
+      lastWriteTime.dwHighDateTime=dateTime>>32;
+      (void) SetFileTime(handle,&creationTime,&lastAccessTime,&lastWriteTime);
+      CloseHandle(handle);
+    }
+  path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
+#endif
+}
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

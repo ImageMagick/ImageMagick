@@ -4110,14 +4110,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               preserve_timestamp=IsStringTrue(GetImageOption(image_info,
                 "preserve-timestamp"));
               if (preserve_timestamp != MagickFalse)
-                {
-                  struct utimbuf
-                    timestamp;
-
-                  timestamp.actime=properties.st_atime;
-                  timestamp.modtime=properties.st_mtime;
-                  (void) utime(image->filename,&timestamp);
-                }
+                copy_attributes_utf8(image->filename,&properties);
             }
 #endif
             if (*backup_filename != '\0')
