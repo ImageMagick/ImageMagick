@@ -304,9 +304,10 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
   wchar_t
     *path_wide;
 
+  status=-1;
   path_wide=create_wchar_path(path);
   if (path_wide == (WCHAR *) NULL)
-    return;
+    return(status);
   handle=CreateFileW(path_wide,FILE_WRITE_ATTRIBUTES,FILE_SHARE_WRITE |
     FILE_SHARE_READ,NULL,OPEN_EXISTING,0,NULL);
   if (handle != (HANDLE) NULL)
@@ -330,6 +331,7 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
       lastWriteTime.dwHighDateTime=dateTime>>32;
       status=SetFileTime(handle,&creationTime,&lastAccessTime,&lastWriteTime);
       CloseHandle(handle);
+      status=0;
     }
   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
 #endif
