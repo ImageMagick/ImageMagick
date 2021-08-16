@@ -472,8 +472,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   const MagickBooleanType verbose,ExceptionInfo *exception)
 {
   char
+    buffer[MagickPathExtent],
     color[MagickPathExtent],
-    format[MagickPathExtent],
     key[MagickPathExtent];
 
   ChannelFeatures
@@ -606,7 +606,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         channel_statistics);
       return(ferror(file) != 0 ? MagickFalse : MagickTrue);
     }
-  *format='\0';
   elapsed_time=GetElapsedTime(&image->timer);
   user_time=GetUserTime(&image->timer);
   GetTimerInfo(&image->timer);
@@ -650,8 +649,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           if (image->total_colors != 0)
             {
               (void) FormatMagickSize(image->total_colors,MagickFalse,"B",
-                MagickPathExtent,format);
-              (void) FormatLocaleFile(file,"%s ",format);
+                MagickPathExtent,buffer);
+              (void) FormatLocaleFile(file,"%s ",buffer);
             }
         }
       else
@@ -668,9 +667,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           image->error.normalized_maximum_error);
       if (image->extent != 0)
         {
-          (void) FormatMagickSize(image->extent,MagickTrue,"B",MagickPathExtent,
-            format);
-          (void) FormatLocaleFile(file,"%s ",format);
+          (void) FormatMagickSize(image->extent,MagickTrue,"B",
+            MagickPathExtent,buffer);
+          (void) FormatLocaleFile(file,"%s ",buffer);
         }
       (void) FormatLocaleFile(file,"%0.3fu %lu:%02lu.%03lu",user_time,
         (unsigned long) (elapsed_time/60.0),(unsigned long) floor(fmod(
@@ -1281,8 +1280,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (IsStringTrue(artifact) != MagickFalse)
     {
       char
-        *points,
-        value[MagickPathExtent];
+        *points;
 
       PointInfo
         *bounding_box,
@@ -1303,9 +1301,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           points=AcquireString("");
           for (n=0; n < (ssize_t) number_points; n++)
           {
-            (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            (void) FormatLocaleString(buffer,MagickPathExtent,"%g,%g ",
               convex_hull[n].x,convex_hull[n].y);
-            (void) ConcatenateString(&points,value);
+            (void) ConcatenateString(&points,buffer);
           }
           convex_hull=(PointInfo *) RelinquishMagickMemory(convex_hull);
           (void) FormatLocaleFile(file,"  Convex hull: ");
@@ -1318,9 +1316,9 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           points=AcquireString("");
           for (n=0; n < (ssize_t) number_points; n++)
           {
-            (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            (void) FormatLocaleString(buffer,MagickPathExtent,"%g,%g ",
               bounding_box[n].x,bounding_box[n].y);
-            (void) ConcatenateString(&points,value);
+            (void) ConcatenateString(&points,buffer);
           }
           bounding_box=(PointInfo *) RelinquishMagickMemory(bounding_box);
           (void) FormatLocaleFile(file,"  Minimum bounding box: ");
@@ -1522,18 +1520,18 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   (void) FormatLocaleFile(file,"  Tainted: %s\n",CommandOptionToMnemonic(
     MagickBooleanOptions,(ssize_t) image->taint));
-  (void) FormatMagickSize(image->extent,MagickTrue,"B",MagickPathExtent,format);
-  (void) FormatLocaleFile(file,"  Filesize: %s\n",format);
+  (void) FormatMagickSize(image->extent,MagickTrue,"B",MagickPathExtent,buffer);
+  (void) FormatLocaleFile(file,"  Filesize: %s\n",buffer);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
-    MagickFalse,"P",MagickPathExtent,format);
-  if (strlen(format) > 1)
-    format[strlen(format)-1]='\0';
-  (void) FormatLocaleFile(file,"  Number pixels: %s\n",format);
+    MagickFalse,"P",MagickPathExtent,buffer);
+  if (strlen(buffer) > 1)
+    buffer[strlen(buffer)-1]='\0';
+  (void) FormatLocaleFile(file,"  Number pixels: %s\n",buffer);
   if (elapsed_time > MagickEpsilon)
     {
       (void) FormatMagickSize((MagickSizeType) ((double) image->columns*
-        image->rows/elapsed_time+0.5),MagickFalse,"P",MagickPathExtent,format);
-      (void) FormatLocaleFile(file,"  Pixels per second: %s\n",format);
+        image->rows/elapsed_time+0.5),MagickFalse,"P",MagickPathExtent,buffer);
+      (void) FormatLocaleFile(file,"  Pixels per second: %s\n",buffer);
     }
   (void) FormatLocaleFile(file,"  User time: %0.3fu\n",user_time);
   (void) FormatLocaleFile(file,"  Elapsed time: %lu:%02lu.%03lu\n",

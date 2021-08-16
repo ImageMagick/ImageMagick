@@ -519,6 +519,33 @@ ModuleExport void UnregisterJXLImage(void)
 %    o image:  The image.
 %
 */
+
+static JxlEncoderStatus JXLWriteMetadata(const Image *image,
+  JxlEncoder *encoder)
+{
+  const StringInfo
+    *profile;
+
+  JxlColorEncoding
+    color_encoding;
+
+  JxlEncoderStatus
+    encoder_status;
+
+  profile=GetImageProfile(image,"ICC");
+  if (profile != (const StringInfo *) NULL)
+    encoder_status=JxlEncoderSetICCProfile(encoder,
+      (void*) GetStringInfoDatum(profile),GetStringInfoLength(profile));
+  else
+    {
+      memset(&color_encoding,0,sizeof(color_encoding));
+      JxlColorEncodingSetToLinearSRGB(&color_encoding,
+        IsImageGray(image) == GRAYColorspace ? JXL_TRUE : JXL_FALSE);
+      encoder_status=JxlEncoderSetColorEncoding(encoder,&color_encoding);
+    }
+  return(encoder_status);
+}
+
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -635,6 +662,13 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
     JxlEncoderOptionsSetEffort(encoder_options,StringToInteger(option));
+  encoder_status=JXLWriteMetadata(image,encoder);
+  if (encoder_status != JXL_ENC_SUCCESS)
+    {
+      JxlThreadParallelRunnerDestroy(runner);
+      JxlEncoderDestroy(encoder);
+      ThrowWriterException(CoderError,"UnableToWriteImageData");
+    }
   bytes_per_row=image->columns*
     ((image->alpha_trait == BlendPixelTrait) ? 4 : 3)*
     ((format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :

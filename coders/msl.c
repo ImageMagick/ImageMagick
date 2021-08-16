@@ -7637,6 +7637,7 @@ static void MSLError(void *context,const char *format,...)
 #endif
   ThrowMSLException(DelegateFatalError,reason,"SAX error");
   va_end(operands);
+  xmlStopParser(msl_info->parser);
 }
 
 static void MSLCDataBlock(void *context,const xmlChar *value,int length)

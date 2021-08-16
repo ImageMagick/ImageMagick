@@ -73,7 +73,8 @@
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
 #include <libraw.h>
 #endif
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -361,6 +362,37 @@ static void LibRawDataError(void *data,const char *magick_unused(file),
   }
 }
 
+static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
+  libraw_data_t *raw_info,ExceptionInfo *exception)
+{
+  const char
+    *option;
+
+  int
+    errcode;
+
+  libraw_processed_image_t
+    *thumbnail;
+
+  option=GetImageOption(image_info,"dng:read-thumbnail");
+  if (IsStringTrue(option) == MagickFalse)
+    return;
+  errcode=libraw_unpack_thumb(raw_info);
+  if (errcode != LIBRAW_SUCCESS)
+    return;
+  thumbnail=libraw_dcraw_make_mem_thumb(raw_info,&errcode);
+  if (errcode == LIBRAW_SUCCESS)
+    {
+      StringInfo
+        *profile;
+
+      profile=BlobToStringInfo(thumbnail->data,thumbnail->data_size);
+      (void) SetImageProfile(image,"dng:thumbnail",profile,exception);
+    }
+  if (thumbnail != (libraw_processed_image_t *) NULL)
+    libraw_dcraw_clear_mem(thumbnail);
+}
+
 #endif
 
 static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -447,6 +479,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->page.height=raw_info->sizes.raw_height;
     image->page.x=raw_info->sizes.left_margin;
     image->page.y=raw_info->sizes.top_margin;
+    ReadLibRawThumbnail(image_info,image,raw_info,exception);
     if (image_info->ping != MagickFalse)
       {
         libraw_close(raw_info);
@@ -563,7 +596,8 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   return(InvokeDNGDelegate(image_info,image,exception));
 #endif
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -746,7 +780,8 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
