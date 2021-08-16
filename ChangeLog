@@ -1,5 +1,5 @@
 2021-07-26  7.1.0-5  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-5 GIT revision 18
+  * Release ImageMagick version 7.1.0-5 GIT revision 18 
 
 2021-08-12  7.1.0-5  Dirk Lemstra <dirk@lem.....org>
   * Added option (-dng:read-thumbnail=true) to read the thumbnail of a raw
