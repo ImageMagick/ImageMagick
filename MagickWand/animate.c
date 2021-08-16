@@ -1152,7 +1152,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowAnimateException(OptionError,"MissingArgument",option);
             if (XRemoteCommand(display,resource_info.window_id,argv[i]) != 0)
-              return(MagickFalse);
+              {
+                DestroyAnimate();
+                return(MagickFalse);
+              }
             i--;
             break;
           }
