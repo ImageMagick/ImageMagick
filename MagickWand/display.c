@@ -1863,7 +1863,10 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
                 p=fgets(answer,(int) sizeof(answer),stdin);
                 (void) p;
                 if (((*answer != 'y') && (*answer != 'Y')))
-                  return(MagickFalse);
+                  {
+                    DestroyDisplay();
+                    return(MagickFalse);
+                  }
               }
             break;
           }
