@@ -102,7 +102,7 @@ jobs:
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
-        devenv /upgrade configure.vcxproj
+        devenv /upgrade configure.sln
         msbuild configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
 
     - name: Configure ImageMagick
