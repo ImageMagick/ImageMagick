@@ -10,8 +10,7 @@
 
 - Open a new pull request with the patch and follow the instructions from the pull request template.
 - Before submitting, please ensure that your code matches the existing coding patterns and practise as demonstrated in the repository.
-- Once the pull request has been accepted for the master (IM7) branch, please submit another patch for the
-  [ImageMagick-6](https://github.com/ImageMagick/ImageMagick/tree/ImageMagick-6) branch when applicable.
+- Once the pull request has been accepted, please submit another patch to the [ImageMagick6](https://github.com/ImageMagick/ImageMagick6) legacy repository when applicable.
 
 #### **Do you intend to add a new feature?**
 
