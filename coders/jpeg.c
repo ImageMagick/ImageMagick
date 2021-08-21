@@ -372,7 +372,7 @@ static void JPEGProgressHandler(j_common_ptr jpeg_info)
   longjmp(client_info->error_recovery,1);
 }
 
-static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
+static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
 {
 #define JPEGExcessiveWarnings  1000
 
@@ -399,8 +399,8 @@ static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
       */
       (jpeg_info->err->format_message)(jpeg_info,message);
       if (jpeg_info->err->num_warnings++ < JPEGExcessiveWarnings)
-        ThrowBinaryException(CorruptImageWarning,(char *) message,
-          image->filename);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageWarning,message,"`%s'",image->filename);
     }
   else
     if (level >= jpeg_info->err->trace_level)
@@ -413,7 +413,6 @@ static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "[%s] JPEG Trace: \"%s\"",image->filename,message);
       }
-  return(MagickTrue);
 }
 
 static boolean ReadProfileData(j_decompress_ptr jpeg_info,const size_t index,
