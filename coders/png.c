@@ -1764,11 +1764,10 @@ static png_voidp Magick_png_malloc(png_structp png_ptr,png_size_t size)
 /*
   Free a pointer.  It is removed from the list at the same time.
 */
-static png_free_ptr Magick_png_free(png_structp png_ptr,png_voidp ptr)
+static void Magick_png_free(png_structp png_ptr,png_voidp ptr)
 {
   (void) png_ptr;
   ptr=RelinquishMagickMemory(ptr);
-  return((png_free_ptr) NULL);
 }
 #endif
 
