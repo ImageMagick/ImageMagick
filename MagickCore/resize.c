@@ -655,11 +655,11 @@ static double Welch(const double x,
 %  crossing is at (36 sqrt(2) + 123)/(72 sqrt(2) + 47), almost the same as the
 %  first crossing of Mitchell and Lanczos2Sharp.
 %
-%  RodidouxSharp is a slightly sharper version of Rodidoux, some believe it
+%  RobidouxSharp is a slightly sharper version of Robidoux, some believe it
 %  is too sharp.  It is designed to minimize the maximum possible change in
 %  a pixel value which is at one of the extremes (e.g., 0 or 255) under no-op
-%  conditions.  Amazingly Mitchell falls roughly between Rodidoux and
-%  RodidouxSharp, though this seems to have been pure coincidence.
+%  conditions.  Amazingly Mitchell falls roughly between Robidoux and
+%  RobidouxSharp, though this seems to have been pure coincidence.
 %
 %  'EXPERT' OPTIONS:
 %
