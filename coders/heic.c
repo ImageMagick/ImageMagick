@@ -861,6 +861,7 @@ static MagickBooleanType WriteHEICImageYCbCr(Image *image,
 
   status=MagickTrue;
   bit_depth=8;
+  if (image->image_info->depth > 0) bit_depth=image->image_info->depth;
   error=heif_image_add_plane(heif_image,heif_channel_Y,(int) image->columns,
     (int) image->rows,bit_depth);
   status=IsHeifSuccess(image,&error,exception);
@@ -939,6 +940,7 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
     *p;
 
   int
+    bit_depth,
     stride;
 
   struct heif_error
@@ -948,9 +950,12 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
     *q,
     *plane;
 
+  bit_depth=8;
+  if (image->image_info->depth > 0) bit_depth=image->image_info->depth;
+
   status=MagickTrue;
   error=heif_image_add_plane(heif_image,heif_channel_interleaved,
-    (int) image->columns,(int) image->rows,8);
+    (int) image->columns,(int) image->rows,bit_depth);
   status=IsHeifSuccess(image,&error,exception);
   if (status == MagickFalse)
     return status;
@@ -1029,6 +1034,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
