@@ -690,17 +690,6 @@ if test "$enable_pipes" = 'yes'; then
     MAGICK_FEATURES="Pipes $MAGICK_FEATURES"
 fi
 
-# Build a version of ImageMagick with assert statements.
-AC_ARG_ENABLE([assert],
-    [AC_HELP_STRING([--disable-assert],
-                    [disable assert() statements in build])],
-    [enable_assert=$enableval],
-    [enable_assert='yes'])
-
-if test "$enable_assert" = 'no'; then
-    AC_DEFINE([NDEBUG],[1],[Turn off assert statements])
-fi
-
 # Don't emit "rebuild rules" for configure, Makefile.ins, etc.
 AM_MAINTAINER_MODE
 
