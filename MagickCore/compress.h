@@ -31,6 +31,7 @@ typedef enum
   DXT1Compression,
   DXT3Compression,
   DXT5Compression,
+  BC7Compression,
   FaxCompression,
   Group4Compression,
   JBIG1Compression,        /* ISO/IEC std 11544 / ITU-T rec T.82 */
