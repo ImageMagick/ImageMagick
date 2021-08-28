@@ -2,7 +2,8 @@
   * Release ImageMagick version 7.1.0-6 GIT revision 18...
 
 2021-08-21  7.1.0-6  <quetzlzacatenango@image...>
-  * 
+  * Tweak the bilevel image type (reference
+    https://github.com/ImageMagick/ImageMagick/issues/4121).
 
 2021-08-21  7.1.0-5  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-5 GIT revision 18995:8f77c3c9c:20210821 
