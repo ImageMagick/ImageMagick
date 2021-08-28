@@ -1255,6 +1255,16 @@ static inline size_t ColorTo565(const DDSVector3 point)
   return (r << 11) | (g << 5) | b;
 }
 
+static inline unsigned char GetSubsetIndex(unsigned char numSubsets,
+  unsigned char partitionid,size_t pixelIndex)
+{
+  if (numSubsets == 2)
+    return PartitionTable[0][partitionid][pixelIndex];
+  if (numSubsets == 3)
+    return PartitionTable[1][partitionid][pixelIndex];
+  return 0;
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1822,7 +1832,7 @@ static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
     return(SkipDXTMipmaps(image,dds_info,16,exception));
 }
 
-static unsigned char GetBit(unsigned char *block,size_t *startBit)
+static unsigned char GetBit(const unsigned char *block,size_t *startBit)
 {
   size_t index = (*startBit) / 8;
   size_t base = (*startBit) - (index * 8);
@@ -1830,7 +1840,7 @@ static unsigned char GetBit(unsigned char *block,size_t *startBit)
   return ((block[index] >> base) & 0x01);
 }
 
-static unsigned char GetBits(unsigned char *block,size_t *startBit,
+static unsigned char GetBits(const unsigned char *block,size_t *startBit,
   unsigned char numBits)
 {
   size_t index = (*startBit) / 8;
@@ -1851,13 +1861,6 @@ static unsigned char GetBits(unsigned char *block,size_t *startBit,
   return ret;
 }
 
-static inline unsigned char GetSubsetIndex(unsigned char numSubsets, unsigned char partitionid, size_t pixelIndex)
-{
-  if (numSubsets == 1) return 0;
-  if (numSubsets > 3) return 0;
-  return PartitionTable[numSubsets - 2][partitionid][pixelIndex];
-}
-
 static MagickBooleanType IsPixelAnchorIndex(unsigned char subsetIndex,
   unsigned char numSubsets,size_t pixelIndex,unsigned char partitionid)
 {
@@ -1875,85 +1878,8 @@ static MagickBooleanType IsPixelAnchorIndex(unsigned char subsetIndex,
   return AnchorIndexTable[3][partitionid] == pixelIndex;
 }
 
-static MagickBooleanType SetBC7Pixels(Image *image,BC7Colors colors,
-  unsigned char *subsetIndices,unsigned char *colorIndices,
-  unsigned char *alphaIndices,unsigned char indexPrec,unsigned char sbit,
-  unsigned char rotation,size_t mode,Quantum *q)
-{
-  ssize_t
-    i;
-
-  ssize_t
-    j;
-
-  size_t
-    count;
-
-  unsigned char
-    c0,
-    c1,
-    weight,
-    r,
-    g,
-    b,
-    a;
-
-  
-  for (i = 0; i < 16; i++)
-  {
-    c0 = 2 * subsetIndices[i];
-    c1 = (2 * subsetIndices[i]) + 1;
-
-    /* Interpolation */
-    weight = 0;
-    switch(indexPrec)
-    {
-      case 2: weight = weight2[colorIndices[i]]; break;
-      case 3: weight = weight3[colorIndices[i]]; break;
-      default: weight = weight4[colorIndices[i]];
-    }
-
-    r=((64 - weight) * colors.r[c0] + weight * colors.r[c1] + 32) >> 6;
-    g=((64 - weight) * colors.g[c0] + weight * colors.g[c1] + 32) >> 6;
-    b=((64 - weight) * colors.b[c0] + weight * colors.b[c1] + 32) >> 6;
-    a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
-
-    /* Interpolate alpha for mode 4 and 5 blocks */
-    if (mode == 4 || mode == 5)
-    {
-      weight = weight2[alphaIndices[i]];
-      if (mode == 4 && sbit == 0)
-        weight = weight3[alphaIndices[i]];
-
-      a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
-    }
-
-    switch (rotation)
-    {
-      case 0: break;  /* no change */
-      case 1:
-        Swap(a,r);
-        break;
-      case 2:
-        Swap(a,g);
-        break;
-      case 3:
-        Swap(a,b);
-        break;
-    }
-
-    SetPixelRed(image,ScaleCharToQuantum(r),q);
-    SetPixelGreen(image,ScaleCharToQuantum(g),q);
-    SetPixelBlue(image,ScaleCharToQuantum(b),q);
-    SetPixelAlpha(image,ScaleCharToQuantum(a),q);
-    
-    q+=GetPixelChannels(image);
-  }
-  return(MagickTrue);
-}
-
 static MagickBooleanType ReadEndpoints(BC7Colors *endpoints,
-  unsigned char *block,size_t mode,size_t *startBit)
+  const unsigned char *block,size_t mode,size_t *startBit)
 {
   unsigned char
     numSubsets,
@@ -2081,6 +2007,7 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
     mode;
 
   ssize_t
+    count,
     x,
     y,
     i;
@@ -2095,65 +2022,72 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
     rotation,
     selectorBit,
     indexPrec,
-    index2Prec;
-  
+    index2Prec,
+    c0,
+    c1,
+    weight;
+
+  const unsigned char
+    *ptr;
+
   for (y = 0; y < (ssize_t) image->rows; y += 4)
   {
     for (x = 0; x < (ssize_t) image->columns; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
-      q = QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
+      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
         MagickMin(4,image->rows-y),exception);
 
       if (q == (Quantum *) NULL)
         return(MagickFalse);
 
       /* Read 16 bytes of data from the image */
-      ssize_t count = 0;
-      ReadBlobStream(image, 16, block, &count);
-
+      ptr=ReadBlobStream(image,16,block,&count);
+      
       if (count != 16)
         return(MagickFalse);
 
+      if (EOFBlob(image) != MagickFalse)
+        return(MagickFalse);
+
       /* Get the mode of the block */
-      startBit = 0;
-      while (startBit <= 8 && !GetBit(block, &startBit)) {}
-      mode = startBit - 1;
+      startBit=0;
+      while (startBit <= 8 && !GetBit(ptr, &startBit)) {}
+      mode=startBit - 1;
 
       if (mode > 7)
         return(MagickFalse);
 
-      numSubsets = modeInfo[mode].numSubsets;
-      partitionid = 0;
+      numSubsets=modeInfo[mode].numSubsets;
+      partitionid=0;
 
       /* only these modes have more than 1 subset */
       if (mode == 0 || mode == 1 || mode == 2 || mode == 3 || mode == 7)
       {
-        partitionid = GetBits(block, &startBit, modeInfo[mode].partitionBits);
+        partitionid=GetBits(ptr,&startBit,modeInfo[mode].partitionBits);
         if (partitionid > 63)
           return(MagickFalse);
       }
 
       rotation = 0;
       if (mode == 4 || mode == 5)
-        rotation = GetBits(block, &startBit, 2);
+        rotation=GetBits(ptr,&startBit,2);
       
       selectorBit = 0;
       if (mode == 4)
-        selectorBit = GetBit(block, &startBit);
+        selectorBit=GetBit(ptr, &startBit);
 
-      ReadEndpoints(&colors, block, mode, &startBit);
+      (void) ReadEndpoints(&colors, ptr, mode, &startBit);
 
-      indexPrec = modeInfo[mode].indexPrecision;
-      index2Prec = modeInfo[mode].index2Precision;
+      indexPrec=modeInfo[mode].indexPrecision;
+      index2Prec=modeInfo[mode].index2Precision;
 
       if (mode == 4 && selectorBit == 1)
       {
         indexPrec = 3;
-        /* first index has 1 bit precision */
-        alphaIndices[0] = GetBit(block, &startBit);
+        alphaIndices[0] = GetBit(ptr, &startBit);
         for (i = 1; i < 16; i++)
-          alphaIndices[i] = GetBits(block, &startBit, 2);
+          alphaIndices[i] = GetBits(ptr, &startBit, 2);
       }
 
       /* get color and subset indices */
@@ -2163,23 +2097,72 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         unsigned char numbits = indexPrec;
         if (IsPixelAnchorIndex(subsetIndices[i], numSubsets, i, partitionid))
           numbits--;
-        colorIndices[i] = GetBits(block, &startBit, numbits);
+        colorIndices[i] = GetBits(ptr, &startBit, numbits);
       }
 
       /* get alpha indices if the block has it */
       if (mode == 5 || (mode == 4 && selectorBit == 0))
       {
-        alphaIndices[0] = GetBits(block, &startBit, index2Prec - 1);
+        alphaIndices[0] = GetBits(ptr, &startBit, index2Prec - 1);
 
         for (i = 1; i < 16; i++)
-          alphaIndices[i] = GetBits(block, &startBit, index2Prec);
+          alphaIndices[i] = GetBits(ptr, &startBit, index2Prec);
       }
 
-      if (EOFBlob(image) != MagickFalse)
-        return(MagickFalse);
+      unsigned char r,g,b,a;
 
       /* Write the pixels */
-      SetBC7Pixels(image,colors,subsetIndices,colorIndices,alphaIndices,indexPrec,selectorBit,rotation,mode,q);
+      for (i = 0; i < 16; i++)
+      {
+        c0 = 2 * subsetIndices[i];
+        c1 = (2 * subsetIndices[i]) + 1;
+
+        /* Interpolation */
+        weight = 0;
+        switch(indexPrec)
+        {
+          case 2: weight = weight2[colorIndices[i]]; break;
+          case 3: weight = weight3[colorIndices[i]]; break;
+          default: weight = weight4[colorIndices[i]];
+        }
+
+        r=(((64 - weight) * colors.r[c0] + weight * colors.r[c1] + 32) >> 6);
+        g=(((64 - weight) * colors.g[c0] + weight * colors.g[c1] + 32) >> 6);
+        b=(((64 - weight) * colors.b[c0] + weight * colors.b[c1] + 32) >> 6);
+        a= ((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
+
+        /* Interpolate alpha for mode 4 and 5 blocks */
+        if (mode == 4 || mode == 5)
+        {
+          weight = weight2[alphaIndices[i]];
+          if (mode == 4 && selectorBit == 0)
+            weight = weight3[alphaIndices[i]];
+
+          a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
+        }
+
+        switch (rotation)
+        {
+          case 0: break;  // no change
+          case 1:
+            Swap(a,r);
+            break;
+          case 2:
+            Swap(a,g);
+            break;
+          case 3:
+            Swap(a,b);
+            break;
+        }
+
+        SetPixelRed(image,ScaleCharToQuantum((unsigned char)r),q);
+        SetPixelGreen(image,ScaleCharToQuantum((unsigned char)g),q);
+        SetPixelBlue(image,ScaleCharToQuantum((unsigned char)b),q);
+        SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)a),q);
+        
+        q+=GetPixelChannels(image);
+      }
+
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         return(MagickFalse);
     }
@@ -2451,7 +2434,7 @@ static MagickBooleanType ReadUncompressedRGBA(const ImageInfo *image_info,
   else
     return(SkipRGBMipmaps(image,dds_info,4,exception));
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2669,11 +2652,10 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
               decoder = ReadDXT5;
               break;
             }
-            case DXGI_FORMAT_BC7_TYPELESS:
             case DXGI_FORMAT_BC7_UNORM:
             {
               alpha_trait = BlendPixelTrait;
-              compression = BC7Compression;
+              compression = DXT5Compression;
               decoder = ReadBC7;
               break;
             }
@@ -2876,7 +2858,7 @@ ModuleExport void UnregisterDDSImage(void)
 %
 %  WriteDDSImage() writes a DirectDraw Surface image file in the DXT5 format.
 %
-%  The format of the WriteBMPImage method is:
+%  The format of the WriteDDSImage method is:
 %
 %     MagickBooleanType WriteDDSImage(const ImageInfo *image_info,Image *image)
 %
