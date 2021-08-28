@@ -2651,7 +2651,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case DXGI_FORMAT_BC7_UNORM:
             {
               alpha_trait = BlendPixelTrait;
-              compression = DXT5Compression;
+              compression = BC7Compression;
               decoder = ReadBC7;
               break;
             }

@@ -1290,6 +1290,7 @@ static const OptionInfo
     { "DXT1", DXT1Compression, UndefinedOptionFlag, MagickFalse },
     { "DXT3", DXT3Compression, UndefinedOptionFlag, MagickFalse },
     { "DXT5", DXT5Compression, UndefinedOptionFlag, MagickFalse },
+    { "BC7", BC7Compression, UndefinedOptionFlag, MagickFalse },
     { "Fax", FaxCompression, UndefinedOptionFlag, MagickFalse },
     { "Group4", Group4Compression, UndefinedOptionFlag, MagickFalse },
     { "JBIG1", JBIG1Compression, UndefinedOptionFlag, MagickFalse },
