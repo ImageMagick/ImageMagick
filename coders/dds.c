@@ -1834,8 +1834,8 @@ static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
 
 static unsigned char GetBit(const unsigned char *block,size_t *startBit)
 {
-  size_t index = (*startBit) / 8;
-  size_t base = (*startBit) - (index * 8);
+  size_t index=(*startBit) >> 3;
+  size_t base=(*startBit) - (index << 3);
   (*startBit)++;
   return ((block[index] >> base) & 0x01);
 }
@@ -1843,38 +1843,38 @@ static unsigned char GetBit(const unsigned char *block,size_t *startBit)
 static unsigned char GetBits(const unsigned char *block,size_t *startBit,
   unsigned char numBits)
 {
-  size_t index = (*startBit) / 8;
-  size_t base = (*startBit) - (index * 8);
-  unsigned char ret = 0;
+  size_t index=(*startBit) >> 3;
+  size_t base=(*startBit) - (index << 3);
+  unsigned char ret=0;
   if (base + numBits > 8)
   {
-    size_t uFirstIndexBits = 8 - base;
-    size_t uNextIndexBits = numBits - uFirstIndexBits;
-    ret = ((block[index] >> base) | (((block[index + 1]) &
+    size_t uFirstIndexBits=8 - base;
+    size_t uNextIndexBits=numBits - uFirstIndexBits;
+    ret=((block[index] >> base) | (((block[index + 1]) &
       ((1u << uNextIndexBits) - 1)) << uFirstIndexBits));
   }
   else
   {
-    ret = ((block[index] >> base) & ((1 << numBits) - 1));
+    ret=((block[index] >> base) & ((1 << numBits) - 1));
   }
-  (*startBit) += numBits;
+  (*startBit)+=numBits;
   return ret;
 }
 
 static MagickBooleanType IsPixelAnchorIndex(unsigned char subsetIndex,
   unsigned char numSubsets,size_t pixelIndex,unsigned char partitionid)
 {
-  // for first subset
+  /* for first subset */
   if (subsetIndex == 0)
     return AnchorIndexTable[0][partitionid] == pixelIndex;
-  // for second subset of two subset partitioning
+  /* for second subset of two subset partitioning */
   if (subsetIndex == 1 && numSubsets == 2)
     return AnchorIndexTable[1][partitionid] == pixelIndex;
-  // for second subset of three subset partitioning
+  /* for second subset of three subset partitioning */
   if (subsetIndex == 1 && numSubsets == 3)
     return AnchorIndexTable[2][partitionid] == pixelIndex;
 
-  // for third subset of three subset partitioning
+  /* for third subset of three subset partitioning */
   return AnchorIndexTable[3][partitionid] == pixelIndex;
 }
 
@@ -1892,37 +1892,38 @@ static MagickBooleanType ReadEndpoints(BC7Colors *endpoints,
   size_t
     i;
 
-  numSubsets = modeInfo[mode].numSubsets;
-  colorBits = modeInfo[mode].colorPrecision;
+  numSubsets=modeInfo[mode].numSubsets;
+  colorBits=modeInfo[mode].colorPrecision;
 
   /* red */
-  for (i = 0; i < numSubsets * 2; i++)
-    endpoints->r[i] = GetBits(block, startBit, colorBits);
+  for (i=0; i < numSubsets * 2; i++)
+    endpoints->r[i]=GetBits(block,startBit,colorBits);
 
   /* green */
-  for (i = 0; i < numSubsets * 2; i++)
-    endpoints->g[i] = GetBits(block, startBit, colorBits);
+  for (i=0; i < numSubsets * 2; i++)
+    endpoints->g[i]=GetBits(block,startBit,colorBits);
 
   /* blue */
-  for (i = 0; i < numSubsets * 2; i++)
-    endpoints->b[i] = GetBits(block, startBit, colorBits);
+  for (i=0; i < numSubsets * 2; i++)
+    endpoints->b[i]=GetBits(block,startBit,colorBits);
 
   /* alpha */
-  alphabits = modeInfo[mode].alphaPrecision;
-  MagickBooleanType hasAlpha = mode >= 4;
+  alphabits=modeInfo[mode].alphaPrecision;
+  MagickBooleanType hasAlpha=mode >= 4;
 
   if (hasAlpha != MagickFalse)
   {
-    for (i = 0; i < numSubsets * 2; i++)
-      endpoints->a[i] = GetBits(block, startBit, alphabits);
+    for (i=0; i < numSubsets * 2; i++)
+      endpoints->a[i]=GetBits(block,startBit,alphabits);
   }
 
   /* handle modes that have p bits */
-  MagickBooleanType hasPbits = mode == 0 || mode == 1 || mode == 3 || mode == 6 || mode == 7;
+  MagickBooleanType hasPbits=mode == 0 || mode == 1 || mode == 3 ||
+    mode == 6 || mode == 7;
 
   if (hasPbits != MagickFalse)
   {
-    for (i = 0; i < numSubsets * 2; i++)
+    for (i=0; i < numSubsets * 2; i++)
     {
       endpoints->r[i] <<= 1;
       endpoints->g[i] <<= 1;
@@ -1933,8 +1934,8 @@ static MagickBooleanType ReadEndpoints(BC7Colors *endpoints,
     /* mode 1 shares a p-bit for both endpoints */
     if (mode == 1)
     {
-      pbit0 = GetBit(block, startBit);
-      pbit1 = GetBit(block, startBit);
+      pbit0=GetBit(block,startBit);
+      pbit1=GetBit(block,startBit);
 
       endpoints->r[0] |= pbit0;
       endpoints->g[0] |= pbit0;
@@ -1953,9 +1954,9 @@ static MagickBooleanType ReadEndpoints(BC7Colors *endpoints,
 
     else
     {
-      for (i = 0; i < numSubsets * 2; i++)
+      for (i=0; i < numSubsets * 2; i++)
       {
-        pbit = GetBit(block, startBit);
+        pbit=GetBit(block,startBit);
         endpoints->r[i] |= pbit;
         endpoints->g[i] |= pbit;
         endpoints->b[i] |= pbit;
@@ -1972,23 +1973,23 @@ static MagickBooleanType ReadEndpoints(BC7Colors *endpoints,
   }
 
   /* color and alpha bit shifting so that MSB lies in bit 7 */
-  for (i = 0; i < numSubsets * 2; i++)
+  for (i=0; i < numSubsets * 2; i++)
   {
     endpoints->r[i] <<= (8 - colorBits);
     endpoints->g[i] <<= (8 - colorBits);
     endpoints->b[i] <<= (8 - colorBits);
     endpoints->a[i] <<= (8 - alphabits);
 
-    endpoints->r[i] = endpoints->r[i] | (endpoints->r[i] >> colorBits);
-    endpoints->g[i] = endpoints->g[i] | (endpoints->g[i] >> colorBits);
-    endpoints->b[i] = endpoints->b[i] | (endpoints->b[i] >> colorBits);
-    endpoints->a[i] = endpoints->a[i] | (endpoints->a[i] >> alphabits);
+    endpoints->r[i]=endpoints->r[i] | (endpoints->r[i] >> colorBits);
+    endpoints->g[i]=endpoints->g[i] | (endpoints->g[i] >> colorBits);
+    endpoints->b[i]=endpoints->b[i] | (endpoints->b[i] >> colorBits);
+    endpoints->a[i]=endpoints->a[i] | (endpoints->a[i] >> alphabits);
   }
 
   if (hasAlpha == MagickFalse)
   {
-    for (i = 0; i < numSubsets * 2; i++)
-      endpoints->a[i] = 255;
+    for (i=0; i < numSubsets * 2; i++)
+      endpoints->a[i]=255;
   }
   return MagickTrue;
 }
@@ -2069,81 +2070,77 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
           return(MagickFalse);
       }
 
-      rotation = 0;
+      rotation=0;
       if (mode == 4 || mode == 5)
         rotation=GetBits(ptr,&startBit,2);
       
-      selectorBit = 0;
+      selectorBit=0;
       if (mode == 4)
         selectorBit=GetBit(ptr, &startBit);
 
-      (void) ReadEndpoints(&colors, ptr, mode, &startBit);
+      (void) ReadEndpoints(&colors,ptr,mode,&startBit);
 
       indexPrec=modeInfo[mode].indexPrecision;
       index2Prec=modeInfo[mode].index2Precision;
 
       if (mode == 4 && selectorBit == 1)
       {
-        indexPrec = 3;
-        alphaIndices[0] = GetBit(ptr, &startBit);
+        indexPrec=3;
+        alphaIndices[0]=GetBit(ptr, &startBit);
         for (i = 1; i < 16; i++)
-          alphaIndices[i] = GetBits(ptr, &startBit, 2);
+          alphaIndices[i]=GetBits(ptr, &startBit, 2);
       }
 
       /* get color and subset indices */
-      for (i = 0; i < 16; i++)
+      for (i=0; i < 16; i++)
       {
-        subsetIndices[i] = GetSubsetIndex(numSubsets, partitionid, i);
-        unsigned char numbits = indexPrec;
-        if (IsPixelAnchorIndex(subsetIndices[i], numSubsets, i, partitionid))
+        subsetIndices[i]=GetSubsetIndex(numSubsets, partitionid, i);
+        unsigned char numbits=indexPrec;
+        if (IsPixelAnchorIndex(subsetIndices[i],numSubsets,i,partitionid))
           numbits--;
-        colorIndices[i] = GetBits(ptr, &startBit, numbits);
+        colorIndices[i]=GetBits(ptr,&startBit,numbits);
       }
 
       /* get alpha indices if the block has it */
       if (mode == 5 || (mode == 4 && selectorBit == 0))
       {
-        alphaIndices[0] = GetBits(ptr, &startBit, index2Prec - 1);
+        alphaIndices[0]=GetBits(ptr,&startBit,index2Prec - 1);
 
-        for (i = 1; i < 16; i++)
-          alphaIndices[i] = GetBits(ptr, &startBit, index2Prec);
+        for (i=1; i < 16; i++)
+          alphaIndices[i]=GetBits(ptr,&startBit,index2Prec);
       }
 
       unsigned char r,g,b,a;
 
       /* Write the pixels */
-      for (i = 0; i < 16; i++)
+      for (i=0; i < 16; i++)
       {
-        c0 = 2 * subsetIndices[i];
-        c1 = (2 * subsetIndices[i]) + 1;
+        c0=2 * subsetIndices[i];
+        c1=(2 * subsetIndices[i]) + 1;
 
-        /* Interpolation */
-        weight = 0;
+        /* Color Interpolation */
         switch(indexPrec)
         {
-          case 2: weight = weight2[colorIndices[i]]; break;
-          case 3: weight = weight3[colorIndices[i]]; break;
-          default: weight = weight4[colorIndices[i]];
+          case 2: weight=weight2[colorIndices[i]]; break;
+          case 3: weight=weight3[colorIndices[i]]; break;
+          default: weight=weight4[colorIndices[i]];
         }
-
-        r=(((64 - weight) * colors.r[c0] + weight * colors.r[c1] + 32) >> 6);
-        g=(((64 - weight) * colors.g[c0] + weight * colors.g[c1] + 32) >> 6);
-        b=(((64 - weight) * colors.b[c0] + weight * colors.b[c1] + 32) >> 6);
-        a= ((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
+        r=((64 - weight) * colors.r[c0] + weight * colors.r[c1] + 32) >> 6;
+        g=((64 - weight) * colors.g[c0] + weight * colors.g[c1] + 32) >> 6;
+        b=((64 - weight) * colors.b[c0] + weight * colors.b[c1] + 32) >> 6;
+        a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
 
         /* Interpolate alpha for mode 4 and 5 blocks */
         if (mode == 4 || mode == 5)
         {
-          weight = weight2[alphaIndices[i]];
+          weight=weight2[alphaIndices[i]];
           if (mode == 4 && selectorBit == 0)
-            weight = weight3[alphaIndices[i]];
-
+            weight=weight3[alphaIndices[i]];
           a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
         }
-
         switch (rotation)
         {
-          case 0: break;  // no change
+          case 0: break;  /* no change */
           case 1:
             Swap(a,r);
             break;
@@ -2162,7 +2159,6 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         
         q+=GetPixelChannels(image);
       }
-
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         return(MagickFalse);
     }
