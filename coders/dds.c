@@ -1,4 +1,4 @@
-/*
+﻿/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -878,14 +878,14 @@ static const unsigned char weight4[] = { 0, 4, 9, 13, 17, 21, 26, 30, 34,
 /* stores info for each mode of BC7 */
 static const BC7ModeInfo modeInfo[8] =
 {
-    { 4, 3, 4, 0, 6, 3, 0 },   /* mode 0 */
-    { 6, 2, 6, 0, 2, 3, 0 },   /* mode 1 */
-    { 6, 3, 5, 0, 0, 2, 0 },   /* mode 2 */
-    { 6, 2, 7, 0, 4, 2, 0 },   /* mode 3 */
-    { 0, 1, 5, 6, 0, 2, 3 },   /* mode 4 */
-    { 0, 1, 7, 8, 0, 2, 2 },   /* mode 5 */
-    { 0, 1, 7, 7, 2, 4, 0 },   /* mode 6 */
-    { 6, 2, 5, 5, 4, 2, 0 },   /* mode 7 */
+  { 4, 3, 4, 0, 6, 3, 0 },   /* mode 0 */
+  { 6, 2, 6, 0, 2, 3, 0 },   /* mode 1 */
+  { 6, 3, 5, 0, 0, 2, 0 },   /* mode 2 */
+  { 6, 2, 7, 0, 4, 2, 0 },   /* mode 3 */
+  { 0, 1, 5, 6, 0, 2, 3 },   /* mode 4 */
+  { 0, 1, 7, 8, 0, 2, 2 },   /* mode 5 */
+  { 0, 1, 7, 7, 2, 4, 0 },   /* mode 6 */
+  { 6, 2, 5, 5, 4, 2, 0 },   /* mode 7 */
 };
 
 static const unsigned char PartitionTable[2][64][16] =
@@ -1288,33 +1288,7 @@ static MagickBooleanType IsDDS(const unsigned char *magick, const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e a d D D S I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ReadDDSImage() reads a DirectDraw Surface image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the ReadDDSImage method is:
-%
-%      Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: The image info.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
+
 static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
 {
   size_t
@@ -1901,9 +1875,10 @@ static MagickBooleanType IsPixelAnchorIndex(unsigned char subsetIndex,
   return AnchorIndexTable[3][partitionid] == pixelIndex;
 }
 
-static MagickBooleanType SetBC7Pixels(Image *image,ssize_t x,ssize_t y,
-  BC7Colors colors,unsigned char *subsetIndices,unsigned char *colorIndices,
-  unsigned char *alphaIndices,unsigned char indexPrec,unsigned char sbit,unsigned char rotation,size_t mode,Quantum *q)
+static MagickBooleanType SetBC7Pixels(Image *image,BC7Colors colors,
+  unsigned char *subsetIndices,unsigned char *colorIndices,
+  unsigned char *alphaIndices,unsigned char indexPrec,unsigned char sbit,
+  unsigned char rotation,size_t mode,Quantum *q)
 {
   ssize_t
     i;
@@ -1923,66 +1898,56 @@ static MagickBooleanType SetBC7Pixels(Image *image,ssize_t x,ssize_t y,
     b,
     a;
 
-  count = 0;
-
-  for (j = 0; j < 4; j++)
+  
+  for (i = 0; i < 16; i++)
   {
-    for (i = 0; i < 4; i++)
+    c0 = 2 * subsetIndices[i];
+    c1 = (2 * subsetIndices[i]) + 1;
+
+    /* Interpolation */
+    weight = 0;
+    switch(indexPrec)
     {
-      if ((x + i) < (ssize_t) image->columns &&
-        (y + j) < (ssize_t) image->rows)
-      {
-        c0 = 2 * subsetIndices[count];
-        c1 = (2 * subsetIndices[count]) + 1;
-
-        /* Interpolation */
-        weight = 0;
-        switch(indexPrec)
-        {
-          case 2: weight = weight2[colorIndices[count]]; break;
-          case 3: weight = weight3[colorIndices[count]]; break;
-          case 4: weight = weight4[colorIndices[count]]; break;
-        }
-
-        r=((64 - weight) * colors.r[c0] + weight * colors.r[c1] + 32) >> 6;
-        g=((64 - weight) * colors.g[c0] + weight * colors.g[c1] + 32) >> 6;
-        b=((64 - weight) * colors.b[c0] + weight * colors.b[c1] + 32) >> 6;
-        a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
-
-        // Interpolate alpha for mode 4 and 5 blocks
-        if (mode == 4 || mode == 5)
-        {
-          weight = weight2[alphaIndices[count]];
-          if (mode == 4 && sbit == 0)
-            weight = weight3[alphaIndices[count]];
-
-          a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
-        }
-
-        switch (rotation)
-        {
-          case 0: break;  // no change
-          case 1:
-            Swap(a,r);
-            break;
-          case 2:
-            Swap(a,g);
-            break;
-          case 3:
-            Swap(a,b);
-            break;
-        }
-
-        SetPixelRed(image,ScaleCharToQuantum(r),q);
-        SetPixelGreen(image,ScaleCharToQuantum(g),q);
-        SetPixelBlue(image,ScaleCharToQuantum(b),q);
-        SetPixelOpacity(image,ScaleCharToQuantum(a),q);
-        
-        q+=GetPixelChannels(image);
-
-        count++;
-      }
+      case 2: weight = weight2[colorIndices[i]]; break;
+      case 3: weight = weight3[colorIndices[i]]; break;
+      default: weight = weight4[colorIndices[i]];
     }
+
+    r=((64 - weight) * colors.r[c0] + weight * colors.r[c1] + 32) >> 6;
+    g=((64 - weight) * colors.g[c0] + weight * colors.g[c1] + 32) >> 6;
+    b=((64 - weight) * colors.b[c0] + weight * colors.b[c1] + 32) >> 6;
+    a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
+
+    /* Interpolate alpha for mode 4 and 5 blocks */
+    if (mode == 4 || mode == 5)
+    {
+      weight = weight2[alphaIndices[i]];
+      if (mode == 4 && sbit == 0)
+        weight = weight3[alphaIndices[i]];
+
+      a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
+    }
+
+    switch (rotation)
+    {
+      case 0: break;  /* no change */
+      case 1:
+        Swap(a,r);
+        break;
+      case 2:
+        Swap(a,g);
+        break;
+      case 3:
+        Swap(a,b);
+        break;
+    }
+
+    SetPixelRed(image,ScaleCharToQuantum(r),q);
+    SetPixelGreen(image,ScaleCharToQuantum(g),q);
+    SetPixelBlue(image,ScaleCharToQuantum(b),q);
+    SetPixelAlpha(image,ScaleCharToQuantum(a),q);
+    
+    q+=GetPixelChannels(image);
   }
   return(MagickTrue);
 }
@@ -2097,7 +2062,7 @@ static MagickBooleanType ReadEndpoints(BC7Colors *endpoints,
   if (hasAlpha == MagickFalse)
   {
     for (i = 0; i < numSubsets * 2; i++)
-      endpoints->a[i] = 0;
+      endpoints->a[i] = 255;
   }
   return MagickTrue;
 }
@@ -2185,13 +2150,13 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
       if (mode == 4 && selectorBit == 1)
       {
         indexPrec = 3;
-        // first index has 1 bit precision
+        /* first index has 1 bit precision */
         alphaIndices[0] = GetBit(block, &startBit);
         for (i = 1; i < 16; i++)
           alphaIndices[i] = GetBits(block, &startBit, 2);
       }
 
-      // get color and subset indices
+      /* get color and subset indices */
       for (i = 0; i < 16; i++)
       {
         subsetIndices[i] = GetSubsetIndex(numSubsets, partitionid, i);
@@ -2201,10 +2166,9 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         colorIndices[i] = GetBits(block, &startBit, numbits);
       }
 
-      // get alpha indices if the block has it
+      /* get alpha indices if the block has it */
       if (mode == 5 || (mode == 4 && selectorBit == 0))
       {
-        // first index has 1 bit less precision
         alphaIndices[0] = GetBits(block, &startBit, index2Prec - 1);
 
         for (i = 1; i < 16; i++)
@@ -2215,7 +2179,7 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         return(MagickFalse);
 
       /* Write the pixels */
-      SetBC7Pixels(image,x,y,colors,subsetIndices,colorIndices,alphaIndices,indexPrec,selectorBit,rotation,mode,q);
+      SetBC7Pixels(image,colors,subsetIndices,colorIndices,alphaIndices,indexPrec,selectorBit,rotation,mode,q);
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         return(MagickFalse);
     }
@@ -2225,17 +2189,17 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
   return(MagickTrue);
 }
 
-static MagickBooleanType ReadBC7(const ImageInfo *image_info, Image *image,
-  DDSInfo *dds_info, const MagickBooleanType read_mipmaps,
+static MagickBooleanType ReadBC7(const ImageInfo *image_info,Image *image,
+  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (ReadBC7Pixels(image,dds_info,exception) == MagickFalse)
     return(MagickFalse);
 
   if (read_mipmaps != MagickFalse)
-    return(ReadMipmaps(image_info,image,dds_info,ReadDXT1Pixels,exception));
+    return(ReadMipmaps(image_info,image,dds_info,ReadBC7Pixels,exception));
   else
-    return(SkipDXTMipmaps(image,dds_info,8,exception));
+    return(SkipDXTMipmaps(image,dds_info,16,exception));
 }
 
 static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
@@ -2488,6 +2452,32 @@ static MagickBooleanType ReadUncompressedRGBA(const ImageInfo *image_info,
     return(SkipRGBMipmaps(image,dds_info,4,exception));
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d D D S I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadDDSImage() reads a DirectDraw Surface image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadDDSImage method is:
+%
+%      Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
 static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   const char
@@ -2681,7 +2671,6 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case DXGI_FORMAT_BC7_TYPELESS:
             case DXGI_FORMAT_BC7_UNORM:
-            case DXGI_FORMAT_BC7_UNORM_SRGB:
             {
               alpha_trait = BlendPixelTrait;
               compression = BC7Compression;
