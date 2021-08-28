@@ -2164,12 +2164,12 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
     {
       status=TransformImageColorspace(image,GRAYColorspace,exception);
       (void) NormalizeImage(image,exception);
-      status=BilevelImage(image,QuantumRange/2.0,exception);
       quantize_info=AcquireQuantizeInfo(image_info);
-      quantize_info->number_colors=256;
-      quantize_info->colorspace=GRAYColorspace;
+      quantize_info->number_colors=2;
+      quantize_info->dither_method=FloydSteinbergDitherMethod;
       status=QuantizeImage(quantize_info,image,exception);
       quantize_info=DestroyQuantizeInfo(quantize_info);
+      status=MinMaxStretchImage(image,0.0,0.0,1.0,exception);
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
