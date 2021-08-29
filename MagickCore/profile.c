@@ -1101,84 +1101,79 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               {
                 source_info.colorspace=CMYKColorspace;
                 source_info.channels=4;
+                if (highres != MagickFalse)
+                  {
+                    source_info.type=(cmsUInt32Number) TYPE_CMYK_DBL;
+                    source_info.scale=100.0;
+                  }
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_CMYK_8;
                 else
+                  source_info.type=(cmsUInt32Number) TYPE_CMYK_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                  if (highres == MagickFalse)
-                    source_info.type=(cmsUInt32Number) TYPE_CMYK_16;
-                  else
+                else
+                  source_info.type=(cmsUInt32Number) TYPE_CMYK_16;
 #endif
-                    {
-                      source_info.type=(cmsUInt32Number) TYPE_CMYK_DBL;
-                      source_info.scale=100.0;
-                    }
                 break;
               }
               case cmsSigGrayData:
               {
                 source_info.colorspace=GRAYColorspace;
                 source_info.channels=1;
+                if (highres != MagickFalse)
+                  source_info.type=(cmsUInt32Number) TYPE_GRAY_DBL;
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_GRAY_8;
                 else
+                  source_info.type=(cmsUInt32Number) TYPE_GRAY_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                  if (highres == MagickFalse)
-                    source_info.type=(cmsUInt32Number) TYPE_GRAY_16;
-                  else
+                else
+                  source_info.type=(cmsUInt32Number) TYPE_GRAY_16;
 #endif
-                    source_info.type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 break;
               }
               case cmsSigLabData:
               {
                 source_info.colorspace=LabColorspace;
+                if (highres != MagickFalse)
+                  {
+                    source_info.type=(cmsUInt32Number) TYPE_Lab_DBL;
+                    source_info.scale=100.0;
+                    source_info.translate=(-0.5);
+                  }
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_Lab_8;
                 else
+                  source_info.type=(cmsUInt32Number) TYPE_Lab_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                  if (highres == MagickFalse)
-                    source_info.type=(cmsUInt32Number) TYPE_Lab_16;
-                  else
+                else
+                  source_info.type=(cmsUInt32Number) TYPE_Lab_16;
 #endif
-                    {
-                      source_info.type=(cmsUInt32Number) TYPE_Lab_DBL;
-                      source_info.scale=100.0;
-                      source_info.translate=(-0.5);
-                    }
                 break;
               }
               case cmsSigRgbData:
               {
                 source_info.colorspace=sRGBColorspace;
+                if (highres != MagickFalse)
+                  source_info.type=(cmsUInt32Number) TYPE_RGB_DBL;
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_RGB_8;
                 else
+                  source_info.type=(cmsUInt32Number) TYPE_RGB_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                  if (highres == MagickFalse)
-                    source_info.type=(cmsUInt32Number) TYPE_RGB_16;
-                  else
+                else
+                  source_info.type=(cmsUInt32Number) TYPE_RGB_16;
 #endif
-                    source_info.type=(cmsUInt32Number) TYPE_RGB_DBL;
                 break;
               }
               case cmsSigXYZData:
               {
                 source_info.colorspace=XYZColorspace;
+                if (highres != MagickFalse)
+                  source_info.type=(cmsUInt32Number) TYPE_XYZ_DBL;
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_XYZ_8;
                 else
+                  source_info.type=(cmsUInt32Number) TYPE_XYZ_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                  if (highres == MagickFalse)
-                    source_info.type=(cmsUInt32Number) TYPE_XYZ_16;
-                  else
+                else
+                  source_info.type=(cmsUInt32Number) TYPE_XYZ_16;
 #endif
-                    source_info.type=(cmsUInt32Number) TYPE_XYZ_DBL;
                 break;
               }
               default:
@@ -1197,84 +1192,79 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               {
                 target_info.colorspace=CMYKColorspace;
                 target_info.channels=4;
+                if (highres != MagickFalse)
+                  {
+                    target_info.type=(cmsUInt32Number) TYPE_CMYK_DBL;
+                    target_info.scale=0.01;
+                  }
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-                if (highres == MagickFalse)
-                  target_info.type=(cmsUInt32Number) TYPE_CMYK_8;
                 else
+                  target_info.type=(cmsUInt32Number) TYPE_CMYK_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                  if (highres == MagickFalse)
-                    target_info.type=(cmsUInt32Number) TYPE_CMYK_16;
-                  else
+                else
+                  target_info.type=(cmsUInt32Number) TYPE_CMYK_16;
 #endif
-                    {
-                      target_info.type=(cmsUInt32Number) TYPE_CMYK_DBL;
-                      target_info.scale=0.01;
-                    }
                 break;
               }
               case cmsSigGrayData:
               {
                 target_info.colorspace=GRAYColorspace;
                 target_info.channels=1;
+                if (highres != MagickFalse)
+                  target_info.type=(cmsUInt32Number) TYPE_GRAY_DBL;
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-                if (highres == MagickFalse)
-                  target_info.type=(cmsUInt32Number) TYPE_GRAY_8;
                 else
+                  target_info.type=(cmsUInt32Number) TYPE_GRAY_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                  if (highres == MagickFalse)
-                    target_info.type=(cmsUInt32Number) TYPE_GRAY_16;
-                  else
+                else
+                  target_info.type=(cmsUInt32Number) TYPE_GRAY_16;
 #endif
-                    target_info.type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 break;
               }
               case cmsSigLabData:
               {
                 target_info.colorspace=LabColorspace;
+                if (highres != MagickFalse)
+                  {
+                    target_info.type=(cmsUInt32Number) TYPE_Lab_DBL;
+                    target_info.scale=0.01;
+                    target_info.translate=0.5;
+                  }
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-                if (highres == MagickFalse)
-                  target_info.type=(cmsUInt32Number) TYPE_Lab_8;
                 else
+                  target_info.type=(cmsUInt32Number) TYPE_Lab_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                  if (highres == MagickFalse)
-                    target_info.type=(cmsUInt32Number) TYPE_Lab_16;
-                  else
+                else
+                  target_info.type=(cmsUInt32Number) TYPE_Lab_16;
 #endif
-                    {
-                      target_info.type=(cmsUInt32Number) TYPE_Lab_DBL;
-                      target_info.scale=0.01;
-                      target_info.translate=0.5;
-                    }
                 break;
               }
               case cmsSigRgbData:
               {
                 target_info.colorspace=sRGBColorspace;
+                if (highres != MagickFalse)
+                  target_info.type=(cmsUInt32Number) TYPE_RGB_DBL;
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-                if (highres == MagickFalse)
-                  target_info.type=(cmsUInt32Number) TYPE_RGB_8;
                 else
+                  target_info.type=(cmsUInt32Number) TYPE_RGB_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                  if (highres == MagickFalse)
-                    target_info.type=(cmsUInt32Number) TYPE_RGB_16;
-                  else
+                else
+                  target_info.type=(cmsUInt32Number) TYPE_RGB_16;
 #endif
-                    target_info.type=(cmsUInt32Number) TYPE_RGB_DBL;
                 break;
               }
               case cmsSigXYZData:
               {
                 target_info.colorspace=XYZColorspace;
+                if (highres != MagickFalse)
+                  target_info.type=(cmsUInt32Number) TYPE_XYZ_DBL;
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-                if (highres == MagickFalse)
-                  target_info.type=(cmsUInt32Number) TYPE_XYZ_8;
                 else
+                  target_info.type=(cmsUInt32Number) TYPE_XYZ_8;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                  if (highres == MagickFalse)
-                    source_info.type=(cmsUInt32Number) TYPE_XYZ_16;
-                  else
+                else
+                  source_info.type=(cmsUInt32Number) TYPE_XYZ_16;
 #endif
-                    target_info.type=(cmsUInt32Number) TYPE_XYZ_DBL;
                 break;
               }
               default:
