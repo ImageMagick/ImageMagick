@@ -3894,11 +3894,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   for (j = 0; j < 2; j++)
   {
     if (j == 0)
-      status = png_get_text(ping,ping_info,&text,&num_text) != 0 ?
-          MagickTrue : MagickFalse;
+      status=png_get_text(ping,ping_info,&text,&num_text) != 0 ?
+        MagickTrue : MagickFalse;
     else
-      status = png_get_text(ping,end_info,&text,&num_text) != 0 ?
-          MagickTrue : MagickFalse;
+      status=png_get_text(ping,end_info,&text,&num_text) != 0 ?
+        MagickTrue : MagickFalse;
 
     if (status != MagickFalse)
       for (i=0; i < (ssize_t) num_text; i++)
