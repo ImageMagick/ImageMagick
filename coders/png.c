@@ -2034,7 +2034,7 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       (chunk->name[2] ==  78) && (chunk->name[3] ==  84))
     {
      if (chunk->size != 1)
-       return(-1); /* Error return */
+       return(-1);
 
      image=(Image *) png_get_user_chunk_ptr(ping);
 
@@ -2049,10 +2049,11 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       (chunk->name[2] ==  65) && (chunk->name[3] == 103))
     {
       if (chunk->size != 9)
-        return(-1); /* Error return */
+        return(-1);
 
+       /* ImageMagick requires pixel units */
       if (chunk->data[8] != 0)
-        return(0);  /* ImageMagick requires pixel units */
+        return(0);
 
       image=(Image *) png_get_user_chunk_ptr(ping);
 
