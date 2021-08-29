@@ -2001,10 +2001,9 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
      "    read_user_chunk: found %c%c%c%c chunk",
        chunk->name[0],chunk->name[1],chunk->name[2],chunk->name[3]);
 
-  if (chunk->name[0]  == 101 &&
-      (chunk->name[1] ==  88 || chunk->name[1] == 120 ) &&
-      chunk->name[2] ==   73 &&
-      chunk-> name[3] == 102)
+  if ((chunk->name[0] == 101) &&
+      ((chunk->name[1] == 88) || (chunk->name[1] == 120)) &&
+      (chunk->name[2] ==  73) && (chunk->name[3] == 102))
     {
       /* process eXIf or exIf chunk */
 
@@ -2020,10 +2019,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
     }
 
   /* orNT */
-  if (chunk->name[0] == 111 &&
-      chunk->name[1] == 114 &&
-      chunk->name[2] ==  78 &&
-      chunk->name[3] ==  84)
+  if ((chunk->name[0] == 111) && (chunk->name[1] == 114) &&
+      (chunk->name[2] ==  78) && (chunk->name[3] ==  84))
     {
      /* recognized orNT */
      if (chunk->size != 1)
@@ -2038,10 +2035,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
     }
 
   /* vpAg (deprecated, replaced by caNv) */
-  if (chunk->name[0] == 118 &&
-      chunk->name[1] == 112 &&
-      chunk->name[2] ==  65 &&
-      chunk->name[3] == 103)
+  if ((chunk->name[0] == 118) && (chunk->name[1] == 112) &&
+      (chunk->name[2] ==  65) && (chunk->name[3] == 103))
     {
       /* recognized vpAg */
 
@@ -2060,10 +2055,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
     }
 
   /* caNv */
-  if (chunk->name[0] ==  99 &&
-      chunk->name[1] ==  97 &&
-      chunk->name[2] ==  78 &&
-      chunk->name[3] == 118)
+  if ((chunk->name[0] == 99) && (chunk->name[1] ==  97) &&
+      (chunk->name[2] == 78) && (chunk->name[3] == 118))
     {
       /* recognized caNv */
 
@@ -2081,8 +2074,8 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
     }
 
   /* acTL */
-  if ((chunk->name[0]  == 97) && (chunk->name[1]  == 99) &&
-      (chunk->name[2]  == 84) && (chunk->name[3]  == 76))
+  if ((chunk->name[0] == 97) && (chunk->name[1] == 99) &&
+      (chunk->name[2] == 84) && (chunk->name[3] == 76))
     {
       image=(Image *) png_get_user_chunk_ptr(ping);
       error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
