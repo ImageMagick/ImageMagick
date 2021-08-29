@@ -526,9 +526,9 @@ static void TransformDoublePixels(const int id,const Image* image,
   const cmsHTRANSFORM *transform,Quantum *q)
 {
 #define GetLCMSPixel(source_info,pixel,translate) \
-  (source_info->scale*(QuantumScale*(pixel)+(translate)))
+  (source_info->scale*((QuantumScale*pixel)+translate))
 #define SetLCMSPixel(target_info,pixel,translate) \
-  ClampToQuantum(target_info->scale*(QuantumRange*(pixel)+(translate)))
+  ClampToQuantum(target_info->scale*((QuantumRange*pixel)+translate))
 
   double
     *p;
