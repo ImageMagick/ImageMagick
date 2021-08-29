@@ -413,8 +413,8 @@ static void **DestroyPixelThreadSet(void **pixels)
   return(pixels);
 }
 
-static void **AcquirePixelThreadSet(const size_t columns,
-  const size_t channels,MagickBooleanType highres)
+static void **AcquirePixelThreadSet(const size_t columns,const size_t channels,
+  MagickBooleanType highres)
 {
   ssize_t
     i;
@@ -465,11 +465,11 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(const LCMSInfo *source_info,
   cmsHTRANSFORM
     *transform;
 
-  ssize_t
-    i;
-
   size_t
     number_threads;
+
+  ssize_t
+    i;
 
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   transform=(cmsHTRANSFORM *) AcquireQuantumMemory(number_threads,
@@ -525,10 +525,10 @@ static void TransformDoublePixels(const int id,const Image* image,
   const LCMSInfo *source_info,const LCMSInfo *target_info,
   const cmsHTRANSFORM *transform,Quantum *q)
 {
-#define GetLCMSPixel(source_info,pixel) \
-  (source_info->scale*QuantumScale*(pixel)+source_info->translate)
-#define SetLCMSPixel(target_info,pixel) \
-  ClampToQuantum(target_info->scale*QuantumRange*(pixel)+target_info->translate)
+#define GetLCMSPixel(source_info,pixel,translate) \
+  (source_info->scale*(QuantumScale*(pixel)+(translate)))
+#define SetLCMSPixel(target_info,pixel,translate) \
+  ClampToQuantum(target_info->scale*(QuantumRange*(pixel)+(translate)))
 
   double
     *p;
@@ -539,37 +539,41 @@ static void TransformDoublePixels(const int id,const Image* image,
   p=(double *) source_info->pixels[id];
   for (x=0; x < (ssize_t) image->columns; x++)
   {
-    *p++=GetLCMSPixel(source_info,GetPixelRed(image,q));
+    *p++=GetLCMSPixel(source_info,GetPixelRed(image,q),0.0);
     if (source_info->channels > 1)
       {
-        *p++=GetLCMSPixel(source_info,GetPixelGreen(image,q));
-        *p++=GetLCMSPixel(source_info,GetPixelBlue(image,q));
+        *p++=GetLCMSPixel(source_info,GetPixelGreen(image,q),
+          source_info->translate);
+        *p++=GetLCMSPixel(source_info,GetPixelBlue(image,q),
+          source_info->translate);
       }
     if (source_info->channels > 3)
-      *p++=GetLCMSPixel(source_info,GetPixelBlack(image,q));
+      *p++=GetLCMSPixel(source_info,GetPixelBlack(image,q),0.0);
     q+=GetPixelChannels(image);
   }
-  cmsDoTransform(transform[id],source_info->pixels[id],
-    target_info->pixels[id],(unsigned int) image->columns);
+  cmsDoTransform(transform[id],source_info->pixels[id],target_info->pixels[id],
+    (unsigned int) image->columns);
   p=(double *) target_info->pixels[id];
   q-=GetPixelChannels(image)*image->columns;
   for (x=0; x < (ssize_t) image->columns; x++)
   {
     if (target_info->channels == 1)
-      SetPixelGray(image,SetLCMSPixel(target_info,*p),q);
+      SetPixelGray(image,SetLCMSPixel(target_info,*p,0.0),q);
     else
-      SetPixelRed(image,SetLCMSPixel(target_info,*p),q);
+      SetPixelRed(image,SetLCMSPixel(target_info,*p,0.0),q);
     p++;
     if (target_info->channels > 1)
       {
-        SetPixelGreen(image,SetLCMSPixel(target_info,*p),q);
+        SetPixelGreen(image,SetLCMSPixel(target_info,*p,
+          target_info->translate),q);
         p++;
-        SetPixelBlue(image,SetLCMSPixel(target_info,*p),q);
+        SetPixelBlue(image,SetLCMSPixel(target_info,*p,
+          target_info->translate),q);
         p++;
       }
     if (target_info->channels > 3)
       {
-        SetPixelBlack(image,SetLCMSPixel(target_info,*p),q);
+        SetPixelBlack(image,SetLCMSPixel(target_info,*p,0.0),q);
         p++;
       }
     q+=GetPixelChannels(image);
@@ -599,8 +603,8 @@ static void TransformQuantumPixels(const int id,const Image* image,
       *p++=GetPixelBlack(image,q);
     q+=GetPixelChannels(image);
   }
-  cmsDoTransform(transform[id],source_info->pixels[id],
-    target_info->pixels[id],(unsigned int) image->columns);
+  cmsDoTransform(transform[id],source_info->pixels[id],target_info->pixels[id],
+    (unsigned int) image->columns);
   p=(Quantum *) target_info->pixels[id];
   q-=GetPixelChannels(image)*image->columns;
   for (x=0; x < (ssize_t) image->columns; x++)
@@ -1075,8 +1079,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               {
                 target_info.profile=source_info.profile;
                 source_info.profile=cmsOpenProfileFromMemTHR(cms_context,
-                  GetStringInfoDatum(icc_profile),
-                  (cmsUInt32Number) GetStringInfoLength(icc_profile));
+                  GetStringInfoDatum(icc_profile),(cmsUInt32Number)
+                  GetStringInfoLength(icc_profile));
                 if (source_info.profile == (cmsHPROFILE) NULL)
                   ThrowProfileException(ResourceLimitError,
                     "ColorspaceColorProfileMismatch",name);
@@ -1102,14 +1106,14 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   source_info.type=(cmsUInt32Number) TYPE_CMYK_8;
                 else
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_CMYK_16;
-                else
+                  if (highres == MagickFalse)
+                    source_info.type=(cmsUInt32Number) TYPE_CMYK_16;
+                  else
 #endif
-                  {
-                    source_info.type=(cmsUInt32Number) TYPE_CMYK_DBL;
-                    source_info.scale=100.0;
-                  }
+                    {
+                      source_info.type=(cmsUInt32Number) TYPE_CMYK_DBL;
+                      source_info.scale=100.0;
+                    }
                 break;
               }
               case cmsSigGrayData:
@@ -1121,11 +1125,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   source_info.type=(cmsUInt32Number) TYPE_GRAY_8;
                 else
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_GRAY_16;
-                else
+                  if (highres == MagickFalse)
+                    source_info.type=(cmsUInt32Number) TYPE_GRAY_16;
+                  else
 #endif
-                  source_info.type=(cmsUInt32Number) TYPE_GRAY_DBL;
+                    source_info.type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 break;
               }
               case cmsSigLabData:
@@ -1136,15 +1140,15 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   source_info.type=(cmsUInt32Number) TYPE_Lab_8;
                 else
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_Lab_16;
-                else
+                  if (highres == MagickFalse)
+                    source_info.type=(cmsUInt32Number) TYPE_Lab_16;
+                  else
 #endif
-                  {
-                    source_info.type=(cmsUInt32Number) TYPE_Lab_DBL;
-                    source_info.scale=100.0;
-                    source_info.translate=(-0.5);
-                  }
+                    {
+                      source_info.type=(cmsUInt32Number) TYPE_Lab_DBL;
+                      source_info.scale=100.0;
+                      source_info.translate=(-0.5);
+                    }
                 break;
               }
               case cmsSigRgbData:
@@ -1155,11 +1159,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   source_info.type=(cmsUInt32Number) TYPE_RGB_8;
                 else
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_RGB_16;
-                else
+                  if (highres == MagickFalse)
+                    source_info.type=(cmsUInt32Number) TYPE_RGB_16;
+                  else
 #endif
-                  source_info.type=(cmsUInt32Number) TYPE_RGB_DBL;
+                    source_info.type=(cmsUInt32Number) TYPE_RGB_DBL;
                 break;
               }
               case cmsSigXYZData:
@@ -1170,11 +1174,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   source_info.type=(cmsUInt32Number) TYPE_XYZ_8;
                 else
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_XYZ_16;
-                else
+                  if (highres == MagickFalse)
+                    source_info.type=(cmsUInt32Number) TYPE_XYZ_16;
+                  else
 #endif
-                  source_info.type=(cmsUInt32Number) TYPE_XYZ_DBL;
+                    source_info.type=(cmsUInt32Number) TYPE_XYZ_DBL;
                 break;
               }
               default:
@@ -1198,14 +1202,14 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   target_info.type=(cmsUInt32Number) TYPE_CMYK_8;
                 else
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                if (highres == MagickFalse)
-                  target_info.type=(cmsUInt32Number) TYPE_CMYK_16;
-                else
+                  if (highres == MagickFalse)
+                    target_info.type=(cmsUInt32Number) TYPE_CMYK_16;
+                  else
 #endif
-                  {
-                    target_info.type=(cmsUInt32Number) TYPE_CMYK_DBL;
-                    target_info.scale=0.01;
-                  }
+                    {
+                      target_info.type=(cmsUInt32Number) TYPE_CMYK_DBL;
+                      target_info.scale=0.01;
+                    }
                 break;
               }
               case cmsSigGrayData:
@@ -1217,11 +1221,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   target_info.type=(cmsUInt32Number) TYPE_GRAY_8;
                 else
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                if (highres == MagickFalse)
-                  target_info.type=(cmsUInt32Number) TYPE_GRAY_16;
-                else
+                  if (highres == MagickFalse)
+                    target_info.type=(cmsUInt32Number) TYPE_GRAY_16;
+                  else
 #endif
-                  target_info.type=(cmsUInt32Number) TYPE_GRAY_DBL;
+                    target_info.type=(cmsUInt32Number) TYPE_GRAY_DBL;
                 break;
               }
               case cmsSigLabData:
@@ -1232,15 +1236,15 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   target_info.type=(cmsUInt32Number) TYPE_Lab_8;
                 else
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                if (highres == MagickFalse)
-                  target_info.type=(cmsUInt32Number) TYPE_Lab_16;
-                else
+                  if (highres == MagickFalse)
+                    target_info.type=(cmsUInt32Number) TYPE_Lab_16;
+                  else
 #endif
-                  {
-                    target_info.type=(cmsUInt32Number) TYPE_Lab_DBL;
-                    target_info.scale=0.01;
-                    target_info.translate=0.5;
-                  }
+                    {
+                      target_info.type=(cmsUInt32Number) TYPE_Lab_DBL;
+                      target_info.scale=0.01;
+                      target_info.translate=0.5;
+                    }
                 break;
               }
               case cmsSigRgbData:
@@ -1251,11 +1255,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   target_info.type=(cmsUInt32Number) TYPE_RGB_8;
                 else
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                if (highres == MagickFalse)
-                  target_info.type=(cmsUInt32Number) TYPE_RGB_16;
-                else
+                  if (highres == MagickFalse)
+                    target_info.type=(cmsUInt32Number) TYPE_RGB_16;
+                  else
 #endif
-                  target_info.type=(cmsUInt32Number) TYPE_RGB_DBL;
+                    target_info.type=(cmsUInt32Number) TYPE_RGB_DBL;
                 break;
               }
               case cmsSigXYZData:
@@ -1266,11 +1270,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   target_info.type=(cmsUInt32Number) TYPE_XYZ_8;
                 else
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-                if (highres == MagickFalse)
-                  source_info.type=(cmsUInt32Number) TYPE_XYZ_16;
-                else
+                  if (highres == MagickFalse)
+                    source_info.type=(cmsUInt32Number) TYPE_XYZ_16;
+                  else
 #endif
-                  target_info.type=(cmsUInt32Number) TYPE_XYZ_DBL;
+                    target_info.type=(cmsUInt32Number) TYPE_XYZ_DBL;
                 break;
               }
               default:
@@ -1310,8 +1314,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             if (image->black_point_compensation != MagickFalse)
               flags|=cmsFLAGS_BLACKPOINTCOMPENSATION;
 #endif
-            transform=AcquireTransformThreadSet(&source_info,&target_info,
-              flags,cms_context);
+            transform=AcquireTransformThreadSet(&source_info,&target_info,flags,
+              cms_context);
             if (transform == (cmsHTRANSFORM *) NULL)
               ThrowProfileException(ImageError,"UnableToCreateColorTransform",
                 name);
@@ -1371,9 +1375,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                   continue;
                 }
               if (highres != MagickFalse)
-                TransformDoublePixels(id,image,&source_info,&target_info,transform,q);
+                TransformDoublePixels(id,image,&source_info,&target_info,
+                  transform,q);
               else
-                TransformQuantumPixels(id,image,&source_info,&target_info,transform,q);
+                TransformQuantumPixels(id,image,&source_info,&target_info,
+                  transform,q);
               sync=SyncCacheViewAuthenticPixels(image_view,exception);
               if (sync == MagickFalse)
                 status=MagickFalse;
