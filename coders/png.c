@@ -1982,11 +1982,6 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
       ((chunk->name[1] == 88) || (chunk->name[1] == 120)) &&
       (chunk->name[2] ==  73) && (chunk->name[3] == 102))
     {
-      /* process eXIf or exIf chunk */
-
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        " recognized eXIf chunk");
-
       image=(Image *) png_get_user_chunk_ptr(ping);
 
       error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
@@ -1999,7 +1994,6 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
   if ((chunk->name[0] == 111) && (chunk->name[1] == 114) &&
       (chunk->name[2] ==  78) && (chunk->name[3] ==  84))
     {
-     /* recognized orNT */
      if (chunk->size != 1)
        return(-1); /* Error return */
 
@@ -2015,8 +2009,6 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
   if ((chunk->name[0] == 118) && (chunk->name[1] == 112) &&
       (chunk->name[2] ==  65) && (chunk->name[3] == 103))
     {
-      /* recognized vpAg */
-
       if (chunk->size != 9)
         return(-1); /* Error return */
 
@@ -2035,8 +2027,6 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
   if ((chunk->name[0] == 99) && (chunk->name[1] ==  97) &&
       (chunk->name[2] == 78) && (chunk->name[3] == 118))
     {
-      /* recognized caNv */
-
       if (chunk->size != 16)
         return(-1); /* Error return */
 
