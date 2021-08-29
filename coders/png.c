@@ -1952,6 +1952,45 @@ static void read_eXIf_chunk(Image *image,png_struct *ping,png_info *info,
 #endif
 
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
+static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
+  ExceptionInfo *exception)
+{
+  if ((size > 19) && (LocaleNCompare((const char *) data,
+      "XML:com.adobe.xmp",17) == 0) && (data[18] == 0) && (data[19] == 0))
+    {
+      size_t
+        offset;
+
+      StringInfo
+        *profile;
+
+      offset=20;
+      while(offset < size)
+      {
+        if (data[offset++] == 0)
+          break;
+      }
+      while(offset < size)
+      {
+        if (data[offset++] == 0)
+          break;
+      }
+      if (size-offset < 1)
+        return(0);
+      profile=BlobToStringInfo((const void *) (data+offset),size-offset);
+      if (profile == (StringInfo *) NULL)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",
+            image->filename);
+          return(-1);
+        }
+      (void) SetImageProfile(image,"xmp",profile,exception);
+      profile=DestroyStringInfo(profile);
+      return(1);
+    }
+  return(0);
+}
 
 static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 {
@@ -2051,6 +2090,18 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
         error_info->exception);
 
       return(1);
+    }
+
+  /* iTXt */
+  if ((chunk->name[0] == 105) && (chunk->name[1] ==  84) &&
+      (chunk->name[2] ==  88) && (chunk->name[3] == 116))
+    {
+      image=(Image *) png_get_user_chunk_ptr(ping);
+
+      error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
+
+      return(PNGParseiTXt(image,chunk->data,chunk->size,
+        error_info->exception));
     }
 
   return(0); /* Did not recognize */
