@@ -1895,23 +1895,33 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
   return MagickTrue;
 }
 
-static int PNGSetExifProfile(Image *image,png_size_t size,png_byte *data,
+static int PNGSetExifProfile(Image *image,png_byte *data,png_size_t size,
   ExceptionInfo *exception)
 {
   StringInfo
     *profile;
 
-  unsigned char
-    *p;
+  if ((size > 6) && (data[0] == 'E') && (data[1] == 'x') && (data[2] == 'i') &&
+      (data[3] == 'f') && (data[4] == '\0') && (data[5] == '\0'))
+    profile=BlobToStringInfo((const void *) data,size);
+  else
+    {
+      unsigned char
+        *p;
 
-  png_byte
-    *s;
-
-  size_t
-    i;
-
-  profile=BlobToStringInfo((const void *) NULL,size+6);
-
+      profile=BlobToStringInfo((const void *) NULL,size+6);
+      if (profile != (StringInfo *) NULL)
+        {
+          p=GetStringInfoDatum(profile);
+          *p++ ='E';
+          *p++ ='x';
+          *p++ ='i';
+          *p++ ='f';
+          *p++ ='\0';
+          *p++ ='\0';
+          (void) CopyMagickMemory(p,data,size);
+        }
+    }
   if (profile == (StringInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1919,41 +1929,8 @@ static int PNGSetExifProfile(Image *image,png_size_t size,png_byte *data,
         image->filename);
       return(-1);
     }
-  p=GetStringInfoDatum(profile);
-
-  /* Initialize profile with "Exif\0\0" */
-  *p++ ='E';
-  *p++ ='x';
-  *p++ ='i';
-  *p++ ='f';
-  *p++ ='\0';
-  *p++ ='\0';
-
-  s=data;
-  i=0;
-  if (size > 6)
-    {
-      /* Skip first 6 bytes if "Exif\0\0" is
-          already present by accident
-      */
-      if (s[0] == 'E' && s[1] == 'x'  && s[2] == 'i' &&
-          s[3] == 'f' && s[4] == '\0' && s[5] == '\0')
-      {
-        s+=6;
-        i=6;
-        SetStringInfoLength(profile,size);
-        p=GetStringInfoDatum(profile);
-      }
-    }
-
-  /* copy chunk->data to profile */
-  for (; i<size; i++)
-    *p++ = *s++;
-
   (void) SetImageProfile(image,"exif",profile,exception);
-
   profile=DestroyStringInfo(profile);
-
   return(1);
 }
 
@@ -1969,7 +1946,7 @@ static void read_eXIf_chunk(Image *image,png_struct *ping,png_info *info,
 
 #if PNG_LIBPNG_VER > 10631
   if (png_get_eXIf_1(ping,info,&size,&data))
-    (void) PNGSetExifProfile(image,size,data,exception);
+    (void) PNGSetExifProfile(image,data,size,exception);
 #endif
 }
 #endif
@@ -2014,7 +1991,7 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
 
       error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
 
-      return(PNGSetExifProfile(image,chunk->size,chunk->data,
+      return(PNGSetExifProfile(image,chunk->data,chunk->size,
         error_info->exception));
     }
 
