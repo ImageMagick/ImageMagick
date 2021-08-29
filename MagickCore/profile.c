@@ -367,8 +367,8 @@ typedef struct _LCMSInfo
     intent;
 
   double
-    scale,
-    translate;
+    scale[4],
+    translate[4];
 
   void
     **magick_restrict pixels;
@@ -525,10 +525,10 @@ static void TransformDoublePixels(const int id,const Image* image,
   const LCMSInfo *source_info,const LCMSInfo *target_info,
   const cmsHTRANSFORM *transform,Quantum *q)
 {
-#define GetLCMSPixel(source_info,pixel,translate) \
-  (source_info->scale*((QuantumScale*pixel)+translate))
-#define SetLCMSPixel(target_info,pixel,translate) \
-  ClampToQuantum(target_info->scale*((QuantumRange*pixel)+translate))
+#define GetLCMSPixel(source_info,pixel,index) \
+  (source_info->scale[index]*((QuantumScale*pixel)+source_info->translate[index]))
+#define SetLCMSPixel(target_info,pixel,index) \
+  ClampToQuantum(target_info->scale[index]*((QuantumRange*pixel)+target_info->translate[index]))
 
   double
     *p;
@@ -539,16 +539,14 @@ static void TransformDoublePixels(const int id,const Image* image,
   p=(double *) source_info->pixels[id];
   for (x=0; x < (ssize_t) image->columns; x++)
   {
-    *p++=GetLCMSPixel(source_info,GetPixelRed(image,q),0.0);
+    *p++=GetLCMSPixel(source_info,GetPixelRed(image,q),0);
     if (source_info->channels > 1)
       {
-        *p++=GetLCMSPixel(source_info,GetPixelGreen(image,q),
-          source_info->translate);
-        *p++=GetLCMSPixel(source_info,GetPixelBlue(image,q),
-          source_info->translate);
+        *p++=GetLCMSPixel(source_info,GetPixelGreen(image,q),1);
+        *p++=GetLCMSPixel(source_info,GetPixelBlue(image,q),2);
       }
     if (source_info->channels > 3)
-      *p++=GetLCMSPixel(source_info,GetPixelBlack(image,q),0.0);
+      *p++=GetLCMSPixel(source_info,GetPixelBlack(image,q),3);
     q+=GetPixelChannels(image);
   }
   cmsDoTransform(transform[id],source_info->pixels[id],target_info->pixels[id],
@@ -558,22 +556,20 @@ static void TransformDoublePixels(const int id,const Image* image,
   for (x=0; x < (ssize_t) image->columns; x++)
   {
     if (target_info->channels == 1)
-      SetPixelGray(image,SetLCMSPixel(target_info,*p,0.0),q);
+      SetPixelGray(image,SetLCMSPixel(target_info,*p,0),q);
     else
-      SetPixelRed(image,SetLCMSPixel(target_info,*p,0.0),q);
+      SetPixelRed(image,SetLCMSPixel(target_info,*p,0),q);
     p++;
     if (target_info->channels > 1)
       {
-        SetPixelGreen(image,SetLCMSPixel(target_info,*p,
-          target_info->translate),q);
+        SetPixelGreen(image,SetLCMSPixel(target_info,*p,1),q);
         p++;
-        SetPixelBlue(image,SetLCMSPixel(target_info,*p,
-          target_info->translate),q);
+        SetPixelBlue(image,SetLCMSPixel(target_info,*p,2),q);
         p++;
       }
     if (target_info->channels > 3)
       {
-        SetPixelBlack(image,SetLCMSPixel(target_info,*p,0.0),q);
+        SetPixelBlack(image,SetLCMSPixel(target_info,*p,3),q);
         p++;
       }
     q+=GetPixelChannels(image);
@@ -622,6 +618,22 @@ static void TransformQuantumPixels(const int id,const Image* image,
       SetPixelBlack(image,*p++,q);
     q+=GetPixelChannels(image);
   }
+}
+
+static inline void SetLCMSInfoTranslate(LCMSInfo *info,const double translate)
+{
+  info->translate[0]=translate;
+  info->translate[1]=translate;
+  info->translate[2]=translate;
+  info->translate[3]=translate;
+}
+
+static inline void SetLCMSInfoScale(LCMSInfo *info,const double scale)
+{
+  info->scale[0]=scale;
+  info->scale[1]=scale;
+  info->scale[2]=scale;
+  info->scale[3]=scale;
 }
 #endif
 
@@ -1091,8 +1103,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             if (IsStringFalse(artifact) != MagickFalse)
               highres=MagickFalse;
 #endif
-            source_info.scale=1.0;
-            source_info.translate=0.0;
+            SetLCMSInfoScale(&source_info,1.0);
+            SetLCMSInfoTranslate(&source_info,0.0);
             source_info.colorspace=sRGBColorspace;
             source_info.channels=3;
             switch (cmsGetColorSpace(source_info.profile))
@@ -1104,7 +1116,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 if (highres != MagickFalse)
                   {
                     source_info.type=(cmsUInt32Number) TYPE_CMYK_DBL;
-                    source_info.scale=100.0;
+                    SetLCMSInfoScale(&source_info,100.0);
                   }
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
                 else
@@ -1136,8 +1148,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 if (highres != MagickFalse)
                   {
                     source_info.type=(cmsUInt32Number) TYPE_Lab_DBL;
-                    source_info.scale=100.0;
-                    source_info.translate=(-0.5);
+                    source_info.scale[0]=100.0;
+                    source_info.scale[1]=255.0;
+                    source_info.scale[2]=255.0;
+                    source_info.translate[1]=(-0.5);
+                    source_info.translate[2]=(-0.5);
                   }
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
                 else
@@ -1183,8 +1198,8 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             signature=cmsGetPCS(source_info.profile);
             if (target_info.profile != (cmsHPROFILE) NULL)
               signature=cmsGetColorSpace(target_info.profile);
-            target_info.scale=1.0;
-            target_info.translate=0.0;
+            SetLCMSInfoScale(&target_info,1.0);
+            SetLCMSInfoTranslate(&target_info,0.0);
             target_info.channels=3;
             switch (signature)
             {
@@ -1195,7 +1210,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 if (highres != MagickFalse)
                   {
                     target_info.type=(cmsUInt32Number) TYPE_CMYK_DBL;
-                    target_info.scale=0.01;
+                    SetLCMSInfoScale(&target_info,0.01);
                   }
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
                 else
@@ -1227,8 +1242,11 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                 if (highres != MagickFalse)
                   {
                     target_info.type=(cmsUInt32Number) TYPE_Lab_DBL;
-                    target_info.scale=0.01;
-                    target_info.translate=0.5;
+                    target_info.scale[0]=0.01;
+                    target_info.scale[1]=1/255.0;
+                    target_info.scale[2]=1/255.0;
+                    target_info.translate[1]=0.5;
+                    target_info.translate[2]=0.5;
                   }
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
                 else
