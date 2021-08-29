@@ -1086,7 +1086,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                     "ColorspaceColorProfileMismatch",name);
               }
             highres=MagickTrue;
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
+#if !defined(MAGICKCORE_HDRI_SUPPORT) || (MAGICKCORE_QUANTUM_DEPTH > 16)
             artifact=GetImageArtifact(image,"profile:highres-transform");
             if (IsStringFalse(artifact) != MagickFalse)
               highres=MagickFalse;
