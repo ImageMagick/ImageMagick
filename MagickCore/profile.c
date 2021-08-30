@@ -1072,11 +1072,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             cmsUInt32Number
               flags;
 
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-            const char
-              *artifact;
-#endif
-
             MagickBooleanType
               highres;
 
@@ -1099,9 +1094,14 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               }
             highres=MagickTrue;
 #if !defined(MAGICKCORE_HDRI_SUPPORT) || (MAGICKCORE_QUANTUM_DEPTH > 16)
-            artifact=GetImageArtifact(image,"profile:highres-transform");
-            if (IsStringFalse(artifact) != MagickFalse)
-              highres=MagickFalse;
+            {
+              const char
+                *artifact;
+
+              artifact=GetImageArtifact(image,"profile:highres-transform");
+              if (IsStringFalse(artifact) != MagickFalse)
+                highres=MagickFalse;
+            }
 #endif
             SetLCMSInfoScale(&source_info,1.0);
             SetLCMSInfoTranslate(&source_info,0.0);
