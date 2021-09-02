@@ -57,17 +57,20 @@ extern "C" {
 #define _SC_PAGE_SIZE 1
 #define _SC_PHYS_PAGES 2
 #define _SC_OPEN_MAX 3
-#if !defined(SSIZE_MAX)
-# ifdef _WIN64
-#   define SSIZE_MAX LLONG_MAX
-#   if defined(_MSC_VER)
-#     define MAGICKCORE_SIZEOF_SSIZE_T 8
-#   endif
-# else
-#   define SSIZE_MAX LONG_MAX
-#   if defined(_MSC_VER)
-#     define MAGICKCORE_SIZEOF_SSIZE_T 4
-#   endif
+#ifdef _WIN64
+#  if !defined(SSIZE_MAX)
+#    define SSIZE_MAX LLONG_MAX
+#  endif
+#  if defined(_MSC_VER)
+#    define MAGICKCORE_SIZEOF_SSIZE_T 8
+#  endif
+#else
+#  if !defined(SSIZE_MAX)
+#    define SSIZE_MAX LONG_MAX
+#  endif
+#  if defined(_MSC_VER)
+#    define MAGICKCORE_SIZEOF_SSIZE_T 4
+#  endif
 # endif
 #endif
 
