@@ -60,8 +60,14 @@ extern "C" {
 #if !defined(SSIZE_MAX)
 # ifdef _WIN64
 #   define SSIZE_MAX LLONG_MAX
+#   if defined(_MSC_VER)
+#     define MAGICKCORE_SIZEOF_SSIZE_T 8
+#   endif
 # else
 #   define SSIZE_MAX LONG_MAX
+#   if defined(_MSC_VER)
+#     define MAGICKCORE_SIZEOF_SSIZE_T 4
+#   endif
 # endif
 #endif
 
