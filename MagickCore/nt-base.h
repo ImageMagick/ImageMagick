@@ -71,7 +71,6 @@ extern "C" {
 #  if defined(_MSC_VER)
 #    define MAGICKCORE_SIZEOF_SSIZE_T 4
 #  endif
-# endif
 #endif
 
 /*
