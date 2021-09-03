@@ -60,10 +60,15 @@ extern "C" {
 #define MagickQuantumDepth  "Q?"
 #define MagickQuantumRange  "?"
 #endif
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+#define MagickHDRISupport  "-HDRI"
+#else
+#define MagickHDRISupport  ""
+#endif
 #define MagickVersion  \
   MagickPackageName " " MagickLibVersionText MagickLibAddendum " " \
-  MagickQuantumDepth " " MagickPlatform " " MagickReleaseDate " " \
-  MagickAuthoritativeURL
+  MagickQuantumDepth MagickHDRISupport " " MagickPlatform " " \
+  MagickReleaseDate " " MagickAuthoritativeURL
 
 extern MagickExport char
   *GetMagickHomeURL(void);
