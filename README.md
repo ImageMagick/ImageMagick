@@ -28,7 +28,7 @@ We continue to maintain the legacy release of ImageMagick, version 6, at https:/
 
 #### Features and Capabilities
 
-Here are just a few examples of what ImageMagick can do:
+Here are just a few [examples](https://imagemagick.org/script/examples.php) of what ImageMagick can do:
 
 * [Animation](https://imagemagick.org/script/command-line-options.php#bilateral-blur): non-linear, edge-preserving, and noise-reducing smoothing filter.
 * [Bilateral Blur](https://imagemagick.org/script/command-line-options.php#bilateral-blur): non-linear, edge-preserving, and noise-reducing smoothing filter.
