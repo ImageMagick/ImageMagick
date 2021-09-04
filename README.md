@@ -30,11 +30,15 @@ We continue to maintain the legacy release of ImageMagick, version 6, at https:/
 
 Here are just a few examples of what ImageMagick can do:
 
+* [Animation](https://imagemagick.org/script/command-line-options.php#bilateral-blur): non-linear, edge-preserving, and noise-reducing smoothing filter.
 * [Bilateral Blur](https://imagemagick.org/script/command-line-options.php#bilateral-blur): non-linear, edge-preserving, and noise-reducing smoothing filter.
 * [Color management](https://imagemagick.org/script/color-management.php): accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.
+* [Color thresholding](https://imagemagick.org/script/color-management.php) force all pixels in the color range to white otherwise black.
+* [Command-line processing](https://imagemagick.org/script/command-line-processing.php) utilize ImageMagick from the command-line.
 * [Complex text layout](https://en.wikipedia.org/wiki/Complex_text_layout) bidirectional text support and shaping.
 * [Composite](https://imagemagick.org/script/composite.php): overlap one image over another.
 * [Connected component labeling](https://imagemagick.org/script/connected-components.php): uniquely label connected regions in an image.
+* [Convex hull](https://imagemagick.org/script/convex-hull.php) smallest area convex polygon containing the image foreground objects. In addition, the minimum bounding box and unrotate angle are also generated.
 * [Decorate](https://legacy.imagemagick.org/Usage/crop/): add a border or frame to an image.
 * [Delineate image features](https://legacy.imagemagick.org/Usage/transform/#vision): Canny edge detection, mean-shift, Hough lines.
 * [Discrete Fourier transform](https://legacy.imagemagick.org/Usage/fourier/): implements the forward and inverse [DFT](http://en.wikipedia.org/wiki/Discrete_Fourier_transform).
