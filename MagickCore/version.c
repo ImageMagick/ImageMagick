@@ -642,7 +642,7 @@ MagickExport void ListMagickVersion(FILE *file)
   (void) FormatLocaleFile(file,"Compiler: Visual Studio %d (%d)\n",
     MAGICKCORE_MSC_VER,_MSC_FULL_VER);
 #elif defined(__GNUC__)
-  (void) FormatLocaleFile(file,"Compiler: gcc (%d.%d)\n",__GNUC___,
+  (void) FormatLocaleFile(file,"Compiler: gcc (%d.%d)\n",__GNUC__,
     __GNUC_MINOR__);
 #elif defined(__clang__)
   (void) FormatLocaleFile(file,"Compiler: clang (%d.%d.%d)\n",__clang_major__,
