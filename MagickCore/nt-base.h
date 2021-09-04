@@ -100,7 +100,7 @@ extern "C" {
 #endif
 
 #if !defined(access)
-#if defined(_VISUALC_) && (_MSC_VER >= 1400)
+#if defined(_MSC_VER)
 #  define access(path,mode)  _access_s(path,mode)
 #endif
 #endif
@@ -115,9 +115,6 @@ extern "C" {
 #endif
 #if !defined(MAGICKCORE_HAVE_ERF)
 #  define MAGICKCORE_HAVE_ERF
-#endif
-#if defined(_VISUALC_) && (_MSC_VER < 1700)
-#  define erf(x)  NTErf(x)
 #endif
 #if !defined(fdopen)
 #  define fdopen  _fdopen
@@ -245,10 +242,8 @@ extern "C" {
 #if !defined(vfprintf_l)
 #define vfprintf_l  _vfprintf_l
 #endif
-#if !defined(vsnprintf)
-#if !defined(_MSC_VER) || (defined(_MSC_VER) && _MSC_VER < 1500)
+#if !defined(vsnprintf) && !defined(_MSC_VER)
 #define vsnprintf _vsnprintf
-#endif
 #endif
 #if !defined(vsnprintf_l)
 #define vsnprintf_l  _vsnprintf_l
@@ -258,7 +253,6 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(__BORLANDC__)) && \
-  !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
   !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
 #  if !defined(fseek)
 #    define fseek  _fseeki64

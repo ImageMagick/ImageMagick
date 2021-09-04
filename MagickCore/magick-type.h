@@ -149,11 +149,7 @@ typedef uintptr_t MagickAddressType;
 typedef size_t MagickAddressType;
 #endif
 
-#if defined(_MSC_VER) && (_MSC_VER == 1200)
-typedef MagickOffsetType QuantumAny;
-#else
 typedef MagickSizeType QuantumAny;
-#endif
 
 #if defined(macintosh)
 #define ExceptionInfo  MagickExceptionInfo
@@ -185,7 +181,7 @@ typedef enum
 */
 #if defined(MAGICKCORE_HAVE_ISNAN) && !defined(__cplusplus) && !defined(c_plusplus)
 #  define IsNaN(a) isnan(a)
-#elif defined(_MSC_VER) && (_MSC_VER >= 1310)
+#elif defined(_MSC_VER)
 #  include <float.h>
 #  define IsNaN(a) _isnan(a)
 #else

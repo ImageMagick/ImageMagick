@@ -751,7 +751,7 @@ MagickPrivate int NTExitLibrary(void)
 MagickPrivate MagickBooleanType NTGatherRandomData(const size_t length,
   unsigned char *random)
 {
-#if defined(MAGICKCORE_CIPHER_SUPPORT) && defined(_MSC_VER) && (_MSC_VER > 1200)
+#if defined(MAGICKCORE_CIPHER_SUPPORT) && defined(_MSC_VER)
   HCRYPTPROV
     handle;
 
