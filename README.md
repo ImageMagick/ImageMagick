@@ -71,9 +71,9 @@ Now that ImageMagick version 7 is released, we continue to maintain the legacy r
 
 Want more performance from ImageMagick? Try these options:
 
-* add more memory to your system, see the pixel cache;
-* add more cores to your system, see threads of execution support;
-* reduce lock contention with the tcmalloc memory allocation library;
-* push large images to a solid-state drive, see large image support.
+* add more memory to your system, see the [pixel cache](https://imagemagick.org/script/architecture.php#cache);
+* add more cores to your system, see [threads of execution support](https://imagemagick.org/script/architecture.php#threads);
+* reduce lock contention with the [tcmalloc](http://goog-perftools.sourceforge.net/doc/tcmalloc.html_ memory allocation library;
+* push large images to a solid-state drive, see [large image support](https://imagemagick.org/script/architecture.php#tera-pixel_.
 
-If these options are prohibitive, you can reduce the quality of the image results. The default build is Q16 HDRI. If you disable HDRI, you use half the memory and instead of predominately floating point operations, you use the typically more efficient integer operations. The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative). If you build the Q8 non-HDRI version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values. For a Q8 non-HDRI build of ImageMagick, use these configure script options: --with-quantum-depth=8 --disable-hdri.
+If these options are prohibitive, you can reduce the quality of the image results. The default build is Q16 HDRI. If you disable [HDRI](https://imagemagick.org/script/high-dynamic-range.php), you use half the memory and instead of predominately floating point operations, you use the typically more efficient integer operations. The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative). If you build the Q8 non-HDRI version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values. For a Q8 non-HDRI build of ImageMagick, use these configure script options: --with-quantum-depth=8 --disable-hdri.
