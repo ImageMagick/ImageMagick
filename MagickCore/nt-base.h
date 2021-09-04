@@ -73,19 +73,23 @@ extern "C" {
 #  endif
 #endif
 
-/*
-  _MSC_VER values:
-    1100 MSVC 5.0
-    1200 MSVC 6.0
-    1300 MSVC 7.0 Visual C++ .NET 2002
-    1310 Visual c++ .NET 2003
-    1400 Visual C++ 2005
-    1500 Visual C++ 2008
-    1600 Visual C++ 2010
-    1700 Visual C++ 2012
-    1800 Visual C++ 2013
-    1900 Visual C++ 2015
-*/
+#if defined(_MSC_VER)
+# if !defined(MAGICKCORE_MSC_VER)
+#   if (_MSC_VER >= 1930)
+#     define MAGICKCORE_MSC_VER 2022
+#   elif (_MSC_VER >= 1920)
+#     define MAGICKCORE_MSC_VER 2019
+#   elif (_MSC_VER >= 1910)
+#     define MAGICKCORE_MSC_VER 2017
+#   elif (_MSC_VER >= 1900)
+#     define MAGICKCORE_MSC_VER 2015
+#   elif (_MSC_VER >= 1800)
+#     define MAGICKCORE_MSC_VER 2013
+#   elif (_MSC_VER >= 1700)
+#     define MAGICKCORE_MSC_VER 2012
+#   endif
+# endif
+#endif
 
 #if !defined(chsize)
 # if defined(__BORLANDC__)
