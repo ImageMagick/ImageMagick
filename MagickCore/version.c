@@ -635,12 +635,25 @@ MagickExport void ListMagickVersion(FILE *file)
     GetMagickVersion((size_t *) NULL));;
   (void) FormatLocaleFile(file,"Copyright: %s\n",GetMagickCopyright());
   (void) FormatLocaleFile(file,"License: %s\n",GetMagickLicense());
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_MSC_FULL_VER)
-  (void) FormatLocaleFile(file,"Visual C++: %d\n",_MSC_FULL_VER);
-#endif
   (void) FormatLocaleFile(file,"Features: %s\n",GetMagickFeatures());
   (void) FormatLocaleFile(file,"Delegates (built-in): %s\n",
     GetMagickDelegates());
+#if defined(MAGICKCORE_MSC_VER)
+  (void) FormatLocaleFile(file,"Compiler: Visual Studio %d (%d)\n",
+    MAGICKCORE_MSC_VER,_MSC_FULL_VER);
+#elif defined(__GNUC__)
+  (void) FormatLocaleFile(file,"Compiler: gcc (%d.%d)\n",__GNUC___,
+    __GNUC_MINOR__);
+#elif defined(__clang__)
+  (void) FormatLocaleFile(file,"Compiler: clang (%d.%d.%d)\n",__clang_major__,
+    __clang_minor__,__clang_patchlevel__);
+#elif defined(__MINGW32_MAJOR_VERSION)
+  (void) FormatLocaleFile(file,"Compiler: MinGW (%d.%d)\n",
+    __MINGW32_MAJOR_VERSION,__MINGW32_MINOR_VERSION);
+#elif defined(__MINGW64_VERSION_MAJOR)
+  (void) FormatLocaleFile(file,"Compiler: MinGW-w64 (%d.%d)\n",
+    __MINGW64_VERSION_MAJOR ,__MINGW64_VERSION_MINOR);
+#endif
   if (IsEventLogging() != MagickFalse)
     {
       (void) FormatLocaleFile(file,"Wizard attributes: ");
