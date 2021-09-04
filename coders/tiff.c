@@ -682,7 +682,7 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
 {
   char
     message[MagickPathExtent],
-    *text;
+    *text = (char *) NULL;
 
   MagickBooleanType
     status;
@@ -691,7 +691,6 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
     count,
     type;
 
-  text=(char *) NULL;
   status=MagickTrue;
   if ((TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1) &&
       (text != (char *) NULL))
@@ -993,10 +992,11 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
 
 #if defined(TIFF_VERSION_BIG)
   uint64
+    *value = (uint64 *) NULL;
 #else
   uint32
+    *value = (uint32 *) NULL;
 #endif
-    *value;
 
   unsigned char
     buffer[BUFFER_SIZE+32];
@@ -1013,7 +1013,6 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   /*
     Search for Adobe APP14 JPEG marker.
   */
-  value=NULL;
   if (!TIFFGetField(tiff,TIFFTAG_STRIPOFFSETS,&value) || (value == NULL))
     return(ReadStripMethod);
   position=TellBlob(image);
@@ -1208,7 +1207,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     *option;
 
   float
-    *chromaticity,
+    *chromaticity = (float *) NULL,
     x_position,
     y_position,
     x_resolution,
@@ -1524,7 +1523,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
     if (TIFFGetFieldDefaulted(tiff,TIFFTAG_ORIENTATION,&orientation,sans) == 1)
       image->orientation=(OrientationType) orientation;
-    chromaticity=(float *) NULL;
     if (TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity) == 1)
       {
         if ((chromaticity != (float *) NULL) && (*chromaticity != 0.0))
@@ -1623,9 +1621,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           range;
 
         uint16
-          *blue_colormap,
-          *green_colormap,
-          *red_colormap;
+          *blue_colormap = (uint16 *) NULL,
+          *green_colormap = (uint16 *) NULL,
+          *red_colormap = (uint16 *) NULL;
 
         /*
           Initialize colormap.
