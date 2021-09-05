@@ -326,13 +326,13 @@ typedef struct _DDSSingleColorLookup
 typedef struct _BC7ModeInfo
 {
   unsigned char
-    partitionBits,
-    numSubsets,
-    colorPrecision,
-    alphaPrecision,
-    numPbits,
-    indexPrecision,
-    index2Precision;
+    partition_bits,
+    num_subsets,
+    color_precision,
+    alpha_precision,
+    num_pbits,
+    index_precision,
+    index2_precision;
 } BC7ModeInfo;
 
 typedef MagickBooleanType
@@ -1835,189 +1835,188 @@ static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
 static unsigned char GetBit(const unsigned char *block,size_t *startBit)
 {
   size_t
-    index,
-    base;
+    base,
+    index;
 
   index=(*startBit) >> 3;
   base=(*startBit) - (index << 3);
   (*startBit)++;
   if (index > 15)
-    return 0;
-  return ((block[index] >> base) & 0x01);
+    return(0);
+  return((block[index] >> base) & 0x01);
 }
 
-static unsigned char GetBits(const unsigned char *block,size_t *startBit,
-  unsigned char numBits)
+static unsigned char GetBits(const unsigned char *block,size_t *start_bit,
+  unsigned char num_bits)
 {
+  size_t
+    base,
+    first_bits,
+    index,
+    next_bits;
+
   unsigned char
     ret;
 
-  size_t
-    index,
-    base,
-    firstBits,
-    nextBits;
-
-  index=(*startBit) >> 3;
-  base=(*startBit) - (index << 3);
+  index=(*start_bit) >> 3;
+  base=(*start_bit)-(index << 3);
   if (index > 15)
-    return 0;
-  if (base + numBits > 8)
+    return(0);
+  if (base + num_bits > 8)
   {
-    firstBits=8 - base;
-    nextBits=numBits - firstBits;
+    first_bits=8-base;
+    next_bits=num_bits-first_bits;
     ret=((block[index] >> base) | (((block[index + 1]) &
-      ((1u << nextBits) - 1)) << firstBits));
+      ((1u << next_bits) - 1)) << first_bits));
   }
   else
   {
-    ret=((block[index] >> base) & ((1 << numBits) - 1));
+    ret=((block[index] >> base) & ((1 << num_bits) - 1));
   }
-  (*startBit)+=numBits;
-  return ret;
+  (*start_bit)+=num_bits;
+  return(ret);
 }
 
-static MagickBooleanType IsPixelAnchorIndex(unsigned char subsetIndex,
-  unsigned char numSubsets,size_t pixelIndex,unsigned char partitionid)
+static MagickBooleanType IsPixelAnchorIndex(unsigned char subset_index,
+  unsigned char num_subsets,size_t pixelIndex,unsigned char partitionid)
 {
   size_t
-    tableIndex;
+    table_index;
 
   /* for first subset */
-  if (subsetIndex == 0)
-    tableIndex = 0;
+  if (subset_index == 0)
+    table_index=0;
   /* for second subset of two subset partitioning */
-  else if (subsetIndex == 1 && numSubsets == 2)
-    tableIndex = 1;
+  else if ((subset_index == 1) && (num_subsets == 2))
+    table_index=1;
   /* for second subset of three subset partitioning */
-  else if (subsetIndex == 1 && numSubsets == 3)
-    tableIndex = 2;
+  else if ((subset_index == 1) && (num_subsets == 3))
+    table_index=2;
   /* for third subset of three subset partitioning */
   else
-    tableIndex = 3;
+    table_index=3;
 
-  if (BC7_AnchorIndexTable[tableIndex][partitionid] == pixelIndex)
-    return MagickTrue;
+  if (BC7_AnchorIndexTable[table_index][partitionid] == pixelIndex)
+    return(MagickTrue);
   else
-    return MagickFalse;  
+    return(MagickFalse);
 }
 
-static void ReadEndpoints(BC7Colors *endpoints,
-  const unsigned char *block,size_t mode,size_t *startBit)
+static void ReadEndpoints(BC7Colors *endpoints,const unsigned char *block,
+  size_t mode,size_t *start_bit)
 {
   MagickBooleanType
-    hasAlpha,
-    hasPbits;
+    has_alpha,
+    has_pbits;
 
   unsigned char
-    numSubsets,
-    colorBits,
-    alphabits,
+    alpha_bits,
+    color_bits,
     pbit,
     pbit0,
     pbit1;
-  
+
   size_t
+    num_subsets,
     i;
 
-  numSubsets=BC7_modeInfo[mode].numSubsets;
-  colorBits=BC7_modeInfo[mode].colorPrecision;
+  num_subsets=(size_t) BC7_modeInfo[mode].num_subsets;
+  color_bits=BC7_modeInfo[mode].color_precision;
 
   /* red */
-  for (i=0; i < numSubsets * 2; i++)
-    endpoints->r[i]=GetBits(block,startBit,colorBits);
+  for (i=0; i < num_subsets * 2; i++)
+    endpoints->r[i]=GetBits(block,start_bit,color_bits);
 
   /* green */
-  for (i=0; i < numSubsets * 2; i++)
-    endpoints->g[i]=GetBits(block,startBit,colorBits);
+  for (i=0; i < num_subsets * 2; i++)
+    endpoints->g[i]=GetBits(block,start_bit,color_bits);
 
   /* blue */
-  for (i=0; i < numSubsets * 2; i++)
-    endpoints->b[i]=GetBits(block,startBit,colorBits);
+  for (i=0; i < num_subsets * 2; i++)
+    endpoints->b[i]=GetBits(block,start_bit,color_bits);
 
   /* alpha */
-  alphabits=BC7_modeInfo[mode].alphaPrecision;
-  hasAlpha=mode >= 4;
+  alpha_bits=BC7_modeInfo[mode].alpha_precision;
+  has_alpha=mode >= 4;
 
-  if (hasAlpha != MagickFalse)
-  {
-    for (i=0; i < numSubsets * 2; i++)
-      endpoints->a[i]=GetBits(block,startBit,alphabits);
-  }
+  if (has_alpha != MagickFalse)
+    {
+      for (i=0; i < num_subsets * 2; i++)
+        endpoints->a[i]=GetBits(block,start_bit,alpha_bits);
+    }
 
   /* handle modes that have p bits */
-  hasPbits=mode == 0 || mode == 1 || mode == 3 || mode == 6 || mode == 7;
+  has_pbits=(mode == 0) || (mode == 1) || (mode == 3) || (mode == 6) || (mode == 7);
 
-  if (hasPbits != MagickFalse)
-  {
-    for (i=0; i < numSubsets * 2; i++)
+  if (has_pbits != MagickFalse)
     {
-      endpoints->r[i] <<= 1;
-      endpoints->g[i] <<= 1;
-      endpoints->b[i] <<= 1;
-      endpoints->a[i] <<= 1;
-    }
-
-    /* mode 1 shares a p-bit for both endpoints */
-    if (mode == 1)
-    {
-      pbit0=GetBit(block,startBit);
-      pbit1=GetBit(block,startBit);
-
-      endpoints->r[0] |= pbit0;
-      endpoints->g[0] |= pbit0;
-      endpoints->b[0] |= pbit0;
-      endpoints->r[1] |= pbit0;
-      endpoints->g[1] |= pbit0;
-      endpoints->b[1] |= pbit0;
-
-      endpoints->r[2] |= pbit1;
-      endpoints->g[2] |= pbit1;
-      endpoints->b[2] |= pbit1;
-      endpoints->r[3] |= pbit1;
-      endpoints->g[3] |= pbit1;
-      endpoints->b[3] |= pbit1;
-    }
-
-    else
-    {
-      for (i=0; i < numSubsets * 2; i++)
+      for (i=0; i < num_subsets * 2; i++)
       {
-        pbit=GetBit(block,startBit);
-        endpoints->r[i] |= pbit;
-        endpoints->g[i] |= pbit;
-        endpoints->b[i] |= pbit;
-        endpoints->a[i] |= pbit;
+        endpoints->r[i] <<= 1;
+        endpoints->g[i] <<= 1;
+        endpoints->b[i] <<= 1;
+        endpoints->a[i] <<= 1;
+      }
+
+      /* mode 1 shares a p-bit for both endpoints */
+      if (mode == 1)
+        {
+          pbit0=GetBit(block,start_bit);
+          pbit1=GetBit(block,start_bit);
+
+          endpoints->r[0] |= pbit0;
+          endpoints->g[0] |= pbit0;
+          endpoints->b[0] |= pbit0;
+          endpoints->r[1] |= pbit0;
+          endpoints->g[1] |= pbit0;
+          endpoints->b[1] |= pbit0;
+
+          endpoints->r[2] |= pbit1;
+          endpoints->g[2] |= pbit1;
+          endpoints->b[2] |= pbit1;
+          endpoints->r[3] |= pbit1;
+          endpoints->g[3] |= pbit1;
+          endpoints->b[3] |= pbit1;
+        }
+      else
+      {
+        for (i=0; i < num_subsets * 2; i++)
+        {
+          pbit=GetBit(block,start_bit);
+          endpoints->r[i] |= pbit;
+          endpoints->g[i] |= pbit;
+          endpoints->b[i] |= pbit;
+          endpoints->a[i] |= pbit;
+        }
       }
     }
-  }
 
   /* 1 bit increased due to the pbit */
-  if (hasPbits != MagickFalse)
-  {
-    colorBits++;
-    alphabits++;
-  }
+  if (has_pbits != MagickFalse)
+    {
+      color_bits++;
+      alpha_bits++;
+    }
 
   /* color and alpha bit shifting so that MSB lies in bit 7 */
-  for (i=0; i < numSubsets * 2; i++)
+  for (i=0; i < num_subsets * 2; i++)
   {
-    endpoints->r[i] <<= (8 - colorBits);
-    endpoints->g[i] <<= (8 - colorBits);
-    endpoints->b[i] <<= (8 - colorBits);
-    endpoints->a[i] <<= (8 - alphabits);
+    endpoints->r[i] <<= (8 - color_bits);
+    endpoints->g[i] <<= (8 - color_bits);
+    endpoints->b[i] <<= (8 - color_bits);
+    endpoints->a[i] <<= (8 - color_bits);
 
-    endpoints->r[i]=endpoints->r[i] | (endpoints->r[i] >> colorBits);
-    endpoints->g[i]=endpoints->g[i] | (endpoints->g[i] >> colorBits);
-    endpoints->b[i]=endpoints->b[i] | (endpoints->b[i] >> colorBits);
-    endpoints->a[i]=endpoints->a[i] | (endpoints->a[i] >> alphabits);
+    endpoints->r[i]=endpoints->r[i] | (endpoints->r[i] >> color_bits);
+    endpoints->g[i]=endpoints->g[i] | (endpoints->g[i] >> color_bits);
+    endpoints->b[i]=endpoints->b[i] | (endpoints->b[i] >> color_bits);
+    endpoints->a[i]=endpoints->a[i] | (endpoints->a[i] >> color_bits);
   }
 
-  if (hasAlpha == MagickFalse)
-  {
-    for (i=0; i < numSubsets * 2; i++)
-      endpoints->a[i]=255;
-  }
+  if (has_alpha == MagickFalse)
+    {
+      for (i=0; i < num_subsets * 2; i++)
+        endpoints->a[i]=255;
+    }
 }
 
 static MagickBooleanType ReadBC7Pixels(Image *image,
@@ -2025,39 +2024,39 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
 {
   BC7Colors
     colors;
-  
+
   Quantum
     *q;
-  
+
   size_t
-    startBit,
-    mode;
+    mode,
+    start_bit;
 
   ssize_t
     count,
+    i,
     x,
-    y,
-    i;
-    
+    y;
+
   unsigned char
+    a,
+    alpha_indices[16],
+    b,
     block[16],
-    subsetIndices[16],
-    colorIndices[16],
-    alphaIndices[16],
-    numSubsets,
-    partitionid,
-    rotation,
-    selectorBit,
-    indexPrec,
-    index2Prec,
-    numbits,
-    weight,
     c0,
     c1,
-    r,
+    color_indices[16],
     g,
-    b,
-    a;
+    index_prec,
+    index2_prec,
+    num_bits,
+    num_subsets,
+    partitionid,
+    r,
+    rotation,
+    selector_bit,
+    subset_indices[16],
+    weight;
 
   magick_unreferenced(dds_info);
 
@@ -2082,75 +2081,75 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         return(MagickFalse);
 
       /* Get the mode of the block */
-      startBit=0;
-      while (startBit <= 8 && !GetBit(block, &startBit)) {}
-      mode=startBit - 1;
+      start_bit=0;
+      while (start_bit <= 8 && !GetBit(block, &start_bit)) {}
+      mode=start_bit-1;
 
       if (mode > 7)
         return(MagickFalse);
 
-      numSubsets=BC7_modeInfo[mode].numSubsets;
+      num_subsets=BC7_modeInfo[mode].num_subsets;
       partitionid=0;
 
       /* only these modes have more than 1 subset */
-      if (mode == 0 || mode == 1 || mode == 2 || mode == 3 || mode == 7)
-      {
-        partitionid=GetBits(block,&startBit,BC7_modeInfo[mode].partitionBits);
-        if (partitionid > 63)
-          return(MagickFalse);
-      }
+      if ((mode == 0) || (mode == 1) || (mode == 2) || (mode == 3) || (mode == 7))
+        {
+          partitionid=GetBits(block,&start_bit,BC7_modeInfo[mode].partition_bits);
+          if (partitionid > 63)
+            return(MagickFalse);
+        }
 
       rotation=0;
-      if (mode == 4 || mode == 5)
-        rotation=GetBits(block,&startBit,2);
+      if ((mode == 4) || (mode == 5))
+        rotation=GetBits(block,&start_bit,2);
       
-      selectorBit=0;
+      selector_bit=0;
       if (mode == 4)
-        selectorBit=GetBit(block, &startBit);
+        selector_bit=GetBit(block, &start_bit);
 
-      ReadEndpoints(&colors,block,mode,&startBit);
+      ReadEndpoints(&colors,block,mode,&start_bit);
 
-      indexPrec=BC7_modeInfo[mode].indexPrecision;
-      index2Prec=BC7_modeInfo[mode].index2Precision;
+      index_prec=BC7_modeInfo[mode].index_precision;
+      index2_prec=BC7_modeInfo[mode].index2_precision;
 
-      if (mode == 4 && selectorBit == 1)
-      {
-        indexPrec=3;
-        alphaIndices[0]=GetBit(block, &startBit);
-        for (i = 1; i < 16; i++)
-          alphaIndices[i]=GetBits(block, &startBit, 2);
-      }
+      if ((mode == 4) && (selector_bit == 1))
+        {
+          index_prec=3;
+          alpha_indices[0]=GetBit(block,&start_bit);
+          for (i = 1; i < 16; i++)
+            alpha_indices[i]=GetBits(block,&start_bit,2);
+        }
 
       /* get color and subset indices */
       for (i=0; i < 16; i++)
       {
-        subsetIndices[i]=GetSubsetIndex(numSubsets, partitionid, i);
-        numbits=indexPrec;
-        if (IsPixelAnchorIndex(subsetIndices[i],numSubsets,i,partitionid))
-          numbits--;
-        colorIndices[i]=GetBits(block,&startBit,numbits);
+        subset_indices[i]=GetSubsetIndex(num_subsets, partitionid, i);
+        num_bits=index_prec;
+        if (IsPixelAnchorIndex(subset_indices[i],num_subsets,i,partitionid))
+          num_bits--;
+        color_indices[i]=GetBits(block,&start_bit,num_bits);
       }
 
       /* get alpha indices if the block has it */
-      if (mode == 5 || (mode == 4 && selectorBit == 0))
-      {
-        alphaIndices[0]=GetBits(block,&startBit,index2Prec - 1);
-        for (i=1; i < 16; i++)
-          alphaIndices[i]=GetBits(block,&startBit,index2Prec);
-      }
+      if ((mode == 5) || ((mode == 4) && (selector_bit == 0)))
+        {
+          alpha_indices[0]=GetBits(block,&start_bit,index2_prec - 1);
+          for (i=1; i < 16; i++)
+            alpha_indices[i]=GetBits(block,&start_bit,index2_prec);
+        }
 
       /* Write the pixels */
       for (i=0; i < 16; i++)
       {
-        c0=2 * subsetIndices[i];
-        c1=(2 * subsetIndices[i]) + 1;
+        c0=2 * subset_indices[i];
+        c1=(2 * subset_indices[i]) + 1;
 
         /* Color Interpolation */
-        switch(indexPrec)
+        switch(index_prec)
         {
-          case 2: weight=BC7_weight2[colorIndices[i]]; break;
-          case 3: weight=BC7_weight3[colorIndices[i]]; break;
-          default: weight=BC7_weight4[colorIndices[i]];
+          case 2: weight=BC7_weight2[color_indices[i]]; break;
+          case 3: weight=BC7_weight3[color_indices[i]]; break;
+          default: weight=BC7_weight4[color_indices[i]];
         }
         r=((64 - weight) * colors.r[c0] + weight * colors.r[c1] + 32) >> 6;
         g=((64 - weight) * colors.g[c0] + weight * colors.g[c1] + 32) >> 6;
@@ -2159,12 +2158,12 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
 
         /* Interpolate alpha for mode 4 and 5 blocks */
         if (mode == 4 || mode == 5)
-        {
-          weight=BC7_weight2[alphaIndices[i]];
-          if (mode == 4 && selectorBit == 0)
-            weight=BC7_weight3[alphaIndices[i]];
-          a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
-        }
+          {
+            weight=BC7_weight2[alpha_indices[i]];
+            if (mode == 4 && selector_bit == 0)
+              weight=BC7_weight3[alpha_indices[i]];
+            a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
+          }
         switch (rotation)
         {
           case 1:
