@@ -2060,6 +2060,11 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
 
   magick_unreferenced(dds_info);
 
+  memset(alpha_indices,0,sizeof(alpha_indices));
+  memset(block,0,sizeof(block));
+  memset(color_indices,0,sizeof(color_indices));
+  memset(subset_indices,0,sizeof(subset_indices));
+
   for (y = 0; y < (ssize_t) image->rows; y += 4)
   {
     for (x = 0; x < (ssize_t) image->columns; x += 4)
