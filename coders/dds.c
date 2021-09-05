@@ -2186,7 +2186,7 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         SetPixelGreen(image,ScaleCharToQuantum((unsigned char)g),q);
         SetPixelBlue(image,ScaleCharToQuantum((unsigned char)b),q);
         SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)a),q);
-        
+
         q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2218,14 +2218,15 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
     *q;
 
   ssize_t
-    x, y;
+    x,
+    y;
 
   unsigned short
     color;
 
   for (y = 0; y < (ssize_t) image->rows; y++)
   {
-    q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
+    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
 
     if (q == (Quantum *) NULL)
       return(MagickFalse);
