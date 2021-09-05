@@ -336,11 +336,11 @@ typedef struct _BC7ModeInfo
 } BC7ModeInfo;
 
 typedef MagickBooleanType
-  DDSDecoder(const ImageInfo *,Image *,DDSInfo *,const MagickBooleanType,
+  DDSDecoder(const ImageInfo *,Image *,const DDSInfo *,const MagickBooleanType,
     ExceptionInfo *);
 
 typedef MagickBooleanType
-  DDSPixelDecoder(Image *,DDSInfo *,ExceptionInfo *);
+  DDSPixelDecoder(Image *,const DDSInfo *,ExceptionInfo *);
 
 static const DDSSingleColorLookup DDSLookup_5_4[] =
 {
@@ -1403,7 +1403,7 @@ static MagickBooleanType SetDXT1Pixels(Image *image,ssize_t x,ssize_t y,
 }
 
 static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,DDSPixelDecoder decoder,ExceptionInfo *exception)
+  const DDSInfo *dds_info,DDSPixelDecoder decoder,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -1493,7 +1493,7 @@ static void CalculateColors(unsigned short c0, unsigned short c1,
 }
 
 static MagickBooleanType ReadDXT1Pixels(Image *image,
-  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+  const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   DDSColors
     colors;
@@ -1557,7 +1557,7 @@ static MagickBooleanType ReadDXT1Pixels(Image *image,
 /*
   Skip the mipmap images for compressed (DXTn) dds files
 */
-static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
+static MagickBooleanType SkipDXTMipmaps(Image *image,const DDSInfo *dds_info,
   int texel_size,ExceptionInfo *exception)
 {
   /*
@@ -1604,7 +1604,7 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
 }
 
 static MagickBooleanType ReadDXT1(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (ReadDXT1Pixels(image,dds_info,exception) == MagickFalse)
@@ -1617,7 +1617,7 @@ static MagickBooleanType ReadDXT1(const ImageInfo *image_info,Image *image,
 }
 
 static MagickBooleanType ReadDXT3Pixels(Image *image,
-  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+  const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   DDSColors
     colors;
@@ -1705,7 +1705,7 @@ static MagickBooleanType ReadDXT3Pixels(Image *image,
 }
 
 static MagickBooleanType ReadDXT3(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (ReadDXT3Pixels(image,dds_info,exception) == MagickFalse)
@@ -1718,7 +1718,7 @@ static MagickBooleanType ReadDXT3(const ImageInfo *image_info,Image *image,
 }
 
 static MagickBooleanType ReadDXT5Pixels(Image *image,
-  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+  const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   DDSColors
     colors;
@@ -1820,7 +1820,7 @@ static MagickBooleanType ReadDXT5Pixels(Image *image,
 }
 
 static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (ReadDXT5Pixels(image,dds_info,exception) == MagickFalse)
@@ -2020,7 +2020,7 @@ static void ReadEndpoints(BC7Colors *endpoints,const unsigned char *block,
 }
 
 static MagickBooleanType ReadBC7Pixels(Image *image,
-  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+  const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   BC7Colors
     colors;
@@ -2199,7 +2199,7 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
 }
 
 static MagickBooleanType ReadBC7(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (ReadBC7Pixels(image,dds_info,exception) == MagickFalse)
@@ -2212,7 +2212,7 @@ static MagickBooleanType ReadBC7(const ImageInfo *image_info,Image *image,
 }
 
 static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
-  DDSInfo *dds_info,ExceptionInfo *exception)
+  const DDSInfo *dds_info,ExceptionInfo *exception)
 {
   Quantum
     *q;
@@ -2271,7 +2271,7 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
 /*
   Skip the mipmap images for uncompressed (RGB or RGBA) dds files
 */
-static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
+static MagickBooleanType SkipRGBMipmaps(Image *image,const DDSInfo *dds_info,
   int pixel_size,ExceptionInfo *exception)
 {
   /*
@@ -2318,7 +2318,7 @@ static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
 }
 
 static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
-  Image *image,DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  Image *image,const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (dds_info->pixelformat.rgb_bitcount == 8 || 
@@ -2340,7 +2340,7 @@ static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
 }
 
 static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
-  DDSInfo *dds_info,ExceptionInfo *exception)
+  const DDSInfo *dds_info,ExceptionInfo *exception)
 {
   Quantum
     *q;
@@ -2448,7 +2448,7 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
 }
 
 static MagickBooleanType ReadUncompressedRGBA(const ImageInfo *image_info,
-  Image *image,DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  Image *image,const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (ReadUncompressedRGBAPixels(image,dds_info,exception) == MagickFalse)
