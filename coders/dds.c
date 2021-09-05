@@ -876,7 +876,7 @@ static const unsigned char BC7_weight4[] = { 0, 4, 9, 13, 17, 21, 26, 30, 34,
   38, 43, 47, 51, 55, 60, 64 };
 
 /* stores info for each mode of BC7 */
-static const BC7ModeInfo BC7_modeInfo[8] =
+static const BC7ModeInfo BC7_mode_info[8] =
 {
   { 4, 3, 4, 0, 6, 3, 0 },   /* mode 0 */
   { 6, 2, 6, 0, 2, 3, 0 },   /* mode 1 */
@@ -888,7 +888,7 @@ static const BC7ModeInfo BC7_modeInfo[8] =
   { 6, 2, 5, 5, 4, 2, 0 },   /* mode 7 */
 };
 
-static const unsigned char BC7_PartitionTable[2][64][16] =
+static const unsigned char BC7_partition_table[2][64][16] =
 {
   { /* BC7 Partition Set for 2 Subsets */
     { 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1 },
@@ -1025,7 +1025,7 @@ static const unsigned char BC7_PartitionTable[2][64][16] =
   }
 };
 
-static const unsigned char BC7_AnchorIndexTable[4][64] =
+static const unsigned char BC7_anchor_index_table[4][64] =
 {
   /* Anchor index values for the first subset */
   {
@@ -1259,9 +1259,9 @@ static inline unsigned char GetSubsetIndex(unsigned char numSubsets,
   unsigned char partitionid,size_t pixelIndex)
 {
   if (numSubsets == 2)
-    return BC7_PartitionTable[0][partitionid][pixelIndex];
+    return BC7_partition_table[0][partitionid][pixelIndex];
   if (numSubsets == 3)
-    return BC7_PartitionTable[1][partitionid][pixelIndex];
+    return BC7_partition_table[1][partitionid][pixelIndex];
   return 0;
 }
 
@@ -1896,7 +1896,7 @@ static MagickBooleanType IsPixelAnchorIndex(unsigned char subset_index,
   else
     table_index=3;
 
-  if (BC7_AnchorIndexTable[table_index][partitionid] == pixelIndex)
+  if (BC7_anchor_index_table[table_index][partitionid] == pixelIndex)
     return(MagickTrue);
   else
     return(MagickFalse);
@@ -1920,8 +1920,8 @@ static void ReadEndpoints(BC7Colors *endpoints,const unsigned char *block,
     num_subsets,
     i;
 
-  num_subsets=(size_t) BC7_modeInfo[mode].num_subsets;
-  color_bits=BC7_modeInfo[mode].color_precision;
+  num_subsets=(size_t) BC7_mode_info[mode].num_subsets;
+  color_bits=BC7_mode_info[mode].color_precision;
 
   /* red */
   for (i=0; i < num_subsets * 2; i++)
@@ -1936,7 +1936,7 @@ static void ReadEndpoints(BC7Colors *endpoints,const unsigned char *block,
     endpoints->b[i]=GetBits(block,start_bit,color_bits);
 
   /* alpha */
-  alpha_bits=BC7_modeInfo[mode].alpha_precision;
+  alpha_bits=BC7_mode_info[mode].alpha_precision;
   has_alpha=mode >= 4;
 
   if (has_alpha != MagickFalse)
@@ -2093,13 +2093,13 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
       if (mode > 7)
         return(MagickFalse);
 
-      num_subsets=BC7_modeInfo[mode].num_subsets;
+      num_subsets=BC7_mode_info[mode].num_subsets;
       partitionid=0;
 
       /* only these modes have more than 1 subset */
       if ((mode == 0) || (mode == 1) || (mode == 2) || (mode == 3) || (mode == 7))
         {
-          partitionid=GetBits(block,&start_bit,BC7_modeInfo[mode].partition_bits);
+          partitionid=GetBits(block,&start_bit,BC7_mode_info[mode].partition_bits);
           if (partitionid > 63)
             return(MagickFalse);
         }
@@ -2114,8 +2114,8 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
 
       ReadEndpoints(&colors,block,mode,&start_bit);
 
-      index_prec=BC7_modeInfo[mode].index_precision;
-      index2_prec=BC7_modeInfo[mode].index2_precision;
+      index_prec=BC7_mode_info[mode].index_precision;
+      index2_prec=BC7_mode_info[mode].index2_precision;
 
       if ((mode == 4) && (selector_bit == 1))
         {
