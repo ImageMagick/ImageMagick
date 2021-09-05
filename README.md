@@ -1,6 +1,5 @@
 # ImageMagick
 
-[![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=main)](https://travis-ci.org/ImageMagick/ImageMagick)
 ![main](https://github.com/ImageMagick/ImageMagick/workflows/main/badge.svg)
 [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/imagemagick.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:imagemagick)
 
