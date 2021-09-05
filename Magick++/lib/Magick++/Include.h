@@ -542,6 +542,7 @@ namespace Magick
   using MagickCore::DXT1Compression;
   using MagickCore::DXT3Compression;
   using MagickCore::DXT5Compression;
+  using MagickCore::BC7Compression;
   using MagickCore::FaxCompression;
   using MagickCore::Group4Compression;
   using MagickCore::JBIG1Compression;
