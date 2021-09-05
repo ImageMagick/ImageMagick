@@ -120,7 +120,7 @@ jobs:
       with:
         certificate: '${{ secrets.CERTIFICATE }}'
         folder: 'ImageMagick-Windows\VisualMagick\installer\output'
-  
+
     - uses: actions/upload-artifact@v2
       with:
         name: installers
@@ -149,7 +149,7 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows
         7z a ImageMagick-Windows.7z .\source\*
-  
+
     - uses: actions/upload-artifact@v2
       with:
         name: ImageMagick-Windows
