@@ -1834,24 +1834,40 @@ static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
 
 static unsigned char GetBit(const unsigned char *block,size_t *startBit)
 {
-  size_t index=(*startBit) >> 3;
-  size_t base=(*startBit) - (index << 3);
+  size_t
+    index,
+    base;
+
+  index=(*startBit) >> 3;
+  base=(*startBit) - (index << 3);
   (*startBit)++;
+  if (index > 15)
+    return 0;
   return ((block[index] >> base) & 0x01);
 }
 
 static unsigned char GetBits(const unsigned char *block,size_t *startBit,
   unsigned char numBits)
 {
-  size_t index=(*startBit) >> 3;
-  size_t base=(*startBit) - (index << 3);
-  unsigned char ret=0;
+  unsigned char
+    ret;
+
+  size_t
+    index,
+    base,
+    firstBits,
+    nextBits;
+
+  index=(*startBit) >> 3;
+  base=(*startBit) - (index << 3);
+  if (index > 15)
+    return 0;
   if (base + numBits > 8)
   {
-    size_t uFirstIndexBits=8 - base;
-    size_t uNextIndexBits=numBits - uFirstIndexBits;
+    firstBits=8 - base;
+    nextBits=numBits - firstBits;
     ret=((block[index] >> base) | (((block[index + 1]) &
-      ((1u << uNextIndexBits) - 1)) << uFirstIndexBits));
+      ((1u << nextBits) - 1)) << firstBits));
   }
   else
   {
@@ -1864,23 +1880,35 @@ static unsigned char GetBits(const unsigned char *block,size_t *startBit,
 static MagickBooleanType IsPixelAnchorIndex(unsigned char subsetIndex,
   unsigned char numSubsets,size_t pixelIndex,unsigned char partitionid)
 {
+  size_t
+    tableIndex;
+
   /* for first subset */
   if (subsetIndex == 0)
-    return AnchorIndexTable[0][partitionid] == pixelIndex;
+    tableIndex = 0;
   /* for second subset of two subset partitioning */
-  if (subsetIndex == 1 && numSubsets == 2)
-    return AnchorIndexTable[1][partitionid] == pixelIndex;
+  else if (subsetIndex == 1 && numSubsets == 2)
+    tableIndex = 1;
   /* for second subset of three subset partitioning */
-  if (subsetIndex == 1 && numSubsets == 3)
-    return AnchorIndexTable[2][partitionid] == pixelIndex;
-
+  else if (subsetIndex == 1 && numSubsets == 3)
+    tableIndex = 2;
   /* for third subset of three subset partitioning */
-  return AnchorIndexTable[3][partitionid] == pixelIndex;
+  else
+    tableIndex = 3;
+
+  if (AnchorIndexTable[tableIndex][partitionid] == pixelIndex)
+    return MagickTrue;
+  else
+    return MagickFalse;  
 }
 
-static MagickBooleanType ReadEndpoints(BC7Colors *endpoints,
+static void ReadEndpoints(BC7Colors *endpoints,
   const unsigned char *block,size_t mode,size_t *startBit)
 {
+  MagickBooleanType
+    hasAlpha,
+    hasPbits;
+
   unsigned char
     numSubsets,
     colorBits,
@@ -1909,7 +1937,7 @@ static MagickBooleanType ReadEndpoints(BC7Colors *endpoints,
 
   /* alpha */
   alphabits=modeInfo[mode].alphaPrecision;
-  MagickBooleanType hasAlpha=mode >= 4;
+  hasAlpha=mode >= 4;
 
   if (hasAlpha != MagickFalse)
   {
@@ -1918,8 +1946,7 @@ static MagickBooleanType ReadEndpoints(BC7Colors *endpoints,
   }
 
   /* handle modes that have p bits */
-  MagickBooleanType hasPbits=mode == 0 || mode == 1 || mode == 3 ||
-    mode == 6 || mode == 7;
+  hasPbits=mode == 0 || mode == 1 || mode == 3 || mode == 6 || mode == 7;
 
   if (hasPbits != MagickFalse)
   {
@@ -1991,7 +2018,6 @@ static MagickBooleanType ReadEndpoints(BC7Colors *endpoints,
     for (i=0; i < numSubsets * 2; i++)
       endpoints->a[i]=255;
   }
-  return MagickTrue;
 }
 
 static MagickBooleanType ReadBC7Pixels(Image *image,
@@ -2024,12 +2050,14 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
     selectorBit,
     indexPrec,
     index2Prec,
+    numbits,
+    weight,
     c0,
     c1,
-    weight;
-
-  const unsigned char
-    *ptr;
+    r,
+    g,
+    b,
+    a;
 
   for (y = 0; y < (ssize_t) image->rows; y += 4)
   {
@@ -2043,7 +2071,7 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         return(MagickFalse);
 
       /* Read 16 bytes of data from the image */
-      ptr=ReadBlobStream(image,16,block,&count);
+      count=ReadBlob(image,16,block);
       
       if (count != 16)
         return(MagickFalse);
@@ -2053,7 +2081,7 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
 
       /* Get the mode of the block */
       startBit=0;
-      while (startBit <= 8 && !GetBit(ptr, &startBit)) {}
+      while (startBit <= 8 && !GetBit(block, &startBit)) {}
       mode=startBit - 1;
 
       if (mode > 7)
@@ -2065,20 +2093,20 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
       /* only these modes have more than 1 subset */
       if (mode == 0 || mode == 1 || mode == 2 || mode == 3 || mode == 7)
       {
-        partitionid=GetBits(ptr,&startBit,modeInfo[mode].partitionBits);
+        partitionid=GetBits(block,&startBit,modeInfo[mode].partitionBits);
         if (partitionid > 63)
           return(MagickFalse);
       }
 
       rotation=0;
       if (mode == 4 || mode == 5)
-        rotation=GetBits(ptr,&startBit,2);
+        rotation=GetBits(block,&startBit,2);
       
       selectorBit=0;
       if (mode == 4)
-        selectorBit=GetBit(ptr, &startBit);
+        selectorBit=GetBit(block, &startBit);
 
-      (void) ReadEndpoints(&colors,ptr,mode,&startBit);
+      ReadEndpoints(&colors,block,mode,&startBit);
 
       indexPrec=modeInfo[mode].indexPrecision;
       index2Prec=modeInfo[mode].index2Precision;
@@ -2086,31 +2114,28 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
       if (mode == 4 && selectorBit == 1)
       {
         indexPrec=3;
-        alphaIndices[0]=GetBit(ptr, &startBit);
+        alphaIndices[0]=GetBit(block, &startBit);
         for (i = 1; i < 16; i++)
-          alphaIndices[i]=GetBits(ptr, &startBit, 2);
+          alphaIndices[i]=GetBits(block, &startBit, 2);
       }
 
       /* get color and subset indices */
       for (i=0; i < 16; i++)
       {
         subsetIndices[i]=GetSubsetIndex(numSubsets, partitionid, i);
-        unsigned char numbits=indexPrec;
+        numbits=indexPrec;
         if (IsPixelAnchorIndex(subsetIndices[i],numSubsets,i,partitionid))
           numbits--;
-        colorIndices[i]=GetBits(ptr,&startBit,numbits);
+        colorIndices[i]=GetBits(block,&startBit,numbits);
       }
 
       /* get alpha indices if the block has it */
       if (mode == 5 || (mode == 4 && selectorBit == 0))
       {
-        alphaIndices[0]=GetBits(ptr,&startBit,index2Prec - 1);
-
+        alphaIndices[0]=GetBits(block,&startBit,index2Prec - 1);
         for (i=1; i < 16; i++)
-          alphaIndices[i]=GetBits(ptr,&startBit,index2Prec);
+          alphaIndices[i]=GetBits(block,&startBit,index2Prec);
       }
-
-      unsigned char r,g,b,a;
 
       /* Write the pixels */
       for (i=0; i < 16; i++)
@@ -2140,7 +2165,6 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         }
         switch (rotation)
         {
-          case 0: break;  /* no change */
           case 1:
             Swap(a,r);
             break;
