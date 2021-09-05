@@ -1863,16 +1863,16 @@ static unsigned char GetBits(const unsigned char *block,size_t *start_bit,
   if (index > 15)
     return(0);
   if (base + num_bits > 8)
-  {
-    first_bits=8-base;
-    next_bits=num_bits-first_bits;
-    ret=((block[index] >> base) | (((block[index + 1]) &
-      ((1u << next_bits) - 1)) << first_bits));
-  }
+    {
+      first_bits=8-base;
+      next_bits=num_bits-first_bits;
+      ret=((block[index] >> base) | (((block[index + 1]) &
+        ((1u << next_bits) - 1)) << first_bits));
+    }
   else
-  {
-    ret=((block[index] >> base) & ((1 << num_bits) - 1));
-  }
+    {
+      ret=((block[index] >> base) & ((1 << num_bits) - 1));
+    }
   (*start_bit)+=num_bits;
   return(ret);
 }
