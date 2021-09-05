@@ -1832,15 +1832,15 @@ static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
     return(SkipDXTMipmaps(image,dds_info,16,exception));
 }
 
-static unsigned char GetBit(const unsigned char *block,size_t *startBit)
+static unsigned char GetBit(const unsigned char *block,size_t *start_bit)
 {
   size_t
     base,
     index;
 
-  index=(*startBit) >> 3;
-  base=(*startBit) - (index << 3);
-  (*startBit)++;
+  index=(*start_bit) >> 3;
+  base=(*start_bit) - (index << 3);
+  (*start_bit)++;
   if (index > 15)
     return(0);
   return((block[index] >> base) & 0x01);
