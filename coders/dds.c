@@ -2059,6 +2059,8 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
     b,
     a;
 
+  magick_unreferenced(dds_info);
+
   for (y = 0; y < (ssize_t) image->rows; y += 4)
   {
     for (x = 0; x < (ssize_t) image->columns; x += 4)
