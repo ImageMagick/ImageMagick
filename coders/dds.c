@@ -870,13 +870,13 @@ static const DDSSingleColorLookup*
   DDSLookup_5_4
 };
 
-static const unsigned char weight2[] = { 0, 21, 43, 64 };
-static const unsigned char weight3[] = { 0, 9, 18, 27, 37, 46, 55, 64 };
-static const unsigned char weight4[] = { 0, 4, 9, 13, 17, 21, 26, 30, 34,
+static const unsigned char BC7_weight2[] = { 0, 21, 43, 64 };
+static const unsigned char BC7_weight3[] = { 0, 9, 18, 27, 37, 46, 55, 64 };
+static const unsigned char BC7_weight4[] = { 0, 4, 9, 13, 17, 21, 26, 30, 34,
   38, 43, 47, 51, 55, 60, 64 };
 
 /* stores info for each mode of BC7 */
-static const BC7ModeInfo modeInfo[8] =
+static const BC7ModeInfo BC7_modeInfo[8] =
 {
   { 4, 3, 4, 0, 6, 3, 0 },   /* mode 0 */
   { 6, 2, 6, 0, 2, 3, 0 },   /* mode 1 */
@@ -888,7 +888,7 @@ static const BC7ModeInfo modeInfo[8] =
   { 6, 2, 5, 5, 4, 2, 0 },   /* mode 7 */
 };
 
-static const unsigned char PartitionTable[2][64][16] =
+static const unsigned char BC7_PartitionTable[2][64][16] =
 {
   { /* BC7 Partition Set for 2 Subsets */
     { 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1 },
@@ -1025,7 +1025,7 @@ static const unsigned char PartitionTable[2][64][16] =
   }
 };
 
-static const unsigned char AnchorIndexTable[4][64] =
+static const unsigned char BC7_AnchorIndexTable[4][64] =
 {
   /* Anchor index values for the first subset */
   {
@@ -1259,9 +1259,9 @@ static inline unsigned char GetSubsetIndex(unsigned char numSubsets,
   unsigned char partitionid,size_t pixelIndex)
 {
   if (numSubsets == 2)
-    return PartitionTable[0][partitionid][pixelIndex];
+    return BC7_PartitionTable[0][partitionid][pixelIndex];
   if (numSubsets == 3)
-    return PartitionTable[1][partitionid][pixelIndex];
+    return BC7_PartitionTable[1][partitionid][pixelIndex];
   return 0;
 }
 
@@ -1896,7 +1896,7 @@ static MagickBooleanType IsPixelAnchorIndex(unsigned char subsetIndex,
   else
     tableIndex = 3;
 
-  if (AnchorIndexTable[tableIndex][partitionid] == pixelIndex)
+  if (BC7_AnchorIndexTable[tableIndex][partitionid] == pixelIndex)
     return MagickTrue;
   else
     return MagickFalse;  
@@ -1920,8 +1920,8 @@ static void ReadEndpoints(BC7Colors *endpoints,
   size_t
     i;
 
-  numSubsets=modeInfo[mode].numSubsets;
-  colorBits=modeInfo[mode].colorPrecision;
+  numSubsets=BC7_modeInfo[mode].numSubsets;
+  colorBits=BC7_modeInfo[mode].colorPrecision;
 
   /* red */
   for (i=0; i < numSubsets * 2; i++)
@@ -1936,7 +1936,7 @@ static void ReadEndpoints(BC7Colors *endpoints,
     endpoints->b[i]=GetBits(block,startBit,colorBits);
 
   /* alpha */
-  alphabits=modeInfo[mode].alphaPrecision;
+  alphabits=BC7_modeInfo[mode].alphaPrecision;
   hasAlpha=mode >= 4;
 
   if (hasAlpha != MagickFalse)
@@ -2087,13 +2087,13 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
       if (mode > 7)
         return(MagickFalse);
 
-      numSubsets=modeInfo[mode].numSubsets;
+      numSubsets=BC7_modeInfo[mode].numSubsets;
       partitionid=0;
 
       /* only these modes have more than 1 subset */
       if (mode == 0 || mode == 1 || mode == 2 || mode == 3 || mode == 7)
       {
-        partitionid=GetBits(block,&startBit,modeInfo[mode].partitionBits);
+        partitionid=GetBits(block,&startBit,BC7_modeInfo[mode].partitionBits);
         if (partitionid > 63)
           return(MagickFalse);
       }
@@ -2108,8 +2108,8 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
 
       ReadEndpoints(&colors,block,mode,&startBit);
 
-      indexPrec=modeInfo[mode].indexPrecision;
-      index2Prec=modeInfo[mode].index2Precision;
+      indexPrec=BC7_modeInfo[mode].indexPrecision;
+      index2Prec=BC7_modeInfo[mode].index2Precision;
 
       if (mode == 4 && selectorBit == 1)
       {
@@ -2146,9 +2146,9 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         /* Color Interpolation */
         switch(indexPrec)
         {
-          case 2: weight=weight2[colorIndices[i]]; break;
-          case 3: weight=weight3[colorIndices[i]]; break;
-          default: weight=weight4[colorIndices[i]];
+          case 2: weight=BC7_weight2[colorIndices[i]]; break;
+          case 3: weight=BC7_weight3[colorIndices[i]]; break;
+          default: weight=BC7_weight4[colorIndices[i]];
         }
         r=((64 - weight) * colors.r[c0] + weight * colors.r[c1] + 32) >> 6;
         g=((64 - weight) * colors.g[c0] + weight * colors.g[c1] + 32) >> 6;
@@ -2158,9 +2158,9 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         /* Interpolate alpha for mode 4 and 5 blocks */
         if (mode == 4 || mode == 5)
         {
-          weight=weight2[alphaIndices[i]];
+          weight=BC7_weight2[alphaIndices[i]];
           if (mode == 4 && selectorBit == 0)
-            weight=weight3[alphaIndices[i]];
+            weight=BC7_weight3[alphaIndices[i]];
           a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
         }
         switch (rotation)
