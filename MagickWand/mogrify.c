@@ -1992,7 +1992,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("kmeans",option+1) == 0)
           {
             /*
-              K-means clustering
+              K-means clustering.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);

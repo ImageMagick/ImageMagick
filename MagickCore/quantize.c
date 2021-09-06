@@ -640,8 +640,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   if (cube_info->quantize_info->measure_error != MagickFalse)
     (void) GetImageQuantizeError(image,exception);
   if ((cube_info->quantize_info->number_colors == 2) &&
-      ((cube_info->quantize_info->colorspace == LinearGRAYColorspace) ||
-       (cube_info->quantize_info->colorspace == GRAYColorspace)))
+      (IsGrayColorspace(cube_info->quantize_info->colorspace)))
     {
       double
         intensity;
@@ -2956,17 +2955,20 @@ static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
   for (i=0; i < (ssize_t) number_children; i++)
     if (node_info->child[i] != (NodeInfo *) NULL)
       PruneChild(cube_info,node_info->child[i]);
-  /*
-    Merge color statistics into parent.
-  */
-  parent=node_info->parent;
-  parent->number_unique+=node_info->number_unique;
-  parent->total_color.red+=node_info->total_color.red;
-  parent->total_color.green+=node_info->total_color.green;
-  parent->total_color.blue+=node_info->total_color.blue;
-  parent->total_color.alpha+=node_info->total_color.alpha;
-  parent->child[node_info->id]=(NodeInfo *) NULL;
-  cube_info->nodes--;
+  if (cube_info->nodes > cube_info->maximum_colors)
+    {
+      /*
+        Merge color statistics into parent.
+      */
+      parent=node_info->parent;
+      parent->number_unique+=node_info->number_unique;
+      parent->total_color.red+=node_info->total_color.red;
+      parent->total_color.green+=node_info->total_color.green;
+      parent->total_color.blue+=node_info->total_color.blue;
+      parent->total_color.alpha+=node_info->total_color.alpha;
+      parent->child[node_info->id]=(NodeInfo *) NULL;
+      cube_info->nodes--;
+    }
 }
 
 /*
