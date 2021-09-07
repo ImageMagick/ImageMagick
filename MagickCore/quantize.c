@@ -1987,7 +1987,7 @@ static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info,
   cube_info->y=0;
   extent=MagickMax(image->columns,image->rows);
   level=(size_t) log2((double) extent);
-  if ((1UL << level) < extent)
+  if (((size_t) 1UL << level) < extent)
     level++;
   cube_info->offset=0;
   cube_info->span=(MagickSizeType) image->columns*image->rows;
