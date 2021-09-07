@@ -992,6 +992,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   {
     case ActivateAlphaChannel:
     {
+      if (image->alpha_trait == BlendPixelTrait)
+        return(status);
       image->alpha_trait=BlendPixelTrait;
       break;
     }
@@ -1191,6 +1193,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case OffAlphaChannel:
     {
+      if (image->alpha_trait == UndefinedPixelTrait)
+        return(status);
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
