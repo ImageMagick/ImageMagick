@@ -36,9 +36,6 @@
 %
 %
 */
-
-#define IM
-
 
 /*
   Include declarations.
