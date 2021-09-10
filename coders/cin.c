@@ -410,6 +410,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q;
 
   size_t
+    extent,
     length;
 
   ssize_t
@@ -749,16 +750,18 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  quantum_info->quantum=32;
-  quantum_info->pack=MagickFalse;
+  SetQuantumQuantum(quantum_info,32);
+  SetQuantumPack(quantum_info,MagickFalse);
   quantum_type=RGBQuantum;
-  length=GetQuantumExtent(image,quantum_info,quantum_type);
+  extent=GetQuantumExtent(image,quantum_info,quantum_type);
   length=GetBytesPerRow(image->columns,3,image->depth,MagickTrue);
   if (cin.image.number_channels == 1)
     {
       quantum_type=GrayQuantum;
       length=GetBytesPerRow(image->columns,1,image->depth,MagickTrue);
     }
+  if (length > extent)
+    status=SetQuantumPad(image,quantum_info,length-extent);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
