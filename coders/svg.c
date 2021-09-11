@@ -3476,7 +3476,8 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
 }
 #endif
 
-static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   char
     filename[MagickPathExtent];
@@ -3488,7 +3489,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *file;
 
   Image
-    *image,
     *next;
 
   int
@@ -3510,61 +3510,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   xmlSAXHandlerPtr
     sax_handler;
 
-  /*
-    Open image file.
-  */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickCoreSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  if (image_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image_info->filename);
-  assert(exception->signature == MagickCoreSignature);
-  image=AcquireImage(image_info,exception);
-  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    {
-      image=DestroyImageList(image);
-      return((Image *) NULL);
-    }
-  if ((fabs(image->resolution.x) < MagickEpsilon) ||
-      (fabs(image->resolution.y) < MagickEpsilon))
-    {
-      GeometryInfo
-        geometry_info;
-
-      int
-        flags;
-
-      flags=ParseGeometry(SVGDensityGeometry,&geometry_info);
-      image->resolution.x=geometry_info.rho;
-      image->resolution.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        image->resolution.y=image->resolution.x;
-    }
-  if (LocaleCompare(image_info->magick,"MSVG") != 0)
-    {
-      Image
-        *svg_image;
-
-#if defined(MAGICKCORE_RSVG_DELEGATE)
-      if (LocaleCompare(image_info->magick,"RSVG") == 0)
-        {
-          svg_image=RenderRSVGImage(image_info,image,exception);
-          return(svg_image);
-        }
-#endif
-      svg_image=RenderSVGImage(image_info,image,exception);
-      if (svg_image != (Image *) NULL)
-        {
-          image=DestroyImageList(image);
-          return(svg_image);
-        }
-#if defined(MAGICKCORE_RSVG_DELEGATE)
-      svg_image=RenderRSVGImage(image_info,image,exception);
-      return(svg_image);
-#endif
-    }
   /*
     Open draw file.
   */
@@ -3718,15 +3663,27 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   return(GetFirstImageInList(image));
 }
 #else
+static Image *RenderMSVGImage(const ImageInfo *magick_unused(image_info),
+  Image *image,ExceptionInfo *magick_unused(exception))
+{
+  magick_unreferenced(image_info);
+  magick_unreferenced(exception);
+  image=DestroyImageList(image);
+  return((Image *) NULL);
+}
+#endif
+
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
-    *image,
-    *svg_image;
+    *image;
 
   MagickBooleanType
     status;
 
+  /*
+    Open image file.
+  */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -3756,11 +3713,32 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((flags & SigmaValue) == 0)
         image->resolution.y=image->resolution.x;
     }
-  svg_image=RenderSVGImage(image_info,image,exception);
-  image=DestroyImage(image);
-  return(svg_image);
-}
+  if (LocaleCompare(image_info->magick,"MSVG") != 0)
+    {
+      Image
+        *svg_image;
+
+#if defined(MAGICKCORE_RSVG_DELEGATE)
+      if (LocaleCompare(image_info->magick,"RSVG") == 0)
+        {
+          image=RenderRSVGImage(image_info,image,exception);
+          return(image);
+        }
 #endif
+      svg_image=RenderSVGImage(image_info,image,exception);
+      if (svg_image != (Image *) NULL)
+        {
+          image=DestroyImageList(image);
+          return(svg_image);
+        }
+#if defined(MAGICKCORE_RSVG_DELEGATE)
+      image=RenderRSVGImage(image_info,image,exception);
+      return(image);
+#endif
+    }
+  image=RenderMSVGImage(image_info,image,exception);
+  return(image);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
