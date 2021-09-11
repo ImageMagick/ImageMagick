@@ -662,19 +662,37 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) RelinquishUniqueFileResource(read_info->filename);
     }
   else
-    for (i=1; ; i++)
     {
-      (void) InterpretImageFilename(image_info,image,filename,(int) i,
-        read_info->filename,exception);
-      if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
-        break;
-      read_info->blob=NULL;
-      read_info->length=0;
-      next=ReadImage(read_info,exception);
-      (void) RelinquishUniqueFileResource(read_info->filename);
+      next=(Image *) NULL;
+      for (i=1; ; i++)
+      {
+        (void) InterpretImageFilename(image_info,image,filename,(int) i,
+          read_info->filename,exception);
+        if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
+          break;
+        read_info->blob=NULL;
+        read_info->length=0;
+        next=ReadImage(read_info,exception);
+        (void) RelinquishUniqueFileResource(read_info->filename);
+        if (next == (Image *) NULL)
+          break;
+        AppendImageToList(&pdf_image,next);
+      }
+      /* Clean up remaining files */
       if (next == (Image *) NULL)
-        break;
-      AppendImageToList(&pdf_image,next);
+        {
+          ssize_t
+            j;
+
+          for (j=i+1; ; j++)
+            {
+              (void) InterpretImageFilename(image_info,image,filename,(int) j,
+                read_info->filename,exception);
+              if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
+                break;
+              (void) RelinquishUniqueFileResource(read_info->filename);
+            }
+        }
     }
   read_info=DestroyImageInfo(read_info);
   if (pdf_image == (Image *) NULL)
