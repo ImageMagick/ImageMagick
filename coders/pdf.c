@@ -2414,6 +2414,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     tile_image=ThumbnailImage(image,geometry.width,geometry.height,exception);
     if (tile_image == (Image *) NULL)
       {
+        xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
         (void) CloseBlob(image);
         return(MagickFalse);
       }
