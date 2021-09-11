@@ -67,6 +67,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
@@ -3734,7 +3735,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return(image);
 #endif
     }
-  image=RenderMSVGImage(image_info,image,exception);
+  status=IsRightsAuthorized(CoderPolicyDomain,ReadPolicyRights,"MSVG");
+  if (status == MagickFalse)
+    image=DestroyImageList(image);
+  else
+    image=RenderMSVGImage(image_info,image,exception);
   return(image);
 }
 
