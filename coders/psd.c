@@ -2216,15 +2216,11 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
 ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
   const ImageInfo *image_info,const PSDInfo *psd_info,ExceptionInfo *exception)
 {
-  PolicyDomain
-    domain;
+  MagickBooleanType
+    status;
 
-  PolicyRights
-    rights;
-
-  domain=CoderPolicyDomain;
-  rights=ReadPolicyRights;
-  if (IsRightsAuthorized(domain,rights,"PSD") == MagickFalse)
+  status=IsRightsAuthorized(CoderPolicyDomain,ReadPolicyRights,"PSD");
+  if (status == MagickFalse)
     return(MagickTrue);
   return(ReadPSDLayersInternal(image,image_info,psd_info,MagickFalse,
     exception));
@@ -3744,22 +3740,17 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
       (void) DeleteImageRegistry(property);
     next_image=GetNextImageInList(next_image);
   }
-
   return(status);
 }
 
 ModuleExport MagickBooleanType WritePSDLayers(Image * image,
   const ImageInfo *image_info,const PSDInfo *psd_info,ExceptionInfo *exception)
 {
-  PolicyDomain
-    domain;
+  MagickBooleanType
+    status;
 
-  PolicyRights
-    rights;
-
-  domain=CoderPolicyDomain;
-  rights=WritePolicyRights;
-  if (IsRightsAuthorized(domain,rights,"PSD") == MagickFalse)
+  status=IsRightsAuthorized(CoderPolicyDomain,WritePolicyRights,"PSD");
+  if (status == MagickFalse)
     return(MagickTrue);
   return WritePSDLayersInternal(image,image_info,psd_info,(size_t*) NULL,
     exception);
