@@ -516,9 +516,11 @@ namespace Magick
 
     // Image representation type (also see type operation)
     //   Available types:
-    //    Bilevel        Grayscale       GrayscaleMatte
-    //    Palette        PaletteMatte    TrueColor
-    //    TrueColorMatte ColorSeparation ColorSeparationMatte
+    //    Bilevel         PaletteBilevelAlpha
+    //    Grayscale       GrayscaleAlpha
+    //    Palette         PaletteAlpha
+    //    TrueColor       TrueColorAlpha
+    //    ColorSeparation ColorSeparationAlpha
     void type(const ImageType type_);
     ImageType type(void) const;
 
