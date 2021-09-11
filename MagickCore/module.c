@@ -1251,18 +1251,18 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   module_info=(ModuleInfo *) GetModuleInfo(module,exception);
   if (module_info != (ModuleInfo *) NULL)
     return(MagickTrue);
+  (void) CopyMagickString(module_name,module,MagickPathExtent);
+  p=GetCoderInfo(module,exception);
+  if (p != (CoderInfo *) NULL)
+    (void) CopyMagickString(module_name,p->name,MagickPathExtent);
   rights=ReadPolicyRights;
-  if (IsRightsAuthorized(ModulePolicyDomain,rights,module) == MagickFalse)
+  if (IsRightsAuthorized(ModulePolicyDomain,rights,module_name) == MagickFalse)
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",module);
       return(MagickFalse);
     }
-  (void) CopyMagickString(module_name,module,MagickPathExtent);
-  p=GetCoderInfo(module,exception);
-  if (p != (CoderInfo *) NULL)
-    (void) CopyMagickString(module_name,p->name,MagickPathExtent);
   if (GetValueFromSplayTree(module_list,module_name) != (void *) NULL)
     return(MagickTrue);  /* module already opened, return */
   /*

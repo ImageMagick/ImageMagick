@@ -1,8 +1,12 @@
 2021-09-06  7.1.0-7  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-7 GIT revision 19...
 
+2021-09-11  7.1.0-7  Dirk Lemstra <dirk@lem.....org>
+  * Fixed incorrect check when module is used as the domain in policy.xml
+    that would allow the use of a disabled module.
+
 2021-09-06  7.1.0-7  <quetzlzacatenango@image...>
-  * prevent color reduction merging into one color (reference
+  * Prevent color reduction merging into one color (reference
     https://github.com/ImageMagick/ImageMagick/issues/4059)
 
 2021-09-04  7.1.0-6  <quetzlzacatenango@image...>
@@ -15,21 +19,21 @@
     https://github.com/ImageMagick/ImageMagick/issues/4105).
 
 2021-08-21  7.1.0-5  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-5 GIT revision 18995:8f77c3c9c:20210821 
+  * Release ImageMagick version 7.1.0-5 GIT revision 18995:8f77c3c9c:20210821
 
 2021-08-12  7.1.0-5  Dirk Lemstra <dirk@lem.....org>
   * Added option (-dng:read-thumbnail=true) to read the thumbnail of a raw
-    image and store it as a profile called dng:thumbnail.
+    Image and store it as a profile called dng:thumbnail.
 
 2021-07-26  7.1.0-5  <quetzlzacatenango@image...>
-  * heap-based buffer overflow in TIFF coder (alert from Hunter Mitchell).
-  * grayscale image write optimization.
+  * Heap-based buffer overflow in TIFF coder (alert from Hunter Mitchell).
+  * Grayscale image write optimization.
 
 2021-07-18  7.1.0-4  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-4 GIT revision 18926:8eb9c6c48:20210718
 
 2021-07-17  7.1.0-4  <quetzlzacatenango@image...>
-  * trim no longer returns an empty image on 1-pixel width input (reference
+  * Trim no longer returns an empty image on 1-pixel width input (reference
     https://github.com/ImageMagick/ImageMagick/issues/3896).
   * remove virtual canvas offset from difference image.
 
@@ -42,7 +46,7 @@
 
 2021-06-26  7.1.0-3  <quetzlzacatenango@image...>
   * system() is not supported under IOS.
-  * accelerate subimage-search with FFT's (contributed by Fred).
+  * Accelerate subimage-search with FFT's (contributed by Fred).
 
 2021-06-25  7.1.0-2  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-2 GIT revision 18831:601356f1d:20210625
