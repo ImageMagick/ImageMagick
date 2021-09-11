@@ -654,12 +654,18 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
         if ((rights & ReadPolicyRights) != 0)
           authorized=(p->rights & ReadPolicyRights) != 0 ? MagickTrue :
             MagickFalse;
+        if (authorized == MagickFalse)
+          break;
         if ((rights & WritePolicyRights) != 0)
           authorized=(p->rights & WritePolicyRights) != 0 ? MagickTrue :
             MagickFalse;
+        if (authorized == MagickFalse)
+          break;
         if ((rights & ExecutePolicyRights) != 0)
           authorized=(p->rights & ExecutePolicyRights) != 0 ? MagickTrue :
             MagickFalse;
+        if (authorized == MagickFalse)
+          break;
       }
     p=(PolicyInfo *) GetNextValueInLinkedList(policy_cache);
   }
