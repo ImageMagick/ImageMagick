@@ -406,10 +406,6 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   PixelInfo
     fill_color;
 
-  ssize_t
-    x,
-    n;
-
   Quantum
     *q;
 
@@ -417,6 +413,8 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
     *svg_handle;
 
   ssize_t
+    n,
+    x,
     y;
 
   unsigned char
