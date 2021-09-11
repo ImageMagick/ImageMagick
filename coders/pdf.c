@@ -2413,7 +2413,10 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
         &geometry.width,&geometry.height);
     tile_image=ThumbnailImage(image,geometry.width,geometry.height,exception);
     if (tile_image == (Image *) NULL)
-      return(MagickFalse);
+      {
+        (void) CloseBlob(image);
+        return(MagickFalse);
+      }
     xref[object++]=TellBlob(image);
     (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g 0 obj\n",(double)
       object);
