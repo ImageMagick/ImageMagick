@@ -486,7 +486,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   sans_exception=AcquireExceptionInfo();
   magick_info=GetMagickInfo(read_info->magick,sans_exception);
   if (sans_exception->severity == PolicyError)
-    magick_info=GetMagickInfo(read_info->magick,exception);
+    InheritException(exception,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (magick_info != (const MagickInfo *) NULL)
     {
