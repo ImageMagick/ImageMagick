@@ -301,6 +301,8 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
             break;
           name[i++]=(char) c;
         }
+        if (c == EOF)
+          break;
         name[i]='\0';
         value=ConstantString(name);
         (void) SubstituteString(&value,"#20"," ");
