@@ -48,6 +48,7 @@
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
+#include "MagickCore/colormap-private.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
@@ -1148,6 +1149,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           j=(ssize_t) sixel_pixels[y * image->columns + x];
+          j=ConstrainColormapIndex(image,j,exception);
           SetPixelIndex(image,j,q);
           SetPixelRed(image,image->colormap[j].red,q);
           SetPixelGreen(image,image->colormap[j].green,q);
