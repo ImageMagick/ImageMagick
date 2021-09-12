@@ -2547,6 +2547,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
               exception);
             if (status == MagickFalse)
               {
+                tile_image=DestroyImage(tile_image);
                 xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
@@ -2558,6 +2559,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             status=InjectImageBlob(image_info,image,tile_image,"jp2",exception);
             if (status == MagickFalse)
               {
+                tile_image=DestroyImage(tile_image);
                 xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
@@ -2610,6 +2612,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
+                tile_image=DestroyImage(tile_image);
                 xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
@@ -2652,6 +2655,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
               exception);
             if (status == MagickFalse)
               {
+                tile_image=DestroyImage(tile_image);
                 xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
@@ -2663,6 +2667,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             status=InjectImageBlob(image_info,image,tile_image,"jp2",exception);
             if (status == MagickFalse)
               {
+                tile_image=DestroyImage(tile_image);
                 xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
@@ -2719,6 +2724,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
             pixel_info=RelinquishVirtualMemory(pixel_info);
             if (status == MagickFalse)
               {
+                tile_image=DestroyImage(tile_image);
                 xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                 (void) CloseBlob(image);
                 return(MagickFalse);
@@ -2808,6 +2814,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
               pixel_info=RelinquishVirtualMemory(pixel_info);
               if (status == MagickFalse)
                 {
+                  tile_image=DestroyImage(tile_image);
                   xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
                   (void) CloseBlob(image);
                   return(MagickFalse);
