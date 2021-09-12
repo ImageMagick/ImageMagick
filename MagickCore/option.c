@@ -2725,6 +2725,8 @@ MagickExport MagickBooleanType IsCommandOption(const char *option)
   assert(option != (const char *) NULL);
   if ((*option != '-') && (*option != '+'))
     return(MagickFalse);
+  if (IsPathAccessible(option) != MagickFalse)
+    return(MagickFalse);
   if (strlen(option) == 1)
     return(((*option == '{') || (*option == '}') || (*option == '[') ||
       (*option == ']')) ? MagickTrue : MagickFalse);
