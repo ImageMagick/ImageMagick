@@ -1149,6 +1149,9 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         {
           j=(ssize_t) sixel_pixels[y * image->columns + x];
           SetPixelIndex(image,j,q);
+          SetPixelRed(image,image->colormap[j].red,q);
+          SetPixelGreen(image,image->colormap[j].green,q);
+          SetPixelBlue(image,image->colormap[j].blue,q);
           q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
