@@ -1,9 +1,9 @@
-2021-09-06  7.1.0-7  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-7 GIT revision 19...
+2021-09-11  7.1.0-7  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-7 GIT revision 19081:51d10c05d:20210911
 
 2021-09-11  7.1.0-7  Dirk Lemstra <dirk@lem.....org>
   * Fixed incorrect check when module is used as the domain in policy.xml
-    that would allow the use of a disabled module.
+    that could allow the use of a disabled module.
 
 2021-09-06  7.1.0-7  <quetzlzacatenango@image...>
   * Prevent color reduction merging into one color (reference
