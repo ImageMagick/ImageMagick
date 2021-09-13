@@ -3776,8 +3776,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
 
   size_t
     length,
-    num_channels,
-    packet_size;
+    num_channels;
 
   StringInfo
     *bim_profile;
@@ -3796,9 +3795,6 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  packet_size=(size_t) (image->depth > 8 ? 6 : 3);
-  if (image->alpha_trait != UndefinedPixelTrait)
-    packet_size+=image->depth > 8 ? 2 : 1;
   psd_info.version=1;
   if ((LocaleCompare(image_info->magick,"PSB") == 0) ||
       (image->columns > 30000) || (image->rows > 30000))
