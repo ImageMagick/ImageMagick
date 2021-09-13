@@ -121,7 +121,7 @@ typedef struct sixel_output {
     *node_top;
 
   unsigned char
-    buffer[1],
+    buffer[SIXEL_OUTPUT_PACKET_SIZE*2],
     has_8bit_control; /* 0: 7bit terminal, 1: 8bit terminal */
 } sixel_output_t;
 
@@ -638,8 +638,7 @@ static sixel_output_t *sixel_output_create(Image *image)
   sixel_output_t
     *output;
 
-  output=(sixel_output_t *)AcquireQuantumMemory(sizeof(sixel_output_t)+
-    SIXEL_OUTPUT_PACKET_SIZE*2,1);
+  output=(sixel_output_t *) AcquireMagickMemory(sizeof(sixel_output_t));
   if (output == (sixel_output_t *) NULL)
     return((sixel_output_t *) NULL);
   output->has_8bit_control=0;
@@ -1374,11 +1373,10 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
     sixel_palette[3*i+1]=ScaleQuantumToChar(image->colormap[i].green);
     sixel_palette[3*i+2]=ScaleQuantumToChar(image->colormap[i].blue);
   }
-
   /*
     Define SIXEL pixels.
   */
-  output = sixel_output_create(image);
+  output=sixel_output_create(image);
   if (output == (sixel_output_t *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   sixel_pixels=(sixel_pixel_t *) AcquireQuantumMemory(image->columns,
