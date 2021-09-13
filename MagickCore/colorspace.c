@@ -1557,8 +1557,8 @@ MagickExport MagickBooleanType SetImageGray(Image *image,
 MagickExport MagickBooleanType SetImageMonochrome(Image *image,
   ExceptionInfo *exception)
 {
-  ImageType
-    type;
+  MagickBooleanType
+    is_bilevel;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -1568,13 +1568,13 @@ MagickExport MagickBooleanType SetImageMonochrome(Image *image,
     return(MagickTrue);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     return(MagickFalse);
-  type=IdentifyImageMonochrome(image,exception);
-  if (type == UndefinedType)
+  is_bilevel=IdentifyImageMonochrome(image,exception);
+  if (is_bilevel == MagickFalse)
     return(MagickFalse);
   image->colorspace=GRAYColorspace;
   if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
     return(MagickFalse);
-  image->type=type;
+  image->type=BilevelType;
   return(MagickTrue);
 }
 
