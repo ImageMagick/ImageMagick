@@ -1,5 +1,7 @@
 #!/bin/bash -eu
 
+echo `date`
+
 # build zlib
 pushd "$SRC/zlib"
 ./configure --static --prefix="$WORK"
