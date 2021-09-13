@@ -3,7 +3,8 @@
 
 2021-09-11  7.1.0-7  Dirk Lemstra <dirk@lem.....org>
   * Fixed incorrect check when module is used as the domain in policy.xml
-    that could allow the use of a disabled module.
+    that could allow the use of a disabled module. (reference
+    https://github.com/ImageMagick/ImageMagick/security/advisories/GHSA-qvhr-jj4p-j2qr).
 
 2021-09-06  7.1.0-7  <quetzlzacatenango@image...>
   * Prevent color reduction merging into one color (reference
