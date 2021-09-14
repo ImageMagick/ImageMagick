@@ -2004,12 +2004,12 @@ static void ReadEndpoints(BC7Colors *endpoints,const unsigned char *block,
     endpoints->r[i] <<= (8 - color_bits);
     endpoints->g[i] <<= (8 - color_bits);
     endpoints->b[i] <<= (8 - color_bits);
-    endpoints->a[i] <<= (8 - color_bits);
+    endpoints->a[i] <<= (8 - alpha_bits);
 
     endpoints->r[i]=endpoints->r[i] | (endpoints->r[i] >> color_bits);
     endpoints->g[i]=endpoints->g[i] | (endpoints->g[i] >> color_bits);
     endpoints->b[i]=endpoints->b[i] | (endpoints->b[i] >> color_bits);
-    endpoints->a[i]=endpoints->a[i] | (endpoints->a[i] >> color_bits);
+    endpoints->a[i]=endpoints->a[i] | (endpoints->a[i] >> alpha_bits);
   }
 
   if (has_alpha == MagickFalse)
