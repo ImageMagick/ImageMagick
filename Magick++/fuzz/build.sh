@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-echo `date`
+echo "IMFUZZ: "`date`
 
 # build zlib
 pushd "$SRC/zlib"
@@ -9,7 +9,7 @@ make -j$(nproc) CFLAGS="$CFLAGS -fPIC"
 make install
 popd
 
-echo `date`
+echo "IMFUZZ: "`date`
 
 # Build xz
 pushd "$SRC/xz"
@@ -111,11 +111,11 @@ MAGICK_LIBS="$LIB_FUZZING_ENGINE $MAGICK_LIBS_NO_FUZZ"
 MAGICK_OUTPUT=$OUT
 MAGICK_FAST_BUILD=0
 
-echo `date`
+echo "IMFUZZ: "`date`
 
 . $MAGICK_SRC/build_fuzzers.sh
 
-echo `date`
+echo "IMFUZZ: "`date`
 
 mkdir afl_testcases
 (cd afl_testcases; tar xvf "$SRC/afl_testcases.tgz")
