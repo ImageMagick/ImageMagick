@@ -2122,6 +2122,9 @@ namespace Magick
       {
         const MagickCore::MagickInfo *magick_info =
           MagickCore::GetMagickInfo( coder_list[i], exceptionInfo );
+        if (!magick_info)
+          continue;
+
         coder_list[i]=(char *)
           MagickCore::RelinquishMagickMemory( coder_list[i] );
 
