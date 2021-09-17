@@ -1717,14 +1717,16 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   rights=ExecutePolicyRights;
-  if (IsRightsAuthorized(DelegatePolicyDomain,rights,decode) == MagickFalse)
+  if ((decode != (const char *) NULL) &&
+      (IsRightsAuthorized(DelegatePolicyDomain,rights,decode) == MagickFalse))
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",decode);
       return(MagickFalse);
     }
-  if (IsRightsAuthorized(DelegatePolicyDomain,rights,encode) == MagickFalse)
+  if ((encode != (const char *) NULL) &&
+      (IsRightsAuthorized(DelegatePolicyDomain,rights,encode) == MagickFalse))
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
