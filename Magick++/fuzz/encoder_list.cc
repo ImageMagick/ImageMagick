@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include <Magick++/Image.h>
+#include <Magick++/Functions.h>
 #include <Magick++/STL.h>
 
 static std::string getInitializer(const std::string magick_module)
@@ -15,6 +16,8 @@ static std::string getInitializer(const std::string magick_module)
 }
 
 int main() {
+  Magick::InitializeMagick((const char *) NULL);
+
   std::list<Magick::CoderInfo> coderList;
   coderInfoList(&coderList, Magick::CoderInfo::TrueMatch, Magick::CoderInfo::AnyMatch, Magick::CoderInfo::AnyMatch);
 
