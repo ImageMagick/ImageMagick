@@ -1,3 +1,10 @@
+2021-09-18  7.1.0-8  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-8 GIT revision 19112:772e98c64:20210918
+
+2021-09-17  7.1.0-8  Dirk Lemstra <dirk@lem.....org>
+  * Check for `null` in InvokeDelegate() (reference
+    https://github.com/ImageMagick/ImageMagick/issues/4225).
+
 2021-09-12  7.1.0-7  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-7 GIT revision 19095:d368d3c6b:20210912
 
