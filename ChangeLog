@@ -1,3 +1,10 @@
+2021-09-18  7.1.0-9  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-9 GIT revision 19...
+
+2021-09-19  7.1.0-9  <quetzlzacatenango@image...>
+  * improve wrapping between words and within words (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/4227).
+
 2021-09-18  7.1.0-8  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-8 GIT revision 19115:428fe1921:20210918
 

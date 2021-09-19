@@ -596,29 +596,34 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     status;
 
   char
-    *p,
-    *q,
-    *s;
-
-  ssize_t
-    i;
+    *p = (*caption),
+    *q = draw_info->text,
+    *s = (char *) NULL;
 
   size_t
-    width;
+    width = 0;
 
   ssize_t
+    i,
     n;
 
-  q=draw_info->text;
-  s=(char *) NULL;
-  for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
+  for ( ; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
   {
-    if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
-      s=p;
     if (GetUTFCode(p) == '\n')
       {
         q=draw_info->text;
         continue;
+      }
+    if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
+      {
+        s=p;
+        if (width > image->columns)
+          {
+            for (i=0; i < (ssize_t) GetUTFOctets(s); i++)
+              *(s+i)=' ';
+            *s='\n';
+            p=s;
+          }
       }
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
