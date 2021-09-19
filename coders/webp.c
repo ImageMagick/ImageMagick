@@ -975,7 +975,7 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
 
   if (webp_status != 0)
     {
-      // add last null frame and assemble picture.
+      /* add last null frame and assemble picture. */
       webp_status=WebPAnimEncoderAdd(enc,(WebPPicture *) NULL,
         (int) frame_timestamp,configure);
       if (webp_status != 0)
@@ -1029,7 +1029,7 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"UnableToEncodeImageFile","`%s'",image->filename);
 
-  // Clean up returned data
+  /* Clean up returned data */
   memset(webp_data, 0, sizeof(*webp_data));
   mux_error=WEBP_MUX_OK;
   if (image->iterations > 0)
