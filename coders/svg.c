@@ -3337,7 +3337,6 @@ static void SVGWarning(void *context,const char *format,...)
     DelegateWarning,reason,"`%s`",message);
   message=DestroyString(message);
   va_end(operands);
-  svg_info->parser->instate=XML_PARSER_EOF;
 }
 
 static void SVGError(void *,const char *,...)
