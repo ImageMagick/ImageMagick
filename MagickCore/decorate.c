@@ -247,24 +247,24 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   */
   matte=image->matte_color;
   accentuate=matte;
-  accentuate.red=(double) (QuantumScale*((QuantumRange-
-    AccentuateModulate)*matte.red+(QuantumRange*AccentuateModulate)));
-  accentuate.green=(double) (QuantumScale*((QuantumRange-
-    AccentuateModulate)*matte.green+(QuantumRange*AccentuateModulate)));
-  accentuate.blue=(double) (QuantumScale*((QuantumRange-
-    AccentuateModulate)*matte.blue+(QuantumRange*AccentuateModulate)));
-  accentuate.black=(double) (QuantumScale*((QuantumRange-
-    AccentuateModulate)*matte.black+(QuantumRange*AccentuateModulate)));
+  accentuate.red=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
+    matte.red+(QuantumRange*(double) AccentuateModulate)));
+  accentuate.green=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
+    matte.green+(QuantumRange*(double) AccentuateModulate)));
+  accentuate.blue=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
+    matte.blue+(QuantumRange*(double) AccentuateModulate)));
+  accentuate.black=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
+    matte.black+(QuantumRange*(double) AccentuateModulate)));
   accentuate.alpha=matte.alpha;
   highlight=matte;
-  highlight.red=(double) (QuantumScale*((QuantumRange-
-    HighlightModulate)*matte.red+(QuantumRange*HighlightModulate)));
-  highlight.green=(double) (QuantumScale*((QuantumRange-
-    HighlightModulate)*matte.green+(QuantumRange*HighlightModulate)));
-  highlight.blue=(double) (QuantumScale*((QuantumRange-
-    HighlightModulate)*matte.blue+(QuantumRange*HighlightModulate)));
-  highlight.black=(double) (QuantumScale*((QuantumRange-
-    HighlightModulate)*matte.black+(QuantumRange*HighlightModulate)));
+  highlight.red=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
+    matte.red+(QuantumRange*(double) HighlightModulate)));
+  highlight.green=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
+    matte.green+(QuantumRange*(double) HighlightModulate)));
+  highlight.blue=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
+    matte.blue+(QuantumRange*(double) HighlightModulate)));
+  highlight.black=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
+    matte.black+(QuantumRange*(double) HighlightModulate)));
   highlight.alpha=matte.alpha;
   shadow=matte;
   shadow.red=QuantumScale*matte.red*ShadowModulate;
