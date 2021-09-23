@@ -192,12 +192,12 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     trough;
 
   ssize_t
-    x;
+    x_offset,
+    y_offset;
 
   size_t
     bevel_width,
-    height,
-    width;
+    height;
 
   ssize_t
     y;
@@ -213,9 +213,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
     ThrowImageException(OptionError,"FrameIsLessThanImageSize");
   bevel_width=(size_t) (frame_info->outer_bevel+frame_info->inner_bevel);
-  x=(ssize_t) frame_info->width-frame_info->x-bevel_width;
-  y=(ssize_t) frame_info->height-frame_info->y-bevel_width;
-  if ((x < (ssize_t) image->columns) ||  (y < (ssize_t) image->rows))
+  x_offset=(ssize_t) frame_info->width-frame_info->x-bevel_width;
+  y_offset=(ssize_t) frame_info->height-frame_info->y-bevel_width;
+  if ((x_offset < (ssize_t) image->columns) ||
+      (y_offset < (ssize_t) image->rows))
     ThrowImageException(OptionError,"FrameIsLessThanImageSize");
   /*
     Initialize framed image attributes.
@@ -285,6 +286,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     frame_info->inner_bevel);
   if (height != 0)
     {
+      size_t
+        width;
+
       ssize_t
         x;
 
@@ -467,6 +471,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     frame_info->y-image->rows-bevel_width+frame_info->outer_bevel);
   if (height != 0)
     {
+      size_t
+        width;
+
       ssize_t
         x;
 
@@ -561,13 +568,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     }
   frame_view=DestroyCacheView(frame_view);
   image_view=DestroyCacheView(image_view);
-  x=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
+  x_offset=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
     frame_info->inner_bevel);
-  y=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
+  y_offset=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
     frame_info->inner_bevel);
   if (status != MagickFalse)
-    status=CompositeImage(frame_image,image,compose,MagickTrue,x,y,
-      exception);
+    status=CompositeImage(frame_image,image,compose,MagickTrue,x_offset,
+      y_offset,exception);
   if (status == MagickFalse)
     frame_image=DestroyImage(frame_image);
   return(frame_image);
