@@ -756,9 +756,6 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
             }
           else
             {
-              MagickBooleanType
-                status;
-
               status=QueryColorCompliance(name,AllCompliance,&pixel,
                 fx_info->exception);
               if (status != MagickFalse)
@@ -2238,9 +2235,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
         }
       if (IsFxFunction(expression,"for",3) != MagickFalse)
         {
-          double
-            sans = 0.0;
-
           size_t
             length;
 
@@ -2321,9 +2315,6 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
     {
       if (IsFxFunction(expression,"if",2) != MagickFalse)
         {
-          double
-            sans = 0.0;
-
           size_t
             length;
 
