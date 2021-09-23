@@ -648,8 +648,8 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const size_t level)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IdentifyPaletteImage() returns MagickTrue if the image has 256 unique colors
-%  or less.
+%  IdentifyPaletteImage() returns MagickTrue if the image does not have more
+%  unique colors than specified in max_colors.
 %
 %  The format of the IdentifyPaletteImage method is:
 %
@@ -660,12 +660,14 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const size_t level)
 %
 %    o image: the image.
 %
+%    o max_colors: the maximum unique colors.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 
 static MagickBooleanType CheckImageColors(const Image *image,
-  ExceptionInfo *exception,size_t max_colors)
+  const size_t max_colors,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -800,7 +802,7 @@ MagickExport MagickBooleanType IdentifyPaletteImage(const Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  return(CheckImageColors(image,exception,256));
+  return(CheckImageColors(image,256,exception));
 }
 
 /*
@@ -838,7 +840,7 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  return(CheckImageColors(image,exception,MaximumUniqueColors));
+  return(CheckImageColors(image,MaximumUniqueColors,exception));
 }
 
 /*
