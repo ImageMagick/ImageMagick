@@ -430,24 +430,24 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     {
       char
         *edges,
-        *p,
-        *q;
+        *q,
+        *r;
 
       bounds.width=(size_t) image->columns;
       bounds.height=(size_t) image->rows;
       bounds.x=0;
       bounds.y=0;
       edges=AcquireString(artifact);
-      q=edges;
-      while ((p=StringToken(",",&q)) != (char *) NULL)
+      r=edges;
+      while ((q=StringToken(",",&r)) != (char *) NULL)
       {
-        if (LocaleCompare(p,"north") == 0)
+        if (LocaleCompare(q,"north") == 0)
           bounds.y=(ssize_t) image->rows;
-        if (LocaleCompare(p,"east") == 0)
+        if (LocaleCompare(q,"east") == 0)
           bounds.width=0;
-        if (LocaleCompare(p,"south") == 0)
+        if (LocaleCompare(q,"south") == 0)
           bounds.height=0;
-        if (LocaleCompare(p,"west") == 0)
+        if (LocaleCompare(q,"west") == 0)
           bounds.x=(ssize_t) image->columns;
       }
       edges=DestroyString(edges);
@@ -490,7 +490,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       bounding_box;
 
     const Quantum
-      *magick_restrict p;
+      *magick_restrict q;
 
     ssize_t
       x;
@@ -501,8 +501,8 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 #  pragma omp critical (MagickCore_GetImageBoundingBox)
 #endif
     bounding_box=bounds;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
+    q=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (const Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
@@ -510,7 +510,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      GetPixelInfoPixel(image,p,&pixel);
+      GetPixelInfoPixel(image,q,&pixel);
       if ((x < bounding_box.x) &&
           (IsFuzzyEquivalencePixelInfo(&pixel,&target[0]) == MagickFalse))
         bounding_box.x=x;
@@ -530,7 +530,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
           bounding_box.width=(size_t) x;
           bounding_box.height=(size_t) y;
         }
-      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #  pragma omp critical (MagickCore_GetImageBoundingBox)
@@ -614,6 +614,7 @@ static PixelInfo GetEdgeBackgroundColor(const Image *image,
   /*
     Most dominant color of edges/corners is the background color of the image.
   */
+  memset(&edge_background,0,sizeof(edge_background));
   artifact=GetImageArtifact(image,"convex-hull:background-color");
   if (artifact == (const char *) NULL)
     artifact=GetImageArtifact(image,"background");
@@ -1066,9 +1067,9 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
-        i;
+        j;
 
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         PixelChannel
           channel;
@@ -1076,7 +1077,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
         PixelTrait
           traits;
 
-        channel=GetPixelChannelChannel(image,i);
+        channel=GetPixelChannelChannel(image,j);
         traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
@@ -1086,7 +1087,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
             range;
 
           range=GetQuantumRange(current_depth[id]);
-          if (p[i] == ScaleAnyToQuantum(ScaleQuantumToAny(p[i],range),range))
+          if (p[j] == ScaleAnyToQuantum(ScaleQuantumToAny(p[j],range),range))
             break;
           current_depth[id]++;
         }
@@ -1265,9 +1266,6 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
 
     for (j=0; j < (ssize_t) number_hull_vertices; j++)
     {
-      double
-        diameter;
-
       diameter=fabs(getFeretDiameter(&vertices[i],
         &vertices[(i+1) % number_hull_vertices],&vertices[j]));
       if (min_diameter < diameter)
