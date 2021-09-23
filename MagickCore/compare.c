@@ -1385,7 +1385,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     status;
 
   ssize_t
-    i;
+    j;
 
   size_t
     columns,
@@ -1575,13 +1575,13 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   }
   image_view=DestroyCacheView(image_view);
   reconstruct_view=DestroyCacheView(reconstruct_view);
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
   {
-    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelChannel channel = GetPixelChannelChannel(image,j);
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if ((traits == UndefinedPixelTrait) || ((traits & UpdatePixelTrait) == 0))
       continue;
-    distortion[i]/=area;
+    distortion[j]/=area;
   }
   distortion[CompositePixelChannel]/=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
