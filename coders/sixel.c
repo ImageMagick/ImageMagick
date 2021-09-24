@@ -160,11 +160,11 @@ static int hue_to_rgb(int n1,int n2,int hue)
   if (hue > HLSMAX)
     hue -= HLSMAX;
   if (hue < (HLSMAX/6))
-    return(n1 + (((n2-n1)*hue+(HLSMAX/12))/(HLSMAX/6)));
+    return(n1 + (((ssize_t) (n2-n1)*hue+(HLSMAX/12))/(HLSMAX/6)));
   if (hue < (HLSMAX/2))
     return(n2);
   if (hue < ((HLSMAX*2)/3))
-    return(n1+(((n2-n1)*(((HLSMAX*2)/3)-hue)+(HLSMAX/12))/(HLSMAX/6)));
+    return(n1+(((ssize_t) (n2-n1)*(((HLSMAX*2)/3)-hue)+(HLSMAX/12))/(HLSMAX/6)));
   return(n1);
 }
 
