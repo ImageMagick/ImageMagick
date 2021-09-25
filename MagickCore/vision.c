@@ -549,6 +549,126 @@ static void EccentricityThreshold(const Image *component_image,
   }
 }
 
+static void AngleThreshold(const Image *component_image,
+  CCObjectInfo *object,const ssize_t metric_index,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  ssize_t
+    i;
+
+  status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic) shared(status) \
+    magick_number_threads(component_image,component_image,component_image->colors,1)
+#endif
+  for (i=0; i < (ssize_t) component_image->colors; i++)
+  {
+    CacheView
+      *component_view;
+
+    double
+      M00 = 0.0,
+      M01 = 0.0,
+      M02 = 0.0,
+      M10 = 0.0,
+      M11 = 0.0,
+      M20 = 0.0;
+
+    PointInfo
+      centroid = { 0.0, 0.0 };
+
+    RectangleInfo
+      bounding_box;
+
+    const Quantum
+      *magick_restrict p;
+
+    ssize_t
+      x;
+
+    ssize_t
+      y;
+
+    /*
+      Compute ellipse angle of each object.
+    */
+    if (status == MagickFalse)
+      continue;
+    component_view=AcquireAuthenticCacheView(component_image,exception);
+    bounding_box=object[i].bounding_box;
+    for (y=0; y < (ssize_t) bounding_box.height; y++)
+    {
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
+        bounding_box.y+y,bounding_box.width,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (x=0; x < (ssize_t) bounding_box.width; x++)
+      {
+        if ((ssize_t) GetPixelIndex(component_image,p) == i)
+          {
+            M00++;
+            M10+=x;
+            M01+=y;
+          }
+        p+=GetPixelChannels(component_image);
+      }
+    }
+    centroid.x=M10*PerceptibleReciprocal(M00);
+    centroid.y=M01*PerceptibleReciprocal(M00);
+    for (y=0; y < (ssize_t) bounding_box.height; y++)
+    {
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
+        bounding_box.y+y,bounding_box.width,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (x=0; x < (ssize_t) bounding_box.width; x++)
+      {
+        if ((ssize_t) GetPixelIndex(component_image,p) == i)
+          {
+            M11+=(x-centroid.x)*(y-centroid.y);
+            M20+=(x-centroid.x)*(x-centroid.x);
+            M02+=(y-centroid.y)*(y-centroid.y);
+          }
+        p+=GetPixelChannels(component_image);
+      }
+    }
+    component_view=DestroyCacheView(component_view);
+    object[i].metric[metric_index]=RadiansToDegrees(1.0/2.0*atan(2.0*M11*
+      PerceptibleReciprocal(M20-M02)));
+    if (fabs(M11) < 0.0)
+        {
+          if ((fabs(M20-M02) >= 0.0) && ((M20-M02) < 0.0))
+            object[i].metric[metric_index]+=90.0;
+        }
+      else
+        if (M11 < 0.0)
+          {
+            if (fabs(M20-M02) >= 0.0)
+              {
+                if ((M20-M02) < 0.0)
+                  object[i].metric[metric_index]+=90.0;
+                else
+                  object[i].metric[metric_index]+=180.0;
+              }
+          }
+        else
+          if ((fabs(M20-M02) >= 0.0) && ((M20-M02) < 0.0))
+            object[i].metric[metric_index]+=90.0;
+  }
+}
+
 MagickExport Image *ConnectedComponentsImage(const Image *image,
   const size_t connectivity,CCObjectInfo **objects,ExceptionInfo *exception)
 {
@@ -1240,114 +1360,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="angle";
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(dynamic) shared(status) \
-        magick_number_threads(component_image,component_image,component_image->colors,1)
-#endif
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-      {
-        CacheView
-          *component_view;
-
-        double
-          M00 = 0.0,
-          M01 = 0.0,
-          M02 = 0.0,
-          M10 = 0.0,
-          M11 = 0.0,
-          M20 = 0.0;
-
-        PointInfo
-          centroid = { 0.0, 0.0 };
-
-        RectangleInfo
-          bounding_box;
-
-        const Quantum
-          *magick_restrict p;
-
-        ssize_t
-          x;
-
-        ssize_t
-          y;
-
-        /*
-          Compute ellipse angle of each object.
-        */
-        if (status == MagickFalse)
-          continue;
-        component_view=AcquireAuthenticCacheView(component_image,exception);
-        bounding_box=object[i].bounding_box;
-        for (y=0; y < (ssize_t) bounding_box.height; y++)
-        {
-          if (status == MagickFalse)
-            continue;
-          p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
-            bounding_box.y+y,bounding_box.width,1,exception);
-          if (p == (const Quantum *) NULL)
-            {
-              status=MagickFalse;
-              break;
-            }
-          for (x=0; x < (ssize_t) bounding_box.width; x++)
-          {
-            if ((ssize_t) GetPixelIndex(component_image,p) == i)
-              {
-                M00++;
-                M10+=x;
-                M01+=y;
-              }
-            p+=GetPixelChannels(component_image);
-          }
-        }
-        centroid.x=M10*PerceptibleReciprocal(M00);
-        centroid.y=M01*PerceptibleReciprocal(M00);
-        for (y=0; y < (ssize_t) bounding_box.height; y++)
-        {
-          if (status == MagickFalse)
-            continue;
-          p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
-            bounding_box.y+y,bounding_box.width,1,exception);
-          if (p == (const Quantum *) NULL)
-            {
-              status=MagickFalse;
-              break;
-            }
-          for (x=0; x < (ssize_t) bounding_box.width; x++)
-          {
-            if ((ssize_t) GetPixelIndex(component_image,p) == i)
-              {
-                M11+=(x-centroid.x)*(y-centroid.y);
-                M20+=(x-centroid.x)*(x-centroid.x);
-                M02+=(y-centroid.y)*(y-centroid.y);
-              }
-            p+=GetPixelChannels(component_image);
-          }
-        }
-        component_view=DestroyCacheView(component_view);
-        object[i].metric[n]=RadiansToDegrees(1.0/2.0*atan(2.0*M11*
-          PerceptibleReciprocal(M20-M02)));
-        if (fabs(M11) < 0.0)
-           {
-             if ((fabs(M20-M02) >= 0.0) && ((M20-M02) < 0.0))
-               object[i].metric[n]+=90.0;
-           }
-         else
-           if (M11 < 0.0)
-             {
-               if (fabs(M20-M02) >= 0.0)
-                 {
-                   if ((M20-M02) < 0.0)
-                     object[i].metric[n]+=90.0;
-                   else
-                     object[i].metric[n]+=180.0;
-                 }
-             }
-           else
-             if ((fabs(M20-M02) >= 0.0) && ((M20-M02) < 0.0))
-               object[i].metric[n]+=90.0;
-      }
+      AngleThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
              (object[i].metric[n] >= max_threshold)) && (i != background_id))
