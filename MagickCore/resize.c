@@ -2401,14 +2401,14 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
   { \
     if (intensities[B] > intensities[A]) \
       { \
-        ssize_t    \
+        const ssize_t    \
           offsets[3] = { B, C, D }; \
  \
         MixPixels(pixels,offsets,3,result,3,channels); \
       } \
     else \
       { \
-        ssize_t    \
+        const ssize_t    \
           offsets[3] = { A, B, C }; \
  \
         MixPixels(pixels,offsets,3,result,3,channels); \
@@ -2423,6 +2423,9 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
       Mix2Pixels(pixels,A,B,result,3,channels); \
   }
 
+  const ssize_t
+    pixels_offsets[4] = { 0, 1, 3, 4 };
+
   MagickFloatType
     intensities[9];
 
@@ -2436,9 +2439,6 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
 
   ssize_t
     i;
-
-  ssize_t
-    offsets[4] = { 0, 1, 3, 4 };
 
   for (i=0; i < 9; i++)
     intensities[i]=GetPixelIntensity(source,pixels + i*channels);
@@ -2508,7 +2508,7 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
       Line(1,4,0,3)
       return;
     }
-  MixPixels(pixels,offsets,4,result,3,channels);
+  MixPixels(pixels,pixels_offsets,4,result,3,channels);
 #undef Corner
 #undef Line
 }
