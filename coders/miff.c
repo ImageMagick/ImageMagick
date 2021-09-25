@@ -457,7 +457,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
   lzma_stream
     initialize_lzma = LZMA_STREAM_INIT,
-    lzma_info;
+    lzma_info = LZMA_STREAM_INIT;
 
   lzma_allocator
     allocator;
