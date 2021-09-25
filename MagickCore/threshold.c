@@ -1911,9 +1911,7 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
     progress;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     y;
 
   ThresholdMap
@@ -1995,19 +1993,17 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
-        i;
-
-      ssize_t
+        j,
         n;
 
       n=0;
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         ssize_t
           level,
           threshold;
 
-        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelChannel channel = GetPixelChannelChannel(image,j);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
@@ -2016,10 +2012,10 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
             n++;
             continue;
           }
-        threshold=(ssize_t) (QuantumScale*q[i]*(levels[n]*(map->divisor-1)+1));
+        threshold=(ssize_t) (QuantumScale*q[j]*(levels[n]*(map->divisor-1)+1));
         level=threshold/(map->divisor-1);
         threshold-=level*(map->divisor-1);
-        q[i]=ClampToQuantum((double) (level+(threshold >=
+        q[j]=ClampToQuantum((double) (level+(threshold >=
           map->levels[(x % map->width)+map->width*(y % map->height)]))*
           QuantumRange/levels[n]);
         n++;
