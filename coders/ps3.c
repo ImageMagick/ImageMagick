@@ -1155,9 +1155,6 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       (void) WriteBlobString(image,"/ClipImage {} def\n");
     else
       {
-        const char
-          *value;
-
         value=GetImageProperty(image,image->magick_filename,exception);
         if (value == (const char *) NULL)
           return(MagickFalse);
