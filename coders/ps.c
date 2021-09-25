@@ -1381,6 +1381,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
   const char
     *value;
 
+  const Quantum
+    *p;
+
   const StringInfo
     *profile;
 
@@ -1415,13 +1418,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     media_info,
     page_info;
 
-  const Quantum
-    *p;
-
-  ssize_t
-    i,
-    x;
-
   unsigned char
     *q;
 
@@ -1437,7 +1433,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     text_size;
 
   ssize_t
+    i,
     j,
+    x,
     y;
 
   time_t
@@ -1627,15 +1625,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
             Image
               *preview_image;
 
-            Quantum
-              pixel;
-
-            ssize_t
-              x;
-
-            ssize_t
-              y;
-
             /*
               Create preview image.
             */
@@ -1662,9 +1651,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
               byte=0;
               for (x=0; x < (ssize_t) preview_image->columns; x++)
               {
+                Quantum
+                  luma;
+
                 byte<<=1;
-                pixel=ClampToQuantum(GetPixelLuma(preview_image,p));
-                if (pixel >= (Quantum) (QuantumRange/2))
+                luma=ClampToQuantum(GetPixelLuma(preview_image,p));
+                if (luma >= (Quantum) (QuantumRange/2))
                   byte|=0x01;
                 bit++;
                 if (bit == 8)
@@ -1783,9 +1775,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
       {
         if (type == GrayscaleType)
           {
-            Quantum
-              pixel;
-
             /*
               Dump image as grayscale.
             */
@@ -1801,9 +1790,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                pixel=(Quantum) ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
+                Quantum
+                  luma;
+
+                luma=(Quantum) ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
                   image,p)));
-                q=PopHexPixel(hex_digits,(size_t) pixel,q);
+                q=PopHexPixel(hex_digits,(size_t) luma,q);
                 if ((q-pixels+8) >= 80)
                   {
                     *q++='\n';
@@ -1828,12 +1820,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
           }
         else
           {
-            ssize_t
-              y;
-
-            Quantum
-              pixel;
-
             /*
               Dump image as bitmap.
             */
@@ -1851,9 +1837,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
               byte=0;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
+                Quantum
+                  luma;
+
                 byte<<=1;
-                pixel=ClampToQuantum(GetPixelLuma(image,p));
-                if (pixel >= (Quantum) (QuantumRange/2))
+                luma=ClampToQuantum(GetPixelLuma(image,p));
+                if (luma >= (Quantum) (QuantumRange/2))
                   byte|=0x01;
                 bit++;
                 if (bit == 8)
