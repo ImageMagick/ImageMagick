@@ -4323,9 +4323,6 @@ static MagickBooleanType RenderMVGContent(Image *image,
       }
       case TextPrimitive:
       {
-        char
-          geometry[MagickPathExtent];
-
         if (primitive_info[j].coordinates != 1)
           {
             status=MagickFalse;
@@ -4349,8 +4346,6 @@ static MagickBooleanType RenderMVGContent(Image *image,
             mvg_info.point=primitive_info->point;
             cursor=0.0;
           }
-        (void) FormatLocaleString(geometry,MagickPathExtent,"%+f%+f",
-          primitive_info->point.x,primitive_info->point.y);
         clone_info->render=MagickFalse;
         clone_info->text=AcquireString(token);
         status&=GetTypeMetrics(image,clone_info,&metrics,exception);
