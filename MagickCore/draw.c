@@ -5675,8 +5675,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
            (draw_info->stroke_pattern != (Image *) NULL)))
         {
           double
-            x,
-            y;
+            point_x,
+            point_y;
 
           MagickBooleanType
             closed_path;
@@ -5686,9 +5686,9 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           */
           closed_path=primitive_info[0].closed_subpath;
           i=(ssize_t) primitive_info[0].coordinates;
-          x=fabs(primitive_info[i-1].point.x-primitive_info[0].point.x);
-          y=fabs(primitive_info[i-1].point.y-primitive_info[0].point.y);
-          if ((x < MagickEpsilon) && (y < MagickEpsilon))
+          point_x=fabs(primitive_info[i-1].point.x-primitive_info[0].point.x);
+          point_y=fabs(primitive_info[i-1].point.y-primitive_info[0].point.y);
+          if ((point_x < MagickEpsilon) && (point_y < MagickEpsilon))
             closed_path=MagickTrue;
           if ((((draw_info->linecap == RoundCap) ||
                 (closed_path != MagickFalse)) &&
