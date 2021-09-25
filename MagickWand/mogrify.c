@@ -4067,11 +4067,11 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if (*magic != '\0')
           {
             char
-              filename[MagickPathExtent];
+              name[MagickPathExtent];
 
-            (void) FormatLocaleString(filename,MagickPathExtent,"%s:%s",magic,
+            (void) FormatLocaleString(name,MagickPathExtent,"%s:%s",magic,
               image->filename);
-            (void) CopyMagickString(image->filename,filename,MagickPathExtent);
+            (void) CopyMagickString(image->filename,name,MagickPathExtent);
           }
         if ((LocaleCompare(image->filename,"-") != 0) &&
             (IsPathWritable(image->filename) != MagickFalse))
