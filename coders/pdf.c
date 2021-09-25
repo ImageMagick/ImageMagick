@@ -2383,7 +2383,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     else
       {
         const unsigned char
-          *p;
+          *r;
 
         /*
           Write ICC profile.
@@ -2402,9 +2402,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobString(image,buffer);
         offset=TellBlob(image);
         Ascii85Initialize(image);
-        p=GetStringInfoDatum(icc_profile);
+        r=GetStringInfoDatum(icc_profile);
         for (i=0; i < (ssize_t) GetStringInfoLength(icc_profile); i++)
-          Ascii85Encode(image,(unsigned char) *p++);
+          Ascii85Encode(image,(unsigned char) *r++);
         Ascii85Flush(image);
         offset=TellBlob(image)-offset;
         (void) WriteBlobString(image,"endstream\n");
