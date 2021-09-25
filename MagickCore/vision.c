@@ -129,9 +129,7 @@ static int CCObjectInfoCompare(const void *x,const void *y)
 }
 
 static void CircularityThreshold(const Image *component_image,
-  CCObjectInfo *object,const double min_threshold,const double max_threshold,
-  const ssize_t metric_index,const ssize_t background_id,
-  ExceptionInfo *exception)
+  CCObjectInfo *object,const ssize_t metric_index,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -241,16 +239,10 @@ static void CircularityThreshold(const Image *component_image,
     object[i].metric[metric_index]=4.0*MagickPI*object[i].area/
       (object[i].metric[metric_index]*object[i].metric[metric_index]);
   }
-  for (i=0; i < (ssize_t) component_image->colors; i++)
-    if (((object[i].metric[metric_index] < min_threshold) ||
-          (object[i].metric[metric_index] >= max_threshold)) && (i != background_id))
-      object[i].merge=MagickTrue;
 }
 
 static void MajorAxisThreshold(const Image *component_image,
-  CCObjectInfo *object,const double min_threshold,const double max_threshold,
-  const ssize_t metric_index,const ssize_t background_id,
-  ExceptionInfo *exception)
+  CCObjectInfo *object,const ssize_t metric_index,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -348,10 +340,107 @@ static void MajorAxisThreshold(const Image *component_image,
     object[i].metric[metric_index]=sqrt((2.0*PerceptibleReciprocal(M00))*((M20+M02)+
       sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
   }
+}
+
+static void MinorAxisThreshold(const Image *component_image,
+  CCObjectInfo *object,const ssize_t metric_index,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  ssize_t
+    i;
+
+  status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic) shared(status) \
+    magick_number_threads(component_image,component_image,component_image->colors,1)
+#endif
   for (i=0; i < (ssize_t) component_image->colors; i++)
-    if (((object[i].metric[metric_index] < min_threshold) ||
-          (object[i].metric[metric_index] >= max_threshold)) && (i != background_id))
-      object[i].merge=MagickTrue;
+  {
+    CacheView
+      *component_view;
+
+    double
+      M00 = 0.0,
+      M01 = 0.0,
+      M02 = 0.0,
+      M10 = 0.0,
+      M11 = 0.0,
+      M20 = 0.0;
+
+    PointInfo
+      centroid = { 0.0, 0.0 };
+
+    RectangleInfo
+      bounding_box;
+
+    const Quantum
+      *magick_restrict p;
+
+    ssize_t
+      x;
+
+    ssize_t
+      y;
+
+    /*
+      Compute ellipse major axis of each object.
+    */
+    if (status == MagickFalse)
+      continue;
+    component_view=AcquireAuthenticCacheView(component_image,exception);
+    bounding_box=object[i].bounding_box;
+    for (y=0; y < (ssize_t) bounding_box.height; y++)
+    {
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
+        bounding_box.y+y,bounding_box.width,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (x=0; x < (ssize_t) bounding_box.width; x++)
+      {
+        if ((ssize_t) GetPixelIndex(component_image,p) == i)
+          {
+            M00++;
+            M10+=x;
+            M01+=y;
+          }
+        p+=GetPixelChannels(component_image);
+      }
+    }
+    centroid.x=M10*PerceptibleReciprocal(M00);
+    centroid.y=M01*PerceptibleReciprocal(M00);
+    for (y=0; y < (ssize_t) bounding_box.height; y++)
+    {
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
+        bounding_box.y+y,bounding_box.width,1,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (x=0; x < (ssize_t) bounding_box.width; x++)
+      {
+        if ((ssize_t) GetPixelIndex(component_image,p) == i)
+          {
+            M11+=(x-centroid.x)*(y-centroid.y);
+            M20+=(x-centroid.x)*(x-centroid.x);
+            M02+=(y-centroid.y)*(y-centroid.y);
+          }
+        p+=GetPixelChannels(component_image);
+      }
+    }
+    component_view=DestroyCacheView(component_view);
+    object[i].metric[metric_index]=sqrt((2.0*PerceptibleReciprocal(M00))*((M20+M02)-
+      sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
+  }
 }
 
 MagickExport Image *ConnectedComponentsImage(const Image *image,
@@ -973,8 +1062,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="circularity";
-      CircularityThreshold(image,object,min_threshold,max_threshold,
-        n,background_id,exception);
+      CircularityThreshold(image,object,n,exception);
+      for (i=0; i < (ssize_t) component_image->colors; i++)
+        if (((object[i].metric[n] < min_threshold) ||
+              (object[i].metric[n] >= max_threshold)) && (i != background_id))
+          object[i].merge=MagickTrue;
     }
   artifact=GetImageArtifact(image,"connected-components:diameter-threshold");
   if (artifact != (const char *) NULL)
@@ -1000,8 +1092,11 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="major-axis";
-      MajorAxisThreshold(component_image,object,min_threshold,max_threshold,
-        n,background_id,exception);
+      MajorAxisThreshold(component_image,object,n,exception);
+      for (i=0; i < (ssize_t) component_image->colors; i++)
+        if (((object[i].metric[n] < min_threshold) ||
+              (object[i].metric[n] >= max_threshold)) && (i != background_id))
+          object[i].merge=MagickTrue;
     }
   artifact=GetImageArtifact(image,"connected-components:minor-axis-threshold");
   if (artifact != (const char *) NULL)
@@ -1011,98 +1106,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="minor-axis";
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(dynamic) shared(status) \
-        magick_number_threads(component_image,component_image,component_image->colors,1)
-#endif
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-      {
-        CacheView
-          *component_view;
-
-        double
-          M00 = 0.0,
-          M01 = 0.0,
-          M02 = 0.0,
-          M10 = 0.0,
-          M11 = 0.0,
-          M20 = 0.0;
-
-        PointInfo
-          centroid = { 0.0, 0.0 };
-
-        RectangleInfo
-          bounding_box;
-
-        const Quantum
-          *magick_restrict p;
-
-        ssize_t
-          x;
-
-        ssize_t
-          y;
-
-        /*
-          Compute ellipse major axis of each object.
-        */
-        if (status == MagickFalse)
-          continue;
-        component_view=AcquireAuthenticCacheView(component_image,exception);
-        bounding_box=object[i].bounding_box;
-        for (y=0; y < (ssize_t) bounding_box.height; y++)
-        {
-          if (status == MagickFalse)
-            continue;
-          p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
-            bounding_box.y+y,bounding_box.width,1,exception);
-          if (p == (const Quantum *) NULL)
-            {
-              status=MagickFalse;
-              break;
-            }
-          for (x=0; x < (ssize_t) bounding_box.width; x++)
-          {
-            if ((ssize_t) GetPixelIndex(component_image,p) == i)
-              {
-                M00++;
-                M10+=x;
-                M01+=y;
-              }
-            p+=GetPixelChannels(component_image);
-          }
-        }
-        centroid.x=M10*PerceptibleReciprocal(M00);
-        centroid.y=M01*PerceptibleReciprocal(M00);
-        for (y=0; y < (ssize_t) bounding_box.height; y++)
-        {
-          if (status == MagickFalse)
-            continue;
-          p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
-            bounding_box.y+y,bounding_box.width,1,exception);
-          if (p == (const Quantum *) NULL)
-            {
-              status=MagickFalse;
-              break;
-            }
-          for (x=0; x < (ssize_t) bounding_box.width; x++)
-          {
-            if ((ssize_t) GetPixelIndex(component_image,p) == i)
-              {
-                M11+=(x-centroid.x)*(y-centroid.y);
-                M20+=(x-centroid.x)*(x-centroid.x);
-                M02+=(y-centroid.y)*(y-centroid.y);
-              }
-            p+=GetPixelChannels(component_image);
-          }
-        }
-        component_view=DestroyCacheView(component_view);
-        object[i].metric[n]=sqrt((2.0*PerceptibleReciprocal(M00))*((M20+M02)-
-          sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
-      }
+      MinorAxisThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
-             (object[i].metric[n] >= max_threshold)) && (i != background_id))
+              (object[i].metric[n] >= max_threshold)) && (i != background_id))
           object[i].merge=MagickTrue;
     }
   artifact=GetImageArtifact(image,"connected-components:eccentricity-threshold");
