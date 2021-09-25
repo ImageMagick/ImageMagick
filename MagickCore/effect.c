@@ -152,17 +152,11 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   MagickOffsetType
     progress;
 
-  ssize_t
-    i;
-
   size_t
     width;
 
   ssize_t
-    j,
-    k,
-    u,
-    v,
+    w,
     y;
 
   assert(image != (const Image *) NULL);
@@ -211,33 +205,39 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   (void) memset(kernel,0,(size_t) width*sizeof(*kernel));
-  for (i=0; i < (ssize_t) width; i+=2)
+  for (w=0; w < (ssize_t) width; w+=2)
   {
-    kernel[i]=(double *) MagickAssumeAligned(AcquireAlignedMemory(
-      (size_t) (width-i),(width-i)*sizeof(**kernel)));
-    if (kernel[i] == (double *) NULL)
+    ssize_t
+      j,
+      k,
+      u,
+      v;
+
+    kernel[w]=(double *) MagickAssumeAligned(AcquireAlignedMemory(
+      (size_t) (width-w),(width-w)*sizeof(**kernel)));
+    if (kernel[w] == (double *) NULL)
       break;
     normalize=0.0;
-    j=(ssize_t) (width-i-1)/2;
+    j=(ssize_t) (width-w-1)/2;
     k=0;
     for (v=(-j); v <= j; v++)
     {
       for (u=(-j); u <= j; u++)
       {
-        kernel[i][k]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+        kernel[w][k]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
           MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-        normalize+=kernel[i][k];
+        normalize+=kernel[w][k];
         k++;
       }
     }
-    kernel[i][(k-1)/2]+=(double) (1.0-normalize);
+    kernel[w][(k-1)/2]+=(double) (1.0-normalize);
     if (sigma < MagickEpsilon)
-      kernel[i][(k-1)/2]=1.0;
+      kernel[w][(k-1)/2]=1.0;
   }
-  if (i < (ssize_t) width)
+  if (w < (ssize_t) width)
     {
-      for (i-=2; i >= 0; i-=2)
-        kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+      for (w-=2; w >= 0; w-=2)
+        kernel[w]=(double *) RelinquishAlignedMemory(kernel[w]);
       kernel=(double **) RelinquishAlignedMemory(kernel);
       edge_image=DestroyImage(edge_image);
       blur_image=DestroyImage(blur_image);
@@ -405,8 +405,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   edge_view=DestroyCacheView(edge_view);
   image_view=DestroyCacheView(image_view);
   edge_image=DestroyImage(edge_image);
-  for (i=0; i < (ssize_t) width; i+=2)
-    kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+  for (w=0; w < (ssize_t) width; w+=2)
+    kernel[w]=(double *) RelinquishAlignedMemory(kernel[w]);
   kernel=(double **) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
@@ -473,17 +473,11 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   MagickOffsetType
     progress;
 
-  ssize_t
-    i;
-
   size_t
     width;
 
   ssize_t
-    j,
-    k,
-    u,
-    v,
+    w,
     y;
 
   assert(image != (const Image *) NULL);
@@ -532,33 +526,39 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   (void) memset(kernel,0,(size_t) width*sizeof(*kernel));
-  for (i=0; i < (ssize_t) width; i+=2)
+  for (w=0; w < (ssize_t) width; w+=2)
   {
-    kernel[i]=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
-      (width-i),(width-i)*sizeof(**kernel)));
-    if (kernel[i] == (double *) NULL)
+    ssize_t
+      j,
+      k,
+      u,
+      v;
+
+    kernel[w]=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+      (width-w),(width-w)*sizeof(**kernel)));
+    if (kernel[w] == (double *) NULL)
       break;
     normalize=0.0;
-    j=(ssize_t) (width-i-1)/2;
+    j=(ssize_t) (width-w-1)/2;
     k=0;
     for (v=(-j); v <= j; v++)
     {
       for (u=(-j); u <= j; u++)
       {
-        kernel[i][k]=(double) (-exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+        kernel[w][k]=(double) (-exp(-((double) u*u+v*v)/(2.0*MagickSigma*
           MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-        normalize+=kernel[i][k];
+        normalize+=kernel[w][k];
         k++;
       }
     }
-    kernel[i][(k-1)/2]=(double) ((-2.0)*normalize);
+    kernel[w][(k-1)/2]=(double) ((-2.0)*normalize);
     if (sigma < MagickEpsilon)
-      kernel[i][(k-1)/2]=1.0;
+      kernel[w][(k-1)/2]=1.0;
   }
-  if (i < (ssize_t) width)
+  if (w < (ssize_t) width)
     {
-      for (i-=2; i >= 0; i-=2)
-        kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+      for (w-=2; w >= 0; w-=2)
+        kernel[w]=(double *) RelinquishAlignedMemory(kernel[w]);
       kernel=(double **) RelinquishAlignedMemory(kernel);
       edge_image=DestroyImage(edge_image);
       sharp_image=DestroyImage(sharp_image);
@@ -726,8 +726,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   edge_view=DestroyCacheView(edge_view);
   image_view=DestroyCacheView(image_view);
   edge_image=DestroyImage(edge_image);
-  for (i=0; i < (ssize_t) width; i+=2)
-    kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+  for (w=0; w < (ssize_t) width; w+=2)
+    kernel[w]=(double *) RelinquishAlignedMemory(kernel[w]);
   kernel=(double **) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     sharp_image=DestroyImage(sharp_image);
@@ -925,15 +925,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
     mid;
 
   ssize_t
-    u;
-
-  ssize_t
-    n,
     number_threads,
-    v;
-
-  ssize_t
-    i,
+    w,
     y;
 
   assert(image != (const Image *) NULL);
@@ -957,16 +950,27 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
       blur_image=DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (i=(-MaxIntensity); i < MaxIntensity; i++)
-    intensity_gaussian[i+MaxIntensity]=BlurGaussian((double) i,intensity_sigma);
+  for (w=(-MaxIntensity); w < MaxIntensity; w++)
+    intensity_gaussian[w+MaxIntensity]=BlurGaussian((double) w,intensity_sigma);
   spatial_gaussian=weights[number_threads];
-  n=0;
-  mid.x=(ssize_t) (width/2L);
-  mid.y=(ssize_t) (height/2L);
-  for (v=0; v < (ssize_t) height; v++)
-    for (u=0; u < (ssize_t) width; u++)
-      spatial_gaussian[n++]=BlurGaussian(BlurDistance(0,0,u-mid.x,v-mid.y),
-        spatial_sigma);
+  {
+    ssize_t
+      n,
+      v;
+
+    n=0;
+    mid.x=(ssize_t) (width/2L);
+    mid.y=(ssize_t) (height/2L);
+    for (v=0; v < (ssize_t) height; v++)
+    {
+      ssize_t
+        u;
+
+      for (u=0; u < (ssize_t) width; u++)
+        spatial_gaussian[n++]=BlurGaussian(BlurDistance(0,0,u-mid.x,v-mid.y),
+          spatial_sigma);
+    }
+  }
   /*
     Bilateral blur image.
   */
@@ -2374,13 +2378,11 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   PointInfo
     point;
 
-  ssize_t
-    i;
-
   size_t
     width;
 
   ssize_t
+    w,
     y;
 
   assert(image != (Image *) NULL);
@@ -2400,11 +2402,11 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     }
   point.x=(double) width*sin(DegreesToRadians(angle));
   point.y=(double) width*cos(DegreesToRadians(angle));
-  for (i=0; i < (ssize_t) width; i++)
+  for (w=0; w < (ssize_t) width; w++)
   {
-    offset[i].x=CastDoubleToLong(ceil((double) (i*point.y)/
+    offset[w].x=CastDoubleToLong(ceil((double) (w*point.y)/
       hypot(point.x,point.y)-0.5));
-    offset[i].y=CastDoubleToLong(ceil((double) (i*point.x)/
+    offset[w].y=CastDoubleToLong(ceil((double) (w*point.x)/
       hypot(point.x,point.y)-0.5));
   }
   /*
@@ -3162,13 +3164,11 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   PointInfo
     blur_center;
 
-  ssize_t
-    i;
-
   size_t
     n;
 
   ssize_t
+    w,
     y;
 
   /*
@@ -3210,10 +3210,10 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   offset=theta*(double) (n-1)/2.0;
-  for (i=0; i < (ssize_t) n; i++)
+  for (w=0; w < (ssize_t) n; w++)
   {
-    cos_theta[i]=cos((double) (theta*i-offset));
-    sin_theta[i]=sin((double) (theta*i-offset));
+    cos_theta[w]=cos((double) (theta*w-offset));
+    sin_theta[w]=sin((double) (theta*w-offset));
   }
   /*
     Radial blur image.
@@ -3437,17 +3437,12 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   MagickRealType
     *kernel;
 
-  ssize_t
-    i;
-
   size_t
     width;
 
   ssize_t
     center,
     j,
-    u,
-    v,
     y;
 
   /*
@@ -3464,13 +3459,22 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
     width,width*sizeof(*kernel)));
   if (kernel == (MagickRealType *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  j=(ssize_t) (width-1)/2;
-  i=0;
-  for (v=(-j); v <= j; v++)
   {
-    for (u=(-j); u <= j; u++)
-      kernel[i++]=(MagickRealType) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
-        MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
+    ssize_t
+      i,
+      v;
+
+    j=(ssize_t) (width-1)/2;
+    i=0;
+    for (v=(-j); v <= j; v++)
+    {
+      ssize_t
+        u;
+
+      for (u=(-j); u <= j; u++)
+        kernel[i++]=(MagickRealType) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+          MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
+    }
   }
   if (image->debug != MagickFalse)
     {
