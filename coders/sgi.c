@@ -931,9 +931,6 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
     i,
     x;
 
-  unsigned char
-    *q;
-
   size_t
     imageListLength;
 
@@ -1131,6 +1128,9 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
         ssize_t
           offset,
           *offsets;
+
+        unsigned char
+          *q;
 
         /*
           Convert SGI uncompressed pixels.
