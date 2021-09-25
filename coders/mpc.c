@@ -155,9 +155,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     keyword[MagickPathExtent],
     *options;
 
-  const unsigned char
-    *p;
-
   GeometryInfo
     geometry_info;
 
@@ -892,6 +889,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     depth=GetImageQuantumDepth(image,MagickFalse);
     if (image->storage_class == PseudoClass)
       {
+        const unsigned char
+          *p;
+
         size_t
           packet_size;
 
