@@ -366,9 +366,6 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ssize_t
-        i;
-
       if (GetPixelReadMask(image,p) <= (QuantumRange/2))
         {
           p+=GetPixelChannels(image);
@@ -856,7 +853,7 @@ static void EncodeIptcProfile(FILE *file,const StringInfo *profile)
         value->values_length=0;
         values[count++]=value;
       }
-    length=(size_t) (GetStringInfoDatum(profile)[i++] << 8);
+    length=((size_t) GetStringInfoDatum(profile)[i++] << 8);
     length|=GetStringInfoDatum(profile)[i++];
     attribute=(char *) NULL;
     if (~length >= (MagickPathExtent-1))
@@ -955,9 +952,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   MagickBooleanType
     ping;
 
-  const Quantum
-    *p;
-
   ssize_t
     i,
     x;
@@ -978,8 +972,9 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   elapsed_time=GetElapsedTime(&image->timer);
   user_time=GetUserTime(&image->timer);
   GetTimerInfo(&image->timer);
-  p=GetVirtualPixels(image,0,0,1,1,exception);
-  ping=p == (const Quantum *) NULL ? MagickTrue : MagickFalse;
+  ping=MagickTrue;
+  if (GetVirtualPixels(image,0,0,1,1,exception) != (const Quantum *) NULL)
+    ping=MagickFalse;
   (void) ping;
   (void) SignatureImage(image,exception);
   (void) FormatLocaleFile(file,"{\n");
@@ -1064,12 +1059,12 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
         max_locations;
 
       StatisticType
-        type;
+        statistic_type;
 
       /*
         Display minimum, maximum, or mean pixel locations.
       */
-      type=(StatisticType) ParseCommandOption(MagickStatisticOptions,
+      statistic_type=(StatisticType) ParseCommandOption(MagickStatisticOptions,
         MagickFalse,locate);
       limit=GetImageArtifact(image,"identify:limit");
       if (limit == (const char *) NULL)
@@ -1077,43 +1072,44 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
       max_locations=0;
       if (limit != (const char *) NULL)
         max_locations=StringToUnsignedLong(limit);
-      channel_statistics=GetLocationStatistics(image,type,exception);
+      channel_statistics=GetLocationStatistics(image,statistic_type,exception);
       if (channel_statistics == (ChannelStatistics *) NULL)
         return(MagickFalse);
       (void) FormatLocaleFile(file,"    \"channel%s\": {\n",locate);
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelLocations(file,image,AlphaPixelChannel,"alpha",
-          type,max_locations,MagickTrue,channel_statistics);
+          statistic_type,max_locations,MagickTrue,channel_statistics);
       switch (image->colorspace)
       {
         case RGBColorspace:
         default:
         {
           (void) PrintChannelLocations(file,image,RedPixelChannel,"red",
-            type,max_locations,MagickTrue,channel_statistics);
+            statistic_type,max_locations,MagickTrue,channel_statistics);
           (void) PrintChannelLocations(file,image,GreenPixelChannel,"green",
-            type,max_locations,MagickTrue,channel_statistics);
+            statistic_type,max_locations,MagickTrue,channel_statistics);
           (void) PrintChannelLocations(file,image,BluePixelChannel,"blue",
-            type,max_locations,MagickFalse,channel_statistics);
+            statistic_type,max_locations,MagickFalse,channel_statistics);
           break;
         }
         case CMYKColorspace:
         {
           (void) PrintChannelLocations(file,image,CyanPixelChannel,"cyan",
-            type,max_locations,MagickTrue,channel_statistics);
+            statistic_type,max_locations,MagickTrue,channel_statistics);
           (void) PrintChannelLocations(file,image,MagentaPixelChannel,
-            "magenta",type,max_locations,MagickTrue,channel_statistics);
+            "magenta",statistic_type,max_locations,MagickTrue,
+            channel_statistics);
           (void) PrintChannelLocations(file,image,YellowPixelChannel,"yellow",
-            type,max_locations,MagickTrue,channel_statistics);
+            statistic_type,max_locations,MagickTrue,channel_statistics);
           (void) PrintChannelLocations(file,image,BlackPixelChannel,"black",
-            type,max_locations,MagickFalse,channel_statistics);
+            statistic_type,max_locations,MagickFalse,channel_statistics);
           break;
         }
         case LinearGRAYColorspace:
         case GRAYColorspace:
         {
           (void) PrintChannelLocations(file,image,GrayPixelChannel,"gray",
-            type,max_locations,MagickFalse,channel_statistics);
+            statistic_type,max_locations,MagickFalse,channel_statistics);
           break;
         }
       }
