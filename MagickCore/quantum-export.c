@@ -3918,30 +3918,30 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         Sa;
 
       Quantum
-        *magick_restrict q;
+        *magick_restrict r;
 
       /*
         Associate alpha.
       */
       if (image_view != (CacheView *) NULL)
-        q=GetCacheViewAuthenticPixelQueue(image_view);
+        r=GetCacheViewAuthenticPixelQueue(image_view);
       else
-        q=GetAuthenticPixelQueue(image);
+        r=GetAuthenticPixelQueue(image);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         ssize_t
           i;
 
-        Sa=QuantumScale*GetPixelAlpha(image,q);
+        Sa=QuantumScale*GetPixelAlpha(image,r);
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
           PixelChannel channel = GetPixelChannelChannel(image,i);
           PixelTrait traits = GetPixelChannelTraits(image,channel);
           if ((traits & UpdatePixelTrait) == 0)
             continue;
-          q[i]=ClampToQuantum(Sa*q[i]);
+          r[i]=ClampToQuantum(Sa*r[i]);
         }
-        q+=GetPixelChannels(image);
+        r+=GetPixelChannels(image);
       }
     }
   if ((quantum_type == CbYCrQuantum) || (quantum_type == CbYCrAQuantum))
@@ -3950,18 +3950,18 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         quantum;
 
       Quantum
-        *magick_restrict q;
+        *magick_restrict r;
 
       if (image_view != (CacheView *) NULL)
-        q=GetAuthenticPixelQueue(image);
+        r=GetAuthenticPixelQueue(image);
       else
-        q=GetAuthenticPixelQueue(image);
+        r=GetAuthenticPixelQueue(image);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        quantum=GetPixelRed(image,q);
-        SetPixelRed(image,GetPixelGreen(image,q),q);
-        SetPixelGreen(image,quantum,q);
-        q+=GetPixelChannels(image);
+        quantum=GetPixelRed(image,r);
+        SetPixelRed(image,GetPixelGreen(image,r),r);
+        SetPixelGreen(image,quantum,r);
+        r+=GetPixelChannels(image);
       }
     }
   q=pixels;
@@ -4083,18 +4083,18 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         quantum;
 
       Quantum
-        *magick_restrict q;
+        *magick_restrict r;
 
       if (image_view != (CacheView *) NULL)
-        q=GetCacheViewAuthenticPixelQueue(image_view);
+        r=GetCacheViewAuthenticPixelQueue(image_view);
       else
-        q=GetAuthenticPixelQueue(image);
+        r=GetAuthenticPixelQueue(image);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        quantum=GetPixelRed(image,q);
-        SetPixelRed(image,GetPixelGreen(image,q),q);
-        SetPixelGreen(image,quantum,q);
-        q+=GetPixelChannels(image);
+        quantum=GetPixelRed(image,r);
+        SetPixelRed(image,GetPixelGreen(image,r),r);
+        SetPixelGreen(image,quantum,r);
+        r+=GetPixelChannels(image);
       }
     }
   return(extent);
