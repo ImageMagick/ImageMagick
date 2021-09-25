@@ -3442,7 +3442,6 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
 
   ssize_t
     center,
-    j,
     y;
 
   /*
@@ -3462,6 +3461,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   {
     ssize_t
       i,
+      j,
       v;
 
     j=(ssize_t) (width-1)/2;
