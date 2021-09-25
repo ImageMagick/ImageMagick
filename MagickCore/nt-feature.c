@@ -42,9 +42,6 @@
 */
 #include "MagickCore/studio.h"
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
-#define WIN32_LEAN_AND_MEAN
-#define VC_EXTRALEAN
-#include <windows.h>
 #include "MagickCore/cache.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
