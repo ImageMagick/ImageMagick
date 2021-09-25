@@ -1803,12 +1803,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     for (j=0; j < msl_info->n; j++)
                     {
                       const char
-                        *attribute;
+                        *prop;
 
-                      attribute=GetImageProperty(msl_info->attributes[j],"id",
+                      prop=GetImageProperty(msl_info->attributes[j],"id",
                         exception);
-                      if ((attribute != (const char *) NULL)  &&
-                          (LocaleCompare(attribute,value) == 0))
+                      if ((prop != (const char *) NULL)  &&
+                          (LocaleCompare(prop,value) == 0))
                         {
                           composite_image=CloneImage(msl_info->image[j],0,0,
                             MagickFalse,exception);
@@ -1913,11 +1913,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     for (j=0; j < msl_info->n; j++)
                     {
                       const char
-                        *attribute;
+                        *prop;
 
-                      attribute=GetImageProperty(msl_info->attributes[j],"id",
+                      prop=GetImageProperty(msl_info->attributes[j],"id",
                         exception);
-                      if ((attribute != (const char *) NULL)  &&
+                      if ((prop != (const char *) NULL)  &&
                           (LocaleCompare(value,value) == 0))
                         {
                           SetImageType(composite_image,TrueColorAlphaType,
@@ -1939,10 +1939,9 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       ssize_t
                         opacity,
-                        y;
+                        k,
+                        r;
 
-                      ssize_t
-                        x;
 
                       Quantum
                         *q;
@@ -1963,11 +1962,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         (void) SetImageAlpha(composite_image,OpaqueAlpha,
                           exception);
                       composite_view=AcquireAuthenticCacheView(composite_image,exception);
-                      for (y=0; y < (ssize_t) composite_image->rows ; y++)
+                      for (r=0; r < (ssize_t) composite_image->rows ; r++)
                       {
-                        q=GetCacheViewAuthenticPixels(composite_view,0,y,
+                        q=GetCacheViewAuthenticPixels(composite_view,0,r,
                           (ssize_t) composite_image->columns,1,exception);
-                        for (x=0; x < (ssize_t) composite_image->columns; x++)
+                        for (k=0; k < (ssize_t) composite_image->columns; k++)
                         {
                           if (GetPixelAlpha(composite_image,q) == OpaqueAlpha)
                             SetPixelAlpha(composite_image,
@@ -3648,12 +3647,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     for (j=0; j < msl_info->n; j++)
                     {
                       const char
-                        *attribute;
+                        *prop;
 
-                      attribute=GetImageProperty(msl_info->attributes[j],"id",
+                      prop=GetImageProperty(msl_info->attributes[j],"id",
                         exception);
-                      if ((attribute != (const char *) NULL)  &&
-                          (LocaleCompare(attribute,value) == 0))
+                      if ((prop != (const char *) NULL)  &&
+                          (LocaleCompare(prop,value) == 0))
                         {
                           affinity_image=CloneImage(msl_info->image[j],0,0,
                             MagickFalse,exception);
@@ -4371,7 +4370,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
             {
               const char
-                *name;
+                *profile_name;
 
               const StringInfo
                 *profile;
@@ -4415,7 +4414,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     *p;
 
                   StringInfo
-                    *profile;
+                    *new_profile;
 
                   (void) CopyMagickString(filename,keyword,MagickPathExtent);
                   (void) CopyMagickString(name,keyword,MagickPathExtent);
@@ -4435,26 +4434,26 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           *q=(*++p);
                         break;
                       }
-                  profile=FileToStringInfo(filename,~0UL,exception);
-                  if (profile != (StringInfo *) NULL)
+                  new_profile=FileToStringInfo(filename,~0UL,exception);
+                  if (new_profile != (StringInfo *) NULL)
                     {
                       (void) ProfileImage(msl_info->image[n],name,
-                        GetStringInfoDatum(profile),(size_t)
-                        GetStringInfoLength(profile),exception);
-                      profile=DestroyStringInfo(profile);
+                        GetStringInfoDatum(new_profile),(size_t)
+                        GetStringInfoLength(new_profile),exception);
+                      new_profile=DestroyStringInfo(new_profile);
                     }
                   continue;
                 }
               ResetImageProfileIterator(profile_image);
-              name=GetNextImageProfile(profile_image);
-              while (name != (const char *) NULL)
+              profile_name=GetNextImageProfile(profile_image);
+              while (profile_name != (const char *) NULL)
               {
-                profile=GetImageProfile(profile_image,name);
+                profile=GetImageProfile(profile_image,profile_name);
                 if (profile != (StringInfo *) NULL)
-                  (void) ProfileImage(msl_info->image[n],name,
+                  (void) ProfileImage(msl_info->image[n],profile_name,
                     GetStringInfoDatum(profile),(size_t)
                     GetStringInfoLength(profile),exception);
-                name=GetNextImageProfile(profile_image);
+                profile_name=GetNextImageProfile(profile_image);
               }
               profile_image=DestroyImage(profile_image);
             }
@@ -4905,34 +4904,34 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           if (status != MagickFalse)
             {
               Image
-                *image;
+                *target;
 
-              image=msl_info->attributes[n];
-              FormatImageProperty(image,"msl:font-metrics.pixels_per_em.x",
+              target=msl_info->attributes[n];
+              FormatImageProperty(target,"msl:font-metrics.pixels_per_em.x",
                 "%g",metrics.pixels_per_em.x);
-              FormatImageProperty(image,"msl:font-metrics.pixels_per_em.y",
+              FormatImageProperty(target,"msl:font-metrics.pixels_per_em.y",
                 "%g",metrics.pixels_per_em.y);
-              FormatImageProperty(image,"msl:font-metrics.ascent","%g",
+              FormatImageProperty(target,"msl:font-metrics.ascent","%g",
                 metrics.ascent);
-              FormatImageProperty(image,"msl:font-metrics.descent","%g",
+              FormatImageProperty(target,"msl:font-metrics.descent","%g",
                 metrics.descent);
-              FormatImageProperty(image,"msl:font-metrics.width","%g",
+              FormatImageProperty(target,"msl:font-metrics.width","%g",
                 metrics.width);
-              FormatImageProperty(image,"msl:font-metrics.height","%g",
+              FormatImageProperty(target,"msl:font-metrics.height","%g",
                 metrics.height);
-              FormatImageProperty(image,"msl:font-metrics.max_advance","%g",
+              FormatImageProperty(target,"msl:font-metrics.max_advance","%g",
                 metrics.max_advance);
-              FormatImageProperty(image,"msl:font-metrics.bounds.x1","%g",
+              FormatImageProperty(target,"msl:font-metrics.bounds.x1","%g",
                 metrics.bounds.x1);
-              FormatImageProperty(image,"msl:font-metrics.bounds.y1","%g",
+              FormatImageProperty(target,"msl:font-metrics.bounds.y1","%g",
                 metrics.bounds.y1);
-              FormatImageProperty(image,"msl:font-metrics.bounds.x2","%g",
+              FormatImageProperty(target,"msl:font-metrics.bounds.x2","%g",
                 metrics.bounds.x2);
-              FormatImageProperty(image,"msl:font-metrics.bounds.y2","%g",
+              FormatImageProperty(target,"msl:font-metrics.bounds.y2","%g",
                 metrics.bounds.y2);
-              FormatImageProperty(image,"msl:font-metrics.origin.x","%g",
+              FormatImageProperty(target,"msl:font-metrics.origin.x","%g",
                 metrics.origin.x);
-              FormatImageProperty(image,"msl:font-metrics.origin.y","%g",
+              FormatImageProperty(target,"msl:font-metrics.origin.y","%g",
                 metrics.origin.y);
             }
           draw_info=DestroyDrawInfo(draw_info);
@@ -5056,17 +5055,17 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 if (LocaleCompare(keyword,"filename") == 0)
                   {
                     Image
-                      *image;
+                      *next;
 
                     if (value == (char *) NULL)
                       break;
                     (void) CopyMagickString(msl_info->image_info[n]->filename,
                       value,MagickPathExtent);
-                    image=ReadImage(msl_info->image_info[n],exception);
+                    next=ReadImage(msl_info->image_info[n],exception);
                     CatchException(exception);
-                    if (image == (Image *) NULL)
+                    if (next == (Image *) NULL)
                       continue;
-                    AppendImageToList(&msl_info->image[n],image);
+                    AppendImageToList(&msl_info->image[n],next);
                     break;
                   }
                 (void) SetMSLAttributes(msl_info,keyword,value);
@@ -5164,7 +5163,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
         if (attributes == (const xmlChar **) NULL)
-        break;
+          break;
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
           keyword=(const char *) attributes[i++];
@@ -5179,40 +5178,37 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
           if (LocaleCompare(keyword,"geometry") == 0)
             {
-              int
-                flags;
-
               RectangleInfo
-                geometry;
+                region;
 
-            flags=ParseAbsoluteGeometry(value,&geometry);
+            flags=ParseAbsoluteGeometry(value,&region);
             if ((flags & WidthValue) != 0)
               {
                 if ((flags & HeightValue) == 0)
-                  geometry.height=geometry.width;
-                width=geometry.width;
-                height=geometry.height;
+                  region.height=region.width;
+                width=region.width;
+                height=region.height;
               }
             if ((flags & AspectValue) != 0)
               {
                 if ((flags & XValue) != 0)
-                  x+=geometry.x;
+                  x+=region.x;
                 if ((flags & YValue) != 0)
-                  y+=geometry.y;
+                  y+=region.y;
               }
             else
               {
                 if ((flags & XValue) != 0)
                   {
-                    x=geometry.x;
-                    if ((width == 0) && (geometry.x > 0))
-                      width=msl_info->image[n]->columns+geometry.x;
+                    x=region.x;
+                    if ((width == 0) && (region.x > 0))
+                      width=msl_info->image[n]->columns+region.x;
                   }
                 if ((flags & YValue) != 0)
                   {
-                    y=geometry.y;
-                    if ((height == 0) && (geometry.y > 0))
-                      height=msl_info->image[n]->rows+geometry.y;
+                    y=region.y;
+                    if ((height == 0) && (region.y > 0))
+                      height=msl_info->image[n]->rows+region.y;
                   }
               }
             break;
@@ -5308,9 +5304,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
             if (LocaleCompare(keyword,"geometry") == 0)
               {
-                ssize_t
-                  flags;
-
                 flags=ParseGeometry(value,&geometry_info);
                 if ((flags & SigmaValue) == 0)
                   geometry_info.sigma*=geometry_info.rho;
@@ -6143,24 +6136,21 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 const char
                   *image_option;
 
-                MagickStatusType
-                  flags;
-
                 RectangleInfo
-                  geometry;
+                  page_geometry;
 
-                (void) memset(&geometry,0,sizeof(geometry));
+                (void) memset(&page_geometry,0,sizeof(page_geometry));
                 image_option=GetImageArtifact(msl_info->image[n],"page");
                 if (image_option != (const char *) NULL)
-                  flags=ParseAbsoluteGeometry(image_option,&geometry);
-                flags=ParseAbsoluteGeometry(value,&geometry);
+                  flags=ParseAbsoluteGeometry(image_option,&page_geometry);
+                flags=ParseAbsoluteGeometry(value,&page_geometry);
                 (void) FormatLocaleString(page,MagickPathExtent,"%.20gx%.20g",
-                  (double) geometry.width,(double) geometry.height);
+                  (double) page_geometry.width,(double) page_geometry.height);
                 if (((flags & XValue) != 0) || ((flags & YValue) != 0))
                   (void) FormatLocaleString(page,MagickPathExtent,
-                    "%.20gx%.20g%+.20g%+.20g",(double) geometry.width,
-                    (double) geometry.height,(double) geometry.x,(double)
-                    geometry.y);
+                    "%.20gx%.20g%+.20g%+.20g",(double) page_geometry.width,
+                    (double) page_geometry.height,(double) page_geometry.x,
+                    (double) page_geometry.y);
                 (void) SetImageOption(msl_info->image_info[n],keyword,page);
                 msl_info->image_info[n]->page=GetPageGeometry(page);
                 break;
@@ -7154,12 +7144,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     for (j=0; j < msl_info->n; j++)
                     {
                       const char
-                        *attribute;
+                        *prop;
 
-                      attribute=GetImageProperty(msl_info->attributes[j],"id",
+                      prop=GetImageProperty(msl_info->attributes[j],"id",
                       exception);
-                      if ((attribute != (const char *) NULL)  &&
-                          (LocaleCompare(attribute,value) == 0))
+                      if ((prop != (const char *) NULL)  &&
+                          (LocaleCompare(prop,value) == 0))
                         {
                           texture_image=CloneImage(msl_info->image[j],0,0,
                             MagickFalse,exception);
