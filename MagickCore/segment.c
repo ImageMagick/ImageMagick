@@ -550,7 +550,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     Cluster
-      *cluster;
+      *c;
 
     const PixelInfo
       *magick_restrict p;
@@ -578,23 +578,23 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       pixel.red=(double) ScaleQuantumToChar(GetPixelRed(image,q));
       pixel.green=(double) ScaleQuantumToChar(GetPixelGreen(image,q));
       pixel.blue=(double) ScaleQuantumToChar(GetPixelBlue(image,q));
-      for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
+      for (c=head; c != (Cluster *) NULL; c=c->next)
       {
-        if ((pixel.red >= (double) (cluster->red.left-SafeMargin)) &&
-            (pixel.red <= (double) (cluster->red.right+SafeMargin)) &&
-            (pixel.green >= (double) (cluster->green.left-SafeMargin)) &&
-            (pixel.green <= (double) (cluster->green.right+SafeMargin)) &&
-            (pixel.blue >= (double) (cluster->blue.left-SafeMargin)) &&
-            (pixel.blue <= (double) (cluster->blue.right+SafeMargin)))
+        if ((pixel.red >= (double) (c->red.left-SafeMargin)) &&
+            (pixel.red <= (double) (c->red.right+SafeMargin)) &&
+            (pixel.green >= (double) (c->green.left-SafeMargin)) &&
+            (pixel.green <= (double) (c->green.right+SafeMargin)) &&
+            (pixel.blue >= (double) (c->blue.left-SafeMargin)) &&
+            (pixel.blue <= (double) (c->blue.right+SafeMargin)))
           {
             /*
               Classify this pixel.
             */
-            SetPixelIndex(image,(Quantum) cluster->id,q);
+            SetPixelIndex(image,(Quantum) c->id,q);
             break;
           }
       }
-      if (cluster == (Cluster *) NULL)
+      if (c == (Cluster *) NULL)
         {
           double
             distance_squared,
@@ -1084,27 +1084,29 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      PixelInfo
-        pixel;
+      double
+        b,
+        g,
+        r;
 
-      pixel.red=(double) ScaleQuantumToChar(GetPixelRed(image,p));
-      pixel.green=(double) ScaleQuantumToChar(GetPixelGreen(image,p));
-      pixel.blue=(double) ScaleQuantumToChar(GetPixelBlue(image,p));
+      r=(double) ScaleQuantumToChar(GetPixelRed(image,p));
+      g=(double) ScaleQuantumToChar(GetPixelGreen(image,p));
+      b=(double) ScaleQuantumToChar(GetPixelBlue(image,p));
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-        if ((pixel.red >= (double) (cluster->red.left-SafeMargin)) &&
-            (pixel.red <= (double) (cluster->red.right+SafeMargin)) &&
-            (pixel.green >= (double) (cluster->green.left-SafeMargin)) &&
-            (pixel.green <= (double) (cluster->green.right+SafeMargin)) &&
-            (pixel.blue >= (double) (cluster->blue.left-SafeMargin)) &&
-            (pixel.blue <= (double) (cluster->blue.right+SafeMargin)))
+        if ((r >= (double) (cluster->red.left-SafeMargin)) &&
+            (r <= (double) (cluster->red.right+SafeMargin)) &&
+            (g >= (double) (cluster->green.left-SafeMargin)) &&
+            (g <= (double) (cluster->green.right+SafeMargin)) &&
+            (b >= (double) (cluster->blue.left-SafeMargin)) &&
+            (b <= (double) (cluster->blue.right+SafeMargin)))
           {
             /*
               Count this pixel.
             */
             count++;
-            cluster->red.center+=pixel.red;
-            cluster->green.center+=pixel.green;
-            cluster->blue.center+=pixel.blue;
+            cluster->red.center+=r;
+            cluster->green.center+=g;
+            cluster->blue.center+=b;
             cluster->count++;
             break;
           }
