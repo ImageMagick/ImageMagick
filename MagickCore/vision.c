@@ -128,6 +128,125 @@ static int CCObjectInfoCompare(const void *x,const void *y)
   return((int) (q->area-(ssize_t) p->area));
 }
 
+static void CircularityThreshold(const Image *component_image,
+  CCObjectInfo *object,const double min_threshold,const double max_threshold,
+  const ssize_t metric_index,const ssize_t background_id,
+  ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  ssize_t
+    i;
+
+  status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(dynamic) shared(status) \
+    magick_number_threads(component_image,component_image,component_image->colors,1)
+#endif
+  for (i=0; i < (ssize_t) component_image->colors; i++)
+  {
+    CacheView
+      *component_view;
+
+    RectangleInfo
+      bounding_box;
+
+    size_t
+      pattern[4] = { 1, 0, 0, 0 };
+
+    ssize_t
+      y;
+
+    /*
+      Compute perimeter of each object.
+    */
+    if (status == MagickFalse)
+      continue;
+    component_view=AcquireAuthenticCacheView(component_image,exception);
+    bounding_box=object[i].bounding_box;
+    for (y=(-1); y < (ssize_t) bounding_box.height; y++)
+    {
+      const Quantum
+        *magick_restrict p;
+
+      ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      p=GetCacheViewVirtualPixels(component_view,bounding_box.x-1,
+        bounding_box.y+y,bounding_box.width+2,2,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (x=(-1); x < (ssize_t) bounding_box.width; x++)
+      {
+        Quantum
+          pixels[4];
+
+        ssize_t
+          v;
+
+        size_t
+          foreground;
+
+        /*
+          An Algorithm for Calculating Objects’ Shape Features in Binary
+          Images, Lifeng He, Yuyan Chao.
+        */
+        foreground=0;
+        for (v=0; v < 2; v++)
+        {
+          ssize_t
+            u;
+
+          for (u=0; u < 2; u++)
+          {
+            ssize_t
+              offset;
+
+            offset=v*(bounding_box.width+2)*
+              GetPixelChannels(component_image)+u*
+              GetPixelChannels(component_image);
+            pixels[2*v+u]=GetPixelIndex(component_image,p+offset);
+            if ((ssize_t) pixels[2*v+u] == i)
+              foreground++;
+          }
+        }
+        if (foreground == 1)
+          pattern[1]++;
+        else
+          if (foreground == 2)
+            {
+              if ((((ssize_t) pixels[0] == i) &&
+                    ((ssize_t) pixels[3] == i)) ||
+                  (((ssize_t) pixels[1] == i) &&
+                    ((ssize_t) pixels[2] == i)))
+                pattern[0]++;  /* diagonal */
+              else
+                pattern[2]++;
+            }
+          else
+            if (foreground == 3)
+              pattern[3]++;
+        p+=GetPixelChannels(component_image);
+      }
+    }
+    component_view=DestroyCacheView(component_view);
+    object[i].metric[metric_index]=ceil(MagickSQ1_2*pattern[1]+1.0*pattern[2]+
+      MagickSQ1_2*pattern[3]+MagickSQ2*pattern[0]-0.5);
+    object[i].metric[metric_index]=4.0*MagickPI*object[i].area/
+      (object[i].metric[metric_index]*object[i].metric[metric_index]);
+  }
+  for (i=0; i < (ssize_t) component_image->colors; i++)
+    if (((object[i].metric[metric_index] < min_threshold) ||
+          (object[i].metric[metric_index] >= max_threshold)) && (i != background_id))
+      object[i].merge=MagickTrue;
+}
+
 MagickExport Image *ConnectedComponentsImage(const Image *image,
   const size_t connectivity,CCObjectInfo **objects,ExceptionInfo *exception)
 {
@@ -747,111 +866,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="circularity";
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(dynamic) shared(status) \
-        magick_number_threads(component_image,component_image,component_image->colors,1)
-#endif
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-      {
-        CacheView
-          *component_view;
-
-        RectangleInfo
-          bounding_box;
-
-        size_t
-          pattern[4] = { 1, 0, 0, 0 };
-
-        ssize_t
-          y;
-
-        /*
-          Compute perimeter of each object.
-        */
-        if (status == MagickFalse)
-          continue;
-        component_view=AcquireAuthenticCacheView(component_image,exception);
-        bounding_box=object[i].bounding_box;
-        for (y=(-1); y < (ssize_t) bounding_box.height; y++)
-        {
-          const Quantum
-            *magick_restrict p;
-
-          ssize_t
-            x;
-
-          if (status == MagickFalse)
-            continue;
-          p=GetCacheViewVirtualPixels(component_view,bounding_box.x-1,
-            bounding_box.y+y,bounding_box.width+2,2,exception);
-          if (p == (const Quantum *) NULL)
-            {
-              status=MagickFalse;
-              break;
-            }
-          for (x=(-1); x < (ssize_t) bounding_box.width; x++)
-          {
-            Quantum
-              pixels[4];
-
-            ssize_t
-              v;
-
-            size_t
-              foreground;
-
-            /*
-              An Algorithm for Calculating Objects’ Shape Features in Binary
-              Images, Lifeng He, Yuyan Chao.
-            */
-            foreground=0;
-            for (v=0; v < 2; v++)
-            {
-              ssize_t
-                u;
-
-              for (u=0; u < 2; u++)
-              {
-                ssize_t
-                  offset;
-
-                offset=v*(bounding_box.width+2)*
-                  GetPixelChannels(component_image)+u*
-                  GetPixelChannels(component_image);
-                pixels[2*v+u]=GetPixelIndex(component_image,p+offset);
-                if ((ssize_t) pixels[2*v+u] == i)
-                  foreground++;
-              }
-            }
-            if (foreground == 1)
-              pattern[1]++;
-            else
-              if (foreground == 2)
-                {
-                  if ((((ssize_t) pixels[0] == i) &&
-                       ((ssize_t) pixels[3] == i)) ||
-                      (((ssize_t) pixels[1] == i) &&
-                       ((ssize_t) pixels[2] == i)))
-                    pattern[0]++;  /* diagonal */
-                  else
-                    pattern[2]++;
-                }
-              else
-                if (foreground == 3)
-                  pattern[3]++;
-            p+=GetPixelChannels(component_image);
-          }
-        }
-        component_view=DestroyCacheView(component_view);
-        object[i].metric[n]=ceil(MagickSQ1_2*pattern[1]+1.0*pattern[2]+
-          MagickSQ1_2*pattern[3]+MagickSQ2*pattern[0]-0.5);
-        object[i].metric[n]=4.0*MagickPI*object[i].area/(object[i].metric[n]*
-          object[i].metric[n]);
-      }
-      for (i=0; i < (ssize_t) component_image->colors; i++)
-        if (((object[i].metric[n] < min_threshold) ||
-             (object[i].metric[n] >= max_threshold)) && (i != background_id))
-          object[i].merge=MagickTrue;
+      CircularityThreshold(image,object,min_threshold,max_threshold,
+        n,background_id,exception);
     }
   artifact=GetImageArtifact(image,"connected-components:diameter-threshold");
   if (artifact != (const char *) NULL)
