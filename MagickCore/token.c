@@ -245,9 +245,6 @@ MagickExport magick_hot_spot size_t GetNextToken(
     }
     default:
     {
-      char
-        *q;
-
       value=StringToDouble(p,&q);
       (void) value;
       if ((p != q) && (*p != ','))
@@ -360,9 +357,6 @@ MagickExport MagickBooleanType GlobExpression(
     done,
     match;
 
-  const char
-    *magick_restrict p;
-
   /*
     Return on empty pattern or '*'.
   */
@@ -372,8 +366,8 @@ MagickExport MagickBooleanType GlobExpression(
     return(MagickTrue);
   if (LocaleCompare(pattern,"*") == 0)
     return(MagickTrue);
-  p=pattern+strlen(pattern)-1;
-  if ((GetUTFCode(p) == ']') && (strchr(pattern,'[') != (char *) NULL))
+  if ((GetUTFCode(pattern+strlen(pattern)-1) == ']') &&
+      (strchr(pattern,'[') != (char *) NULL))
     {
       ExceptionInfo
         *exception;
