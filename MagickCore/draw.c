@@ -3457,33 +3457,33 @@ static MagickBooleanType RenderMVGContent(Image *image,
                   name[MagickPathExtent];
 
                 RectangleInfo
-                  bounds;
+                  region;
 
                 (void) GetNextToken(q,&q,extent,token);
                 (void) CopyMagickString(name,token,MagickPathExtent);
                 (void) GetNextToken(q,&q,extent,token);
-                bounds.x=CastDoubleToLong(ceil(GetDrawValue(token,
+                region.x=CastDoubleToLong(ceil(GetDrawValue(token,
                   &next_token)-0.5));
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
-                bounds.y=CastDoubleToLong(ceil(GetDrawValue(token,
+                region.y=CastDoubleToLong(ceil(GetDrawValue(token,
                   &next_token)-0.5));
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
-                bounds.width=(size_t) CastDoubleToLong(floor(GetDrawValue(
+                region.width=(size_t) CastDoubleToLong(floor(GetDrawValue(
                   token,&next_token)+0.5));
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
-                bounds.height=(size_t) floor(GetDrawValue(token,&next_token)+
+                region.height=(size_t) floor(GetDrawValue(token,&next_token)+
                   0.5);
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
@@ -3509,8 +3509,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 (void) FormatLocaleString(key,MagickPathExtent,"%s-geometry",
                   name);
                 (void) FormatLocaleString(geometry,MagickPathExtent,
-                  "%.20gx%.20g%+.20g%+.20g",(double) bounds.width,(double)
-                  bounds.height,(double) bounds.x,(double) bounds.y);
+                  "%.20gx%.20g%+.20g%+.20g",(double) region.width,(double)
+                  region.height,(double) region.x,(double) region.y);
                 (void) SetImageArtifact(image,key,geometry);
                 (void) GetNextToken(q,&q,extent,token);
                 break;
