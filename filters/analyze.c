@@ -110,8 +110,8 @@ static inline int GetMagickNumberThreads(const Image *source,
       ((GetImagePixelCacheType(destination) != MemoryCache) &&
        (GetImagePixelCacheType(destination) != MapCache)))
     return(MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1));
-  return(MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),
-    (ssize_t) (chunk)/64),1));
+  return(MagickMax(MagickMin((int) GetMagickResourceLimit(ThreadResource),
+    (int) (chunk)/64),1));
 }
 #endif
 
