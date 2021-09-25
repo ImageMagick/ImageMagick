@@ -7470,7 +7470,9 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           box_q[3].y)/(slope.p-slope.q));
         box_q[4].y=(double) (slope.p*(box_q[4].x-box_q[0].x)+box_q[0].y);
       }
+    DisableMSCWarning(4127)
     CheckPathExtent(MaxStrokePad,MaxStrokePad);
+    RestoreMSCWarning
     dot_product=dx.q*dy.p-dx.p*dy.q;
     if (dot_product <= 0.0)
       switch (draw_info->linejoin)
@@ -7526,7 +7528,9 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
             theta.q+=2.0*MagickPI;
           arc_segments=(size_t) CastDoubleToLong(ceil((double) ((theta.
             q-theta.p)/(2.0*sqrt(PerceptibleReciprocal(mid))))));
+          DisableMSCWarning(4127)
           CheckPathExtent(MaxStrokePad,arc_segments+MaxStrokePad);
+          RestoreMSCWarning
           stroke_q[q].x=box_q[1].x;
           stroke_q[q].y=box_q[1].y;
           q++;
@@ -7599,7 +7603,9 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
             theta.p+=2.0*MagickPI;
           arc_segments=(size_t) CastDoubleToLong(ceil((double) ((theta.p-
             theta.q)/(2.0*sqrt((double) (PerceptibleReciprocal(mid)))))));
+          DisableMSCWarning(4127)
           CheckPathExtent(arc_segments+MaxStrokePad,MaxStrokePad);
+          RestoreMSCWarning
           stroke_p[p++]=box_p[1];
           for (j=1; j < (ssize_t) arc_segments; j++)
           {
