@@ -413,7 +413,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     if (gettimeofday(&timer,(struct timezone *) NULL) == 0)
       {
         seconds=(size_t) timer.tv_sec;
-        nanoseconds=(size_t) (1000UL*timer.tv_usec);
+        nanoseconds=((size_t) 1000UL*timer.tv_usec);
       }
   }
 #endif
