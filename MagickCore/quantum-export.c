@@ -3885,14 +3885,14 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   const Quantum
     *magick_restrict p;
 
+  size_t
+    extent;
+
   ssize_t
     x;
 
   unsigned char
     *magick_restrict q;
-
-  size_t
-    extent;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
