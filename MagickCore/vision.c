@@ -1424,9 +1424,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         }
       for (x=0; x < (ssize_t) bounding_box.width; x++)
       {
-        ssize_t
-          n;
-
         if (status == MagickFalse)
           continue;
         j=(ssize_t) GetPixelIndex(component_image,p);
@@ -1434,7 +1431,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           for (n=0; n < (ssize_t) (connectivity > 4 ? 4 : 2); n++)
           {
             const Quantum
-              *p;
+              *q;
 
             /*
               Compute area of adjacent objects.
@@ -1443,14 +1440,14 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
               continue;
             dx=connectivity > 4 ? connect8[n][1] : connect4[n][1];
             dy=connectivity > 4 ? connect8[n][0] : connect4[n][0];
-            p=GetCacheViewVirtualPixels(object_view,bounding_box.x+x+dx,
+            q=GetCacheViewVirtualPixels(object_view,bounding_box.x+x+dx,
               bounding_box.y+y+dy,1,1,exception);
-            if (p == (const Quantum *) NULL)
+            if (q == (const Quantum *) NULL)
               {
                 status=MagickFalse;
                 break;
               }
-            j=(ssize_t) GetPixelIndex(component_image,p);
+            j=(ssize_t) GetPixelIndex(component_image,q);
             if (j != i)
               object[j].census++;
           }
