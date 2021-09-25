@@ -2085,9 +2085,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         uint32
           *p;
 
-        uint32
-          *pixels;
-
         /*
           Convert generic TIFF image.
         */
@@ -2102,15 +2099,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         generic_info=AcquireVirtualMemory(number_pixels,sizeof(uint32));
         if (generic_info == (MemoryInfo *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        pixels=(uint32 *) GetVirtualMemoryBlob(generic_info);
+        p=(uint32 *) GetVirtualMemoryBlob(generic_info);
         status=TIFFReadRGBAImage(tiff,(uint32) image->columns,(uint32)
-          image->rows,(uint32 *) pixels,0);
+          image->rows,(uint32 *) p,0);
         if (status == -1)
           {
             generic_info=RelinquishVirtualMemory(generic_info);
             break;
           }
-        p=pixels+(image->columns*image->rows)-1;
+        p+=(image->columns*image->rows)-1;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           ssize_t
