@@ -2235,9 +2235,6 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   MagickOffsetType
     progress;
 
-  PixelInfo
-    threshold;
-
   RandomInfo
     **magick_restrict random_info;
 
@@ -2257,7 +2254,6 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   assert(exception->signature == MagickCoreSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  GetPixelInfo(image,&threshold);
   /*
     Random threshold image.
   */
