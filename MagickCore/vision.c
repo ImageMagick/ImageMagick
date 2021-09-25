@@ -164,9 +164,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   MatrixInfo
     *equivalences;
 
-  RectangleInfo
-    bounding_box;
-
   ssize_t
     i;
 
@@ -1076,8 +1073,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
              (object[i].metric[n] >= max_threshold)) && (i != background_id))
           object[i].merge=MagickTrue;
     }
-  artifact=GetImageArtifact(image,
-    "connected-components:eccentricity-threshold");
+  artifact=GetImageArtifact(image,"connected-components:eccentricity-threshold");
   if (artifact != (const char *) NULL)
     {
       /*
@@ -1312,11 +1308,14 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   object_view=AcquireVirtualCacheView(component_image,exception);
   for (i=0; i < (ssize_t) component_image->colors; i++)
   {
-    ssize_t
-      j;
+    RectangleInfo
+      bounding_box;
 
     size_t
       id;
+
+    ssize_t
+      j;
 
     if (status == MagickFalse)
       continue;
