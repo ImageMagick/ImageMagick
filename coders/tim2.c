@@ -185,7 +185,7 @@ static inline Quantum GetChannelValue(unsigned int word,unsigned char channel,
     case RGBA32:
       return ScaleCharToQuantum(word>>channel*8 & ~(~0x0U<<8));
     default:
-      return -1;
+      return QuantumRange;
   }
 }
 
