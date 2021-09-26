@@ -965,7 +965,7 @@ static MagickBooleanType IsLocaleTreeInstantiated(ExceptionInfo *exception)
 %
 */
 MagickExport double InterpretLocaleValue(const char *magick_restrict string,
-  char **magick_restrict sentinal)
+  char *magick_restrict *sentinal)
 {
   char
     *q;
