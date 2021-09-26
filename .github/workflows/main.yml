@@ -109,7 +109,7 @@ jobs:
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2019 /x64 /smtd
+        configure.exe /noWizard /VS2019 /${{matrix.platform}} /smtd
 
     - name: Build ImageMagick
       shell: cmd
