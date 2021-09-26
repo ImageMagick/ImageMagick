@@ -1050,7 +1050,7 @@ MagickExport size_t GetMaxMemoryRequest(void)
       char
         *value;
 
-      max_memory_request=(size_t) MagickULLConstant(~0);
+      max_memory_request=SIZE_MAX;
       value=GetPolicyValue("system:max-memory-request");
       if (value != (char *) NULL)
         {
