@@ -57,9 +57,8 @@ extern "C" {
     *exception; \
  \
   exception=AcquireExceptionInfo(); \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"'%s': %s",context, \
-    strerror(errno)); \
+  (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \
+    "'%s': %s",context,strerror(errno)); \
   CatchException(exception); \
   (void) DestroyExceptionInfo(exception); \
 }
