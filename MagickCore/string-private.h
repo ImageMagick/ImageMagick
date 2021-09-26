@@ -41,7 +41,7 @@ static inline double SiPrefixToDoubleInterval(const char *string,
 }
 
 static inline double StringToDouble(const char *magick_restrict string,
-  char **magick_restrict sentinal)
+  char *magick_restrict *sentinal)
 {
   return(InterpretLocaleValue(string,sentinal));
 }
