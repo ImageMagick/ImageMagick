@@ -1633,6 +1633,7 @@ extern size_t
 MagickExport MagickBooleanType ListModuleInfo(FILE *magick_unused(file),
   ExceptionInfo *magick_unused(exception))
 {
+  magick_unreferenced(file);
   magick_unreferenced(exception);
   return(MagickTrue);
 }
