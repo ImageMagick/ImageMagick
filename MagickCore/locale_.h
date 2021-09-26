@@ -49,7 +49,7 @@ extern MagickExport const LocaleInfo
   **GetLocaleInfoList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport double
-  InterpretLocaleValue(const char *magick_restrict,char *magick_restrict*);
+  InterpretLocaleValue(const char *magick_restrict,char *magick_restrict *);
 
 extern MagickExport int
   LocaleCompare(const char *,const char *) magick_attribute((__pure__)),
