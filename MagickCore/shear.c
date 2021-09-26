@@ -292,6 +292,8 @@ static void RadonProjection(const Image *image,MatrixInfo *source_matrixs,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
     magick_number_threads(image,image,GetMatrixColumns(p),1)
+#else
+  magick_unreferenced(image)
 #endif
   for (x=0; x < (ssize_t) GetMatrixColumns(p); x++)
   {
