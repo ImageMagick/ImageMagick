@@ -106,9 +106,6 @@
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(MAGICKCORE_OPENCL_SUPPORT)
 static void InitializeDcrawOpenCL(ExceptionInfo *exception)
 {
-  MagickBooleanType
-    opencl_disabled;
-
   MagickCLDevice
     *devices;
 

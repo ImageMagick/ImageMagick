@@ -2308,9 +2308,6 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
     number_devices,
     number_platforms;
 
-  size_t
-    length;
-
   number_platforms=0;
   if (openCL_library->clGetPlatformIDs(0,NULL,&number_platforms) != CL_SUCCESS)
     return;
