@@ -1,5 +1,8 @@
-2021-09-18  7.1.0-9  <quetzlzacatenango@image...>
+2021-09-26  7.1.0-9  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-9 GIT revision 19...
+
+2021-09-26  7.1.0-9  Dirk Lemstra <dirk@lem.....org>
+  * Squash a dump truck load of VisualStudio compiler warnings.
 
 2021-09-19  7.1.0-9  <quetzlzacatenango@image...>
   * improve wrapping between words and within words (reference
