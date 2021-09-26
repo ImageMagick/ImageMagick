@@ -2319,7 +2319,7 @@ MagickPrivate MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
 %
 */
 MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
-  ExceptionInfo *exception)
+  ExceptionInfo *magick_unused(exception))
 {
   CacheInfo
     *magick_restrict cache_info;
@@ -2330,6 +2330,7 @@ MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   assert(length != (MagickSizeType *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  magick_unreferenced(exception);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
   *length=cache_info->length;
