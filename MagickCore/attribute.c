@@ -961,7 +961,9 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
     }
   image_view=AcquireVirtualCacheView(image,exception);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
+  DisableMSCWarning(4127)
   if ((1UL*QuantumRange) <= MaxMap)
+  RestoreMSCWarning
     {
       size_t
         *depth_map;
@@ -974,10 +976,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        unsigned int
-          depth;
-
-        for (depth=1; depth < MAGICKCORE_QUANTUM_DEPTH; depth++)
+        for (depth=1; depth < (size_t) MAGICKCORE_QUANTUM_DEPTH; depth++)
         {
           Quantum
             pixel;
@@ -1015,16 +1014,16 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           ssize_t
-            i;
+            j;
 
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
           {
-            PixelChannel channel = GetPixelChannelChannel(image,i);
+            PixelChannel channel = GetPixelChannelChannel(image,j);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) == 0)
               continue;
-            if (depth_map[ScaleQuantumToMap(p[i])] > current_depth[id])
-              current_depth[id]=depth_map[ScaleQuantumToMap(p[i])];
+            if (depth_map[ScaleQuantumToMap(p[j])] > current_depth[id])
+              current_depth[id]=depth_map[ScaleQuantumToMap(p[j])];
           }
           p+=GetPixelChannels(image);
         }
@@ -1970,7 +1969,9 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
+  DisableMSCWarning(4127)
   if ((1UL*QuantumRange) <= MaxMap)
+  RestoreMSCWarning
     {
       Quantum
         *depth_map;
@@ -2011,9 +2012,9 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           ssize_t
-            i;
+            j;
 
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
           {
             PixelChannel
               channel;
@@ -2021,11 +2022,11 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
             PixelTrait
               traits;
 
-            channel=GetPixelChannelChannel(image,i);
+            channel=GetPixelChannelChannel(image,j);
             traits=GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) == 0)
               continue;
-            q[i]=depth_map[ScaleQuantumToMap(q[i])];
+            q[j]=depth_map[ScaleQuantumToMap(q[j])];
           }
           q+=GetPixelChannels(image);
         }
