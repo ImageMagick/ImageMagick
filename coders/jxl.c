@@ -654,9 +654,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       float
         distance;
 
-      distance=(image_info->quality >= 30) ? 0.1f+(100-MagickMin(100,
-        image_info->quality))*0.09f : 6.4f+pow(2.5f,(30-image_info->quality)/
-        5.0f)/6.25f;
+      distance=(image_info->quality >= 30) ? 0.1f+(float) (100-MagickMin(100,
+        image_info->quality))*0.09f : 6.4f+(float) pow(2.5f,(30-
+        image_info->quality)/5.0f)/6.25f;
       JxlEncoderOptionsSetDistance(encoder_options,distance);
     }
   option=GetImageOption(image_info,"jxl:effort");
