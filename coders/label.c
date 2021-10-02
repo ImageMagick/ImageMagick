@@ -93,8 +93,8 @@ static inline void AdjustTypeMetricBounds(TypeMetric *metrics)
     {
       double
         new_x1;
-
-      new_x1=-metrics->bounds.x1;
+      
+      new_x1=ceil(-metrics->bounds.x1+0.5);
       metrics->width+=new_x1+new_x1;
       metrics->bounds.x1=new_x1;
     }
