@@ -129,12 +129,12 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     split,
     status;
 
-  ssize_t
-    i;
-
   size_t
     height,
     width;
+
+  ssize_t
+    i;
 
   TypeMetric
     metrics;
