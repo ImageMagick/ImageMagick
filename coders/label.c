@@ -87,19 +87,20 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
 static inline void AdjustTypeMetricBounds(TypeMetric *metrics)
 {
-  if (metrics->bounds.x1 < 0.0)
-    {
-      double
-        new_x1;
+  double
+    x1;
       
-      new_x1=ceil(-metrics->bounds.x1+0.5);
-      metrics->width+=new_x1+new_x1;
-      metrics->bounds.x1=new_x1;
+  if (metrics->bounds.x1 >= 0.0)
+    {
+      metrics->bounds.x1=0.0;
+      return;
     }
-  else
-    metrics->bounds.x1=0.0;
+  x1=ceil(-metrics->bounds.x1+0.5);
+  metrics->width+=x1+x1;
+  metrics->bounds.x1=x1;
 }
 
 static Image *ReadLABELImage(const ImageInfo *image_info,
@@ -279,8 +280,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   */
   (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
     (draw_info->direction == RightToLeftDirection ? (double) image->columns-
-    metrics.bounds.x2 : metrics.bounds.x1),(draw_info->gravity == UndefinedGravity ?
-    MagickMax(metrics.ascent,metrics.bounds.y2) : 0.0));
+    metrics.bounds.x2 : metrics.bounds.x1),(draw_info->gravity ==
+    UndefinedGravity ? MagickMax(metrics.ascent,metrics.bounds.y2) : 0.0));
   (void) CloneString(&draw_info->geometry,geometry);
   status=AnnotateImage(image,draw_info,exception);
   if (image_info->pointsize == 0.0)
