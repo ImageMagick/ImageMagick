@@ -588,6 +588,33 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static inline char *ReplaceSpaceWithNewline(char **caption, char *space)
+{
+  size_t
+    octets;
+
+  octets=(size_t) GetUTFOctets(space);
+  if (octets == 1)
+    *space='\n';
+  else
+    {
+      char
+        *target;
+
+      size_t
+        length;
+
+      length=strlen(*caption);
+      *space='\n';
+      target=AcquireString(*caption);
+      CopyMagickString(target,*caption,space-(*caption)+2);
+      ConcatenateMagickString(target,space+octets,length);
+      (void) DestroyString(*caption);
+      *caption=target;
+    }
+  return(space);
+}
+
 MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   const MagickBooleanType split,TypeMetric *metrics,char **caption,
   ExceptionInfo *exception)
@@ -618,12 +645,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
       {
         s=p;
         if (width > image->columns)
-          {
-            for (i=0; i < (ssize_t) GetUTFOctets(s); i++)
-              *(s+i)=' ';
-            *s='\n';
-            p=s;
-          }
+          p=ReplaceSpaceWithNewline(caption,s);
       }
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
@@ -635,12 +657,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     if (width <= image->columns)
       continue;
     if (s != (char *) NULL)
-      {
-        for (i=0; i < (ssize_t) GetUTFOctets(s); i++)
-          *(s+i)=' ';
-        *s='\n';
-        p=s;
-      }
+      p=ReplaceSpaceWithNewline(caption,s);
     else
       if ((split != MagickFalse) || (GetUTFOctets(p) > 2))
         {
