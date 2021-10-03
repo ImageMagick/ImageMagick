@@ -136,7 +136,7 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
 
 %build
 autoconf -f -i
-export CFLAGS="%{optflags} -DIMPNG_SETJMP_IS_THREAD_SAFE"
+export CFLAGS="%{optflags}"
 %configure --enable-shared \
         --disable-static \
         --with-modules \
