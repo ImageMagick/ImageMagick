@@ -610,7 +610,7 @@ static inline char *ReplaceSpaceWithNewline(char **caption,char *space)
       *space='\n';
       offset=space-(*caption);
       target=AcquireString(*caption);
-      CopyMagickString(target,*caption,space-(*caption)+2);
+      CopyMagickString(target,*caption,offset+2);
       ConcatenateMagickString(target,space+octets,length);
       (void) DestroyString(*caption);
       *caption=target;
