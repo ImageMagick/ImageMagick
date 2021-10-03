@@ -637,12 +637,16 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
 
   for ( ; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
   {
-    if (GetUTFCode(p) == '\n')
+    int
+      code;
+
+    code=GetUTFCode(p);
+    if (code == '\n')
       {
         q=draw_info->text;
         continue;
       }
-    if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
+    if (IsUTFSpace(code) != MagickFalse)
       {
         s=p;
         if (width > image->columns)
