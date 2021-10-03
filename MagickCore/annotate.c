@@ -624,18 +624,21 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     status;
 
   char
-    *p = (*caption),
-    *q = draw_info->text,
-    *s = (char *) NULL;
+    *p,
+    *q,
+    *s;
 
   size_t
-    width = 0;
+    width;
 
   ssize_t
     i,
     n;
 
-  for ( ; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
+  q=draw_info->text;
+  s=(char *) NULL;
+  width=0;
+  for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
   {
     int
       code;
