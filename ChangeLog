@@ -1,8 +1,10 @@
-2021-09-26  7.1.0-9  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-9 GIT revision 19...
+2021-10-03  7.1.0-9  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-9 GIT revision 19218:442703a3e:20211003.
 
-2021-09-26  7.1.0-9  Dirk Lemstra <dirk@lem.....org>
+2021-10-03  7.1.0-9  Dirk Lemstra <dirk@lem.....org>
   * Squash a dump truck load of VisualStudio compiler warnings.
+  * improved algorithm for automatic calculation of word breaks and pointsize
+    for caption and labels.
 
 2021-09-19  7.1.0-9  <quetzlzacatenango@image...>
   * improve wrapping between words and within words (reference
