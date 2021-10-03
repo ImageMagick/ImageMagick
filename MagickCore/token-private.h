@@ -152,6 +152,13 @@ static inline unsigned int GetUTFOctets(const char *magick_restrict text)
   return(octets);
 }
 
+static inline MagickBooleanType IsNonBreakingUTFSpace(int code)
+{
+  if (code == 0x00a0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static inline MagickBooleanType IsUTFSpace(int code)
 {
   if (((code >= 0x0009) && (code <= 0x000d)) || (code == 0x0020) ||
