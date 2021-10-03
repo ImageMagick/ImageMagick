@@ -588,7 +588,8 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static inline char *ReplaceSpaceWithNewline(char **caption, char *space)
+
+static inline char *ReplaceSpaceWithNewline(char **caption,char *space)
 {
   size_t
     octets;
