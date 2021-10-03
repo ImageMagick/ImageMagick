@@ -603,15 +603,18 @@ static inline char *ReplaceSpaceWithNewline(char **caption,char *space)
         *target;
 
       size_t
-        length;
+        length,
+        offset;
 
       length=strlen(*caption);
       *space='\n';
+      offset=space-(*caption);
       target=AcquireString(*caption);
       CopyMagickString(target,*caption,space-(*caption)+2);
       ConcatenateMagickString(target,space+octets,length);
       (void) DestroyString(*caption);
       *caption=target;
+      space=(*caption)+offset;
     }
   return(space);
 }
