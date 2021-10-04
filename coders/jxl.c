@@ -356,6 +356,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         decoder_status=JxlDecoderGetColorAsICCProfile(decoder,&format,
           JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
           profile_size);
+        (void) SetImageProfile(image,"icc",profile,exception);
+        DestroyStringInfo(profile);
         if (decoder_status == JXL_DEC_SUCCESS)
           decoder_status=JXL_DEC_COLOR_ENCODING;
         break;
