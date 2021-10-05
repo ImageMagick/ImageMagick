@@ -100,6 +100,7 @@ static MagickBooleanType IdentifyUsage(void)
       "  -log format          format of debugging information\n"
       "  -version             print version information",
     operators[] =
+      "  -auto-orient         automagically orient (rotate) image\n"
       "  -channel mask        set the image channel mask\n"
       "  -grayscale method    convert image to grayscale\n"
       "  -negate              replace every pixel with its complementary color",
@@ -371,6 +372,8 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
               ThrowIdentifyException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("auto-orient",option+1) == 0)
+          break;
         ThrowIdentifyException(OptionError,"UnrecognizedOption",option)
       }
       case 'c':
