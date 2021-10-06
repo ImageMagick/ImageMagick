@@ -622,7 +622,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     }
   memset(&format,0,sizeof(format));
   JXLSetFormat(image,&format);
-  memset(&basic_info,0,sizeof(basic_info));
+  JxlEncoderInitBasicInfo(&basic_info);
   basic_info.xsize=(uint32_t) image->columns;
   basic_info.ysize=(uint32_t) image->rows;
   basic_info.bits_per_sample=8;
