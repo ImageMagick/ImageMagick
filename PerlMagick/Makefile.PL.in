@@ -34,8 +34,8 @@ sub AutodetectWin32gcc {
   my @libdir = ($wrkdir);
   my @bindir = ();
 
-  #try to get configuration info via identify or convert utilities
-  my $conf = `identify -list Configure 2>$devnull` || `convert -list Configure 2>$devnull`;
+  #try to get configuration info via magick or identify utilities
+  my $conf = `magick identify -list Configure 2>$devnull` || `identify -list Configure 2>$devnull`;
   foreach my $line (split '\n', $conf) {
     if ($line =~ /^Path:\s+(.*)/) {
       my ($vol,$dir,$file) = splitpath($1);
@@ -59,7 +59,7 @@ sub AutodetectWin32gcc {
       push @b, catfile($dirpath,'..','..','bin');
       push @b, catfile($dirpath,'..','..','..');
       push @b, catfile($dirpath,'..','..','..','bin');
-      foreach (@b) { push @bindir, $_ if (-e "$_/convert.exe" || -e "$_/identify.exe") };
+      foreach (@b) { push @bindir, $_ if (-e "$_/magick.exe" || -e "$_/identify.exe") };
 
       # try to detect 'include' dir
       push @i, catfile($dirpath,'include');
@@ -109,8 +109,8 @@ sub AutodetectWin32gcc {
 # 3) During installation select that you want to install ImageMagick's
 #    development files (libraries+headers)
 #
-# 4) You also need to have ImageMagick's directory in your PATH
-#    note: we are checking the presence of convert.exe and/or identify.exe tools
+# 4) You NEED TO have ImageMagick's directory in your PATH.  We are
+#    using the 'magick' tool to determine your actual configuration.
 #
 # 5) You might need Visual C++ Redistributable Package installed on your system
 #    see instructions on ImageMagick's Binary Release webpage
@@ -127,9 +127,9 @@ EOF
 }
 
 sub AutodetectDelegates {
-  #try to get configuration info via identify or convert utilities
+  #try to get configuration info via magick or identify utilities
   my $devnull = devnull();
-  my $conf = `identify -list Configure 2>$devnull` || `convert -list Configure 2>$devnull`;
+  my $conf = `magick identify -list Configure 2>$devnull` || `identify -list Configure 2>$devnull`;
   my @delegates = ();
   foreach my $line (split '\n', $conf) {
     next unless $line =~ /^DELEGATES\s+/;
