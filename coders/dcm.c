@@ -3221,14 +3221,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               quantum=4;
             }
         }
-
-      /*
-        If we're exiting a sequence, restore the previous image parameters,
-        effectively undoing any parameter changes that happened inside the
-        sequence.
-      */
       if ((group == 0xFFFE) && (element == 0xE0DD))
         {
+          /*
+            If we're exiting a sequence, restore the previous image parameters,
+            effectively undoing any parameter changes that happened inside the
+            sequence.
+          */
           sequence_depth--;
           info_copy=(DCMInfo *) RemoveLastElementFromLinkedList(stack);
           if (info_copy == (DCMInfo *)NULL)
@@ -3242,19 +3241,17 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           memcpy(&info,info_copy,sizeof(info));
           RelinquishMagickMemory(info_copy);
         }
-
-      /*
-        If we're entering a sequence, push the current image parameters onto
-        the stack, so we can restore them at the end of the sequence.
-      */
       if (strcmp(explicit_vr,"SQ") == 0)
         {
+          /*
+            If we're entering a sequence, push the current image parameters
+            onto the stack, so we can restore them at the end of the sequence.
+          */
           info_copy=(DCMInfo *) AcquireMagickMemory(sizeof(info));
           memcpy(info_copy,&info,sizeof(info));
           AppendValueToLinkedList(stack,info_copy);
           sequence_depth++;
         }
-
       datum=0;
       if (quantum == 4)
         {
@@ -3819,6 +3816,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
             image->filename);
+          group=0xfffc;
           break;
         }
     }
