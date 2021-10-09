@@ -12,10 +12,10 @@
 #include "Magick++/Include.h"
 #include <string>
 
-using namespace std;
-
 #include "Magick++/Color.h"
 #include "Magick++/Exception.h"
+
+using namespace std;
 
 MagickPPExport int Magick::operator == (const Magick::Color &left_,
   const Magick::Color &right_)

@@ -12,10 +12,10 @@
 #include "Magick++/Include.h"
 #include <string>
 
-using namespace std;
-
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
+
+using namespace std;
 
 static bool magick_initialized=false;
 

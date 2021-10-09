@@ -16,10 +16,10 @@
 #include <strings.h>
 #endif
 
-using namespace std;
-
 #include "Magick++/Geometry.h"
 #include "Magick++/Exception.h"
+
+using namespace std;
 
 MagickPPExport int Magick::operator == (const Magick::Geometry& left_,
   const Magick::Geometry& right_)

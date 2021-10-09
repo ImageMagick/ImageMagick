@@ -16,13 +16,13 @@
 #include <errno.h>
 #include <math.h>
 
-using namespace std;
-
 #include "Magick++/Image.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Pixels.h"
 #include "Magick++/Options.h"
 #include "Magick++/ImageRef.h"
+
+using namespace std;
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
