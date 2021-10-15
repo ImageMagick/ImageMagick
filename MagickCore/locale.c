@@ -222,6 +222,8 @@ static SplayTreeInfo *AcquireLocaleSplayTree(const char *filename,
         options=DestroyLocaleOptions(options);
       }
   }
+#else
+  magick_unreferenced(filename);
 #endif
   if (GetNumberOfNodesInSplayTree(cache) == 0)
     (void) LoadLocaleCache(cache,LocaleMap,"built-in",locale,0,

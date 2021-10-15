@@ -865,6 +865,8 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     }
     options=DestroyConfigureOptions(options);
   }
+#else
+  magick_unreferenced(filename);
 #endif
   /*
     Load built-in color map.

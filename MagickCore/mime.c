@@ -177,6 +177,9 @@ MagickExport LinkedListInfo *AcquireMimeCache(const char *filename,
     }
     options=DestroyConfigureOptions(options);
   }
+#else
+  magick_unreferenced(filename);
+  magick_unreferenced(exception);
 #endif
   return(cache);
 }

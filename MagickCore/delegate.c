@@ -225,6 +225,8 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
     }
     options=DestroyConfigureOptions(options);
   }
+#else
+  magick_unreferenced(filename);
 #endif
   if (IsLinkedListEmpty(cache) != MagickFalse)
     (void) LoadDelegateCache(cache,DelegateMap,"built-in",0,exception);

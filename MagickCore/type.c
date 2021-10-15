@@ -238,6 +238,8 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
         font_path=DestroyString(font_path);
       }
   }
+#else
+  magick_unreferenced(filename);
 #endif
   if (GetNumberOfNodesInSplayTree(cache) == 0)
     (void) LoadTypeCache(cache,TypeMap,"built-in",0,exception);

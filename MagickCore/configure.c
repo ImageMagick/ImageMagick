@@ -186,6 +186,9 @@ static LinkedListInfo *AcquireConfigureCache(const char *filename,
     }
     options=DestroyConfigureOptions(options);
   }
+#else
+  magick_unreferenced(filename);
+  magick_unreferenced(exception);
 #endif
   /*
     Load built-in configure.

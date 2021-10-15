@@ -299,6 +299,8 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
     }
     options=DestroyConfigureOptions(options);
   }
+#else
+  magick_unreferenced(filename);
 #endif
   /*
     Load built-in log map.
