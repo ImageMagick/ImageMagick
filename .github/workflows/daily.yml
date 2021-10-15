@@ -119,6 +119,52 @@ jobs:
         set /p solution=<solution
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
+  build_windows_zero_configuration:
+    name: 'Windows Q16-x64 hdri=yes (Zero configuration ${{matrix.buildType}})'
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        buildType: [ dmt, smtd ]
+
+    steps:
+    - name: Clone ImageMagick-Windows
+      uses: actions/checkout@v2
+      with:
+        repository: ImageMagick/ImageMagick-Windows
+        path: ImageMagick-Windows
+        ref: refs/heads/main
+        fetch-depth: 1
+
+    - name: Clone repositories
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
+        CloneRepositories.cmd https://github.com/ImageMagick shallow
+
+    - name: Build configure
+      shell: cmd
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        msbuild configure.2019.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
+
+    - name: Configure ImageMagick
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        configure.exe /noWizard /VS2019 /x64 /${{matrix.buildType}} /zeroConfigurationSupport
+
+    - name: Build ImageMagick
+      shell: cmd
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
+        dir /B *.sln > solution
+        set /p solution=<solution
+        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=x64
+
   build_msys2:
     name: 'Windows Q16-${{matrix.toolchain}} hdri=yes (MSYS2)'
     runs-on: windows-latest
