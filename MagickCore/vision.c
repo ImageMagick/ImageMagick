@@ -1413,6 +1413,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       ssize_t
         x;
 
+      size_t
+        n;
+
       if (status == MagickFalse)
         continue;
       p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
