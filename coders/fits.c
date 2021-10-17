@@ -639,10 +639,8 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   const Quantum
     *p;
 
-  ImageType
-    type;
-
   MagickBooleanType
+    is_gray,
     status;
 
   QuantumInfo
@@ -703,9 +701,9 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     image->depth));
   CopyFitsRecord(fits_info,header,offset);
   offset+=80;
-  type=IdentifyImageCoderType(image,exception);
+  is_gray=IdentifyImageCoderGray(image,exception);
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS   =           %10lu",
-    (type == GrayscaleType) || (type == BilevelType) ? 2UL : 3UL);
+    (is_gray != MagickFalse) ? 2UL : 3UL);
   CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS1  =           %10lu",
@@ -716,7 +714,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     (unsigned long) image->rows);
   CopyFitsRecord(fits_info,header,offset);
   offset+=80;
-  if ((type != GrayscaleType) && (type != BilevelType))
+  if (is_gray == MagickFalse)
     {
       (void) FormatLocaleString(header,FITSBlocksize,
         "NAXIS3  =           %10lu",3UL);
@@ -755,7 +753,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     Convert image to fits scale PseudoColor class.
   */
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
-  if (IsGrayImageType(type) != MagickFalse)
+  if (is_gray != MagickFalse)
     {
       length=GetQuantumExtent(image,quantum_info,GrayQuantum);
       for (y=(ssize_t) image->rows-1; y >= 0; y--)

@@ -488,9 +488,6 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
   imageListLength=GetImageListLength(image);
   do
   {
-    ImageType
-      type;
-
     /*
       Scale relative to dots-per-inch.
     */
@@ -730,11 +727,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     number_pixels=(MagickSizeType) image->columns*image->rows;
     if (number_pixels != (MagickSizeType) ((size_t) number_pixels))
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    type=UndefinedType;
-    if (image_info->type != TrueColorType)
-      type=IdentifyImageCoderType(image,exception);
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
-        (IsGrayImageType(type) != MagickFalse))
+        ((image_info->type != TrueColorType) &&
+         (IdentifyImageCoderGray(image,exception) != MagickFalse)))
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "%.20g %.20g\n1\n%d\n",(double) image->columns,(double) image->rows,

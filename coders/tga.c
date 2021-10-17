@@ -729,9 +729,6 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   const Quantum
     *p;
 
-  ImageType
-    type;
-
   MagickBooleanType
     status;
 
@@ -798,14 +795,11 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   tga_info.height=(unsigned short) image->rows;
   tga_info.bits_per_pixel=8;
   tga_info.attributes=0;
-  type=UndefinedType;
-  if (image_info->type != TrueColorType)
-    type=IdentifyImageCoderType(image,exception);
   if ((image_info->type != TrueColorType) &&
       (image_info->type != TrueColorAlphaType) &&
       (image_info->type != PaletteType) &&
       (image->alpha_trait == UndefinedPixelTrait) &&
-      (IsGrayImageType(type) != MagickFalse))
+      (IdentifyImageCoderGray(image,exception) != MagickFalse))
     tga_info.image_type=compression == RLECompression ? TGARLEMonochrome :
       TGAMonochrome;
   else

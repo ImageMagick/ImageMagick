@@ -3589,12 +3589,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if ((image_info->type != TrueColorType) &&
             (image_info->type != TrueColorAlphaType))
           {
-            ImageType
-              type;
-
-            type=IdentifyImageCoderType(image,exception);
             if ((image_info->type != PaletteType) &&
-                (IsGrayImageType(type) != MagickFalse))
+                (IdentifyImageCoderGray(image,exception) != MagickFalse))
               {
                 photometric=(uint16) (quantum_info->min_is_white !=
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :

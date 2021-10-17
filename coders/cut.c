@@ -609,27 +609,24 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) SyncImage(image,exception);
 
 
-  /*detect monochrome image*/
-
-  if(palette==NULL)
-    {    /*attempt to detect binary (black&white) images*/
-      ImageType
-        type;
-
-      type=IdentifyImageCoderType(image,exception);
+  /* detect monochrome image */
+  if (palette == (Image *) NULL)
+    {
+      /* attempt to detect binary (black&white) images */
       if ((image->storage_class == PseudoClass) &&
-          (IsGrayImageType(type) != MagickFalse))
+          (IdentifyImageCoderGray(image,exception) != MagickFalse))
         {
-          if(GetCutColors(image,exception)==2)
+          if (GetCutColors(image,exception) == 2)
             {
               for (i=0; i < (ssize_t)image->colors; i++)
                 {
                   Quantum
                     sample;
+
                   sample=ScaleCharToQuantum((unsigned char) i);
-                  if(image->colormap[i].red!=sample) goto Finish;
-                  if(image->colormap[i].green!=sample) goto Finish;
-                  if(image->colormap[i].blue!=sample) goto Finish;
+                  if (image->colormap[i].red!=sample) goto Finish;
+                  if (image->colormap[i].green!=sample) goto Finish;
+                  if (image->colormap[i].blue!=sample) goto Finish;
                 }
 
               image->colormap[1].red=image->colormap[1].green=

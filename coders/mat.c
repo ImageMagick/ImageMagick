@@ -1646,9 +1646,6 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
     char
       padding;
 
-    ImageType
-      type;
-
     MagickBooleanType
       is_gray;
 
@@ -1666,9 +1663,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
 
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
-    type=IdentifyImageCoderType(image,exception);
-    is_gray=(IsGrayImageType(type) != MagickFalse) ? MagickTrue :
-      MagickFalse;
+    is_gray=IdentifyImageCoderGray(image,exception);
     z=(is_gray != MagickFalse) ? 0 : 3;
 
     /*

@@ -4057,9 +4057,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     for (scene=0; scene < (ssize_t) number_scenes; scene++)
     {
-      ImageType
-        type;
-
       image->columns=info.width;
       image->rows=info.height;
       image->depth=info.depth;
@@ -4272,8 +4269,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 exception);
             }
         }
-      type=IdentifyImageCoderType(image,exception);
-      if (IsGrayImageType(type) != MagickFalse)
+      if (IdentifyImageCoderGray(image,exception) != MagickFalse)
         (void) SetImageColorspace(image,GRAYColorspace,exception);
       if (EOFBlob(image) != MagickFalse)
         {

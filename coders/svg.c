@@ -3980,9 +3980,6 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     at_splines_type
       *splines;
 
-    ImageType
-      type;
-
     const Quantum
       *p;
 
@@ -4002,8 +3999,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     fitting_options=at_fitting_opts_new();
     output_options=at_output_opts_new();
     number_planes=3;
-    type=IdentifyImageCoderType(image,exception);
-    if (IsGrayImageType(type) != MagickFalse)
+    if (IdentifyImageCoderGray(image,exception) != MagickFalse)
       number_planes=1;
     trace=at_bitmap_new(image->columns,image->rows,number_planes);
     i=0;
