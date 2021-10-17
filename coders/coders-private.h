@@ -49,4 +49,23 @@ static inline ImageType IdentifyImageCoderType(const Image *image,
   return(TrueColorType);
 }
 
+static inline MagickBooleanType CoderIdentifyImageGray(const Image *image,
+  ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  ImageType
+    type;
+
+  value=GetImageProperty(image,"colorspace:auto-grayscale",exception);
+  if (IsStringFalse(value) != MagickFalse)
+    return(MagickFalse);
+  type=IdentifyImageGray(image,exception);
+  if ((type == BilevelType) || (type == GrayscaleType) ||
+      (type == GrayscaleAlphaType))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 #endif
