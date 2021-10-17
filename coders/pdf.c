@@ -1456,10 +1456,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     version=1.6;
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    ImageType type = UndefinedType;
-    if (image_info->type != TrueColorType)
-      type=IdentifyImageCoderType(next,exception);
-    if (IsGrayImageType(type) != MagickFalse)
+    if ((image_info->type != TrueColorType) &&
+        (IdentifyImageCoderGray(next,exception) != MagickFalse))
       SetImageColorspace(next,GRAYColorspace,exception);
     icc_profile=GetCompatibleColorProfile(next);
     if (icc_profile != (StringInfo *) NULL)
@@ -1615,9 +1613,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   {
     Image
       *tile_image;
-
-    ImageType
-      type;
 
     MagickBooleanType
       thumbnail;
@@ -1991,11 +1986,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     number_pixels=(MagickSizeType) image->columns*image->rows;
     if ((4*number_pixels) != (MagickSizeType) ((size_t) (4*number_pixels)))
       ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
-    type=UndefinedType;
-    if (image_info->type != TrueColorType)
-      type=IdentifyImageCoderType(image,exception);
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
-        (IsGrayImageType(type) != MagickFalse))
+        (IsImageGray(image) != MagickFalse))
       {
         switch (compression)
         {
@@ -2350,9 +2342,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobString(image,buffer);
     device="DeviceRGB";
     channels=0;
-    type=UndefinedType;
-    if (image_info->type != TrueColorType)
-      type=IdentifyImageCoderType(image,exception);
     if (image->colorspace == CMYKColorspace)
       {
         device="DeviceCMYK";
@@ -2361,7 +2350,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     else
       if ((compression == FaxCompression) ||
           (compression == Group4Compression) ||
-          (IsGrayImageType(type) != MagickFalse))
+          (IsImageGray(image) != MagickFalse))
         {
           device="DeviceGray";
           channels=1;
@@ -2526,12 +2515,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobString(image,"stream\n");
     offset=TellBlob(image);
     number_pixels=(MagickSizeType) tile_image->columns*tile_image->rows;
-    type=UndefinedType;
-    if (image_info->type != TrueColorType)
-      type=IdentifyImageCoderType(tile_image,exception);
     if ((compression == FaxCompression) ||
         (compression == Group4Compression) ||
-        (IsGrayImageType(type) != MagickFalse))
+        (IsImageGray(image) != MagickFalse))
       {
         switch (compression)
         {
