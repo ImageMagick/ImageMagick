@@ -49,7 +49,7 @@ static inline ImageType IdentifyImageCoderType(const Image *image,
   return(TrueColorType);
 }
 
-static inline MagickBooleanType IdentifyCoderImageGray(const Image *image,
+static inline MagickBooleanType IdentifyImageCoderGray(const Image *image,
   ExceptionInfo *exception)
 {
   const char
@@ -68,7 +68,7 @@ static inline MagickBooleanType IdentifyCoderImageGray(const Image *image,
   return(MagickFalse);
 }
 
-static inline MagickBooleanType IdentifyCoderImageMonochrome(
+static inline MagickBooleanType IdentifyImageCoderMonochrome(
   const Image *image,ExceptionInfo *exception)
 {
   const char

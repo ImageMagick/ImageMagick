@@ -1851,7 +1851,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='F';
         if (image_info->type == TrueColorType)
           break;
-        if (IdentifyCoderImageGray(image,exception) != MagickFalse)
+        if (IdentifyImageCoderGray(image,exception) != MagickFalse)
           format='f';
         break;
       }
@@ -1869,7 +1869,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='H';
         if (image_info->type == TrueColorType)
           break;
-        if (IdentifyCoderImageGray(image,exception) != MagickFalse)
+        if (IdentifyImageCoderGray(image,exception) != MagickFalse)
           format='h';
         break;
       }
@@ -1879,14 +1879,14 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='6';
         if (image_info->type == TrueColorType)
           break;
-        if (IdentifyCoderImageGray(image,exception) != MagickFalse)
+        if (IdentifyImageCoderGray(image,exception) != MagickFalse)
           {
             format='5';
             if (image_info->compression == NoCompression)
               format='2';
           }
         else
-          if (IdentifyCoderImageMonochrome(image,exception) != MagickFalse)
+          if (IdentifyImageCoderMonochrome(image,exception) != MagickFalse)
           {
             format='4';
             if (image_info->compression == NoCompression)
