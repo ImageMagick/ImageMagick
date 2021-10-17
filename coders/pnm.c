@@ -1851,7 +1851,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='F';
         if (image_info->type == TrueColorType)
           break;
-        if (IdentifyImageCoderType(image,exception) == GrayscaleType)
+        if (IdentifyCoderImageGray(image,exception) != MagickFalse)
           format='f';
         break;
       }
@@ -1869,33 +1869,30 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='H';
         if (image_info->type == TrueColorType)
           break;
-        if (IdentifyImageCoderType(image,exception) == GrayscaleType)
+        if (IdentifyCoderImageGray(image,exception) != MagickFalse)
           format='h';
         break;
       }
       case 'N':
       case 'n':
       {
-        ImageType
-          type;
-
         format='6';
         if (image_info->type == TrueColorType)
           break;
-        type=IdentifyImageCoderType(image,exception);
-        if (type == GrayscaleType)
+        if (IdentifyCoderImageGray(image,exception) != MagickFalse)
           {
             format='5';
             if (image_info->compression == NoCompression)
               format='2';
-            if (type == BilevelType)
-              {
-                format='4';
-                if (image_info->compression == NoCompression)
-                  format='1';
-              }
-            break;
           }
+        else
+          if (IdentifyCoderImageMonochrome(image,exception) != MagickFalse)
+          {
+            format='4';
+            if (image_info->compression == NoCompression)
+              format='1';
+          }
+        break;
       }
       default:
       {

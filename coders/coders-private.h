@@ -68,4 +68,16 @@ static inline MagickBooleanType IdentifyCoderImageGray(const Image *image,
   return(MagickFalse);
 }
 
+static inline MagickBooleanType IdentifyCoderImageMonochrome(
+  const Image *image,ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  value=GetImageProperty(image,"colorspace:auto-grayscale",exception);
+  if (IsStringFalse(value) != MagickFalse)
+    return(MagickFalse);
+  return(IdentifyImageMonochrome(image,exception));
+}
+
 #endif
