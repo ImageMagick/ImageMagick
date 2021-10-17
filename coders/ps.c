@@ -1774,10 +1774,10 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     index=(Quantum) 0;
     x=0;
     if (image_info->type != TrueColorType)
-      type=IdentifyImageCoderType(image,exception);
+      type=IdentifyImageCoderGrayType(image,exception);
     if (IsGrayImageType(type) != MagickFalse)
       {
-        if (type == GrayscaleType)
+        if (type != BilevelType)
           {
             /*
               Dump image as grayscale.
