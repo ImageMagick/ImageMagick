@@ -1580,7 +1580,7 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (IsImageGray(image))
+  if (IsImageGray(image) != MagickFalse)
     return(image->type);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     return(UndefinedType);
