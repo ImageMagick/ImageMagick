@@ -292,7 +292,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
               draw_info->stroke_width+0.5);
             if ((image->columns != 0) && (image->rows != 0))
               {
-                if ((width >= image->columns) && (height >= image->rows))
+                if ((width >= image->columns) || (height >= image->rows))
                   break;
                 if ((width < image->columns) && (height < image->rows))
                   low=draw_info->pointsize;

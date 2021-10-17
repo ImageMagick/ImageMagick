@@ -204,7 +204,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
           if ((image->columns != 0) && (image->rows != 0))
             {
-              if ((width >= image->columns) && (height >= image->rows))
+              if ((width >= image->columns) || (height >= image->rows))
                 break;
             }
           else
