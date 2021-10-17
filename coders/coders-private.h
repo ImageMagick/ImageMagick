@@ -17,6 +17,7 @@
 #define MAGICK_CODERS_PRIVATE_H
 
 #include "MagickCore/attribute.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/string_.h"
 
@@ -62,8 +63,7 @@ static inline MagickBooleanType IdentifyImageCoderGray(const Image *image,
   if (IsStringFalse(value) != MagickFalse)
     return(MagickFalse);
   type=IdentifyImageGray(image,exception);
-  if ((type == BilevelType) || (type == GrayscaleType) ||
-      (type == GrayscaleAlphaType))
+  if (IsGrayImageType(type) != MagickFalse)
     return(MagickTrue);
   return(MagickFalse);
 }

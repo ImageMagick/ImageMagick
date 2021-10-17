@@ -1737,8 +1737,7 @@ MagickExport ImageType IdentifyImageType(const Image *image,
       return(ColorSeparationAlphaType);
     }
   type=IdentifyImageGray(image,exception);
-  if ((type == BilevelType) || (type == GrayscaleType) ||
-      (type == GrayscaleAlphaType))
+  if (IsGrayImageType(type))
     return(type);
   if (IdentifyPaletteImage(image,exception) != MagickFalse)
     {
@@ -1778,8 +1777,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if ((image->type == BilevelType) || (image->type == GrayscaleType) ||
-      (image->type == GrayscaleAlphaType))
+  if (IsGrayImageType(image->type))
     return(MagickTrue);
   return(MagickFalse);
 }

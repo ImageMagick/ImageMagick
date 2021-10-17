@@ -134,8 +134,7 @@ MagickExport ColorspaceType GetImageColorspaceType(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   colorspace=image->colorspace;
   type=IdentifyImageType(image,exception);
-  if ((type == BilevelType) || (type == GrayscaleType) ||
-      (type == GrayscaleAlphaType))
+  if (IsGrayImageType(type))
     colorspace=GRAYColorspace;
   return(colorspace);
 }
