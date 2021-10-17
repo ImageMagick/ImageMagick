@@ -2703,30 +2703,9 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           "Number of colors: unspecified");
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "JPEG data precision: %d",(int) jpeg_info->data_precision);
-      switch (image->colorspace)
+      switch (jpeg_info->in_color_space)
       {
-        case CMYKColorspace:
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Storage class: DirectClass");
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Colorspace: CMYK");
-          break;
-        }
-        case YCbCrColorspace:
-        case Rec601YCbCrColorspace:
-        case Rec709YCbCrColorspace:
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Colorspace: YCbCr");
-          break;
-        }
-        default:
-          break;
-      }
-      switch (image->colorspace)
-      {
-        case CMYKColorspace:
+        case JCS_CMYK:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: CMYK");
@@ -2742,7 +2721,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
             jpeg_info->comp_info[3].v_samp_factor);
           break;
         }
-        case GRAYColorspace:
+        case JCS_GRAYSCALE:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: GRAY");
@@ -2751,11 +2730,10 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
             jpeg_info->comp_info[0].v_samp_factor);
           break;
         }
-        case sRGBColorspace:
-        case RGBColorspace:
+        case JCS_RGB:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Image colorspace is RGB");
+            "Colorspace: RGB");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Sampling factors: %dx%d,%dx%d,%dx%d",
             jpeg_info->comp_info[0].h_samp_factor,
@@ -2766,9 +2744,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
             jpeg_info->comp_info[2].v_samp_factor);
           break;
         }
-        case YCbCrColorspace:
-        case Rec601YCbCrColorspace:
-        case Rec709YCbCrColorspace:
+        case JCS_YCbCr:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: YCbCr");
@@ -2780,22 +2756,6 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
             jpeg_info->comp_info[1].v_samp_factor,
             jpeg_info->comp_info[2].h_samp_factor,
             jpeg_info->comp_info[2].v_samp_factor);
-          break;
-        }
-        default:
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
-            image->colorspace);
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: %dx%d,%dx%d,%dx%d,%dx%d",
-            jpeg_info->comp_info[0].h_samp_factor,
-            jpeg_info->comp_info[0].v_samp_factor,
-            jpeg_info->comp_info[1].h_samp_factor,
-            jpeg_info->comp_info[1].v_samp_factor,
-            jpeg_info->comp_info[2].h_samp_factor,
-            jpeg_info->comp_info[2].v_samp_factor,
-            jpeg_info->comp_info[3].h_samp_factor,
-            jpeg_info->comp_info[3].v_samp_factor);
           break;
         }
       }
