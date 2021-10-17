@@ -50,34 +50,26 @@ static inline ImageType IdentifyImageCoderType(const Image *image,
   return(TrueColorType);
 }
 
-static inline MagickBooleanType IdentifyImageCoderGray(const Image *image,
+static inline ImageType IdentifyImageCoderGrayType(const Image *image,
   ExceptionInfo *exception)
 {
   const char
     *value;
 
+  value=GetImageProperty(image,"colorspace:auto-grayscale",exception);
+  if (IsStringFalse(value) != MagickFalse)
+    return(UndefinedType);
+  return(IdentifyImageGray(image,exception));
+}
+
+static inline MagickBooleanType IdentifyImageCoderGray(const Image *image,
+  ExceptionInfo *exception)
+{
   ImageType
     type;
 
-  value=GetImageProperty(image,"colorspace:auto-grayscale",exception);
-  if (IsStringFalse(value) != MagickFalse)
-    return(MagickFalse);
-  type=IdentifyImageGray(image,exception);
-  if (IsGrayImageType(type) != MagickFalse)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
-static inline MagickBooleanType IdentifyImageCoderMonochrome(
-  const Image *image,ExceptionInfo *exception)
-{
-  const char
-    *value;
-
-  value=GetImageProperty(image,"colorspace:auto-grayscale",exception);
-  if (IsStringFalse(value) != MagickFalse)
-    return(MagickFalse);
-  return(IdentifyImageMonochrome(image,exception));
+  type=IdentifyImageCoderGrayType(image,exception);
+  return(IsGrayImageType(type));
 }
 
 #endif

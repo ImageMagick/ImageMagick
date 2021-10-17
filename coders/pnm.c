@@ -1876,21 +1876,24 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       case 'N':
       case 'n':
       {
+        ImageType
+          type;
+
         format='6';
         if (image_info->type == TrueColorType)
           break;
-        if (IdentifyImageCoderGray(image,exception) != MagickFalse)
+        type=IdentifyImageCoderGrayType(image,exception);
+        if (IsGrayImageType(type) != MagickFalse)
           {
             format='5';
             if (image_info->compression == NoCompression)
               format='2';
-          }
-        else
-          if (IdentifyImageCoderMonochrome(image,exception) != MagickFalse)
-          {
-            format='4';
-            if (image_info->compression == NoCompression)
-              format='1';
+            if (type == BilevelType)
+              {
+                format='4';
+                if (image_info->compression == NoCompression)
+                  format='1';
+              }
           }
         break;
       }
