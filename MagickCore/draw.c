@@ -1383,10 +1383,11 @@ static MagickBooleanType DrawBoundingRectangles(Image *image,
         flags;
 
       flags=ParseGeometry(clone_info->density,&geometry_info);
-      resolution.x=geometry_info.rho;
-      resolution.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == MagickFalse)
-        resolution.y=resolution.x;
+      if ((flags & RhoValue) != 0)
+        resolution.x=geometry_info.rho;
+      resolution.y=resolution.x;
+      if ((flags & SigmaValue) != 0)
+        resolution.y=geometry_info.sigma;
     }
   mid=(resolution.x/96.0)*ExpandAffine(&clone_info->affine)*
     clone_info->stroke_width/2.0;
