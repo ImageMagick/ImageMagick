@@ -305,7 +305,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           }
           high=draw_info->pointsize;
         }
-      for (; (high-low) > 0.5; )
+      while ((high-low) > 0.5)
       {
         draw_info->pointsize=(low+high)/2.0;
         text=AcquireString(caption);
