@@ -294,9 +294,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
               {
                 if ((width >= image->columns) && (height >= image->rows))
                   break;
-                else
-                  if ((width < image->columns) && (height < image->rows))
-                    low=draw_info->pointsize;
+                if ((width < image->columns) && (height < image->rows))
+                  low=draw_info->pointsize;
               }
             else
               if (((image->columns != 0) && (width >= image->columns)) ||
