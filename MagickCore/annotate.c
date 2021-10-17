@@ -1526,13 +1526,13 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         geometry_info;
 
       MagickStatusType
-        flags;
+        geometry_flags;
 
-      flags=ParseGeometry(draw_info->density,&geometry_info);
-      if ((flags & RhoValue) != 0)
+      geometry_flags=ParseGeometry(draw_info->density,&geometry_info);
+      if ((geometry_flags & RhoValue) != 0)
         resolution.x=geometry_info.rho;
       resolution.y=resolution.x;
-      if ((flags & SigmaValue) != 0)
+      if ((geometry_flags & SigmaValue) != 0)
         resolution.y=geometry_info.sigma;
     }
   ft_status=FT_Set_Char_Size(face,(FT_F26Dot6) (64.0*draw_info->pointsize),
