@@ -264,6 +264,13 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         }
       else
         {
+          option=GetImageOption(image_info,"caption:start-pointsize");
+          if (option != (const char *) NULL)
+            {
+              draw_info->pointsize=StringToDouble(option,(char**) NULL);
+              if (draw_info->pointsize < 1.0)
+                draw_info->pointsize=1.0;
+            }
           for (n=0; n < 32; n++, draw_info->pointsize*=2.0)
           {
             text=AcquireString(caption);
