@@ -3199,7 +3199,7 @@ MagickPrivate void XGetPixelInfo(Display *display,
             Initialize map relative to display and image gamma.
           */
           flags=ParseGeometry(resource_info->display_gamma,&geometry_info);
-          if ((flags & WhoValue) != 0)
+          if ((flags & RhoValue) != 0)
             red_gamma=geometry_info.rho;
           green_gamma=red_gamma;
           if ((flags & SigmaValue) != 0)
