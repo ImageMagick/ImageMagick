@@ -253,6 +253,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       /*
         Auto fit text into bounding box.
       */
+      low=1.0;
       option=GetImageOption(image_info,"caption:max-pointsize");
       if (option != (const char*) NULL)
         {
@@ -286,6 +287,9 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
               {
                 if ((width >= image->columns) && (height >= image->rows))
                   break;
+                else
+                  if ((width < image->columns) && (height < image->rows))
+                    low=draw_info->pointsize;
               }
             else
               if (((image->columns != 0) && (width >= image->columns)) ||
@@ -294,7 +298,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           }
           high=draw_info->pointsize;
         }
-      for (low=1.0; (high-low) > 0.5; )
+      for (; (high-low) > 0.5; )
       {
         draw_info->pointsize=(low+high)/2.0;
         text=AcquireString(caption);
