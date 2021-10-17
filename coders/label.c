@@ -88,11 +88,8 @@
 %
 */
 
-static inline void AdjustTypeMetricBounds(const DrawInfo *draw_info,
-  TypeMetric *metrics)
+static inline void AdjustTypeMetricBounds(TypeMetric *metrics)
 {
-  if (draw_info->gravity == UndefinedGravity)
-    return;
   if (metrics->bounds.x1 >= 0.0)
     metrics->bounds.x1=0.0;
   else
@@ -169,7 +166,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   draw_info->text=ConstantString(label);
   (void) memset(&metrics,0,sizeof(metrics));
   status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-  AdjustTypeMetricBounds(draw_info,&metrics);
+  AdjustTypeMetricBounds(&metrics);
   if ((image->columns == 0) && (image->rows == 0))
     {
       image->columns=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
@@ -200,7 +197,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
           if (status == MagickFalse)
             break;
-          AdjustTypeMetricBounds(draw_info,&metrics);
+          AdjustTypeMetricBounds(&metrics);
           width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
           height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
           if ((image->columns != 0) && (image->rows != 0))
@@ -233,7 +230,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
           if (status == MagickFalse)
             break;
-          AdjustTypeMetricBounds(draw_info,&metrics);
+          AdjustTypeMetricBounds(&metrics);
           width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
           height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
           if ((image->columns != 0) && (image->rows != 0))
@@ -254,7 +251,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           {
             draw_info->pointsize=floor((low+high)/2.0-0.5);
             status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-            AdjustTypeMetricBounds(draw_info,&metrics);
+            AdjustTypeMetricBounds(&metrics);
           }
       }
    label=DestroyString(label);
