@@ -1,4 +1,4 @@
-These active developers and have made source code contributions to the
+These active developers have made source code contributions to the
 ImageMagick project in the last few years:
 
 Cristy
