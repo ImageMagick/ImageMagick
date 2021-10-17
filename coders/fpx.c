@@ -841,7 +841,6 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
   colorspace.numberOfComponents=3;
   if (image->alpha_trait != UndefinedPixelTrait)
     colorspace.numberOfComponents=4;
-  type=UndefinedType;
   if ((image_info->type != TrueColorType) &&
       (IdentifyImageCoderGray(image,exception) != MagickFalse))
     {
