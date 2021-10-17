@@ -1413,9 +1413,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       ssize_t
         x;
 
-      size_t
-        k;
-
       if (status == MagickFalse)
         continue;
       p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
@@ -1427,6 +1424,9 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         }
       for (x=0; x < (ssize_t) bounding_box.width; x++)
       {
+        size_t
+          k;
+
         if (status == MagickFalse)
           continue;
         j=(ssize_t) GetPixelIndex(component_image,p);
