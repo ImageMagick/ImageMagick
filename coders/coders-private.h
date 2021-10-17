@@ -49,7 +49,7 @@ static inline ImageType IdentifyImageCoderType(const Image *image,
   return(TrueColorType);
 }
 
-static inline MagickBooleanType CoderIdentifyImageGray(const Image *image,
+static inline MagickBooleanType IdentifyCoderImageGray(const Image *image,
   ExceptionInfo *exception)
 {
   const char
