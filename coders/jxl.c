@@ -525,26 +525,16 @@ ModuleExport void UnregisterJXLImage(void)
 static JxlEncoderStatus JXLWriteMetadata(const Image *image,
   JxlEncoder *encoder)
 {
-  const StringInfo
-    *profile;
-
   JxlColorEncoding
     color_encoding;
 
   JxlEncoderStatus
     encoder_status;
 
-  profile=GetImageProfile(image,"ICC");
-  if (profile != (const StringInfo *) NULL)
-    encoder_status=JxlEncoderSetICCProfile(encoder,
-      (void*) GetStringInfoDatum(profile),GetStringInfoLength(profile));
-  else
-    {
-      memset(&color_encoding,0,sizeof(color_encoding));
-      JxlColorEncodingSetToLinearSRGB(&color_encoding,
-        IsImageGray(image) == MagickTrue ? JXL_TRUE : JXL_FALSE);
-      encoder_status=JxlEncoderSetColorEncoding(encoder,&color_encoding);
-    }
+  memset(&color_encoding,0,sizeof(color_encoding));
+  JxlColorEncodingSetToSRGB(&color_encoding,
+    IsImageGray(image) == MagickTrue ? JXL_TRUE : JXL_FALSE);
+  encoder_status=JxlEncoderSetColorEncoding(encoder,&color_encoding);
   return(encoder_status);
 }
 
@@ -665,6 +655,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   if (option != (const char *) NULL)
     JxlEncoderOptionsSetEffort(encoder_options,StringToInteger(option));
   encoder_status=JXLWriteMetadata(image,encoder);
+  encoder_status=JXL_ENC_SUCCESS;
   if (encoder_status != JXL_ENC_SUCCESS)
     {
       JxlThreadParallelRunnerDestroy(runner);
