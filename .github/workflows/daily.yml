@@ -120,7 +120,7 @@ jobs:
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
   build_windows_zero_configuration:
-    name: 'Windows Q16-x64 hdri=yes (Zero configuration ${{matrix.buildType}})'
+    name: 'Windows Q16-x64 hdri=yes (zero configuration ${{matrix.buildType}})'
     runs-on: windows-latest
 
     strategy:
