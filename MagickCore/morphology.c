@@ -4299,7 +4299,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
     case CrossKernel:
       return;
 
-    /* These only allows a +/-90 degree rotation (by transpose) */
+    /* These only allow a +/-90 degree rotation (by transpose) */
     /* A 180 degree rotation is useless */
     case BlurKernel:
       if ( 135.0 < angle && angle <= 225.0 )
