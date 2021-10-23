@@ -114,7 +114,8 @@ static inline wchar_t *create_wchar_mode(const char *mode)
     *wideChar;
 
   count=MultiByteToWideChar(CP_UTF8,0,mode,-1,NULL,0);
-  wideChar=(wchar_t *) AcquireQuantumMemory(count,sizeof(*wideChar));
+  wideChar=(wchar_t *) AcquireQuantumMemory((size_t) count+1,
+    sizeof(*wideChar));
   if (wideChar == (wchar_t *) NULL)
     return((wchar_t *) NULL);
   count=MultiByteToWideChar(CP_UTF8,0,mode,-1,wideChar,count);
@@ -123,6 +124,9 @@ static inline wchar_t *create_wchar_mode(const char *mode)
       wideChar=(wchar_t *) RelinquishMagickMemory(wideChar);
       return((wchar_t *) NULL);
     }
+  /* Specifies that the file is not inherited by child processes. */
+  wideChar[count] = L'\0';
+  wideChar[count-1] = L'N';
   return(wideChar);
 }
 #endif
