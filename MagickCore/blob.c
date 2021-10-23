@@ -3295,7 +3295,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       blob_info->file_info.file=(*type == 'r') ? stdin : stdout;
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
       if (strchr(type,'b') != (char *) NULL)
-        setmode(fileno(blob_info->file_info.file),_O_BINARY);
+        (void) setmode(fileno(blob_info->file_info.file),_O_BINARY);
 #endif
       blob_info->type=StandardStream;
       blob_info->exempt=MagickTrue;
@@ -3317,7 +3317,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
         }
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
       if (strchr(type,'b') != (char *) NULL)
-        setmode(fileno(blob_info->file_info.file),_O_BINARY);
+        (void) setmode(fileno(blob_info->file_info.file),_O_BINARY);
 #endif
       blob_info->type=FileStream;
       blob_info->exempt=MagickTrue;
