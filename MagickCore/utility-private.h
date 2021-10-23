@@ -104,6 +104,27 @@ static inline wchar_t *create_wchar_path(const char *utf8)
     }
   return(wideChar);
 }
+
+static inline wchar_t *create_wchar_mode(const char *mode)
+{
+  int
+    count;
+
+  wchar_t
+    *wideChar;
+
+  count=MultiByteToWideChar(CP_UTF8,0,mode,-1,NULL,0);
+  wideChar=(wchar_t *) AcquireQuantumMemory(count,sizeof(*wideChar));
+  if (wideChar == (wchar_t *) NULL)
+    return((wchar_t *) NULL);
+  count=MultiByteToWideChar(CP_UTF8,0,mode,-1,wideChar,count);
+  if (count == 0)
+    {
+      wideChar=(wchar_t *) RelinquishMagickMemory(wideChar);
+      return((wchar_t *) NULL);
+    }
+  return(wideChar);
+}
 #endif
 
 static inline int access_utf8(const char *path,int mode)
@@ -141,7 +162,7 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
    path_wide=create_wchar_path(path);
    if (path_wide == (wchar_t *) NULL)
      return((FILE *) NULL);
-   mode_wide=create_wchar_path(mode);
+   mode_wide=create_wchar_mode(mode);
    if (mode_wide == (wchar_t *) NULL)
      {
        path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
