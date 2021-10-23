@@ -3496,37 +3496,37 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                   }
               }
           }
+      }
+    else
+#if defined(MAGICKCORE_ZLIB_DELEGATE)
+      if ((LocaleCompare(extension,"Z") == 0) ||
+          (LocaleCompare(extension,"gz") == 0) ||
+          (LocaleCompare(extension,"wmz") == 0) ||
+          (LocaleCompare(extension,"svgz") == 0))
+        {
+          blob_info->file_info.gzfile=gzopen(filename,"wb");
+          if (blob_info->file_info.gzfile != (gzFile) NULL)
+            blob_info->type=ZipStream;
         }
       else
-#if defined(MAGICKCORE_ZLIB_DELEGATE)
-        if ((LocaleCompare(extension,"Z") == 0) ||
-            (LocaleCompare(extension,"gz") == 0) ||
-            (LocaleCompare(extension,"wmz") == 0) ||
-            (LocaleCompare(extension,"svgz") == 0))
+#endif
+#if defined(MAGICKCORE_BZLIB_DELEGATE)
+        if (LocaleCompare(extension,"bz2") == 0)
           {
-            blob_info->file_info.gzfile=gzopen(filename,"wb");
-            if (blob_info->file_info.gzfile != (gzFile) NULL)
-              blob_info->type=ZipStream;
+            blob_info->file_info.bzfile=BZ2_bzopen(filename,"w");
+            if (blob_info->file_info.bzfile != (BZFILE *) NULL)
+              blob_info->type=BZipStream;
           }
         else
 #endif
-#if defined(MAGICKCORE_BZLIB_DELEGATE)
-          if (LocaleCompare(extension,"bz2") == 0)
-            {
-              blob_info->file_info.bzfile=BZ2_bzopen(filename,"w");
-              if (blob_info->file_info.bzfile != (BZFILE *) NULL)
-                blob_info->type=BZipStream;
-            }
-          else
-#endif
-            {
-              blob_info->file_info.file=(FILE *) fopen_utf8(filename,type);
-              if (blob_info->file_info.file != (FILE *) NULL)
-                {
-                  blob_info->type=FileStream;
-                  (void) SetStreamBuffering(image_info,blob_info);
-                }
-            }
+          {
+            blob_info->file_info.file=(FILE *) fopen_utf8(filename,type);
+            if (blob_info->file_info.file != (FILE *) NULL)
+              {
+                blob_info->type=FileStream;
+                (void) SetStreamBuffering(image_info,blob_info);
+              }
+          }
   blob_info->status=MagickFalse;
   blob_info->error_number=MagickFalse;
   if (blob_info->type != UndefinedStream)
