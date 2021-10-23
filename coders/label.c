@@ -158,6 +158,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     return(DestroyImageList(image));
   (void) SetImageProperty(image,"label",label,exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  draw_info->render=MagickFalse;
   width=(size_t) floor(0.5*draw_info->pointsize*strlen(label)+0.5);
   if (AcquireMagickResource(WidthResource,width) == MagickFalse)
     {
@@ -216,7 +217,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
                 metrics.bounds.x1,metrics.ascent);
               if (draw_info->gravity == UndefinedGravity)
                 (void) CloneString(&draw_info->geometry,geometry);
-              status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
+              status=GetMultilineTypeMetrics(image,draw_info,&metrics,
+                exception);
               if (status == MagickFalse)
                 break;
               AdjustTypeMetricBounds(&metrics);
@@ -309,6 +311,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   /*
     Draw label.
   */
+  draw_info->render=MagickTrue;
   (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
     (draw_info->direction == RightToLeftDirection ? (double) image->columns-
     metrics.bounds.x2 : metrics.bounds.x1),(draw_info->gravity ==
