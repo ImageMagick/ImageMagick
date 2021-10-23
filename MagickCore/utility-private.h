@@ -215,7 +215,8 @@ static inline int open_utf8(const char *path,int flags,mode_t mode)
   path_wide=create_wchar_path(path);
   if (path_wide == (wchar_t *) NULL)
     return(-1);
-  status=_wopen(path_wide,flags,mode);
+  /* O_NOINHERIT specifies that the file is not inherited by child processes */
+  status=_wopen(path_wide,flags | O_NOINHERIT,mode);
   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
   return(status);
 #endif
