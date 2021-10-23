@@ -3190,7 +3190,7 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 */
 
 static inline MagickBooleanType SetStreamBuffering(const ImageInfo *image_info,
-  Image *image)
+  const Image *image)
 {
   const char
     *option;
