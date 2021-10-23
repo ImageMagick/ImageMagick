@@ -3981,7 +3981,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           redmap=(int *) RelinquishMagickMemory(redmap);
         image=DestroyImageList(image);
         if ((status == MagickFalse) && (exception->severity < ErrorException))
-          ThrowReaderException(CorruptImageError,"CorruptImageError");
+          ThrowDCMException(CorruptImageError,"CorruptImageError");
         return(GetFirstImageInList(images));
       }
     if (info.depth != (1UL*MAGICKCORE_QUANTUM_DEPTH))
