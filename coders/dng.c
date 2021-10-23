@@ -341,6 +341,18 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
       if (raw_info->params.output_color == 5)
         image->colorspace=XYZColorspace;
     }
+  option=GetImageOption(image_info,"dng:interpolation-quality");
+  if (option == (const char *) NULL)
+    {
+      int
+        value;
+
+      value=StringToInteger(option);
+      if (value == -1)
+        raw_info->params.no_interpolation=1;
+      else
+        raw_info->params.user_qual=value;
+    }
 }
 
 static void LibRawDataError(void *data,const char *magick_unused(file),
