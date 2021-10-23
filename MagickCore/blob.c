@@ -3305,7 +3305,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       (IsGeometry(filename+3) != MagickFalse))
     {
       char
-        fileMode[MagickPathExtent];
+        fileMode[2];
 
       *fileMode =(*type);
       fileMode[1]='\0';
