@@ -750,7 +750,6 @@ static MagickBooleanType IsPICT(const unsigned char *magick,const size_t length)
   return(MagickFalse);
 }
 
-#if !defined(macintosh)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1548,7 +1547,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

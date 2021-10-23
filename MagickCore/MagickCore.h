@@ -25,7 +25,7 @@ extern "C" {
 
 #if !defined(MAGICKCORE_CONFIG_H)
 # define MAGICKCORE_CONFIG_H
-# if !defined(vms) && !defined(macintosh)
+# if !defined(vms)
 #  include "MagickCore/magick-config.h"
 # else
 #  include "magick-config.h"

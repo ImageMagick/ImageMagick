@@ -151,10 +151,6 @@ typedef size_t MagickAddressType;
 
 typedef MagickSizeType QuantumAny;
 
-#if defined(macintosh)
-#define ExceptionInfo  MagickExceptionInfo
-#endif
-
 typedef enum
 {
   UndefinedClass,

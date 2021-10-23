@@ -1136,9 +1136,7 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
 MagickPrivate MagickBooleanType IsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
-#if defined(macintosh)
-  return(MACIsMagickConflict(magick));
-#elif defined(vms)
+#if defined(vms)
   return(VMSIsMagickConflict(magick));
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(NTIsMagickConflict(magick));

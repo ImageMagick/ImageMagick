@@ -3395,9 +3395,6 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                   "%s-%.20g.%s",path,(double) image->scene,extension);
             }
           (void) CopyMagickString(image->filename,filename,MagickPathExtent);
-#if defined(macintosh)
-          SetApplicationType(filename,image_info->magick,'8BIM');
-#endif
         }
     }
   if (image_info->file != (FILE *) NULL)

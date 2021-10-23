@@ -226,13 +226,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #else
 # include <types.h>
 # include <stat.h>
-# if defined(macintosh)
-#  if !defined(DISABLE_SIOUX)
-#   include <SIOUX.h>
-#   include <console.h>
-#  endif
-#  include <unix.h>
-# endif
 # include "MagickCore/magick-type.h"
 #endif
 

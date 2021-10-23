@@ -71,7 +71,7 @@
 #include "MagickCore/string_.h"
 #include "coders/coders-private.h"
 #if defined(MAGICKCORE_FPX_DELEGATE)
-#if !defined(vms) && !defined(macintosh) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if !defined(vms) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include <fpxlib.h>
 #else
 #include "Fpxlib.h"
@@ -213,18 +213,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   tile_width=64;
   tile_height=64;
   flashpix=(FPXImageHandle *) NULL;
-  {
-#if defined(macintosh)
-    FSSpec
-      fsspec;
-
-    FilenameToFSSpec(image->filename,&fsspec);
-    fpx_status=FPX_OpenImageByFilename((const FSSpec &) fsspec,(char *) NULL,
-#else
-    fpx_status=FPX_OpenImageByFilename(image->filename,(char *) NULL,
-#endif
-      &width,&height,&tile_width,&tile_height,&colorspace,&flashpix);
-  }
+  fpx_status=FPX_OpenImageByFilename(image->filename,(char *) NULL,&width,
+    &height,&tile_width,&tile_height,&colorspace,&flashpix);
   if (fpx_status == FPX_LOW_MEMORY_ERROR)
     {
       FPX_ClearSystem();
@@ -856,19 +846,9 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
     compression=JPEG_UNSPECIFIED;
   if (image_info->compression == JPEGCompression)
     compression=JPEG_UNSPECIFIED;
-  {
-#if defined(macintosh)
-    FSSpec
-      fsspec;
-
-    FilenameToFSSpec(filename,&fsspec);
-    fpx_status=FPX_CreateImageByFilename((const FSSpec &) fsspec,image->columns,
-#else
-    fpx_status=FPX_CreateImageByFilename(image->filename,image->columns,
-#endif
-      image->rows,tile_width,tile_height,colorspace,background_color,
-      compression,&flashpix);
-  }
+  fpx_status=FPX_CreateImageByFilename(image->filename,image->columns,
+    image->rows,tile_width,tile_height,colorspace,background_color,compression,
+    &flashpix);
   if (fpx_status != FPX_OK)
     return(status);
   if (compression == JPEG_UNSPECIFIED)

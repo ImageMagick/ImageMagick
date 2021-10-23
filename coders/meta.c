@@ -1812,11 +1812,7 @@ static void formatString(Image *ofile, const char *s, ssize_t len)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   (void) WriteBlobString(ofile,"\"\r\n");
 #else
-#if defined(macintosh)
-  (void) WriteBlobString(ofile,"\"\r");
-#else
   (void) WriteBlobString(ofile,"\"\n");
-#endif
 #endif
 }
 
