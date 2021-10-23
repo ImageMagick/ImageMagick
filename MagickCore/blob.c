@@ -3190,7 +3190,7 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 */
 
 static inline MagickBooleanType SetStreamBuffering(const ImageInfo *image_info,
-  const Image *image)
+  const BlobInfo *blob_info)
 {
   const char
     *option;
@@ -3205,7 +3205,7 @@ static inline MagickBooleanType SetStreamBuffering(const ImageInfo *image_info,
   option=GetImageOption(image_info,"stream:buffer-size");
   if (option != (const char *) NULL)
     size=StringToUnsignedLong(option);
-  status=setvbuf(image->blob->file_info.file,(char *) NULL,size == 0 ?
+  status=setvbuf(blob_info->file_info.file,(char *) NULL,size == 0 ?
     _IONBF : _IOFBF,size);
   return(status == 0 ? MagickTrue : MagickFalse);
 }
@@ -3299,7 +3299,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #endif
       blob_info->type=StandardStream;
       blob_info->exempt=MagickTrue;
-      return(SetStreamBuffering(image_info,image));
+      return(SetStreamBuffering(image_info,blob_info));
     }
   if ((LocaleNCompare(filename,"fd:",3) == 0) &&
       (IsGeometry(filename+3) != MagickFalse))
@@ -3321,7 +3321,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #endif
       blob_info->type=FileStream;
       blob_info->exempt=MagickTrue;
-      return(SetStreamBuffering(image_info,image));
+      return(SetStreamBuffering(image_info,blob_info));
     }
 #if defined(MAGICKCORE_HAVE_POPEN) && defined(MAGICKCORE_PIPES_SUPPORT)
   if (*filename == '|')
@@ -3349,7 +3349,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
         }
       blob_info->type=PipeStream;
       blob_info->exempt=MagickTrue;
-      return(SetStreamBuffering(image_info,image));
+      return(SetStreamBuffering(image_info,blob_info));
     }
 #endif
   status=GetPathAttributes(filename,&blob_info->properties);
@@ -3364,7 +3364,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
         }
       blob_info->type=FileStream;
       blob_info->exempt=MagickTrue;
-      return(SetStreamBuffering(image_info,image));
+      return(SetStreamBuffering(image_info,blob_info));
     }
 #endif
   GetPathComponent(image->filename,ExtensionPath,extension);
@@ -3419,7 +3419,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
               magick[3];
 
             blob_info->type=FileStream;
-            (void) SetStreamBuffering(image_info,image);
+            (void) SetStreamBuffering(image_info,blob_info);
             (void) memset(magick,0,sizeof(magick));
             count=fread(magick,1,sizeof(magick),blob_info->file_info.file);
             (void) fseek(blob_info->file_info.file,-((off_t) count),SEEK_CUR);
@@ -3524,7 +3524,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
               if (blob_info->file_info.file != (FILE *) NULL)
                 {
                   blob_info->type=FileStream;
-                  (void) SetStreamBuffering(image_info,image);
+                  (void) SetStreamBuffering(image_info,blob_info);
                 }
             }
   blob_info->status=MagickFalse;
