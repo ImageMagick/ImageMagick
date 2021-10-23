@@ -124,7 +124,7 @@ static inline wchar_t *create_wchar_mode(const char *mode)
       wideChar=(wchar_t *) RelinquishMagickMemory(wideChar);
       return((wchar_t *) NULL);
     }
-  /* Specifies that the file is not inherited by child processes. */
+  /* Specifies that the file is not inherited by child processes */
   wideChar[count] = L'\0';
   wideChar[count-1] = L'N';
   return(wideChar);
@@ -206,18 +206,18 @@ static inline int open_utf8(const char *path,int flags,mode_t mode)
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(open(path,flags,mode));
 #else
-   int
-     status;
+  int
+    status;
 
-   wchar_t
-     *path_wide;
+  wchar_t
+    *path_wide;
 
-   path_wide=create_wchar_path(path);
-   if (path_wide == (wchar_t *) NULL)
-     return(-1);
-   status=_wopen(path_wide,flags,mode);
-   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
-   return(status);
+  path_wide=create_wchar_path(path);
+  if (path_wide == (wchar_t *) NULL)
+    return(-1);
+  status=_wopen(path_wide,flags,mode);
+  path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
+  return(status);
 #endif
 }
 
