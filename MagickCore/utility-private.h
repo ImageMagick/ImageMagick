@@ -88,7 +88,8 @@ static inline wchar_t *create_wchar_path(const char *utf8)
       longPath=(wchar_t *) RelinquishMagickMemory(longPath);
       if ((count < 5) || (count >= MAX_PATH))
         return((wchar_t *) NULL);
-      wideChar=(wchar_t *) AcquireQuantumMemory(count-3,sizeof(*wideChar));
+      wideChar=(wchar_t *) AcquireQuantumMemory((size_t) count-3,
+        sizeof(*wideChar));
       wcscpy(wideChar,shortPath+4);
       return(wideChar);
     }
