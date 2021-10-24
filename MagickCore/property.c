@@ -3643,7 +3643,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
       (void) SetImageBackgroundColor(property_image,exception);
     }
   interpret_text=AcquireString(embed_text); /* new string with extra space */
-  extent=MagickPathExtent;                     /* allocated space in string */
+  extent=MagickPathExtent;                  /* allocated space in string */
   number=MagickFalse;                       /* is last char a number? */
   for (q=interpret_text; *p!='\0'; number=isdigit((int) ((unsigned char) *p)) ? MagickTrue : MagickFalse,p++)
   {
