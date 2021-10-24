@@ -408,7 +408,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   heif_item_id
-    *image_ids,
     primary_image_id;
 
   Image
@@ -491,10 +490,12 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     }
   status=ReadHEICImageHandle(image_info,image,image_handle,exception);
   heif_image_handle_release(image_handle);
-  image_ids=(heif_item_id *) NULL;
   count=(size_t) heif_context_get_number_of_top_level_images(heif_context);
   if ((status != MagickFalse) && (count > 1))
     {
+      heif_item_id
+        *image_ids;
+
       size_t
         i;
 
@@ -537,6 +538,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
           if (image->scene >= (image_info->scene+image_info->number_scenes-1))
             break;
       }
+      image_ids=(heif_item_id *) RelinquishMagickMemory(image_ids);
     }
   error=heif_context_get_image_handle(heif_context,primary_image_id,
     &image_handle);
@@ -548,8 +550,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     }
   ReadHEICDepthImage(image_info,image,image_handle,exception);
   heif_image_handle_release(image_handle);
-  if (image_ids != (heif_item_id *) NULL)
-    (void) RelinquishMagickMemory(image_ids);
   heif_context_free(heif_context);
   file_data=RelinquishMagickMemory(file_data);
   if (status == MagickFalse)
