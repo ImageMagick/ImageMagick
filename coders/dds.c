@@ -2146,15 +2146,28 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
       /* Write the pixels */
       for (i=0; i < 16; i++)
       {
+        unsigned char
+          c2;
+
         c0=2 * subset_indices[i];
         c1=(2 * subset_indices[i]) + 1;
+        c2=color_indices[i];
 
+        weight=64;
         /* Color Interpolation */
         switch(index_prec)
         {
-          case 2: weight=BC7_weight2[color_indices[i]]; break;
-          case 3: weight=BC7_weight3[color_indices[i]]; break;
-          default: weight=BC7_weight4[color_indices[i]];
+          case 2:
+            if (c2 < sizeof(BC7_weight2))
+              weight=BC7_weight2[c2];
+            break;
+          case 3:
+            if (c2 < sizeof(BC7_weight3))
+              weight=BC7_weight3[c2];
+            break;
+          default:
+            if (c2 < sizeof(BC7_weight4))
+              weight=BC7_weight4[c2];
         }
         r=((64 - weight) * colors.r[c0] + weight * colors.r[c1] + 32) >> 6;
         g=((64 - weight) * colors.g[c0] + weight * colors.g[c1] + 32) >> 6;
@@ -2164,10 +2177,16 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         /* Interpolate alpha for mode 4 and 5 blocks */
         if (mode == 4 || mode == 5)
           {
-            weight=BC7_weight2[alpha_indices[i]];
-            if (mode == 4 && selector_bit == 0)
-              weight=BC7_weight3[alpha_indices[i]];
-            a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
+            unsigned char
+              a0;
+
+            a0=alpha_indices[i];
+            if (a0 < sizeof(BC7_weight2))
+              weight=BC7_weight2[a0];
+            if ((mode == 4) && (selector_bit == 0) && (a0 < sizeof(BC7_weight3)))
+              weight=BC7_weight3[a0];
+            if ((c0 < sizeof(colors.a)) && (c1 < sizeof(colors.a)))
+              a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
           }
         switch (rotation)
         {
