@@ -102,14 +102,6 @@ static inline void AdjustTypeMetricBounds(TypeMetric *metrics)
       metrics->width+=x1+x1;
       metrics->bounds.x1=x1;
     }
-  if (metrics->bounds.y1 >= 0.0)
-    metrics->bounds.y1=0.0;
-  else
-    {
-      double y1 = ceil(-metrics->bounds.y1+0.5);
-      metrics->height+=y1+y1;
-      metrics->bounds.y1=y1;
-    }
 }
 
 static Image *ReadCAPTIONImage(const ImageInfo *image_info,
