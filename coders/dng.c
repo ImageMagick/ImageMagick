@@ -342,7 +342,7 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
         image->colorspace=XYZColorspace;
     }
   option=GetImageOption(image_info,"dng:interpolation-quality");
-  if (option == (const char *) NULL)
+  if (option != (const char *) NULL)
     {
       int
         value;
