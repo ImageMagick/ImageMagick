@@ -490,6 +490,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       return(DestroyImageList(image));
     }
   status=ReadHEICImageHandle(image_info,image,image_handle,exception);
+  heif_image_handle_release(image_handle);
   image_ids=(heif_item_id *) NULL;
   count=(size_t) heif_context_get_number_of_top_level_images(heif_context);
   if ((status != MagickFalse) && (count > 1))
@@ -501,7 +502,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
         sizeof(*image_ids));
       if (image_ids == (heif_item_id *) NULL)
         {
-          heif_image_handle_release(image_handle);
           heif_context_free(heif_context);
           file_data=RelinquishMagickMemory(file_data);
           return(DestroyImageList(image));
@@ -530,6 +530,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
             break;
           }
         status=ReadHEICImageHandle(image_info,image,image_handle,exception);
+        heif_image_handle_release(image_handle);
         if (status == MagickFalse)
           break;
         if (image_info->number_scenes != 0)
@@ -537,7 +538,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
             break;
       }
     }
-  heif_image_handle_release(image_handle);
   error=heif_context_get_image_handle(heif_context,primary_image_id,
     &image_handle);
   if (IsHeifSuccess(image,&error,exception) == MagickFalse)
