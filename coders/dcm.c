@@ -2709,6 +2709,7 @@ typedef struct _DCMInfo
     mask,
     max_value,
     samples_per_pixel,
+    scale_size,
     signed_data,
     significant_bits,
     width,
@@ -3011,6 +3012,17 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
   return(status);
 }
 
+static void* RelinquishDCMInfo(void *memory)
+{
+  DCMInfo
+    *info;
+
+  info=(DCMInfo *) memory;
+  if (info->scale != (Quantum *) NULL)
+    info->scale=(Quantum *) RelinquishMagickMemory(info->scale);
+  return(RelinquishMagickMemory(info));
+}
+
 static inline void RelinquishDCMMemory(DCMInfo *info,DCMMap *map,
   DCMStreamInfo *stream_info,LinkedListInfo *stack,unsigned char *data)
 {
@@ -3030,7 +3042,7 @@ static inline void RelinquishDCMMemory(DCMInfo *info,DCMMap *map,
   if (stream_info != (DCMStreamInfo *) NULL)
     stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info);
   if (stack != (LinkedListInfo *) NULL)
-    stack=DestroyLinkedList(stack,RelinquishMagickMemory);
+    stack=DestroyLinkedList(stack,RelinquishDCMInfo);
   if (data != (unsigned char *) NULL)
     data=(unsigned char *) RelinquishMagickMemory(data);
 }
@@ -3254,7 +3266,18 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             onto the stack, so we can restore them at the end of the sequence.
           */
           info_copy=(DCMInfo *) AcquireMagickMemory(sizeof(info));
+          if (info_copy == (DCMInfo *) NULL)
+            ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
           memcpy(info_copy,&info,sizeof(info));
+          info_copy->scale=(Quantum *) AcquireQuantumMemory(
+            info_copy->scale_size,sizeof(*info_copy->scale));
+          if (info_copy->scale == (Quantum *) NULL)
+            {
+              info_copy=(DCMInfo *) RelinquishMagickMemory(info_copy);
+              ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
+            }
+          memcpy(info_copy->scale,info.scale,info_copy->scale_size*
+            sizeof(*info_copy->scale));
           AppendValueToLinkedList(stack,info_copy);
           sequence_depth++;
         }
@@ -3990,7 +4013,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowDCMException(CorruptImageError,"InsufficientImageDataInFile");
         if (info.scale != (Quantum *) NULL)
           info.scale=(Quantum *) RelinquishMagickMemory(info.scale);
-        info.scale=(Quantum *) AcquireQuantumMemory(MagickMax(length,MaxMap)+1,
+        info.scale_size=MagickMax(length,MaxMap)+1;
+        info.scale=(Quantum *) AcquireQuantumMemory(info.scale_size,
           sizeof(*info.scale));
         if (info.scale == (Quantum *) NULL)
           ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
