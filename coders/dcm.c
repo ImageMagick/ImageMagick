@@ -3011,29 +3011,35 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
   return(status);
 }
 
+static inline void RelinquishDCMMemory(DCMInfo *info,DCMMap *map,
+  DCMStreamInfo *stream_info,LinkedListInfo *stack,unsigned char *data)
+{
+  if (info->scale != (Quantum *) NULL)
+    info->scale=(Quantum *) RelinquishMagickMemory(info->scale);
+  if (map->gray != (int *) NULL)
+    map->gray=(int *) RelinquishMagickMemory(map->gray);
+  if (map->blue != (int *) NULL)
+    map->blue=(int *) RelinquishMagickMemory(map->blue);
+  if (map->green != (int *) NULL)
+    map->green=(int *) RelinquishMagickMemory(map->green);
+  if (map->red != (int *) NULL)
+    map->red=(int *) RelinquishMagickMemory(map->red);
+  if (stream_info->offsets != (ssize_t *) NULL)
+    stream_info->offsets=(ssize_t *) RelinquishMagickMemory(
+      stream_info->offsets);
+  if (stream_info != (DCMStreamInfo *) NULL)
+    stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info);
+  if (stack != (LinkedListInfo *) NULL)
+    stack=DestroyLinkedList(stack,RelinquishMagickMemory);
+  if (data != (unsigned char *) NULL)
+    data=(unsigned char *) RelinquishMagickMemory(data);
+}
+
 static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define ThrowDCMException(exception,message) \
 { \
-  if (info.scale != (Quantum *) NULL) \
-    info.scale=(Quantum *) RelinquishMagickMemory(info.scale); \
-  if (data != (unsigned char *) NULL) \
-    data=(unsigned char *) RelinquishMagickMemory(data); \
-  if (map.gray != (int *) NULL) \
-    map.gray=(int *) RelinquishMagickMemory(map.gray); \
-  if (map.blue != (int *) NULL) \
-    map.blue=(int *) RelinquishMagickMemory(map.blue); \
-  if (map.green != (int *) NULL) \
-    map.green=(int *) RelinquishMagickMemory(map.green); \
-  if (map.red != (int *) NULL) \
-    map.red=(int *) RelinquishMagickMemory(map.red); \
-  if (stream_info->offsets != (ssize_t *) NULL) \
-    stream_info->offsets=(ssize_t *) RelinquishMagickMemory( \
-      stream_info->offsets); \
-  if (stream_info != (DCMStreamInfo *) NULL) \
-    stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info); \
-  if (stack != (LinkedListInfo *) NULL) \
-    stack=DestroyLinkedList(stack,RelinquishMagickMemory); \
+  RelinquishDCMMemory(&info,&map,stream_info,stack,data); \
   ThrowReaderException((exception),(message)); \
 }
 
@@ -3965,20 +3971,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) RelinquishUniqueFileResource(filename);
         }
         read_info=DestroyImageInfo(read_info);
-        if (stream_info->offsets != (ssize_t *) NULL)
-          stream_info->offsets=(ssize_t *)
-            RelinquishMagickMemory(stream_info->offsets);
-        stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info);
-        if (info.scale != (Quantum *) NULL)
-          info.scale=(Quantum *) RelinquishMagickMemory(info.scale);
-        if (map.gray != (int *) NULL)
-          map.gray=(int *) RelinquishMagickMemory(map.gray);
-        if (map.blue != (int *) NULL)
-          map.blue=(int *) RelinquishMagickMemory(map.blue);
-        if (map.green != (int *) NULL)
-          map.green=(int *) RelinquishMagickMemory(map.green);
-        if (map.red != (int *) NULL)
-          map.red=(int *) RelinquishMagickMemory(map.red);
+        RelinquishDCMMemory(&info,&map,stream_info,stack,data);
         image=DestroyImageList(image);
         if ((status == MagickFalse) && (exception->severity < ErrorException))
           ThrowDCMException(CorruptImageError,"CorruptImageError");
@@ -4322,21 +4315,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Free resources.
   */
-  if (stream_info->offsets != (ssize_t *) NULL)
-    stream_info->offsets=(ssize_t *)
-      RelinquishMagickMemory(stream_info->offsets);
-  stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info);
-  stack=DestroyLinkedList(stack,RelinquishMagickMemory);
-  if (info.scale != (Quantum *) NULL)
-    info.scale=(Quantum *) RelinquishMagickMemory(info.scale);
-  if (map.gray != (int *) NULL)
-    map.gray=(int *) RelinquishMagickMemory(map.gray);
-  if (map.blue != (int *) NULL)
-    map.blue=(int *) RelinquishMagickMemory(map.blue);
-  if (map.green != (int *) NULL)
-    map.green=(int *) RelinquishMagickMemory(map.green);
-  if (map.red != (int *) NULL)
-    map.red=(int *) RelinquishMagickMemory(map.red);
+  RelinquishDCMMemory(&info,&map,stream_info,stack,data);
   if (image == (Image *) NULL)
     return(image);
   (void) CloseBlob(image);
