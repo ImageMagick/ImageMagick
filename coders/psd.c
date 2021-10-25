@@ -3921,6 +3921,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
       const char
         *option;
 
+      CompressionType
+        compression;
+
       MagickOffsetType
         size_offset;
 
@@ -3938,15 +3941,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
             (psd_info.version == 1 ? 8 : 12),size_offset);
           (void) WriteBlobMSBLong(image,0);  /* user mask data */
         }
-    }
-  /*
-    Write composite image.
-  */
-  if (status != MagickFalse)
-    {
-      CompressionType
-        compression;
-
+      /*
+        Write composite image.
+      */
       compression=image->compression;
       if (image_info->compression != UndefinedCompression)
         image->compression=image_info->compression;
