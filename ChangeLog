@@ -1,3 +1,9 @@
+2021-10-25  7.1.0-12  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-12 GIT revision 19318:113f8f901:20211025
+
+2021-10-15  7.1.0-12  <quetzlzacatenango@image...>
+  * fix x64 build.
+
 2021-10-24  7.1.0-11  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-11 GIT revision 19313:fbf76f2ef:20211024
 
