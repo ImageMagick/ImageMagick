@@ -67,12 +67,6 @@ struct timezone
 
 #endif
 
-#if defined(MAGICKCORE_BZLIB_DELEGATE)
-#  if defined(_WIN32)
-#    define BZ_IMPORT 1
-#  endif
-#endif
-
 extern MagickPrivate char
   *NTGetLastError(void);
 
