@@ -3936,9 +3936,9 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
             exception);
           (void) WritePSDSize(&psd_info,image,size+
             (psd_info.version == 1 ? 8 : 12),size_offset);
+          (void) WriteBlobMSBLong(image,0);  /* user mask data */
         }
     }
-  (void) WriteBlobMSBLong(image,0);  /* user mask data */
   /*
     Write composite image.
   */
