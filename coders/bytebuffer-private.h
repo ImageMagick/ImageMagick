@@ -57,7 +57,8 @@ static inline int ReadMagickByteBuffer(MagickByteBuffer *buffer)
     result;
 
   result=PeekMagickByteBuffer(buffer);
-  buffer->offset++;
+  if (result != EOF)
+    buffer->offset++;
   return(result);
 }
 

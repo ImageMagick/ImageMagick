@@ -1,38 +1,42 @@
+2021-10-28  7.1.0-13  Dirk Lemstra <dirk@lem.....org>
+  * Fix stack overflow when parsing malicious ps image file (report from
+    Muhammad Aldo Firmansyah).
+
 2021-10-25  7.1.0-12  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-12 GIT revision 19318:113f8f901:20211025
 
 2021-10-15  7.1.0-12  <quetzlzacatenango@image...>
-  * fix x64 build.
+  * Fix x64 build.
 
 2021-10-24  7.1.0-11  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-11 GIT revision 19313:fbf76f2ef:20211024
 
 2021-10-11  7.1.0-11  <quetzlzacatenango@image...>
-  * fix connected component abort trap (reference
+  * Fix connected component abort trap (reference
     https://github.com/ImageMagick/ImageMagick/issues/4372).
-  * fix possible unitialized values (reference
+  * Fix possible unitialized values (reference
     https://github.com/ImageMagick/ImageMagick/issues/4379).
-  * fix stack overflow when parsing malicious tiff image file (report from
+  * Fix stack overflow when parsing malicious tiff image file (report from
     Muhammad Aldo Firmansyah).
 
 2021-10-10  7.1.0-10  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-10 GIT revision 19236:07ebe6b6e:20211010
 
 2021-10-03  7.1.0-10  <quetzlzacatenango@image...>
-  * improved algorithm for automatic calculation of pointsize for caption and
+  * Improved algorithm for automatic calculation of pointsize for caption and
     labels.
-  * support -auto-orient option in the identify utlity.
+  * Support -auto-orient option in the identify utlity.
 
 2021-10-03  7.1.0-9  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-9 GIT revision 19220:7921bf068:20211003
 
 2021-10-03  7.1.0-9  Dirk Lemstra <dirk@lem.....org>
   * Squash a dump truck load of VisualStudio compiler warnings.
-  * improved algorithm for automatic calculation of word breaks and pointsize
+  * Improved algorithm for automatic calculation of word breaks and pointsize
     for caption and labels.
 
 2021-09-19  7.1.0-9  <quetzlzacatenango@image...>
-  * improve wrapping between words and within words (reference
+  * Improve wrapping between words and within words (reference
     https://github.com/ImageMagick/ImageMagick/discussions/4227).
 
 2021-09-18  7.1.0-8  <quetzlzacatenango@image...>
