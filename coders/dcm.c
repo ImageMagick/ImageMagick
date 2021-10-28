@@ -3256,8 +3256,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               */
               ThrowDCMException(CorruptImageError,"ImproperImageHeader");
             }
-          memcpy(&info,info_copy,sizeof(info));
-          info_copy=RelinquishMagickMemory(info_copy);
+          if (info.scale != (Quantum *) NULL)
+            info.scale=(Quantum *) RelinquishMagickMemory(info.scale);
+          (void) memcpy(&info,info_copy,sizeof(info));
+          info_copy=(DCMInfo *) RelinquishMagickMemory(info_copy);
         }
       if (strcmp(explicit_vr,"SQ") == 0)
         {
@@ -3268,7 +3270,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           info_copy=(DCMInfo *) AcquireMagickMemory(sizeof(info));
           if (info_copy == (DCMInfo *) NULL)
             ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
-          memcpy(info_copy,&info,sizeof(info));
+          (void) memcpy(info_copy,&info,sizeof(info));
           info_copy->scale=(Quantum *) AcquireQuantumMemory(
             info_copy->scale_size,sizeof(*info_copy->scale));
           if (info_copy->scale == (Quantum *) NULL)
@@ -3276,7 +3278,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               info_copy=(DCMInfo *) RelinquishMagickMemory(info_copy);
               ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed");
             }
-          memcpy(info_copy->scale,info.scale,info_copy->scale_size*
+          (void) memcpy(info_copy->scale,info.scale,info_copy->scale_size*
             sizeof(*info_copy->scale));
           AppendValueToLinkedList(stack,info_copy);
           sequence_depth++;
