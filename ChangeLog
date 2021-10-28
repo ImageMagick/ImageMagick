@@ -1,5 +1,5 @@
 2021-10-28  7.1.0-13  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-13 GIT revision 19323:ddae9678f:20211028
+  * Release ImageMagick version 7.1.0-13 GIT revision 19325:987f36b50:20211028
 
 2021-10-28  7.1.0-13  Dirk Lemstra <dirk@lem.....org>
   * Fix stack overflow when parsing malicious ps image file (report from
