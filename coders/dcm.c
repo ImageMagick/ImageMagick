@@ -3012,7 +3012,7 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
   return(status);
 }
 
-static void* RelinquishDCMInfo(void *memory)
+static void *RelinquishDCMInfo(void *memory)
 {
   DCMInfo
     *info;
@@ -3257,7 +3257,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowDCMException(CorruptImageError,"ImproperImageHeader");
             }
           memcpy(&info,info_copy,sizeof(info));
-          RelinquishMagickMemory(info_copy);
+          info_copy=RelinquishMagickMemory(info_copy);
         }
       if (strcmp(explicit_vr,"SQ") == 0)
         {
