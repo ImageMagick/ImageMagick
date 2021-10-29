@@ -3980,8 +3980,6 @@ static MagickBooleanType resizeHorizontalFilter(MagickCLDevice device,
     support;
 
   int
-    cacheRangeStart,
-    cacheRangeEnd,
     numCachedPixels,
     resizeFilterType,
     resizeWindowType;
@@ -4038,10 +4036,7 @@ DisableMSCWarning(4127)
 RestoreMSCWarning
   {
     /* calculate the local memory size needed per workgroup */
-    cacheRangeStart=(int) (((0 + 0.5)/xFactor+MagickEpsilon)-support+0.5);
-    cacheRangeEnd=(int) ((((pixelPerWorkgroup-1) + 0.5)/xFactor+
-      MagickEpsilon)+support+0.5);
-    numCachedPixels=cacheRangeEnd-cacheRangeStart+1;
+    numCachedPixels=(int) ceil((pixelPerWorkgroup-1)/xFactor+2*support);
     imageCacheLocalMemorySize=numCachedPixels*sizeof(CLQuantum)*
       number_channels;
     totalLocalMemorySize=imageCacheLocalMemorySize;
@@ -4164,8 +4159,6 @@ static MagickBooleanType resizeVerticalFilter(MagickCLDevice device,
     support;
 
   int
-    cacheRangeStart,
-    cacheRangeEnd,
     numCachedPixels,
     resizeFilterType,
     resizeWindowType;
@@ -4222,10 +4215,7 @@ DisableMSCWarning(4127)
 RestoreMSCWarning
   {
     /* calculate the local memory size needed per workgroup */
-    cacheRangeStart=(int) (((0 + 0.5)/yFactor+MagickEpsilon)-support+0.5);
-    cacheRangeEnd=(int) ((((pixelPerWorkgroup-1) + 0.5)/yFactor+
-      MagickEpsilon)+support+0.5);
-    numCachedPixels=cacheRangeEnd-cacheRangeStart+1;
+    numCachedPixels=(int)ceil((pixelPerWorkgroup-1)/yFactor+2*support);
     imageCacheLocalMemorySize=numCachedPixels*sizeof(CLQuantum)*
       number_channels;
     totalLocalMemorySize=imageCacheLocalMemorySize;
