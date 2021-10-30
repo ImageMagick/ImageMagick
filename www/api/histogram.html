@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - MagickCore, C API: Image Histograms</title>
+  <title>ImageMagick – MagickCore, C API: Image Histograms</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="magickcore, c, api:, image, histograms, image processing software" />
@@ -117,7 +117,7 @@ size_t GetImageHistogram(const Image *image,
 
 <h2><a href="../../api/MagickCore/histogram_8c.html" id="IdentifyPaletteImage">IdentifyPaletteImage</a></h2>
 
-<p>IdentifyPaletteImage() returns MagickTrue if the image has 256 unique colors or less.</p>
+<p>IdentifyPaletteImage() returns MagickTrue if the image does not have more unique colors than specified in max_colors.</p>
 
 <p>The format of the IdentifyPaletteImage method is:</p>
 
@@ -130,6 +130,9 @@ MagickBooleanType IdentifyPaletteImage(const Image *image,
 
 <dt>image</dt>
 <p>the image.</p>
+
+<dt>max_colors</dt>
+<p>the maximum unique colors.</p>
 
 <dt>exception</dt>
 <p>return any errors or warnings in this structure.</p>

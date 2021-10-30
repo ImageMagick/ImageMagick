@@ -1,0 +1,186 @@
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"  />
+  <meta name="viewport" content="width=device-width, initial-scale=1"  />
+  <title>ImageMagick – MagickCache: an Efficient Image Cache</title>
+  <meta name="application-name" content="ImageMagick" />
+  <meta name="description" content="Secure methods and tools to cache images, image sequences,
+video, audio or metadata in a local folder.">
+  <meta name="application-url" content="https://imagemagick.org" />
+  <meta name="generator" content="PHP" />
+  <meta name="keywords" content="magickcache:, an, efficient, image, cache, image processing software" />
+  <meta name="rating" content="GENERAL" />
+  <meta name="robots" content="INDEX, FOLLOW" />
+  <meta name="generator" content="ImageMagick Studio LLC" />
+  <meta name="author" content="ImageMagick Studio LLC" />
+  <meta name="revisit-after" content="2 DAYS" />
+  <meta name="resource-type" content="document" />
+  <meta name="copyright" content="Copyright (c) 1999-2020 ImageMagick Studio LLC" />
+  <meta name="distribution" content="Global" />
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta property='og:url' content='../' />
+  <meta property='og:title' content='ImageMagick' />
+  <meta property='og:image' content='../images/logo.png' />
+  <meta property='og:type' content='website' />
+  <meta property='og:site_name' content='ImageMagick' />
+  <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+  <link href="magick-cache.html" rel="canonical" />
+  <link href="../images/wand.png" rel="icon" />
+  <link href="../images/wand.ico" rel="shortcut icon" />
+  <link href="assets/magick.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="magick-navbars">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link " href="../www/index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="../www/download.html">Download</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="../www/command-line-processing.html">CLI</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="../www/develop.html">Develop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
+        </li>
+        <li class="nav-item">
+          <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
+        </li>
+      </ul>
+      <form class="d-flex form-inline" action="search.html">
+        <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
+      </form>
+    </div>
+  </div>
+  </nav>
+
+  <div class="container">
+    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3129977114552745"
+      data-ad-slot="6345125851"
+      data-full-width-responsive="true"
+      data-ad-format="horizontal"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  </div>
+
+  <main class="container">
+  <div class="magick-template">
+<div class="magick-header">
+<h1 class="text-center">MagickCache: an Efficient Image Cache</h1>
+<p class="text-info">The Magick cache is a work in progress.  Do not use the cache in production services until version is at least 1.0.0.  It is currently 0.9.2. The MagickCache requires ImageMagick version 7.1.0-0 or above.</p>
+<p class="lead magick-description">The MagickCache provides secure methods and tools to cache images, image sequences, video, audio or metadata in a local folder. Any content is memory-mapped for efficient retrieval.  Additional efficiencies are possible by retrieving a portion of an image.  Content can persist or you can assign a time-to-live (TTL) to automatically expire content when the TTL is exceeded. MagickCache supports virtually unlimited content upwards of billions of images making it suitable as a web image service.</p>
+<p>The MagickCache works in concert with <a href="https://imagemagick.org">ImageMagick</a>.  Download the <a href="https://github.com/ImageMagick/MagickCache">MagickCache</a> and install.  You will now want to create the cache and populate it with images, video, and associated metadata.</p>
+<h4>Create a MagickCache</h4>
+<p>You will require a place to store and retrieve your content.  Let's create a cache on our local filesystem:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt create /opt/magick-cache</samp></pre></ul>
+<p>Where `passkey.txt` contains your cache passkey. Don't lose your passkey. Without it, you will be unable to identify, expire, or delete content in your cache.</p>
+<p>You only need to create a MagickCache once.  You can, however, create more than one MagickCache with different paths.</p>
+<p>Once the MagickCache is created, you will want to populate the cache with content that includes images, video, audio, or metadata.
+<h4>Put content in the MagickCache</h4>
+<p>Let's add a movie cast image to our newly created cache:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache put /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.jpg</samp></pre></ul>
+<p>Note, the image identifier is an IRI composed of <em>project</em>/<em>type</em>/<em>resource-path</em>.  In this example, the project is <samp>movies</samp>, type is <samp>image</samp>, and the resource path is <samp>mission-impossible/cast/rebecca-ferguson</samp>.  The path uniquely identifies a cache resource.  Two different images cannot be stored with the same resource path.  Instead use something like <samp>mission-impossible/cast/20210508-rebecca-ferguson-1</samp> and <samp>mission-impossible/cast/20210508-rebecca-ferguson-2</samp>.</p>
+<p>Now, let's set a resource passkey and the time to live to 2 days.  Anytime after the second day, the image is automatically deleted with the <samp>expire</samp> function.  To get, expire, or delete the image, you will need to use the same resource passkey:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt -ttl "2 days" put /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.jpg</samp></pre></ul>
+<p>Where <samp>passkey.txt</samp> contains your resource passkey.  Don't lose your passkey.  Without it, you will be unable to get, identify, expire or delete resources you own.</p>
+<p>The resource passkey ensures only you and the cache owner can access your image.  To prevent the cache owner from viewing its content, scramble it with:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt -passphrase passphrase.txt -ttl "2 days" put /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.jpg</samp></pre></ul>
+<p>Note, blobs and metadata are stored in the cache in plaintext. To prevent snooping, scramble the content before you store it in the cache.</p>
+<h4>Get content from the MagickCache</h4>
+<p>Eventually you will want retrieve your content, let's get our original cast image from the cache:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre></ul>
+<p>Notice the original image was put in the cache in the JPEG format. Here we conveniently convert it to the PNG format as we extract the image.</p>
+<p>The <samp>-extract</samp> option is useful when retrieving an image.  To extract a portion of the image, specify tile width, height, and offset:</p>
+
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt -extract 100x100+0+0 get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre></ul>
+<p>To resize instead, do not specify the offset:</p>
+
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt -extract 100x100 get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre></ul>
+
+<p>If your image is scrambled, provide the passphrase to descramble it:</p>
+
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt -passphrase passphrase.txt get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre></ul>
+
+<h4>Delete content from the MagickCache</h4>
+<p>We can explicitly delete content:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt delete /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson</samp></pre></ul>
+<p>or we can delete all cast images that have expired (exceeded their respective time to live), try this comand:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt expire /opt/magick-cache movies/images/mission-impossible/cast</samp></pre></ul>
+<h4>Identify the MagickCache content</h4>
+<p>Perhaps you want to identify all the content you own:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt identify /opt/magick-cache movies/images/mission-impossible/cast
+movies/images/mission-impossible/cast/rebecca-ferguson[1368x912] 406B 1:0:0:0 2021-05-30T17:41:42Z
+identified 1 resources</samp></pre></ul>
+<p>Each entry includes the IRI, image dimensions for images, the content extent in bytes, time to live, whether the resource is expired (denoted with a `*`), and the creation date.</p>
+<p>Others can store content in the cache along side your content.  However, their content is unavailable to you.  You cannot get, identify, expire or delete content that you do not own as determined by your secret passkey.</p>
+<p>The MagickCache owner can get, identify, expire, or delete all the content, including content you own, with this command, for example:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt identify /opt/magick-cache /</samp></pre></ul>
+<p>Note, expired reesources are annotated with an asterisks.</p>
+<h4>MagickCache is not just for Images</h4>
+<p>In addition to a type of <samp>image</samp>, you can store the image content in its original form, video, or audio as content type of <samp>blob</samp> or metadata with a content type of <samp>meta</samp>:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt put /opt/magick-cache movies/blob/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.mp4</samp></pre></ul>
+<p> or</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt put /opt/magick-cache movies/meta/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.txt</samp></pre></ul>
+<p>Images must be in a format that ImageMagick understands.  Metadata must be text.  Blobs can be any content including images, video, audio, or binary files.</p>
+<h4>Delete a MagickCache</h4>
+<p>The MagickCache owner can completely delete all the content within a cache:</p>
+<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt delete /opt/magick-cache /</samp></pre></ul>
+<p>Be careful, after this command, your cached content is irrevocably lost.</p>
+<h4>Security</h4>
+<p>MagickCache security is not crytographically strong.  Instead it generates a unique hash for each resource ensuring the resource ID cannot be discovered.  A resource is accessible to both the user of the cache and the cache owner provided they can present their respective passkeys.  They are also accessible to anyone with sufficient privileges to access the MagickCache  disk path.</p>
+</div>
+  </div>
+  </main><!-- /.container -->
+  <footer class="magick-footer">
+    <div class="container-fluid">
+      <a href="../www/security-policy.html">Security</a> •
+      <a href="../www/news.html">News</a>
+     
+      <a href="magick-cache.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+     
+      <a href="../www/links.html">Related</a> •
+      <a href="../www/sitemap.html">Sitemap</a>
+   <br/>
+     <a href="../www/support.html">Sponsor</a> •
+     <a href="../www/cite.html">Cite</a> •
+     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
+   <br/>
+     <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+     <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
+    <br/>
+    <small>© 1999-2021 ImageMagick Studio LLC</small>
+    </div>
+  </footer>
+
+  <!-- Javascript assets -->
+  <script src="assets/magick.js" ></script>
+  </body>
+</html>
+<!-- Magick Cache 30th October 2021 14:05 -->

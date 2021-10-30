@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - JP2 Encoding Options</title>
+  <title>ImageMagick – JP2 Encoding Options</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="jp2, encoding, options, image processing software" />
@@ -103,42 +103,35 @@
 
 <p>Use this command to convert a JPEG-2000 image to the PNG image format:</p>
 
-<pre class="highlight"><code>magick wizard.jp2 wizard.png
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick wizard.jp2 wizard.png </samp></pre></ul>
 
 <p>Let's convert a JPEG image to a lossless JPEG-2000 image:</p>
 
-<pre class="highlight"><code>magick wizard.jpg -quality 0 wizard.jp2
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick wizard.jpg -quality 0 wizard.jp2 </samp></pre></ul>
 
 <p>Here we extract an area from the image:</p>
 
-<pre class="highlight"><code>magick 'wizard.jp2[640x480+0+0]' wizard.png
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick 'wizard.jp2[640x480+0+0]' wizard.png </samp></pre></ul>
 
 <p>Extract a particular tile from the image:</p>
 
-<pre class="highlight"><code>magick 'wizard.jp2[2]' wizard.png
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick 'wizard.jp2[2]' wizard.png </samp></pre></ul>
 
 <p>Specify a subsampling factor:</p>
 
-<pre class="highlight"><code>magick wizard.png -colorspace YUV -sampling-factor 2,2 wizard.jp2
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick wizard.png -colorspace YUV -sampling-factor 2,2 wizard.jp2 </samp></pre></ul>
 
 <p>Save a tiled JPEG-2000 image:</p>
 
-<pre class="highlight"><code>magick wizard.png 'wizard.png[512x512]'
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick wizard.png 'wizard.png[512x512]' </samp></pre></ul>
 
 <p>Write a digital Cinema 4K profile compliant codestream:</p>
 
-<pre class="highlight"><code>magick wizard.png -resize 4096x2160! -depth 12 wizard.jp2
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick wizard.png -resize 4096x2160! -depth 12 wizard.jp2 </samp></pre></ul>
 
 <p>Here is a complete list of JPEG-2000 decoding options:</p>
 
-<div class="table-responsive" style="font-size:87.5% !important;">
+<div class="table-responsive" style="font-size:smaller !important;">
 <table class="table table-sm table-hover">
   <tr>
     <td>jp2:quality-layers=<var>x</var></td>
@@ -152,7 +145,7 @@
 
 <p>Here is a complete list of JPEG-2000 encoding options:</p>
 
-<div class="table-responsive" style="font-size:87.5% !important;">
+<div class="table-responsive" style="font-size:smaller !important;">
 <table class="table table-sm table-hover">
   <tr>
     <td>jp2:number-resolutions=<var>x</var></td>
@@ -200,4 +193,4 @@
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 13th February 2021 11:37 -->
+<!-- Magick Cache 30th October 2021 14:06 -->

@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - Motion Picture Digital Images</title>
+  <title>ImageMagick – Motion Picture Digital Images</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="motion, picture, digital, images, image processing software" />
@@ -128,7 +128,7 @@
 
 <p>ImageMagick supports these DPX properties:</p>
 
-<pre class="pre-scrollable highlight"><code>dpx:file.copyright
+<ul><pre class="pre-scrollable bg-light text-dark"><samp>dpx:file.copyright
 dpx:file.creator
 dpx:file.filename
 dpx:file.project
@@ -174,36 +174,36 @@ dpx:television.video_signal
 dpx:television.white_level
 dpx:user.id
 dpx:user.data
-</code></pre>
+</samp></pre></ul>
 
-<p>Look for any user data as the <code>dpx:user-data</code> image profile.</p>
+<p>Look for any user data as the <samp>dpx:user-data</samp> image profile.</p>
 
 <p> To determine which properties are associated with your DPX image, use this command for example:</p>
 
-<pre class="highlight"><code>magick identify -verbose bluebells.dpx
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick identify -verbose bluebells.dpx
+</samp></pre></ul>
 
 <p>To identify a particular property, try this:</p>
 
-<pre class="highlight"><code>magick identify -format "%[dpx:television.time.code]" bluebells.dpx
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick identify -format "%[dpx:television.time.code]" bluebells.dpx
+</samp></pre></ul>
 
 <p>Finally, to set a property:</p>
 
-<pre class="highlight"><code>magick bluebells.dpx -define dpx:television.time.code=10:00:02:15 bluebells-001.dpx
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick bluebells.dpx -define dpx:television.time.code=10:00:02:15 bluebells-001.dpx
+</samp></pre></ul>
 
 <h2><a class="anchor" id="settings"></a>DPX Settings</h2>
 
 <p>Use <a href="command-line-options.html#set">-set</a> to specify the image or film gamma or black and white points.  For example use:
 </p>
 
-<pre class="highlight"><code>-set gamma 1.7
+<ul><pre class="bg-light text-dark"><samp>-set gamma 1.7
 -set film-gamma 0.6
 -set reference-black 95
 -set reference-white 685
 -set profile dpx:user.data
-</code></pre>
+</samp></pre></ul>
 
 </div>
   </div>
@@ -234,4 +234,4 @@ dpx:user.data
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 13th February 2021 13:53 -->
+<!-- Magick Cache 30th October 2021 14:07 -->

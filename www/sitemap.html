@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - Sitemap</title>
+  <title>ImageMagick – Sitemap</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="sitemap, image processing software" />
@@ -94,7 +94,7 @@
 <h1 class="text-center">Sitemap</h1>
 <p class="text-center"><a href="sitemap.html#overview">Overview</a> • <a href="sitemap.html#download">Download ImageMagick</a> • <a href="sitemap.html#install">Install ImageMagick</a> • <a href="sitemap.html#command-line">Command-line Tools</a> • <a href="sitemap.html#program-interfaces">Program Interfaces</a> • <a href="sitemap.html#formats">Image Formats</a> • <a href="sitemap.html#help">Getting Help</a> • <a href="sitemap.html#support">Support ImageMagick</a> • <a href="sitemap.html#miscellaneous">Miscellaneous Topics</a></p>
 
-<p class="lead magick-description">Use this ImageMagick sitemap to quickly jump to one of the areas of interest listed below.  If you can't find what you want on this page, try our <a href="../www/search.html">site search</a>.</p>
+<p class="lead magick-description">Use this ImageMagick sitemap to quickly jump to one of the areas of interest listed below.  If you can't find what you want on this page, try our <a href="../www/search.html?q=ImageMagick&amp;sa=">site search</a>.</p>
 
 <h2><a class="anchor" id="overview"></a>Overview</h2>
 
@@ -106,7 +106,7 @@
   <li><a href="../www/color-management.html">Color management</a>: accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.</li>
   <li><a href="../www/resources.html">Resources</a>: ImageMagick depends on external resources including configuration files, loadable modules, fonts, and environment variables.</li>
   <li><a href="../www/openmp.html">Parallel execution</a>: ImageMagick is threaded to take advantage of speed-ups offered by the multicore processor chips.</li>
-  <li><a href="security-policy.html">Security policy</a>: best practices strongly encourages you to configure a security policy that suits your local environment.</li>
+  <li><a href="security-policy.html">Security policy</a>: best practices strongly encourage you to configure a security policy that suits your local environment.</li>
   <li><a href="../www/architecture.html">Architecture</a>: get to know more about the software and algorithms behind ImageMagick.</li>
   <li><a href="../www/license.html">License</a>: the legally binding and authoritative terms and conditions for use, reproduction, and distribution of ImageMagick.</li>
   <li><a href="../www/export.html">Export classification</a>: export control status of ImageMagick.</li>
@@ -119,9 +119,9 @@
 <dl class="magick-list-unstyled">
   <li><a href="download.html">Download ImageMagick</a>: ImageMagick source and binary distributions are available from a variety of FTP and Web mirrors.</li>
   <li> <dl class="magick-list-unstyled">
-    <li><a href="../download">Unix source</a>: Unix source distributions.</li>
+    <li><a href="../download">Linux source</a>: Linux source distributions.</li>
     <li><a href="https://download.imagemagick.org/ImageMagick/download/windows">Windows source</a>: Windows source distributions.</li>
-    <li><a href="https://download.imagemagick.org/ImageMagick/download/binaries">Unix and Windows binaries</a>: Unix and Windows binary distributions.</li>
+    <li><a href="https://download.imagemagick.org/ImageMagick/download/binaries">Linux and Windows binaries</a>: Linux and Windows binary distributions.</li>
     <li><a href="https://github.com/ImageMagick">Git repository</a>: stable and development source releases.</li>
     <li><a href="https://download.imagemagick.org/ImageMagick/download/delegates">Delegate libraries</a>: ImageMagick depends on a number of optional delegate libraries to extend its functionality.</li>
   </dl> </li>
@@ -129,17 +129,18 @@
 
 <h2><a class="anchor" id="install"></a>Install ImageMagick</h2>
 
-  <p>You can install ImageMagick from source. However, if you don't have a proper development environment or if you're anxious to get started, download a ready-to-run Unix or Windows executable.</p>
+  <p>You can install ImageMagick from source. However, if you don't have a proper development environment or if you're anxious to get started, download a ready-to-run Linux or Windows executable.</p>
 <dl class="magick-list-unstyled">
     <li><a href="../www/install-source.html">Install from source</a>: ImageMagick builds under Windows, Mac OS X, and Linux.</li>
-    <li><a href="download.html">Install from a binary distribution</a>: install a ready-to-run Unix or Windows executable.</li>
+    <li><a href="download.html">Install from a binary distribution</a>: install a ready-to-run Linux or Windows executable.</li>
     <li><a href="../www/ImageMagickObject.html">Install ImageMagickObject COM+ component</a>: install the Windows ImageMagick COM+ component.</li>
 </dl>
 
 <h2><a class="anchor" id="command-line"></a>Command-line Tools</h2>
 <dl class="magick-list-unstyled">
-  <li><a href="command-line-tools.html">Command-line tools</a>: overview of the ImageMagick commands.</li>
-  <li> <dl class="magick-list-unstyled">
+  <li><a href="command-line-tools.html">Command-line tools</a>: overview of the ImageMagick commands.
+  <ul class="magick-list-unstyled">
+    <li><a href="magick.html">magick</a>: convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and more.</li>
     <li><a href="../www/animate.html">animate</a>: animates an image sequence on any X server.</li>
     <li><a href="../www/compare.html">compare</a>: mathematically and visually annotate the difference between an image and its reconstruction.</li>
     <li><a href="../www/composite.html">composite</a>: overlaps one image over another.</li>
@@ -148,11 +149,10 @@
     <li><a href="display.html">display</a>: displays an image or image sequence on any X server.</li>
     <li><a href="../www/identify.html">identify</a>: describes the format and characteristics of one or more image files.</li>
     <li><a href="import.html">import</a>: saves any visible window on an X server and outputs it as an image file.</li>
-    <li><a href="magick.html">magick</a>: convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and more.</li>
     <li><a href="mogrify.html">mogrify</a>: resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and more.</li>
     <li><a href="montage.html">montage</a>: create a composite image by combining several separate images.</li>
     <li><a href="../www/stream.html">stream</a>: a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.</li>
-  </dl></li>
+  </ul></li>
   <li><a href="command-line-processing.html">Command line processing</a>: the anatomy of the command line.</li>
   <li><a href="command-line-options.html">Command line options</a>: annotated list of all options that can appear on the command-line.</li>
   <li><a href="../www/fx.html">Fx</a>: apply a mathematical expression to an image or image channels.</li>
@@ -162,8 +162,8 @@
 <h2><a class="anchor" id="program-interfaces"></a>Program Interfaces</h2>
 
 <dl class="magick-list-unstyled">
-  <li><a href="develop.html">Program interfaces</a>: application programming interfaces.</li>
-  <li> <dl class="magick-list-unstyled">
+  <li><a href="develop.html">Program interfaces</a>: application programming interfaces.
+  <ul class="magick-list-unstyled">
     <li><a href="http://common-lisp.net/project/cl-magick/">CL-Magick</a>: provides a Common Lisp interface to the ImageMagick library.</li>
     <li><a href="https://github.com/dlemstra/Magick.NET">Magick.NET</a>: Use Magick.NET to convert, compose, and edit images from Windows .NET.</li>
     <li><a href="../Magick++">Magick++</a>: provides an object-oriented C++ interface to ImageMagick.</li>
@@ -177,7 +177,7 @@
     <li><a href="https://download.imagemagick.org/ImageMagick/download/python/">PythonMagick</a>: an object-oriented Python interface to ImageMagick.</li>
     <li><a href="http://rmagick.rubyforge.org/">RMagick</a>: is an interface between the Ruby programming language and ImageMagick.</li>
     <li><a href="http://tclmagick.sourceforge.net/">TclMagick</a>: a native Tcl-extension to the ImageMagick MagickWand API.</li>
-  </dl></li>
+  </ul></li>
 </dl>
 
 <h2><a class="anchor" id="format"></a>Image Formats</h2>
@@ -207,7 +207,7 @@
 
 <h2><a class="anchor" id="miscellaneous"></a>Miscellaneous Topics</h2>
 
-<div class="pre-scrollable highlight table-responsive" style="font-size:87.5% !important;">
+<div class="pre-scrollable bg-light text-dark table-responsive" style="font-size:smaller !important;">
 <table class="table table-sm table-hover">
   <tr>
     <td><a href="https://legacy.imagemagick.org/Usage/anim_basics/">Animation</a></td>
@@ -388,4 +388,4 @@
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 13th February 2021 14:08 -->
+<!-- Magick Cache 30th October 2021 14:05 -->

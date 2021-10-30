@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - WebP Encoding Options</title>
+  <title>ImageMagick – WebP Encoding Options</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="webp, encoding, options, image processing software" />
@@ -100,11 +100,11 @@
 
 <p>Use this command:</p>
 
-<ul><pre class="highlight"><code>magick wizard.png -quality 50 -define webp:lossless=true wizard.webp</code></pre></ul>
+<ul><pre class="bg-light text-dark"><samp>magick wizard.png -quality 50 -define webp:lossless=true wizard.webp</samp></pre></ul>
 
 <p>Here is a complete list of WebP encoding options:</p>
 
-<div class="table-responsive" style="font-size:87.5% !important;">
+<div class="table-responsive" style="font-size:smaller !important;">
 <table class="table table-sm table-hover">
   <thead>
   <tr>
@@ -124,6 +124,10 @@
   <tr>
     <td>alpha-quality=<var>value</var></td>
     <td>the compression value for alpha compression between 0 and 100. Lossless compression of alpha is achieved using a value of 100, while the lower values result in a lossy compression. The default is 100.</td>
+  </tr>
+  <tr>
+    <td>exact=<var>true, false</var></td>
+    <td>preserve RGB values in transparent area. It's disabled by default to help compressibility.</td>
   </tr>
   <tr>
     <td>auto-filter=<var>true, false</var></td>
@@ -160,6 +164,10 @@
   <tr>
     <td>method=<var>value</var></td>
     <td>the compression method to use. It controls the trade off between encoding speed and the compressed file size and quality. Possible values range from 0 to 6. Default value is 4. When higher values are utilized, the encoder spends more time inspecting additional encoding possibilities and decide on the quality gain. Lower value might result in faster processing time at the expense of larger file size and lower compression quality.</td>
+  </tr>
+  <tr>
+    <td>near-lossless=<var>value</var></td>
+    <td>the near lossless encoding, between 0 (max-loss) and 100 (off).</td>
   </tr>
   <tr>
     <td>preprocessing=<var>value</var></td>
@@ -234,4 +242,4 @@
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 13th February 2021 13:00 -->
+<!-- Magick Cache 30th October 2021 14:06 -->

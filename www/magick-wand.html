@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - MagickWand, C API</title>
+  <title>ImageMagick – MagickWand, C API</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="magickwc, api, image processing software" />
@@ -109,15 +109,15 @@
 
 <p>After you write your MagickWand program, compile it like this:</p>
 
-<ul><pre class="highlight"><code>cc -o wand wand.c `pkg-config --cflags --libs MagickWand`</code></pre></ul>
+<ul><pre class="bg-light text-dark"><samp>cc -o wand wand.c `pkg-config --cflags --libs MagickWand`</samp></pre></ul>
 
-<p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
+<p>Set the <samp>PKG_CONFIG_PATH</samp> environment variable if ImageMagick is not in your default system path:</p>
 
-<ul><pre class="highlight"><code>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</code></pre></ul>
+<ul><pre class="bg-light text-dark"><samp>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</samp></pre></ul>
 
 <p>Here is a example program that utilizes the MagickWand API to get you started, <a href="https://imagemagick.org/source/wand.c">wand.c</a>. It reads an image, creates a thumbnail, and writes the result to disk.</p>
 
-<ul><pre class="pre-scrollable highlight"><code>#include &lt;stdio.h>
+<ul><pre class="pre-scrollable bg-light text-dark"><samp>#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;MagickWand/MagickWand.h>
 
@@ -172,11 +172,11 @@ int main(int argc,char **argv)
   MagickWandTerminus();
   return(0);
 }
-</code></pre></ul>
+</samp></pre></ul>
 
 <p>Here is another program that shows one way to get and set image pixels with the MagickWand API, <a href="https://imagemagick.org/source/contrast.c">contrast.c</a>. It reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk.</p>
 
-<ul><pre class="pre-scrollable highlight"><code>#include &lt;stdio.h>
+<ul><pre class="pre-scrollable bg-light text-dark"><samp>#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;math.h>
 #include &lt;MagickWand/MagickWand.h>
@@ -282,10 +282,10 @@ int main(int argc,char **argv)
   MagickWandTerminus();
   return(0);
 }
-</code></pre></ul>
+</samp></pre></ul>
 <p><a class="anchor" id="wand-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="https://imagemagick.org/source/wand/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
 
-<ul><pre class="pre-scrollable highlight"><code>#include &lt;stdio.h>
+<ul><pre class="pre-scrollable bg-light text-dark"><samp>#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;math.h>
 #include &lt;MagickWand/MagickWand.h>
@@ -391,7 +391,7 @@ int main(int argc,char **argv)
   MagickWandTerminus();
   return(0);
 }
-</code></pre></ul>
+</samp></pre></ul>
 <p><a href="../MagickWand/index.html">MagickWand Examples in C</a> illustrates how to use the ImageMagick MagickWand API. Each example is presented as a C function, complete with headers, so that it can be copied to a file and then included in your own C project.</p>
 </div>
   </div>
@@ -422,4 +422,4 @@ int main(int argc,char **argv)
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 13th February 2021 12:21 -->
+<!-- Magick Cache 30th October 2021 14:06 -->

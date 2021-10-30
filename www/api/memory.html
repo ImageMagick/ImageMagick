@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - MagickCore, C API: Memory Allocation</title>
+  <title>ImageMagick – MagickCore, C API: Memory Allocation</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="magickcore, c, api:, memory, allocation, image processing software" />
@@ -380,12 +380,12 @@ MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
 </dl>
 <h2><a href="../../api/MagickCore/memory_8c.html" id="ResetMagickMemory">ResetMagickMemory</a></h2>
 
-<p>ResetMagickMemory() fills the first size bytes of the memory area pointed to by memory with the constant byte c.</p>
+<p>ResetMagickMemory() fills the first size bytes of the memory area pointed to   by memory with the constant byte c.  We use a volatile pointer when updating the byte string.  Most compilers will avoid optimizing away access to a volatile pointer, even if the pointer appears to be unused after the call.</p>
 
 <p>The format of the ResetMagickMemory method is:</p>
 
 <pre class="text">
-void *ResetMagickMemory(void *memory,int byte,const size_t size)
+void *ResetMagickMemory(void *memory,int c,const size_t size)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -399,7 +399,7 @@ void *ResetMagickMemory(void *memory,int byte,const size_t size)
 <dd>a pointer to a memory allocation. </dd>
 
 <dd> </dd>
-<dt>byte</dt>
+<dt>c</dt>
 <dd>set the memory to this value. </dd>
 
 <dd> </dd>

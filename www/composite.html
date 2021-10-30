@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - Command-line Tools: Composite</title>
+  <title>ImageMagick – Command-line Tools: Composite</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="command-line, tools:, composite, image processing software" />
@@ -94,14 +94,13 @@
 <h1 class="text-center">Overlap One Image over Another</h1>
 <p class="text-center"><a href="composite.html#usage">Example Usage</a> • <a href="composite.html#options">Option Summary</a></p>
 
-<p class="lead magick-description">Use the <code>composite</code> program to overlap one image over another.  See <a href="../www/command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>composite</code> command or see below for example usages of the command.</p>
+<p class="lead magick-description">Use the <samp>composite</samp> program to overlap one image over another.  See <a href="../www/command-line-processing.html">Command Line Processing</a> for advice on how to structure your <samp>composite</samp> command or see below for example usages of the command.</p>
 
 <h2><a class="anchor" id="usage"></a>Example Usage</h2>
 
-<p>We list a few examples of the <code>composite</code> command here to illustrate its usefulness and ease of use.  To get started, lets overlay a smiley face over a rose:</p>
+<p>We list a few examples of the <samp>composite</samp> command here to illustrate its usefulness and ease of use.  To get started, lets overlay a smiley face over a rose:</p>
 
-<pre class="highlight"><code>magick composite -gravity center smile.gif  rose: rose-over.png
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick composite -gravity center smile.gif  rose: rose-over.png </samp></pre></ul>
 
 <ul>
   <a href="../images/smile.gif"><img src="../images/smile.gif" width="48" height="48" alt="smile" /></a>
@@ -113,11 +112,10 @@
 
 <p>You can create three-dimensional effect with the <var>Atop</var>:</p>
 
-<pre class="highlight"><code>magick convert -size 70x70 canvas:none -fill red -draw 'circle 35,35 10,30' red-circle.png
+<ul><pre class="bg-light text-dark"><samp>magick convert -size 70x70 canvas:none -fill red -draw 'circle 35,35 10,30' red-circle.png
 magick convert -size 70x70 canvas:none -draw 'circle 35,35 35,20' -negate \
 -channel A -gaussian-blur 0x8 white-highlight.png
-magick composite -compose atop -geometry -13-17 white-highlight.png red-circle.png red-ball.png
-</code></pre>
+magick composite -compose atop -geometry -13-17 white-highlight.png red-circle.png red-ball.png </samp></pre></ul>
 
 <ul>
   <a href="../images/white-highlight.png"><img src="../images/white-highlight.png" width="70" height="70" alt="white highlight" /></a>
@@ -127,11 +125,11 @@ magick composite -compose atop -geometry -13-17 white-highlight.png red-circle.p
   <a href="../images/red-ball.png"><img src="../images/red-ball.png" width="70" height="70" alt="red ball" /></a>
 </ul>
 
-<p>You can find additional examples of using <code>composite</code> in <a href="https://legacy.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.  You can find out more about them and the mathematics by looking at <a href="http://www.w3.org/TR/SVG12/rendering.html">SVG Alpha Compositing</a></p>
+<p>You can find additional examples of using <samp>composite</samp> in <a href="https://legacy.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.  You can find out more about them and the mathematics by looking at <a href="http://www.w3.org/TR/SVG12/rendering.html">SVG Alpha Compositing</a></p>
 
 <h2><a class="anchor" id="options"></a>Option Summary</h2>
 
-<p>The <code>composite</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
+<p>The <samp>composite</samp> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 
 <table class="table table-sm table-hover">
   <tbody>
@@ -568,4 +566,3 @@ transparent, extract, background, or shape the alpha channel</td>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 13th February 2021 11:37 -->

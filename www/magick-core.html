@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - MagickCore, Low-level C API</title>
+  <title>ImageMagick – MagickCore, Low-level C API</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="magickcore, low-level, c, api, image processing software" />
@@ -127,11 +127,13 @@
   <li><a href="api/montage.html">Create an Image Thumbnail</a></li>
   <li><a href="api/fourier.html">Compute the discrete Fourier transform (DFT)</a></li>
   <li><a href="api/compare.html">Compare an Image to a Reconstructed Image</a></li>
+  <li><a href="api/vision.html">Computer Vision</a></li>
   <li><a href="api/display.html">Interactively Display and Edit an Image</a></li>
   <li><a href="api/animate.html">Interactively Animate an Image Sequence</a></li>
   <li><a href="api/cipher.html">Convert to and from Cipher Pixels</a></li>
   <li><a href="api/list.html">Working with Image Lists</a></li>
   <li><a href="api/image-view.html">Image View Methods</a></li>
+  <li><a href="api/image-cache.html">Image Cache Methods</a></li>
   <li><a href="api/cache.html">Get or Set Image Pixels</a></li>
   <li><a href="api/cache-view.html">Working with Cache Views</a></li>
   <li><a href="api/stream.html">The Pixel FIFO</a></li>
@@ -151,15 +153,15 @@
 
 <p>After you write your MagickCore program, compile it like this:</p>
 
-<ul><pre class="highlight"><code>cc -o core core.c `pkg-config --cflags --libs MagickWand`</code></pre></ul>
+<ul><pre class="bg-light text-dark"><samp>cc -o core core.c `pkg-config --cflags --libs MagickWand`</samp></pre></ul>
 
-<p>Set the <code>PKG_CONFIG_PATH</code> environment variable if ImageMagick is not in your default system path:</p>
+<p>Set the <samp>PKG_CONFIG_PATH</samp> environment variable if ImageMagick is not in your default system path:</p>
 
-<ul><pre class="highlight"><code>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig </code></pre></ul>
+<ul><pre class="bg-light text-dark"><samp>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig </samp></pre></ul>
 
 <p>Here is a example program that utilizes the MagickCore API to get you started, <a href="https://imagemagick.org/source/core.c">core.c</a>. It reads a GIF image, creates a thumbnail, and writes it to disk in the PNG image format.</p>
 
-<ul><pre class="pre-scrollable highlight"><code>#include &lt;stdio.h>
+<ul><pre class="pre-scrollable bg-light text-dark"><samp>#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;string.h>
 #include &lt;time.h>
@@ -221,10 +223,10 @@ int main(int argc,char **argv)
   exception=DestroyExceptionInfo(exception);
   MagickCoreTerminus();
   return(0);
-}</code></pre></ul>
+}</samp></pre></ul>
 <p><a class="anchor" id="image-view"></a>Now lets perform the same contrast enhancement while taking advantage of our dual or quad-core processing system by running the algorithm in parallel utilizing wand views.  The <a href="https://imagemagick.org/source/core/sigmoidal-contrast.c">sigmoidal-contrast.c</a> module reads an image, applies sigmoidal non-linearity contrast control, and writes the result to disk just like the previous contrast enhancement program, but now it does its work in parallel (assumes ImageMagick is built with OpenMP support).</p>
 
-<ul><pre class="pre-scrollable highlight"><code>#include &lt;stdio.h>
+<ul><pre class="pre-scrollable bg-light text-dark"><samp>#include &lt;stdio.h>
 #include &lt;stdlib.h>
 #include &lt;math.h>
 #include &lt;MagickCore/MagickCore.h>
@@ -340,7 +342,7 @@ int main(int argc,char **argv)
   image_info=DestroyImageInfo(image_info);
   MagickCoreTerminus();
   return(0);
-}</code></pre></ul>
+}</samp></pre></ul>
 </div>
   </div>
   </main><!-- /.container -->
@@ -370,4 +372,4 @@ int main(int argc,char **argv)
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 13th February 2021 14:08 -->
+<!-- Magick Cache 30th October 2021 14:06 -->

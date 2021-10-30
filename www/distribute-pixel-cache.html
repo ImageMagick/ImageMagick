@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - Distributed Pixel Cache</title>
+  <title>ImageMagick – Distributed Pixel Cache</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="distributed, pixel, cache, image processing software" />
@@ -93,18 +93,16 @@
 <div class="magick-header">
 <h1 class="text-center">Distributed Pixel Cache</h1>
 <p class="lead magick-description">A distributed pixel cache is an extension of the traditional pixel cache available on a single host.  The distributed pixel cache may span multiple servers so that it can grow in size and transactional capacity to support very large images or large image sequences.  Start up the pixel cache server on one or more hosts.  When you read or operate on an image and the local pixel cache resources are exhausted, ImageMagick contacts one or more of these remote pixel servers to store or retrieve pixels.</p>
-<p>For really large images or large image sequences, or if there is limited resources on your host, you can utilize a distributed pixel cache on one or more remote hosts. To get started, first set your shared secret in the <code>policy.xml</code> security policy configuration file:</p>
-<pre class="highlight">
-&lt;policy domain="cache" name="shared-secret" value="<em>passhrase</em>" stealth="true"/>
-</pre>
+<p>For really large images or large image sequences, or if there is limited resources on your host, you can utilize a distributed pixel cache on one or more remote hosts. To get started, first set your shared secret in the <samp>policy.xml</samp> security policy configuration file:</p>
+<ul><pre class="bg-light text-dark"><samp>
+&lt;policy domain="cache" name="shared-secret" value="<em>passhrase</em>" stealth="true"/> </samp></pre></ul>
 
 <p>Here we create two distributed pixel caches and utilize them from our desktop:</p>
-<pre class="highlight"><code>magick -distribute-cache 6668 &amp;  # start on 192.168.100.50
+<ul><pre class="bg-light text-dark"><samp>magick -distribute-cache 6668 &amp;  # start on 192.168.100.50
 magick -distribute-cache 6668 &amp;  # start on 192.168.100.51
 magick -limit memory 1GiB -limit map 2GiB -limit disk 4GiB \
   -define registry:cache:hosts=192.168.100.50:6668,192.168.100.51:6668 \
-  myhugeimage.jpg -sharpen 5x2 myhugeimage.png
-</code></pre>
+  myhugeimage.jpg -sharpen 5x2 myhugeimage.png </samp></pre></ul>
 <p>For large image sequences, the servers are contacted in a round-robin fashion to distribute the load over multiple distributed pixel caches (assuming you have a host list rather than a single host).  In our example, some modest resources are available on the desktop as defined by the -limit option.  For smaller images, they are allocated on the desktop up to the specified limits.</p>
 <p>Your image processing tasks are likely to perform slower when utilizing a distributed pixel cache due to pixels shuffling between the client and the server over a network.  Algorithms that access virtual pixels (e.g. -sharpen) are noticeably slower, up to 3 times slower, than algorithms that only access authentic pixels (e.g. -negate) due to increased network traffic.</p>
 <p>A client can only contact a compatible distributed pixel cache server.  Compatibility requires the same ImageMagick library interface, quantum depth, HDRI status, OS word size, and endianness.  The distributed pixel cache checks these attributes and exits if these requirements are not met.</p>
@@ -137,4 +135,4 @@ magick -limit memory 1GiB -limit map 2GiB -limit disk 4GiB \
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 13th February 2021 11:37 -->
+<!-- Magick Cache 30th October 2021 14:05 -->

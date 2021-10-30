@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - Parallel Execution with OpenCL</title>
+  <title>ImageMagick – Parallel Execution with OpenCL</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="parallel, execution, with, opencl, image processing software" />
@@ -93,7 +93,7 @@
 <div class="magick-header">
 
 <p class="lead magick-description">The following is a list of image operators that have been <a href="http://en.wikipedia.org/wiki/OpenCL">OpenCL</a>-accelerated:</p>
-<pre class="highlight"><code>blur
+<ul><pre class="bg-light text-dark"><samp>blur
 charcoal
 contrast
 constrast-stretch
@@ -112,15 +112,17 @@ noise
 radial-blur
 resize
 sketch
-unsharp</code></pre>
-<p>When the OpenCL acceleration is invoked for the first time, ImageMagick conducts a series of tests to configure the OpenCL environment according to the system hardware; therefore, it is normal to experience a higher latency the first time you use an accelerated option.  The OpenCL kernels are embedded inside ImageMagick in source format.  During the initial setup, ImageMagick discovers all the available OpenCL devices and compiles the kernels for each of these targets.  ImageMagick also runs several performance tests internally to determine the preferred device to use.  The compiled kernel code and the performance test results are stored into the cache directory so that the data can be reused by subsequent invocations of the OpenCL path.  By default, the OpenCL cached data is stored in <code>$HOME/.cache/ImageMagick</code> on Linux and on MacOSX or in <code>%LOCALAPPDATA%\ImageMagick</code> on Windows.  To change the cache directory, set the MAGICK_OPENCL_CACHE_DIR environment variable.  ImageMagick is able to detect hardware changes, driver updates, and new kernel sources and re-run the setup and the calibration test.  You can also force ImageMagick to re-run the process by removing the content from the cache directory.</p>
-<p>If ImageMagick includes OpenCL support, the OpenCL path is enable by default.  You can disable it, simply set the environment variable MAGICK_OCL_DEVICE to <code>OFF</code>.  You could also force the OpenCL path to use a particular class of devices by setting it to <code>GPU</code> or <code>CPU</code>.</p>
+unsharp</samp></pre></ul>
+
+<p>When the OpenCL acceleration is invoked for the first time, ImageMagick conducts a series of tests to configure the OpenCL environment according to the system hardware; therefore, it is normal to experience a higher latency the first time you use an accelerated option.  The OpenCL kernels are embedded inside ImageMagick in source format.  During the initial setup, ImageMagick discovers all the available OpenCL devices and compiles the kernels for each of these targets.  ImageMagick also runs several performance tests internally to determine the preferred device to use.  The compiled kernel code and the performance test results are stored into the cache directory so that the data can be reused by subsequent invocations of the OpenCL path.  By default, the OpenCL cached data is stored in <samp>$HOME/.cache/ImageMagick</samp> on Linux and on MacOSX or in <samp>%LOCALAPPDATA%\ImageMagick</samp> on Windows.  To change the cache directory, set the MAGICK_OPENCL_CACHE_DIR environment variable.  ImageMagick is able to detect hardware changes, driver updates, and new kernel sources and re-run the setup and the calibration test.  You can also force ImageMagick to re-run the process by removing the content from the cache directory.</p>
+<p>If ImageMagick includes OpenCL support, the OpenCL path is enable by default.  You can disable it, simply set the environment variable MAGICK_OCL_DEVICE to <samp>OFF</samp>.  You could also force the OpenCL path to use a particular class of devices by setting it to <samp>GPU</samp> or <samp>CPU</samp>.</p>
 <p>In addition to the environment variables just mentioned, ImageMagick provides a set of APIs that allow developers to gain a finer grain control of the OpenCL acceleration.  For example, use the InitializeOpenCL) function to initialize the OpenCL environment:</p>
-<pre class="highlight"><code>clEnv=GetCurrentOpenCLEnv();
+
+<ul><pre class="bg-light text-dark"><samp>clEnv=GetCurrentOpenCLEnv();
 if (InitializeOpenCL(clEnv,exception) == MagickFalse)
   {
     /* looks like OpenCL is not supported  */
-  }</code></pre>
+  }</samp></pre></ul>
 </div>
   </div>
   </main><!-- /.container -->
@@ -150,4 +152,4 @@ if (InitializeOpenCL(clEnv,exception) == MagickFalse)
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 13th February 2021 11:37 -->
+<!-- Magick Cache 30th October 2021 14:05 -->

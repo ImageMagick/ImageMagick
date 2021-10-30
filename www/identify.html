@@ -7,9 +7,9 @@
 <head>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
-  <title>ImageMagick - Command-line Tools: Identify</title>
+  <title>ImageMagick – Command-line Tools: Identify</title>
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="Use ImageMagick® to create, edit, compose, and convert digital images. Resize an image, crop it, change its shades and colors, add captions, and more." />
+  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="generator" content="PHP" />
   <meta name="keywords" content="command-line, tools:, identify, image processing software" />
@@ -94,23 +94,22 @@
 <h1 class="text-center">Image Format and Characteristics</h1>
 <p class="text-center"><a href="identify.html#usage">Example Usage</a> • <a href="identify.html#options">Option Summary</a></p>
 
-<p class="lead magick-description">The <code>magick identify</code> program describes the format and characteristics of one or more image files. It also reports if an image is incomplete or corrupt. The information returned includes the image number, the file name, the width and height of the image, whether the image is colormapped or not, the number of colors in the image, the number of bytes in the image, the format of the image (JPEG, PNM, etc.), and finally the number of seconds it took to read and process the image.  Many more attributes are available with the verbose option.  See <a href="../www/command-line-processing.html">Command Line Processing</a> for advice on how to structure your <code>magick identify</code> command or see below for example usages of the command.</p>
+<p class="lead magick-description">The <samp>magick identify</samp> program describes the format and characteristics of one or more image files. It also reports if an image is incomplete or corrupt. The information returned includes the image number, the file name, the width and height of the image, whether the image is colormapped or not, the number of colors in the image, the number of bytes in the image, the format of the image (JPEG, PNM, etc.), and finally the number of seconds it took to read and process the image.  Many more attributes are available with the verbose option.  See <a href="../www/command-line-processing.html">Command Line Processing</a> for advice on how to structure your <samp>magick identify</samp> command or see below for example usages of the command.</p>
 
 <h2><a class="anchor" id="usage"></a>Example Usage</h2>
 
-<p>We list a few examples of the <code>magick identify</code> command here to illustrate its usefulness and ease of use. To get started, lets identify an image in the JPEG format:</p>
+<p>We list a few examples of the <samp>magick identify</samp> command here to illustrate its usefulness and ease of use. To get started, lets identify an image in the JPEG format:</p>
 
-<pre class="highlight"><code>-> magick identify rose.jpg
-rose.jpg JPEG 70x46 70x46+0+0 8-bit sRGB 2.36KB 0.000u 0:00.000
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>$ magick identify rose.jpg
+rose.jpg JPEG 70x46 70x46+0+0 8-bit sRGB 2.36KB 0.000u 0:00.000 </samp></pre></ul>
 
-<p>By default, <code>magick identify</code> provides the following output:</p>
+<p>By default, <samp>magick identify</samp> provides the following output:</p>
 
-<ul><code>Filename[frame #] image-format widthxheight page-widthxpage-height+x-offset+y-offset colorspace user-time elapsed-time</code></ul>
+<ul><samp>Filename[frame #] image-format widthxheight page-widthxpage-height+x-offset+y-offset colorspace user-time elapsed-time</samp></ul>
 
 <p>Next, we look at the same image in greater detail:</p>
 
-<pre class="pre-scrollable highlight"><code>-> magick identify -verbose rose.jpg
+<ul><pre class="pre-scrollable bg-light text-dark"><samp>$ magick identify -verbose rose.jpg
 Image: rose.jpg
   Format: JPEG (Joint Photographic Experts Group JFIF format)
   Mime type: images/jpeg
@@ -191,39 +190,37 @@ Image: rose.jpg
   Number pixels: 3.22K
   User time: 0.000u
   Elapsed time: 0:01.000
-  Version: ImageMagick 7.0.4-8 Q16 x86_64 http://imagemagick.org
-</code></pre>
+  Version: ImageMagick 7.0.4-8 Q16 x86_64 http://imagemagick.org </samp></pre></ul>
+
 <p>Note, the image signature is generated from the pixel components, not the image metadata.</p>
 
 <p>To get the print size in inches of an image at 72 DPI, use:</p>
 
-<pre class="highlight"><code>-> magick identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png
-8.5 x 11 inches
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>$ magick identify -format "%[fx:w/72] by %[fx:h/72] inches" document.png
+8.5 x 11 inches </samp></pre></ul>
 
 <p>The depth and dimensions of a raw image must be specified on the command line:</p>
 
-<pre class="highlight"><code>-> magick identify -depth 8 -size 640x480 image.raw
-image.raw RGB 640x480 sRGB 9kb 0.000u 0:01
-</code></pre>
+<ul><pre class="bg-light text-dark"><samp>$ magick identify -depth 8 -size 640x480 image.raw
+image.raw RGB 640x480 sRGB 9kb 0.000u 0:01 </samp></pre></ul>
 
 <p>Here we display the image texture features, moments, perceptual hash, and the number of unique colors in the image:</p>
 
-<pre class="highlight"><code>-> magick identify -verbose -features 1 -moments -unique image.png</code></pre>
+<ul><pre class="bg-light text-dark"><samp>$ magick identify -verbose -features 1 -moments -unique image.png</samp></pre></ul>
 
 <p>To display the convex hull and minimum bounding box attributes of the image, use:</p>
 
-<pre class="highlight"><code>magick identify -define identify:convex-hull=true image.png</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick identify -define identify:convex-hull=true image.png</samp></pre></ul>
 
 <p>Here is a special define that outputs the location of the minimum or maximum pixel of the image:</p>
 
-<pre class="highlight"><code>magick identify -precision 5 -define identify:locate=maximum -define identify:limit=3 image.png</code></pre>
+<ul><pre class="bg-light text-dark"><samp>magick identify -precision 5 -define identify:locate=maximum -define identify:limit=3 image.png</samp></pre></ul>
 
-<p>You can find additional examples of using <code>magick identify</code> in <a href="https://legacy.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
+<p>You can find additional examples of using <samp>magick identify</samp> in <a href="https://legacy.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.</p>
 
 <h2><a class="anchor" id="options"></a>Option Summary</h2>
 
-<p>The <code>magick identify</code> command recognizes these options.  Click on an option to get more details about how that option works.</p>
+<p>The <samp>magick identify</samp> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 
 <table class="table table-sm table-hover">
   <tbody>
@@ -246,6 +243,11 @@ transparent, extract, background, or shape the alpha channel</td>
   <tr>
     <td><a href="../www/command-line-options.html#authenticate">-authenticate <var>value</var></a></td>
     <td>decrypt image with this password</td>
+  </tr>
+
+  <tr>
+    <td><a href="../www/command-line-options.html#auto-orient">-auto-orient</a></td>
+    <td>automagically orient image</td>
   </tr>
 
   <tr>
@@ -480,4 +482,4 @@ transparent, extract, background, or shape the alpha channel</td>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 13th February 2021 13:45 -->
+<!-- Magick Cache 30th October 2021 14:05 -->
