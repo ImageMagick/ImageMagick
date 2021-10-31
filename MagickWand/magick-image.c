@@ -1858,18 +1858,18 @@ WandExport MagickBooleanType MagickColorMatrixImage(MagickWand *wand,
 %  MagickColorThresholdImage() forces all pixels in the color range to white
 %  otherwise black.
 %
-%  The format of the MagickWhiteThresholdImage method is:
+%  The format of the MagickColorThresholdImage method is:
 %
-%      MagickBooleanType MagickWhiteThresholdImage(MagickWand *wand,
+%      MagickBooleanType MagickColorThresholdImage(MagickWand *wand,
 %        const PixelWand *start_color,const PixelWand *stop_color)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o start-color: the start color pixel wand.
+%    o start_color: the start color pixel wand.
 %
-%    o stop-color: the stop color pixel wand.
+%    o stop_color: the stop color pixel wand.
 %
 */
 WandExport MagickBooleanType MagickColorThresholdImage(MagickWand *wand,
