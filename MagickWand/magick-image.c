@@ -6762,7 +6762,7 @@ WandExport MagickBooleanType MagickInverseFourierTransformImage(
 %  MagickKmeansImage() applies k-means color reduction to an image. This is a
 %  colorspace clustering or segmentation technique.
 %
-%  The format of the MagickKuwaharaImage method is:
+%  The format of the MagickKmeansImage method is:
 %
 %      MagickBooleanType MagickKmeansImage(MagickWand *wand,
 %        const size_t number_colors, const size_t max_iterations,
