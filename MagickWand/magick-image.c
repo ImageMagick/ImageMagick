@@ -1430,7 +1430,9 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
 %
 %    o height: the height of the tile divisions to use in vertical direction.
 %
-%    o number_bins: number of bins for histogram ("dynamic range").
+%    o number_bins: number of bins for histogram ("dynamic range"). Although
+%      parameter is currently a double, it is cast to size_t internally. Param
+%      will be changed to size_t type in ImageMagick 7.2.0 / 8.0.
 %
 %    o clip_limit: contrast limit for localised changes in contrast. A limit
 %      less than 1 results in standard non-contrast limited AHE.
