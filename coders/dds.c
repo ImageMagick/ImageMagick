@@ -2147,7 +2147,8 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         }
 
       /* Write the pixels */
-      area=MagickMin(4,image->columns-x)*MagickMin(4,image->rows-y);
+      area=MagickMin(MagickMin(4,image->columns-x)*MagickMin(4,image->rows-y),
+        16);
       for (i=0; i < (ssize_t) area; i++)
       {
         unsigned char
