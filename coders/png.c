@@ -1416,6 +1416,8 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
           char
             msg[MagickPathExtent];
 
+          if (check < length)
+            (void) memset(data+check,0,length-check);
           (void) FormatLocaleString(msg,MagickPathExtent,
             "Expected %.20g bytes; found %.20g bytes",(double) length,
             (double) check);
