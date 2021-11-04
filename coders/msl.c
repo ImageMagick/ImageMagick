@@ -7393,19 +7393,21 @@ static void MSLEndElement(void *context,const xmlChar *tag)
     {
       if (LocaleCompare((const char *) tag, "group") == 0 )
       {
-        if (msl_info->group_info[msl_info->number_groups-1].numImages > 0 )
+        if ((msl_info->number_groups > 0) &&
+            (msl_info->group_info[msl_info->number_groups-1].numImages > 0))
         {
           ssize_t  i = (ssize_t)
             (msl_info->group_info[msl_info->number_groups-1].numImages);
-          while ( i-- )
+
+          while ((i--) && (msl_info->n > 0))
           {
             if (msl_info->image[msl_info->n] != (Image *) NULL)
               msl_info->image[msl_info->n]=DestroyImage(
                 msl_info->image[msl_info->n]);
             msl_info->attributes[msl_info->n]=DestroyImage(
-                msl_info->attributes[msl_info->n]);
+              msl_info->attributes[msl_info->n]);
             msl_info->image_info[msl_info->n]=DestroyImageInfo(
-                msl_info->image_info[msl_info->n]);
+              msl_info->image_info[msl_info->n]);
             msl_info->n--;
           }
         }
@@ -7418,7 +7420,7 @@ static void MSLEndElement(void *context,const xmlChar *tag)
     {
       if (LocaleCompare((const char *) tag, "image") == 0)
         MSLPopImage(msl_info);
-       break;
+      break;
     }
     case 'L':
     case 'l':
