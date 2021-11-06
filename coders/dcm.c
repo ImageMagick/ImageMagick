@@ -3996,10 +3996,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) RelinquishUniqueFileResource(filename);
         }
         read_info=DestroyImageInfo(read_info);
-        RelinquishDCMMemory(&info,&map,stream_info,stack,data);
         image=DestroyImageList(image);
         if ((status == MagickFalse) && (exception->severity < ErrorException))
           ThrowDCMException(CorruptImageError,"CorruptImageError")
+        else
+          RelinquishDCMMemory(&info,&map,stream_info,stack,data);
         return(GetFirstImageInList(images));
       }
     if (info.depth != (1UL*MAGICKCORE_QUANTUM_DEPTH))
