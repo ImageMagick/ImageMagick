@@ -203,7 +203,8 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
     version[MagickPathExtent];
 
   int
-    c;
+    c,
+    percent_count;
 
   MagickByteBuffer
     buffer;
@@ -231,6 +232,7 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
   pdf_info->trimbox=IsStringTrue(GetImageOption(image_info,"pdf:use-trimbox"));
   *version='\0';
   spotcolor=0;
+  percent_count=0;
   (void) memset(&buffer,0,sizeof(buffer));
   buffer.image=image;
   for (c=ReadMagickByteBuffer(&buffer); c != EOF; c=ReadMagickByteBuffer(&buffer))
@@ -252,6 +254,11 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
             if (c == EOF)
               break;
           }
+        if (++percent_count == 2)
+          {
+            percent_count=0;
+            break;
+          }
         continue;
       }
       case '<':
@@ -262,6 +269,7 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
       case '/':
         break;
       default:
+        percent_count=0;
         continue;
     }
     if (c == EOF)
