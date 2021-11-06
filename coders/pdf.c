@@ -237,9 +237,7 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
   buffer.image=image;
   for (c=ReadMagickByteBuffer(&buffer); c != EOF; c=ReadMagickByteBuffer(&buffer))
   {
-    switch(c)
-    {
-      case '%':
+    if (c == '%')
       {
         if (*version == '\0')
           {
@@ -255,23 +253,26 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
               break;
           }
         if (++percent_count == 2)
-          {
-            percent_count=0;
-            break;
-          }
-        continue;
+          percent_count=0;
+        else
+          continue;
       }
-      case '<':
+    else
       {
-        ReadGhostScriptXMPProfile(&buffer,&pdf_info->profile);
-        continue;
-      }
-      case '/':
-        break;
-      default:
         percent_count=0;
-        continue;
-    }
+        switch(c)
+        {
+          case '<':
+          {
+            ReadGhostScriptXMPProfile(&buffer,&pdf_info->profile);
+            continue;
+          }
+          case '/':
+            break;
+          default:
+            continue;
+        }
+      }
     if (c == EOF)
       break;
     if (CompareMagickByteBuffer(&buffer,PDFRotate,strlen(PDFRotate)) != MagickFalse)
