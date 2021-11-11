@@ -2629,17 +2629,29 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (profile != (StringInfo *) NULL)
     {
+      const char
+        *option;
+
       Image
         *next;
 
+      MagickBooleanType
+        replicate_profile;
+
+      option=GetImageOption(image_info,"psd:replicate-profile");
+      replicate_profile=IsStringTrue(option);
       i=0;
       next=image;
       while (next != (Image *) NULL)
       {
         if (PSDSkipImage(&psd_info,image_info,i++) == MagickFalse)
-          (void) SetImageProfile(next,GetStringInfoName(profile),profile,
-            exception);
-        next=next->next;
+          {
+            (void) SetImageProfile(next,GetStringInfoName(profile),profile,
+              exception);
+            if (replicate_profile == MagickFalse)
+              break;
+          }
+        next=image->next;
       }
       profile=DestroyStringInfo(profile);
     }

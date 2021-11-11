@@ -1,3 +1,8 @@
+2021-11-11  7.1.0-15  Dirk Lemstra <dirk@lem.....org>
+  * The profile of a PSD file will no longer be copied to all the images, only
+    the first returned image will contain the profile. To re-enable the old
+    behavior add -define psd:replicate-profile=true.
+
 2021-11-01  7.1.0-14  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-14 GIT revision 19332:bb886ff39:20211101
 
