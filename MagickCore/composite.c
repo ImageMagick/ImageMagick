@@ -548,6 +548,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
   MagickBooleanType
     clamp,
+    compose_sync,
     status;
 
   MagickOffsetType
@@ -594,6 +595,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   value=GetImageArtifact(image,"compose:clamp");
   if (value != (const char *) NULL)
     clamp=IsStringTrue(value);
+  compose_sync=MagickTrue;
+  value=GetImageArtifact(image,"compose:sync");
+  if (value != (const char *) NULL)
+    compose_sync=IsStringTrue(value);
   SetGeometryInfo(&geometry_info);
   percent_luma=100.0;
   percent_chroma=100.0;
@@ -1874,6 +1879,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 OR a greyscale version of a binary 'Or'
                 OR the 'Intersection' of pixel sets.
             */
+            if (compose_sync == MagickFalse)
+              {
+                pixel=MagickMin(Sc,Dc);
+                break;
+              }
             if ((Sca*Da) < (Dca*Sa))
               {
                 pixel=QuantumRange*(Sca+Dca*(1.0-Sa));
@@ -1884,12 +1894,23 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case DarkenIntensityCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=GetPixelIntensity(source_image,p) <
+                  GetPixelIntensity(image,q) ? Sc : Dc;
+                break;
+              }
             pixel=Sa*GetPixelIntensity(source_image,p) <
               Da*GetPixelIntensity(image,q) ? Sc : Dc;
             break;
           }
           case DifferenceCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=fabs((double) Sc-Dc);
+                break;
+              }
             pixel=QuantumRange*gamma*(Sca+Dca-2.0*MagickMin(Sca*Da,Dca*Sa));
             break;
           }
@@ -1901,6 +1922,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case DivideDstCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=QuantumRange*(Sc/PerceptibleReciprocal(Dc));
+                break;
+              }
             if ((fabs((double) Sca) < MagickEpsilon) &&
                 (fabs((double) Dca) < MagickEpsilon))
               {
@@ -1917,6 +1943,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case DivideSrcCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=QuantumRange*(Dc/PerceptibleReciprocal(Sc));
+                break;
+              }
             if ((fabs((double) Dca) < MagickEpsilon) &&
                 (fabs((double) Sca) < MagickEpsilon))
               {
@@ -2055,6 +2086,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case LightenCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=MagickMax(Sc,Dc);
+                break;
+              }
             if ((Sca*Da) > (Dca*Sa))
               {
                 pixel=QuantumRange*(Sca+Dca*(1.0-Sa));
@@ -2070,6 +2106,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 OR a greyscale version of a binary 'And'
                 OR the 'Union' of pixel sets.
             */
+            if (compose_sync == MagickFalse)
+              {
+                pixel=GetPixelIntensity(source_image,p) >
+                  GetPixelIntensity(image,q) ? Sc : Dc;
+                break;
+              }
             pixel=Sa*GetPixelIntensity(source_image,p) >
               Da*GetPixelIntensity(image,q) ? Sc : Dc;
             break;
@@ -2121,6 +2163,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                Dca' = A*Sca*Dca + B*Sca*Da + C*Dca*Sa + D*Sa*Da + Sca*(1.0-Da) +
                  Dca*(1.0-Sa)
             */
+            if (compose_sync == MagickFalse)
+              {
+                pixel=geometry_info.rho*Sc*Dc+geometry_info.sigma*Sc+
+                  geometry_info.xi*Dc+geometry_info.psi;
+                break;
+              }
             pixel=QuantumRange*gamma*(geometry_info.rho*Sca*Dca+
               geometry_info.sigma*Sca*Da+geometry_info.xi*Dca*Sa+
               geometry_info.psi*Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
@@ -2128,6 +2176,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case MinusDstCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=Dc-Sc;
+                break;
+              }
             pixel=gamma*(Sa*Sc+Da*Dc-2.0*Da*Dc*Sa);
             break;
           }
@@ -2138,6 +2191,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
                 f(Sc,Dc) = Sc - Dc
             */
+            if (compose_sync == MagickFalse)
+              {
+                pixel=Sc-Dc;
+                break;
+              }
             pixel=gamma*(Da*Dc+Sa*Sc-2.0*Sa*Sc*Da);
             break;
           }
@@ -2173,6 +2231,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case ModulusAddCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=(Sc+Dc);
+                break;
+              }
             if ((Sca+Dca) <= 1.0)
               {
                 pixel=QuantumRange*(Sca+Dca);
@@ -2183,6 +2246,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case ModulusSubtractCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=(Sc-Dc);
+                break;
+              }
             if ((Sca-Dca) >= 0.0)
               {
                 pixel=QuantumRange*(Sca-Dca);
@@ -2193,6 +2261,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case MultiplyCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=QuantumScale*(Dc*Sc);
+                break;
+              }
             pixel=QuantumRange*gamma*(Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
             break;
           }
@@ -2267,6 +2340,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case PlusCompositeOp:
           {
+            if (compose_sync == MagickFalse)
+              {
+                pixel=(Dc+Sc);
+                break;
+              }
             pixel=QuantumRange*(Sca+Dca);
             break;
           }
@@ -2341,6 +2419,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
                 f(Sc,Dc) = 1.0-(1.0-Sc)*(1.0-Dc)
             */
+            if (compose_sync == MagickFalse)
+              {
+                pixel=Sc+Dc-Sc*Dc;
+                break;
+              }
             pixel=QuantumRange*gamma*(Sca+Dca-Sca*Dca);
             break;
           }
