@@ -4331,7 +4331,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(unsharp_view,0,y,unsharp_image->columns,1,
+    q=GetCacheViewAuthenticPixels(unsharp_view,0,y,unsharp_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
