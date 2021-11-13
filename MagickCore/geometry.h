@@ -51,13 +51,14 @@ typedef enum
   NormalizeValue = 0x2000,  /* '!'  ScaleKernelValue() in morphology.c */
   LessValue = 0x4000,       /* '<'  resize smaller - special use flag */
   GreaterValue = 0x8000,    /* '>'  resize larger - spacial use flag */
-  MinimumValue = 0x10000,   /* '^'  special handling needed */
-  CorrelateNormalizeValue = 0x10000, /* '^' see ScaleKernelValue() */
-  AreaValue = 0x20000,      /* '@'  resize to area - special use flag */
-  DecimalValue = 0x40000,   /* '.'  floating point numbers found */
-  SeparatorValue = 0x80000, /* 'x'  separator found */
-  AspectRatioValue = 0x100000,    /* '~'  special handling needed */
-  AlphaValue = 0x200000,    /* '/'  alpha */
+  MaximumValue = 0x10000,   /* '#'  special handling needed */
+  MinimumValue = 0x20000,   /* '^'  special handling needed */
+  CorrelateNormalizeValue = 0x20000, /* '^' see ScaleKernelValue() */
+  AreaValue = 0x40000,      /* '@'  resize to area - special use flag */
+  DecimalValue = 0x80000,   /* '.'  floating point numbers found */
+  SeparatorValue = 0x100000, /* 'x'  separator found */
+  AspectRatioValue = 0x200000,    /* '~'  special handling needed */
+  AlphaValue = 0x400000,    /* '/'  alpha */
 #undef AllValues
   AllValues = 0x7fffffff
 } GeometryFlags;

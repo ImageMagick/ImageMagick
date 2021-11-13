@@ -154,6 +154,12 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
         (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
+      case '#':
+      {
+        flags|=MaximumValue;
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
+        break;
+      }
       case '^':
       {
         flags|=MinimumValue;
@@ -936,6 +942,12 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
         (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
+      case '#':
+      {
+        flags|=MaximumValue;
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
+        break;
+      }
       case '^':
       {
         flags|=MinimumValue;
@@ -1305,18 +1317,24 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       (void) ParseGeometry(geometry,&geometry_info);
       geometry_ratio=geometry_info.rho;
       image_ratio=(double) image->columns/image->rows;
-      if (geometry_ratio >= image_ratio)
+      region_info->width=image->columns;
+      region_info->height=image->rows;
+      if ((flags & MaximumValue) != 0)
         {
-          region_info->width=image->columns;
-          region_info->height=(size_t) floor((double) (image->rows*image_ratio/
-            geometry_ratio)+0.5);
+          if (geometry_ratio < image_ratio)
+            region_info->height=(size_t) floor((double) (image->rows*
+              image_ratio/geometry_ratio)+0.5);
+          else
+            region_info->width=(size_t) floor((double) (image->columns*
+              geometry_ratio/image_ratio)+0.5);
         }
       else
-        {
+        if (geometry_ratio >= image_ratio)
+          region_info->height=(size_t) floor((double) (image->rows*image_ratio/
+            geometry_ratio)+0.5);
+        else
           region_info->width=(size_t) floor((double) (image->columns*
             geometry_ratio/image_ratio)+0.5);
-          region_info->height=image->rows;
-        }
     }
   /*
     Adjust offset according to gravity setting.
