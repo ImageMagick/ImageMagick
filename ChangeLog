@@ -1,3 +1,9 @@
+2021-11-13  7.1.0-15  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-15 GIT revision 19...
+
+2021-11-13  7.1.0-15  <quetzlzacatenango@image...>
+  * Support '#' modifier to aspect ratio geometry (e.g., 3:2#).
+
 2021-11-11  7.1.0-15  Dirk Lemstra <dirk@lem.....org>
   * The profile of a PSD file will no longer be copied to all the images, only
     the first returned image will contain the profile. To re-enable the old
