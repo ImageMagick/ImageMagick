@@ -614,7 +614,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   } while (LocaleNCompare((char *) text,MagickTXTID,strlen(MagickTXTID)) == 0);
   (void) CloseBlob(image);
   if (q == (Quantum *) NULL)
-    return(DestroyImage(image));
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
