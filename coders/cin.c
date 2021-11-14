@@ -760,8 +760,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       quantum_type=GrayQuantum;
       length=GetBytesPerRow(image->columns,1,image->depth,MagickTrue);
     }
-  if (length > extent)
-    status=SetQuantumPad(image,quantum_info,length-extent);
+  status=SetQuantumPad(image,quantum_info,0);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
