@@ -1,5 +1,5 @@
 2021-11-13  7.1.0-15  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-15 GIT revision 19...
+  * Release ImageMagick version 7.1.0-15 GIT revision 19349:2ba5cdf42:20211114
 
 2021-11-13  7.1.0-15  <quetzlzacatenango@image...>
   * Support '#' modifier to aspect ratio geometry (e.g., 3:2#).
