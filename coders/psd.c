@@ -422,11 +422,11 @@ static MagickBooleanType ApplyPSDLayerOpacity(Image *image,Quantum opacity,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (revert == MagickFalse)
-        SetPixelAlpha(image,(Quantum) (QuantumScale*(GetPixelAlpha(image,q))*
-          opacity),q);
+        SetPixelAlpha(image,ClampToQuantum(QuantumScale*
+          GetPixelAlpha(image,q)*opacity),q);
       else if (opacity > 0)
-        SetPixelAlpha(image,(Quantum) (QuantumRange*(GetPixelAlpha(image,q)/
-          (MagickRealType) opacity)),q);
+        SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*
+          GetPixelAlpha(image,q)/(MagickRealType) opacity),q);
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1477,7 +1477,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
            (IsStringTrue(option) == MagickFalse)))
         {
           (void) SeekBlob(image,(MagickOffsetType)
-            layer_info->channel_info[channel].size-2,SEEK_CUR);
+            (layer_info->channel_info[channel].size-2),SEEK_CUR);
           return(MagickTrue);
         }
       mask=CloneImage(image,layer_info->mask.page.width,
