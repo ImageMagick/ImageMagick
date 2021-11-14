@@ -1405,10 +1405,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       switch (compose)
       {
         case BumpmapCompositeOp:
-        {
-          alpha=GetPixelIntensity(source_image,p)*Sa;
-          break;
-        }
         case ColorBurnCompositeOp:
         case ColorDodgeCompositeOp:
         case DarkenCompositeOp:
@@ -1567,6 +1563,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=QuantumRange*Da;
                 break;
               }
+              case BumpmapCompositeOp:
+              {
+                pixel=GetPixelIntensity(source_image,p)*Da;
+                break;
+              }
               case ChangeMaskCompositeOp:
               {
                 if (IsFuzzyEquivalencePixel(source_image,p,image,q) != MagickFalse)
@@ -1625,6 +1626,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case DarkenIntensityCompositeOp:
               {
+                if (compose_sync == MagickFalse)
+                  {
+                    pixel=GetPixelIntensity(source_image,p) <
+                      GetPixelIntensity(image,q) ? Sa : Da;
+                    break;
+                  }
                 pixel=Sa*GetPixelIntensity(source_image,p) <
                   Da*GetPixelIntensity(image,q) ? Sa : Da;
                 break;
@@ -1650,6 +1657,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case LightenIntensityCompositeOp:
               {
+                if (compose_sync == MagickFalse)
+                  {
+                    pixel=GetPixelIntensity(source_image,p) >
+                      GetPixelIntensity(image,q) ? Sa : Da;
+                    break;
+                  }
                 pixel=Sa*GetPixelIntensity(source_image,p) >
                   Da*GetPixelIntensity(image,q) ? Sa : Da;
                 break;
@@ -1661,7 +1674,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case MultiplyCompositeOp:
               {
-                pixel=QuantumRange*Sa*Da;
+                if (compose_sync == MagickFalse)
+                  {
+                    pixel=QuantumRange*Sa*Da;
+                    break;
+                  }
+                pixel=QuantumRange*alpha;
                 break;
               }
               case NegateCompositeOp:
@@ -2263,7 +2281,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=QuantumScale*(Dc*Sc);
+                pixel=QuantumScale*Dc*Sc;
                 break;
               }
             pixel=QuantumRange*gamma*(Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
