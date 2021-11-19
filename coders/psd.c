@@ -1040,7 +1040,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,
             nibble;
 
           p=PushFloatPixel(MSBEndian,p,&nibble);
-          pixel=ClampToQuantum((MagickRealType) (QuantumRange*nibble));
+          pixel=ClampToQuantum(((MagickRealType) QuantumRange)*nibble);
         }
     if (image->depth > 1)
       {
