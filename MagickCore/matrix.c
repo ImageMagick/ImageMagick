@@ -50,7 +50,6 @@
 #include "MagickCore/matrix-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/thread-private.h"

@@ -50,7 +50,6 @@
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/random_.h"

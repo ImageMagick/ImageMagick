@@ -53,7 +53,6 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
