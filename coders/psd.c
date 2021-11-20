@@ -952,7 +952,7 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
       SetPixelViaPixelInfo(image,color,q);
       return;
     }
-  if (type >= StartMetaPixelChannel)
+  if ((type >= (ssize_t) StartMetaPixelChannel) && (type < MaxPixelChannels))
     {
       SetPixelChannel(image,(PixelChannel) type,pixel,q);
       return;
@@ -1540,6 +1540,43 @@ static MagickBooleanType ReadPSDChannel(Image *image,
   return(status);
 }
 
+static ssize_t GetPsdPixelChannel(const PSDInfo *psd_info,ssize_t index)
+{
+  switch (psd_info->mode)
+  {
+    case GrayscaleMode:
+    {
+      if (index == 1) return(-1);
+      if (index > 1) return(StartMetaPixelChannel+index-2);
+    }
+    case RGBMode:
+    {
+      if (index == 3) return(-1);
+      if (index > 3) return(StartMetaPixelChannel+index-4);
+    }
+    case CMYKMode:
+    {
+      if (index == 4) return(-1);
+      if (index > 4) return(StartMetaPixelChannel+index-5);
+      break;
+    }
+  }
+  return(index);
+}
+
+static void SetPsdMetaChannels(Image *image,const PSDInfo *psd_info,
+  const unsigned short channels,ExceptionInfo *exception)
+{
+  ssize_t
+    number_meta_channels;
+
+  number_meta_channels=(ssize_t) channels-psd_info->min_channels;
+  if (image->alpha_trait == BlendPixelTrait)
+    number_meta_channels--;
+  if (number_meta_channels > 0)
+    (void) SetPixelMetaChannels(image,(size_t) number_meta_channels,exception);
+}
+
 static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
   const PSDInfo *psd_info,LayerInfo* layer_info,ExceptionInfo *exception)
 {
@@ -1579,6 +1616,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
   (void) SetImageProperty(layer_info->image,"label",(char *) layer_info->name,
     exception);
 
+  SetPsdMetaChannels(layer_info->image,psd_info,layer_info->channels,exception);
   status=MagickTrue;
   for (j=0; j < (ssize_t) layer_info->channels; j++)
   {
@@ -1588,8 +1626,6 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
 
     compression=(PSDCompressionType) ReadBlobShort(layer_info->image);
     layer_info->image->compression=ConvertPSDCompression(compression);
-    if (layer_info->channel_info[j].type == -1)
-      layer_info->image->alpha_trait=BlendPixelTrait;
 
     status=ReadPSDChannel(layer_info->image,image_info,psd_info,layer_info,
       (size_t) j,compression,exception);
@@ -1863,11 +1899,9 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
     status;
 
   ssize_t
-    i;
-
-  ssize_t
     count,
     index,
+    i,
     j,
     number_layers;
 
@@ -1961,13 +1995,14 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
     for (j=0; j < (ssize_t) layer_info[i].channels; j++)
     {
       layer_info[i].channel_info[j].type=ReadBlobSignedShort(image);
-      if ((layer_info[i].channel_info[j].type < -3) ||
-          (layer_info[i].channel_info[j].type > 4))
+      if (layer_info[i].channel_info[j].type < -3)
         {
           layer_info=DestroyLayerInfo(layer_info,number_layers);
           ThrowBinaryException(CorruptImageError,"NoSuchImageChannel",
             image->filename);
         }
+      layer_info->channel_info[j].type=GetPsdPixelChannel(psd_info,
+        layer_info->channel_info[j].type);
       layer_info[i].channel_info[j].size=(size_t) GetPSDSize(psd_info,
         image);
       if (image->debug != MagickFalse)
@@ -2150,6 +2185,14 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       }
+    for (j=0; j < (ssize_t) layer_info[i].channels; j++)
+    {
+      if (layer_info[i].channel_info[j].type == -1)
+        {
+          layer_info[i].image->alpha_trait=BlendPixelTrait;
+          break;
+        }
+    }
     if (layer_info[i].info != (StringInfo *) NULL)
       {
         (void) SetImageProfile(layer_info[i].image,"psd:additional-info",
@@ -2218,45 +2261,6 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
     exception));
 }
 
-static ssize_t GetPsdPixelChannel(const PSDInfo *psd_info,ssize_t index)
-{
-  switch (psd_info->mode)
-  {
-    case GrayscaleMode:
-    {
-      if (index == 1) return -1;
-      if (index > 1) return StartMetaPixelChannel+index-2;
-      break;
-    }
-    case RGBMode:
-    {
-      if (index == 3) return -1;
-      if (index > 3) return StartMetaPixelChannel+index-4;
-      break;
-    }
-    case CMYKMode:
-    {
-      if (index == 4) return -1;
-      if (index > 4) return StartMetaPixelChannel+index-5;
-      break;
-    }
-  }
-  return index;
-}
-
-static void SetPsdMetaChannels(Image *image,const PSDInfo *psd_info,
-  ExceptionInfo *exception)
-{
-  ssize_t
-    number_meta_channels;
-
-  number_meta_channels=(ssize_t) psd_info->channels-psd_info->min_channels;
-  if (image->alpha_trait == BlendPixelTrait)
-    number_meta_channels--;
-  if (number_meta_channels > 0)
-    (void) SetPixelMetaChannels(image,(size_t) number_meta_channels,exception);
-}
-
 static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
   Image *image,const PSDInfo *psd_info,ExceptionInfo *exception)
 {
@@ -2293,7 +2297,7 @@ static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
           image->filename);
     }
 
-  SetPsdMetaChannels(image,psd_info,exception);
+  SetPsdMetaChannels(image,psd_info,psd_info->channels,exception);
   status=MagickTrue;
   for (i=0; i < (ssize_t) psd_info->channels; i++)
   {
