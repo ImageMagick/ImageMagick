@@ -69,6 +69,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/property.h"
@@ -949,6 +950,11 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
       if (type != 0)
         color->alpha=(MagickRealType) pixel;
       SetPixelViaPixelInfo(image,color,q);
+      return;
+    }
+  if (type >= StartMetaPixelChannel)
+    {
+      SetPixelChannel(image,(PixelChannel) type,pixel,q);
       return;
     }
   switch (type)
@@ -2219,20 +2225,36 @@ static ssize_t GetPsdPixelChannel(const PSDInfo *psd_info,ssize_t index)
     case GrayscaleMode:
     {
       if (index == 1) return -1;
+      if (index > 1) return StartMetaPixelChannel+index-2;
       break;
     }
     case RGBMode:
     {
       if (index == 3) return -1;
+      if (index > 3) return StartMetaPixelChannel+index-4;
       break;
     }
     case CMYKMode:
     {
       if (index == 4) return -1;
+      if (index > 4) return StartMetaPixelChannel+index-5;
       break;
     }
   }
   return index;
+}
+
+static void SetPsdMetaChannels(Image *image,const PSDInfo *psd_info,
+  ExceptionInfo *exception)
+{
+  ssize_t
+    number_meta_channels;
+
+  number_meta_channels=(ssize_t) psd_info->channels-psd_info->min_channels;
+  if (image->alpha_trait == BlendPixelTrait)
+    number_meta_channels--;
+  if (number_meta_channels > 0)
+    (void) SetPixelMetaChannels(image,(size_t) number_meta_channels,exception);
 }
 
 static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
@@ -2271,6 +2293,7 @@ static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
           image->filename);
     }
 
+  SetPsdMetaChannels(image,psd_info,exception);
   status=MagickTrue;
   for (i=0; i < (ssize_t) psd_info->channels; i++)
   {
