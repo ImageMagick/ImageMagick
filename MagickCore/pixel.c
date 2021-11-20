@@ -6365,7 +6365,8 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
 MagickExport MagickBooleanType SetPixelMetaChannels(Image *image,
   const size_t number_meta_channels,ExceptionInfo *exception)
 {
-  image->number_meta_channels=number_meta_channels;
+  image->number_meta_channels=MagickMin(number_meta_channels,MaxPixelChannels
+    -(size_t) StartMetaChannel);
   InitializePixelChannelMap(image);
   return(SyncImagePixelCache(image,exception));
 }
