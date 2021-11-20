@@ -73,11 +73,6 @@
 #include "MagickCore/utility.h"
 
 /*
-  Define declarations.
-*/
-#define StartMetaChannel (CompositeMaskPixelChannel+1)
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

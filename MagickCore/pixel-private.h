@@ -22,6 +22,10 @@
 extern "C" {
 #endif
 
+#ifndef StartMetaChannel
+  #define StartMetaChannel (CompositeMaskPixelChannel+1)
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
