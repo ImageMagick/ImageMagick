@@ -118,7 +118,7 @@ typedef enum
 */
 typedef struct _ChannelInfo
 {
-  short
+  signed short
     type;
 
   size_t
@@ -1968,7 +1968,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         layer_info[i].page.width,(double) layer_info[i].channels);
     for (j=0; j < (ssize_t) layer_info[i].channels; j++)
     {
-      layer_info[i].channel_info[j].type=(short) ReadBlobShort(image);
+      layer_info[i].channel_info[j].type=ReadBlobSignedShort(image);
       if ((layer_info[i].channel_info[j].type < -4) ||
           (layer_info[i].channel_info[j].type > 4))
         {
