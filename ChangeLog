@@ -1,5 +1,5 @@
 2021-11-20  7.1.0-15  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-15 GIT revision 19367:c8362214a:20211120
+  * Release ImageMagick version 7.1.0-15 GIT revision 19376:b80d2471d:20211120
 
 2021-11-15  7.1.0-15  <quetzlzacatenango@image...>
   * fix alpha channel calculation of arithmetic divide compose operator.
