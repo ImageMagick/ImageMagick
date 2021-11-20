@@ -328,7 +328,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     if (EOFBlob(image) != MagickFalse)
       ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
     number_pixels=(MagickSizeType) viff_info.columns*viff_info.rows;
-    if (number_pixels > GetBlobSize(image))
+    if (number_pixels > 8*GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     if (number_pixels != (size_t) number_pixels)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
