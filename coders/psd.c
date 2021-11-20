@@ -1969,7 +1969,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
     for (j=0; j < (ssize_t) layer_info[i].channels; j++)
     {
       layer_info[i].channel_info[j].type=ReadBlobSignedShort(image);
-      if ((layer_info[i].channel_info[j].type < -4) ||
+      if ((layer_info[i].channel_info[j].type < -3) ||
           (layer_info[i].channel_info[j].type > 4))
         {
           layer_info=DestroyLayerInfo(layer_info,number_layers);
