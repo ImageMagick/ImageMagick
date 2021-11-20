@@ -1,5 +1,5 @@
 2021-11-20  7.1.0-15  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-15 GIT revision 19376:b80d2471d:20211120
+  * Release ImageMagick version 7.1.0-15 GIT revision 19380:8098f3335:20211120
 
 2021-11-20  7.1.0-15  Dirk Lemstra <dirk@lem.....org>
   * Added support for reading extra channels in a PSD file (reference
