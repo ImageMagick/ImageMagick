@@ -958,19 +958,17 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
       SetPixelAlpha(image,pixel,q);
       break;
     }
-    case -2:
     case 0:
+    case -2:
     {
       SetPixelRed(image,pixel,q);
       break;
     }
-    case -3:
     case 1:
     {
       SetPixelGreen(image,pixel,q);
       break;
     }
-    case -4:
     case 2:
     {
       SetPixelBlue(image,pixel,q);
