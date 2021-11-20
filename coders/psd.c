@@ -978,18 +978,6 @@ static inline void SetPSDPixel(Image *image,const size_t channels,
     {
       if (image->colorspace == CMYKColorspace)
         SetPixelBlack(image,pixel,q);
-      else
-        if (image->alpha_trait != UndefinedPixelTrait)
-          SetPixelAlpha(image,pixel,q);
-      break;
-    }
-    case 4:
-    {
-      if ((IssRGBCompatibleColorspace(image->colorspace) != MagickFalse) &&
-          (channels > 3))
-        break;
-      if (image->alpha_trait != UndefinedPixelTrait)
-        SetPixelAlpha(image,pixel,q);
       break;
     }
   }
@@ -2224,6 +2212,29 @@ ModuleExport MagickBooleanType ReadPSDLayers(Image *image,
     exception));
 }
 
+static ssize_t GetPsdPixelChannel(const PSDInfo *psd_info,ssize_t index)
+{
+  switch (psd_info->mode)
+  {
+    case GrayscaleMode:
+    {
+      if (index == 1) return -1;
+      break;
+    }
+    case RGBMode:
+    {
+      if (index == 3) return -1;
+      break;
+    }
+    case CMYKMode:
+    {
+      if (index == 4) return -1;
+      break;
+    }
+  }
+  return index;
+}
+
 static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
   Image *image,const PSDInfo *psd_info,ExceptionInfo *exception)
 {
@@ -2266,10 +2277,7 @@ static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
     ssize_t
       type;
 
-    type=i;
-    if ((type == 1) && (psd_info->channels == 2))
-      type=-1;
-
+    type=GetPsdPixelChannel(psd_info,i);
     if (compression == RLE)
       status=ReadPSDChannelRLE(image,psd_info,type,sizes+(i*image->rows),
         exception);
