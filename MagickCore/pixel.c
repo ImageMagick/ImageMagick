@@ -73,6 +73,11 @@
 #include "MagickCore/utility.h"
 
 /*
+  Define declarations.
+*/
+#define StartMetaChannel (CompositeMaskPixelChannel+1)
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -4337,9 +4342,6 @@ MagickExport void InitializePixelChannelMap(Image *image)
     trait;
 
   ssize_t
-    i;
-
-  ssize_t
     n;
 
   assert(image != (Image *) NULL);
@@ -4365,11 +4367,6 @@ MagickExport void InitializePixelChannelMap(Image *image)
     }
   if (image->colorspace == CMYKColorspace)
     SetPixelChannelAttributes(image,BlackPixelChannel,trait,n++);
-  for (i=0; i < (ssize_t) image->number_meta_channels; i++)
-  {
-    SetPixelChannelAttributes(image,(PixelChannel) n,UpdatePixelTrait,n);
-    n++;
-  }
   if (image->alpha_trait != UndefinedPixelTrait)
     SetPixelChannelAttributes(image,AlphaPixelChannel,CopyPixelTrait,n++);
   if (image->storage_class == PseudoClass)
@@ -4381,6 +4378,21 @@ MagickExport void InitializePixelChannelMap(Image *image)
   if ((image->channels & CompositeMaskChannel) != 0)
     SetPixelChannelAttributes(image,CompositeMaskPixelChannel,CopyPixelTrait,
       n++);
+  if (image->number_meta_channels > 0)
+    {
+      PixelChannel
+        meta_channel;
+
+      ssize_t
+        i;
+
+      meta_channel=StartMetaChannel;
+      for (i=0; i < (ssize_t) image->number_meta_channels; i++)
+      {
+        SetPixelChannelAttributes(image,meta_channel++,UpdatePixelTrait,n);
+        n++;
+      }
+    }
   image->number_channels=(size_t) n;
   (void) SetPixelChannelMask(image,image->channel_mask);
 }
