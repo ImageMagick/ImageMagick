@@ -1518,7 +1518,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
 static MagickBooleanType GetPixelChannelFromPsdIndex(const PSDInfo *psd_info,
   ssize_t index,PixelChannel *channel)
 {
-  *channel=RedChannel;
+  *channel=RedPixelChannel;
   switch (psd_info->mode)
   {
     case BitmapMode:
