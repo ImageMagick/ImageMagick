@@ -1521,6 +1521,9 @@ static MagickBooleanType GetPixelChannelFromPsdIndex(const PSDInfo *psd_info,
   *channel=RedChannel;
   switch (psd_info->mode)
   {
+    case BitmapMode:
+    case DuotoneMode:
+    case IndexedMode:
     case GrayscaleMode:
     {
       if (index == 1)
@@ -1529,6 +1532,8 @@ static MagickBooleanType GetPixelChannelFromPsdIndex(const PSDInfo *psd_info,
         index=StartMetaPixelChannel+index-2;
       break;
     }
+    case LabMode:
+    case MultichannelMode:
     case RGBMode:
     {
       if (index == 3)
