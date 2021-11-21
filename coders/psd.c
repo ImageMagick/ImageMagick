@@ -1432,7 +1432,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
   channel_image=image;
   channel=layer_info->channel_info[channel_index].channel;
   mask=(Image *) NULL;
-  if (layer_info->channel_info[channel_index].channel == ReadMaskChannel)
+  if (channel == ReadMaskChannel)
     {
       const char
         *option;
