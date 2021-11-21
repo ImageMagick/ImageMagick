@@ -118,9 +118,6 @@
 /* Define to 1 if clock_gettime supports CLOCK_REALTIME. */
 #undef HAVE_CLOCK_REALTIME
 
-/* Define to 1 if you have the <CL/cl.h> header file. */
-#undef HAVE_CL_CL_H
-
 /* Define to 1 if you have the <complex.h> header file. */
 #undef HAVE_COMPLEX_H
 
@@ -347,6 +344,9 @@
 
 /* Define to 1 if you have the `newlocale' function. */
 #undef HAVE_NEWLOCALE
+
+/* Define to 1 if you have the <CL/cl.h> header file. */
+#undef HAVE_CL_CL_H
 
 /* Define to 1 if you have the <OpenCL/cl.h> header file. */
 #undef HAVE_OPENCL_CL_H
