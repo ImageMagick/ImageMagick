@@ -1441,7 +1441,7 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,const size_t channels,
 
 static MagickBooleanType ReadPSDChannel(Image *image,
   const ImageInfo *image_info,const PSDInfo *psd_info,LayerInfo* layer_info,
-  const size_t channel,const PSDCompressionType compression,
+  const size_t channel_index,const PSDCompressionType compression,
   ExceptionInfo *exception)
 {
   Image
@@ -1449,20 +1449,21 @@ static MagickBooleanType ReadPSDChannel(Image *image,
     *mask;
 
   MagickOffsetType
+    end_offset,
     offset;
 
   MagickBooleanType
     status;
 
-  if (layer_info->channel_info[channel].supported == MagickFalse)
+  end_offset=(MagickOffsetType) layer_info->channel_info[channel_index].size-2;
+  if (layer_info->channel_info[channel_index].supported == MagickFalse)
     {
-      (void) SeekBlob(image,(MagickOffsetType)
-        (layer_info->channel_info[channel].size-2),SEEK_CUR);
+      (void) SeekBlob(image,end_offset,SEEK_CUR);
       return(MagickTrue);
     }
   channel_image=image;
   mask=(Image *) NULL;
-  if ((layer_info->channel_info[channel].type < -1) &&
+  if ((layer_info->channel_info[channel_index].type < -1) &&
       (layer_info->mask.page.width > 0) && (layer_info->mask.page.height > 0))
     {
       const char
@@ -1473,12 +1474,11 @@ static MagickBooleanType ReadPSDChannel(Image *image,
         disabled or if the flags have unsupported values.
       */
       option=GetImageOption(image_info,"psd:preserve-opacity-mask");
-      if ((layer_info->channel_info[channel].type != -2) ||
+      if ((layer_info->channel_info[channel_index].type != -2) ||
           (layer_info->mask.flags > 2) || ((layer_info->mask.flags & 0x02) &&
            (IsStringTrue(option) == MagickFalse)))
         {
-          (void) SeekBlob(image,(MagickOffsetType)
-            (layer_info->channel_info[channel].size-2),SEEK_CUR);
+          (void) SeekBlob(image,end_offset,SEEK_CUR);
           return(MagickTrue);
         }
       mask=CloneImage(image,layer_info->mask.page.width,
@@ -1497,7 +1497,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
   {
     case Raw:
       status=ReadPSDChannelRaw(channel_image,psd_info->channels,
-        (ssize_t) layer_info->channel_info[channel].type,exception);
+        (ssize_t) layer_info->channel_info[channel_index].type,exception);
       break;
     case RLE:
       {
@@ -1509,7 +1509,8 @@ static MagickBooleanType ReadPSDChannel(Image *image,
           ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
             image->filename);
         status=ReadPSDChannelRLE(channel_image,psd_info,
-          (ssize_t) layer_info->channel_info[channel].type,sizes,exception);
+          (ssize_t) layer_info->channel_info[channel_index].type,sizes,
+          exception);
         sizes=(MagickOffsetType *) RelinquishMagickMemory(sizes);
       }
       break;
@@ -1517,8 +1518,8 @@ static MagickBooleanType ReadPSDChannel(Image *image,
     case ZipWithoutPrediction:
 #ifdef MAGICKCORE_ZLIB_DELEGATE
       status=ReadPSDChannelZip(channel_image,layer_info->channels,
-        (ssize_t) layer_info->channel_info[channel].type,compression,
-        layer_info->channel_info[channel].size-2,exception);
+        (ssize_t) layer_info->channel_info[channel_index].type,compression,
+        (const size_t) end_offset,exception);
 #else
       (void) ThrowMagickException(exception,GetMagickModule(),
           MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn",
@@ -1531,8 +1532,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
       break;
   }
 
-  (void) SeekBlob(image,offset+layer_info->channel_info[channel].size-2,
-    SEEK_SET);
+  (void) SeekBlob(image,offset+end_offset,SEEK_SET);
   if (status == MagickFalse)
     {
       if (mask != (Image *) NULL)
