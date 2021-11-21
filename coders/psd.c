@@ -1432,7 +1432,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
   channel_image=image;
   channel=layer_info->channel_info[channel_index].channel;
   mask=(Image *) NULL;
-  if (channel == ReadMaskChannel)
+  if (channel == ReadMaskPixelChannel)
     {
       const char
         *option;
@@ -1555,7 +1555,7 @@ static MagickBooleanType GetPixelChannelFromPsdIndex(const PSDInfo *psd_info,
   if (index == -1)
     *channel=AlphaPixelChannel;
   else if (index == -2)
-    *channel=ReadMaskChannel;
+    *channel=ReadMaskPixelChannel;
   else
     *channel=(PixelChannel) index;
   return(MagickTrue);
