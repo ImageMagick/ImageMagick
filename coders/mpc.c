@@ -63,6 +63,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
@@ -578,15 +579,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleCompare(keyword,"number-meta-channels") == 0)
                   {
                     image->number_meta_channels=StringToUnsignedLong(options);
-                    if (image->number_meta_channels > MaxPixelChannels)
-                      {
-                        if (profiles != (LinkedListInfo *) NULL)
-                          profiles=DestroyLinkedList(profiles,
-                            RelinquishMagickMemory);
-                        options=DestroyString(options);
-                        ThrowReaderException(CorruptImageError,
-                          "ImproperImageHeader");
-                      }
                     break;
                   }
                 break;
@@ -795,7 +787,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (image->compression == UndefinedCompression) ||
         (image->columns == 0) || (image->rows == 0) ||
         (image->number_channels > MaxPixelChannels) ||
-        (image->number_meta_channels > (MaxPixelChannels-8)) ||
+        (image->number_meta_channels > (MaxPixelChannels-StartMetaPixelChannel)) ||
         ((image->number_channels+image->number_meta_channels) >= MaxPixelChannels) ||
         (image->depth == 0) || (image->depth > 64))
       {
