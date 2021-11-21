@@ -119,6 +119,9 @@ typedef enum
 */
 typedef struct _ChannelInfo
 {
+  MagickBooleanType
+    supported;
+
   signed short
     type;
 
@@ -1451,6 +1454,12 @@ static MagickBooleanType ReadPSDChannel(Image *image,
   MagickBooleanType
     status;
 
+  if (layer_info->channel_info[channel].supported == MagickFalse)
+    {
+      (void) SeekBlob(image,(MagickOffsetType)
+        (layer_info->channel_info[channel].size-2),SEEK_CUR);
+      return(MagickTrue);
+    }
   channel_image=image;
   mask=(Image *) NULL;
   if ((layer_info->channel_info[channel].type < -1) &&
@@ -1994,15 +2003,12 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         layer_info[i].page.width,(double) layer_info[i].channels);
     for (j=0; j < (ssize_t) layer_info[i].channels; j++)
     {
+      layer_info[i].channel_info[j].supported=MagickTrue;
       layer_info[i].channel_info[j].type=ReadBlobSignedShort(image);
-      if (layer_info[i].channel_info[j].type < -3)
-        {
-          layer_info=DestroyLayerInfo(layer_info,number_layers);
-          ThrowBinaryException(CorruptImageError,"NoSuchImageChannel",
-            image->filename);
-        }
-      layer_info->channel_info[j].type=GetPsdPixelChannel(psd_info,
-        layer_info->channel_info[j].type);
+      layer_info[i].channel_info[j].type=GetPsdPixelChannel(psd_info,
+        (ssize_t) layer_info->channel_info[j].type);
+      if (layer_info[i].channel_info[j].type < -2)
+        layer_info[i].channel_info[j].supported=MagickFalse;
       layer_info[i].channel_info[j].size=(size_t) GetPSDSize(psd_info,
         image);
       if (image->debug != MagickFalse)
