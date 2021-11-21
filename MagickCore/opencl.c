@@ -96,10 +96,6 @@
 #include <dlfcn.h>
 #endif
 
-#ifdef MAGICKCORE_HAVE_OPENCL_CL_H
-#define MAGICKCORE_OPENCL_MACOSX  1
-#endif
-
 /*
   Define declarations.
 */
@@ -2500,7 +2496,7 @@ void *OsLibraryGetFunctionAddress(void *library,const char *functionName)
 
 static MagickBooleanType BindOpenCLFunctions()
 {
-#ifdef MAGICKCORE_OPENCL_MACOSX
+#ifdef MAGICKCORE_HAVE_OPENCL_CL_H
 #define BIND(X) openCL_library->X= &X;
 #else
   (void) memset(openCL_library,0,sizeof(MagickLibrary));
