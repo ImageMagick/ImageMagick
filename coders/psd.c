@@ -936,22 +936,22 @@ static inline void SetPSDPixel(Image *image,const PixelChannel channel,
       PixelInfo
         *color;
 
-      Quantum
-        index;
-
-      index=pixel;
-      if (packet_size == 1)
-        index=(Quantum) ScaleQuantumToChar(index);
-      index=(Quantum) ConstrainColormapIndex(image,(ssize_t) index,
-        exception);
-      if (channel == RedPixelChannel)
-        SetPixelIndex(image,index,q);
-      else if (channel == AlphaPixelChannel)
+      if (channel == GrayPixelChannel)
         {
-          color=image->colormap+(ssize_t) GetPixelIndex(image,q);
-          color->alpha=(MagickRealType) pixel;
-          SetPixelViaPixelInfo(image,color,q);
+          Quantum
+            index;
+
+          index=pixel;
+          if (packet_size == 1)
+            index=(Quantum) ScaleQuantumToChar(index);
+          index=(Quantum) ConstrainColormapIndex(image,(ssize_t) index,
+            exception);
+          SetPixelIndex(image,index,q);
         }
+      color=image->colormap+(ssize_t) GetPixelIndex(image,q);
+      if (channel == AlphaPixelChannel)
+        color->alpha=(MagickRealType) pixel;
+      SetPixelViaPixelInfo(image,color,q);
     }
   else
     SetPixelChannel(image,channel,pixel,q);
