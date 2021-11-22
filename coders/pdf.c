@@ -1465,8 +1465,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     version=1.6;
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    if ((image_info->type != TrueColorType) &&
-        (IdentifyImageCoderGray(next,exception) != MagickFalse))
+    if (IdentifyImageCoderGray(next,exception) != MagickFalse)
       SetImageColorspace(next,GRAYColorspace,exception);
     icc_profile=GetCompatibleColorProfile(next);
     if (icc_profile != (StringInfo *) NULL)
@@ -1996,7 +1995,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if ((4*number_pixels) != (MagickSizeType) ((size_t) (4*number_pixels)))
       ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
-        (IdentifyImageCoderGray(image,exception) != MagickFalse))
+        (IsImageGray(image) != MagickFalse))
       {
         switch (compression)
         {
@@ -2359,7 +2358,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     else
       if ((compression == FaxCompression) ||
           (compression == Group4Compression) ||
-          (IdentifyImageCoderGray(image,exception) != MagickFalse))
+          (IsImageGray(image,exception) != MagickFalse))
         {
           device="DeviceGray";
           channels=1;
@@ -2526,7 +2525,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     number_pixels=(MagickSizeType) tile_image->columns*tile_image->rows;
     if ((compression == FaxCompression) ||
         (compression == Group4Compression) ||
-        (IdentifyImageCoderGray(image,exception) != MagickFalse))
+        (IdentifyImageCoderGray(tile_image,exception) != MagickFalse))
       {
         switch (compression)
         {
