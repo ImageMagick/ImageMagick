@@ -2278,6 +2278,41 @@ AC_SUBST([HEIF_LIBS])
 dnl ===========================================================================
 
 #
+# Check for the libavif library to use instead of libheif when encoding AVIF.
+#
+AC_ARG_WITH([libavif],
+    [AC_HELP_STRING([--without-libavif],
+                    [disable libavif support])],
+    [with_libavif=$withval],
+    [with_libavif='no'])
+
+if test "$with_libavif" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-libavif=$with_libavif "
+fi
+
+have_libavif='no'
+LIBAVIF_CFLAGS=""
+LIBAVIF_LIBS=""
+LIBAVIF_PKG=""
+if test "x$with_libavif" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES([LIBAVIF],[libavif],[have_libavif=yes],[have_libavif=no])
+  AC_MSG_RESULT([])
+fi
+
+if test "$have_libavif" = 'yes'; then
+  AC_DEFINE([LIBAVIF_DELEGATE],[1],[Define if you have libavif library])
+  CFLAGS="$LIBAVIF_CFLAGS $CFLAGS"
+fi
+
+AM_CONDITIONAL([LIBAVIF_DELEGATE],[test "$have_libavif" = 'yes'])
+AC_SUBST([LIBAVIF_CFLAGS])
+AC_SUBST([LIBAVIF_LIBS])
+
+
+dnl ===========================================================================
+
+#
 # Check for JBIG delegate library.
 #
 AC_ARG_WITH([jbig],
@@ -3764,6 +3799,9 @@ fi
 if test "$have_heic"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES heic"
 fi
+if test "$have_libavif"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES libavif"
+fi
 if test "$have_jbig"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jbig"
 fi
@@ -3899,7 +3937,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $LIBAVIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 AC_SUBST([MAGICK_DEP_LIBS])
@@ -4056,6 +4094,7 @@ Delegate library configuration:
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
   HEIC              --with-heic=$with_heic		$have_heic
+  LIBAVIF           --with-libavif=$with_libavif $have_libavif
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   JPEG XL           --with-jxl=$with_jxl		$have_jxl

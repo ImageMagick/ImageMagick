@@ -826,6 +826,10 @@ JPEG_DELEGATE_TRUE
 JBIG_LIBS
 JBIG_DELEGATE_FALSE
 JBIG_DELEGATE_TRUE
+LIBAVIF_DELEGATE_FALSE
+LIBAVIF_DELEGATE_TRUE
+LIBAVIF_LIBS
+LIBAVIF_CFLAGS
 HEIC_DELEGATE_FALSE
 HEIC_DELEGATE_TRUE
 HEIF_LIBS
@@ -1221,6 +1225,7 @@ with_fontpath
 with_gs_font_dir
 with_gvc
 with_heic
+with_libavif
 with_jbig
 with_jpeg
 with_jxl
@@ -1281,6 +1286,8 @@ GVC_CFLAGS
 GVC_LIBS
 HEIF_CFLAGS
 HEIF_LIBS
+LIBAVIF_CFLAGS
+LIBAVIF_LIBS
 JXL_CFLAGS
 JXL_LIBS
 LCMS2_CFLAGS
@@ -2051,6 +2058,7 @@ Optional Packages:
   --with-gs-font-dir=DIR  Ghostscript font directory
   --with-gvc              enable GVC support
   --without-heic          disable HEIC support
+  --without-libavif       disable libavif support
   --without-jbig          disable JBIG support
   --without-jpeg          disable JPEG support
   --with-jxl              enable JPEG-XL support
@@ -2125,6 +2133,10 @@ Some influential environment variables:
   GVC_LIBS    linker flags for GVC, overriding pkg-config
   HEIF_CFLAGS C compiler flags for HEIF, overriding pkg-config
   HEIF_LIBS   linker flags for HEIF, overriding pkg-config
+  LIBAVIF_CFLAGS
+              C compiler flags for LIBAVIF, overriding pkg-config
+  LIBAVIF_LIBS
+              linker flags for LIBAVIF, overriding pkg-config
   JXL_CFLAGS  C compiler flags for JXL, overriding pkg-config
   JXL_LIBS    linker flags for JXL, overriding pkg-config
   LCMS2_CFLAGS
@@ -4568,7 +4580,7 @@ MAGICK_PATCHLEVEL_VERSION=11
 
 MAGICK_VERSION=7.1.0-11
 
-MAGICK_GIT_REVISION=19237:32bf14aa2:20211010
+MAGICK_GIT_REVISION=19240:c191d5d0d:20211122
 
 
 # Substitute library versioning
@@ -4598,7 +4610,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,11
 
-PACKAGE_RELEASE_DATE=2021-10-10
+PACKAGE_RELEASE_DATE=2021-11-22
 
 
 # Ensure that make can run correctly
@@ -10251,7 +10263,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -10297,7 +10309,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -10321,7 +10333,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -10366,7 +10378,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -10390,7 +10402,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -24585,6 +24597,8 @@ main ()
     if (*(data + i) != *(data3 + i))
       return 14;
   close (fd);
+  free (data);
+  free (data3);
   return 0;
 }
 _ACEOF
@@ -30452,6 +30466,124 @@ fi
 
 
 #
+# Check for the libavif library to use instead of libheif when encoding AVIF.
+#
+
+# Check whether --with-libavif was given.
+if test "${with_libavif+set}" = set; then :
+  withval=$with_libavif; with_libavif=$withval
+else
+  with_libavif='no'
+fi
+
+
+if test "$with_libavif" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-libavif=$with_libavif "
+fi
+
+have_libavif='no'
+LIBAVIF_CFLAGS=""
+LIBAVIF_LIBS=""
+LIBAVIF_PKG=""
+if test "x$with_libavif" = "xyes"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+$as_echo "-------------------------------------------------------------" >&6; }
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libavif" >&5
+$as_echo_n "checking for libavif... " >&6; }
+
+if test -n "$LIBAVIF_CFLAGS"; then
+    pkg_cv_LIBAVIF_CFLAGS="$LIBAVIF_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libavif\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libavif") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBAVIF_CFLAGS=`$PKG_CONFIG --cflags "libavif" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$LIBAVIF_LIBS"; then
+    pkg_cv_LIBAVIF_LIBS="$LIBAVIF_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libavif\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libavif") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBAVIF_LIBS=`$PKG_CONFIG --libs "libavif" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBAVIF_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libavif" 2>&1`
+        else
+	        LIBAVIF_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libavif" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBAVIF_PKG_ERRORS" >&5
+
+	have_libavif=no
+elif test $pkg_failed = untried; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	have_libavif=no
+else
+	LIBAVIF_CFLAGS=$pkg_cv_LIBAVIF_CFLAGS
+	LIBAVIF_LIBS=$pkg_cv_LIBAVIF_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_libavif=yes
+fi
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+fi
+
+if test "$have_libavif" = 'yes'; then
+
+$as_echo "#define LIBAVIF_DELEGATE 1" >>confdefs.h
+
+  CFLAGS="$LIBAVIF_CFLAGS $CFLAGS"
+fi
+
+ if test "$have_libavif" = 'yes'; then
+  LIBAVIF_DELEGATE_TRUE=
+  LIBAVIF_DELEGATE_FALSE='#'
+else
+  LIBAVIF_DELEGATE_TRUE='#'
+  LIBAVIF_DELEGATE_FALSE=
+fi
+
+
+
+
+
+
+#
 # Check for JBIG delegate library.
 #
 
@@ -35718,6 +35850,9 @@ fi
 if test "$have_heic"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES heic"
 fi
+if test "$have_libavif"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES libavif"
+fi
 if test "$have_jbig"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jbig"
 fi
@@ -35941,7 +36076,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $LIBAVIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 
@@ -36293,6 +36428,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HEIC_DELEGATE_TRUE}" && test -z "${HEIC_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"HEIC_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${LIBAVIF_DELEGATE_TRUE}" && test -z "${LIBAVIF_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"LIBAVIF_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${JBIG_DELEGATE_TRUE}" && test -z "${JBIG_DELEGATE_FALSE}"; then
@@ -39011,6 +39150,7 @@ Delegate library configuration:
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
   HEIC              --with-heic=$with_heic		$have_heic
+  LIBAVIF           --with-libavif=$with_libavif $have_libavif
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   JPEG XL           --with-jxl=$with_jxl		$have_jxl
@@ -39110,6 +39250,7 @@ Delegate library configuration:
   Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
   Graphviz          --with-gvc=$with_gvc		$have_gvc
   HEIC              --with-heic=$with_heic		$have_heic
+  LIBAVIF           --with-libavif=$with_libavif $have_libavif
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   JPEG XL           --with-jxl=$with_jxl		$have_jxl
