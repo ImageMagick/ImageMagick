@@ -2682,7 +2682,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (replicate_profile == MagickFalse)
               break;
           }
-        next=image->next;
+        next=next->next;
       }
       profile=DestroyStringInfo(profile);
     }
