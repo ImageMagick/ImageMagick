@@ -1550,7 +1550,7 @@ static MagickBooleanType GetPixelChannelFromPsdIndex(const PSDInfo *psd_info,
       break;
     }
   }
-  if ((index < -2) || (index > MaxPixelChannels))
+  if ((index < -2) || (index >= MaxPixelChannels))
     return(MagickFalse);
   if (index == -1)
     *channel=AlphaPixelChannel;
