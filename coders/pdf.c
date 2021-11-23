@@ -2358,7 +2358,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     else
       if ((compression == FaxCompression) ||
           (compression == Group4Compression) ||
-          (IsImageGray(image,exception) != MagickFalse))
+          (IsImageGray(image) != MagickFalse))
         {
           device="DeviceGray";
           channels=1;
