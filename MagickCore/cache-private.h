@@ -127,9 +127,6 @@ typedef struct _NexusInfo
 
   struct _NexusInfo
     *virtual_nexus;
-
-  SemaphoreInfo
-    *semaphore;
 } NexusInfo;
 
 typedef struct _CacheInfo
