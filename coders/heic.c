@@ -81,6 +81,14 @@
 #endif
 #endif
 
+#if defined(MAGICKCORE_LIBAVIF_DELEGATE)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#include <avif.h>
+#else
+#include <avif/avif.h>
+#endif
+#endif
+
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 /*
   Define declarations.
@@ -991,6 +999,157 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
   return(status);
 }
 
+static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
+  Image *image,ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    scene;
+
+  ssize_t
+    y;
+
+  avifEncoder * 
+    encoder = NULL;
+  
+  avifRWData 
+    avifOutput = AVIF_DATA_EMPTY;
+
+  const Quantum
+    *p;
+
+  uint8_t
+    *q;
+
+
+  scene=0;
+
+  encoder = avifEncoderCreate();
+  encoder->maxThreads = 1;
+  encoder->minQuantizer = 24;
+  encoder->maxQuantizer = 26;
+  encoder->minQuantizerAlpha = AVIF_QUANTIZER_LOSSLESS;
+  encoder->maxQuantizerAlpha = AVIF_QUANTIZER_LOSSLESS;
+  encoder->tileRowsLog2 = 0;
+  encoder->tileColsLog2 = 0;
+  encoder->codecChoice = AVIF_CODEC_CHOICE_AOM;
+  encoder->speed = 6;
+
+  status = MagickTrue;
+
+  printf("Encoding AVIF using libavif!\n");
+
+  do
+  {
+    avifImage * avif_image = avifImageCreate(image->columns, image->rows, 8, AVIF_PIXEL_FORMAT_YUV444);
+    avifRGBImage rgb;
+
+
+    memset(&rgb, 0, sizeof(rgb));
+    //TODO: Original image has to be in RGB colorspace
+
+
+    avifRGBImageSetDefaults(&rgb, avif_image);
+    rgb.format = AVIF_RGB_FORMAT_RGB;
+    rgb.depth = 8;
+    avifRGBImageAllocatePixels(&rgb);
+
+    printf("RGB ready!!\n");
+
+    /*
+      Copy image to avif_image
+    */
+    for (y=0; y < (ssize_t) image->rows; y++)
+    {
+      ssize_t
+        x;
+
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+      q=&rgb.pixels[y * rgb.rowBytes];
+
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          *(q++)=ScaleQuantumToChar(GetPixelRed(image,p));
+          *(q++)=ScaleQuantumToChar(GetPixelGreen(image,p));
+          *(q++)=ScaleQuantumToChar(GetPixelBlue(image,p));
+          if (image->alpha_trait != UndefinedPixelTrait)
+            *(q++)=ScaleQuantumToChar(GetPixelAlpha(image,p));
+
+          p+=GetPixelChannels(image);
+        }
+      if (image->previous == (Image *) NULL)
+        {
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
+    }
+    printf("RGB copied!!\n");
+
+    avifResult convertResult = avifImageRGBToYUV(avif_image, &rgb);
+    if (convertResult != AVIF_RESULT_OK)
+      {
+        status=MagickFalse;
+        break;
+      }
+    printf("RGB converted!!\n");
+
+    avifResult addImageResult = avifEncoderAddImage(encoder, avif_image, 1, AVIF_ADD_IMAGE_FLAG_SINGLE);
+    if (addImageResult != AVIF_RESULT_OK)
+      {
+        status=MagickFalse;
+        break;
+      }
+
+    //TODO:
+    if (avif_image) 
+    {
+      avifImageDestroy(avif_image);
+    }
+    avifRGBImageFreePixels(&rgb);
+
+    if (GetNextImageInList(image) == (Image *) NULL)
+      break;
+    image=SyncNextImageInList(image);
+    status=SetImageProgress(image,SaveImagesTag,scene,
+      GetImageListLength(image));
+    if (status == MagickFalse)
+      break;
+    
+    scene++;
+  } while (image_info->adjoin != MagickFalse);
+
+  if (status == MagickFalse)
+    return status;
+
+
+  printf("%d images added, encoding...!!\n", scene);
+  avifResult finishResult = avifEncoderFinish(encoder, &avifOutput);
+  if (finishResult != AVIF_RESULT_OK)
+    {
+        status=MagickFalse;
+    }
+  printf("Images encoded %d !!\n", avifOutput.size);
+
+  WriteBlob(image, (int) avifOutput.size, avifOutput.data);
+
+  if (encoder) 
+    {
+      avifEncoderDestroy(encoder);
+    }
+  avifRWDataFree(&avifOutput);
+
+  return status;
+}
+
 static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
@@ -1040,6 +1199,22 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   encode_avif=(LocaleCompare(image_info->magick,"AVIF") == 0) ?
     MagickTrue : MagickFalse;
 #endif
+
+#if defined(MAGICKCORE_LIBAVIF_DELEGATE)
+  if (encode_avif != MagickFalse)
+    {
+      const char
+          *option;
+
+      option=GetImageOption(image_info,"heic:libavif");
+
+      if (IsStringTrue(option) != MagickFalse) {
+        printf("Using libavif!");
+        return WriteAVIFImageLibavif(image_info, image, exception);
+      }
+    }
+#endif
+
   do
   {
 #if LIBHEIF_NUMERIC_VERSION >= 0x01040000
