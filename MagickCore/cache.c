@@ -1133,7 +1133,8 @@ MagickPrivate NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
   nexus_info=(NexusInfo **) RelinquishAlignedMemory(nexus_info);
   return(nexus_info);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2930,8 +2931,7 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
                 EdgeX(x_offset,cache_info->columns),
                 EdgeY(y_offset,cache_info->rows),1UL,1UL,virtual_nexus,
                 exception);
-              r=GetVirtualMetacontentFromNexus(cache_info,
-                nexus_info->virtual_nexus);
+              r=GetVirtualMetacontentFromNexus(cache_info,virtual_nexus);
               break;
             }
             case RandomVirtualPixelMethod:
