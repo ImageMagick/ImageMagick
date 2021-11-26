@@ -60,8 +60,12 @@ static inline int GetMagickNumberThreads(const Image *source,
   /*
     Return number of threads dependent on cache type and work load.
   */
-  if ((multithreaded == 0) || (source_type == PingCache) || 
-      (destination_type == PingCache))
+#if defined(__has_feature)
+#if __has_feature(address_sanitizer)
+  return(1);
+#endif
+#endif
+  if (multithreaded == 0)
     return(1);
   if (((source_type != MemoryCache) && (source_type != MapCache)) ||
       ((destination_type != MemoryCache) && (destination_type != MapCache)))
