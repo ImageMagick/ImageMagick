@@ -1,3 +1,9 @@
+2021-11-27  7.1.0-17  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-17 GIT revision 19412:23402d5ca:20211127
+
+2021-11-27  7.1.0-17  <quetzlzacatenango@image...>
+  * set threads to 1 when using ASAN to avoid false positive memory leaks.
+
 2021-11-21  7.1.0-16  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-16 GIT revision 19398:7dc99d829:20211121
 
