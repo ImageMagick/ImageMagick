@@ -152,7 +152,7 @@ static inline void SetOpenMPMaximumThreads(const int threads)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   omp_set_num_threads(threads);
 #else
-  (void) threads;
+  magick_unreferenced(threads);
 #endif
 }
 
@@ -161,7 +161,7 @@ static inline void SetOpenMPNested(const int value)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   omp_set_nested(value);
 #else
-  (void) value;
+  magick_unreferenced(value);
 #endif
 }
 
