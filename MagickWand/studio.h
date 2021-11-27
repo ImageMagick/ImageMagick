@@ -269,9 +269,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  define SetNotifyHandlers \
     SetErrorHandler(NTErrorHandler); \
     SetWarningHandler(NTWarningHandler)
-#  if !defined(MAGICKCORE_HAVE_TIFFCONF_H)
-#    define HAVE_TIFFCONF_H
-#  endif
 # endif
 
 #endif
