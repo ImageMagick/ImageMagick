@@ -1027,15 +1027,20 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
   scene=0;
 
   encoder = avifEncoderCreate();
+  
   encoder->maxThreads = 1;
-  encoder->minQuantizer = 24;
-  encoder->maxQuantizer = 26;
+  // encoder->minQuantizer = 24;
+  // encoder->maxQuantizer = 26;
+  encoder->minQuantizer = 1;
+  encoder->maxQuantizer = 63;
+
   encoder->minQuantizerAlpha = AVIF_QUANTIZER_LOSSLESS;
   encoder->maxQuantizerAlpha = AVIF_QUANTIZER_LOSSLESS;
   encoder->tileRowsLog2 = 0;
   encoder->tileColsLog2 = 0;
   encoder->codecChoice = AVIF_CODEC_CHOICE_AOM;
-  encoder->speed = 6;
+  encoder->speed = 5;
+  
 
   status = MagickTrue;
 
@@ -1043,9 +1048,11 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
 
   do
   {
-    avifImage * avif_image = avifImageCreate(image->columns, image->rows, 8, AVIF_PIXEL_FORMAT_YUV444);
+    avifImage * avif_image = avifImageCreate(image->columns, image->rows, image->depth, AVIF_PIXEL_FORMAT_YUV420);
     avifRGBImage rgb;
 
+    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+      status=TransformImageColorspace(image,sRGBColorspace,exception);
 
     memset(&rgb, 0, sizeof(rgb));
     //TODO: Original image has to be in RGB colorspace
@@ -1053,10 +1060,22 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
 
     avifRGBImageSetDefaults(&rgb, avif_image);
     rgb.format = AVIF_RGB_FORMAT_RGB;
-    rgb.depth = 8;
+    if (image->alpha_trait != UndefinedPixelTrait) {
+      rgb.format = AVIF_RGB_FORMAT_RGBA;
+    }
+    rgb.depth = image->depth;
     avifRGBImageAllocatePixels(&rgb);
 
+
     printf("RGB ready!!\n");
+
+    avif_image->colorPrimaries = AVIF_COLOR_PRIMARIES_UNSPECIFIED;
+    avif_image->transferCharacteristics = AVIF_TRANSFER_CHARACTERISTICS_SRGB;
+    avif_image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT601;
+    avif_image->yuvRange = AVIF_RANGE_FULL;
+    avif_image->alphaPremultiplied = AVIF_FALSE;
+    avif_image->yuvFormat = AVIF_PIXEL_FORMAT_YUV420;
+
 
     /*
       Copy image to avif_image
