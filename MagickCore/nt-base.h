@@ -192,6 +192,9 @@ extern "C" {
 #if !defined(popen)
 #  define popen  _popen
 #endif
+#if !defined(putenv)
+#  define putenv  _putenv
+#endif
 #if !defined(fprintf_l)
 #define fprintf_l  _fprintf_s_l
 #endif
