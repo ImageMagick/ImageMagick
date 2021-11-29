@@ -1027,20 +1027,21 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
   scene=0;
 
   encoder = avifEncoderCreate();
+  // avifEncoderSetCodecSpecificOption(encoder, "end-usage", "cq");
+  // avifEncoderSetCodecSpecificOption(encoder, "cq-level", "50");
   
   encoder->maxThreads = 1;
-  // encoder->minQuantizer = 24;
-  // encoder->maxQuantizer = 26;
-  encoder->minQuantizer = 1;
-  encoder->maxQuantizer = 63;
+  encoder->minQuantizer = 32;
+  encoder->maxQuantizer = 32;
+  // encoder->minQuantizer = 1;
+  // encoder->maxQuantizer = 63;
 
   encoder->minQuantizerAlpha = AVIF_QUANTIZER_LOSSLESS;
   encoder->maxQuantizerAlpha = AVIF_QUANTIZER_LOSSLESS;
   encoder->tileRowsLog2 = 0;
   encoder->tileColsLog2 = 0;
   encoder->codecChoice = AVIF_CODEC_CHOICE_AOM;
-  encoder->speed = 5;
-  
+  encoder->speed = 5;  
 
   status = MagickTrue;
 
@@ -1151,6 +1152,7 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
 
 
   printf("%d images added, encoding...!!\n", scene);
+
   avifResult finishResult = avifEncoderFinish(encoder, &avifOutput);
   if (finishResult != AVIF_RESULT_OK)
     {
