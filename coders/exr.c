@@ -289,9 +289,17 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         continue;
       }
     (void) memset(scanline,0,columns*sizeof(*scanline));
-    ImfInputSetFrameBuffer(file,scanline-data_window.min_x-columns*yy,1,
-      columns);
-    ImfInputReadPixels(file,yy,yy);
+    if (ImfInputSetFrameBuffer(file,scanline-data_window.min_x-columns*yy,1,
+      columns) == 0)
+      {
+        status=MagickFalse;
+        break;
+      }
+    if (ImfInputReadPixels(file,yy,yy) == 0)
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       int
@@ -318,6 +326,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   scanline=(ImfRgba *) RelinquishMagickMemory(scanline);
   (void) ImfCloseInputFile(file);
+  if (status == MagickFalse)
+    ThrowReaderException(CorruptImageError,"UnableToReadImageData");
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
