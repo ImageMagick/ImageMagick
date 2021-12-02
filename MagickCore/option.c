@@ -2727,7 +2727,7 @@ MagickExport MagickBooleanType IsCommandOption(const char *option)
     *value;
 
   ExceptionInfo
-    *exception = AcquireExceptionInfo();
+    *exception;
 
   MagickBooleanType
     pedantic;
@@ -2735,6 +2735,7 @@ MagickExport MagickBooleanType IsCommandOption(const char *option)
   assert(option != (const char *) NULL);
   if ((*option != '-') && (*option != '+'))
     return(MagickFalse);
+  exception=AcquireExceptionInfo();
   value=(char *) GetImageRegistry(StringRegistryType,"option:pedantic",
     exception);
   exception=DestroyExceptionInfo(exception);
