@@ -425,7 +425,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   JxlThreadParallelRunnerDestroy(runner);
   JxlDecoderDestroy(decoder);
   if (decoder_status == JXL_DEC_ERROR)
-     ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+    ThrowReaderException(CorruptImageError,"UnableToReadImageData");
   (void) CloseBlob(image);
   return(image);
 }
