@@ -247,7 +247,10 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      (void) ImfCloseInputFile(file);
+      return(DestroyImageList(image));
+    }
   ImfHeaderDataWindow(hdr_info,&data_window.min_x,&data_window.min_y,
     &data_window.max_x,&data_window.max_y);
   columns=((size_t) data_window.max_x-data_window.min_x+1UL);
