@@ -1382,6 +1382,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   FT_Library
     library;
 
+  FT_Long
+    face_index;
+
   FT_Matrix
     affine;
 
@@ -1443,6 +1446,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (ft_status != 0)
     ThrowBinaryException(TypeError,"UnableToInitializeFreetypeLibrary",
       image->filename);
+  face_index=(FT_Long) draw_info->face;
   args.flags=FT_OPEN_PATHNAME;
   if (draw_info->font == (char *) NULL)
     args.pathname=ConstantString("helvetica");
@@ -1450,9 +1454,19 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (*draw_info->font != '@')
       args.pathname=ConstantString(draw_info->font);
     else
-      args.pathname=ConstantString(draw_info->font+1);
+      {
+        /*
+          Extract face index, e.g. @msgothic[1].
+        */
+        ImageInfo *image_info=AcquireImageInfo();
+        (void) strcpy(image_info->filename,draw_info->font+1);
+        (void) SetImageInfo(image_info,0,exception);
+        face_index=(FT_Long) image_info->scene;
+        args.pathname=ConstantString(image_info->filename);
+        image_info=DestroyImageInfo(image_info);
+     }
   face=(FT_Face) NULL;
-  ft_status=FT_Open_Face(library,&args,(long) draw_info->face,&face);
+  ft_status=FT_Open_Face(library,&args,face_index,&face);
   if (ft_status != 0)
     {
       (void) FT_Done_FreeType(library);
