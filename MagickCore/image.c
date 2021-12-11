@@ -787,11 +787,12 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
 MagickExport Image *CloneImage(const Image *image,const size_t columns,
   const size_t rows,const MagickBooleanType detach,ExceptionInfo *exception)
 {
+  double
+    scale_x,
+    scale_y;
+
   Image
     *clone_image;
-
-  double
-    scale;
 
   size_t
     length;
@@ -886,21 +887,23 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       clone_image->cache=ReferencePixelCache(image->cache);
       return(clone_image);
     }
-  scale=1.0;
+  scale_x=1.0;
+  scale_y=1.0;
   if (image->columns != 0)
-    scale=(double) columns/(double) image->columns;
-  clone_image->page.width=(size_t) CastDoubleToLong(floor(scale*
-    image->page.width+0.5));
-  clone_image->page.x=CastDoubleToLong(ceil(scale*image->page.x-0.5));
-  clone_image->tile_offset.x=CastDoubleToLong(ceil(scale*
-    image->tile_offset.x-0.5));
-  scale=1.0;
+    scale_x=(double) columns/(double) image->columns;
   if (image->rows != 0)
-    scale=(double) rows/(double) image->rows;
-  clone_image->page.height=(size_t) CastDoubleToLong(floor(scale*
+    scale_y=(double) rows/(double) image->rows;
+  clone_image->page.width=(size_t) CastDoubleToLong(floor(scale_x*
+    image->page.width+0.5));
+  clone_image->page.height=(size_t) CastDoubleToLong(floor(scale_y*
     image->page.height+0.5));
-  clone_image->page.y=CastDoubleToLong(ceil(scale*image->page.y-0.5));
-  clone_image->tile_offset.y=CastDoubleToLong(ceil(scale*
+  if (MagickAbsoluteValue(scale_x-scale_y) < 2.0)
+    scale_x=scale_y=MagickMin(scale_x,scale_y);
+  clone_image->page.x=CastDoubleToLong(ceil(scale_x*image->page.x-0.5));
+  clone_image->tile_offset.x=CastDoubleToLong(ceil(scale_x*
+    image->tile_offset.x-0.5));
+  clone_image->page.y=CastDoubleToLong(ceil(scale_y*image->page.y-0.5));
+  clone_image->tile_offset.y=CastDoubleToLong(ceil(scale_y*
     image->tile_offset.y-0.5));
   clone_image->cache=ClonePixelCache(image->cache);
   if (SetImageExtent(clone_image,columns,rows,exception) == MagickFalse)
