@@ -2005,7 +2005,7 @@ static void TerminateDestination(j_compress_ptr compress_info)
     }
 }
 
-static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
+static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
   ExceptionInfo *exception)
 {
   const char
@@ -2772,7 +2772,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           (unsigned int) MagickMin((size_t) strlen(value+i),65533L));
     }
   if (image->profiles != (void *) NULL)
-    WriteProfile(jpeg_info,image,exception);
+    WriteProfiles(jpeg_info,image,exception);
   /*
     Convert MIFF to JPEG raster pixels.
   */
