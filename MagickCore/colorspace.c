@@ -1519,7 +1519,7 @@ MagickExport MagickBooleanType SetImageGray(Image *image,
   if (type == UndefinedType)
     return(MagickFalse);
   image->colorspace=GRAYColorspace;
-  if (SyncImagePixelCache((Image *) image,exception) == MagickFalse)
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
   image->type=type;
   return(MagickTrue);
