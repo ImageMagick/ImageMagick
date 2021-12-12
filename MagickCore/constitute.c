@@ -694,50 +694,54 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     (void) GetImageProperty(next,"icc:*",exception);
     (void) GetImageProperty(next,"iptc:*",exception);
     (void) GetImageProperty(next,"xmp:*",exception);
-    value=GetImageProperty(next,"exif:Orientation",exception);
-    if (value == (char *) NULL)
-      value=GetImageProperty(next,"tiff:Orientation",exception);
-    if (value != (char *) NULL)
+    option=GetImageOption(image_info,"exif:sync-image");
+    if (IsStringFalse(option) == MagickFalse)
       {
-        next->orientation=(OrientationType) StringToLong(value);
-        (void) DeleteImageProperty(next,"tiff:Orientation");
-        (void) DeleteImageProperty(next,"exif:Orientation");
-      }
-    value=GetImageProperty(next,"exif:XResolution",exception);
-    if (value != (char *) NULL)
-      {
-        geometry_info.rho=next->resolution.x;
-        geometry_info.sigma=1.0;
-        flags=ParseGeometry(value,&geometry_info);
-        if (geometry_info.sigma != 0)
-          next->resolution.x=geometry_info.rho/geometry_info.sigma;
-        if (strchr(value,',') != (char *) NULL)
-          next->resolution.x=geometry_info.rho+geometry_info.sigma/1000.0;
-        (void) DeleteImageProperty(next,"exif:XResolution");
-      }
-    value=GetImageProperty(next,"exif:YResolution",exception);
-    if (value != (char *) NULL)
-      {
-        geometry_info.rho=next->resolution.y;
-        geometry_info.sigma=1.0;
-        flags=ParseGeometry(value,&geometry_info);
-        if (geometry_info.sigma != 0)
-          next->resolution.y=geometry_info.rho/geometry_info.sigma;
-        if (strchr(value,',') != (char *) NULL)
-          next->resolution.y=geometry_info.rho+geometry_info.sigma/1000.0;
-        (void) DeleteImageProperty(next,"exif:YResolution");
-      }
-    value=GetImageProperty(next,"exif:ResolutionUnit",exception);
-    if (value == (char *) NULL)
-      value=GetImageProperty(next,"tiff:ResolutionUnit",exception);
-    if (value != (char *) NULL)
-      {
-        option_type=ParseCommandOption(MagickResolutionOptions,MagickFalse,
-          value);
-        if (option_type >= 0)
-          next->units=(ResolutionType) option_type;
-        (void) DeleteImageProperty(next,"exif:ResolutionUnit");
-        (void) DeleteImageProperty(next,"tiff:ResolutionUnit");
+        value=GetImageProperty(next,"exif:Orientation",exception);
+        if (value == (char *) NULL)
+          value=GetImageProperty(next,"tiff:Orientation",exception);
+        if (value != (char *) NULL)
+          {
+            next->orientation=(OrientationType) StringToLong(value);
+            (void) DeleteImageProperty(next,"tiff:Orientation");
+            (void) DeleteImageProperty(next,"exif:Orientation");
+          }
+        value=GetImageProperty(next,"exif:XResolution",exception);
+        if (value != (char *) NULL)
+          {
+            geometry_info.rho=next->resolution.x;
+            geometry_info.sigma=1.0;
+            flags=ParseGeometry(value,&geometry_info);
+            if (geometry_info.sigma != 0)
+              next->resolution.x=geometry_info.rho/geometry_info.sigma;
+            if (strchr(value,',') != (char *) NULL)
+              next->resolution.x=geometry_info.rho+geometry_info.sigma/1000.0;
+            (void) DeleteImageProperty(next,"exif:XResolution");
+          }
+        value=GetImageProperty(next,"exif:YResolution",exception);
+        if (value != (char *) NULL)
+          {
+            geometry_info.rho=next->resolution.y;
+            geometry_info.sigma=1.0;
+            flags=ParseGeometry(value,&geometry_info);
+            if (geometry_info.sigma != 0)
+              next->resolution.y=geometry_info.rho/geometry_info.sigma;
+            if (strchr(value,',') != (char *) NULL)
+              next->resolution.y=geometry_info.rho+geometry_info.sigma/1000.0;
+            (void) DeleteImageProperty(next,"exif:YResolution");
+          }
+        value=GetImageProperty(next,"exif:ResolutionUnit",exception);
+        if (value == (char *) NULL)
+          value=GetImageProperty(next,"tiff:ResolutionUnit",exception);
+        if (value != (char *) NULL)
+          {
+            option_type=ParseCommandOption(MagickResolutionOptions,MagickFalse,
+              value);
+            if (option_type >= 0)
+              next->units=(ResolutionType) option_type;
+            (void) DeleteImageProperty(next,"exif:ResolutionUnit");
+            (void) DeleteImageProperty(next,"tiff:ResolutionUnit");
+          }
       }
     if (next->page.width == 0)
       next->page.width=next->columns;
