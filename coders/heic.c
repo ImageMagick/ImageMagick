@@ -1011,8 +1011,8 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
   ssize_t
     y;
 
-  avifEncoder * 
-    encoder = NULL;
+  avifEncoder  
+    *encoder = NULL;
   
   avifRWData 
     avifOutput = AVIF_DATA_EMPTY;
@@ -1023,18 +1023,33 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
   uint8_t
     *q;
 
+  size_t
+    quality = 50;
+
+  uint8_t
+    cq_level;
+
+  char 
+    cq_level_str[MagickPathExtent];
 
   scene=0;
 
   encoder = avifEncoderCreate();
-  // avifEncoderSetCodecSpecificOption(encoder, "end-usage", "cq");
-  // avifEncoderSetCodecSpecificOption(encoder, "cq-level", "50");
+  avifEncoderSetCodecSpecificOption(encoder, "end-usage", "q");
+
+  if (image_info->quality != UndefinedCompressionQuality)
+    quality = image_info->quality;
+  
+  cq_level = ((100 - quality) * 63 + 50) / 100;
+  sprintf(cq_level_str, "%d", cq_level);
+  avifEncoderSetCodecSpecificOption(encoder, "cq-level", cq_level_str);
+
   
   encoder->maxThreads = 1;
-  encoder->minQuantizer = 32;
-  encoder->maxQuantizer = 32;
-  // encoder->minQuantizer = 1;
-  // encoder->maxQuantizer = 63;
+  // encoder->minQuantizer = 32;
+  // encoder->maxQuantizer = 32;
+  encoder->minQuantizer = 1;
+  encoder->maxQuantizer = 63;
 
   encoder->minQuantizerAlpha = AVIF_QUANTIZER_LOSSLESS;
   encoder->maxQuantizerAlpha = AVIF_QUANTIZER_LOSSLESS;
@@ -1045,7 +1060,7 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
 
   status = MagickTrue;
 
-  printf("Encoding AVIF using libavif!\n");
+  // printf("Encoding AVIF using libavif!\n");
 
   do
   {
@@ -1068,7 +1083,7 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
     avifRGBImageAllocatePixels(&rgb);
 
 
-    printf("RGB ready!!\n");
+    // printf("RGB ready!!\n");
 
     avif_image->colorPrimaries = AVIF_COLOR_PRIMARIES_UNSPECIFIED;
     avif_image->transferCharacteristics = AVIF_TRANSFER_CHARACTERISTICS_SRGB;
@@ -1112,7 +1127,7 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
             break;
         }
     }
-    printf("RGB copied!!\n");
+    // printf("RGB copied!!\n");
 
     avifResult convertResult = avifImageRGBToYUV(avif_image, &rgb);
     if (convertResult != AVIF_RESULT_OK)
@@ -1120,7 +1135,7 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
         status=MagickFalse;
         break;
       }
-    printf("RGB converted!!\n");
+    // printf("RGB converted!!\n");
 
     avifResult addImageResult = avifEncoderAddImage(encoder, avif_image, 1, AVIF_ADD_IMAGE_FLAG_SINGLE);
     if (addImageResult != AVIF_RESULT_OK)
@@ -1151,14 +1166,14 @@ static MagickBooleanType WriteAVIFImageLibavif(const ImageInfo *image_info,
     return status;
 
 
-  printf("%d images added, encoding...!!\n", scene);
+  // printf("%d images added, encoding...!!\n", scene);
 
   avifResult finishResult = avifEncoderFinish(encoder, &avifOutput);
   if (finishResult != AVIF_RESULT_OK)
     {
         status=MagickFalse;
     }
-  printf("Images encoded %d !!\n", avifOutput.size);
+  // printf("Images encoded %d !!\n", avifOutput.size);
 
   WriteBlob(image, (int) avifOutput.size, avifOutput.data);
 
@@ -1230,7 +1245,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       option=GetImageOption(image_info,"heic:libavif");
 
       if (IsStringTrue(option) != MagickFalse) {
-        printf("Using libavif!");
+        // printf("Using libavif!");
         return WriteAVIFImageLibavif(image_info, image, exception);
       }
     }
