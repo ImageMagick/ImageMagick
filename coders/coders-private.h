@@ -66,4 +66,19 @@ static inline MagickBooleanType IdentifyImageCoderGray(const Image *image,
   return(IsGrayImageType(type));
 }
 
+static inline MagickBooleanType SetImageCoderGray(Image *image,
+  ExceptionInfo *exception)
+{
+  ImageType
+    type;
+
+  if (IsImageGray(image) != MagickFalse)
+    return(MagickTrue);
+  type=IdentifyImageCoderGrayType(image,exception);
+  if (IsGrayImageType(type) == MagickFalse)
+    return(MagickFalse);
+  image->type=type;
+  return(SetImageColorspace(image,GRAYColorspace,exception));
+}
+
 #endif
