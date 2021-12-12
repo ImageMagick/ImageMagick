@@ -2160,7 +2160,8 @@ static void WriteProfileShort(const EndianType endian,
   (void) memcpy(p,buffer,2);
 }
 
-MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
+static MagickBooleanType SyncExifProfile(const Image *image,unsigned char *exif,
+  size_t length)
 {
 #define MaxDirectoryStack  16
 #define EXIF_DELIMITER  "\n"
@@ -2185,7 +2186,6 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
 
   size_t
     entry,
-    length,
     number_entries;
 
   SplayTreeInfo
@@ -2200,14 +2200,8 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
     format_bytes[] = {0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8};
 
   unsigned char
-    *directory,
-    *exif;
+    *directory;
 
-  /*
-    Set EXIF resolution tag.
-  */
-  length=GetStringInfoLength(profile);
-  exif=GetStringInfoDatum(profile);
   if (length < 16)
     return(MagickFalse);
   id=(ssize_t) ReadProfileShort(LSBEndian,exif);
@@ -2386,7 +2380,8 @@ MagickBooleanType SyncExifProfile(Image *image,StringInfo *profile)
   return(MagickTrue);
 }
 
-static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
+static MagickBooleanType Sync8BimProfile(const Image *image,
+  const StringInfo *profile)
 {
   size_t
     length;
@@ -2442,6 +2437,8 @@ static MagickBooleanType Sync8BimProfile(Image *image,StringInfo *profile)
             image->resolution.y*65536.0),p+8);
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+12);
       }
+    if (id == 0x0422)
+      (void) SyncExifProfile(image,p,count);
     p+=count;
     length-=count;
   }
@@ -2463,7 +2460,8 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
       status=MagickFalse;
   profile=(StringInfo *) GetImageProfile(image,"EXIF");
   if (profile != (StringInfo *) NULL)
-    if (SyncExifProfile(image,profile) == MagickFalse)
+    if (SyncExifProfile(image,GetStringInfoDatum(profile),
+      GetStringInfoLength(profile)) == MagickFalse)
       status=MagickFalse;
   return(status);
 }
