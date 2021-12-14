@@ -308,6 +308,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   fits_info.bits_per_pixel=8;
   fits_info.columns=1;
   fits_info.rows=1;
+  fits_info.number_axes=1;
   fits_info.number_planes=1;
   fits_info.min_data=0.0;
   fits_info.max_data=0.0;
@@ -394,6 +395,13 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if ((fits_info.bits_per_pixel != 8) && (fits_info.bits_per_pixel != 16) &&
         (fits_info.bits_per_pixel != 32) && (fits_info.bits_per_pixel != 64) &&
         (fits_info.bits_per_pixel != -32) && (fits_info.bits_per_pixel != -64))
+      {
+        if (comment != (char *) NULL)
+          comment=DestroyString(comment);
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
+    if ((fits_info.columns <= 0) || (fits_info.rows <= 0) ||
+        (fits_info.number_axes <= 0) || (fits_info.number_planes <= 0))
       {
         if (comment != (char *) NULL)
           comment=DestroyString(comment);
@@ -625,7 +633,7 @@ static inline void CopyFitsRecord(char *buffer,const char *data,
     return;
   length=MagickMin(strlen(data),80);
   if (length > (size_t) (FITSBlocksize-offset))
-    length=FITSBlocksize-offset;
+    length=(size_t) (FITSBlocksize-offset);
   (void) strncpy(buffer+offset,data,length);
 }
 
