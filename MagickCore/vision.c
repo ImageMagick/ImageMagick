@@ -1721,10 +1721,8 @@ MagickExport Image *IntegralImage(const Image *image,ExceptionInfo *exception)
 
       for (i=0; i < (ssize_t) GetPixelChannels(integral_image); i++)
       {
-        Quantum
-          a = 0,
-          b = 0,
-          c = 0;
+        double
+          sum;
 
         PixelTrait traits = GetPixelChannelTraits(integral_image,
           (PixelChannel) i);
@@ -1732,13 +1730,14 @@ MagickExport Image *IntegralImage(const Image *image,ExceptionInfo *exception)
           continue;
         if ((traits & CopyPixelTrait) != 0)
           continue;
-        if (x != 0)
-          a=(q-GetPixelChannels(integral_image))[i];
-        if (y != 0)
-          b=p[i];
-        if ((x != 0) && (y != 0))
-          c=(p-GetPixelChannels(integral_image))[i];
-        q[i]=ClampToQuantum((MagickRealType) q[i]+a+b-c);
+        sum=(double) q[i];
+        if (x > 0)
+          sum+=(q-GetPixelChannels(integral_image))[i];
+        if (y > 0)
+          sum+=p[i];
+        if ((x > 0) && (y > 0))
+          sum-=(p-GetPixelChannels(integral_image))[i];
+        q[i]=ClampToQuantum(sum);
       }
       p+=GetPixelChannels(integral_image);
       q+=GetPixelChannels(integral_image);
