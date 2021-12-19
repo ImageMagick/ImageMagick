@@ -585,6 +585,7 @@ static struct
       {"intensity-sigma", RealReference}, {"spatial-sigma", RealReference},
       {"channel", MagickChannelOptions} } },
     { "SortPixels", { { (const char *) NULL, NullReference } } },
+    { "Integral", { { (const char *) NULL, NullReference } } },
   };
 
 static SplayTreeInfo
@@ -7695,6 +7696,8 @@ Mogrify(ref,...)
     BilateralBlurImage = 306
     SortPixels         = 307
     SortPixelsImage    = 308
+    Integral           = 309
+    IntegralImage      = 310
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -11631,6 +11634,11 @@ Mogrify(ref,...)
         case 154:  /* SortPixels */
         {
           (void) SortImagePixels(image,exception);
+          break;
+        }
+        case 155:  /* Integral */
+        {
+          image=IntegralImage(image,exception);
           break;
         }
       }

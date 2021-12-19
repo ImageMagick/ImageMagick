@@ -1941,6 +1941,12 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               interpolate_method,exception);
             break;
           }
+        if (LocaleCompare("integral",option+1) == 0)
+          {
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            mogrify_image=IntegralImage(*image,exception);
+            break;
+          }
         if (LocaleCompare("interline-spacing",option+1) == 0)
           {
             if (*option == '+')
@@ -3638,6 +3644,7 @@ static MagickBooleanType MogrifyUsage(void)
       "  -identify            identify the format and characteristics of the image\n"
       "  -ift                 implements the inverse discrete Fourier transform (DFT)\n"
       "  -implode amount      implode image pixels about the center\n"
+      "  -integral            calculate the sum of values (pixel values) in the image\n"
       "  -interpolative-resize geometry\n"
       "                       resize image using interpolation\n"
       "  -kmeans geometry     K means color reduction\n"
@@ -5305,6 +5312,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 "UnrecognizedPixelIntensityMethod",argv[i]);
             break;
           }
+        if (LocaleCompare("integral",option+1) == 0)
+          break;
         if (LocaleCompare("intent",option+1) == 0)
           {
             ssize_t

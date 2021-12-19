@@ -221,6 +221,9 @@ static MagickBooleanType ConvertUsage(void)
       "  -identify            identify the format and characteristics of the image\n"
       "  -ift                 implements the inverse discrete Fourier transform (DFT)\n"
       "  -implode amount      implode image pixels about the center\n"
+      "  -integral            calculate the sum of values (pixel values) in the image\n"
+      "  -interpolative-resize geometry\n"
+      "                       resize image using interpolation\n"
       "  -kmeans geometry     K means color reduction\n"
       "  -kuwahara geometry   edge preserving noise reduction filter\n"
       "  -lat geometry        local adaptive thresholding\n"
@@ -1861,6 +1864,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
+        if (LocaleCompare("integral",option+1) == 0)
+          break;
         if (LocaleCompare("intensity",option+1) == 0)
           {
             ssize_t

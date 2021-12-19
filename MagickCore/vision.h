@@ -51,7 +51,8 @@ typedef struct _CCObjectInfo
 
 extern MagickExport Image
   *ConnectedComponentsImage(const Image *,const size_t,CCObjectInfo **,
-    ExceptionInfo *);
+    ExceptionInfo *),
+  *IntegralImage(const Image *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

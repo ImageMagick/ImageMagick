@@ -1620,3 +1620,147 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     *objects=object;
   return(component_image);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     I n t e g r a l I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IntegralImage() returns the sum of values (pixel values) in the image.
+%
+%  The format of the IntegralImage method is:
+%
+%      Image *IntegralImage(const Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *IntegralImage(const Image *image,ExceptionInfo *exception)
+{
+#define IntegralImageTag  "Integral/Image"
+
+  CacheView
+    *image_view,
+    *integral_view;
+
+  Image
+    *integral_image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
+  /*
+    Initialize integral image.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  integral_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (integral_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(integral_image,DirectClass,exception) == MagickFalse)
+    {
+      integral_image=DestroyImage(integral_image);
+      return((Image *) NULL);
+    }
+  /*
+    Calculate the sum of values (pixel values) in the image.
+  */
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireVirtualCacheView(integral_image,exception);
+  integral_view=AcquireAuthenticCacheView(integral_image,exception);
+  for (y=0; y < (ssize_t) integral_image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    MagickBooleanType
+      sync;
+
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(integral_view,0,y-1,integral_image->columns,1,
+      exception);
+    q=GetCacheViewAuthenticPixels(integral_view,0,y,integral_image->columns,1,
+      exception);
+    if ((p == (Quantum *) NULL) || (p == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) integral_image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(integral_image); i++)
+      {
+        Quantum
+          a = 0,
+          b = 0,
+          c = 0;
+
+        PixelTrait traits = GetPixelChannelTraits(integral_image,
+          (PixelChannel) i);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((traits & CopyPixelTrait) != 0)
+          continue;
+        if (x != 0)
+          a=(q-GetPixelChannels(integral_image))[i];
+        if (y != 0)
+          b=p[i];
+        if ((x != 0) && (y != 0))
+          c=(p-GetPixelChannels(integral_image))[i];
+        q[i]=ClampToQuantum((MagickRealType) q[i]+a+b-c);
+      }
+      p+=GetPixelChannels(integral_image);
+      q+=GetPixelChannels(integral_image);
+    }
+    sync=SyncCacheViewAuthenticPixels(integral_view,exception);
+    if (sync == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+        progress++;
+        proceed=SetImageProgress(integral_image,IntegralImageTag,progress,
+          integral_image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  integral_view=DestroyCacheView(integral_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    integral_image=DestroyImage(integral_image);
+  return(integral_image);
+}

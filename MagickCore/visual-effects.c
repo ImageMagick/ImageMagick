@@ -612,7 +612,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(colorize_image,exception);
+  image_view=AcquireAuthenticCacheView(colorize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(colorize_image,colorize_image,colorize_image->rows,1)

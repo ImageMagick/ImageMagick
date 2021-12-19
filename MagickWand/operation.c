@@ -2579,6 +2579,11 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
                _exception);
           break;
         }
+      if (LocaleCompare("integral",option+1) == 0)
+        {
+          new_image=IntegralImage(_image,_exception);
+          break;
+        }
       if (LocaleCompare("interpolative-resize",option+1) == 0)
         {
           /* FUTURE: New to IMv7
@@ -2587,7 +2592,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
           new_image=InterpolativeResizeImage(_image,geometry.width,
-               geometry.height,_image->interpolate,_exception);
+            geometry.height,_image->interpolate,_exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -2893,8 +2898,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
-          new_image=MotionBlurImage(_image,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,_exception);
+          new_image=MotionBlurImage(_image,geometry_info.rho,
+            geometry_info.sigma,geometry_info.xi,_exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);

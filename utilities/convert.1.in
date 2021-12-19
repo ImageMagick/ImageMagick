@@ -190,6 +190,9 @@ Image Operators:
   \-identify            identify the format and characteristics of the image
   \-ift                 implements the inverse discrete Fourier transform (DFT)
   \-implode amount      implode image pixels about the center
+  \-integral            calculate the sum of values (pixel values) in the image
+  \-interpolative-resize geometry
+                       resize image using interpolation
   \-kmeans geometry     K means color reduction
   \-lat geometry        local adaptive thresholding
   \-layers method       optimize or compare image layers
