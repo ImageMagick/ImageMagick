@@ -1709,7 +1709,7 @@ MagickExport Image *IntegralImage(const Image *image,ExceptionInfo *exception)
       exception);
     q=GetCacheViewAuthenticPixels(integral_view,0,y,integral_image->columns,1,
       exception);
-    if ((p == (Quantum *) NULL) || (p == (Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (p == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
