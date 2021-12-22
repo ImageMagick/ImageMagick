@@ -1,7 +1,7 @@
-2021-12-19  7.1.0-19  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-19 GIT revision 19....
+2021-12-22  7.1.0-19  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-19 GIT revision 19456:d7f1b2b9b:20211222
 
-2021-12-19  7.1.0-19  <quetzlzacatenango@image...>
+2021-12-22  7.1.0-19  <quetzlzacatenango@image...>
   * support -integral option.
   * possible DoS for certain SVG constructs (reference
     https://github.com/ImageMagick/ImageMagick/issues/4626).
