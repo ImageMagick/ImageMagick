@@ -5533,21 +5533,31 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       else
         if (*primitive_info->text != '\0')
           {
+            MagickBooleanType
+              status;
+
+            struct stat
+              attributes;
+
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
-            status&=SetImageInfo(clone_info,1,exception);
-            (void) CopyMagickString(clone_info->filename,primitive_info->text,
-              MagickPathExtent);
-            if (clone_info->size != (char *) NULL)
-              clone_info->size=DestroyString(clone_info->size);
-            if (clone_info->extract != (char *) NULL)
-              clone_info->extract=DestroyString(clone_info->extract);
-            if ((LocaleCompare(clone_info->magick,"file") == 0) ||
-                (LocaleCompare(clone_info->magick,"https") == 0) ||
-                (LocaleCompare(clone_info->magick,"http") == 0) ||
-                (LocaleCompare(clone_info->magick,"mpri") == 0) ||
-                (IsPathAccessible(clone_info->filename) != MagickFalse))
-              composite_images=ReadImage(clone_info,exception);
+            status=GetPathAttributes(clone_info->filename,&attributes);
+            if ((status != MagickFalse) && (S_ISCHR(attributes.st_mode) == 0))
+              {
+                status&=SetImageInfo(clone_info,1,exception);
+                (void) CopyMagickString(clone_info->filename,
+                  primitive_info->text,MagickPathExtent);
+                if (clone_info->size != (char *) NULL)
+                  clone_info->size=DestroyString(clone_info->size);
+                if (clone_info->extract != (char *) NULL)
+                  clone_info->extract=DestroyString(clone_info->extract);
+                if ((LocaleCompare(clone_info->magick,"file") == 0) ||
+                    (LocaleCompare(clone_info->magick,"https") == 0) ||
+                    (LocaleCompare(clone_info->magick,"http") == 0) ||
+                    (LocaleCompare(clone_info->magick,"mpri") == 0) ||
+                    (IsPathAccessible(clone_info->filename) != MagickFalse))
+                  composite_images=ReadImage(clone_info,exception);
+              }
           }
       clone_info=DestroyImageInfo(clone_info);
       if (composite_images == (Image *) NULL)
