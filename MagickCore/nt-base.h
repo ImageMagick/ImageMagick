@@ -72,6 +72,9 @@ extern "C" {
 #    define MAGICKCORE_SIZEOF_SSIZE_T 4
 #  endif
 #endif
+#ifndef S_ISCHR
+#  define S_ISCHR(m) (((m) & S_IFMT) == S_IFCHR)
+#endif
 
 #if defined(_MSC_VER)
 # if !defined(MAGICKCORE_MSC_VER)
