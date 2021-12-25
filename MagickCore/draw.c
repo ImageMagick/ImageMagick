@@ -5534,17 +5534,18 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         if (*primitive_info->text != '\0')
           {
             MagickBooleanType
-              status;
+              path_status;
 
             struct stat
               attributes;
 
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
-            status=GetPathAttributes(clone_info->filename,&attributes);
-            if ((status != MagickFalse) && (S_ISCHR(attributes.st_mode) == 0))
+            path_status=GetPathAttributes(clone_info->filename,&attributes);
+            if ((path_status != MagickFalse) &&
+                (S_ISCHR(attributes.st_mode) == 0))
               {
-                status&=SetImageInfo(clone_info,1,exception);
+                (void) SetImageInfo(clone_info,1,exception);
                 (void) CopyMagickString(clone_info->filename,
                   primitive_info->text,MagickPathExtent);
                 if (clone_info->size != (char *) NULL)
