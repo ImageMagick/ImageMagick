@@ -361,7 +361,7 @@ static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
 }
 
 /* Calculate minimum and maximum from a given block of data */
-static void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, size_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
+static void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, size_t CellType, size_t ldblk, void *BImgBuff, double *Min, double *Max)
 {
 MagickOffsetType filepos;
 int i, x;
@@ -423,8 +423,11 @@ float *fltrow;
 }
 
 
-static void FixSignedValues(const Image *image,Quantum *q, int y)
+static void FixSignedValues(const Image *image,Quantum *q, unsigned int y)
 {
+  if (y == 0)
+    return;
+
   while(y-->0)
   {
      /* Please note that negative values will overflow
@@ -439,11 +442,14 @@ static void FixSignedValues(const Image *image,Quantum *q, int y)
 
 
 /** Fix whole row of logical/binary data. It means pack it. */
-static void FixLogical(unsigned char *Buff,int ldblk)
+static void FixLogical(unsigned char *Buff,size_t ldblk)
 {
-unsigned char mask=128;
-unsigned char *BuffL = Buff;
-unsigned char val = 0;
+  unsigned char mask=128;
+  unsigned char *BuffL = Buff;
+  unsigned char val = 0;
+
+  if (ldblk == 0)
+    return;
 
   while(ldblk-->0)
   {
@@ -604,7 +610,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     unsigned int nameLen;
   } MAT4_HDR;
 
-  long
+  size_t
     ldblk;
 
   EndianType
@@ -648,7 +654,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     */
     ldblk=ReadBlobLSBLong(image);
     if(EOFBlob(image)) break;
-    if ((ldblk > 9999) || (ldblk < 0))
+    if (ldblk > 9999)
       break;
     HDR.Type[3]=ldblk % 10; ldblk /= 10;  /* T digit */
     HDR.Type[2]=ldblk % 10; ldblk /= 10;  /* P digit */
@@ -884,7 +890,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   QuantumInfo *quantum_info;
   ImageInfo *clone_info;
   int i;
-  ssize_t ldblk;
+  size_t ldblk;
   unsigned char *BImgBuff = NULL;
   double MinVal, MaxVal;
   unsigned z, z2;
@@ -1142,25 +1148,25 @@ MATLAB_KO:
           image->depth = 1;
         else
           image->depth = 8;         /* Byte type cell */
-        ldblk = (ssize_t) MATLAB_HDR.SizeX;
+        ldblk = (size_t) MATLAB_HDR.SizeX;
         break;
       case miINT16:
       case miUINT16:
         sample_size = 16;
         image->depth = 16;        /* Word type cell */
-        ldblk = (ssize_t) (2 * MATLAB_HDR.SizeX);
+        ldblk = (size_t) (2 * MATLAB_HDR.SizeX);
         break;
       case miINT32:
       case miUINT32:
         sample_size = 32;
         image->depth = 32;        /* Dword type cell */
-        ldblk = (ssize_t) (4 * MATLAB_HDR.SizeX);
+        ldblk = (size_t) (4 * MATLAB_HDR.SizeX);
         break;
       case miINT64:
       case miUINT64:
         sample_size = 64;
         image->depth = 64;        /* Qword type cell */
-        ldblk = (ssize_t) (8 * MATLAB_HDR.SizeX);
+        ldblk = (size_t) (8 * MATLAB_HDR.SizeX);
         break;
       case miSINGLE:
         sample_size = 32;
@@ -1169,7 +1175,7 @@ MATLAB_KO:
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
           {              /* complex float type cell */
           }
-        ldblk = (ssize_t) (4 * MATLAB_HDR.SizeX);
+        ldblk = (size_t) (4 * MATLAB_HDR.SizeX);
         break;
       case miDOUBLE:
         sample_size = 64;
@@ -1188,7 +1194,7 @@ RestoreMSCWarning
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
           {                         /* complex double type cell */
           }
-        ldblk = (ssize_t) (8 * MATLAB_HDR.SizeX);
+        ldblk = (size_t) (8 * MATLAB_HDR.SizeX);
         break;
       default:
         if ((image != image2) && (image2 != (Image *) NULL))
@@ -1203,7 +1209,7 @@ RestoreMSCWarning
     image->colors = GetQuantumRange(image->depth);
     if (image->columns == 0 || image->rows == 0)
       goto MATLAB_KO;
-    if((unsigned int)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
+    if((size_t)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
       goto MATLAB_KO;
     /* Image is gray when no complex flag is set and 2D Matrix */
     if ((MATLAB_HDR.DimFlag == 8) &&
@@ -1246,7 +1252,7 @@ RestoreMSCWarning
       }
 
   /* ----- Load raster data ----- */
-    BImgBuff = (unsigned char *) AcquireQuantumMemory((size_t) (ldblk),sizeof(double));    /* Ldblk was set in the check phase */
+    BImgBuff = (unsigned char *) AcquireQuantumMemory(ldblk,sizeof(double));    /* Ldblk was set in the check phase */
     if (BImgBuff == NULL)
       {
         if (clone_info != (ImageInfo *) NULL)
@@ -1282,7 +1288,7 @@ RestoreMSCWarning
               "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));
             goto done_reading;    /* Skip image rotation, when cannot set image pixels    */
           }
-        if(ReadBlob(image2,ldblk,(unsigned char *)BImgBuff) != (ssize_t) ldblk)
+        if(ReadBlob(image2,ldblk,(unsigned char *)BImgBuff) != ldblk)
           {
             if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1));
