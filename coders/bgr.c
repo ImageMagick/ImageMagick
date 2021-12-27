@@ -163,6 +163,17 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     exception);
   if (canvas_image == (Image *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  quantum_type=BGRQuantum;
+  if (LocaleCompare(image_info->magick,"BGRA") == 0)
+    {
+      quantum_type=BGRAQuantum;
+      canvas_image->alpha_trait=BlendPixelTrait;
+    }
+  if (LocaleCompare(image_info->magick,"BGRO") == 0)
+    {
+      quantum_type=BGROQuantum;
+      canvas_image->alpha_trait=BlendPixelTrait;
+    }
   (void) SetImageVirtualPixelMethod(canvas_image,BlackVirtualPixelMethod,
     exception);
   quantum_info=AcquireQuantumInfo(image_info,canvas_image);
@@ -170,19 +181,6 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       canvas_image=DestroyImage(canvas_image);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  quantum_type=BGRQuantum;
-  if (LocaleCompare(image_info->magick,"BGRA") == 0)
-    {
-      quantum_type=BGRAQuantum;
-      image->alpha_trait=BlendPixelTrait;
-      canvas_image->alpha_trait=BlendPixelTrait;
-    }
-  if (LocaleCompare(image_info->magick,"BGRO") == 0)
-    {
-      quantum_type=BGROQuantum;
-      image->alpha_trait=BlendPixelTrait;
-      canvas_image->alpha_trait=BlendPixelTrait;
     }
   pixels=GetQuantumPixels(quantum_info);
   if (image_info->number_scenes != 0)
@@ -210,6 +208,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read pixels to virtual canvas image then push to image.
     */
+    image->alpha_trait=canvas_image->alpha_trait;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;

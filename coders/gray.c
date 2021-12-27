@@ -163,8 +163,14 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   */
   canvas_image=CloneImage(image,image->extract_info.width,1,MagickFalse,
     exception);
-  if(canvas_image == (Image *) NULL)
+  if (canvas_image == (Image *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  quantum_type=GrayQuantum;
+  if (LocaleCompare(image_info->magick,"GRAYA") == 0)
+    {
+      quantum_type=GrayAlphaQuantum;
+      canvas_image->alpha_trait=BlendPixelTrait;
+    }
   (void) SetImageVirtualPixelMethod(canvas_image,BlackVirtualPixelMethod,
     exception);
   quantum_info=AcquireQuantumInfo(image_info,canvas_image);
@@ -172,13 +178,6 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     {
       canvas_image=DestroyImage(canvas_image);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  quantum_type=GrayQuantum;
-  if (LocaleCompare(image_info->magick,"GRAYA") == 0)
-    {
-      quantum_type=GrayAlphaQuantum;
-      image->alpha_trait=BlendPixelTrait;
-      canvas_image->alpha_trait=BlendPixelTrait;
     }
   pixels=GetQuantumPixels(quantum_info);
   if (image_info->number_scenes != 0)
@@ -206,6 +205,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     /*
       Read pixels to virtual canvas image then push to image.
     */
+    image->alpha_trait=canvas_image->alpha_trait;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;

@@ -151,7 +151,7 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
   /*
-    Create virtual canvas to support cropping (i.e. image.gray[100x100+10+20]).
+    Create virtual canvas to support cropping (i.e. image.raw[100x100+10+20]).
   */
   canvas_image=CloneImage(image,image->extract_info.width,1,MagickFalse,
     exception);
