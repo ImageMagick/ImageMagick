@@ -659,7 +659,7 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     HDR.Type[3]=ldblk % 10; ldblk /= 10;  /* T digit */
     HDR.Type[2]=ldblk % 10; ldblk /= 10;  /* P digit */
     HDR.Type[1]=ldblk % 10; ldblk /= 10;  /* O digit */
-    HDR.Type[0]=ldblk;        /* M digit */
+    HDR.Type[0]=(unsigned char) ldblk;    /* M digit */
     if (HDR.Type[3] != 0)
       break;  /* Data format */
     if (HDR.Type[2] != 0)
@@ -1288,7 +1288,7 @@ RestoreMSCWarning
               "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));
             goto done_reading;    /* Skip image rotation, when cannot set image pixels    */
           }
-        if(ReadBlob(image2,ldblk,(unsigned char *)BImgBuff) != ldblk)
+        if(ReadBlob(image2,ldblk,(unsigned char *)BImgBuff) != (unsigned char) ldblk)
           {
             if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1));
