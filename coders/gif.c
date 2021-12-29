@@ -147,10 +147,10 @@ static inline ssize_t ConstrainColormapIndexGIF(Image *image,const ssize_t index
   const ssize_t opacity,ExceptionInfo *exception)
 {
   /*
-    Opacity index is valid even when outside of the colormap.
+    Opacity index can be valid even when outside of the colormap.
   */
-  if (opacity >= 0 && index == opacity)
-    return index;
+  if ((opacity >= 0) && (index == opacity))
+    return((ssize_t) index);
   if ((index < 0) || (index >= (ssize_t) image->colors))
     {
       if (exception->severity != CorruptImageError)
@@ -426,14 +426,12 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
 
   ssize_t
     index,
+    remapped_index,
     offset,
     y;
 
   unsigned char
     data_size;
-
-  PixelInfo
-    placeholder_color = {0};
 
   /*
     Allocate decoder tables.
@@ -459,9 +457,6 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
     Quantum
       *magick_restrict q;
 
-    PixelInfo
-      *current_color;
-
     q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
@@ -471,15 +466,15 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
       if (c < 0)
         break;
       index=ConstrainColormapIndexGIF(image,(ssize_t) c,opacity,exception);
-      SetPixelIndex(image,(Quantum) index,q);
       /*
         Opacity index might be outside of the colormap. Use placeholder color when out-of-bounds.
       */
       if (index >= (ssize_t) image->colors)
-        current_color=&placeholder_color;
+        remapped_index=(image->colors-1);
       else
-        current_color=image->colormap+index;
-      SetPixelViaPixelInfo(image,current_color,q);
+        remapped_index=index;
+      SetPixelIndex(image,(Quantum) remapped_index,q);
+      SetPixelViaPixelInfo(image,image->colormap+remapped_index,q);
       SetPixelAlpha(image,index == opacity ? TransparentAlpha : OpaqueAlpha,q);
       x++;
       q+=GetPixelChannels(image);
@@ -1026,7 +1021,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
-    opacity;
+    opacity,
+    remapped_opacity;
 
   unsigned char
     background,
@@ -1307,8 +1303,18 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     local_colors=BitSet((int) flag,0x80) == 0 ? global_colors : one <<
       ((size_t) (flag & 0x07)+1);
     image->colors=local_colors;
-    if (opacity == (ssize_t) image->colors)
-      image->colors++;
+    /*
+      Certain GIFs have the opacity index set outside of the colormap.
+      If this is the case, remap the actual index (as in the file) to a
+      placeholder color index.
+    */
+    if (opacity >= (ssize_t) image->colors)
+      {
+        image->colors++;
+        remapped_opacity=image->colors-1;
+      }
+    else
+      remapped_opacity=opacity;
     image->ticks_per_second=100;
     image->alpha_trait=opacity >= 0 ? BlendPixelTrait : UndefinedPixelTrait;
     if ((image->columns == 0) || (image->rows == 0))
@@ -1329,10 +1335,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].red=(double) ScaleCharToQuantum(*p++);
           image->colormap[i].green=(double) ScaleCharToQuantum(*p++);
           image->colormap[i].blue=(double) ScaleCharToQuantum(*p++);
-          if (i == opacity)
+          if (i == remapped_opacity)
             {
               image->colormap[i].alpha=(double) TransparentAlpha;
-              image->transparent_color=image->colormap[opacity];
+              image->transparent_color=image->colormap[remapped_opacity];
             }
         }
         image->background_color=image->colormap[MagickMin((ssize_t) background,
@@ -1364,7 +1370,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].red=(double) ScaleCharToQuantum(*p++);
           image->colormap[i].green=(double) ScaleCharToQuantum(*p++);
           image->colormap[i].blue=(double) ScaleCharToQuantum(*p++);
-          if (i == opacity)
+          if (i == remapped_opacity)
             image->colormap[i].alpha=(double) TransparentAlpha;
         }
         colormap=(unsigned char *) RelinquishMagickMemory(colormap);
