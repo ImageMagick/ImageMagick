@@ -1930,7 +1930,7 @@ MagickExport MagickBooleanType IsImagesEqual(const Image *image,
 
     p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
       break;
     for (x=0; x < (ssize_t) columns; x++)
     {

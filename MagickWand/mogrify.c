@@ -4566,8 +4566,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
-        if (LocaleCompare("compare",option+1) == 0)
-          break;
         if (LocaleCompare("comment",option+1) == 0)
           {
             if (*option == '+')
@@ -4575,6 +4573,25 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("compare",option+1) == 0)
+          break;
+        if (LocaleCompare("compose",option+1) == 0)
+          {
+            ssize_t
+              compose;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            compose=ParseCommandOption(MagickComposeOptions,MagickFalse,
+              argv[i]);
+            if (compose < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedComposeOperator",
+                argv[i]);
             break;
           }
         if (LocaleCompare("composite",option+1) == 0)
