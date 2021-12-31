@@ -527,29 +527,29 @@ static MagickBooleanType CompositeOverImage(Image *image,
   return(status);
 }
 
-static Image *SeamlessDeltaImage(const Image *image,const Image *source_image,
+static Image *SeamlessAddImage(const Image *image,const Image *source_image,
   const double sign,ExceptionInfo *exception)
 {
   CacheView
     *source_view,
     *image_view,
-    *delta_view;
+    *add_view;
 
   Image
-    *delta_image;
+    *add_image;
 
   ssize_t
     y;
 
   /*
-    Return new image whose pixels are the delta between the image & source.
+    Return new image whose pixels are added between the image & source.
   */
-  delta_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (delta_image == (Image *) NULL)
-    return(delta_image);
+  add_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (add_image == (Image *) NULL)
+    return(add_image);
   image_view=AcquireVirtualCacheView(image,exception);
   source_view=AcquireVirtualCacheView(source_image,exception);
-  delta_view=AcquireVirtualCacheView(delta_image,exception);
+  add_view=AcquireVirtualCacheView(add_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const Quantum
@@ -564,7 +564,7 @@ static Image *SeamlessDeltaImage(const Image *image,const Image *source_image,
 
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
-    r=GetCacheViewAuthenticPixels(delta_view,0,y,image->columns,1,exception);
+    r=GetCacheViewAuthenticPixels(add_view,0,y,image->columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL) ||
         (r == (Quantum *) NULL))
       break;
@@ -587,19 +587,19 @@ static Image *SeamlessDeltaImage(const Image *image,const Image *source_image,
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(source_image);
-      r+=GetPixelChannels(delta_image);
+      r+=GetPixelChannels(add_image);
     }
     if (x < (ssize_t) image->columns)
       break;
-    if (SyncCacheViewAuthenticPixels(delta_view,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(add_view,exception) == MagickFalse)
       break;
   }
-  delta_view=DestroyCacheView(delta_view);
+  add_view=DestroyCacheView(add_view);
   source_view=DestroyCacheView(source_view);
   image_view=DestroyCacheView(image_view);
   if (y < (ssize_t) image->rows)
-    delta_image=DestroyImage(delta_image);
-  return(delta_image);
+    add_image=DestroyImage(add_image);
+  return(add_image);
 }
 
 static Image *SeamlessMeanImage(Image *image,const Image *source_image,
@@ -770,8 +770,8 @@ static MagickBooleanType SeamlessNegateAlpha(Image *image,
   return(MagickTrue);
 }
 
-static MagickBooleanType SeamlessRMSEDistortion(const Image *image,
-  const Image *source_image,double *distortion,ExceptionInfo *exception)
+static MagickBooleanType SeamlessRMSEResidual(const Image *image,
+  const Image *source_image,double *residual,ExceptionInfo *exception)
 {
   CacheView
     *image_view,
@@ -803,7 +803,7 @@ static MagickBooleanType SeamlessRMSEDistortion(const Image *image,
   for (y=0; y < (ssize_t) rows; y++)
   {
     double
-      channel_distortion[MaxPixelChannels+1];
+      channel_residual[MaxPixelChannels+1];
 
     const Quantum
       *magick_restrict p,
@@ -824,7 +824,7 @@ static MagickBooleanType SeamlessRMSEDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) memset(channel_distortion,0,sizeof(channel_distortion));
+    (void) memset(channel_residual,0,sizeof(channel_residual));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -862,38 +862,39 @@ static MagickBooleanType SeamlessRMSEDistortion(const Image *image,
         else
           distance=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(source_image,
             channel,q));
-        channel_distortion[CompositePixelChannel]+=distance*distance;
+        channel_residual[CompositePixelChannel]+=distance*distance;
       }
       local_area++;
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(source_image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_SeamlessRMSEDistortion)
+    #pragma omp critical (MagickCore_SeamlessRMSEResidual)
 #endif
     {
       area+=local_area;
-      *distortion+=channel_distortion[CompositePixelChannel];
+      *residual+=channel_residual[CompositePixelChannel];
     }
   }
   source_view=DestroyCacheView(source_view);
   image_view=DestroyCacheView(image_view);
   area=PerceptibleReciprocal(area);
-  *distortion=sqrt(*distortion*area/(double) GetImageChannels(image));
+  *residual=sqrt(*residual*area/(double) GetImageChannels(image));
   return(status);
 }
 
 static MagickBooleanType SeamlessBlendImage(Image *image,
   const Image *source_image,const ssize_t x_offset,const ssize_t y_offset,
-  const double iterations,const double delta,ExceptionInfo *exception)
+  const double iterations,const double residual_threshold,
+  ExceptionInfo *exception)
 {
   Image
+    *add_image,
     *crop_image,
-    *delta_image,
     *foreground_image,
     *mean_image,
-    *reconstruct_image,
-    *relaxed_image;
+    *relaxed_image,
+    *residual_image;
 
   KernelInfo
     *kernel_info;
@@ -919,12 +920,12 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   if (crop_image == (Image *) NULL)
     return(MagickFalse);
   (void) ResetImagePage(crop_image,"0x0+0+0");
-  delta_image=SeamlessDeltaImage(crop_image,source_image,-1.0,exception);
+  add_image=SeamlessAddImage(crop_image,source_image,-1.0,exception);
   crop_image=DestroyImage(crop_image);
-  if (delta_image == (Image *) NULL)
+  if (add_image == (Image *) NULL)
     return(MagickFalse);
-  mean_image=SeamlessMeanImage(delta_image,source_image,exception);
-  delta_image=DestroyImage(delta_image);
+  mean_image=SeamlessMeanImage(add_image,source_image,exception);
+  add_image=DestroyImage(add_image);
   if (mean_image == (Image *) NULL)
     return(MagickFalse);
   relaxed_image=CloneImage(mean_image,0,0,MagickTrue,exception);
@@ -940,8 +941,8 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
       mean_image=DestroyImage(mean_image);
       return(MagickFalse);
     }
-  reconstruct_image=CloneImage(relaxed_image,0,0,MagickTrue,exception);
-  if (reconstruct_image == (Image *) NULL)
+  residual_image=CloneImage(relaxed_image,0,0,MagickTrue,exception);
+  if (residual_image == (Image *) NULL)
     {
       relaxed_image=DestroyImage(relaxed_image);
       mean_image=DestroyImage(mean_image);
@@ -953,7 +954,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   kernel_info=AcquireKernelInfo("3x3:0,0.25,0,0.25,0,0.25,0,0.25,0",exception);
   if (kernel_info == (KernelInfo *) NULL)
     {
-      reconstruct_image=DestroyImage(reconstruct_image);
+      residual_image=DestroyImage(residual_image);
       relaxed_image=DestroyImage(relaxed_image);
       mean_image=DestroyImage(mean_image);
       return(MagickFalse);
@@ -961,7 +962,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   for (i=0; i < (ssize_t) iterations; i++)
   {
     double
-      distortion;
+      rmse_residual = 1.0;
 
     Image
       *convolve_image;
@@ -975,23 +976,24 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
       exception);
     if (status == MagickFalse)
       break;
-    status=SeamlessRMSEDistortion(relaxed_image,reconstruct_image,&distortion,
+    status=SeamlessRMSEResidual(relaxed_image,residual_image,&rmse_residual,
       exception);
     if (status == MagickFalse)
       break;
-    if (distortion < delta)
+    if (rmse_residual < residual_threshold)
       break;
-    reconstruct_image=DestroyImage(reconstruct_image);
-    reconstruct_image=CloneImage(relaxed_image,0,0,MagickTrue,exception);
-    if (reconstruct_image == (Image *) NULL)
+    residual_image=DestroyImage(residual_image);
+    residual_image=CloneImage(relaxed_image,0,0,MagickTrue,exception);
+    if (residual_image == (Image *) NULL)
       break;
   }
   kernel_info=DestroyKernelInfo(kernel_info);
-  reconstruct_image=DestroyImage(reconstruct_image);
+  mean_image=DestroyImage(mean_image);
+  residual_image=DestroyImage(residual_image);
   /*
     Composite source image over the background image.
   */
-  foreground_image=SeamlessDeltaImage(source_image,relaxed_image,1.0,exception);
+  foreground_image=SeamlessAddImage(source_image,relaxed_image,1.0,exception);
   relaxed_image=DestroyImage(relaxed_image);
   if (foreground_image == (Image *) NULL)
     return(MagickFalse);
@@ -1635,7 +1637,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     case SeamlessBlendCompositeOp:
     {
       double
-        delta = 0.2,
+        residual_threshold = 0.2,
         iterations = 1000.0;
 
       value=GetImageArtifact(image,"compose:args");
@@ -1644,10 +1646,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           flags=ParseGeometry(value,&geometry_info);
           iterations=geometry_info.rho;
           if ((flags & SigmaValue) != 0)
-            delta=geometry_info.sigma;
+            residual_threshold=geometry_info.sigma;
         }
       status=SeamlessBlendImage(image,composite,x_offset,y_offset,iterations,
-        delta,exception);
+        residual_threshold,exception);
+      source_image=DestroyImage(source_image);
       return(status);
     }
     case MathematicsCompositeOp:
