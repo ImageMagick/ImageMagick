@@ -62,9 +62,10 @@
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
+#include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
-#include "MagickCore/memory_.h"
+#include "MagickCore/morphology.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/property.h"
@@ -75,6 +76,7 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/token.h"
+#include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
@@ -522,6 +524,480 @@ static MagickBooleanType CompositeOverImage(Image *image,
   }
   source_view=DestroyCacheView(source_view);
   image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
+static Image *SeamlessDeltaImage(const Image *image,const Image *source_image,
+  const double sign,ExceptionInfo *exception)
+{
+  CacheView
+    *source_view,
+    *image_view,
+    *delta_view;
+
+  Image
+    *delta_image;
+
+  ssize_t
+    y;
+
+  /*
+    Return new image whose pixels are the delta between the image & source.
+  */
+  delta_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (delta_image == (Image *) NULL)
+    return(delta_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+  delta_view=AcquireVirtualCacheView(delta_image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p,
+      *magick_restrict q;
+
+    Quantum
+      *magick_restrict r;
+
+    ssize_t
+      x;
+
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
+    r=GetCacheViewAuthenticPixels(delta_view,0,y,image->columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL) ||
+        (r == (Quantum *) NULL))
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        PixelTrait source_image_traits = GetPixelChannelTraits(source_image,
+          channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (source_image_traits == UndefinedPixelTrait) ||
+            ((source_image_traits & UpdatePixelTrait) == 0))
+          continue;
+        r[i]=p[i]+sign*GetPixelChannel(source_image,channel,q);
+      }
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(source_image);
+      r+=GetPixelChannels(delta_image);
+    }
+    if (x < (ssize_t) image->columns)
+      break;
+    if (SyncCacheViewAuthenticPixels(delta_view,exception) == MagickFalse)
+      break;
+  }
+  delta_view=DestroyCacheView(delta_view);
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  if (y < (ssize_t) image->rows)
+    delta_image=DestroyImage(delta_image);
+  return(delta_image);
+}
+
+static Image *SeamlessMeanImage(Image *image,const Image *source_image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *source_view;
+
+  Image
+    *mean_image;
+
+  Quantum
+    mean[MaxPixelChannels];
+
+  ssize_t
+    i,
+    y;
+
+  /*
+    Replace any masked pixels with mean pixel.
+  */
+  (void) memset(mean,0,MaxPixelChannels*sizeof(*mean));
+  image_view=AcquireVirtualCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    ssize_t
+      x;
+
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        mean[i]+=QuantumScale*p[i];
+      }
+      p+=GetPixelChannels(image);
+    }
+    if (x < (ssize_t) image->columns)
+      break;
+  }
+  if (y < (ssize_t) image->rows)
+    return((Image *) NULL);
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+    mean[i]=ClampToQuantum((double) QuantumRange*mean[i]/image->columns/
+      image->rows);
+  image_view=DestroyCacheView(image_view);
+  mean_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (mean_image == (Image *) NULL)
+    return(mean_image);
+  image_view=AcquireAuthenticCacheView(mean_image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+  for (y=0; y < (ssize_t) mean_image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    p=GetCacheViewVirtualPixels(source_view,0,y,mean_image->columns,1,
+      exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,mean_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      break;
+    for (x=0; x < (ssize_t) mean_image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      if (GetPixelAlpha(source_image,p) > (QuantumRange/2))
+        for (i=0; i < (ssize_t) GetPixelChannels(mean_image); i++)
+        {
+          PixelChannel channel = GetPixelChannelChannel(mean_image,i);
+          PixelTrait traits = GetPixelChannelTraits(mean_image,channel);
+          if (traits == UndefinedPixelTrait)
+            continue;
+          q[i]=mean[i];
+        }
+      p+=GetPixelChannels(source_image);
+      q+=GetPixelChannels(mean_image);
+    }
+    if (x < (ssize_t) mean_image->columns)
+      break;
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      break;
+  }
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  if (y < (ssize_t) image->rows)
+    mean_image=DestroyImage(mean_image);
+  return(mean_image);
+}
+
+static MagickBooleanType SeamlessNegateAlpha(Image *image,
+  const Image *source_image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *source_view;
+
+  ssize_t
+    y;
+
+  /*
+    Negate the alpha channel.
+  */
+  image->alpha_trait=BlendPixelTrait;
+  image_view=AcquireAuthenticCacheView(image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    p=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if (channel == AlphaPixelChannel)
+          q[i]=QuantumRange-GetPixelAlpha(source_image,p);
+      }
+      p+=GetPixelChannels(source_image);
+      q+=GetPixelChannels(image);
+    }
+    if (x < (ssize_t) image->columns)
+      break;
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      break;
+  }
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  if (y < (ssize_t) image->rows)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
+static MagickBooleanType SeamlessRMSEDistortion(const Image *image,
+  const Image *source_image,double *distortion,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *source_view;
+
+  double
+    area;
+
+  MagickBooleanType
+    status;
+
+  size_t
+    columns,
+    rows;
+
+  ssize_t
+    y;
+
+  status=MagickTrue;
+  rows=MagickMax(image->rows,source_image->rows);
+  columns=MagickMax(image->columns,source_image->columns);
+  area=0.0;
+  image_view=AcquireVirtualCacheView(image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,image,rows,1)
+#endif
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    double
+      channel_distortion[MaxPixelChannels+1];
+
+    const Quantum
+      *magick_restrict p,
+      *magick_restrict q;
+
+    size_t
+      local_area = 0;      
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
+    q=GetCacheViewVirtualPixels(source_view,0,y,columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    (void) memset(channel_distortion,0,sizeof(channel_distortion));
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      double
+        Da,
+        Sa;
+
+      ssize_t
+        i;
+
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
+          (GetPixelReadMask(source_image,q) <= (QuantumRange/2)))
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(source_image);
+          continue;
+        }
+      Sa=QuantumScale*GetPixelAlpha(image,p);
+      Da=QuantumScale*GetPixelAlpha(source_image,q);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        double
+          distance;
+
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        PixelTrait source_traits = GetPixelChannelTraits(source_image,
+          channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (source_traits == UndefinedPixelTrait) ||
+            ((source_traits & UpdatePixelTrait) == 0))
+          continue;
+        if (channel == AlphaPixelChannel)
+          distance=QuantumScale*(p[i]-GetPixelChannel(source_image,
+            channel,q));
+        else
+          distance=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(source_image,
+            channel,q));
+        channel_distortion[CompositePixelChannel]+=distance*distance;
+      }
+      local_area++;
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(source_image);
+    }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp critical (MagickCore_SeamlessRMSEDistortion)
+#endif
+    {
+      area+=local_area;
+      *distortion+=channel_distortion[CompositePixelChannel];
+    }
+  }
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  area=PerceptibleReciprocal(area);
+  *distortion=sqrt(*distortion*area/(double) GetImageChannels(image));
+  return(status);
+}
+
+static MagickBooleanType SeamlessBlendImage(Image *image,
+  const Image *source_image,const ssize_t x_offset,const ssize_t y_offset,
+  const double iterations,const double delta,ExceptionInfo *exception)
+{
+  Image
+    *crop_image,
+    *delta_image,
+    *foreground_image,
+    *mean_image,
+    *reconstruct_image,
+    *relaxed_image;
+
+  KernelInfo
+    *kernel_info;
+
+  MagickBooleanType
+    status = MagickTrue;
+
+  RectangleInfo
+    crop_info = {
+      source_image->columns,
+      source_image->rows,
+      x_offset,
+      y_offset
+    };
+
+  ssize_t
+    i;
+
+  /*
+    Seamless blend composite operator.
+  */
+  crop_image=CropImage(image,&crop_info,exception);
+  if (crop_image == (Image *) NULL)
+    return(MagickFalse);
+  (void) ResetImagePage(crop_image,"0x0+0+0");
+  delta_image=SeamlessDeltaImage(crop_image,source_image,-1.0,exception);
+  crop_image=DestroyImage(crop_image);
+  if (delta_image == (Image *) NULL)
+    return(MagickFalse);
+  mean_image=SeamlessMeanImage(delta_image,source_image,exception);
+  delta_image=DestroyImage(delta_image);
+  if (mean_image == (Image *) NULL)
+    return(MagickFalse);
+  relaxed_image=CloneImage(mean_image,0,0,MagickTrue,exception);
+  if (relaxed_image == (Image *) NULL)
+    {
+      mean_image=DestroyImage(mean_image);
+      return(MagickFalse);
+    }
+  status=SeamlessNegateAlpha(mean_image,source_image,exception);
+  if (status == MagickFalse)
+    {
+      relaxed_image=DestroyImage(relaxed_image);
+      mean_image=DestroyImage(mean_image);
+      return(MagickFalse);
+    }
+  reconstruct_image=CloneImage(relaxed_image,0,0,MagickTrue,exception);
+  if (reconstruct_image == (Image *) NULL)
+    {
+      relaxed_image=DestroyImage(relaxed_image);
+      mean_image=DestroyImage(mean_image);
+      return(MagickFalse);
+    }
+  /*
+    Convolve relaxed image and blur area of interest.
+  */
+  kernel_info=AcquireKernelInfo("3x3:0,0.25,0,0.25,0,0.25,0,0.25,0",exception);
+  if (kernel_info == (KernelInfo *) NULL)
+    {
+      reconstruct_image=DestroyImage(reconstruct_image);
+      relaxed_image=DestroyImage(relaxed_image);
+      mean_image=DestroyImage(mean_image);
+      return(MagickFalse);
+    }
+  for (i=0; i < (ssize_t) iterations; i++)
+  {
+    double
+      distortion;
+
+    Image
+      *convolve_image;
+
+    convolve_image=ConvolveImage(relaxed_image,kernel_info,exception);
+    if (convolve_image == (Image *) NULL)
+      break;
+    relaxed_image=DestroyImage(relaxed_image);
+    relaxed_image=convolve_image;
+    status=CompositeOverImage(relaxed_image,mean_image,MagickTrue,0,0,
+      exception);
+    if (status == MagickFalse)
+      break;
+    status=SeamlessRMSEDistortion(relaxed_image,reconstruct_image,&distortion,
+      exception);
+    if (status == MagickFalse)
+      break;
+    if (distortion < delta)
+      break;
+    reconstruct_image=DestroyImage(reconstruct_image);
+    reconstruct_image=CloneImage(relaxed_image,0,0,MagickTrue,exception);
+    if (reconstruct_image == (Image *) NULL)
+      break;
+  }
+  kernel_info=DestroyKernelInfo(kernel_info);
+  reconstruct_image=DestroyImage(reconstruct_image);
+  /*
+    Composite source image over the background image.
+  */
+  foreground_image=SeamlessDeltaImage(source_image,relaxed_image,1.0,exception);
+  relaxed_image=DestroyImage(relaxed_image);
+  if (foreground_image == (Image *) NULL)
+    return(MagickFalse);
+  status=CompositeOverImage(image,foreground_image,MagickTrue,x_offset,y_offset,
+    exception);
+  foreground_image=DestroyImage(foreground_image);
   return(status);
 }
 
@@ -1155,6 +1631,24 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             canvas_dissolve=geometry_info.sigma/100.0;
         }
       break;
+    }
+    case SeamlessBlendCompositeOp:
+    {
+      double
+        delta = 0.2,
+        iterations = 1000.0;
+
+      value=GetImageArtifact(image,"compose:args");
+      if (value != (char *) NULL)
+        {
+          flags=ParseGeometry(value,&geometry_info);
+          iterations=geometry_info.rho;
+          if ((flags & SigmaValue) != 0)
+            delta=geometry_info.sigma;
+        }
+      status=SeamlessBlendImage(image,composite,x_offset,y_offset,iterations,
+        delta,exception);
+      return(status);
     }
     case MathematicsCompositeOp:
     {

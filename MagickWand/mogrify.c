@@ -5698,7 +5698,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            (void) GetNextToken(argv[i],(const char **) NULL,MagickPathExtent,token);
+            (void) GetNextToken(argv[i],(const char **) NULL,MagickPathExtent,
+              token);
             op=ParseCommandOption(MagickMorphologyOptions,MagickFalse,token);
             if (op < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedMorphologyMethod",

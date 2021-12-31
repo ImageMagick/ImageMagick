@@ -1,3 +1,9 @@
+2021-01-01  7.1.0-20  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-20 GIT revision 19...
+
+2021-01-01  7.1.0-20  <quetzlzacatenango@image...>
+  * support seamless blending of a foreground and background image.
+
 2021-12-22  7.1.0-19  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-19 GIT revision 19456:d7f1b2b9b:20211222
 

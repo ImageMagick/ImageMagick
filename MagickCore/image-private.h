@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "MagickCore/pixel-accessor.h"
+
 #define BackgroundColor  "#ffffff"  /* white */
 #define BorderColor  "#dfdfdf"  /* gray */
 #define DefaultResolution  72.0
@@ -64,6 +66,25 @@ static inline ssize_t CastDoubleToLong(const double value)
 static inline double DegreesToRadians(const double degrees)
 {
   return((double) (MagickPI*degrees/180.0));
+}
+
+static inline size_t GetImageChannels(const Image *image)
+{
+  ssize_t
+    i;
+
+  size_t
+    channels;
+
+  channels=0;
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    if ((traits & UpdatePixelTrait) != 0)
+      channels++;
+  }
+  return(channels == 0 ? (size_t) 1 : channels);
 }
 
 static inline double RadiansToDegrees(const double radians)
