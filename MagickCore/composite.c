@@ -1637,8 +1637,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     case SeamlessBlendCompositeOp:
     {
       double
-        residual_threshold = 0.2,
-        iterations = 1000.0;
+        iterations = 400.0,
+        residual_threshold = 0.00003,
 
       value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
