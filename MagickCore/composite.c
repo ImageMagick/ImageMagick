@@ -889,19 +889,23 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   const double iterations,const double residual_threshold,
   ExceptionInfo *exception)
 {
+  double
+    residual;
+
   Image
     *add_image,
     *crop_image,
     *foreground_image,
     *mean_image,
-    *relaxed_image,
+    *relax_image,
     *residual_image;
 
   KernelInfo
     *kernel_info;
 
   MagickBooleanType
-    status = MagickTrue;
+    status = MagickTrue,
+    verbose = MagickFalse;
 
   RectangleInfo
     crop_info = {
@@ -933,8 +937,8 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   add_image=DestroyImage(add_image);
   if (mean_image == (Image *) NULL)
     return(MagickFalse);
-  relaxed_image=CloneImage(mean_image,0,0,MagickTrue,exception);
-  if (relaxed_image == (Image *) NULL)
+  relax_image=CloneImage(mean_image,0,0,MagickTrue,exception);
+  if (relax_image == (Image *) NULL)
     {
       mean_image=DestroyImage(mean_image);
       return(MagickFalse);
@@ -942,14 +946,14 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   status=SeamlessNegateAlpha(mean_image,source_image,exception);
   if (status == MagickFalse)
     {
-      relaxed_image=DestroyImage(relaxed_image);
+      relax_image=DestroyImage(relax_image);
       mean_image=DestroyImage(mean_image);
       return(MagickFalse);
     }
-  residual_image=CloneImage(relaxed_image,0,0,MagickTrue,exception);
+  residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
   if (residual_image == (Image *) NULL)
     {
-      relaxed_image=DestroyImage(relaxed_image);
+      relax_image=DestroyImage(relax_image);
       mean_image=DestroyImage(mean_image);
       return(MagickFalse);
     }
@@ -960,35 +964,40 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   if (kernel_info == (KernelInfo *) NULL)
     {
       residual_image=DestroyImage(residual_image);
-      relaxed_image=DestroyImage(relaxed_image);
+      relax_image=DestroyImage(relax_image);
       mean_image=DestroyImage(mean_image);
       return(MagickFalse);
     }
+  verbose=IsStringTrue(GetImageArtifact(image,"verbose"));
+  if (verbose != MagickFalse)
+    (void) FormatLocaleFile(stderr,"Iteration: Residual\n");
   for (i=0; i < (ssize_t) iterations; i++)
   {
     double
-      rmse_residual = 1.0;
+      residual = 1.0;
 
     Image
       *convolve_image;
 
-    convolve_image=ConvolveImage(relaxed_image,kernel_info,exception);
+    convolve_image=ConvolveImage(relax_image,kernel_info,exception);
     if (convolve_image == (Image *) NULL)
       break;
-    relaxed_image=DestroyImage(relaxed_image);
-    relaxed_image=convolve_image;
-    status=CompositeOverImage(relaxed_image,mean_image,MagickTrue,0,0,
+    relax_image=DestroyImage(relax_image);
+    relax_image=convolve_image;
+    status=CompositeOverImage(relax_image,mean_image,MagickTrue,0,0,
       exception);
     if (status == MagickFalse)
       break;
-    status=SeamlessRMSEResidual(relaxed_image,residual_image,&rmse_residual,
+    status=SeamlessRMSEResidual(relax_image,residual_image,&residual,
       exception);
     if (status == MagickFalse)
       break;
-    if (rmse_residual < residual_threshold)
+    if (verbose != MagickFalse)
+      (void) FormatLocaleFile(stderr,"%g: %g\n",(double) i,(double) residual);
+    if (residual < residual_threshold)
       break;
     residual_image=DestroyImage(residual_image);
-    residual_image=CloneImage(relaxed_image,0,0,MagickTrue,exception);
+    residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
     if (residual_image == (Image *) NULL)
       break;
   }
@@ -998,8 +1007,8 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   /*
     Composite source image over the background image.
   */
-  foreground_image=SeamlessAddImage(source_image,relaxed_image,1.0,exception);
-  relaxed_image=DestroyImage(relaxed_image);
+  foreground_image=SeamlessAddImage(source_image,relax_image,1.0,exception);
+  relax_image=DestroyImage(relax_image);
   if (foreground_image == (Image *) NULL)
     return(MagickFalse);
   status=CompositeOverImage(image,foreground_image,MagickTrue,x_offset,y_offset,
