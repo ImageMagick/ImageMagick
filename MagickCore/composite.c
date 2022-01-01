@@ -1632,7 +1632,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     {
       double
         iterations = 400.0,
-        residual_threshold = 0.00003,
+        residual_threshold = 0.00003;
 
       value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
