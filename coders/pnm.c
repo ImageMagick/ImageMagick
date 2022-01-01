@@ -491,7 +491,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       {
-        comment_info.comment=DestroyString(comment_info.comment); \
+        comment_info.comment=DestroyString(comment_info.comment);
         return(DestroyImageList(image));
       }
     if (colorspace != UndefinedColorspace)
