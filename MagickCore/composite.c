@@ -795,6 +795,7 @@ static MagickBooleanType SeamlessRMSEResidual(const Image *image,
   rows=MagickMax(image->rows,source_image->rows);
   columns=MagickMax(image->columns,source_image->columns);
   area=0.0;
+  *residual=0.0;
   image_view=AcquireVirtualCacheView(image,exception);
   source_view=AcquireVirtualCacheView(source_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -889,9 +890,6 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   const double iterations,const double residual_threshold,
   ExceptionInfo *exception)
 {
-  double
-    residual;
-
   Image
     *add_image,
     *crop_image,
@@ -984,15 +982,14 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
       break;
     relax_image=DestroyImage(relax_image);
     relax_image=convolve_image;
-    status=CompositeOverImage(relax_image,mean_image,MagickTrue,0,0,
-      exception);
+    status=CompositeOverImage(relax_image,mean_image,MagickTrue,0,0,exception);
     if (status == MagickFalse)
       break;
-    status=SeamlessRMSEResidual(relax_image,residual_image,&residual,
-      exception);
+    status=SeamlessRMSEResidual(relax_image,residual_image,&residual,exception);
     if (status == MagickFalse)
       break;
-    if (verbose != MagickFalse)
+    if ((verbose != MagickFalse) && (QuantumTick((MagickOffsetType) i,
+        (MagickSizeType) iterations) != MagickFalse))
       (void) FormatLocaleFile(stderr,"%g: %g\n",(double) i,(double) residual);
     if (residual < residual_threshold)
       break;
