@@ -381,19 +381,10 @@ WandExport MagickBooleanType IsPixelWand(const PixelWand *wand)
 */
 WandExport PixelWand *NewPixelWand(void)
 {
-  const char
-    *quantum;
-
   PixelWand
     *wand;
 
-  size_t
-    depth;
-
-  depth=MAGICKCORE_QUANTUM_DEPTH;
-  quantum=GetMagickQuantumDepth(&depth);
-  if (depth != MAGICKCORE_QUANTUM_DEPTH)
-    ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
+  CheckMagickCoreCompatibility();
   wand=(PixelWand *) AcquireCriticalMemory(sizeof(*wand));
   (void) memset(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();

@@ -44,7 +44,20 @@ extern "C" {
   (void) DestroyExceptionInfo(fatal_exception); \
   MagickWandTerminus(); \
   _exit((int) (severity-FatalErrorException)+1); \
-} 
+}
+
+static inline void CheckMagickCoreCompatibility()
+{
+  const char
+    *quantum;
+
+  size_t
+    depth;
+
+  quantum=GetMagickQuantumDepth(&depth);
+  if (depth != MAGICKCORE_QUANTUM_DEPTH)
+    ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
+}
 
 struct _MagickWand
 {

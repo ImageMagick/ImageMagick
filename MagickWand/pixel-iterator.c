@@ -284,9 +284,6 @@ WandExport MagickBooleanType IsPixelIterator(const PixelIterator *iterator)
 */
 WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
 {
-  const char
-    *quantum;
-
   ExceptionInfo
     *exception;
 
@@ -296,16 +293,9 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   PixelIterator
     *iterator;
 
-  size_t
-    depth;
-
   CacheView
     *view;
 
-  depth=MAGICKCORE_QUANTUM_DEPTH;
-  quantum=GetMagickQuantumDepth(&depth);
-  if (depth != MAGICKCORE_QUANTUM_DEPTH)
-    ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
   assert(wand != (MagickWand *) NULL);
   image=GetImageFromMagickWand(wand);
   if (image == (Image *) NULL)
@@ -401,9 +391,6 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
   CacheView
     *view;
 
-  const char
-    *quantum;
-
   ExceptionInfo
     *exception;
 
@@ -413,16 +400,9 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
   PixelIterator
     *iterator;
 
-  size_t
-    depth;
-
   assert(wand != (MagickWand *) NULL);
-  depth=MAGICKCORE_QUANTUM_DEPTH;
-  quantum=GetMagickQuantumDepth(&depth);
-  if (depth != MAGICKCORE_QUANTUM_DEPTH)
-    ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
   if ((width == 0) || (height == 0))
-    ThrowWandFatalException(WandError,"ZeroRegionSize",quantum);
+    ThrowWandFatalException(WandError,"ZeroRegionSize",wand->name);
   image=GetImageFromMagickWand(wand);
   if (image == (Image *) NULL)
     return((PixelIterator *) NULL);

@@ -76,21 +76,8 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   MagickCLI
     *cli_wand;
 
-  /* precaution - as per NewMagickWand() */
-  {
-     size_t depth = MAGICKCORE_QUANTUM_DEPTH;
-     const char *quantum = GetMagickQuantumDepth(&depth);
-     if (depth != MAGICKCORE_QUANTUM_DEPTH)
-       ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
-  }
-
-  /* allocate memory for MgaickCLI */
+  CheckMagickCoreCompatibility();
   cli_wand=(MagickCLI *) AcquireCriticalMemory(sizeof(*cli_wand));
-
-  /* Initialize Wand Part of MagickCLI
-     FUTURE: this is a repeat of code from NewMagickWand()
-     However some parts may be given fro man external source!
-  */
   cli_wand->wand.id=AcquireWandId();
   (void) FormatLocaleString(cli_wand->wand.name,MagickPathExtent,
            "%s-%.20g","MagickWandCLI", (double) cli_wand->wand.id);
