@@ -637,9 +637,6 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ssize_t
-        i;
-
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -683,9 +680,6 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
       break;
     for (x=0; x < (ssize_t) mean_image->columns; x++)
     {
-      ssize_t
-        i;
-
       if (GetPixelAlpha(source_image,p) > (QuantumRange/2))
         for (i=0; i < (ssize_t) GetPixelChannels(mean_image); i++)
         {
