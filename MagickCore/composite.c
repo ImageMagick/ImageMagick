@@ -988,11 +988,16 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
     status=SeamlessRMSEResidual(relax_image,residual_image,&residual,exception);
     if (status == MagickFalse)
       break;
-    if ((verbose != MagickFalse) && (QuantumTick((MagickOffsetType) i,
-        (MagickSizeType) iterations) != MagickFalse))
+    if ((verbose != MagickFalse) &&
+        (QuantumTick((MagickOffsetType) i,(MagickSizeType) iterations)))
       (void) FormatLocaleFile(stderr,"%g: %g\n",(double) i,(double) residual);
     if (residual < residual_threshold)
-      break;
+      {
+        if (verbose != MagickFalse)
+          (void) FormatLocaleFile(stderr,"%g: %g\n",(double) i,(double)
+            residual);
+        break;
+      }
     residual_image=DestroyImage(residual_image);
     residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
     if (residual_image == (Image *) NULL)
