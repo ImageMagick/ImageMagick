@@ -1267,6 +1267,7 @@ static const OptionInfo
     { "RMSE", RMSECompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Saturate", SaturateCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Screen", ScreenCompositeOp, UndefinedOptionFlag, MagickFalse },
+    { "SeamlessBlend", SeamlessBlendCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SoftBurn", SoftBurnCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SoftDodge", SoftDodgeCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SoftLight", SoftLightCompositeOp, UndefinedOptionFlag, MagickFalse },

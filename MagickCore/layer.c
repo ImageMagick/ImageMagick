@@ -674,7 +674,7 @@ static RectangleInfo CompareImagesBounds(const Image *alpha_image,
     bounding_box=bounds;
     p=GetCacheViewVirtualPixels(alpha_view,0,y,alpha_image->columns,1,
       exception);
-    q=GetCacheViewVirtualPixels(beta_view,0,y,beta_image->columns,1,exception);
+    q=GetCacheViewVirtualPixels(beta_view,0,y,alpha_image->columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
       {
         status=MagickFalse;

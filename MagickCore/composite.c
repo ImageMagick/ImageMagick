@@ -55,6 +55,7 @@
 #include "MagickCore/composite-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/draw.h"
+#include "MagickCore/exception-private.h"
 #include "MagickCore/fx.h"
 #include "MagickCore/gem.h"
 #include "MagickCore/geometry.h"
@@ -637,6 +638,9 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      ssize_t
+        i;
+
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -680,6 +684,9 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
       break;
     for (x=0; x < (ssize_t) mean_image->columns; x++)
     {
+      ssize_t
+        i;
+
       if (GetPixelAlpha(source_image,p) > (QuantumRange/2))
         for (i=0; i < (ssize_t) GetPixelChannels(mean_image); i++)
         {
@@ -910,6 +917,10 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   /*
     Seamless blend composite operator.
   */
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  ThrowBinaryException(ConfigureError,
+    "HDRI feature required for seamless blending",image->filename);
+#endif
   crop_image=CropImage(image,&crop_info,exception);
   if (crop_image == (Image *) NULL)
     return(MagickFalse);
@@ -1631,8 +1642,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     case SeamlessBlendCompositeOp:
     {
       double
-        iterations = 400.0,
-        residual_threshold = 0.00003;
+        residual_threshold = 0.2,
+        iterations = 1000.0;
 
       value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
