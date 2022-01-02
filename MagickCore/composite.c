@@ -617,7 +617,7 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
     mean[MaxPixelChannels];
 
   ssize_t
-    i,
+    j,
     y;
 
   /*
@@ -656,8 +656,8 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
   }
   if (y < (ssize_t) image->rows)
     return((Image *) NULL);
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-    mean[i]=ClampToQuantum((double) QuantumRange*mean[i]/image->columns/
+  for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+    mean[j]=ClampToQuantum((double) QuantumRange*mean[j]/image->columns/
       image->rows);
   image_view=DestroyCacheView(image_view);
   mean_image=CloneImage(image,0,0,MagickTrue,exception);
