@@ -1003,7 +1003,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
     status=SeamlessRMSEResidual(relax_image,residual_image,&residual,exception);
     if (status == MagickFalse)
       break;
-    if ((verbose != MagickFalse) && ((i % tick) == 0))
+    if ((verbose != MagickFalse) && ((i % MagickMax(tick,1)) == 0))
       (void) FormatLocaleFile(stderr,"  %g: %g\n",(double) i,(double) residual);
     if (residual < residual_threshold)
       {
