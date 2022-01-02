@@ -260,6 +260,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 { \
   if (comment_info.comment != (char *) NULL)  \
     comment_info.comment=DestroyString(comment_info.comment); \
+  if (quantum_info != (QuantumInfo *) NULL) \
+     quantum_info=DestroyQuantumInfo(quantum_info); \
   ThrowReaderException((exception),(message)); \
 }
 
@@ -328,6 +330,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read PNM image.
   */
+  quantum_info=(QuantumInfo *) NULL;
   count=ReadBlob(image,1,(unsigned char *) &format);
   do
   {
