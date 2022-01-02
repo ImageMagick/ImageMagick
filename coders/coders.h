@@ -139,6 +139,7 @@
 #include "coders/ps.h"
 #include "coders/psd.h"
 #include "coders/pwp.h"
+#include "coders/qoi.h"
 #include "coders/raw.h"
 #include "coders/rgb.h"
 #include "coders/rgf.h"
