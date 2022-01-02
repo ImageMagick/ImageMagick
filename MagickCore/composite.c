@@ -543,7 +543,7 @@ static Image *SeamlessAddImage(const Image *image,const Image *source_image,
     y;
 
   /*
-    Return new image whose pixels are added between the image & source.
+    Added or subtract source from image.
   */
   add_image=CloneImage(image,0,0,MagickTrue,exception);
   if (add_image == (Image *) NULL)
@@ -621,7 +621,7 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
     y;
 
   /*
-    Replace any masked pixels with mean pixel.
+    Compute the mean of the image.
   */
   (void) memset(mean,0,MaxPixelChannels*sizeof(*mean));
   image_view=AcquireVirtualCacheView(image,exception);
@@ -659,6 +659,9 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
   for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
     mean[j]=ClampToQuantum((double) QuantumRange*mean[j]/image->columns/
       image->rows);
+  /*
+    Replace any masked pixels with the mean pixel.
+  */
   image_view=DestroyCacheView(image_view);
   mean_image=CloneImage(image,0,0,MagickTrue,exception);
   if (mean_image == (Image *) NULL)
@@ -687,15 +690,17 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
       ssize_t
         i;
 
-      if (GetPixelAlpha(source_image,p) > (QuantumRange/2))
-        for (i=0; i < (ssize_t) GetPixelChannels(mean_image); i++)
-        {
-          PixelChannel channel = GetPixelChannelChannel(mean_image,i);
-          PixelTrait traits = GetPixelChannelTraits(mean_image,channel);
-          if (traits == UndefinedPixelTrait)
-            continue;
+      for (i=0; i < (ssize_t) GetPixelChannels(mean_image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(mean_image,i);
+        PixelTrait traits = GetPixelChannelTraits(mean_image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if (GetPixelAlpha(source_image,p) > 0)
           q[i]=mean[i];
-        }
+        if (GetPixelAlpha(source_image,p) == QuantumRange)
+          q[i]=0.0;
+      }
       p+=GetPixelChannels(source_image);
       q+=GetPixelChannels(mean_image);
     }
@@ -709,66 +714,6 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
   if (y < (ssize_t) image->rows)
     mean_image=DestroyImage(mean_image);
   return(mean_image);
-}
-
-static MagickBooleanType SeamlessNegateAlpha(Image *image,
-  const Image *source_image,ExceptionInfo *exception)
-{
-  CacheView
-    *image_view,
-    *source_view;
-
-  ssize_t
-    y;
-
-  /*
-    Negate the alpha channel.
-  */
-  image->alpha_trait=BlendPixelTrait;
-  image_view=AcquireAuthenticCacheView(image,exception);
-  source_view=AcquireVirtualCacheView(source_image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    const Quantum
-      *magick_restrict p;
-
-    Quantum
-      *magick_restrict q;
-
-    ssize_t
-      x;
-
-    p=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        if (channel == AlphaPixelChannel)
-          q[i]=QuantumRange-GetPixelAlpha(source_image,p);
-      }
-      p+=GetPixelChannels(source_image);
-      q+=GetPixelChannels(image);
-    }
-    if (x < (ssize_t) image->columns)
-      break;
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      break;
-  }
-  source_view=DestroyCacheView(source_view);
-  image_view=DestroyCacheView(image_view);
-  if (y < (ssize_t) image->rows)
-    return(MagickFalse);
-  return(MagickTrue);
 }
 
 static MagickBooleanType SeamlessRMSEResidual(const Image *image,
@@ -805,14 +750,14 @@ static MagickBooleanType SeamlessRMSEResidual(const Image *image,
   for (y=0; y < (ssize_t) rows; y++)
   {
     double
-      channel_residual[MaxPixelChannels+1];
+      channel_residual;
 
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
 
     size_t
-      local_area = 0;      
+      local_area = 0;
 
     ssize_t
       x;
@@ -826,7 +771,7 @@ static MagickBooleanType SeamlessRMSEResidual(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) memset(channel_residual,0,sizeof(channel_residual));
+    channel_residual=0.0;
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -864,7 +809,7 @@ static MagickBooleanType SeamlessRMSEResidual(const Image *image,
         else
           distance=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(source_image,
             channel,q));
-        channel_residual[CompositePixelChannel]+=distance*distance;
+        channel_residual+=distance*distance;
       }
       local_area++;
       p+=GetPixelChannels(image);
@@ -875,7 +820,7 @@ static MagickBooleanType SeamlessRMSEResidual(const Image *image,
 #endif
     {
       area+=local_area;
-      *residual+=channel_residual[CompositePixelChannel];
+      *residual+=channel_residual;
     }
   }
   source_view=DestroyCacheView(source_view);
@@ -885,9 +830,79 @@ static MagickBooleanType SeamlessRMSEResidual(const Image *image,
   return(status);
 }
 
+static MagickBooleanType SeamlessThresholdAlphaChannel(Image *image,
+  const Image *source_image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *source_view;
+
+  ssize_t
+    y;
+
+  /*
+    Threshold the alpha channel.
+  */
+  if (SetImageAlpha(image,OpaqueAlpha,exception) == MagickFalse)
+    return(MagickFalse);
+  image_view=AcquireAuthenticCacheView(image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    p=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if (channel == AlphaPixelChannel)
+          {
+            double
+              alpha;
+
+            alpha=(double) GetPixelAlpha(source_image,p);
+            q[i]=(Quantum) 0;
+            if ((fabs(alpha) < MagickEpsilon) ||
+                (fabs(alpha) > (QuantumRange-MagickEpsilon)))
+              q[i]=QuantumRange;
+          }
+      }
+      p+=GetPixelChannels(source_image);
+      q+=GetPixelChannels(image);
+    }
+    if (x < (ssize_t) image->columns)
+      break;
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      break;
+  }
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  if (y < (ssize_t) image->rows)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 static MagickBooleanType SeamlessBlendImage(Image *image,
   const Image *source_image,const ssize_t x_offset,const ssize_t y_offset,
-  const double iterations,const double residual_threshold,
+  const double iterations,const double residual_threshold,const size_t tick,
   ExceptionInfo *exception)
 {
   Image
@@ -941,7 +956,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
       mean_image=DestroyImage(mean_image);
       return(MagickFalse);
     }
-  status=SeamlessNegateAlpha(mean_image,source_image,exception);
+  status=SeamlessThresholdAlphaChannel(mean_image,source_image,exception);
   if (status == MagickFalse)
     {
       relax_image=DestroyImage(relax_image);
@@ -968,7 +983,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
     }
   verbose=IsStringTrue(GetImageArtifact(image,"verbose"));
   if (verbose != MagickFalse)
-    (void) FormatLocaleFile(stderr,"Iteration: Residual\n");
+    (void) FormatLocaleFile(stderr,"seamless blending:\n");
   for (i=0; i < (ssize_t) iterations; i++)
   {
     double
@@ -988,13 +1003,12 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
     status=SeamlessRMSEResidual(relax_image,residual_image,&residual,exception);
     if (status == MagickFalse)
       break;
-    if ((verbose != MagickFalse) &&
-        (QuantumTick((MagickOffsetType) i,(MagickSizeType) iterations)))
-      (void) FormatLocaleFile(stderr,"%g: %g\n",(double) i,(double) residual);
+    if ((verbose != MagickFalse) && ((i % tick) == 0))
+      (void) FormatLocaleFile(stderr,"  %g: %g\n",(double) i,(double) residual);
     if (residual < residual_threshold)
       {
         if (verbose != MagickFalse)
-          (void) FormatLocaleFile(stderr,"%g: %g\n",(double) i,(double)
+          (void) FormatLocaleFile(stderr,"  %g: %g\n",(double) i,(double)
             residual);
         break;
       }
@@ -1007,7 +1021,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   mean_image=DestroyImage(mean_image);
   residual_image=DestroyImage(residual_image);
   /*
-    Composite source image over the background image.
+    Composite relaxed image over the background image.
   */
   foreground_image=SeamlessAddImage(source_image,relax_image,1.0,exception);
   relax_image=DestroyImage(relax_image);
@@ -1653,8 +1667,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     case SeamlessBlendCompositeOp:
     {
       double
-        residual_threshold = 0.2,
-        iterations = 1000.0;
+        residual_threshold = 0.0002,
+        iterations = 400.0;
+
+     size_t
+        tick = 100;
 
       value=GetImageArtifact(image,"compose:args");
       if (value != (char *) NULL)
@@ -1663,9 +1680,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           iterations=geometry_info.rho;
           if ((flags & SigmaValue) != 0)
             residual_threshold=geometry_info.sigma;
+          if ((flags & XiValue) != 0)
+            tick=(size_t) geometry_info.xi;
         }
       status=SeamlessBlendImage(image,composite,x_offset,y_offset,iterations,
-        residual_threshold,exception);
+        residual_threshold,tick,exception);
       source_image=DestroyImage(source_image);
       return(status);
     }
