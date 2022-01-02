@@ -584,7 +584,7 @@ static Image *SeamlessAddImage(const Image *image,const Image *source_image,
             (source_image_traits == UndefinedPixelTrait) ||
             ((source_image_traits & UpdatePixelTrait) == 0))
           continue;
-        r[i]=p[i]+sign*GetPixelChannel(source_image,channel,q);
+        r[i]=ClampToQuantum(p[i]+sign*GetPixelChannel(source_image,channel,q));
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(source_image);
@@ -700,9 +700,9 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
         if (traits == UndefinedPixelTrait)
           continue;
         if (fabs(alpha) >= MagickEpsilon)
-          q[i]=mean[i];
+          q[i]=ClampToQuantum(mean[i]);
         if (fabs(alpha-QuantumRange) < MagickEpsilon)
-          q[i]=0.0;
+          q[i]=(Quantum) 0;
       }
       p+=GetPixelChannels(source_image);
       q+=GetPixelChannels(mean_image);
@@ -800,15 +800,13 @@ static MagickBooleanType SeamlessRMSEResidual(const Image *image,
 
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait source_traits = GetPixelChannelTraits(source_image,
-          channel);
+        PixelTrait source_traits = GetPixelChannelTraits(source_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (source_traits == UndefinedPixelTrait) ||
             ((source_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=QuantumScale*(p[i]-GetPixelChannel(source_image,
-            channel,q));
+          distance=QuantumScale*(p[i]-GetPixelChannel(source_image,channel,q));
         else
           distance=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(source_image,
             channel,q));
@@ -876,7 +874,7 @@ static MagickBooleanType SeamlessThresholdAlphaChannel(Image *image,
       q[i]=(Quantum) 0;
       if ((fabs(alpha) < MagickEpsilon) ||
           (fabs(alpha) > (QuantumRange-MagickEpsilon)))
-        q[i]=QuantumRange;
+        q[i]=(Quantum) QuantumRange;
       p+=GetPixelChannels(source_image);
       q+=GetPixelChannels(image);
     }
@@ -926,10 +924,6 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   /*
     Seamless blend composite operator.
   */
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  ThrowBinaryException(ConfigureError,
-    "HDRI feature required for seamless blending",image->filename);
-#endif
   crop_image=CropImage(image,&crop_info,exception);
   if (crop_image == (Image *) NULL)
     return(MagickFalse);
