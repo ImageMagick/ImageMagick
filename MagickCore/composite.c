@@ -687,6 +687,9 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
       break;
     for (x=0; x < (ssize_t) mean_image->columns; x++)
     {
+      double
+        alpha = (double) GetPixelAlpha(source_image,p);
+
       ssize_t
         i;
 
@@ -696,9 +699,9 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
         PixelTrait traits = GetPixelChannelTraits(mean_image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (GetPixelAlpha(source_image,p) > 0)
+        if (fabs(alpha) >= MagickEpsilon)
           q[i]=mean[i];
-        if (GetPixelAlpha(source_image,p) == QuantumRange)
+        if (fabs(alpha-QuantumRange) < MagickEpsilon)
           q[i]=0.0;
       }
       p+=GetPixelChannels(source_image);
@@ -864,27 +867,16 @@ static MagickBooleanType SeamlessThresholdAlphaChannel(Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        alpha = (double) GetPixelAlpha(source_image,p);
+
       ssize_t
-        i;
+        i = GetPixelChannelOffset(image,AlphaPixelChannel);
 
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        if (channel == AlphaPixelChannel)
-          {
-            double
-              alpha;
-
-            alpha=(double) GetPixelAlpha(source_image,p);
-            q[i]=(Quantum) 0;
-            if ((fabs(alpha) < MagickEpsilon) ||
-                (fabs(alpha) > (QuantumRange-MagickEpsilon)))
-              q[i]=QuantumRange;
-          }
-      }
+      q[i]=(Quantum) 0;
+      if ((fabs(alpha) < MagickEpsilon) ||
+          (fabs(alpha) > (QuantumRange-MagickEpsilon)))
+        q[i]=QuantumRange;
       p+=GetPixelChannels(source_image);
       q+=GetPixelChannels(image);
     }
