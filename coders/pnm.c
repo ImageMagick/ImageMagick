@@ -299,8 +299,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     depth,
-    extent,
-    packet_size;
+    extent;
 
   ssize_t
     count,
@@ -426,8 +425,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Assign a value to the specified keyword.
           */
           if (LocaleCompare(keyword,"depth") == 0)
-            packet_size=StringToUnsignedLong(value);
-          (void) packet_size;
+            (void) StringToUnsignedLong(value);
           if (LocaleCompare(keyword,"height") == 0)
             image->rows=StringToUnsignedLong(value);
           if (LocaleCompare(keyword,"maxval") == 0)
