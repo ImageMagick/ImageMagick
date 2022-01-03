@@ -1038,6 +1038,8 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   relax_image=DestroyImage(relax_image);
   if (foreground_image == (Image *) NULL)
     return(MagickFalse);
+  (void) SetImageMask(foreground_image,ReadPixelMask,(const Image *) NULL,
+    exception);
   status=CompositeOverImage(image,foreground_image,MagickTrue,x_offset,y_offset,
     exception);
   foreground_image=DestroyImage(foreground_image);
