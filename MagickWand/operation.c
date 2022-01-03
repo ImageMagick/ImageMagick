@@ -2013,7 +2013,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfNormalOp)
             (void) ClipImage(_image,_exception);
           else /* "+mask" remove the write mask */
-            (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,
+            (void) SetImageMask(_image,WritePixelMask,(const Image *) NULL,
               _exception);
           break;
         }
@@ -2024,7 +2024,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           if (IfPlusOp) {
             /* use "+clip-mask" Remove the write mask for -clip-path */
-            (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,_exception);
+            (void) SetImageMask(_image,WritePixelMask,(const Image *) NULL,
+             _exception);
             break;
           }
           clip_mask=GetImageCache(_image_info,arg1,_exception);
@@ -2790,7 +2791,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
               /*
                 Remove a mask.
               */
-              (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,
+              (void) SetImageMask(_image,WritePixelMask,(const Image *) NULL,
                 _exception);
               break;
             }
@@ -3160,7 +3161,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           if (IfPlusOp)
             { /* Remove a mask. */
-              (void) SetImageMask(_image,ReadPixelMask,(Image *) NULL,
+              (void) SetImageMask(_image,ReadPixelMask,(const Image *) NULL,
                 _exception);
               break;
             }
@@ -3683,7 +3684,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           if (IfPlusOp)
             { /* Remove a mask. */
-              (void) SetImageMask(_image,WritePixelMask,(Image *) NULL,
+              (void) SetImageMask(_image,WritePixelMask,(const Image *) NULL,
                 _exception);
               break;
             }

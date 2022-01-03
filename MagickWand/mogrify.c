@@ -1145,7 +1145,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             if (*option == '+')
               {
-                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,WritePixelMask,(const Image *) NULL,
                   exception);
                 break;
               }
@@ -1163,7 +1163,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,WritePixelMask,(const Image *) NULL,
                   exception);
                 break;
               }
@@ -2210,7 +2210,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,WritePixelMask,(const Image *) NULL,
                   exception);
                 break;
               }
@@ -2686,7 +2686,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,ReadPixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,ReadPixelMask,(const Image *) NULL,
                   exception);
                 break;
               }
@@ -3476,7 +3476,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,WritePixelMask,(const Image *) NULL,
                   exception);
                 break;
               }
