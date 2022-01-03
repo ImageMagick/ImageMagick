@@ -532,12 +532,15 @@ static Image *SeamlessAddImage(const Image *image,const Image *source_image,
   const double sign,ExceptionInfo *exception)
 {
   CacheView
-    *source_view,
+    *add_view,
     *image_view,
-    *add_view;
+    *source_view;
 
   Image
     *add_image;
+
+  MagickBooleanType
+    status = MagickTrue;
 
   ssize_t
     y;
@@ -550,7 +553,11 @@ static Image *SeamlessAddImage(const Image *image,const Image *source_image,
     return(add_image);
   image_view=AcquireVirtualCacheView(image,exception);
   source_view=AcquireVirtualCacheView(source_image,exception);
-  add_view=AcquireVirtualCacheView(add_image,exception);
+  add_view=AcquireAuthenticCacheView(add_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,add_image,image->rows,1)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const Quantum
@@ -563,12 +570,17 @@ static Image *SeamlessAddImage(const Image *image,const Image *source_image,
     ssize_t
       x;
 
+    if (status == MagickFalse)
+      continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     q=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
     r=GetCacheViewAuthenticPixels(add_view,0,y,image->columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL) ||
         (r == (Quantum *) NULL))
-      break;
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -590,15 +602,13 @@ static Image *SeamlessAddImage(const Image *image,const Image *source_image,
       q+=GetPixelChannels(source_image);
       r+=GetPixelChannels(add_image);
     }
-    if (x < (ssize_t) image->columns)
-      break;
     if (SyncCacheViewAuthenticPixels(add_view,exception) == MagickFalse)
-      break;
+      status=MagickFalse;
   }
   add_view=DestroyCacheView(add_view);
   source_view=DestroyCacheView(source_view);
   image_view=DestroyCacheView(image_view);
-  if (y < (ssize_t) image->rows)
+  if (status == MagickFalse)
     add_image=DestroyImage(add_image);
   return(add_image);
 }
@@ -612,6 +622,9 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
 
   Image
     *mean_image;
+
+  MagickBooleanType
+    status = MagickTrue;
 
   Quantum
     mean[MaxPixelChannels];
@@ -651,8 +664,6 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
       }
       p+=GetPixelChannels(image);
     }
-    if (x < (ssize_t) image->columns)
-      break;
   }
   if (y < (ssize_t) image->rows)
     return((Image *) NULL);
@@ -660,7 +671,7 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
     mean[j]=ClampToQuantum((double) QuantumRange*mean[j]/image->columns/
       image->rows);
   /*
-    Replace any masked pixels with the mean pixel.
+    Replace any unmasked pixels with the mean pixel.
   */
   image_view=DestroyCacheView(image_view);
   mean_image=CloneImage(image,0,0,MagickTrue,exception);
@@ -668,6 +679,10 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
     return(mean_image);
   image_view=AcquireAuthenticCacheView(mean_image,exception);
   source_view=AcquireVirtualCacheView(source_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,mean_image,mean_image->rows,1)
+#endif
   for (y=0; y < (ssize_t) mean_image->rows; y++)
   {
     const Quantum
@@ -679,12 +694,18 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
     ssize_t
       x;
 
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     p=GetCacheViewVirtualPixels(source_view,0,y,mean_image->columns,1,
       exception);
     q=GetCacheViewAuthenticPixels(image_view,0,y,mean_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      break;
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) mean_image->columns; x++)
     {
       Quantum
@@ -700,22 +721,21 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
         PixelTrait traits = GetPixelChannelTraits(mean_image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (fabs((double) alpha) >= MagickEpsilon)
-          q[i]=ClampToQuantum(mean[i]);
         if (mask <= (QuantumRange/2))
           q[i]=(Quantum) 0;
+        else
+          if (fabs((double) alpha) >= MagickEpsilon)
+            q[i]=ClampToQuantum(mean[i]);
       }
       p+=GetPixelChannels(source_image);
       q+=GetPixelChannels(mean_image);
     }
-    if (x < (ssize_t) mean_image->columns)
-      break;
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      break;
+      status=MagickFalse;
   }
   source_view=DestroyCacheView(source_view);
   image_view=DestroyCacheView(image_view);
-  if (y < (ssize_t) image->rows)
+  if (status == MagickFalse)
     mean_image=DestroyImage(mean_image);
   return(mean_image);
 }
@@ -728,22 +748,18 @@ static MagickBooleanType SeamlessRMSEResidual(const Image *image,
     *source_view;
 
   double
-    area;
+    area = 0.0;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   size_t
-    columns,
-    rows;
+    columns = MagickMax(image->columns,source_image->columns),
+    rows = MagickMax(image->rows,source_image->rows);
 
   ssize_t
     y;
 
-  status=MagickTrue;
-  rows=MagickMax(image->rows,source_image->rows);
-  columns=MagickMax(image->columns,source_image->columns);
-  area=0.0;
   *residual=0.0;
   image_view=AcquireVirtualCacheView(image,exception);
   source_view=AcquireVirtualCacheView(source_image,exception);
@@ -753,12 +769,12 @@ static MagickBooleanType SeamlessRMSEResidual(const Image *image,
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    double
-      channel_residual;
-
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
+
+    double
+      channel_residual;
 
     size_t
       local_area = 0;
@@ -839,6 +855,9 @@ static MagickBooleanType SeamlessThresholdAlphaChannel(Image *image,
     *image_view,
     *source_view;
 
+  MagickBooleanType
+    status = MagickTrue;
+
   ssize_t
     y;
 
@@ -849,6 +868,10 @@ static MagickBooleanType SeamlessThresholdAlphaChannel(Image *image,
     return(MagickFalse);
   image_view=AcquireAuthenticCacheView(image,exception);
   source_view=AcquireVirtualCacheView(source_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,image,image->rows,1)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const Quantum
@@ -860,10 +883,15 @@ static MagickBooleanType SeamlessThresholdAlphaChannel(Image *image,
     ssize_t
       x;
 
+    if (status == MagickFalse)
+      continue;
     p=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      break;
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       Quantum
@@ -872,22 +900,19 @@ static MagickBooleanType SeamlessThresholdAlphaChannel(Image *image,
       ssize_t
         i = GetPixelChannelOffset(image,AlphaPixelChannel);
 
-      q[i]=(Quantum) 0;
       if (fabs((double) alpha) < MagickEpsilon)
         q[i]=(Quantum) QuantumRange;
+      else
+        q[i]=(Quantum) 0;
       p+=GetPixelChannels(source_image);
       q+=GetPixelChannels(image);
     }
-    if (x < (ssize_t) image->columns)
-      break;
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      break;
+      status=MagickFalse;
   }
   source_view=DestroyCacheView(source_view);
   image_view=DestroyCacheView(image_view);
-  if (y < (ssize_t) image->rows)
-    return(MagickFalse);
-  return(MagickTrue);
+  return(status);
 }
 
 static MagickBooleanType SeamlessBlendImage(Image *image,
