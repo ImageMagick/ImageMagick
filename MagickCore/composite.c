@@ -620,14 +620,14 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
     *image_view,
     *source_view;
 
+  double
+    mean[MaxPixelChannels];
+
   Image
     *mean_image;
 
   MagickBooleanType
     status = MagickTrue;
-
-  Quantum
-    mean[MaxPixelChannels];
 
   ssize_t
     j,
@@ -668,8 +668,7 @@ static Image *SeamlessMeanImage(Image *image,const Image *source_image,
   if (y < (ssize_t) image->rows)
     return((Image *) NULL);
   for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-    mean[j]=ClampToQuantum((double) QuantumRange*mean[j]/image->columns/
-      image->rows);
+    mean[j]=(double) QuantumRange*mean[j]/image->columns/image->rows;
   /*
     Replace any unmasked pixels with the mean pixel.
   */
@@ -1032,7 +1031,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   mean_image=DestroyImage(mean_image);
   residual_image=DestroyImage(residual_image);
   /*
-    Composite relaxed image over the background image.
+    Composite the foreground image over the background image.
   */
   foreground_image=SeamlessAddImage(source_image,relax_image,1.0,exception);
   relax_image=DestroyImage(relax_image);
