@@ -279,6 +279,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/ps.h \
 	coders/pwp.c \
 	coders/pwp.h \
+	coders/qoi.c \
+	coders/qoi.h \
 	coders/raw.c \
 	coders/raw.h \
 	coders/rgb.c \
@@ -480,6 +482,7 @@ CODERS_NOINST_HDRS = \
 	coders/psd-private.h \
 	coders/ps.h \
 	coders/pwp.h \
+	coders/qoi.h \
 	coders/raw.h \
 	coders/rgb.h \
 	coders/rgf.h \
@@ -606,6 +609,7 @@ coders_LTLIBRARIES = \
 	coders/ps3.la \
 	coders/psd.la \
 	coders/pwp.la \
+	coders/qoi.la \
 	coders/raw.la \
 	coders/rgb.la \
 	coders/rgf.la \
@@ -1216,6 +1220,12 @@ coders_pwp_la_SOURCES      = coders/pwp.c
 coders_pwp_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_pwp_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_pwp_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# QOI coder module
+coders_qoi_la_SOURCES      = coders/qoi.c
+coders_qoi_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_qoi_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_qoi_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # RAW coder module
 coders_raw_la_SOURCES      = coders/raw.c
