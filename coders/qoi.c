@@ -59,7 +59,9 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
 
-
+/*
+  Define declaractions.
+*/
 #define QOI_SRGB   0
 #define QOI_LINEAR 1
 
@@ -73,22 +75,82 @@
 #define QOI_MASK_2    0xc0 /* 11000000 */
 
 #define QOI_COLOR_HASH(C) (C.rgba.r*3 + C.rgba.g*5 + C.rgba.b*7 + C.rgba.a*11)
-
+
+/*
+  Typedef declaractions.
+*/
+typedef union
+{
+  struct { unsigned char r, g, b, a; } rgba;
+  unsigned int v;
+} qoi_rgba_t;
+
+/*
+  Forward declarations.
+*/
+static MagickBooleanType
+  WriteQOIImage(const ImageInfo *,Image *,ExceptionInfo *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s Q O I                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsQOI()() returns MagickTrue if the image format type, identified by the
+%  magick string, is QOI.
+%
+%  The format of the IsQOI method is:
+%
+%      MagickBooleanType IsQOI(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o magick: compare image format pattern against these bytes.
+%
+%    o length: Specifies the length of the magick string.
+%
+*/
 static unsigned int IsQOI(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
     return(MagickFalse);
-  if (LocaleNCompare((char *) magick, "qoif", 4) != 0)
+  if (LocaleNCompare((const char *) magick, "qoif", 4) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
 
-
-typedef union {
-  struct { unsigned char r, g, b, a; } rgba;
-  unsigned int v;
-} qoi_rgba_t;
-
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d Q O I I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadQOIImage() reads a Quite OK Image Format image file and returns it. It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadQOIImage method is:
+%
+%      Image *ReadQOIImage(image_info,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
 static Image *ReadQOIImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -276,7 +338,94 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
   return(GetFirstImageInList(image));
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r Q O I I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RegisterQOIImage() adds properties for the QOI image format to
+%  the list of supported formats.  The properties include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterQOIImage method is:
+%
+%      size_t RegisterQOIImage(void)
+%
+*/
+ModuleExport size_t RegisterQOIImage(void)
+{
+  MagickInfo
+    *entry;
 
+  entry=AcquireMagickInfo("QOI","QOI","Quite OK image format");
+  entry->decoder=(DecodeImageHandler *) ReadQOIImage;
+  entry->encoder=(EncodeImageHandler *) WriteQOIImage;
+  entry->magick=(IsImageFormatHandler *) IsQOI;
+  entry->flags^=CoderAdjoinFlag;
+  (void) RegisterMagickInfo(entry);
+  return(MagickImageCoderSignature);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r Q O I I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UnregisterQOIImage() removes format registrations made by the
+%  QOI module from the list of supported formats.
+%
+%  The format of the UnregisterQOIImage method is:
+%
+%      UnregisterQOIImage(void)
+%
+*/
+ModuleExport void UnregisterQOIImage(void)
+{
+  (void) UnregisterMagickInfo("QOI");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e Q O I I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteQOIImage() writes an image in the Quite OK Image Format image format.
+%
+%  The format of the WriteQOIImage method is:
+%
+%      MagickBooleanType WriteQOIImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows.
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
 static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -430,22 +579,4 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
     }
   }
   return(MagickTrue);
-}
-
-ModuleExport size_t RegisterQOIImage(void)
-{
-  MagickInfo
-    *entry;
-
-  entry=AcquireMagickInfo("QOI","QOI","Quite OK image format");
-  entry->decoder=(DecodeImageHandler *) ReadQOIImage;
-  entry->encoder=(EncodeImageHandler *) WriteQOIImage;
-  entry->magick=(IsImageFormatHandler *) IsQOI;
-  (void) RegisterMagickInfo(entry);
-  return(MagickImageCoderSignature);
-}
-
-ModuleExport void UnregisterQOIImage(void)
-{
-  (void) UnregisterMagickInfo("QOI");
 }
