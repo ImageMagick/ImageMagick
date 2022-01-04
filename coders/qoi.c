@@ -346,8 +346,8 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,"qoif");
   (void) WriteBlobMSBLong(image,(unsigned int) image->columns);
   (void) WriteBlobMSBLong(image,(unsigned int) image->rows);
-  (void) WriteBlobByte(image,channels);
-  (void) WriteBlobByte(image,colorspace);
+  (void) WriteBlobByte(image,(const unsigned char) channels);
+  (void) WriteBlobByte(image,(const unsigned char) colorspace);
   /*
     Initialize encoding state.
   */
