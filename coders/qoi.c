@@ -484,11 +484,11 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
     ThrowWriterException(CoderError,"ImageTypeNotSupported");
 
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-   (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if (IsRGBColorspace(image->colorspace))
-     colorspace=QOI_LINEAR;
+    colorspace=QOI_LINEAR;
   else
-     colorspace=QOI_SRGB;
+    colorspace=QOI_SRGB;
   /*
     Write QOI header.
   */
