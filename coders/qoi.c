@@ -481,7 +481,7 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   else if (quantum_type == RGBAQuantum)
     channels=4;
   else
-    ThrowWriterException(ImageError,"MemoryAllocationFailed");
+    ThrowWriterException(CoderError,"ImageTypeNotSupported");
 
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
    (void) TransformImageColorspace(image,sRGBColorspace,exception);
@@ -508,7 +508,7 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   run=0;
   p=GetVirtualPixels(image,0,0,image->columns,image->rows,exception);
   if (p == (const Quantum *) NULL)
-    return(MagickFalse);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     Do the actual encoding.
   */
