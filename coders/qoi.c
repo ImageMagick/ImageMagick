@@ -60,7 +60,7 @@
 #include "MagickCore/module.h"
 
 /*
-  Define declaractions.
+  Define declarations.
 */
 #define QOI_SRGB   0
 #define QOI_LINEAR 1
@@ -77,7 +77,7 @@
 #define QOI_COLOR_HASH(C) (C.rgba.r*3 + C.rgba.g*5 + C.rgba.b*7 + C.rgba.a*11)
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
 typedef union
 {
