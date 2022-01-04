@@ -16,7 +16,8 @@
 
 #include "coders/coders-private.h"
 
-#define MagickQOIHeaders
+#define MagickQOIHeaders \
+  MagickCoderHeader("QOI", 0, "qoif")
 
 #define MagickQOIAliases
 
