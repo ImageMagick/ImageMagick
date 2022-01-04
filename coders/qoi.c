@@ -580,6 +580,12 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   }
   if (run > 0)
       (void) WriteBlobByte(image,QOI_OP_RUN | (const unsigned char) (run - 1));
+  /*
+    Write the QOI end marker: seven 0x00 bytes followed by 0x01.
+  */
+  for (i=0; i < 7; i++)
+    (void) WriteBlobByte(image,0x00);
+  (void) WriteBlobByte(image,0x01);
 
   return(MagickTrue);
 }
