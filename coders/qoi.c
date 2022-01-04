@@ -594,5 +594,6 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobByte(image,0x00);
   (void) WriteBlobByte(image,0x01);
 
+  (void) CloseBlob(image);
   return(MagickTrue);
 }
