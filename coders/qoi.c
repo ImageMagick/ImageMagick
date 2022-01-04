@@ -548,22 +548,29 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
         vb,
         vg_r,
         vg_b;
-      vr=px.rgba.r - pp.rgba.r;
-      vg=px.rgba.g - pp.rgba.g;
-      vb=px.rgba.b - pp.rgba.b;
-      vg_r=vr - vg;
-      vg_b=vb - vg;
+
+      unsigned char
+        diff,
+        luma;
+
+      vr=(signed char) (px.rgba.r - pp.rgba.r);
+      vg=(signed char) (px.rgba.g - pp.rgba.g);
+      vb=(signed char) (px.rgba.b - pp.rgba.b);
+      vg_r=(signed char) (vr - vg);
+      vg_b=(signed char) (vb - vg);
 
       if (vr > -3 && vr < 2 &&
           vg > -3 && vg < 2 &&
           vb > -3 && vb < 2) {
-        (void) WriteBlobByte(image,QOI_OP_DIFF
-                 | (vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
+          diff=(unsigned char) ((vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
+          (void) WriteBlobByte(image,QOI_OP_DIFF | diff);
       } else if (vg_r >  -9 && vg_r < 8 &&
                  vg   > -33 && vg   < 32 &&
-                 vg_b >  -9 && vg_b < 2) {
-        (void) WriteBlobByte(image,QOI_OP_LUMA | (vg + 32));
-        (void) WriteBlobByte(image,(vg_r + 8) << 4 | (vg_b +  8));
+                 vg_b >  -9 && vg_b < 8) {
+        luma=(unsigned char) (vg + 32);
+        (void) WriteBlobByte(image,QOI_OP_LUMA | luma);
+        luma=(unsigned char) ((vg_r + 8) << 4 | (vg_b +  8));
+        (void) WriteBlobByte(image,luma);
       } else {
         (void) WriteBlobByte(image,QOI_OP_RGB);
         (void) WriteBlobByte(image,px.rgba.r);
