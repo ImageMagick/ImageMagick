@@ -157,9 +157,6 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
   Image
     *image;
 
-  QuantumInfo
-    *quantum_info;
-
   Quantum
     *q;
 
@@ -234,12 +231,6 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse)
-    return(DestroyImageList(image));
-  quantum_info=AcquireQuantumInfo(image_info,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
   if (status == MagickFalse)
     return(DestroyImageList(image));
 
@@ -429,9 +420,6 @@ ModuleExport void UnregisterQOIImage(void)
 static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
-  QuantumInfo
-    *quantum_info;
-
   QuantumType
     quantum_type;
 
@@ -470,10 +458,6 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
     return(status);
   image->endian=MSBEndian;
   image->depth=8;
-
-  quantum_info=AcquireQuantumInfo(image_info,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowWriterException(ImageError,"MemoryAllocationFailed");
 
   quantum_type=GetQuantumType(image,exception);
   if (quantum_type == RGBQuantum)
