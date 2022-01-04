@@ -578,5 +578,8 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
       (void) WriteBlobByte(image,px.rgba.a);
     }
   }
+  if (run > 0)
+      (void) WriteBlobByte(image,QOI_OP_RUN | (const unsigned char) (run - 1));
+
   return(MagickTrue);
 }
