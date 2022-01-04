@@ -213,6 +213,10 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
   image->alpha_trait=BlendPixelTrait;
   if (image->columns == 0 || image->rows == 0)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
+  if (image->ping != MagickFalse) {
+    (void) CloseBlob(image);
+    return(GetFirstImageInList(image));
+  }
 
   channels=ReadBlobByte(image);
   if (channels == 3)
@@ -320,8 +324,7 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
       "UnexpectedEndOfFile",image->filename);
   if (status != MagickFalse) {
     status=SyncAuthenticPixels(image,exception);
-    if (image->ping == MagickFalse)
-      SyncImage(image,exception);
+    SyncImage(image,exception);
   }
   (void) CloseBlob(image);
   if (status == MagickFalse)
