@@ -376,18 +376,19 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
     if (pp.v == px.v) {
       run++;
       if (run == 62) {
-        (void) WriteBlobByte(image,QOI_OP_RUN | (run - 1));
+        (void) WriteBlobByte(image,QOI_OP_RUN |
+          (const unsigned char) (run - 1));
         run=0;
       }
       continue;
     }
     if (run > 0) {
-      (void) WriteBlobByte(image,QOI_OP_RUN | (run - 1));
+      (void) WriteBlobByte(image,QOI_OP_RUN | (const unsigned char) (run - 1));
       run=0;
     }
     idx=QOI_COLOR_HASH(px) % 64;
     if (lut[idx].v == px.v) {
-      (void) WriteBlobByte(image,QOI_OP_INDEX | idx);
+      (void) WriteBlobByte(image,QOI_OP_INDEX | (const unsigned char) idx);
       continue;
     }
     lut[QOI_COLOR_HASH(px) % 64]=px;
