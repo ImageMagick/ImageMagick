@@ -10,7 +10,7 @@ name: release
 jobs:
   release_windows_installer:
     name: 'Windows ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}} (${{matrix.type}})'
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     strategy:
       fail-fast: false
@@ -25,10 +25,8 @@ jobs:
         include:
           - platform: x64
             bit: 64
-            platform_alias: x64
           - platform: x86
             bit: 32
-            platform_alias: Win32
           - type: dll
             type_flag: dmt
           - type: static
@@ -73,30 +71,30 @@ jobs:
     - name: Build configure
       shell: cmd
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
-        msbuild configure.2019.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
+        msbuild configure.2022.sln /m /t:Rebuild /p:Configuration=Release,Platform=x86
 
     - name: Configure ImageMagick
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2019 /includeOptional /installedSupport /deprecated /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /${{matrix.type_flag}}
+        configure.exe /noWizard /VS2022 /includeOptional /installedSupport /deprecated /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /${{matrix.type_flag}}
 
     - name: Build ImageMagick
       shell: cmd
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
         set /p solution=<solution
-        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform_alias}}
+        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
     - name: Build PerlMagick
       if: ${{matrix.type == 'dll'}}
       shell: cmd
       run: |
         set PATH=
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\ImageMagick\PerlMagick
         set PATH=%PATH%;C:\Strawberry${{matrix.bit}}\c\bin;C:\Strawberry${{matrix.bit}}\perl\site\bin;C:\Strawberry${{matrix.bit}}\perl\bin;C:\WINDOWS\System32\WindowsPowerShell\v1.0
         perl "Makefile.PL" "MAKE=nmake"
@@ -112,7 +110,7 @@ jobs:
     - name: Create installer
       shell: cmd
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\installer\im-${{matrix.platform}}${{matrix.hdri_flag}}-${{matrix.type}}-${{matrix.quantum}}.iss
 
     - name: Sign installer
@@ -157,7 +155,7 @@ jobs:
 
   release_windows_portable:
     name: 'Windows portable ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}'
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     strategy:
       fail-fast: false
@@ -171,10 +169,8 @@ jobs:
         include:
           - platform: x64
             bit: 64
-            platform_alias: x64
           - platform: x86
             bit: 32
-            platform_alias: Win32
           - hdri: HDRI
             hdri_flag: '-HDRI'
 
@@ -201,23 +197,23 @@ jobs:
     - name: Build configure
       shell: cmd
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
-        msbuild configure.2019.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
+        msbuild configure.2022.sln /m /t:Rebuild /p:Configuration=Release,Platform=x86
 
     - name: Configure ImageMagick
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2019 /noOpenMP /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /smt
+        configure.exe /noWizard /VS2022 /noOpenMP /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /smt
 
     - name: Build ImageMagick
       shell: cmd
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
         set /p solution=<solution
-        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform_alias}}
+        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
     - name: Sign exectables
       uses: dlemstra/code-sign-action@v1
