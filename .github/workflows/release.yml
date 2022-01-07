@@ -196,7 +196,7 @@ jobs:
     - name: Install FFmpeg
       shell: cmd
       run: |
-        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20160630/ffmpeg-4.2-win${{matrix.bit}}.exe -OutFile ffmpeg.exe
+        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/ffmpeg-4.2.3-win${{matrix.bit}}.exe -OutFile ffmpeg.exe
         copy /Y ffmpeg.exe %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\bin
 
     - name: Build configure
