@@ -60,7 +60,7 @@
 #include "MagickCore/module.h"
 
 /*
-  Define declaractions.
+  Define declarations.
 */
 #define QOI_SRGB   0
 #define QOI_LINEAR 1
@@ -77,7 +77,7 @@
 #define QOI_COLOR_HASH(C) (C.rgba.r*3 + C.rgba.g*5 + C.rgba.b*7 + C.rgba.a*11)
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
 typedef union
 {
@@ -157,9 +157,6 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
   Image
     *image;
 
-  QuantumInfo
-    *quantum_info;
-
   Quantum
     *q;
 
@@ -216,6 +213,10 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
   image->alpha_trait=BlendPixelTrait;
   if (image->columns == 0 || image->rows == 0)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
+  if (image->ping != MagickFalse) {
+    (void) CloseBlob(image);
+    return(GetFirstImageInList(image));
+  }
 
   channels=ReadBlobByte(image);
   if (channels == 3)
@@ -234,12 +235,6 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse)
-    return(DestroyImageList(image));
-  quantum_info=AcquireQuantumInfo(image_info,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
   if (status == MagickFalse)
     return(DestroyImageList(image));
 
@@ -329,8 +324,7 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
       "UnexpectedEndOfFile",image->filename);
   if (status != MagickFalse) {
     status=SyncAuthenticPixels(image,exception);
-    if (image->ping == MagickFalse)
-      SyncImage(image,exception);
+    SyncImage(image,exception);
   }
   (void) CloseBlob(image);
   if (status == MagickFalse)
@@ -429,9 +423,6 @@ ModuleExport void UnregisterQOIImage(void)
 static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
-  QuantumInfo
-    *quantum_info;
-
   QuantumType
     quantum_type;
 
@@ -471,24 +462,20 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   image->endian=MSBEndian;
   image->depth=8;
 
-  quantum_info=AcquireQuantumInfo(image_info,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowWriterException(ImageError,"MemoryAllocationFailed");
-
   quantum_type=GetQuantumType(image,exception);
   if (quantum_type == RGBQuantum)
     channels=3;
   else if (quantum_type == RGBAQuantum)
     channels=4;
   else
-    ThrowWriterException(ImageError,"MemoryAllocationFailed");
+    ThrowWriterException(CoderError,"ImageTypeNotSupported");
 
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-   (void) TransformImageColorspace(image,sRGBColorspace,exception);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if (IsRGBColorspace(image->colorspace))
-     colorspace=QOI_LINEAR;
+    colorspace=QOI_LINEAR;
   else
-     colorspace=QOI_SRGB;
+    colorspace=QOI_SRGB;
   /*
     Write QOI header.
   */
@@ -508,11 +495,11 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   run=0;
   p=GetVirtualPixels(image,0,0,image->columns,image->rows,exception);
   if (p == (const Quantum *) NULL)
-    return(MagickFalse);
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   /*
     Do the actual encoding.
   */
-  end = image->rows * image->columns;
+  end=image->rows * image->columns;
   for (i=0; i < end; i++) {
     pp=px;
     px.rgba.r=ScaleQuantumToChar(GetPixelRed(image,p));
@@ -548,22 +535,29 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
         vb,
         vg_r,
         vg_b;
-      vr=px.rgba.r - pp.rgba.r;
-      vg=px.rgba.g - pp.rgba.g;
-      vb=px.rgba.b - pp.rgba.b;
-      vg_r=vr - vg;
-      vg_b=vb - vg;
+
+      unsigned char
+        diff,
+        luma;
+
+      vr=(signed char) (px.rgba.r - pp.rgba.r);
+      vg=(signed char) (px.rgba.g - pp.rgba.g);
+      vb=(signed char) (px.rgba.b - pp.rgba.b);
+      vg_r=(signed char) (vr - vg);
+      vg_b=(signed char) (vb - vg);
 
       if (vr > -3 && vr < 2 &&
           vg > -3 && vg < 2 &&
           vb > -3 && vb < 2) {
-        (void) WriteBlobByte(image,QOI_OP_DIFF
-                 | (vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
+          diff=(unsigned char) ((vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
+          (void) WriteBlobByte(image,QOI_OP_DIFF | diff);
       } else if (vg_r >  -9 && vg_r < 8 &&
                  vg   > -33 && vg   < 32 &&
-                 vg_b >  -9 && vg_b < 2) {
-        (void) WriteBlobByte(image,QOI_OP_LUMA | (vg + 32));
-        (void) WriteBlobByte(image,(vg_r + 8) << 4 | (vg_b +  8));
+                 vg_b >  -9 && vg_b < 8) {
+        luma=(unsigned char) (vg + 32);
+        (void) WriteBlobByte(image,QOI_OP_LUMA | luma);
+        luma=(unsigned char) ((vg_r + 8) << 4 | (vg_b +  8));
+        (void) WriteBlobByte(image,luma);
       } else {
         (void) WriteBlobByte(image,QOI_OP_RGB);
         (void) WriteBlobByte(image,px.rgba.r);
@@ -578,5 +572,15 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
       (void) WriteBlobByte(image,px.rgba.a);
     }
   }
+  if (run > 0)
+      (void) WriteBlobByte(image,QOI_OP_RUN | (const unsigned char) (run - 1));
+  /*
+    Write the QOI end marker: seven 0x00 bytes followed by 0x01.
+  */
+  for (i=0; i < 7; i++)
+    (void) WriteBlobByte(image,0x00);
+  (void) WriteBlobByte(image,0x01);
+
+  (void) CloseBlob(image);
   return(MagickTrue);
 }
