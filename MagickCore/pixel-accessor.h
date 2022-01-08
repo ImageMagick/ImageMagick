@@ -18,7 +18,6 @@
 #ifndef MAGICKCORE_PIXEL_ACCESSOR_H
 #define MAGICKCORE_PIXEL_ACCESSOR_H
 
-#include <assert.h>
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/color.h"
@@ -712,8 +711,10 @@ static inline void SetPixelChannelAttributes(
   const Image *magick_restrict image,const PixelChannel channel,
   const PixelTrait traits,const ssize_t offset)
 {
-  assert((ssize_t) channel < MaxPixelChannels);
-  assert(offset < MaxPixelChannels);
+  if ((ssize_t) channel >= MaxPixelChannels)
+    return;
+  if (offset >= MaxPixelChannels)
+    return;
   image->channel_map[offset].channel=channel;
   image->channel_map[channel].offset=offset;
   image->channel_map[channel].traits=traits;
