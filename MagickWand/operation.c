@@ -4083,6 +4083,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                     clip_to_self,geometry.x,geometry.y,_exception);
                   break;
                 }
+                case SaliencyBlendCompositeOp:
                 case SeamlessBlendCompositeOp:
                 {
                   status&=CompositeImage(source_image,mask_image,

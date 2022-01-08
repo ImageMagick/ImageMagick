@@ -152,6 +152,8 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
         case DistortCompositeOp:
         case DissolveCompositeOp:
         case ModulateCompositeOp:
+        case SaliencyBlendCompositeOp:
+        case SeamlessBlendCompositeOp:
         case ThresholdCompositeOp:
         {
           (void) SetImageArtifact(*image,"compose:args",

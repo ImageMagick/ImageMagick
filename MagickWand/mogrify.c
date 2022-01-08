@@ -8242,6 +8242,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                       clip_to_self,geometry.x,geometry.y,exception);
                     break;
                   }
+                  case SaliencyBlendCompositeOp:
                   case SeamlessBlendCompositeOp:
                   {
                     status&=CompositeImage(source_image,mask_image,
