@@ -5163,6 +5163,11 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         jng_image=DestroyImageList(jng_image);
     }
 
+  if (alpha_image != (Image *) NULL)
+    alpha_image=DestroyImageList(alpha_image);
+  if (alpha_image_info != (ImageInfo *) NULL)
+    alpha_image_info=DestroyImageInfo(alpha_image_info);
+
   /* Read the JNG image.  */
 
   if (mng_info->mng_type == 0)
