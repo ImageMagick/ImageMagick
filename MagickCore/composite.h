@@ -104,6 +104,7 @@ typedef enum
   SoftDodgeCompositeOp,
   StampCompositeOp,
   RMSECompositeOp,
+  SaliencyBlendCompositeOp,
   SeamlessBlendCompositeOp
 } CompositeOperator;
 

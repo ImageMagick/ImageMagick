@@ -912,6 +912,137 @@ static MagickBooleanType SeamlessRMSEResidual(const Image *image,
   return(status);
 }
 
+static MagickBooleanType SaliencyBlendImage(Image *image,
+  const Image *source_image,const ssize_t x_offset,const ssize_t y_offset,
+  const double iterations,const double residual_threshold,const size_t tick,
+  ExceptionInfo *exception)
+{
+  Image
+    *add_image,
+    *crop_image,
+    *foreground_image,
+    *mean_image,
+    *relax_image,
+    *residual_image;
+
+  KernelInfo
+    *kernel_info;
+
+  MagickBooleanType
+    status = MagickTrue,
+    verbose = MagickFalse;
+
+  RectangleInfo
+    crop_info = {
+      source_image->columns,
+      source_image->rows,
+      x_offset,
+      y_offset
+    };
+
+  ssize_t
+    i;
+
+  /*
+    Seamless blend composite operator.
+  */
+  crop_image=CropImage(image,&crop_info,exception);
+  if (crop_image == (Image *) NULL)
+    return(MagickFalse);
+  (void) ResetImagePage(crop_image,"0x0+0+0");
+  add_image=SeamlessAddImage(crop_image,source_image,-1.0,exception);
+  crop_image=DestroyImage(crop_image);
+  if (add_image == (Image *) NULL)
+    return(MagickFalse);
+  mean_image=SeamlessMeanImage(add_image,source_image,exception);
+  add_image=DestroyImage(add_image);
+  if (mean_image == (Image *) NULL)
+    return(MagickFalse);
+  relax_image=CloneImage(mean_image,0,0,MagickTrue,exception);
+  if (relax_image == (Image *) NULL)
+    {
+      mean_image=DestroyImage(mean_image);
+      return(MagickFalse);
+    }
+  status=SeamlessMaskAlphaChannel(mean_image,source_image,exception);
+  if (status == MagickFalse)
+    {
+      relax_image=DestroyImage(relax_image);
+      mean_image=DestroyImage(mean_image);
+      return(MagickFalse);
+    }
+  residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
+  if (residual_image == (Image *) NULL)
+    {
+      relax_image=DestroyImage(relax_image);
+      mean_image=DestroyImage(mean_image);
+      return(MagickFalse);
+    }
+  /*
+    Convolve relaxed image and blur area of interest.
+  */
+  kernel_info=AcquireKernelInfo("3x3:0,0.25,0,0.25,0,0.25,0,0.25,0",exception);
+  if (kernel_info == (KernelInfo *) NULL)
+    {
+      residual_image=DestroyImage(residual_image);
+      relax_image=DestroyImage(relax_image);
+      mean_image=DestroyImage(mean_image);
+      return(MagickFalse);
+    }
+  verbose=IsStringTrue(GetImageArtifact(image,"verbose"));
+  if (verbose != MagickFalse)
+    (void) FormatLocaleFile(stderr,"seamless blending:\n");
+  for (i=0; i < (ssize_t) iterations; i++)
+  {
+    double
+      residual = 1.0;
+
+    Image
+      *convolve_image;
+
+    convolve_image=ConvolveImage(relax_image,kernel_info,exception);
+    if (convolve_image == (Image *) NULL)
+      break;
+    relax_image=DestroyImage(relax_image);
+    relax_image=convolve_image;
+    status=CompositeOverImage(relax_image,mean_image,MagickTrue,0,0,exception);
+    if (status == MagickFalse)
+      break;
+    status=SeamlessRMSEResidual(relax_image,residual_image,&residual,exception);
+    if (status == MagickFalse)
+      break;
+    if ((verbose != MagickFalse) && ((i % MagickMax(tick,1)) == 0))
+      (void) FormatLocaleFile(stderr,"  %g: %g\n",(double) i,(double) residual);
+    if (residual < residual_threshold)
+      {
+        if (verbose != MagickFalse)
+          (void) FormatLocaleFile(stderr,"  %g: %g\n",(double) i,(double)
+            residual);
+        break;
+      }
+    residual_image=DestroyImage(residual_image);
+    residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
+    if (residual_image == (Image *) NULL)
+      break;
+  }
+  kernel_info=DestroyKernelInfo(kernel_info);
+  mean_image=DestroyImage(mean_image);
+  residual_image=DestroyImage(residual_image);
+  /*
+    Composite the foreground image over the background image.
+  */
+  foreground_image=SeamlessAddImage(source_image,relax_image,1.0,exception);
+  relax_image=DestroyImage(relax_image);
+  if (foreground_image == (Image *) NULL)
+    return(MagickFalse);
+  (void) SetImageMask(foreground_image,ReadPixelMask,(const Image *) NULL,
+    exception);
+  status=CompositeOverImage(image,foreground_image,MagickTrue,x_offset,y_offset,
+    exception);
+  foreground_image=DestroyImage(foreground_image);
+  return(status);
+}
+
 static MagickBooleanType SeamlessBlendImage(Image *image,
   const Image *source_image,const ssize_t x_offset,const ssize_t y_offset,
   const double iterations,const double residual_threshold,const size_t tick,
@@ -1673,6 +1804,30 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             canvas_dissolve=geometry_info.sigma/100.0;
         }
       break;
+    }
+    case SaliencyBlendCompositeOp:
+    {
+      double
+        residual_threshold = 0.0002,
+        iterations = 400.0;
+
+     size_t
+        tick = 100;
+
+      value=GetImageArtifact(image,"compose:args");
+      if (value != (char *) NULL)
+        {
+          flags=ParseGeometry(value,&geometry_info);
+          iterations=geometry_info.rho;
+          if ((flags & SigmaValue) != 0)
+            residual_threshold=geometry_info.sigma;
+          if ((flags & XiValue) != 0)
+            tick=(size_t) geometry_info.xi;
+        }
+      status=SaliencyBlendImage(image,composite,x_offset,y_offset,iterations,
+        residual_threshold,tick,exception);
+      source_image=DestroyImage(source_image);
+      return(status);
     }
     case SeamlessBlendCompositeOp:
     {
