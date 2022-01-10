@@ -4093,7 +4093,23 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                   break;
                 }
                 default:
+                {
+                  Image
+                    *clone_image;
+
+                  clone_image=CloneImage(new_images,0,0,MagickTrue,_exception);
+                  if (clone_image == (Image *) NULL)
+                    break;
+                  status&=CompositeImage(new_images,source_image,compose,
+                    clip_to_self,geometry.x,geometry.y,_exception);
+                  status&=CompositeImage(new_images,mask_image,
+                    CopyAlphaCompositeOp,MagickTrue,0,0,_exception);
+                  status&=CompositeImage(clone_image,new_images,OverCompositeOp,
+                    clip_to_self,0,0,_exception);
+                  new_images=DestroyImageList(new_images);
+                  new_images=clone_image;
                   break;
+                }
               }
               status&=CompositeImage(clone_image,new_images,OverCompositeOp,
                 clip_to_self,0,0,_exception);
