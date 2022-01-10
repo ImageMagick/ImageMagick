@@ -181,70 +181,723 @@
        operations.
 */
 
-static void HCLComposite(const MagickRealType hue,const MagickRealType chroma,
-  const MagickRealType luma,MagickRealType *red,MagickRealType *green,
-  MagickRealType *blue)
+static Image *BlendAddImage(const Image *image,const Image *source_image,
+  const double attenuate,const double sign,ExceptionInfo *exception)
 {
-  MagickRealType
-    b,
-    c,
-    g,
-    h,
-    m,
-    r,
-    x;
+  CacheView
+    *add_view,
+    *image_view,
+    *source_view;
+
+  Image
+    *add_image;
+
+  MagickBooleanType
+    status = MagickTrue;
+
+  ssize_t
+    y;
 
   /*
-    Convert HCL to RGB colorspace.
+    Added or subtract source from image.
   */
-  assert(red != (MagickRealType *) NULL);
-  assert(green != (MagickRealType *) NULL);
-  assert(blue != (MagickRealType *) NULL);
-  h=6.0*hue;
-  c=chroma;
-  x=c*(1.0-fabs(fmod(h,2.0)-1.0));
-  r=0.0;
-  g=0.0;
-  b=0.0;
-  if ((0.0 <= h) && (h < 1.0))
-    {
-      r=c;
-      g=x;
-    }
-  else
-    if ((1.0 <= h) && (h < 2.0))
+  add_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (add_image == (Image *) NULL)
+    return(add_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+  add_view=AcquireAuthenticCacheView(add_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,add_image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p,
+      *magick_restrict q;
+
+    Quantum
+      *magick_restrict r;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
+    r=GetCacheViewAuthenticPixels(add_view,0,y,image->columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL) ||
+        (r == (Quantum *) NULL))
       {
-        r=x;
-        g=c;
+        status=MagickFalse;
+        continue;
       }
-    else
-      if ((2.0 <= h) && (h < 3.0))
-        {
-          g=c;
-          b=x;
-        }
-      else
-        if ((3.0 <= h) && (h < 4.0))
-          {
-            g=x;
-            b=c;
-          }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        PixelTrait source_image_traits = GetPixelChannelTraits(source_image,
+          channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (source_image_traits == UndefinedPixelTrait) ||
+            ((source_image_traits & UpdatePixelTrait) == 0))
+          continue;
+        r[i]=ClampToQuantum(attenuate*(p[i]+sign*
+          GetPixelChannel(source_image,channel,q)));
+      }
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(source_image);
+      r+=GetPixelChannels(add_image);
+    }
+    if (SyncCacheViewAuthenticPixels(add_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  add_view=DestroyCacheView(add_view);
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    add_image=DestroyImage(add_image);
+  return(add_image);
+}
+
+static Image *BlendConvolveImage(const Image *image,const char *kernel,
+  ExceptionInfo *exception)
+{
+  Image
+    *clone_image,
+    *convolve_image;
+
+  KernelInfo
+    *kernel_info;
+
+  /*
+    Convolve image.
+  */
+  kernel_info=AcquireKernelInfo(kernel,exception);
+  if (kernel_info == (KernelInfo *) NULL)
+    return((Image *) NULL);
+  clone_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (clone_image == (Image *) NULL)
+    {
+      kernel_info=DestroyKernelInfo(kernel_info);
+      return((Image *) NULL);
+    }
+  (void) SetImageAlphaChannel(clone_image,OffAlphaChannel,exception);
+  convolve_image=ConvolveImage(clone_image,kernel_info,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  clone_image=DestroyImage(clone_image);
+  return(convolve_image);
+}
+
+static Image *BlendMagnitudeImage(const Image *image,const Image *source_image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *magnitude_view,
+    *source_view;
+
+  Image
+    *magnitude_image;
+
+  MagickBooleanType
+    status = MagickTrue;
+
+  ssize_t
+    y;
+
+  /*
+    Generate the magnitude between two images.
+  */
+  magnitude_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (magnitude_image == (Image *) NULL)
+    return(magnitude_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+  magnitude_view=AcquireAuthenticCacheView(magnitude_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,magnitude_image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p,
+      *magick_restrict q;
+
+    Quantum
+      *magick_restrict r;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
+    r=GetCacheViewAuthenticPixels(magnitude_view,0,y,image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL) ||
+        (r == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        PixelTrait source_image_traits = GetPixelChannelTraits(source_image,
+          channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (source_image_traits == UndefinedPixelTrait) ||
+            ((source_image_traits & UpdatePixelTrait) == 0))
+          continue;
+        r[i]=ClampToQuantum(hypot((double) p[i],(double)
+          GetPixelChannel(source_image,channel,q)));
+      }
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(source_image);
+      r+=GetPixelChannels(magnitude_image);
+    }
+    if (SyncCacheViewAuthenticPixels(magnitude_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  magnitude_view=DestroyCacheView(magnitude_view);
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    magnitude_image=DestroyImage(magnitude_image);
+  return(magnitude_image);
+}
+
+static Image *BlendMaxMagnitudeImage(const Image *src_mag,const Image *dst_mag,
+  const Image *src_dx,const Image *dst_dx,ExceptionInfo *exception)
+{
+  CacheView
+    *dst_dx_view,
+    *dst_mag_view,
+    *magnitude_view,
+    *src_dx_view,
+    *src_mag_view;
+
+  Image
+    *magnitude_image;
+
+  MagickBooleanType
+    status = MagickTrue;
+
+  ssize_t
+    y;
+
+  /*
+    Generate the magnitude between two images.
+  */
+  magnitude_image=CloneImage(src_mag,0,0,MagickTrue,exception);
+  if (magnitude_image == (Image *) NULL)
+    return(magnitude_image);
+  src_mag_view=AcquireVirtualCacheView(src_mag,exception);
+  dst_mag_view=AcquireVirtualCacheView(dst_mag,exception);
+  src_dx_view=AcquireVirtualCacheView(src_dx,exception);
+  dst_dx_view=AcquireVirtualCacheView(dst_dx,exception);
+  magnitude_view=AcquireAuthenticCacheView(magnitude_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(src_mag,magnitude_image,src_mag->rows,1)
+#endif
+  for (y=0; y < (ssize_t) src_mag->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p,
+      *magick_restrict q,
+      *magick_restrict r,
+      *magick_restrict s;
+
+    Quantum
+      *magick_restrict t;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(src_mag_view,0,y,src_mag->columns,1,exception);
+    q=GetCacheViewVirtualPixels(dst_mag_view,0,y,src_mag->columns,1,exception);
+    r=GetCacheViewVirtualPixels(src_dx_view,0,y,src_mag->columns,1,exception);
+    s=GetCacheViewVirtualPixels(dst_dx_view,0,y,src_mag->columns,1,exception);
+    t=GetCacheViewAuthenticPixels(magnitude_view,0,y,src_mag->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL) ||
+        (r == (const Quantum *) NULL) || (s == (const Quantum *) NULL) ||
+        (r == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) src_mag->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(src_mag); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(src_mag,i);
+        PixelTrait traits = GetPixelChannelTraits(src_mag,channel);
+        PixelTrait dst_mag_traits = GetPixelChannelTraits(dst_mag,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (dst_mag_traits == UndefinedPixelTrait) ||
+            ((dst_mag_traits & UpdatePixelTrait) == 0))
+          continue;
+        if (p[i] > GetPixelChannel(dst_mag,channel,q))
+          t[i]=GetPixelChannel(src_dx,channel,r);
         else
-          if ((4.0 <= h) && (h < 5.0))
-            {
-              r=x;
-              b=c;
-            }
-          else
-            if ((5.0 <= h) && (h < 6.0))
-              {
-                r=c;
-                b=x;
-              }
-  m=luma-(0.298839*r+0.586811*g+0.114350*b);
-  *red=QuantumRange*(r+m);
-  *green=QuantumRange*(g+m);
-  *blue=QuantumRange*(b+m);
+          t[i]=GetPixelChannel(dst_dx,channel,s);
+      }
+      p+=GetPixelChannels(src_mag);
+      q+=GetPixelChannels(dst_mag);
+      r+=GetPixelChannels(src_dx);
+      s+=GetPixelChannels(dst_dx);
+      t+=GetPixelChannels(magnitude_image);
+    }
+    if (SyncCacheViewAuthenticPixels(magnitude_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  magnitude_view=DestroyCacheView(magnitude_view);
+  dst_dx_view=DestroyCacheView(dst_dx_view);
+  dst_mag_view=DestroyCacheView(dst_mag_view);
+  src_dx_view=DestroyCacheView(src_dx_view);
+  src_mag_view=DestroyCacheView(src_mag_view);
+  if (status == MagickFalse)
+    magnitude_image=DestroyImage(magnitude_image);
+  return(magnitude_image);
+}
+
+static Image *BlendDivergentImage(const Image *image,const Image *source_image,
+  ExceptionInfo *exception)
+{
+#define FreeDivergentResources() \
+{ \
+  if (dy_image != (Image *) NULL) \
+    dy_image=DestroyImage(dy_image); \
+  if (dx_image != (Image *) NULL) \
+    dx_image=DestroyImage(dx_image); \
+  if (dst_mag != (Image *) NULL) \
+    dst_mag=DestroyImage(dst_mag); \
+  if (dst_dy != (Image *) NULL) \
+    dst_dy=DestroyImage(dst_dy); \
+  if (dst_dx != (Image *) NULL) \
+    dst_dx=DestroyImage(dst_dx); \
+  if (src_mag != (Image *) NULL) \
+    src_mag=DestroyImage(src_mag); \
+  if (src_dy != (Image *) NULL) \
+    src_dy=DestroyImage(src_dy); \
+  if (src_dx != (Image *) NULL) \
+    src_dx=DestroyImage(src_dx); \
+}
+
+  Image
+    *divergent_image = (Image *) NULL,
+    *dx_image = (Image *) NULL,
+    *dy_image = (Image *) NULL,
+    *div_dx = (Image *) NULL,
+    *div_dy = (Image *) NULL,
+    *dst_dx = (Image *) NULL,
+    *dst_dy = (Image *) NULL,
+    *dst_mag = (Image *) NULL,
+    *src_dx = (Image *) NULL,
+    *src_dy = (Image *) NULL,
+    *src_mag = (Image *) NULL;
+
+  /*
+    Create X and Y gradient images for src and the magnitude.
+  */
+  src_dx=BlendConvolveImage(image,"3x1:-0.5,0.0,0.5",exception);
+  if (src_dx == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  src_dy=BlendConvolveImage(image,"1x3:-0.5,0.0,0.5",exception);
+  if (src_dy == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  src_mag=BlendMagnitudeImage(src_dx,src_dy,exception);
+  if (src_mag == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  /*
+    Create X and Y gradient images for dst and the magnitude.
+  */
+  dst_dx=BlendConvolveImage(source_image,"3x1:-0.5,0.0,0.5",exception);
+  if (dst_dx == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  dst_dy=BlendConvolveImage(source_image,"1x3:-0.5,0.0,0.5",exception);
+  if (dst_dy == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  dst_mag=BlendMagnitudeImage(dst_dx,dst_dy,exception);
+  if (dst_mag == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  /*
+    Pick src or dst gradient for larger of two magnitudes.
+  */
+  dx_image=BlendMaxMagnitudeImage(src_mag,dst_mag,src_dx,dst_dx,exception);
+  if (dx_image == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  dy_image=BlendMaxMagnitudeImage(src_mag,dst_mag,src_dy,dst_dy,exception);
+  if (dy_image == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  /*
+    Create divergence of gradients dx and dy and divide by 4 as guide image.
+  */
+  div_dx=BlendConvolveImage(dx_image,"3x1:-0.5,0.0,0.5",exception);
+  if (div_dx == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  div_dy=BlendConvolveImage(dy_image,"1x3:-0.5,0.0,0.5",exception);
+  if (div_dy == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  divergent_image=BlendAddImage(div_dx,div_dy,0.25,1.0,exception);
+  if (divergent_image == (Image *) NULL)
+    {
+      FreeDivergentResources();
+      return((Image *) NULL);
+    }
+  FreeDivergentResources();
+  return(divergent_image);
+}
+
+static MagickBooleanType BlendMaskAlphaChannel(Image *image,
+  const Image *source_image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *source_view;
+
+  MagickBooleanType
+    status = MagickTrue;
+
+  ssize_t
+    y;
+
+  /*
+    Threshold the alpha channel.
+  */
+  if (SetImageAlpha(image,OpaqueAlpha,exception) == MagickFalse)
+    return(MagickFalse);
+  image_view=AcquireAuthenticCacheView(image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      Quantum
+        alpha = GetPixelAlpha(source_image,p);
+
+      ssize_t
+        i = GetPixelChannelOffset(image,AlphaPixelChannel);
+
+      if (fabs((double) alpha) >= MagickEpsilon)
+        q[i]=(Quantum) 0;
+      p+=GetPixelChannels(source_image);
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
+static Image *BlendMeanImage(Image *image,const Image *source_image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *source_view;
+
+  double
+    mean[MaxPixelChannels];
+
+  Image
+    *mean_image;
+
+  MagickBooleanType
+    status = MagickTrue;
+
+  ssize_t
+    j,
+    y;
+
+  /*
+    Compute the mean of the image.
+  */
+  (void) memset(mean,0,MaxPixelChannels*sizeof(*mean));
+  image_view=AcquireVirtualCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    ssize_t
+      x;
+
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        mean[i]+=QuantumScale*p[i];
+      }
+      p+=GetPixelChannels(image);
+    }
+  }
+  if (y < (ssize_t) image->rows)
+    return((Image *) NULL);
+  for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
+    mean[j]=(double) QuantumRange*mean[j]/image->columns/image->rows;
+  /*
+    Replace any unmasked pixels with the mean pixel.
+  */
+  image_view=DestroyCacheView(image_view);
+  mean_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (mean_image == (Image *) NULL)
+    return(mean_image);
+  image_view=AcquireAuthenticCacheView(mean_image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,mean_image,mean_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) mean_image->rows; y++)
+  {
+    const Quantum
+      *magick_restrict p;
+
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(source_view,0,y,mean_image->columns,1,
+      exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,mean_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) mean_image->columns; x++)
+    {
+      Quantum
+        alpha = GetPixelAlpha(source_image,p),
+        mask = GetPixelReadMask(source_image,p);
+
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(mean_image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(mean_image,i);
+        PixelTrait traits = GetPixelChannelTraits(mean_image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if (mask <= (QuantumRange/2))
+          q[i]=(Quantum) 0;
+        else
+          if (fabs((double) alpha) >= MagickEpsilon)
+            q[i]=ClampToQuantum(mean[i]);
+      }
+      p+=GetPixelChannels(source_image);
+      q+=GetPixelChannels(mean_image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    mean_image=DestroyImage(mean_image);
+  return(mean_image);
+}
+
+static MagickBooleanType BlendRMSEResidual(const Image *image,
+  const Image *source_image,double *residual,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view,
+    *source_view;
+
+  double
+    area = 0.0;
+
+  MagickBooleanType
+    status = MagickTrue;
+
+  size_t
+    columns = MagickMax(image->columns,source_image->columns),
+    rows = MagickMax(image->rows,source_image->rows);
+
+  ssize_t
+    y;
+
+  *residual=0.0;
+  image_view=AcquireVirtualCacheView(image,exception);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,image,rows,1)
+#endif
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    const Quantum
+      *magick_restrict p,
+      *magick_restrict q;
+
+    double
+      channel_residual;
+
+    size_t
+      local_area = 0;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
+    q=GetCacheViewVirtualPixels(source_view,0,y,columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    channel_residual=0.0;
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      double
+        Da,
+        Sa;
+
+      ssize_t
+        i;
+
+      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
+          (GetPixelReadMask(source_image,q) <= (QuantumRange/2)))
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(source_image);
+          continue;
+        }
+      Sa=QuantumScale*GetPixelAlpha(image,p);
+      Da=QuantumScale*GetPixelAlpha(source_image,q);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        double
+          distance;
+
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        PixelTrait source_traits = GetPixelChannelTraits(source_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (source_traits == UndefinedPixelTrait) ||
+            ((source_traits & UpdatePixelTrait) == 0))
+          continue;
+        if (channel == AlphaPixelChannel)
+          distance=QuantumScale*(p[i]-GetPixelChannel(source_image,channel,q));
+        else
+          distance=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(source_image,
+            channel,q));
+        channel_residual+=distance*distance;
+      }
+      local_area++;
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(source_image);
+    }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp critical (MagickCore_BlendRMSEResidual)
+#endif
+    {
+      area+=local_area;
+      *residual+=channel_residual;
+    }
+  }
+  source_view=DestroyCacheView(source_view);
+  image_view=DestroyCacheView(image_view);
+  area=PerceptibleReciprocal(area);
+  *residual=sqrt(*residual*area/(double) GetImageChannels(image));
+  return(status);
 }
 
 static void CompositeHCL(const MagickRealType red,const MagickRealType green,
@@ -528,388 +1181,70 @@ static MagickBooleanType CompositeOverImage(Image *image,
   return(status);
 }
 
-static Image *SeamlessAddImage(const Image *image,const Image *source_image,
-  const double sign,ExceptionInfo *exception)
+static void HCLComposite(const MagickRealType hue,const MagickRealType chroma,
+  const MagickRealType luma,MagickRealType *red,MagickRealType *green,
+  MagickRealType *blue)
 {
-  CacheView
-    *add_view,
-    *image_view,
-    *source_view;
-
-  Image
-    *add_image;
-
-  MagickBooleanType
-    status = MagickTrue;
-
-  ssize_t
-    y;
+  MagickRealType
+    b,
+    c,
+    g,
+    h,
+    m,
+    r,
+    x;
 
   /*
-    Added or subtract source from image.
+    Convert HCL to RGB colorspace.
   */
-  add_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (add_image == (Image *) NULL)
-    return(add_image);
-  image_view=AcquireVirtualCacheView(image,exception);
-  source_view=AcquireVirtualCacheView(source_image,exception);
-  add_view=AcquireAuthenticCacheView(add_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,add_image,image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    const Quantum
-      *magick_restrict p,
-      *magick_restrict q;
-
-    Quantum
-      *magick_restrict r;
-
-    ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
-    r=GetCacheViewAuthenticPixels(add_view,0,y,image->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL) ||
-        (r == (Quantum *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) image->columns; x++)
+  assert(red != (MagickRealType *) NULL);
+  assert(green != (MagickRealType *) NULL);
+  assert(blue != (MagickRealType *) NULL);
+  h=6.0*hue;
+  c=chroma;
+  x=c*(1.0-fabs(fmod(h,2.0)-1.0));
+  r=0.0;
+  g=0.0;
+  b=0.0;
+  if ((0.0 <= h) && (h < 1.0))
     {
-      ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait source_image_traits = GetPixelChannelTraits(source_image,
-          channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (source_image_traits == UndefinedPixelTrait) ||
-            ((source_image_traits & UpdatePixelTrait) == 0))
-          continue;
-        r[i]=ClampToQuantum(p[i]+sign*GetPixelChannel(source_image,channel,q));
-      }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(source_image);
-      r+=GetPixelChannels(add_image);
+      r=c;
+      g=x;
     }
-    if (SyncCacheViewAuthenticPixels(add_view,exception) == MagickFalse)
-      status=MagickFalse;
-  }
-  add_view=DestroyCacheView(add_view);
-  source_view=DestroyCacheView(source_view);
-  image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
-    add_image=DestroyImage(add_image);
-  return(add_image);
-}
-
-static MagickBooleanType SeamlessMaskAlphaChannel(Image *image,
-  const Image *source_image,ExceptionInfo *exception)
-{
-  CacheView
-    *image_view,
-    *source_view;
-
-  MagickBooleanType
-    status = MagickTrue;
-
-  ssize_t
-    y;
-
-  /*
-    Threshold the alpha channel.
-  */
-  if (SetImageAlpha(image,OpaqueAlpha,exception) == MagickFalse)
-    return(MagickFalse);
-  image_view=AcquireAuthenticCacheView(image,exception);
-  source_view=AcquireVirtualCacheView(source_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    const Quantum
-      *magick_restrict p;
-
-    Quantum
-      *magick_restrict q;
-
-    ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(source_view,0,y,image->columns,1,exception);
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+  else
+    if ((1.0 <= h) && (h < 2.0))
       {
-        status=MagickFalse;
-        continue;
+        r=x;
+        g=c;
       }
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      Quantum
-        alpha = GetPixelAlpha(source_image,p);
-
-      ssize_t
-        i = GetPixelChannelOffset(image,AlphaPixelChannel);
-
-      if (fabs((double) alpha) >= MagickEpsilon)
-        q[i]=(Quantum) 0;
-      p+=GetPixelChannels(source_image);
-      q+=GetPixelChannels(image);
-    }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      status=MagickFalse;
-  }
-  source_view=DestroyCacheView(source_view);
-  image_view=DestroyCacheView(image_view);
-  return(status);
-}
-
-static Image *SeamlessMeanImage(Image *image,const Image *source_image,
-  ExceptionInfo *exception)
-{
-  CacheView
-    *image_view,
-    *source_view;
-
-  double
-    mean[MaxPixelChannels];
-
-  Image
-    *mean_image;
-
-  MagickBooleanType
-    status = MagickTrue;
-
-  ssize_t
-    j,
-    y;
-
-  /*
-    Compute the mean of the image.
-  */
-  (void) memset(mean,0,MaxPixelChannels*sizeof(*mean));
-  image_view=AcquireVirtualCacheView(image,exception);
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    const Quantum
-      *magick_restrict p;
-
-    ssize_t
-      x;
-
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    if (p == (const Quantum *) NULL)
-      break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        mean[i]+=QuantumScale*p[i];
-      }
-      p+=GetPixelChannels(image);
-    }
-  }
-  if (y < (ssize_t) image->rows)
-    return((Image *) NULL);
-  for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-    mean[j]=(double) QuantumRange*mean[j]/image->columns/image->rows;
-  /*
-    Replace any unmasked pixels with the mean pixel.
-  */
-  image_view=DestroyCacheView(image_view);
-  mean_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (mean_image == (Image *) NULL)
-    return(mean_image);
-  image_view=AcquireAuthenticCacheView(mean_image,exception);
-  source_view=AcquireVirtualCacheView(source_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,mean_image,mean_image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) mean_image->rows; y++)
-  {
-    const Quantum
-      *magick_restrict p;
-
-    Quantum
-      *magick_restrict q;
-
-    ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    p=GetCacheViewVirtualPixels(source_view,0,y,mean_image->columns,1,
-      exception);
-    q=GetCacheViewAuthenticPixels(image_view,0,y,mean_image->columns,1,
-      exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) mean_image->columns; x++)
-    {
-      Quantum
-        alpha = GetPixelAlpha(source_image,p),
-        mask = GetPixelReadMask(source_image,p);
-
-      ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(mean_image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(mean_image,i);
-        PixelTrait traits = GetPixelChannelTraits(mean_image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        if (mask <= (QuantumRange/2))
-          q[i]=(Quantum) 0;
-        else
-          if (fabs((double) alpha) >= MagickEpsilon)
-            q[i]=ClampToQuantum(mean[i]);
-      }
-      p+=GetPixelChannels(source_image);
-      q+=GetPixelChannels(mean_image);
-    }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      status=MagickFalse;
-  }
-  source_view=DestroyCacheView(source_view);
-  image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
-    mean_image=DestroyImage(mean_image);
-  return(mean_image);
-}
-
-static MagickBooleanType SeamlessRMSEResidual(const Image *image,
-  const Image *source_image,double *residual,ExceptionInfo *exception)
-{
-  CacheView
-    *image_view,
-    *source_view;
-
-  double
-    area = 0.0;
-
-  MagickBooleanType
-    status = MagickTrue;
-
-  size_t
-    columns = MagickMax(image->columns,source_image->columns),
-    rows = MagickMax(image->rows,source_image->rows);
-
-  ssize_t
-    y;
-
-  *residual=0.0;
-  image_view=AcquireVirtualCacheView(image,exception);
-  source_view=AcquireVirtualCacheView(source_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,rows,1)
-#endif
-  for (y=0; y < (ssize_t) rows; y++)
-  {
-    const Quantum
-      *magick_restrict p,
-      *magick_restrict q;
-
-    double
-      channel_residual;
-
-    size_t
-      local_area = 0;
-
-    ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
-    q=GetCacheViewVirtualPixels(source_view,0,y,columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    channel_residual=0.0;
-    for (x=0; x < (ssize_t) columns; x++)
-    {
-      double
-        Da,
-        Sa;
-
-      ssize_t
-        i;
-
-      if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
-          (GetPixelReadMask(source_image,q) <= (QuantumRange/2)))
+    else
+      if ((2.0 <= h) && (h < 3.0))
         {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(source_image);
-          continue;
+          g=c;
+          b=x;
         }
-      Sa=QuantumScale*GetPixelAlpha(image,p);
-      Da=QuantumScale*GetPixelAlpha(source_image,q);
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        double
-          distance;
-
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait source_traits = GetPixelChannelTraits(source_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (source_traits == UndefinedPixelTrait) ||
-            ((source_traits & UpdatePixelTrait) == 0))
-          continue;
-        if (channel == AlphaPixelChannel)
-          distance=QuantumScale*(p[i]-GetPixelChannel(source_image,channel,q));
+      else
+        if ((3.0 <= h) && (h < 4.0))
+          {
+            g=x;
+            b=c;
+          }
         else
-          distance=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(source_image,
-            channel,q));
-        channel_residual+=distance*distance;
-      }
-      local_area++;
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(source_image);
-    }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_SeamlessRMSEResidual)
-#endif
-    {
-      area+=local_area;
-      *residual+=channel_residual;
-    }
-  }
-  source_view=DestroyCacheView(source_view);
-  image_view=DestroyCacheView(image_view);
-  area=PerceptibleReciprocal(area);
-  *residual=sqrt(*residual*area/(double) GetImageChannels(image));
-  return(status);
+          if ((4.0 <= h) && (h < 5.0))
+            {
+              r=x;
+              b=c;
+            }
+          else
+            if ((5.0 <= h) && (h < 6.0))
+              {
+                r=c;
+                b=x;
+              }
+  m=luma-(0.298839*r+0.586811*g+0.114350*b);
+  *red=QuantumRange*(r+m);
+  *green=QuantumRange*(g+m);
+  *blue=QuantumRange*(b+m);
 }
 
 static MagickBooleanType SaliencyBlendImage(Image *image,
@@ -918,12 +1253,10 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   ExceptionInfo *exception)
 {
   Image
-    *add_image,
     *crop_image,
-    *foreground_image,
-    *mean_image,
+    *divergent_image,
     *relax_image,
-    *residual_image;
+    *residual_image = (Image *) NULL;
 
   KernelInfo
     *kernel_info;
@@ -944,38 +1277,28 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
     i;
 
   /*
-    Seamless blend composite operator.
+    Saliency blend composite operator.
   */
   crop_image=CropImage(image,&crop_info,exception);
   if (crop_image == (Image *) NULL)
     return(MagickFalse);
-  (void) ResetImagePage(crop_image,"0x0+0+0");
-  add_image=SeamlessAddImage(crop_image,source_image,-1.0,exception);
-  crop_image=DestroyImage(crop_image);
-  if (add_image == (Image *) NULL)
-    return(MagickFalse);
-  mean_image=SeamlessMeanImage(add_image,source_image,exception);
-  add_image=DestroyImage(add_image);
-  if (mean_image == (Image *) NULL)
-    return(MagickFalse);
-  relax_image=CloneImage(mean_image,0,0,MagickTrue,exception);
-  if (relax_image == (Image *) NULL)
+  divergent_image=BlendDivergentImage(source_image,crop_image,exception);
+  if (divergent_image == (Image *) NULL)
     {
-      mean_image=DestroyImage(mean_image);
+      crop_image=DestroyImage(crop_image);
       return(MagickFalse);
     }
-  status=SeamlessMaskAlphaChannel(mean_image,source_image,exception);
-  if (status == MagickFalse)
+  (void) ResetImagePage(crop_image,"0x0+0+0");
+  relax_image=BlendMeanImage(crop_image,source_image,exception);
+  if (relax_image == (Image *) NULL)
     {
-      relax_image=DestroyImage(relax_image);
-      mean_image=DestroyImage(mean_image);
+      divergent_image=DestroyImage(divergent_image);
       return(MagickFalse);
     }
   residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
   if (residual_image == (Image *) NULL)
     {
       relax_image=DestroyImage(relax_image);
-      mean_image=DestroyImage(mean_image);
       return(MagickFalse);
     }
   /*
@@ -986,29 +1309,32 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
     {
       residual_image=DestroyImage(residual_image);
       relax_image=DestroyImage(relax_image);
-      mean_image=DestroyImage(mean_image);
       return(MagickFalse);
     }
   verbose=IsStringTrue(GetImageArtifact(image,"verbose"));
   if (verbose != MagickFalse)
-    (void) FormatLocaleFile(stderr,"seamless blending:\n");
+    (void) FormatLocaleFile(stderr,"saliency blending:\n");
   for (i=0; i < (ssize_t) iterations; i++)
   {
     double
       residual = 1.0;
 
     Image
-      *convolve_image;
+      *convolve_image,
+      *subtract_image;
 
     convolve_image=ConvolveImage(relax_image,kernel_info,exception);
     if (convolve_image == (Image *) NULL)
       break;
     relax_image=DestroyImage(relax_image);
     relax_image=convolve_image;
-    status=CompositeOverImage(relax_image,mean_image,MagickTrue,0,0,exception);
-    if (status == MagickFalse)
+    subtract_image=BlendAddImage(relax_image,divergent_image,1.0,-1.0,
+      exception);
+    if (subtract_image == (Image *) NULL)
       break;
-    status=SeamlessRMSEResidual(relax_image,residual_image,&residual,exception);
+    relax_image=DestroyImage(relax_image);
+    relax_image=subtract_image;
+    status=BlendRMSEResidual(relax_image,residual_image,&residual,exception);
     if (status == MagickFalse)
       break;
     if ((verbose != MagickFalse) && ((i % MagickMax(tick,1)) == 0))
@@ -1026,20 +1352,13 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
       break;
   }
   kernel_info=DestroyKernelInfo(kernel_info);
-  mean_image=DestroyImage(mean_image);
+  divergent_image=DestroyImage(divergent_image);
   residual_image=DestroyImage(residual_image);
   /*
-    Composite the foreground image over the background image.
+    Composite relaxed over the background image.
   */
-  foreground_image=SeamlessAddImage(source_image,relax_image,1.0,exception);
-  relax_image=DestroyImage(relax_image);
-  if (foreground_image == (Image *) NULL)
-    return(MagickFalse);
-  (void) SetImageMask(foreground_image,ReadPixelMask,(const Image *) NULL,
+  status=CompositeOverImage(image,relax_image,MagickTrue,x_offset,y_offset,
     exception);
-  status=CompositeOverImage(image,foreground_image,MagickTrue,x_offset,y_offset,
-    exception);
-  foreground_image=DestroyImage(foreground_image);
   return(status);
 }
 
@@ -1054,7 +1373,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
     *foreground_image,
     *mean_image,
     *relax_image,
-    *residual_image;
+    *residual_image = (Image *) NULL;
 
   KernelInfo
     *kernel_info;
@@ -1081,11 +1400,11 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   if (crop_image == (Image *) NULL)
     return(MagickFalse);
   (void) ResetImagePage(crop_image,"0x0+0+0");
-  add_image=SeamlessAddImage(crop_image,source_image,-1.0,exception);
+  add_image=BlendAddImage(crop_image,source_image,1.0,-1.0,exception);
   crop_image=DestroyImage(crop_image);
   if (add_image == (Image *) NULL)
     return(MagickFalse);
-  mean_image=SeamlessMeanImage(add_image,source_image,exception);
+  mean_image=BlendMeanImage(add_image,source_image,exception);
   add_image=DestroyImage(add_image);
   if (mean_image == (Image *) NULL)
     return(MagickFalse);
@@ -1095,7 +1414,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
       mean_image=DestroyImage(mean_image);
       return(MagickFalse);
     }
-  status=SeamlessMaskAlphaChannel(mean_image,source_image,exception);
+  status=BlendMaskAlphaChannel(mean_image,source_image,exception);
   if (status == MagickFalse)
     {
       relax_image=DestroyImage(relax_image);
@@ -1139,7 +1458,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
     status=CompositeOverImage(relax_image,mean_image,MagickTrue,0,0,exception);
     if (status == MagickFalse)
       break;
-    status=SeamlessRMSEResidual(relax_image,residual_image,&residual,exception);
+    status=BlendRMSEResidual(relax_image,residual_image,&residual,exception);
     if (status == MagickFalse)
       break;
     if ((verbose != MagickFalse) && ((i % MagickMax(tick,1)) == 0))
@@ -1151,7 +1470,8 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
             residual);
         break;
       }
-    residual_image=DestroyImage(residual_image);
+    if (residual_image != (Image *) NULL)
+      residual_image=DestroyImage(residual_image);
     residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
     if (residual_image == (Image *) NULL)
       break;
@@ -1162,7 +1482,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   /*
     Composite the foreground image over the background image.
   */
-  foreground_image=SeamlessAddImage(source_image,relax_image,1.0,exception);
+  foreground_image=BlendAddImage(source_image,relax_image,1.0,1.0,exception);
   relax_image=DestroyImage(relax_image);
   if (foreground_image == (Image *) NULL)
     return(MagickFalse);
