@@ -3272,7 +3272,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed")
           (void) memcpy(info_copy,&info,sizeof(info));
           info_copy->scale=(Quantum *) AcquireQuantumMemory(
-            info_copy->scale_size,sizeof(*info_copy->scale));
+            info_copy->scale_size+1,sizeof(*info_copy->scale));
           if (info_copy->scale == (Quantum *) NULL)
             {
               info_copy=(DCMInfo *) RelinquishMagickMemory(info_copy);
