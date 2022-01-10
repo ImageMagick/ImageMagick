@@ -4059,10 +4059,10 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           else
             {
               Image
-                *clone_image;
+                *canvas_images;
 
-              clone_image=CloneImage(new_images,0,0,MagickTrue,_exception);
-              if (clone_image == (Image *) NULL)
+              canvas_images=CloneImage(new_images,0,0,MagickTrue,_exception);
+              if (canvas_images == (Image *) NULL)
                 break;
               switch (compose)
               {
@@ -4111,10 +4111,10 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                   break;
                 }
               }
-              status&=CompositeImage(clone_image,new_images,OverCompositeOp,
+              status&=CompositeImage(canvas_images,new_images,OverCompositeOp,
                 clip_to_self,0,0,_exception);
               new_images=DestroyImageList(new_images);
-              new_images=clone_image;
+              new_images=canvas_images;
               mask_image=DestroyImage(mask_image);
             }
           source_image=DestroyImage(source_image);

@@ -8218,10 +8218,10 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             else
               {
                 Image
-                  *clone_image;
+                  *canvas_image;
 
-                clone_image=CloneImage(new_images,0,0,MagickTrue,exception);
-                if (clone_image == (Image *) NULL)
+                canvas_image=CloneImage(new_images,0,0,MagickTrue,exception);
+                if (canvas_image == (Image *) NULL)
                   break;
                 switch (compose)
                 {
@@ -8270,10 +8270,10 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                     break;
                   }
                 }
-                status&=CompositeImage(clone_image,new_images,OverCompositeOp,
+                status&=CompositeImage(canvas_image,new_images,OverCompositeOp,
                   clip_to_self,0,0,exception);
                 new_images=DestroyImageList(new_images);
-                new_images=clone_image;
+                new_images=canvas_image;
                 mask_image=DestroyImage(mask_image);
               }
             source_image=DestroyImage(source_image);
