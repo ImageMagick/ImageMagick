@@ -210,7 +210,6 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   image->columns=(size_t) ReadBlobMSBLong(image);
   image->rows=(size_t) ReadBlobMSBLong(image);
-  image->alpha_trait=BlendPixelTrait;
   if (image->columns == 0 || image->rows == 0)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   if (image->ping != MagickFalse) {
@@ -222,7 +221,10 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
   if (channels == 3)
     SetQuantumImageType(image,RGBQuantum);
   else if (channels == 4)
-    SetQuantumImageType(image,RGBAQuantum);
+    {
+      SetQuantumImageType(image,RGBAQuantum);
+      image->alpha_trait=BlendPixelTrait;
+    }
   else
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
@@ -311,7 +313,7 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
       SetPixelGreen(image,ScaleCharToQuantum((unsigned char)px.rgba.g),q);
       SetPixelBlue(image,ScaleCharToQuantum((unsigned char)px.rgba.b),q);
       if (channels == 4)
-        SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)px.rgba.a),q);
+        SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) px.rgba.a),q);
       q+=GetPixelChannels(image);
       p++;
     } while (run-- > 0);
@@ -463,12 +465,15 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   image->depth=8;
 
   quantum_type=GetQuantumType(image,exception);
-  if (quantum_type == RGBQuantum)
+  if ((quantum_type == RGBQuantum) || (quantum_type == GrayQuantum) ||
+      (quantum_type == IndexQuantum))
     channels=3;
-  else if (quantum_type == RGBAQuantum)
-    channels=4;
   else
-    ThrowWriterException(CoderError,"ImageTypeNotSupported");
+    if ((quantum_type == RGBAQuantum) || (quantum_type == GrayAlphaQuantum) ||
+        (quantum_type == IndexAlphaQuantum))
+      channels=4;
+    else
+      ThrowWriterException(CoderError,"ImageTypeNotSupported");
 
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
