@@ -464,6 +464,12 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   image->endian=MSBEndian;
   image->depth=8;
 
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  if (IsRGBColorspace(image->colorspace))
+    colorspace=QOI_LINEAR;
+  else
+    colorspace=QOI_SRGB;
   quantum_type=GetQuantumType(image,exception);
   if ((quantum_type == RGBQuantum) || (quantum_type == GrayQuantum) ||
       (quantum_type == IndexQuantum))
@@ -474,13 +480,6 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
       channels=4;
     else
       ThrowWriterException(CoderError,"ImageTypeNotSupported");
-
-  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  if (IsRGBColorspace(image->colorspace))
-    colorspace=QOI_LINEAR;
-  else
-    colorspace=QOI_SRGB;
   /*
     Write QOI header.
   */
