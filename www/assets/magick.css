@@ -62,13 +62,3 @@ a.anchor {
   max-height: 340px;
   overflow-y: scroll;
 }
-
-p.option-center {
-    display: grid;
-    grid-template-columns: 1fr 1em 1fr 2em 1fr 2em 1fr 2em;
-    text-align: left !important;
-}
-p.option-center:nth-child(even){
-    color: white;
-}
-
