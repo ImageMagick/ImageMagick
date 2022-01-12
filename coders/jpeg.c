@@ -347,7 +347,6 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
       (char *) message,"`%s'",image->filename);
   longjmp(client_info->error_recovery,1);
-  _exit(1);
 }
 
 static void JPEGProgressHandler(j_common_ptr jpeg_info)
@@ -371,7 +370,6 @@ static void JPEGProgressHandler(j_common_ptr jpeg_info)
   (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
     "too many scans","`%s'",image->filename);
   longjmp(client_info->error_recovery,1);
-  _exit(1);
 }
 
 static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
