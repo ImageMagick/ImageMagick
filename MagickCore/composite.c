@@ -356,7 +356,7 @@ static Image *BlendMaxMagnitudeImage(const Image *alpha_image,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL) ||
         (r == (const Quantum *) NULL) || (s == (const Quantum *) NULL) ||
-        (r == (Quantum *) NULL))
+        (t == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -1294,7 +1294,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   crop_image=CropImage(image,&crop_info,exception);
   if (crop_image == (Image *) NULL)
     return(MagickFalse);
-  divergent_image=BlendDivergentImage(source_image,crop_image,exception);
+  divergent_image=BlendDivergentImage(crop_image,source_image,exception);
   if (divergent_image == (Image *) NULL)
     {
       crop_image=DestroyImage(crop_image);
