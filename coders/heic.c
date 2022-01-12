@@ -597,6 +597,8 @@ static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   if (LocaleNCompare((const char *) magick+8,"mif1",4) == 0)
     return(MagickTrue);
+  if (LocaleNCompare((const char *) magick+8,"msf1",4) == 0)
+    return(MagickTrue);
   return(MagickFalse);
 }
 
