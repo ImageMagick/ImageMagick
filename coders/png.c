@@ -10940,7 +10940,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     png_set_compression_strategy(ping,
        mng_info->write_png_compression_strategy-1);
 
-  ping_interlace_method=image_info->interlace != NoInterlace;
+  ping_interlace_method=image->interlace != NoInterlace;
 
   if (mng_info->write_mng)
     png_set_sig_bytes(ping,8);
@@ -13004,7 +13004,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   chunk[12]=jng_color_type;
   chunk[13]=8;  /* sample depth */
   chunk[14]=8; /*jng_image_compression_method */
-  chunk[15]=(unsigned char) (image_info->interlace == NoInterlace ? 0 : 8);
+  chunk[15]=(unsigned char) (image->interlace == NoInterlace ? 0 : 8);
   chunk[16]=jng_alpha_sample_depth;
   chunk[17]=jng_alpha_compression_method;
   chunk[18]=0; /*jng_alpha_filter_method */
