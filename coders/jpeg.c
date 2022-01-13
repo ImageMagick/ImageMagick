@@ -2436,7 +2436,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
 #endif
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if ((LocaleCompare(image_info->magick,"PJPEG") == 0) ||
-      (image_info->interlace != NoInterlace))
+      (image->interlace != NoInterlace))
     {
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
