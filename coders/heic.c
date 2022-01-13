@@ -554,6 +554,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   file_data=RelinquishMagickMemory(file_data);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
 #endif
