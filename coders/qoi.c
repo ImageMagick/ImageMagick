@@ -151,8 +151,7 @@ static unsigned int IsQOI(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadQOIImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadQOIImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -169,7 +168,7 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
 
   ssize_t
     count,
-    p;
+    i;
 
   unsigned char
     magick[4];
@@ -217,7 +216,7 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
     return(GetFirstImageInList(image));
   }
 
-  channels=ReadBlobByte(image);
+  channels=(size_t) ReadBlobByte(image);
   if (channels == 3)
     SetQuantumImageType(image,RGBQuantum);
   else if (channels == 4)
@@ -228,11 +227,11 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
   else
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
-  colorspace=ReadBlobByte(image);
+  colorspace=(size_t) ReadBlobByte(image);
   if (colorspace == QOI_SRGB)
-    SetImageColorspace(image,sRGBColorspace,exception);
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   else if (colorspace == QOI_LINEAR)
-    SetImageColorspace(image,RGBColorspace,exception);
+    (void) SetImageColorspace(image,RGBColorspace,exception);
   else
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
@@ -257,7 +256,7 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
   /*
     Actual decoding.
   */
-  for (p=0; p < (image->rows * image->columns);)
+  for (i=0; i < (ssize_t) (image->rows * image->columns);)
   {
     run = 0;
 
@@ -266,27 +265,27 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
     if (b == QOI_OP_RGB) {
       if ((b=ReadBlobByte(image)) == EOF)
         break;
-      px.rgba.r=b;
+      px.rgba.r=(unsigned char) b;
       if ((b=ReadBlobByte(image)) == EOF)
         break;
-      px.rgba.g=b;
+      px.rgba.g=(unsigned char) b;
       if ((b=ReadBlobByte(image)) == EOF)
         break;
-      px.rgba.b=b;
+      px.rgba.b=(unsigned char) b;
     }
     else if (b == QOI_OP_RGBA) {
       if ((b=ReadBlobByte(image)) == EOF)
         break;
-      px.rgba.r=b;
+      px.rgba.r=(unsigned char) b;
       if ((b=ReadBlobByte(image)) == EOF)
         break;
-      px.rgba.g=b;
+      px.rgba.g=(unsigned char) b;
       if ((b=ReadBlobByte(image)) == EOF)
         break;
-      px.rgba.b=b;
+      px.rgba.b=(unsigned char) b;
       if ((b=ReadBlobByte(image)) == EOF)
         break;
-      px.rgba.a=b;
+      px.rgba.a=(unsigned char) b;
     }
     else if ((b & QOI_MASK_2) == QOI_OP_INDEX) {
       px=lut[b & ~QOI_MASK_2];
@@ -309,25 +308,27 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
     }
     lut[QOI_COLOR_HASH(px) % 64]=px;
     do {
-      SetPixelRed(image,ScaleCharToQuantum((unsigned char)px.rgba.r),q);
-      SetPixelGreen(image,ScaleCharToQuantum((unsigned char)px.rgba.g),q);
-      SetPixelBlue(image,ScaleCharToQuantum((unsigned char)px.rgba.b),q);
-      if (channels == 4)
-        SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) px.rgba.a),q);
+      if (i < (ssize_t) (image->columns*image->rows))
+        {
+          SetPixelRed(image,ScaleCharToQuantum((unsigned char)px.rgba.r),q);
+          SetPixelGreen(image,ScaleCharToQuantum((unsigned char)px.rgba.g),q);
+          SetPixelBlue(image,ScaleCharToQuantum((unsigned char)px.rgba.b),q);
+          if (channels == 4)
+            SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) px.rgba.a),q);
+        }
       q+=GetPixelChannels(image);
-      p++;
+      i++;
     } while (run-- > 0);
-    status=SetImageProgress(image,LoadImageTag,p,image->rows * image->columns);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) i,image->rows * image->columns);
     if (status == MagickFalse)
       break;
   }
+  status=SyncAuthenticPixels(image,exception);
+  if (i < (ssize_t) (image->columns*image->rows))
+    ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,
       "UnexpectedEndOfFile",image->filename);
-  if (status != MagickFalse) {
-    status=SyncAuthenticPixels(image,exception);
-    SyncImage(image,exception);
-  }
   (void) CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));
