@@ -66,8 +66,11 @@
 /*
   Define declarations.
 */
+#if defined(MAGICKCORE_WEBP_DELEGATE)
 #define VIDEOIntermediateFormat "webp"
-
+#else
+#define VIDEOIntermediateFormat "pam"
+#endif
 
 /*
   Forward declarations.
@@ -241,6 +244,9 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
         if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
           (void) ConcatenateMagickString(options," -pix_fmt rgba",
             MagickPathExtent);
+      (void) FormatLocaleString(command,MagickPathExtent," -vcodec %s",
+        VIDEOIntermediateFormat);
+      (void) ConcatenateMagickString(options,command,MagickPathExtent);
       AcquireUniqueFilename(read_info->unique);
       (void) FormatLocaleString(command,MagickPathExtent,
         GetDelegateCommands(delegate_info),read_info->filename,options,
@@ -684,8 +690,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
         }
       AcquireUniqueFilename(write_info->unique);
       (void) FormatLocaleString(command,MagickPathExtent,
-        GetDelegateCommands(delegate_info),basename,options,write_info->unique,
-        image_info->magick);
+        GetDelegateCommands(delegate_info),basename,VIDEOIntermediateFormat,
+        options,write_info->unique,image_info->magick);
       options=DestroyString(options);
       exit_code=ExternalDelegateCommand(MagickFalse,image_info->verbose,
         command,message,exception);
