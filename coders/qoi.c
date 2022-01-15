@@ -211,11 +211,6 @@ static Image *ReadQOIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=(size_t) ReadBlobMSBLong(image);
   if (image->columns == 0 || image->rows == 0)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
-  if (image->ping != MagickFalse)
-    {
-      (void) CloseBlob(image);
-      return(GetFirstImageInList(image));
-    }
   channels=(size_t) ReadBlobByte(image);
   if (channels == 3)
     SetQuantumImageType(image,RGBQuantum);
@@ -233,6 +228,11 @@ static Image *ReadQOIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) SetImageColorspace(image,RGBColorspace,exception);
   else
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if (image->ping != MagickFalse)
+    {
+      (void) CloseBlob(image);
+      return(GetFirstImageInList(image));
+    }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
