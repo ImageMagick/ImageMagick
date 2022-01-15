@@ -3848,7 +3848,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           */
           fx_info=AcquireFxInfo(property_image,pattern+3,exception);
           status=FxEvaluateChannelExpression(fx_info,CompositePixelChannel,0,0,
-            &value);
+            &value,exception);
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)
             {
@@ -3881,22 +3881,22 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           GetPixelInfo(property_image,&pixel);
           fx_info=AcquireFxInfo(property_image,pattern+4,exception);
           status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
-            &value);
+            &value,exception);
           pixel.red=(double) QuantumRange*value;
           status&=FxEvaluateChannelExpression(fx_info,GreenPixelChannel,0,0,
-            &value);
+            &value,exception);
           pixel.green=(double) QuantumRange*value;
           status&=FxEvaluateChannelExpression(fx_info,BluePixelChannel,0,0,
-            &value);
+            &value,exception);
           pixel.blue=(double) QuantumRange*value;
           if (property_image->colorspace == CMYKColorspace)
             {
               status&=FxEvaluateChannelExpression(fx_info,BlackPixelChannel,0,0,
-                &value);
+                &value,exception);
               pixel.black=(double) QuantumRange*value;
             }
           status&=FxEvaluateChannelExpression(fx_info,AlphaPixelChannel,0,0,
-            &value);
+            &value,exception);
           pixel.alpha=(double) QuantumRange*value;
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)
@@ -3929,22 +3929,22 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           GetPixelInfo(property_image,&pixel);
           fx_info=AcquireFxInfo(property_image,pattern+6,exception);
           status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
-            &value);
+            &value,exception);
           pixel.red=(double) QuantumRange*value;
           status&=FxEvaluateChannelExpression(fx_info,GreenPixelChannel,0,0,
-            &value);
+            &value,exception);
           pixel.green=(double) QuantumRange*value;
           status&=FxEvaluateChannelExpression(fx_info,BluePixelChannel,0,0,
-            &value);
+            &value,exception);
           pixel.blue=(double) QuantumRange*value;
           if (property_image->colorspace == CMYKColorspace)
             {
               status&=FxEvaluateChannelExpression(fx_info,BlackPixelChannel,0,0,
-                &value);
+                &value,exception);
               pixel.black=(double) QuantumRange*value;
             }
           status&=FxEvaluateChannelExpression(fx_info,AlphaPixelChannel,0,0,
-            &value);
+            &value,exception);
           pixel.alpha=(double) QuantumRange*value;
           fx_info=DestroyFxInfo(fx_info);
           if (status != MagickFalse)

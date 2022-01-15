@@ -32,7 +32,7 @@ extern MagickPrivate FxInfo
 extern MagickPrivate MagickBooleanType
   FxEvaluateExpression(FxInfo *,double *,ExceptionInfo *),
   FxEvaluateChannelExpression(FxInfo *,const PixelChannel,const ssize_t,
-   const ssize_t,double *);
+   const ssize_t,double *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
