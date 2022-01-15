@@ -73,7 +73,7 @@ jobs:
         quantum: [ 8, 16, 32, 64 ]
         hdri: [ yes, no ]
         buildType: [ dmt, smtd ]
-        platform: [ x64, x86 ]
+        platform: [ x64, x86, arm64 ]
         exclude:
           - quantum: 8
             hdri: yes
