@@ -1385,6 +1385,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   */
   status=CompositeOverImage(image,relax_image,MagickTrue,x_offset,y_offset,
     exception);
+  relax_image=DestroyImage(relax_image);
   return(status);
 }
 
