@@ -69,6 +69,7 @@
   #include "coders/flif.h"
 #endif
 #include "coders/fpx.h"
+#include "coders/ftxt.h"
 #include "coders/gif.h"
 #include "coders/gradient.h"
 #include "coders/gray.h"

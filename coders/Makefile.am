@@ -166,6 +166,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/fl32.h \
 	coders/flif.h \
 	coders/fpx.h \
+	coders/ftxt.h \
+	coders/ftxt.c \
 	coders/ghostscript-private.h \
 	coders/gif.c \
 	coders/gif.h \
@@ -422,6 +424,7 @@ CODERS_NOINST_HDRS = \
 	coders/fl32.h \
 	coders/flif.h \
 	coders/fpx.h \
+	coders/ftxt.h \
 	coders/ghostscript-private.h \
 	coders/gif.h \
 	coders/gradient.h \
@@ -557,6 +560,7 @@ coders_LTLIBRARIES = \
 	coders/fax.la \
 	coders/fits.la \
 	coders/fl32.la \
+	coders/ftxt.la \
 	coders/gif.la \
 	coders/gradient.la \
 	coders/gray.la \
@@ -872,6 +876,12 @@ coders_fpx_la_SOURCES      = coders/fpx.c
 coders_fpx_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_fpx_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_fpx_la_LIBADD       = $(MAGICKCORE_LIBS) $(FPX_LIBS) $(MATH_LIBS) -lstdc++
+
+# FTXT coder module
+coders_ftxt_la_SOURCES      = coders/ftxt.c
+coders_ftxt_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_ftxt_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_ftxt_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # GIF coder module
 coders_gif_la_SOURCES      = coders/gif.c
