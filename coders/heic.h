@@ -20,7 +20,8 @@
   MagickCoderHeader("AVIF", 4, "ftypavif") \
   MagickCoderHeader("HEIC", 4, "ftypheic") \
   MagickCoderHeader("HEIC", 4, "ftypheix") \
-  MagickCoderHeader("HEIC", 4, "ftypmif1")
+  MagickCoderHeader("HEIC", 4, "ftypmif1") \
+  MagickCoderHeader("HEIC", 4, "ftypmsf1")
 
 #define MagickHEICAliases \
   MagickCoderAlias("HEIC", "AVIF") \

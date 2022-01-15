@@ -554,6 +554,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   file_data=RelinquishMagickMemory(file_data);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
 #endif
@@ -596,6 +597,8 @@ static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
   if (LocaleNCompare((const char *) magick+8,"heix",4) == 0)
     return(MagickTrue);
   if (LocaleNCompare((const char *) magick+8,"mif1",4) == 0)
+    return(MagickTrue);
+  if (LocaleNCompare((const char *) magick+8,"msf1",4) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
