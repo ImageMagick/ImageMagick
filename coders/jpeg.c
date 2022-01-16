@@ -1056,7 +1056,6 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     scanline[1];
 
   MagickBooleanType
-    debug,
     status;
 
   MagickSizeType
@@ -1096,8 +1095,6 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  debug=IsEventLogging();
-  (void) debug;
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
