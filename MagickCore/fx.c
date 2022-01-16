@@ -3603,7 +3603,9 @@ static MagickBooleanType ExecuteRPN (FxInfo * fx_info, fxRtT * fx_infort, FILE *
   *result = regA;
 
   if (fx_infort->usedValStack != 0) {
-    fprintf (stderr, "ValStack not empty (%i)\n", fx_infort->usedValStack);
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "ValStack not empty", "%i",  fx_infort->usedValStack);
     return MagickFalse;
   }
 
@@ -3673,9 +3675,6 @@ MagickPrivate FxInfo *AcquireFxInfo (const Image * images, const char * expressi
   }
 
   if (chLimit != '\0' && chLimit != ';') {
-    fprintf (stderr, "AcquireFxInfo: TranslateExpression did not exhaust input '%s' chLimit='%c'\n",
-             fx_info->pex, chLimit ? chLimit : ' ');
-
     ThrowMagickException (
       fx_info->exception, GetMagickModule(), OptionError,
       "AcquireFxInfo: TranslateExpression did not exhaust input at", "'%s'",
