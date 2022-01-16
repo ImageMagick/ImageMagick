@@ -375,7 +375,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
 
   while (!eofInp) {
     ValueTypeT expectType = vtAny;
-    char * ppf = procFmt;
+    ppf = procFmt;
     while (*ppf && !eofInp) {
       if (*ppf == chEsc) {
         ppf++;
@@ -632,8 +632,6 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,Image *image
   char chSep;
   if (sChSep[0]==chEsc && (sChSep[1] == 'n' || sChSep[1] == 'N')) chSep = '\n';
   else chSep = sChSep[0];
-
-  int depth = image->depth;
 
   char sSuff[2];
   sSuff[0] = '\0';
