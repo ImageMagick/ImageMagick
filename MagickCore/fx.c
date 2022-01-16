@@ -764,7 +764,7 @@ static char * SetPtrShortExp (FxInfo * fx_info, char * pExp, size_t len)
   *fx_info->ShortExp = '\0';
 
   if (pExp && len) {
-    int slen = CopyMagickString (fx_info->ShortExp, pExp, len);
+    size_t slen = CopyMagickString (fx_info->ShortExp, pExp, len);
     if (slen > MaxLen) { 
       CopyMagickString (fx_info->ShortExp+MaxLen, "...", 4);
     }
@@ -927,6 +927,7 @@ static MagickBooleanType OprInPlace (FxInfo * fx_info, int op)
 static const char * OprStr (FxInfo * fx_info, int oprNum)
 {
   const char * str;
+  (void) fx_info;
   if      (oprNum < 0) str = "bad OprStr";
   else if (oprNum <= oNull) str = Operators[oprNum].str;
   else if (oprNum <= fNull) str = Functions[oprNum-FirstFunc].str;
@@ -1028,7 +1029,7 @@ static void DestroyFxRt (fxRtT * fx_infort)
   fx_infort->random_info = DestroyRandomInfo (fx_infort->random_info);
 }
 
-static int GetToken (FxInfo * fx_info)
+static size_t GetToken (FxInfo * fx_info)
 /* Returns length of token that starts with an alpha,
      or 0 if it isn't a token that starts with an alpha.
    j0 and j1 have trailing digit.
@@ -1381,7 +1382,7 @@ static MagickBooleanType IsQualifier (FxInfo * fx_info)
   return MagickFalse;
 }
 
-static int GetProperty (FxInfo * fx_info, fxFltType *val)
+static ssize_t GetProperty (FxInfo * fx_info, fxFltType *val)
 /* returns number of character to swallow.
    "-1" means invalid input
    "0" means no relevant input (don't swallow, but not an error)
@@ -1443,7 +1444,7 @@ static int GetProperty (FxInfo * fx_info, fxFltType *val)
     }
 
     text = DestroyString(text);
-    return (len);
+    return ((ssize_t) len);
   }
 
   return 0;
@@ -1479,11 +1480,11 @@ static ssize_t inline GetConstantColour (FxInfo * fx_info, fxFltType *v0, fxFltT
   if (!QueryColorCompliance (fx_info->token, AllCompliance, &colour, dummy_exception) || IsGray) {
     int type = ParseCommandOption (MagickColorspaceOptions, MagickFalse, ColSp);
     if (type >= 0 || IsIcc || IsDev) {
-      char * p = fx_info->pex + fx_info->lenToken;
-      while (isspace ((int)*p)) p++;
-      if (*p == '(') {
-        while (*p && *p != ')') p++;
-        size_t lenfun = p - fx_info->pex + 1;
+      char * q = fx_info->pex + fx_info->lenToken;
+      while (isspace ((int)*q)) q++;
+      if (*q == '(') {
+        while (*q && *q != ')') q++;
+        size_t lenfun = q - fx_info->pex + 1;
         if (lenfun > MaxTokenLen) {
           ThrowMagickException (
             fx_info->exception, GetMagickModule(), OptionError,
@@ -2004,7 +2005,7 @@ static MagickBooleanType GetOperand (
     }
 
     val = 0;
-    size_t lenOptArt = GetProperty (fx_info, &val);
+    ssize_t lenOptArt = GetProperty (fx_info, &val);
     if (lenOptArt < 0) return MagickFalse;
     if (lenOptArt > 0) {
       AddElement (fx_info, val, oNull);
