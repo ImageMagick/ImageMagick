@@ -240,7 +240,7 @@ MagickExport MagickBooleanType RegisterStaticModule(const char *module,
   p=GetCoderInfo(module,exception);
   if (p != (CoderInfo *) NULL)
     (void) CopyMagickString(module_name,p->name,MagickPathExtent);
-  rights=ReadPolicyRights | WritePolicyRights;
+  rights=(PolicyRights) (ReadPolicyRights | WritePolicyRights);
   if (IsRightsAuthorized(ModulePolicyDomain,rights,module_name) == MagickFalse)
     {
       errno=EPERM;
@@ -292,14 +292,13 @@ MagickExport void RegisterStaticModules(void)
   ssize_t
     i;
 
-  rights=ReadPolicyRights | WritePolicyRights;
+  rights=(PolicyRights) (ReadPolicyRights | WritePolicyRights);
   extent=sizeof(MagickModules)/sizeof(MagickModules[0]);
   for (i=0; i < (ssize_t) extent; i++)
   {
     if (MagickModules[i].registered == MagickFalse)
       {
-        if (IsRightsAuthorized(ModulePolicyDomain,rights,
-              MagickModules[i].module) == MagickFalse)
+        if (IsRightsAuthorized(ModulePolicyDomain,rights,MagickModules[i].module) == MagickFalse)
           continue;
         (void) (MagickModules[i].register_module)();
         MagickModules[i].registered=MagickTrue;

@@ -258,7 +258,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
   MagickBooleanType
     status;
 
-  register Quantum
+  Quantum
     *q;
 
   assert(image_info != (const ImageInfo *) NULL);
@@ -494,7 +494,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
               fprintf (stderr, "NumChannelsError (%li,%li): i=%i but nExpCh=%i\n", x, y, i, nExpCh);
             }
 
-            if (x < image->columns && y < image->rows) {
+            if (x < (ssize_t) image->columns && y < (ssize_t) image->rows) {
               q = QueueAuthenticPixels (image, x,y, 1,1, exception);
               if (!q) break;
               for (i=0; i< nExpCh; i++) {
@@ -524,7 +524,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
               break;
             }
 
-            if (x < image->columns && y < image->rows) {
+            if (x < (ssize_t) image->columns && y < (ssize_t) image->rows) {
               q = QueueAuthenticPixels (image, x,y, 1,1, exception);
               if (!q) break;
 
@@ -573,7 +573,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
 
       if (firstX && firstY) {
         x++;
-        if (x >= image->columns) {
+        if (x >= (ssize_t) image->columns) {
           x = 0;
           y++;
         }
@@ -602,11 +602,11 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
 
   if (verbose) fprintf (stderr, "nPix=%li MaxX=%li MaxY=%li\n", nPix, MaxX, MaxY);
 
-  if (nPix > image->columns * image->rows) {
+  if (nPix > (ssize_t) (image->columns * image->rows)) {
     fprintf (stderr, "Too many pixels were read\n");
     fprintf (stderr, "nPix=%li MaxX=%li MaxY=%li\n", nPix, MaxX, MaxY);
     ThrowMagickException(exception, GetMagickModule(), CorruptImageWarning,"TooManyPixels", "`%s'",image_info->filename);
-  } else if (MaxX >= image->columns || MaxY >= image->rows) {
+  } else if (MaxX >= (ssize_t) image->columns || MaxY >= (ssize_t) image->rows) {
     fprintf (stderr, "Image bounds exceeded\n");
     fprintf (stderr, "nPix=%li MaxX=%li MaxY=%li\n", nPix, MaxX, MaxY);
     ThrowMagickException(exception, GetMagickModule(), CorruptImageWarning,"ImageBoundsExceeded", "`%s'",image_info->filename);

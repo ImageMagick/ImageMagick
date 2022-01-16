@@ -137,8 +137,10 @@ static Image *ReadORAImage(const ImageInfo *image_info,
   zip_file_t
     *merged_image_file;
 
+  zip_int64_t
+    read_bytes;
+
   zip_uint64_t
-    read_bytes,
     offset;
 
   image_metadata=AcquireImage(image_info,exception);
@@ -200,7 +202,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
           status=MagickFalse;
         break;
       }
-    else if (read_bytes == sizeof(image_data_buffer)-offset)
+    else if (read_bytes == (ssize_t) (sizeof(image_data_buffer)-offset))
       {
         /* Write the entirely of image_data_buffer to temp file */
         if (!fwrite(image_data_buffer,sizeof(image_data_buffer),1,file))
