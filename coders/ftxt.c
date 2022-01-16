@@ -118,7 +118,6 @@ static int ReadInt (Image * image, MagickBooleanType *eofInp, int * chPushed, Ma
     *p = chIn;
     p++;
     if (p-buffer >= MaxTextExtent) {
-      fprintf (stderr, "ReadInt too long\n");
       *eofInp = MagickTrue;
       continue;
     }
@@ -139,14 +138,11 @@ static int ReadInt (Image * image, MagickBooleanType *eofInp, int * chPushed, Ma
   errno = 0;
   int val = strtol (buffer, &tail, 10);
   if (errno || *tail) {
-    if (errno) fprintf (stderr, "ReadInt errno=%i: %s\n", errno, strerror (errno));
-    if (*tail) fprintf (stderr, "ReadInt: unused input [%s]\n", tail);
     *eofInp = MagickTrue;
     *err = MagickTrue;
   }
 
   if (val < 0) {
-    fprintf (stderr, "Negative integer [%i] not permitted\n", val);
     *err = MagickTrue;
   }
 
@@ -174,16 +170,13 @@ static long double BufToFlt (char * buffer, char ** tail, ValueTypeT expectType,
     if (expectType != vtAny && expectType != vtIntHex) *err = MagickTrue;
   } else if (*buffer == '0' && *(buffer+1)=='x') {
     // read hex floating-point
-    errno = 0;
     val = strtold (buffer, tail);
-    if (errno) fprintf (stderr, "ReadFlt HexFlt errno=%i: %s\n", errno, strerror (errno));
     if (expectType != vtAny && expectType != vtFltHex) *err = MagickTrue;
   } else {
     // Read decimal floating-point (possibly a percent).
     errno = 0;
     val = strtold (buffer, tail);
     if (errno) {
-      fprintf (stderr, "ReadFlt flt errno=%i: %s\n", errno, strerror (errno));
       *err = MagickTrue;
     }
     if (**tail=='%') {
@@ -232,7 +225,6 @@ static void ReadUntil (Image * image, int UntilChar, MagickBooleanType *eofInp, 
     }
     if (chIn == UntilChar) break;
     if (i >= BufSiz) {
-      fprintf (stderr, "ReadUntil: BufSiz busted\n");
       *eofInp = MagickTrue;
       break;
     }
@@ -275,24 +267,8 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-
-  MagickBooleanType verbose = image_info->verbose;
-
-  if (verbose) {
-    fprintf (stderr, "Image colorspace: %i\n", image->colorspace);
-    fprintf (stderr, "Image_info colorspace: %i\n", image_info->colorspace);
-  }
-
   SetImageColorspace (image, RGBColorspace, exception);
   SetImageColorspace (image, image_info->colorspace, exception);
-
-  if (verbose) {
-    fprintf (stderr, "Image colorspace: %i\n", image->colorspace);
-    fprintf (stderr, "num channels: %lu\n", GetPixelChannels (image));
-    fprintf (stderr, "Image depth: %lu\n", image->depth);
-    fprintf (stderr, "Image_info depth: %lu\n", image_info->depth);
-  }
-
   const char * sFmt = GetImageArtifact (image, "ftxt:format");
   if (sFmt == NULL) sFmt = dfltFmt;
 
@@ -317,11 +293,6 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
   if (numMeta) {
     if (!SetPixelMetaChannels (image, numMeta, exception))
       ThrowReaderException(OptionError,"SetPixelMetaChannelsFailure");
-  }
-
-  if (verbose) {
-    fprintf (stderr, "numMeta %i\n", numMeta);
-    fprintf (stderr, "num channels: %lu\n", GetPixelChannels (image));
   }
 
   // make image zero (if RGB channels, transparent black).
@@ -375,22 +346,14 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
 
-  if (verbose) fprintf (stderr, "size %lix%li\n", image->columns, image->rows);
-
   // How many channel values can we expect?
   int nExpCh = 0;
   for (i=0; i < (ssize_t) GetPixelChannels (image); i++) {
     PixelChannel channel = GetPixelChannelChannel (image, i);
     PixelTrait traits = GetPixelChannelTraits (image, channel);
-    if (verbose) fprintf (stderr, "i=%i ch=%i traits=%i\n", i, channel, traits);
     if ((traits & UpdatePixelTrait) != UpdatePixelTrait) continue;
     nExpCh++;
   }
-  if (verbose)
-    fprintf (stderr, "nExpCh=%i: Expect %i channel values%s.\n",
-             nExpCh, nExpCh,
-             (hasAlpha) ? " (including alpha)" : ""
-            );
 
   long double chVals[MaxPixelChannels];
   for (i=0; i < MaxPixelChannels; i++) chVals[i] = 0;
@@ -472,8 +435,6 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
               val = BufToFlt (pt, &tail, expectType, &TypeErr);
               if (expectType == vtProp) val *= QuantumRange;
               if (TypeErr) {
-                fprintf (stderr, "Type error: (%li,%li) expected %i at %s i=%i val=%Lg tail=[%s]\n",
-                         x, y, (int)expectType, pt, i, val, tail);
                 break;
               }
 
@@ -491,7 +452,6 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
 
             if (i+1 != nExpCh) {
               nChErr = MagickTrue;
-              fprintf (stderr, "NumChannelsError (%li,%li): i=%i but nExpCh=%i\n", x, y, i, nExpCh);
             }
 
             if (x < (ssize_t) image->columns && y < (ssize_t) image->rows) {
@@ -515,12 +475,10 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
             ReadUntil (image, UntilChar, &eofInp, &chPushed, buffer, MaxTextExtent-1);
             if (eofInp) break;
             if (!*buffer) {
-              fprintf (stderr, "buffer empty (%li,%li)\n", x, y);
               ThrowReaderException(CorruptImageError,"No input for escape 'H' or 's'.");
             }
             PixelInfo pixelinf;
             if (!QueryColorCompliance(buffer, AllCompliance, &pixelinf, exception)) {
-              fprintf (stderr, "QueryColorCompliance failed (%li,%li) [%s]\n", x, y, buffer);
               break;
             }
 
@@ -536,7 +494,6 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
             break;
           }
           default:
-            fprintf (stderr, "Unknown escape '%c'\n", *ppf);
             break;
         }
       } else {
@@ -544,7 +501,6 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
         chIn = ReadChar (image, &chPushed);
         if (chIn == EOF) {
           if (ppf != procFmt) {
-            fprintf (stderr, "(%li,%li) Expect [%c] %i but found EOF.\n", x, y, *ppf, (int)*ppf);
             ThrowReaderException(CorruptImageError,"EOFduringFormat");
           }
           eofInp = MagickTrue;
@@ -552,13 +508,11 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
           if (chIn == '\r' && *ppf == '\n') {
             chIn = ReadChar (image, &chPushed);
             if (chIn != '\n') {
-              fprintf (stderr, "(%li,%li) \\r not followed by \\n.\n", x, y);
               ThrowReaderException(CorruptImageError,"BackslashRbad");
             }
           }
 
           if (chIn != *ppf) {
-            fprintf (stderr, "(%li,%li) Error at character '%c'. Expected '%c'.\n", x, y, chIn, *ppf);
             ThrowReaderException(CorruptImageError,"UnexpectedInputChar");
           }
         }
@@ -587,12 +541,10 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
     ThrowReaderException(CorruptImageError,"TypeError");
 
   if (chPushed) {
-    fprintf (stderr, "Unused pushed char [%c] %i\n", chPushed, (int)chPushed);
     ThrowReaderException(CorruptImageError,"UnusedPushedChar");
   }
 
   if (MaxX < 0 && MaxY < 0) {
-    fprintf (stderr, "Unexpected EOF: no pixels were read\n");
     ThrowReaderException(CorruptImageError,"UnexpectedEof");
   }
 
@@ -600,15 +552,9 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,ExceptionInfo *exception
     ThrowReaderException(CorruptImageError,"NumChannelsError");
   }
 
-  if (verbose) fprintf (stderr, "nPix=%li MaxX=%li MaxY=%li\n", nPix, MaxX, MaxY);
-
   if (nPix > (ssize_t) (image->columns * image->rows)) {
-    fprintf (stderr, "Too many pixels were read\n");
-    fprintf (stderr, "nPix=%li MaxX=%li MaxY=%li\n", nPix, MaxX, MaxY);
     ThrowMagickException(exception, GetMagickModule(), CorruptImageWarning,"TooManyPixels", "`%s'",image_info->filename);
   } else if (MaxX >= (ssize_t) image->columns || MaxY >= (ssize_t) image->rows) {
-    fprintf (stderr, "Image bounds exceeded\n");
-    fprintf (stderr, "nPix=%li MaxX=%li MaxY=%li\n", nPix, MaxX, MaxY);
     ThrowMagickException(exception, GetMagickModule(), CorruptImageWarning,"ImageBoundsExceeded", "`%s'",image_info->filename);
   }
 
@@ -674,8 +620,6 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,Image *image
     return(status);
   scene=0;
 
-  MagickBooleanType verbose = image_info->verbose;
-
   int precision = GetMagickPrecision();
   const char * sFmt;
 
@@ -694,14 +638,6 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,Image *image
   char sSuff[2];
   sSuff[0] = '\0';
   sSuff[1] = '\0';
-
-  if (verbose) {
-    fprintf (stderr, "Image colorspace: %i\n", image->colorspace);
-    fprintf (stderr, "GetPixelChannels(): %lu\n", GetPixelChannels (image));
-    fprintf (stderr, "Image depth: %i\n", depth);
-    fprintf (stderr, "Image_info depth: %lu\n", image_info->depth);
-    fprintf (stderr, "Image Q depth: %lu\n", GetImageQuantumDepth(image, MagickFalse));
-  }
 
   do
   {
@@ -767,7 +703,6 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,Image *image
                 for (i=0; i < (ssize_t) GetPixelChannels (image); i++) {
                   PixelChannel channel = GetPixelChannelChannel (image, i);
                   PixelTrait traits = GetPixelChannelTraits (image, channel);
-                  if (verbose) fprintf (stderr, "i=%li ch=%i tr=%i\n", i, channel, traits);
                   if ((traits & UpdatePixelTrait) != UpdatePixelTrait) continue;
                   if (HexFmt) {
                     FormatLocaleString (buffer,MaxTextExtent,"%s#%Lx", sSep, (signed long long)(((long double)p[i])+0.5));
