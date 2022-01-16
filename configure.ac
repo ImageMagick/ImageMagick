@@ -1848,10 +1848,10 @@ dnl ===========================================================================
 # Check for FLIF delegate library.
 #
 AC_ARG_WITH([flif],
-    [AC_HELP_STRING([--without-flif],
-                    [disable FLIF support])],
+    [AC_HELP_STRING([--with-flif],
+                    [enable FLIF support])],
     [with_flif=$withval],
-    [with_flif='yes'])
+    [with_flif='no'])
 
 if test "$with_flif" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-flif=$with_flif "
