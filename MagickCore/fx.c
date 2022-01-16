@@ -801,7 +801,9 @@ static MagickBooleanType ExtendUserSymbols (FxInfo * fx_info)
   fx_info->numUserSymbols = ceil (fx_info->numUserSymbols * (1 + TableExtend));
   fx_info->UserSymbols = (UserSymbolT *) ResizeMagickMemory (fx_info->UserSymbols, fx_info->numUserSymbols * sizeof(UserSymbolT));
   if (!fx_info->UserSymbols) {
-    ThrowFatalException(ResourceLimitFatalError, "ExtendUserSymbols oom");
+    (void) ThrowMagickException(fx_info->exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",
+      fx_info->image->filename);
     return MagickFalse;
   }
   return MagickTrue;
@@ -911,8 +913,11 @@ static MagickBooleanType ExtendRPN (FxInfo * fx_info)
 {
   fx_info->numElements = ceil (fx_info->numElements * (1 + TableExtend));
   fx_info->Elements = (ElementT *) ResizeMagickMemory (fx_info->Elements, fx_info->numElements * sizeof(ElementT));
-  if (!fx_info->Elements) {
-    ThrowFatalException(ResourceLimitFatalError, "Extend Elements oom");
+  if (!fx_info->Elements)
+    {
+      (void) ThrowMagickException(fx_info->exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        fx_info->image->filename);
     return MagickFalse;
   }
   return MagickTrue;
@@ -926,7 +931,9 @@ static MagickBooleanType OprInPlace (FxInfo * fx_info, int op)
 
 static const char * OprStr (FxInfo * fx_info, int oprNum)
 {
-  const char * str;
+  const char
+    *str;
+
   (void) fx_info;
   if      (oprNum < 0) str = "bad OprStr";
   else if (oprNum <= oNull) str = Operators[oprNum].str;
@@ -1029,7 +1036,7 @@ static void DestroyFxRt (fxRtT * fx_infort)
   fx_infort->random_info = DestroyRandomInfo (fx_infort->random_info);
 }
 
-static size_t GetToken (FxInfo * fx_info)
+static size_t GetToken(FxInfo * fx_info)
 /* Returns length of token that starts with an alpha,
      or 0 if it isn't a token that starts with an alpha.
    j0 and j1 have trailing digit.
@@ -1227,7 +1234,9 @@ static MagickBooleanType ExtendOperatorStack (FxInfo * fx_info)
   fx_info->numOprStack = ceil (fx_info->numOprStack * (1 + TableExtend));
   fx_info->OperatorStack = (OperatorE *) ResizeMagickMemory (fx_info->OperatorStack, fx_info->numOprStack * sizeof(OperatorE));
   if (!fx_info->OperatorStack) {
-    ThrowFatalException(ResourceLimitFatalError, "ExtendOperatorStack oom");
+    (void) ThrowMagickException(fx_info->exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",
+      fx_info->image->filename);
     return MagickFalse;
   }
   return MagickTrue;
@@ -1284,21 +1293,21 @@ static MagickBooleanType PopOprOpenParen (FxInfo * fx_info, OperatorE op)
   return MagickTrue;
 }
 
-static int GetCoordQualifier (FxInfo * fx_info, OperatorE op)
+static MagickBooleanType GetCoordQualifier(FxInfo * fx_info,OperatorE op)
 /* Returns -1 if invalid CoordQualifier, +1 if valid and appropriate.
 */
 {
-  if (op != (OperatorE)fU && op != (OperatorE)fV && op != (OperatorE)fS) return -1;
+  if (op != (OperatorE)fU && op != (OperatorE)fV && op != (OperatorE)fS) return MagickFalse;
 
   GetToken (fx_info);
 
   if (fx_info->lenToken != 1) {
-    return -1;
+    return MagickFalse;
   }
-  if (*fx_info->token != 'p' && *fx_info->token != 'P') return -1;
-  if (!GetFunction (fx_info, fP)) return -1;
+  if (*fx_info->token != 'p' && *fx_info->token != 'P') return MagickFalse;
+  if (!GetFunction (fx_info, fP)) return MagickFalse;
 
-  return 1;
+  return MagickTrue;
 }
 
 static PixelChannel GetChannelQualifier (FxInfo * fx_info, OperatorE op)
@@ -1382,7 +1391,7 @@ static MagickBooleanType IsQualifier (FxInfo * fx_info)
   return MagickFalse;
 }
 
-static ssize_t GetProperty (FxInfo * fx_info, fxFltType *val)
+static ssize_t GetProperty(FxInfo * fx_info, fxFltType *val)
 /* returns number of character to swallow.
    "-1" means invalid input
    "0" means no relevant input (don't swallow, but not an error)
@@ -1759,7 +1768,7 @@ static MagickBooleanType GetFunction (FxInfo * fx_info, FunctionE fe)
 
     if (fe == fU || fe == fV || fe == fS) {
 
-      coordQual = (GetCoordQualifier (fx_info, (OperatorE) fe) == 1) ? MagickTrue : MagickFalse;
+      coordQual = GetCoordQualifier (fx_info, (OperatorE) fe);
 
       if (coordQual) {
 
@@ -2143,7 +2152,7 @@ static MagickBooleanType inline IsRealOperator (OperatorE op)
 
 static MagickBooleanType inline ProcessTernaryOpr (FxInfo * fx_info, TernaryT * ptern)
 /* Ternary operator "... ? ... : ..."
-   returns false iff we have exception
+   returns false if we have exception
 */
 {
 
@@ -2554,7 +2563,9 @@ static MagickBooleanType CollectStatistics (FxInfo * fx_info)
 
   fx_info->statistics = (ChannelStatistics **) AcquireMagickMemory (fx_info->ImgListLen * sizeof (ChannelStatistics *));
   if (!fx_info->statistics) {
-    ThrowFatalException(ResourceLimitFatalError, "statistics oom");
+    (void) ThrowMagickException(fx_info->exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",
+      fx_info->image->filename);
     return MagickFalse;
   }
 
@@ -3686,13 +3697,15 @@ MagickPrivate FxInfo *AcquireFxInfo (const Image * images, const char * expressi
 
   fx_info->fxrts = (fxRtT *)AcquireQuantumMemory (number_threads, sizeof(fxRtT));
   if (!fx_info->fxrts) {
-    ThrowFatalException(ResourceLimitFatalError, "fxrts oom");
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
     return NULL;
   }
   int t;
   for (t=0; t < (int) number_threads; t++) {
     if (!AllocFxRt (fx_info, &fx_info->fxrts[t])) {
-      ThrowFatalException(ResourceLimitFatalError, "AllocFxRt");
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
       return NULL;
     }
   }
