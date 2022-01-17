@@ -2757,9 +2757,9 @@ static fxFltType inline ImageStat (
       /* Do nothing */
       break;
     case aPrintsizeX:
-      return PerceptibleReciprocal (pfx->Images[ImgNum]->resolution.x) * pfx->Images[ImgNum]->columns;
+      return (fxFltType) PerceptibleReciprocal (pfx->Images[ImgNum]->resolution.x) * pfx->Images[ImgNum]->columns;
     case aPrintsizeY:
-      return PerceptibleReciprocal (pfx->Images[ImgNum]->resolution.y) * pfx->Images[ImgNum]->rows;
+      return (fxFltType) PerceptibleReciprocal (pfx->Images[ImgNum]->resolution.y) * pfx->Images[ImgNum]->rows;
     case aQuality:
       return (fxFltType) pfx->Images[ImgNum]->quality;
     case aRes:
