@@ -2703,10 +2703,15 @@ static fxFltType inline ImageStat (
   return -99;
 }
 
-static MagickOffsetType inline FxGcd(MagickOffsetType x, MagickOffsetType y)
+static inline double FxGCD(const double x,const double y,const size_t depth)
 {
-  if (y != 0) return (FxGcd (y, x % y));
-  return (x);
+#define FxMaxFunctionDepth  200
+
+  if (x < y)
+    return(FxGCD(y,x,depth+1));
+  if ((fabs(y) < 0.001) || (depth >= FxMaxFunctionDepth))
+    return(x);
+  return(FxGCD(y,x-y*floor(x/y),depth+1));
 }
 
 static ssize_t inline ChkImgNum (FxInfo * fx_info, fxFltType f)
@@ -3091,7 +3096,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * fx_info, fxRtT * fx_infort, FILE *
           regA = exp((-regA*regA/2.0))/sqrt(2.0*MagickPI);
           break;
         case fGcd:
-          regA = FxGcd ((MagickOffsetType) (regA+0.5),(MagickOffsetType) (regB+0.5));
+          regA = FxGCD (regA,regB, 0);
           break;
         case fHypot:
           regA = hypot (regA, regB);
