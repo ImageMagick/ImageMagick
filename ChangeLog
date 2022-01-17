@@ -1,9 +1,19 @@
 2021-01-01  7.1.0-20  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-20 GIT revision 19...
 
+2022-01-09  7.1.0-20  Dirk Lemstra <dirk@lem.....org>
+  * Added support for ARM64 to the Visual Studio build on Windows.
+
 2021-01-01  7.1.0-20  <quetzlzacatenango@image...>
   * Support seamless blending of a foreground and background image.
   * Support saliency blending of a foreground and background image.
+  * Support QOI image format.
+  * Perist frame delay when converting APNG to Webp (reference
+    https://github.com/ImageMagick/ImageMagick/issues/4704).
+  * -fx performance increase by one or two orders of magnitude (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/4533).
+  * Add support for formatted text (reference
+    https://github.com/ImageMagick/ImageMagick/discussions/4515).
 
 2021-12-22  7.1.0-19  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-19 GIT revision 19456:d7f1b2b9b:20211222

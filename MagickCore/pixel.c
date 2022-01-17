@@ -4385,7 +4385,8 @@ MagickExport void InitializePixelChannelMap(Image *image)
       for (i=0; i < (ssize_t) image->number_meta_channels; i++)
       {
         assert(meta_channel < MaxPixelChannels);
-        SetPixelChannelAttributes(image,meta_channel++,UpdatePixelTrait,n);
+        SetPixelChannelAttributes(image,meta_channel,UpdatePixelTrait,n);
+        meta_channel=(PixelChannel) (meta_channel+1);
         n++;
       }
     }

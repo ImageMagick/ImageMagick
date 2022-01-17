@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 #ifndef StartMetaPixelChannel
-  #define StartMetaPixelChannel (CompositeMaskPixelChannel+1)
+  #define StartMetaPixelChannel ((PixelChannel) (CompositeMaskPixelChannel+1))
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

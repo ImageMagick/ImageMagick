@@ -2039,7 +2039,7 @@ Optional Packages:
   --with-dejavu-font-dir=DIR
                           DejaVu font directory
   --with-fftw             enable FFTW support
-  --without-flif          disable FLIF support
+  --with-flif             enable FLIF support
   --without-fpx           disable FlashPIX support
   --without-djvu          disable DjVu support
   --without-fontconfig    disable fontconfig support
@@ -4568,7 +4568,7 @@ MAGICK_PATCHLEVEL_VERSION=20
 
 MAGICK_VERSION=7.1.0-20
 
-MAGICK_GIT_REVISION=19502:2cbf74cbe:20220103
+MAGICK_GIT_REVISION=19553:457ad2f58:20220116
 
 
 # Substitute library versioning
@@ -4598,7 +4598,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,20
 
-PACKAGE_RELEASE_DATE=2021-12-31
+PACKAGE_RELEASE_DATE=2022-01-15
 
 
 # Ensure that make can run correctly
@@ -29231,7 +29231,7 @@ fi
 if test "${with_flif+set}" = set; then :
   withval=$with_flif; with_flif=$withval
 else
-  with_flif='yes'
+  with_flif='no'
 fi
 
 

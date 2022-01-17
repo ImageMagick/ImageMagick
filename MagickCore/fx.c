@@ -13,12 +13,12 @@
 %                   MagickCore Image Special Effects Methods                  %
 %                                                                             %
 %                               Software Design                               %
-%                                    Cristy                                   %
-%                                 October 1996                                %
+%                             snibgo (Alan Gibson)                            %
+%                                 January 2022                                %
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999-2022 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -90,2729 +90,3669 @@
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/transform-private.h"
 #include "MagickCore/utility.h"
-
+
+#define MaxTokenLen 100
+#define RpnInit 100
+#define TableExtend 0.1
+#define InitNumOprStack 50
+#define MinValStackSize 100
+#define InitNumUserSymbols 50
+
+typedef long double fxFltType;
+
+typedef enum {
+  oAddEq,
+  oSubtractEq,
+  oMultiplyEq,
+  oDivideEq,
+  oPlusPlus,
+  oSubSub,
+  oAdd,
+  oSubtract,
+  oMultiply,
+  oDivide,
+  oModulus,
+  oUnaryPlus,
+  oUnaryMinus,
+  oLshift,
+  oRshift,
+  oEq,
+  oNotEq,
+  oLtEq,
+  oGtEq,
+  oLt,
+  oGt,
+  oLogAnd,
+  oLogOr,
+  oLogNot,
+  oBitAnd,
+  oBitOr,
+  oBitNot,
+  oPow,
+  oQuery,
+  oColon,
+  oOpenParen,
+  oCloseParen,
+  oOpenBracket,
+  oCloseBracket,
+  oOpenBrace,
+  oCloseBrace,
+
+  oAssign,
+  oNull
+} OperatorE;
+
+typedef struct {
+  OperatorE op;
+  const char * str;
+  int precedence;
+  int nArgs;
+} OperatorT;
+
+static const OperatorT Operators[] = {
+  {oAddEq,       "+=",    12, 1},
+  {oSubtractEq,  "-=",    12, 1},
+  {oMultiplyEq,  "*=",    13, 1},
+  {oDivideEq,    "/=",    13, 1},
+  {oPlusPlus,    "++",    12, 0},
+  {oSubSub,      "--",    12, 0},
+  {oAdd,         "+",     12, 2},
+  {oSubtract,    "-",     12, 2},
+  {oMultiply,    "*",     13, 2},
+  {oDivide,      "/",     13, 2},
+  {oModulus,     "%",     13, 2},
+  {oUnaryPlus,   "+",     14, 1},
+  {oUnaryMinus,  "-",     14, 1},
+  {oLshift,      "<<",    11, 2},
+  {oRshift,      ">>",    11, 2},
+  {oEq,          "==",     9, 2},
+  {oNotEq,       "!=",     9, 2},
+  {oLtEq,        "<=",    10, 2},
+  {oGtEq,        ">=",    10, 2},
+  {oLt,          "<",     10, 2},
+  {oGt,          ">",     10, 2},
+  {oLogAnd,      "&&",    10, 2},
+  {oLogOr,       "||",     5, 2},
+  {oLogNot,      "!",      5, 1},
+  {oBitAnd,      "&",      6, 2},
+  {oBitOr,       "|",      7, 2},
+  {oBitNot,      "~",      8, 1},
+  {oPow,         "^",     15, 2},
+  {oQuery,       "?",      4, 1},
+  {oColon,       ":",      4, 1},
+  {oOpenParen,   "(",      0, 0},
+  {oCloseParen,  ")",      0, 0},
+  {oOpenBracket, "[",      0, 0},
+  {oCloseBracket,"]",      0, 0},
+  {oOpenBrace,   "{",      0, 0},
+  {oCloseBrace,  "}",      0, 0},
+
+  {oAssign,      "=",      3, 1},
+  {oNull,        "onull",  17, 0}
+};
+
+typedef enum {
+  cEpsilon,
+  cE,
+  cOpaque,
+  cPhi,
+  cPi,
+  cQuantumRange,
+  cQuantumScale,
+  cTransparent,
+  cMaxRgb,
+  cNull
+} ConstantE;
+
+typedef struct {
+  ConstantE cons;
+  fxFltType val;
+  const char * str;
+} ConstantT;
+
+static const ConstantT Constants[] = {
+  {cEpsilon,      MagickEpsilon,         "epsilon"},
+  {cE,            2.7182818284590452354, "e"},
+  {cOpaque,       1.0,                   "opaque"},
+  {cPhi,          MagickPHI,             "phi"},
+  {cPi,           MagickPI,              "pi"},
+  {cQuantumRange, QuantumRange,          "quantumrange"},
+  {cQuantumScale, QuantumScale,          "quantumscale"},
+  {cTransparent,  0.0,                   "transparent"},
+  {cMaxRgb,       QuantumRange,          "MaxRGB"},
+  {cNull,         0.0,                   "cnull"}
+};
+
+#define FirstFunc fAbs
+
+typedef enum {
+  fAbs = (oNull+1),
+#if defined(MAGICKCORE_HAVE_ACOSH)
+  fAcosh,
+#endif
+  fAcos,
+  fAiry,
+  fAlt,
+#if defined(MAGICKCORE_HAVE_ASINH)
+  fAsinh,
+#endif
+  fAsin,
+#if defined(MAGICKCORE_HAVE_ATANH)
+  fAtanh,
+#endif
+  fAtan2,
+  fAtan,
+  fCeil,
+  fChannel,
+  fClamp,
+  fCosh,
+  fCos,
+  fDebug,
+  fDrc,
+#if defined(MAGICKCORE_HAVE_ERF)
+  fErf,
+#endif
+  fExp,
+  fFloor,
+  fGauss,
+  fGcd,
+  fHypot,
+  fInt,
+  fIsnan,
+#if defined(MAGICKCORE_HAVE_J0)
+  fJ0,
+#endif
+#if defined(MAGICKCORE_HAVE_J1)
+  fJ1,
+#endif
+#if defined(MAGICKCORE_HAVE_J1)
+  fJinc,
+#endif
+  fLn,
+  fLogtwo,
+  fLog,
+  fMax,
+  fMin,
+  fMod,
+  fNot,
+  fPow,
+  fRand,
+  fRound,
+  fSign,
+  fSinc,
+  fSinh,
+  fSin,
+  fSqrt,
+  fSquish,
+  fTanh,
+  fTan,
+  fTrunc,
+  fDo,
+  fFor,
+  fIf,
+  fWhile,
+  fU,
+  fU0,
+  fUP,
+  fS,
+  fV,
+  fP,
+  fSP,
+  fVP,
+
+  fNull
+} FunctionE;
+
+
+typedef struct {
+  FunctionE func;
+  const char * str;
+  int nArgs;
+} FunctionT;
+
+static const FunctionT Functions[] = {
+  {fAbs,     "abs"   , 1},
+#if defined(MAGICKCORE_HAVE_ACOSH)
+  {fAcosh,   "acosh" , 1},
+#endif
+  {fAcos,    "acos"  , 1},
+  {fAiry,    "airy"  , 1},
+  {fAlt,     "alt"   , 1},
+#if defined(MAGICKCORE_HAVE_ASINH)
+  {fAsinh,   "asinh" , 1},
+#endif
+  {fAsin,    "asin"  , 1},
+#if defined(MAGICKCORE_HAVE_ATANH)
+  {fAtanh,   "atanh" , 1},
+#endif
+  {fAtan2,   "atan2" , 2},
+  {fAtan,    "atan"  , 1},
+  {fCeil,    "ceil"  , 1},
+  {fChannel, "channel"  , 5},
+  {fClamp,   "clamp" , 1},
+  {fCosh,    "cosh"  , 1},
+  {fCos,     "cos"   , 1},
+  {fDebug,   "debug" , 1},
+  {fDrc,     "drc"   , 2},
+#if defined(MAGICKCORE_HAVE_ERF)
+  {fErf,     "erf"   , 1},
+#endif
+  {fExp,     "exp"   , 1},
+  {fFloor,   "floor" , 1},
+  {fGauss,   "gauss" , 2},
+  {fGcd,     "gcd"   , 2},
+  {fHypot,   "hypot" , 2},
+  {fInt,     "int"   , 1},
+  {fIsnan,   "isnan" , 1},
+#if defined(MAGICKCORE_HAVE_J0)
+  {fJ0,      "j0"    , 1},
+#endif
+#if defined(MAGICKCORE_HAVE_J1)
+  {fJ1,      "j1"    , 1},
+#endif
+#if defined(MAGICKCORE_HAVE_J1)
+  {fJinc,    "jinc"  , 1},
+#endif
+  {fLn,      "ln"    , 1},
+  {fLogtwo,  "logtwo", 1},
+  {fLog,     "log"   , 1},
+  {fMax,     "max"   , 2},
+  {fMin,     "min"   , 2},
+  {fMod,     "mod"   , 2},
+  {fNot,     "not"   , 1},
+  {fPow,     "pow"   , 2},
+  {fRand,    "rand"  , 0},
+  {fRound,   "round" , 1},
+  {fSign,    "sign"  , 1},
+  {fSinc,    "sinc"  , 1},
+  {fSinh,    "sinh"  , 1},
+  {fSin,     "sin"   , 1},
+  {fSqrt,    "sqrt"  , 1},
+  {fSquish,  "squish", 1},
+  {fTanh,    "tanh"  , 1},
+  {fTan,     "tan"   , 1},
+  {fTrunc,   "trunc" , 1},
+  {fDo,      "do",     2},
+  {fFor,     "for",    3},
+  {fIf,      "if",     3},
+  {fWhile,   "while",  2},
+  {fU,       "u",      1},
+  {fU0,      "u0",     0},
+  {fUP,      "up",     3},
+  {fS,       "s",      0},
+  {fV,       "v",      0},
+  {fP,       "p",      2},
+  {fSP,      "sp",     2},
+  {fVP,      "vp",     2},
+
+  {fNull,    "fnull" , 0}
+};
+
+#define FirstImgAttr aDepth
+
+typedef enum {
+  aDepth = fNull+1,
+  aExtent,
+  aKurtosis,
+  aMaxima,
+  aMean,
+  aMedian,
+  aMinima,
+  aPage,
+  aPageWid,
+  aPageHt,
+  aPageX,
+  aPageY,
+  aPrintsize,
+  aPrintsizeX,
+  aPrintsizeY,
+  aQuality,
+  aRes,
+  aResX,
+  aResY,
+  aSkewness,
+  aStdDev,
+  aH,
+  aN,
+  aT,
+  aW,
+  aZ,
+  aNull
+} ImgAttrE;
+
+
+typedef struct {
+  ImgAttrE attr;
+  const char * str;
+  int NeedStats;
+} ImgAttrT;
+
+static const ImgAttrT ImgAttrs[] = {
+  {aDepth,      "depth",              1},
+  {aExtent,     "extent",             0},
+  {aKurtosis,   "kurtosis",           1},
+  {aMaxima,     "maxima",             1},
+  {aMean,       "mean",               1},
+  {aMedian,     "median",             1},
+  {aMinima,     "minima",             1},
+  {aPage,       "page",               0},
+  {aPageX,      "page.x",             0},
+  {aPageY,      "page.y",             0},
+  {aPageWid,    "page.width",         0},
+  {aPageHt,     "page.height",        0},
+  {aPrintsize,  "printsize",          0},
+  {aPrintsizeX, "printsize.x",        0},
+  {aPrintsizeY, "printsize.y",        0},
+  {aQuality,    "quality",            0},
+  {aRes,        "resolution",         0},
+  {aResX,       "resolution.x",       0},
+  {aResY,       "resolution.y",       0},
+  {aSkewness,   "skewness",           1},
+  {aStdDev,     "standard_deviation", 1},
+  {aH,          "h", 0},
+  {aN,          "n", 0},
+  {aT,          "t", 0},
+  {aW,          "w", 0},
+  {aZ,          "z", 0},
+
+  {aNull,       "anull", 0}
+};
+
+#define FirstSym sHue
+
+typedef enum {
+  sHue = (aNull+1),
+  sIntensity,
+  sLightness,
+  sLuma,
+  sLuminance,
+  sSaturation,
+  sA,
+  sB,
+  sC,
+  sG,
+  sI,
+  sJ,
+  sK,
+  sM,
+  sO,
+  sR,
+  sY,
+  sNull
+} SymbolE;
+
+typedef struct {
+  SymbolE sym;
+  const char * str;
+} SymbolT;
+
+static const SymbolT Symbols[] = {
+  {sHue,         "hue"},
+  {sIntensity,   "intensity"},
+  {sLightness,   "lightness"},
+  {sLuma,        "luma"},
+  {sLuminance,   "luminance"},
+  {sSaturation,  "saturation"},
+  {sA,           "a"},
+  {sB,           "b"},
+  {sC,           "c"},
+  {sG,           "g"},
+  {sI,           "i"},
+  {sJ,           "j"},
+  {sK,           "k"},
+  {sM,           "m"},
+  {sO,           "o"},
+  {sR,           "r"},
+  {sY,           "y"},
+  {sNull,        "snull"}
+};
 /*
-  Typedef declarations.
+   There is no way to access new value of pixels. This might be a future enhancement, eg "q".
+   fP, oU and oV can have channel qualifier such as "u.r".
+   For meta channels, we might also allow numbered channels eg "u.2" or "u.16".
+   ... or have extra argument to p[].
 */
-typedef enum
-{
-  BitwiseAndAssignmentOperator = 0xd9U,
-  BitwiseOrAssignmentOperator,
-  LeftShiftAssignmentOperator,
-  RightShiftAssignmentOperator,
-  PowerAssignmentOperator,
-  ModuloAssignmentOperator,
-  PlusAssignmentOperator,
-  SubtractAssignmentOperator,
-  MultiplyAssignmentOperator,
-  DivideAssignmentOperator,
-  IncrementAssignmentOperator,
-  DecrementAssignmentOperator,
-  LeftShiftOperator,
-  RightShiftOperator,
-  LessThanEqualOperator,
-  GreaterThanEqualOperator,
-  EqualOperator,
-  NotEqualOperator,
-  LogicalAndOperator,
-  LogicalOrOperator,
-  ExponentialNotation
-} FxOperator;
 
-struct _FxInfo
-{
-  const Image
-    *images;
+#define FirstCont (sNull+1)
 
-  char
-    *expression;
+/* Run-time controls are in the RPN, not explicitly in the input string. */
+typedef enum {
+  rGoto = FirstCont,
+  rIfZeroGoto,
+  rIfNotZeroGoto,
+  rCopyFrom,
+  rCopyTo,
+  rZerStk,
+  rNull
+} ControlE;
 
-  FILE
-    *file;
+typedef struct {
+  ControlE cont;
+  const char * str;
+  int nArgs;
+} ControlT;
 
-  SplayTreeInfo
-    *colors,
-    *symbols;
+static const ControlT Controls[] = {
+  {rGoto,          "goto",          0},
+  {rIfZeroGoto,    "ifzerogoto",    1},
+  {rIfNotZeroGoto, "ifnotzerogoto", 1},
+  {rCopyFrom,      "copyfrom",      0},
+  {rCopyTo,        "copyto",        1},
+  {rZerStk,        "zerstk",        0},
+  {rNull,          "rnull",         0}
+};
 
-  CacheView
-    **view;
+#define NULL_ADDRESS -2
+
+typedef struct {
+  int addrQuery;
+  int addrColon;
+} TernaryT;
+
+typedef struct {
+  const char * str;
+  PixelChannel pixChan;
+} ChannelT;
+
+#define NO_CHAN_QUAL      ((PixelChannel) (-1))
+#define THIS_CHANNEL      ((PixelChannel) (-2))
+#define HUE_CHANNEL       ((PixelChannel) (-3))
+#define SAT_CHANNEL       ((PixelChannel) (-4))
+#define LIGHT_CHANNEL     ((PixelChannel) (-5))
+#define INTENSITY_CHANNEL ((PixelChannel) (-6))
+
+static const ChannelT Channels[] = {
+  {"r",          RedPixelChannel},
+  {"g",          GreenPixelChannel},
+  {"b",          BluePixelChannel},
+  {"c",          CyanPixelChannel},
+  {"m",          MagentaPixelChannel},
+  {"y",          YellowPixelChannel},
+  {"k",          BlackPixelChannel},
+  {"a",          AlphaPixelChannel},
+  {"o",          AlphaPixelChannel},
+  {"hue",        HUE_CHANNEL},
+  {"saturation", SAT_CHANNEL},
+  {"lightness",  LIGHT_CHANNEL},
+  {"intensity",  INTENSITY_CHANNEL},
+  {"all",        CompositePixelChannel},
+  {"this",       THIS_CHANNEL},
+  {"",           NO_CHAN_QUAL}
+};
+
+/* The index into UserSymbols is also the index into run-time UserSymVals.
+*/
+typedef struct {
+  char * pex;
+  size_t len;
+} UserSymbolT;
+
+typedef enum {
+  etOperator,
+  etConstant,
+  etFunction,
+  etImgAttr,
+  etSymbol,
+  etColourConstant,
+  etControl
+} ElementTypeE;
+
+static const char * sElementTypes[] = {
+  "Operator",
+  "Constant",
+  "Function",
+  "ImgAttr",
+  "Symbol",
+  "ColConst",
+  "Control"
+};
+
+typedef struct {
+  ElementTypeE type;
+  fxFltType
+    val, val1, val2;
+  int oprNum;
+  int nArgs;
+  MagickBooleanType IsRelative;
+  MagickBooleanType DoPush;
+  int EleNdx;
+  int nDest; /* Number of Elements that "goto" this element */
+  PixelChannel ChannelQual;
+  ImgAttrE ImgAttrQual;
+  char * pExpStart;
+  size_t lenExp;
+} ElementT;
+
+typedef struct {
+  RandomInfo * magick_restrict random_info;
+  int numValStack;
+  int usedValStack;
+  fxFltType * ValStack;
+  fxFltType * UserSymVals;
+  Quantum * thisPixel;
+} fxRtT;
+
+struct _FxInfo {
+  Image * image;
+  int ImgListLen;
+  int ImgNum;
+  MagickBooleanType NeedStats;
+  MagickBooleanType NeedHsl;
+  MagickBooleanType DebugOpt;       /* Whether "-debug" option is in effect */
+  MagickBooleanType ContainsDebug;  /* Whether expression contains "debug ()" function */
+  char * expression;
+  char * pex;
+  char ShortExp[MaxTokenLen]; /* for reporting */
+  int teDepth;
+  char token[MaxTokenLen];
+  size_t lenToken;
+  int numElements;
+  int usedElements;
+  ElementT * Elements;  /* Elements is read-only at runtime. */
+  int numUserSymbols;
+  int usedUserSymbols;
+  UserSymbolT * UserSymbols;
+  int numOprStack;
+  int usedOprStack;
+  int maxUsedOprStack;
+  OperatorE * OperatorStack;
+  ChannelStatistics ** statistics;
+  int precision;
 
   RandomInfo
-    *random_info;
+    **magick_restrict random_infos;
 
-  ExceptionInfo
-    *exception;
+  CacheView ** Views;
+  Image ** Images;
+
+  ExceptionInfo * exception;
+
+  fxRtT * fxrts;
 };
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   A c q u i r e F x I n f o                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquireFxInfo() allocates the FxInfo structure.
-%
-%  The format of the AcquireFxInfo method is:
-%
-%      FxInfo *AcquireFxInfo(Image *images,const char *expression,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o images: the image sequence.
-%
-%    o expression: the expression.
-%
-%    o exception: return any errors or warnings in this structure.
-%
+
+/* Forward declarations for recursion.
 */
-MagickPrivate FxInfo *AcquireFxInfo(const Image *images,const char *expression,
-  ExceptionInfo *exception)
+static MagickBooleanType TranslateStatementList
+  (FxInfo * fx_info, char * strLimit, char * chLimit);
+
+static MagickBooleanType TranslateExpression
+  (FxInfo * fx_info, char * strLimit, char * chLimit, MagickBooleanType * needPopAll);
+
+static MagickBooleanType GetFunction (FxInfo * fx_info, FunctionE fe);
+
+static MagickBooleanType InitFx (FxInfo * fx_info, const Image * img, ExceptionInfo *exception)
 {
-  const Image
-    *next;
+  fx_info->ImgListLen = (int) GetImageListLength (img);
+  fx_info->ImgNum = (int) GetImageIndexInList (img);
+  fx_info->image = (Image *)img;
 
-  FxInfo
-    *fx_info;
+  fx_info->NeedStats = MagickFalse;
+  fx_info->NeedHsl = MagickFalse;
+  fx_info->DebugOpt = IsStringTrue (GetImageArtifact (img, "fx:debug"));
+  fx_info->statistics = NULL;
+  fx_info->Views = NULL;
+  fx_info->Images = NULL;
+  fx_info->exception = exception;
+  fx_info->precision = GetMagickPrecision ();
+  fx_info->random_infos = AcquireRandomInfoThreadSet ();
+  fx_info->ContainsDebug = MagickFalse;
 
-  ssize_t
-    i;
-
-  unsigned char
-    fx_op[2];
-
-  fx_info=(FxInfo *) AcquireCriticalMemory(sizeof(*fx_info));
-  (void) memset(fx_info,0,sizeof(*fx_info));
-  fx_info->exception=AcquireExceptionInfo();
-  fx_info->images=images;
-  fx_info->colors=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
-    RelinquishMagickMemory);
-  fx_info->symbols=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
-    RelinquishMagickMemory);
-  fx_info->view=(CacheView **) AcquireQuantumMemory(GetImageListLength(
-    fx_info->images),sizeof(*fx_info->view));
-  if (fx_info->view == (CacheView **) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  i=0;
-  next=GetFirstImageInList(fx_info->images);
+  fx_info->Views =
+    (CacheView **) AcquireQuantumMemory (GetImageListLength (img), sizeof (fx_info->Views));
+  if (!fx_info->Views) ThrowFatalException(ResourceLimitFatalError, "Views oom");
+  ssize_t i=0;
+  const Image * next = GetFirstImageInList (img);
   for ( ; next != (Image *) NULL; next=next->next)
   {
-    fx_info->view[i]=AcquireVirtualCacheView(next,exception);
+    fx_info->Views[i] = AcquireVirtualCacheView (next, fx_info->exception);
+    if (!fx_info->Views[i]) ThrowFatalException(ResourceLimitFatalError, "Views[i] oom");
     i++;
   }
-  fx_info->random_info=AcquireRandomInfo();
-  fx_info->expression=ConstantString(expression);
-  fx_info->file=stderr;
-  /*
-    Convert compound to simple operators.
-  */
-  fx_op[1]='\0';
-  *fx_op=(unsigned char) BitwiseAndAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"&=",(char *) fx_op);
-  *fx_op=(unsigned char) BitwiseOrAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"|=",(char *) fx_op);
-  *fx_op=(unsigned char) LeftShiftAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"<<=",(char *) fx_op);
-  *fx_op=(unsigned char) RightShiftAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,">>=",(char *) fx_op);
-  *fx_op=(unsigned char) PowerAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"^=",(char *) fx_op);
-  *fx_op=(unsigned char) ModuloAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"%=",(char *) fx_op);
-  *fx_op=(unsigned char) PlusAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"+=",(char *) fx_op);
-  *fx_op=(unsigned char) SubtractAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"-=",(char *) fx_op);
-  *fx_op=(unsigned char) MultiplyAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"*=",(char *) fx_op);
-  *fx_op=(unsigned char) DivideAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"/=",(char *) fx_op);
-  *fx_op=(unsigned char) IncrementAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"++",(char *) fx_op);
-  *fx_op=(unsigned char) DecrementAssignmentOperator;
-  (void) SubstituteString(&fx_info->expression,"--",(char *) fx_op);
-  *fx_op=(unsigned char) LeftShiftOperator;
-  (void) SubstituteString(&fx_info->expression,"<<",(char *) fx_op);
-  *fx_op=(unsigned char) RightShiftOperator;
-  (void) SubstituteString(&fx_info->expression,">>",(char *) fx_op);
-  *fx_op=(unsigned char) LessThanEqualOperator;
-  (void) SubstituteString(&fx_info->expression,"<=",(char *) fx_op);
-  *fx_op=(unsigned char) GreaterThanEqualOperator;
-  (void) SubstituteString(&fx_info->expression,">=",(char *) fx_op);
-  *fx_op=(unsigned char) EqualOperator;
-  (void) SubstituteString(&fx_info->expression,"==",(char *) fx_op);
-  *fx_op=(unsigned char) NotEqualOperator;
-  (void) SubstituteString(&fx_info->expression,"!=",(char *) fx_op);
-  *fx_op=(unsigned char) LogicalAndOperator;
-  (void) SubstituteString(&fx_info->expression,"&&",(char *) fx_op);
-  *fx_op=(unsigned char) LogicalOrOperator;
-  (void) SubstituteString(&fx_info->expression,"||",(char *) fx_op);
-  *fx_op=(unsigned char) ExponentialNotation;
-  (void) SubstituteString(&fx_info->expression,"**",(char *) fx_op);
-  /*
-    Force right-to-left associativity for unary negation.
-  */
-  (void) SubstituteString(&fx_info->expression,"-","-1.0*");
-  (void) SubstituteString(&fx_info->expression,"^-1.0*","^-");
-  (void) SubstituteString(&fx_info->expression,"E-1.0*","E-");
-  (void) SubstituteString(&fx_info->expression,"e-1.0*","e-");
-  (void) SubstituteString(&fx_info->expression," ","");  /* compact string */
-  return(fx_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D e s t r o y F x I n f o                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyFxInfo() deallocates memory associated with an FxInfo structure.
-%
-%  The format of the DestroyFxInfo method is:
-%
-%      ImageInfo *DestroyFxInfo(ImageInfo *fx_info)
-%
-%  A description of each parameter follows:
-%
-%    o fx_info: the fx info.
-%
-*/
-MagickPrivate FxInfo *DestroyFxInfo(FxInfo *fx_info)
-{
-  ssize_t
-    i;
 
-  fx_info->exception=DestroyExceptionInfo(fx_info->exception);
-  fx_info->expression=DestroyString(fx_info->expression);
-  fx_info->symbols=DestroySplayTree(fx_info->symbols);
-  fx_info->colors=DestroySplayTree(fx_info->colors);
-  for (i=(ssize_t) GetImageListLength(fx_info->images)-1; i >= 0; i--)
-    fx_info->view[i]=DestroyCacheView(fx_info->view[i]);
-  fx_info->view=(CacheView **) RelinquishMagickMemory(fx_info->view);
-  fx_info->random_info=DestroyRandomInfo(fx_info->random_info);
-  fx_info=(FxInfo *) RelinquishMagickMemory(fx_info);
-  return(fx_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+     F x E v a l u a t e C h a n n e l E x p r e s s i o n                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  FxEvaluateChannelExpression() evaluates an expression and returns the
-%  results.
-%
-%  The format of the FxEvaluateExpression method is:
-%
-%      double FxEvaluateChannelExpression(FxInfo *fx_info,
-%        const PixelChannel channel,const ssize_t x,const ssize_t y,
-%        double *alpha,Exceptioninfo *exception)
-%      double FxEvaluateExpression(FxInfo *fx_info,
-%        double *alpha,Exceptioninfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o fx_info: the fx info.
-%
-%    o channel: the channel.
-%
-%    o x,y: the pixel position.
-%
-%    o alpha: the result.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
+  fx_info->Images = ImageListToArray (img, fx_info->exception);
 
-static inline const double *GetFxSymbolValue(FxInfo *magick_restrict fx_info,
-  const char *symbol)
-{
-  return((const double *) GetValueFromSplayTree(fx_info->symbols,symbol));
+  return MagickTrue;
 }
 
-static inline MagickBooleanType SetFxSymbolValue(
-  FxInfo *magick_restrict fx_info,const char *magick_restrict symbol,
-  double const value)
+static MagickBooleanType DeInitFx (FxInfo * fx_info)
 {
-  double
-    *object;
+  ssize_t i;
+  if (fx_info->Images) RelinquishMagickMemory (fx_info->Images);
 
-  object=(double *) GetValueFromSplayTree(fx_info->symbols,symbol);
-  if (object != (double *) NULL)
-    {
-      *object=value;
-      return(MagickTrue);
+  if (fx_info->Views) {
+    for (i=(ssize_t) GetImageListLength(fx_info->image)-1; i >= 0; i--)
+      fx_info->Views[i] = DestroyCacheView (fx_info->Views[i]);
+    fx_info->Views=(CacheView **) RelinquishMagickMemory (fx_info->Views);
+  }
+
+  fx_info->random_infos = DestroyRandomInfoThreadSet (fx_info->random_infos);
+
+  if (fx_info->statistics) {
+    for (i=(ssize_t) GetImageListLength(fx_info->image)-1; i >= 0; i--) {
+      RelinquishMagickMemory (fx_info->statistics[i]);
     }
-  object=(double *) AcquireMagickMemory(sizeof(*object));
-  if (object == (double *) NULL)
+
+    fx_info->statistics = (ChannelStatistics **) RelinquishMagickMemory(fx_info->statistics);
+  }
+
+  return MagickTrue;
+}
+
+static ElementTypeE TypeOfOpr (FxInfo * fx_info, int op)
+{
+  (void) fx_info;
+  if (op <  oNull) return etOperator;
+  if (op == oNull) return etConstant;
+  if (op <= fNull) return etFunction;
+  if (op <= aNull) return etImgAttr;
+  if (op <= sNull) return etSymbol;
+  if (op <= rNull) return etControl;
+
+  return (ElementTypeE) 0;
+}
+
+static char * SetPtrShortExp (FxInfo * fx_info, char * pExp, size_t len)
+{
+  #define MaxLen 20
+
+  *fx_info->ShortExp = '\0';
+
+  if (pExp && len) {
+    size_t slen = CopyMagickString (fx_info->ShortExp, pExp, len);
+    if (slen > MaxLen) { 
+      CopyMagickString (fx_info->ShortExp+MaxLen, "...", 4);
+    }
+    char * p = strchr (fx_info->ShortExp, '\n');
+    if (p) CopyMagickString (p, "...", 4);
+    p = strchr (fx_info->ShortExp, '\r');
+    if (p) CopyMagickString (p, "...", 4);
+  }
+  return fx_info->ShortExp;
+}
+
+static char * SetShortExp (FxInfo * fx_info)
+{
+  return SetPtrShortExp (fx_info, fx_info->pex, MaxTokenLen-1);
+}
+
+static int FindUserSymbol (FxInfo * fx_info, char * name)
+/* returns index into fx_info->UserSymbols, and thus into fx_infort->UserSymVals,
+   or NULL_ADDRESS if not found.
+*/
+{
+  ssize_t i;
+  size_t lenName = strlen (name);
+  for (i=0; i < fx_info->usedUserSymbols; i++) {
+    UserSymbolT *pus = &fx_info->UserSymbols[i];
+    if (lenName == pus->len && LocaleNCompare (name, pus->pex, lenName)==0) break;
+  }
+  if (i == fx_info->usedUserSymbols) return NULL_ADDRESS;
+  return i;
+}
+
+static MagickBooleanType ExtendUserSymbols (FxInfo * fx_info)
+{
+  fx_info->numUserSymbols = ceil (fx_info->numUserSymbols * (1 + TableExtend));
+  fx_info->UserSymbols = (UserSymbolT *) ResizeMagickMemory (fx_info->UserSymbols, fx_info->numUserSymbols * sizeof(UserSymbolT));
+  if (!fx_info->UserSymbols) {
+    (void) ThrowMagickException(fx_info->exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",
+      fx_info->image->filename);
+    return MagickFalse;
+  }
+  return MagickTrue;
+}
+
+static int AddUserSymbol (FxInfo * fx_info, char * pex, size_t len)
+{
+  if (++fx_info->usedUserSymbols >= fx_info->numUserSymbols) {
+    if (!ExtendUserSymbols (fx_info)) return -1;
+  }
+  UserSymbolT *pus = &fx_info->UserSymbols[fx_info->usedUserSymbols-1];
+  pus->pex = pex;
+  pus->len = len;
+
+  return fx_info->usedUserSymbols-1;
+}
+
+static void DumpTables (FxInfo * fx_info, FILE * fh)
+{
+
+  ssize_t i;
+  (void) fx_info;
+  for (i=0; i <= rNull; i++) {
+    const char * str = "";
+    if (                     i < oNull) str = Operators[i].str;
+    if (i >= FirstFunc    && i < fNull) str = Functions[i-FirstFunc].str;
+    if (i >= FirstImgAttr && i < aNull) str = ImgAttrs[i-FirstImgAttr].str;
+    if (i >= FirstSym     && i < sNull) str = Symbols[i-FirstSym].str;
+    if (i >= FirstCont    && i < rNull) str = Controls[i-FirstCont].str;
+    if      (i==0    ) fprintf (stderr, "Operators:\n ");
+    else if (i==oNull) fprintf (stderr, "\nFunctions:\n ");
+    else if (i==fNull) fprintf (stderr, "\nImage attributes:\n ");
+    else if (i==aNull) fprintf (stderr, "\nSymbols:\n ");
+    else if (i==sNull) fprintf (stderr, "\nControls:\n ");
+    fprintf (fh, " %s", str);
+  }
+  fprintf (fh, "\n");
+}
+
+static char * NameOfUserSym (FxInfo * fx_info, int ndx, char * buf)
+{
+  assert (ndx >= 0 && ndx < fx_info->usedUserSymbols);
+  UserSymbolT * pus = &fx_info->UserSymbols[ndx];
+  CopyMagickString (buf, pus->pex, pus->len+1);
+  return buf;
+}
+
+static void DumpUserSymbols (FxInfo * fx_info, FILE * fh)
+{
+  fprintf (fh, "UserSymbols (%i)\n", fx_info->usedUserSymbols);
+  char UserSym[MaxTokenLen];
+  ssize_t i;
+  for (i=0; i < fx_info->usedUserSymbols; i++) {
+    fprintf (fh, "  %g: '%s'\n", (double) i, NameOfUserSym (fx_info, i, UserSym));
+  }
+}
+
+static MagickBooleanType BuildRPN (FxInfo * fx_info)
+{
+  fx_info->numUserSymbols = InitNumUserSymbols;
+  fx_info->usedUserSymbols = 0;
+  fx_info->UserSymbols = (UserSymbolT *) AcquireMagickMemory (fx_info->numUserSymbols * sizeof(UserSymbolT));
+  if (!fx_info->UserSymbols) ThrowFatalException(ResourceLimitFatalError, "UserSymbols oom");
+
+  fx_info->numElements = RpnInit;
+  fx_info->usedElements = 0;
+  fx_info->Elements = NULL;
+
+  fx_info->Elements = (ElementT *) AcquireMagickMemory (fx_info->numElements * sizeof(ElementT));
+  if (!fx_info->Elements) ThrowFatalException(ResourceLimitFatalError, "Elements oom");
+
+  fx_info->usedOprStack = 0;
+  fx_info->maxUsedOprStack = 0;
+  fx_info->numOprStack = InitNumOprStack;
+  fx_info->OperatorStack = (OperatorE *) AcquireMagickMemory (fx_info->numOprStack * sizeof(OperatorE));
+  if (!fx_info->OperatorStack) ThrowFatalException(ResourceLimitFatalError, "OperatorStack oom");
+
+  return MagickTrue;
+}
+
+static MagickBooleanType AllocFxRt (FxInfo * fx_info, fxRtT * fx_infort)
+{
+  fx_infort->random_info = AcquireRandomInfo ();
+  fx_infort->thisPixel = NULL;
+
+  int nRnd = 20 + 10 * GetPseudoRandomValue (fx_infort->random_info);
+  ssize_t i;
+  for (i=0; i < nRnd; i++) GetPseudoRandomValue (fx_infort->random_info);;
+
+  fx_infort->usedValStack = 0;
+  fx_infort->numValStack = 2 * fx_info->maxUsedOprStack;
+  if (fx_infort->numValStack < MinValStackSize) fx_infort->numValStack = MinValStackSize;
+  fx_infort->ValStack = (fxFltType *) AcquireMagickMemory (fx_infort->numValStack * sizeof(fxFltType));
+  if (!fx_infort->ValStack) ThrowFatalException(ResourceLimitFatalError, "ValStack oom");
+
+  fx_infort->UserSymVals = NULL;
+
+  if (fx_info->usedUserSymbols) {
+    fx_infort->UserSymVals = (fxFltType *) AcquireMagickMemory (fx_info->usedUserSymbols * sizeof(fxFltType));
+    if (!fx_infort->UserSymVals) ThrowFatalException(ResourceLimitFatalError, "UserSymVals oom");
+    for (i = 0; i < fx_info->usedUserSymbols; i++) fx_infort->UserSymVals[i] = 0;
+  }
+  return MagickTrue;
+}
+
+static MagickBooleanType ExtendRPN (FxInfo * fx_info)
+{
+  fx_info->numElements = ceil (fx_info->numElements * (1 + TableExtend));
+  fx_info->Elements = (ElementT *) ResizeMagickMemory (fx_info->Elements, fx_info->numElements * sizeof(ElementT));
+  if (!fx_info->Elements)
     {
       (void) ThrowMagickException(fx_info->exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",
-        fx_info->images->filename);
-      return(MagickFalse);
-    }
-  *object=value;
-  return(AddValueToSplayTree(fx_info->symbols,ConstantString(symbol),object));
+        fx_info->image->filename);
+    return MagickFalse;
+  }
+  return MagickTrue;
 }
 
-static double FxChannelStatistics(FxInfo *fx_info,Image *image,
-  PixelChannel channel,const char *symbol,ExceptionInfo *exception)
+static MagickBooleanType OprInPlace (FxInfo * fx_info, int op)
 {
-  ChannelType
-    channel_mask;
-
-  char
-    key[MagickPathExtent];
-
-  const double
-    *value;
-
-  double
-    statistic;
-
-  const char
-    *p;
-
-  channel_mask=UndefinedChannel;
-  for (p=symbol; (*p != '.') && (*p != '\0'); p++) ;
-  if (*p == '.')
-    {
-      ssize_t
-        option;
-
-      option=ParseCommandOption(MagickPixelChannelOptions,MagickTrue,p+1);
-      if (option >= 0)
-        {
-          channel=(PixelChannel) option;
-          channel_mask=SetPixelChannelMask(image,(ChannelType)
-            (1UL << channel));
-        }
-    }
-  (void) FormatLocaleString(key,MagickPathExtent,"%p.%.20g.%s",(void *) image,
-    (double) channel,symbol);
-  value=GetFxSymbolValue(fx_info,key);
-  if (value != (const double *) NULL)
-    {
-      if (channel_mask != UndefinedChannel)
-        (void) SetPixelChannelMask(image,channel_mask);
-      return(QuantumScale*(*value));
-    }
-  statistic=0.0;
-  if (LocaleNCompare(symbol,"depth",5) == 0)
-    {
-      size_t
-        depth;
-
-      depth=GetImageDepth(image,exception);
-      statistic=(double) depth;
-    }
-  if (LocaleNCompare(symbol,"kurtosis",8) == 0)
-    {
-      double
-        kurtosis,
-        skewness;
-
-      (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
-      statistic=kurtosis;
-    }
-  if (LocaleNCompare(symbol,"maxima",6) == 0)
-    {
-      double
-        maxima,
-        minima;
-
-      (void) GetImageRange(image,&minima,&maxima,exception);
-      statistic=maxima;
-    }
-  if (LocaleNCompare(symbol,"mean",4) == 0)
-    {
-      double
-        mean,
-        standard_deviation;
-
-      (void) GetImageMean(image,&mean,&standard_deviation,exception);
-      statistic=mean;
-    }
-  if (LocaleNCompare(symbol,"median",6) == 0)
-    {
-      double
-        median;
-
-      (void) GetImageMedian(image,&median,exception);
-      statistic=median;
-    }
-  if (LocaleNCompare(symbol,"minima",6) == 0)
-    {
-      double
-        maxima,
-        minima;
-
-      (void) GetImageRange(image,&minima,&maxima,exception);
-      statistic=minima;
-    }
-  if (LocaleNCompare(symbol,"skewness",8) == 0)
-    {
-      double
-        kurtosis,
-        skewness;
-
-      (void) GetImageKurtosis(image,&kurtosis,&skewness,exception);
-      statistic=skewness;
-    }
-  if (LocaleNCompare(symbol,"standard_deviation",18) == 0)
-    {
-      double
-        mean,
-        standard_deviation;
-
-      (void) GetImageMean(image,&mean,&standard_deviation,exception);
-      statistic=standard_deviation;
-    }
-  if (channel_mask != UndefinedChannel)
-    (void) SetPixelChannelMask(image,channel_mask);
-  if (SetFxSymbolValue(fx_info,key,statistic) == MagickFalse)
-    return(0.0);
-  return(QuantumScale*statistic);
+  (void) fx_info;
+  return (op >= oAddEq && op <= oSubSub ? MagickTrue : MagickFalse);
 }
 
-static double
-  FxEvaluateSubexpression(FxInfo *,const PixelChannel,const ssize_t,
-    const ssize_t,const char *,const size_t,double *,ExceptionInfo *);
-
-static inline MagickBooleanType IsFxFunction(const char *expression,
-  const char *name,const size_t length)
-{
-  int
-    c;
-
-  size_t
-    i;
-
-  for (i=0; i <= length; i++)
-    if (expression[i] == '\0')
-      return(MagickFalse);
-  c=expression[length];
-  if ((LocaleNCompare(expression,name,length) == 0) &&
-      ((isspace((int) ((unsigned char) c)) == 0) || (c == '(')))
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
-static inline double FxGCD(const double alpha,const double beta,
-  const size_t depth)
-{
-#define FxMaxFunctionDepth  200
-
-  if (alpha < beta)
-    return(FxGCD(beta,alpha,depth+1));
-  if ((fabs(beta) < 0.001) || (depth >= FxMaxFunctionDepth))
-    return(alpha);
-  return(FxGCD(beta,alpha-beta*floor(alpha/beta),depth+1));
-}
-
-static inline const char *FxSubexpression(const char *expression,
-  ExceptionInfo *exception)
+static const char * OprStr (FxInfo * fx_info, int oprNum)
 {
   const char
-    *subexpression;
+    *str;
 
-  ssize_t
-    level;
+  (void) fx_info;
+  if      (oprNum < 0) str = "bad OprStr";
+  else if (oprNum <= oNull) str = Operators[oprNum].str;
+  else if (oprNum <= fNull) str = Functions[oprNum-FirstFunc].str;
+  else if (oprNum <= aNull) str = ImgAttrs[oprNum-FirstImgAttr].str;
+  else if (oprNum <= sNull) str = Symbols[oprNum-FirstSym].str;
+  else if (oprNum <= rNull) str = Controls[oprNum-FirstCont].str;
+  else {
+    str = "bad OprStr";
+  }
+  return str;
+}
 
-  level=0;
-  subexpression=expression;
-  while ((*subexpression != '\0') &&
-         ((level != 1) || (strchr(")",(int) *subexpression) == (char *) NULL)))
-  {
-    if (strchr("(",(int) *subexpression) != (char *) NULL)
-      level++;
+static MagickBooleanType DumpRPN (FxInfo * fx_info, FILE * fh)
+{
+  fprintf (fh, "DumpRPN:");
+  fprintf (fh, "  numElements=%i", fx_info->numElements);
+  fprintf (fh, "  usedElements=%i", fx_info->usedElements);
+  fprintf (fh, "  maxUsedOprStack=%i", fx_info->maxUsedOprStack);
+  fprintf (fh, "  ImgListLen=%i", fx_info->ImgListLen);
+  fprintf (fh, "  NeedStats=%s", fx_info->NeedStats ? "yes" : "no");
+  fprintf (fh, "  NeedHsl=%s\n", fx_info->NeedHsl ? "yes" : "no");
+
+  ssize_t i;
+  for (i=0; i < fx_info->usedElements; i++) {
+    ElementT * pel = &fx_info->Elements[i];
+    pel->nDest = 0;
+  }
+  for (i=0; i < fx_info->usedElements; i++) {
+    ElementT * pel = &fx_info->Elements[i];
+    if (pel->oprNum == rGoto || pel->oprNum == rIfZeroGoto || pel->oprNum == rIfNotZeroGoto) {
+      if (pel->EleNdx >= 0 && pel->EleNdx < fx_info->numElements) {
+        ElementT * pelDest = &fx_info->Elements[pel->EleNdx];
+        pelDest->nDest++;
+      }
+    }
+  }
+  for (i=0; i < fx_info->usedElements; i++) {
+    ElementT * pel = &fx_info->Elements[i];
+    const char * str = OprStr (fx_info, pel->oprNum);
+    const char *sRelAbs = "";
+    if (pel->oprNum == fP || pel->oprNum == fUP || pel->oprNum == fVP || pel->oprNum == fSP)
+      sRelAbs = pel->IsRelative ? "[]" : "{}";
+
+    if (pel->type == etColourConstant)
+      fprintf (fh, "  %g: %s vals=%.*Lg,%.*Lg,%.*Lg '%s%s' nArgs=%i ndx=%i  %s",
+               (double) i, sElementTypes[pel->type],
+               fx_info->precision, pel->val, fx_info->precision, pel->val1, fx_info->precision, pel->val2,
+               str, sRelAbs, pel->nArgs, pel->EleNdx,
+               pel->DoPush ? "push" : "NO push");
     else
-      if (strchr(")",(int) *subexpression) != (char *) NULL)
+      fprintf (fh, "  %g: %s val=%.*Lg '%s%s' nArgs=%i ndx=%i  %s",
+               (double) i, sElementTypes[pel->type], fx_info->precision, pel->val, str, sRelAbs,
+               pel->nArgs, pel->EleNdx,
+               pel->DoPush ? "push" : "NO push");
+
+    if (pel->ImgAttrQual != aNull)
+      fprintf (fh, " ia=%s", OprStr(fx_info, pel->ImgAttrQual));
+
+    if (pel->ChannelQual != NO_CHAN_QUAL) {
+      if (pel->ChannelQual == THIS_CHANNEL) fprintf (stderr, "  ch=this");
+      else fprintf (stderr, "  ch=%i", pel->ChannelQual);
+    }
+
+    char UserSym[MaxTokenLen];
+
+    if (pel->oprNum == rCopyTo) {
+      fprintf (fh, "  CopyTo ==> %s", NameOfUserSym (fx_info, pel->EleNdx, UserSym));
+    } else if (pel->oprNum == rCopyFrom) {
+      fprintf (fh, "  CopyFrom <== %s", NameOfUserSym (fx_info, pel->EleNdx, UserSym));
+    } else if (OprInPlace (fx_info, pel->oprNum)) {
+      fprintf (fh, "  <==> %s", NameOfUserSym (fx_info, pel->EleNdx, UserSym));
+    }
+    if (pel->nDest > 0)  fprintf (fh, "  <==dest(%i)", pel->nDest);
+    fprintf (fh, "\n");
+  }
+  return MagickTrue;
+}
+
+static void DestroyRPN (FxInfo * fx_info)
+{
+  fx_info->numOprStack = 0;
+  fx_info->usedOprStack = 0;
+  if (fx_info->OperatorStack) fx_info->OperatorStack = (OperatorE *) RelinquishMagickMemory (fx_info->OperatorStack);
+
+  fx_info->numElements = 0;
+  fx_info->usedElements = 0;
+  if (fx_info->Elements) fx_info->Elements = (ElementT *) RelinquishMagickMemory (fx_info->Elements);
+
+  fx_info->usedUserSymbols = 0;
+  if (fx_info->UserSymbols) fx_info->UserSymbols = (UserSymbolT *) RelinquishMagickMemory (fx_info->UserSymbols);
+}
+
+static void DestroyFxRt (fxRtT * fx_infort)
+{
+  fx_infort->usedValStack = 0;
+  if (fx_infort->ValStack) fx_infort->ValStack = (fxFltType *) RelinquishMagickMemory (fx_infort->ValStack);
+  if (fx_infort->UserSymVals) fx_infort->UserSymVals = (fxFltType *) RelinquishMagickMemory (fx_infort->UserSymVals);
+
+  fx_infort->random_info = DestroyRandomInfo (fx_infort->random_info);
+}
+
+static size_t GetToken(FxInfo * fx_info)
+/* Returns length of token that starts with an alpha,
+     or 0 if it isn't a token that starts with an alpha.
+   j0 and j1 have trailing digit.
+   Also colours like "gray47" have more trailing digits.
+   After intial alpha(s) also allow single "_", eg "standard_deviation".
+   Does not advance fx_info->pex.
+   This splits "mean.r" etc.
+*/
+{
+
+  *fx_info->token = '\0';
+  fx_info->lenToken = 0;
+  char * p = fx_info->pex;
+  if (!isalpha((int)*p)) return 0;
+  size_t len = 0;
+
+  /* Regard strings that start "icc-" or "device-",
+     followed by any number of alphas,
+     as a token.
+  */
+
+  if (LocaleNCompare (p, "icc-", 4) == 0) {
+    len = 4;
+    p += 4;
+    while (isalpha ((int)*p)) { len++; p++; }
+  } else if (LocaleNCompare (p, "device-", 7) == 0) {
+    len = 7;
+    p += 7;
+    while (isalpha ((int)*p)) { len++; p++; }
+  } else {
+    while (isalpha ((int)*p)) { len++; p++; }
+    if (*p == '_')            { len++; p++; }
+    while (isalpha ((int)*p)) { len++; p++; }
+    while (isdigit ((int)*p)) { len++; p++; }
+  }
+  if (len >= MaxTokenLen) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "GetToken: too long", "%g at '%s'",
+      (double) len, SetShortExp(fx_info));
+    len = MaxTokenLen;
+  }
+  if (len) {
+    CopyMagickString (fx_info->token, fx_info->pex, (len+1<MaxTokenLen)?len+1:MaxTokenLen);
+  }
+
+  fx_info->lenToken = strlen (fx_info->token);
+  return len;
+}
+
+static MagickBooleanType TokenMaybeUserSymbol (FxInfo * fx_info)
+{
+  char * p = fx_info->token;
+  ssize_t i = 0;
+  while (*p) {
+    if (!isalpha ((int)*p++)) return MagickFalse;
+    i++;
+  }
+  if (i < 2) return MagickFalse;
+  return MagickTrue;
+}
+
+static MagickBooleanType AddElement (FxInfo * fx_info, fxFltType val, int oprNum)
+{
+  assert (oprNum <= rNull);
+
+  if (++fx_info->usedElements >= fx_info->numElements) {
+    if (!ExtendRPN (fx_info)) return MagickFalse;
+  }
+
+  ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+  pel->type = TypeOfOpr (fx_info, oprNum);
+  pel->val = val;
+  pel->val1 = 0;
+  pel->val2 = 0;
+  pel->oprNum = oprNum;
+  pel->DoPush = MagickTrue;
+  pel->EleNdx = 0;
+  pel->ChannelQual = NO_CHAN_QUAL;
+  pel->ImgAttrQual = aNull;
+  pel->nDest = 0;
+  pel->pExpStart = NULL;
+  pel->lenExp = 0;
+
+  if (oprNum <= oNull) pel->nArgs = Operators[oprNum].nArgs;
+  else if (oprNum <= fNull) pel->nArgs = Functions[oprNum-FirstFunc].nArgs;
+  else if (oprNum <= aNull) pel->nArgs = 0;
+  else if (oprNum <= sNull) pel->nArgs = 0;
+  else                      pel->nArgs = Controls[oprNum-FirstCont].nArgs;
+
+  return MagickTrue;
+}
+
+static MagickBooleanType AddAddressingElement (FxInfo * fx_info, int oprNum, int EleNdx)
+{
+  if (!AddElement (fx_info, 0, oprNum)) return MagickFalse;
+  ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+  pel->EleNdx = EleNdx;
+  if (oprNum == rGoto || oprNum == rIfZeroGoto || oprNum == rIfNotZeroGoto 
+   || oprNum == rZerStk)
+  {
+    pel->DoPush = MagickFalse;
+  }
+
+  /* Note: for() may or may not need pushing,
+     depending on whether the value is needed, eg "for(...)+2" or debug(for(...)).
+  */
+
+  return MagickTrue;
+}
+
+static MagickBooleanType AddColourElement (FxInfo * fx_info, ElementTypeE type, fxFltType val0, fxFltType val1, fxFltType val2)
+{
+  (void) type;
+  if (!AddElement (fx_info, val0, oNull)) return MagickFalse;
+  ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+  pel->val1 = val1;
+  pel->val2 = val2;
+  pel->type = etColourConstant;
+  return MagickTrue;
+}
+
+static void inline SkipSpaces (FxInfo * fx_info)
+{
+  while (isspace ((int)*fx_info->pex)) fx_info->pex++;
+}
+
+static char inline PeekChar (FxInfo * fx_info)
+{
+  SkipSpaces (fx_info);
+  return *fx_info->pex;
+}
+
+static MagickBooleanType inline PeekStr (FxInfo * fx_info, const char * str)
+{
+  SkipSpaces (fx_info);
+  
+  return (LocaleNCompare (fx_info->pex, str, strlen(str))==0 ? MagickTrue : MagickFalse);
+}
+
+static MagickBooleanType ExpectChar (FxInfo * fx_info, char c)
+{
+  if (PeekChar (fx_info) != c) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "Expected char", "'%c' at '%s'", c, SetShortExp (fx_info));
+    return MagickFalse;
+  }
+  fx_info->pex++;
+  return MagickTrue;
+}
+
+static int MaybeXYWH (FxInfo * fx_info, ImgAttrE * pop)
+/* If ".x" or ".y" or ".width" or ".height" increments *pop and returns 1 to 4 .
+   Otherwise returns 0.
+*/
+{
+
+  if (*pop != aPage && *pop != aPrintsize && *pop != aRes) return 0;
+
+  if (PeekChar (fx_info) != '.') return 0;
+
+  if (!ExpectChar (fx_info, '.')) return 0;
+
+  int ret=0;
+  GetToken (fx_info);
+  if (LocaleCompare ("x", fx_info->token)==0) ret=1;
+  else if (LocaleCompare ("y", fx_info->token)==0) ret=2;
+  else if (LocaleCompare ("width", fx_info->token)==0) ret=3;
+  else if (LocaleCompare ("height", fx_info->token)==0) ret=4;
+
+  if (!ret)
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "Invalid 'x' or 'y' or 'width' or 'height' token=", "'%s' at '%s'",
+      fx_info->token, SetShortExp(fx_info));
+
+  if (*pop == aPage) (*pop) = (ImgAttrE) (*pop+ret);
+  else {
+    if (ret > 2) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Invalid 'width' or 'height' token=", "'%s' at '%s'",
+        fx_info->token, SetShortExp(fx_info));
+    } else {
+      (*pop) = (ImgAttrE) (*pop+ret);
+    }
+  }
+  fx_info->pex+=fx_info->lenToken;
+  return ret;
+}
+
+static MagickBooleanType ExtendOperatorStack (FxInfo * fx_info)
+{
+  fx_info->numOprStack = ceil (fx_info->numOprStack * (1 + TableExtend));
+  fx_info->OperatorStack = (OperatorE *) ResizeMagickMemory (fx_info->OperatorStack, fx_info->numOprStack * sizeof(OperatorE));
+  if (!fx_info->OperatorStack) {
+    (void) ThrowMagickException(fx_info->exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",
+      fx_info->image->filename);
+    return MagickFalse;
+  }
+  return MagickTrue;
+}
+
+static MagickBooleanType PushOperatorStack (FxInfo * fx_info, int op)
+{
+  if (++fx_info->usedOprStack >= fx_info->numOprStack) {
+    if (!ExtendOperatorStack (fx_info))
+      return MagickFalse;
+  }
+  fx_info->OperatorStack[fx_info->usedOprStack-1] = (OperatorE) op;
+
+  if (fx_info->maxUsedOprStack < fx_info->usedOprStack)
+    fx_info->maxUsedOprStack = fx_info->usedOprStack;
+  return MagickTrue;
+}
+
+static OperatorE GetLeadingOp (FxInfo * fx_info)
+{
+  OperatorE op = oNull;
+
+  if      (*fx_info->pex == '-') op = oUnaryMinus;
+  else if (*fx_info->pex == '+') op = oUnaryPlus;
+  else if (*fx_info->pex == '~') op = oBitNot;
+  else if (*fx_info->pex == '!') op = oLogNot;
+  else if (*fx_info->pex == '(') op = oOpenParen;
+
+  return op;
+}
+
+static MagickBooleanType OprIsUnaryPrefix (FxInfo * fx_info, OperatorE op)
+{
+  (void) fx_info;
+  return (op == oUnaryMinus || op == oUnaryPlus || op == oBitNot || op == oLogNot ? MagickTrue : MagickFalse);
+}
+
+static MagickBooleanType TopOprIsUnaryPrefix (FxInfo * fx_info)
+{
+  if (!fx_info->usedOprStack) return MagickFalse;
+
+  return OprIsUnaryPrefix (fx_info, fx_info->OperatorStack[fx_info->usedOprStack-1]);
+}
+
+static MagickBooleanType PopOprOpenParen (FxInfo * fx_info, OperatorE op)
+{
+
+  if (!fx_info->usedOprStack) return MagickFalse;
+
+  if (fx_info->OperatorStack[fx_info->usedOprStack-1] != op) return MagickFalse;
+
+  fx_info->usedOprStack--;
+
+  return MagickTrue;
+}
+
+static MagickBooleanType GetCoordQualifier(FxInfo * fx_info,OperatorE op)
+/* Returns -1 if invalid CoordQualifier, +1 if valid and appropriate.
+*/
+{
+  if (op != (OperatorE)fU && op != (OperatorE)fV && op != (OperatorE)fS) return MagickFalse;
+
+  GetToken (fx_info);
+
+  if (fx_info->lenToken != 1) {
+    return MagickFalse;
+  }
+  if (*fx_info->token != 'p' && *fx_info->token != 'P') return MagickFalse;
+  if (!GetFunction (fx_info, fP)) return MagickFalse;
+
+  return MagickTrue;
+}
+
+static PixelChannel GetChannelQualifier (FxInfo * fx_info, OperatorE op)
+{
+  if (op == (OperatorE)fU || op == (OperatorE)fV || op == (OperatorE)fP || 
+      op == (OperatorE)fUP || op == (OperatorE)fVP ||
+      op == (OperatorE)fS || (op >= (OperatorE)FirstImgAttr && op <= (OperatorE)aNull)
+     )
+  {
+    GetToken (fx_info);
+
+    const ChannelT * pch = &Channels[0];
+    while (*pch->str) {
+      if (LocaleCompare (pch->str, fx_info->token)==0) {
+
+        if (op >= (OperatorE)FirstImgAttr && op <= (OperatorE)aNull &&
+              (pch->pixChan == HUE_CHANNEL ||
+               pch->pixChan == SAT_CHANNEL ||
+               pch->pixChan == LIGHT_CHANNEL)
+           )
+        {
+          ThrowMagickException (
+            fx_info->exception, GetMagickModule(), OptionError,
+            "Can't have image attribute with HLS qualifier at", "'%s'",
+            SetShortExp(fx_info));
+          return NO_CHAN_QUAL;
+        }
+
+        fx_info->pex += fx_info->lenToken;
+        return pch->pixChan;
+      }
+      pch++;
+    }
+  }
+  return NO_CHAN_QUAL;
+}
+
+static ImgAttrE GetImgAttrToken (FxInfo * fx_info)
+{
+  ImgAttrE ia = aNull;
+  const char * iaStr;
+  for (ia = FirstImgAttr; ia < aNull; ia=(ImgAttrE) (ia+1)) {
+    iaStr = ImgAttrs[ia-FirstImgAttr].str;
+    if (LocaleCompare (iaStr, fx_info->token)==0) {
+      fx_info->pex += strlen(fx_info->token);
+      if (ImgAttrs[ia-FirstImgAttr].NeedStats == 1) fx_info->NeedStats = MagickTrue;
+      MaybeXYWH (fx_info, &ia);
+      break;
+    }
+  }
+
+  if (ia == aPage || ia == aPrintsize || ia == aRes) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "Attribute", "'%s' needs qualifier at '%s'",
+      iaStr, SetShortExp(fx_info));
+  }
+
+  return ia;
+}
+
+static ImgAttrE GetImgAttrQualifier (FxInfo * fx_info, OperatorE op)
+{
+  ImgAttrE ia = aNull;
+  if (op == (OperatorE)fU || op == (OperatorE)fV || op == (OperatorE)fP || op == (OperatorE)fS) {
+    GetToken (fx_info);
+    if (fx_info->lenToken == 0) {
+      return aNull;
+    }
+    ia = GetImgAttrToken (fx_info);
+  }
+  return ia;
+}
+
+static MagickBooleanType IsQualifier (FxInfo * fx_info)
+{
+  if (PeekChar (fx_info) == '.') {
+    fx_info->pex++;
+    return MagickTrue;
+  }
+  return MagickFalse;
+}
+
+static ssize_t GetProperty(FxInfo * fx_info, fxFltType *val)
+/* returns number of character to swallow.
+   "-1" means invalid input
+   "0" means no relevant input (don't swallow, but not an error)
+*/
+{
+
+  if (PeekStr (fx_info, "%[")) {
+
+    int level = 0;
+    char * p = fx_info->pex + 2;
+    while (*p) {
+      if (*p == '[') level++;
+      else if (*p == ']') {
+        if (level == 0) break;
         level--;
-    subexpression++;
+      }
+      p++;
+    }
+    if (!*p || level != 0) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "After '%[' expected ']' at", "'%s'",
+        SetShortExp(fx_info));
+      return -1;
+    }
+
+    size_t len = p - fx_info->pex + 1;
+    if (len > MaxTokenLen) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Too much text between '%[' and ']' at", "'%s'",
+        SetShortExp(fx_info));
+      return -1;
+    }
+
+    char sProperty [MaxTokenLen];
+    CopyMagickString (sProperty, fx_info->pex, len+1);
+    sProperty[len] = '\0';
+
+    char * text = InterpretImageProperties (fx_info->image->image_info, fx_info->image,
+       sProperty, fx_info->exception);
+
+    if (!text) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Unknown property", "'%s' at '%s'",
+        sProperty, SetShortExp(fx_info));
+      return -1;
+    }
+
+    char * tailptr;
+    *val = strtold (text, &tailptr);
+    if (text == tailptr) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Property", "'%s' is not a number at '%s'",
+        text, SetShortExp(fx_info));
+      return -1;
+    }
+
+    text = DestroyString(text);
+    return ((ssize_t) len);
   }
-  if (*subexpression == '\0')
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "UnbalancedParenthesis","`%s'",expression);
-  return(subexpression);
+
+  return 0;
 }
 
-static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
-  const ssize_t x,const ssize_t y,const char *expression,const size_t depth,
-  ExceptionInfo *exception)
+static ssize_t inline GetConstantColour (FxInfo * fx_info, fxFltType *v0, fxFltType *v1, fxFltType *v2)
+/* Finds named colour such as "blue" and colorspace function such as "lab(10,20,30)".
+   Returns number of characters to swallow.
+*/
 {
-  char
-    *q,
-    symbol[MagickPathExtent];
-
-  const char
-    *artifact,
-    *p;
-
-  const double
-    *value;
-
-  double
-    alpha,
-    beta;
-
-  Image
-    *image;
-
-  MagickBooleanType
-    status;
-
   PixelInfo
-    pixel;
+    colour;
 
-  PointInfo
-    point;
+  ExceptionInfo
+    *dummy_exception = AcquireExceptionInfo ();
 
-  ssize_t
-    i;
+  char ColSp[MaxTokenLen];
+  CopyMagickString (ColSp, fx_info->token, MaxTokenLen);
 
-  size_t
-    level;
+  char * p = ColSp + fx_info->lenToken - 1;
+  if (*p == 'a' || *p == 'A') *p = '\0';
 
-  p=expression;
-  i=GetImageIndexInList(fx_info->images);
-  level=0;
-  point.x=(double) x;
-  point.y=(double) y;
-  if (isalpha((int) ((unsigned char) *(p+1))) == 0)
-    {
-      char
-        *subexpression;
+  GetPixelInfo (fx_info->image, &colour);
 
-      subexpression=AcquireString(expression);
-      if (strchr("suv",(int) *p) != (char *) NULL)
-        {
-          switch (*p)
-          {
-            case 's':
-            default:
-            {
-              i=GetImageIndexInList(fx_info->images);
-              break;
-            }
-            case 'u': i=0; break;
-            case 'v': i=1; break;
-          }
-          p++;
-          if (*p == '[')
-            {
-              level++;
-              q=subexpression;
-              for (p++; *p != '\0'; )
-              {
-                if (*p == '[')
-                  level++;
-                else
-                  if (*p == ']')
-                    {
-                      level--;
-                      if (level == 0)
-                        break;
-                    }
-                *q++=(*p++);
-              }
-              *q='\0';
-              alpha=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,
-                depth,&beta,exception);
-              i=(ssize_t) alpha;
-              if (*p != '\0')
-                p++;
-            }
-          if (*p == '.')
-            p++;
+  /* "gray" is both a colorspace and a named colour. */
+
+  MagickBooleanType IsGray = (LocaleCompare (ColSp, "gray") == 0 ? MagickTrue : MagickFalse);
+  MagickBooleanType IsIcc = (LocaleCompare (ColSp, "icc-color") == 0) ? MagickTrue : MagickFalse;
+  MagickBooleanType IsDev = (LocaleNCompare (ColSp, "device-", 7) == 0) ? MagickTrue : MagickFalse;
+
+  /* QueryColorCompliance will raise a warning if it isn't a colour, so we discard any exceptions.
+  */
+  if (!QueryColorCompliance (fx_info->token, AllCompliance, &colour, dummy_exception) || IsGray) {
+    int type = ParseCommandOption (MagickColorspaceOptions, MagickFalse, ColSp);
+    if (type >= 0 || IsIcc || IsDev) {
+      char * q = fx_info->pex + fx_info->lenToken;
+      while (isspace ((int)*q)) q++;
+      if (*q == '(') {
+        while (*q && *q != ')') q++;
+        size_t lenfun = q - fx_info->pex + 1;
+        if (lenfun > MaxTokenLen) {
+          ThrowMagickException (
+            fx_info->exception, GetMagickModule(), OptionError,
+            "lenfun too long", "'%g' at '%s'",
+            (double) lenfun, SetShortExp(fx_info));
+          dummy_exception = DestroyExceptionInfo (dummy_exception);
+          return 0;
         }
-      if ((*p == 'p') && (isalpha((int) ((unsigned char) *(p+1))) == 0))
-        {
-          p++;
-          if (*p == '{')
-            {
-              level++;
-              q=subexpression;
-              for (p++; *p != '\0'; )
-              {
-                if (*p == '{')
-                  level++;
-                else
-                  if (*p == '}')
-                    {
-                      level--;
-                      if (level == 0)
-                        break;
-                    }
-                *q++=(*p++);
-              }
-              *q='\0';
-              alpha=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,
-                depth,&beta,exception);
-              point.x=alpha;
-              point.y=beta;
-              if (*p != '\0')
-                p++;
-            }
-          else
-            if (*p == '[')
-              {
-                level++;
-                q=subexpression;
-                for (p++; *p != '\0'; )
-                {
-                  if (*p == '[')
-                    level++;
-                  else
-                    if (*p == ']')
-                      {
-                        level--;
-                        if (level == 0)
-                          break;
-                      }
-                  *q++=(*p++);
-                }
-                *q='\0';
-                alpha=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,
-                  depth,&beta,exception);
-                point.x+=alpha;
-                point.y+=beta;
-                if (*p != '\0')
-                  p++;
-              }
-          if (*p == '.')
-            p++;
+        char sFunc[MaxTokenLen];
+        CopyMagickString (sFunc, fx_info->pex, lenfun+1);
+        if (QueryColorCompliance (sFunc, AllCompliance, &colour, dummy_exception)) {
+          *v0 = colour.red   / QuantumRange;
+          *v1 = colour.green / QuantumRange;
+          *v2 = colour.blue  / QuantumRange;
+          dummy_exception = DestroyExceptionInfo (dummy_exception);
+          return lenfun;
         }
-      subexpression=DestroyString(subexpression);
-    }
-  image=GetImageFromList(fx_info->images,i);
-  if (image == (Image *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "NoSuchImage","`%s'",expression);
-      return(0.0);
-    }
-  i=GetImageIndexInList(image);
-  GetPixelInfo(image,&pixel);
-  status=InterpolatePixelInfo(image,fx_info->view[i],image->interpolate,
-    point.x,point.y,&pixel,exception);
-  (void) status;
-  if ((*p != '\0') && (*(p+1) != '\0') && (*(p+2) != '\0') &&
-      (LocaleCompare(p,"intensity") != 0) && (LocaleCompare(p,"luma") != 0) &&
-      (LocaleCompare(p,"luminance") != 0) && (LocaleCompare(p,"hue") != 0) &&
-      (LocaleCompare(p,"saturation") != 0) &&
-      (LocaleCompare(p,"lightness") != 0))
-    {
-      char
-        name[MagickPathExtent];
-
-      size_t
-        length;
-
-      (void) CopyMagickString(name,p,MagickPathExtent);
-      length=strlen(name);
-      for (q=name+length-1; q > name; q--)
-      {
-        if (*q == ')')
-          break;
-        if (*q == '.')
-          {
-            *q='\0';
-            break;
-          }
       }
-      q=name;
-      if ((*q != '\0') && (*(q+1) != '\0') && (*(q+2) != '\0') &&
-          (GetFxSymbolValue(fx_info,name) == (const double *) NULL))
-        {
-          PixelInfo
-            *color;
-
-          color=(PixelInfo *) GetValueFromSplayTree(fx_info->colors,name);
-          if (color != (PixelInfo *) NULL)
-            {
-              pixel=(*color);
-              p+=length;
-            }
-          else
-            {
-              status=QueryColorCompliance(name,AllCompliance,&pixel,
-                fx_info->exception);
-              if (status != MagickFalse)
-                {
-                  (void) AddValueToSplayTree(fx_info->colors,
-                    ConstantString(name),ClonePixelInfo(&pixel));
-                  p+=length;
-                }
-            }
-        }
     }
-  (void) CopyMagickString(symbol,p,MagickPathExtent);
-  (void) StripMagickString(symbol);
-  if (*symbol == '\0')
-    {
-      switch (channel)
-      {
-        case RedPixelChannel: return(QuantumScale*pixel.red);
-        case GreenPixelChannel: return(QuantumScale*pixel.green);
-        case BluePixelChannel: return(QuantumScale*pixel.blue);
-        case BlackPixelChannel:
-        {
-          if (image->colorspace != CMYKColorspace)
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                ImageError,"ColorSeparatedImageRequired","`%s'",
-                image->filename);
-              return(0.0);
-            }
-          return(QuantumScale*pixel.black);
-        }
-        case AlphaPixelChannel:
-        {
-          if (pixel.alpha_trait == UndefinedPixelTrait)
-            return(1.0);
-          alpha=(double) (QuantumScale*pixel.alpha);
-          return(alpha);
-        }
-        case CompositePixelChannel:
-        {
-          Quantum
-            quantum_pixel[MaxPixelChannels];
-
-          SetPixelViaPixelInfo(image,&pixel,quantum_pixel);
-          return(QuantumScale*GetPixelIntensity(image,quantum_pixel));
-        }
-        case IndexPixelChannel:
-          return(0.0);
-        default:
-          break;
-      }
-      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "UnableToParseExpression","`%s'",p);
-      return(0.0);
+    if (!IsGray) {
+      dummy_exception = DestroyExceptionInfo (dummy_exception);
+      return 0;
     }
-  switch (*symbol)
-  {
-    case 'A':
-    case 'a':
-    {
-      if (LocaleCompare(symbol,"a") == 0)
-        return((QuantumScale*pixel.alpha));
-      break;
-    }
-    case 'B':
-    case 'b':
-    {
-      if (LocaleCompare(symbol,"b") == 0)
-        return(QuantumScale*pixel.blue);
-      break;
-    }
-    case 'C':
-    case 'c':
-    {
-      if (IsFxFunction(symbol,"channel",7) != MagickFalse)
-        {
-          GeometryInfo
-            channel_info;
-
-          MagickStatusType
-            flags;
-
-          flags=ParseGeometry(symbol+7,&channel_info);
-          if (image->colorspace == CMYKColorspace)
-            switch (channel)
-            {
-              case CyanPixelChannel:
-              {
-                if ((flags & RhoValue) == 0)
-                  return(0.0);
-                return(channel_info.rho);
-              }
-              case MagentaPixelChannel:
-              {
-                if ((flags & SigmaValue) == 0)
-                  return(0.0);
-                return(channel_info.sigma);
-              }
-              case YellowPixelChannel:
-              {
-                if ((flags & XiValue) == 0)
-                  return(0.0);
-                return(channel_info.xi);
-              }
-              case BlackPixelChannel:
-              {
-                if ((flags & PsiValue) == 0)
-                  return(0.0);
-                return(channel_info.psi);
-              }
-              case AlphaPixelChannel:
-              {
-                if ((flags & ChiValue) == 0)
-                  return(0.0);
-                return(channel_info.chi);
-              }
-              default:
-                return(0.0);
-            }
-          switch (channel)
-          {
-            case RedPixelChannel:
-            {
-              if ((flags & RhoValue) == 0)
-                return(0.0);
-              return(channel_info.rho);
-            }
-            case GreenPixelChannel:
-            {
-              if ((flags & SigmaValue) == 0)
-                return(0.0);
-              return(channel_info.sigma);
-            }
-            case BluePixelChannel:
-            {
-              if ((flags & XiValue) == 0)
-                return(0.0);
-              return(channel_info.xi);
-            }
-            case BlackPixelChannel:
-            {
-              if ((flags & ChiValue) == 0)
-                return(0.0);
-              return(channel_info.chi);
-            }
-            case AlphaPixelChannel:
-            {
-              if ((flags & PsiValue) == 0)
-                return(0.0);
-              return(channel_info.psi);
-            }
-            default:
-              return(0.0);
-          }
-        }
-      if (LocaleCompare(symbol,"c") == 0)
-        return(QuantumScale*pixel.red);
-      break;
-    }
-    case 'D':
-    case 'd':
-    {
-      if (LocaleNCompare(symbol,"depth",5) == 0)
-        return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
-      break;
-    }
-    case 'E':
-    case 'e':
-    {
-      if (LocaleCompare(symbol,"extent") == 0)
-        {
-          if (image->extent != 0)
-            return((double) image->extent);
-          return((double) GetBlobSize(image));
-        }
-      break;
-    }
-    case 'G':
-    case 'g':
-    {
-      if (LocaleCompare(symbol,"g") == 0)
-        return(QuantumScale*pixel.green);
-      break;
-    }
-    case 'K':
-    case 'k':
-    {
-      if (LocaleNCompare(symbol,"kurtosis",8) == 0)
-        return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
-      if (LocaleCompare(symbol,"k") == 0)
-        {
-          if (image->colorspace != CMYKColorspace)
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"ColorSeparatedImageRequired","`%s'",
-                image->filename);
-              return(0.0);
-            }
-          return(QuantumScale*pixel.black);
-        }
-      break;
-    }
-    case 'H':
-    case 'h':
-    {
-      if (LocaleCompare(symbol,"h") == 0)
-        return((double) image->rows);
-      if (LocaleCompare(symbol,"hue") == 0)
-        {
-          double
-            hue,
-            lightness,
-            saturation;
-
-          ConvertRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
-            &lightness);
-          return(hue);
-        }
-      break;
-    }
-    case 'I':
-    case 'i':
-    {
-      if ((LocaleCompare(symbol,"image.depth") == 0) ||
-          (LocaleCompare(symbol,"image.minima") == 0) ||
-          (LocaleCompare(symbol,"image.maxima") == 0) ||
-          (LocaleCompare(symbol,"image.mean") == 0) ||
-          (LocaleCompare(symbol,"image.kurtosis") == 0) ||
-          (LocaleCompare(symbol,"image.skewness") == 0) ||
-          (LocaleCompare(symbol,"image.standard_deviation") == 0))
-        return(FxChannelStatistics(fx_info,image,channel,symbol+6,exception));
-      if (LocaleCompare(symbol,"image.resolution.x") == 0)
-        return(image->resolution.x);
-      if (LocaleCompare(symbol,"image.resolution.y") == 0)
-        return(image->resolution.y);
-      if (LocaleCompare(symbol,"intensity") == 0)
-        {
-          Quantum
-            quantum_pixel[MaxPixelChannels];
-
-          SetPixelViaPixelInfo(image,&pixel,quantum_pixel);
-          return(QuantumScale*GetPixelIntensity(image,quantum_pixel));
-        }
-      if (LocaleCompare(symbol,"i") == 0)
-        return((double) x);
-      break;
-    }
-    case 'J':
-    case 'j':
-    {
-      if (LocaleCompare(symbol,"j") == 0)
-        return((double) y);
-      break;
-    }
-    case 'L':
-    case 'l':
-    {
-      if (LocaleCompare(symbol,"lightness") == 0)
-        {
-          double
-            hue,
-            lightness,
-            saturation;
-
-          ConvertRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
-            &lightness);
-          return(lightness);
-        }
-      if (LocaleCompare(symbol,"luma") == 0)
-        {
-          double
-            luma;
-
-          luma=0.212656*pixel.red+0.715158*pixel.green+0.072186*pixel.blue;
-          return(QuantumScale*luma);
-        }
-      if (LocaleCompare(symbol,"luminance") == 0)
-        {
-          double
-            luminence;
-
-          luminence=0.212656*pixel.red+0.715158*pixel.green+0.072186*pixel.blue;
-          return(QuantumScale*luminence);
-        }
-      break;
-    }
-    case 'M':
-    case 'm':
-    {
-      if (LocaleNCompare(symbol,"maxima",6) == 0)
-        return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
-      if (LocaleNCompare(symbol,"mean",4) == 0)
-        return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
-      if (LocaleNCompare(symbol,"median",6) == 0)
-        return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
-      if (LocaleNCompare(symbol,"minima",6) == 0)
-        return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
-      if (LocaleCompare(symbol,"m") == 0)
-        return(QuantumScale*pixel.green);
-      break;
-    }
-    case 'N':
-    case 'n':
-    {
-      if (LocaleCompare(symbol,"n") == 0)
-        return((double) GetImageListLength(fx_info->images));
-      break;
-    }
-    case 'O':
-    case 'o':
-    {
-      if (LocaleCompare(symbol,"o") == 0)
-        return(QuantumScale*pixel.alpha);
-      break;
-    }
-    case 'P':
-    case 'p':
-    {
-      if (LocaleCompare(symbol,"page.height") == 0)
-        return((double) image->page.height);
-      if (LocaleCompare(symbol,"page.width") == 0)
-        return((double) image->page.width);
-      if (LocaleCompare(symbol,"page.x") == 0)
-        return((double) image->page.x);
-      if (LocaleCompare(symbol,"page.y") == 0)
-        return((double) image->page.y);
-      if (LocaleCompare(symbol,"printsize.x") == 0)
-        return(PerceptibleReciprocal(image->resolution.x)*image->columns);
-      if (LocaleCompare(symbol,"printsize.y") == 0)
-        return(PerceptibleReciprocal(image->resolution.y)*image->rows);
-      break;
-    }
-    case 'Q':
-    case 'q':
-    {
-      if (LocaleCompare(symbol,"quality") == 0)
-        return((double) image->quality);
-      break;
-    }
-    case 'R':
-    case 'r':
-    {
-      if (LocaleCompare(symbol,"resolution.x") == 0)
-        return(image->resolution.x);
-      if (LocaleCompare(symbol,"resolution.y") == 0)
-        return(image->resolution.y);
-      if (LocaleCompare(symbol,"r") == 0)
-        return(QuantumScale*pixel.red);
-      break;
-    }
-    case 'S':
-    case 's':
-    {
-      if (LocaleCompare(symbol,"saturation") == 0)
-        {
-          double
-            hue,
-            lightness,
-            saturation;
-
-          ConvertRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
-            &lightness);
-          return(saturation);
-        }
-      if (LocaleNCompare(symbol,"skewness",8) == 0)
-        return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
-      if (LocaleNCompare(symbol,"standard_deviation",18) == 0)
-        return(FxChannelStatistics(fx_info,image,channel,symbol,exception));
-      break;
-    }
-    case 'T':
-    case 't':
-    {
-      if (LocaleCompare(symbol,"t") == 0)
-        return((double) GetImageIndexInList(fx_info->images));
-      break;
-    }
-    case 'W':
-    case 'w':
-    {
-      if (LocaleCompare(symbol,"w") == 0)
-        return((double) image->columns);
-      break;
-    }
-    case 'Y':
-    case 'y':
-    {
-      if (LocaleCompare(symbol,"y") == 0)
-        return(QuantumScale*pixel.blue);
-      break;
-    }
-    case 'Z':
-    case 'z':
-    {
-      if (LocaleCompare(symbol,"z") == 0)
-        return((double) GetImageDepth(image,fx_info->exception));
-      break;
-    }
-    default:
-      break;
   }
-  value=GetFxSymbolValue(fx_info,symbol);
-  if (value != (const double *) NULL)
-    return(*value);
-  artifact=GetImageArtifact(image,symbol);
-  if (artifact != (const char *) NULL)
-    return(StringToDouble(artifact,(char **) NULL));
-  (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-    "UndefinedVariable","`%s'",symbol);
-  (void) SetFxSymbolValue(fx_info,symbol,0.0);
-  return(0.0);
+
+  *v0 = colour.red   / QuantumRange;
+  *v1 = colour.green / QuantumRange;
+  *v2 = colour.blue  / QuantumRange;
+
+  dummy_exception = DestroyExceptionInfo (dummy_exception);
+
+  return (ssize_t) strlen (fx_info->token);
 }
 
-static const char *FxOperatorPrecedence(const char *expression,
-  ExceptionInfo *exception)
+static ssize_t inline GetHexColour (FxInfo * fx_info, fxFltType *v0, fxFltType *v1, fxFltType *v2)
+/* Returns number of characters to swallow.
+   Negative return means it starts with '#', but invalid hex number.
+*/
 {
-  typedef enum
-  {
-    UndefinedPrecedence,
-    NullPrecedence,
-    BitwiseComplementPrecedence,
-    ExponentPrecedence,
-    ExponentialNotationPrecedence,
-    MultiplyPrecedence,
-    AdditionPrecedence,
-    ShiftPrecedence,
-    RelationalPrecedence,
-    EquivalencyPrecedence,
-    BitwiseAndPrecedence,
-    BitwiseOrPrecedence,
-    LogicalAndPrecedence,
-    LogicalOrPrecedence,
-    TernaryPrecedence,
-    AssignmentPrecedence,
-    CommaPrecedence,
-    SeparatorPrecedence
-  } FxPrecedence;
 
-  FxPrecedence
-    precedence,
-    target;
+  if (*fx_info->pex != '#') return 0;
 
-  const char
-    *subexpression;
+  /* find end of hex digits. */
+  char * p = fx_info->pex + 1;
+  while (isxdigit ((int)*p)) p++;
+  if (isalpha ((int)*p)) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "Bad hex number at", "'%s'",
+      SetShortExp(fx_info));
+    return -1;
+  }
 
-  int
-    c;
+  size_t len = p - fx_info->pex;
+  if (len < 1) return 0;
+  if (len >= MaxTokenLen) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "Hex colour too long at", "'%s'",
+      SetShortExp(fx_info));
+    return -1;
+  }
+  CopyMagickString (fx_info->token, fx_info->pex, len+1);
 
-  size_t
-    level;
+  PixelInfo colour;
 
-  c=(-1);
-  level=0;
-  subexpression=(const char *) NULL;
-  target=NullPrecedence;
-  while ((c != '\0') && (*expression != '\0'))
-  {
-    precedence=UndefinedPrecedence;
-    if ((isspace((int) ((unsigned char) *expression)) != 0) || (c == (int) '@'))
-      {
-        expression++;
-        continue;
-      }
-    switch (*expression)
-    {
-      case 'A':
-      case 'a':
-      {
-#if defined(MAGICKCORE_HAVE_ACOSH)
-        if (IsFxFunction(expression,"acosh",5) != MagickFalse)
-          {
-            expression+=5;
-            break;
-          }
-#endif
-#if defined(MAGICKCORE_HAVE_ASINH)
-        if (IsFxFunction(expression,"asinh",5) != MagickFalse)
-          {
-            expression+=5;
-            break;
-          }
-#endif
-#if defined(MAGICKCORE_HAVE_ATANH)
-        if (IsFxFunction(expression,"atanh",5) != MagickFalse)
-          {
-            expression+=5;
-            break;
-          }
-#endif
-        if (IsFxFunction(expression,"atan2",5) != MagickFalse)
-          {
-            expression+=5;
-            break;
-          }
+  GetPixelInfo (fx_info->image, &colour);
+
+  if (!QueryColorCompliance (fx_info->token, AllCompliance, &colour, fx_info->exception)) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "QueryColorCompliance rejected", "'%s' at '%s'",
+      fx_info->token, SetShortExp(fx_info));
+    return -1;
+  }
+
+  *v0 = colour.red   / QuantumRange;
+  *v1 = colour.green / QuantumRange;
+  *v2 = colour.blue  / QuantumRange;
+
+  return len;
+}
+
+static MagickBooleanType GetFunction (FxInfo * fx_info, FunctionE fe)
+{
+  /* A function, so get open-parens, n args, close-parens
+  */
+  const char * funStr = Functions[fe-FirstFunc].str;
+  fx_info->pex += fx_info->lenToken;
+
+  int nArgs = Functions[fe-FirstFunc].nArgs;
+  char chLimit = ')';
+  char expChLimit = ')';
+  char *strLimit = (char *) ",)";
+  OperatorE pushOp = oOpenParen;
+
+  if (fe == fP) {
+    char p = PeekChar (fx_info);
+    if (p=='{') {
+      ExpectChar (fx_info, '{');
+      pushOp = oOpenBrace;
+      strLimit = (char *) ",}";
+      chLimit = '}';
+      expChLimit = '}';
+    } else if (p=='[') {
+      ExpectChar (fx_info, '[');
+      pushOp = oOpenBracket;
+      strLimit = (char *) ",]";
+      chLimit = ']';
+      expChLimit = ']';
+    } else {
+      nArgs = 0;
+      chLimit = ']';
+      expChLimit = ']';
+    }
+  } else if (fe == fU) {
+    char p = PeekChar (fx_info);
+    if (p=='[') {
+      ExpectChar (fx_info, '[');
+      pushOp = oOpenBracket;
+      strLimit = (char *) ",]";
+      chLimit = ']';
+      expChLimit = ']';
+    } else {
+      nArgs = 0;
+      chLimit = ']';
+      expChLimit = ']';
+    }
+  } else if (fe == fV || fe == fS) {
+      nArgs = 0;
+      pushOp = oOpenBracket;
+      chLimit = ']';
+      expChLimit = ']';
+  } else {
+    if (!ExpectChar (fx_info, '(')) return MagickFalse;
+  }
+  if (!PushOperatorStack (fx_info, pushOp)) return MagickFalse;
+
+  char * pExpStart = fx_info->pex;
+  size_t lenExp = 0;
+
+  int FndArgs = 0;
+  int ndx0 = NULL_ADDRESS, ndx1 = NULL_ADDRESS, ndx2 = NULL_ADDRESS, ndx3 = NULL_ADDRESS;
+  ndx0 = fx_info->usedElements;
+  if (fe==fDo) {
+    AddAddressingElement (fx_info, rGoto, NULL_ADDRESS); /* address will be ndx1+1 */
+  }
+  while (nArgs > 0) {
+    int FndOne = 0;
+    if (TranslateStatementList (fx_info, strLimit, &chLimit)) {
+      FndOne = 1;
+    } else {
+      /* Maybe don't break because other expressions may be not empty. */
+      if (!chLimit) break;
+      if (fe == fP || fe == fS|| fe == fIf) {
+        AddElement (fx_info, 0, oNull);
+        FndOne = 1;
+      } 
+    }
+
+    if (strchr (strLimit, chLimit)==NULL) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "For function", "'%s' expected one of '%s' after expression but found '%c' at '%s'",
+        funStr, strLimit, chLimit ? chLimit : ' ', SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    if (FndOne) {
+      FndArgs++;
+      nArgs--;
+    }
+    switch (FndArgs) {
+      case 1:
+        ndx1 = fx_info->usedElements;
+        if (fe==fWhile) {
+          AddAddressingElement (fx_info, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2+1 */
+        } else if (fe==fDo) {
+          AddAddressingElement (fx_info, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2+1 */
+        } else if (fe==fFor) {
+          fx_info->Elements[fx_info->usedElements-1].DoPush = MagickFalse;
+        } else if (fe==fIf) {
+          AddAddressingElement (fx_info, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2 + 1 */
+          fx_info->Elements[fx_info->usedElements-1].DoPush = MagickTrue; /* we may need return from if() */
+        }
         break;
-      }
-      case 'E':
-      case 'e':
-      {
-        if ((isdigit((int) ((unsigned char) c)) != 0) &&
-            ((LocaleNCompare(expression,"E+",2) == 0) ||
-             (LocaleNCompare(expression,"E-",2) == 0)))
-          {
-            expression+=2;  /* scientific notation */
-            break;
-          }
-      }
-      case 'J':
-      case 'j':
-      {
-        if ((IsFxFunction(expression,"j0",2) != MagickFalse) ||
-            (IsFxFunction(expression,"j1",2) != MagickFalse))
-          {
-            expression+=2;
-            break;
-          }
+      case 2:
+        ndx2 = fx_info->usedElements;
+        if (fe==fWhile) {
+          fx_info->Elements[fx_info->usedElements-1].DoPush = MagickFalse;
+          AddAddressingElement (fx_info, rGoto, ndx0);
+        } else if (fe==fDo) {
+          fx_info->Elements[fx_info->usedElements-1].DoPush = MagickFalse;
+          AddAddressingElement (fx_info, rGoto, ndx0 + 1);
+        } else if (fe==fFor) {
+          AddAddressingElement (fx_info, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx3 */
+          fx_info->Elements[fx_info->usedElements-1].DoPush = MagickTrue; /* we may need return from for() */
+          AddAddressingElement (fx_info, rZerStk, NULL_ADDRESS);
+        } else if (fe==fIf) {
+          AddAddressingElement (fx_info, rGoto, NULL_ADDRESS); /* address will be ndx3 */
+        }
         break;
-      }
-      case '#':
-      {
-        while (isxdigit((int) ((unsigned char) *(expression+1))) != 0)
-          expression++;
+      case 3:
+        if (fe==fFor) {
+          fx_info->Elements[fx_info->usedElements-1].DoPush = MagickFalse;
+          AddAddressingElement (fx_info, rGoto, ndx1);
+        }
+        ndx3 = fx_info->usedElements;
         break;
-      }
       default:
         break;
     }
-    if ((c == (int) '{') || (c == (int) '['))
-      level++;
-    else
-      if ((c == (int) '}') || (c == (int) ']'))
-        level--;
-    if (level == 0)
-      switch ((unsigned char) *expression)
-      {
-        case '~':
-        case '!':
-        {
-          precedence=BitwiseComplementPrecedence;
-          break;
-        }
-        case '^':
-        case '@':
-        {
-          precedence=ExponentPrecedence;
-          break;
-        }
-        default:
-        {
-          if (((c != 0) && ((isdigit((int) ((unsigned char) c)) != 0) ||
-               (strchr(")",c) != (char *) NULL))) &&
-              (((islower((int) ((unsigned char) *expression)) != 0) ||
-               (strchr("(",(int) ((unsigned char) *expression)) != (char *) NULL)) ||
-               ((isdigit((int) ((unsigned char) c)) == 0) &&
-                (isdigit((int) ((unsigned char) *expression)) != 0))) &&
-              (strchr("xy",(int) ((unsigned char) *expression)) == (char *) NULL))
-            precedence=MultiplyPrecedence;
-          break;
-        }
-        case '*':
-        case '/':
-        case '%':
-        {
-          precedence=MultiplyPrecedence;
-          break;
-        }
-        case '+':
-        case '-':
-        {
-          if ((strchr("(+-/*%:&^|<>~,",c) == (char *) NULL) ||
-              (isalpha((int) ((unsigned char) c)) != 0))
-            precedence=AdditionPrecedence;
-          break;
-        }
-        case BitwiseAndAssignmentOperator:
-        case BitwiseOrAssignmentOperator:
-        case LeftShiftAssignmentOperator:
-        case RightShiftAssignmentOperator:
-        case PowerAssignmentOperator:
-        case ModuloAssignmentOperator:
-        case PlusAssignmentOperator:
-        case SubtractAssignmentOperator:
-        case MultiplyAssignmentOperator:
-        case DivideAssignmentOperator:
-        case IncrementAssignmentOperator:
-        case DecrementAssignmentOperator:
-        {
-          precedence=AssignmentPrecedence;
-          break;
-        }
-        case LeftShiftOperator:
-        case RightShiftOperator:
-        {
-          precedence=ShiftPrecedence;
-          break;
-        }
-        case '<':
-        case LessThanEqualOperator:
-        case GreaterThanEqualOperator:
-        case '>':
-        {
-          precedence=RelationalPrecedence;
-          break;
-        }
-        case EqualOperator:
-        case NotEqualOperator:
-        {
-          precedence=EquivalencyPrecedence;
-          break;
-        }
-        case '&':
-        {
-          precedence=BitwiseAndPrecedence;
-          break;
-        }
-        case '|':
-        {
-          precedence=BitwiseOrPrecedence;
-          break;
-        }
-        case LogicalAndOperator:
-        {
-          precedence=LogicalAndPrecedence;
-          break;
-        }
-        case LogicalOrOperator:
-        {
-          precedence=LogicalOrPrecedence;
-          break;
-        }
-        case ExponentialNotation:
-        {
-          precedence=ExponentialNotationPrecedence;
-          break;
-        }
-        case ':':
-        case '?':
-        {
-          precedence=TernaryPrecedence;
-          break;
-        }
-        case '=':
-        {
-          precedence=AssignmentPrecedence;
-          break;
-        }
-        case ',':
-        {
-          precedence=CommaPrecedence;
-          break;
-        }
-        case ';':
-        {
-          precedence=SeparatorPrecedence;
-          break;
-        }
-      }
-    if ((precedence == BitwiseComplementPrecedence) ||
-        (precedence == TernaryPrecedence) ||
-        (precedence == AssignmentPrecedence))
-      {
-        if (precedence > target)
-          {
-            /*
-              Right-to-left associativity.
-            */
-            target=precedence;
-            subexpression=expression;
-          }
-      }
-    else
-      if (precedence >= target)
-        {
-          /*
-            Left-to-right associativity.
-          */
-          target=precedence;
-          subexpression=expression;
-        }
-    if (strchr("(",(int) *expression) != (char *) NULL)
-      expression=FxSubexpression(expression,exception);
-    c=(int) (*expression++);
+    if (chLimit == expChLimit) {
+      lenExp = fx_info->pex - pExpStart - 1;
+      break;
+    }
+  } /* end while args of a function */
+  if (chLimit && chLimit != expChLimit && chLimit != ',' ) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "For function", "'%s' expected '%c', found '%c' at '%s'",
+      funStr, expChLimit, chLimit ? chLimit : ' ', SetShortExp(fx_info));
+    return MagickFalse;
   }
-  return(subexpression);
-}
 
-static double FxEvaluateSubexpression(FxInfo *fx_info,
-  const PixelChannel channel,const ssize_t x,const ssize_t y,
-  const char *expression,const size_t depth,double *beta,
-  ExceptionInfo *exception)
-{
-#define FxMaxParenthesisDepth  58
-#define FxMaxSubexpressionDepth  200
-#define FxReturn(value) \
-{ \
-  subexpression=DestroyString(subexpression); \
-  return(value); \
-}
-#define FxParseConditional(subexpression,sentinal,p,q) \
-{ \
-  p=subexpression; \
-  for (q=(char *) p; (*q != (sentinal)) && (*q != '\0'); q++) \
-    if (*q == '(') \
-      { \
-        for (q++; (*q != ')') && (*q != '\0'); q++); \
-        if (*q == '\0') \
-          break; \
-      } \
-  if (*q == '\0') \
-    { \
-      (void) ThrowMagickException(exception,GetMagickModule(), \
-        OptionError,"UnableToParseExpression","`%s'",subexpression); \
-      FxReturn(0.0); \
-    } \
-  if (strlen(q) == 1) \
-    *(q+1)='\0'; \
-  *q='\0'; \
-}
-
-  char
-    *q,
-    *subexpression;
-
-  double
-    alpha,
-    gamma,
-    sans,
-    value;
-
-  const char
-    *p;
-
-  *beta=0.0;
-  sans=0.0;
-  subexpression=AcquireString(expression);
-  *subexpression='\0';
-  if (depth > FxMaxSubexpressionDepth)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "UnableToParseExpression","`%s'",expression);
-      FxReturn(0.0);
+  if (fe == fP || fe == fS || fe == fU) {
+    while (FndArgs < Functions[fe-FirstFunc].nArgs) {
+      AddElement (fx_info, 0, oNull);
+      FndArgs++;
     }
-  if (exception->severity >= ErrorException)
-    FxReturn(0.0);
-  while (isspace((int) ((unsigned char) *expression)) != 0)
-    expression++;
-  if (*expression == '\0')
-    FxReturn(0.0);
-  p=FxOperatorPrecedence(expression,exception);
-  if (p != (const char *) NULL)
-    {
-      (void) CopyMagickString(subexpression,expression,(size_t)
-        (p-expression+1));
-      alpha=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,depth+1,
-        beta,exception);
-      switch ((unsigned char) *p)
-      {
-        case '~':
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          *beta=(double) (~(size_t) *beta);
-          FxReturn(*beta);
+  }
+
+  if (FndArgs > Functions[fe-FirstFunc].nArgs) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "For function", "'%s' expected %i arguments, found '%i' at '%s'",
+      funStr, Functions[fe-FirstFunc].nArgs, FndArgs, SetShortExp(fx_info));
+    return MagickFalse;
+  }
+  if (FndArgs < Functions[fe-FirstFunc].nArgs) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "For function", "'%s' expected %i arguments, found too few (%i) at '%s'",
+      funStr, Functions[fe-FirstFunc].nArgs, FndArgs, SetShortExp(fx_info));
+    return MagickFalse;
+  }
+  if (fe != fS && fe != fV && FndArgs == 0 && Functions[fe-FirstFunc].nArgs == 0) {
+    /* This is for "rand()" and similar. */
+    chLimit = expChLimit;
+    if (!ExpectChar (fx_info, ')')) return MagickFalse;
+  }
+
+  if (chLimit != expChLimit) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "For function", "'%s', arguments don't end with '%c' at '%s'",
+      funStr, expChLimit, SetShortExp(fx_info));
+    return MagickFalse;
+  }
+  if (!PopOprOpenParen (fx_info, pushOp)) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "Bug: For function", "'%s' tos not '%s' at '%s'",
+      funStr, Operators[pushOp].str, SetShortExp(fx_info));
+    return MagickFalse;
+  }
+
+  MagickBooleanType coordQual = MagickFalse;
+  PixelChannel chQual = NO_CHAN_QUAL;
+  ImgAttrE iaQual = aNull;
+
+  if (IsQualifier (fx_info)) {
+
+    if (fe == fU || fe == fV || fe == fS) {
+
+      coordQual = GetCoordQualifier (fx_info, (OperatorE) fe);
+
+      if (coordQual) {
+
+        /* Remove last element, which should be fP */
+        ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+        if (pel->oprNum != fP) {
+          ThrowMagickException (
+            fx_info->exception, GetMagickModule(), OptionError,
+            "Bug: For function", "'%s' last element not 'p' at '%s'",
+            funStr, SetShortExp(fx_info));
+          return MagickFalse;
         }
-        case '!':
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(*beta == 0.0 ? 1.0 : 0.0);
-        }
-        case '^':
-        {
-          *beta=pow(alpha,FxEvaluateSubexpression(fx_info,channel,x,y,++p,
-            depth+1,beta,exception));
-          FxReturn(*beta);
-        }
-        case '*':
-        case ExponentialNotation:
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(alpha*(*beta));
-        }
-        case '/':
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(PerceptibleReciprocal(*beta)*alpha);
-        }
-        case '%':
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(fmod(alpha,*beta));
-        }
-        case '+':
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(alpha+(*beta));
-        }
-        case '-':
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(alpha-(*beta));
-        }
-        case BitwiseAndAssignmentOperator:
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          value=(double) ((size_t) (alpha+0.5) & (size_t) (*beta+0.5));
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case BitwiseOrAssignmentOperator:
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          value=(double) ((size_t) (alpha+0.5) | (size_t) (*beta+0.5));
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case LeftShiftAssignmentOperator:
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          if ((size_t) (*beta+0.5) >= (8*sizeof(size_t)))
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"ShiftCountOverflow","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          value=(double) ((size_t) (alpha+0.5) << (size_t) (*beta+0.5));
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case RightShiftAssignmentOperator:
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          if ((size_t) (*beta+0.5) >= (8*sizeof(size_t)))
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"ShiftCountOverflow","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          value=(double) ((size_t) (alpha+0.5) >> (size_t) (*beta+0.5));
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case PowerAssignmentOperator:
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          value=pow(alpha,*beta);
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case ModuloAssignmentOperator:
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          value=fmod(alpha,*beta);
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case PlusAssignmentOperator:
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          value=alpha+(*beta);
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case SubtractAssignmentOperator:
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          value=alpha-(*beta);
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case MultiplyAssignmentOperator:
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          value=alpha*(*beta);
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case DivideAssignmentOperator:
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          value=alpha*PerceptibleReciprocal(*beta);
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case IncrementAssignmentOperator:
-        {
-          if (*subexpression == '\0')
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-              exception);
-          value=alpha+1.0;
-          if (*subexpression == '\0')
-            {
-              if (SetFxSymbolValue(fx_info,p,value) == MagickFalse)
-                return(0.0);
-            }
-          else
-            if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-              return(0.0);
-          FxReturn(*beta);
-        }
-        case DecrementAssignmentOperator:
-        {
-          if (*subexpression == '\0')
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-              exception);
-          value=alpha-1.0;
-          if (*subexpression == '\0')
-            {
-              if (SetFxSymbolValue(fx_info,p,value) == MagickFalse)
-                return(0.0);
-            }
-          else
-            if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-              return(0.0);
-          FxReturn(*beta);
-        }
-        case LeftShiftOperator:
-        {
-          gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          if ((size_t) (gamma+0.5) >= (8*sizeof(size_t)))
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"ShiftCountOverflow","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          *beta=(double) ((size_t) (alpha+0.5) << (size_t) (gamma+0.5));
-          FxReturn(*beta);
-        }
-        case RightShiftOperator:
-        {
-          gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          if ((size_t) (gamma+0.5) >= (8*sizeof(size_t)))
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"ShiftCountOverflow","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          *beta=(double) ((size_t) (alpha+0.5) >> (size_t) (gamma+0.5));
-          FxReturn(*beta);
-        }
-        case '<':
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(alpha < *beta ? 1.0 : 0.0);
-        }
-        case LessThanEqualOperator:
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(alpha <= *beta ? 1.0 : 0.0);
-        }
-        case '>':
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(alpha > *beta ? 1.0 : 0.0);
-        }
-        case GreaterThanEqualOperator:
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(alpha >= *beta ? 1.0 : 0.0);
-        }
-        case EqualOperator:
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(fabs(alpha-(*beta)) < MagickEpsilon ? 1.0 : 0.0);
-        }
-        case NotEqualOperator:
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(fabs(alpha-(*beta)) >= MagickEpsilon ? 1.0 : 0.0);
-        }
-        case '&':
-        {
-          gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          *beta=(double) ((size_t) (alpha+0.5) & (size_t) (gamma+0.5));
-          FxReturn(*beta);
-        }
-        case '|':
-        {
-          gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          *beta=(double) ((size_t) (alpha+0.5) | (size_t) (gamma+0.5));
-          FxReturn(*beta);
-        }
-        case LogicalAndOperator:
-        {
-          p++;
-          if (alpha <= 0.0)
-            {
-              *beta=0.0;
-              FxReturn(*beta);
-            }
-          gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,beta,
-            exception);
-          *beta=(gamma > 0.0) ? 1.0 : 0.0;
-          FxReturn(*beta);
-        }
-        case LogicalOrOperator:
-        {
-          p++;
-          if (alpha > 0.0)
-            {
-             *beta=1.0;
-             FxReturn(*beta);
-            }
-          gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,beta,
-            exception);
-          *beta=(gamma > 0.0) ? 1.0 : 0.0;
-          FxReturn(*beta);
-        }
-        case '?':
-        {
-          (void) CopyMagickString(subexpression,++p,MagickPathExtent-1);
-          FxParseConditional(subexpression,':',p,q);
-          if (fabs(alpha) >= MagickEpsilon)
-            gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,beta,
-              exception);
-          else
-            gamma=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
-              exception);
-          FxReturn(gamma);
-        }
-        case '=':
-        {
-          q=subexpression;
-          while (isalpha((int) ((unsigned char) *q)) != 0)
-            q++;
-          if (*q != '\0')
-            {
-              (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","`%s'",subexpression);
-              FxReturn(0.0);
-            }
-          ClearMagickException(exception);
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          value=(*beta);
-          if (SetFxSymbolValue(fx_info,subexpression,value) == MagickFalse)
-            return(0.0);
-          FxReturn(*beta);
-        }
-        case ',':
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(alpha);
-        }
-        case ';':
-        {
-          *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,beta,
-            exception);
-          FxReturn(*beta);
-        }
-        default:
-        {
-          gamma=alpha*FxEvaluateSubexpression(fx_info,channel,x,y,++p,depth+1,
-            beta,exception);
-          FxReturn(gamma);
-        }
+        chQual = pel->ChannelQual;
+        expChLimit = (pel->IsRelative) ? ']' : '}';
+        fx_info->usedElements--;
+        if (fe == fU) fe = fUP;
+        else if (fe == fV) fe = fVP;
+        else if (fe == fS) fe = fSP;
+        funStr = Functions[fe-FirstFunc].str;
       }
     }
-  if (strchr("(",(int) *expression) != (char *) NULL)
-    {
-      size_t
-        length;
 
-      if (depth >= FxMaxParenthesisDepth)
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "ParenthesisNestedTooDeeply","`%s'",expression);
-      length=CopyMagickString(subexpression,expression+1,MagickPathExtent);
-      if (length != 0)
-        subexpression[length-1]='\0';
-      gamma=FxEvaluateSubexpression(fx_info,channel,x,y,subexpression,depth+1,
-        beta,exception);
-      FxReturn(gamma);
-    }
-  switch (*expression)
-  {
-    case '+':
+    if ( chQual == NO_CHAN_QUAL &&
+         (fe == fP || fe == fS || fe == fSP || fe == fU || fe == fUP || fe == fV || fe == fVP)
+       )
     {
-      gamma=FxEvaluateSubexpression(fx_info,channel,x,y,expression+1,depth+1,
-        beta,exception);
-      FxReturn(1.0*gamma);
+      chQual = GetChannelQualifier (fx_info, (OperatorE) fe);
     }
-    case '-':
-    {
-      gamma=FxEvaluateSubexpression(fx_info,channel,x,y,expression+1,depth+1,
-        beta,exception);
-      FxReturn(-1.0*gamma);
-    }
-    case '~':
-    {
-      gamma=FxEvaluateSubexpression(fx_info,channel,x,y,expression+1,depth+1,
-        beta,exception);
-      FxReturn((double) (~(size_t) (gamma+0.5)));
-    }
-    case 'A':
-    case 'a':
-    {
-      if (IsFxFunction(expression,"abs",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(fabs(alpha));
-        }
-#if defined(MAGICKCORE_HAVE_ACOSH)
-      if (IsFxFunction(expression,"acosh",5) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          FxReturn(acosh(alpha));
-        }
-#endif
-      if (IsFxFunction(expression,"acos",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          FxReturn(acos(alpha));
-        }
-#if defined(MAGICKCORE_HAVE_J1)
-      if (IsFxFunction(expression,"airy",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          if (alpha == 0.0)
-            FxReturn(1.0);
-          gamma=2.0*j1((MagickPI*alpha))/(MagickPI*alpha);
-          FxReturn(gamma*gamma);
-        }
-#endif
-#if defined(MAGICKCORE_HAVE_ASINH)
-      if (IsFxFunction(expression,"asinh",5) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          FxReturn(asinh(alpha));
-        }
-#endif
-      if (IsFxFunction(expression,"asin",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          FxReturn(asin(alpha));
-        }
-      if (IsFxFunction(expression,"alt",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(((ssize_t) alpha) & 0x01 ? -1.0 : 1.0);
-        }
-      if (IsFxFunction(expression,"atan2",5) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          FxReturn(atan2(alpha,*beta));
-        }
-#if defined(MAGICKCORE_HAVE_ATANH)
-      if (IsFxFunction(expression,"atanh",5) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          FxReturn(atanh(alpha));
-        }
-#endif
-      if (IsFxFunction(expression,"atan",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          FxReturn(atan(alpha));
-        }
-      if (LocaleCompare(expression,"a") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'B':
-    case 'b':
-    {
-      if (LocaleCompare(expression,"b") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'C':
-    case 'c':
-    {
-      if (IsFxFunction(expression,"ceil",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          FxReturn(ceil(alpha));
-        }
-      if (IsFxFunction(expression,"clamp",5) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          if (alpha < 0.0)
-            FxReturn(0.0);
-          if (alpha > 1.0)
-            FxReturn(1.0);
-          FxReturn(alpha);
-        }
-      if (IsFxFunction(expression,"cosh",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          FxReturn(cosh(alpha));
-        }
-      if (IsFxFunction(expression,"cos",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(cos(alpha));
-        }
-      if (LocaleCompare(expression,"c") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'D':
-    case 'd':
-    {
-      if (IsFxFunction(expression,"debug",5) != MagickFalse)
-        {
-          const char
-            *type;
 
-          size_t
-            length;
+    if (chQual == NO_CHAN_QUAL && (fe == fU || fe == fV || fe == fS)) {
+      /* Note: we don't allow "p.mean" etc. */
+      iaQual = GetImgAttrQualifier (fx_info, (OperatorE) fe);
+    }
+    if (IsQualifier (fx_info) && chQual == NO_CHAN_QUAL && iaQual != aNull) {
+      chQual = GetChannelQualifier (fx_info, (OperatorE) fe);
+    }
+    if (coordQual && iaQual != aNull) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "For function", "'%s', can't have qualifiers 'p' and image attribute '%s' at '%s'",
+        funStr, fx_info->token, SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    if (!coordQual && chQual == NO_CHAN_QUAL && iaQual == aNull) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "For function", "'%s', bad qualifier '%s' at '%s'",
+        funStr, fx_info->token, SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    if (!coordQual && chQual == CompositePixelChannel && iaQual == aNull) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "For function", "'%s', bad compsite qualifier '%s' at '%s'",
+        funStr, fx_info->token, SetShortExp(fx_info));
+      return MagickFalse;
+    }
 
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          switch (fx_info->images->colorspace)
-          {
-            case CMYKColorspace:
-            {
-              switch (channel)
-              {
-                case CyanPixelChannel: type="cyan"; break;
-                case MagentaPixelChannel: type="magenta"; break;
-                case YellowPixelChannel: type="yellow"; break;
-                case AlphaPixelChannel: type="alpha"; break;
-                case BlackPixelChannel: type="black"; break;
-                default: type="unknown"; break;
-              }
-              break;
-            }
-            case GRAYColorspace:
-            {
-              switch (channel)
-              {
-                case RedPixelChannel: type="gray"; break;
-                case AlphaPixelChannel: type="alpha"; break;
-                default: type="unknown"; break;
-              }
-              break;
-            }
-            default:
-            {
-              switch (channel)
-              {
-                case RedPixelChannel: type="red"; break;
-                case GreenPixelChannel: type="green"; break;
-                case BluePixelChannel: type="blue"; break;
-                case AlphaPixelChannel: type="alpha"; break;
-                default: type="unknown"; break;
-              }
-              break;
-            }
-          }
-          *subexpression='\0';
-          length=1;
-          if (strlen(expression) > 6)
-            length=CopyMagickString(subexpression,expression+6,
-              MagickPathExtent);
-          if (length != 0)
-            subexpression[length-1]='\0';
-          if (fx_info->file != (FILE *) NULL)
-            (void) FormatLocaleFile(fx_info->file,"%s[%.20g,%.20g].%s: "
-              "%s=%.*g\n",fx_info->images->filename,(double) x,(double) y,type,
-              subexpression,GetMagickPrecision(),alpha);
-          FxReturn(alpha);
-        }
-      if (IsFxFunction(expression,"do",2) != MagickFalse)
-        {
-          size_t
-            length;
+    if (chQual == HUE_CHANNEL || chQual == SAT_CHANNEL || chQual == LIGHT_CHANNEL) {
+      fx_info->NeedHsl = MagickTrue;
 
-          /*
-            Parse do(expression,condition test).
-          */
-          length=CopyMagickString(subexpression,expression+3,
-            MagickPathExtent-1);
-          if (length != 0)
-            subexpression[length-1]='\0';
-          FxParseConditional(subexpression,',',p,q);
-          for (alpha=0.0; ; )
-          {
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
-              exception);
-            gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
-              exception);
-            if (fabs(gamma) < MagickEpsilon)
-              break;
-          }
-          FxReturn(alpha);
-        }
-      if (IsFxFunction(expression,"drc",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(alpha*PerceptibleReciprocal(*beta*(alpha-1.0)+1.0));
-        }
-      break;
+      if (iaQual >= FirstImgAttr && iaQual < aNull) {
+        ThrowMagickException (
+          fx_info->exception, GetMagickModule(), OptionError,
+          "Can't have image attribute with HLS qualifier at", "'%s'",
+          SetShortExp(fx_info));
+        return MagickFalse;
+      }
     }
-    case 'E':
-    case 'e':
-    {
-      if (LocaleCompare(expression,"epsilon") == 0)
-        FxReturn(MagickEpsilon);
-#if defined(MAGICKCORE_HAVE_ERF)
-      if (IsFxFunction(expression,"erf",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(erf(alpha));
-        }
-#endif
-      if (IsFxFunction(expression,"exp",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(exp(alpha));
-        }
-      if (LocaleCompare(expression,"e") == 0)
-        FxReturn(2.7182818284590452354);
-      break;
-    }
-    case 'F':
-    case 'f':
-    {
-      if (IsFxFunction(expression,"floor",5) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          FxReturn(floor(alpha));
-        }
-      if (IsFxFunction(expression,"for",3) != MagickFalse)
-        {
-          size_t
-            length;
-
-          /*
-            Parse for(initialization, condition test, expression).
-          */
-          length=CopyMagickString(subexpression,expression+4,
-            MagickPathExtent-1);
-          if (length != 0)
-            subexpression[length-1]='\0';
-          FxParseConditional(subexpression,',',p,q);
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
-            exception);
-          (void) CopyMagickString(subexpression,q+1,MagickPathExtent-1);
-          FxParseConditional(subexpression,',',p,q);
-          for (alpha=0.0; ; )
-          {
-            gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
-              exception);
-            if (fabs(gamma) < MagickEpsilon)
-              break;
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
-              exception);
-          }
-          FxReturn(alpha);
-        }
-      break;
-    }
-    case 'G':
-    case 'g':
-    {
-      if (IsFxFunction(expression,"gauss",5) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          FxReturn(exp((-alpha*alpha/2.0))/sqrt(2.0*MagickPI));
-        }
-      if (IsFxFunction(expression,"gcd",3) != MagickFalse)
-        {
-          double
-            gcd;
-
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          if (IsNaN(alpha) != 0)
-            FxReturn(alpha);
-          gcd=FxGCD(alpha,*beta,0);
-          FxReturn(gcd);
-        }
-      if (LocaleCompare(expression,"g") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'H':
-    case 'h':
-    {
-      if (LocaleCompare(expression,"h") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      if (LocaleCompare(expression,"hue") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      if (IsFxFunction(expression,"hypot",5) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          FxReturn(hypot(alpha,*beta));
-        }
-      break;
-    }
-    case 'K':
-    case 'k':
-    {
-      if (LocaleCompare(expression,"k") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'I':
-    case 'i':
-    {
-      if (IsFxFunction(expression,"if",2) != MagickFalse)
-        {
-          size_t
-            length;
-
-          /*
-            Parse if(condition test, true-expression, false-expression).
-          */
-          length=CopyMagickString(subexpression,expression+3,
-            MagickPathExtent-1);
-          if (length != 0)
-            subexpression[length-1]='\0';
-          FxParseConditional(subexpression,',',p,q);
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
-            exception);
-          (void) CopyMagickString(subexpression,q+1,MagickPathExtent-1);
-          FxParseConditional(subexpression,',',p,q);
-          if (fabs(alpha) >= MagickEpsilon)
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,beta,
-              exception);
-          else
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,beta,
-              exception);
-          FxReturn(alpha);
-        }
-      if (LocaleCompare(expression,"intensity") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      if (IsFxFunction(expression,"int",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(floor(alpha));
-        }
-      if (IsFxFunction(expression,"isnan",5) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          FxReturn((double) !!IsNaN(alpha));
-        }
-      if (LocaleCompare(expression,"i") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'J':
-    case 'j':
-    {
-      if (LocaleCompare(expression,"j") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-#if defined(MAGICKCORE_HAVE_J0)
-      if (IsFxFunction(expression,"j0",2) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+2,
-            depth+1,beta,exception);
-          FxReturn(j0(alpha));
-        }
-#endif
-#if defined(MAGICKCORE_HAVE_J1)
-      if (IsFxFunction(expression,"j1",2) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+2,
-            depth+1,beta,exception);
-          FxReturn(j1(alpha));
-        }
-#endif
-#if defined(MAGICKCORE_HAVE_J1)
-      if (IsFxFunction(expression,"jinc",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          if (alpha == 0.0)
-            FxReturn(1.0);
-          FxReturn((2.0*j1((MagickPI*alpha))/(MagickPI*alpha)));
-        }
-#endif
-      break;
-    }
-    case 'L':
-    case 'l':
-    {
-      if (IsFxFunction(expression,"ln",2) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+2,
-            depth+1,beta,exception);
-          FxReturn(log(alpha));
-        }
-      if (IsFxFunction(expression,"logtwo",6) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+6,
-            depth+1,beta,exception);
-          FxReturn(log10(alpha)/log10(2.0));
-        }
-      if (IsFxFunction(expression,"log",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(log10(alpha));
-        }
-      if (LocaleCompare(expression,"lightness") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'M':
-    case 'm':
-    {
-      if (LocaleCompare(expression,"MaxRGB") == 0)
-        FxReturn(QuantumRange);
-      if (LocaleNCompare(expression,"maxima",6) == 0)
-        break;
-      if (IsFxFunction(expression,"max",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(alpha > *beta ? alpha : *beta);
-        }
-      if (LocaleNCompare(expression,"minima",6) == 0)
-        break;
-      if (IsFxFunction(expression,"min",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(alpha < *beta ? alpha : *beta);
-        }
-      if (IsFxFunction(expression,"mod",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(alpha-floor((alpha*PerceptibleReciprocal(*beta)))*(*beta));
-        }
-      if (LocaleCompare(expression,"m") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'N':
-    case 'n':
-    {
-      if (IsFxFunction(expression,"not",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn((double) (alpha < MagickEpsilon));
-        }
-      if (LocaleCompare(expression,"n") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'O':
-    case 'o':
-    {
-      if (LocaleCompare(expression,"Opaque") == 0)
-        FxReturn(1.0);
-      if (LocaleCompare(expression,"o") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'P':
-    case 'p':
-    {
-      if (LocaleCompare(expression,"phi") == 0)
-        FxReturn(MagickPHI);
-      if (LocaleCompare(expression,"pi") == 0)
-        FxReturn(MagickPI);
-      if (IsFxFunction(expression,"pow",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(pow(alpha,*beta));
-        }
-      if (LocaleCompare(expression,"p") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'Q':
-    case 'q':
-    {
-      if (LocaleCompare(expression,"QuantumRange") == 0)
-        FxReturn(QuantumRange);
-      if (LocaleCompare(expression,"QuantumScale") == 0)
-        FxReturn(QuantumScale);
-      break;
-    }
-    case 'R':
-    case 'r':
-    {
-      if (IsFxFunction(expression,"rand",4) != MagickFalse)
-        {
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_FxEvaluateSubexpression)
-#endif
-          alpha=GetPseudoRandomValue(fx_info->random_info);
-          FxReturn(alpha);
-        }
-      if (IsFxFunction(expression,"round",5) != MagickFalse)
-        {
-          /*
-            Round the fraction to nearest integer.
-          */
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          if ((alpha-floor(alpha)) < (ceil(alpha)-alpha))
-            FxReturn(floor(alpha));
-          FxReturn(ceil(alpha));
-        }
-      if (LocaleCompare(expression,"r") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'S':
-    case 's':
-    {
-      if (LocaleCompare(expression,"saturation") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      if (IsFxFunction(expression,"sign",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          FxReturn(alpha < 0.0 ? -1.0 : 1.0);
-        }
-      if (IsFxFunction(expression,"sinc",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          if (alpha == 0)
-            FxReturn(1.0);
-          FxReturn(sin((MagickPI*alpha))/(MagickPI*alpha));
-        }
-      if (IsFxFunction(expression,"sinh",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          FxReturn(sinh(alpha));
-        }
-      if (IsFxFunction(expression,"sin",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(sin(alpha));
-        }
-      if (IsFxFunction(expression,"sqrt",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          FxReturn(sqrt(alpha));
-        }
-      if (IsFxFunction(expression,"squish",6) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+6,
-            depth+1,beta,exception);
-          FxReturn((1.0/(1.0+exp(-alpha))));
-        }
-      if (LocaleCompare(expression,"s") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'T':
-    case 't':
-    {
-      if (IsFxFunction(expression,"tanh",4) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+4,
-            depth+1,beta,exception);
-          FxReturn(tanh(alpha));
-        }
-      if (IsFxFunction(expression,"tan",3) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,
-            depth+1,beta,exception);
-          FxReturn(tan(alpha));
-        }
-      if (LocaleCompare(expression,"Transparent") == 0)
-        FxReturn(0.0);
-      if (IsFxFunction(expression,"trunc",5) != MagickFalse)
-        {
-          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,
-            depth+1,beta,exception);
-          if (alpha >= 0.0)
-            FxReturn(floor(alpha));
-          FxReturn(ceil(alpha));
-        }
-      if (LocaleCompare(expression,"t") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'U':
-    case 'u':
-    {
-      if (LocaleCompare(expression,"u") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'V':
-    case 'v':
-    {
-      if (LocaleCompare(expression,"v") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'W':
-    case 'w':
-    {
-      if (IsFxFunction(expression,"while",5) != MagickFalse)
-        {
-          size_t
-            length;
-
-          /*
-            Parse while(condition test, expression).
-          */
-          length=CopyMagickString(subexpression,expression+6,
-            MagickPathExtent-1);
-          if (length != 0)
-            subexpression[length-1]='\0';
-          FxParseConditional(subexpression,',',p,q);
-          for (alpha=0.0; ; )
-          {
-            gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,depth+1,&sans,
-              exception);
-            if (fabs(gamma) < MagickEpsilon)
-              break;
-            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,q+1,depth+1,
-              beta,exception);
-          }
-          FxReturn(alpha);
-        }
-      if (LocaleCompare(expression,"w") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'Y':
-    case 'y':
-    {
-      if (LocaleCompare(expression,"y") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    case 'Z':
-    case 'z':
-    {
-      if (LocaleCompare(expression,"z") == 0)
-        FxReturn(FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception));
-      break;
-    }
-    default:
-      break;
   }
-  subexpression=DestroyString(subexpression);
-  q=(char *) expression;
-  alpha=InterpretSiPrefixValue(expression,&q);
-  if (q == expression)
-    alpha=FxGetSymbol(fx_info,channel,x,y,expression,depth+1,exception);
-  if (*q == ')')
-    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "UnbalancedParenthesis","`%s'",expression);
-  FxReturn(alpha);
+
+  if (fe==fWhile) {
+    fx_info->Elements[ndx1].EleNdx = ndx2+1;
+  } else if (fe==fDo) {
+    fx_info->Elements[ndx0].EleNdx = ndx1+1;
+    fx_info->Elements[ndx1].EleNdx = ndx2+1;
+  } else if (fe==fFor) {
+    fx_info->Elements[ndx2].EleNdx = ndx3;
+  } else if (fe==fIf) {
+    fx_info->Elements[ndx1].EleNdx = ndx2 + 1;
+    fx_info->Elements[ndx2].EleNdx = ndx3;
+  } else {
+    if (fe == fU && iaQual == aNull) {
+      ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+      if (pel->type == etConstant && pel->val == 0.0) {
+        fx_info->usedElements--;
+        fe = fU0;
+      }
+    }
+    AddElement (fx_info, 0, fe);
+    if (fe == fP || fe == fU  || fe == fU0 || fe == fUP ||
+        fe == fV || fe == fVP || fe == fS || fe == fSP)
+    {
+      ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+      pel->IsRelative = (expChLimit == ']') ? MagickTrue : MagickFalse;
+      if (chQual >= 0) pel->ChannelQual = chQual;
+      if (iaQual != aNull && (fe == fU || fe == fV || fe == fS)) {
+        /* Note: we don't allow "p[2,3].mean" or "p.mean" etc. */
+        pel->ImgAttrQual = iaQual;
+      }
+    }
+  }
+
+  if (pExpStart && lenExp) {
+    ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+    pel->pExpStart = pExpStart;
+    pel->lenExp = lenExp;
+  }
+
+  if (fe == fDebug)
+    fx_info->ContainsDebug = MagickTrue;
+
+  return MagickTrue;
 }
 
-MagickPrivate MagickBooleanType FxEvaluateExpression(FxInfo *fx_info,
-  double *alpha,ExceptionInfo *exception)
+static MagickBooleanType IsStealth (int op)
 {
-  MagickBooleanType
-    status;
-
-  status=FxEvaluateChannelExpression(fx_info,GrayPixelChannel,0,0,alpha,
-    exception);
-  return(status);
+  return (op == fU0 || op == fUP || op == fSP || op == fVP ||
+           (op >= FirstCont && op <= rNull)
+         ) ? MagickTrue : MagickFalse;
 }
 
-MagickExport MagickBooleanType FxPreprocessExpression(FxInfo *fx_info,
-  double *alpha,ExceptionInfo *exception)
+static MagickBooleanType GetOperand (
+  FxInfo * fx_info, MagickBooleanType * UserSymbol, MagickBooleanType * NewUserSymbol, int * UserSymNdx,
+  MagickBooleanType * needPopAll)
 {
-  FILE
-    *file;
+
+  *NewUserSymbol = *UserSymbol = MagickFalse;
+  *UserSymNdx = NULL_ADDRESS;
+
+  SkipSpaces (fx_info);
+  if (!*fx_info->pex) return MagickFalse;
+  GetToken (fx_info);
+
+  if (fx_info->lenToken==0) {
+
+    /* Try '(' or unary prefix
+    */
+    OperatorE op = GetLeadingOp (fx_info);
+    if (op==oOpenParen) {
+      if (!PushOperatorStack (fx_info, op)) return MagickFalse;
+      fx_info->pex++;
+      char chLimit = '\0';
+      if (!TranslateExpression (fx_info, (char *) ")", &chLimit, needPopAll)) {
+        ThrowMagickException (
+          fx_info->exception, GetMagickModule(), OptionError,
+          "Empty expression in parentheses at", "'%s'",
+          SetShortExp(fx_info));
+      }
+      if (chLimit != ')') {
+        ThrowMagickException (
+          fx_info->exception, GetMagickModule(), OptionError,
+          "'(' but no ')' at", "'%s'",
+          SetShortExp(fx_info));
+        return MagickFalse;
+      }
+      /* Top of opr stack should be '('. */
+      if (!PopOprOpenParen (fx_info, oOpenParen)) {
+        ThrowMagickException (
+          fx_info->exception, GetMagickModule(), OptionError,
+          "Bug: tos not '(' at", "'%s'",
+          SetShortExp(fx_info));
+        return MagickFalse;
+      }
+      return MagickTrue;
+    } else if (OprIsUnaryPrefix (fx_info, op)) {
+      if (!PushOperatorStack (fx_info, op)) return MagickFalse;
+      fx_info->pex++;
+      SkipSpaces (fx_info);
+      if (!*fx_info->pex) return MagickFalse;
+
+      if (!GetOperand (fx_info, UserSymbol, NewUserSymbol, UserSymNdx, needPopAll)) {
+        ThrowMagickException (
+          fx_info->exception, GetMagickModule(), OptionError,
+          "After unary, bad operand at", "'%s'",
+          SetShortExp(fx_info));
+        return MagickFalse;
+      }
+
+      if (*NewUserSymbol) {
+        ThrowMagickException (
+          fx_info->exception, GetMagickModule(), OptionError,
+          "After unary, NewUserSymbol at", "'%s'",
+          SetShortExp(fx_info));
+        return MagickFalse;
+      }
+
+      if (*UserSymbol) {
+        AddAddressingElement (fx_info, rCopyFrom, *UserSymNdx);
+        *UserSymNdx = NULL_ADDRESS;
+
+        *UserSymbol = MagickFalse;
+        *NewUserSymbol = MagickFalse;
+      }
+
+      GetToken (fx_info);
+      return MagickTrue;
+    } else if (*fx_info->pex == '#') {
+      fxFltType v0=0, v1=0, v2=0;
+      size_t lenToken = GetHexColour (fx_info, &v0, &v1, &v2);
+      if (lenToken < 0) {
+        ThrowMagickException (
+          fx_info->exception, GetMagickModule(), OptionError,
+          "Bad hex number at", "'%s'",
+          SetShortExp(fx_info));
+        return MagickFalse;
+      } else if (lenToken > 0) {
+        AddColourElement (fx_info, etColourConstant, v0, v1, v2);
+        fx_info->pex+=lenToken;
+      }
+      return MagickTrue;
+    }
+
+    /* Try a constant number.
+    */
+    char * tailptr;
+    fxFltType val = strtold (fx_info->pex, &tailptr);
+    if (fx_info->pex != tailptr) {
+      fx_info->pex = tailptr;
+      if (*tailptr) {
+        /* Could have "prefix" K, Ki, M etc.
+           See https://en.wikipedia.org/wiki/Metric_prefix
+           and https://en.wikipedia.org/wiki/Binary_prefix
+        */
+        int Pow = 0.0;
+        const char Prefices[] = "yzafpnum.kMGTPEZY";
+        const char * pSi = strchr (Prefices, *tailptr);
+        if (pSi && *pSi != '.') Pow = (pSi - Prefices) * 3 - 24;
+        else if (*tailptr == 'c') Pow = -2;
+        else if (*tailptr == 'h') Pow =  2;
+        else if (*tailptr == 'k') Pow =  3;
+        if (Pow != 0.0) {
+          if (*(++fx_info->pex) == 'i') {
+            val *= pow (2.0, Pow/0.3);
+            fx_info->pex++;
+          } else {
+            val *= pow (10.0, Pow);
+          }
+        }
+      }
+      AddElement (fx_info, val, oNull);
+      return MagickTrue;
+    }
+
+    val = 0;
+    ssize_t lenOptArt = GetProperty (fx_info, &val);
+    if (lenOptArt < 0) return MagickFalse;
+    if (lenOptArt > 0) {
+      AddElement (fx_info, val, oNull);
+      fx_info->pex += lenOptArt;
+      return MagickTrue;
+    }
+
+  } /* end of lenToken==0 */
+
+  if (fx_info->lenToken > 0) {
+    ConstantE ce;
+    for (ce = (ConstantE)0; ce < cNull; ce=(ConstantE) (ce+1)) {
+      const char * ceStr = Constants[ce].str;
+      if (LocaleCompare (ceStr, fx_info->token)==0) {
+        break;
+      }
+    }
+
+    if (ce != cNull) {
+      AddElement (fx_info, Constants[ce].val, oNull);
+      fx_info->pex += fx_info->lenToken;
+      return MagickTrue;
+    }
+
+    FunctionE fe;
+    for (fe = FirstFunc; fe < fNull; fe=(FunctionE) (fe+1)) {
+      const char * feStr = Functions[fe-FirstFunc].str;
+      if (LocaleCompare (feStr, fx_info->token)==0) {
+        break;
+      }
+    }
+
+    if (fe == fV && fx_info->ImgListLen < 2) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Symbol 'v' but fewer than two images at", "'%s'",
+        SetShortExp(fx_info));
+      return MagickFalse;
+    }
+
+    if (IsStealth (fe)) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Function", "'%s' not permitted at '%s'",
+        fx_info->token, SetShortExp(fx_info));
+    }
+
+    if (fe == fDo || fe == fFor || fe == fIf || fe == fWhile) {
+      *needPopAll = MagickTrue;
+    }
+
+    if (fe != fNull) return (GetFunction (fx_info, fe));
+
+    /* Try image attribute
+    */
+    ImgAttrE ia = GetImgAttrToken (fx_info);
+    if (ia != aNull) {
+      fxFltType val = 0;
+      AddElement (fx_info, val, ia);
+
+      if (ImgAttrs[ia-FirstImgAttr].NeedStats==1) {
+        if (IsQualifier (fx_info)) {
+          PixelChannel chQual = GetChannelQualifier (fx_info, (OperatorE) ia);
+          if (chQual == NO_CHAN_QUAL) {
+            ThrowMagickException (
+              fx_info->exception, GetMagickModule(), OptionError,
+              "Bad channel qualifier at", "'%s'",
+              SetShortExp(fx_info));
+            return MagickFalse;
+          }
+          /* Adjust the element */
+          ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+          pel->ChannelQual = chQual;
+        }
+      }
+      return MagickTrue;
+    }
+
+    /* Try symbol
+    */
+    SymbolE se;
+    for (se = FirstSym; se < sNull; se=(SymbolE) (se+1)) {
+      const char * seStr = Symbols[se-FirstSym].str;
+      if (LocaleCompare (seStr, fx_info->token)==0) {
+        break;
+      }
+    }
+    if (se != sNull) {
+      fxFltType val = 0;
+      AddElement (fx_info, val, se);
+      fx_info->pex += fx_info->lenToken;
+
+      if (se==sHue || se==sSaturation || se==sLightness) fx_info->NeedHsl = MagickTrue;
+      return MagickTrue;
+    }
+
+    /* Try constant colour.
+    */
+    fxFltType v0, v1, v2;
+    int ColLen = GetConstantColour (fx_info, &v0, &v1, &v2);
+    if (ColLen > 0) {
+      AddColourElement (fx_info, etColourConstant, v0, v1, v2);
+      fx_info->pex+=ColLen;
+      return MagickTrue;
+    }
+
+    /* Try user symbols. If it is, don't AddElement yet.
+    */
+    if (TokenMaybeUserSymbol (fx_info)) {
+      *UserSymbol = MagickTrue;
+      *UserSymNdx = FindUserSymbol (fx_info, fx_info->token);
+      if (*UserSymNdx == NULL_ADDRESS) {
+        *UserSymNdx = AddUserSymbol (fx_info, fx_info->pex, fx_info->lenToken); /* so future "CopyFrom" and "CopyTo" works. */
+        *NewUserSymbol = MagickTrue;
+      } else {
+      }
+      fx_info->pex += fx_info->lenToken;
+
+      return MagickTrue;
+    }
+  }
+
+  ThrowMagickException (
+    fx_info->exception, GetMagickModule(), OptionError,
+    "Expected operand at", "'%s'",
+    SetShortExp(fx_info));
+
+  return MagickFalse;
+}
+
+static MagickBooleanType inline IsRealOperator (OperatorE op)
+{
+  return (op < oOpenParen || op > oCloseBrace ? MagickTrue : MagickFalse);
+}
+
+static MagickBooleanType inline ProcessTernaryOpr (FxInfo * fx_info, TernaryT * ptern)
+/* Ternary operator "... ? ... : ..."
+   returns false if we have exception
+*/
+{
+
+  if (fx_info->OperatorStack[fx_info->usedOprStack-1] == oQuery) {
+    if (ptern->addrQuery != NULL_ADDRESS) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Already have '?' in sub-expression at", "'%s'",
+        SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    if (ptern->addrColon != NULL_ADDRESS) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Already have ':' in sub-expression at", "'%s'",
+        SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    fx_info->usedOprStack--;
+    ptern->addrQuery = fx_info->usedElements;
+    AddAddressingElement (fx_info, rIfZeroGoto, NULL_ADDRESS);
+    /* address will be one after the Colon address. */
+  }
+  if (fx_info->OperatorStack[fx_info->usedOprStack-1] == oColon) {
+    if (ptern->addrQuery == NULL_ADDRESS) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Need '?' in sub-expression at", "'%s'",
+        SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    if (ptern->addrColon != NULL_ADDRESS) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Already have ':' in sub-expression at", "'%s'",
+        SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    fx_info->usedOprStack--;
+    ptern->addrColon = fx_info->usedElements;
+    fx_info->Elements[fx_info->usedElements-1].DoPush = MagickTrue;
+    AddAddressingElement (fx_info, rGoto, NULL_ADDRESS);
+    /* address will be after the subexpression */
+  }
+  return MagickTrue;
+}
+
+static MagickBooleanType GetOperator (
+  FxInfo * fx_info,
+  MagickBooleanType * Assign, MagickBooleanType * Update, MagickBooleanType * IncrDecr,
+  TernaryT * ptern)
+{
+  (void) ptern;
+  SkipSpaces (fx_info);
+
+  OperatorE op;
+  size_t len = 0;
+  for (op = (OperatorE)0; op != oNull; op=(OperatorE) (op+1)) {
+    const char * opStr = Operators[op].str;
+    len = strlen(opStr);
+    if (LocaleNCompare (opStr, fx_info->pex, len)==0) {
+      break;
+    }
+  }
+
+  if (!IsRealOperator (op)) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "Not a real operator at", "'%s'",
+      SetShortExp(fx_info));
+    return MagickFalse;
+  }
+
+  if (op==oNull) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "Expected operator at", "'%s'",
+      SetShortExp(fx_info));
+    return MagickFalse;
+  }
+
+  *Assign = (op==oAssign) ? MagickTrue : MagickFalse;
+  *Update = OprInPlace (fx_info, op);
+  *IncrDecr = (op == oPlusPlus || op == oSubSub) ? MagickTrue : MagickFalse;
+
+  /* while top of OperatorStack is not empty and is not open-parens or assign,
+       and top of OperatorStack is higher precedence than new op,
+     then move top of OperatorStack to Element list.
+  */
+
+  while (fx_info->usedOprStack > 0) {
+    OperatorE top = fx_info->OperatorStack[fx_info->usedOprStack-1];
+    if (top == oOpenParen || top == oAssign || OprInPlace (fx_info, top)) break;
+    int precTop = Operators[top].precedence;
+    int precNew = Operators[op].precedence;
+    /* Assume left associativity.
+       If right assoc, this would be "<=".
+    */
+    if (precTop < precNew) break;
+    AddElement (fx_info, 0, top);
+    fx_info->usedOprStack--;
+  }
+
+  MagickBooleanType DoneIt = MagickFalse;
+
+  /* If new op is close paren, and stack top is open paren,
+     remove stack top.
+  */
+  if (op==oCloseParen) {
+    if (fx_info->usedOprStack == 0) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Found ')' but nothing on stack at", "'%s'",
+        SetShortExp(fx_info));
+      return MagickFalse;
+    }
+
+    if (fx_info->OperatorStack[fx_info->usedOprStack-1] != oOpenParen) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Found ')' but no '(' on stack at", "'%s'",
+        SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    fx_info->usedOprStack--;
+    DoneIt = MagickTrue;
+  }
+
+  if (!DoneIt) {
+    if (!PushOperatorStack (fx_info, op)) return MagickFalse;
+  }
+
+  fx_info->pex += len;
+
+  return MagickTrue;
+}
+
+static MagickBooleanType ResolveTernaryAddresses (FxInfo * fx_info, TernaryT * ptern)
+{
+  if (ptern->addrQuery == NULL_ADDRESS && ptern->addrColon == NULL_ADDRESS)
+    return MagickTrue;
+
+  if (ptern->addrQuery != NULL_ADDRESS && ptern->addrColon != NULL_ADDRESS) {
+    fx_info->Elements[ptern->addrQuery].EleNdx = ptern->addrColon + 1;
+    fx_info->Elements[ptern->addrColon].EleNdx = fx_info->usedElements;
+    ptern->addrQuery = NULL_ADDRESS;
+    ptern->addrColon = NULL_ADDRESS;
+  } else if (ptern->addrQuery != NULL_ADDRESS) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "'?' with no corresponding ':'", "'%s' at '%s'",
+        fx_info->token, SetShortExp(fx_info));
+      return MagickFalse;
+  } else if (ptern->addrColon != NULL_ADDRESS) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "':' with no corresponding '?'", "'%s' at '%s'",
+        fx_info->token, SetShortExp(fx_info));
+      return MagickFalse;
+  }
+  return MagickTrue;
+}
+
+static MagickBooleanType TranslateExpression (
+  FxInfo * fx_info, char * strLimit, char * chLimit, MagickBooleanType * needPopAll)
+{
+  fx_info->teDepth++;
+
+  *chLimit = '\0';
+
+  TernaryT ternary;
+  ternary.addrQuery = NULL_ADDRESS;
+  ternary.addrColon = NULL_ADDRESS;
+
+  int StartEleNdx = fx_info->usedElements-1;
+  if (StartEleNdx < 0) StartEleNdx = 0;
+
+  SkipSpaces (fx_info);
+
+  if (!*fx_info->pex) {
+    fx_info->teDepth--;
+    return MagickFalse;
+  }
+
+  if (strchr(strLimit,*fx_info->pex)!=NULL) {
+    *chLimit = *fx_info->pex;
+    fx_info->pex++;
+    fx_info->teDepth--;
+
+    return MagickFalse;
+  }
+
+  /* There should be only one New per expression (oAssign), but can be many Old.
+  */
+  MagickBooleanType UserSymbol, NewUserSymbol;
+  int UserSymNdx0, UserSymNdx1;
+
+  if (!GetOperand (fx_info, &UserSymbol, &NewUserSymbol, &UserSymNdx0, needPopAll)) return MagickFalse;
+  SkipSpaces (fx_info);
 
   MagickBooleanType
-    status;
+    Assign = MagickFalse,
+    Update = MagickFalse,
+    IncrDecr = MagickFalse;
 
-  file=fx_info->file;
-  fx_info->file=(FILE *) NULL;
-  status=FxEvaluateChannelExpression(fx_info,GrayPixelChannel,0,0,alpha,
-    exception);
-  fx_info->file=file;
-  return(status);
+  /* Loop through Operator, Operand, Operator, Operand, ...
+  */
+  while (*fx_info->pex && (!*strLimit || (strchr(strLimit,*fx_info->pex)==NULL))) {
+    if (!GetOperator (fx_info, &Assign, &Update, &IncrDecr, &ternary)) return MagickFalse;
+    SkipSpaces (fx_info);
+    if (NewUserSymbol && !Assign) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Expected assignment after new UserSymbol", "'%s' at '%s'",
+        fx_info->token, SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    if (!UserSymbol && Assign) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Attempted assignment to non-UserSymbol", "'%s' at '%s'",
+        fx_info->token, SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    if (!UserSymbol && Update) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Attempted update to non-UserSymbol", "'%s' at '%s'",
+        fx_info->token, SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    if (UserSymbol && (Assign || Update) && !IncrDecr) {
+
+      if (!TranslateExpression (fx_info, strLimit, chLimit, needPopAll)) return MagickFalse;
+      if (!*fx_info->pex) break;
+      if (!*strLimit) break;
+      if (strchr(strLimit,*chLimit)!=NULL) break;
+    }
+    if (UserSymbol && !Assign && !Update && UserSymNdx0 != NULL_ADDRESS) {
+      AddAddressingElement (fx_info, rCopyFrom, UserSymNdx0);
+      UserSymNdx0 = NULL_ADDRESS;
+      ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+      pel->DoPush = MagickTrue;
+    }
+
+    if (UserSymbol) {
+      while (TopOprIsUnaryPrefix (fx_info)) {
+        OperatorE op = fx_info->OperatorStack[fx_info->usedOprStack-1];
+        AddElement (fx_info, 0, op);
+        fx_info->usedOprStack--;
+      }
+    }
+
+    if (!ProcessTernaryOpr (fx_info, &ternary)) return MagickFalse;
+
+    if (ternary.addrColon != NULL_ADDRESS) {
+      if (!TranslateExpression (fx_info, (char *) ",);", chLimit, needPopAll)) return MagickFalse;
+      break;
+    }
+
+    UserSymbol = NewUserSymbol = MagickFalse;
+
+    if (!*fx_info->pex) break;
+    if (*strLimit && (strchr(strLimit,*fx_info->pex)!=NULL) ) break;
+
+    if (IncrDecr) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "'++' and '--' must be the final operators in an expression at", "'%s'",
+        SetShortExp(fx_info));
+      return MagickFalse;
+    }
+
+    if (!GetOperand (fx_info, &UserSymbol, &NewUserSymbol, &UserSymNdx1, needPopAll)) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Expected operand at", "'%s'",
+        SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    SkipSpaces (fx_info);
+    if (NewUserSymbol && !Assign) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "NewUserSymbol", "'%s' after non-assignment operator at '%s'",
+        fx_info->token, SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    if (UserSymbol && !NewUserSymbol) {
+      AddAddressingElement (fx_info, rCopyFrom, UserSymNdx1);
+      UserSymNdx1 = NULL_ADDRESS;
+    }
+    UserSymNdx0 = UserSymNdx1;
+  }
+
+  if (UserSymbol && !Assign && !Update && UserSymNdx0 != NULL_ADDRESS) {
+    if (NewUserSymbol) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "NewUserSymbol", "'%s' needs assignment operator at '%s'",
+        fx_info->token, SetShortExp(fx_info));
+      return MagickFalse;
+    }
+    AddAddressingElement (fx_info, rCopyFrom, UserSymNdx0);
+    ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+    pel->DoPush = MagickTrue;
+  }
+
+  if (*fx_info->pex && !*chLimit && (strchr(strLimit,*fx_info->pex)!=NULL)) {
+    *chLimit = *fx_info->pex;
+    fx_info->pex++;
+  }
+  while (fx_info->usedOprStack) {
+    OperatorE op = fx_info->OperatorStack[fx_info->usedOprStack-1];
+    if (op == oOpenParen || op == oOpenBracket || op == oOpenBrace) {
+      break;
+    }
+    if ( (op==oAssign && !Assign) || (OprInPlace(fx_info, op) && !Update) ) {
+      break;
+    }
+    fx_info->usedOprStack--;
+    AddElement (fx_info, 0, op);
+    if (op == oAssign) {
+      /* Adjust last element, by deletion and add.
+      */
+      fx_info->usedElements--;
+      int addr = UserSymNdx0;
+      AddAddressingElement (fx_info, rCopyTo, addr);
+      break;
+    } else if (OprInPlace (fx_info, op)) {
+      int addr = UserSymNdx0;
+      /* Modify latest element.
+      */
+      fx_info->Elements[fx_info->usedElements-1].EleNdx = addr;
+      break;
+    }
+  }
+
+  ResolveTernaryAddresses (fx_info, &ternary);
+
+  fx_info->teDepth--;
+
+  if (!fx_info->teDepth && *needPopAll) {
+    AddAddressingElement (fx_info, rZerStk, NULL_ADDRESS);
+    *needPopAll = MagickFalse;
+  }
+
+  return MagickTrue;
 }
 
-MagickPrivate MagickBooleanType FxEvaluateChannelExpression(FxInfo *fx_info,
-  const PixelChannel channel,const ssize_t x,const ssize_t y,
-  double *alpha,ExceptionInfo *exception)
+
+static MagickBooleanType TranslateStatement (FxInfo * fx_info, char * strLimit, char * chLimit)
 {
-  double
-    beta;
+  SkipSpaces (fx_info);
 
-  beta=0.0;
-  *alpha=FxEvaluateSubexpression(fx_info,channel,x,y,fx_info->expression,0,
-    &beta,exception);
-  return(exception->severity == OptionError ? MagickFalse : MagickTrue);
+  if (!*fx_info->pex) return MagickFalse;
+
+  MagickBooleanType NeedPopAll = MagickFalse;
+
+  if (!TranslateExpression (fx_info, strLimit, chLimit, &NeedPopAll)) {
+    return MagickFalse;
+  }
+
+  if (fx_info->usedElements && *chLimit==';') {
+    /* FIXME: not necessarily the last element,
+       but the last _executed_ element, eg "goto" in a "for()"., 
+       Pending a fix, we will use rZerStk.
+    */
+    ElementT * pel = &fx_info->Elements[fx_info->usedElements-1];
+    if (pel->DoPush) pel->DoPush = MagickFalse;
+  }
+
+  return MagickTrue;
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%     F x I m a g e                                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  FxImage() applies a mathematical expression to the specified image.
-%
-%  The format of the FxImage method is:
-%
-%      Image *FxImage(const Image *image,const char *expression,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o expression: A mathematical expression.
-%
-%    o exception: return any errors or warnings in this structure.
-%
+
+static MagickBooleanType TranslateStatementList (FxInfo * fx_info, char * strLimit, char * chLimit)
+{
+  SkipSpaces (fx_info);
+
+  if (!*fx_info->pex) return MagickFalse;
+
+#define MAX_SLIMIT 10
+  char sLimits[MAX_SLIMIT];
+  CopyMagickString (sLimits, strLimit, MAX_SLIMIT-1);
+
+  if (strchr(strLimit,';')==NULL)
+    ConcatenateMagickString (sLimits, ";", MAX_SLIMIT);
+
+  for (;;) {
+    if (!TranslateStatement (fx_info, sLimits, chLimit)) return MagickFalse;
+
+    if (!*fx_info->pex) break;
+
+    if (*chLimit != ';') {
+      break;
+    }
+  }
+
+  return MagickTrue;
+}
+
+/*--------------------------------------------------------------------
+   Run-time
 */
 
-static FxInfo **DestroyFxThreadSet(FxInfo **fx_info)
+static MagickBooleanType CollectStatistics (FxInfo * fx_info)
 {
-  ssize_t
-    i;
 
-  assert(fx_info != (FxInfo **) NULL);
-  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
-    if (fx_info[i] != (FxInfo *) NULL)
-      fx_info[i]=DestroyFxInfo(fx_info[i]);
-  fx_info=(FxInfo **) RelinquishMagickMemory(fx_info);
-  return(fx_info);
-}
-
-static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
-  ExceptionInfo *exception)
-{
-  char
-    *fx_expression;
-
-  double
-    alpha;
-
-  FxInfo
-    **fx_info;
-
-  ssize_t
-    i;
-
-  size_t
-    number_threads;
-
-  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
-  fx_info=(FxInfo **) AcquireQuantumMemory(number_threads,sizeof(*fx_info));
-  if (fx_info == (FxInfo **) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
-      return((FxInfo **) NULL);
-    }
-  (void) memset(fx_info,0,number_threads*sizeof(*fx_info));
-  if (*expression != '@')
-    fx_expression=ConstantString(expression);
-  else
-    fx_expression=FileToString(expression+1,~0UL,exception);
-  for (i=0; i < (ssize_t) number_threads; i++)
-  {
-    MagickBooleanType
-      status;
-
-    fx_info[i]=AcquireFxInfo(image,fx_expression,exception);
-    if (fx_info[i] == (FxInfo *) NULL)
-      break;
-    status=FxPreprocessExpression(fx_info[i],&alpha,exception);
-    if (status == MagickFalse)
-      break;
+  fx_info->statistics = (ChannelStatistics **) AcquireMagickMemory (fx_info->ImgListLen * sizeof (ChannelStatistics *));
+  if (!fx_info->statistics) {
+    (void) ThrowMagickException(fx_info->exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",
+      fx_info->image->filename);
+    return MagickFalse;
   }
-  fx_expression=DestroyString(fx_expression);
-  if (i < (ssize_t) number_threads)
-    fx_info=DestroyFxThreadSet(fx_info);
-  return(fx_info);
+
+  Image * img = GetFirstImageInList (fx_info->image);
+
+  ssize_t imgNum=0;
+  for (;;) {
+    ChannelStatistics * cs = GetImageStatistics (img, fx_info->exception);
+    fx_info->statistics[imgNum] = cs;
+    int ch;
+    for (ch=0; ch <= (ssize_t) MaxPixelChannels; ch++) {
+      cs[ch].mean *= QuantumScale;
+      cs[ch].median *= QuantumScale;
+      cs[ch].maxima *= QuantumScale;
+      cs[ch].minima *= QuantumScale;
+      cs[ch].standard_deviation *= QuantumScale;
+      cs[ch].kurtosis *= QuantumScale;
+      cs[ch].skewness *= QuantumScale;
+      cs[ch].entropy *= QuantumScale;
+    }
+
+    if (++imgNum == fx_info->ImgListLen) break;
+    img = GetNextImageInList (img);
+    assert (img);
+  }
+  return MagickTrue;
 }
 
-MagickExport Image *FxImage(const Image *image,const char *expression,
+static MagickBooleanType inline PushVal (FxInfo * fx_info, fxRtT * fx_infort, fxFltType val, int addr)
+{
+  if (fx_infort->usedValStack >=fx_infort->numValStack) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "ValStack overflow at addr=", "%i",
+      addr);
+    return MagickFalse;
+  }
+
+  fx_infort->ValStack[fx_infort->usedValStack++] = val;
+  return MagickTrue;
+}
+
+static inline fxFltType PopVal (FxInfo * fx_info, fxRtT * fx_infort, int addr)
+{
+  if (fx_infort->usedValStack <= 0) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "ValStack underflow at addr=", "%i",
+      addr);
+    return 0;
+  }
+
+  return fx_infort->ValStack[--fx_infort->usedValStack];
+}
+
+static fxFltType inline ImageStat (
+  FxInfo * fx_info, int ImgNum, PixelChannel channel, ImgAttrE ia)
+{
+  assert (channel >= 0 && channel <= MaxPixelChannels);
+
+  ChannelStatistics * cs = NULL;
+
+  if (fx_info->NeedStats) cs = fx_info->statistics[ImgNum];
+
+  switch (ia) {
+    case aDepth:
+      return GetImageDepth (fx_info->Images[ImgNum], fx_info->exception);
+      break;
+    case aExtent:
+      return GetBlobSize (fx_info->image);
+      break;
+    case aKurtosis:
+      return cs[channel].kurtosis;
+      break;
+    case aMaxima:
+      return cs[channel].maxima;
+      break;
+    case aMean:
+      return cs[channel].mean;
+      break;
+    case aMedian:
+      return cs[channel].median;
+      break;
+    case aMinima:
+      return cs[channel].minima;
+      break;
+    case aPage:
+      /* Do nothing */
+      break;
+    case aPageWid:
+      return fx_info->Images[ImgNum]->page.width;
+    case aPageHt:
+      return fx_info->Images[ImgNum]->page.height;
+    case aPageX:
+      return fx_info->Images[ImgNum]->page.x;
+    case aPageY:
+      return fx_info->Images[ImgNum]->page.y;
+    case aPrintsize:
+      /* Do nothing */
+      break;
+    case aPrintsizeX:
+      return PerceptibleReciprocal (fx_info->Images[ImgNum]->resolution.x) * fx_info->Images[ImgNum]->columns;
+    case aPrintsizeY:
+      return PerceptibleReciprocal (fx_info->Images[ImgNum]->resolution.y) * fx_info->Images[ImgNum]->rows;
+    case aQuality:
+      return fx_info->Images[ImgNum]->quality;
+    case aRes:
+      /* Do nothing */
+      break;
+    case aResX:
+      return fx_info->Images[ImgNum]->resolution.x;
+    case aResY:
+      return fx_info->Images[ImgNum]->resolution.y;
+    case aSkewness:
+      return cs[channel].skewness;
+    case aStdDev:
+      return cs[channel].standard_deviation;
+    case aH:
+      return fx_info->Images[ImgNum]->rows;
+    case aN:
+      return fx_info->ImgListLen;
+    case aT: /* image index in list */
+      return ImgNum;
+    case aW:
+      return fx_info->Images[ImgNum]->columns;
+    case aZ:
+      return GetImageDepth (fx_info->Images[ImgNum], fx_info->exception);
+      break;
+    default:
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Unknown ia=", "%i",
+        ia);
+  }
+  return -99;
+}
+
+static inline double FxGCD(const double x,const double y,const size_t depth)
+{
+#define FxMaxFunctionDepth  200
+
+  if (x < y)
+    return(FxGCD(y,x,depth+1));
+  if ((fabs(y) < 0.001) || (depth >= FxMaxFunctionDepth))
+    return(x);
+  return(FxGCD(y,x-y*floor(x/y),depth+1));
+}
+
+static ssize_t inline ChkImgNum (FxInfo * fx_info, fxFltType f)
+{
+  ssize_t i = floor (f + 0.5);
+  if (i < 0) i += fx_info->ImgListLen;
+  if (i < 0 || i >= fx_info->ImgListLen) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "ImgNum", "%g bad for ImgListLen %g",
+      (double) i, (double) fx_info->ImgListLen);
+    
+  }
+  return i;
+}
+
+#define WHICH_ATTR_CHAN \
+  (pel->ChannelQual == NO_CHAN_QUAL) ? CompositePixelChannel : \
+  (pel->ChannelQual == THIS_CHANNEL) ? channel : pel->ChannelQual
+
+#define WHICH_NON_ATTR_CHAN \
+  (pel->ChannelQual == NO_CHAN_QUAL || \
+   pel->ChannelQual == THIS_CHANNEL || \
+   pel->ChannelQual == CompositePixelChannel \
+  ) ? (channel == CompositePixelChannel ? RedPixelChannel: channel) \
+    : pel->ChannelQual
+
+static fxFltType GetHslFlt (FxInfo * fx_info, int ImgNum, const fxFltType fx, const fxFltType fy,
+  int channel)
+{
+  Image * img = fx_info->Images[ImgNum];
+
+  double red, green, blue;
+
+  MagickBooleanType okay = MagickTrue;
+  if(!InterpolatePixelChannel (img, fx_info->Views[ImgNum], RedPixelChannel, img->interpolate,
+    fx, fy, &red, fx_info->exception)) okay = MagickFalse;
+  if(!InterpolatePixelChannel (img, fx_info->Views[ImgNum], GreenPixelChannel, img->interpolate,
+    fx, fy, &green, fx_info->exception)) okay = MagickFalse;
+  if(!InterpolatePixelChannel (img, fx_info->Views[ImgNum], BluePixelChannel, img->interpolate,
+    fx, fy, &blue, fx_info->exception)) okay = MagickFalse;
+
+  if (!okay)
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "GetHslFlt failure", "%i %Lg,%Lg %i", ImgNum, fx, fy, channel);
+
+  double hue=0, saturation=0, lightness=0;
+
+  ConvertRGBToHSL (
+    red, green, blue,
+    &hue, &saturation, &lightness);
+
+  if (channel == HUE_CHANNEL)   return hue;
+  if (channel == SAT_CHANNEL)   return saturation;
+  if (channel == LIGHT_CHANNEL) return lightness;
+
+  return 0;
+}
+
+static fxFltType GetHslInt (FxInfo * fx_info, int ImgNum, const ssize_t imgx, const ssize_t imgy, int channel)
+{
+  Image * img = fx_info->Images[ImgNum];
+
+  const Quantum * p = GetCacheViewVirtualPixels (fx_info->Views[ImgNum], imgx, imgy, 1, 1, fx_info->exception);
+  if (!p)
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "GetHslInt failure", "%i %g,%g %i", ImgNum, (double) imgx, (double) imgy, channel);
+
+  double hue=0, saturation=0, lightness=0;
+
+  ConvertRGBToHSL (
+    GetPixelRed (img, p), GetPixelGreen (img, p), GetPixelBlue (img, p),
+    &hue, &saturation, &lightness);
+
+  if (channel == HUE_CHANNEL)   return hue;
+  if (channel == SAT_CHANNEL)   return saturation;
+  if (channel == LIGHT_CHANNEL) return lightness;
+
+  return 0;
+}
+
+static fxFltType inline GetIntensity (FxInfo * fx_info, int ImgNum, const ssize_t imgx, const ssize_t imgy)
+{
+  Quantum
+    quantum_pixel[MaxPixelChannels];
+
+  PixelInfo
+    pixelinf;
+
+  Image * img = fx_info->Images[ImgNum];
+
+  GetPixelInfo (img, &pixelinf);
+
+  if (!InterpolatePixelInfo (img, fx_info->Views[fx_info->ImgNum], img->interpolate,
+              imgx, imgy, &pixelinf, fx_info->exception))
+  {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "GetIntensity failure", "%i %g,%g", ImgNum, (double) imgx, (double) imgy);
+  }
+
+  SetPixelViaPixelInfo (img, &pixelinf, quantum_pixel);
+  return QuantumScale * GetPixelIntensity (img, quantum_pixel);
+}
+
+static MagickBooleanType ExecuteRPN (FxInfo * fx_info, fxRtT * fx_infort, FILE * fh, fxFltType *result,
+  const PixelChannel channel, const ssize_t imgx, const ssize_t imgy)
+{
+
+  const Quantum * p = fx_infort->thisPixel;
+
+  /* For -fx, this sets p to ImgNum 0.
+     for %[fx:...], this sets p to the currrent image.
+     Similarly img.
+  */
+  (void) fh;
+  if (!p) p = GetCacheViewVirtualPixels (
+    fx_info->Views[fx_info->ImgNum], imgx, imgy, 1, 1, fx_info->exception);
+
+  fxFltType regA=0, regB=0, regC=0, regD=0, regE=0;
+  Image * img = fx_info->image;
+  ChannelStatistics * cs = NULL;
+  if (fx_info->NeedStats) {
+    cs = fx_info->statistics[fx_info->ImgNum];
+  }
+
+  /*  Folllowing is only for expressions like "saturation", with no image specifier.
+  */
+  double hue=0, saturation=0, lightness=0;
+  if (fx_info->NeedHsl) {
+    ConvertRGBToHSL (
+      GetPixelRed (img, p), GetPixelGreen (img, p), GetPixelBlue (img, p),
+      &hue, &saturation, &lightness);
+  }
+
+  ssize_t i;
+  for (i=0; i < fx_info->usedElements; i++) {
+    ElementT *pel = &fx_info->Elements[i];
+      switch (pel->nArgs) {
+        case 0:
+          break;
+        case 1:
+          regA = PopVal (fx_info, fx_infort, i);
+          break;
+        case 2:
+          regB = PopVal (fx_info, fx_infort, i);
+          regA = PopVal (fx_info, fx_infort, i);
+          break;
+        case 3:
+          regC = PopVal (fx_info, fx_infort, i);
+          regB = PopVal (fx_info, fx_infort, i);
+          regA = PopVal (fx_info, fx_infort, i);
+          break;
+        case 4:
+          regD = PopVal (fx_info, fx_infort, i);
+          regC = PopVal (fx_info, fx_infort, i);
+          regB = PopVal (fx_info, fx_infort, i);
+          regA = PopVal (fx_info, fx_infort, i);
+          break;
+        case 5:
+          regE = PopVal (fx_info, fx_infort, i);
+          regD = PopVal (fx_info, fx_infort, i);
+          regC = PopVal (fx_info, fx_infort, i);
+          regB = PopVal (fx_info, fx_infort, i);
+          regA = PopVal (fx_info, fx_infort, i);
+          break;
+        default:
+          ThrowMagickException (
+            fx_info->exception, GetMagickModule(), OptionError,
+            "Too many args:", "%i", pel->nArgs);
+          break;
+      }
+
+      switch (pel->oprNum) {
+        case oAddEq:
+          regA = (fx_infort->UserSymVals[pel->EleNdx] += regA);
+          break;
+        case oSubtractEq:
+          regA = (fx_infort->UserSymVals[pel->EleNdx] -= regA);
+          break;
+        case oMultiplyEq:
+          regA = (fx_infort->UserSymVals[pel->EleNdx] *= regA);
+          break;
+        case oDivideEq:
+          if (regA != 0) regA = (fx_infort->UserSymVals[pel->EleNdx] /= regA);
+          break;
+        case oPlusPlus:
+          regA = fx_infort->UserSymVals[pel->EleNdx]++;
+          break;
+        case oSubSub:
+          regA = fx_infort->UserSymVals[pel->EleNdx]--;
+          break;
+        case oAdd:
+          regA += regB;
+          break;
+        case oSubtract:
+          regA -= regB;
+          break;
+        case oMultiply:
+          regA *= regB;
+          break;
+        case oDivide:
+          if (regB != 0) regA /= regB;
+          break;
+        case oModulus:
+          regA = fmod (regA, fabs(floor(regB+0.5)));
+          break;
+        case oUnaryPlus:
+          /* Do nothing. */
+          break;
+        case oUnaryMinus:
+          regA = -regA;
+          break;
+        case oLshift:
+          regA = (size_t)(regA+0.5) << (size_t)(regB+0.5);
+          break;
+        case oRshift:
+          regA = (size_t)(regA+0.5) >> (size_t)(regB+0.5);
+          break;
+        case oEq:
+          regA = fabs(regA-regB) < MagickEpsilon ? 1.0 : 0.0;
+          break;
+        case oNotEq:
+          regA = fabs(regA-regB) >= MagickEpsilon ? 1.0 : 0.0;
+          break;
+        case oLtEq:
+          regA = (regA <= regB) ? 1.0 : 0.0;
+          break;
+        case oGtEq:
+          regA = (regA >= regB) ? 1.0 : 0.0;
+          break;
+        case oLt:
+          regA = (regA < regB) ? 1.0 : 0.0;
+          break;
+        case oGt:
+          regA = (regA > regB) ? 1.0 : 0.0;
+          break;
+        case oLogAnd:
+          regA = (regA<=0) ? 0 : (regB > 0) ? 1 : 0;
+          break;
+        case oLogOr:
+          regA = (regA>0) ? 1 : (regB > 0) ? 1 : 0;
+          break;
+        case oLogNot:
+          regA = (regA==0) ? 1 : 0;
+          break;
+        case oBitAnd:
+          regA = (size_t)(regA+0.5) & (size_t)(regB+0.5);
+          break;
+        case oBitOr:
+          regA = (size_t)(regA+0.5) | (size_t)(regB+0.5);
+          break;
+        case oBitNot:
+          /* Old fx doesn't add 0.5. */
+          regA = ~(size_t)(regA+0.5);
+          break;
+        case oPow:
+          regA = pow (regA, regB);
+          break;
+        case oQuery:
+        case oColon:
+          break;
+        case oOpenParen:
+        case oCloseParen:
+        case oOpenBracket:
+        case oCloseBracket:
+        case oOpenBrace:
+        case oCloseBrace:
+          break;
+        case oAssign:
+          pel->val = regA;
+          break;
+        case oNull: {
+          if (pel->type == etColourConstant) {
+            switch (channel) {
+              default:
+              case 0:
+                regA = pel->val;
+                break;
+              case 1:
+                regA = pel->val1;
+                break;
+              case 2:
+                regA = pel->val2;
+                break;
+            }
+          } else {
+            regA = pel->val;
+          }
+          break;
+        }
+        case fAbs:
+          regA = abs (regA);
+          break;
+#if defined(MAGICKCORE_HAVE_ACOSH)
+        case fAcosh:
+          regA = acosh (regA);
+          break;
+#endif
+        case fAcos:
+          regA = acos (regA);
+          break;
+#if defined(MAGICKCORE_HAVE_J1)
+        case fAiry:
+          if (regA==0) regA = 1.0;
+          else {
+            fxFltType gamma = 2.0 * j1 ((MagickPI*regA)) / (MagickPI*regA);
+            regA = gamma * gamma;
+          }
+          break;
+#endif
+        case fAlt:
+          regA = ((ssize_t) regA) & 0x01 ? -1.0 : 1.0;
+          break;
+#if defined(MAGICKCORE_HAVE_ASINH)
+        case fAsinh:
+          regA = asinh (regA);
+          break;
+#endif
+        case fAsin:
+          regA = asin (regA);
+          break;
+#if defined(MAGICKCORE_HAVE_ATANH)
+        case fAtanh:
+          regA = atanh (regA);
+          break;
+#endif
+        case fAtan2:
+          regA = atan2 (regA, regB);
+          break;
+        case fAtan:
+          regA = atan (regA);
+          break;
+        case fCeil:
+          regA = ceil (regA);
+          break;
+        case fChannel:
+          switch (channel) {
+            case 0: break;
+            case 1: regA = regB; break;
+            case 2: regA = regC; break;
+            case 3: regA = regD; break;
+            case 4: regA = regE; break;
+            default: regA = 0;
+          }
+          break;
+        case fClamp:
+          if (regA < 0) regA = 0;
+          else if (regA > 1.0) regA = 1.0;
+          break;
+        case fCosh:
+          regA = cosh (regA);
+          break;
+        case fCos:
+          regA = cos (regA);
+          break;
+        case fDebug:
+          /* FIXME: debug() should give channel name. */
+
+          fprintf (stderr, "%s[%g,%g].%g: %s=%.*Lg\n",
+                   img->filename, (double) imgx, (double) imgy,
+                   (double) channel, SetPtrShortExp (fx_info, pel->pExpStart, pel->lenExp+1),
+                   fx_info->precision, regA);
+          break;
+        case fDrc:
+          regA = regA / (regB*(regA-1.0) + 1.0);
+          break;
+#if defined(MAGICKCORE_HAVE_ERF)
+        case fErf:
+          regA = erf (regA);
+          break;
+#endif
+        case fExp:
+          regA = exp (regA);
+          break;
+        case fFloor:
+          regA = floor (regA);
+          break;
+        case fGauss:
+          regA = exp((-regA*regA/2.0))/sqrt(2.0*MagickPI);
+          break;
+        case fGcd:
+          regA = FxGCD (regA,regB, 0);
+          break;
+        case fHypot:
+          regA = hypot (regA, regB);
+          break;
+        case fInt:
+          regA = floor (regA);
+          break;
+        case fIsnan:
+          regA = !!IsNaN (regA);
+          break;
+#if defined(MAGICKCORE_HAVE_J0)
+        case fJ0:
+          regA = j0 (regA);
+          break;
+#endif
+#if defined(MAGICKCORE_HAVE_J1)
+        case fJ1:
+          regA = j1 (regA);
+          break;
+#endif
+#if defined(MAGICKCORE_HAVE_J1)
+        case fJinc:
+          if (regA==0) regA = 1.0;
+          else regA = 2.0 * j1 ((MagickPI*regA))/(MagickPI*regA);
+          break;
+#endif
+        case fLn:
+          regA = log (regA);
+          break;
+        case fLogtwo:
+          regA = log10(regA) / log10(2.0);
+          break;
+        case fLog:
+          regA = log10 (regA);
+          break;
+        case fMax:
+          regA = (regA > regB) ? regA : regB;
+          break;
+        case fMin:
+          regA = (regA < regB) ? regA : regB;
+          break;
+        case fMod:
+          regA = regA - floor((regA*PerceptibleReciprocal(regB)))*regB;
+          break;
+        case fNot:
+          regA = (regA < MagickEpsilon);
+          break;
+        case fPow:
+          regA = pow (regA, regB);
+          break;
+        case fRand: {
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp critical (MagickCore_ExecuteRPN)
+#endif
+          regA = GetPseudoRandomValue (fx_infort->random_info);
+          break;
+        }
+        case fRound:
+          regA = floor (regA + 0.5);
+          break;
+        case fSign:
+          regA = (regA < 0) ? -1.0 : 1.0;
+          break;
+        case fSinc:
+          regA = sin ((MagickPI*regA)) / (MagickPI*regA);
+          break;
+        case fSinh:
+          regA = sinh (regA);
+          break;
+        case fSin:
+          regA = sin (regA);
+          break;
+        case fSqrt:
+          regA = sqrt (regA);
+          break;
+        case fSquish:
+          regA = 1.0 / (1.0 + exp (-regA));
+          break;
+        case fTanh:
+          regA = tanh (regA);
+          break;
+        case fTan:
+          regA = tan (regA);
+          break;
+        case fTrunc:
+          if (regA >= 0) regA = floor (regA);
+          else regA = ceil (regA);
+          break;
+
+        case fDo:
+        case fFor:
+        case fIf:
+        case fWhile:
+          break;
+        case fU: {
+          /* Note: 1 value is available, index into image list.
+             May have ImgAttr qualifier or channel qualifier or both.
+          */
+          int ImgNum = ChkImgNum (fx_info, regA);
+          regA = 0;
+          if (ImgNum == 0) {
+            Image * pimg = fx_info->Images[0];
+            int pech = (int)pel->ChannelQual;
+            if (pel->ImgAttrQual == aNull) {
+              if (pech < 0) {
+                if (pech == NO_CHAN_QUAL || pech == THIS_CHANNEL) {
+                  if (fx_info->ImgNum==0) {
+                    regA = QuantumScale * p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+                  } else {
+                    const Quantum * pv = GetCacheViewVirtualPixels (
+                                   fx_info->Views[0], imgx, imgy, 1,1, fx_info->exception);
+                    if (!pv) {
+                      ThrowMagickException (
+                        fx_info->exception, GetMagickModule(), OptionError,
+                        "fU can't get cache", "%i", ImgNum);
+                      break;
+                    }
+                    regA = QuantumScale * pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+                  }
+                } else if (pech == HUE_CHANNEL || pech == SAT_CHANNEL ||
+                    pech == LIGHT_CHANNEL) {
+                  regA = GetHslInt (fx_info, ImgNum, imgx, imgy, pech);
+                  break;
+                } else if (pech == INTENSITY_CHANNEL) {
+                  regA = GetIntensity (fx_info, 0, imgx, imgy);
+                }
+              } else {
+                if (fx_info->ImgNum==0) {
+                  regA = QuantumScale * p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+                } else {
+                  const Quantum * pv = GetCacheViewVirtualPixels (
+                                 fx_info->Views[0], imgx, imgy, 1,1, fx_info->exception);
+                  if (!pv) {
+                    ThrowMagickException (
+                      fx_info->exception, GetMagickModule(), OptionError,
+                      "fU can't get cache", "%i", ImgNum);
+                    break;
+                  }
+                  regA = QuantumScale * pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+                }
+              }
+            } else {
+              /* we have an image atttribute */
+              regA = ImageStat (fx_info, 0, WHICH_ATTR_CHAN, pel->ImgAttrQual);
+            }
+          } else {
+            /* We have non-zero ImgNum. */
+            if (pel->ImgAttrQual == aNull) {
+              if ((int)pel->ChannelQual < 0) {
+                if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
+                    pel->ChannelQual == LIGHT_CHANNEL)
+                {
+                  regA = GetHslInt (fx_info, ImgNum, imgx, imgy, pel->ChannelQual);
+                  break;
+                } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
+                  regA = GetIntensity (fx_info, ImgNum, imgx, imgy);
+                  break;
+                }
+              }
+
+              const Quantum * pv = GetCacheViewVirtualPixels (
+                                   fx_info->Views[ImgNum], imgx, imgy, 1,1, fx_info->exception);
+              if (!pv) {
+                ThrowMagickException (
+                  fx_info->exception, GetMagickModule(), OptionError,
+                  "fU can't get cache", "%i", ImgNum);
+                break;
+              }
+              regA = QuantumScale *
+         pv[fx_info->Images[ImgNum]->channel_map[WHICH_NON_ATTR_CHAN].offset];
+            } else {
+              regA = ImageStat (fx_info, ImgNum, WHICH_ATTR_CHAN, pel->ImgAttrQual);
+            }
+          }
+          break;
+        }
+        case fU0: {
+          /* No args. No image attribute. We may have a ChannelQual.
+             If called from %[fx:...], ChannelQual will be CompositePixelChannel.
+          */
+          Image * pimg = fx_info->Images[0];
+          int pech = (int)pel->ChannelQual;
+          if (pech < 0) {
+            if (pech == NO_CHAN_QUAL || pech == THIS_CHANNEL) {
+
+              if (fx_info->ImgNum==0) {
+                regA = QuantumScale * p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+              } else {
+                const Quantum * pv = GetCacheViewVirtualPixels (
+                               fx_info->Views[0], imgx, imgy, 1,1, fx_info->exception);
+                if (!pv) {
+                  ThrowMagickException (
+                    fx_info->exception, GetMagickModule(), OptionError,
+                    "fU0 can't get cache", "%i", 0);
+                  break;
+                }
+                regA = QuantumScale * pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+              }
+
+            } else if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
+                       pel->ChannelQual == LIGHT_CHANNEL) {
+              regA = GetHslInt (fx_info, 0, imgx, imgy, pel->ChannelQual);
+              break;
+            } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
+              regA = GetIntensity (fx_info, 0, imgx, imgy);
+            }
+          } else {
+            if (fx_info->ImgNum==0) {
+              regA = QuantumScale * p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+            } else {
+              const Quantum * pv = GetCacheViewVirtualPixels (
+                                   fx_info->Views[0], imgx, imgy, 1,1, fx_info->exception);
+              if (!pv) {
+                ThrowMagickException (
+                  fx_info->exception, GetMagickModule(), OptionError,
+                  "fU0 can't get cache", "%i", 0);
+                break;
+              }
+              regA = QuantumScale * pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+            }
+          }
+          break;
+        }
+        case fUP: {
+          /* 3 args are: ImgNum, x, y */
+          int ImgNum = ChkImgNum (fx_info, regA);
+
+          fxFltType fx, fy;
+          if (pel->IsRelative) {
+            fx = imgx + regB;
+            fy = imgy + regC;
+          } else {
+            fx = regB;
+            fy = regC;
+          }
+
+          if ((int)pel->ChannelQual < 0) {
+            if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL
+             || pel->ChannelQual == LIGHT_CHANNEL) {
+              regA = GetHslFlt (fx_info, ImgNum, fx, fy, pel->ChannelQual);
+              break;
+            } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
+              regA = GetIntensity (fx_info, ImgNum, fx, fy);
+              break;
+            }
+          }
+
+          double v;
+          Image * imUP = fx_info->Images[ImgNum];
+          if (! InterpolatePixelChannel (imUP, fx_info->Views[ImgNum], WHICH_NON_ATTR_CHAN,
+                  imUP->interpolate, fx, fy, &v, fx_info->exception))
+          {
+            ThrowMagickException (
+              fx_info->exception, GetMagickModule(), OptionError,
+              "fUP can't get interpolate", "%i", ImgNum);
+            break;
+          }
+          regA = v * QuantumScale;
+
+          break;
+        }
+        case fS:
+        case fV: {
+          /* No args. */
+          int ImgNum = 1;
+          if (pel->oprNum == fS) ImgNum = fx_info->ImgNum;
+
+          if (pel->ImgAttrQual == aNull) {
+            const Quantum * pv = GetCacheViewVirtualPixels (
+                                   fx_info->Views[ImgNum], imgx, imgy, 1,1, fx_info->exception);
+            if (!pv) {
+              ThrowMagickException (
+                fx_info->exception, GetMagickModule(), OptionError,
+                "fV can't get cache", "%i", ImgNum);
+              break;
+            }
+
+            if ((int)pel->ChannelQual < 0) {
+              if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
+                  pel->ChannelQual == LIGHT_CHANNEL) {
+                regA = GetHslInt (fx_info, ImgNum, imgx, imgy, pel->ChannelQual);
+                break;
+              } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
+                regA = GetIntensity (fx_info, ImgNum, imgx, imgy);
+                break;
+              }
+            }
+
+            regA = QuantumScale *
+         pv[fx_info->Images[ImgNum]->channel_map[WHICH_NON_ATTR_CHAN].offset];
+          } else {
+            regA = ImageStat (fx_info, ImgNum, WHICH_ATTR_CHAN, pel->ImgAttrQual);
+          }
+
+          break;
+        }
+        case fP:
+        case fSP:
+        case fVP: {
+          /* 2 args are: x, y */
+          int ImgNum = fx_info->ImgNum;
+          if (pel->oprNum == fVP) ImgNum = 1;
+          fxFltType fx, fy;
+          if (pel->IsRelative) {
+            fx = imgx + regA;
+            fy = imgy + regB;
+          } else {
+            fx = regA;
+            fy = regB;
+          }
+          if ((int)pel->ChannelQual < 0) {
+            if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
+                pel->ChannelQual == LIGHT_CHANNEL) {
+              regA = GetHslFlt (fx_info, ImgNum, fx, fy, pel->ChannelQual);
+              break;
+            } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
+              regA = GetIntensity (fx_info, ImgNum, fx, fy);
+            }
+          }
+
+          double v;
+
+          if (! InterpolatePixelChannel (fx_info->Images[ImgNum], fx_info->Views[ImgNum],
+                                         WHICH_NON_ATTR_CHAN, fx_info->Images[ImgNum]->interpolate,
+                                         fx, fy, &v, fx_info->exception)
+                                        )
+          {
+            ThrowMagickException (
+              fx_info->exception, GetMagickModule(), OptionError,
+              "fSP or fVP can't get interp", "%i", ImgNum);
+            break;
+          }
+          regA = v * (fxFltType)QuantumScale;
+
+          break;
+        }
+        case fNull:
+          break;
+        case aDepth:
+          regA = GetImageDepth (img, fx_info->exception) / QuantumRange;
+          break;
+        case aExtent:
+          regA = img->extent;
+          break;
+        case aKurtosis:
+          regA = cs[WHICH_ATTR_CHAN].kurtosis;
+          break;
+        case aMaxima:
+          regA = cs[WHICH_ATTR_CHAN].maxima;
+          break;
+        case aMean:
+          regA = cs[WHICH_ATTR_CHAN].mean;
+          break;
+        case aMedian:
+          regA = cs[WHICH_ATTR_CHAN].median;
+          break;
+        case aMinima:
+          regA = cs[WHICH_ATTR_CHAN].minima;
+          break;
+        case aPage:
+          break;
+        case aPageWid:
+          regA = img->page.width;
+          break;
+        case aPageHt:
+          regA = img->page.height;
+          break;
+        case aPageX:
+          regA = img->page.x;
+          break;
+        case aPageY:
+          regA = img->page.y;
+          break;
+        case aPrintsize:
+          break;
+        case aPrintsizeX:
+          regA = PerceptibleReciprocal (img->resolution.x) * img->columns;
+          break;
+        case aPrintsizeY:
+          regA = PerceptibleReciprocal (img->resolution.y) * img->rows;
+          break;
+        case aQuality:
+          regA = img->quality;
+          break;
+        case aRes:
+          break;
+        case aResX:
+          regA = img->resolution.x;
+          break;
+        case aResY:
+          regA = img->resolution.y;
+          break;
+        case aSkewness:
+          regA = cs[WHICH_ATTR_CHAN].skewness;
+          break;
+        case aStdDev:
+          regA = cs[WHICH_ATTR_CHAN].standard_deviation;
+          break;
+        case aH: /* image->rows */
+          regA = img->rows;
+          break;
+        case aN: /* image list length */
+          regA = fx_info->ImgListLen;
+          break;
+        case aT: /* image index in list */
+          regA = fx_info->ImgNum;
+          break;
+        case aW: /* image->columns */
+          regA = img->columns;
+          break;
+        case aZ: /* image depth */
+          regA = GetImageDepth (img, fx_info->exception);
+          break;
+        case aNull:
+          break;
+        case sHue: /* of conversion to HSL */
+          regA = hue;
+          break;
+        case sIntensity:
+          regA = GetIntensity (fx_info, fx_info->ImgNum, imgx, imgy);
+          break;
+        case sLightness: /* of conversion to HSL */
+          regA = lightness;
+          break;
+        case sLuma: /* calculation */
+        case sLuminance: /* as Luma */
+          regA = QuantumScale * (0.212656 * GetPixelRed (img,p) +
+                                 0.715158 * GetPixelGreen (img,p) +
+                                 0.072186 * GetPixelBlue (img,p));
+          break;
+        case sSaturation: /* from conversion to HSL */
+          regA = saturation;
+          break;
+        case sA: /* alpha */
+          regA = QuantumScale * GetPixelAlpha (img, p);
+          break;
+        case sB: /* blue */
+          regA = QuantumScale * GetPixelBlue (img, p);
+          break;
+        case sC: /* red (ie cyan) */
+          regA = QuantumScale * GetPixelCyan (img, p);
+          break;
+        case sG: /* green */
+          regA = QuantumScale * GetPixelGreen (img, p);
+          break;
+        case sI: /* current x-coordinate */
+          regA = imgx;
+          break;
+        case sJ: /* current y-coordinate */
+          regA = imgy;
+          break;
+        case sK: /* black of CMYK */
+          regA = QuantumScale * GetPixelBlack (img, p);
+          break;
+        case sM: /* green (ie magenta) */
+          regA = QuantumScale * GetPixelGreen (img, p);
+          break;
+        case sO: /* alpha */
+          regA = QuantumScale * GetPixelAlpha (img, p);
+          break;
+        case sR:
+          regA = QuantumScale * GetPixelRed (img, p);
+          break;
+        case sY:
+          regA = QuantumScale * GetPixelYellow (img, p);
+          break;
+        case sNull:
+          break;
+
+        case rGoto:
+          i = pel->EleNdx-1; /* -1 because 'for' loop will increment. */
+          break;
+        case rIfZeroGoto:
+          if (fabs(regA) < MagickEpsilon) i = pel->EleNdx-1;
+          break;
+        case rIfNotZeroGoto:
+          if (fabs(regA) > MagickEpsilon) i = pel->EleNdx-1;
+          break;
+        case rCopyFrom:
+          regA = fx_infort->UserSymVals[pel->EleNdx];
+          break;
+        case rCopyTo:
+          fx_infort->UserSymVals[pel->EleNdx] = regA;
+          break;
+        case rZerStk:
+          fx_infort->usedValStack = 0;
+          break;
+        case rNull:
+          break;
+
+        default:
+          ThrowMagickException (
+            fx_info->exception, GetMagickModule(), OptionError,
+            "pel->oprNum", "%i '%s' not yet implemented",
+            (int)pel->oprNum, OprStr(fx_info, pel->oprNum));
+          break;
+    }
+    if (i < 0) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "Bad run-time address", "%g", (double) i);
+    }
+    if (pel->DoPush) 
+      if (!PushVal (fx_info, fx_infort, regA, i)) break;
+  }
+
+  if (fx_infort->usedValStack > 0) regA = PopVal (fx_info, fx_infort, 9999);
+
+  *result = regA;
+
+  if (fx_infort->usedValStack != 0) {
+      ThrowMagickException (
+        fx_info->exception, GetMagickModule(), OptionError,
+        "ValStack not empty", "%i",  fx_infort->usedValStack);
+    return MagickFalse;
+  }
+
+  return MagickTrue;
+}
+
+/* Following is substitute for FxEvaluateChannelExpression().
+*/
+MagickPrivate MagickBooleanType FxEvaluateChannelExpression (
+  FxInfo *fx_info,
+  const PixelChannel channel, const ssize_t x, const ssize_t y,
+  double *result, ExceptionInfo *exception)
+{
+  assert (fx_info != NULL);
+  assert (fx_info->image != NULL);
+  assert (fx_info->Images != NULL);
+  assert (fx_info->Views != NULL);
+  assert (fx_info->fxrts != NULL);
+
+  const int
+    id = GetOpenMPThreadId();
+
+  fx_info->fxrts[id].thisPixel = NULL;
+
+  fxFltType ret;
+
+  if (!ExecuteRPN (fx_info, &fx_info->fxrts[id], stderr, &ret, channel, x, y)) {
+    ThrowMagickException (exception, GetMagickModule(), OptionError,
+      "ExecuteRPN failed", "'%s'",fx_info->pex);
+    return MagickFalse;
+  }
+
+  *result = ret;
+
+  return MagickTrue;
+}
+
+MagickPrivate FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionInfo *exception)
+{
+  FxInfo * fx_info = (FxInfo*) AcquireCriticalMemory (sizeof (*fx_info));
+
+  memset (fx_info, 0, sizeof (*fx_info));
+
+  if (!InitFx (fx_info, images, exception)) return NULL;
+
+  if (!BuildRPN (fx_info)) return NULL;
+
+  fx_info->pex = (char *)expression;
+
+  if (*expression == '@')
+    fx_info->expression = FileToString (expression+1, ~0UL, exception);
+  else
+    fx_info->expression = ConstantString (expression);
+
+  fx_info->pex = fx_info->expression;
+
+  fx_info->teDepth = 0;
+  char chLimit;
+  if (!TranslateStatementList (fx_info, (char *) ";", &chLimit)) return NULL;
+
+  if (fx_info->teDepth) {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "Translate expression depth", "(%i) not 0",
+      fx_info->teDepth);
+    return NULL;
+  }
+
+  if (chLimit != '\0' && chLimit != ';') {
+    ThrowMagickException (
+      fx_info->exception, GetMagickModule(), OptionError,
+      "AcquireFxInfo: TranslateExpression did not exhaust input at", "'%s'",
+      fx_info->pex);
+    return NULL;
+  }
+
+  if (fx_info->NeedStats && !fx_info->statistics) {
+    if (!CollectStatistics (fx_info)) return (FxInfo *) NULL;
+  }
+
+  if (fx_info->DebugOpt) {
+    DumpTables (fx_info, stderr);
+    DumpUserSymbols (fx_info, stderr);
+    DumpRPN (fx_info, stderr);
+  }
+
+  size_t number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+
+  fx_info->fxrts = (fxRtT *)AcquireQuantumMemory (number_threads, sizeof(fxRtT));
+  if (!fx_info->fxrts) {
+    (void) ThrowMagickException(exception,GetMagickModule(),
+      ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
+    return NULL;
+  }
+  int t;
+  for (t=0; t < (int) number_threads; t++) {
+    if (!AllocFxRt (fx_info, &fx_info->fxrts[t])) {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
+      return NULL;
+    }
+  }
+
+  return fx_info;
+}
+
+FxInfo *DestroyFxInfo (FxInfo * fx_info)
+{
+  assert (fx_info != NULL);
+  assert (fx_info->image != NULL);
+  assert (fx_info->Images != NULL);
+  assert (fx_info->Views != NULL);
+  assert (fx_info->fxrts != NULL);
+
+  int t;
+  for (t=0; t < (int) GetMagickResourceLimit(ThreadResource); t++) {
+    DestroyFxRt (&fx_info->fxrts[t]);
+  }
+  fx_info->fxrts = (fxRtT *) RelinquishMagickMemory (fx_info->fxrts);
+
+  DestroyRPN (fx_info);
+
+  fx_info->expression = DestroyString (fx_info->expression);
+  fx_info->pex = NULL;
+
+  DeInitFx (fx_info);
+
+  fx_info = (FxInfo *) RelinquishMagickMemory(fx_info);
+
+  return NULL;
+}
+
+/* Following is substitute for FxImage().
+*/
+MagickExport Image *FxImage (const Image *image, const char *expression,
   ExceptionInfo *exception)
 {
-#define FxImageTag  "Fx/Image"
+#define FxImageTag  "FxNew/Image"
 
   CacheView
     *fx_view,
     *image_view;
-
-  FxInfo
-    **magick_restrict fx_info;
 
   Image
     *fx_image;
@@ -2832,32 +3772,29 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (expression == (const char *) NULL)
     return(CloneImage(image,0,0,MagickTrue,exception));
-  fx_info=AcquireFxThreadSet(image,expression,exception);
-  if (fx_info == (FxInfo **) NULL)
-    return((Image *) NULL);
   fx_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (fx_image == (Image *) NULL)
-    {
-      fx_info=DestroyFxThreadSet(fx_info);
-      return((Image *) NULL);
-    }
-  if (SetImageStorageClass(fx_image,DirectClass,exception) == MagickFalse)
-    {
-      fx_info=DestroyFxThreadSet(fx_info);
-      fx_image=DestroyImage(fx_image);
-      return((Image *) NULL);
-    }
-  /*
-    Fx image.
-  */
+  if (!fx_image) return NULL;
+  if (SetImageStorageClass(fx_image,DirectClass,exception) == MagickFalse) {
+    fx_image=DestroyImage(fx_image);
+    return NULL;
+  }
+
+  FxInfo * fx_info = AcquireFxInfo (image, expression, exception);
+
+  if (!fx_info) return NULL;
+  assert (fx_info->image != NULL);
+  assert (fx_info->Images != NULL);
+  assert (fx_info->Views != NULL);
+  assert (fx_info->fxrts != NULL);
+
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image,exception);
-  fx_view=AcquireAuthenticCacheView(fx_image,exception);
+  image_view = AcquireVirtualCacheView (image, fx_info->exception);
+  fx_view = AcquireAuthenticCacheView (fx_image, fx_info->exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic) shared(progress,status) \
     magick_number_threads(image,fx_image,fx_image->rows, \
-      GlobExpression(fx_info[0]->expression,"*debug(*",MagickTrue) == 0 ? 1 : 0)
+      fx_info->ContainsDebug ? 0 : 1)
 #endif
   for (y=0; y < (ssize_t) fx_image->rows; y++)
   {
@@ -2873,45 +3810,46 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     ssize_t
       x;
 
+    fxFltType
+      result = 0.0;
+
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(fx_view,0,y,fx_image->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      {
+    p = GetCacheViewVirtualPixels (image_view, 0, y, image->columns, 1, fx_info->exception);
+    q = QueueCacheViewAuthenticPixels (fx_view, 0, y, fx_image->columns, 1, fx_info->exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL)) {
         status=MagickFalse;
         continue;
-      }
-    for (x=0; x < (ssize_t) fx_image->columns; x++)
-    {
-      ssize_t
-        i;
+    }
+    for (x=0; x < (ssize_t) fx_image->columns; x++) {
+      ssize_t i;
+
+      fx_info->fxrts[id].thisPixel = (Quantum *)p;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        double
-          alpha;
-
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait fx_traits=GetPixelChannelTraits(fx_image,channel);
+        PixelChannel channel = GetPixelChannelChannel (image, i);
+        PixelTrait traits = GetPixelChannelTraits (image, channel);
+        PixelTrait fx_traits = GetPixelChannelTraits (fx_image, channel);
         if ((traits == UndefinedPixelTrait) ||
             (fx_traits == UndefinedPixelTrait))
           continue;
-        if ((fx_traits & CopyPixelTrait) != 0)
-          {
-            SetPixelChannel(fx_image,channel,p[i],q);
+        if ((fx_traits & CopyPixelTrait) != 0) {
+            SetPixelChannel (fx_image, channel, p[i], q);
             continue;
-          }
-        alpha=0.0;
-        (void) FxEvaluateChannelExpression(fx_info[id],channel,x,y,&alpha,
-          exception);
-        q[i]=ClampToQuantum(QuantumRange*alpha);
+        }
+
+        if (!ExecuteRPN (fx_info, &fx_info->fxrts[id], stderr, &result, channel, x, y)) {
+          status=MagickFalse;
+          continue;
+        }
+
+        q[i] = ClampToQuantum (QuantumRange*result);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(fx_image);
+      p+=GetPixelChannels (image);
+      q+=GetPixelChannels (fx_image);
     }
-    if (SyncCacheViewAuthenticPixels(fx_view,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(fx_view, fx_info->exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -2922,15 +3860,37 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
         #pragma omp atomic
 #endif
         progress++;
-        proceed=SetImageProgress(image,FxImageTag,progress,image->rows);
+        proceed = SetImageProgress (image, FxImageTag, progress, image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
-  fx_view=DestroyCacheView(fx_view);
-  image_view=DestroyCacheView(image_view);
-  fx_info=DestroyFxThreadSet(fx_info);
+
+  fx_view = DestroyCacheView (fx_view);
+  image_view = DestroyCacheView (image_view);
+
+  /* Before destroying the user symbol values, dump them to stderr.
+  */
+  if (fx_info->DebugOpt && fx_info->usedUserSymbols) {
+    fprintf (stderr, "User symbols (%i):\n", fx_info->usedUserSymbols);
+    int t, i;
+    char UserSym[MaxTokenLen];
+    for (t=0; t < (int) GetMagickResourceLimit(ThreadResource); t++) {
+      for (i = 0; i < fx_info->usedUserSymbols; i++) {
+        fprintf (stderr, "th=%i us=%i '%s': %.*Lg\n",
+                 t, i, NameOfUserSym (fx_info, i, UserSym), fx_info->precision, fx_info->fxrts[t].UserSymVals[i]);
+      }
+    }
+  }
+
+  if (fx_info->exception->severity != UndefinedException) {
+    status = MagickFalse;
+  }
+
   if (status == MagickFalse)
-    fx_image=DestroyImage(fx_image);
+    fx_image = DestroyImage (fx_image);
+
+  fx_info = DestroyFxInfo (fx_info);
+
   return(fx_image);
 }

@@ -1937,7 +1937,7 @@ static void ReadEndpoints(BC7Colors *endpoints,const unsigned char *block,
 
   /* alpha */
   alpha_bits=BC7_mode_info[mode].alpha_precision;
-  has_alpha=mode >= 4;
+  has_alpha=mode >= 4 ? MagickTrue : MagickFalse;
 
   if (has_alpha != MagickFalse)
     {
@@ -1946,7 +1946,7 @@ static void ReadEndpoints(BC7Colors *endpoints,const unsigned char *block,
     }
 
   /* handle modes that have p bits */
-  has_pbits=(mode == 0) || (mode == 1) || (mode == 3) || (mode == 6) || (mode == 7);
+  has_pbits=(mode == 0) || (mode == 1) || (mode == 3) || (mode == 6) || (mode == 7) ? MagickTrue : MagickFalse;
 
   if (has_pbits != MagickFalse)
     {

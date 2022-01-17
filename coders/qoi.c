@@ -151,8 +151,7 @@ static unsigned int IsQOI(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadQOIImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadQOIImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -169,7 +168,7 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
 
   ssize_t
     count,
-    p;
+    i;
 
   unsigned char
     magick[4];
@@ -212,12 +211,7 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
   image->rows=(size_t) ReadBlobMSBLong(image);
   if (image->columns == 0 || image->rows == 0)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
-  if (image->ping != MagickFalse) {
-    (void) CloseBlob(image);
-    return(GetFirstImageInList(image));
-  }
-
-  channels=ReadBlobByte(image);
+  channels=(size_t) ReadBlobByte(image);
   if (channels == 3)
     SetQuantumImageType(image,RGBQuantum);
   else if (channels == 4)
@@ -227,19 +221,21 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
     }
   else
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-
-  colorspace=ReadBlobByte(image);
+  colorspace=(size_t) ReadBlobByte(image);
   if (colorspace == QOI_SRGB)
-    SetImageColorspace(image,sRGBColorspace,exception);
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   else if (colorspace == QOI_LINEAR)
-    SetImageColorspace(image,RGBColorspace,exception);
+    (void) SetImageColorspace(image,RGBColorspace,exception);
   else
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-
+  if (image->ping != MagickFalse)
+    {
+      (void) CloseBlob(image);
+      return(GetFirstImageInList(image));
+    }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-
   /*
     Get a write pointer for the whole image.
   */
@@ -257,77 +253,87 @@ static Image *ReadQOIImage(const ImageInfo *image_info,
   /*
     Actual decoding.
   */
-  for (p=0; p < (image->rows * image->columns);)
+  for (i=0; i < (ssize_t) (image->rows * image->columns);)
   {
     run = 0;
 
     if ((b=ReadBlobByte(image)) == EOF)
       break;
-    if (b == QOI_OP_RGB) {
-      if ((b=ReadBlobByte(image)) == EOF)
-        break;
-      px.rgba.r=b;
-      if ((b=ReadBlobByte(image)) == EOF)
-        break;
-      px.rgba.g=b;
-      if ((b=ReadBlobByte(image)) == EOF)
-        break;
-      px.rgba.b=b;
-    }
-    else if (b == QOI_OP_RGBA) {
-      if ((b=ReadBlobByte(image)) == EOF)
-        break;
-      px.rgba.r=b;
-      if ((b=ReadBlobByte(image)) == EOF)
-        break;
-      px.rgba.g=b;
-      if ((b=ReadBlobByte(image)) == EOF)
-        break;
-      px.rgba.b=b;
-      if ((b=ReadBlobByte(image)) == EOF)
-        break;
-      px.rgba.a=b;
-    }
-    else if ((b & QOI_MASK_2) == QOI_OP_INDEX) {
-      px=lut[b & ~QOI_MASK_2];
-    }
-    else if ((b & QOI_MASK_2) == QOI_OP_DIFF) {
-      px.rgba.r+=((b >> 4) & 0x03) - 2;
-      px.rgba.g+=((b >> 2) & 0x03) - 2;
-      px.rgba.b+=( b       & 0x03) - 2;
-    }
-    else if ((b & QOI_MASK_2) == QOI_OP_LUMA) {
-      vg=(b & ~QOI_MASK_2) - 32;
-      if ((b=ReadBlobByte(image)) == EOF)
-        break;
-      px.rgba.r+=vg - 8 + ((b >> 4) & 0x0f);
-      px.rgba.g+=vg;
-      px.rgba.b+=vg - 8 +  (b       & 0x0f);
-    }
-    else if ((b & QOI_MASK_2) == QOI_OP_RUN) {
-      run=b & ~QOI_MASK_2;
-    }
+    if (b == QOI_OP_RGB)
+      {
+        if ((b=ReadBlobByte(image)) == EOF)
+          break;
+        px.rgba.r=(unsigned char) b;
+        if ((b=ReadBlobByte(image)) == EOF)
+          break;
+        px.rgba.g=(unsigned char) b;
+        if ((b=ReadBlobByte(image)) == EOF)
+          break;
+        px.rgba.b=(unsigned char) b;
+      }
+    else if (b == QOI_OP_RGBA)
+      {
+        if ((b=ReadBlobByte(image)) == EOF)
+          break;
+        px.rgba.r=(unsigned char) b;
+        if ((b=ReadBlobByte(image)) == EOF)
+          break;
+        px.rgba.g=(unsigned char) b;
+        if ((b=ReadBlobByte(image)) == EOF)
+          break;
+        px.rgba.b=(unsigned char) b;
+        if ((b=ReadBlobByte(image)) == EOF)
+          break;
+        px.rgba.a=(unsigned char) b;
+      }
+    else if ((b & QOI_MASK_2) == QOI_OP_INDEX)
+      {
+        px=lut[b & ~QOI_MASK_2];
+      }
+    else if ((b & QOI_MASK_2) == QOI_OP_DIFF)
+      {
+        px.rgba.r+=((b >> 4) & 0x03) - 2;
+        px.rgba.g+=((b >> 2) & 0x03) - 2;
+        px.rgba.b+=( b       & 0x03) - 2;
+      }
+    else if ((b & QOI_MASK_2) == QOI_OP_LUMA)
+      {
+        vg=(b & ~QOI_MASK_2) - 32;
+        if ((b=ReadBlobByte(image)) == EOF)
+          break;
+        px.rgba.r+=vg - 8 + ((b >> 4) & 0x0f);
+        px.rgba.g+=vg;
+        px.rgba.b+=vg - 8 +  (b       & 0x0f);
+      }
+    else if ((b & QOI_MASK_2) == QOI_OP_RUN)
+      {
+        run=b & ~QOI_MASK_2;
+      }
     lut[QOI_COLOR_HASH(px) % 64]=px;
-    do {
-      SetPixelRed(image,ScaleCharToQuantum((unsigned char)px.rgba.r),q);
-      SetPixelGreen(image,ScaleCharToQuantum((unsigned char)px.rgba.g),q);
-      SetPixelBlue(image,ScaleCharToQuantum((unsigned char)px.rgba.b),q);
-      if (channels == 4)
-        SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) px.rgba.a),q);
+    do
+    {
+      if (i < (ssize_t) (image->columns*image->rows))
+        {
+          SetPixelRed(image,ScaleCharToQuantum((unsigned char)px.rgba.r),q);
+          SetPixelGreen(image,ScaleCharToQuantum((unsigned char)px.rgba.g),q);
+          SetPixelBlue(image,ScaleCharToQuantum((unsigned char)px.rgba.b),q);
+          if (channels == 4)
+            SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) px.rgba.a),q);
+        }
       q+=GetPixelChannels(image);
-      p++;
+      i++;
     } while (run-- > 0);
-    status=SetImageProgress(image,LoadImageTag,p,image->rows * image->columns);
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) i,
+      image->rows * image->columns);
     if (status == MagickFalse)
       break;
   }
+  status=SyncAuthenticPixels(image,exception);
+  if (i < (ssize_t) (image->columns*image->rows))
+    ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,
       "UnexpectedEndOfFile",image->filename);
-  if (status != MagickFalse) {
-    status=SyncAuthenticPixels(image,exception);
-    SyncImage(image,exception);
-  }
   (void) CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));
@@ -463,10 +469,9 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
     return(status);
   image->endian=MSBEndian;
   image->depth=8;
-
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  if (IsRGBColorspace(image->colorspace))
+  if (IsRGBColorspace(image->colorspace) != MagickFalse)
     colorspace=QOI_LINEAR;
   else
     colorspace=QOI_SRGB;
@@ -513,78 +518,88 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
       px.rgba.a=ScaleQuantumToChar(GetPixelAlpha(image,p));
     p+=GetPixelChannels(image);
 
-    if (pp.v == px.v) {
-      run++;
-      if (run == 62) {
+    if (pp.v == px.v)
+      {
+        run++;
+        if (run == 62)
+          {
+            (void) WriteBlobByte(image,QOI_OP_RUN |
+              (const unsigned char) (run - 1));
+            run=0;
+          }
+        continue;
+      }
+    if (run > 0)
+      {
         (void) WriteBlobByte(image,QOI_OP_RUN |
           (const unsigned char) (run - 1));
         run=0;
       }
-      continue;
-    }
-    if (run > 0) {
-      (void) WriteBlobByte(image,QOI_OP_RUN | (const unsigned char) (run - 1));
-      run=0;
-    }
     idx=QOI_COLOR_HASH(px) % 64;
-    if (lut[idx].v == px.v) {
-      (void) WriteBlobByte(image,QOI_OP_INDEX | (const unsigned char) idx);
-      continue;
-    }
+    if (lut[idx].v == px.v)
+      {
+        (void) WriteBlobByte(image,QOI_OP_INDEX | (const unsigned char) idx);
+        continue;
+      }
     lut[QOI_COLOR_HASH(px) % 64]=px;
-    if (pp.rgba.a == px.rgba.a) {
-      signed char
-        vr,
-        vg,
-        vb,
-        vg_r,
-        vg_b;
+    if (pp.rgba.a == px.rgba.a)
+      {
+        signed char
+          vr,
+          vg,
+          vb,
+          vg_r,
+          vg_b;
 
-      unsigned char
-        diff,
-        luma;
+        unsigned char
+          diff,
+          luma;
 
-      vr=(signed char) (px.rgba.r - pp.rgba.r);
-      vg=(signed char) (px.rgba.g - pp.rgba.g);
-      vb=(signed char) (px.rgba.b - pp.rgba.b);
-      vg_r=(signed char) (vr - vg);
-      vg_b=(signed char) (vb - vg);
+        vr=(signed char) (px.rgba.r - pp.rgba.r);
+        vg=(signed char) (px.rgba.g - pp.rgba.g);
+        vb=(signed char) (px.rgba.b - pp.rgba.b);
+        vg_r=(signed char) (vr - vg);
+        vg_b=(signed char) (vb - vg);
 
-      if (vr > -3 && vr < 2 &&
-          vg > -3 && vg < 2 &&
-          vb > -3 && vb < 2) {
-          diff=(unsigned char) ((vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
-          (void) WriteBlobByte(image,QOI_OP_DIFF | diff);
-      } else if (vg_r >  -9 && vg_r < 8 &&
-                 vg   > -33 && vg   < 32 &&
-                 vg_b >  -9 && vg_b < 8) {
-        luma=(unsigned char) (vg + 32);
-        (void) WriteBlobByte(image,QOI_OP_LUMA | luma);
-        luma=(unsigned char) ((vg_r + 8) << 4 | (vg_b +  8));
-        (void) WriteBlobByte(image,luma);
-      } else {
-        (void) WriteBlobByte(image,QOI_OP_RGB);
+        if ((vr > -3) && (vr < 2) && (vg > -3) && (vg < 2) &&
+            (vb > -3) && (vb < 2))
+          {
+            diff=(unsigned char) ((vr + 2) << 4 | (vg + 2) << 2 | (vb + 2));
+            (void) WriteBlobByte(image,QOI_OP_DIFF | diff);
+          }
+        else if ((vg_r > -9) && (vg_r < 8) && (vg > -33) && (vg < 32) &&
+                 (vg_b > -9) && (vg_b < 8))
+          {
+            luma=(unsigned char) (vg + 32);
+            (void) WriteBlobByte(image,QOI_OP_LUMA | luma);
+            luma=(unsigned char) ((vg_r + 8) << 4 | (vg_b +  8));
+            (void) WriteBlobByte(image,luma);
+          }
+        else
+          {
+            (void) WriteBlobByte(image,QOI_OP_RGB);
+            (void) WriteBlobByte(image,px.rgba.r);
+            (void) WriteBlobByte(image,px.rgba.g);
+            (void) WriteBlobByte(image,px.rgba.b);
+          }
+      }
+    else
+      {
+        (void) WriteBlobByte(image,QOI_OP_RGBA);
         (void) WriteBlobByte(image,px.rgba.r);
         (void) WriteBlobByte(image,px.rgba.g);
         (void) WriteBlobByte(image,px.rgba.b);
+        (void) WriteBlobByte(image,px.rgba.a);
       }
-    } else {
-      (void) WriteBlobByte(image,QOI_OP_RGBA);
-      (void) WriteBlobByte(image,px.rgba.r);
-      (void) WriteBlobByte(image,px.rgba.g);
-      (void) WriteBlobByte(image,px.rgba.b);
-      (void) WriteBlobByte(image,px.rgba.a);
-    }
   }
   if (run > 0)
-      (void) WriteBlobByte(image,QOI_OP_RUN | (const unsigned char) (run - 1));
+    (void) WriteBlobByte(image,QOI_OP_RUN | (const unsigned char) (run - 1));
   /*
     Write the QOI end marker: seven 0x00 bytes followed by 0x01.
   */
   for (i=0; i < 7; i++)
     (void) WriteBlobByte(image,0x00);
   (void) WriteBlobByte(image,0x01);
-
   (void) CloseBlob(image);
   return(MagickTrue);
 }

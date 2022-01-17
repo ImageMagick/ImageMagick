@@ -356,7 +356,7 @@ static Image *BlendMaxMagnitudeImage(const Image *alpha_image,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL) ||
         (r == (const Quantum *) NULL) || (s == (const Quantum *) NULL) ||
-        (r == (Quantum *) NULL))
+        (t == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -1294,7 +1294,8 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   crop_image=CropImage(image,&crop_info,exception);
   if (crop_image == (Image *) NULL)
     return(MagickFalse);
-  divergent_image=BlendDivergentImage(source_image,crop_image,exception);
+  (void) SetImageArtifact(crop_image,"compose:clamp","off");
+  divergent_image=BlendDivergentImage(crop_image,source_image,exception);
   if (divergent_image == (Image *) NULL)
     {
       crop_image=DestroyImage(crop_image);
@@ -1304,12 +1305,21 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   relax_image=BlendMeanImage(crop_image,source_image,exception);
   if (relax_image == (Image *) NULL)
     {
+      crop_image=DestroyImage(crop_image);
+      divergent_image=DestroyImage(divergent_image);
+      return(MagickFalse);
+    }
+  status=BlendMaskAlphaChannel(crop_image,source_image,exception);
+  if (status == MagickFalse)
+    {
+      crop_image=DestroyImage(crop_image);
       divergent_image=DestroyImage(divergent_image);
       return(MagickFalse);
     }
   residual_image=CloneImage(relax_image,0,0,MagickTrue,exception);
   if (residual_image == (Image *) NULL)
     {
+      crop_image=DestroyImage(crop_image);
       relax_image=DestroyImage(relax_image);
       return(MagickFalse);
     }
@@ -1319,6 +1329,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   kernel_info=AcquireKernelInfo("3x3:0,0.25,0,0.25,0,0.25,0,0.25,0",exception);
   if (kernel_info == (KernelInfo *) NULL)
     {
+      crop_image=DestroyImage(crop_image);
       residual_image=DestroyImage(residual_image);
       relax_image=DestroyImage(relax_image);
       return(MagickFalse);
@@ -1345,6 +1356,9 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
       break;
     relax_image=DestroyImage(relax_image);
     relax_image=sum_image;
+    status=CompositeOverImage(relax_image,crop_image,MagickTrue,0,0,exception);
+    if (status == MagickFalse)
+      break;
     status=BlendRMSEResidual(relax_image,residual_image,&residual,exception);
     if (status == MagickFalse)
       break;
@@ -1363,6 +1377,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
       break;
   }
   kernel_info=DestroyKernelInfo(kernel_info);
+  crop_image=DestroyImage(crop_image);
   divergent_image=DestroyImage(divergent_image);
   residual_image=DestroyImage(residual_image);
   /*
@@ -1370,6 +1385,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   */
   status=CompositeOverImage(image,relax_image,MagickTrue,x_offset,y_offset,
     exception);
+  relax_image=DestroyImage(relax_image);
   return(status);
 }
 
@@ -1410,6 +1426,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   crop_image=CropImage(image,&crop_info,exception);
   if (crop_image == (Image *) NULL)
     return(MagickFalse);
+  (void) SetImageArtifact(crop_image,"compose:clamp","off");
   (void) ResetImagePage(crop_image,"0x0+0+0");
   sum_image=BlendSumImage(crop_image,source_image,1.0,-1.0,exception);
   crop_image=DestroyImage(crop_image);

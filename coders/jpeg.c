@@ -347,7 +347,6 @@ static void JPEGErrorHandler(j_common_ptr jpeg_info)
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
       (char *) message,"`%s'",image->filename);
   longjmp(client_info->error_recovery,1);
-  _exit(1);
 }
 
 static void JPEGProgressHandler(j_common_ptr jpeg_info)
@@ -371,7 +370,6 @@ static void JPEGProgressHandler(j_common_ptr jpeg_info)
   (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
     "too many scans","`%s'",image->filename);
   longjmp(client_info->error_recovery,1);
-  _exit(1);
 }
 
 static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
@@ -1058,7 +1056,6 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     scanline[1];
 
   MagickBooleanType
-    debug,
     status;
 
   MagickSizeType
@@ -1098,8 +1095,6 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  debug=IsEventLogging();
-  (void) debug;
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)

@@ -3847,6 +3847,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             FX - value calculator.
           */
           fx_info=AcquireFxInfo(property_image,pattern+3,exception);
+          if (fx_info == (FxInfo *) NULL)
+            continue;
           status=FxEvaluateChannelExpression(fx_info,CompositePixelChannel,0,0,
             &value,exception);
           fx_info=DestroyFxInfo(fx_info);
@@ -3880,6 +3882,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           */
           GetPixelInfo(property_image,&pixel);
           fx_info=AcquireFxInfo(property_image,pattern+4,exception);
+          if (fx_info == (FxInfo *) NULL)
+            continue;
           status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
             &value,exception);
           pixel.red=(double) QuantumRange*value;
@@ -3928,6 +3932,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           */
           GetPixelInfo(property_image,&pixel);
           fx_info=AcquireFxInfo(property_image,pattern+6,exception);
+          if (fx_info == (FxInfo *) NULL)
+            continue;
           status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
             &value,exception);
           pixel.red=(double) QuantumRange*value;

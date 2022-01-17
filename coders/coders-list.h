@@ -66,6 +66,7 @@ AddMagickCoder(FL32)
 #if defined(MAGICKCORE_FPX_DELEGATE)
   AddMagickCoder(FPX)
 #endif
+AddMagickCoder(FTXT)
 AddMagickCoder(GIF)
 AddMagickCoder(GRADIENT)
 AddMagickCoder(GRAY)
