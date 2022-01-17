@@ -746,7 +746,8 @@ static MagickBooleanType DeInitFx (FxInfo * pfx)
     pfx->Views=(CacheView **) RelinquishMagickMemory (pfx->Views);
   }
 
-  pfx->random_infos = DestroyRandomInfoThreadSet (pfx->random_infos);
+  if (pfx->random_infos)
+    pfx->random_infos = DestroyRandomInfoThreadSet (pfx->random_infos);
 
   if (pfx->statistics) {
     for (i = GetImageListLength(pfx->image); i > 0; i--) {
@@ -3750,9 +3751,17 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
 
   memset (pfx, 0, sizeof (*pfx));
 
-  if (!InitFx (pfx, images, exception)) return NULL;
+  if (!InitFx (pfx, images, exception))
+    {
+      pfx = DestroyFxInfo (pfx);
+      return NULL;
+    }
 
-  if (!BuildRPN (pfx)) return NULL;
+  if (!BuildRPN (pfx))
+    {
+      pfx = DestroyFxInfo (pfx);
+      return NULL;
+    }
 
   pfx->pex = (char *)expression;
 
@@ -3764,13 +3773,18 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
   pfx->pex = pfx->expression;
 
   pfx->teDepth = 0;
-  if (!TranslateStatementList (pfx, ";", &chLimit)) return NULL;
+  if (!TranslateStatementList (pfx, ";", &chLimit))
+    {
+      pfx = DestroyFxInfo (pfx);
+      return NULL;
+    }
 
   if (pfx->teDepth) {
     (void) ThrowMagickException (
       pfx->exception, GetMagickModule(), OptionError,
       "Translate expression depth", "(%i) not 0",
       pfx->teDepth);
+    pfx = DestroyFxInfo (pfx);
     return NULL;
   }
 
@@ -3782,11 +3796,16 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
       pfx->exception, GetMagickModule(), OptionError,
       "AcquireFxInfo: TranslateExpression did not exhaust input at", "'%s'",
       pfx->pex);
+    pfx = DestroyFxInfo (pfx);
     return NULL;
   }
 
   if (pfx->NeedStats && !pfx->statistics) {
-    if (!CollectStatistics (pfx)) return NULL;
+    if (!CollectStatistics (pfx))
+      {
+        pfx = DestroyFxInfo (pfx);
+        return NULL;
+      }
   }
 
   if (pfx->DebugOpt) {
@@ -3828,16 +3847,19 @@ FxInfo *DestroyFxInfo (FxInfo * pfx)
   assert (pfx->image != NULL);
   assert (pfx->Images != NULL);
   assert (pfx->Views != NULL);
-  assert (pfx->fxrts != NULL);
 
-  for (t=0; t < (ssize_t) GetMagickResourceLimit(ThreadResource); t++) {
-    DestroyFxRt (&pfx->fxrts[t]);
-  }
-  pfx->fxrts = (fxRtT *) RelinquishMagickMemory (pfx->fxrts);
+  if (pfx->fxrts != NULL)
+    {
+      for (t=0; t < (ssize_t) GetMagickResourceLimit(ThreadResource); t++) {
+        DestroyFxRt (&pfx->fxrts[t]);
+      }
+      pfx->fxrts = (fxRtT *) RelinquishMagickMemory (pfx->fxrts);
+    }
 
   DestroyRPN (pfx);
 
-  pfx->expression = DestroyString (pfx->expression);
+  if (pfx->expression != NULL)
+    pfx->expression = DestroyString (pfx->expression);
   pfx->pex = NULL;
 
   (void) DeInitFx (pfx);
