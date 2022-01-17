@@ -30,7 +30,6 @@ extern MagickPrivate FxInfo
   *DestroyFxInfo(FxInfo *);
 
 extern MagickPrivate MagickBooleanType
-  FxEvaluateExpression(FxInfo *,double *,ExceptionInfo *),
   FxEvaluateChannelExpression(FxInfo *,const PixelChannel,const ssize_t,
    const ssize_t,double *,ExceptionInfo *);
 
