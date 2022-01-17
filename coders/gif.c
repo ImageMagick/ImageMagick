@@ -1729,7 +1729,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobByte(image,(unsigned char) (opacity >= 0 ? opacity :
           0));
         (void) WriteBlobByte(image,(unsigned char) 0x00);
-        if ((image->gamma != 1.0f/2.2f))
+        if (fabs(image->gamma - 1.0f/2.2f) > MagickEpsilon)
           {
             char
               attributes[MagickPathExtent];
