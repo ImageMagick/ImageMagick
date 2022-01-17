@@ -1004,7 +1004,7 @@ static MagickBooleanType DumpRPN (FxInfo * pfx, FILE * fh)
   fprintf (fh, "  numElements=%i", pfx->numElements);
   fprintf (fh, "  usedElements=%i", pfx->usedElements);
   fprintf (fh, "  maxUsedOprStack=%i", pfx->maxUsedOprStack);
-  fprintf (fh, "  ImgListLen=%lu", pfx->ImgListLen);
+  fprintf (fh, "  ImgListLen=%g", (double) pfx->ImgListLen);
   fprintf (fh, "  NeedStats=%s", pfx->NeedStats ? "yes" : "no");
   fprintf (fh, "  NeedHsl=%s\n", pfx->NeedHsl ? "yes" : "no");
 
@@ -1556,13 +1556,13 @@ static size_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *
   if (!QueryColorCompliance (pfx->token, AllCompliance, &colour, dummy_exception) || IsGray) {
     ssize_t type = ParseCommandOption (MagickColorspaceOptions, MagickFalse, ColSp);
     if (type >= 0 || IsIcc || IsDev) {
-      char * p = pfx->pex + pfx->lenToken;
-      while (isspace ((int)*p)) p++;
-      if (*p == '(') {
+      char * q = pfx->pex + pfx->lenToken;
+      while (isspace((int) ((unsigned char) *q))) q++;
+      if (*q == '(') {
         size_t lenfun;
         char sFunc[MagickPathExtent];
-        while (*p && *p != ')') p++;
-        lenfun = (size_t) (p - pfx->pex + 1);
+        while (*q && *q != ')') p++;
+        lenfun = (size_t) (q - pfx->pex + 1);
         if (lenfun > MaxTokenLen) {
           (void) ThrowMagickException (
             pfx->exception, GetMagickModule(), OptionError,
