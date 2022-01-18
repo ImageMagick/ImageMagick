@@ -3,6 +3,7 @@
 
 2022-01-09  7.1.0-20  Dirk Lemstra <dirk@lem.....org>
   * Added support for ARM64 to the Visual Studio build on Windows.
+  * Removed ImageMagickObject from the Windows installer.
 
 2021-01-01  7.1.0-20  <quetzlzacatenango@image...>
   * Support seamless blending of a foreground and background image.
