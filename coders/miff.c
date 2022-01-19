@@ -1701,7 +1701,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     {
       c=ReadBlobByte(image);
     } while ((isgraph((int) ((unsigned char) c)) == 0) && (c != EOF));
-    if (c != EOF)
+    if ((c != EOF) && ((c == 'i') || (c == 'I')))
       {
         /*
           Allocate next image structure.
@@ -1718,7 +1718,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (status == MagickFalse)
           break;
       }
-  } while (c != EOF);
+  } while (c != EOF && ((c == 'i') || (c == 'I')));
   (void) CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));
