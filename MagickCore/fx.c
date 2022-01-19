@@ -3589,10 +3589,10 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         case aPrintsize:
           break;
         case aPrintsizeX:
-          regA = PerceptibleReciprocal (img->resolution.x) * img->columns;
+          regA = (fxFltType) PerceptibleReciprocal (img->resolution.x) * img->columns;
           break;
         case aPrintsizeY:
-          regA = PerceptibleReciprocal (img->resolution.y) * img->rows;
+          regA = (fxFltType) PerceptibleReciprocal (img->resolution.y) * img->rows;
           break;
         case aQuality:
           regA = (fxFltType) img->quality;
