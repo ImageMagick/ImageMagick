@@ -1507,6 +1507,7 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
           pfx->exception, GetMagickModule(), OptionError,
           "Property", "'%s' is not a number at '%s'",
           text, SetShortExp(pfx));
+        text = DestroyString(text);
         return -1;
       }
 
