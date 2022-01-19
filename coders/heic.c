@@ -325,8 +325,8 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
     return(MagickFalse);
   image->columns=(size_t) heif_image_get_width(heif_image,
     heif_channel_interleaved);
-  image->rows=(size_t) heif_image_get_height(heif_image
-    ,heif_channel_interleaved);
+  image->rows=(size_t) heif_image_get_height(heif_image,
+    heif_channel_interleaved);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
