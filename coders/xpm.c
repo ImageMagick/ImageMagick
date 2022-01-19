@@ -773,7 +773,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
               break;
             for (x=0; x < (ssize_t) picon->columns; x++)
             {
-              if (GetPixelAlpha(image,q) == (Quantum) TransparentAlpha)
+              if (GetPixelAlpha(picon,q) == (Quantum) TransparentAlpha)
                 transparent=MagickTrue;
               else
                 SetPixelAlpha(picon,OpaqueAlpha,q);
@@ -804,7 +804,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
           break;
         for (x=0; x < (ssize_t) picon->columns; x++)
         {
-          if (GetPixelAlpha(image,q) == (Quantum) TransparentAlpha)
+          if (GetPixelAlpha(picon,q) == (Quantum) TransparentAlpha)
             SetPixelIndex(picon,(Quantum) picon->colors,q);
           q+=GetPixelChannels(picon);
         }
