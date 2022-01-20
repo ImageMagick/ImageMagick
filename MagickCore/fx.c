@@ -1499,21 +1499,21 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
          sProperty, pfx->exception);
 
       if (!text) {
+        text = DestroyString(text);
         (void) ThrowMagickException (
           pfx->exception, GetMagickModule(), OptionError,
           "Unknown property", "'%s' at '%s'",
           sProperty, SetShortExp(pfx));
-        text = DestroyString(text);
         return -1;
       }
 
       *val = strtold (text, &tailptr);
       if (text == tailptr) {
+        text = DestroyString(text);
         (void) ThrowMagickException (
           pfx->exception, GetMagickModule(), OptionError,
           "Property", "'%s' text '%s' is not a number at '%s'",
           sProperty, text, SetShortExp(pfx));
-        text = DestroyString(text);
         return -1;
       }
 
@@ -3806,6 +3806,8 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
   pfx->teDepth = 0;
   if (!TranslateStatementList (pfx, ";", &chLimit)) {
     (void) DestroyRPN (pfx);
+    pfx->expression = DestroyString (pfx->expression);
+    pfx->pex = NULL;
     (void) DeInitFx (pfx);
     pfx = (FxInfo*) RelinquishMagickMemory(pfx);
     return NULL;
@@ -3818,6 +3820,8 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
       pfx->teDepth);
 
     (void) DestroyRPN (pfx);
+    pfx->expression = DestroyString (pfx->expression);
+    pfx->pex = NULL;
     (void) DeInitFx (pfx);
     pfx = (FxInfo*) RelinquishMagickMemory(pfx);
     return NULL;
@@ -3830,6 +3834,8 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
       (int)chLimit, pfx->pex);
 
     (void) DestroyRPN (pfx);
+    pfx->expression = DestroyString (pfx->expression);
+    pfx->pex = NULL;
     (void) DeInitFx (pfx);
     pfx = (FxInfo*) RelinquishMagickMemory(pfx);
     return NULL;
@@ -3838,6 +3844,8 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
   if (pfx->NeedStats && !pfx->statistics) {
     if (!CollectStatistics (pfx)) {
       (void) DestroyRPN (pfx);
+      pfx->expression = DestroyString (pfx->expression);
+      pfx->pex = NULL;
       (void) DeInitFx (pfx);
       pfx = (FxInfo*) RelinquishMagickMemory(pfx);
       return NULL;
@@ -3861,6 +3869,8 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
         "fxrts", "%lu",
         number_threads);
       (void) DestroyRPN (pfx);
+      pfx->expression = DestroyString (pfx->expression);
+      pfx->pex = NULL;
       (void) DeInitFx (pfx);
       pfx = (FxInfo*) RelinquishMagickMemory(pfx);
       return NULL;
@@ -3879,6 +3889,8 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
         }
         pfx->fxrts = (fxRtT *) RelinquishMagickMemory (pfx->fxrts);
         (void) DestroyRPN (pfx);
+        pfx->expression = DestroyString (pfx->expression);
+        pfx->pex = NULL;
         (void) DeInitFx (pfx);
         pfx = (FxInfo*) RelinquishMagickMemory(pfx);
         return NULL;
