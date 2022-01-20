@@ -3804,7 +3804,12 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
   pfx->pex = (char *)pfx->expression;
 
   pfx->teDepth = 0;
-  if (!TranslateStatementList (pfx, ";", &chLimit)) return NULL;
+  if (!TranslateStatementList (pfx, ";", &chLimit)) {
+    (void) DestroyRPN (pfx);
+    (void) DeInitFx (pfx);
+    pfx = (FxInfo*) RelinquishMagickMemory(pfx);
+    return NULL;
+  }
 
   if (pfx->teDepth) {
     (void) ThrowMagickException (
