@@ -236,7 +236,9 @@ typedef enum {
   fAcosh,
 #endif
   fAcos,
+#if defined(MAGICKCORE_HAVE_J1)
   fAiry,
+#endif
   fAlt,
 #if defined(MAGICKCORE_HAVE_ASINH)
   fAsinh,
@@ -320,7 +322,9 @@ static const FunctionT Functions[] = {
   {fAcosh,   "acosh" , 1},
 #endif
   {fAcos,    "acos"  , 1},
+#if defined(MAGICKCORE_HAVE_J1)
   {fAiry,    "airy"  , 1},
+#endif
   {fAlt,     "alt"   , 1},
 #if defined(MAGICKCORE_HAVE_ASINH)
   {fAsinh,   "asinh" , 1},
@@ -403,10 +407,10 @@ typedef enum {
   aMedian,
   aMinima,
   aPage,
-  aPageWid,
-  aPageHt,
   aPageX,
   aPageY,
+  aPageWid,
+  aPageHt,
   aPrintsize,
   aPrintsizeX,
   aPrintsizeY,
@@ -1280,6 +1284,7 @@ static int MaybeXYWH (FxInfo * pfx, ImgAttrE * pop)
     }
   }
   pfx->pex+=pfx->lenToken;
+
   return ret;
 }
 
@@ -1498,6 +1503,7 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
           pfx->exception, GetMagickModule(), OptionError,
           "Unknown property", "'%s' at '%s'",
           sProperty, SetShortExp(pfx));
+        text = DestroyString(text);
         return -1;
       }
 
@@ -1505,8 +1511,8 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
       if (text == tailptr) {
         (void) ThrowMagickException (
           pfx->exception, GetMagickModule(), OptionError,
-          "Property", "'%s' is not a number at '%s'",
-          text, SetShortExp(pfx));
+          "Property", "'%s' text '%s' is not a number at '%s'",
+          sProperty, text, SetShortExp(pfx));
         text = DestroyString(text);
         return -1;
       }
@@ -1895,7 +1901,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
     if (!coordQual && chQual == CompositePixelChannel && iaQual == aNull) {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
-        "For function", "'%s', bad compsite qualifier '%s' at '%s'",
+        "For function", "'%s', bad composite qualifier '%s' at '%s'",
         funStr, pfx->token, SetShortExp(pfx));
       return MagickFalse;
     }
@@ -2611,6 +2617,9 @@ static MagickBooleanType TranslateExpression (
     *needPopAll = MagickFalse;
   }
 
+  if (pfx->exception->severity != UndefinedException)
+    return MagickFalse;
+
   return MagickTrue;
 }
 
@@ -2626,7 +2635,6 @@ static MagickBooleanType TranslateStatement (FxInfo * pfx, char * strLimit, char
   if (!TranslateExpression (pfx, strLimit, chLimit, &NeedPopAll)) {
     return MagickFalse;
   }
-
   if (pfx->usedElements && *chLimit==';') {
     /* FIXME: not necessarily the last element,
        but the last _executed_ element, eg "goto" in a "for()"., 
@@ -2661,6 +2669,9 @@ static MagickBooleanType TranslateStatementList (FxInfo * pfx, const char * strL
       break;
     }
   }
+
+  if (pfx->exception->severity != UndefinedException)
+    return MagickFalse;
 
   return MagickTrue;
 }
@@ -2767,14 +2778,14 @@ static fxFltType inline ImageStat (
     case aPage:
       /* Do nothing */
       break;
-    case aPageWid:
-      return (fxFltType) pfx->Images[ImgNum]->page.width;
-    case aPageHt:
-      return (fxFltType) pfx->Images[ImgNum]->page.height;
     case aPageX:
       return (fxFltType) pfx->Images[ImgNum]->page.x;
     case aPageY:
       return (fxFltType) pfx->Images[ImgNum]->page.y;
+    case aPageWid:
+      return (fxFltType) pfx->Images[ImgNum]->page.width;
+    case aPageHt:
+      return (fxFltType) pfx->Images[ImgNum]->page.height;
     case aPrintsize:
       /* Do nothing */
       break;
@@ -3007,7 +3018,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (pfxrt->UserSymVals[pel->EleNdx] *= regA);
           break;
         case oDivideEq:
-          regA = (pfxrt->UserSymVals[pel->EleNdx] *= PerceptibleReciprocal((double) regA));
+          regA = (pfxrt->UserSymVals[pel->EleNdx] *= PerceptibleReciprocal(regA));
           break;
         case oPlusPlus:
           regA = pfxrt->UserSymVals[pel->EleNdx]++;
@@ -3025,7 +3036,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA *= regB;
           break;
         case oDivide:
-          regA *= PerceptibleReciprocal((double) regB);
+          regA *= PerceptibleReciprocal(regB);
           break;
         case oModulus:
           regA = fmod ((double) regA, fabs(floor((double) regB+0.5)));
@@ -3575,17 +3586,17 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           break;
         case aPage:
           break;
-        case aPageWid:
-          regA = (fxFltType) img->page.width;
-          break;
-        case aPageHt:
-          regA = (fxFltType) img->page.height;
-          break;
         case aPageX:
           regA = (fxFltType) img->page.x;
           break;
         case aPageY:
           regA = (fxFltType) img->page.y;
+          break;
+        case aPageWid:
+          regA = (fxFltType) img->page.width;
+          break;
+        case aPageHt:
+          regA = (fxFltType) img->page.height;
           break;
         case aPrintsize:
           break;
@@ -3725,7 +3736,9 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
   *result = regA;
 
   if (pfxrt->usedValStack != 0) {
-    fprintf (stderr, "ValStack not empty (%i)\n", pfxrt->usedValStack);
+      (void) ThrowMagickException (
+        pfx->exception, GetMagickModule(), OptionError,
+        "ValStack not empty", "(%i)", pfxrt->usedValStack);
     return MagickFalse;
   }
 
@@ -3772,18 +3785,23 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
 
   memset (pfx, 0, sizeof (*pfx));
 
-  if (!InitFx (pfx, images, exception)) return NULL;
+  if (!InitFx (pfx, images, exception)) {
+    pfx = (FxInfo*) RelinquishMagickMemory(pfx);
+    return NULL;
+  }
 
-  if (!BuildRPN (pfx)) return NULL;
-
-  pfx->pex = (char *)expression;
+  if (!BuildRPN (pfx)) {
+    (void) DeInitFx (pfx);
+    pfx = (FxInfo*) RelinquishMagickMemory(pfx);
+    return NULL;
+  }
 
   if (*expression == '@')
     pfx->expression = FileToString (expression+1, ~0UL, exception);
   else
     pfx->expression = ConstantString (expression);
 
-  pfx->pex = pfx->expression;
+  pfx->pex = (char *)pfx->expression;
 
   pfx->teDepth = 0;
   if (!TranslateStatementList (pfx, ";", &chLimit)) return NULL;
@@ -3793,22 +3811,32 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
       pfx->exception, GetMagickModule(), OptionError,
       "Translate expression depth", "(%i) not 0",
       pfx->teDepth);
+
+    (void) DestroyRPN (pfx);
+    (void) DeInitFx (pfx);
+    pfx = (FxInfo*) RelinquishMagickMemory(pfx);
     return NULL;
   }
 
   if (chLimit != '\0' && chLimit != ';') {
-    fprintf (stderr, "AcquireFxInfo: TranslateExpression did not exhaust input '%s' chLimit='%c'\n",
-             pfx->pex, chLimit ? chLimit : ' ');
-
     (void) ThrowMagickException (
       pfx->exception, GetMagickModule(), OptionError,
-      "AcquireFxInfo: TranslateExpression did not exhaust input at", "'%s'",
-      pfx->pex);
+      "AcquireFxInfo: TranslateExpression did not exhaust input", "(chLimit=%i) at'%s'",
+      (int)chLimit, pfx->pex);
+
+    (void) DestroyRPN (pfx);
+    (void) DeInitFx (pfx);
+    pfx = (FxInfo*) RelinquishMagickMemory(pfx);
     return NULL;
   }
 
   if (pfx->NeedStats && !pfx->statistics) {
-    if (!CollectStatistics (pfx)) return NULL;
+    if (!CollectStatistics (pfx)) {
+      (void) DestroyRPN (pfx);
+      (void) DeInitFx (pfx);
+      pfx = (FxInfo*) RelinquishMagickMemory(pfx);
+      return NULL;
+    }
   }
 
   if (pfx->DebugOpt) {
@@ -3827,6 +3855,9 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
         pfx->exception, GetMagickModule(), ResourceLimitFatalError,
         "fxrts", "%lu",
         number_threads);
+      (void) DestroyRPN (pfx);
+      (void) DeInitFx (pfx);
+      pfx = (FxInfo*) RelinquishMagickMemory(pfx);
       return NULL;
     }
     for (t=0; t < (ssize_t) number_threads; t++) {
@@ -3835,6 +3866,16 @@ FxInfo *AcquireFxInfo (const Image * images, const char * expression, ExceptionI
           pfx->exception, GetMagickModule(), ResourceLimitFatalError,
           "AllocFxRt t=", "%g",
           (double) t);
+        {
+          ssize_t t2;
+          for (t2 = t-1; t2 >= 0; t2--) {
+            DestroyFxRt (&pfx->fxrts[t]);
+          }
+        }
+        pfx->fxrts = (fxRtT *) RelinquishMagickMemory (pfx->fxrts);
+        (void) DestroyRPN (pfx);
+        (void) DeInitFx (pfx);
+        pfx = (FxInfo*) RelinquishMagickMemory(pfx);
         return NULL;
       }
     }
