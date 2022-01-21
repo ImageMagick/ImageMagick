@@ -1590,7 +1590,7 @@ static ssize_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType 
           *v1 = colour.green / QuantumRange;
           *v2 = colour.blue  / QuantumRange;
           dummy_exception = DestroyExceptionInfo (dummy_exception);
-          return lenfun;
+          return (ssize_t) lenfun;
         }
       } else {
         (void) ThrowMagickException (
@@ -1612,7 +1612,7 @@ static ssize_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType 
   *v2 = colour.blue  / QuantumRange;
 
   dummy_exception = DestroyExceptionInfo (dummy_exception);
-  return strlen (pfx->token);
+  return (ssize_t) strlen (pfx->token);
 }
 
 static ssize_t inline GetHexColour (FxInfo * pfx, fxFltType *v0, fxFltType *v1, fxFltType *v2)
