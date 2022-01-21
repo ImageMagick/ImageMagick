@@ -1456,7 +1456,6 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
    "0" means no relevant input (don't swallow, but not an error)
 */
 {
-
   if (PeekStr (pfx, "%[")) {
     int level = 0;
     size_t len;
@@ -1491,14 +1490,12 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
 
     (void) CopyMagickString (sProperty, pfx->pex, len+1);
     sProperty[len] = '\0';
-
     {
       char * tailptr;
       char * text;
       text = InterpretImageProperties (pfx->image->image_info, pfx->image,
          sProperty, pfx->exception);
-
-      if (!text) {
+      if (!text || !*text) {
         text = DestroyString(text);
         (void) ThrowMagickException (
           pfx->exception, GetMagickModule(), OptionError,
@@ -1525,9 +1522,11 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
   return 0;
 }
 
-static size_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *v1, fxFltType *v2)
+static ssize_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *v1, fxFltType *v2)
 /* Finds named colour such as "blue" and colorspace function such as "lab(10,20,30)".
    Returns number of characters to swallow.
+   Return -1 means apparantly a constant colour, but with an error.
+   Return 0 means not a constant colour, but not an error.
 */
 {
   PixelInfo
@@ -1546,7 +1545,6 @@ static size_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *
 
   char ColSp[MagickPathExtent];
   (void) CopyMagickString (ColSp, pfx->token, MaxTokenLen);
-
   p = ColSp + pfx->lenToken - 1;
   if (*p == 'a' || *p == 'A') *p = '\0';
 
@@ -1569,14 +1567,22 @@ static size_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *
         size_t lenfun;
         char sFunc[MagickPathExtent];
         while (*q && *q != ')') q++;
+        if (!*q) {
+          (void) ThrowMagickException (
+            pfx->exception, GetMagickModule(), OptionError,
+            "constant color missing ')'", "at '%s'",
+            SetShortExp(pfx));
+          dummy_exception = DestroyExceptionInfo (dummy_exception);
+          return -1;
+        }
         lenfun = (size_t) (q - pfx->pex + 1);
         if (lenfun > MaxTokenLen) {
           (void) ThrowMagickException (
             pfx->exception, GetMagickModule(), OptionError,
-            "lenfun too long", "'%g' at '%s'",
-            (double) lenfun, SetShortExp(pfx));
+            "lenfun too long", "'%lu' at '%s'",
+            lenfun, SetShortExp(pfx));
           dummy_exception = DestroyExceptionInfo (dummy_exception);
-          return 0;
+          return -1;
         }
         (void) CopyMagickString (sFunc, pfx->pex, lenfun+1);
         if (QueryColorCompliance (sFunc, AllCompliance, &colour, dummy_exception)) {
@@ -1586,6 +1592,13 @@ static size_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *
           dummy_exception = DestroyExceptionInfo (dummy_exception);
           return lenfun;
         }
+      } else {
+        (void) ThrowMagickException (
+          pfx->exception, GetMagickModule(), OptionError,
+          "colorspace but not a valid color with '(...)' at", "'%s'",
+          SetShortExp(pfx));
+        dummy_exception = DestroyExceptionInfo (dummy_exception);
+        return -1;
       }
     }
     if (!IsGray) {
@@ -1599,7 +1612,6 @@ static size_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *
   *v2 = colour.blue  / QuantumRange;
 
   dummy_exception = DestroyExceptionInfo (dummy_exception);
-
   return strlen (pfx->token);
 }
 
@@ -1996,6 +2008,7 @@ static MagickBooleanType GetOperand (
           pfx->exception, GetMagickModule(), OptionError,
           "Empty expression in parentheses at", "'%s'",
           SetShortExp(pfx));
+        return MagickFalse;
       }
       if (chLimit != ')') {
         (void) ThrowMagickException (
@@ -2210,7 +2223,8 @@ static MagickBooleanType GetOperand (
     */
     {
       fxFltType v0, v1, v2;
-      size_t ColLen = GetConstantColour (pfx, &v0, &v1, &v2);
+      ssize_t ColLen = GetConstantColour (pfx, &v0, &v1, &v2);
+      if (ColLen < 0) return MagickFalse;
       if (ColLen > 0) {
         (void) AddColourElement (pfx, v0, v1, v2);
         pfx->pex+=ColLen;
@@ -2325,7 +2339,6 @@ static MagickBooleanType GetOperator (
   size_t len = 0;
   MagickBooleanType DoneIt = MagickFalse;
   SkipSpaces (pfx);
-
   for (op = (OperatorE)0; op != oNull; op=(OperatorE) (op+1)) {
     const char * opStr = Operators[op].str;
     len = strlen(opStr);
@@ -2654,7 +2667,6 @@ static MagickBooleanType TranslateStatementList (FxInfo * pfx, const char * strL
   SkipSpaces (pfx);
 
   if (!*pfx->pex) return MagickFalse;
-
   (void) CopyMagickString (sLimits, strLimit, MAX_SLIMIT-1);
 
   if (strchr(strLimit,';')==NULL)
@@ -3018,7 +3030,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (pfxrt->UserSymVals[pel->EleNdx] *= regA);
           break;
         case oDivideEq:
-          regA = (pfxrt->UserSymVals[pel->EleNdx] *= PerceptibleReciprocal((double) regA));
+          regA = (pfxrt->UserSymVals[pel->EleNdx] *= PerceptibleReciprocal((double)regA));
           break;
         case oPlusPlus:
           regA = pfxrt->UserSymVals[pel->EleNdx]++;
@@ -3036,7 +3048,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA *= regB;
           break;
         case oDivide:
-          regA *= PerceptibleReciprocal((double) regB);
+          regA *= PerceptibleReciprocal((double)regB);
           break;
         case oModulus:
           regA = fmod ((double) regA, fabs(floor((double) regB+0.5)));
