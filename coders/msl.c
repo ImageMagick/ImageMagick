@@ -1153,6 +1153,30 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           msl_info->image[n]=append_image;
           break;
         }
+      if (LocaleCompare((const char *) tag, "autoorient") == 0)
+        {
+          Image
+            *new_image;
+
+          /*
+            Adjusts an image's orientation
+          */
+          if (msl_info->image[n] == (Image *) NULL)
+            {
+              ThrowMSLException(OptionError,"NoImagesDefined",
+                (const char *) tag);
+              break;
+            }
+
+          new_image=AutoOrientImage(msl_info->image[n],
+              msl_info->image[n]->orientation, exception);
+          if (new_image == (Image *) NULL)
+            break;
+
+          msl_info->image[n]=DestroyImage(msl_info->image[n]);
+          msl_info->image[n]=new_image;
+          break;
+        }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
       break;
     }
