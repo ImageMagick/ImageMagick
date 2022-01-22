@@ -1590,7 +1590,7 @@ static ssize_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType 
           *v1 = colour.green / QuantumRange;
           *v2 = colour.blue  / QuantumRange;
           dummy_exception = DestroyExceptionInfo (dummy_exception);
-          return (ssize_t) lenfun;
+          return (ssize_t)lenfun;
         }
       } else {
         (void) ThrowMagickException (
@@ -2546,8 +2546,16 @@ static MagickBooleanType TranslateExpression (
 
     UserSymbol = NewUserSymbol = MagickFalse;
 
-    if (!*pfx->pex) break;
-    if (*strLimit && (strchr(strLimit,*pfx->pex)!=NULL) ) break;
+    if ( (!*pfx->pex) || (*strLimit && (strchr(strLimit,*pfx->pex)!=NULL) ) )
+    {
+      if (IncrDecr) break;
+
+      (void) ThrowMagickException (
+        pfx->exception, GetMagickModule(), OptionError,
+        "Expected operand after operator", "at '%s'",
+        SetShortExp(pfx));
+      return MagickFalse;
+    }
 
     if (IncrDecr) {
       (void) ThrowMagickException (
@@ -3070,7 +3078,6 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (fxFltType) ((size_t)(regA+0.5) << (size_t)(regB+0.5));
           break;
         case oRshift:
-          regA = (fxFltType) 0.0;
           if ((size_t) (regB+0.5) >= (8*sizeof(size_t)))
             {
               (void) ThrowMagickException ( pfx->exception, GetMagickModule(),
