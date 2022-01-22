@@ -3060,9 +3060,24 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = -regA;
           break;
         case oLshift:
+          if ((size_t) (regB+0.5) >= (8*sizeof(size_t)))
+            {
+              (void) ThrowMagickException ( pfx->exception, GetMagickModule(),
+                OptionError, "undefined shift", "%g", (double) regB);
+              regA = (fxFltType) 0.0;
+              break;
+            }
           regA = (fxFltType) ((size_t)(regA+0.5) << (size_t)(regB+0.5));
           break;
         case oRshift:
+          regA = (fxFltType) 0.0;
+          if ((size_t) (regB+0.5) >= (8*sizeof(size_t)))
+            {
+              (void) ThrowMagickException ( pfx->exception, GetMagickModule(),
+                OptionError, "undefined shift", "%g", (double) regB);
+              regA = (fxFltType) 0.0;
+              break;
+            }
           regA = (fxFltType) ((size_t)(regA+0.5) >> (size_t)(regB+0.5));
           break;
         case oEq:
