@@ -66,6 +66,7 @@ jobs:
       run: |
         powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi -OutFile strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi
         msiexec /i strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi /qn INSTALLDIR="C:\Strawberry${{matrix.bit}}"
+        mv "C:\Strawberry" "C:\Strawberry64"
 
     - name: Install Inno Setup
       shell: cmd
