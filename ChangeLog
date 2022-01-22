@@ -1,5 +1,5 @@
 2022-01-21  7.1.0-20  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-20 GIT revision 19585:2cd840776:20220121
+  * Release ImageMagick version 7.1.0-20 GIT revision 19585:2cd840776:20220121 
 
 2022-01-09  7.1.0-20  Dirk Lemstra <dirk@lem.....org>
   * Added support for ARM64 to the Visual Studio build on Windows.
