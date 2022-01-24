@@ -587,6 +587,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
 static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
 {
 #if defined(MAGICKCORE_HEIC_DELEGATE)
+#if LIBHEIF_NUMERIC_VERSION >= 0x01040000
   enum heif_filetype_result
     heif_filetype;
 
@@ -595,6 +596,7 @@ static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
   heif_filetype=heif_check_filetype(magick,(int) length);
   if (heif_filetype == heif_filetype_yes_supported)
     return(MagickTrue);
+#endif
 #endif
   return(MagickFalse);
 }
