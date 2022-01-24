@@ -2903,7 +2903,7 @@ static inline fxFltType ImageStat (
         "Unknown ia=", "%i",
         ia);
   }
-  if (NeedRelinq) cs = RelinquishMagickMemory (cs);
+  if (NeedRelinq) cs = (ChannelStatistics*) RelinquishMagickMemory (cs);
 
   return ret;
 }
