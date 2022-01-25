@@ -743,7 +743,7 @@ static MagickBooleanType InitFx (FxInfo * pfx, const Image * img,
         i);
       /* dealloc any done so far, and Imgs */
       for ( ; i > 0; i--) {
-        ImgT * pimg = &pfx->Imgs[i-1];
+        pimg = &pfx->Imgs[i-1];
         pimg->View = DestroyCacheView (pimg->View);
       }
       pfx->Imgs=(ImgT *) RelinquishMagickMemory (pfx->Imgs);
