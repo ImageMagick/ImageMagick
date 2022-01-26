@@ -3294,7 +3294,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         case fDebug:
           /* FIXME: debug() should give channel name. */
 
-          fprintf (stderr, "%s[%g,%g].%i: %s=%.*Lg\n",
+          (void) fprintf (stderr, "%s[%g,%g].[%i]: %s=%.*Lg\n",
                    img->filename, (double) imgx, (double) imgy,
                    channel, SetPtrShortExp (pfx, pel->pExpStart, (size_t) (pel->lenExp+1)),
                    pfx->precision, regA);
@@ -3668,7 +3668,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         case fNull:
           break;
         case aDepth:
-          regA = (fxFltType) GetImageDepth (img, pfx->exception) / QuantumRange;
+          regA = (fxFltType) GetImageDepth (img, pfx->exception);
           break;
         case aExtent:
           regA = (fxFltType) img->extent;
