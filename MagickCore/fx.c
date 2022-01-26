@@ -764,7 +764,7 @@ static MagickBooleanType DeInitFx (FxInfo * pfx)
   if (pfx->Images) pfx->Images = (Image**) RelinquishMagickMemory (pfx->Images);
 
   if (pfx->Imgs) {
-    for (i = (ssize_t) GetImageListLength(pfx->image); i > 0; i--) {
+    for (i = (ssize_t)GetImageListLength(pfx->image); i > 0; i--) {
       ImgT * pimg = &pfx->Imgs[i-1];
       pimg->View = DestroyCacheView (pimg->View);
     }
@@ -773,7 +773,7 @@ static MagickBooleanType DeInitFx (FxInfo * pfx)
   pfx->random_infos = DestroyRandomInfoThreadSet (pfx->random_infos);
 
   if (pfx->statistics) {
-    for (i = (ssize_t) GetImageListLength(pfx->image); i > 0; i--) {
+    for (i = (ssize_t)GetImageListLength(pfx->image); i > 0; i--) {
       pfx->statistics[i-1]=(ChannelStatistics *) RelinquishMagickMemory (pfx->statistics[i-1]);
     }
 
@@ -2903,7 +2903,7 @@ static inline fxFltType ImageStat (
         "Unknown ia=", "%i",
         ia);
   }
-  if (NeedRelinq) cs = (ChannelStatistics*) RelinquishMagickMemory (cs);
+  if (NeedRelinq) cs = (ChannelStatistics *)RelinquishMagickMemory (cs);
 
   return ret;
 }
@@ -3031,6 +3031,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
   fxFltType regA=0, regB=0, regC=0, regD=0, regE=0;
   Image * img = pfx->image;
   ChannelStatistics * cs = NULL;
+  MagickBooleanType NeedRelinq = MagickFalse;
   double hue=0, saturation=0, lightness=0;
   int i;
 
@@ -3045,6 +3046,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
     cs = pfx->statistics[pfx->ImgNum];
   } else if (pfx->NeedStats) {
     cs = CollectOneImgStats (pfx, pfx->Images[pfx->ImgNum]);
+    NeedRelinq = MagickTrue;
   }
 
   /*  Folllowing is only for expressions like "saturation", with no image specifier.
@@ -3836,6 +3838,8 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
   if (pfxrt->usedValStack > 0) regA = PopVal (pfx, pfxrt, 9999);
 
   *result = regA;
+
+  if (NeedRelinq) cs = (ChannelStatistics *)RelinquishMagickMemory (cs);
 
   if (pfx->exception->severity != UndefinedException) {
     return MagickFalse;
