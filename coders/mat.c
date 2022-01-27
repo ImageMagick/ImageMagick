@@ -361,10 +361,10 @@ static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
 }
 
 /* Calculate minimum and maximum from a given block of data */
-static void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, size_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
+static void CalcMinMax(Image *image, int endian_indicator, ssize_t SizeX, ssize_t SizeY, size_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
 {
 MagickOffsetType filepos;
-int i, x;
+ssize_t i, x;
 void (*ReadBlobDoublesXXX)(Image * image, size_t len, double *data);
 void (*ReadBlobFloatsXXX)(Image * image, size_t len, float *data);
 double *dblrow;
@@ -423,7 +423,7 @@ float *fltrow;
 }
 
 
-static void FixSignedValues(const Image *image,Quantum *q, int y)
+static void FixSignedValues(const Image *image,Quantum *q, ssize_t y)
 {
   while(y-->0)
   {
@@ -439,11 +439,14 @@ static void FixSignedValues(const Image *image,Quantum *q, int y)
 
 
 /** Fix whole row of logical/binary data. It means pack it. */
-static void FixLogical(unsigned char *Buff,int ldblk)
+static void FixLogical(unsigned char *Buff,ssize_t ldblk)
 {
 unsigned char mask=128;
 unsigned char *BuffL = Buff;
 unsigned char val = 0;
+
+  if (ldblk == 0)
+    return;
 
   while(ldblk-->0)
   {
@@ -604,9 +607,6 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     unsigned int nameLen;
   } MAT4_HDR;
 
-  long
-    ldblk;
-
   EndianType
     endian;
 
@@ -626,10 +626,9 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     format_type;
 
   ssize_t
-    i;
-
-  ssize_t
     count,
+    i,
+    ldblk,
     y;
 
   unsigned char
@@ -883,7 +882,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t CellType;
   QuantumInfo *quantum_info;
   ImageInfo *clone_info;
-  int i;
+  ssize_t i;
   ssize_t ldblk;
   unsigned char *BImgBuff = NULL;
   double MinVal, MaxVal;
@@ -1203,7 +1202,7 @@ RestoreMSCWarning
     image->colors = GetQuantumRange(image->depth);
     if (image->columns == 0 || image->rows == 0)
       goto MATLAB_KO;
-    if((unsigned int)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
+    if((size_t)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
       goto MATLAB_KO;
     /* Image is gray when no complex flag is set and 2D Matrix */
     if ((MATLAB_HDR.DimFlag == 8) &&
