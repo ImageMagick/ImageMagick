@@ -48,6 +48,7 @@
 #include "MagickCore/channel.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -4532,11 +4533,8 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     *name;
 
   Image
+    *linear_image,
     *thumbnail_image;
-
-  double
-    x_factor,
-    y_factor;
 
   struct stat
     attributes;
@@ -4547,36 +4545,22 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  x_factor=(double) columns/(double) image->columns;
-  y_factor=(double) rows/(double) image->rows;
-  if ((x_factor*y_factor) > 0.1)
-    thumbnail_image=ResizeImage(image,columns,rows,image->filter,exception);
-  else
-    if (((SampleFactor*columns) < 128) || ((SampleFactor*rows) < 128))
-      thumbnail_image=ResizeImage(image,columns,rows,image->filter,exception);
-    else
-      {
-        Image
-          *sample_image;
-
-        sample_image=SampleImage(image,SampleFactor*columns,SampleFactor*rows,
-          exception);
-        if (sample_image == (Image *) NULL)
-          return((Image *) NULL);
-        thumbnail_image=ResizeImage(sample_image,columns,rows,image->filter,
-          exception);
-        sample_image=DestroyImage(sample_image);
-      }
+  linear_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (linear_image == (Image *) NULL)
+    return((Image *) NULL);
+  (void) SetImageColorspace(linear_image,RGBColorspace,exception);
+  linear_image->filter=LanczosSharpFilter;
+  thumbnail_image=DistortResizeImage(linear_image,columns,rows,exception);
+  linear_image=DestroyImage(linear_image);
   if (thumbnail_image == (Image *) NULL)
-    return(thumbnail_image);
+    return((Image *) NULL);
+  /*
+    Set sRGB colorspace and remove color profiles and comments.
+  */
+  (void) SetImageColorspace(thumbnail_image,sRGBColorspace,exception);
   (void) ParseAbsoluteGeometry("0x0+0+0",&thumbnail_image->page);
-  if (thumbnail_image->alpha_trait == UndefinedPixelTrait)
-    (void) SetImageAlphaChannel(thumbnail_image,OpaqueAlphaChannel,exception);
   thumbnail_image->depth=8;
   thumbnail_image->interlace=NoInterlace;
-  /*
-    Strip all profiles except color profiles.
-  */
   ResetImageProfileIterator(thumbnail_image);
   for (name=GetNextImageProfile(thumbnail_image); name != (const char *) NULL; )
   {
@@ -4588,6 +4572,9 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     name=GetNextImageProfile(thumbnail_image);
   }
   (void) DeleteImageProperty(thumbnail_image,"comment");
+  /*
+    Set Thumb properties.
+  */
   (void) CopyMagickString(value,image->magick_filename,MagickPathExtent);
   if (strstr(image->magick_filename,"//") == (char *) NULL)
     (void) FormatLocaleString(value,MagickPathExtent,"file://%s",
