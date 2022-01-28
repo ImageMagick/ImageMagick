@@ -1,7 +1,9 @@
 2022-01-27  7.1.0-21  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-21 GIT revision 19605:7347fb36c:20220127
+  * Release ImageMagick version 7.1.0-21 GIT revision 19607:e035b46ae:20220127
 
 2021-01-24  7.1.0-21  <quetzlzacatenango@image...>
+  * PDF now shows the correct Unicode title (reference
+  https://github.com/ImageMagick/ImageMagick/issues/4771).
   * optimize Fx image statistics (reference
     https://github.com/ImageMagick/ImageMagick/discussions/4533).
 
