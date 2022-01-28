@@ -3126,7 +3126,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           {
             (void) WriteBlobByte(image,'0');
             (void) WriteBlobByte(image,'0');
-            (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 4) & 0x0f]);
+            (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 4) & 0xf0]);
             (void) WriteBlobByte(image,hex_digits[utf16[i] & 0x0f]);
           }
           (void) FormatLocaleString(buffer,MagickPathExtent,">\n");
