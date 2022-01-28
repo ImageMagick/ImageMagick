@@ -3088,8 +3088,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     {
       title=EscapeParenthesis(GetPDFTitle(image_info,basename));
-      (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (%s)\n",
-        title);
+      (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (%s)\n",title);
       title=DestroyString(title);
     }
   else
@@ -3126,7 +3125,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           {
             (void) WriteBlobByte(image,'0');
             (void) WriteBlobByte(image,'0');
-            (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 4) & 0xf0]);
+            (void) WriteBlobByte(image,hex_digits[(utf16[i] & 0xf0) >> 4]);
             (void) WriteBlobByte(image,hex_digits[utf16[i] & 0x0f]);
           }
           (void) FormatLocaleString(buffer,MagickPathExtent,">\n");
