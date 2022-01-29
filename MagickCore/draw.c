@@ -5529,8 +5529,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       else
         if (*primitive_info->text != '\0')
           {
-            struct stat
-              attributes;
+            MagickBooleanType
+              path_status;
 
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
@@ -5541,13 +5541,22 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               clone_info->size=DestroyString(clone_info->size);
             if (clone_info->extract != (char *) NULL)
               clone_info->extract=DestroyString(clone_info->extract);
+            path_status=IsPathAccessible(clone_info->filename);
+            if (path_status != MagickFalse)
+              {
+                struct stat
+                  attributes;
+
+                path_status=GetPathAttributes(clone_info->filename,&attributes);
+                if ((path_status != MagickFalse) &&
+                    (S_ISCHR(attributes.st_mode) != 0))
+                  path_status=MagickFalse;
+              }
             if ((LocaleCompare(clone_info->magick,"file") == 0) ||
                 (LocaleCompare(clone_info->magick,"https") == 0) ||
                 (LocaleCompare(clone_info->magick,"http") == 0) ||
                 (LocaleCompare(clone_info->magick,"mpri") == 0) ||
-                ((IsPathAccessible(clone_info->filename) != MagickFalse) &&
-                 (GetPathAttributes(clone_info->filename,&attributes) != MagickFalse) &&
-                 (S_ISCHR(attributes.st_mode) == 0)))
+                (path_status != MagickFalse))
               composite_images=ReadImage(clone_info,exception);
           }
       clone_info=DestroyImageInfo(clone_info);
