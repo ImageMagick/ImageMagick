@@ -2273,10 +2273,10 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
     Check if there is enough storage for drawing pimitives.
   */
   quantum=sizeof(**mvg_info->primitive_info);
-  extent=(double) mvg_info->offset+pad+(PrimitiveExtentPad+1)*quantum;
+  extent=(double) mvg_info->offset+pad+(PrimitiveExtentPad+1)*(double) quantum;
   if (extent < (double) *mvg_info->extent)
     return(MagickTrue);
-  if (extent >= (double) MAGICK_SSIZE_MAX)
+  if ((extent >= (double) MAGICK_SSIZE_MAX) || (IsNaN(extent) != 0))
     return(MagickFalse);
   *mvg_info->primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(
     *mvg_info->primitive_info,(size_t) (extent+1),quantum);
