@@ -1,3 +1,10 @@
+2022-01-29  7.1.0-22  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-22 GIT revision 19...
+
+2021-01-29  7.1.0-22  <quetzlzacatenango@image...>
+  * limit colorname length to avoid possible DoS
+  * restore MPRI URI in SVG
+
 2022-01-28  7.1.0-21  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-21 GIT revision 19609:f084a86ec:20220128
 
