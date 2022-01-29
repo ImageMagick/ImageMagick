@@ -2292,6 +2292,12 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   if ((name == (char *) NULL) || (*name == '\0'))
     name=BackgroundColor;
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
+  if (strlen(name) > MagickPathExtent)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "UnrecognizedColor","`%s'",name);
+      return(MagickFalse);
+    }
   while (isspace((int) ((unsigned char) *name)) != 0)
     name++;
   GetPixelInfo((Image *) NULL,color);
