@@ -5551,7 +5551,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                 if ((LocaleCompare(clone_info->magick,"file") == 0) ||
                     (LocaleCompare(clone_info->magick,"https") == 0) ||
                     (LocaleCompare(clone_info->magick,"http") == 0) ||
-                    (LocaleCompare(clone_info->magick,"mpri") == 0) ||
                     (IsPathAccessible(clone_info->filename) != MagickFalse))
                   composite_images=ReadImage(clone_info,exception);
               }
