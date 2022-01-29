@@ -5532,15 +5532,28 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             MagickBooleanType
               path_status;
 
+<<<<<<< HEAD
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
             status&=SetImageInfo(clone_info,0,exception);
+=======
+            struct stat
+              attributes;
+
+            /*
+              Read composite image.
+            */
+            (void) CopyMagickString(clone_info->filename,primitive_info->text,
+              MagickPathExtent);
+            (void) SetImageInfo(clone_info,1,exception);
+>>>>>>> 15ccf2130 (permit compositing MPRI images)
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
             if (clone_info->size != (char *) NULL)
               clone_info->size=DestroyString(clone_info->size);
             if (clone_info->extract != (char *) NULL)
               clone_info->extract=DestroyString(clone_info->extract);
+<<<<<<< HEAD
             path_status=IsPathAccessible(clone_info->filename);
             if (path_status != MagickFalse)
               {
@@ -5558,6 +5571,26 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                 (LocaleCompare(clone_info->magick,"mpri") == 0) ||
                 (path_status != MagickFalse))
               composite_images=ReadImage(clone_info,exception);
+=======
+            path_status=GetPathAttributes(clone_info->filename,&attributes);
+            if (path_status != MagickFalse)
+              {
+                if (S_ISCHR(attributes.st_mode) == 0)
+                  composite_images=ReadImage(clone_info,exception);
+                else
+                  (void) ThrowMagickException(exception,GetMagickModule(),
+                    FileOpenError,"UnableToOpenFile","`%s'",
+                      clone_info->filename);
+              }
+            else
+              if ((LocaleCompare(clone_info->magick,"ftp") != 0) &&
+                  (LocaleCompare(clone_info->magick,"https") != 0) &&
+                  (LocaleCompare(clone_info->magick,"http") != 0))
+                composite_images=ReadImage(clone_info,exception);
+              else
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  FileOpenError,"UnableToOpenFile","`%s'",clone_info->filename);
+>>>>>>> 15ccf2130 (permit compositing MPRI images)
           }
       clone_info=DestroyImageInfo(clone_info);
       if (composite_images == (Image *) NULL)
