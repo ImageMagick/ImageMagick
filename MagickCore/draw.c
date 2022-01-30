@@ -1603,13 +1603,13 @@ static Image *DrawClippingMask(Image *image,const DrawInfo *draw_info,
   status=RenderMVGContent(clip_mask,clone_info,0,exception);
   clone_info=DestroyDrawInfo(clone_info);
   separate_mask=SeparateImage(clip_mask,AlphaChannel,exception);
-  if (separate_mask != (Image *) NULL)
+  if (separate_mask == (Image *) NULL)
+    status=MagickFalse; 
+  else
     {
       clip_mask=DestroyImage(clip_mask);
       clip_mask=separate_mask;
-      status=NegateImage(clip_mask,MagickFalse,exception);
-      if (status == MagickFalse)
-        clip_mask=DestroyImage(clip_mask);
+      status&=NegateImage(clip_mask,MagickFalse,exception);
     }
   if (status == MagickFalse)
     clip_mask=DestroyImage(clip_mask);
