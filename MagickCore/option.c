@@ -810,7 +810,7 @@ static const OptionInfo
     { "-function", 2L,SimpleOperatorFlag | AlwaysInterpretArgsFlag, MagickFalse },
     { "+fuzz", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-fuzz", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+fx", 1L, DeprecateOptionFlag | FireOptionFlag | NeverInterpretArgsFlag, MagickTrue },
+    { "+fx", 1L, SimpleOperatorFlag | FireOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-fx", 1L, ListOperatorFlag | FireOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-gamma", 1L, SimpleOperatorFlag, MagickFalse },
     { "+gamma", 1L, SimpleOperatorFlag, MagickFalse },
