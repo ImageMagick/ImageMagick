@@ -1,3 +1,9 @@
+2022-02-02  7.1.0-23  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-23 GIT revision 19...
+
+2021-02-02  7.1.0-23  <quetzlzacatenango@image...>
+  * limit recursion when reading the VID image format.
+
 2022-01-29  7.1.0-22  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-22 GIT revision 19618:cb0ac9022:20220129
 
