@@ -845,11 +845,11 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
 %  relative to the values.
 %
 %  Values may also be separated by commas, colons, or slashes, and offsets.
-%  Offsets may be prefixed by multiple signs to make offset string
-%  substitutions easier to handle from shell scripts.
-%  For example: "-10-10", "-+10-+10", or "+-10+-10" will generate negtive
-%  offsets, while "+10+10", "++10++10", or "--10--10" will generate positive
-%  offsets.
+%  Chroma subsampling definitions have to be in the form of a:b:c.  Offsets may
+%  be prefixed by multiple signs to make offset string substitutions easier to
+%  handle from shell scripts.  For example: "-10-10", "-+10-+10", or "+-10+-10"
+%  will generate negtive offsets, while "+10+10", "++10++10", or "--10--10"
+%  will generate positive offsets.
 %
 %  The format of the ParseGeometry method is:
 %
