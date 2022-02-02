@@ -410,7 +410,7 @@ struct _ImageInfo
     quality;            /* compression quality */
 
   char
-    *sampling_factor,   /* JPEG write sampling factor */
+    *sampling_factor,   /* Chroma subsampling ratio string */
     *server_name,       /* X windows server name - display/animate */
     *font,              /* DUP for draw_info */
     *texture,           /* montage/display background tile */

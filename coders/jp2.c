@@ -966,7 +966,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       parameters->cp_disto_alloc=OPJ_TRUE;
     }
   if (image_info->sampling_factor != (const char *) NULL)
-    (void) sscanf(image_info->sampling_factor,"%d,%d",
+    (void) sscanf(image_info->sampling_factor,"%d:%d",
       &parameters->subsampling_dx,&parameters->subsampling_dy);
   property=GetImageProperty(image,"comment",exception);
   if (property != (const char *) NULL)
