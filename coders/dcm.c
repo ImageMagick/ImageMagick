@@ -3052,6 +3052,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define ThrowDCMException(exception,message) \
 { \
   RelinquishDCMMemory(&info,&map,stream_info,stack,data); \
+  if (info_copy != (DCMInfo *) NULL) \
+    info_copy=(DCMInfo *) RelinquishDCMInfo(info_copy); \
   ThrowReaderException((exception),(message)); \
 }
 
@@ -3063,7 +3065,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   DCMInfo
     info,
-    *info_copy;
+    *info_copy = (DCMInfo *) NULL;
 
   DCMMap
     map;
