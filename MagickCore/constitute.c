@@ -463,7 +463,7 @@ static void InitializeReadImageInfo(const ImageInfo *image_info,
     read_image_info->sync_from_exif=MagickFalse;
   read_image_info->caption=GetImageOption(image_info,"caption");
   read_image_info->comment=GetImageOption(image_info,"comment");
-  read_image_info->label=option=GetImageOption(image_info,"label");
+  read_image_info->label=GetImageOption(image_info,"label");
   option=GetImageOption(image_info,"delay");
   if (option != (const char *) NULL)
     {
