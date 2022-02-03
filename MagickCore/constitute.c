@@ -694,7 +694,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     (void) GetImageProperty(next,"icc:*",exception);
     (void) GetImageProperty(next,"iptc:*",exception);
     (void) GetImageProperty(next,"xmp:*",exception);
-    option=GetImageOption(image_info,"exif:sync-image");
+    option=GetImageOption(read_info,"exif:sync-image");
     if (IsStringFalse(option) == MagickFalse)
       {
         value=GetImageProperty(next,"exif:Orientation",exception);
@@ -825,7 +825,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           sizeof(timestamp),timestamp);
         (void) SetImageProperty(next,"date:create",timestamp,exception);
       }
-    option=GetImageOption(image_info,"delay");
+    option=GetImageOption(read_info,"delay");
     if (option != (const char *) NULL)
       {
         flags=ParseGeometry(option,&geometry_info);
@@ -847,7 +847,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           next->ticks_per_second=CastDoubleToLong(floor(
             geometry_info.sigma+0.5));
       }
-    option=GetImageOption(image_info,"dispose");
+    option=GetImageOption(read_info,"dispose");
     if (option != (const char *) NULL)
       {
         option_type=ParseCommandOption(MagickDisposeOptions,MagickFalse,
