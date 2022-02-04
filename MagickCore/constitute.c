@@ -818,14 +818,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   {
     char
       magick_path[MagickPathExtent],
-      *property,
-      timestamp[MagickTimeExtent];
+      *property;
 
     const StringInfo
       *profile;
-
-    ssize_t
-      option_type;
 
     static const char
       *source_date_epoch = (const char *) NULL;
@@ -929,6 +925,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       }
     if (source_date_epoch == (const char *) NULL)
       {
+        char
+          timestamp[MagickTimeExtent];
+
         (void) FormatMagickTime((time_t) GetBlobProperties(next)->st_mtime,
           sizeof(timestamp),timestamp);
         (void) SetImageProperty(next,"date:modify",timestamp,exception);
@@ -956,6 +955,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       }
     if (constitute_info.dispose != (const char *) NULL)
       {
+        ssize_t
+          option_type;
+
         option_type=ParseCommandOption(MagickDisposeOptions,MagickFalse,
           constitute_info.dispose);
         if (option_type >= 0)
