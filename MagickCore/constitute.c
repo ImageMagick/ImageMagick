@@ -93,7 +93,8 @@ typedef struct _ConstituteInfo
     *label;
 
   MagickBooleanType
-    sync_from_exif;
+    sync_from_exif,
+    sync_from_tiff;
 
   MagickStatusType
     delay_flags;
@@ -458,9 +459,13 @@ static void InitializeConstituteInfo(const ImageInfo *image_info,
 
   memset(constitute_info,0,sizeof(*constitute_info));
   constitute_info->sync_from_exif=MagickTrue;
+  constitute_info->sync_from_tiff=MagickTrue;
   option=GetImageOption(image_info,"exif:sync-image");
   if (IsStringFalse(option) != MagickFalse)
     constitute_info->sync_from_exif=MagickFalse;
+  option=GetImageOption(image_info,"tiff:sync-image");
+  if (IsStringFalse(option) != MagickFalse)
+    constitute_info->sync_from_tiff=MagickFalse;
   constitute_info->caption=GetImageOption(image_info,"caption");
   constitute_info->comment=GetImageOption(image_info,"comment");
   constitute_info->label=GetImageOption(image_info,"label");
@@ -485,23 +490,24 @@ static void SyncOrientationFromProperties(Image *image,
   ConstituteInfo *constitute_info,ExceptionInfo *exception)
 {
   const char
-    *value;
+    *orientation;
 
-  value=(const char *) NULL;
+  orientation=(const char *) NULL;
   if (constitute_info->sync_from_exif != MagickFalse)
     {
-      value=GetImageProperty(image,"exif:Orientation",exception);
-      if (value != (const char *) NULL)
+      orientation=GetImageProperty(image,"exif:Orientation",exception);
+      if (orientation != (const char *) NULL)
         (void) DeleteImageProperty(image,"exif:Orientation");
     }
-  if (value == (const char *) NULL)
+  if ((orientation == (const char *) NULL) &&
+      (constitute_info->sync_from_tiff != MagickFalse))
     {
-      value=GetImageProperty(image,"tiff:Orientation",exception);
-      if (value != (const char *) NULL)
+      orientation=GetImageProperty(image,"tiff:Orientation",exception);
+      if (orientation != (const char *) NULL)
         (void) DeleteImageProperty(image,"tiff:Orientation");
     }
-  if (value != (const char *) NULL)
-    image->orientation=(OrientationType) StringToLong(value);
+  if (orientation != (const char *) NULL)
+    image->orientation=(OrientationType) StringToLong(orientation);
 }
 
 MagickExport Image *ReadImage(const ImageInfo *image_info,
