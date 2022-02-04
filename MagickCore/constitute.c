@@ -497,17 +497,21 @@ static void SyncOrientationFromProperties(Image *image,
     {
       orientation=GetImageProperty(image,"exif:Orientation",exception);
       if (orientation != (const char *) NULL)
-        (void) DeleteImageProperty(image,"exif:Orientation");
+        {
+          image->orientation=(OrientationType) StringToLong(orientation);
+          (void) DeleteImageProperty(image,"exif:Orientation");
+        }
     }
   if ((orientation == (const char *) NULL) &&
       (constitute_info->sync_from_tiff != MagickFalse))
     {
       orientation=GetImageProperty(image,"tiff:Orientation",exception);
       if (orientation != (const char *) NULL)
-        (void) DeleteImageProperty(image,"tiff:Orientation");
+        {
+          image->orientation=(OrientationType) StringToLong(orientation);
+          (void) DeleteImageProperty(image,"tiff:Orientation");
+        }
     }
-  if (orientation != (const char *) NULL)
-    image->orientation=(OrientationType) StringToLong(orientation);
 }
 
 static void SyncResolutionFromProperties(Image *image,
@@ -518,23 +522,21 @@ static void SyncResolutionFromProperties(Image *image,
     *resolution_y,
     *resolution_units;
 
+  MagickBooleanType
+    used_tiff;
+
   resolution_x=(const char *) NULL;
   resolution_y=(const char *) NULL;
   resolution_units=(const char *) NULL;
+  used_tiff=MagickFalse;
   if (constitute_info->sync_from_exif != MagickFalse)
     {
       resolution_x=GetImageProperty(image,"exif:XResolution",exception);
       resolution_y=GetImageProperty(image,"exif:YResolution",exception);
       if ((resolution_x != (const char *) NULL) &&
           (resolution_y != (const char *) NULL))
-        {
-          (void) DeleteImageProperty(image,"exif:XResolution");
-          (void) DeleteImageProperty(image,"exif:YResolution");
-          resolution_units=GetImageProperty(image,"exif:ResolutionUnit",
-            exception);
-          if (resolution_units != (const char *) NULL)
-            (void) DeleteImageProperty(image,"exif:ResolutionUnit");
-        }
+        resolution_units=GetImageProperty(image,"exif:ResolutionUnit",
+          exception);
     }
   if ((resolution_x == (const char *) NULL) &&
       (resolution_y == (const char *) NULL) &&
@@ -545,12 +547,9 @@ static void SyncResolutionFromProperties(Image *image,
       if ((resolution_x != (const char *) NULL) &&
           (resolution_y != (const char *) NULL))
         {
-          (void) DeleteImageProperty(image,"tiff:XResolution");
-          (void) DeleteImageProperty(image,"tiff:YResolution");
+          used_tiff=MagickTrue;
           resolution_units=GetImageProperty(image,"tiff:ResolutionUnit",
             exception);
-          if (resolution_units != (const char *) NULL)
-            (void) DeleteImageProperty(image,"tiff:ResolutionUnit");
         }
     }
   if ((resolution_x != (const char *) NULL) &&
@@ -586,6 +585,18 @@ static void SyncResolutionFromProperties(Image *image,
             if (option_type >= 0)
               image->units=(ResolutionType) option_type;
           }
+      if (used_tiff == MagickFalse)
+        {
+          (void) DeleteImageProperty(image,"exif:XResolution");
+          (void) DeleteImageProperty(image,"exif:YResolution");
+          (void) DeleteImageProperty(image,"exif:ResolutionUnit");
+        }
+      else
+        {
+          (void) DeleteImageProperty(image,"tiff:XResolution");
+          (void) DeleteImageProperty(image,"tiff:YResolution");
+          (void) DeleteImageProperty(image,"tiff:ResolutionUnit");
+        }
     }
 }
 
