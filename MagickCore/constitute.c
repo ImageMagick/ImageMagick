@@ -84,7 +84,7 @@
 /*
   Typedef declaractions.
 */
-typedef struct _ReadImageInfo
+typedef struct _ConstituteInfo
 {
   const char
     *caption,
@@ -103,7 +103,7 @@ typedef struct _ReadImageInfo
 
   ssize_t
     ticks_per_second;
-} ReadImageInfo;
+} ConstituteInfo;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -450,33 +450,33 @@ static MagickBooleanType IsCoderAuthorized(const char *coder,
   return(MagickTrue);
 }
 
-static void InitializeReadImageInfo(const ImageInfo *image_info,
-  ReadImageInfo *read_image_info)
+static void InitializeConstituteInfo(const ImageInfo *image_info,
+  ConstituteInfo *constitute_info)
 {
   const char
     *option;
 
-  memset(read_image_info,0,sizeof(*read_image_info));
-  read_image_info->sync_from_exif=MagickTrue;
+  memset(constitute_info,0,sizeof(*constitute_info));
+  constitute_info->sync_from_exif=MagickTrue;
   option=GetImageOption(image_info,"exif:sync-image");
   if (IsStringFalse(option) != MagickFalse)
-    read_image_info->sync_from_exif=MagickFalse;
-  read_image_info->caption=GetImageOption(image_info,"caption");
-  read_image_info->comment=GetImageOption(image_info,"comment");
-  read_image_info->label=GetImageOption(image_info,"label");
+    constitute_info->sync_from_exif=MagickFalse;
+  constitute_info->caption=GetImageOption(image_info,"caption");
+  constitute_info->comment=GetImageOption(image_info,"comment");
+  constitute_info->label=GetImageOption(image_info,"label");
   option=GetImageOption(image_info,"delay");
   if (option != (const char *) NULL)
     {
       GeometryInfo
         geometry_info;
 
-      read_image_info->delay_flags=ParseGeometry(option,&geometry_info);
-      if (read_image_info->delay_flags != NoValue)
+      constitute_info->delay_flags=ParseGeometry(option,&geometry_info);
+      if (constitute_info->delay_flags != NoValue)
         {
-          read_image_info->delay=floor(geometry_info.rho+0.5);
-          if ((read_image_info->delay_flags & SigmaValue) != 0)
-          read_image_info->ticks_per_second=CastDoubleToLong(floor(
-            geometry_info.sigma+0.5));
+          constitute_info->delay=floor(geometry_info.rho+0.5);
+          if ((constitute_info->delay_flags & SigmaValue) != 0)
+            constitute_info->ticks_per_second=CastDoubleToLong(floor(
+              geometry_info.sigma+0.5));
         }
     }
 }
@@ -488,6 +488,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     filename[MagickPathExtent],
     magick[MagickPathExtent],
     magick_filename[MagickPathExtent];
+
+  ConstituteInfo
+    constitute_info;
 
   const char
     *value;
@@ -516,9 +519,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
   MagickStatusType
     flags;
-
-  ReadImageInfo
-    read_image_info;
 
   /*
     Determine image type from filename prefix or suffix (e.g. image.jpg).
@@ -711,7 +711,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           image=GetFirstImageInList(clones);
         }
     }
-  InitializeReadImageInfo(image_info,&read_image_info);
+  InitializeConstituteInfo(read_info,&constitute_info);
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     char
@@ -747,7 +747,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     (void) GetImageProperty(next,"icc:*",exception);
     (void) GetImageProperty(next,"iptc:*",exception);
     (void) GetImageProperty(next,"xmp:*",exception);
-    if (read_image_info.sync_from_exif != MagickFalse)
+    if (constitute_info.sync_from_exif != MagickFalse)
       {
         GeometryInfo
           geometry_info;
@@ -802,24 +802,24 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       next->page.width=next->columns;
     if (next->page.height == 0)
       next->page.height=next->rows;
-    if (read_image_info.caption != (const char *) NULL)
+    if (constitute_info.caption != (const char *) NULL)
       {
         property=InterpretImageProperties(read_info,next,
-          read_image_info.caption,exception);
+          constitute_info.caption,exception);
         (void) SetImageProperty(next,"caption",property,exception);
         property=DestroyString(property);
       }
-    if (read_image_info.comment != (const char *) NULL)
+    if (constitute_info.comment != (const char *) NULL)
       {
         property=InterpretImageProperties(read_info,next,
-          read_image_info.comment,exception);
+          constitute_info.comment,exception);
         (void) SetImageProperty(next,"comment",property,exception);
         property=DestroyString(property);
       }
-    if (read_image_info.label != (const char *) NULL)
+    if (constitute_info.label != (const char *) NULL)
       {
         property=InterpretImageProperties(read_info,next,
-          read_image_info.label,exception);
+          constitute_info.label,exception);
         (void) SetImageProperty(next,"label",property,exception);
         property=DestroyString(property);
       }
@@ -880,28 +880,28 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           sizeof(timestamp),timestamp);
         (void) SetImageProperty(next,"date:create",timestamp,exception);
       }
-    if (read_image_info.delay_flags != NoValue)
+    if (constitute_info.delay_flags != NoValue)
       {
-        if ((read_image_info.delay_flags & GreaterValue) != 0)
+        if ((constitute_info.delay_flags & GreaterValue) != 0)
           {
-            if (next->delay > read_image_info.delay)
-              next->delay=read_image_info.delay;
+            if (next->delay > constitute_info.delay)
+              next->delay=constitute_info.delay;
           }
         else
-          if ((read_image_info.delay_flags & LessValue) != 0)
+          if ((constitute_info.delay_flags & LessValue) != 0)
             {
-              if (next->delay < read_image_info.delay)
-                next->delay=read_image_info.delay;
+              if (next->delay < constitute_info.delay)
+                next->delay=constitute_info.delay;
             }
           else
-            next->delay=read_image_info.delay;
-        if ((read_image_info.delay_flags & SigmaValue) != 0)
-          next->ticks_per_second=read_image_info.ticks_per_second;
+            next->delay=constitute_info.delay;
+        if ((constitute_info.delay_flags & SigmaValue) != 0)
+          next->ticks_per_second=constitute_info.ticks_per_second;
       }
-    if (read_image_info.dispose != MagickFalse)
+    if (constitute_info.dispose != (const char *) NULL)
       {
         option_type=ParseCommandOption(MagickDisposeOptions,MagickFalse,
-          read_image_info.dispose);
+          constitute_info.dispose);
         if (option_type >= 0)
           next->dispose=(DisposeType) option_type;
       }
