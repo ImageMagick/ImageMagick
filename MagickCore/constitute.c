@@ -510,6 +510,85 @@ static void SyncOrientationFromProperties(Image *image,
     image->orientation=(OrientationType) StringToLong(orientation);
 }
 
+static void SyncResolutionFromProperties(Image *image,
+  ConstituteInfo *constitute_info, ExceptionInfo *exception)
+{
+  const char
+    *resolution_x,
+    *resolution_y,
+    *resolution_units;
+
+  resolution_x=(const char *) NULL;
+  resolution_y=(const char *) NULL;
+  resolution_units=(const char *) NULL;
+  if (constitute_info->sync_from_exif != MagickFalse)
+    {
+      resolution_x=GetImageProperty(image,"exif:XResolution",exception);
+      resolution_y=GetImageProperty(image,"exif:YResolution",exception);
+      if ((resolution_x != (const char *) NULL) &&
+          (resolution_y != (const char *) NULL))
+        {
+          (void) DeleteImageProperty(image,"exif:XResolution");
+          (void) DeleteImageProperty(image,"exif:YResolution");
+          resolution_units=GetImageProperty(image,"exif:ResolutionUnit",
+            exception);
+          if (resolution_units != (const char *) NULL)
+            (void) DeleteImageProperty(image,"exif:ResolutionUnit");
+        }
+    }
+  if ((resolution_x == (const char *) NULL) &&
+      (resolution_y == (const char *) NULL) &&
+      constitute_info->sync_from_tiff != MagickFalse)
+    {
+      resolution_x=GetImageProperty(image,"tiff:XResolution",exception);
+      resolution_y=GetImageProperty(image,"tiff:YResolution",exception);
+      if ((resolution_x != (const char *) NULL) &&
+          (resolution_y != (const char *) NULL))
+        {
+          (void) DeleteImageProperty(image,"tiff:XResolution");
+          (void) DeleteImageProperty(image,"tiff:YResolution");
+          resolution_units=GetImageProperty(image,"tiff:ResolutionUnit",
+            exception);
+          if (resolution_units != (const char *) NULL)
+            (void) DeleteImageProperty(image,"tiff:ResolutionUnit");
+        }
+    }
+  if ((resolution_x != (const char *) NULL) &&
+      (resolution_y != (const char *) NULL))
+    {
+      GeometryInfo
+        geometry_info;
+
+      MagickStatusType
+        flags;
+
+      ssize_t
+        option_type;
+
+      geometry_info.rho=image->resolution.x;
+      geometry_info.sigma=1.0;
+      flags=ParseGeometry(resolution_x,&geometry_info);
+      if (geometry_info.sigma != 0)
+        image->resolution.x=geometry_info.rho/geometry_info.sigma;
+      if (strchr(resolution_x,',') != (char *) NULL)
+        image->resolution.x=geometry_info.rho+geometry_info.sigma/1000.0;
+      geometry_info.rho=image->resolution.y;
+      geometry_info.sigma=1.0;
+      flags=ParseGeometry(resolution_y,&geometry_info);
+      if (geometry_info.sigma != 0)
+        image->resolution.y=geometry_info.rho/geometry_info.sigma;
+      if (strchr(resolution_y,',') != (char *) NULL)
+        image->resolution.y=geometry_info.rho+geometry_info.sigma/1000.0;
+      if (resolution_units != (char *) NULL)
+          {
+            option_type=ParseCommandOption(MagickResolutionOptions,MagickFalse,
+              resolution_units);
+            if (option_type >= 0)
+              image->units=(ResolutionType) option_type;
+          }
+    }
+}
+
 MagickExport Image *ReadImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -520,9 +599,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
   ConstituteInfo
     constitute_info;
-
-  const char
-    *value;
 
   const DelegateInfo
     *delegate_info;
@@ -545,9 +621,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
   MagickBooleanType
     status;
-
-  MagickStatusType
-    flags;
 
   /*
     Determine image type from filename prefix or suffix (e.g. image.jpg).
@@ -777,48 +850,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     (void) GetImageProperty(next,"iptc:*",exception);
     (void) GetImageProperty(next,"xmp:*",exception);
     SyncOrientationFromProperties(next,&constitute_info,exception);
-    if (constitute_info.sync_from_exif != MagickFalse)
-      {
-        GeometryInfo
-          geometry_info;
-
-        value=GetImageProperty(next,"exif:XResolution",exception);
-        if (value != (char *) NULL)
-          {
-            geometry_info.rho=next->resolution.x;
-            geometry_info.sigma=1.0;
-            flags=ParseGeometry(value,&geometry_info);
-            if (geometry_info.sigma != 0)
-              next->resolution.x=geometry_info.rho/geometry_info.sigma;
-            if (strchr(value,',') != (char *) NULL)
-              next->resolution.x=geometry_info.rho+geometry_info.sigma/1000.0;
-            (void) DeleteImageProperty(next,"exif:XResolution");
-          }
-        value=GetImageProperty(next,"exif:YResolution",exception);
-        if (value != (char *) NULL)
-          {
-            geometry_info.rho=next->resolution.y;
-            geometry_info.sigma=1.0;
-            flags=ParseGeometry(value,&geometry_info);
-            if (geometry_info.sigma != 0)
-              next->resolution.y=geometry_info.rho/geometry_info.sigma;
-            if (strchr(value,',') != (char *) NULL)
-              next->resolution.y=geometry_info.rho+geometry_info.sigma/1000.0;
-            (void) DeleteImageProperty(next,"exif:YResolution");
-          }
-        value=GetImageProperty(next,"exif:ResolutionUnit",exception);
-        if (value == (char *) NULL)
-          value=GetImageProperty(next,"tiff:ResolutionUnit",exception);
-        if (value != (char *) NULL)
-          {
-            option_type=ParseCommandOption(MagickResolutionOptions,MagickFalse,
-              value);
-            if (option_type >= 0)
-              next->units=(ResolutionType) option_type;
-            (void) DeleteImageProperty(next,"exif:ResolutionUnit");
-            (void) DeleteImageProperty(next,"tiff:ResolutionUnit");
-          }
-      }
+    SyncResolutionFromProperties(next,&constitute_info,exception);
     if (next->page.width == 0)
       next->page.width=next->columns;
     if (next->page.height == 0)
@@ -851,6 +883,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       {
         RectangleInfo
           geometry;
+
+        MagickStatusType
+          flags;
 
         SetGeometry(next,&geometry);
         flags=ParseAbsoluteGeometry(read_info->extract,&geometry);
