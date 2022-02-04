@@ -2274,7 +2274,7 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   */
   quantum=sizeof(**mvg_info->primitive_info);
   extent=(double) mvg_info->offset+pad+(PrimitiveExtentPad+1)*(double) quantum;
-  if (extent < (double) *mvg_info->extent)
+  if (extent <= (double) *mvg_info->extent)
     return(MagickTrue);
   if ((extent >= (double) MAGICK_SSIZE_MAX) || (IsNaN(extent) != 0))
     return(MagickFalse);
