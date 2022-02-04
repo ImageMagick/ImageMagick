@@ -481,6 +481,29 @@ static void InitializeConstituteInfo(const ImageInfo *image_info,
     }
 }
 
+static void SyncOrientationFromProperties(Image *image,
+  ConstituteInfo *constitute_info,ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  value=(const char *) NULL;
+  if (constitute_info->sync_from_exif != MagickFalse)
+    {
+      value=GetImageProperty(image,"exif:Orientation",exception);
+      if (value != (const char *) NULL)
+        (void) DeleteImageProperty(image,"exif:Orientation");
+    }
+  if (value == (const char *) NULL)
+    {
+      value=GetImageProperty(image,"tiff:Orientation",exception);
+      if (value != (const char *) NULL)
+        (void) DeleteImageProperty(image,"tiff:Orientation");
+    }
+  if (value != (const char *) NULL)
+    image->orientation=(OrientationType) StringToLong(value);
+}
+
 MagickExport Image *ReadImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -747,20 +770,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     (void) GetImageProperty(next,"icc:*",exception);
     (void) GetImageProperty(next,"iptc:*",exception);
     (void) GetImageProperty(next,"xmp:*",exception);
+    SyncOrientationFromProperties(next,&constitute_info,exception);
     if (constitute_info.sync_from_exif != MagickFalse)
       {
         GeometryInfo
           geometry_info;
 
-        value=GetImageProperty(next,"exif:Orientation",exception);
-        if (value == (char *) NULL)
-          value=GetImageProperty(next,"tiff:Orientation",exception);
-        if (value != (char *) NULL)
-          {
-            next->orientation=(OrientationType) StringToLong(value);
-            (void) DeleteImageProperty(next,"tiff:Orientation");
-            (void) DeleteImageProperty(next,"exif:Orientation");
-          }
         value=GetImageProperty(next,"exif:XResolution",exception);
         if (value != (char *) NULL)
           {
