@@ -931,6 +931,9 @@
 /* The size of `unsigned long long', as computed by sizeof. */
 #cmakedefine SIZEOF_UNSIGNED_LONG_LONG @SIZEOF_UNSIGNED_LONG_LONG@
 
+/* The size of `void *', as computed by sizeof. */
+#cmakedefine SIZEOF_VOID_P @SIZEOF_VOID_P@
+
 /* The size of `unsigned short', as computed by sizeof. */
 #cmakedefine SIZEOF_UNSIGNED_SHORT @SIZEOF_UNSIGNED_SHORT@
 
