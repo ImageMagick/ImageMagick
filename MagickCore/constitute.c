@@ -538,7 +538,7 @@ static void SyncResolutionFromProperties(Image *image,
     }
   if ((resolution_x == (const char *) NULL) &&
       (resolution_y == (const char *) NULL) &&
-      constitute_info->sync_from_tiff != MagickFalse)
+      (constitute_info->sync_from_tiff != MagickFalse))
     {
       resolution_x=GetImageProperty(image,"tiff:XResolution",exception);
       resolution_y=GetImageProperty(image,"tiff:YResolution",exception);
