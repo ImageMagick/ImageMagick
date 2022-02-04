@@ -317,7 +317,6 @@ locale_.h
 log.h
 magic.h
 magick.h
-magick-baseconfig.h
 magick-config.h
 magick-type.h
 matrix.h
@@ -362,7 +361,6 @@ transform.h
 threshold.h
 type.h
 utility.h
-version.h
 vision.h
 visual-effects.h
 widget.h
@@ -721,3 +719,8 @@ LIBRARY DESTINATION bin
 ARCHIVE DESTINATION lib
 PUBLIC_HEADER DESTINATION ${IMAGEMAGICK_INC_DIR}/MagickCore
 )
+
+INSTALL(FILES
+${CMAKE_CURRENT_BINARY_DIR}/magick-baseconfig.h
+${CMAKE_CURRENT_BINARY_DIR}/version.h
+DESTINATION ${IMAGEMAGICK_INC_DIR}/MagickCore)
