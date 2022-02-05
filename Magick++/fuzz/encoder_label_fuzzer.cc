@@ -34,5 +34,3 @@ static bool validateFileName(const std::string &fileName)
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   return fuzzEncoderWithStringFilename("label", Data, Size, validateFileName);
 }
-
-#include "travis.cc"

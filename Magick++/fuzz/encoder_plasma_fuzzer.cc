@@ -27,5 +27,3 @@
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   return fuzzEncoderWithStringFilename("plasma", Data, Size);
 }
-
-#include "travis.cc"
