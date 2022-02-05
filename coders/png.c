@@ -5105,26 +5105,40 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   if ((image_info->ping == MagickFalse) && (alpha_image != (Image *) NULL) &&
       (jng_color_type >= 12))
     {
-      if (jng_alpha_compression_method == 0)
+      switch (jng_alpha_compression_method)
+      {
+        case 0:
         {
           png_byte
             data[5];
+
+          (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
+            "png:%s",alpha_image->filename);
           (void) WriteBlobMSBULong(alpha_image,0x00000000L);
           PNGType(data,mng_IEND);
           LogPNGChunk(logging,mng_IEND,0L);
           (void) WriteBlob(alpha_image,4,data);
           (void) WriteBlobMSBULong(alpha_image,crc32(0,data,4));
+          break;
         }
-
+        case 8:
+        {
+          (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
+            "jpeg:%s",alpha_image->filename);
+          break;
+        }
+        default:
+        {
+          (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
+            "alpha:%s",alpha_image->filename);
+          break;
+        }
+      }
       (void) CloseBlob(alpha_image);
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading alpha from alpha_blob.");
-
-      (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
-        "%s",alpha_image->filename);
-
       jng_image=ReadImage(alpha_image_info,exception);
 
       if (jng_image != (Image *) NULL)
