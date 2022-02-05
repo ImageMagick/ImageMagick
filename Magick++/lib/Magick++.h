@@ -1,7 +1,9 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000
-// Copyright Dirk Lemstra 2014
+//
+// Copyright @ 2013 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
 //
 // Simplified includes for Magick++.
 // Inclusion of this header is sufficient to use all Magick++ APIs.
