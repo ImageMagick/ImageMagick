@@ -567,6 +567,7 @@ static void SyncResolutionFromProperties(Image *image,
       geometry_info.rho=image->resolution.x;
       geometry_info.sigma=1.0;
       flags=ParseGeometry(resolution_x,&geometry_info);
+      (void) flags;
       if (geometry_info.sigma != 0)
         image->resolution.x=geometry_info.rho/geometry_info.sigma;
       if (strchr(resolution_x,',') != (char *) NULL)

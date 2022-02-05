@@ -93,7 +93,7 @@ MagickExport MagickBooleanType NTIsMagickConflict(const char *magick)
   assert(magick != (char *) NULL);
   if (strlen(magick) > 1)
     return(MagickFalse);
-  status=(GetLogicalDrives() & (1 << ((LocaleUppercase((int)
+  status=(GetLogicalDrives() & (1 << ((LocaleToUppercase((int)
     (*magick)))-'A'))) != 0 ? MagickTrue : MagickFalse;
   return(status);
 }

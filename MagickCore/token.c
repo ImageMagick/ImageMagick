@@ -45,6 +45,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
+#include "MagickCore/locale-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
 #include "MagickCore/string_.h"
@@ -544,7 +545,7 @@ MagickExport MagickBooleanType GlobExpression(
       {
         if (case_insensitive != MagickFalse)
           {
-            if (LocaleLowercase((int) GetUTFCode(expression)) != LocaleLowercase((int) GetUTFCode(pattern)))
+            if (LocaleToLowercase((int) GetUTFCode(expression)) != LocaleToLowercase((int) GetUTFCode(pattern)))
               {
                 done=MagickTrue;
                 break;
@@ -817,12 +818,12 @@ static void StoreToken(TokenInfo *token_info,char *string,
   {
     case 1:
     {
-      string[i]=(char) LocaleUppercase(c);
+      string[i]=(char) LocaleToUppercase(c);
       break;
     }
     case 2:
     {
-      string[i]=(char) LocaleLowercase(c);
+      string[i]=(char) LocaleToLowercase(c);
       break;
     }
     default:
