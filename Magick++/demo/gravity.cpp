@@ -2,6 +2,9 @@
 //
 // Copyright Bob Friesenhahn, 2000, 2001, 2003
 //
+// Copyright @ 2013 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
+//
 // Demo of text annotation with gravity.  Produces an animation showing
 // the effect of rotated text assize_t with various gravity specifications.
 //
