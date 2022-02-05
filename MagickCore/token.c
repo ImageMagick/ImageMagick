@@ -176,14 +176,14 @@ MagickExport magick_hot_spot size_t GetNextToken(
   const char *magick_restrict start,const char **magick_restrict end,
   const size_t extent,char *magick_restrict token)
 {
-  double
-    value;
-
   char
     *magick_restrict q;
 
   const char
     *magick_restrict p;
+
+  double
+    value;
 
   ssize_t
     i;
