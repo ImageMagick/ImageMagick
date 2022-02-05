@@ -558,23 +558,19 @@ static void SyncResolutionFromProperties(Image *image,
       GeometryInfo
         geometry_info;
 
-      MagickStatusType
-        flags;
-
       ssize_t
         option_type;
 
       geometry_info.rho=image->resolution.x;
       geometry_info.sigma=1.0;
-      flags=ParseGeometry(resolution_x,&geometry_info);
-      (void) flags;
+      (void) ParseGeometry(resolution_x,&geometry_info);
       if (geometry_info.sigma != 0)
         image->resolution.x=geometry_info.rho/geometry_info.sigma;
       if (strchr(resolution_x,',') != (char *) NULL)
         image->resolution.x=geometry_info.rho+geometry_info.sigma/1000.0;
       geometry_info.rho=image->resolution.y;
       geometry_info.sigma=1.0;
-      flags=ParseGeometry(resolution_y,&geometry_info);
+      (void) ParseGeometry(resolution_y,&geometry_info);
       if (geometry_info.sigma != 0)
         image->resolution.y=geometry_info.rho/geometry_info.sigma;
       if (strchr(resolution_y,',') != (char *) NULL)
