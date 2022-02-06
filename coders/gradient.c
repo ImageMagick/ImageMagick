@@ -192,8 +192,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  (void) CopyMagickString(start_color,"black",MagickPathExtent);
-  (void) CopyMagickString(stop_color,"white",MagickPathExtent);
+  (void) CopyMagickString(start_color,"white",MagickPathExtent);
+  (void) CopyMagickString(stop_color,"black",MagickPathExtent);
   if (*image_info->filename != '\0')
     {
       char
