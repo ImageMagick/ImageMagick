@@ -1713,6 +1713,25 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         const char
           *value;
 
+        if ((GetPreviousImageInList(image) == (Image *) NULL) &&
+            (GetNextImageInList(image) != (Image *) NULL) &&
+            (image->iterations != 1))
+          {
+            /*
+              Write Netscape Loop extension.
+            */
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "  Writing GIF Extension %s","NETSCAPE2.0");
+            (void) WriteBlobByte(image,(unsigned char) 0x21);
+            (void) WriteBlobByte(image,(unsigned char) 0xff);
+            (void) WriteBlobByte(image,(unsigned char) 0x0b);
+            (void) WriteBlob(image,11,(unsigned char *) "NETSCAPE2.0");
+            (void) WriteBlobByte(image,(unsigned char) 0x03);
+            (void) WriteBlobByte(image,(unsigned char) 0x01);
+            (void) WriteBlobLSBShort(image,(unsigned short) (image->iterations ?
+              image->iterations-1 : 0));
+            (void) WriteBlobByte(image,(unsigned char) 0x00);
+          }
         /*
           Write graphics control extension.
         */
@@ -1773,25 +1792,6 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
               for (i=0; i < (ssize_t) count; i++)
                 (void) WriteBlobByte(image,(unsigned char) *p++);
             }
-            (void) WriteBlobByte(image,(unsigned char) 0x00);
-          }
-        if ((GetPreviousImageInList(image) == (Image *) NULL) &&
-            (GetNextImageInList(image) != (Image *) NULL) &&
-            (image->iterations != 1))
-          {
-            /*
-              Write Netscape Loop extension.
-            */
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-               "  Writing GIF Extension %s","NETSCAPE2.0");
-            (void) WriteBlobByte(image,(unsigned char) 0x21);
-            (void) WriteBlobByte(image,(unsigned char) 0xff);
-            (void) WriteBlobByte(image,(unsigned char) 0x0b);
-            (void) WriteBlob(image,11,(unsigned char *) "NETSCAPE2.0");
-            (void) WriteBlobByte(image,(unsigned char) 0x03);
-            (void) WriteBlobByte(image,(unsigned char) 0x01);
-            (void) WriteBlobLSBShort(image,(unsigned short) (image->iterations ?
-              image->iterations-1 : 0));
             (void) WriteBlobByte(image,(unsigned char) 0x00);
           }
         ResetImageProfileIterator(image);
