@@ -2312,6 +2312,8 @@ static MagickBooleanType inline ProcessTernaryOpr (FxInfo * pfx, TernaryT * pter
    returns false iff we have exception
 */
 {
+  if (pfx->usedOprStack == 0)
+    return MagickFalse;
   if (pfx->OperatorStack[pfx->usedOprStack-1] == oQuery) {
     if (ptern->addrQuery != NULL_ADDRESS) {
       (void) ThrowMagickException (
