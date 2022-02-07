@@ -800,9 +800,6 @@
 /* Magick API method prefix tag */
 #cmakedefine NAMESPACE_PREFIX_TAG @NAMESPACE_PREFIX_TAG@
 
-/* Define to 1 if assertions should be disabled. */
-#cmakedefine NDEBUG @NDEBUG@
-
 /* Define if you have OPENEXR library */
 #cmakedefine OPENEXR_DELEGATE
 
