@@ -44,7 +44,7 @@ if(WIN32)
   if(NOT WINDOWS)
     set(WINDOWS TRUE)
   endif()
-  #TODO check for mingw or cygwin ???
+  # TODO check for mingw or cygwin ???
 elseif(UNIX AND NOT APPLE)
   if(CMAKE_SYSTEM_NAME MATCHES ".*Linux")
     set(LINUX TRUE)
@@ -91,124 +91,44 @@ endif()
 
 magick_check_env()
 
-# Don't compile coders and filters as modules
-set(BUILD_MODULES FALSE)
+####### OPTIONS #######
+set(MAGICKCORE_QUANTUM_DEPTH "16" CACHE STRING "Number of bits in a pixel Quantum")
+set_property(CACHE MAGICKCORE_QUANTUM_DEPTH PROPERTY STRINGS "8;16;32;64")
+set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -DMAGICKCORE_QUANTUM_DEPTH=${MAGICKCORE_QUANTUM_DEPTH})
 
-# Permit enciphering and deciphering image pixels
-set(CIPHER_SUPPORT TRUE)
-
-# Not really sure what's this for
-set(CODER_DIRNAME "")
-
-# I think this is used if we wanted to install, since we only want a static library
-set(CONFIGURE_PATH "")
-
-# TODO should this be the path used????
-set(CONFIGURE_RELATIVE_PATH "\"ImageMagick-7\"")
-
-# I think this is used if we wanted to install, since we only want a static library
-set(DOCUMENTATION_PATH "")
-
-# Give user the option to compile with deprecated methods
-option(EXCLUDE_DEPRECATED "Exclude deprecated methods" ON)
-
-# TODO I think this is used if we wanted to install, since we only want a static library
-set(EXECUTABLE_PATH "")
-
-# TODO Not really sure what's this for
-set(FILTER_DIRNAME "")
-
-# This seems to be an ImageMagick flag to accurately represent the wide range of intensity levels found in real scenes 
-set(HDRI_ENABLE_OBSOLETE_IN_H FALSE)
-
-# Compile without JEMALLOC dependency
-set(HasJEMALLOC FALSE)
-
-# Compile without UMEM dependency
-set(HasUMEM FALSE)
-
-# I think this is used if we wanted to install, since we only want a static library
-set(INCLUDEARCH_PATH "")
-
-# I think this is used if we wanted to install, since we only want a static library
-set(INCLUDE_PATH "")
-
-# Not really sure what's this for
-set(INSTALLED_SUPPORT "")
-
-# TODO should this be the path used????
-set(LIBRARY_PATH "\"ImageMagick-7\"")
-
-# TODO should this be the path used????
-set(LIBRARY_RELATIVE_PATH "\"ImageMagick-7\"")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
-set(LIB_BIN_BASEDIRNAME "")
-
-# TODO Compile without LQR dependency
-set(LQR FALSE)
-
-# TODO We are not compiling against LTDL
-set(LTDL_MODULE_EXT "")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
-set(LT_OBJDIR "")
-
-# Set the default font search path
-# TODO add dir for linux and mac os x
-if(WIN32)
-  set(MAGICK_FONT_PATH "\"$ENV{WINDIR}\\FONTS\\\"")
-  # Escape the path C way where '\' must be '\\' (regex and cmake also escapes '\' so to find one we need '\\\\')
-  string(REGEX REPLACE "\\\\" "\\\\\\\\" MAGICK_FONT_PATH ${MAGICK_FONT_PATH})
-elseif(UNIX AND NOT APPLE)
-  set(MAGICK_FONT_PATH "/usr/share/fonts/")
-elseif(APPLE)
-  set(MAGICK_FONT_PATH "/System/Library/Fonts/")
+option(MAGICK_BUILD_STATIC "Build ImageMagick statically" FALSE)
+if(MAGICK_BUILD_STATIC)
+  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -D_LIB)
+else()
+  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -D_DLL)
 endif()
 
-#TODO should we use the host cpu or the build bitness???
+option(MAGICK_HDRI_ENABLE "Build ImageMagick with High dynamic-range imaging" TRUE)
+if(MAGICK_HDRI_ENABLE)
+  set(HDRI_SUFFIX HDRI)
+  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -DMAGICKCORE_HDRI_ENABLE)
+endif()
+
+option(BUILD_MAGICKPP "Enable build/install of Magick++" TRUE)
+option(BUILD_UTILITIES "Enable build/install of command-line utilities" TRUE)
+option(BUILD_MODULES "Compile coders and filters as modules" FALSE)
+option(CIPHER_SUPPORT "Permit enciphering and deciphering image pixels" TRUE)
+option(EXCLUDE_DEPRECATED "Exclude deprecated methods" TRUE)
+set(NAMESPACE_PREFIX "" CACHE STRING "Prefix MagickCore API methods")
+set(NAMESPACE_PREFIX_TAG ${NAMESPACE_PREFIX})
+set(PixelCacheThreshold "" CACHE STRING "Set pixel cache threshhold in MB (default available memory)")
+option(WITH_DMALLOC "Use dmalloc for memory profiling" FALSE)
+
+# TODO
+set(VERSION "")
 set(MAGICK_TARGET_CPU "")
-
-#TODO what should go on the OS???
 set(MAGICK_TARGET_OS "")
-
-#TODO what should go on the vendor???
 set(MAGICK_TARGET_VENDOR "")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
-set(MODULES_BASEDIRNAME "")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
-set(MODULES_DIRNAME "")
-
-# TODO if a namespace should be better define it here
-set(NAMESPACE_PREFIX "")
-
-# TODO same as above
-set(NAMESPACE_PREFIX_TAG "")
-
-# TODO Not sure why this isn't an ifdef inside the code, so it would check if it was on Debug or Release
-set(NDEBUG 1)
-
-# TODO I think this is used if we wanted to install, since we only want a static library
 set(PACKAGE "")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
 set(PACKAGE_BUGREPORT "")
-
-# TODO Will be correctly filled near the end of file
-set(PACKAGE_NAME "")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
 set(PACKAGE_STRING "")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
 set(PACKAGE_TARNAME "")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
 set(PACKAGE_URL "")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
 set(PACKAGE_VERSION "")
 
 # Set if pipe (|) is enabled on filenames 
@@ -221,24 +141,6 @@ endif()
 # TODO Not sure what to do here
 set(PTHREAD_CREATE_JOINABLE "")
 
-# TODO Maybe this should be an option
-set(PixelCacheThreshold "")
-
-# TODO Not sure what value to give here
-set(QUANTUM_DEPTH_OBSOLETE_IN_H 16)
-
-# TODO I think this is used if we wanted to install, since we only want a static library
-set(SHAREARCH_BASEDIRNAME "")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
-set(SHAREARCH_DIRNAME "")
-
-# TODO I think this is used if we wanted to install, since we only want a static library
-set(SHARE_PATH "")
-
-# TODO should this be the path used????
-set(SHARE_RELATIVE_PATH "\"ImageMagick-7\"")
-
 # Check POSIX threads libraries and header files exists
 find_package(Threads)
 if(CMAKE_USE_PTHREADS_INIT)
@@ -250,21 +152,21 @@ endif()
 # Check if we are on AIX, do the _ALL_SOURCE magic
 if(AIX)
   set(_ALL_SOURCE 1)
+  set(_LARGE_FILES 1)
 endif()
 
 # Check if we're on Solaris
 IF (SOLARIS)
   set(_POSIX_PTHREAD_SEMANTICS TRUE)
   set(__EXTENSIONS__ TRUE)
+  # TODO restrict the system version and check if the define should be these
+  set(_UINT32_T uint32_t)
+  set(_UINT64_T uint64_t)
+  set(_UINT8_T uint8_t)
 endif()
 
 # TODO Not sure how to test this, so for now it's disabled
 set(_TANDEM_SOURCE FALSE)
-
-# TODO Define the version
-set(VERSION "")
-
-option(WITH_DMALLOC "Use dmalloc for memory profiling" OFF)
 
 # TODO check if this is supposed to be any of the ones defined https://cmake.org/cmake/help/v3.0/module/FindX11.html
 set(X11_CONFIGURE_PATH "")
@@ -287,40 +189,42 @@ endif()
 # Disable run-time bounds-checking
 set(_FORTIFY_SOURCE FALSE)
 
-# Check if we are on AIX, activate _LARGE_FILES
-if(AIX)
-  set(_LARGE_FILES 1)
+####### PATHS #######
+# TODO Configure these correctly
+set(CODER_DIRNAME "")
+set(CONFIGURE_PATH "")
+set(CONFIGURE_RELATIVE_PATH "\"ImageMagick-7\"")
+set(DOCUMENTATION_PATH "")
+set(EXECUTABLE_PATH "")
+set(FILTER_DIRNAME "")
+set(INCLUDEARCH_PATH "")
+set(INCLUDE_PATH "")
+set(INSTALLED_SUPPORT "")
+set(LIBRARY_PATH "\"ImageMagick-7\"")
+set(LIBRARY_RELATIVE_PATH "\"ImageMagick-7\"")
+set(LIB_BIN_BASEDIRNAME "")
+set(SHAREARCH_BASEDIRNAME "")
+set(SHAREARCH_DIRNAME "")
+set(SHARE_PATH "")
+set(SHARE_RELATIVE_PATH "\"ImageMagick-7\"")
+set(MODULES_BASEDIRNAME "")
+set(MODULES_DIRNAME "")
+set(LT_OBJDIR "")
+
+# Set the default font search path
+if(WIN32)
+  set(MAGICK_FONT_PATH "\"$ENV{WINDIR}\\FONTS\\\"")
+  # Escape the path C way where '\' must be '\\' (regex and cmake also escapes '\' so to find one we need '\\\\')
+  string(REGEX REPLACE "\\\\" "\\\\\\\\" MAGICK_FONT_PATH ${MAGICK_FONT_PATH})
+elseif(UNIX AND NOT APPLE)
+  set(MAGICK_FONT_PATH "/usr/share/fonts/")
+elseif(APPLE)
+  set(MAGICK_FONT_PATH "/System/Library/Fonts/")
 endif()
 
-#TODO restrict the system version and check if the define should be these
-if(SOLARIS)
-  set(_UINT32_T uint32_t)
-  set(_UINT64_T uint64_t)
-  set(_UINT8_T uint8_t)
-endif()
-
-# Give user the choice for MAGICKCORE_QUANTUM_DEPTH bits
-set(MAGICKCORE_QUANTUM_DEPTH "16" CACHE STRING "Number of bits in a pixel Quantum")
-set_property(CACHE MAGICKCORE_QUANTUM_DEPTH PROPERTY STRINGS "8;16;32;64")
-set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -DMAGICKCORE_QUANTUM_DEPTH=${MAGICKCORE_QUANTUM_DEPTH})
-
-# Give user the choice for MAGICK_STATIC_BUILD bits
-option(MAGICK_BUILD_STATIC "Build ImageMagick statically" OFF)
-if(MAGICK_BUILD_STATIC)
-  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -D_LIB)
-else()
-  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -D_DLL)
-endif()
-
-# Give user the choice for MAGICK_HDRI_ENABLE
-option(MAGICK_HDRI_ENABLE "Build ImageMagick with High dynamic-range imaging" ON)
-if(MAGICK_HDRI_ENABLE)
-  set(HDRI_SUFFIX HDRI)
-  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -DMAGICKCORE_HDRI_ENABLE)
-endif()
-
+####### CONFIG #######
 # Fetch some needed values from version.sh and fill the correspondent variables
-FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/configure CONTENT_CONFIGURE)
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/configure CONTENT_CONFIGURE)
 
 # Try to find the date in the format yyyy-mm-dd
 string(REGEX MATCH "\nPACKAGE_RELEASE_DATE=([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])\n" FOUND_LAST_CHANGE_DATE "${CONTENT_CONFIGURE}")
@@ -439,21 +343,28 @@ file(READ ${CMAKE_CURRENT_BINARY_DIR}/config/config.h CONTENT_CONFIG_H)
 # Now we need to Regex Replace some things in the header file
 # All caps defines will be prefixed with a macro MAGICKCORE_
 string(REGEX REPLACE 
-"\\*\\/\n#define[ ]+([A-Z0-9_]+)[ ]*([a-zA-Z0-9\":\\\-]*)\n" 
-"*/\n#ifndef MAGICKCORE_\\1\n#define MAGICKCORE_\\1 \\2\n#endif\n"
-CONTENT_CONFIG_H ${CONTENT_CONFIG_H})
+  "\\*\\/\n#define[ ]+([A-Z0-9_]+)[ ]*([a-zA-Z0-9\":\\\-]*)\n" 
+  "*/\n#ifndef MAGICKCORE_\\1\n#define MAGICKCORE_\\1 \\2\n#endif\n"
+  CONTENT_CONFIG_H ${CONTENT_CONFIG_H}
+)
 # All uncaps defines will be prefixed with a macro _magickcore_
 string(REGEX REPLACE 
-"\\*\\/\n#define[ ]+([a-z0-9_]+)[ ]*([a-zA-Z0-9 \"_]*)\n" 
-"*/\n#ifndef _magickcore_\\1\n#define _magickcore_\\1 \\2\n#endif\n"
-CONTENT_CONFIG_H ${CONTENT_CONFIG_H})
+  "\\*\\/\n#define[ ]+([a-z0-9_]+)[ ]*([a-zA-Z0-9 \"_]*)\n" 
+  "*/\n#ifndef _magickcore_\\1\n#define _magickcore_\\1 \\2\n#endif\n"
+  CONTENT_CONFIG_H ${CONTENT_CONFIG_H}
+)
 # For some reason (I can't seem to find the logic) there's some defines we need to remove the prefix
-string(REGEX REPLACE "_magickcore___func__" "__func__" CONTENT_CONFIG_H ${CONTENT_CONFIG_H})
+string(REGEX REPLACE
+  "_magickcore___func__"
+  "__func__"
+  CONTENT_CONFIG_H ${CONTENT_CONFIG_H}
+)
 # Also for ssize_t we need to typedef instead of define or else magick++ will not compile
 string(REGEX REPLACE 
-"#ifndef _magickcore_ssize_t\n#define _magickcore_ssize_t ([a-zA-Z ]*)\n#endif" 
-"typedef \\1 ssize_t;"
-CONTENT_CONFIG_H ${CONTENT_CONFIG_H})
+  "#ifndef _magickcore_ssize_t\n#define _magickcore_ssize_t ([a-zA-Z ]*)\n#endif" 
+  "typedef \\1 ssize_t;"
+  CONTENT_CONFIG_H ${CONTENT_CONFIG_H}
+)
 
 # Now we need to append things to the previously read file content
 set(CONTENT_CONFIG_H 
@@ -519,11 +430,17 @@ magick_find_delegate(FPX_DELEGATE FlashPIX FALSE)
 magick_find_delegate(GS_DELEGATE Ghostscript FALSE)
 magick_find_delegate(GVC_DELEGATE GVC FALSE)
 magick_find_delegate(LTDL_DELEGATE LTDL FALSE)
+# TODO
+set(LTDL_MODULE_EXT "")
 magick_find_delegate(PANGO_DELEGATE Pango FALSE)
 magick_find_delegate(PANGOCAIRO_DELEGATE PangoCairo FALSE)
 magick_find_delegate(RAQM_DELEGATE RAQM FALSE)
 magick_find_delegate(WEBPMUX_DELEGATE WEBPMUX FALSE)
 magick_find_delegate(WMF_DELEGATE WMF FALSE)
+magick_find_delegate(LQR Lqr FALSE)
+
+magick_find_delegate(HasJEMALLOC Jemalloc FALSE)
+magick_find_delegate(HasUMEM UMEM FALSE)
 
 # Set OpenCL Accelerator
 # TODO does it suffice to enable only if we have the headers ???
@@ -544,7 +461,7 @@ magick_find_delegate(X11_DELEGATE X11 TRUE)
 
 # Delegate special cases
 if(ZLIB_DELEGATE)
-  option(LZMA_API_STATIC "Use lib LZMA as static?" OFF)
+  option(LZMA_API_STATIC "Use lib LZMA as static?" FALSE)
   if(LZMA_API_STATIC)
     set(IMAGEMAGICK_DELEGATES_COMPILER_DEFINITIONS ${IMAGEMAGICK_DELEGATES_COMPILER_DEFINITIONS} "-DLZMA_API_STATIC")
   endif()
@@ -563,7 +480,7 @@ set(FILTERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/filters)
 
 set(IMAGEMAGICK_INC_DIR "include/ImageMagick-${MAGICK_VERSION_MAJOR}")
 
-#Although this is not a delegate we can add the pthread library dependency here
+# Although this is not a delegate we can add the pthread library dependency here
 if(THREAD_SUPPORT)
   list(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${CMAKE_THREAD_LIBS_INIT})
 endif()
@@ -577,7 +494,10 @@ set(MAGICK_BINARY_NAME "Magick")
 
 # Add the subdirectories to be compiled
 add_subdirectory("MagickCore")
-# TODO: Add options for these
 add_subdirectory("MagickWand")
-add_subdirectory("Magick++")
-add_subdirectory("utilities")
+if(BUILD_MAGICKPP)
+  add_subdirectory("Magick++")
+endif()
+if(BUILD_UTILITIES)
+  add_subdirectory("utilities")
+endif()
