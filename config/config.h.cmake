@@ -258,6 +258,9 @@
 /* Define if you have the <lcms2/lcms2.h> header file. */
 #cmakedefine HAVE_LCMS2_LCMS2_H
 
+/* Define if you have the <libraw/libraw.h> header file. */
+#cmakedefine HAVE_LIBRAW_LIBRAW_H
+
 /* Define to 1 if you have the `gcov' library (-lgcov). */
 #cmakedefine HAVE_LIBGCOV @HAVE_LIBGCOV@
 
