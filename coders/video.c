@@ -106,15 +106,6 @@ static MagickBooleanType
 %
 */
 
-static MagickBooleanType IsAVI(const unsigned char *magick,const size_t length)
-{
-  if (length < 4)
-    return(MagickFalse);
-  if (memcmp(magick,"RIFF",4) == 0)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
 static MagickBooleanType IsPNG(const unsigned char *magick,const size_t length)
 {
   if (length < 8)
@@ -341,7 +332,6 @@ ModuleExport size_t RegisterVIDEOImage(void)
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("VIDEO","AVI","Microsoft Audio/Visual Interleaved");
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
-  entry->magick=(IsImageFormatHandler *) IsAVI;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("VIDEO","FLV","Flash Video Stream");
