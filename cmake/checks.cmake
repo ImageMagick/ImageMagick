@@ -233,12 +233,6 @@ macro(magick_check_env)
   # Check if `j1' exists
   CHECK_FUNCTION_EXISTS(j1 HAVE_J1)
 
-  # Check if <lcms2.h> exists
-  CHECK_INCLUDE_FILE(lcms2.h HAVE_LCMS2_H)
-
-  # Check if <lcms2/lcms2.h> exists
-  CHECK_INCLUDE_FILE(lcms2/lcms2.h HAVE_LCMS2_LCMS2_H)
-
   # Check if `gcov' exists
   CHECK_LIBRARY_EXISTS(gcov "" "" HAVE_LIBGCOV)
 
@@ -371,13 +365,6 @@ macro(magick_check_env)
 
   # Check if <process.h> exists
   CHECK_INCLUDE_FILE(process.h HAVE_PROCESS_H)
-
-  # Check if POSIX threads library, header and symbols exists
-  CHECK_INCLUDE_FILE(pthread.h HAVE_PTHREAD_H)
-  if(HAVE_PTHREAD_H)
-    CHECK_LIBRARY_EXISTS(pthread pthread_create "" HAVE_PTHREAD)
-    CHECK_SYMBOL_EXISTS(PTHREAD_PRIO_INHERIT pthread.h HAVE_PTHREAD_PRIO_INHERIT)
-  endif()
 
   # Check if `pwrite' exists
   CHECK_FUNCTION_EXISTS(pwrite HAVE_PWRITE)
