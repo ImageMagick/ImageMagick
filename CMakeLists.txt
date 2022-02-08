@@ -111,13 +111,69 @@ endif()
 
 option(BUILD_MAGICKPP "Enable build/install of Magick++" TRUE)
 option(BUILD_UTILITIES "Enable build/install of command-line utilities" TRUE)
-option(BUILD_MODULES "Compile coders and filters as modules" FALSE)
+option(BUILD_MODULES "Compile coders and filters as modules" FALSE) # TODO
 option(CIPHER_SUPPORT "Permit enciphering and deciphering image pixels" TRUE)
 option(EXCLUDE_DEPRECATED "Exclude deprecated methods" TRUE)
 set(NAMESPACE_PREFIX "" CACHE STRING "Prefix MagickCore API methods")
 set(NAMESPACE_PREFIX_TAG ${NAMESPACE_PREFIX})
 set(PixelCacheThreshold "" CACHE STRING "Set pixel cache threshhold in MB (default available memory)")
 option(WITH_DMALLOC "Use dmalloc for memory profiling" FALSE)
+
+# Fetch some needed values from version.sh and fill the correspondent variables
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/configure CONTENT_CONFIGURE)
+
+# Try to find the date in the format yyyy-mm-dd
+string(REGEX MATCH "\nPACKAGE_RELEASE_DATE=([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])\n" FOUND_LAST_CHANGE_DATE "${CONTENT_CONFIGURE}")
+if(FOUND_LAST_CHANGE_DATE)
+  set(PACKAGE_RELEASE_DATE ${CMAKE_MATCH_1})
+endif()
+
+# Try to find `PACKAGE_NAME'
+string(REGEX MATCH "\nPACKAGE_NAME='([A-Za-z0-9]+)'\n" FOUND_PACKAGE_NAME ${CONTENT_CONFIGURE})
+if(FOUND_PACKAGE_NAME)
+  set(PACKAGE_NAME ${CMAKE_MATCH_1})
+endif()
+
+# Try to find `PACKAGE_LIB_VERSION'
+string(REGEX MATCH "\nPACKAGE_LIB_VERSION=([A-Fa-f0-9x]+)\n" FOUND_PACKAGE_LIB_VERSION ${CONTENT_CONFIGURE})
+if(FOUND_PACKAGE_LIB_VERSION)
+  set(PACKAGE_LIB_VERSION ${CMAKE_MATCH_1})
+endif()
+
+# Try to find `PACKAGE_VERSION'
+string(REGEX MATCH "\nPACKAGE_BASE_VERSION=([0-9.]+)\n" FOUND_PACKAGE_VERSION ${CONTENT_CONFIGURE})
+if(FOUND_PACKAGE_VERSION)
+  set(MAGICK_LIB_VERSION_TEXT ${CMAKE_MATCH_1})
+  set(MAGICKPP_LIB_VERSION_TEXT ${CMAKE_MATCH_1})
+endif()
+
+# Try parse just the major version number from MAGICK_LIB_VERSION_TEXT
+string(REGEX MATCH "([0-9])\\..*" FOUND_VERSION_MAJOR "${MAGICK_LIB_VERSION_TEXT}")
+if(FOUND_VERSION_MAJOR)
+  set(MAGICK_VERSION_MAJOR ${CMAKE_MATCH_1})
+endif()
+
+# Try to find `MAGICK_LIBRARY_CURRENT', `MAGICK_LIBRARY_REVISION' and `MAGICK_LIBRARY_AGE'
+string(REGEX MATCH "\nMAGICK_LIBRARY_CURRENT=([0-9]+)\nMAGICK_LIBRARY_REVISION=([0-9]+)\nMAGICK_LIBRARY_AGE=([0-9]+)\n" FOUND_MAGICK_LIB_VERSION_NUMBER ${CONTENT_CONFIGURE})
+if(FOUND_MAGICK_LIB_VERSION_NUMBER)
+  set(MAGICK_LIB_VERSION_NUMBER "${CMAKE_MATCH_1},${CMAKE_MATCH_2},${CMAKE_MATCH_3}")
+  set(MAGICK_LIBRARY_CURRENT ${CMAKE_MATCH_1})
+  set(MAGICK_LIBRARY_CURRENT_MIN ${CMAKE_MATCH_1})
+endif()
+
+# Try to find `PACKAGE_RELEASE'
+string(REGEX MATCH "\nPACKAGE_VERSION_ADDENDUM=-([0-9]+)\n" FOUND_PACKAGE_RELEASE ${CONTENT_CONFIGURE})
+if(FOUND_PACKAGE_RELEASE)
+  set(PACKAGE_VERSION_ADDENDUM "-${CMAKE_MATCH_1}")
+endif()
+
+# Try to find `MAGICKPP_LIBRARY_CURRENT', `MAGICKPP_LIBRARY_REVISION' and `MAGICKPP_LIBRARY_AGE'
+string(REGEX MATCH "\nMAGICKPP_LIBRARY_CURRENT=([0-9]+)\nMAGICKPP_LIBRARY_REVISION=([0-9]+)\nMAGICKPP_LIBRARY_AGE=([0-9]+)\n" FOUND_MAGICKPP_LIBRARY_VERSION_INFO ${CONTENT_CONFIGURE})
+if(FOUND_MAGICKPP_LIBRARY_VERSION_INFO)
+  set(MAGICKPP_LIBRARY_VERSION_INFO "${CMAKE_MATCH_1}:${CMAKE_MATCH_2}:${CMAKE_MATCH_3}")
+  set(MAGICKPP_LIBRARY_CURRENT ${CMAKE_MATCH_1})
+  set(MAGICKPP_LIBRARY_CURRENT_MIN ${CMAKE_MATCH_1})
+endif()
 
 # TODO
 set(VERSION "")
@@ -147,6 +203,11 @@ if(CMAKE_USE_PTHREADS_INIT)
   set(THREAD_SUPPORT TRUE)
   set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
   set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+endif()
+CHECK_INCLUDE_FILE(pthread.h HAVE_PTHREAD_H)
+if(HAVE_PTHREAD_H)
+  CHECK_LIBRARY_EXISTS(pthread pthread_create "" HAVE_PTHREAD)
+  CHECK_SYMBOL_EXISTS(PTHREAD_PRIO_INHERIT pthread.h HAVE_PTHREAD_PRIO_INHERIT)
 endif()
 
 # Check if we are on AIX, do the _ALL_SOURCE magic
@@ -222,63 +283,114 @@ elseif(APPLE)
   set(MAGICK_FONT_PATH "/System/Library/Fonts/")
 endif()
 
+####### DELEGATES #######
+magick_find_delegate(BZLIB_DELEGATE BZip2 TRUE)
+magick_find_delegate(LZMA_DELEGATE LibLZMA TRUE)
+magick_find_delegate(ZLIB_DELEGATE ZLIB TRUE)
+magick_find_delegate(ZSTD_DELEGATE zstd TRUE)
+magick_find_delegate(FREETYPE_DELEGATE Freetype TRUE)
+magick_find_delegate(XML_DELEGATE LibXml2 TRUE)
+
+# TODO Is this correct?
+magick_find_delegate(TIFF_DELEGATE TIFF TRUE)
+if(TIFF_FOUND)
+  set(HAVE_TIFFCONF_H 1)
+  set(HAVE_TIFFISBIGENDIAN 1)
+  set(HAVE_TIFFISCODECCONFIGURED 1)
+  set(HAVE_TIFFMERGEFIELDINFO 1)
+  set(HAVE_TIFFREADEXIFDIRECTORY 1)
+  set(HAVE_TIFFSETERRORHANDLEREXT 1)
+  set(HAVE_TIFFSETTAGEXTENDER 1)
+  set(HAVE_TIFFSETWARNINGHANDLEREXT 1)
+  set(HAVE_TIFFSWABARRAYOFTRIPLES 1)
+endif()
+magick_find_delegate(LCMS_DELEGATE lcms TRUE)
+if(LCMS_FOUND)
+  set(HAVE_LCMS2_H 1)
+endif()
+magick_find_delegate(RAW_R_DELEGATE libraw TRUE)
+if(LIBRAW_FOUND)
+  set(HAVE_LIBRAW_LIBRAW_H 1)
+endif()
+magick_find_delegate(HEIC_DELEGATE libheif TRUE)
+
+magick_find_delegate(JBIG_DELEGATE JBIG TRUE)
+magick_find_delegate(JPEG_DELEGATE JPEG TRUE)
+magick_find_delegate(LIBOPENJP2_DELEGATE OpenJPEG TRUE)
+magick_find_delegate(OPENEXR_DELEGATE OpenEXR TRUE)
+magick_find_delegate(PNG_DELEGATE PNG TRUE)
+magick_find_delegate(RSVG_DELEGATE Rsvg TRUE)
+magick_find_delegate(WEBP_DELEGATE WebP TRUE)
+magick_find_delegate(JXL_DELEGATE JXL TRUE)
+
+# TODO are these correct and should they be off by default?
+magick_find_delegate(AUTOTRACE_DELEGATE AUTOTRACE FALSE)
+magick_find_delegate(CAIRO_DELEGATE Cairo FALSE)
+magick_find_delegate(DJVU_DELEGATE DJVU FALSE)
+magick_find_delegate(DPS_DELEGATE DPS FALSE)
+magick_find_delegate(FFTW_DELEGATE FFTW FALSE)
+magick_find_delegate(FLIF_DELEGATE FLIF FALSE)
+magick_find_delegate(FONTCONFIG_DELEGATE Fontconfig FALSE)
+magick_find_delegate(FPX_DELEGATE FlashPIX FALSE)
+magick_find_delegate(GS_DELEGATE Ghostscript FALSE)
+magick_find_delegate(GVC_DELEGATE GVC FALSE)
+magick_find_delegate(LTDL_DELEGATE LTDL FALSE)
+# TODO
+set(LTDL_MODULE_EXT "")
+magick_find_delegate(PANGO_DELEGATE Pango FALSE)
+magick_find_delegate(PANGOCAIRO_DELEGATE PangoCairo FALSE)
+magick_find_delegate(RAQM_DELEGATE RAQM FALSE)
+magick_find_delegate(WEBPMUX_DELEGATE WEBPMUX FALSE)
+magick_find_delegate(WMF_DELEGATE WMF FALSE)
+magick_find_delegate(LQR Lqr FALSE)
+
+magick_find_delegate(HasJEMALLOC Jemalloc FALSE)
+magick_find_delegate(HasUMEM UMEM FALSE)
+
+# Set OpenCL Accelerator
+# TODO does it suffice to enable only if we have the headers ???
+if((HAVE_OPENCL_CL_H OR HAVE_CL_CL_H) AND DEFINED OPENCL_LIBRARY)
+  set(_OPENCL 1)
+  set(OPENCLLIB_DELEGATE TRUE)
+else()
+  set(_OPENCL "")
+endif()
+
+# TODO Should we check if gdi32 exists if windows?
+if(WIN32)
+  set(WINGDI32_DELEGATE TRUE)
+endif()
+
+# Compile with X11 if present
+magick_find_delegate(X11_DELEGATE X11 TRUE)
+
+# Delegate special cases
+if(ZLIB_DELEGATE)
+  option(LZMA_API_STATIC "Use lib LZMA as static?" FALSE)
+  if(LZMA_API_STATIC)
+    set(IMAGEMAGICK_DELEGATES_COMPILER_DEFINITIONS ${IMAGEMAGICK_DELEGATES_COMPILER_DEFINITIONS} "-DLZMA_API_STATIC")
+  endif()
+endif()
+
+if(OPENCLLIB_DELEGATE)
+  set(IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${IMAGEMAGICK_DELEGATES_LIBRARIES_LINK} ${OPENCL_LIBRARY})
+endif()
+
+# Set ImageMagick base dir to be used inside sub-projects
+set(IMAGEMAGICK_BASE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+
+# Set coders andd filters path
+set(CODERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/coders)
+set(FILTERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/filters)
+
+set(IMAGEMAGICK_INC_DIR "include/ImageMagick-${MAGICK_VERSION_MAJOR}")
+
+# Although this is not a delegate we can add the pthread library dependency here
+if(THREAD_SUPPORT)
+  list(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${CMAKE_THREAD_LIBS_INIT})
+endif()
+
 ####### CONFIG #######
-# Fetch some needed values from version.sh and fill the correspondent variables
-file(READ ${CMAKE_CURRENT_SOURCE_DIR}/configure CONTENT_CONFIGURE)
-
-# Try to find the date in the format yyyy-mm-dd
-string(REGEX MATCH "\nPACKAGE_RELEASE_DATE=([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])\n" FOUND_LAST_CHANGE_DATE "${CONTENT_CONFIGURE}")
-if(FOUND_LAST_CHANGE_DATE)
-  set(PACKAGE_RELEASE_DATE ${CMAKE_MATCH_1})
-endif()
-
-# Try to find `PACKAGE_NAME'
-string(REGEX MATCH "\nPACKAGE_NAME='([A-Za-z0-9]+)'\n" FOUND_PACKAGE_NAME ${CONTENT_CONFIGURE})
-if(FOUND_PACKAGE_NAME)
-  set(PACKAGE_NAME ${CMAKE_MATCH_1})
-endif()
-
-# Try to find `PACKAGE_LIB_VERSION'
-string(REGEX MATCH "\nPACKAGE_LIB_VERSION=([A-Fa-f0-9x]+)\n" FOUND_PACKAGE_LIB_VERSION ${CONTENT_CONFIGURE})
-if(FOUND_PACKAGE_LIB_VERSION)
-  set(PACKAGE_LIB_VERSION ${CMAKE_MATCH_1})
-endif()
-
-# Try to find `PACKAGE_VERSION'
-string(REGEX MATCH "\nPACKAGE_BASE_VERSION=([0-9.]+)\n" FOUND_PACKAGE_VERSION ${CONTENT_CONFIGURE})
-if(FOUND_PACKAGE_VERSION)
-  set(MAGICK_LIB_VERSION_TEXT ${CMAKE_MATCH_1})
-  set(MAGICKPP_LIB_VERSION_TEXT ${CMAKE_MATCH_1})
-endif()
-
-# Try parse just the major version number from MAGICK_LIB_VERSION_TEXT
-string(REGEX MATCH "([0-9])\\..*" FOUND_VERSION_MAJOR "${MAGICK_LIB_VERSION_TEXT}")
-if(FOUND_VERSION_MAJOR)
-  set(MAGICK_VERSION_MAJOR ${CMAKE_MATCH_1})
-endif()
-
-# Try to find `MAGICK_LIBRARY_CURRENT', `MAGICK_LIBRARY_REVISION' and `MAGICK_LIBRARY_AGE'
-string(REGEX MATCH "\nMAGICK_LIBRARY_CURRENT=([0-9]+)\nMAGICK_LIBRARY_REVISION=([0-9]+)\nMAGICK_LIBRARY_AGE=([0-9]+)\n" FOUND_MAGICK_LIB_VERSION_NUMBER ${CONTENT_CONFIGURE})
-if(FOUND_MAGICK_LIB_VERSION_NUMBER)
-  set(MAGICK_LIB_VERSION_NUMBER "${CMAKE_MATCH_1},${CMAKE_MATCH_2},${CMAKE_MATCH_3}")
-  set(MAGICK_LIBRARY_CURRENT ${CMAKE_MATCH_1})
-  set(MAGICK_LIBRARY_CURRENT_MIN ${CMAKE_MATCH_1})
-endif()
-
-# Try to find `PACKAGE_RELEASE'
-string(REGEX MATCH "\nPACKAGE_VERSION_ADDENDUM=-([0-9]+)\n" FOUND_PACKAGE_RELEASE ${CONTENT_CONFIGURE})
-if(FOUND_PACKAGE_RELEASE)
-  set(PACKAGE_VERSION_ADDENDUM "-${CMAKE_MATCH_1}")
-endif()
-
-# Try to find `MAGICKPP_LIBRARY_CURRENT', `MAGICKPP_LIBRARY_REVISION' and `MAGICKPP_LIBRARY_AGE'
-string(REGEX MATCH "\nMAGICKPP_LIBRARY_CURRENT=([0-9]+)\nMAGICKPP_LIBRARY_REVISION=([0-9]+)\nMAGICKPP_LIBRARY_AGE=([0-9]+)\n" FOUND_MAGICKPP_LIBRARY_VERSION_INFO ${CONTENT_CONFIGURE})
-if(FOUND_MAGICKPP_LIBRARY_VERSION_INFO)
-  set(MAGICKPP_LIBRARY_VERSION_INFO "${CMAKE_MATCH_1}:${CMAKE_MATCH_2}:${CMAKE_MATCH_3}")
-  set(MAGICKPP_LIBRARY_CURRENT ${CMAKE_MATCH_1})
-  set(MAGICKPP_LIBRARY_CURRENT_MIN ${CMAKE_MATCH_1})
-endif()
-
 # Set the version.h file path to be autogenerated
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MagickCore/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/MagickCore/version.h)
 
@@ -382,108 +494,6 @@ ${CONTENT_CONFIG_H}
 
 # Create the magick-baseconfig.h file
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/MagickCore/magick-baseconfig.h "${CONTENT_CONFIG_H}")
-
-####### DELEGATES #######
-magick_find_delegate(BZLIB_DELEGATE BZip2 TRUE)
-magick_find_delegate(LZMA_DELEGATE LibLZMA TRUE)
-magick_find_delegate(ZLIB_DELEGATE ZLIB TRUE)
-magick_find_delegate(ZSTD_DELEGATE Zstd TRUE)
-
-magick_find_delegate(LCMS_DELEGATE LCMS TRUE)
-magick_find_delegate(FREETYPE_DELEGATE Freetype TRUE)
-magick_find_delegate(XML_DELEGATE LibXml2 TRUE)
-
-# TODO Is this correct?
-magick_find_delegate(TIFF_DELEGATE TIFF TRUE)
-if(TIFF_FOUND)
-  set(HAVE_TIFFCONF_H 1)
-  set(HAVE_TIFFISBIGENDIAN 1)
-  set(HAVE_TIFFISCODECCONFIGURED 1)
-  set(HAVE_TIFFMERGEFIELDINFO 1)
-  set(HAVE_TIFFREADEXIFDIRECTORY 1)
-  set(HAVE_TIFFSETERRORHANDLEREXT 1)
-  set(HAVE_TIFFSETTAGEXTENDER 1)
-  set(HAVE_TIFFSETWARNINGHANDLEREXT 1)
-  set(HAVE_TIFFSWABARRAYOFTRIPLES 1)
-endif()
-
-magick_find_delegate(HEIC_DELEGATE HEIF TRUE)
-magick_find_delegate(JBIG_DELEGATE JBIG TRUE)
-magick_find_delegate(JPEG_DELEGATE JPEG TRUE)
-magick_find_delegate(LIBOPENJP2_DELEGATE OpenJpeg TRUE)
-magick_find_delegate(OPENEXR_DELEGATE OpenEXR TRUE)
-magick_find_delegate(PNG_DELEGATE PNG TRUE)
-magick_find_delegate(RAW_R_DELEGATE LibRaw TRUE)
-magick_find_delegate(RSVG_DELEGATE Rsvg TRUE)
-magick_find_delegate(WEBP_DELEGATE WEBP TRUE)
-magick_find_delegate(JXL_DELEGATE JXL TRUE)
-
-# TODO are these correct and should they be off by default?
-magick_find_delegate(AUTOTRACE_DELEGATE AUTOTRACE FALSE)
-magick_find_delegate(CAIRO_DELEGATE Cairo FALSE)
-magick_find_delegate(DJVU_DELEGATE DJVU FALSE)
-magick_find_delegate(DPS_DELEGATE DPS FALSE)
-magick_find_delegate(FFTW_DELEGATE FFTW FALSE)
-magick_find_delegate(FLIF_DELEGATE FLIF FALSE)
-magick_find_delegate(FONTCONFIG_DELEGATE Fontconfig FALSE)
-magick_find_delegate(FPX_DELEGATE FlashPIX FALSE)
-magick_find_delegate(GS_DELEGATE Ghostscript FALSE)
-magick_find_delegate(GVC_DELEGATE GVC FALSE)
-magick_find_delegate(LTDL_DELEGATE LTDL FALSE)
-# TODO
-set(LTDL_MODULE_EXT "")
-magick_find_delegate(PANGO_DELEGATE Pango FALSE)
-magick_find_delegate(PANGOCAIRO_DELEGATE PangoCairo FALSE)
-magick_find_delegate(RAQM_DELEGATE RAQM FALSE)
-magick_find_delegate(WEBPMUX_DELEGATE WEBPMUX FALSE)
-magick_find_delegate(WMF_DELEGATE WMF FALSE)
-magick_find_delegate(LQR Lqr FALSE)
-
-magick_find_delegate(HasJEMALLOC Jemalloc FALSE)
-magick_find_delegate(HasUMEM UMEM FALSE)
-
-# Set OpenCL Accelerator
-# TODO does it suffice to enable only if we have the headers ???
-if((HAVE_OPENCL_CL_H OR HAVE_CL_CL_H) AND DEFINED OPENCL_LIBRARY)
-  set(_OPENCL 1)
-  set(OPENCLLIB_DELEGATE TRUE)
-else()
-  set(_OPENCL "")
-endif()
-
-# TODO Should we check if gdi32 exists if windows?
-if(WIN32)
-  set(WINGDI32_DELEGATE TRUE)
-endif()
-
-# Compile with X11 if present
-magick_find_delegate(X11_DELEGATE X11 TRUE)
-
-# Delegate special cases
-if(ZLIB_DELEGATE)
-  option(LZMA_API_STATIC "Use lib LZMA as static?" FALSE)
-  if(LZMA_API_STATIC)
-    set(IMAGEMAGICK_DELEGATES_COMPILER_DEFINITIONS ${IMAGEMAGICK_DELEGATES_COMPILER_DEFINITIONS} "-DLZMA_API_STATIC")
-  endif()
-endif()
-
-if(OPENCLLIB_DELEGATE)
-  set(IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${IMAGEMAGICK_DELEGATES_LIBRARIES_LINK} ${OPENCL_LIBRARY})
-endif()
-
-# Set ImageMagick base dir to be used inside sub-projects
-set(IMAGEMAGICK_BASE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-
-# Set coders andd filters path
-set(CODERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/coders)
-set(FILTERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/filters)
-
-set(IMAGEMAGICK_INC_DIR "include/ImageMagick-${MAGICK_VERSION_MAJOR}")
-
-# Although this is not a delegate we can add the pthread library dependency here
-if(THREAD_SUPPORT)
-  list(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES_LINK ${CMAKE_THREAD_LIBS_INIT})
-endif()
 
 # Set the binaries name
 set(MAGICK_BINARY_SUFFIX "${MAGICK_VERSION_MAJOR}.${MagickQuantumDepth}${HDRI_SUFFIX}")
