@@ -17,8 +17,7 @@
 #include "coders/coders-private.h"
 
 #define MagickVIDEOHeaders \
-  MagickCoderHeader("VIDEO", 0, "\000\000\001\263") \
-  MagickCoderHeader("VIDEO", 0, "RIFF")
+  MagickCoderHeader("VIDEO", 0, "\000\000\001\263")
 
 #define MagickVIDEOAliases \
   MagickCoderAlias("VIDEO", "3GP") \
