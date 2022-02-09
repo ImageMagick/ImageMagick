@@ -14,7 +14,7 @@
 %                                                                             %
 %                             Software Design                                 %
 %                                  Cristy                                     %
-%                              January 2003                                   %
+%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
