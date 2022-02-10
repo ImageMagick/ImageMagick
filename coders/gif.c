@@ -1865,6 +1865,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
                        /*
                          Write generic extension.
                        */
+                       (void) memset(extension,0,sizeof(extension));
                        (void) CopyMagickString(extension,name+4,
                          sizeof(extension));
                        (void) WriteBlob(image,11,(unsigned char *) extension);
