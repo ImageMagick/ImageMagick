@@ -331,8 +331,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  (void) memset(&pixel,0,sizeof(pixel));
-  pixel.alpha=(MagickRealType) OpaqueAlpha;
+  GetPixelInfo(image,&pixel);
   if (tga_info.colormap_type != 0)
     {
       /*
@@ -342,7 +341,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colors=tga_info.colormap_index;
       if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      pixel.colorspace=image->colorspace;
       for (i=0; i < (ssize_t) tga_info.colormap_index; i++)
         image->colormap[i]=pixel;
       for ( ; i < (ssize_t) image->colors; i++)
@@ -406,7 +404,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ReadBlobByte(image));
             pixel.alpha=(MagickRealType) ScaleCharToQuantum((unsigned char)
               ReadBlobByte(image));
-            pixel.alpha_trait=BlendPixelTrait;
             break;
           }
         }
