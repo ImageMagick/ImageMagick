@@ -45,7 +45,7 @@ testGetAttribute('input.miff','columns','70');
 testGetAttribute('input.miff','directory',undef);
 
 ++$test;
-testGetAttribute('input.miff','gamma','0.454545');
+testGetAttribute('input.miff','gamma','0.454545454545455');
 
 ++$test;
 testGetAttribute('input.miff','geometry',undef);
