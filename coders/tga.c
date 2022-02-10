@@ -183,9 +183,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels[4],
     runlength;
 
-  unsigned int
-    alpha_bits;
-
   /*
     Open image file.
   */
@@ -242,6 +239,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((tga_info.image_type != TGAMonochrome) &&
       (tga_info.image_type != TGARLEMonochrome))
     {
+      unsigned int
+        alpha_bits;
+
       alpha_bits=(tga_info.attributes & 0x0FU);
       image->alpha_trait=(alpha_bits > 0) || (tga_info.bits_per_pixel == 32) ||
         (tga_info.colormap_size == 32) ?  BlendPixelTrait : UndefinedPixelTrait;
