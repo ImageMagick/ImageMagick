@@ -405,6 +405,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ReadBlobByte(image));
             pixel.alpha=(MagickRealType) ScaleCharToQuantum((unsigned char)
               ReadBlobByte(image));
+            pixel.alpha_trait=BlendPixelTrait;
             break;
           }
         }
