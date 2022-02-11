@@ -652,7 +652,6 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
 
       status=ReadProfile(image,"xmp",profile,(ssize_t) length,exception);
       dng=BlobToStringInfo(profile,length);
-PrintStringInfo(stdout,"dng",dng);
       if (dng != (StringInfo *) NULL)
         {
           const char
