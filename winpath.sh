@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 1999-2020 ImageMagick Studio LLC
+# Copyright © 1999 ImageMagick Studio LLC
 # Copyright (C) 2003 - 2008 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
