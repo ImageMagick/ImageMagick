@@ -16,28 +16,19 @@
 %                                 June 2000                                   %
 %                                                                             %
 %                                                                             %
-%  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("ImageMagick"),  %
-%  to deal in ImageMagick without restriction, including without limitation   %
-%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
-%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
-%  ImageMagick is furnished to do so, subject to the following conditions:    %
+%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
+%  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
-%  The above copyright notice and this permission notice shall be included in %
-%  all copies or substantial portions of ImageMagick.                         %
+%  You may not use this file except in compliance with the License.  You may  %
+%  obtain a copy of the License at                                            %
 %                                                                             %
-%  The software is provided "as is", without warranty of any kind, express or %
-%  implied, including but not limited to the warranties of merchantability,   %
-%  fitness for a particular purpose and noninfringement.  In no event shall   %
-%  ImageMagick Studio be liable for any claim, damages or other liability,    %
-%  whether in an action of contract, tort or otherwise, arising from, out of  %
-%  or in connection with ImageMagick or the use or other dealings in          %
-%  ImageMagick.                                                               %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
-%  Except as contained in this notice, the name of the ImageMagick Studio     %
-%  shall not be used in advertising or otherwise to promote the sale, use or  %
-%  other dealings in ImageMagick without prior written authorization from the %
-%  ImageMagick Studio.                                                        %
+%  Unless required by applicable law or agreed to in writing, software        %
+%  distributed under the License is distributed on an "AS IS" BASIS,          %
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   %
+%  See the License for the specific language governing permissions and        %
+%  limitations under the License.                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
