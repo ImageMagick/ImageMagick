@@ -4990,9 +4990,6 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
 #endif
       for (y=start_y; y <= stop_y; y++)
       {
-        MagickBooleanType
-          sync;
-
         PixelInfo
           pixel;
 
@@ -5029,8 +5026,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
             }
           q+=GetPixelChannels(image);
         }
-        sync=SyncCacheViewAuthenticPixels(image_view,exception);
-        if (sync == MagickFalse)
+        if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
