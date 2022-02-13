@@ -4794,7 +4794,7 @@ static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
             }
           else
             {
-              alpha=PerceptibleReciprocal(alpha);
+              alpha=1.0/alpha;
               beta=delta.x*(y-q->y)-delta.y*(x-q->x);
               distance=alpha*beta*beta;
             }
