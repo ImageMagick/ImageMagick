@@ -4872,7 +4872,7 @@ static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
         break;
     q=p->points+i-1;
     if ((((q+1)->x-q->x)*(y-q->y)) <= (((q+1)->y-q->y)*(x-q->x)))
-      winding_number+=p->direction ? 1 : -1;
+      winding_number+=p->direction != 0 ? 1 : -1;
   }
   if (fill_rule != NonZeroRule)
     {
@@ -5050,6 +5050,10 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     const int
       id = GetOpenMPThreadId();
 
+    double
+      fill_alpha,
+      stroke_alpha;
+
     Quantum
       *magick_restrict q;
 
@@ -5069,12 +5073,10 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         status=MagickFalse;
         continue;
       }
+    fill_alpha=GetFillAlpha(polygon_info[id],mid,fill,draw_info->fill_rule,
+      start_x,y,&stroke_alpha);
     for (x=start_x; x <= stop_x; x++)
     {
-      double
-        fill_alpha,
-        stroke_alpha;
-
       PixelInfo
         fill_color,
         stroke_color;
