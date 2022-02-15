@@ -2175,14 +2175,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     num_passes,
     number_colors,
     pass,
-    ping_bit_depth,
-    ping_color_type,
-    ping_file_depth,
-    ping_interlace_method,
-    ping_compression_method,
-    ping_filter_method,
-    ping_num_trans,
-    unit_type;
+    ping_bit_depth = 0,
+    ping_color_type = 0,
+    ping_file_depth = 0,
+    ping_interlace_method = 0,
+    ping_compression_method = 0,
+    ping_filter_method = 0,
+    ping_num_trans = 0,
+    unit_type = 0;
 
   double
     file_gamma;
