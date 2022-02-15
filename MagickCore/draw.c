@@ -4752,7 +4752,8 @@ static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
       break;
     if ((double) y > (p->bounds.y2+mid+0.5))
       {
-        (void) DestroyEdge(polygon_info,j);
+        p--;
+        (void) DestroyEdge(polygon_info,j--);
         continue;
       }
     if (((double) x <= (p->bounds.x1-mid-0.5)) ||
@@ -5053,10 +5054,6 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     const int
       id = GetOpenMPThreadId();
 
-    double
-      fill_alpha,
-      stroke_alpha;
-
     Quantum
       *magick_restrict q;
 
@@ -5072,10 +5069,12 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         status=MagickFalse;
         continue;
       }
-    fill_alpha=GetFillAlpha(polygon_info[id],mid,fill,draw_info->fill_rule,
-      poly_extent.x1,y,&stroke_alpha);
     for (x=poly_extent.x1; x <= poly_extent.x2; x++)
     {
+      double
+        fill_alpha,
+        stroke_alpha;
+
       PixelInfo
         fill_color,
         stroke_color;
