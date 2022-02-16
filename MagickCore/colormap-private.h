@@ -39,8 +39,8 @@ static inline ssize_t ConstrainColormapIndex(Image *image,const ssize_t index,
   return((ssize_t) index);
 }
 
-static inline void ValidateColormapValue(Image *image,
-  const ssize_t index,Quantum *target,ExceptionInfo *exception)
+static inline void ValidateColormapValue(Image *image,const ssize_t index,
+  Quantum *target,ExceptionInfo *exception)
 { 
   if ((index < 0) || (index >= (ssize_t) image->colors))
     {
