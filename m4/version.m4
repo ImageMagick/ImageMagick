@@ -1,4 +1,4 @@
-#  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+#  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -27,7 +27,7 @@ m4_define([magick_name], [ImageMagick])
 m4_define([magick_major_version], [7])
 m4_define([magick_minor_version], [1])
 m4_define([magick_micro_version], [0])
-m4_define([magick_patchlevel_version], [25])
+m4_define([magick_patchlevel_version], [26])
 m4_define([magick_bugreport],
           [https://github.com/ImageMagick/ImageMagick/issues])
 m4_define([magick_url], [https://imagemagick.org])
