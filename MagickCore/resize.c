@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -48,6 +48,7 @@
 #include "MagickCore/channel.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -4532,9 +4533,10 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     *name;
 
   Image
+    *clone_image,
     *thumbnail_image;
 
-  double
+  ssize_t
     x_factor,
     y_factor;
 
@@ -4547,26 +4549,30 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  x_factor=(double) columns/(double) image->columns;
-  y_factor=(double) rows/(double) image->rows;
-  if ((x_factor*y_factor) > 0.1)
-    thumbnail_image=ResizeImage(image,columns,rows,image->filter,exception);
-  else
-    if (((SampleFactor*columns) < 128) || ((SampleFactor*rows) < 128))
-      thumbnail_image=ResizeImage(image,columns,rows,image->filter,exception);
-    else
-      {
-        Image
-          *sample_image;
-
-        sample_image=SampleImage(image,SampleFactor*columns,SampleFactor*rows,
-          exception);
-        if (sample_image == (Image *) NULL)
-          return((Image *) NULL);
-        thumbnail_image=ResizeImage(sample_image,columns,rows,image->filter,
-          exception);
-        sample_image=DestroyImage(sample_image);
-      }
+  x_factor=(ssize_t) image->columns/columns;
+  y_factor=(ssize_t) image->rows/rows;
+  clone_image=CloneImage(image,0,0,MagickTrue,exception);
+  if ((x_factor > 4) && (y_factor > 4))
+    {
+      thumbnail_image=SampleImage(clone_image,4*columns,4*rows,exception);
+      if (thumbnail_image != (Image *) NULL)
+        {
+          clone_image=DestroyImage(clone_image);
+          clone_image=thumbnail_image;
+        }
+    }
+  if ((x_factor > 2) && (y_factor > 2))
+    {
+      thumbnail_image=ResizeImage(clone_image,2*columns,2*rows,BoxFilter,
+        exception);
+      if (thumbnail_image != (Image *) NULL)
+        {
+          clone_image=DestroyImage(clone_image);
+          clone_image=thumbnail_image;
+        }
+    }
+  thumbnail_image=ResizeImage(clone_image,columns,rows,image->filter ==
+    UndefinedFilter ? LanczosSharpFilter : image->filter,exception);
   if (thumbnail_image == (Image *) NULL)
     return(thumbnail_image);
   (void) ParseAbsoluteGeometry("0x0+0+0",&thumbnail_image->page);

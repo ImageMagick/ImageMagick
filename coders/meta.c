@@ -17,7 +17,7 @@
 %                                 July 2001                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -48,6 +48,7 @@
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
+#include "MagickCore/locale-private.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
@@ -177,10 +178,10 @@ static int stringnicmp(const char *p,const char *q,size_t n)
       break;
     i=(*p);
     if (islower((int) ((unsigned char) i)) != 0)
-      i=LocaleUppercase(i);
+      i=LocaleToUppercase(i);
     j=(*q);
     if (islower((int) ((unsigned char) j)) != 0)
-      j=LocaleUppercase(j);
+      j=LocaleToUppercase(j);
     if (i != j)
       break;
     n--;
@@ -189,7 +190,7 @@ static int stringnicmp(const char *p,const char *q,size_t n)
     p++;
     q++;
   }
-  return(LocaleUppercase((int) *p)-LocaleUppercase((int) *q));
+  return(LocaleToUppercase((int) *p)-LocaleToUppercase((int) *q));
 }
 
 static size_t convertHTMLcodes(char *s)

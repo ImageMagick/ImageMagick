@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -3088,8 +3088,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     {
       title=EscapeParenthesis(GetPDFTitle(image_info,basename));
-      (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (%s)\n",
-        title);
+      (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (%s)\n",title);
       title=DestroyString(title);
     }
   else
@@ -3124,8 +3123,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (ssize_t) length; i++)
           {
-            (void) WriteBlobByte(image,'0');
-            (void) WriteBlobByte(image,'0');
+            (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 12) & 0x0f]);
+            (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 8) & 0x0f]);
             (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 4) & 0x0f]);
             (void) WriteBlobByte(image,hex_digits[utf16[i] & 0x0f]);
           }

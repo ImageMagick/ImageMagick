@@ -10,14 +10,14 @@
 %     SSSSS   CCCC  R  R   EEEEE  EEEEE  N   N  SSSSS  H   H   OOO     T      %
 %                                                                             %
 %                                                                             %
-%                  Takes a screenshot from the monitor(s).                    %
+%                   Takes a screenshot of the monitor(s).                     %
 %                                                                             %
 %                              Software Design                                %
 %                                Dirk Lemstra                                 %
 %                                 April 2014                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %

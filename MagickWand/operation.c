@@ -2450,6 +2450,11 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           args=(double *) RelinquishMagickMemory(args);
           break;
         }
+      if (LocaleCompare("fx",option+1) == 0)
+        {
+          new_image=FxImage(_image,arg1,_exception);
+          break;
+        }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'g':

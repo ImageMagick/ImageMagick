@@ -17,7 +17,7 @@
 %                              January 1993                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -45,6 +45,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
+#include "MagickCore/locale-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
 #include "MagickCore/string_.h"
@@ -175,14 +176,14 @@ MagickExport magick_hot_spot size_t GetNextToken(
   const char *magick_restrict start,const char **magick_restrict end,
   const size_t extent,char *magick_restrict token)
 {
-  double
-    value;
-
   char
     *magick_restrict q;
 
   const char
     *magick_restrict p;
+
+  double
+    value;
 
   ssize_t
     i;
@@ -544,7 +545,7 @@ MagickExport MagickBooleanType GlobExpression(
       {
         if (case_insensitive != MagickFalse)
           {
-            if (LocaleLowercase((int) GetUTFCode(expression)) != LocaleLowercase((int) GetUTFCode(pattern)))
+            if (LocaleToLowercase((int) GetUTFCode(expression)) != LocaleToLowercase((int) GetUTFCode(pattern)))
               {
                 done=MagickTrue;
                 break;
@@ -817,12 +818,12 @@ static void StoreToken(TokenInfo *token_info,char *string,
   {
     case 1:
     {
-      string[i]=(char) LocaleUppercase(c);
+      string[i]=(char) LocaleToUppercase(c);
       break;
     }
     case 2:
     {
-      string[i]=(char) LocaleLowercase(c);
+      string[i]=(char) LocaleToLowercase(c);
       break;
     }
     default:

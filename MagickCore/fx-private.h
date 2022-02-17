@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 2022 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.  You may
@@ -30,7 +30,6 @@ extern MagickPrivate FxInfo
   *DestroyFxInfo(FxInfo *);
 
 extern MagickPrivate MagickBooleanType
-  FxEvaluateExpression(FxInfo *,double *,ExceptionInfo *),
   FxEvaluateChannelExpression(FxInfo *,const PixelChannel,const ssize_t,
    const ssize_t,double *,ExceptionInfo *);
 

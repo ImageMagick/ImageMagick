@@ -17,7 +17,7 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -3177,7 +3177,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
       if (LocaleNCompare("papersize:",property,10) == 0)
         {
-          const char
+          char
             *papersize;
 
           WarnNoImageReturn("\"%%[%s]\"",property);
@@ -3186,11 +3186,12 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           if (papersize != (const char *) NULL)
             {
               RectangleInfo
-                page;
+                page = { 0, 0, 0, 0 };
 
               (void) ParseAbsoluteGeometry(papersize,&page);
               (void) FormatLocaleString(value,MagickPathExtent,"%.20gx%.20g",
                 (double) page.width,(double) page.height);
+              papersize=DestroyString(papersize);
             }
           break;
         }

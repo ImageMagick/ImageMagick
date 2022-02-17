@@ -17,7 +17,7 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -810,7 +810,7 @@ static const OptionInfo
     { "-function", 2L,SimpleOperatorFlag | AlwaysInterpretArgsFlag, MagickFalse },
     { "+fuzz", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-fuzz", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+fx", 1L, DeprecateOptionFlag | FireOptionFlag | NeverInterpretArgsFlag, MagickTrue },
+    { "+fx", 1L, SimpleOperatorFlag | FireOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-fx", 1L, ListOperatorFlag | FireOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-gamma", 1L, SimpleOperatorFlag, MagickFalse },
     { "+gamma", 1L, SimpleOperatorFlag, MagickFalse },

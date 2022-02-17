@@ -18,7 +18,7 @@
 %                                December 1996                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -49,6 +49,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image-private.h"
+#include "MagickCore/locale-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
@@ -93,7 +94,7 @@ MagickExport MagickBooleanType NTIsMagickConflict(const char *magick)
   assert(magick != (char *) NULL);
   if (strlen(magick) > 1)
     return(MagickFalse);
-  status=(GetLogicalDrives() & (1 << ((LocaleUppercase((int)
+  status=(GetLogicalDrives() & (1 << ((LocaleToUppercase((int)
     (*magick)))-'A'))) != 0 ? MagickTrue : MagickFalse;
   return(status);
 }

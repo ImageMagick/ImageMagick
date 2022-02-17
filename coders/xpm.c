@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -58,6 +58,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
@@ -68,8 +69,8 @@
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
 #include "MagickCore/threshold.h"
+#include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "coders/coders-private.h"
 
@@ -338,15 +339,20 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (xpm_buffer == (char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   /*
-    Remove comments.
+    Remove comments & read properties.
   */
   count=0;
   width=0;
   for (p=xpm_buffer; *p != '\0'; p++)
   {
+    char
+      properties[MagickPathExtent];
+
     if (*p != '"')
       continue;
-    count=(ssize_t) sscanf(p+1,"%lu %lu %lu %lu",&columns,&rows,&colors,&width);
+    (void) GetNextToken(p,(const char **) NULL,MagickPathExtent,properties);
+    count=(ssize_t) sscanf(properties,"%lu %lu %lu %lu",&columns,&rows,&colors,
+      &width);
     image->columns=columns;
     image->rows=rows;
     image->colors=colors;
@@ -773,7 +779,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
               break;
             for (x=0; x < (ssize_t) picon->columns; x++)
             {
-              if (GetPixelAlpha(image,q) == (Quantum) TransparentAlpha)
+              if (GetPixelAlpha(picon,q) == (Quantum) TransparentAlpha)
                 transparent=MagickTrue;
               else
                 SetPixelAlpha(picon,OpaqueAlpha,q);
@@ -804,7 +810,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
           break;
         for (x=0; x < (ssize_t) picon->columns; x++)
         {
-          if (GetPixelAlpha(image,q) == (Quantum) TransparentAlpha)
+          if (GetPixelAlpha(picon,q) == (Quantum) TransparentAlpha)
             SetPixelIndex(picon,(Quantum) picon->colors,q);
           q+=GetPixelChannels(picon);
         }

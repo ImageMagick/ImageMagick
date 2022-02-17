@@ -16,28 +16,19 @@
 %                                2001-2008                                    %
 %                                                                             %
 %                                                                             %
-%  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("ImageMagick"),  %
-%  to deal in ImageMagick without restriction, including without limitation   %
-%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
-%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
-%  ImageMagick is furnished to do so, subject to the following conditions:    %
+%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
+%  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
-%  The above copyright notice and this permission notice shall be included in %
-%  all copies or substantial portions of ImageMagick.                         %
+%  You may not use this file except in compliance with the License.  You may  %
+%  obtain a copy of the License at                                            %
 %                                                                             %
-%  The software is provided "as is", without warranty of any kind, express or %
-%  implied, including but not limited to the warranties of merchantability,   %
-%  fitness for a particular purpose and noninfringement.  In no event shall   %
-%  ImageMagick Studio be liable for any claim, damages or other liability,    %
-%  whether in an action of contract, tort or otherwise, arising from, out of  %
-%  or in connection with ImageMagick or the use or other dealings in          %
-%  ImageMagick.                                                               %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
-%  Except as contained in this notice, the name of the ImageMagick Studio     %
-%  shall not be used in advertising or otherwise to promote the sale, use or  %
-%  other dealings in ImageMagick without prior written authorization from the %
-%  ImageMagick Studio.                                                        %
+%  Unless required by applicable law or agreed to in writing, software        %
+%  distributed under the License is distributed on an "AS IS" BASIS,          %
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   %
+%  See the License for the specific language governing permissions and        %
+%  limitations under the License.                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -361,10 +352,10 @@ static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
 }
 
 /* Calculate minimum and maximum from a given block of data */
-static void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, size_t CellType, size_t ldblk, void *BImgBuff, double *Min, double *Max)
+static void CalcMinMax(Image *image, int endian_indicator, ssize_t SizeX, ssize_t SizeY, size_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
 {
 MagickOffsetType filepos;
-int i, x;
+ssize_t i, x;
 void (*ReadBlobDoublesXXX)(Image * image, size_t len, double *data);
 void (*ReadBlobFloatsXXX)(Image * image, size_t len, float *data);
 double *dblrow;
@@ -423,11 +414,8 @@ float *fltrow;
 }
 
 
-static void FixSignedValues(const Image *image,Quantum *q, unsigned int y)
+static void FixSignedValues(const Image *image,Quantum *q, ssize_t y)
 {
-  if (y == 0)
-    return;
-
   while(y-->0)
   {
      /* Please note that negative values will overflow
@@ -442,11 +430,11 @@ static void FixSignedValues(const Image *image,Quantum *q, unsigned int y)
 
 
 /** Fix whole row of logical/binary data. It means pack it. */
-static void FixLogical(unsigned char *Buff,size_t ldblk)
+static void FixLogical(unsigned char *Buff,ssize_t ldblk)
 {
-  unsigned char mask=128;
-  unsigned char *BuffL = Buff;
-  unsigned char val = 0;
+unsigned char mask=128;
+unsigned char *BuffL = Buff;
+unsigned char val = 0;
 
   if (ldblk == 0)
     return;
@@ -610,9 +598,6 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     unsigned int nameLen;
   } MAT4_HDR;
 
-  size_t
-    ldblk;
-
   EndianType
     endian;
 
@@ -632,10 +617,9 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     format_type;
 
   ssize_t
-    i;
-
-  ssize_t
     count,
+    i,
+    ldblk,
     y;
 
   unsigned char
@@ -654,12 +638,12 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     */
     ldblk=ReadBlobLSBLong(image);
     if(EOFBlob(image)) break;
-    if (ldblk > 9999)
+    if ((ldblk > 9999) || (ldblk < 0))
       break;
     HDR.Type[3]=ldblk % 10; ldblk /= 10;  /* T digit */
     HDR.Type[2]=ldblk % 10; ldblk /= 10;  /* P digit */
     HDR.Type[1]=ldblk % 10; ldblk /= 10;  /* O digit */
-    HDR.Type[0]=(unsigned char) ldblk;    /* M digit */
+    HDR.Type[0]=ldblk;        /* M digit */
     if (HDR.Type[3] != 0)
       break;  /* Data format */
     if (HDR.Type[2] != 0)
@@ -889,8 +873,8 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t CellType;
   QuantumInfo *quantum_info;
   ImageInfo *clone_info;
-  int i;
-  size_t ldblk;
+  ssize_t i;
+  ssize_t ldblk;
   unsigned char *BImgBuff = NULL;
   double MinVal, MaxVal;
   unsigned z, z2;
@@ -1148,25 +1132,25 @@ MATLAB_KO:
           image->depth = 1;
         else
           image->depth = 8;         /* Byte type cell */
-        ldblk = (size_t) MATLAB_HDR.SizeX;
+        ldblk = (ssize_t) MATLAB_HDR.SizeX;
         break;
       case miINT16:
       case miUINT16:
         sample_size = 16;
         image->depth = 16;        /* Word type cell */
-        ldblk = (size_t) (2 * MATLAB_HDR.SizeX);
+        ldblk = (ssize_t) (2 * MATLAB_HDR.SizeX);
         break;
       case miINT32:
       case miUINT32:
         sample_size = 32;
         image->depth = 32;        /* Dword type cell */
-        ldblk = (size_t) (4 * MATLAB_HDR.SizeX);
+        ldblk = (ssize_t) (4 * MATLAB_HDR.SizeX);
         break;
       case miINT64:
       case miUINT64:
         sample_size = 64;
         image->depth = 64;        /* Qword type cell */
-        ldblk = (size_t) (8 * MATLAB_HDR.SizeX);
+        ldblk = (ssize_t) (8 * MATLAB_HDR.SizeX);
         break;
       case miSINGLE:
         sample_size = 32;
@@ -1175,7 +1159,7 @@ MATLAB_KO:
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
           {              /* complex float type cell */
           }
-        ldblk = (size_t) (4 * MATLAB_HDR.SizeX);
+        ldblk = (ssize_t) (4 * MATLAB_HDR.SizeX);
         break;
       case miDOUBLE:
         sample_size = 64;
@@ -1194,7 +1178,7 @@ RestoreMSCWarning
         if (MATLAB_HDR.StructureFlag & FLAG_COMPLEX)
           {                         /* complex double type cell */
           }
-        ldblk = (size_t) (8 * MATLAB_HDR.SizeX);
+        ldblk = (ssize_t) (8 * MATLAB_HDR.SizeX);
         break;
       default:
         if ((image != image2) && (image2 != (Image *) NULL))
@@ -1252,7 +1236,7 @@ RestoreMSCWarning
       }
 
   /* ----- Load raster data ----- */
-    BImgBuff = (unsigned char *) AcquireQuantumMemory(ldblk,sizeof(double));    /* Ldblk was set in the check phase */
+    BImgBuff = (unsigned char *) AcquireQuantumMemory((size_t) (ldblk),sizeof(double));    /* Ldblk was set in the check phase */
     if (BImgBuff == NULL)
       {
         if (clone_info != (ImageInfo *) NULL)
@@ -1288,7 +1272,7 @@ RestoreMSCWarning
               "  MAT set image pixels returns unexpected NULL on a row %u.", (unsigned)(MATLAB_HDR.SizeY-i-1));
             goto done_reading;    /* Skip image rotation, when cannot set image pixels    */
           }
-        if(ReadBlob(image2,ldblk,(unsigned char *)BImgBuff) != (unsigned char) ldblk)
+        if(ReadBlob(image2,ldblk,(unsigned char *)BImgBuff) != (ssize_t) ldblk)
           {
             if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
               "  MAT cannot read scanrow %u from a file.", (unsigned)(MATLAB_HDR.SizeY-i-1));

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.  You may
@@ -52,15 +52,17 @@ extern "C" {
 #define UndefinedCompressionQuality  0UL
 #define UndefinedTicksPerSecond  100L
 
-static inline ssize_t CastDoubleToLong(const double value)
+static inline ssize_t CastDoubleToLong(const double x)
 {
-  if (IsNaN(value) != 0)
+  if (IsNaN(x) != 0)
     return(0);
-  if (floor(value) > ((double) MAGICK_SSIZE_MAX-1))
+  if (x > ((double) MAGICK_SSIZE_MAX+0.5))
     return((ssize_t) MAGICK_SSIZE_MAX);
-  if (ceil(value) < ((double) MAGICK_SSIZE_MIN+1))
+  if (x < ((double) MAGICK_SSIZE_MIN-0.5))
     return((ssize_t) MAGICK_SSIZE_MIN);
-  return((ssize_t) value);
+  if (x >= 0.0)
+    return((ssize_t) (x+0.5));
+  return((ssize_t) (x-0.5));
 }
 
 static inline double DegreesToRadians(const double degrees)

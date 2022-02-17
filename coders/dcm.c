@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -3052,6 +3052,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define ThrowDCMException(exception,message) \
 { \
   RelinquishDCMMemory(&info,&map,stream_info,stack,data); \
+  if (info_copy != (DCMInfo *) NULL) \
+    info_copy=(DCMInfo *) RelinquishDCMInfo(info_copy); \
   ThrowReaderException((exception),(message)); \
 }
 
@@ -3063,7 +3065,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   DCMInfo
     info,
-    *info_copy;
+    *info_copy = (DCMInfo *) NULL;
 
   DCMMap
     map;
@@ -3274,10 +3276,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           info_copy->scale=(Quantum *) AcquireQuantumMemory(
             info_copy->scale_size+1,sizeof(*info_copy->scale));
           if (info_copy->scale == (Quantum *) NULL)
-            {
-              info_copy=(DCMInfo *) RelinquishMagickMemory(info_copy);
-              ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed")
-            }
+            ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed")
           (void) memcpy(info_copy->scale,info.scale,info_copy->scale_size*
             sizeof(*info_copy->scale));
           AppendValueToLinkedList(stack,info_copy);

@@ -7,7 +7,7 @@ Cristy
 
 Dirk Lemstra
      Contributor to and maintainer of Magick++, OpenCL acceleration, and
-     the Windows build (configure, ImageMagickObject, etc.).
+     the Windows build.
 
 Bastien ROUCARIÈS
      Various patches from Debian downstream.

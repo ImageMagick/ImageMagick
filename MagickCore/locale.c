@@ -17,7 +17,7 @@
 %                                 July 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1414,8 +1414,8 @@ MagickExport int LocaleCompare(const char *p,const char *q)
       *s = (const unsigned char *) q;
 
     for ( ; (*r != '\0') && (*s != '\0') && ((*r == *s) ||
-      (LocaleLowercase((int) *r) == LocaleLowercase((int) *s))); r++, s++);
-    return(LocaleLowercase((int) *r)-LocaleLowercase((int) *s));
+      (LocaleToLowercase((int) *r) == LocaleToLowercase((int) *s))); r++, s++);
+    return(LocaleToLowercase((int) *r)-LocaleToLowercase((int) *s));
   }
 }
 
@@ -1449,7 +1449,7 @@ MagickExport void LocaleLower(char *string)
 
   assert(string != (char *) NULL);
   for (q=string; *q != '\0'; q++)
-    *q=(char) LocaleLowercase((int) *q);
+    *q=(char) LocaleToLowercase((int) *q);
 }
 
 /*
@@ -1463,7 +1463,7 @@ MagickExport void LocaleLower(char *string)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LocaleLowercase() convert to lowercase.
+%  LocaleLowercase() converts the character to lowercase.
 %
 %  The format of the LocaleLowercase method is:
 %
@@ -1476,13 +1476,7 @@ MagickExport void LocaleLower(char *string)
 */
 MagickExport int LocaleLowercase(const int c)
 {
-  if ((c == EOF) || (c != (unsigned char) c))
-    return(c);
-#if defined(MAGICKCORE_LOCALE_SUPPORT)
-  if (c_locale != (locale_t) NULL)
-    return(tolower_l((int) ((unsigned char) c),c_locale));
-#endif
-  return(tolower((int) ((unsigned char) c)));
+  return(LocaleToLowercase(c));
 }
 
 /*
@@ -1543,8 +1537,8 @@ MagickExport int LocaleNCompare(const char *p,const char *q,const size_t length)
       n = length;
 
     for (n--; (*s != '\0') && (*t != '\0') && (n != 0) && ((*s == *t) ||
-      (LocaleLowercase((int) *s) == LocaleLowercase((int) *t))); s++, t++, n--);
-    return(LocaleLowercase((int) *s)-LocaleLowercase((int) *t));
+      (LocaleToLowercase((int) *s) == LocaleToLowercase((int) *t))); s++, t++, n--);
+    return(LocaleToLowercase((int) *s)-LocaleToLowercase((int) *t));
   }
 }
 
@@ -1578,7 +1572,7 @@ MagickExport void LocaleUpper(char *string)
 
   assert(string != (char *) NULL);
   for (q=string; *q != '\0'; q++)
-    *q=(char) LocaleUppercase((int) *q);
+    *q=(char) LocaleToUppercase((int) *q);
 }
 
 /*
@@ -1592,7 +1586,7 @@ MagickExport void LocaleUpper(char *string)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LocaleUppercase() convert to uppercase.
+%  LocaleUppercase() converts the character to uppercase.
 %
 %  The format of the LocaleUppercase method is:
 %
@@ -1605,13 +1599,7 @@ MagickExport void LocaleUpper(char *string)
 */
 MagickExport int LocaleUppercase(const int c)
 {
-  if (c == EOF)
-    return(c);
-#if defined(MAGICKCORE_LOCALE_SUPPORT)
-  if (c_locale != (locale_t) NULL)
-    return(toupper_l((int) ((unsigned char) c),c_locale));
-#endif
-  return(toupper((int) ((unsigned char) c)));
+  return(LocaleToUppercase(c));
 }
 
 /*

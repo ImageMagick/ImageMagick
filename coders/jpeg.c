@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -182,7 +182,7 @@ typedef struct _QuantizationTable
 */
 static const char
   xmp_namespace[] = "http://ns.adobe.com/xap/1.0/ ";
-#define XmpNamespaceExtent 28
+#define XMPNamespaceExtent 28
 
 /*
   Forward declarations.
@@ -629,7 +629,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   return(ReadProfileData(jpeg_info,marker,length));
 }
 
-static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
+static boolean ReadXMPProfile(j_decompress_ptr jpeg_info)
 {
   ExceptionInfo
     *exception;
@@ -665,8 +665,8 @@ static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
   p=GetStringInfoDatum(profile);
   length=GetStringInfoLength(profile);
   status=MagickTrue;
-  if ((length > XmpNamespaceExtent) &&
-      (LocaleNCompare((char *) p,xmp_namespace,XmpNamespaceExtent-1) == 0))
+  if ((length > XMPNamespaceExtent) &&
+      (LocaleNCompare((char *) p,xmp_namespace,XMPNamespaceExtent-1) == 0))
     {
       ssize_t
         j;
@@ -674,8 +674,8 @@ static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
       /*
         Extract namespace from XMP profile.
       */
-      p=GetStringInfoDatum(profile)+XmpNamespaceExtent;
-      for (j=XmpNamespaceExtent; j < (ssize_t) length; j++)
+      p=GetStringInfoDatum(profile)+XMPNamespaceExtent;
+      for (j=XMPNamespaceExtent; j < (ssize_t) length; j++)
       {
         if (*p == '\0')
           break;
@@ -1146,7 +1146,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   if (IsOptionMember("IPTC",option) == MagickFalse)
     jpeg_set_marker_processor(jpeg_info,IPTC_MARKER,ReadIPTCProfile);
   if (IsOptionMember("APP",option) == MagickFalse)
-    jpeg_set_marker_processor(jpeg_info,XML_MARKER,ReadXmlProfile);
+    jpeg_set_marker_processor(jpeg_info,XML_MARKER,ReadXMPProfile);
   for (i=3; i < 16; i++)
     /* APP14 is ignored because this will change the colors of the image */
     if (i != IPTC_INDEX && i != 14)
@@ -2125,7 +2125,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
         if (xmp_profile != (StringInfo *) NULL)
           {
             ConcatenateStringInfo(xmp_profile,profile);
-            GetStringInfoDatum(xmp_profile)[XmpNamespaceExtent]='\0';
+            GetStringInfoDatum(xmp_profile)[XMPNamespaceExtent]='\0';
             length=GetStringInfoLength(xmp_profile);
             jpeg_write_marker(jpeg_info,XML_MARKER,
               GetStringInfoDatum(xmp_profile),(unsigned int) length);

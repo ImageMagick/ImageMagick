@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.  You may
@@ -746,10 +746,10 @@ extern "C" {
 #define LocaleCompare  PrependMagickMethod(LocaleCompare)
 #define LocaleComponentGenesis  PrependMagickMethod(LocaleComponentGenesis)
 #define LocaleComponentTerminus  PrependMagickMethod(LocaleComponentTerminus)
-#define LocaleLowercase  PrependMagickMethod(LocaleLowercase)
+#define LocaleToLowercase  PrependMagickMethod(LocaleToLowercase)
 #define LocaleLower  PrependMagickMethod(LocaleLower)
 #define LocaleNCompare  PrependMagickMethod(LocaleNCompare)
-#define LocaleUppercase  PrependMagickMethod(LocaleUppercase)
+#define LocaleToUppercase  PrependMagickMethod(LocaleToUppercase)
 #define LocaleUpper  PrependMagickMethod(LocaleUpper)
 #define LockSemaphoreInfo  PrependMagickMethod(LockSemaphoreInfo)
 #define LogComponentGenesis  PrependMagickMethod(LogComponentGenesis)

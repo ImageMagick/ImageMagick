@@ -1,7 +1,9 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2014-2015
+//
+// Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
 //
 // Definition of Magick::Exception and derived classes
 // Magick::Warning* and Magick::Error*.  Derived from C++ STD
@@ -108,7 +110,7 @@ namespace Magick
     explicit ErrorCorruptImage(const std::string& what_,Exception *nested_);
     ~ErrorCorruptImage() throw();
   };
-  
+
   class MagickPPExport ErrorDelegate: public Error
   {
   public:
@@ -116,7 +118,7 @@ namespace Magick
     explicit ErrorDelegate(const std::string& what_,Exception *nested_);
     ~ErrorDelegate() throw();
   };
-  
+
   class MagickPPExport ErrorDraw: public Error
   {
   public:
@@ -220,7 +222,7 @@ namespace Magick
     explicit ErrorUndefined(const std::string& what_,Exception *nested_);
     ~ErrorUndefined() throw();
   };
-  
+
   class MagickPPExport ErrorXServer: public Error
   {
   public:

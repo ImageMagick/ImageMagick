@@ -17,7 +17,7 @@
 %                                January 2014                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -54,6 +54,7 @@
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
+#include "MagickCore/locale-private.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
@@ -1519,8 +1520,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
           q++;
         (void) CopyMagickString(image_info->filename,p,(size_t) (q-p+1));
         p=q+1;
-        JSONFormatLocaleFile(file,"{\n       \"name\": %s",
-          image_info->filename);
+        JSONFormatLocaleFile(file,"{\n       \"name\": %s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
         tile=ReadImage(image_info,exception);
         (void) SetWarningHandler(handler);
@@ -1530,8 +1530,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
             continue;
           }
         (void) FormatLocaleFile(file,",\n       \"info\": \"%.20gx%.20g %s\"",
-          (double) tile->magick_columns,(double) tile->magick_rows,
-          tile->magick);
+          (double) tile->magick_columns,(double) tile->magick_rows,tile->magick);
         (void) SignatureImage(tile,exception);
         ResetImagePropertyIterator(tile);
         property=GetNextImageProperty(tile);

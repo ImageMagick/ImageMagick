@@ -17,7 +17,7 @@
 %                                October 1994                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -196,7 +196,7 @@ struct dirent *readdir(DIR *directory)
   buffer[sizeof(buffer)-1]='\0';
   for (p=buffer; *p; p++)
     if (isupper((int) ((unsigned char) *p)))
-      *p=LocaleLowercase(*p);
+      *p=LocaleToLowercase(*p);
   /*
     Skip any directory component and just copy the name.
   */

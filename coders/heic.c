@@ -22,7 +22,7 @@
 %                                                                             %
 %                      Copyright 2017-2018 YANDEX LLC.                        %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2018 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -325,8 +325,8 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
     return(MagickFalse);
   image->columns=(size_t) heif_image_get_width(heif_image,
     heif_channel_interleaved);
-  image->rows=(size_t) heif_image_get_height(heif_image
-    ,heif_channel_interleaved);
+  image->rows=(size_t) heif_image_get_height(heif_image,
+    heif_channel_interleaved);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
@@ -586,20 +586,18 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
 */
 static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
 {
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+#if LIBHEIF_NUMERIC_VERSION >= 0x01040000
+  enum heif_filetype_result
+    heif_filetype;
+
   if (length < 12)
     return(MagickFalse);
-  if (LocaleNCompare((const char *) magick+4,"ftyp",4) != 0)
-    return(MagickFalse);
-  if (LocaleNCompare((const char *) magick+8,"avif",4) == 0)
+  heif_filetype=heif_check_filetype(magick,(int) length);
+  if (heif_filetype == heif_filetype_yes_supported)
     return(MagickTrue);
-  if (LocaleNCompare((const char *) magick+8,"heic",4) == 0)
-    return(MagickTrue);
-  if (LocaleNCompare((const char *) magick+8,"heix",4) == 0)
-    return(MagickTrue);
-  if (LocaleNCompare((const char *) magick+8,"mif1",4) == 0)
-    return(MagickTrue);
-  if (LocaleNCompare((const char *) magick+8,"msf1",4) == 0)
-    return(MagickTrue);
+#endif
+#endif
   return(MagickFalse);
 }
 

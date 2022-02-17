@@ -18,7 +18,7 @@
 %                               November 1997                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -2164,6 +2164,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   /* To do: Read the tEXt/Creation Time chunk into the date:create property */
 
+  double
+    file_gamma;
+
   Image
     *image;
 
@@ -2173,19 +2176,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     num_text,
     num_text_total,
     num_passes,
-    number_colors,
+    number_colors = 0,
     pass,
-    ping_bit_depth,
-    ping_color_type,
-    ping_file_depth,
-    ping_interlace_method,
-    ping_compression_method,
-    ping_filter_method,
-    ping_num_trans,
-    unit_type;
-
-  double
-    file_gamma;
+    ping_bit_depth = 0,
+    ping_color_type = 0,
+    ping_file_depth = 0,
+    ping_interlace_method = 0,
+    ping_compression_method = 0,
+    ping_filter_method = 0,
+    ping_num_trans = 0,
+    unit_type = 0;
 
   MagickBooleanType
     logging,
@@ -2224,8 +2224,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     text;
 
   png_uint_32
-    ping_height,
-    ping_width,
+    ping_height = 0,
+    ping_width = 0,
     x_resolution,
     y_resolution;
 
@@ -2235,28 +2235,22 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   Quantum
     *volatile quantum_scanline;
 
-  ssize_t
-    y;
-
-  unsigned char
-    *p;
-
-  ssize_t
-    i,
-    x;
-
   Quantum
     *q;
 
   size_t
     length,
-    ping_rowbytes,
+    ping_rowbytes = 0,
     row_offset;
 
   ssize_t
-    j;
+    i,
+    j,
+    x,
+    y;
 
   unsigned char
+    *p,
     *ping_pixels;
 
 #ifdef PNG_UNKNOWN_CHUNKS_SUPPORTED
@@ -2993,7 +2987,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
     {
       png_colorp
-        palette;
+        palette = (png_colorp) NULL;
 
       (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
 
@@ -3299,7 +3293,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
         {
           png_colorp
-            palette;
+            palette = (png_colorp) NULL;
 
           (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
           image->colors=(size_t) number_colors;
@@ -3321,7 +3315,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
         {
           png_colorp
-            palette;
+            palette = (png_colorp) NULL;
 
           (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
 
@@ -4057,7 +4051,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
             {
               png_colorp
-                plte;
+                plte = (png_colorp) NULL;
 
               /*
                 Copy the PLTE to the object buffer.
@@ -5105,26 +5099,40 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   if ((image_info->ping == MagickFalse) && (alpha_image != (Image *) NULL) &&
       (jng_color_type >= 12))
     {
-      if (jng_alpha_compression_method == 0)
+      switch (jng_alpha_compression_method)
+      {
+        case 0:
         {
           png_byte
             data[5];
+
+          (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
+            "png:%s",alpha_image->filename);
           (void) WriteBlobMSBULong(alpha_image,0x00000000L);
           PNGType(data,mng_IEND);
           LogPNGChunk(logging,mng_IEND,0L);
           (void) WriteBlob(alpha_image,4,data);
           (void) WriteBlobMSBULong(alpha_image,crc32(0,data,4));
+          break;
         }
-
+        case 8:
+        {
+          (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
+            "jpeg:%s",alpha_image->filename);
+          break;
+        }
+        default:
+        {
+          (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
+            "alpha:%s",alpha_image->filename);
+          break;
+        }
+      }
       (void) CloseBlob(alpha_image);
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Reading alpha from alpha_blob.");
-
-      (void) FormatLocaleString(alpha_image_info->filename,MagickPathExtent,
-        "%s",alpha_image->filename);
-
       jng_image=ReadImage(alpha_image_info,exception);
 
       if (jng_image != (Image *) NULL)

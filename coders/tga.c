@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -183,9 +183,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels[4],
     runlength;
 
-  unsigned int
-    alpha_bits;
-
   /*
     Open image file.
   */
@@ -242,6 +239,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((tga_info.image_type != TGAMonochrome) &&
       (tga_info.image_type != TGARLEMonochrome))
     {
+      unsigned int
+        alpha_bits;
+
       alpha_bits=(tga_info.attributes & 0x0FU);
       image->alpha_trait=(alpha_bits > 0) || (tga_info.bits_per_pixel == 32) ||
         (tga_info.colormap_size == 32) ?  BlendPixelTrait : UndefinedPixelTrait;
@@ -331,8 +331,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  (void) memset(&pixel,0,sizeof(pixel));
-  pixel.alpha=(MagickRealType) OpaqueAlpha;
+  GetPixelInfo(image,&pixel);
   if (tga_info.colormap_type != 0)
     {
       /*

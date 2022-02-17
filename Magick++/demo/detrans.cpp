@@ -7,6 +7,9 @@
 //
 // Copyright Bob Friesenhahn, 2000
 //
+// Copyright @ 2013 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
+//
 // Usage: detrans color file...
 //
 

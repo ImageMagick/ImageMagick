@@ -18,7 +18,7 @@
 %                    Based on kmiya's sixel (2014-03-28)                      %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -189,10 +189,10 @@ static int hls_to_rgb(int hue, int lum, int sat)
       else
         magic2=(int) (lum+sat-(((ssize_t) lum*sat)+(HLSMAX/2))/HLSMAX);
       magic1=2*lum-magic2;
-      r=(hue_to_rgb(magic1,magic2,hue+(ssize_t) (HLSMAX/3))*RGBMAX+(HLSMAX/2))/
+      r=(hue_to_rgb(magic1,magic2,(ssize_t) hue+(HLSMAX/3))*RGBMAX+(HLSMAX/2))/
         HLSMAX;
       g=(hue_to_rgb(magic1,magic2,hue)*RGBMAX+(ssize_t) (HLSMAX/2))/HLSMAX;
-      b=(hue_to_rgb(magic1,magic2,hue-(ssize_t) (HLSMAX/3))*RGBMAX+(HLSMAX/2))/
+      b=(hue_to_rgb(magic1,magic2,(ssize_t) hue-(HLSMAX/3))*RGBMAX+(HLSMAX/2))/
         HLSMAX;
     }
   return(SIXEL_RGB(r,g,b));

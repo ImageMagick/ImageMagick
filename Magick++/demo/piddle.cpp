@@ -2,6 +2,9 @@
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2002, 2003
 //
+// Copyright @ 2013 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
+//
 // PerlMagick "piddle" demo re-implemented using Magick++ methods.
 // The PerlMagick "piddle" demo is written by Cristy
 //

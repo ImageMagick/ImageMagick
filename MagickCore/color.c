@@ -16,7 +16,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -2292,6 +2292,12 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   if ((name == (char *) NULL) || (*name == '\0'))
     name=BackgroundColor;
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
+  if (strlen(name) > MagickPathExtent)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "UnrecognizedColor","`%s'",name);
+      return(MagickFalse);
+    }
   while (isspace((int) ((unsigned char) *name)) != 0)
     name++;
   GetPixelInfo((Image *) NULL,color);
