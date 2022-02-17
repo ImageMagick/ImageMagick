@@ -4576,8 +4576,6 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   if (thumbnail_image == (Image *) NULL)
     return(thumbnail_image);
   (void) ParseAbsoluteGeometry("0x0+0+0",&thumbnail_image->page);
-  if (thumbnail_image->alpha_trait == UndefinedPixelTrait)
-    (void) SetImageAlphaChannel(thumbnail_image,OpaqueAlphaChannel,exception);
   thumbnail_image->depth=8;
   thumbnail_image->interlace=NoInterlace;
   /*
