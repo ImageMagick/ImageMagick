@@ -934,6 +934,11 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   (void) WebPAnimEncoderOptionsInit(&enc_options);
   if (image_info->verbose)
     enc_options.verbose=1;
+  /*
+    Appropriate default kmin, kmax values for lossy and lossless.
+  */
+  enc_options.kmin = configure->lossless ? 9 : 3;
+  enc_options.kmax = configure->lossless ? 17 : 5;
   enc=WebPAnimEncoderNew((int) coalesce_image->page.width,
     (int) coalesce_image->page.height,&enc_options);
 
