@@ -615,6 +615,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (IsStringTrue(option) != MagickFalse)
     (void) ConcatenateMagickString(options,"-dInterpolateControl=-1 ",
       MagickPathExtent);
+  option=GetImageOption(image_info,"pdf:hide-annotations");
+  if (IsStringTrue(option) != MagickFalse)
+    (void) ConcatenateMagickString(options,"-dShowAnnots=false ",
+      MagickPathExtent);
   option=GetImageOption(image_info,"authenticate");
   if (option != (char *) NULL)
     {
