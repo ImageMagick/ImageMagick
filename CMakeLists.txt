@@ -347,13 +347,11 @@ magick_find_delegate(LQR Lqr FALSE)
 magick_find_delegate(HasJEMALLOC Jemalloc FALSE)
 magick_find_delegate(HasUMEM UMEM FALSE)
 
-# Set OpenCL Accelerator
-# TODO does it suffice to enable only if we have the headers ???
-if((HAVE_OPENCL_CL_H OR HAVE_CL_CL_H) AND DEFINED OPENCL_LIBRARY)
+magick_find_delegate(OPENCLLIB_DELEGATE OpenCL FALSE)
+if(OpenCL_FOUND)
   set(_OPENCL 1)
-  set(OPENCLLIB_DELEGATE TRUE)
-else()
-  set(_OPENCL "")
+  CHECK_INCLUDE_FILE(OpenCL/cl.h HAVE_OPENCL_CL_H)
+  CHECK_INCLUDE_FILE(CL/cl.h HAVE_CL_CL_H)
 endif()
 
 # TODO Should we check if gdi32 exists if windows?

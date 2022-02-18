@@ -85,9 +85,6 @@ macro(magick_check_env)
   # Check if `CLOCK_REALTIME' exists
   CHECK_SYMBOL_EXISTS(CLOCK_REALTIME time.h HAVE_CLOCK_REALTIME)
 
-  # Check if <CL/cl.h> exists
-  CHECK_INCLUDE_FILE(CL/cl.h HAVE_CL_CL_H)
-
   # Check if <complex.h> exists
   CHECK_INCLUDE_FILE(complex.h HAVE_COMPLEX_H)
 
@@ -326,9 +323,6 @@ macro(magick_check_env)
 
   # Check if `newlocale' exists
   CHECK_FUNCTION_EXISTS(newlocale HAVE_NEWLOCALE)
-
-  # Check if <OpenCL/cl.h> exists
-  CHECK_INCLUDE_FILE(OpenCL/cl.h HAVE_OPENCL_CL_H)
 
   # Check if <OS.h> exists
   CHECK_INCLUDE_FILE(OS.h HAVE_OS_H)
