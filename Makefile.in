@@ -65,7 +65,7 @@
 #
 #  Makefile for Magick ImageMagick configuration files.
 
-#  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+#  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -589,14 +589,14 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	coders/webp.h coders/wmf.h coders/wpg.c coders/wpg.h \
 	coders/xbm.c coders/xbm.h coders/xc.c coders/xcf.c \
 	coders/xcf.h coders/xc.h coders/x.h coders/xpm.c coders/xpm.h \
-	coders/xps.c coders/xps.h coders/xtrn.c coders/xtrn.h \
-	coders/xwd.h coders/yaml.c coders/yaml.h coders/ycbcr.c \
-	coders/ycbcr.h coders/yuv.c coders/yuv.h coders/dps.c \
-	coders/djvu.c coders/exr.c coders/flif.c coders/fpx.c \
-	coders/clipboard.c coders/emf.c coders/heic.c coders/jbig.c \
-	coders/jpeg.c coders/jp2.c coders/jxl.c coders/png.c \
-	coders/ept.c coders/tiff.c coders/webp.c coders/wmf.c \
-	coders/x.c coders/xwd.c filters/analyze.c
+	coders/xps.c coders/xps.h coders/xwd.h coders/yaml.c \
+	coders/yaml.h coders/ycbcr.c coders/ycbcr.h coders/yuv.c \
+	coders/yuv.h coders/dps.c coders/djvu.c coders/exr.c \
+	coders/flif.c coders/fpx.c coders/clipboard.c coders/emf.c \
+	coders/heic.c coders/jbig.c coders/jpeg.c coders/jp2.c \
+	coders/jxl.c coders/png.c coders/ept.c coders/tiff.c \
+	coders/webp.c coders/wmf.c coders/x.c coders/xwd.c \
+	filters/analyze.c
 am__objects_1 = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-accelerate.lo \
 	MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-annotate.lo \
@@ -827,7 +827,6 @@ am__objects_19 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xcf.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xpm.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xps.lo \
-	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ycbcr.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yuv.lo \
@@ -1940,14 +1939,6 @@ coders_xps_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_xps_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_xps_la_rpath = -rpath $(codersdir)
-coders_xtrn_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
-am_coders_xtrn_la_OBJECTS = coders/xtrn_la-xtrn.lo
-coders_xtrn_la_OBJECTS = $(am_coders_xtrn_la_OBJECTS)
-coders_xtrn_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(coders_xtrn_la_LDFLAGS) $(LDFLAGS) -o \
-	$@
-@WITH_MODULES_TRUE@am_coders_xtrn_la_rpath = -rpath $(codersdir)
 coders_xwd_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_xwd_la_OBJECTS = coders/xwd_la-xwd.lo
 coders_xwd_la_OBJECTS = $(am_coders_xwd_la_OBJECTS)
@@ -2431,7 +2422,6 @@ am__depfiles_remade = Magick++/demo/$(DEPDIR)/analyze-analyze.Po \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xcf.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xpm.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xps.Plo \
-	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xwd.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ycbcr.Plo \
@@ -2567,7 +2557,6 @@ am__depfiles_remade = Magick++/demo/$(DEPDIR)/analyze-analyze.Po \
 	coders/$(DEPDIR)/xcf_la-xcf.Plo \
 	coders/$(DEPDIR)/xpm_la-xpm.Plo \
 	coders/$(DEPDIR)/xps_la-xps.Plo \
-	coders/$(DEPDIR)/xtrn_la-xtrn.Plo \
 	coders/$(DEPDIR)/xwd_la-xwd.Plo \
 	coders/$(DEPDIR)/yaml_la-yaml.Plo \
 	coders/$(DEPDIR)/ycbcr_la-ycbcr.Plo \
@@ -2685,10 +2674,10 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
 	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
 	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
-	$(coders_xps_la_SOURCES) $(coders_xtrn_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) $(coders_yaml_la_SOURCES) \
-	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
+	$(coders_xps_la_SOURCES) $(coders_xwd_la_SOURCES) \
+	$(coders_yaml_la_SOURCES) $(coders_ycbcr_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
+	$(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
 	$(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) \
 	$(Magick___demo_gravity_SOURCES) \
@@ -2778,10 +2767,10 @@ DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
 	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
 	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
-	$(coders_xps_la_SOURCES) $(coders_xtrn_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) $(coders_yaml_la_SOURCES) \
-	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
+	$(coders_xps_la_SOURCES) $(coders_xwd_la_SOURCES) \
+	$(coders_yaml_la_SOURCES) $(coders_ycbcr_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
+	$(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
 	$(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) \
 	$(Magick___demo_gravity_SOURCES) \
@@ -3979,8 +3968,6 @@ MAGICKCORE_CODER_SRCS = \
 	coders/xpm.h \
 	coders/xps.c \
 	coders/xps.h \
-	coders/xtrn.c \
-	coders/xtrn.h \
 	coders/xwd.h \
 	coders/yaml.c \
 	coders/yaml.h \
@@ -4146,7 +4133,6 @@ CODERS_NOINST_HDRS = \
 	coders/x.h \
 	coders/xpm.h \
 	coders/xps.h \
-	coders/xtrn.h \
 	coders/xwd.h \
 	coders/yaml.h \
 	coders/ycbcr.h \
@@ -4269,7 +4255,6 @@ CODERS_NOINST_HDRS = \
 @WITH_MODULES_TRUE@	coders/xcf.la \
 @WITH_MODULES_TRUE@	coders/xpm.la \
 @WITH_MODULES_TRUE@	coders/xps.la \
-@WITH_MODULES_TRUE@	coders/xtrn.la \
 @WITH_MODULES_TRUE@	coders/yaml.la \
 @WITH_MODULES_TRUE@	coders/ycbcr.la \
 @WITH_MODULES_TRUE@	coders/yuv.la \
@@ -5088,12 +5073,6 @@ coders_xps_la_SOURCES = coders/xps.c
 coders_xps_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_xps_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_xps_la_LIBADD = $(MAGICKCORE_LIBS) $(MUPDF_LIBS) $(FREETYPE_LIBS) $(MATH_LIBS)
-
-# XPS coder module
-coders_xtrn_la_SOURCES = coders/xtrn.c
-coders_xtrn_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
-coders_xtrn_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_xtrn_la_LIBADD = $(MAGICKCORE_LIBS) $(OLE_LIBS)
 
 # XWD coder module
 coders_xwd_la_SOURCES = coders/xwd.c
@@ -7070,8 +7049,6 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xp
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xps.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
-coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.lo:  \
-	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ycbcr.lo:  \
@@ -7875,11 +7852,6 @@ coders/xps_la-xps.lo: coders/$(am__dirstamp) \
 
 coders/xps.la: $(coders_xps_la_OBJECTS) $(coders_xps_la_DEPENDENCIES) $(EXTRA_coders_xps_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(AM_V_CCLD)$(coders_xps_la_LINK) $(am_coders_xps_la_rpath) $(coders_xps_la_OBJECTS) $(coders_xps_la_LIBADD) $(LIBS)
-coders/xtrn_la-xtrn.lo: coders/$(am__dirstamp) \
-	coders/$(DEPDIR)/$(am__dirstamp)
-
-coders/xtrn.la: $(coders_xtrn_la_OBJECTS) $(coders_xtrn_la_DEPENDENCIES) $(EXTRA_coders_xtrn_la_DEPENDENCIES) coders/$(am__dirstamp)
-	$(AM_V_CCLD)$(coders_xtrn_la_LINK) $(am_coders_xtrn_la_rpath) $(coders_xtrn_la_OBJECTS) $(coders_xtrn_la_LIBADD) $(LIBS)
 coders/xwd_la-xwd.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 
@@ -8449,7 +8421,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xcf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xpm.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xps.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xwd.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ycbcr.Plo@am__quote@ # am--include-marker
@@ -8588,7 +8559,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/xcf_la-xcf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/xpm_la-xpm.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/xps_la-xps.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/xtrn_la-xtrn.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/xwd_la-xwd.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/yaml_la-yaml.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/ycbcr_la-ycbcr.Plo@am__quote@ # am--include-marker
@@ -10100,13 +10070,6 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xp
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xps.lo `test -f 'coders/xps.c' || echo '$(srcdir)/'`coders/xps.c
 
-coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.lo: coders/xtrn.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.lo `test -f 'coders/xtrn.c' || echo '$(srcdir)/'`coders/xtrn.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/xtrn.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.lo `test -f 'coders/xtrn.c' || echo '$(srcdir)/'`coders/xtrn.c
-
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.lo: coders/yaml.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.lo `test -f 'coders/yaml.c' || echo '$(srcdir)/'`coders/yaml.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.Plo
@@ -11373,13 +11336,6 @@ coders/xps_la-xps.lo: coders/xps.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/xps.c' object='coders/xps_la-xps.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_xps_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/xps_la-xps.lo `test -f 'coders/xps.c' || echo '$(srcdir)/'`coders/xps.c
-
-coders/xtrn_la-xtrn.lo: coders/xtrn.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_xtrn_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/xtrn_la-xtrn.lo -MD -MP -MF coders/$(DEPDIR)/xtrn_la-xtrn.Tpo -c -o coders/xtrn_la-xtrn.lo `test -f 'coders/xtrn.c' || echo '$(srcdir)/'`coders/xtrn.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/xtrn_la-xtrn.Tpo coders/$(DEPDIR)/xtrn_la-xtrn.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/xtrn.c' object='coders/xtrn_la-xtrn.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_xtrn_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/xtrn_la-xtrn.lo `test -f 'coders/xtrn.c' || echo '$(srcdir)/'`coders/xtrn.c
 
 coders/xwd_la-xwd.lo: coders/xwd.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_xwd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/xwd_la-xwd.lo -MD -MP -MF coders/$(DEPDIR)/xwd_la-xwd.Tpo -c -o coders/xwd_la-xwd.lo `test -f 'coders/xwd.c' || echo '$(srcdir)/'`coders/xwd.c
@@ -12986,7 +12942,6 @@ distclean: distclean-am
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xcf.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xpm.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xps.Plo
-	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xwd.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ycbcr.Plo
@@ -13125,7 +13080,6 @@ distclean: distclean-am
 	-rm -f coders/$(DEPDIR)/xcf_la-xcf.Plo
 	-rm -f coders/$(DEPDIR)/xpm_la-xpm.Plo
 	-rm -f coders/$(DEPDIR)/xps_la-xps.Plo
-	-rm -f coders/$(DEPDIR)/xtrn_la-xtrn.Plo
 	-rm -f coders/$(DEPDIR)/xwd_la-xwd.Plo
 	-rm -f coders/$(DEPDIR)/yaml_la-yaml.Plo
 	-rm -f coders/$(DEPDIR)/ycbcr_la-ycbcr.Plo
@@ -13484,7 +13438,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xcf.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xpm.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xps.Plo
-	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xtrn.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xwd.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-yaml.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ycbcr.Plo
@@ -13623,7 +13576,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f coders/$(DEPDIR)/xcf_la-xcf.Plo
 	-rm -f coders/$(DEPDIR)/xpm_la-xpm.Plo
 	-rm -f coders/$(DEPDIR)/xps_la-xps.Plo
-	-rm -f coders/$(DEPDIR)/xtrn_la-xtrn.Plo
 	-rm -f coders/$(DEPDIR)/xwd_la-xwd.Plo
 	-rm -f coders/$(DEPDIR)/yaml_la-yaml.Plo
 	-rm -f coders/$(DEPDIR)/ycbcr_la-ycbcr.Plo
