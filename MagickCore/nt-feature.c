@@ -56,12 +56,18 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/nt-base.h"
 #include "MagickCore/nt-base-private.h"
+#include "MagickCore/nt-feature.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/token.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/utility.h"
+#if defined(__CYGWIN__)
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
+#include <windows.h>
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
