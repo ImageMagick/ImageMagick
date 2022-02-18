@@ -187,7 +187,6 @@ AddMagickCoder(XC)
 AddMagickCoder(XCF)
 AddMagickCoder(XPM)
 AddMagickCoder(XPS)
-AddMagickCoder(XTRN)
 #if defined(MAGICKCORE_X11_DELEGATE)
   AddMagickCoder(XWD)
 #endif
