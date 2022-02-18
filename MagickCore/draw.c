@@ -2922,20 +2922,30 @@ static MagickBooleanType RenderMVGContent(Image *image,
       {
         if (LocaleCompare("fill",keyword) == 0)
           {
+            const char
+              *mvg_class;
+
             (void) GetNextToken(q,&q,extent,token);
             if (graphic_context[n]->clip_path != MagickFalse)
               break;
+            mvg_class=(const char *) GetValueFromSplayTree(macros,token);
+            if (mvg_class != (const char *) NULL)
+              {
+                (void) DrawPatternPath(image,draw_info,mvg_class,
+                  &graphic_context[n]->fill_pattern,exception);
+                break;
+              }
             (void) FormatLocaleString(pattern,MagickPathExtent,"%s",token);
             if (GetImageArtifact(image,pattern) != (const char *) NULL)
-              (void) DrawPatternPath(image,draw_info,token,
-                &graphic_context[n]->fill_pattern,exception);
-            else
               {
-                status&=QueryColorCompliance(token,AllCompliance,
-                  &graphic_context[n]->fill,exception);
-                if (graphic_context[n]->fill_alpha != OpaqueAlpha)
-                  graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
+                (void) DrawPatternPath(image,draw_info,token,
+                  &graphic_context[n]->fill_pattern,exception);
+                break;
               }
+            status&=QueryColorCompliance(token,AllCompliance,
+              &graphic_context[n]->fill,exception);
+            if (graphic_context[n]->fill_alpha != OpaqueAlpha)
+              graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
@@ -3629,21 +3639,31 @@ static MagickBooleanType RenderMVGContent(Image *image,
           }
         if (LocaleCompare("stroke",keyword) == 0)
           {
+            const char
+              *mvg_class;
+
             (void) GetNextToken(q,&q,extent,token);
             if (graphic_context[n]->clip_path != MagickFalse)
               break;
+            mvg_class=(const char *) GetValueFromSplayTree(macros,token);
+            if (mvg_class != (const char *) NULL)
+              {
+                (void) DrawPatternPath(image,draw_info,mvg_class,
+                  &graphic_context[n]->stroke_pattern,exception);
+                break;
+              }
             (void) FormatLocaleString(pattern,MagickPathExtent,"%s",token);
             if (GetImageArtifact(image,pattern) != (const char *) NULL)
-              (void) DrawPatternPath(image,draw_info,token,
-                &graphic_context[n]->stroke_pattern,exception);
-            else
               {
-                status&=QueryColorCompliance(token,AllCompliance,
-                  &graphic_context[n]->stroke,exception);
-                if (graphic_context[n]->stroke_alpha != OpaqueAlpha)
-                  graphic_context[n]->stroke.alpha=
-                    graphic_context[n]->stroke_alpha;
-               }
+                (void) DrawPatternPath(image,draw_info,token,
+                  &graphic_context[n]->stroke_pattern,exception);
+                break;
+              }
+            status&=QueryColorCompliance(token,AllCompliance,
+              &graphic_context[n]->stroke,exception);
+            if (graphic_context[n]->stroke_alpha != OpaqueAlpha)
+              graphic_context[n]->stroke.alpha=
+                graphic_context[n]->stroke_alpha;
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
