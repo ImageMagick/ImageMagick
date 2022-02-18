@@ -191,7 +191,6 @@
 #include "coders/xcf.h"
 #include "coders/xpm.h"
 #include "coders/xps.h"
-#include "coders/xtrn.h"
 #if defined(MAGICKCORE_X11_DELEGATE)
   #include "coders/xwd.h"
 #endif

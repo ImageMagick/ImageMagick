@@ -81,7 +81,7 @@ Chantal Racette, Laurentian University
 
 William Radcliffe
      Author of the VisualMagick project configure facility for Visual C++.
-     Author of FlashPix module. Author of the EMF, XTRN, and META coders.
+     Author of FlashPix module. Author of the EMF, and META coders.
      Significant contributions to the MSL, JPEG, TIFF, SVG, and URL coders.
      Authored "process" module support. Wrote the micro-timer facility used
      by 'identify'. Ported module loader support to Windows. Significantly

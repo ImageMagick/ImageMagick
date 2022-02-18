@@ -359,8 +359,6 @@ MAGICKCORE_CODER_SRCS = \
 	coders/xpm.h \
 	coders/xps.c \
 	coders/xps.h \
-	coders/xtrn.c \
-	coders/xtrn.h \
 	coders/xwd.h \
 	coders/yaml.c \
 	coders/yaml.h \
@@ -526,7 +524,6 @@ CODERS_NOINST_HDRS = \
 	coders/x.h \
 	coders/xpm.h \
 	coders/xps.h \
-	coders/xtrn.h \
 	coders/xwd.h \
 	coders/yaml.h \
 	coders/ycbcr.h \
@@ -649,7 +646,6 @@ coders_LTLIBRARIES = \
 	coders/xcf.la \
 	coders/xpm.la \
 	coders/xps.la \
-	coders/xtrn.la \
 	coders/yaml.la \
 	coders/ycbcr.la \
 	coders/yuv.la \
@@ -1470,12 +1466,6 @@ coders_xps_la_SOURCES      = coders/xps.c
 coders_xps_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_xps_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_xps_la_LIBADD       = $(MAGICKCORE_LIBS) $(MUPDF_LIBS) $(FREETYPE_LIBS) $(MATH_LIBS)
-
-# XPS coder module
-coders_xtrn_la_SOURCES     = coders/xtrn.c
-coders_xtrn_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
-coders_xtrn_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_xtrn_la_LIBADD      = $(MAGICKCORE_LIBS) $(OLE_LIBS)
 
 # XWD coder module
 coders_xwd_la_SOURCES      = coders/xwd.c
