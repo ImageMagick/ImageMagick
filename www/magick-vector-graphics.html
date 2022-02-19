@@ -97,10 +97,10 @@
 <p class="lead magick-description">This specification defines the features and syntax for Magick Vector Graphics (MVG), a modularized language for describing two-dimensional vector and mixed vector/raster graphics in ImageMagick.  You can use the language to draw from the
 command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG -- Scalable Vector Graphics</a> file or from one of the ImageMagick <a href="develop.html">program interfaces</a>.  Use this command, for example, to render an arc:</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick -size 100x60 canvas:skyblue -fill white -stroke black \
+<pre class="bg-light text-dark mx-4"><samp>magick -size 100x60 canvas:skyblue -fill white -stroke black \
   -draw "path 'M 30,40  A 30,20  20  0,0 70,20 A 30,20  20  1,0 30,40 Z '" \
   arc.png
-</samp></pre></ul>
+</samp></pre>
 
 <p>and here is the result:</p>
 
@@ -110,7 +110,7 @@ command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG 
 
 <p>When the drawing gets sufficiently complex, we recommend you assemble the graphic primitives into a MVG file. For our example, we use <a href="https://imagemagick.org/source/piechart.mvg">piechart.mvg</a>:</p>
 
-<ul><pre class="pre-scrollable bg-light text-dark"><samp>push graphic-context
+<pre class="pre-scrollable bg-light text-dark mx-4"><samp>push graphic-context
   viewbox 0 0 624 369
   affine 0.283636 0 0 0.283846 -0 -0
   push graphic-context
@@ -260,12 +260,12 @@ command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/">SVG 
     pop graphic-context
   pop graphic-context
 pop graphic-context
-</samp></pre></ul>
+</samp></pre>
 
 <p>to render a pie chart with this command:</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick mvg:piechart.mvg piechart.png
-</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>magick mvg:piechart.mvg piechart.png
+</samp></pre>
 
 <p>which produces this rendering:</p>
 
@@ -275,15 +275,15 @@ pop graphic-context
 
 <p>However, in general, MVG is sufficiently difficult to work with that you probably want to use a program to generate your graphics in the SVG format.  ImageMagick automagically converts SVG to MVG and renders your image, for example, we render <a href="https://imagemagick.org/source/piechart.svg">piechart.svg</a> with this command:</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick mvg:piechart.svg piechart.jpg
-</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>magick mvg:piechart.svg piechart.jpg
+</samp></pre>
 
 
 <p>to produce the same pie chart we created with the MVG language.</p>
 
 <p>Drawing is available from many of the ImageMagick <a href="develop.html">program interfaces</a> as well.  ImageMagick converts the drawing API calls to MVG and renders it.  Here is example code written in the <a href="../www/magick-wand.html">MagickWand</a> language: </p>
 
-<ul><pre class="pre-scrollable bg-light text-dark"><samp>(void) PushDrawingWand(draw_wand);
+<pre class="pre-scrollable bg-light text-dark mx-4"><samp>(void) PushDrawingWand(draw_wand);
 {
   const PointInfo points[6] =
   {
@@ -308,7 +308,7 @@ pop graphic-context
   DrawPolygon(draw_wand,6,points);
 }
 (void) PopDrawingWand(draw_wand);
-</samp></pre></ul>
+</samp></pre>
 
 <h2><a class="anchor" id="overview"></a>MVG Overview</h2>
 
@@ -316,24 +316,24 @@ pop graphic-context
 
 <p>Metafile wrapper syntax (to support stand-alone MVG files):</p>
 
-<ul><pre class="bg-light text-dark"><samp>push graphic-context
+<pre class="bg-light text-dark mx-4"><samp>push graphic-context
   viewbox 0 0 width height
   [ any other MVG commands ]
 pop graphic-context
-</samp></pre></ul>
+</samp></pre>
 
 <p>Pattern syntax (saving and restoring context):</p>
 
-<ul><pre class="bg-light text-dark"><samp>push pattern id x,y width,height
+<pre class="bg-light text-dark mx-4"><samp>push pattern id x,y width,height
  push graphic-context
   [ drawing commands ]
  pop graphic-context
 pop pattern
-</samp></pre></ul>
+</samp></pre>
 
 <p>an example is (%s is a identifier string):</p>
 
-<ul><pre class="bg-light text-dark"><samp>push defs
+<pre class="bg-light text-dark mx-4"><samp>push defs
  push pattern %s 10,10 20,20
   push graphic-context
    fill red
@@ -345,28 +345,28 @@ pop pattern
   pop graphic-context
  pop pattern
 pop defs
-</samp></pre></ul>
+</samp></pre>
 
 <p>For image tiling use:</p>
 
-<ul><pre class="bg-light text-dark"><samp>push pattern id x,y width,height
+<pre class="bg-light text-dark mx-4"><samp>push pattern id x,y width,height
  image Copy ...
 pop pattern
-</samp></pre></ul>
+</samp></pre>
 
 <p>Note you can use the pattern for either the fill or stroke like:</p>
 
-<ul><pre class="bg-light text-dark"><samp>stroke url(#%s)
-</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>stroke url(#%s)
+</samp></pre>
 
 <p>or</p>
 
-<ul><pre class="bg-light text-dark"><samp>fill url(#%s)
-</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>fill url(#%s)
+</samp></pre>
 
 <p>The clip path defines a clipping area, where only the contained area to be drawn upon.  Areas outside of the clipping areare masked.</p>
 
-<ul><pre class="bg-light text-dark"><samp>push defs
+<pre class="bg-light text-dark mx-4"><samp>push defs
  push clip-path "myClipPath"
   push graphic-context
    rectangle 10,10 20,20
@@ -374,7 +374,7 @@ pop pattern
  pop clip-path
 pop defs
 clip-path url(#myClipPath)
-</samp></pre></ul>
+</samp></pre>
 
 <h2><a class="anchor" id="primitives"></a>Drawing Primitives</h2>
 
@@ -416,24 +416,24 @@ clip-path url(#myClipPath)
   <tr>
     <td><a class="anchor" id="clip-rule"></a>clip-rule <var>rule</var></td>
     <td>Choose from these rule types:
-<ul><pre class="bg-light text-dark"><samp>evenodd
-nonzero</samp></pre></ul></td>
+<pre class="bg-light text-dark mx-4"><samp>evenodd
+nonzero</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="clip-units"></a>clip-units <var>units</var></td>
     <td>Choose from these unit types:
-<ul><pre class="bg-light text-dark"><samp>userSpace
+<pre class="bg-light text-dark mx-4"><samp>userSpace
 userSpaceOnUse
-objectBoundingBox</samp></pre></ul></td>
+objectBoundingBox</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="color"></a>color <var>x</var>,<var>y</var> <var>method</var></td>
     <td>Choose from these method types:
-<ul><pre class="bg-light text-dark"><samp>point
+<pre class="bg-light text-dark mx-4"><samp>point
 replace
 floodfill
 filltoborder
-reset</samp></pre></ul></td>
+reset</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="compliance"></a>compliance <var>type</var></td>
@@ -442,10 +442,10 @@ reset</samp></pre></ul></td>
   <tr>
     <td><a class="anchor" id="decorate"></a>decorate <var>type</var></td>
     <td>Choose from these types of decorations:
-<ul><pre class="bg-light text-dark"><samp>none
+<pre class="bg-light text-dark mx-4"><samp>none
 line-through
 overline
-underline</samp></pre></ul></td>
+underline</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="ellipse"></a>ellipse <var>center<sub>x</sub></var>,<var>center<sub>y</sub></var>   <var>radius<sub>x</sub></var>,<var>radius<sub>y</sub></var>   <var>arc<sub>start</sub></var>,<var>arc<sub>stop</sub></var></td>
@@ -462,8 +462,8 @@ underline</samp></pre></ul></td>
   <tr>
     <td><a class="anchor" id="fill-rule"></a>fill-rule <var>rule</var></td>
     <td>Choose from these rule types:
-<ul><pre class="bg-light text-dark"><samp>evenodd
-nonzero</samp></pre></ul></td>
+<pre class="bg-light text-dark mx-4"><samp>evenodd
+nonzero</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="font"></a>font <var>name</var></td>
@@ -480,7 +480,7 @@ nonzero</samp></pre></ul></td>
   <tr>
     <td><a class="anchor" id="font-stretch"></a>font-stretch <var>type</var></td>
     <td>Choose from these stretch types:
-<ul><pre class="bg-light text-dark"><samp>all
+<pre class="bg-light text-dark mx-4"><samp>all
 normal
 ultra-condensed
 extra-condensed
@@ -489,20 +489,20 @@ semi-condensed
 semi-expanded
 expanded
 extra-expanded
-ultra-expanded</samp></pre></ul></td>
+ultra-expanded</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="font-style"></a>font-style <var>style</var></td>
     <td>Choose from these styles:
-<ul><pre class="bg-light text-dark"><samp>all
+<pre class="bg-light text-dark mx-4"><samp>all
 normal
 italic
-oblique</samp></pre></ul></td>
+oblique</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="font-weight"></a>font-weight <var>weight</var></td>
     <td>Choose from these weights:
-<ul><pre class="bg-light text-dark"><samp>all
+<pre class="bg-light text-dark mx-4"><samp>all
 normal
 bold
 100
@@ -513,19 +513,19 @@ bold
 600
 700
 800
-900</samp></pre></ul></td>
+900</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="gradient-units"></a>gradient-units <var>units</var></td>
     <td>Choose from these units:
-<ul><pre class="bg-light text-dark"><samp>userSpace
+<pre class="bg-light text-dark mx-4"><samp>userSpace
 userSpaceOnUse
-objectBoundingBox</samp></pre></ul></td>
+objectBoundingBox</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="gravity"></a>gravity <var>type</var></td>
     <td>Choose from these gravity types:
-<ul><pre class="bg-light text-dark"><samp>NorthWest
+<pre class="bg-light text-dark mx-4"><samp>NorthWest
 North
 NorthEast
 West
@@ -533,7 +533,7 @@ Center
 East
 SouthWest
 South
-SouthEast</samp></pre></ul></td>
+SouthEast</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="compose"></a>image <var>compose x,y width,height 'filename'</var></td>
@@ -728,11 +728,11 @@ SouthEast</samp></pre></ul></td>
   <tr>
     <td><a class="anchor" id="matte"></a>matte <var>x,y method</var></td>
     <td>Choose from these methods:
-<ul><pre class="bg-light text-dark"><samp>point
+<pre class="bg-light text-dark mx-4"><samp>point
 replace
 floodfill
 filltoborder
-reset</samp></pre></ul></td>
+reset</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="offset"></a>offset <var>offset</var></td>
@@ -849,16 +849,16 @@ reset</samp></pre></ul></td>
   <tr>
     <td><a class="anchor" id="stroke-linecap"></a>stroke-linecap <var>type</var></td>
     <td>Choose from these cap types:
-<ul><pre class="bg-light text-dark"><samp>butt
+<pre class="bg-light text-dark mx-4"><samp>butt
 round
-square</samp></pre></ul></td>
+square</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="stroke-linejoin"></a>stroke-linejoin <var>type</var></td>
     <td>Choose from these join types:
-<ul><pre class="bg-light text-dark"><samp>bevel
+<pre class="bg-light text-dark mx-4"><samp>bevel
 miter
-round</samp></pre></ul></td>
+round</samp></pre></td>
   </tr>
   <tr>
     <td><a class="anchor" id="stroke-miterlimit"></a>stroke-miterlimit <var>limit</var></td>
@@ -919,7 +919,7 @@ round</samp></pre></ul></td>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
-    <small>© 1999-2021 ImageMagick Studio LLC</small>
+    <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
   </footer>
 
@@ -927,4 +927,4 @@ round</samp></pre></ul></td>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th October 2021 14:06 -->
+<!-- Magick Cache 18th February 2022 23:53 -->

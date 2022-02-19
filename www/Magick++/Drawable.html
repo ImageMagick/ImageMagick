@@ -202,7 +202,7 @@ int main(int /*argc*/,char **/*argv*/)
 <td width="27%">
 <p class="western" style="text-align:center">DrawableColor</p></td>
 <td width="21%">
-<p class="western"><font size="2">double x_, double y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a> paintMethod_</font></p></td>
+<p class="western"><font size="2">double x_, double y_, <a href="https://imagemagick.org/Magick++/Enumerations.html#PaintMethod">PaintMethod</a> paintMethod_</font></p></td>
 <td width="52%">
 <p class="western">Color image according to paintMethod. The point method recolors the target pixel. The replace method recolors any pixel that matches the color of the target pixel. Floodfill recolors any pixel that matches the color of the target pixel and is a neighbor, whereas filltoborder recolors any neighbor pixel that is not the border color. Finally, reset recolors all pixels.</p></td></tr>
 <tr>
@@ -225,12 +225,12 @@ int main(int /*argc*/,char **/*argv*/)
 <p class="western">double x_, double y_, double width_, double height_, const Image &amp;image_</p></td></tr>
 <tr>
 <td width="21%">
-<p class="western"><font size="2">double x_, double y_, double width_, double height_, const std::string &amp;filename_, <a href="Enumerations.html#CompositeOperator">CompositeOperator</a> composition_</font></p></td>
+<p class="western"><font size="2">double x_, double y_, double width_, double height_, const std::string &amp;filename_, <a href="https://imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a> composition_</font></p></td>
 <td rowspan="2" width="52%">
 <p class="western">Composite current image with contents of specified image, rendered with specified width and height, using specified composition algorithm, at specified coordinates. If the <i>matte</i> attribute is set to <i>true</i>, then the image composition will consider an alpha channel, or transparency, present in the image file so that non-opaque portions allow part (or all) of the composite image to show through. If the specified <i>width</i> or <i>height</i> is zero, then the image is composited at its natural size, without enlargement or reduction.</p></td></tr>
 <tr>
 <td width="21%">
-<p class="western"><font size="2">double x_, double y_, double width_, double height_, const Image &amp;image_, <a href="Enumerations.html#CompositeOperator">CompositeOperator</a> composition_</font></p></td></tr>
+<p class="western"><font size="2">double x_, double y_, double width_, double height_, const Image &amp;image_, <a href="https://imagemagick.org/Magick++/Enumerations.html#CompositeOperator">CompositeOperator</a> composition_</font></p></td></tr>
 <tr>
 <td width="27%">
 <p class="western" style="text-align:center">DrawableDashArray</p></td>
@@ -263,7 +263,7 @@ int main(int /*argc*/,char **/*argv*/)
 <td width="27%">
 <p class="western" style="text-align:center">DrawableFillRule</p></td>
 <td width="21%">
-<p class="western"><font size="2"><a href="Enumerations.html#FillRule">FillRule</a> fillRule_</font></p></td>
+<p class="western"><font size="2"><a href="https://imagemagick.org/Magick++/Enumerations.html#FillRule">FillRule</a> fillRule_</font></p></td>
 <td width="52%">
 <p class="western"><font size="2" style="font-size: 11pt">Specify the algorithm which is to be used to determine what parts of the canvas are included inside the shape. See documentation on SVG's</font> <a href="http://www.w3.org/TR/SVG/painting.html#FillRuleProperty"><font size="2" style="font-size: 11pt">fill-rule</font></a> <font size="2" style="font-size: 11pt">property for usage details.</font></p></td></tr>
 <tr>
@@ -283,16 +283,16 @@ int main(int /*argc*/,char **/*argv*/)
 <tr>
 <td width="21%">
 <p class="western"><font size="2">const std::string &amp;family_,</font><br />
-<font size="2"><a href="Enumerations.html#StyleType">StyleType</a> style_,</font><br />
+<font size="2"><a href="https://imagemagick.org/Magick++/Enumerations.html#StyleType">StyleType</a> style_,</font><br />
 <font size="2">unsigned int weight_,</font><br />
-<font size="2"><a href="Enumerations.html#StretchType">StretchType</a> stretch_</font></p></td>
+<font size="2"><a href="https://imagemagick.org/Magick++/Enumerations.html#StretchType">StretchType</a> stretch_</font></p></td>
 <td width="52%">
 <p class="western">Specify font family, style, weight (one of the set { 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 } with 400 being the normal size), and stretch to be used to select the font used when drawing text. Wildcard matches may be applied to style via the AnyStyle enumeration, applied to weight if weight is zero, and applied to stretch via the AnyStretch enumeration.</p></td></tr>
 <tr>
 <td width="27%">
 <p class="western" style="text-align:center">DrawableGravity</p></td>
 <td width="21%">
-<p class="western"><font size="2"><a href="Enumerations.html#GravityType">GravityType</a> gravity_</font></p></td>
+<p class="western"><font size="2"><a href="https://imagemagick.org/Magick++/Enumerations.html#GravityType">GravityType</a> gravity_</font></p></td>
 <td width="52%">
 <p class="western">Specify text positioning gravity.</p></td></tr>
 <tr>
@@ -306,7 +306,7 @@ int main(int /*argc*/,char **/*argv*/)
 <td width="27%">
 <p class="western" style="text-align:center">DrawableMatte</p></td>
 <td width="21%">
-<p class="western"><font size="2">double x_, double y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a> paintMethod_</font></p></td>
+<p class="western"><font size="2">double x_, double y_, <a href="https://imagemagick.org/Magick++/Enumerations.html#PaintMethod">PaintMethod</a> paintMethod_</font></p></td>
 <td width="52%">
 <p class="western">Change the pixel matte value to transparent. The point method changes the matte value of the target pixel. The replace method changes the matte value of any pixel that matches the color of the target pixel. Floodfill changes the matte value of any pixel that matches the color of the target pixel and is a neighbor, whereas filltoborder changes the matte value of any neighbor pixel that is not the border color, Finally reset changes the matte value of all pixels.</p></td></tr>
 <tr>
@@ -454,14 +454,14 @@ int main(int /*argc*/,char **/*argv*/)
 <td width="27%">
 <p class="western" style="text-align:center">DrawableStrokeLineCap</p></td>
 <td width="21%">
-<p class="western"><font size="2"><a href="Enumerations.html#LineCap">LineCap</a> linecap_</font></p></td>
+<p class="western"><font size="2"><a href="https://imagemagick.org/Magick++/Enumerations.html#LineCap">LineCap</a> linecap_</font></p></td>
 <td width="52%">
 <p class="western">Specify the shape to be used at the end of open subpaths when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap, and SquareCap.</p></td></tr>
 <tr>
 <td width="27%">
 <p class="western" style="text-align:center">DrawableStrokeLineJoin</p></td>
 <td width="21%">
-<p class="western"><font size="2"><a href="Enumerations.html#LineJoin">LineJoin</a> linejoin_</font></p></td>
+<p class="western"><font size="2"><a href="https://imagemagick.org/Magick++/Enumerations.html#LineJoin">LineJoin</a> linejoin_</font></p></td>
 <td width="52%">
 <p class="western">Specify the shape to be used at the corners of paths (or other vector shapes) when they are stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</p></td></tr>
 <tr>
@@ -484,12 +484,12 @@ int main(int /*argc*/,char **/*argv*/)
 <td width="21%">
 <p class="western">double x_, double y_, std::string text_</p></td>
 <td width="52%">
-<p class="western"><font size="2" style="font-size: 11pt">Annotate image with text using <i>stroke</i> color, font, font pointsize, and <i>box</i> color (text background color), at specified coordinates. If text contains</font> <a href="FormatCharacters.html"><font size="2" style="font-size: 11pt">special format characters</font></a> <font size="2" style="font-size: 11pt">the image filename, type, width, height, or other image attributes may be incorporated in the text (see label()).</font></p></td></tr>
+<p class="western"><font size="2" style="font-size: 11pt">Annotate image with text using <i>stroke</i> color, font, font pointsize, and <i>box</i> color (text background color), at specified coordinates. If text contains</font> <a href="https://imagemagick.org/Magick++/FormatCharacters.html"><font size="2" style="font-size: 11pt">special format characters</font></a> <font size="2" style="font-size: 11pt">the image filename, type, width, height, or other image attributes may be incorporated in the text (see label()).</font></p></td></tr>
 <tr>
 <td width="21%">
 <p class="western">const double x_, const double y_, const std::string &amp;text_, const std::string &amp;encoding_</p></td>
 <td width="52%">
-<p class="western"><font size="2" style="font-size: 11pt">Annotate image with text represented with text encoding, using current <i>stroke</i> color, font, font pointsize, and <i>box</i> color (text background color), at specified coordinates. If text contains</font> <a href="FormatCharacters.html"><font size="2" style="font-size: 11pt">special format characters</font></a> <font size="2" style="font-size: 11pt">the image filename, type, width, height, or other image attributes may be incorporated in the text (see label()).</font></p>
+<p class="western"><font size="2" style="font-size: 11pt">Annotate image with text represented with text encoding, using current <i>stroke</i> color, font, font pointsize, and <i>box</i> color (text background color), at specified coordinates. If text contains</font> <a href="https://imagemagick.org/Magick++/FormatCharacters.html"><font size="2" style="font-size: 11pt">special format characters</font></a> <font size="2" style="font-size: 11pt">the image filename, type, width, height, or other image attributes may be incorporated in the text (see label()).</font></p>
 <p class="western"><font size="2" style="font-size: 11pt">The text encoding specifies the code set to use for text annotations. The only character encoding which may be specified at this time is "<font face="Courier, monospace">UTF-8</font>" for representing</font> <a href="http://www.unicode.org/"><font size="2" style="font-size: 11pt">Unicode</font></a> <font size="2" style="font-size: 11pt">as a sequence of bytes. Specify an empty string to set text encoding to the system's default. Successful text annotation using Unicode may require fonts designed to support Unicode.</font></p></td></tr>
 <tr>
 <td width="27%">
@@ -502,7 +502,7 @@ int main(int /*argc*/,char **/*argv*/)
 <td width="27%">
 <p class="western" style="text-align:center"><a name="DrawableTextDecoration"></a> DrawableTextDecoration</p></td>
 <td width="21%">
-<p class="western"><font size="2"><a href="Enumerations.html#DecorationType">DecorationType</a> decoration_</font></p></td>
+<p class="western"><font size="2"><a href="https://imagemagick.org/Magick++/Enumerations.html#DecorationType">DecorationType</a> decoration_</font></p></td>
 <td width="52%">
 <p class="western">Specify decoration (e.g. UnderlineDecoration) to apply to text.</p></td></tr>
 <tr>

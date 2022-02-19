@@ -351,6 +351,10 @@ below. </p>
 <p> The math composition is applied on an individual channel basis as defined by the <a href="../www/command-line-options.html#channel" >-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha
 composition effects, becoming involved. </p>
 
+<p>Use <samp>-define compose:sync=false</samp> and the above mathematical compositions will no longer synchronise its actions with the alpha channel.  Instead the math composition is applied on an individual channel basis as defined by the <a href="../www/command-line-options.html#channel">-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha composition effects, becoming involved.</p> 
+
+<p>This define is not applied to the lighting composition methods (see below) even though they are closely related to mathematical composition methods.</p>
+
 <p>The following lighting composition methods are also available. </p>
 
 <table class="table table-sm table-hover">
@@ -511,16 +515,16 @@ but not always, the same name as the composite 'method' they use, and replaces
 the normal use of the <a href="../www/command-line-options.html#compose" >-compose</a>
 setting in the "<samp>composite</samp>" command.  For example... </p>
 
-<ul><pre class="bg-light text-dark"><samp>composite ... -blend 50x50 ...  </samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>composite ... -blend 50x50 ...  </samp></pre>
 
 <p>The "<samp>magick</samp>" command can accept these extra arguments to its <a href="../www/command-line-options.html#composite"
 >-composite</a> operator, using the special <a href="../www/command-line-options.html#define">-define</a>
-attribute of '<code class="arg">compose:args</samp>'.  This means you can now
+attribute of <samp>compose:args</samp>.  This means you can now
 make use of these special augmented <a href="../www/command-line-options.html#compose"
 >-compose</a> methods, those the argument and the method both need to be set
 separately.  For example... </p>
 
-<ul><pre class="bg-light text-dark"><samp>magick ... -compose blend  -define compose:args=50,50 -composite ...  </samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>magick ... -compose blend  -define compose:args=50,50 -composite ...  </samp></pre>
 
 <p>The following is a table of these special 'argumented' compose methods,
 with a brief summary of what they do. For more details see the equivalent
@@ -537,11 +541,11 @@ with a brief summary of what they do. For more details see the equivalent
     <td>dissolve</td>
     <td>Arguments:
         <var>src_percent</var>[x<var>dst_percent</var>]
-    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#dissolve">-dissolve</a>
-    <br/>Dissolve the 'source' image by the percentage given before overlaying
+    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#dissolve">-dissolve</a>.
+    Dissolve the 'source' image by the percentage given before overlaying
         'over' the 'destination' image. If <var>src_percent</var> is
         greater than 100, it starts dissolving the main image so it will
-        become transparent at a value of '<code class="arg">200</samp>'.  If
+        become transparent at a value of <samp>200</samp>.  If
         both percentages are given, each image are dissolved to the
         percentages given.
     </td>
@@ -552,8 +556,8 @@ with a brief summary of what they do. For more details see the equivalent
     <td>Arguments:
         <var>src_percent</var>[x<var>dst_percent</var>]
     <br/>Equivalent to "<samp>composite</samp>" <a
-        href="../www/command-line-options.html#blend">-blend</a>
-    <br/>Average the images together ('plus') according to the percentages
+        href="../www/command-line-options.html#blend">-blend</a>.
+    Average the images together ('plus') according to the percentages
         given and each pixels transparency.  If only a single percentage value
         is given it sets the weight of the composite or 'source' image, while
         the background image is weighted by the exact opposite amount. That is
@@ -567,9 +571,9 @@ with a brief summary of what they do. For more details see the equivalent
     <td>mathematics</td>
     <td>Arguments: <var>A, B, C, D</var>
     <br/>Not available in "<samp>composite</samp>" at this time.
-    <br/>Merge the source and destination images according to the formula
-    <br/>     <samp>A*Sc*Dc + B*Sc + C*Dc + D</samp>
-    <br/>Can be used to generate a custom composition method that would
+    Merge the source and destination images according to the formula
+    <ul><samp>A*Sc*Dc + B*Sc + C*Dc + D</samp></ul>
+    Can be used to generate a custom composition method that would
         otherwise need to be implemented using the slow <a
         href="../www/command-line-options.html#fx">-fx</a> DIY image operator.
     </td>
@@ -579,8 +583,8 @@ with a brief summary of what they do. For more details see the equivalent
     <td>modulate</td>
     <td>Arguments:
         <var>brightness</var>[x<var>saturation</var>]
-    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#watermark">-watermark</a>
-    <br/>Take a grayscale image (with alpha mask) and modify the destination
+    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#watermark">-watermark</a>.
+    Take a grayscale image (with alpha mask) and modify the destination
         image's brightness according to watermark image's grayscale value and
         the <var>brightness</var> percentage.  The destinations
         color saturation attribute is just direct modified by the <var>saturation</var> percentage, which defaults to 100 percent
@@ -593,8 +597,8 @@ with a brief summary of what they do. For more details see the equivalent
     <td>displace</td>
     <td>Arguments:
         <var>X-scale</var>[x<var>Y-scale</var>][!][%]
-    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#displace">-displace</a>
-    <br/>With this option, the 'overlay' image, and optionally the 'mask'
+    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#displace">-displace</a>.
+    With this option, the 'overlay' image, and optionally the 'mask'
         image, is used as a relative displacement map, which is used to
         displace the lookup of what part of the destination image is seen at
         each point of the overlaid area.  Much like the displacement map is a
@@ -622,7 +626,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>Arguments:
         <var>X-scale</var>[x<var>Y-scale</var>[+<var>X-center</var>+<var>Y-center</var>]][!][%]
     <br/>Not available in "<samp>composite</samp>" at this time.
-    <br/>Exactly as per 'Displace' (above), but using absolute coordinates,
+    Exactly as per 'Displace' (above), but using absolute coordinates,
         relative to the center of the overlay (or that given).  Basically
         allows you to generate absolute distortion maps where 'black' will
         look up the left/top edge, and 'white' looks up the bottom/right
@@ -640,8 +644,8 @@ with a brief summary of what they do. For more details see the equivalent
     <td>blur</td>
     <td>Arguments:
         <var>Width</var>[x<var>Height</var>[+<var>Angle</var>][+<var>Angle2</var>]]
-    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#blur-composite">-blur</a>
-    <br/>A Variable Blur Mapping Composition method, where each pixel in the
+    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#blur-composite">-blur</a>.
+    A Variable Blur Mapping Composition method, where each pixel in the
         overlaid region is replaced with an Elliptical Weighted Average (EWA),
         with an ellipse (typically a circle) of the given sigma size, scaled
         according to overlay (source image) grayscale mapping.
@@ -660,6 +664,19 @@ with a brief summary of what they do. For more details see the equivalent
     <br/><br/>
     </td>
   </tr>
+  <tr>
+    <td>seamless-blend</td>
+    <td>Arguments: <var>max-iterations</var>x<var>distortion</var>
+    <p>Seamlessly inserts the overlay image onto the background image. This operator requires a mask. Set the maximum iterations and distortion when seamlessly blending a foreground object onto a background image. The distortion is the RMSE between each iteration, a good start might be 300x0.0001. Note, seamless blending works most effectively when the HDRI feature is enabled.</p>
+    </td>
+  </tr>
+  <tr>
+    <td>saliency-blend</td>
+    <td>Arguments: <var>max-iterations</var>x<var>distortion</var>
+    <p>Merges the overlay image with the background image such that the image that is most salient (has the most detail) at a given pixel will show in the result. This operator requires a mask. Set the maximum iterations and distortion when seamlessly blending a foreground object onto a background image. The distortion is the RMSE between each iteration, a good start might be 300x0.0001. Note, seamless blending works most effectively when the HDRI feature is enabled. Saliency-blending will be a bit slower than seamless blending.</p>
+    </td>
+  </tr>
+
 
   </tbody>
 </table>
@@ -687,7 +704,7 @@ href="../www/command-line-options.html#list">-list compose</a>.</p>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
-    <small>© 1999-2021 ImageMagick Studio LLC</small>
+    <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
   </footer>
 
@@ -695,4 +712,3 @@ href="../www/command-line-options.html#list">-list compose</a>.</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th October 2021 14:06 -->

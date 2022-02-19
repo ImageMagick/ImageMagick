@@ -101,11 +101,11 @@
 
 <p>Each of the following commands produces the same <var>lime</var> border around the image. (Use "double quotes" for Windows.)</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick -bordercolor lime -border 10 image.jpg image.png
+<pre class="bg-light text-dark mx-4"><samp>magick -bordercolor lime -border 10 image.jpg image.png
 magick -bordercolor '#0f0' -border 10 image.jpg image.png
 magick -bordercolor '#00ff00' -border 10 image.jpg image.png
 magick -bordercolor 'rgb(0,255,0)' -border 10 image.jpg image.png
-magick -bordercolor 'rgb(0,100%,0)' -border 10 image.jpg image.png</samp></pre></ul>
+magick -bordercolor 'rgb(0,100%,0)' -border 10 image.jpg image.png</samp></pre>
 
 <p>The list of recognized color names (for example, <var>aqua</var>, <var>black</var>, <var>blue</var>, <var>fuchsia</var>, <var>gray</var>, <var>green</var>, <var>lime</var>, <var>maroon</var>, <var>navy</var>, <var>olive</var>, <var>purple</var>, <var>red</var>, <var>silver</var>, <var>teal</var>, <var>white</var>, <var>yellow</var>, and others) is shown in a table further below.</p>
 
@@ -113,13 +113,13 @@ magick -bordercolor 'rgb(0,100%,0)' -border 10 image.jpg image.png</samp></pre><
 
 <p>The sRGB, CMYK, HSL and HSB color models are used in numerical color specifications. These examples all specify the same red sRGB color:</p>
 
-<ul><pre class="bg-light text-dark"><samp>#f00                      #rgb
+<pre class="bg-light text-dark mx-4"><samp>#f00                      #rgb
 #ff0000                   #rrggbb
 #ff0000ff                 #rrggbbaa
 #ffff00000000             #rrrrggggbbbb
 #ffff00000000ffff         #rrrrggggbbbbaaaa
 rgb(255, 0, 0)            an integer in the range 0—255 for each component
-rgb(100.0%, 0.0%, 0.0%)   a float in the range 0—100% for each component</samp></pre></ul>
+rgb(100.0%, 0.0%, 0.0%)   a float in the range 0—100% for each component</samp></pre>
 
 <p>The format of an sRGB value in hexadecimal notation is a '#' immediately followed by either three, six, or twelve hexadecimal characters. The three-digit sRGB notation (#rgb) is converted into six-digit form (#rrggbb) by replicating digits, not by adding zeros. For example,  #fb0 expands to #ffbb00. This ensures that white (#ffffff) can be specified with the short notation (#fff) and removes any dependencies on the color depth of the image. Use the hexadecimal notation whenever performance is an issue.  ImageMagick does not need to load the expansive color table to interpret a hexadecimal color, e.g., <samp>#000000</samp>, but it does if <samp>black</samp> is used instead.</p>
 
@@ -129,10 +129,10 @@ rgb(100.0%, 0.0%, 0.0%)   a float in the range 0—100% for each component</samp
 
 <p>The sRGB color model is extended in this specification to include <var>alpha</var> to allow specification of the transparency of a color. These examples all specify the same color:</p>
 
-<ul><pre class="bg-light text-dark"><samp>rgb(255, 0, 0)                 range 0 - 255
+<pre class="bg-light text-dark mx-4"><samp>rgb(255, 0, 0)                 range 0 - 255
 rgba(255, 0, 0, 1.0)           the same, with an explicit alpha value
 rgb(100%, 0%, 0%)              range 0.0% - 100.0%
-rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value</samp></pre></ul>
+rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value</samp></pre>
 
 <p>The format of an RGBA value in the functional notation is 'rgba(<var>r</var>,<var>g</var>,<var>b</var>,<var>a</var>)',  where  <var>r</var>, <var>g</var>, and <var>b</var> are as described above for the RGB functional notation, and where the alpha value <var>a</var> ranges from 0.0 (fully transparent) to 1.0 (fully opaque).</p>
 
@@ -140,11 +140,11 @@ rgba(100%, 0%, 0%, 1.0)        the same, with an explicit alpha value</samp></pr
 
 <p>Non-linear gray values are conveniently defined with a name, single intensity value or an intensity value and an alpha value:</p>
 
-<ul><pre class="bg-light text-dark"><samp>
+<pre class="bg-light text-dark mx-4"><samp>
 gray50            near mid gray
 gray(127)         near mid gray
 gray(50%)         mid gray
-graya(50%, 0.5)   semi-transparent mid gray</samp></pre></ul>
+graya(50%, 0.5)   semi-transparent mid gray</samp></pre>
 
 <p>For linear gray values add -colorspace RGB -colorspace Gray or -colorspace LinearGray when creating gray colors. The latter is new as of Imagemagick 6.9.9-29 and 7.0.7-17.</p>
 
@@ -164,27 +164,27 @@ graya(50%, 0.5)   semi-transparent mid gray</samp></pre></ul>
 
 <p>The HSB color system is a little easier to understand than the HSL color system. In the HSB color system, black is at the bottom apex and white is at the top center of the cone on the central axis. The most colorful or saturated colors will then be at the outer edge of the top of the cone at the widest part. Thus at Saturation=100% and Brightness=100%</p>
 
-<ul><pre class="bg-light text-dark"><samp>hsb(0,   100%,  100%)    or    hsb(0,   255,   255)       full red
+<pre class="bg-light text-dark mx-4"><samp>hsb(0,   100%,  100%)    or    hsb(0,   255,   255)       full red
 hsb(120, 100%,  100%)    or    hsb(120, 255,   255)       full green
 hsb(120, 100%,  75%)     or    hsb(120, 255,   191.25)    medium green
 hsb(120, 100%,  50%)     or    hsb(120, 255,   127.5)     dark green
 hsb(120, 100%,  25%)     or    hsb(120, 255,   63.75)     very dark green
-hsb(120, 50%,   50%)     or    hsb(120, 127.5, 127.5)     pastel green</samp></pre></ul>
+hsb(120, 50%,   50%)     or    hsb(120, 127.5, 127.5)     pastel green</samp></pre>
 
 <p>In the HSL color system, black is at the bottom apex and white is at the top apex. However, saturation is largest at the middle of the double cone on its outer perimeter and thus at a lightness value of 50%. The most colorful or saturated colors will then be at the outer edge of the double cone at its widest part. Thus at Saturation=100% and Brightness=50%</p>
 
-<ul><pre class="bg-light text-dark"><samp>hsl(0,   100%,  50%)     or    hsl(0,   255,   127.5)     full red
+<pre class="bg-light text-dark mx-4"><samp>hsl(0,   100%,  50%)     or    hsl(0,   255,   127.5)     full red
 hsl(120, 100%,  100%)    or    hsl(120, 255,   255)       white
 hsl(120, 100%,  75%)     or    hsl(120, 255,   191.25)    pastel green
 hsl(120, 100%,  50%)     or    hsl(120, 255,   127.5)     full green
 hsl(120, 100%,  25%)     or    hsl(120, 255,   63.75)     dark green
-hsl(120, 50%,   50%)     or    hsl(120, 127.5, 127.5)     medium green</samp></pre></ul>
+hsl(120, 50%,   50%)     or    hsl(120, 127.5, 127.5)     medium green</samp></pre>
 
 <p>One advantage of HSB or HSL over RGB is that it can be more intuitive: you can guess at the colors you want, and then tweak. It is also easier to create sets of matching colors (by keeping the hue the same and varying the brightness or lightness and saturation, for example).</p>
 
 <p>Just as the 'rgb()' functional notation has the 'rgba()' alpha counterpart, the 'hsl()' and 'hsb()' functional notations have their 'hsla()' 'hsba()' alpha counterparts. These examples specify the same color:</p>
 
-<ul><pre class="bg-light text-dark"><samp>hsb(120, 100%,  100%)              full green in hsb
+<pre class="bg-light text-dark mx-4"><samp>hsb(120, 100%,  100%)              full green in hsb
 hsba(120, 100%,  100%,  1.0)       the same, with an alpha value of 1.0
 hsb(120, 255,  255)                full green in hsb
 hsba(120, 255,  255,  1.0)         the same, with an alpha value of 1.0
@@ -192,21 +192,21 @@ hsba(120, 255,  255,  1.0)         the same, with an alpha value of 1.0
 hsl(120, 100%,  50%)               full green in hsl
 hsla(120, 100%,  50%,  1.0)        the same, with an alpha value of 1.0
 hsl(120, 255,  127.5)              full green in hsl
-hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0</samp></pre></ul>
+hsla(120, 255,  127.5,  1.0)       the same, with an alpha value of 1.0</samp></pre>
 
 <p>For ImageMagick between 6.5.6-6 and 6.9.2-0, HSL (HSB) could only be specified with Hue as percent in range 0—100%, when Saturation and Lightness (Brightness) were also specified as percent in range 0—100%.</p>
 
 <p>Specify the Lab colors like this:</p>
-<ul><pre class="bg-light text-dark"><samp>cielab(62.253188, 23.950124, 48.410653)</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>cielab(62.253188, 23.950124, 48.410653)</samp></pre>
 <p>Note, the <samp>a</samp> and <samp>b</samp> components of any Lab color you specify are biased internally by 50% to ensure it fits in the quantum range (typically 0 to 65535).  The bias is retained when writing to the TIFF and MIFF image formats.  However, the TXT format supports negative pixel values so the bias is removed when writing to this format:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick xc:cyan -colorspace LAB txt:
+<pre class="bg-light text-dark mx-4"><samp>$ magick xc:cyan -colorspace LAB txt:
 # ImageMagick pixel enumeration: 1,1,65535,cielab
 0,0: (59711,20409.5,-3632.9)  #E93F4FBA71CF  cielab(91.1132,-48.0855,-14.1358)
 
-$ magick -size 100x100 xc:"cielab(91.1132,-48.0855,-14.1358)" -colorspace sRGB cyan.png</samp></pre></ul>
+$ magick -size 100x100 xc:"cielab(91.1132,-48.0855,-14.1358)" -colorspace sRGB cyan.png</samp></pre>
 
 <p>Or specify colors generically with the <samp>icc-color</samp> keyword, for example:</p>
-<ul><pre class="bg-light text-dark"><samp>
+<pre class="bg-light text-dark mx-4"><samp>
 icc-color(cmyk, 0.11, 0.48, 0.83, 0.00)  cymk
 icc-color(rgb, 1, 0, 0)                  linear rgb
 icc-color(rgb, red)                      linear rgb
@@ -214,12 +214,12 @@ icc-color(lineargray, 0.5)               linear gray
 icc-color(srgb, 1, 0, 0)                 non-linear rgb
 icc-color(srgb, red)                     non-linear rgb
 icc-color(gray, 0.5)                     non-linear gray
-</samp></pre></ul>
+</samp></pre>
 
 <p>Or specify uncalibrated device colors with the <samp>device-</samp> keyword, for example:</p>
-<ul><pre class="bg-light text-dark"><samp>device-gray(0.5)
+<pre class="bg-light text-dark mx-4"><samp>device-gray(0.5)
 device-rgb(0.5, 1.0, 0.0)
-device-cmyk(0.11, 0.48, 0.83, 0.00)</samp></pre></ul>
+device-cmyk(0.11, 0.48, 0.83, 0.00)</samp></pre>
 
 <p>ImageMagick also supports wide-gamut color such as <samp>Lab</samp>, <samp>LCH</samp>, and <samp>Display-P3</samp>.</p>
 
@@ -4980,7 +4980,7 @@ device-cmyk(0.11, 0.48, 0.83, 0.00)</samp></pre></ul>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
-    <small>© 1999-2021 ImageMagick Studio LLC</small>
+    <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
   </footer>
 
@@ -4988,4 +4988,3 @@ device-cmyk(0.11, 0.48, 0.83, 0.00)</samp></pre></ul>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th October 2021 14:06 -->

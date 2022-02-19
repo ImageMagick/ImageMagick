@@ -96,7 +96,7 @@
 
 <a class="anchor" id="fx"></a>
 
-<p class="lead magick-description">Use the FX special effects image operator to apply a mathematical expression to an image or image channels.  Use FX to:</p>
+<p class="lead magick-description">The <a href="http://im.snibgo.com/fxnew.htm" target="_blank">FX special effects image operator</a> applies a mathematical expression to each pixel channel of an image.  Use FX to:</p>
 
 <ul>
   <li>create canvases, gradients, mathematical colormaps</li>
@@ -107,10 +107,12 @@
   <li>generate image metrics or 'fingerprints'</li>
 </ul>
 
+<p>The operator loops through all the pixels of an image and all the channels of each pixel and returns a new image with the results.  The expression can reference any image in the image sequence, but only a copy of the first image is returned with suitable updates per your expression.</p>
+
 <p>The expression can be simple:</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick -size 64x64 canvas:black -channel blue -fx "1/2" fx_navy.png
-</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>magick -size 64x64 canvas:black -channel blue -fx "1/2" fx_navy.png
+</samp></pre>
 
 <p>Here, we convert a black to a navy blue image:</p>
 
@@ -122,10 +124,10 @@
 
 <p>Or the expression can be complex:</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick rose: \
+<pre class="bg-light text-dark mx-4"><samp>magick rose: \
   -fx "(1.0/(1.0+exp(10.0*(0.5-u)))-0.006693)*1.0092503" \
   rose-sigmoidal.png
-</samp></pre></ul>
+</samp></pre>
 
 <p>This expression results in a high contrast version of the source image:</p>
 
@@ -137,10 +139,10 @@
 
 <p>The expression can include variable assignments.  Assignments, in most cases, reduce the complexity of an expression and permit some operations that might not be possible any other way.  For example, lets create a radial gradient:</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick -size 70x70 canvas: \
+<pre class="bg-light text-dark mx-4"><samp>magick -size 70x70 canvas: \
   -fx "Xi=i-w/2; Yj=j-h/2; 1.2*(0.5-hypot(Xi,Yj)/70.0)+0.5" \
   radial-gradient.png
-</samp></pre></ul>
+</samp></pre>
 
 <p>The command above returns this image:</p>
 
@@ -150,15 +152,15 @@
 
 <p>This FX expression adds random noise to an image:</p>
 
-</ul><pre class="bg-light text-dark"><samp>magick photo.jpg -fx 'iso=32; rone=rand(); rtwo=rand(); \
+<pre class="bg-light text-dark mx-4"><samp>magick photo.jpg -fx 'iso=32; rone=rand(); rtwo=rand(); \
   myn=sqrt(-2*ln(rone))*cos(2*Pi*rtwo); myntwo=sqrt(-2*ln(rtwo))* \
   cos(2*Pi*rone); pnoise=sqrt(p)*myn*sqrt(iso)* \
   channel(4.28,3.86,6.68,0)/255; max(0,p+pnoise)' noisy.png
-</samp></pre></ul>
+</samp></pre>
 
 <p>This FX script utilizes a loop to create a <a href="https://en.wikipedia.org/wiki/Julia_set">Julia set</a>:</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick -size 400x400 xc:black -colorspace gray -fx " \
+<pre class="bg-light text-dark mx-4"><samp>magick -size 400x400 xc:black -colorspace gray -fx " \
   Xi=2.4*i/w-1.2; \
   Yj=2.4*j/h-1.2; \
   for (pixel=0.0, (hypot(Xi,Yj) &lt; 2.0) &amp;&amp; (pixel &lt; 1.0), \
@@ -170,19 +172,21 @@
   pixel == 1.0 ? 0.0 : pixel" \
   \( -size 1x1 xc:white xc:red xc:orange xc:yellow xc:green1 xc:cyan xc:blue \
      xc:blueviolet xc:white -reverse +append -filter Cubic -resize 1024x1! \) \
-  -clut -rotate -90 julia-set.png</samp></pre></ul>
+  -clut -rotate -90 julia-set.png</samp></pre>
 
 <ul>
   <a href="../images/julia-set.png"><img src="../images/julia-set.png" width="160" height="160" alt="Julia Fractals" /></a>
 </ul>
 
 <p>This FX script prints the first 10 prime numbers:</p>
-<ul><pre class="bg-light text-dark"><samp>magick xc: -channel gray -fx " \
+<pre class="bg-light text-dark mx-4"><samp>magick xc: -channel gray -fx " \
   for (prime=2, prime &lt; 30, composite=0; \
     for (nn=2, nn &lt; (prime/2+1), if ((prime % nn) == 0, composite++, ); nn++); \
-      if (composite &lt;= 0, debug(prime), ); prime++)" null:</samp></pre></ul>
+      if (composite &lt;= 0, debug(prime), ); prime++)" null:</samp></pre>
 
 <p>See <a href="https://legacy.imagemagick.org/Usage/transform/index.html#fx">Using FX, The Special Effects Image Operator</a> for more examples.</p>
+
+<p>The <samp>-fx</samp> option replaces any image sequence with a clone of the first image updated with the results of the expression.  If you prefer to apply the expression to each image in the sequence, use <samp>+fx</samp> instead.</p>
 
 <p>The next section discusses the FX expression language.</p>
 
@@ -242,6 +246,9 @@
      <dd><samp>m</samp>: magenta</dd>
      <dd><samp>k</samp>: black</dd>
 
+     <dd><samp>all</samp>: all channels</dd>
+     <dd><samp>this</samp>: this channel</dd>
+
      <dd><samp>intensity</samp>: pixel intensity</dd>
 
      <dd><samp>hue</samp>: pixel hue</dd>
@@ -272,9 +279,9 @@
   <dt class="col-md-4"> iterators:</dt>
     <dd class="col-md-8"> do(), for(), while()</dd>
   <dt class="col-md-4"> image attributes:</dt>
-  	<dd class="col-md-8"> image.depth, image.kurtosis, image.maxima, image.minima, image.resolution.x, image.resolution.y, image.skewness, image.standard_deviation</dd>
-  <dt class="col-md-4"> image settings:</dt>
-  	<dd class="col-md-8"> .e.g. <samp>magick ... -set option:wd1 "%[fx:w/2]" -resize "%[fx:wd1-5]" ...</samp><dd>
+  	<dd class="col-md-8"> s.depth, s.kurtosis, s.maxima, s.minima, s.resolution.x, s.resolution.y, s.skewness, s.standard_deviation</dd>
+  <dt class="col-md-4"> user settings:</dt>
+  	<dd class="col-md-8">define Fx symbols as user settings, e.g. <pre class="bg-light text-dark mx-4"><samp>magick ... -set option:wd1 "%[fx:w/2]" -resize "%[fx:wd1-5]" ...</samp></pre><dd>
 </dl>
 
 <h4>The FX Expression</h4>
@@ -283,7 +290,7 @@
 <dl class="row">
 <dt class="col-md-4"> <var>x</var> <samp>^</samp> <var>y</var></dt><dd class="col-md-8"> exponentiation (<var>x<sup>y</sup></var>)</dd>
 <dt class="col-md-4"> <samp>(</samp> ... <samp>)</samp></dt><dd class="col-md-8"> grouping</dd>
-<dt class="col-md-4"> <var>x</var> <samp>*</samp> <var>y</var></dt><dd class="col-md-8"> multiplication (the asterisk <samp>*</samp> is optional, for example, <samp>2u</samp> or <samp>2(x+y)</samp> are acceptable)</dd>
+<dt class="col-md-4"> <var>x</var> <samp>*</samp> <var>y</var></dt><dd class="col-md-8"> multiplication</dd>
 <dt class="col-md-4"> <var>x</var> <samp>/</samp> <var>y</var></dt><dd class="col-md-8"> division</dd>
 <dt class="col-md-4"> <var>x</var> <samp>%</samp> <var>y</var></dt><dd class="col-md-8"> modulo</dd>
 <dt class="col-md-4"> <var>x</var> <samp>+</samp> <var>y</var></dt><dd class="col-md-8"> addition</dd>
@@ -303,7 +310,7 @@
 <dt class="col-md-4"> <samp>~</samp><var>x</var></dt><dd class="col-md-8"> logical NOT operator, return value 1.0 if <var>not</var> <var>x</var> &gt; 0,  otherwise 0.0</dd>
 <dt class="col-md-4"> <samp>+</samp><var>x</var></dt><dd class="col-md-8"> unary plus, return 1.0*value</dd>
 <dt class="col-md-4"> <samp>-</samp><var>x</var></dt><dd class="col-md-8"> unary minus, return -1.0*value</dd>
-<dt class="col-md-4"> <var>x</var> <samp>?</samp> <var>y</var> <samp>:</samp> <var>z</var> </dt><dd class="col-md-8">ternary conditional expression, return value <var>y</var> if <var>x</var> != 0, otherwise <var>z</var>; only one ternary conditional permitted per statement</dd>
+<dt class="col-md-4"> <var>condition</var> <samp>?</samp> <var>true-statements</var> <samp>:</samp> <var>false-statements</var> </dt><dd class="col-md-8">ternary conditional expression, return value <var>true-statements</var> if <var>condition</var> != 0, otherwise <var>false-statements</var></dd>
 <dt class="col-md-4"> <var>x</var> <samp>=</samp> <var>y</var></dt><dd class="col-md-8">assignment; single character variables are reserved, instead use 2 or more characters, letter combinations only (e.g. Xi not X1)</dd>
 <dt class="col-md-4"> <var>x</var> <samp>;</samp> <var>y</var></dt><dd class="col-md-8">statement separator </dd>
 <dt class="col-md-4"> <samp>phi</samp></dt><dd class="col-md-8"> constant (1.618034...)</dd>
@@ -337,16 +344,16 @@
 <dt class="col-md-4"> <samp>cos(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> cosine function</dd>
 <dt class="col-md-4"> <samp>cosh(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> hyperbolic cosine function</dd>
 <dt class="col-md-4"> <samp>debug(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> print <var>x</var> (useful for debugging your expression)</dd>
-<dt class="col-md-4"> <samp>do(</samp><var>expression</var>, <var>condition test</var><samp>)</samp></dt><dd class="col-md-8"> iterate while the condition is not equal to 0</dd>
+<dt class="col-md-4"> <samp>do(</samp><var>statements</var>, <var>condition</var><samp>)</samp></dt><dd class="col-md-8"> iterate while the condition is not equal to 0</dd>
 <dt class="col-md-4"> <samp>drc(</samp><var>x</var>,<var>y</var><samp>)</samp></dt><dd class="col-md-8"> dynamic range compression (knee curve); drc(<var>x</var>,<var>y</var>)=(<var>x</var>)/(<var>y</var>*(<var>x</var>-1)+1); -1&lt;<var>y</var>&lt;1 </dd>
 <dt class="col-md-4"> <samp>erf(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> error function</dd>
 <dt class="col-md-4"> <samp>exp(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> natural exponential function (<var>e<sup>x</sup></var>)</dd>
 <dt class="col-md-4"> <samp>floor(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> largest integral value not greater than argument</dd>
-<dt class="col-md-4"> <samp>for(</samp><var>initialization</var>, <var>condition test</var>, <var>expression</var><samp>)</samp></dt><dd class="col-md-8"> iterate while the condition is not equal to 0</dd>
+<dt class="col-md-4"> <samp>for(</samp><var>initialize</var>, <var>condition</var>, <var>statements</var><samp>)</samp></dt><dd class="col-md-8"> iterate while the condition is not equal to 0</dd>
 <dt class="col-md-4"> <samp>gauss(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> gaussian function; gauss(<var>x</var>)=exp(<var>-x*x/2</var>)/sqrt(2*pi)</dd>
 <dt class="col-md-4"> <samp>gcd(</samp><var>x</var>,<var>y</var><samp>)</samp></dt><dd class="col-md-8"> greatest common denominator</dd>
 <dt class="col-md-4"> <samp>hypot(</samp><var>x</var>,<var>y</var><samp>)</samp></dt><dd class="col-md-8"> the square root of x<sup>2</sup>+y<sup>2</sup></dd>
-<dt class="col-md-4"> <samp>if(</samp><var>condition test</var>, <var>nonzero-expression</var>, <var>zero-expression</var><samp>)</samp></dt><dd class="col-md-8"> interpret expression depending on condition</dd>
+<dt class="col-md-4"> <samp>if(</samp><var>condition</var>, <var>nonzero-statements</var>, <var>zero-statements</var><samp>)</samp></dt><dd class="col-md-8"> interpret expression depending on condition</dd>
 <dt class="col-md-4"> <samp>int(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> greatest integer function (return greatest integer less than or equal to <var>x</var>)</dd>
 <dt class="col-md-4"> <samp>isnan(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8">return 1.0 if <var>x</var> is NAN, 0.0 otherwise</dd>
 <dt class="col-md-4"> <samp>j0(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> Bessel functions of <var>x</var> of the first kind of order 0</dd>
@@ -372,7 +379,7 @@
 <dt class="col-md-4"> <samp>tan(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> tangent function</dd>
 <dt class="col-md-4"> <samp>tanh(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> hyperbolic tangent function</dd>
 <dt class="col-md-4"> <samp>trunc(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> round to integer, towards zero</dd>
-<dt class="col-md-4"> <samp>while(</samp><var>condition test</var>, <var>expression</var><samp>)</samp></dt><dd class="col-md-8"> iterate while the condition is not equal to 0</dd>
+<dt class="col-md-4"> <samp>while(</samp><var>condition</var>, <var>statements</var><samp>)</samp></dt><dd class="col-md-8"> iterate while the condition is not equal to 0</dd>
 <dt class="col-md-4"> <samp>image.depth, image.kurtosis, image.maxima, image.minima, image.resolution.x, image.resolution.y, image.skewness, image.standard_deviation</samp></dt><dd class="col-md-8"> image attributes</dd>
 </dl>
 <p>The expression semantics include these rules:</p>
@@ -382,7 +389,7 @@
 <li>only one ternary conditional (e.g. x ? y : z) per statement</li>
 <li>statements are assignments or the final expression to return</li>
 <li>an assignment starts a statement, it is not an operator</li>
-<li>single character variables are reserved.  Assignments to reserved built-ins do not throw an exception and have no effect;  e.g. <samp>r=3.0; r</samp> returns the pixel red color value, not 3.0</li>
+<li>single character variables are reserved.  Assignments to reserved built-ins throw an exception;  e.g. <samp>r=3.0; r</samp> returns <em>Attempted assignment to non-UserSymbol 'r' at '3.0'</em>.</li>
 <li>unary operators have a lower priority than binary operators, that is, the unary minus (negation) has lower precedence than exponentiation, so -3^2 is interpreted as -(3^2) = -9.  Use parentheses to clarify your intent (e.g. (-3)^2 = 9).</li>
 <li>care must be exercised when using the slash ('/') symbol. The string of characters <var>1/2x</var> is interpreted as (1/2)x. The contrary interpretation should be written explicitly as 1/(2x). Again, the use of parentheses helps clarify the meaning and should be used whenever there is any chance of misinterpretation.</li>
 </ul>
@@ -395,15 +402,15 @@
 
 <p>As an example, we form an image by averaging the first image and third images (the second (index 1) image is ignored and just junked):</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick image1.jpg image2.jpg image3.jpg -fx "(u+u[2])/2.0" image.jpg
-</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>magick image1.jpg image2.jpg image3.jpg -fx "(u+u[2])/2" image.jpg
+</samp></pre>
 
 <p>By default, the image to which <samp>p</samp>, <samp>r</samp>, <samp>g</samp>, <samp>b</samp>, <samp>a</samp>, etc., are applied is the current image <samp>s</samp> in the image list. This is equivalent to <samp>u</samp> except when used in an escape sequence <samp>%[fx:...]</samp>. </p>
 
-<p>It is important to note the special role played by the first image. This is the only image in the image sequence that is modified, other images are used only for their data. As an illustrative example, consider the following, and note that the setting <a href="../www/command-line-options.html#channel">-channel red</a> instructs <a href="../www/command-line-options.html#fx">-fx</a> to modify only the red channel; nothing in the green or blue channels will change. It is instructive to ponder why the result is not symmetric.</p>
+<p>It is important to note the special role played by the first image. This is the only image in the image sequence that is modified, other images are used only for their data. As an illustrative example, consider the following, and note that the setting <a href="../www/command-line-options.html#channel">-channel red</a> instructs <a href="../www/command-line-options.html#fx">-fx</a> to modify only the green channel; nothing in the red or blue channels will change. It is instructive to ponder why the result is not symmetric.</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick -channel red logo: -flop logo: -resize "20%" -fx "(u+v)/2" image.jpg
-</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>magick logo: -flop logo: -resize "20%" -channel green -fx "(u+v)/2" image.jpg
+</samp></pre>
 
 <ul>
   <a href="../images/logo-sm-flop.png"><img src="../images/logo-sm-flop.png" width="128" height="96" alt="logo-sm-flop.png" /></a>
@@ -419,26 +426,28 @@
 
 <p>The pixels are processed one at a time, but a different pixel of an image can be specified using a pixel index represented by <samp>p</samp>. For example,</p>
 
-<ul><pre class="bg-light text-dark"><samp>p[-1].g      green value of pixel to the immediate left of the current pixel
+<pre class="bg-light text-dark mx-4"><samp>p[-1].g      green value of pixel to the immediate left of the current pixel
 p[-1,-1].r   red value of the pixel diagonally left and up from current pixel
-</samp></pre></ul>
+</samp></pre>
 
 <p>To specify an absolute position, use braces, rather than brackets.</p>
 
-<ul><pre class="bg-light text-dark"><samp>p{0,0}.r     red value of the pixel in the upper left corner of the image
+<pre class="bg-light text-dark mx-4"><samp>p{0,0}.r     red value of the pixel in the upper left corner of the image
 p{12,34}.b   blue pixel value at column number 12, row 34 of the image
-</samp></pre></ul>
+</samp></pre>
 
 <p>Integer values of the position retrieve the color of the pixel referenced, while non-integer position values return a blended color according to the current <a href="../www/command-line-options.html#interpolate">-interpolate</a> setting.</p>
 
 <p>A position outside the boundary of the image retrieves a value dictated by the <a href="../www/command-line-options.html#virtual-pixel">-virtual-pixel</a> option setting.</p>
 
+<p>Specify <samp>u.r</samp> to specify the red channel of the current image. If you don't specify a channel qualifier, you get the current channel. Use <samp>mean.this</samp> to set the output channel to the mean of just the input channel.  Use <samp>mean.all</samp> to set the overall mean of the input channels.</p>
+
 <h4>Apply an Expression to Select Image Channels</h4>
 
 <p>Use the <a href="../www/command-line-options.html#channel">-channel</a> setting to specify the output channel of the result. If no output channel is given, the result is set over all channels except the opacity channel. For example, to replace the red channel of <samp>alpha.png</samp> with the average of the green channels from the images <samp>alpha.png</samp> and <samp>beta.png</samp>, use:</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick alpha.png beta.png -channel red -fx "(u.g+v.g)/2" gamma.png
-</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>magick alpha.png beta.png -channel red -fx "(u.g+v.g)/2" gamma.png
+</samp></pre>
 
 
 <h4>Results</h4>
@@ -450,17 +459,21 @@ p{12,34}.b   blue pixel value at column number 12, row 34 of the image
 
 <p>For use with <a href="../www/command-line-options.html#format_identify_">-format</a>, the value-escape <samp>%[fx:]</samp> is evaluated just once for each image in the current image sequence. As each image in the sequence is being evaluated, <samp>s</samp> and <samp>t</samp> successively refer to the current image and its index, while <samp>i</samp> and <samp>j</samp> are set to zero, and the current channel set to red (<a href="../www/command-line-options.html#channel">-channel</a> is ignored). An example:</p>
 
-<ul><pre class="bg-light text-dark"><samp>$ magick canvas:'rgb(25%,50%,75%)' rose: -colorspace rgb  \
+<pre class="bg-light text-dark mx-4"><samp>$ magick canvas:'rgb(25%,50%,75%)' rose: -colorspace gray  \
   -format 'Red channel of NW corner of image #%[fx:t] is %[fx:s]\n' info:
 Red channel of NW corner of image #0 is 0.464883
 Red channel of NW corner of image #1 is 0.184582
-</samp></pre></ul>
+</samp></pre>
 
 <p>Here we use the image indexes to <var>rotate</var> each image differently, and use <samp>-set</samp> with the image index to set a different <var>pause delay</var> on the first image in the animation:</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
-  -set delay '%[fx:t == 0 ? 240 : 10]' -loop 0 rose.gif"
-</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>magick rose: -duplicate 29 -virtual-pixel Gray -distort SRT '%[fx:360.0*t/n]' \
+  -set delay '%[fx:t == 0 ? 240 : 10]' -loop 0 rose.gif
+</samp></pre>
+
+<p>This example tests the difference between two images, measured by RMSE. If the difference is greater than 0.1 it returns 1; otherwise it returns 0:</p>
+
+<pre class="bg-light text-dark mx-4"><samp>magick water.png reference.png -metric RMSE -compare -format "%[fx:%[distortion]>0.1]" info:</samp></pre>
 
 <p>The color-escape <samp>%[pixel:]</samp> or <samp>%[hex:]</samp> is evaluated once per image and per color channel in that image (<a href="../www/command-line-options.html#channel">-channel</a> is ignored), The values generated are then converted into a color string (a named color or hex color value).  The symbols <samp>i</samp> and <samp>j</samp> are set to zero, and <samp>s</samp> and <samp>t</samp> refer to each successively current image and index.</p>
 
@@ -485,7 +498,7 @@ Red channel of NW corner of image #1 is 0.184582
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
-    <small>© 1999-2021 ImageMagick Studio LLC</small>
+    <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
   </footer>
 
@@ -493,4 +506,3 @@ Red channel of NW corner of image #1 is 0.184582
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th October 2021 14:05 -->

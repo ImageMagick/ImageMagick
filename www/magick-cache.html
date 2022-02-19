@@ -98,59 +98,59 @@ video, audio or metadata in a local folder.">
 <p>The MagickCache works in concert with <a href="https://imagemagick.org">ImageMagick</a>.  Download the <a href="https://github.com/ImageMagick/MagickCache">MagickCache</a> and install.  You will now want to create the cache and populate it with images, video, and associated metadata.</p>
 <h4>Create a MagickCache</h4>
 <p>You will require a place to store and retrieve your content.  Let's create a cache on our local filesystem:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt create /opt/magick-cache</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt create /opt/magick-cache</samp></pre>
 <p>Where `passkey.txt` contains your cache passkey. Don't lose your passkey. Without it, you will be unable to identify, expire, or delete content in your cache.</p>
 <p>You only need to create a MagickCache once.  You can, however, create more than one MagickCache with different paths.</p>
 <p>Once the MagickCache is created, you will want to populate the cache with content that includes images, video, audio, or metadata.
 <h4>Put content in the MagickCache</h4>
 <p>Let's add a movie cast image to our newly created cache:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache put /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.jpg</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache put /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.jpg</samp></pre>
 <p>Note, the image identifier is an IRI composed of <em>project</em>/<em>type</em>/<em>resource-path</em>.  In this example, the project is <samp>movies</samp>, type is <samp>image</samp>, and the resource path is <samp>mission-impossible/cast/rebecca-ferguson</samp>.  The path uniquely identifies a cache resource.  Two different images cannot be stored with the same resource path.  Instead use something like <samp>mission-impossible/cast/20210508-rebecca-ferguson-1</samp> and <samp>mission-impossible/cast/20210508-rebecca-ferguson-2</samp>.</p>
 <p>Now, let's set a resource passkey and the time to live to 2 days.  Anytime after the second day, the image is automatically deleted with the <samp>expire</samp> function.  To get, expire, or delete the image, you will need to use the same resource passkey:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt -ttl "2 days" put /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.jpg</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt -ttl "2 days" put /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.jpg</samp></pre>
 <p>Where <samp>passkey.txt</samp> contains your resource passkey.  Don't lose your passkey.  Without it, you will be unable to get, identify, expire or delete resources you own.</p>
 <p>The resource passkey ensures only you and the cache owner can access your image.  To prevent the cache owner from viewing its content, scramble it with:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt -passphrase passphrase.txt -ttl "2 days" put /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.jpg</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt -passphrase passphrase.txt -ttl "2 days" put /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.jpg</samp></pre>
 <p>Note, blobs and metadata are stored in the cache in plaintext. To prevent snooping, scramble the content before you store it in the cache.</p>
 <h4>Get content from the MagickCache</h4>
 <p>Eventually you will want retrieve your content, let's get our original cast image from the cache:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre>
 <p>Notice the original image was put in the cache in the JPEG format. Here we conveniently convert it to the PNG format as we extract the image.</p>
 <p>The <samp>-extract</samp> option is useful when retrieving an image.  To extract a portion of the image, specify tile width, height, and offset:</p>
 
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt -extract 100x100+0+0 get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt -extract 100x100+0+0 get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre>
 <p>To resize instead, do not specify the offset:</p>
 
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt -extract 100x100 get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt -extract 100x100 get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre>
 
 <p>If your image is scrambled, provide the passphrase to descramble it:</p>
 
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt -passphrase passphrase.txt get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt -passphrase passphrase.txt get /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson rebecca-ferguson.png</samp></pre>
 
 <h4>Delete content from the MagickCache</h4>
 <p>We can explicitly delete content:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt delete /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt delete /opt/magick-cache movies/images/mission-impossible/cast/rebecca-ferguson</samp></pre>
 <p>or we can delete all cast images that have expired (exceeded their respective time to live), try this comand:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt expire /opt/magick-cache movies/images/mission-impossible/cast</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt expire /opt/magick-cache movies/images/mission-impossible/cast</samp></pre>
 <h4>Identify the MagickCache content</h4>
 <p>Perhaps you want to identify all the content you own:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt identify /opt/magick-cache movies/images/mission-impossible/cast
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt identify /opt/magick-cache movies/images/mission-impossible/cast
 movies/images/mission-impossible/cast/rebecca-ferguson[1368x912] 406B 1:0:0:0 2021-05-30T17:41:42Z
-identified 1 resources</samp></pre></ul>
+identified 1 resources</samp></pre>
 <p>Each entry includes the IRI, image dimensions for images, the content extent in bytes, time to live, whether the resource is expired (denoted with a `*`), and the creation date.</p>
 <p>Others can store content in the cache along side your content.  However, their content is unavailable to you.  You cannot get, identify, expire or delete content that you do not own as determined by your secret passkey.</p>
 <p>The MagickCache owner can get, identify, expire, or delete all the content, including content you own, with this command, for example:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt identify /opt/magick-cache /</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt identify /opt/magick-cache /</samp></pre>
 <p>Note, expired reesources are annotated with an asterisks.</p>
 <h4>MagickCache is not just for Images</h4>
 <p>In addition to a type of <samp>image</samp>, you can store the image content in its original form, video, or audio as content type of <samp>blob</samp> or metadata with a content type of <samp>meta</samp>:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt put /opt/magick-cache movies/blob/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.mp4</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt put /opt/magick-cache movies/blob/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.mp4</samp></pre>
 <p> or</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt put /opt/magick-cache movies/meta/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.txt</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt put /opt/magick-cache movies/meta/mission-impossible/cast/rebecca-ferguson 20210508-rebecca-ferguson.txt</samp></pre>
 <p>Images must be in a format that ImageMagick understands.  Metadata must be text.  Blobs can be any content including images, video, audio, or binary files.</p>
 <h4>Delete a MagickCache</h4>
 <p>The MagickCache owner can completely delete all the content within a cache:</p>
-<ul><pre class="bg-light text-dark"><samp>$ magick-cache -passkey passkey.txt delete /opt/magick-cache /</samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick-cache -passkey passkey.txt delete /opt/magick-cache /</samp></pre>
 <p>Be careful, after this command, your cached content is irrevocably lost.</p>
 <h4>Security</h4>
 <p>MagickCache security is not crytographically strong.  Instead it generates a unique hash for each resource ensuring the resource ID cannot be discovered.  A resource is accessible to both the user of the cache and the cache owner provided they can present their respective passkeys.  They are also accessible to anyone with sufficient privileges to access the MagickCache  disk path.</p>
@@ -175,7 +175,7 @@ identified 1 resources</samp></pre></ul>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
-    <small>© 1999-2021 ImageMagick Studio LLC</small>
+    <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
   </footer>
 
@@ -183,4 +183,3 @@ identified 1 resources</samp></pre></ul>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th October 2021 14:05 -->

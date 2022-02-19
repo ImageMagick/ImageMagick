@@ -98,7 +98,7 @@
 
 <p>To get a complete listing of which image formats are supported on your system, type</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick identify -list format </samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>magick identify -list format </samp></pre>
 
 <p>On some platforms, ImageMagick automagically processes these extensions: .gz for Zip compression, .Z for Linux compression, .bz2 for block compression, and .pgp for PGP encryption. For example, a PNM image called image.pnm.gz is automagically uncompressed.</p>
 
@@ -110,15 +110,15 @@ Then there is the occasional format that also supports LAB (that is CieLAB)
 (e.g. TIFF, PSD, JPG, JP2).  To determine the colorspace of your image, use
 this command:</p>
 
-<ul><pre class="bg-light text-dark"><samp>$ magick identify -verbose image.jpg
+<pre class="bg-light text-dark mx-4"><samp>$ magick identify -verbose image.jpg
 Image: image.jpg
 Format: JPEG (Joint Photographic Experts Group JFIF format)
 ...
-Colorspace: sRGB </samp></pre></ul>
+Colorspace: sRGB </samp></pre>
 
 OR use the appropriate percent escape
-<ul><pre class="bg-light text-dark"><samp>$ magick image.jpg -print "%[colorspace]\n" null:
-sRGB </samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>$ magick image.jpg -print "%[colorspace]\n" null:
+sRGB </samp></pre>
 
 
 <p>When processing an image, be aware of the colorspace.  Many image
@@ -127,14 +127,14 @@ satisfactory results processing in the sRGB colorspace, you may get improved
 results in linear RGB (essentially sRGB with the gamma function removed).  For
 example,</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick image.jpg -colorspace RGB -resize 50% -colorspace sRGB resize.jpg </samp></pre></ul>
+<pre class="bg-light text-dark mx-4"><samp>magick image.jpg -colorspace RGB -resize 50% -colorspace sRGB resize.jpg </samp></pre>
 
 <p>As of IM 6.7.8-2 one can properly work in LAB colorspace whether or not
 Imagemagick is <a href="high-dynamic-range.html">HDRI</a>-enabled.  Essentially the A and
 B channels are stored with a 50% gray bias, to allow it to handle the
 negatives required by the format.</p>
 
-<ul><pre class="bg-light text-dark"><samp>magick lab.tif -resize 50% resize.jpg </samp></pre> </ul>
+<pre class="bg-light text-dark mx-4"><samp>magick lab.tif -resize 50% resize.jpg </samp></pre> </ul>
 
 <p>Again, it may not make sense for some image processing operators to work
 directly in LAB space, but ImageMagick permits it and generally returns
@@ -333,6 +333,13 @@ the supported image formats.</p>
   </tr>
 
   <tr>
+    <td>DEBUG</td>
+    <td>W</td>
+    <td>Raw pixel debug file, likely only useful to the developers</td>
+    <td></td>
+  </tr>
+
+  <tr>
     <td>DIB</td>
     <td>RW</td>
     <td>Microsoft Windows Device Independent Bitmap</td>
@@ -484,6 +491,13 @@ the supported image formats.</p>
     <td>RW</td>
     <td>FlashPix Format</td>
     <td>FlashPix has the option to store mega- and giga-pixel images at various resolutions in a single file which permits conservative bandwidth and fast reveal times when displayed within a Web browser.  Requires the <a href="https://download.imagemagick.org/ImageMagick/download/delegates">FlashPix SDK</a>. Specify the FlashPix viewing parameters with the <a href="command-line-options.html#define">-define fpx:view</a>.</td>
+  </tr>
+
+  <tr>
+    <td><a href="http://im.snibgo.com/fmttxt.htm">FTXT</a></td>
+    <td>RW</td>
+    <td>Read and Write Pixels as Formatted Text</td>
+    <td>We use 'ftxt:' for defines rather than 'fmttxt:', e.g. 'ftxt:format'.</td>
   </tr>
 
   <tr>
@@ -722,9 +736,9 @@ the supported image formats.</p>
     <td>RW</td>
     <td>Magick Persistent Registry</td>
     <td>This format permits you to write to and read images from memory.  The image persists until the program exits.  For example, let's use the MPR to create a checkerboard:
-<ul><pre class="bg-light text-dark"><samp>magick \( -size 15x15 canvas:black canvas:white -append \) \
+<pre class="bg-light text-dark mx-4"><samp>magick \( -size 15x15 canvas:black canvas:white -append \) \
   \( +clone -flip \) +append -write mpr:checkers +delete \
-  -size 240x240 tile:mpr:checkers board.png </samp></pre></ul>
+  -size 240x240 tile:mpr:checkers board.png </samp></pre>
   </td>
   </tr>
 
@@ -1050,6 +1064,13 @@ the supported image formats.</p>
   </tr>
 
   <tr>
+    <td><a href="https://qoiformat.org/">QOI</a></td>
+    <td>RW</td>
+    <td>Quite OK Image Forma</td>
+    <td>Fast, lossless image compression.</td>
+  </tr>
+
+  <tr>
     <td>RAD</td>
     <td>R</td>
     <td>Radiance image file</td>
@@ -1061,6 +1082,13 @@ the supported image formats.</p>
     <td>R</td>
     <td>Fuji CCD-RAW Graphic File</td>
     <td> </td>
+  </tr>
+
+  <tr>
+    <td>RAW</td>
+    <td>RW</td>
+    <td>Raw gray samples</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.  For signed pixel data, use <samp>-define quantum:format=signed</samp>.</td>
   </tr>
 
   <tr>
@@ -1179,7 +1207,7 @@ the supported image formats.</p>
     <td><a href="http://www.libtiff.org/">TIFF</a></td>
     <td>RW</td>
     <td>Tagged Image File Format</td>
-    <td>Also known as <samp>TIF</samp>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <samp>-define tiff:rows-per-strip=8</samp>).  To define the tile geometry, use for example, <samp>-define tiff:tile-geometry=128x128</samp>. To specify a <var>signed</var> format, use  <samp>-define quantum:format=signed</samp>. To specify a single-precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 64 for a double-precision floating-point format.  Use <samp>-define quantum:polarity=min-is-black</samp> or <samp>-define quantum:polarity=min-is-white</samp> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <samp>-define tiff:alpha=unassociated</samp>.  Set the fill order with <samp>-define tiff:fill-order=msb|lsb</samp>. Set the TIFF endianness with <samp>-define tiff:endian=msb|lsb</samp>. Use <samp>-define tiff:exif-properties=false</samp> to skip reading the EXIF properties.  You can set a number of TIFF software attributes including document name, host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="command-line-options.html#set">-set tiff:software "My Company"</a>. If you want to ignore certain TIFF tags, use this option: <samp>-define tiff:ignore-tags=comma-separated-list-of-tag-IDs</samp>. Since version 6.9.1-4 there is support for reading photoshop layers in TIFF files, this can be disabled with <samp>-define tiff:ignore-layers=true</samp>. To preserve compression of the source image, use: <samp>-define tiff:preserve-compression=true</samp>.</td>
+    <td>Also known as <samp>TIF</samp>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <samp>-define tiff:rows-per-strip=8</samp>).  To define the tile geometry, use for example, <samp>-define tiff:tile-geometry=128x128</samp>. To specify a <var>signed</var> format, use  <samp>-define quantum:format=signed</samp>. To specify a single-precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 64 for a double-precision floating-point format.  Use <samp>-define quantum:polarity=min-is-black</samp> or <samp>-define quantum:polarity=min-is-white</samp> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <samp>-define tiff:alpha=unassociated</samp>.  Set the fill order with <samp>-define tiff:fill-order=msb|lsb</samp>. Set the TIFF endianness with <samp>-define tiff:endian=msb|lsb</samp>. Use <samp>-define tiff:exif-properties=false</samp> to skip reading the EXIF properties.  Use <samp>-define tiff:gps-properties=false</samp> to skip reading the GPS properties. You can set a number of TIFF software attributes including document name, host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="command-line-options.html#set">-set tiff:software "My Company"</a>. If you want to ignore certain TIFF tags, use this option: <samp>-define tiff:ignore-tags=comma-separated-list-of-tag-IDs</samp>. Since version 6.9.1-4 there is support for reading photoshop layers in TIFF files, this can be disabled with <samp>-define tiff:ignore-layers=true</samp>. To preserve compression of the source image, use: <samp>-define tiff:preserve-compression=true</samp>.</td>
   </tr>
 
   <tr>
@@ -1235,6 +1263,13 @@ the supported image formats.</p>
     <td>VICAR</td>
     <td>RW</td>
     <td>VICAR rasterfile format</td>
+    <td> </td>
+  </tr>
+
+  <tr>
+    <td>VIDEO</td>
+    <td>RW</td>
+    <td>Various video formats such as APNG, AVI, MP4, WEBM, etc.  Refer to <a href="defines.html">defines</a>  for a description of these defines: <samp>video:intermediate-format</samp>, <samp>video:pixel-format</samp>, and <samp>video:vsync</samp> defines, that can affect the operation on these video formats.</td>
     <td> </td>
   </tr>
 
@@ -2125,7 +2160,7 @@ the supported image formats.</p>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
     <br/>
-    <small>© 1999-2021 ImageMagick Studio LLC</small>
+    <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
   </footer>
 
@@ -2133,4 +2168,4 @@ the supported image formats.</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th October 2021 14:07 -->
+<!-- Magick Cache 18th February 2022 23:53 -->
