@@ -983,27 +983,22 @@ MagickPrivate MagickBooleanType NTGetModulePath(const char *module,char *path)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N T G h o s t s c r i p t D L L                                           %
+%   N T G h o s t s c r i p t D L L V e c t o r s                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTGhostscriptDLL() returns the path to the most recent Ghostscript version
-%  DLL.  The method returns TRUE on success otherwise FALSE.
+%  NTGhostscriptDLLVectors() returns a GhostInfo structure that includes
+%  function vectors to invoke Ghostscript DLL functions. A null pointer is
+%  returned if there is an error when loading the DLL or retrieving the
+%  function vectors.
 %
-%  The format of the NTGhostscriptDLL method is:
+%  The format of the NTGhostscriptDLLVectors method is:
 %
-%      int NTGhostscriptDLL(char *path,int length)
-%
-%  A description of each parameter follows:
-%
-%    o path: return the Ghostscript DLL path here.
-%
-%    o length: the buffer length.
+%      const GhostInfo *NTGhostscriptDLLVectors(void)
 %
 */
-
 static int NTGetRegistryValue(HKEY root,const char *key,DWORD flags,
   const char *name,char *value,int *length)
 {
@@ -1251,7 +1246,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
   return(TRUE);
 }
 
-MagickPrivate int NTGhostscriptDLL(char *path,int length)
+static int NTGhostscriptDLL(char *path,int length)
 {
   static char
     dll[MagickPathExtent] = { "" };
@@ -1273,31 +1268,69 @@ MagickPrivate int NTGhostscriptDLL(char *path,int length)
   (void) CopyMagickString(path,dll,length);
   return(TRUE);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   N T G h o s t s c r i p t D L L V e c t o r s                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTGhostscriptDLLVectors() returns a GhostInfo structure that includes
-%  function vectors to invoke Ghostscript DLL functions. A null pointer is
-%  returned if there is an error when loading the DLL or retrieving the
-%  function vectors.
-%
-%  The format of the NTGhostscriptDLLVectors method is:
-%
-%      const GhostInfo *NTGhostscriptDLLVectors(void)
-%
-*/
+
+static inline int NTGhostscriptHasValidHandle()
+{
+  if ((nt_ghost_info.delete_instance == NULL) || (ghost_info.exit == NULL) ||
+      (ghost_info.init_with_args == NULL) ||
+      (nt_ghost_info.new_instance == NULL) ||
+      (ghost_info.run_string == NULL) || (ghost_info.set_stdio == NULL) ||
+      (ghost_info.revision == NULL))
+    {
+      return(FALSE);
+    }
+  return(TRUE);
+}
+
 MagickPrivate const GhostInfo *NTGhostscriptDLLVectors(void)
 {
-  if (NTGhostscriptLoadDLL() == FALSE)
+  char
+    path[MagickPathExtent];
+
+  if (ghost_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&ghost_semaphore);
+  LockSemaphoreInfo(ghost_semaphore);
+  if (ghost_handle != (void *) NULL)
+    {
+      UnlockSemaphoreInfo(ghost_semaphore);
+      if (NTGhostscriptHasValidHandle() == FALSE)
+        return((GhostInfo *) NULL);
+      return(&ghost_info);
+    }
+  if (NTGhostscriptDLL(path,sizeof(path)) == FALSE)
+    {
+      UnlockSemaphoreInfo(ghost_semaphore);
+      return(FALSE);
+    }
+  ghost_handle=lt_dlopen(path);
+  if (ghost_handle == (void *) NULL)
+    {
+      UnlockSemaphoreInfo(ghost_semaphore);
+      return(FALSE);
+    }
+  (void) memset((void *) &nt_ghost_info,0,sizeof(NTGhostInfo));
+  nt_ghost_info.delete_instance=(void (MagickDLLCall *)(gs_main_instance *)) (
+    lt_dlsym(ghost_handle,"gsapi_delete_instance"));
+  nt_ghost_info.new_instance=(int (MagickDLLCall *)(gs_main_instance **,
+    void *)) (lt_dlsym(ghost_handle,"gsapi_new_instance"));
+  nt_ghost_info.has_instance=MagickFalse;
+  (void) memset((void *) &ghost_info,0,sizeof(GhostInfo));
+  ghost_info.delete_instance=NTGhostscriptDeleteInstance;
+  ghost_info.exit=(int (MagickDLLCall *)(gs_main_instance*))
+    lt_dlsym(ghost_handle,"gsapi_exit");
+  ghost_info.init_with_args=(int (MagickDLLCall *)(gs_main_instance *,int,
+    char **)) (lt_dlsym(ghost_handle,"gsapi_init_with_args"));
+  ghost_info.new_instance=NTGhostscriptNewInstance;
+  ghost_info.run_string=(int (MagickDLLCall *)(gs_main_instance *,const char *,
+    int,int *)) (lt_dlsym(ghost_handle,"gsapi_run_string"));
+  ghost_info.set_stdio=(int (MagickDLLCall *)(gs_main_instance *,int(
+    MagickDLLCall *)(void *,char *,int),int(MagickDLLCall *)(void *,
+    const char *,int),int(MagickDLLCall *)(void *,const char *,int)))
+    (lt_dlsym(ghost_handle,"gsapi_set_stdio"));
+  ghost_info.revision=(int (MagickDLLCall *)(gsapi_revision_t *,int)) (
+    lt_dlsym(ghost_handle,"gsapi_revision"));
+  UnlockSemaphoreInfo(ghost_semaphore);
+  if (NTGhostscriptHasValidHandle() == FALSE)
     return((GhostInfo *) NULL);
   return(&ghost_info);
 }
@@ -1437,87 +1470,6 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
   }
   *path='\0';
   return(FALSE);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   N T G h o s t s c r i p t L o a d D L L                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTGhostscriptLoadDLL() attempts to load the Ghostscript DLL and returns
-%  TRUE if it succeeds.
-%
-%  The format of the NTGhostscriptLoadDLL method is:
-%
-%      int NTGhostscriptLoadDLL(void)
-%
-*/
-static inline int NTGhostscriptHasValidHandle()
-{
-  if ((nt_ghost_info.delete_instance == NULL) || (ghost_info.exit == NULL) ||
-      (ghost_info.init_with_args == NULL) ||
-      (nt_ghost_info.new_instance == NULL) ||
-      (ghost_info.run_string == NULL) || (ghost_info.set_stdio == NULL) ||
-      (ghost_info.revision == NULL))
-    {
-      return(FALSE);
-    }
-  return(TRUE);
-}
-
-MagickPrivate int NTGhostscriptLoadDLL(void)
-{
-  char
-    path[MagickPathExtent];
-
-  if (ghost_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&ghost_semaphore);
-  LockSemaphoreInfo(ghost_semaphore);
-  if (ghost_handle != (void *) NULL)
-    {
-      UnlockSemaphoreInfo(ghost_semaphore);
-      return(NTGhostscriptHasValidHandle());
-    }
-  if (NTGhostscriptDLL(path,sizeof(path)) == FALSE)
-    {
-      UnlockSemaphoreInfo(ghost_semaphore);
-      return(FALSE);
-    }
-  ghost_handle=lt_dlopen(path);
-  if (ghost_handle == (void *) NULL)
-    {
-      UnlockSemaphoreInfo(ghost_semaphore);
-      return(FALSE);
-    }
-  (void) memset((void *) &nt_ghost_info,0,sizeof(NTGhostInfo));
-  nt_ghost_info.delete_instance=(void (MagickDLLCall *)(gs_main_instance *)) (
-    lt_dlsym(ghost_handle,"gsapi_delete_instance"));
-  nt_ghost_info.new_instance=(int (MagickDLLCall *)(gs_main_instance **,
-    void *)) (lt_dlsym(ghost_handle,"gsapi_new_instance"));
-  nt_ghost_info.has_instance=MagickFalse;
-  (void) memset((void *) &ghost_info,0,sizeof(GhostInfo));
-  ghost_info.delete_instance=NTGhostscriptDeleteInstance;
-  ghost_info.exit=(int (MagickDLLCall *)(gs_main_instance*))
-    lt_dlsym(ghost_handle,"gsapi_exit");
-  ghost_info.init_with_args=(int (MagickDLLCall *)(gs_main_instance *,int,
-    char **)) (lt_dlsym(ghost_handle,"gsapi_init_with_args"));
-  ghost_info.new_instance=NTGhostscriptNewInstance;
-  ghost_info.run_string=(int (MagickDLLCall *)(gs_main_instance *,const char *,
-    int,int *)) (lt_dlsym(ghost_handle,"gsapi_run_string"));
-  ghost_info.set_stdio=(int (MagickDLLCall *)(gs_main_instance *,int(
-    MagickDLLCall *)(void *,char *,int),int(MagickDLLCall *)(void *,
-    const char *,int),int(MagickDLLCall *)(void *,const char *,int)))
-    (lt_dlsym(ghost_handle,"gsapi_set_stdio"));
-  ghost_info.revision=(int (MagickDLLCall *)(gsapi_revision_t *,int)) (
-    lt_dlsym(ghost_handle,"gsapi_revision"));
-  UnlockSemaphoreInfo(ghost_semaphore);
-  return(NTGhostscriptHasValidHandle());
 }
 
 /*
