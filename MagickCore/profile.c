@@ -399,7 +399,7 @@ static void cmsDeleteContext(cmsContext magick_unused(ContextID))
 }
 #endif
 
-static void **DestroyPixelThreadSet(void **pixels)
+static void **DestroyPixelTLS(void **pixels)
 {
   ssize_t
     i;
@@ -413,7 +413,7 @@ static void **DestroyPixelThreadSet(void **pixels)
   return(pixels);
 }
 
-static void **AcquirePixelThreadSet(const size_t columns,const size_t channels,
+static void **AcquirePixelTLS(const size_t columns,const size_t channels,
   MagickBooleanType highres)
 {
   ssize_t
@@ -440,12 +440,12 @@ static void **AcquirePixelThreadSet(const size_t columns,const size_t channels,
   {
     pixels[i]=AcquireQuantumMemory(columns,channels*size);
     if (pixels[i] == (void *) NULL)
-      return(DestroyPixelThreadSet(pixels));
+      return(DestroyPixelTLS(pixels));
   }
   return(pixels);
 }
 
-static cmsHTRANSFORM *DestroyTransformThreadSet(cmsHTRANSFORM *transform)
+static cmsHTRANSFORM *DestroyTransformTLS(cmsHTRANSFORM *transform)
 {
   ssize_t
     i;
@@ -458,7 +458,7 @@ static cmsHTRANSFORM *DestroyTransformThreadSet(cmsHTRANSFORM *transform)
   return(transform);
 }
 
-static cmsHTRANSFORM *AcquireTransformThreadSet(const LCMSInfo *source_info,
+static cmsHTRANSFORM *AcquireTransformTLS(const LCMSInfo *source_info,
   const LCMSInfo *target_info,const cmsUInt32Number flags,
   cmsContext cms_context)
 {
@@ -483,7 +483,7 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(const LCMSInfo *source_info,
       source_info->type,target_info->profile,target_info->type,
       target_info->intent,flags);
     if (transform[i] == (cmsHTRANSFORM) NULL)
-      return(DestroyTransformThreadSet(transform));
+      return(DestroyTransformTLS(transform));
   }
   return(transform);
 }
@@ -1322,7 +1322,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             if (image->black_point_compensation != MagickFalse)
               flags|=cmsFLAGS_BLACKPOINTCOMPENSATION;
 #endif
-            transform=AcquireTransformThreadSet(&source_info,&target_info,flags,
+            transform=AcquireTransformTLS(&source_info,&target_info,flags,
               cms_context);
             if (transform == (cmsHTRANSFORM *) NULL)
               ThrowProfileException(ImageError,"UnableToCreateColorTransform",
@@ -1330,24 +1330,24 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             /*
               Transform image as dictated by the source & target image profiles.
             */
-            source_info.pixels=AcquirePixelThreadSet(image->columns,
+            source_info.pixels=AcquirePixelTLS(image->columns,
               source_info.channels,highres);
-            target_info.pixels=AcquirePixelThreadSet(image->columns,
+            target_info.pixels=AcquirePixelTLS(image->columns,
               target_info.channels,highres);
             if ((source_info.pixels == (void **) NULL) ||
                 (target_info.pixels == (void **) NULL))
               {
-                target_info.pixels=DestroyPixelThreadSet(target_info.pixels);
-                source_info.pixels=DestroyPixelThreadSet(source_info.pixels);
-                transform=DestroyTransformThreadSet(transform);
+                target_info.pixels=DestroyPixelTLS(target_info.pixels);
+                source_info.pixels=DestroyPixelTLS(source_info.pixels);
+                transform=DestroyTransformTLS(transform);
                 ThrowProfileException(ResourceLimitError,
                   "MemoryAllocationFailed",image->filename);
               }
             if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
               {
-                target_info.pixels=DestroyPixelThreadSet(target_info.pixels);
-                source_info.pixels=DestroyPixelThreadSet(source_info.pixels);
-                transform=DestroyTransformThreadSet(transform);
+                target_info.pixels=DestroyPixelTLS(target_info.pixels);
+                source_info.pixels=DestroyPixelTLS(source_info.pixels);
+                transform=DestroyTransformTLS(transform);
                 if (source_info.profile != (cmsHPROFILE) NULL)
                   (void) cmsCloseProfile(source_info.profile);
                 if (target_info.profile != (cmsHPROFILE) NULL)
@@ -1431,9 +1431,9 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               default:
                 break;
             }
-            target_info.pixels=DestroyPixelThreadSet(target_info.pixels);
-            source_info.pixels=DestroyPixelThreadSet(source_info.pixels);
-            transform=DestroyTransformThreadSet(transform);
+            target_info.pixels=DestroyPixelTLS(target_info.pixels);
+            source_info.pixels=DestroyPixelTLS(source_info.pixels);
+            transform=DestroyTransformTLS(transform);
             if ((status != MagickFalse) &&
                 (cmsGetDeviceClass(source_info.profile) != cmsSigLinkClass))
               status=SetImageProfile(image,name,profile,exception);

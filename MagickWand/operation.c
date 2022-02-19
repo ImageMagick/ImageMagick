@@ -992,7 +992,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("intent",option+1) == 0)
         {
           /* Only used by coders: MIFF, MPC, BMP, PNG
-             and for image profile call to AcquireTransformThreadSet()
+             and for image profile call to AcquireTransformTLS()
              SyncImageSettings() used to set per-image attribute.
           */
           arg1 = ArgOption("undefined");

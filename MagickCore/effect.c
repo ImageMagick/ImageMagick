@@ -859,7 +859,7 @@ static inline double BlurGaussian(const double x,const double sigma)
     PerceptibleReciprocal(Magick2PI*sigma*sigma));
 }
 
-static double **DestroyBilateralThreadSet(const ssize_t number_threads,
+static double **DestroyBilateralTLS(const ssize_t number_threads,
   double **weights)
 {
   ssize_t
@@ -873,7 +873,7 @@ static double **DestroyBilateralThreadSet(const ssize_t number_threads,
   return(weights);
 }
 
-static double **AcquireBilateralThreadSet(const size_t number_threads,
+static double **AcquireBilateralTLS(const size_t number_threads,
   const size_t width,const size_t height)
 {
   double
@@ -890,7 +890,7 @@ static double **AcquireBilateralThreadSet(const size_t number_threads,
   {
     weights[i]=(double *) AcquireQuantumMemory(width,height*sizeof(**weights));
     if (weights[i] == (double *) NULL)
-      return(DestroyBilateralThreadSet(number_threads,weights));
+      return(DestroyBilateralTLS(number_threads,weights));
   }
   return(weights);
 }
@@ -943,7 +943,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
       return((Image *) NULL);
     }
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
-  weights=AcquireBilateralThreadSet(number_threads,width,height);
+  weights=AcquireBilateralTLS(number_threads,width,height);
   if (weights == (double **) NULL)
     {
       blur_image=DestroyImage(blur_image);
@@ -1137,7 +1137,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
   blur_image->type=image->type;
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
-  weights=DestroyBilateralThreadSet(number_threads,weights);
+  weights=DestroyBilateralTLS(number_threads,weights);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
@@ -4158,7 +4158,7 @@ MagickExport Image *SpreadImage(const Image *image,
   status=MagickTrue;
   progress=0;
   width=GetOptimalKernelWidth1D(radius,0.5);
-  random_info=AcquireRandomInfoThreadSet();
+  random_info=AcquireRandomInfoTLS();
   image_view=AcquireVirtualCacheView(image,exception);
   spread_view=AcquireAuthenticCacheView(spread_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -4218,7 +4218,7 @@ MagickExport Image *SpreadImage(const Image *image,
   }
   spread_view=DestroyCacheView(spread_view);
   image_view=DestroyCacheView(image_view);
-  random_info=DestroyRandomInfoThreadSet(random_info);
+  random_info=DestroyRandomInfoTLS(random_info);
   if (status == MagickFalse)
     spread_image=DestroyImage(spread_image);
   return(spread_image);

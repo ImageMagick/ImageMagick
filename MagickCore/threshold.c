@@ -2258,7 +2258,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  random_info=AcquireRandomInfoThreadSet();
+  random_info=AcquireRandomInfoTLS();
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
@@ -2328,7 +2328,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  random_info=DestroyRandomInfoThreadSet(random_info);
+  random_info=DestroyRandomInfoTLS(random_info);
   return(status);
 }
 

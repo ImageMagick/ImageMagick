@@ -36,7 +36,7 @@ extern MagickPrivate unsigned long
 extern MagickPrivate void
   RandomComponentTerminus(void);
 
-static inline RandomInfo **DestroyRandomInfoThreadSet(
+static inline RandomInfo **DestroyRandomInfoTLS(
   RandomInfo **random_info)
 {
   ssize_t
@@ -49,7 +49,7 @@ static inline RandomInfo **DestroyRandomInfoThreadSet(
   return((RandomInfo **) RelinquishMagickMemory(random_info));
 }
 
-static inline RandomInfo **AcquireRandomInfoThreadSet(void)
+static inline RandomInfo **AcquireRandomInfoTLS(void)
 {
   ssize_t
     i;

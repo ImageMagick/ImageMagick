@@ -1423,7 +1423,7 @@ MagickExport QuantizeInfo *DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 %
 */
 
-static DoublePixelPacket **DestroyPixelThreadSet(DoublePixelPacket **pixels)
+static DoublePixelPacket **DestroyPixelTLS(DoublePixelPacket **pixels)
 {
   ssize_t
     i;
@@ -1436,7 +1436,7 @@ static DoublePixelPacket **DestroyPixelThreadSet(DoublePixelPacket **pixels)
   return(pixels);
 }
 
-static DoublePixelPacket **AcquirePixelThreadSet(const size_t count)
+static DoublePixelPacket **AcquirePixelTLS(const size_t count)
 {
   DoublePixelPacket
     **pixels;
@@ -1458,7 +1458,7 @@ static DoublePixelPacket **AcquirePixelThreadSet(const size_t count)
     pixels[i]=(DoublePixelPacket *) AcquireQuantumMemory(count,2*
       sizeof(**pixels));
     if (pixels[i] == (DoublePixelPacket *) NULL)
-      return(DestroyPixelThreadSet(pixels));
+      return(DestroyPixelTLS(pixels));
   }
   return(pixels);
 }
@@ -1502,7 +1502,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
   /*
     Distribute quantization error using Floyd-Steinberg.
   */
-  pixels=AcquirePixelThreadSet(image->columns);
+  pixels=AcquirePixelTLS(image->columns);
   if (pixels == (DoublePixelPacket **) NULL)
     return(MagickFalse);
   status=MagickTrue;
@@ -1663,7 +1663,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
     }
   }
   image_view=DestroyCacheView(image_view);
-  pixels=DestroyPixelThreadSet(pixels);
+  pixels=DestroyPixelTLS(pixels);
   return(MagickTrue);
 }
 
@@ -2365,7 +2365,7 @@ typedef struct _KmeansInfo
     distortion;
 } KmeansInfo;
 
-static KmeansInfo **DestroyKmeansThreadSet(KmeansInfo **kmeans_info)
+static KmeansInfo **DestroyKmeansTLS(KmeansInfo **kmeans_info)
 {
   ssize_t
     i;
@@ -2378,7 +2378,7 @@ static KmeansInfo **DestroyKmeansThreadSet(KmeansInfo **kmeans_info)
   return(kmeans_info);
 }
 
-static KmeansInfo **AcquireKmeansThreadSet(const size_t number_colors)
+static KmeansInfo **AcquireKmeansTLS(const size_t number_colors)
 {
   KmeansInfo
     **kmeans_info;
@@ -2400,7 +2400,7 @@ static KmeansInfo **AcquireKmeansThreadSet(const size_t number_colors)
     kmeans_info[i]=(KmeansInfo *) AcquireQuantumMemory(number_colors,
       sizeof(**kmeans_info));
     if (kmeans_info[i] == (KmeansInfo *) NULL)
-      return(DestroyKmeansThreadSet(kmeans_info));
+      return(DestroyKmeansTLS(kmeans_info));
   }
   return(kmeans_info);
 }
@@ -2585,7 +2585,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   /*
     Iterative refinement.
   */
-  kmeans_pixels=AcquireKmeansThreadSet(number_colors);
+  kmeans_pixels=AcquireKmeansTLS(number_colors);
   if (kmeans_pixels == (KmeansInfo **) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -2731,7 +2731,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  kmeans_pixels=DestroyKmeansThreadSet(kmeans_pixels);
+  kmeans_pixels=DestroyKmeansTLS(kmeans_pixels);
   if (image->progress_monitor != (MagickProgressMonitor) NULL)
     (void) SetImageProgress(image,KmeansImageTag,(MagickOffsetType)
       max_iterations-1,max_iterations);

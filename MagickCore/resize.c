@@ -3236,7 +3236,7 @@ typedef struct _ContributionInfo
     pixel;
 } ContributionInfo;
 
-static ContributionInfo **DestroyContributionThreadSet(
+static ContributionInfo **DestroyContributionTLS(
   ContributionInfo **contribution)
 {
   ssize_t
@@ -3251,7 +3251,7 @@ static ContributionInfo **DestroyContributionThreadSet(
   return(contribution);
 }
 
-static ContributionInfo **AcquireContributionThreadSet(const size_t count)
+static ContributionInfo **AcquireContributionTLS(const size_t count)
 {
   ssize_t
     i;
@@ -3273,7 +3273,7 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
     contribution[i]=(ContributionInfo *) MagickAssumeAligned(
       AcquireAlignedMemory(count,sizeof(**contribution)));
     if (contribution[i] == (ContributionInfo *) NULL)
-      return(DestroyContributionThreadSet(contribution));
+      return(DestroyContributionTLS(contribution));
   }
   return(contribution);
 }
@@ -3322,7 +3322,7 @@ static MagickBooleanType HorizontalFilter(
       support=(double) 0.5;
       scale=1.0;
     }
-  contributions=AcquireContributionThreadSet((size_t) (2.0*support+3.0));
+  contributions=AcquireContributionTLS((size_t) (2.0*support+3.0));
   if (contributions == (ContributionInfo **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -3494,7 +3494,7 @@ static MagickBooleanType HorizontalFilter(
   }
   resize_view=DestroyCacheView(resize_view);
   image_view=DestroyCacheView(image_view);
-  contributions=DestroyContributionThreadSet(contributions);
+  contributions=DestroyContributionTLS(contributions);
   return(status);
 }
 
@@ -3540,7 +3540,7 @@ static MagickBooleanType VerticalFilter(
       support=(double) 0.5;
       scale=1.0;
     }
-  contributions=AcquireContributionThreadSet((size_t) (2.0*support+3.0));
+  contributions=AcquireContributionTLS((size_t) (2.0*support+3.0));
   if (contributions == (ContributionInfo **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -3710,7 +3710,7 @@ static MagickBooleanType VerticalFilter(
   }
   resize_view=DestroyCacheView(resize_view);
   image_view=DestroyCacheView(image_view);
-  contributions=DestroyContributionThreadSet(contributions);
+  contributions=DestroyContributionTLS(contributions);
   return(status);
 }
 

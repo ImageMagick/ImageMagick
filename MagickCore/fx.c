@@ -719,7 +719,7 @@ static MagickBooleanType InitFx (FxInfo * pfx, const Image * img,
   pfx->Images = NULL;
   pfx->exception = exception;
   pfx->precision = GetMagickPrecision ();
-  pfx->random_infos = AcquireRandomInfoThreadSet ();
+  pfx->random_infos = AcquireRandomInfoTLS ();
   pfx->ContainsDebug = MagickFalse;
   pfx->runType = (CalcAllStats) ? rtEntireImage : rtCornerOnly;
   pfx->Imgs = (ImgT *)AcquireQuantumMemory (pfx->ImgListLen, sizeof (ImgT));
@@ -770,7 +770,7 @@ static MagickBooleanType DeInitFx (FxInfo * pfx)
     }
     pfx->Imgs=(ImgT *) RelinquishMagickMemory (pfx->Imgs);
   }
-  pfx->random_infos = DestroyRandomInfoThreadSet (pfx->random_infos);
+  pfx->random_infos = DestroyRandomInfoTLS (pfx->random_infos);
 
   if (pfx->statistics) {
     for (i = (ssize_t)GetImageListLength(pfx->image); i > 0; i--) {
