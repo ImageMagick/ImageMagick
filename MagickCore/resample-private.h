@@ -24,8 +24,7 @@
 extern "C" {
 #endif
 
-static inline ResampleFilter **DestroyResampleFilterTLS(
-  ResampleFilter **filter)
+static inline ResampleFilter **DestroyResampleFilterTLS(ResampleFilter **filter)
 {
   ssize_t
     i;
@@ -38,9 +37,9 @@ static inline ResampleFilter **DestroyResampleFilterTLS(
   return(filter);
 }
 
-static inline ResampleFilter **AcquireResampleFilterTLS(
-  const Image *image,const VirtualPixelMethod method,
-  const MagickBooleanType interpolate,ExceptionInfo *exception)
+static inline ResampleFilter **AcquireResampleFilterTLS(const Image *image,
+  const VirtualPixelMethod method,const MagickBooleanType interpolate,
+  ExceptionInfo *exception)
 {
   ssize_t
     i;
