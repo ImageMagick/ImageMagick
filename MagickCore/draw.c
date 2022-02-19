@@ -4951,7 +4951,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     bounds;
 
   size_t
-    number_threads = 1;
+    number_threads;
 
   ssize_t
     i,
