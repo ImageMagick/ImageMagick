@@ -196,6 +196,53 @@ static inline char *create_utf8_string(const wchar_t *wideChar)
   utf8[count]=0;
   return(utf8);
 }
+
+static unsigned char *NTGetRegistryValue(HKEY root,const char *key,DWORD flags,
+  const char *name)
+{
+  unsigned char
+    *value;
+
+  HKEY
+    registry_key;
+
+  DWORD
+    size,
+    type;
+
+  LSTATUS
+    status;
+
+  wchar_t
+    wide_name[100];
+
+  value=(unsigned char *) NULL;
+  status=RegOpenKeyExA(root,key,0,(KEY_READ | flags),&registry_key);
+  if (status != ERROR_SUCCESS)
+    return(value);
+  if (MultiByteToWideChar(CP_UTF8,0,name,-1,wide_name,100) == 0)
+    {
+      RegCloseKey(registry_key);
+      return(value);
+    }
+  status=RegQueryValueExW(registry_key,wide_name,0,&type,0,&size);
+  if ((status == ERROR_SUCCESS) && (type == REG_SZ))
+    {
+      LPBYTE
+        wide;
+
+      wide=(LPBYTE) AcquireQuantumMemory((const size_t) size,sizeof(*wide));
+      if (wide != (LPBYTE) NULL)
+        {
+          status=RegQueryValueExW(registry_key,wide_name,0,&type,wide,&size);
+          if ((status == ERROR_SUCCESS) && (type == REG_SZ))
+            value=(unsigned char *) create_utf8_string((const wchar_t *) wide);
+          wide=(LPBYTE) RelinquishMagickMemory(wide);
+        }
+    }
+  RegCloseKey(registry_key);
+  return(value);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -999,48 +1046,6 @@ MagickPrivate MagickBooleanType NTGetModulePath(const char *module,char *path)
 %      const GhostInfo *NTGhostscriptDLLVectors(void)
 %
 */
-static int NTGetRegistryValue(HKEY root,const char *key,DWORD flags,
-  const char *name,char *value,int *length)
-{
-  BYTE
-    byte,
-    *p;
-
-  DWORD
-    extent,
-    type;
-
-  HKEY
-    hkey;
-
-  LONG
-    status;
-
-  /*
-    Get a registry value: key = root\\key, named value = name.
-  */
-  if (RegOpenKeyExA(root,key,0,KEY_READ | flags,&hkey) != ERROR_SUCCESS)
-    return(1);  /* no match */
-  p=(BYTE *) value;
-  type=REG_SZ;
-  extent=(*length);
-  if (p == (BYTE *) NULL)
-    p=(&byte);  /* ERROR_MORE_DATA only if value is NULL */
-  status=RegQueryValueExA(hkey,(char *) name,0,&type,p,&extent);
-  RegCloseKey(hkey);
-  if (status == ERROR_SUCCESS)
-    {
-      *length=extent;
-      return(0);  /* return the match */
-    }
-  if (status == ERROR_MORE_DATA)
-    {
-      *length=extent;
-      return(-1);  /* buffer not large enough */
-    }
-  return(1);  /* not found */
-}
-
 static int NTLocateGhostscript(DWORD flags,int *root_index,
   const char **product_family,int *major_version,int *minor_version,
   int *patch_version)
@@ -1147,9 +1152,6 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
     buffer[MagickPathExtent],
     *directory;
 
-  int
-    extent;
-
   static const char
     *product_family = (const char *) NULL;
 
@@ -1162,6 +1164,9 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
     minor_version = 0,
     patch_version = 0,
     root_index = 0;
+
+  unsigned char
+    *registry_value;
 
   /*
     Get a string from the installed Ghostscript.
@@ -1196,7 +1201,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
           return(FALSE);
         }
     }
-  if (product_family == NULL)
+  if (product_family == (const char *) NULL)
     {
       flags=0;
 #if defined(KEY_WOW64_32KEY)
@@ -1207,7 +1212,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
 #endif
       (void) NTLocateGhostscript(flags,&root_index,&product_family,
         &major_version,&minor_version,&patch_version);
-      if (product_family == NULL)
+      if (product_family == (const char *) NULL)
 #if defined(_WIN64)
         flags=KEY_WOW64_32KEY;
       else
@@ -1217,7 +1222,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
 #endif
 #endif
     }
-  if (product_family == NULL)
+  if (product_family == (const char *) NULL)
     {
       (void) NTLocateGhostscript(flags,&root_index,&product_family,
         &major_version,&minor_version,&patch_version);
@@ -1225,21 +1230,25 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
       is_64_bit_version=TRUE;
 #endif
     }
-  if (product_family == NULL)
+  if (product_family == (const char *) NULL)
     return(FALSE);
   if (is_64_bit != NULL)
     *is_64_bit=is_64_bit_version;
-  extent=(int) length;
   (void) FormatLocaleString(buffer,MagickPathExtent,"SOFTWARE\\%s\\%d.%d.%d",
     product_family,major_version,minor_version,patch_version);
-  if (NTGetRegistryValue(registry_roots[root_index].hkey,buffer,flags,name,value,&extent) != 0)
+  registry_value=NTGetRegistryValue(registry_roots[root_index].hkey,buffer,
+    flags,name);
+  if (registry_value == (unsigned char *) NULL)
     {
-      extent=(int) length;
       (void) FormatLocaleString(buffer,MagickPathExtent,"SOFTWARE\\%s\\%d.%02d",
         product_family,major_version,minor_version);
-      if (NTGetRegistryValue(registry_roots[root_index].hkey,buffer,flags,name,value,&extent) != 0)
-        return(FALSE);
+      registry_value=NTGetRegistryValue(registry_roots[root_index].hkey,buffer,
+        flags,name);
     }
+  if (registry_value == (unsigned char *) NULL)
+    return(FALSE);
+  (void) CopyMagickString(value,(const char *) registry_value,length);
+  registry_value=(unsigned char *) RelinquishMagickMemory(registry_value);
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "registry: \"%s\\%s\\%s\"=\"%s\"",registry_roots[root_index].name,
     buffer,name,value);
@@ -1966,59 +1975,16 @@ MagickPrivate unsigned char *NTRegistryKeyLookup(const char *subkey)
   char
     package_key[MagickPathExtent];
 
-  DWORD
-    size,
-    type;
-
-  HKEY
-    registry_key;
-
-  LONG
-    status;
-
   unsigned char
     *value;
 
-  /*
-    Look-up base key.
-  */
   (void) FormatLocaleString(package_key,MagickPathExtent,
     "SOFTWARE\\%s\\%s\\Q:%d",MagickPackageName,MagickLibVersionText,
     MAGICKCORE_QUANTUM_DEPTH);
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%s",package_key);
-  registry_key=(HKEY) INVALID_HANDLE_VALUE;
-  status=RegOpenKeyExA(HKEY_LOCAL_MACHINE,package_key,0,KEY_READ,&registry_key);
-  if (status != ERROR_SUCCESS)
-    status=RegOpenKeyExA(HKEY_CURRENT_USER,package_key,0,KEY_READ,
-      &registry_key);
-  if (status != ERROR_SUCCESS)
-    return((unsigned char *) NULL);
-  /*
-    Look-up sub key.
-  */
-  size=32;
-  value=(unsigned char *) AcquireQuantumMemory(size,sizeof(*value));
+  value=NTGetRegistryValue(HKEY_LOCAL_MACHINE,package_key,0,subkey);
   if (value == (unsigned char *) NULL)
-    {
-      RegCloseKey(registry_key);
-      return((unsigned char *) NULL);
-    }
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%s",subkey);
-  status=RegQueryValueExA(registry_key,subkey,0,&type,value,&size);
-  if ((status == ERROR_MORE_DATA) && (type == REG_SZ))
-    {
-      value=(unsigned char *) ResizeQuantumMemory(value,size,sizeof(*value));
-      if (value == (BYTE *) NULL)
-        {
-          RegCloseKey(registry_key);
-          return((unsigned char *) NULL);
-        }
-      status=RegQueryValueExA(registry_key,subkey,0,&type,value,&size);
-    }
-  RegCloseKey(registry_key);
-  if ((type != REG_SZ) || (status != ERROR_SUCCESS))
-    value=(unsigned char *) RelinquishMagickMemory(value);
-  return((unsigned char *) value);
+    value=NTGetRegistryValue(HKEY_CURRENT_USER,package_key,0,subkey);
+  return(value);
 }
 
 /*
