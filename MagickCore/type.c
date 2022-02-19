@@ -1097,8 +1097,9 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
     Determine the Ghostscript font path.
   */
   *font_path='\0';
-  if (NTGhostscriptFonts(font_path,MagickPathExtent-2))
-    (void) ConcatenateMagickString(font_path,DirectorySeparator,MagickPathExtent);
+  if (NTGhostscriptFonts(font_path,MagickPathExtent-2) != MagickFalse)
+    (void) ConcatenateMagickString(font_path,DirectorySeparator,
+      MagickPathExtent);
 #endif
   for (q=(char *) xml; *q != '\0'; )
   {

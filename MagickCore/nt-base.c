@@ -1145,8 +1145,8 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
   return(status);
 }
 
-static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
-  const size_t length)
+static MagickBooleanType NTGhostscriptGetString(const char *name,
+  BOOL *is_64_bit,char *value,const size_t length)
 {
   char
     buffer[MagickPathExtent],
@@ -1186,7 +1186,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
               (void) CopyMagickString(value,buffer,length);
               if (is_64_bit != NULL)
                 *is_64_bit=TRUE;
-              return(TRUE);
+              return(MagickTrue);
             }
           (void) FormatLocaleString(buffer,MagickPathExtent,"%s%sgsdll32.dll",
             directory,DirectorySeparator);
@@ -1196,9 +1196,9 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
               (void) CopyMagickString(value,buffer,length);
               if (is_64_bit != NULL)
                 *is_64_bit=FALSE;
-              return(TRUE);
+              return(MagickTrue);
             }
-          return(FALSE);
+          return(MagickFalse);
         }
     }
   if (product_family == (const char *) NULL)
@@ -1231,7 +1231,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
 #endif
     }
   if (product_family == (const char *) NULL)
-    return(FALSE);
+    return(MagickFalse);
   if (is_64_bit != NULL)
     *is_64_bit=is_64_bit_version;
   (void) FormatLocaleString(buffer,MagickPathExtent,"SOFTWARE\\%s\\%d.%d.%d",
@@ -1246,49 +1246,45 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
         flags,name);
     }
   if (registry_value == (unsigned char *) NULL)
-    return(FALSE);
+    return(MagickFalse);
   (void) CopyMagickString(value,(const char *) registry_value,length);
   registry_value=(unsigned char *) RelinquishMagickMemory(registry_value);
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "registry: \"%s\\%s\\%s\"=\"%s\"",registry_roots[root_index].name,
     buffer,name,value);
-  return(TRUE);
+  return(MagickTrue);
 }
 
-static int NTGhostscriptDLL(char *path,int length)
+static MagickBooleanType NTGhostscriptDLL(char *path,int length)
 {
   static char
     dll[MagickPathExtent] = { "" };
 
   static BOOL
-    is_64_bit_version;
+    is_64_bit;
 
   *path='\0';
   if ((*dll == '\0') &&
-      (NTGhostscriptGetString("GS_DLL",&is_64_bit_version,dll,sizeof(dll)) == FALSE))
-    return(FALSE);
+      (NTGhostscriptGetString("GS_DLL",&is_64_bit,dll,sizeof(dll)) != MagickTrue))
+    return(MagickFalse);
 #if defined(_WIN64)
-  if (!is_64_bit_version)
-    return(FALSE);
+  if (!is_64_bit)
+    return(MagickFalse);
 #else
-  if (is_64_bit_version)
-    return(FALSE);
+  if (is_64_bit)
+    return(MagickFalse);
 #endif
   (void) CopyMagickString(path,dll,length);
-  return(TRUE);
+  return(MagickTrue);
 }
 
-static inline int NTGhostscriptHasValidHandle()
+static inline MagickBooleanType NTGhostscriptHasValidHandle()
 {
   if ((nt_ghost_info.delete_instance == NULL) || (ghost_info.exit == NULL) ||
-      (ghost_info.init_with_args == NULL) ||
-      (nt_ghost_info.new_instance == NULL) ||
-      (ghost_info.run_string == NULL) || (ghost_info.set_stdio == NULL) ||
-      (ghost_info.revision == NULL))
-    {
-      return(FALSE);
-    }
-  return(TRUE);
+      (nt_ghost_info.new_instance == NULL) || (ghost_info.set_stdio == NULL) ||
+      (ghost_info.init_with_args == NULL) || (ghost_info.revision == NULL))
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 MagickPrivate const GhostInfo *NTGhostscriptDLLVectors(void)
@@ -1302,20 +1298,20 @@ MagickPrivate const GhostInfo *NTGhostscriptDLLVectors(void)
   if (ghost_handle != (void *) NULL)
     {
       UnlockSemaphoreInfo(ghost_semaphore);
-      if (NTGhostscriptHasValidHandle() == FALSE)
-        return((GhostInfo *) NULL);
-      return(&ghost_info);
+      if (NTGhostscriptHasValidHandle() == MagickTrue)
+        return(&ghost_info);
+      return((GhostInfo *) NULL);
     }
-  if (NTGhostscriptDLL(path,sizeof(path)) == FALSE)
+  if (NTGhostscriptDLL(path,sizeof(path)) != MagickTrue)
     {
       UnlockSemaphoreInfo(ghost_semaphore);
-      return(FALSE);
+      return((GhostInfo *) NULL);
     }
   ghost_handle=lt_dlopen(path);
   if (ghost_handle == (void *) NULL)
     {
       UnlockSemaphoreInfo(ghost_semaphore);
-      return(FALSE);
+      return((GhostInfo *) NULL);
     }
   (void) memset((void *) &nt_ghost_info,0,sizeof(NTGhostInfo));
   nt_ghost_info.delete_instance=(void (MagickDLLCall *)(gs_main_instance *)) (
@@ -1339,9 +1335,9 @@ MagickPrivate const GhostInfo *NTGhostscriptDLLVectors(void)
   ghost_info.revision=(int (MagickDLLCall *)(gsapi_revision_t *,int)) (
     lt_dlsym(ghost_handle,"gsapi_revision"));
   UnlockSemaphoreInfo(ghost_semaphore);
-  if (NTGhostscriptHasValidHandle() == FALSE)
-    return((GhostInfo *) NULL);
-  return(&ghost_info);
+  if (NTGhostscriptHasValidHandle() == MagickTrue)
+    return(&ghost_info);
+  return((GhostInfo *) NULL);
 }
 
 /*
@@ -1389,7 +1385,7 @@ MagickPrivate void NTGhostscriptEXE(char *path,int length)
       if (*program == '\0')
         {
           if (NTGhostscriptGetString("GS_DLL",&is_64_bit_version,program,
-              sizeof(program)) == FALSE)
+                sizeof(program)) == MagickFalse)
             {
               UnlockSemaphoreInfo(ghost_semaphore);
 #if defined(_WIN64)
@@ -1426,11 +1422,11 @@ MagickPrivate void NTGhostscriptEXE(char *path,int length)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  NTGhostscriptFonts() obtains the path to the Ghostscript fonts.  The method
-%  returns FALSE if it cannot determine the font path.
+%  returns false if it cannot determine the font path.
 %
 %  The format of the NTGhostscriptFonts method is:
 %
-%      int NTGhostscriptFonts(char *path,int length)
+%      MagickBooleanType NTGhostscriptFonts(char *path,int length)
 %
 %  A description of each parameter follows:
 %
@@ -1439,7 +1435,7 @@ MagickPrivate void NTGhostscriptEXE(char *path,int length)
 %    o length: length of the path buffer.
 %
 */
-MagickPrivate int NTGhostscriptFonts(char *path,int length)
+MagickPrivate MagickBooleanType NTGhostscriptFonts(char *path,int length)
 {
   char
     buffer[MagickPathExtent],
@@ -1459,8 +1455,9 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
     }
   else
     {
-      if (NTGhostscriptGetString("GS_LIB",NULL,buffer,MagickPathExtent) == FALSE)
-        return(FALSE);
+      if (NTGhostscriptGetString("GS_LIB",NULL,buffer,
+            MagickPathExtent) == MagickFalse)
+        return(MagickFalse);
     }
   for (p=buffer-1; p != (char *) NULL; p=strchr(p+1,DirectoryListSeparator))
   {
@@ -1471,14 +1468,14 @@ MagickPrivate int NTGhostscriptFonts(char *path,int length)
     (void) FormatLocaleString(filename,MagickPathExtent,"%s%sfonts.dir",path,
       DirectorySeparator);
     if (IsPathAccessible(filename) != MagickFalse)
-      return(TRUE);
+      return(MagickTrue);
     (void) FormatLocaleString(filename,MagickPathExtent,"%s%sn019003l.pfb",path,
       DirectorySeparator);
     if (IsPathAccessible(filename) != MagickFalse)
-      return(TRUE);
+      return(MagickTrue);
   }
   *path='\0';
-  return(FALSE);
+  return(MagickFalse);
 }
 
 /*
