@@ -307,6 +307,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/sixel.h \
 	coders/stegano.c \
 	coders/stegano.h \
+	coders/strimg.c \
+	coders/strimg.h \
 	coders/sun.c \
 	coders/sun.h \
 	coders/svg.c \
@@ -496,6 +498,7 @@ CODERS_NOINST_HDRS = \
 	coders/sgi.h \
 	coders/sixel.h \
 	coders/stegano.h \
+	coders/strimg.h \
 	coders/sun.h \
 	coders/svg.h \
 	coders/tga.h \
@@ -622,6 +625,7 @@ coders_LTLIBRARIES = \
 	coders/sgi.la \
 	coders/sixel.la \
 	coders/stegano.la \
+	coders/strimg.la \
 	coders/sun.la \
 	coders/svg.la \
 	coders/tga.la \
@@ -1292,6 +1296,12 @@ coders_stegano_la_SOURCES  = coders/stegano.c
 coders_stegano_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_stegano_la_LDFLAGS  = $(MODULECOMMONFLAGS)
 coders_stegano_la_LIBADD   = $(MAGICKCORE_LIBS)
+
+# STRIMG coder module
+coders_strimg_la_SOURCES      = coders/strimg.c
+coders_strimg_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_strimg_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_strimg_la_LIBADD       = $(MAGICKCORE_LIBS)
 
 # SUN coder module
 coders_sun_la_SOURCES      = coders/sun.c
