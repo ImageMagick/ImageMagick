@@ -58,6 +58,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/property.h"
+#include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
@@ -262,8 +263,14 @@ static MagickBooleanType WriteSTRIMGImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  QuantumInfo
+    *quantum_info;
+
   ssize_t
     y;
+
+  unsigned char
+    *pixels;
 
   /*
     Open output image file.
@@ -282,31 +289,43 @@ static MagickBooleanType WriteSTRIMGImage(const ImageInfo *image_info,
   /*
     Convert image to a string.
   */
+  quantum_info=AcquireQuantumInfo(image_info,image);
+  if (quantum_info == (QuantumInfo *) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  if (SetQuantumDepth(image,quantum_info,8) == MagickFalse)
+    {
+      quantum_info=DestroyQuantumInfo(quantum_info);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const Quantum
       *p;
 
+    size_t
+      length;
+
     ssize_t
-      x;
+      count;
 
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      ssize_t
-        count;
-
-      count=WriteBlobByte(image,ScaleQuantumToChar(GetPixelIntensity(image,
-        p)));
-      if (count != 1)
-        break;
-      p+=GetPixelChannels(image);
-    }
-    if (x < (ssize_t) image->columns)
+    length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+      GrayQuantum,pixels,exception);
+    count=WriteBlob(image,length,pixels);
+    if (count != (ssize_t) length)
       break;
+    if (image->previous == (Image *) NULL)
+      {
+        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+          image->rows);
+        if (status == MagickFalse)
+          break;
+      }
   }
+  quantum_info=DestroyQuantumInfo(quantum_info);
   if (y < (ssize_t) image->rows)
     ThrowWriterException(CorruptImageError,"UnableToWriteImageData");
   (void) CloseBlob(image);

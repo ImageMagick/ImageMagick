@@ -11435,7 +11435,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (quantum_info == (QuantumInfo *) NULL)
     png_error(ping,"Memory allocation for quantum_info failed");
   quantum_info->format=UndefinedQuantumFormat;
-  SetQuantumDepth(image,quantum_info,image_depth);
+  (void) SetQuantumDepth(image,quantum_info,image_depth);
   (void) SetQuantumEndian(image,quantum_info,MSBEndian);
   num_passes=png_set_interlace_handling(ping);
 
@@ -11462,7 +11462,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_PALETTE)
             quantum_type=IndexQuantum;
         }
-      SetQuantumDepth(image,quantum_info,8);
+      (void) SetQuantumDepth(image,quantum_info,8);
       for (pass=0; pass < num_passes; pass++)
       {
         /*
@@ -11644,7 +11644,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                       "  pass %d, Image Is not GRAY or GRAY_ALPHA",pass);
 
-                  SetQuantumDepth(image,quantum_info,8);
+                  (void) SetQuantumDepth(image,quantum_info,8);
                   image_depth=8;
                 }
 
@@ -11662,7 +11662,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
                 if (ping_color_type == PNG_COLOR_TYPE_GRAY)
                   {
-                    SetQuantumDepth(image,quantum_info,image->depth);
+                    (void) SetQuantumDepth(image,quantum_info,image->depth);
 
                     (void) ExportQuantumPixels(image,(CacheView *) NULL,
                        quantum_info,GrayQuantum,ping_pixels,exception);
