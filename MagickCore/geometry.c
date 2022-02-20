@@ -1260,15 +1260,11 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 
   size_t
     height,
-    stasis_height,
-    stasis_width,
     width;
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",geometry);
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
-  stasis_width=image->columns;
-  stasis_height=image->rows;
   SetGeometry(image,region_info);
   if (image->page.width != 0)
     region_info->width=image->page.width;
@@ -1353,20 +1349,20 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
   if (height == 0)
     region_info->height=image->page.height | image->rows;
   GravityAdjustGeometry(image->columns,image->rows,image->gravity,region_info);
-  if ((flags & GreaterValue) != 0)
-    {
-      if (stasis_width < width)
-        width=stasis_width;
-      if (stasis_height < height)
-        height=stasis_height;
-    }
   if ((flags & LessValue) != 0)
-    {
-      if (stasis_width > width)
-        width=stasis_width;
-      if (stasis_height > height)
-        height=stasis_height;
-    }
+    if ((region_info->width < image->columns) &&
+        (region_info->height < image->rows))
+      {
+        SetGeometry(image,region_info);
+        return(NoValue);
+      }
+  if ((flags & GreaterValue) != 0)
+    if ((region_info->width > image->columns) &&
+        (region_info->height > image->rows))
+      {
+        SetGeometry(image,region_info);
+        return(NoValue);
+      }
   region_info->width=width;
   region_info->height=height;
   return(flags);
