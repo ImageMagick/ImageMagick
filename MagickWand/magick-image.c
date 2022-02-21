@@ -8249,17 +8249,11 @@ WandExport MagickBooleanType MagickPingImageBlob(MagickWand *wand,
   Image
     *images;
 
-  ImageInfo
-    *read_info;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  read_info=CloneImageInfo(wand->image_info);
-  SetImageInfoBlob(read_info,blob,length);
-  images=PingImage(read_info,wand->exception);
-  read_info=DestroyImageInfo(read_info);
+  images=PingBlob(wand->image_info,blob,length,wand->exception);
   if (images == (Image *) NULL)
     return(MagickFalse);
   return(InsertImageInWand(wand,images));
