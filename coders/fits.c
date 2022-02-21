@@ -426,7 +426,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       image->filename);
   number_pixels=(MagickSizeType) fits_info.columns*fits_info.rows;
   if ((fits_info.simple == MagickFalse) || (fits_info.number_axes < 1) ||
-      (fits_info.number_axes > 4) || (number_pixels == 0))
+      (fits_info.number_axes > 4) || (number_pixels == 0) ||
+      (fits_info.number_planes <= 0))
     ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
   for (scene=0; scene < (ssize_t) fits_info.number_planes; scene++)
   {
