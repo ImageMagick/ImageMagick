@@ -4673,7 +4673,7 @@ static PolygonInfo **AcquirePolygonTLS(const PrimitiveInfo *primitive_info,
   return(polygon_info);
 }
 
-static MagickBooleanType AcquirePolygonEdgesTLS(PolygonInfo **polygon_info,
+static MagickBooleanType ClonePolygonEdgesTLS(PolygonInfo **polygon_info,
   const size_t number_threads,ExceptionInfo *exception)
 {
   ssize_t
@@ -5018,7 +5018,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   poly_extent.y2=CastDoubleToLong(floor(bounds.y2+0.5));
   number_threads=GetMagickNumberThreads(image,image,poly_extent.y2-
     poly_extent.y1+1,1);
-  status=AcquirePolygonEdgesTLS(polygon_info,number_threads,exception);
+  status=ClonePolygonEdgesTLS(polygon_info,number_threads,exception);
   if (status == MagickFalse)
     {
       polygon_info=DestroyPolygonTLS(polygon_info);
