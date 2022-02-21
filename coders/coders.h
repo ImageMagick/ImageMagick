@@ -153,6 +153,7 @@
 #include "coders/sgi.h"
 #include "coders/sixel.h"
 #include "coders/stegano.h"
+#include "coders/strimg.h"
 #include "coders/sun.h"
 #include "coders/svg.h"
 #include "coders/tga.h"
