@@ -9,23 +9,8 @@ include(CheckLibraryExists)
 include(CheckCXXSourceRuns)
 include(CheckStructHasMember)
 include(CheckCSourceCompiles)
+include(CheckSourceRuns)
 include(TestBigEndian)
-
-# Compiles the source code, runs the program and sets ${VAR} to 1 if the
-# return value is equal to ${RESULT}.
-macro(check_run_result SRC RESULT VAR)
-  message(STATUS "Performing Test ${VAR}")
-  set(SRC_FILE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/src.c)
-  file(WRITE ${SRC_FILE} "${SRC}")
-  try_run(RUN_RESULT COMPILE_RESULT ${CMAKE_BINARY_DIR} ${SRC_FILE}
-          CMAKE_FLAGS -DLINK_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES})
-  if (RUN_RESULT EQUAL ${RESULT})
-    set(${VAR} 1)
-  message(STATUS "Performing Test ${VAR} - Success")
-  else()
-    message(STATUS "Performing Test ${VAR} - Failed")
-  endif ()
-endmacro()
 
 macro(magick_check_env)
   # Check if `closedir' function returns void instead of `int'
@@ -475,6 +460,8 @@ macro(magick_check_env)
   CHECK_FUNCTION_EXISTS(strerror_r HAVE_STRERROR_R)
 
   # Check if `#' stringizing operator is supported
+  set(HAVE_STRINGIZE_EXITCODE 1)
+  set(HAVE_STRINGIZE_EXITCODE__TRYRUN_OUTPUT 1)
   CHECK_CXX_SOURCE_RUNS(
   "
     #define x(y) #y
@@ -669,6 +656,8 @@ macro(magick_check_env)
 
   # Check if `fork' works
   if(HAVE_FORK)
+    set(HAVE_WORKING_FORK_EXITCODE 1)
+    set(HAVE_WORKING_FORK_EXITCODE__TRYRUN_OUTPUT 1)
     CHECK_CXX_SOURCE_RUNS(
     "
       #ifdef HAVE_SYS_TYPES_H
@@ -684,6 +673,8 @@ macro(magick_check_env)
 
   # Check if `vfork' works
   if(HAVE_VFORK)
+    set(HAVE_WORKING_VFORK_EXITCODE 1)
+    set(HAVE_WORKING_VFORK_EXITCODE__TRYRUN_OUTPUT 1)
     CHECK_CXX_SOURCE_RUNS(
     "
       #ifdef HAVE_SYS_TYPES_H
@@ -884,12 +875,13 @@ macro(magick_check_env)
   CHECK_SYMBOL_EXISTS(_POSIX_SOURCE "stdio.h" EVENT___POSIX_SOURCE)
 
   if(NOT CMAKE_COMPILER_IS_GNUCC)
-    CHECK_RUN_RESULT(
+    set(__CHAR_UNSIGNED___EXITCODE 1)
+    set(__CHAR_UNSIGNED___EXITCODE__TRYRUN_OUTPUT 1)
+    check_source_runs(C
     "
       #include <limits.h>
       int main (void) { return CHAR_MIN == 0; }
     "
-    1
     __CHAR_UNSIGNED__)
   endif()
 
