@@ -1,5 +1,5 @@
 2022-02-20  7.1.0-26  <quetzlzacatenango@image...>
-  * Release ImageMagick version 7.1.0-26 GIT revision 19740:66cb4f91b:20220220
+  * Release ImageMagick version 7.1.0-26 GIT revision 19742:86b1eb465:20220220
 
 2021-02-18  7.1.0-26  <quetzlzacatenango@image...>
   * unrecognized color as the color is used before it is defined (reference
