@@ -1,3 +1,9 @@
+2022-02-21  7.1.0-27  <quetzlzacatenango@image...>
+  * Release ImageMagick version 7.1.0-27 GIT revision 19...
+
+2021-02-21  7.1.0-27  <quetzlzacatenango@image...>
+  * eliminate autoconf 2.71 warnings.
+
 2022-02-21  7.1.0-26  <quetzlzacatenango@image...>
   * Release ImageMagick version 7.1.0-26 GIT revision 19748:da3971cb2:20220221
 
