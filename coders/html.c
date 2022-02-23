@@ -350,7 +350,16 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
       else
         for (p=image->directory; *p != '\0'; p++)
           if (*p != '\xff')
-            (void) WriteBlobByte(image,(unsigned char) *p);
+            {
+              if (*p != '\n')
+                (void) WriteBlobByte(image,(unsigned char) *p);
+              else
+                {
+                  (void) WriteBlobByte(image,'%');
+                  (void) WriteBlobByte(image,'0');
+                  (void) WriteBlobByte(image,'A');
+                }
+            }
           else
             {
               (void) FormatLocaleString(buffer,MagickPathExtent,"\" shape="
