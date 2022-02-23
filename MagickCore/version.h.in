@@ -26,7 +26,7 @@ extern "C" {
   Define declarations.
 */
 #define MagickPackageName "@PACKAGE_NAME@"
-#define MagickCopyright  "(C) 1999-2021 ImageMagick Studio LLC"
+#define MagickCopyright  "(C) 1999 ImageMagick Studio LLC"
 #define MagickLibVersion  @PACKAGE_LIB_VERSION@
 #define MagickLibVersionText  "@MAGICK_LIB_VERSION_TEXT@"
 #define MagickLibVersionNumber  @MAGICK_LIB_VERSION_NUMBER@
