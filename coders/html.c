@@ -203,6 +203,22 @@ ModuleExport void UnregisterHTMLImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static ssize_t WriteURLComponent(Image *image,const int c)
+{
+  char
+    encoding[MagickPathExtent],
+    html5;
+  
+  html5=isalnum(c) != 0 || (c == '*') || (c == '-') || (c == '.') ||
+    (c == '_') ?  c : (c == ' ') ? '+' : 0;
+  if (html5 != 0)
+    (void) FormatLocaleString(encoding,MagickPathExtent,"%c",html5);
+  else
+    (void) FormatLocaleString(encoding,MagickPathExtent,"%%%02X",c);
+  return(WriteBlobString(image,encoding));
+}
+
 static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
@@ -350,16 +366,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
       else
         for (p=image->directory; *p != '\0'; p++)
           if (*p != '\xff')
-            {
-              if (*p != '\n')
-                (void) WriteBlobByte(image,(unsigned char) *p);
-              else
-                {
-                  (void) WriteBlobByte(image,'%');
-                  (void) WriteBlobByte(image,'0');
-                  (void) WriteBlobByte(image,'A');
-                }
-            }
+            (void) WriteURLComponent(image,(unsigned char) *p);
           else
             {
               (void) FormatLocaleString(buffer,MagickPathExtent,"\" shape="
@@ -434,16 +441,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   else
     for (p=image->directory; *p != '\0'; p++)
       if (*p != '\xff')
-        {
-          if (*p != '\n')
-            (void) WriteBlobByte(image,(unsigned char) *p);
-          else
-            {
-              (void) WriteBlobByte(image,'%');
-              (void) WriteBlobByte(image,'0');
-              (void) WriteBlobByte(image,'A');
-            }
-        }
+        (void) WriteURLComponent(image,(unsigned char) *p);
       else
         {
           (void) FormatLocaleString(buffer,MagickPathExtent,"\" shape=\"rect\""

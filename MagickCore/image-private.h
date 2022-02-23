@@ -72,7 +72,7 @@ static inline QuantumAny CastDoubleToQuantumAny(const double x)
   if (x > ((double) ((QuantumAny) ~0)))
     return((QuantumAny) ~0);
   if (x < 0.0)
-    return(0.0);
+    return((QuantumAny) 0);
   return((QuantumAny) (x+0.5));
 }
 
