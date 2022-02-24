@@ -1307,9 +1307,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
         image=SyncNextImageInList(image);
-        status=SetImageExtent(image,image->columns,image->rows,exception);
-        if (status == MagickFalse)
-          break;
+        image->columns=dpx.image.pixels_per_line;
+        image->rows=dpx.image.lines_per_element;
         status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
           GetBlobSize(image));
         if (status == MagickFalse)
