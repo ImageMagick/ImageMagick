@@ -663,8 +663,12 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     tile=0;
     while (tile < MagickMin((ssize_t) tiles_per_page,(ssize_t) number_images))
     {
-      (void) ConcatenateMagickString(montage->directory,
-        image_list[tile]->filename,extent);
+      if (strchr(image_list[tile]->filename,'\xff') == (char *) NULL)
+        (void) ConcatenateMagickString(montage->directory,
+          image_list[tile]->filename,extent);
+      else
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "InvalidArgument","'%s'",image_list[tile]->filename);
       (void) ConcatenateMagickString(montage->directory,"\xff",extent);
       tile++;
     }
