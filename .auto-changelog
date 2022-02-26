@@ -1,0 +1,8 @@
+{
+  "output": "ChangeLog.md",
+  "template": "keepachangelog",
+  "unreleased": false,
+  "commitLimit": false,
+  "startingVersion": "7.1.0-0",
+  "hideCredit": true
+}

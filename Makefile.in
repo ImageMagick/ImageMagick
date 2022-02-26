@@ -3087,7 +3087,7 @@ am__DIST_COMMON = $(srcdir)/ImageMagick.spec.in \
 	$(top_srcdir)/utilities/magick.1.in \
 	$(top_srcdir)/utilities/mogrify.1.in \
 	$(top_srcdir)/utilities/montage.1.in \
-	$(top_srcdir)/utilities/stream.1.in ChangeLog config/ar-lib \
+	$(top_srcdir)/utilities/stream.1.in config/ar-lib \
 	config/compile config/config.guess config/config.sub \
 	config/depcomp config/install-sh config/ltmain.sh \
 	config/missing config/mkinstalldirs
@@ -3561,7 +3561,7 @@ TESTS_ENVIRONMENT = \
 
 TOP_EXTRA_DIST = \
   AUTHORS.txt \
-  ChangeLog \
+  ChangeLog.md \
   LICENSE \
   QuickStart.txt \
   NOTICE \
@@ -6114,7 +6114,7 @@ pkgconfig_DATA = \
 
 @INSTALL_DOC_TRUE@doc_DATA = \
 @INSTALL_DOC_TRUE@  LICENSE \
-@INSTALL_DOC_TRUE@  ChangeLog \
+@INSTALL_DOC_TRUE@  ChangeLog.md \
 @INSTALL_DOC_TRUE@  NEWS.txt
 
 @MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = \
@@ -13905,7 +13905,7 @@ magick-version: MagickCore/version.h
 	fi ; \
 	touch magick-version
 
-MagickCore/version.h:	$(top_srcdir)/ChangeLog $(top_srcdir)/m4/version.m4
+MagickCore/version.h:	$(top_srcdir)/ChangeLog.md $(top_srcdir)/m4/version.m4
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 

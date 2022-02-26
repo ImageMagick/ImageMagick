@@ -38,7 +38,7 @@ m4_define([magick_git_revision],
           ]))
 m4_define([magick_release_date],
           m4_esyscmd([
-            d=$(date -u +%F -r ./ChangeLog)
+            d=$(date -u +%F -r ./ChangeLog.md)
             printf %s "$d"
           ]))
 
@@ -60,7 +60,7 @@ AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([foreign no-define color-tests parallel-tests -Wall -Wno-portability subdir-objects dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
 
 AM_SILENT_RULES([yes])
-AC_SUBST([CONFIGURE_DEPENDENCIES],["$CONFIGURE_DEPENDENCIES \$(top_srcdir)/ChangeLog \$(top_srcdir)/m4/version.m4"])
+AC_SUBST([CONFIGURE_DEPENDENCIES],["$CONFIGURE_DEPENDENCIES \$(top_srcdir)/ChangeLog.md \$(top_srcdir)/m4/version.m4"])
 
 #
 # Save initial user-tunable values
