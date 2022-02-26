@@ -1,3 +1,16 @@
+#### 7.1.0 (2022-02-26)
+
+##### Other Changes
+
+* //github.com/ImageMagick/ImageMagick/issues/4896 ([14a8a358](https://github.com/ImageMagick/ImageMagick/commit/14a8a358452405e99dfa52e799ed37c02db316e6))
+* //github.com/ImageMagick/ImageMagick/issues/966 ([62a3cd54](https://github.com/ImageMagick/ImageMagick/commit/62a3cd54416c067da75be895a27362a01aaebdc8))
+* //github.com/ImageMagick/ImageMagick/issues/4888 ([2fa21843](https://github.com/ImageMagick/ImageMagick/commit/2fa218431d622f33da90a79c1a2f5f5750710fdc))
+* //github.com/ImageMagick/ImageMagick/issues/4888 ([5512240f](https://github.com/ImageMagick/ImageMagick/commit/5512240ff88749d9450d51aa977969a9ad321d6c))
+* //github.com/ImageMagick/ImageMagick/issues/966 ([5c237799](https://github.com/ImageMagick/ImageMagick/commit/5c2377996445ce1c3be00e78a08afde131fb813d))
+* //github.com/ImageMagick/ImageMagick/issues/966 ([f6db6e06](https://github.com/ImageMagick/ImageMagick/commit/f6db6e06dfabe0412d61b433b89efe5ad58d9b21))
+* //github.com/ImageMagick/ImageMagick/issues/4876 ([17b85720](https://github.com/ImageMagick/ImageMagick/commit/17b85720f0685d83797c3925a866f42971c23713))
+* //github.com/ImageMagick/ImageMagick/issues/4870 ([eb088266](https://github.com/ImageMagick/ImageMagick/commit/eb0882667cddc4ea71b61a583a782c430220faf4))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
