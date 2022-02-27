@@ -3804,6 +3804,8 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           i = pel->EleNdx-1; /* -1 because 'for' loop will increment. */
           break;
         case rIfZeroGoto:
+          if (pel->EleNdx == NULL_ADDRESS)
+            break;
           if (fabs((double) regA) < MagickEpsilon) i = pel->EleNdx-1;
           break;
         case rIfNotZeroGoto:
@@ -3813,6 +3815,8 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = pfxrt->UserSymVals[pel->EleNdx];
           break;
         case rCopyTo:
+          if (pel->EleNdx == NULL_ADDRESS)
+            break;
           pfxrt->UserSymVals[pel->EleNdx] = regA;
           break;
         case rZerStk:
@@ -4150,7 +4154,7 @@ MagickExport Image *FxImage (const Image *image, const char *expression,
 
         if (!ExecuteRPN (pfx, &pfx->fxrts[id], &result, channel, x, y)) {
           status=MagickFalse;
-          continue;
+          break;
         }
 
         q[i] = ClampToQuantum ((MagickRealType) (QuantumRange*result));
