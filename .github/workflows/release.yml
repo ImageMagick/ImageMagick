@@ -248,7 +248,7 @@ jobs:
         Copy-Item "ImageMagick-Windows\VisualMagick\bin\type-ghostscript.xml" "portable"
         Copy-Item "ImageMagick-Windows\VisualMagick\bin\type.xml" "portable"
 
-        Copy-Item "ImageMagick-Windows\ImageMagick\ChangeLog" "portable"
+        Copy-Item "ImageMagick-Windows\ImageMagick\ChangeLog.md" "portable"
         Copy-Item "ImageMagick-Windows\ImageMagick\LICENSE" "portable\LICENSE.txt"
         Copy-Item "ImageMagick-Windows\VisualMagick\NOTICE.txt" "portable"
         Copy-Item "ImageMagick-Windows\ImageMagick\README.txt" "portable"
