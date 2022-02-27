@@ -4,7 +4,7 @@ on:
     branches:
     - main
     paths:
-    - 'ChangeLog'
+    - 'ChangeLog.md'
 
 name: release
 jobs:
