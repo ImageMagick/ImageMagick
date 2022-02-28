@@ -2946,6 +2946,97 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           string=GetImageProperty(image,"convex-hull",exception);
           break;
         }
+      if (LocaleCompare("convex-hull:extreme-points",property) == 0)
+        {
+          char
+            *points;
+
+          PointInfo
+            extreme,
+            *convex_hull;
+
+          ssize_t
+            n;
+
+          size_t
+            number_points;
+
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          convex_hull=GetImageConvexHull(image,&number_points,exception);
+          if (convex_hull == (PointInfo *) NULL)
+            break;
+          points=AcquireString("");
+          extreme=convex_hull[0];  /* top */
+          for (n=0; n < (ssize_t) number_points; n++)
+          {
+            if (convex_hull[n].y < extreme.y)
+              {
+                extreme=convex_hull[n];
+                continue; 
+              }
+            if (convex_hull[n].y != extreme.y)
+              continue; 
+            if (convex_hull[n].x < extreme.x)
+              extreme=convex_hull[n];
+          }
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            extreme.x,extreme.y);
+          (void) ConcatenateString(&points,value);
+          extreme=convex_hull[0]; /* right */
+          for (n=0; n < (ssize_t) number_points; n++)
+          {
+            if (convex_hull[n].x > extreme.x)
+              {
+                extreme=convex_hull[n];
+                continue; 
+              }
+            if (convex_hull[n].x != extreme.x)
+              continue; 
+            if (convex_hull[n].y < extreme.y)
+              extreme=convex_hull[n];
+          }
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            extreme.x,extreme.y);
+          (void) ConcatenateString(&points,value);
+          extreme=convex_hull[0];  /* bottom */
+          for (n=0; n < (ssize_t) number_points; n++)
+          {
+            if (convex_hull[n].y > extreme.y)
+              {
+                extreme=convex_hull[n];
+                continue; 
+              }
+            if (convex_hull[n].y != extreme.y)
+              continue; 
+            if (convex_hull[n].x > extreme.x)
+              extreme=convex_hull[n];
+          }
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            extreme.x,extreme.y);
+          (void) ConcatenateString(&points,value);
+          extreme=convex_hull[0];  /* left */
+          for (n=0; n < (ssize_t) number_points; n++)
+          {
+            if (convex_hull[n].x < extreme.x)
+              {
+                extreme=convex_hull[n];
+                continue; 
+              }
+            if (convex_hull[n].x != extreme.x)
+              continue; 
+            if (convex_hull[n].y > extreme.y)
+              extreme=convex_hull[n];
+          }
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            extreme.x,extreme.y);
+          (void) ConcatenateString(&points,value);
+          convex_hull=(PointInfo *) RelinquishMagickMemory(convex_hull);
+          (void) SetImageProperty(image,"convex-hull:extreme-points",points,
+            exception);
+          points=DestroyString(points);
+          string=GetImageProperty(image,"convex-hull:extreme-points",exception);
+          break;
+        }
       if (LocaleCompare("copyright",property) == 0)
         {
           (void) CopyMagickString(value,GetMagickCopyright(),MagickPathExtent);
