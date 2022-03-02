@@ -550,53 +550,53 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	coders/info.h coders/inline.c coders/inline.h coders/ipl.c \
 	coders/ipl.h coders/jbig.h coders/jnx.c coders/jnx.h \
 	coders/jp2.h coders/jpeg.h coders/json.c coders/json.h \
-	coders/jxl.h coders/kernel.c coders/kernel.h coders/label.c \
-	coders/label.h coders/mac.c coders/mac.h coders/magick.c \
-	coders/magick.h coders/map.c coders/map.h coders/mask.c \
-	coders/mask.h coders/mat.c coders/mat.h coders/matte.c \
-	coders/matte.h coders/meta.c coders/meta.h coders/miff.c \
-	coders/miff.h coders/mono.c coders/mono.h coders/mpc.c \
-	coders/mpc.h coders/mpr.c coders/mpr.h coders/msl.c \
-	coders/msl.h coders/mtv.c coders/mtv.h coders/mvg.c \
-	coders/mvg.h coders/null.c coders/null.h coders/ora.c \
-	coders/ora.h coders/otb.c coders/otb.h coders/palm.c \
-	coders/palm.h coders/pango.c coders/pango.h coders/pattern.c \
-	coders/pattern.h coders/pcd.c coders/pcd.h coders/pcl.c \
-	coders/pcl.h coders/pcx.c coders/pcx.h coders/pdb.c \
-	coders/pdb.h coders/pdf.c coders/pdf.h coders/pes.c \
-	coders/pes.h coders/pgx.c coders/pgx.h coders/pict.c \
-	coders/pict.h coders/pix.c coders/pix.h coders/plasma.c \
-	coders/plasma.h coders/png.h coders/pnm.c coders/pnm.h \
-	coders/ps2.c coders/ps2.h coders/ps3.c coders/ps3.h \
-	coders/ps.c coders/psd.c coders/psd.h coders/psd-private.h \
-	coders/ps.h coders/pwp.c coders/pwp.h coders/qoi.c \
-	coders/qoi.h coders/raw.c coders/raw.h coders/rgb.c \
-	coders/rgb.h coders/rgf.c coders/rgf.h coders/rla.c \
-	coders/rla.h coders/rle.c coders/rle.h coders/scr.c \
-	coders/screenshot.c coders/screenshot.h coders/scr.h \
-	coders/sct.c coders/sct.h coders/sfw.c coders/sfw.h \
-	coders/sgi.c coders/sgi.h coders/sixel.c coders/sixel.h \
-	coders/stegano.c coders/stegano.h coders/strimg.c \
-	coders/strimg.h coders/sun.c coders/sun.h coders/svg.c \
-	coders/svg.h coders/tga.c coders/tga.h coders/thumbnail.c \
-	coders/thumbnail.h coders/tiff.h coders/tile.c coders/tile.h \
-	coders/tim2.c coders/tim2.h coders/tim.c coders/tim.h \
-	coders/ttf.c coders/ttf.h coders/txt.c coders/txt.h \
-	coders/uil.c coders/uil.h coders/url.c coders/url.h \
-	coders/uyvy.c coders/uyvy.h coders/vicar.c coders/vicar.h \
-	coders/vid.c coders/vid.h coders/video.c coders/video.h \
-	coders/viff.c coders/viff.h coders/vips.c coders/vips.h \
-	coders/wbmp.c coders/wbmp.h coders/webp.h coders/wmf.h \
-	coders/wpg.c coders/wpg.h coders/xbm.c coders/xbm.h \
-	coders/xc.c coders/xcf.c coders/xcf.h coders/xc.h coders/x.h \
-	coders/xpm.c coders/xpm.h coders/xps.c coders/xps.h \
-	coders/xwd.h coders/yaml.c coders/yaml.h coders/ycbcr.c \
-	coders/ycbcr.h coders/yuv.c coders/yuv.h coders/dps.c \
-	coders/djvu.c coders/exr.c coders/flif.c coders/fpx.c \
-	coders/clipboard.c coders/emf.c coders/heic.c coders/jbig.c \
-	coders/jpeg.c coders/jp2.c coders/jxl.c coders/png.c \
-	coders/ept.c coders/tiff.c coders/webp.c coders/wmf.c \
-	coders/x.c coders/xwd.c filters/analyze.c
+	coders/jxl.c coders/jxl.h coders/kernel.c coders/kernel.h \
+	coders/label.c coders/label.h coders/mac.c coders/mac.h \
+	coders/magick.c coders/magick.h coders/map.c coders/map.h \
+	coders/mask.c coders/mask.h coders/mat.c coders/mat.h \
+	coders/matte.c coders/matte.h coders/meta.c coders/meta.h \
+	coders/miff.c coders/miff.h coders/mono.c coders/mono.h \
+	coders/mpc.c coders/mpc.h coders/mpr.c coders/mpr.h \
+	coders/msl.c coders/msl.h coders/mtv.c coders/mtv.h \
+	coders/mvg.c coders/mvg.h coders/null.c coders/null.h \
+	coders/ora.c coders/ora.h coders/otb.c coders/otb.h \
+	coders/palm.c coders/palm.h coders/pango.c coders/pango.h \
+	coders/pattern.c coders/pattern.h coders/pcd.c coders/pcd.h \
+	coders/pcl.c coders/pcl.h coders/pcx.c coders/pcx.h \
+	coders/pdb.c coders/pdb.h coders/pdf.c coders/pdf.h \
+	coders/pes.c coders/pes.h coders/pgx.c coders/pgx.h \
+	coders/pict.c coders/pict.h coders/pix.c coders/pix.h \
+	coders/plasma.c coders/plasma.h coders/png.h coders/pnm.c \
+	coders/pnm.h coders/ps2.c coders/ps2.h coders/ps3.c \
+	coders/ps3.h coders/ps.c coders/psd.c coders/psd.h \
+	coders/psd-private.h coders/ps.h coders/pwp.c coders/pwp.h \
+	coders/qoi.c coders/qoi.h coders/raw.c coders/raw.h \
+	coders/rgb.c coders/rgb.h coders/rgf.c coders/rgf.h \
+	coders/rla.c coders/rla.h coders/rle.c coders/rle.h \
+	coders/scr.c coders/screenshot.c coders/screenshot.h \
+	coders/scr.h coders/sct.c coders/sct.h coders/sfw.c \
+	coders/sfw.h coders/sgi.c coders/sgi.h coders/sixel.c \
+	coders/sixel.h coders/stegano.c coders/stegano.h \
+	coders/strimg.c coders/strimg.h coders/sun.c coders/sun.h \
+	coders/svg.c coders/svg.h coders/tga.c coders/tga.h \
+	coders/thumbnail.c coders/thumbnail.h coders/tiff.h \
+	coders/tile.c coders/tile.h coders/tim2.c coders/tim2.h \
+	coders/tim.c coders/tim.h coders/ttf.c coders/ttf.h \
+	coders/txt.c coders/txt.h coders/uil.c coders/uil.h \
+	coders/url.c coders/url.h coders/uyvy.c coders/uyvy.h \
+	coders/vicar.c coders/vicar.h coders/vid.c coders/vid.h \
+	coders/video.c coders/video.h coders/viff.c coders/viff.h \
+	coders/vips.c coders/vips.h coders/wbmp.c coders/wbmp.h \
+	coders/webp.h coders/wmf.h coders/wpg.c coders/wpg.h \
+	coders/xbm.c coders/xbm.h coders/xc.c coders/xcf.c \
+	coders/xcf.h coders/xc.h coders/x.h coders/xpm.c coders/xpm.h \
+	coders/xps.c coders/xps.h coders/xwd.h coders/yaml.c \
+	coders/yaml.h coders/ycbcr.c coders/ycbcr.h coders/yuv.c \
+	coders/yuv.h coders/dps.c coders/djvu.c coders/exr.c \
+	coders/flif.c coders/fpx.c coders/clipboard.c coders/emf.c \
+	coders/heic.c coders/jbig.c coders/jpeg.c coders/jp2.c \
+	coders/png.c coders/ept.c coders/tiff.c coders/webp.c \
+	coders/wmf.c coders/x.c coders/xwd.c filters/analyze.c
 am__objects_1 = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-accelerate.lo \
 	MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-annotate.lo \
@@ -752,6 +752,7 @@ am__objects_19 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ipl.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jnx.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-json.lo \
+	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-kernel.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-label.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-mac.lo \
@@ -3821,6 +3822,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/jpeg.h \
 	coders/json.c \
 	coders/json.h \
+	coders/jxl.c \
 	coders/jxl.h \
 	coders/kernel.c \
 	coders/kernel.h \
@@ -6920,6 +6922,8 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jn
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-json.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
+coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo:  \
+	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-kernel.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-label.lo:  \
@@ -7099,8 +7103,6 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jb
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jpeg.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jp2.lo:  \
-	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
-coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-png.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
@@ -9575,6 +9577,13 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-js
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-json.lo `test -f 'coders/json.c' || echo '$(srcdir)/'`coders/json.c
 
+coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo: coders/jxl.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo `test -f 'coders/jxl.c' || echo '$(srcdir)/'`coders/jxl.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/jxl.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo `test -f 'coders/jxl.c' || echo '$(srcdir)/'`coders/jxl.c
+
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-kernel.lo: coders/kernel.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-kernel.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-kernel.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-kernel.lo `test -f 'coders/kernel.c' || echo '$(srcdir)/'`coders/kernel.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-kernel.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-kernel.Plo
@@ -10204,13 +10213,6 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jp
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/jp2.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jp2.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jp2.lo `test -f 'coders/jp2.c' || echo '$(srcdir)/'`coders/jp2.c
-
-coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo: coders/jxl.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo `test -f 'coders/jxl.c' || echo '$(srcdir)/'`coders/jxl.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/jxl.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jxl.lo `test -f 'coders/jxl.c' || echo '$(srcdir)/'`coders/jxl.c
 
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-png.lo: coders/png.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-png.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-png.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-png.lo `test -f 'coders/png.c' || echo '$(srcdir)/'`coders/png.c
