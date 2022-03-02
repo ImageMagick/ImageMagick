@@ -2382,7 +2382,7 @@ JXL_LIBS=''
 JXL_PKG=''
 if test "$with_jxl" != 'no'; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([JXL],[libjxl >= 0.6 libjxl_threads],[have_jxl=yes],[have_jxl=no])
+  PKG_CHECK_MODULES([JXL],[libjxl >= 0.6.1 libjxl_threads],[have_jxl=yes],[have_jxl=no])
   AC_MSG_RESULT([])
 fi
 
