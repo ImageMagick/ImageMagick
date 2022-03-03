@@ -212,14 +212,14 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
           *pos,
           *q;
 
-        value_name_length = sizeof(value_name) - 1;
-        value_data_size = sizeof(value_data) - 1;
-        res = RegEnumValueA ( reg_key, registry_index, value_name,
-          &value_name_length, 0, &type, (BYTE*)value_data, &value_data_size);
+        value_name_length=sizeof(value_name)-1;
+        value_data_size=sizeof(value_data)-1;
+        res=RegEnumValueA(reg_key,registry_index,value_name,&value_name_length,
+          0,&type,(BYTE*)value_data,&value_data_size);
         registry_index++;
         if (res != ERROR_SUCCESS)
           continue;
-        if ( (pos = strstr(value_name, " (TrueType)")) == (char*) NULL )
+        if ((pos = strstr(value_name," (TrueType)")) == (char*) NULL)
           continue;
         *pos='\0'; /* Remove (TrueType) from string */
 
@@ -231,7 +231,7 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
 
         /* Name */
         (void) CopyMagickString(buffer,value_name,MagickPathExtent);
-        for(pos = buffer; *pos != 0 ; pos++)
+        for (pos=buffer; *pos != 0; pos++)
           if (*pos == ' ')
             *pos = '-';
         type_info->name=ConstantString(buffer);
@@ -259,10 +259,10 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
         type_info->weight=400;
 
         /* Some fonts are known to require special encodings */
-        if ( (LocaleCompare(type_info->name, "Symbol") == 0 ) ||
-             (LocaleCompare(type_info->name, "Wingdings") == 0 ) ||
-             (LocaleCompare(type_info->name, "Wingdings-2") == 0 ) ||
-             (LocaleCompare(type_info->name, "Wingdings-3") == 0 ) )
+        if ((LocaleCompare(type_info->name, "Symbol") == 0) ||
+            (LocaleCompare(type_info->name, "Wingdings") == 0) ||
+            (LocaleCompare(type_info->name, "Wingdings-2") == 0) ||
+            (LocaleCompare(type_info->name, "Wingdings-3") == 0))
           type_info->encoding=ConstantString("AppleRoman");
 
         family_extent=value_name;
