@@ -120,7 +120,9 @@ static inline void JXLSetMemoryManager(JxlMemoryManager *memory_manager,
 
 static inline void JXLSetFormat(Image *image,JxlPixelFormat *format)
 {
-  format->num_channels=(image->alpha_trait == BlendPixelTrait) ? 4 : 3;
+  format->num_channels=(image->alpha_trait == BlendPixelTrait) ? 4U : 3U;
+  if (IsImageGray(image) != MagickFalse)
+    format->num_channels=(image->alpha_trait == BlendPixelTrait) ? 2U : 1U;
   format->data_type=(image->depth > 16) ? JXL_TYPE_FLOAT : (image->depth > 8) ?
    JXL_TYPE_UINT16 : JXL_TYPE_UINT8;
 }
@@ -305,12 +307,12 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (count <= 0)
           {
             decoder_status=JXL_DEC_SUCCESS;
-            ThrowMagickException(exception,GetMagickModule(),CoderError,
+            (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
               "InsufficientImageDataInFile","`%s'",image->filename);
             break;
           }
-        decoder_status=JxlDecoderSetInput(decoder,(const uint8_t *) input_buffer,
-          (size_t) count);
+        decoder_status=JxlDecoderSetInput(decoder,(const uint8_t *)
+          input_buffer,(size_t) count);
         if (decoder_status == JXL_DEC_SUCCESS)
           decoder_status=JXL_DEC_NEED_MORE_INPUT;
         break;
@@ -326,9 +328,9 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /* For now we dont support images with an animation */
         if (basic_info.have_animation == 1)
           {
-            ThrowMagickException(exception,GetMagickModule(),
-              MissingDelegateError,"NoDecodeDelegateForThisImageFormat",
-              "`%s'",image->filename);
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
+              image->filename);
             break;
           }
         image->columns=basic_info.xsize;
@@ -357,7 +359,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
           profile_size);
         (void) SetImageProfile(image,"icc",profile,exception);
-        DestroyStringInfo(profile);
+        profile=DestroyStringInfo(profile);
         if (decoder_status == JXL_DEC_SUCCESS)
           decoder_status=JXL_DEC_COLOR_ENCODING;
         break;
@@ -378,7 +380,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         output_buffer=AcquireQuantumMemory(output_size,sizeof(*output_buffer));
         if (output_buffer == (unsigned char *) NULL)
           {
-            ThrowMagickException(exception,GetMagickModule(),CoderError,
+            (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
               "MemoryAllocationFailed","`%s'",image->filename);
             break;
           }
@@ -394,15 +396,15 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         if (output_buffer == (unsigned char *) NULL)
           {
-            ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-              "UnableToReadImageData","`%s'",image->filename);
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              CorruptImageError,"UnableToReadImageData","`%s'",image->filename);
             break;
           }
         type=JXLDataTypeToStorageType(format.data_type);
         if (type == UndefinedPixel)
           {
-            ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-              "Unsupported data type","`%s'",image->filename);
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              CorruptImageError,"Unsupported data type","`%s'",image->filename);
             break;
           }
         status=ImportImagePixels(image,0,0,image->columns,image->rows,
@@ -533,7 +535,7 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
 
   memset(&color_encoding,0,sizeof(color_encoding));
   JxlColorEncodingSetToSRGB(&color_encoding,
-    IsImageGray(image) == MagickTrue ? JXL_TRUE : JXL_FALSE);
+    IsImageGray(image) != MagickFalse ? JXL_TRUE : JXL_FALSE);
   encoder_status=JxlEncoderSetColorEncoding(encoder,&color_encoding);
   return(encoder_status);
 }
@@ -640,20 +642,23 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
   if (image->quality == 100)
-    JxlEncoderOptionsSetLossless(encoder_options,JXL_TRUE);
+    (void) JxlEncoderOptionsSetLossless(encoder_options,JXL_TRUE);
   else
     {
       float
         distance;
 
       distance=(image_info->quality >= 30) ? 0.1f+(float) (100-MagickMin(100,
-        image_info->quality))*0.09f : 6.4f+(float) pow(2.5f,(30-
+        image_info->quality))*0.09f : 6.4f+(float) pow(2.5f,(30.0-
         image_info->quality)/5.0f)/6.25f;
-      JxlEncoderOptionsSetDistance(encoder_options,distance);
+      (void) JxlEncoderOptionsSetDistance(encoder_options,distance);
     }
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
-    JxlEncoderOptionsSetEffort(encoder_options,StringToInteger(option));
+    (void) JxlEncoderOptionsSetEffort(encoder_options,StringToInteger(option));
+  option=GetImageOption(image_info,"jxl:decoding-speed");
+  if (option != (const char *) NULL)
+    JxlEncoderOptionsSetDecodingSpeed(encoder_options,StringToInteger(option));
   encoder_status=JXLWriteMetadata(image,encoder);
   encoder_status=JXL_ENC_SUCCESS;
   if (encoder_status != JXL_ENC_SUCCESS)
@@ -666,6 +671,11 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     ((image->alpha_trait == BlendPixelTrait) ? 4 : 3)*
     ((format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
      (format.data_type == JXL_TYPE_UINT16) ? sizeof(short) : sizeof(char));
+  if (IsImageGray(image) != MagickFalse)
+    bytes_per_row=image->columns*
+      ((image->alpha_trait == BlendPixelTrait) ? 2 : 1)*
+      ((format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
+       (format.data_type == JXL_TYPE_UINT16) ? sizeof(short) : sizeof(char));
   input_buffer=AcquireQuantumMemory(bytes_per_row,image->rows*
     sizeof(*input_buffer));
   if (input_buffer == (unsigned char *) NULL)
@@ -674,9 +684,14 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(encoder);
       ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
-  status=ExportImagePixels(image,0,0,image->columns,image->rows,
-    image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
-    JXLDataTypeToStorageType(format.data_type),input_buffer,exception);
+  if (IsImageGray(image) != MagickFalse)
+    status=ExportImagePixels(image,0,0,image->columns,image->rows,
+      image->alpha_trait == BlendPixelTrait ? "IA" : "I",
+      JXLDataTypeToStorageType(format.data_type),input_buffer,exception);
+  else
+    status=ExportImagePixels(image,0,0,image->columns,image->rows,
+      image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
+      JXLDataTypeToStorageType(format.data_type),input_buffer,exception);
   if (status == MagickFalse)
     {
       input_buffer=(unsigned char *) RelinquishMagickMemory(input_buffer);
