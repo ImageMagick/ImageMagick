@@ -274,109 +274,50 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
               break;
 
             if (LocaleCompare(token,"Italic") == 0)
-              {
-                type_info->style=ItalicStyle;
-              }
-
+              type_info->style=ItalicStyle;
             else if (LocaleCompare(token,"Oblique") == 0)
-              {
-                type_info->style=ObliqueStyle;
-              }
-
+              type_info->style=ObliqueStyle;
             else if (LocaleCompare(token,"Bold") == 0)
-              {
-                type_info->weight=700;
-              }
-
+              type_info->weight=700;
             else if (LocaleCompare(token,"Thin") == 0)
-              {
-                type_info->weight=100;
-              }
-
-            else if ( (LocaleCompare(token,"ExtraLight") == 0) ||
-                      (LocaleCompare(token,"UltraLight") == 0) )
-              {
-                type_info->weight=200;
-              }
-
+              type_info->weight=100;
+            else if ((LocaleCompare(token,"ExtraLight") == 0) ||
+                      (LocaleCompare(token,"UltraLight") == 0))
+              type_info->weight=200;
             else if (LocaleCompare(token,"Light") == 0)
-              {
-                type_info->weight=300;
-              }
-
-            else if ( (LocaleCompare(token,"Normal") == 0) ||
-                      (LocaleCompare(token,"Regular") == 0) )
-              {
-                type_info->weight=400;
-              }
-
+              type_info->weight=300;
+            else if ((LocaleCompare(token,"Normal") == 0) ||
+                     (LocaleCompare(token,"Regular") == 0))
+              type_info->weight=400;
             else if (LocaleCompare(token,"Medium") == 0)
-              {
-                type_info->weight=500;
-              }
-
-            else if ( (LocaleCompare(token,"SemiBold") == 0) ||
-                      (LocaleCompare(token,"DemiBold") == 0) )
-              {
-                type_info->weight=600;
-              }
-
-            else if ( (LocaleCompare(token,"ExtraBold") == 0) ||
-                      (LocaleCompare(token,"UltraBold") == 0) )
-              {
-                type_info->weight=800;
-              }
-
-            else if ( (LocaleCompare(token,"Heavy") == 0) ||
-                      (LocaleCompare(token,"Black") == 0) )
-              {
-                type_info->weight=900;
-              }
-
+              type_info->weight=500;
+            else if ((LocaleCompare(token,"SemiBold") == 0) ||
+                     (LocaleCompare(token,"DemiBold") == 0))
+              type_info->weight=600;
+            else if ((LocaleCompare(token,"ExtraBold") == 0) ||
+                     (LocaleCompare(token,"UltraBold") == 0))
+              type_info->weight=800;
+            else if ((LocaleCompare(token,"Heavy") == 0) ||
+                     (LocaleCompare(token,"Black") == 0))
+              type_info->weight=900;
             else if (LocaleCompare(token,"Condensed") == 0)
-              {
-                type_info->stretch = CondensedStretch;
-              }
-
+              type_info->stretch = CondensedStretch;
             else if (LocaleCompare(token,"Expanded") == 0)
-              {
-                type_info->stretch = ExpandedStretch;
-              }
-
+              type_info->stretch = ExpandedStretch;
             else if (LocaleCompare(token,"ExtraCondensed") == 0)
-              {
-                type_info->stretch = ExtraCondensedStretch;
-              }
-
+              type_info->stretch = ExtraCondensedStretch;
             else if (LocaleCompare(token,"ExtraExpanded") == 0)
-              {
-                type_info->stretch = ExtraExpandedStretch;
-              }
-
+              type_info->stretch = ExtraExpandedStretch;
             else if (LocaleCompare(token,"SemiCondensed") == 0)
-              {
-                type_info->stretch = SemiCondensedStretch;
-              }
-
+              type_info->stretch = SemiCondensedStretch;
             else if (LocaleCompare(token,"SemiExpanded") == 0)
-              {
-                type_info->stretch = SemiExpandedStretch;
-              }
-
+              type_info->stretch = SemiExpandedStretch;
             else if (LocaleCompare(token,"UltraCondensed") == 0)
-              {
-                type_info->stretch = UltraCondensedStretch;
-              }
-
+              type_info->stretch = UltraCondensedStretch;
             else if (LocaleCompare(token,"UltraExpanded") == 0)
-              {
-                type_info->stretch = UltraExpandedStretch;
-              }
-
+              type_info->stretch = UltraExpandedStretch;
             else
-              {
-                family_extent=q;
-              }
+              family_extent=q;
           }
 
         (void) CopyMagickString(buffer,value_name,family_extent-value_name+1);
