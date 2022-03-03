@@ -155,24 +155,27 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
     Try to find the right Windows*\CurrentVersion key, the SystemRoot and
     then the Fonts key
   */
-  res = RegOpenKeyExA (HKEY_LOCAL_MACHINE,
-    "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", 0, KEY_READ, &reg_key);
-  if (res == ERROR_SUCCESS) {
-    system_root_length=sizeof(system_root)-1;
-    res = RegQueryValueExA(reg_key,"SystemRoot",NULL, &type,
-      (BYTE*) system_root, &system_root_length);
-  }
-  if (res != ERROR_SUCCESS) {
-    res = RegOpenKeyExA (HKEY_LOCAL_MACHINE,
-      "SOFTWARE\\Microsoft\\Windows\\CurrentVersion", 0, KEY_READ, &reg_key);
-    if (res == ERROR_SUCCESS) {
-      system_root_length=sizeof(system_root)-1;
-      res = RegQueryValueExA(reg_key,"SystemRoot",NULL, &type,
-        (BYTE*)system_root, &system_root_length);
-    }
-  }
+  res=RegOpenKeyExA(HKEY_LOCAL_MACHINE,
+    "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",0,KEY_READ,&reg_key);
   if (res == ERROR_SUCCESS)
-    res = RegOpenKeyExA (reg_key, "Fonts",0, KEY_READ, &reg_key);
+    {
+      system_root_length=sizeof(system_root)-1;
+      res=RegQueryValueExA(reg_key,"SystemRoot",NULL,&type,(BYTE*) system_root,
+        &system_root_length);
+    }
+  if (res != ERROR_SUCCESS)
+    {
+      res=RegOpenKeyExA(HKEY_LOCAL_MACHINE,
+        "SOFTWARE\\Microsoft\\Windows\\CurrentVersion",0,KEY_READ,&reg_key);
+      if (res == ERROR_SUCCESS)
+        {
+          system_root_length=sizeof(system_root)-1;
+          res = RegQueryValueExA(reg_key,"SystemRoot",NULL,&type,
+            (BYTE*)system_root,&system_root_length);
+        }
+    }
+  if (res == ERROR_SUCCESS)
+    res=RegOpenKeyExA(reg_key,"Fonts",0,KEY_READ,&reg_key);
   if (res != ERROR_SUCCESS)
     return(MagickFalse);
   *font_root='\0';
@@ -229,24 +232,15 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
 
         type_info=(TypeInfo *) AcquireCriticalMemory(sizeof(*type_info));
         (void) memset(type_info,0,sizeof(TypeInfo));
-
         type_info->path=ConstantString("Windows Fonts");
         type_info->signature=MagickCoreSignature;
-
-        /* Name */
         (void) CopyMagickString(buffer,value_name,MagickPathExtent);
         for (pos=buffer; *pos != 0; pos++)
           if (*pos == ' ')
             *pos = '-';
         type_info->name=ConstantString(buffer);
-
-        /* Fullname */
         type_info->description=ConstantString(value_name);
-
-        /* Format */
         type_info->format=ConstantString("truetype");
-
-        /* Glyphs */
         if (strchr(value_data,'\\') != (char *) NULL)
           (void) CopyMagickString(buffer,value_data,MagickPathExtent);
         else
@@ -254,23 +248,18 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
             (void) CopyMagickString(buffer,font_root,MagickPathExtent);
             (void) ConcatenateMagickString(buffer,value_data,MagickPathExtent);
           }
-
         LocaleLower(buffer);
         type_info->glyphs=ConstantString(buffer);
-
         type_info->stretch=NormalStretch;
         type_info->style=NormalStyle;
         type_info->weight=400;
-
         /* Some fonts are known to require special encodings */
         if ((LocaleCompare(type_info->name, "Symbol") == 0) ||
             (LocaleCompare(type_info->name, "Wingdings") == 0) ||
             (LocaleCompare(type_info->name, "Wingdings-2") == 0) ||
             (LocaleCompare(type_info->name, "Wingdings-3") == 0))
           type_info->encoding=ConstantString("AppleRoman");
-
         family_extent=value_name;
-
         for (q=value_name; *q != '\0'; )
           {
             (void) GetNextToken(q,(const char **) &q,MagickPathExtent,token);
@@ -323,11 +312,9 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
             else
               family_extent=q;
           }
-
         (void) CopyMagickString(buffer,value_name,family_extent-value_name+1);
         (void) StripMagickString(buffer);
         type_info->family=ConstantString(buffer);
-
         list_entries++;
         status=AddValueToSplayTree(type_cache,type_info->name,type_info);
         if (status == MagickFalse)
