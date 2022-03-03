@@ -157,19 +157,16 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
   */
   res=RegOpenKeyExA(HKEY_LOCAL_MACHINE,
     "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",0,KEY_READ,&reg_key);
+  system_root_length=sizeof(system_root)-1;
   if (res == ERROR_SUCCESS)
-    {
-      system_root_length=sizeof(system_root)-1;
-      res=RegQueryValueExA(reg_key,"SystemRoot",NULL,&type,(BYTE*) system_root,
-        &system_root_length);
-    }
+    res=RegQueryValueExA(reg_key,"SystemRoot",NULL,&type,(BYTE*) system_root,
+      &system_root_length);
   if (res != ERROR_SUCCESS)
     {
       res=RegOpenKeyExA(HKEY_LOCAL_MACHINE,
         "SOFTWARE\\Microsoft\\Windows\\CurrentVersion",0,KEY_READ,&reg_key);
       if (res == ERROR_SUCCESS)
         {
-          system_root_length=sizeof(system_root)-1;
           res = RegQueryValueExA(reg_key,"SystemRoot",NULL,&type,
             (BYTE*)system_root,&system_root_length);
         }
