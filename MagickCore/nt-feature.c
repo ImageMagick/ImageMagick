@@ -131,22 +131,21 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
   ExceptionInfo *exception)
 {
   HKEY
-    reg_key = (HKEY) INVALID_HANDLE_VALUE;
+    reg_key;
 
   LONG
     res;
 
   int
-    list_entries = 0;
+    list_entries;
 
   char
     buffer[MagickPathExtent],
-    system_root[MagickPathExtent],
     font_root[MagickPathExtent];
 
   DWORD
     type,
-    system_root_length;
+    length;
 
   MagickBooleanType
     status;
@@ -155,37 +154,36 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
     Try to find the right Windows*\CurrentVersion key, the SystemRoot and
     then the Fonts key
   */
+  list_entries=0;
+  reg_key=(HKEY) INVALID_HANDLE_VALUE;
   res=RegOpenKeyExA(HKEY_LOCAL_MACHINE,
     "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",0,KEY_READ,&reg_key);
-  system_root_length=sizeof(system_root)-1;
+  length=sizeof(font_root)-1;
   if (res == ERROR_SUCCESS)
-    res=RegQueryValueExA(reg_key,"SystemRoot",NULL,&type,(BYTE*) system_root,
-      &system_root_length);
+    res=RegQueryValueExA(reg_key,"SystemRoot",NULL,&type,(BYTE*) font_root,
+      &length);
   if (res != ERROR_SUCCESS)
     {
       res=RegOpenKeyExA(HKEY_LOCAL_MACHINE,
         "SOFTWARE\\Microsoft\\Windows\\CurrentVersion",0,KEY_READ,&reg_key);
       if (res == ERROR_SUCCESS)
-        {
-          res = RegQueryValueExA(reg_key,"SystemRoot",NULL,&type,
-            (BYTE*)system_root,&system_root_length);
-        }
+        res=RegQueryValueExA(reg_key,"SystemRoot",NULL,&type,(BYTE*) font_root,
+          &length);
     }
   if (res == ERROR_SUCCESS)
     res=RegOpenKeyExA(reg_key,"Fonts",0,KEY_READ,&reg_key);
   if (res != ERROR_SUCCESS)
     return(MagickFalse);
-  *font_root='\0';
-  (void) CopyMagickString(buffer,system_root,MagickPathExtent);
-  (void) ConcatenateMagickString(buffer,"\\fonts\\arial.ttf",MagickPathExtent);
-  if (IsPathAccessible(buffer) != MagickFalse)
+  (void) ConcatenateMagickString(font_root,"\\fonts\\arial.ttf",
+    MagickPathExtent);
+  if (IsPathAccessible(font_root) != MagickFalse)
     {
-      (void) CopyMagickString(font_root,system_root,MagickPathExtent);
+      font_root[length-1]=0;
       (void) ConcatenateMagickString(font_root,"\\fonts\\",MagickPathExtent);
     }
   else
     {
-      (void) CopyMagickString(font_root,system_root,MagickPathExtent);
+      font_root[length-1]=0;
       (void) ConcatenateMagickString(font_root,"\\",MagickPathExtent);
     }
 
