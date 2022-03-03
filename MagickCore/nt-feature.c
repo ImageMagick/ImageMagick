@@ -196,14 +196,16 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
     DWORD
       registry_index = 0,
       value_data_size,
-      value_name_length;
+      wide_name_length;
 
     char
       value_data[MagickPathExtent],
       value_name[MagickPathExtent];
 
-    res = ERROR_SUCCESS;
+    wchar_t
+      wide_name[MagickPathExtent];
 
+    res=ERROR_SUCCESS;
     while (res != ERROR_NO_MORE_ITEMS)
       {
         char
@@ -212,13 +214,15 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
           *pos,
           *q;
 
-        value_name_length=sizeof(value_name)-1;
+        wide_name_length=MagickPathExtent-1;
         value_data_size=sizeof(value_data)-1;
-        res=RegEnumValueA(reg_key,registry_index,value_name,&value_name_length,
-          0,&type,(BYTE*)value_data,&value_data_size);
+        res=RegEnumValueW(reg_key,registry_index,(wchar_t *) wide_name,
+          &wide_name_length,0,&type,(BYTE *) value_data,&value_data_size);
         registry_index++;
         if (res != ERROR_SUCCESS)
           continue;
+        WideCharToMultiByte(CP_UTF8,0,wide_name,-1,value_name,
+          sizeof(value_name),NULL,NULL);
         if ((pos = strstr(value_name," (TrueType)")) == (char*) NULL)
           continue;
         *pos='\0'; /* Remove (TrueType) from string */
@@ -331,7 +335,7 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
             ResourceLimitError,"MemoryAllocationFailed","`%s'",type_info->name);
       }
   }
-  RegCloseKey ( reg_key );
+  RegCloseKey(reg_key);
   return(MagickTrue);
 }
 
