@@ -4573,6 +4573,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     }
   thumbnail_image=ResizeImage(clone_image,columns,rows,image->filter ==
     UndefinedFilter ? LanczosSharpFilter : image->filter,exception);
+  clone_image=DestroyImage(clone_image);
   if (thumbnail_image == (Image *) NULL)
     return(thumbnail_image);
   (void) ParseAbsoluteGeometry("0x0+0+0",&thumbnail_image->page);
