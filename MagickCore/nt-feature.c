@@ -192,59 +192,51 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
       *type_info;
 
     DWORD
-      registry_index = 0,
-      value_data_size,
-      wide_name_length;
+      registry_index;
 
     char
-      value_data[MagickPathExtent],
-      value_name[MagickPathExtent];
+      utf8[MagickPathExtent];
 
     wchar_t
-      wide_name[MagickPathExtent];
+      wide_name[MagickPathExtent],
+      wide_value[MagickPathExtent];
 
+    registry_index=0;
     res=ERROR_SUCCESS;
     while (res != ERROR_NO_MORE_ITEMS)
       {
         char
           *family_extent,
-          token[MagickPathExtent],
           *pos,
           *q;
 
-        wide_name_length=MagickPathExtent-1;
-        value_data_size=sizeof(value_data)-1;
+        DWORD
+          name_length,
+          value_length;
+
+        name_length=MagickPathExtent-1;
+        value_length=MagickPathExtent-1;
         res=RegEnumValueW(reg_key,registry_index,(wchar_t *) wide_name,
-          &wide_name_length,0,&type,(BYTE *) value_data,&value_data_size);
+          &name_length,0,&type,(BYTE *) wide_value,&value_length);
         registry_index++;
         if (res != ERROR_SUCCESS)
           continue;
-        WideCharToMultiByte(CP_UTF8,0,wide_name,-1,value_name,
-          sizeof(value_name),NULL,NULL);
-        if ((pos = strstr(value_name," (TrueType)")) == (char*) NULL)
+        WideCharToMultiByte(CP_UTF8,0,wide_name,-1,utf8,sizeof(utf8),NULL,
+          NULL);
+        if ((pos=strstr(utf8," (TrueType)")) == (char*) NULL)
           continue;
         *pos='\0'; /* Remove (TrueType) from string */
-
         type_info=(TypeInfo *) AcquireCriticalMemory(sizeof(*type_info));
         (void) memset(type_info,0,sizeof(TypeInfo));
         type_info->path=ConstantString("Windows Fonts");
         type_info->signature=MagickCoreSignature;
-        (void) CopyMagickString(buffer,value_name,MagickPathExtent);
+        (void) CopyMagickString(buffer,utf8,MagickPathExtent);
         for (pos=buffer; *pos != 0; pos++)
           if (*pos == ' ')
             *pos = '-';
         type_info->name=ConstantString(buffer);
-        type_info->description=ConstantString(value_name);
+        type_info->description=ConstantString(utf8);
         type_info->format=ConstantString("truetype");
-        if (strchr(value_data,'\\') != (char *) NULL)
-          (void) CopyMagickString(buffer,value_data,MagickPathExtent);
-        else
-          {
-            (void) CopyMagickString(buffer,font_root,MagickPathExtent);
-            (void) ConcatenateMagickString(buffer,value_data,MagickPathExtent);
-          }
-        LocaleLower(buffer);
-        type_info->glyphs=ConstantString(buffer);
         type_info->stretch=NormalStretch;
         type_info->style=NormalStyle;
         type_info->weight=400;
@@ -254,13 +246,15 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
             (LocaleCompare(type_info->name, "Wingdings-2") == 0) ||
             (LocaleCompare(type_info->name, "Wingdings-3") == 0))
           type_info->encoding=ConstantString("AppleRoman");
-        family_extent=value_name;
-        for (q=value_name; *q != '\0'; )
+        family_extent=utf8;
+        for (q=utf8; *q != '\0'; )
           {
+            char
+              token[MagickPathExtent];
+
             (void) GetNextToken(q,(const char **) &q,MagickPathExtent,token);
             if (*token == '\0')
               break;
-
             if (LocaleCompare(token,"Italic") == 0)
               type_info->style=ItalicStyle;
             else if (LocaleCompare(token,"Oblique") == 0)
@@ -307,9 +301,20 @@ MagickExport MagickBooleanType NTAcquireTypeCache(SplayTreeInfo *type_cache,
             else
               family_extent=q;
           }
-        (void) CopyMagickString(buffer,value_name,family_extent-value_name+1);
+        (void) CopyMagickString(buffer,utf8,family_extent-utf8+1);
         (void) StripMagickString(buffer);
         type_info->family=ConstantString(buffer);
+        WideCharToMultiByte(CP_UTF8,0,wide_value,-1,utf8,sizeof(utf8),NULL,
+          NULL);
+        if (strchr(utf8,'\\') != (char *) NULL)
+          (void) CopyMagickString(buffer,utf8,MagickPathExtent);
+        else
+          {
+            (void) CopyMagickString(buffer,font_root,MagickPathExtent);
+            (void) ConcatenateMagickString(buffer,utf8,MagickPathExtent);
+          }
+        LocaleLower(buffer);
+        type_info->glyphs=ConstantString(buffer);
         list_entries++;
         status=AddValueToSplayTree(type_cache,type_info->name,type_info);
         if (status == MagickFalse)
