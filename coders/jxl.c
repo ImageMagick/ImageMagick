@@ -43,6 +43,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -458,15 +459,26 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport size_t RegisterJXLImage(void)
 {
+  char
+    version[MagickPathExtent];
+
   MagickInfo
     *entry;
 
+  *version='\0';
+#if defined(MAGICKCORE_JXL_DELEGATE)
+  (void) FormatLocaleString(version,MagickPathExtent,"libjxl %u.%u.%u",
+    (JxlDecoderVersion()/1000000),(JxlDecoderVersion()/1000) % 1000,
+    (JxlDecoderVersion() % 1000));
+#endif
   entry=AcquireMagickInfo("JXL", "JXL", "JPEG XL (ISO/IEC 18181)");
 #if defined(MAGICKCORE_JXL_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadJXLImage;
   entry->encoder=(EncodeImageHandler *) WriteJXLImage;
 #endif
   entry->flags^=CoderAdjoinFlag;
+  if (*version != '\0')
+    entry->version=ConstantString(version);
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -593,6 +605,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   JXLSetMemoryManager(&memory_manager,&memory_manager_info,image,exception);
   encoder=JxlEncoderCreate(&memory_manager);
   if (encoder == (JxlEncoder *) NULL)
