@@ -4124,6 +4124,8 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
     {
        if (LocaleCompare(option,"dxt1") == 0)
          compression=FOURCC_DXT1;
+       if (LocaleCompare(option,"dxt5") == 0)
+         compression=FOURCC_DXT5;
        if (LocaleCompare(option,"none") == 0)
          pixelFormat=DDPF_RGB;
     }
