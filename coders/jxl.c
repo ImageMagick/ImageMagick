@@ -425,6 +425,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         status=SetImageExtent(image,image->columns,image->rows,exception);
         if (status == MagickFalse)
           break;
+        JXLSetFormat(image,&pixel_format);
         jxl_status=JxlDecoderImageOutBufferSize(jxl_info,&pixel_format,&extent);
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
