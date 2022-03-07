@@ -1787,6 +1787,13 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
     }
     switch (FndArgs) {
       case 1:
+        if (ndx1 != NULL_ADDRESS) {
+          (void) ThrowMagickException (
+            pfx->exception, GetMagickModule(), OptionError,
+            "For function", "'%s' required argument is missing at '%s'",
+            funStr, SetShortExp(pfx));
+          return MagickFalse;
+        }
         ndx1 = pfx->usedElements;
         if (fe==fWhile) {
           (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2+1 */
@@ -1800,6 +1807,13 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
         }
         break;
       case 2:
+        if (ndx2 != NULL_ADDRESS) {
+          (void) ThrowMagickException (
+            pfx->exception, GetMagickModule(), OptionError,
+            "For function", "'%s' required argument is missing at '%s'",
+            funStr, SetShortExp(pfx));
+          return MagickFalse;
+        }
         ndx2 = pfx->usedElements;
         if (fe==fWhile) {
           pfx->Elements[pfx->usedElements-1].DoPush = MagickFalse;
@@ -1816,6 +1830,13 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
         }
         break;
       case 3:
+        if (ndx3 != NULL_ADDRESS) {
+          (void) ThrowMagickException (
+            pfx->exception, GetMagickModule(), OptionError,
+            "For function", "'%s' required argument is missing at '%s'",
+            funStr, SetShortExp(pfx));
+          return MagickFalse;
+        }
         if (fe==fFor) {
           pfx->Elements[pfx->usedElements-1].DoPush = MagickFalse;
           (void) AddAddressingElement (pfx, rGoto, ndx1);
