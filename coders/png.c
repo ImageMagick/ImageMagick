@@ -5339,8 +5339,8 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
 }
 #endif
 
-static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
-     ExceptionInfo *exception)
+static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
     page_geometry[MagickPathExtent];
@@ -6271,6 +6271,9 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
 
                 /* Record starting point.  */
                 loop_iters=mng_get_long(&chunk[1]);
+                if (image_info->number_scenes != 0)
+                  if (loop_iters > image_info->number_scenes)
+                    loop_iters=image_info->number_scenes;
 
                 if (logging != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7772,8 +7775,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info, const ImageInfo *image_info,
   return(image);
 }
 
-static Image *ReadMNGImage(const ImageInfo *image_info,
-     ExceptionInfo *exception)
+static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -7843,8 +7845,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   return(Image *) NULL;
 }
 
-static Image *ReadMNGImage(const ImageInfo *image_info,
-   ExceptionInfo *exception)
+static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   return(ReadPNGImage(image_info,exception));
 }
