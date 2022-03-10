@@ -6286,9 +6286,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
                       loop_iters=GetMagickResourceLimit(ListLengthResource);
                     if (loop_iters >= 2147483647L)
                       loop_iters=2147483647L;
-                    else
-                      if (loop_iters < 0)
-                        loop_iters=1;
                     if (image_info->number_scenes != 0)
                       if (loop_iters > image_info->number_scenes)
                         loop_iters=image_info->number_scenes;
