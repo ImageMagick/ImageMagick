@@ -6271,9 +6271,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 
                 /* Record starting point.  */
                 loop_iters=mng_get_long(&chunk[1]);
-                if (image_info->number_scenes != 0)
-                  if (loop_iters > image_info->number_scenes)
-                    loop_iters=image_info->number_scenes;
 
                 if (logging != MagickFalse)
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -6289,6 +6286,12 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
                       loop_iters=GetMagickResourceLimit(ListLengthResource);
                     if (loop_iters >= 2147483647L)
                       loop_iters=2147483647L;
+                    else
+                      if (loop_iters < 0)
+                        loop_iters=1;
+                    if (image_info->number_scenes != 0)
+                      if (loop_iters > image_info->number_scenes)
+                        loop_iters=image_info->number_scenes;
                     mng_info->loop_jump[loop_level]=TellBlob(image);
                     mng_info->loop_count[loop_level]=loop_iters;
                   }
