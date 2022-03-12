@@ -66,6 +66,7 @@ Image Settings:
                        virtual pixel access method
 
 Image Operators:
+  \-auto-orient         automatically orient image
   \-brightness-contrast geometry
                         improve brightness / contrast of the image
   \-distort method args

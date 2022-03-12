@@ -92,6 +92,7 @@ static MagickBooleanType CompareUsage(void)
       "  -list type           print a list of supported option arguments\n"
       "  -log format          format of debugging information",
     operators[] =
+      "  -auto-orient         automagically orient (rotate) image\n"
       "  -brightness-contrast geometry\n"
       "                       improve brightness / contrast of the image\n"
       "  -distort method args\n"
@@ -378,6 +379,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 "UnrecognizedAlphaChannelOption",argv[i]);
             break;
           }
+        if (LocaleCompare("auto-orient",option+1) == 0)
+          break;
         if (LocaleCompare("authenticate",option+1) == 0)
           {
             if (*option == '+')

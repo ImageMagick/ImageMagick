@@ -785,6 +785,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       unsigned char
         *output_buffer;
 
+      JxlEncoderCloseInput(jxl_info);
       output_buffer=AcquireQuantumMemory(MagickMaxBufferExtent,
         sizeof(*output_buffer));
       if (output_buffer == (unsigned char *) NULL)
