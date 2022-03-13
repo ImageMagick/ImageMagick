@@ -31,14 +31,13 @@ m4_define([magick_lib_version_number],
           [magick_major_version,magick_minor_version,magick_micro_version,magick_patchlevel_version])
 m4_define([magick_git_revision],
           m4_esyscmd([
-            c=$(git log --full-history --format=tformat:. HEAD | wc -l)
             h=$(git rev-parse --short HEAD)
-            d=$(date -u +%Y%m%d)
-            printf %s "$c:$h:$d"
+            d=$(git log -1 --format=:%cd --date=format:%Y%m%d || date -u +%Y%m%d -r ./ChangeLog.md)
+            printf %s "$h$d"
           ]))
 m4_define([magick_release_date],
           m4_esyscmd([
-            d=$(date -u +%F -r ./ChangeLog.md)
+            d=$(git log -1 --format=%cd --date=format:%Y%m%d || date -u +%F -r ./ChangeLog.md)
             printf %s "$d"
           ]))
 

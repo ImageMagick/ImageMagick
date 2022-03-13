@@ -39,6 +39,7 @@ extern "C" {
 #define MagickppLibAddendum  "@PACKAGE_VERSION_ADDENDUM@"
 #define MagickppLibInterface  @MAGICKPP_LIBRARY_CURRENT@
 #define MagickppLibMinInterface  @MAGICKPP_LIBRARY_CURRENT_MIN@
+#define MagickGitVersion  "@MAGICK_GIT_REVISION@"
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 #define MagickAuthoritativeLicense  \
   "https://imagemagick.org/script/license.php"
@@ -68,7 +69,7 @@ extern "C" {
 #define MagickVersion  \
   MagickPackageName " " MagickLibVersionText MagickLibAddendum " " \
   MagickQuantumDepth MagickHDRISupport " " MagickPlatform " " \
-  MagickReleaseDate " " MagickAuthoritativeURL
+  MagickGitVersion " " MagickAuthoritativeURL
 
 extern MagickExport char
   *GetMagickHomeURL(void);
