@@ -114,7 +114,7 @@ static MagickBooleanType IsJXL(const unsigned char *magick,const size_t length)
   JxlSignature
     signature = JxlSignatureCheck(magick,length);
 
-  if (signature == JXL_SIG_NOT_ENOUGH_BYTES || (signature == JXL_SIG_INVALID))
+  if ((signature == JXL_SIG_NOT_ENOUGH_BYTES) || (signature == JXL_SIG_INVALID))
     return(MagickFalse);
   return(MagickTrue);
 }
