@@ -37,7 +37,7 @@ m4_define([magick_git_revision],
           ]))
 m4_define([magick_release_date],
           m4_esyscmd([
-            d=$(git log -1 --format=%cd --date=format:%Y%m%d || date -u +%F -r ./ChangeLog.md)
+            d=$(git log -1 --format=%cd --date=format:%Y-%m-%d || date -u +%F -r ./ChangeLog.md)
             printf %s "$d"
           ]))
 
