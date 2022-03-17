@@ -4110,7 +4110,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=map.red[i];
               if ((info.scale != (Quantum *) NULL) && (index >= 0) &&
-                  (index <= (int) info.max_value))
+                  (index <= (int) info.scale_size))
                 index=(int) info.scale[index];
               image->colormap[i].red=(MagickRealType) index;
             }
@@ -4119,7 +4119,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=map.green[i];
               if ((info.scale != (Quantum *) NULL) && (index >= 0) &&
-                  (index <= (int) info.max_value))
+                  (index <= (int) info.scale_size))
                 index=(int) info.scale[index];
               image->colormap[i].green=(MagickRealType) index;
             }
@@ -4128,7 +4128,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=map.blue[i];
               if ((info.scale != (Quantum *) NULL) && (index >= 0) &&
-                  (index <= (int) info.max_value))
+                  (index <= (int) info.scale_size))
                 index=(int) info.scale[index];
               image->colormap[i].blue=(MagickRealType) index;
             }
@@ -4137,7 +4137,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=map.gray[i];
               if ((info.scale != (Quantum *) NULL) && (index >= 0) &&
-                  (index <= (int) info.max_value))
+                  (index <= (int) info.scale_size))
                 index=(int) info.scale[index];
               image->colormap[i].red=(MagickRealType) index;
               image->colormap[i].green=(MagickRealType) index;
