@@ -20,7 +20,7 @@
 %                               October 2003                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -749,16 +749,16 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  quantum_info->quantum=32;
-  quantum_info->pack=MagickFalse;
+  SetQuantumQuantum(quantum_info,32);
+  SetQuantumPack(quantum_info,MagickFalse);
   quantum_type=RGBQuantum;
-  length=GetQuantumExtent(image,quantum_info,quantum_type);
   length=GetBytesPerRow(image->columns,3,image->depth,MagickTrue);
   if (cin.image.number_channels == 1)
     {
       quantum_type=GrayQuantum;
       length=GetBytesPerRow(image->columns,1,image->depth,MagickTrue);
     }
+  status=SetQuantumPad(image,quantum_info,0);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {

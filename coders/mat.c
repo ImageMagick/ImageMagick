@@ -16,28 +16,19 @@
 %                                2001-2008                                    %
 %                                                                             %
 %                                                                             %
-%  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("ImageMagick"),  %
-%  to deal in ImageMagick without restriction, including without limitation   %
-%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
-%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
-%  ImageMagick is furnished to do so, subject to the following conditions:    %
+%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
+%  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
-%  The above copyright notice and this permission notice shall be included in %
-%  all copies or substantial portions of ImageMagick.                         %
+%  You may not use this file except in compliance with the License.  You may  %
+%  obtain a copy of the License at                                            %
 %                                                                             %
-%  The software is provided "as is", without warranty of any kind, express or %
-%  implied, including but not limited to the warranties of merchantability,   %
-%  fitness for a particular purpose and noninfringement.  In no event shall   %
-%  ImageMagick Studio be liable for any claim, damages or other liability,    %
-%  whether in an action of contract, tort or otherwise, arising from, out of  %
-%  or in connection with ImageMagick or the use or other dealings in          %
-%  ImageMagick.                                                               %
+%    https://imagemagick.org/script/license.php                               %
 %                                                                             %
-%  Except as contained in this notice, the name of the ImageMagick Studio     %
-%  shall not be used in advertising or otherwise to promote the sale, use or  %
-%  other dealings in ImageMagick without prior written authorization from the %
-%  ImageMagick Studio.                                                        %
+%  Unless required by applicable law or agreed to in writing, software        %
+%  distributed under the License is distributed on an "AS IS" BASIS,          %
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   %
+%  See the License for the specific language governing permissions and        %
+%  limitations under the License.                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -361,10 +352,10 @@ static void ReadBlobDoublesMSB(Image * image, size_t len, double *data)
 }
 
 /* Calculate minimum and maximum from a given block of data */
-static void CalcMinMax(Image *image, int endian_indicator, int SizeX, int SizeY, size_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
+static void CalcMinMax(Image *image, int endian_indicator, ssize_t SizeX, ssize_t SizeY, size_t CellType, unsigned ldblk, void *BImgBuff, double *Min, double *Max)
 {
 MagickOffsetType filepos;
-int i, x;
+ssize_t i, x;
 void (*ReadBlobDoublesXXX)(Image * image, size_t len, double *data);
 void (*ReadBlobFloatsXXX)(Image * image, size_t len, float *data);
 double *dblrow;
@@ -423,7 +414,7 @@ float *fltrow;
 }
 
 
-static void FixSignedValues(const Image *image,Quantum *q, int y)
+static void FixSignedValues(const Image *image,Quantum *q, ssize_t y)
 {
   while(y-->0)
   {
@@ -439,11 +430,14 @@ static void FixSignedValues(const Image *image,Quantum *q, int y)
 
 
 /** Fix whole row of logical/binary data. It means pack it. */
-static void FixLogical(unsigned char *Buff,int ldblk)
+static void FixLogical(unsigned char *Buff,ssize_t ldblk)
 {
 unsigned char mask=128;
 unsigned char *BuffL = Buff;
 unsigned char val = 0;
+
+  if (ldblk == 0)
+    return;
 
   while(ldblk-->0)
   {
@@ -604,9 +598,6 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     unsigned int nameLen;
   } MAT4_HDR;
 
-  long
-    ldblk;
-
   EndianType
     endian;
 
@@ -626,10 +617,9 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     format_type;
 
   ssize_t
-    i;
-
-  ssize_t
     count,
+    i,
+    ldblk,
     y;
 
   unsigned char
@@ -883,7 +873,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t CellType;
   QuantumInfo *quantum_info;
   ImageInfo *clone_info;
-  int i;
+  ssize_t i;
   ssize_t ldblk;
   unsigned char *BImgBuff = NULL;
   double MinVal, MaxVal;
@@ -1203,7 +1193,7 @@ RestoreMSCWarning
     image->colors = GetQuantumRange(image->depth);
     if (image->columns == 0 || image->rows == 0)
       goto MATLAB_KO;
-    if((unsigned int)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
+    if((size_t)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)
       goto MATLAB_KO;
     /* Image is gray when no complex flag is set and 2D Matrix */
     if ((MATLAB_HDR.DimFlag == 8) &&
@@ -1646,9 +1636,6 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
     char
       padding;
 
-    ImageType
-      type;
-
     MagickBooleanType
       is_gray;
 
@@ -1666,9 +1653,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
 
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
-    type=IdentifyImageCoderType(image,exception);
-    is_gray=(IsGrayImageType(type) != MagickFalse) ? MagickTrue :
-      MagickFalse;
+    is_gray=IdentifyImageCoderGray(image,exception);
     z=(is_gray != MagickFalse) ? 0 : 3;
 
     /*

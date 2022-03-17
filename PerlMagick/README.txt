@@ -90,8 +90,8 @@ Installation - Win32 Strawberry perl
    3) During installation select that you want to install ImageMagick's
       development files (libraries+headers)
 
-   4) You NEED TO have ImageMagick's directory in your PATH.  Note: we are
-      checking the presence of convert.exe or identify.exe tools
+   4) You also need to have ImageMagick's directory in your PATH. We are
+      using the 'magick' tool to determine your actual configuration.
 
    5) You might need Visual C++ Redistributable Package installed on your
       system.  See instructions on ImageMagick's Binary Release webpage.

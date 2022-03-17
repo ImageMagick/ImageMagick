@@ -17,7 +17,7 @@
 %                                 July 1998                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -651,7 +651,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
 %
 */
 
-static size_t **DestroyHistogramThreadSet(size_t **histogram)
+static size_t **DestroyHistogramTLS(size_t **histogram)
 {
   ssize_t
     i;
@@ -664,7 +664,7 @@ static size_t **DestroyHistogramThreadSet(size_t **histogram)
   return(histogram);
 }
 
-static size_t **AcquireHistogramThreadSet(const size_t count)
+static size_t **AcquireHistogramTLS(const size_t count)
 {
   ssize_t
     i;
@@ -682,7 +682,7 @@ static size_t **AcquireHistogramThreadSet(const size_t count)
   {
     histogram[i]=(size_t *) AcquireQuantumMemory(count,sizeof(**histogram));
     if (histogram[i] == (size_t *) NULL)
-      return(DestroyHistogramThreadSet(histogram));
+      return(DestroyHistogramTLS(histogram));
   }
   return(histogram);
 }
@@ -741,7 +741,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       paint_image=DestroyImage(paint_image);
       return((Image *) NULL);
     }
-  histograms=AcquireHistogramThreadSet(NumberPaintBins);
+  histograms=AcquireHistogramTLS(NumberPaintBins);
   if (histograms == (size_t **) NULL)
     {
       linear_image=DestroyImage(linear_image);
@@ -862,7 +862,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   }
   paint_view=DestroyCacheView(paint_view);
   image_view=DestroyCacheView(image_view);
-  histograms=DestroyHistogramThreadSet(histograms);
+  histograms=DestroyHistogramTLS(histograms);
   linear_image=DestroyImage(linear_image);
   if (status == MagickFalse)
     paint_image=DestroyImage(paint_image);

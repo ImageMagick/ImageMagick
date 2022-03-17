@@ -1,7 +1,9 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2002, 2003
-// Copyright Dirk Lemstra 2014-2017
+//
+// Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
 //
 // Simple C++ function wrappers for ImageMagick equivalents
 //
@@ -12,10 +14,10 @@
 #include "Magick++/Include.h"
 #include <string>
 
-using namespace std;
-
 #include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
+
+using namespace std;
 
 static bool magick_initialized=false;
 

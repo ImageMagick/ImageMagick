@@ -17,7 +17,7 @@
 %                               January 2010                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2010 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -71,7 +71,6 @@
 #include "MagickCore/morphology-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/prepress.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/resource_.h"
@@ -969,8 +968,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
   switch(type) {
     case UndefinedKernel:    /* These should not call this function */
     case UserDefinedKernel:
-      assert("Should not call this function" != (char *) NULL);
-      break;
+      ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "InvalidOption","`%s'","Should not call this function");
+      return((KernelInfo *) NULL);
     case LaplacianKernel:   /* Named Descrete Convolution Kernels */
     case SobelKernel:       /* these are defined using other kernels */
     case RobertsKernel:
@@ -2628,7 +2628,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     }
     default:
     {
-      assert("Not a Primitive Morphology Method" != (char *) NULL);
+      ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "InvalidOption","`%s'","Not a Primitive Morphology Method");
       break;
     }
   }

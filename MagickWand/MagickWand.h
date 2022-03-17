@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.  You may
@@ -25,7 +25,7 @@ extern "C" {
 
 #if !defined(MAGICKWAND_CONFIG_H)
 # define MAGICKWAND_CONFIG_H
-# if !defined(vms) && !defined(macintosh)
+# if !defined(vms)
 #  include "MagickCore/magick-config.h"
 # else
 #  include "magick-config.h"

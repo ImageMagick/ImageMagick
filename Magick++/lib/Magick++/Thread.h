@@ -1,13 +1,15 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2003
-// Copyright Dirk Lemstra 2014
+//
+// Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
 //
 // Definition of types and classes to support threads
 //
 // This class is a Magick++ implementation class and is not intended
 // for use by end-users.
-// 
+//
 #if !defined (Magick_Thread_header)
 #define Magick_Thread_header
 
@@ -44,7 +46,7 @@ namespace Magick
 
     // Don't support copy constructor
     MutexLock(const MutexLock& original_);
-    
+
     // Don't support assignment
     MutexLock& operator=(const MutexLock& original );
 

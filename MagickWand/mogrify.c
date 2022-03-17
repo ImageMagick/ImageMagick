@@ -17,7 +17,7 @@
 %                                March 2000                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1145,7 +1145,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             if (*option == '+')
               {
-                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,WritePixelMask,(const Image *) NULL,
                   exception);
                 break;
               }
@@ -1163,7 +1163,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,WritePixelMask,(const Image *) NULL,
                   exception);
                 break;
               }
@@ -1804,6 +1804,13 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             parameters=(double *) RelinquishMagickMemory(parameters);
             break;
           }
+        if (LocaleCompare("fx",option+1) == 0)
+          {
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            (void) ParseGeometry(argv[i+1],&geometry_info);
+            mogrify_image=FxImage(*image,argv[i+1],exception);
+            break;
+          }
         break;
       }
       case 'g':
@@ -1941,6 +1948,12 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               interpolate_method,exception);
             break;
           }
+        if (LocaleCompare("integral",option+1) == 0)
+          {
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            mogrify_image=IntegralImage(*image,exception);
+            break;
+          }
         if (LocaleCompare("interline-spacing",option+1) == 0)
           {
             if (*option == '+')
@@ -1992,7 +2005,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("kmeans",option+1) == 0)
           {
             /*
-              K-means clustering
+              K-means clustering.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
@@ -2204,7 +2217,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,WritePixelMask,(const Image *) NULL,
                   exception);
                 break;
               }
@@ -2680,7 +2693,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,ReadPixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,ReadPixelMask,(const Image *) NULL,
                   exception);
                 break;
               }
@@ -3470,7 +3483,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Remove a mask.
                 */
-                (void) SetImageMask(*image,WritePixelMask,(Image *) NULL,
+                (void) SetImageMask(*image,WritePixelMask,(const Image *) NULL,
                   exception);
                 break;
               }
@@ -3638,6 +3651,7 @@ static MagickBooleanType MogrifyUsage(void)
       "  -identify            identify the format and characteristics of the image\n"
       "  -ift                 implements the inverse discrete Fourier transform (DFT)\n"
       "  -implode amount      implode image pixels about the center\n"
+      "  -integral            calculate the sum of values (pixel values) in the image\n"
       "  -interpolative-resize geometry\n"
       "                       resize image using interpolation\n"
       "  -kmeans geometry     K means color reduction\n"
@@ -4067,11 +4081,11 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if (*magic != '\0')
           {
             char
-              filename[MagickPathExtent];
+              name[MagickPathExtent];
 
-            (void) FormatLocaleString(filename,MagickPathExtent,"%s:%s",magic,
+            (void) FormatLocaleString(name,MagickPathExtent,"%s:%s",magic,
               image->filename);
-            (void) CopyMagickString(image->filename,filename,MagickPathExtent);
+            (void) CopyMagickString(image->filename,name,MagickPathExtent);
           }
         if ((LocaleCompare(image->filename,"-") != 0) &&
             (IsPathWritable(image->filename) != MagickFalse))
@@ -4559,8 +4573,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
-        if (LocaleCompare("compare",option+1) == 0)
-          break;
         if (LocaleCompare("comment",option+1) == 0)
           {
             if (*option == '+')
@@ -4568,6 +4580,25 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("compare",option+1) == 0)
+          break;
+        if (LocaleCompare("compose",option+1) == 0)
+          {
+            ssize_t
+              compose;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            compose=ParseCommandOption(MagickComposeOptions,MagickFalse,
+              argv[i]);
+            if (compose < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedComposeOperator",
+                argv[i]);
             break;
           }
         if (LocaleCompare("composite",option+1) == 0)
@@ -5143,8 +5174,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("fx",option+1) == 0)
           {
-            if (*option == '+')
-              break;
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
@@ -5305,6 +5334,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 "UnrecognizedPixelIntensityMethod",argv[i]);
             break;
           }
+        if (LocaleCompare("integral",option+1) == 0)
+          break;
         if (LocaleCompare("intent",option+1) == 0)
           {
             ssize_t
@@ -5672,7 +5703,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            (void) GetNextToken(argv[i],(const char **) NULL,MagickPathExtent,token);
+            (void) GetNextToken(argv[i],(const char **) NULL,MagickPathExtent,
+              token);
             op=ParseCommandOption(MagickMorphologyOptions,MagickFalse,token);
             if (op < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedMorphologyMethod",
@@ -8190,15 +8222,41 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 clip_to_self,geometry.x,geometry.y,exception);
             else
               {
-                if ((compose == DisplaceCompositeOp) ||
-                    (compose == DistortCompositeOp))
+                Image
+                  *canvas_image;
+
+                canvas_image=CloneImage(new_images,0,0,MagickTrue,exception);
+                if (canvas_image == (Image *) NULL)
+                  break;
+                switch (compose)
+                {
+                  case BlendCompositeOp:
+                  {
+                    status&=CompositeImage(new_images,source_image,compose,
+                      clip_to_self,geometry.x,geometry.y,exception);
+                    status&=CompositeImage(new_images,mask_image,
+                      CopyAlphaCompositeOp,MagickTrue,0,0,exception);
+                    break;
+                  }
+                  case DisplaceCompositeOp:
+                  case DistortCompositeOp:
                   {
                     status&=CompositeImage(source_image,mask_image,
                       CopyGreenCompositeOp,MagickTrue,0,0,exception);
                     status&=CompositeImage(new_images,source_image,compose,
                       clip_to_self,geometry.x,geometry.y,exception);
+                    break;
                   }
-                else
+                  case SaliencyBlendCompositeOp:
+                  case SeamlessBlendCompositeOp:
+                  {
+                    status&=CompositeImage(source_image,mask_image,
+                      CopyAlphaCompositeOp,MagickTrue,0,0,exception);
+                    status&=CompositeImage(new_images,source_image,compose,
+                      clip_to_self,geometry.x,geometry.y,exception);
+                    break;
+                  }
+                  default:
                   {
                     Image
                       *clone_image;
@@ -8214,7 +8272,13 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                       OverCompositeOp,clip_to_self,0,0,exception);
                     new_images=DestroyImageList(new_images);
                     new_images=clone_image;
+                    break;
                   }
+                }
+                status&=CompositeImage(canvas_image,new_images,OverCompositeOp,
+                  clip_to_self,0,0,exception);
+                new_images=DestroyImageList(new_images);
+                new_images=canvas_image;
                 mask_image=DestroyImage(mask_image);
               }
             source_image=DestroyImage(source_image);

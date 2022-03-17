@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -588,6 +588,37 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline char *ReplaceSpaceWithNewline(char **caption,char *space)
+{
+  size_t
+    octets;
+
+  octets=(size_t) GetUTFOctets(space);
+  if (octets == 1)
+    *space='\n';
+  else
+    {
+      char
+        *target;
+
+      size_t
+        length,
+        offset;
+
+      length=strlen(*caption);
+      *space='\n';
+      offset=space-(*caption);
+      target=AcquireString(*caption);
+      CopyMagickString(target,*caption,offset+2);
+      ConcatenateMagickString(target,space+octets,length);
+      (void) DestroyString(*caption);
+      *caption=target;
+      space=(*caption)+offset;
+    }
+  return(space);
+}
+
 MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
   const MagickBooleanType split,TypeMetric *metrics,char **caption,
   ExceptionInfo *exception)
@@ -600,25 +631,33 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     *q,
     *s;
 
-  ssize_t
-    i;
-
   size_t
     width;
 
   ssize_t
+    i,
     n;
 
   q=draw_info->text;
   s=(char *) NULL;
+  width=0;
   for (p=(*caption); GetUTFCode(p) != 0; p+=GetUTFOctets(p))
   {
-    if (IsUTFSpace(GetUTFCode(p)) != MagickFalse)
-      s=p;
-    if (GetUTFCode(p) == '\n')
+    int
+      code;
+
+    code=GetUTFCode(p);
+    if (code == '\n')
       {
         q=draw_info->text;
         continue;
+      }
+    if ((IsUTFSpace(code) != MagickFalse) &&
+        (IsNonBreakingUTFSpace(code) == MagickFalse))
+      {
+        s=p;
+        if (width > image->columns)
+          p=ReplaceSpaceWithNewline(caption,s);
       }
     for (i=0; i < (ssize_t) GetUTFOctets(p); i++)
       *q++=(*(p+i));
@@ -630,12 +669,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     if (width <= image->columns)
       continue;
     if (s != (char *) NULL)
-      {
-        for (i=0; i < (ssize_t) GetUTFOctets(s); i++)
-          *(s+i)=' ';
-        *s='\n';
-        p=s;
-      }
+      p=ReplaceSpaceWithNewline(caption,s);
     else
       if ((split != MagickFalse) || (GetUTFOctets(p) > 2))
         {
@@ -974,7 +1008,7 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
   if ((type_info == (const TypeInfo *) NULL) &&
       (draw_info->family != (const char *) NULL))
     {
-      if (strchr(draw_info->family,',') == (char *) NULL)
+      if (strstr(draw_info->family,",'\"") == (char *) NULL)
         type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
           draw_info->stretch,draw_info->weight,exception);
       if (type_info == (const TypeInfo *) NULL)
@@ -994,6 +1028,7 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
           family=StringToArgv(draw_info->family,&number_families);
           for (i=1; i < (ssize_t) number_families; i++)
           {
+            (void) SubstituteString(&family[i],",","");
             type_info=GetTypeInfoByFamily(family[i],draw_info->style,
               draw_info->stretch,draw_info->weight,exception);
             if ((type_info != (const TypeInfo *) NULL) &&
@@ -1348,6 +1383,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   FT_Library
     library;
 
+  FT_Long
+    face_index;
+
   FT_Matrix
     affine;
 
@@ -1409,6 +1447,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (ft_status != 0)
     ThrowBinaryException(TypeError,"UnableToInitializeFreetypeLibrary",
       image->filename);
+  face_index=(FT_Long) draw_info->face;
   args.flags=FT_OPEN_PATHNAME;
   if (draw_info->font == (char *) NULL)
     args.pathname=ConstantString("helvetica");
@@ -1416,9 +1455,19 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (*draw_info->font != '@')
       args.pathname=ConstantString(draw_info->font);
     else
-      args.pathname=ConstantString(draw_info->font+1);
+      {
+        /*
+          Extract face index, e.g. @msgothic[1].
+        */
+        ImageInfo *image_info=AcquireImageInfo();
+        (void) strcpy(image_info->filename,draw_info->font+1);
+        (void) SetImageInfo(image_info,0,exception);
+        face_index=(FT_Long) image_info->scene;
+        args.pathname=ConstantString(image_info->filename);
+        image_info=DestroyImageInfo(image_info);
+     }
   face=(FT_Face) NULL;
-  ft_status=FT_Open_Face(library,&args,(long) draw_info->face,&face);
+  ft_status=FT_Open_Face(library,&args,face_index,&face);
   if (ft_status != 0)
     {
       (void) FT_Done_FreeType(library);
@@ -1495,10 +1544,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         geometry_flags;
 
       geometry_flags=ParseGeometry(draw_info->density,&geometry_info);
-      resolution.x=geometry_info.rho;
-      resolution.y=geometry_info.sigma;
-      if ((geometry_flags & SigmaValue) == 0)
-        resolution.y=resolution.x;
+      if ((geometry_flags & RhoValue) != 0)
+        resolution.x=geometry_info.rho;
+      resolution.y=resolution.x;
+      if ((geometry_flags & SigmaValue) != 0)
+        resolution.y=geometry_info.sigma;
     }
   ft_status=FT_Set_Char_Size(face,(FT_F26Dot6) (64.0*draw_info->pointsize),
     (FT_F26Dot6) (64.0*draw_info->pointsize),(FT_UInt) resolution.x,
@@ -1560,7 +1610,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (draw_info->render == MagickFalse)
     flags=FT_LOAD_NO_BITMAP;
   if (draw_info->text_antialias == MagickFalse)
-    flags|=FT_LOAD_RENDER | FT_LOAD_TARGET_MONO;
+    flags|=FT_LOAD_TARGET_MONO;
   else
     {
 #if defined(FT_LOAD_TARGET_LIGHT)
@@ -1652,17 +1702,13 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     ft_status=FT_Outline_Get_BBox(&outline,&bounds);
     if (ft_status != 0)
       continue;
-    if ((p == draw_info->text) || (bounds.xMin < metrics->bounds.x1))
-      if (bounds.xMin != 0)
+    if ((bounds.xMin < metrics->bounds.x1) && (bounds.xMin != 0))
         metrics->bounds.x1=(double) bounds.xMin;
-    if ((p == draw_info->text) || (bounds.yMin < metrics->bounds.y1))
-      if (bounds.yMin != 0)
+    if ((bounds.yMin < metrics->bounds.y1) && (bounds.yMin != 0))
         metrics->bounds.y1=(double) bounds.yMin;
-    if ((p == draw_info->text) || (bounds.xMax > metrics->bounds.x2))
-      if (bounds.xMax != 0)
+    if ((bounds.xMax > metrics->bounds.x2) && (bounds.xMax != 0))
         metrics->bounds.x2=(double) bounds.xMax;
-    if ((p == draw_info->text) || (bounds.yMax > metrics->bounds.y2))
-      if (bounds.yMax != 0)
+    if ((bounds.yMax > metrics->bounds.y2) && (bounds.yMax != 0))
         metrics->bounds.y2=(double) bounds.yMax;
     if (((draw_info->stroke.alpha != TransparentAlpha) ||
          (draw_info->stroke_pattern != (Image *) NULL)) &&
@@ -2087,10 +2133,11 @@ static MagickBooleanType RenderPostscript(Image *image,
         flags;
 
       flags=ParseGeometry(draw_info->density,&geometry_info);
-      resolution.x=geometry_info.rho;
-      resolution.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        resolution.y=resolution.x;
+      if ((flags & RhoValue) != 0)
+        resolution.x=geometry_info.rho;
+      resolution.y=resolution.x;
+      if ((flags & SigmaValue) != 0)
+        resolution.y=geometry_info.sigma;
     }
   if (identity == MagickFalse)
     (void) TransformImage(&annotate_image,"0x0",(char *) NULL,exception);

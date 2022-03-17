@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.  You may
@@ -112,7 +112,6 @@ extern ModuleExport size_t
   RegisterMNGImage(void),
   RegisterMONOImage(void),
   RegisterMPCImage(void),
-  RegisterMPEGImage(void),
   RegisterMPRImage(void),
   RegisterMSLImage(void),
   RegisterMTVImage(void),
@@ -197,7 +196,6 @@ extern ModuleExport size_t
   RegisterXCFImage(void),
   RegisterXPMImage(void),
   RegisterXPSImage(void),
-  RegisterXTRNImage(void),
   RegisterXVImage(void),
   RegisterXWDImage(void),
   RegisterYAMLImage(void),
@@ -285,7 +283,6 @@ extern ModuleExport void
   UnregisterMNGImage(void),
   UnregisterMONOImage(void),
   UnregisterMPCImage(void),
-  UnregisterMPEGImage(void),
   UnregisterMPRImage(void),
   UnregisterMSLImage(void),
   UnregisterMTVImage(void),
@@ -370,7 +367,6 @@ extern ModuleExport void
   UnregisterXCFImage(void),
   UnregisterXPMImage(void),
   UnregisterXPSImage(void),
-  UnregisterXTRNImage(void),
   UnregisterXVImage(void),
   UnregisterXWDImage(void),
   UnregisterYAMLImage(void),

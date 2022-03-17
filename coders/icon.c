@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -869,6 +869,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     *next;
   
   MagickBooleanType
+    adjoin,
     status;
 
   MagickOffsetType
@@ -910,12 +911,14 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   images=(Image *) NULL;
+  adjoin=image_info->adjoin;
   option=GetImageOption(image_info,"icon:auto-resize");
   if (option != (const char *) NULL)
     {
       images=AutoResizeImage(image,option,&scene,exception);
       if (images == (Image *) NULL)
         ThrowWriterException(ImageError,"InvalidDimensions");
+      adjoin=MagickTrue;
     }
   else
     {
@@ -927,7 +930,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
         scene++;
         next=SyncNextImageInList(next);
-      } while ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse));
+      } while ((next != (Image *) NULL) && (adjoin != MagickFalse));
     }
   /*
     Dump out a ICON header template to be properly initialized later.
@@ -953,7 +956,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       icon_file.directory[scene].offset);
     scene++;
     next=SyncNextImageInList(next);
-  } while ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse));
+  } while ((next != (Image *) NULL) && (adjoin != MagickFalse));
   scene=0;
   next=(images != (Image *) NULL) ? images : image;
   imageListLength=GetImageListLength(image);
@@ -1355,7 +1358,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
     next=SyncNextImageInList(next);
-  } while ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse));
+  } while ((next != (Image *) NULL) && (adjoin != MagickFalse));
   offset=SeekBlob(image,0,SEEK_SET);
   (void) offset;
   (void) WriteBlobLSBShort(image,0);
@@ -1377,7 +1380,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       icon_file.directory[scene].offset);
     scene++;
     next=SyncNextImageInList(next);
-  } while ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse));
+  } while ((next != (Image *) NULL) && (adjoin != MagickFalse));
   (void) CloseBlob(image);
   images=DestroyImageList(images);
   return(MagickTrue);

@@ -2,18 +2,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %                             IIIII  PPPP   L                                 %
 %                               I    P   P  L                                 %
 %                               I    PPPP   L                                 %
 %                               I    P      L                                 %
 %                             IIIII  P      LLLLL                             %
 %                                                                             %
-%                 Read/Write Scanalytics IPLab Image Format                   %
-%                                Sean Burke                                   %
-%                                2008.05.07                                   %
-%                                   v 0.9                                     %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%                 Read/Write Scanalytics IPLab Image Format                   %
+%                                                                             %
+%                              Software Design                                %
+%                                Sean Burke                                   %
+%                                 May 2008                                    %
+%                                                                             %
+%                                                                             %
+%  Copyright @ 2008 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -34,7 +38,7 @@
 
 /*
  Include declarations.
- */
+*/
 #include "MagickCore/studio.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"

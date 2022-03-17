@@ -17,7 +17,7 @@
 %                                 April 2007                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2007 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -247,7 +247,10 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    return(DestroyImageList(image));
+    {
+      (void) ImfCloseInputFile(file);
+      return(DestroyImageList(image));
+    }
   ImfHeaderDataWindow(hdr_info,&data_window.min_x,&data_window.min_y,
     &data_window.max_x,&data_window.max_y);
   columns=((size_t) data_window.max_x-data_window.min_x+1UL);
@@ -289,9 +292,17 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         continue;
       }
     (void) memset(scanline,0,columns*sizeof(*scanline));
-    ImfInputSetFrameBuffer(file,scanline-data_window.min_x-columns*yy,1,
-      columns);
-    ImfInputReadPixels(file,yy,yy);
+    if (ImfInputSetFrameBuffer(file,scanline-data_window.min_x-columns*yy,1,
+      columns) == 0)
+      {
+        status=MagickFalse;
+        break;
+      }
+    if (ImfInputReadPixels(file,yy,yy) == 0)
+      {
+        status=MagickFalse;
+        break;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       int
@@ -318,6 +329,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   scanline=(ImfRgba *) RelinquishMagickMemory(scanline);
   (void) ImfCloseInputFile(file);
+  if (status == MagickFalse)
+    ThrowReaderException(CorruptImageError,"UnableToReadImageData");
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }

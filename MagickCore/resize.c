@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -48,6 +48,7 @@
 #include "MagickCore/channel.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -65,7 +66,6 @@
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resample-private.h"
@@ -2401,14 +2401,14 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
   { \
     if (intensities[B] > intensities[A]) \
       { \
-        ssize_t    \
+        const ssize_t    \
           offsets[3] = { B, C, D }; \
  \
         MixPixels(pixels,offsets,3,result,3,channels); \
       } \
     else \
       { \
-        ssize_t    \
+        const ssize_t    \
           offsets[3] = { A, B, C }; \
  \
         MixPixels(pixels,offsets,3,result,3,channels); \
@@ -2423,6 +2423,9 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
       Mix2Pixels(pixels,A,B,result,3,channels); \
   }
 
+  const ssize_t
+    pixels_offsets[4] = { 0, 1, 3, 4 };
+
   MagickFloatType
     intensities[9];
 
@@ -2436,9 +2439,6 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
 
   ssize_t
     i;
-
-  ssize_t
-    offsets[4] = { 0, 1, 3, 4 };
 
   for (i=0; i < 9; i++)
     intensities[i]=GetPixelIntensity(source,pixels + i*channels);
@@ -2508,7 +2508,7 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
       Line(1,4,0,3)
       return;
     }
-  MixPixels(pixels,offsets,4,result,3,channels);
+  MixPixels(pixels,pixels_offsets,4,result,3,channels);
 #undef Corner
 #undef Line
 }
@@ -3236,7 +3236,7 @@ typedef struct _ContributionInfo
     pixel;
 } ContributionInfo;
 
-static ContributionInfo **DestroyContributionThreadSet(
+static ContributionInfo **DestroyContributionTLS(
   ContributionInfo **contribution)
 {
   ssize_t
@@ -3251,7 +3251,7 @@ static ContributionInfo **DestroyContributionThreadSet(
   return(contribution);
 }
 
-static ContributionInfo **AcquireContributionThreadSet(const size_t count)
+static ContributionInfo **AcquireContributionTLS(const size_t count)
 {
   ssize_t
     i;
@@ -3273,7 +3273,7 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
     contribution[i]=(ContributionInfo *) MagickAssumeAligned(
       AcquireAlignedMemory(count,sizeof(**contribution)));
     if (contribution[i] == (ContributionInfo *) NULL)
-      return(DestroyContributionThreadSet(contribution));
+      return(DestroyContributionTLS(contribution));
   }
   return(contribution);
 }
@@ -3322,7 +3322,7 @@ static MagickBooleanType HorizontalFilter(
       support=(double) 0.5;
       scale=1.0;
     }
-  contributions=AcquireContributionThreadSet((size_t) (2.0*support+3.0));
+  contributions=AcquireContributionTLS((size_t) (2.0*support+3.0));
   if (contributions == (ContributionInfo **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -3494,7 +3494,7 @@ static MagickBooleanType HorizontalFilter(
   }
   resize_view=DestroyCacheView(resize_view);
   image_view=DestroyCacheView(image_view);
-  contributions=DestroyContributionThreadSet(contributions);
+  contributions=DestroyContributionTLS(contributions);
   return(status);
 }
 
@@ -3540,7 +3540,7 @@ static MagickBooleanType VerticalFilter(
       support=(double) 0.5;
       scale=1.0;
     }
-  contributions=AcquireContributionThreadSet((size_t) (2.0*support+3.0));
+  contributions=AcquireContributionTLS((size_t) (2.0*support+3.0));
   if (contributions == (ContributionInfo **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -3710,7 +3710,7 @@ static MagickBooleanType VerticalFilter(
   }
   resize_view=DestroyCacheView(resize_view);
   image_view=DestroyCacheView(image_view);
-  contributions=DestroyContributionThreadSet(contributions);
+  contributions=DestroyContributionTLS(contributions);
   return(status);
 }
 
@@ -4533,9 +4533,10 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     *name;
 
   Image
+    *clone_image,
     *thumbnail_image;
 
-  double
+  ssize_t
     x_factor,
     y_factor;
 
@@ -4548,31 +4549,34 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  x_factor=(double) columns/(double) image->columns;
-  y_factor=(double) rows/(double) image->rows;
-  if ((x_factor*y_factor) > 0.1)
-    thumbnail_image=ResizeImage(image,columns,rows,image->filter,exception);
-  else
-    if (((SampleFactor*columns) < 128) || ((SampleFactor*rows) < 128))
-      thumbnail_image=ResizeImage(image,columns,rows,image->filter,exception);
-    else
-      {
-        Image
-          *sample_image;
-
-        sample_image=SampleImage(image,SampleFactor*columns,SampleFactor*rows,
-          exception);
-        if (sample_image == (Image *) NULL)
-          return((Image *) NULL);
-        thumbnail_image=ResizeImage(sample_image,columns,rows,image->filter,
-          exception);
-        sample_image=DestroyImage(sample_image);
-      }
+  x_factor=(ssize_t) image->columns/columns;
+  y_factor=(ssize_t) image->rows/rows;
+  clone_image=CloneImage(image,0,0,MagickTrue,exception);
+  if ((x_factor > 4) && (y_factor > 4))
+    {
+      thumbnail_image=SampleImage(clone_image,4*columns,4*rows,exception);
+      if (thumbnail_image != (Image *) NULL)
+        {
+          clone_image=DestroyImage(clone_image);
+          clone_image=thumbnail_image;
+        }
+    }
+  if ((x_factor > 2) && (y_factor > 2))
+    {
+      thumbnail_image=ResizeImage(clone_image,2*columns,2*rows,BoxFilter,
+        exception);
+      if (thumbnail_image != (Image *) NULL)
+        {
+          clone_image=DestroyImage(clone_image);
+          clone_image=thumbnail_image;
+        }
+    }
+  thumbnail_image=ResizeImage(clone_image,columns,rows,image->filter ==
+    UndefinedFilter ? LanczosSharpFilter : image->filter,exception);
+  clone_image=DestroyImage(clone_image);
   if (thumbnail_image == (Image *) NULL)
     return(thumbnail_image);
   (void) ParseAbsoluteGeometry("0x0+0+0",&thumbnail_image->page);
-  if (thumbnail_image->alpha_trait == UndefinedPixelTrait)
-    (void) SetImageAlphaChannel(thumbnail_image,OpaqueAlphaChannel,exception);
   thumbnail_image->depth=8;
   thumbnail_image->interlace=NoInterlace;
   /*

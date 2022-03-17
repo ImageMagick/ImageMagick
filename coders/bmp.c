@@ -18,7 +18,7 @@
 %                               December 2001                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -623,8 +623,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bmp_info.offset_bits=ReadBlobLSBLong(image);
     bmp_info.size=ReadBlobLSBLong(image);
     if (image->debug != MagickFalse)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  BMP size: %u",
-        bmp_info.size);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "  BMP header size: %u",bmp_info.size);
+    if (bmp_info.size > 124)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     profile_data=0;
     profile_size=0;
     if (bmp_info.size == 12)
@@ -1566,6 +1568,7 @@ ModuleExport size_t RegisterBMPImage(void)
   entry->magick=(IsImageFormatHandler *) IsBMP;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->mime_type=ConstantString("image/bmp");
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BMP","BMP2","Microsoft Windows bitmap image (V2)");
   entry->decoder=(DecodeImageHandler *) ReadBMPImage;
@@ -1573,6 +1576,7 @@ ModuleExport size_t RegisterBMPImage(void)
   entry->magick=(IsImageFormatHandler *) IsBMP;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->mime_type=ConstantString("image/bmp");
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BMP","BMP3","Microsoft Windows bitmap image (V3)");
   entry->decoder=(DecodeImageHandler *) ReadBMPImage;
@@ -1580,6 +1584,7 @@ ModuleExport size_t RegisterBMPImage(void)
   entry->magick=(IsImageFormatHandler *) IsBMP;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->mime_type=ConstantString("image/bmp");
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }

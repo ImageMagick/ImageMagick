@@ -17,7 +17,7 @@
 %                                 October 1996                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -70,7 +70,6 @@
 #include "MagickCore/montage.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum.h"
@@ -1911,9 +1910,7 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
     progress;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     y;
 
   ThresholdMap
@@ -1995,19 +1992,17 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
-        i;
-
-      ssize_t
+        j,
         n;
 
       n=0;
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         ssize_t
           level,
           threshold;
 
-        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelChannel channel = GetPixelChannelChannel(image,j);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
@@ -2016,10 +2011,10 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
             n++;
             continue;
           }
-        threshold=(ssize_t) (QuantumScale*q[i]*(levels[n]*(map->divisor-1)+1));
+        threshold=(ssize_t) (QuantumScale*q[j]*(levels[n]*(map->divisor-1)+1));
         level=threshold/(map->divisor-1);
         threshold-=level*(map->divisor-1);
-        q[i]=ClampToQuantum((double) (level+(threshold >=
+        q[j]=ClampToQuantum((double) (level+(threshold >=
           map->levels[(x % map->width)+map->width*(y % map->height)]))*
           QuantumRange/levels[n]);
         n++;
@@ -2239,9 +2234,6 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   MagickOffsetType
     progress;
 
-  PixelInfo
-    threshold;
-
   RandomInfo
     **magick_restrict random_info;
 
@@ -2261,13 +2253,12 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   assert(exception->signature == MagickCoreSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  GetPixelInfo(image,&threshold);
   /*
     Random threshold image.
   */
   status=MagickTrue;
   progress=0;
-  random_info=AcquireRandomInfoThreadSet();
+  random_info=AcquireRandomInfoTLS();
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
@@ -2337,7 +2328,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  random_info=DestroyRandomInfoThreadSet(random_info);
+  random_info=DestroyRandomInfoTLS(random_info);
   return(status);
 }
 

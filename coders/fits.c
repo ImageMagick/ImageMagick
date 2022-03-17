@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -53,6 +53,7 @@
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
+#include "MagickCore/locale-private.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
@@ -308,6 +309,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   fits_info.bits_per_pixel=8;
   fits_info.columns=1;
   fits_info.rows=1;
+  fits_info.number_axes=1;
   fits_info.number_planes=1;
   fits_info.min_data=0.0;
   fits_info.max_data=0.0;
@@ -331,7 +333,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       {
         if (isspace((int) ((unsigned char) keyword[i])) != 0)
           break;
-        keyword[i]=LocaleLowercase((int) ((unsigned char) keyword[i]));
+        keyword[i]=LocaleToLowercase((int) ((unsigned char) keyword[i]));
       }
       keyword[i]='\0';
       count=ReadBlob(image,72,(unsigned char *) value);
@@ -399,6 +401,13 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           comment=DestroyString(comment);
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
+    if ((fits_info.columns <= 0) || (fits_info.rows <= 0) ||
+        (fits_info.number_axes <= 0) || (fits_info.number_planes <= 0))
+      {
+        if (comment != (char *) NULL)
+          comment=DestroyString(comment);
+        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
     number_pixels=(MagickSizeType) fits_info.columns*fits_info.rows;
     if ((fits_info.simple != MagickFalse) && (fits_info.number_axes >= 1) &&
         (fits_info.number_axes <= 4) && (number_pixels != 0))
@@ -417,7 +426,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       image->filename);
   number_pixels=(MagickSizeType) fits_info.columns*fits_info.rows;
   if ((fits_info.simple == MagickFalse) || (fits_info.number_axes < 1) ||
-      (fits_info.number_axes > 4) || (number_pixels == 0))
+      (fits_info.number_axes > 4) || (number_pixels == 0) ||
+      (fits_info.number_planes <= 0))
     ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
   for (scene=0; scene < (ssize_t) fits_info.number_planes; scene++)
   {
@@ -625,7 +635,7 @@ static inline void CopyFitsRecord(char *buffer,const char *data,
     return;
   length=MagickMin(strlen(data),80);
   if (length > (size_t) (FITSBlocksize-offset))
-    length=FITSBlocksize-offset;
+    length=(size_t) (FITSBlocksize-offset);
   (void) strncpy(buffer+offset,data,length);
 }
 
@@ -639,10 +649,8 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   const Quantum
     *p;
 
-  ImageType
-    type;
-
   MagickBooleanType
+    is_gray,
     status;
 
   QuantumInfo
@@ -703,9 +711,9 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     image->depth));
   CopyFitsRecord(fits_info,header,offset);
   offset+=80;
-  type=IdentifyImageCoderType(image,exception);
+  is_gray=IdentifyImageCoderGray(image,exception);
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS   =           %10lu",
-    (type == GrayscaleType) || (type == BilevelType) ? 2UL : 3UL);
+    (is_gray != MagickFalse) ? 2UL : 3UL);
   CopyFitsRecord(fits_info,header,offset);
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS1  =           %10lu",
@@ -716,7 +724,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     (unsigned long) image->rows);
   CopyFitsRecord(fits_info,header,offset);
   offset+=80;
-  if ((type != GrayscaleType) && (type != BilevelType))
+  if (is_gray == MagickFalse)
     {
       (void) FormatLocaleString(header,FITSBlocksize,
         "NAXIS3  =           %10lu",3UL);
@@ -755,7 +763,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     Convert image to fits scale PseudoColor class.
   */
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
-  if (IsGrayImageType(type) != MagickFalse)
+  if (is_gray != MagickFalse)
     {
       length=GetQuantumExtent(image,quantum_info,GrayQuantum);
       for (y=(ssize_t) image->rows-1; y >= 0; y--)

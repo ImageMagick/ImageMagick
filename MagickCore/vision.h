@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.  You may
@@ -51,7 +51,8 @@ typedef struct _CCObjectInfo
 
 extern MagickExport Image
   *ConnectedComponentsImage(const Image *,const size_t,CCObjectInfo **,
-    ExceptionInfo *);
+    ExceptionInfo *),
+  *IntegralImage(const Image *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

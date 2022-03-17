@@ -17,7 +17,7 @@
 %                                 July 1999                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1133,7 +1133,8 @@ MagickPrivate NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
   nexus_info=(NexusInfo **) RelinquishAlignedMemory(nexus_info);
   return(nexus_info);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2319,7 +2320,7 @@ MagickPrivate MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
 %
 */
 MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
-  ExceptionInfo *exception)
+  ExceptionInfo *magick_unused(exception))
 {
   CacheInfo
     *magick_restrict cache_info;
@@ -2328,8 +2329,7 @@ MagickExport void *GetPixelCachePixels(Image *image,MagickSizeType *length,
   assert(image->signature == MagickCoreSignature);
   assert(image->cache != (Cache) NULL);
   assert(length != (MagickSizeType *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
+  magick_unreferenced(exception);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
   *length=cache_info->length;
@@ -2931,8 +2931,7 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
                 EdgeX(x_offset,cache_info->columns),
                 EdgeY(y_offset,cache_info->rows),1UL,1UL,virtual_nexus,
                 exception);
-              r=GetVirtualMetacontentFromNexus(cache_info,
-                nexus_info->virtual_nexus);
+              r=GetVirtualMetacontentFromNexus(cache_info,virtual_nexus);
               break;
             }
             case RandomVirtualPixelMethod:

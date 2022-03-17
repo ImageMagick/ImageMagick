@@ -10,7 +10,7 @@ Introduction to ImageMagick
   The functionality of ImageMagick is typically utilized from the command
   line or you can use the features from programs written in your favorite
   language. Choose from these interfaces: G2F (Ada), MagickCore (C),
-  MagickWand (C), ChMagick (Ch), ImageMagickObject (COM+), Magick++ (C++),
+  MagickWand (C), ChMagick (Ch), Magick++ (C++),
   JMagick (Java), L-Magick (Lisp), Lua, NMagick (Neko/haXe), Magick.NET
   (.NET), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP
   (PHP), IMagick (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick

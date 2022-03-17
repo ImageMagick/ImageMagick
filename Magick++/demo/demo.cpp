@@ -2,6 +2,9 @@
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
+// Copyright @ 2013 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
+//
 // Simple demo program for Magick++
 //
 // Concept and algorithms lifted from PerlMagick demo script written

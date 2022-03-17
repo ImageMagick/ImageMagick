@@ -18,7 +18,7 @@
 %                             November 1998                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1136,9 +1136,7 @@ static MagickBooleanType IsMagickTreeInstantiated(ExceptionInfo *exception)
 MagickPrivate MagickBooleanType IsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
-#if defined(macintosh)
-  return(MACIsMagickConflict(magick));
-#elif defined(vms)
+#if defined(vms)
   return(VMSIsMagickConflict(magick));
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
   return(NTIsMagickConflict(magick));
@@ -1476,6 +1474,11 @@ MagickExport void MagickCoreGenesis(const char *path,
   /*
     Initialize the Magick environment.
   */
+#if defined(__has_feature)
+#if __has_feature(address_sanitizer)
+  (void) putenv("MAGICK_THREAD_LIMIT=1");
+#endif
+#endif
   InitializeMagickMutex();
   LockMagickMutex();
   if (magickcore_instantiated != MagickFalse)

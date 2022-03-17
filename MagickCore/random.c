@@ -16,7 +16,7 @@
 %                              December 2001                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -413,7 +413,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     if (gettimeofday(&timer,(struct timezone *) NULL) == 0)
       {
         seconds=(size_t) timer.tv_sec;
-        nanoseconds=(size_t) (1000UL*timer.tv_usec);
+        nanoseconds=((size_t) 1000UL*timer.tv_usec);
       }
   }
 #endif
@@ -454,22 +454,22 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   {
     double
-      seconds;
+      nt_seconds;
 
     LARGE_INTEGER
-      nanoseconds;
+      nt_nanoseconds;
 
     /*
       Not crytographically strong but better than nothing.
     */
-    seconds=NTElapsedTime()+NTUserTime();
-    SetStringInfoLength(chaos,sizeof(seconds));
-    SetStringInfoDatum(chaos,(unsigned char *) &seconds);
+    nt_seconds=NTElapsedTime()+NTUserTime();
+    SetStringInfoLength(chaos,sizeof(nt_seconds));
+    SetStringInfoDatum(chaos,(unsigned char *) &nt_seconds);
     ConcatenateStringInfo(entropy,chaos);
-    if (QueryPerformanceCounter(&nanoseconds) != 0)
+    if (QueryPerformanceCounter(&nt_nanoseconds) != 0)
       {
-        SetStringInfoLength(chaos,sizeof(nanoseconds));
-        SetStringInfoDatum(chaos,(unsigned char *) &nanoseconds);
+        SetStringInfoLength(chaos,sizeof(nt_nanoseconds));
+        SetStringInfoDatum(chaos,(unsigned char *) &nt_nanoseconds);
         ConcatenateStringInfo(entropy,chaos);
       }
     /*

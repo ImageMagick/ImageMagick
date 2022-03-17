@@ -17,7 +17,7 @@
 %                                 April 2014                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -626,9 +626,6 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   const Quantum
     *p;
 
-  ImageType
-    type;
-
   MagickBooleanType
     status;
 
@@ -658,8 +655,7 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   (void) WriteBlobLong(image,(unsigned int) image->rows);
   (void) SetImageStorageClass(image,DirectClass,exception);
   channels=image->alpha_trait != UndefinedPixelTrait ? 4 : 3;
-  type=IdentifyImageCoderType(image,exception);
-  if (IsGrayImageType(type) != MagickFalse)
+  if (IdentifyImageCoderGray(image,exception) != MagickFalse)
     {
       channels=image->alpha_trait != UndefinedPixelTrait ? 2 : 1;
       (void) SetImageColorspace(image,GRAYColorspace,exception);

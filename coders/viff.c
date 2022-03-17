@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -328,7 +328,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     if (EOFBlob(image) != MagickFalse)
       ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
     number_pixels=(MagickSizeType) viff_info.columns*viff_info.rows;
-    if (number_pixels > GetBlobSize(image))
+    if (number_pixels > 8*GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     if (number_pixels != (size_t) number_pixels)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -994,8 +994,8 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
   imageListLength=GetImageListLength(image);
   do
   {
-    ImageType
-      type;
+    MagickBooleanType
+      is_gray;
 
     /*
       Initialize VIFF image structure.
@@ -1030,7 +1030,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     viff_info.map_enable=1;  /* no colormap */
     viff_info.maps_per_cycle=0;
     number_pixels=(MagickSizeType) image->columns*image->rows;
-    type=IdentifyImageCoderType(image,exception);
+    is_gray=IdentifyImageCoderGray(image,exception);
     if (image->storage_class == DirectClass)
       {
         /*
@@ -1047,7 +1047,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
         viff_info.color_space_model=VFF_CM_NONE;
         viff_info.data_storage_type=VFF_TYP_1_BYTE;
         packets=number_pixels;
-        if ((type != GrayscaleType) && (type != BilevelType))
+        if (is_gray == MagickFalse)
           {
             /*
               Colormapped VIFF raster.
@@ -1148,7 +1148,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
         }
       }
     else
-      if ((type != GrayscaleType) && (type != BilevelType))
+      if (is_gray == MagickFalse)
         {
           unsigned char
             *viff_colormap;

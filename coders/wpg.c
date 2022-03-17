@@ -16,7 +16,7 @@
 %                                 June 2000                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -709,10 +709,18 @@ unsigned Flags;
  if(Flags & LCK) (void) ReadBlobLSBLong(image);  /*Edit lock*/
  if(Flags & OID)
   {
-  if(Precision==0)
-    {(void) ReadBlobLSBShort(image);}  /*ObjectID*/
-  else
-    {(void) ReadBlobLSBLong(image);}  /*ObjectID (Double precision)*/
+    /* Read object ID. */
+    if (Precision == 0)
+      {
+        x=ReadBlobLSBShort(image);
+        if (x >= 0x8000)
+          {
+            Precision=1;
+            (void) ReadBlobLSBShort(image);
+          }
+      }
+    else
+      (void) ReadBlobLSBLong(image);
   }
  if(Flags & ROT)
   {
@@ -824,7 +832,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   {
     c=ReadBlobByte(image);
     if (c == EOF)
-      {      
+      {
         (void) fclose(ps_file);
         ThrowException(exception,CorruptImageError,"ImproperImageHeader",
           image->filename);
@@ -842,7 +850,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   (void) CopyMagickString(clone_info->magick,GetMagicName(magic_info),
     MagickPathExtent);
   if (LocaleCompare(clone_info->magick,"PFB") != 0)
-    {      
+    {
       ThrowException(exception,CorruptImageError,"ImproperImageHeader",
         image->filename);
       goto FINISH_UNL;

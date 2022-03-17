@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -160,10 +160,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         flags;
 
       flags=ParseGeometry(image_info->sampling_factor,&geometry_info);
-      horizontal_factor=(ssize_t) geometry_info.rho;
-      vertical_factor=(ssize_t) geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        vertical_factor=horizontal_factor;
+      if ((flags & RhoValue) != 0)
+        horizontal_factor=(ssize_t) geometry_info.rho;
+      vertical_factor=horizontal_factor;
+      if ((flags & SigmaValue) != 0)
+        vertical_factor=(ssize_t) geometry_info.sigma;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
           (vertical_factor != 1) && (vertical_factor != 2))
         ThrowReaderException(CorruptImageError,"UnexpectedSamplingFactor");
@@ -660,10 +661,11 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
         flags;
 
       flags=ParseGeometry(image_info->sampling_factor,&geometry_info);
-      horizontal_factor=(ssize_t) geometry_info.rho;
-      vertical_factor=(ssize_t) geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        vertical_factor=horizontal_factor;
+      if ((flags & RhoValue) != 0)
+        horizontal_factor=(ssize_t) geometry_info.rho;
+      vertical_factor=horizontal_factor;
+      if ((flags & SigmaValue) != 0)
+        vertical_factor=(ssize_t) geometry_info.sigma;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
           (vertical_factor != 1) && (vertical_factor != 2))
         ThrowWriterException(CorruptImageError,"UnexpectedSamplingFactor");

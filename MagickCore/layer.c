@@ -16,7 +16,7 @@
 %                               January 2006                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2006 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -674,7 +674,7 @@ static RectangleInfo CompareImagesBounds(const Image *alpha_image,
     bounding_box=bounds;
     p=GetCacheViewVirtualPixels(alpha_view,0,y,alpha_image->columns,1,
       exception);
-    q=GetCacheViewVirtualPixels(beta_view,0,y,beta_image->columns,1,exception);
+    q=GetCacheViewVirtualPixels(beta_view,0,y,alpha_image->columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
       {
         status=MagickFalse;

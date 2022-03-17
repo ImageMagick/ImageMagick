@@ -17,7 +17,7 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -69,6 +69,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum.h"
+#include "MagickCore/registry.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/splay-tree.h"
@@ -177,71 +178,71 @@ static const OptionInfo
     { "Saturation", GreenChannel, UndefinedOptionFlag, MagickFalse },
     { "Y", YellowChannel, UndefinedOptionFlag, MagickFalse },
     { "Yellow", YellowChannel, UndefinedOptionFlag, MagickFalse },
-    { "0", (ssize_t) (1L << 0), UndefinedOptionFlag, MagickFalse },
-    { "1", (ssize_t) (1L << 1), UndefinedOptionFlag, MagickFalse },
-    { "2", (ssize_t) (1L << 2), UndefinedOptionFlag, MagickFalse },
-    { "3", (ssize_t) (1L << 3), UndefinedOptionFlag, MagickFalse },
-    { "4", (ssize_t) (1L << 4), UndefinedOptionFlag, MagickFalse },
-    { "5", (ssize_t) (1L << 5), UndefinedOptionFlag, MagickFalse },
-    { "6", (ssize_t) (1L << 6), UndefinedOptionFlag, MagickFalse },
-    { "7", (ssize_t) (1L << 7), UndefinedOptionFlag, MagickFalse },
-    { "8", (ssize_t) (1L << 8), UndefinedOptionFlag, MagickFalse },
-    { "9", (ssize_t) (1L << 9), UndefinedOptionFlag, MagickFalse },
-    { "10", (ssize_t) (1L << 10), UndefinedOptionFlag, MagickFalse },
-    { "11", (ssize_t) (1L << 11), UndefinedOptionFlag, MagickFalse },
-    { "12", (ssize_t) (1L << 12), UndefinedOptionFlag, MagickFalse },
-    { "13", (ssize_t) (1L << 13), UndefinedOptionFlag, MagickFalse },
-    { "14", (ssize_t) (1L << 14), UndefinedOptionFlag, MagickFalse },
-    { "15", (ssize_t) (1L << 15), UndefinedOptionFlag, MagickFalse },
-    { "16", (ssize_t) (1L << 16), UndefinedOptionFlag, MagickFalse },
-    { "17", (ssize_t) (1L << 17), UndefinedOptionFlag, MagickFalse },
-    { "18", (ssize_t) (1L << 18), UndefinedOptionFlag, MagickFalse },
-    { "19", (ssize_t) (1L << 19), UndefinedOptionFlag, MagickFalse },
-    { "20", (ssize_t) (1L << 20), UndefinedOptionFlag, MagickFalse },
-    { "21", (ssize_t) (1L << 21), UndefinedOptionFlag, MagickFalse },
-    { "22", (ssize_t) (1L << 22), UndefinedOptionFlag, MagickFalse },
-    { "23", (ssize_t) (1L << 23), UndefinedOptionFlag, MagickFalse },
-    { "24", (ssize_t) (1L << 24), UndefinedOptionFlag, MagickFalse },
-    { "25", (ssize_t) (1L << 25), UndefinedOptionFlag, MagickFalse },
-    { "26", (ssize_t) (1L << 26), UndefinedOptionFlag, MagickFalse },
-    { "27", (ssize_t) (1L << 27), UndefinedOptionFlag, MagickFalse },
-    { "28", (ssize_t) (1L << 28), UndefinedOptionFlag, MagickFalse },
-    { "29", (ssize_t) (1L << 29), UndefinedOptionFlag, MagickFalse },
-    { "30", (ssize_t) (1L << 30), UndefinedOptionFlag, MagickFalse },
-    { "31", (ssize_t) (1L << 31), UndefinedOptionFlag, MagickFalse },
+    { "0", (((ssize_t) 1) << 0), UndefinedOptionFlag, MagickFalse },
+    { "1", (((ssize_t) 1) << 1), UndefinedOptionFlag, MagickFalse },
+    { "2", (((ssize_t) 1) << 2), UndefinedOptionFlag, MagickFalse },
+    { "3", (((ssize_t) 1) << 3), UndefinedOptionFlag, MagickFalse },
+    { "4", (((ssize_t) 1) << 4), UndefinedOptionFlag, MagickFalse },
+    { "5", (((ssize_t) 1) << 5), UndefinedOptionFlag, MagickFalse },
+    { "6", (((ssize_t) 1) << 6), UndefinedOptionFlag, MagickFalse },
+    { "7", (((ssize_t) 1) << 7), UndefinedOptionFlag, MagickFalse },
+    { "8", (((ssize_t) 1) << 8), UndefinedOptionFlag, MagickFalse },
+    { "9", (((ssize_t) 1) << 9), UndefinedOptionFlag, MagickFalse },
+    { "10", (((ssize_t) 1) << 10), UndefinedOptionFlag, MagickFalse },
+    { "11", (((ssize_t) 1) << 11), UndefinedOptionFlag, MagickFalse },
+    { "12", (((ssize_t) 1) << 12), UndefinedOptionFlag, MagickFalse },
+    { "13", (((ssize_t) 1) << 13), UndefinedOptionFlag, MagickFalse },
+    { "14", (((ssize_t) 1) << 14), UndefinedOptionFlag, MagickFalse },
+    { "15", (((ssize_t) 1) << 15), UndefinedOptionFlag, MagickFalse },
+    { "16", (((ssize_t) 1) << 16), UndefinedOptionFlag, MagickFalse },
+    { "17", (((ssize_t) 1) << 17), UndefinedOptionFlag, MagickFalse },
+    { "18", (((ssize_t) 1) << 18), UndefinedOptionFlag, MagickFalse },
+    { "19", (((ssize_t) 1) << 19), UndefinedOptionFlag, MagickFalse },
+    { "20", (((ssize_t) 1) << 20), UndefinedOptionFlag, MagickFalse },
+    { "21", (((ssize_t) 1) << 21), UndefinedOptionFlag, MagickFalse },
+    { "22", (((ssize_t) 1) << 22), UndefinedOptionFlag, MagickFalse },
+    { "23", (((ssize_t) 1) << 23), UndefinedOptionFlag, MagickFalse },
+    { "24", (((ssize_t) 1) << 24), UndefinedOptionFlag, MagickFalse },
+    { "25", (((ssize_t) 1) << 25), UndefinedOptionFlag, MagickFalse },
+    { "26", (((ssize_t) 1) << 26), UndefinedOptionFlag, MagickFalse },
+    { "27", (((ssize_t) 1) << 27), UndefinedOptionFlag, MagickFalse },
+    { "28", (((ssize_t) 1) << 28), UndefinedOptionFlag, MagickFalse },
+    { "29", (((ssize_t) 1) << 29), UndefinedOptionFlag, MagickFalse },
+    { "30", (((ssize_t) 1) << 30), UndefinedOptionFlag, MagickFalse },
+    { "31", (((ssize_t) 1) << 31), UndefinedOptionFlag, MagickFalse },
 #if MAGICKCORE_SIZEOF_SSIZE_T > 4
-    { "32", (ssize_t) (1L << 32), UndefinedOptionFlag, MagickFalse },
-    { "33", (ssize_t) (1L << 33), UndefinedOptionFlag, MagickFalse },
-    { "34", (ssize_t) (1L << 34), UndefinedOptionFlag, MagickFalse },
-    { "35", (ssize_t) (1L << 35), UndefinedOptionFlag, MagickFalse },
-    { "36", (ssize_t) (1L << 36), UndefinedOptionFlag, MagickFalse },
-    { "37", (ssize_t) (1L << 37), UndefinedOptionFlag, MagickFalse },
-    { "38", (ssize_t) (1L << 38), UndefinedOptionFlag, MagickFalse },
-    { "39", (ssize_t) (1L << 39), UndefinedOptionFlag, MagickFalse },
-    { "40", (ssize_t) (1L << 40), UndefinedOptionFlag, MagickFalse },
-    { "41", (ssize_t) (1L << 41), UndefinedOptionFlag, MagickFalse },
-    { "42", (ssize_t) (1L << 42), UndefinedOptionFlag, MagickFalse },
-    { "43", (ssize_t) (1L << 43), UndefinedOptionFlag, MagickFalse },
-    { "44", (ssize_t) (1L << 44), UndefinedOptionFlag, MagickFalse },
-    { "45", (ssize_t) (1L << 45), UndefinedOptionFlag, MagickFalse },
-    { "46", (ssize_t) (1L << 46), UndefinedOptionFlag, MagickFalse },
-    { "47", (ssize_t) (1L << 47), UndefinedOptionFlag, MagickFalse },
-    { "48", (ssize_t) (1L << 48), UndefinedOptionFlag, MagickFalse },
-    { "49", (ssize_t) (1L << 49), UndefinedOptionFlag, MagickFalse },
-    { "50", (ssize_t) (1L << 50), UndefinedOptionFlag, MagickFalse },
-    { "51", (ssize_t) (1L << 41), UndefinedOptionFlag, MagickFalse },
-    { "52", (ssize_t) (1L << 52), UndefinedOptionFlag, MagickFalse },
-    { "53", (ssize_t) (1L << 53), UndefinedOptionFlag, MagickFalse },
-    { "54", (ssize_t) (1L << 54), UndefinedOptionFlag, MagickFalse },
-    { "55", (ssize_t) (1L << 55), UndefinedOptionFlag, MagickFalse },
-    { "56", (ssize_t) (1L << 56), UndefinedOptionFlag, MagickFalse },
-    { "57", (ssize_t) (1L << 57), UndefinedOptionFlag, MagickFalse },
-    { "58", (ssize_t) (1L << 58), UndefinedOptionFlag, MagickFalse },
-    { "59", (ssize_t) (1L << 59), UndefinedOptionFlag, MagickFalse },
-    { "60", (ssize_t) (1L << 60), UndefinedOptionFlag, MagickFalse },
-    { "61", (ssize_t) (1L << 61), UndefinedOptionFlag, MagickFalse },
-    { "62", (ssize_t) (1L << 62), UndefinedOptionFlag, MagickFalse },
-    { "63", (ssize_t) (1L << 63), UndefinedOptionFlag, MagickFalse },
+    { "32", (((ssize_t) 1) << 32), UndefinedOptionFlag, MagickFalse },
+    { "33", (((ssize_t) 1) << 33), UndefinedOptionFlag, MagickFalse },
+    { "34", (((ssize_t) 1) << 34), UndefinedOptionFlag, MagickFalse },
+    { "35", (((ssize_t) 1) << 35), UndefinedOptionFlag, MagickFalse },
+    { "36", (((ssize_t) 1) << 36), UndefinedOptionFlag, MagickFalse },
+    { "37", (((ssize_t) 1) << 37), UndefinedOptionFlag, MagickFalse },
+    { "38", (((ssize_t) 1) << 38), UndefinedOptionFlag, MagickFalse },
+    { "39", (((ssize_t) 1) << 39), UndefinedOptionFlag, MagickFalse },
+    { "40", (((ssize_t) 1) << 40), UndefinedOptionFlag, MagickFalse },
+    { "41", (((ssize_t) 1) << 41), UndefinedOptionFlag, MagickFalse },
+    { "42", (((ssize_t) 1) << 42), UndefinedOptionFlag, MagickFalse },
+    { "43", (((ssize_t) 1) << 43), UndefinedOptionFlag, MagickFalse },
+    { "44", (((ssize_t) 1) << 44), UndefinedOptionFlag, MagickFalse },
+    { "45", (((ssize_t) 1) << 45), UndefinedOptionFlag, MagickFalse },
+    { "46", (((ssize_t) 1) << 46), UndefinedOptionFlag, MagickFalse },
+    { "47", (((ssize_t) 1) << 47), UndefinedOptionFlag, MagickFalse },
+    { "48", (((ssize_t) 1) << 48), UndefinedOptionFlag, MagickFalse },
+    { "49", (((ssize_t) 1) << 49), UndefinedOptionFlag, MagickFalse },
+    { "50", (((ssize_t) 1) << 50), UndefinedOptionFlag, MagickFalse },
+    { "51", (((ssize_t) 1) << 41), UndefinedOptionFlag, MagickFalse },
+    { "52", (((ssize_t) 1) << 52), UndefinedOptionFlag, MagickFalse },
+    { "53", (((ssize_t) 1) << 53), UndefinedOptionFlag, MagickFalse },
+    { "54", (((ssize_t) 1) << 54), UndefinedOptionFlag, MagickFalse },
+    { "55", (((ssize_t) 1) << 55), UndefinedOptionFlag, MagickFalse },
+    { "56", (((ssize_t) 1) << 56), UndefinedOptionFlag, MagickFalse },
+    { "57", (((ssize_t) 1) << 57), UndefinedOptionFlag, MagickFalse },
+    { "58", (((ssize_t) 1) << 58), UndefinedOptionFlag, MagickFalse },
+    { "59", (((ssize_t) 1) << 59), UndefinedOptionFlag, MagickFalse },
+    { "60", (((ssize_t) 1) << 60), UndefinedOptionFlag, MagickFalse },
+    { "61", (((ssize_t) 1) << 61), UndefinedOptionFlag, MagickFalse },
+    { "62", (((ssize_t) 1) << 62), UndefinedOptionFlag, MagickFalse },
+    { "63", (((ssize_t) 1) << 63), UndefinedOptionFlag, MagickFalse },
 #endif
     { (char *) NULL, UndefinedChannel, UndefinedOptionFlag, MagickFalse }
   },
@@ -366,6 +367,7 @@ static const OptionInfo
     { "  gaussian-blur", 0, UndefinedOptionFlag, MagickFalse },
     { "  grayscale", 0, UndefinedOptionFlag, MagickFalse },
     { "  implode", 0, UndefinedOptionFlag, MagickFalse },
+    { "  integral", 0, UndefinedOptionFlag, MagickFalse },
     { "  kmeans", 0, UndefinedOptionFlag, MagickFalse },
     { "  lat", 0, UndefinedOptionFlag, MagickFalse },
     { "  level", 0, UndefinedOptionFlag, MagickFalse },
@@ -808,7 +810,7 @@ static const OptionInfo
     { "-function", 2L,SimpleOperatorFlag | AlwaysInterpretArgsFlag, MagickFalse },
     { "+fuzz", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-fuzz", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+fx", 1L, DeprecateOptionFlag | FireOptionFlag | NeverInterpretArgsFlag, MagickTrue },
+    { "+fx", 1L, SimpleOperatorFlag | FireOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-fx", 1L, ListOperatorFlag | FireOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-gamma", 1L, SimpleOperatorFlag, MagickFalse },
     { "+gamma", 1L, SimpleOperatorFlag, MagickFalse },
@@ -826,8 +828,8 @@ static const OptionInfo
     { "-green-primary", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+hald-clut", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-hald-clut", 0L, ListOperatorFlag | FireOptionFlag, MagickFalse },
-    { "+highlight-color", 0L, NonMagickOptionFlag | ImageInfoOptionFlag, MagickFalse },
-    { "-highlight-color", 1L, NonMagickOptionFlag | ImageInfoOptionFlag, MagickFalse },
+    { "+highlight-color", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "-highlight-color", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+hough-lines", 1L, DeprecateOptionFlag, MagickTrue },
     { "-hough-lines", 1L, SimpleOperatorFlag, MagickTrue },
     { "+iconGeometry", 0L, NonMagickOptionFlag, MagickFalse },
@@ -846,6 +848,8 @@ static const OptionInfo
     { "-insert", 1L, ListOperatorFlag | FireOptionFlag, MagickFalse },
     { "+illuminant", 1L, ImageInfoOptionFlag, MagickFalse },
     { "-illuminant", 1L, ImageInfoOptionFlag, MagickFalse },
+    { "+integral", 0L, SimpleOperatorFlag, MagickFalse },
+    { "-integral", 0L, SimpleOperatorFlag, MagickFalse },
     { "+intensity", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-intensity", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+intent", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -889,8 +893,8 @@ static const OptionInfo
     { "-log", 1L, GlobalOptionFlag, MagickFalse },
     { "+loop", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-loop", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+lowlight-color", 0L, NonMagickOptionFlag | ImageInfoOptionFlag, MagickFalse },
-    { "-lowlight-color", 1L, NonMagickOptionFlag | ImageInfoOptionFlag, MagickFalse },
+    { "+lowlight-color", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "-lowlight-color", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+magnify", 0L, DeprecateOptionFlag, MagickTrue },
     { "-magnify", 0L, SimpleOperatorFlag, MagickFalse },
     { "+map", 0L, ReplacedOptionFlag | ListOperatorFlag | FireOptionFlag, MagickTrue },
@@ -1263,6 +1267,8 @@ static const OptionInfo
     { "RMSE", RMSECompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Saturate", SaturateCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Screen", ScreenCompositeOp, UndefinedOptionFlag, MagickFalse },
+    { "SaliencyBlend", SaliencyBlendCompositeOp, UndefinedOptionFlag, MagickFalse },
+    { "SeamlessBlend", SeamlessBlendCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SoftBurn", SoftBurnCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SoftDodge", SoftDodgeCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SoftLight", SoftLightCompositeOp, UndefinedOptionFlag, MagickFalse },
@@ -1290,6 +1296,7 @@ static const OptionInfo
     { "DXT1", DXT1Compression, UndefinedOptionFlag, MagickFalse },
     { "DXT3", DXT3Compression, UndefinedOptionFlag, MagickFalse },
     { "DXT5", DXT5Compression, UndefinedOptionFlag, MagickFalse },
+    { "BC7", BC7Compression, UndefinedOptionFlag, MagickFalse },
     { "Fax", FaxCompression, UndefinedOptionFlag, MagickFalse },
     { "Group4", Group4Compression, UndefinedOptionFlag, MagickFalse },
     { "JBIG1", JBIG1Compression, UndefinedOptionFlag, MagickFalse },
@@ -2721,8 +2728,26 @@ MagickExport char *GetNextImageOption(const ImageInfo *image_info)
 */
 MagickExport MagickBooleanType IsCommandOption(const char *option)
 {
+  char
+    *value;
+
+  ExceptionInfo
+    *exception;
+
+  MagickBooleanType
+    pedantic;
+
   assert(option != (const char *) NULL);
   if ((*option != '-') && (*option != '+'))
+    return(MagickFalse);
+  exception=AcquireExceptionInfo();
+  value=(char *) GetImageRegistry(StringRegistryType,"option:pedantic",
+    exception);
+  exception=DestroyExceptionInfo(exception);
+  pedantic=IsStringTrue(value);
+  if (value != (char *) NULL)
+    value=DestroyString(value);
+  if ((pedantic == MagickFalse) && (IsPathAccessible(option) != MagickFalse))
     return(MagickFalse);
   if (strlen(option) == 1)
     return(((*option == '{') || (*option == '}') || (*option == '[') ||

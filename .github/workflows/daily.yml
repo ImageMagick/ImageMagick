@@ -65,7 +65,7 @@ jobs:
 
   build_windows:
     name: 'Windows Q${{matrix.quantum}}-${{matrix.platform}} hdri=${{matrix.hdri}} (${{matrix.buildType}})'
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     strategy:
       fail-fast: false
@@ -73,7 +73,7 @@ jobs:
         quantum: [ 8, 16, 32, 64 ]
         hdri: [ yes, no ]
         buildType: [ dmt, smtd ]
-        platform: [ x64, Win32 ]
+        platform: [ x64, x86, arm64 ]
         exclude:
           - quantum: 8
             hdri: yes
@@ -100,24 +100,70 @@ jobs:
     - name: Build configure
       shell: cmd
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
-        msbuild configure.2019.sln /m /t:Rebuild /p:Configuration=Release,Platform=Win32
+        msbuild configure.2022.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
 
     - name: Configure ImageMagick
       shell: cmd
       run: |
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2019 /${{matrix.platform}} /${{matrix.buildType}}
+        configure.exe /noWizard /VS2022 /${{matrix.platform}} /${{matrix.buildType}}
 
     - name: Build ImageMagick
       shell: cmd
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat"
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
         dir /B *.sln > solution
         set /p solution=<solution
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+
+  build_windows_zero_configuration:
+    name: 'Windows Q16-x64 hdri=yes (zero configuration ${{matrix.buildType}})'
+    runs-on: windows-2022
+
+    strategy:
+      fail-fast: false
+      matrix:
+        buildType: [ dmt, smtd ]
+
+    steps:
+    - name: Clone ImageMagick-Windows
+      uses: actions/checkout@v2
+      with:
+        repository: ImageMagick/ImageMagick-Windows
+        path: ImageMagick-Windows
+        ref: refs/heads/main
+        fetch-depth: 1
+
+    - name: Clone repositories
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
+        CloneRepositories.cmd https://github.com/ImageMagick shallow
+
+    - name: Build configure
+      shell: cmd
+      run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        msbuild configure.2022.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
+
+    - name: Configure ImageMagick
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        configure.exe /noWizard /VS2022 /x64 /${{matrix.buildType}} /zeroConfigurationSupport
+
+    - name: Build ImageMagick
+      shell: cmd
+      run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
+        dir /B *.sln > solution
+        set /p solution=<solution
+        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=x64
 
   build_msys2:
     name: 'Windows Q16-${{matrix.toolchain}} hdri=yes (MSYS2)'

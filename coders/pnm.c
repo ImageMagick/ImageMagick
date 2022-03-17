@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -260,11 +260,16 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 { \
   if (comment_info.comment != (char *) NULL)  \
     comment_info.comment=DestroyString(comment_info.comment); \
+  if (quantum_info != (QuantumInfo *) NULL) \
+     quantum_info=DestroyQuantumInfo(quantum_info); \
   ThrowReaderException((exception),(message)); \
 }
 
   char
     format;
+
+  ColorspaceType
+    colorspace;
 
   CommentInfo
     comment_info;
@@ -294,8 +299,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   size_t
     depth,
-    extent,
-    packet_size;
+    extent;
 
   ssize_t
     count,
@@ -325,6 +329,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read PNM image.
   */
+  quantum_info=(QuantumInfo *) NULL;
   count=ReadBlob(image,1,(unsigned char *) &format);
   do
   {
@@ -336,6 +341,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((count != 1) || (format != 'P'))
       ThrowPNMException(CorruptImageError,"ImproperImageHeader");
     max_value=1;
+    colorspace=UndefinedColorspace;
     quantum_type=UndefinedQuantum;
     quantum_scale=1.0;
     format=(char) ReadBlobByte(image);
@@ -419,8 +425,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Assign a value to the specified keyword.
           */
           if (LocaleCompare(keyword,"depth") == 0)
-            packet_size=StringToUnsignedLong(value);
-          (void) packet_size;
+            (void) StringToUnsignedLong(value);
           if (LocaleCompare(keyword,"height") == 0)
             image->rows=StringToUnsignedLong(value);
           if (LocaleCompare(keyword,"maxval") == 0)
@@ -430,23 +435,23 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(value,"BLACKANDWHITE") == 0)
                 {
-                  (void) SetImageColorspace(image,GRAYColorspace,exception);
+                  colorspace=GRAYColorspace;
                   quantum_type=GrayQuantum;
                 }
               if (LocaleCompare(value,"BLACKANDWHITE_ALPHA") == 0)
                 {
-                  (void) SetImageColorspace(image,GRAYColorspace,exception);
+                  colorspace=GRAYColorspace;
                   image->alpha_trait=BlendPixelTrait;
                   quantum_type=GrayAlphaQuantum;
                 }
               if (LocaleCompare(value,"GRAYSCALE") == 0)
                 {
+                  colorspace=GRAYColorspace;
                   quantum_type=GrayQuantum;
-                  (void) SetImageColorspace(image,GRAYColorspace,exception);
                 }
               if (LocaleCompare(value,"GRAYSCALE_ALPHA") == 0)
                 {
-                  (void) SetImageColorspace(image,GRAYColorspace,exception);
+                  colorspace=GRAYColorspace;
                   image->alpha_trait=BlendPixelTrait;
                   quantum_type=GrayAlphaQuantum;
                 }
@@ -457,12 +462,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               if (LocaleCompare(value,"CMYK") == 0)
                 {
-                  (void) SetImageColorspace(image,CMYKColorspace,exception);
+                  colorspace=CMYKColorspace;
                   quantum_type=CMYKQuantum;
                 }
               if (LocaleCompare(value,"CMYK_ALPHA") == 0)
                 {
-                  (void) SetImageColorspace(image,CMYKColorspace,exception);
+                  colorspace=CMYKColorspace;
                   image->alpha_trait=BlendPixelTrait;
                   quantum_type=CMYKAQuantum;
                 }
@@ -487,9 +492,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       {
-        comment_info.comment=DestroyString(comment_info.comment); \
+        comment_info.comment=DestroyString(comment_info.comment);
         return(DestroyImageList(image));
       }
+    if (colorspace != UndefinedColorspace)
+      (void) SetImageColorspace(image,colorspace,exception);
     (void) ResetImagePixels(image,exception);
     /*
       Convert PNM pixels to runextent-encoded MIFF packets.
@@ -831,7 +838,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PNM raster image to pixel packets.
         */
         quantum_type=RGBQuantum;
-        extent=3*(image->depth <= 8 ? 1 : image->depth <= 16 ? 2 : 4)*
+        extent=3*(size_t) (image->depth <= 8 ? 1 : image->depth <= 16 ? 2 : 4)*
           image->columns;
         quantum_info=AcquireQuantumInfo(image_info,image);
         if (quantum_info == (QuantumInfo *) NULL)
@@ -1851,7 +1858,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='F';
         if (image_info->type == TrueColorType)
           break;
-        if (IdentifyImageCoderType(image,exception) == GrayscaleType)
+        if (IdentifyImageCoderGray(image,exception) != MagickFalse)
           format='f';
         break;
       }
@@ -1869,7 +1876,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='H';
         if (image_info->type == TrueColorType)
           break;
-        if (IdentifyImageCoderType(image,exception) == GrayscaleType)
+        if (IdentifyImageCoderGray(image,exception) != MagickFalse)
           format='h';
         break;
       }
@@ -1882,8 +1889,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         format='6';
         if (image_info->type == TrueColorType)
           break;
-        type=IdentifyImageCoderType(image,exception);
-        if (type == GrayscaleType)
+        type=IdentifyImageCoderGrayType(image,exception);
+        if (IsGrayImageType(type) != MagickFalse)
           {
             format='5';
             if (image_info->compression == NoCompression)
@@ -1894,8 +1901,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 if (image_info->compression == NoCompression)
                   format='1';
               }
-            break;
           }
+        break;
       }
       default:
       {

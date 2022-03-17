@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.  You may
@@ -41,7 +41,7 @@ static inline double SiPrefixToDoubleInterval(const char *string,
 }
 
 static inline double StringToDouble(const char *magick_restrict string,
-  char **magick_restrict sentinal)
+  char *magick_restrict *sentinal)
 {
   return(InterpretLocaleValue(string,sentinal));
 }

@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -203,8 +203,8 @@ static inline int ProfileInteger(MagickByteBuffer *buffer,short int *hex_digits)
   return(value);
 }
 
-static void ReadPSInfo(const ImageInfo *image_info,Image *image,
-  PSInfo *ps_info,ExceptionInfo *exception)
+static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
+  ExceptionInfo *exception)
 {
 #define BeginDocument  "BeginDocument:"
 #define EndDocument  "EndDocument:"
@@ -581,6 +581,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     file;
 
   MagickBooleanType
+    crop,
     fitPage,
     status;
 
@@ -639,18 +640,20 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((image->resolution.x == 0.0) || (image->resolution.y == 0.0))
     {
       flags=ParseGeometry(PSDensityGeometry,&geometry_info);
-      image->resolution.x=geometry_info.rho;
-      image->resolution.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        image->resolution.y=image->resolution.x;
+      if ((flags & RhoValue) != 0)
+        image->resolution.x=geometry_info.rho;
+      image->resolution.y=image->resolution.x;
+      if ((flags & SigmaValue) != 0)
+        image->resolution.y=geometry_info.sigma;
     }
   if (image_info->density != (char *) NULL)
     {
       flags=ParseGeometry(image_info->density,&geometry_info);
-      image->resolution.x=geometry_info.rho;
-      image->resolution.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        image->resolution.y=image->resolution.x;
+      if ((flags & RhoValue) != 0)
+        image->resolution.x=geometry_info.rho;
+      image->resolution.y=image->resolution.x;
+      if ((flags & SigmaValue) != 0)
+        image->resolution.y=geometry_info.sigma;
     }
   (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
@@ -681,7 +684,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   fitPage=MagickFalse;
   option=GetImageOption(image_info,"eps:fit-page");
-  if (option != (char *) NULL)
+  if (option != (const char *) NULL)
     {
       char
         *page_geometry;
@@ -703,6 +706,14 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->resolution.y/delta.y) -0.5));
       page_geometry=DestroyString(page_geometry);
       fitPage=MagickTrue;
+    }
+  crop=MagickFalse;
+  if (*image_info->magick == 'E')
+    {
+      option=GetImageOption(image_info,"eps:use-cropbox");
+      if ((option == (const char *) NULL) ||
+          (IsStringTrue(option) != MagickFalse))
+        crop=MagickTrue;
     }
   if (IssRGBCompatibleColorspace(image_info->colorspace) != MagickFalse)
     info.cmyk=MagickFalse;
@@ -755,11 +766,14 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   options=AcquireString("");
   (void) FormatLocaleString(density,MagickPathExtent,"%gx%g",resolution.x,
     resolution.y);
-  if (image_info->ping != MagickFalse)
-    (void) FormatLocaleString(density,MagickPathExtent,"2.0x2.0");
-  else
-    (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",(double)
-      page.width,(double) page.height);
+  if (crop == MagickFalse)
+    {
+      if (image_info->ping != MagickFalse)
+        (void) FormatLocaleString(density,MagickPathExtent,"2.0x2.0");
+      else
+        (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",
+          (double) page.width,(double) page.height);
+    }
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
   if (read_info->number_scenes != 0)
@@ -777,9 +791,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (*image_info->magick == 'E')
     {
-      option=GetImageOption(image_info,"eps:use-cropbox");
-      if ((option == (const char *) NULL) ||
-          (IsStringTrue(option) != MagickFalse))
+      if (crop != MagickFalse)
         (void) ConcatenateMagickString(options,"-dEPSCrop ",MagickPathExtent);
       if (fitPage != MagickFalse)
         (void) ConcatenateMagickString(options,"-dEPSFitPage ",
@@ -1371,6 +1383,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
   const char
     *value;
 
+  const Quantum
+    *p;
+
   const StringInfo
     *profile;
 
@@ -1405,13 +1420,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     media_info,
     page_info;
 
-  const Quantum
-    *p;
-
-  ssize_t
-    i,
-    x;
-
   unsigned char
     *q;
 
@@ -1427,7 +1435,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     text_size;
 
   ssize_t
+    i,
     j,
+    x,
     y;
 
   time_t
@@ -1474,18 +1484,20 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     if ((resolution.x == 0.0) || (resolution.y == 0.0))
       {
         flags=ParseGeometry(PSDensityGeometry,&geometry_info);
-        resolution.x=geometry_info.rho;
-        resolution.y=geometry_info.sigma;
-        if ((flags & SigmaValue) == 0)
-          resolution.y=resolution.x;
+        if ((flags & RhoValue) != 0)
+          resolution.x=geometry_info.rho;
+        resolution.y=resolution.x;
+        if ((flags & SigmaValue) != 0)
+          resolution.y=geometry_info.sigma;
       }
     if (image_info->density != (char *) NULL)
       {
         flags=ParseGeometry(image_info->density,&geometry_info);
-        resolution.x=geometry_info.rho;
-        resolution.y=geometry_info.sigma;
-        if ((flags & SigmaValue) == 0)
-          resolution.y=resolution.x;
+        if ((flags & RhoValue) != 0)
+          resolution.x=geometry_info.rho;
+        resolution.y=resolution.x;
+        if ((flags & SigmaValue) != 0)
+          resolution.y=geometry_info.sigma;
       }
     if (image->units == PixelsPerCentimeterResolution)
       {
@@ -1617,15 +1629,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
             Image
               *preview_image;
 
-            Quantum
-              pixel;
-
-            ssize_t
-              x;
-
-            ssize_t
-              y;
-
             /*
               Create preview image.
             */
@@ -1652,9 +1655,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
               byte=0;
               for (x=0; x < (ssize_t) preview_image->columns; x++)
               {
+                Quantum
+                  luma;
+
                 byte<<=1;
-                pixel=ClampToQuantum(GetPixelLuma(preview_image,p));
-                if (pixel >= (Quantum) (QuantumRange/2))
+                luma=ClampToQuantum(GetPixelLuma(preview_image,p));
+                if (luma >= (Quantum) (QuantumRange/2))
                   byte|=0x01;
                 bit++;
                 if (bit == 8)
@@ -1768,14 +1774,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     index=(Quantum) 0;
     x=0;
     if (image_info->type != TrueColorType)
-      type=IdentifyImageCoderType(image,exception);
+      type=IdentifyImageCoderGrayType(image,exception);
     if (IsGrayImageType(type) != MagickFalse)
       {
-        if (type == GrayscaleType)
+        if (type != BilevelType)
           {
-            Quantum
-              pixel;
-
             /*
               Dump image as grayscale.
             */
@@ -1791,9 +1794,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                pixel=(Quantum) ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
+                Quantum
+                  luma;
+
+                luma=(Quantum) ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(
                   image,p)));
-                q=PopHexPixel(hex_digits,(size_t) pixel,q);
+                q=PopHexPixel(hex_digits,(size_t) luma,q);
                 if ((q-pixels+8) >= 80)
                   {
                     *q++='\n';
@@ -1818,12 +1824,6 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
           }
         else
           {
-            ssize_t
-              y;
-
-            Quantum
-              pixel;
-
             /*
               Dump image as bitmap.
             */
@@ -1841,9 +1841,12 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
               byte=0;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
+                Quantum
+                  luma;
+
                 byte<<=1;
-                pixel=ClampToQuantum(GetPixelLuma(image,p));
-                if (pixel >= (Quantum) (QuantumRange/2))
+                luma=ClampToQuantum(GetPixelLuma(image,p));
+                if (luma >= (Quantum) (QuantumRange/2))
                   byte|=0x01;
                 bit++;
                 if (bit == 8)

@@ -17,7 +17,7 @@
 %                                   May 2019                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 2019-2019 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2019 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -185,7 +185,7 @@ static inline Quantum GetChannelValue(unsigned int word,unsigned char channel,
     case RGBA32:
       return ScaleCharToQuantum(word>>channel*8 & ~(~0x0U<<8));
     default:
-      return -1;
+      return QuantumRange;
   }
 }
 

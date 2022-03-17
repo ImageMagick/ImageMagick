@@ -17,7 +17,7 @@
 %                                 July 1999                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -64,6 +64,16 @@
 #include "MagickCore/utility-private.h"
 
 /*
+  Global declarations.
+*/
+static const char*
+  intermediate_formats[] =
+  {
+    "pam",
+    "webp"
+  };
+
+/*
   Forward declarations.
 */
 static MagickBooleanType
@@ -95,15 +105,6 @@ static MagickBooleanType
 %    o length: Specifies the length of the magick string.
 %
 */
-
-static MagickBooleanType IsAVI(const unsigned char *magick,const size_t length)
-{
-  if (length < 4)
-    return(MagickFalse);
-  if (memcmp(magick,"RIFF",4) == 0)
-    return(MagickTrue);
-  return(MagickFalse);
-}
 
 static MagickBooleanType IsPNG(const unsigned char *magick,const size_t length)
 {
@@ -151,6 +152,21 @@ static MagickBooleanType IsVIDEO(const unsigned char *magick,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static const char *GetIntermediateFormat(const ImageInfo *image_info)
+{
+  const char
+    *option;
+ 
+  option=GetImageOption(image_info,"video:intermediate-format");
+  if (LocaleCompare(option,"pam") == 0)
+    return(intermediate_formats[0]);
+#if defined(MAGICKCORE_WEBP_DELEGATE)
+  return(intermediate_formats[1]);
+#else
+  return(intermediate_formats[0]);
+#endif
+}
+
 static Image *ReadVIDEOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -204,6 +220,7 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
         *sanitized_option;
 
       const char
+        *intermediate_format,
         *option;
 
       int
@@ -235,12 +252,17 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
         if (LocaleNCompare(image_info->magick,"APNG",MagickPathExtent) == 0)
           (void) ConcatenateMagickString(options," -pix_fmt rgba",
             MagickPathExtent);
+      intermediate_format=GetIntermediateFormat(image_info);
+      (void) FormatLocaleString(command,MagickPathExtent," -vcodec %s",
+        intermediate_format);
+      (void) ConcatenateMagickString(options,command,MagickPathExtent);
       AcquireUniqueFilename(read_info->unique);
       (void) FormatLocaleString(command,MagickPathExtent,
         GetDelegateCommands(delegate_info),read_info->filename,options,
         read_info->unique);
       options=DestroyString(options);
-      (void) CopyMagickString(read_info->magick,"pam",MagickPathExtent);
+      (void) CopyMagickString(read_info->magick,intermediate_format,
+        MagickPathExtent);
       (void) CopyMagickString(read_info->filename,read_info->unique,
         MagickPathExtent);
       exit_code=ExternalDelegateCommand(MagickFalse,image_info->verbose,
@@ -310,7 +332,6 @@ ModuleExport size_t RegisterVIDEOImage(void)
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("VIDEO","AVI","Microsoft Audio/Visual Interleaved");
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
-  entry->magick=(IsImageFormatHandler *) IsAVI;
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("VIDEO","FLV","Flash Video Stream");
@@ -513,11 +534,12 @@ static MagickBooleanType CopyDelegateFile(const char *source,
 static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
-#define WriteVIDEOIntermediateFormat "pam"
-
   char
     basename[MagickPathExtent],
     filename[MagickPathExtent];
+
+  const char
+    *intermediate_format;
 
   const DelegateInfo
     *delegate_info;
@@ -578,6 +600,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   write_info->file=(FILE *) NULL;
   *write_info->magick='\0';
   status=MagickTrue;
+  intermediate_format=GetIntermediateFormat(image_info);
   for (p=coalesce_image; p != (Image *) NULL; p=GetNextImageInList(p))
   {
     char
@@ -600,12 +623,11 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
             *frame;
 
           (void) FormatLocaleString(p->filename,MagickPathExtent,"%s%.20g.%s",
-            basename,(double) p->scene,WriteVIDEOIntermediateFormat);
+            basename,(double) p->scene,intermediate_format);
           (void) FormatLocaleString(filename,MagickPathExtent,"%s%.20g.%s",
-            basename,(double) p->scene,WriteVIDEOIntermediateFormat);
+            basename,(double) p->scene,intermediate_format);
           (void) FormatLocaleString(previous_image,MagickPathExtent,
-            "%s%.20g.%s",basename,(double) p->scene,
-            WriteVIDEOIntermediateFormat);
+            "%s%.20g.%s",basename,(double) p->scene,intermediate_format);
           frame=CloneImage(p,0,0,MagickTrue,exception);
           if (frame == (Image *) NULL)
             break;
@@ -621,7 +643,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
         default:
         {
           (void) FormatLocaleString(filename,MagickPathExtent,"%s%.20g.%s",
-            basename,(double) p->scene,WriteVIDEOIntermediateFormat);
+            basename,(double) p->scene,intermediate_format);
           if (length > 0)
             status=BlobToFile(filename,blob,length,exception);
           break;
@@ -632,11 +654,11 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
           if (status != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "%.20g. Wrote %s file for scene %.20g:",(double) i,
-              WriteVIDEOIntermediateFormat,(double) p->scene);
+              intermediate_format,(double) p->scene);
           else
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "%.20g. Failed to write %s file for scene %.20g:",(double) i,
-              WriteVIDEOIntermediateFormat,(double) p->scene);
+              intermediate_format,(double) p->scene);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%s",filename);
         }
     }
@@ -680,8 +702,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
         }
       AcquireUniqueFilename(write_info->unique);
       (void) FormatLocaleString(command,MagickPathExtent,
-        GetDelegateCommands(delegate_info),basename,options,write_info->unique,
-        image_info->magick);
+        GetDelegateCommands(delegate_info),basename,intermediate_format,
+        options,write_info->unique,image_info->magick);
       options=DestroyString(options);
       exit_code=ExternalDelegateCommand(MagickFalse,image_info->verbose,
         command,message,exception);
@@ -711,7 +733,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     for (i=0; i < (ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0); i++)
     {
       (void) FormatLocaleString(p->filename,MagickPathExtent,"%s%.20g.%s",
-        basename,(double) count++,WriteVIDEOIntermediateFormat);
+        basename,(double) count++,intermediate_format);
       (void) RelinquishUniqueFileResource(p->filename);
     }
     (void) CopyMagickString(p->filename,image_info->filename,MagickPathExtent);

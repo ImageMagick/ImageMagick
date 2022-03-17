@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -182,7 +182,7 @@ typedef struct _QuantizationTable
 */
 static const char
   xmp_namespace[] = "http://ns.adobe.com/xap/1.0/ ";
-#define XmpNamespaceExtent 28
+#define XMPNamespaceExtent 28
 
 /*
   Forward declarations.
@@ -629,7 +629,7 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   return(ReadProfileData(jpeg_info,marker,length));
 }
 
-static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
+static boolean ReadXMPProfile(j_decompress_ptr jpeg_info)
 {
   ExceptionInfo
     *exception;
@@ -665,8 +665,8 @@ static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
   p=GetStringInfoDatum(profile);
   length=GetStringInfoLength(profile);
   status=MagickTrue;
-  if ((length > XmpNamespaceExtent) &&
-      (LocaleNCompare((char *) p,xmp_namespace,XmpNamespaceExtent-1) == 0))
+  if ((length > XMPNamespaceExtent) &&
+      (LocaleNCompare((char *) p,xmp_namespace,XMPNamespaceExtent-1) == 0))
     {
       ssize_t
         j;
@@ -674,8 +674,8 @@ static boolean ReadXmlProfile(j_decompress_ptr jpeg_info)
       /*
         Extract namespace from XMP profile.
       */
-      p=GetStringInfoDatum(profile)+XmpNamespaceExtent;
-      for (j=XmpNamespaceExtent; j < (ssize_t) length; j++)
+      p=GetStringInfoDatum(profile)+XMPNamespaceExtent;
+      for (j=XMPNamespaceExtent; j < (ssize_t) length; j++)
       {
         if (*p == '\0')
           break;
@@ -1056,7 +1056,6 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     scanline[1];
 
   MagickBooleanType
-    debug,
     status;
 
   MagickSizeType
@@ -1096,8 +1095,6 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  debug=IsEventLogging();
-  (void) debug;
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -1149,7 +1146,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   if (IsOptionMember("IPTC",option) == MagickFalse)
     jpeg_set_marker_processor(jpeg_info,IPTC_MARKER,ReadIPTCProfile);
   if (IsOptionMember("APP",option) == MagickFalse)
-    jpeg_set_marker_processor(jpeg_info,XML_MARKER,ReadXmlProfile);
+    jpeg_set_marker_processor(jpeg_info,XML_MARKER,ReadXMPProfile);
   for (i=3; i < 16; i++)
     /* APP14 is ignored because this will change the colors of the image */
     if (i != IPTC_INDEX && i != 14)
@@ -2005,7 +2002,7 @@ static void TerminateDestination(j_compress_ptr compress_info)
     }
 }
 
-static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
+static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
   ExceptionInfo *exception)
 {
   const char
@@ -2128,7 +2125,7 @@ static void WriteProfile(j_compress_ptr jpeg_info,Image *image,
         if (xmp_profile != (StringInfo *) NULL)
           {
             ConcatenateStringInfo(xmp_profile,profile);
-            GetStringInfoDatum(xmp_profile)[XmpNamespaceExtent]='\0';
+            GetStringInfoDatum(xmp_profile)[XMPNamespaceExtent]='\0';
             length=GetStringInfoLength(xmp_profile);
             jpeg_write_marker(jpeg_info,XML_MARKER,
               GetStringInfoDatum(xmp_profile),(unsigned int) length);
@@ -2334,15 +2331,11 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     }
     default:
     {
-      ImageType
-        type;
-
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         (void) TransformImageColorspace(image,sRGBColorspace,exception);
       if (image_info->type == TrueColorType)
         break;
-      type=IdentifyImageCoderType(image,exception);
-      if (IsGrayImageType(type) != MagickFalse)
+      if (IdentifyImageCoderGray(image,exception) != MagickFalse)
         {
           jpeg_info->input_components=1;
           jpeg_info->in_color_space=JCS_GRAYSCALE;
@@ -2703,30 +2696,9 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           "Number of colors: unspecified");
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "JPEG data precision: %d",(int) jpeg_info->data_precision);
-      switch (image->colorspace)
+      switch (jpeg_info->in_color_space)
       {
-        case CMYKColorspace:
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Storage class: DirectClass");
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Colorspace: CMYK");
-          break;
-        }
-        case YCbCrColorspace:
-        case Rec601YCbCrColorspace:
-        case Rec709YCbCrColorspace:
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Colorspace: YCbCr");
-          break;
-        }
-        default:
-          break;
-      }
-      switch (image->colorspace)
-      {
-        case CMYKColorspace:
+        case JCS_CMYK:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: CMYK");
@@ -2742,7 +2714,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
             jpeg_info->comp_info[3].v_samp_factor);
           break;
         }
-        case GRAYColorspace:
+        case JCS_GRAYSCALE:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: GRAY");
@@ -2751,11 +2723,10 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
             jpeg_info->comp_info[0].v_samp_factor);
           break;
         }
-        case sRGBColorspace:
-        case RGBColorspace:
+        case JCS_UNKNOWN:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Image colorspace is RGB");
+            "Colorspace: RGB");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Sampling factors: %dx%d,%dx%d,%dx%d",
             jpeg_info->comp_info[0].h_samp_factor,
@@ -2766,9 +2737,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
             jpeg_info->comp_info[2].v_samp_factor);
           break;
         }
-        case YCbCrColorspace:
-        case Rec601YCbCrColorspace:
-        case Rec709YCbCrColorspace:
+        case JCS_YCbCr:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: YCbCr");
@@ -2782,22 +2751,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
             jpeg_info->comp_info[2].v_samp_factor);
           break;
         }
-        default:
-        {
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
-            image->colorspace);
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: %dx%d,%dx%d,%dx%d,%dx%d",
-            jpeg_info->comp_info[0].h_samp_factor,
-            jpeg_info->comp_info[0].v_samp_factor,
-            jpeg_info->comp_info[1].h_samp_factor,
-            jpeg_info->comp_info[1].v_samp_factor,
-            jpeg_info->comp_info[2].h_samp_factor,
-            jpeg_info->comp_info[2].v_samp_factor,
-            jpeg_info->comp_info[3].h_samp_factor,
-            jpeg_info->comp_info[3].v_samp_factor);
-          break;
-        }
+        default: break;
       }
     }
   /*
@@ -2815,7 +2769,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           (unsigned int) MagickMin((size_t) strlen(value+i),65533L));
     }
   if (image->profiles != (void *) NULL)
-    WriteProfile(jpeg_info,image,exception);
+    WriteProfiles(jpeg_info,image,exception);
   /*
     Convert MIFF to JPEG raster pixels.
   */

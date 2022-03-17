@@ -7,7 +7,6 @@
 BEGIN { $| = 1; $test=1; print "1..2\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Image::Magick;
-use lib '/home/cristy/ImageMagick-7.0.8-27/PerlMagick';
 $loaded=1;
 
 require 't/subroutines.pl';

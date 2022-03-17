@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.  You may
@@ -67,12 +67,6 @@ struct timezone
 
 #endif
 
-#if defined(MAGICKCORE_BZLIB_DELEGATE)
-#  if defined(_WIN32)
-#    define BZ_IMPORT 1
-#  endif
-#endif
-
 extern MagickPrivate char
   *NTGetLastError(void);
 
@@ -102,9 +96,6 @@ extern MagickPrivate int
   NTControlHandler(void),
   NTExitLibrary(void),
   NTTruncateFile(int,off_t),
-  NTGhostscriptDLL(char *,int),
-  NTGhostscriptFonts(char *,int),
-  NTGhostscriptLoadDLL(void),
   NTInitializeLibrary(void),
   NTSetSearchPath(const char *),
   NTUnmapMemory(void *,size_t),
@@ -117,6 +108,7 @@ extern MagickPrivate MagickBooleanType
   NTGatherRandomData(const size_t,unsigned char *),
   NTGetExecutionPath(char *,const size_t),
   NTGetModulePath(const char *,char *),
+  NTGhostscriptFonts(char *,int),
   NTReportEvent(const char *,const MagickBooleanType);
 
 extern MagickExport MagickBooleanType

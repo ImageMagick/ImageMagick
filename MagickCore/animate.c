@@ -17,7 +17,7 @@
 %                                July 1992                                    %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -56,6 +56,7 @@
 #include "MagickCore/image-private.h"
 #include "MagickCore/layer.h"
 #include "MagickCore/list.h"
+#include "MagickCore/locale-private.h"
 #include "MagickCore/log.h"
 #include "MagickCore/image.h"
 #include "MagickCore/memory_.h"
@@ -1574,7 +1575,7 @@ MagickExport Image *XAnimateImages(Display *display,
     resource_info,&windows->context);
   (void) CloneString(&class_hints->res_name,resource_info->client_name);
   (void) CloneString(&class_hints->res_class,resource_info->client_name);
-  class_hints->res_class[0]=(char) LocaleUppercase((int)
+  class_hints->res_class[0]=(char) LocaleToUppercase((int)
     class_hints->res_class[0]);
   manager_hints->flags=InputHint | StateHint;
   manager_hints->input=MagickFalse;

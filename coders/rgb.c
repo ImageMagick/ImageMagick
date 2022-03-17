@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -161,28 +161,26 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   canvas_image=CloneImage(image,image->extract_info.width,1,MagickFalse,
     exception);
-  if(canvas_image == (Image *) NULL)
+  if (canvas_image == (Image *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   (void) SetImageVirtualPixelMethod(canvas_image,BlackVirtualPixelMethod,
     exception);
-  quantum_info=AcquireQuantumInfo(image_info,canvas_image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    {
-      canvas_image=DestroyImage(canvas_image);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
   quantum_type=RGBQuantum;
   if (LocaleCompare(image_info->magick,"RGBA") == 0)
     {
       quantum_type=RGBAQuantum;
-      image->alpha_trait=BlendPixelTrait;
       canvas_image->alpha_trait=BlendPixelTrait;
     }
   if (LocaleCompare(image_info->magick,"RGBO") == 0)
     {
       quantum_type=RGBOQuantum;
-      image->alpha_trait=BlendPixelTrait;
       canvas_image->alpha_trait=BlendPixelTrait;
+    }
+  quantum_info=AcquireQuantumInfo(image_info,canvas_image);
+  if (quantum_info == (QuantumInfo *) NULL)
+    {
+      canvas_image=DestroyImage(canvas_image);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   pixels=GetQuantumPixels(quantum_info);
   if (image_info->number_scenes != 0)
@@ -210,6 +208,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read pixels to virtual canvas image then push to image.
     */
+    image->alpha_trait=canvas_image->alpha_trait;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;

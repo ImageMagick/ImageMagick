@@ -19,7 +19,7 @@
 %                                 July 2009                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2009 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -56,7 +56,6 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"

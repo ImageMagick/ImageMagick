@@ -18,7 +18,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -203,6 +203,23 @@ ModuleExport void UnregisterHTMLImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static ssize_t WriteURLComponent(Image *image,const int c)
+{
+  char
+    encoding[MagickPathExtent],
+    html5;
+  
+  html5=isalnum(c) != 0 || (c == '-') || (c == '_') || (c == '.') ||
+    (c == '!') || (c == '~') || (c == '*') || (c == '\'') || (c == '(') ||
+    (c == ')') ?  c : 0;
+  if (html5 != 0)
+    (void) FormatLocaleString(encoding,MagickPathExtent,"%c",html5);
+  else
+    (void) FormatLocaleString(encoding,MagickPathExtent,"%%%02X",c);
+  return(WriteBlobString(image,encoding));
+}
+
 static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
@@ -350,7 +367,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
       else
         for (p=image->directory; *p != '\0'; p++)
           if (*p != '\xff')
-            (void) WriteBlobByte(image,(unsigned char) *p);
+            (void) WriteURLComponent(image,(unsigned char) *p);
           else
             {
               (void) FormatLocaleString(buffer,MagickPathExtent,"\" shape="
@@ -425,7 +442,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
   else
     for (p=image->directory; *p != '\0'; p++)
       if (*p != '\xff')
-        (void) WriteBlobByte(image,(unsigned char) *p);
+        (void) WriteURLComponent(image,(unsigned char) *p);
       else
         {
           (void) FormatLocaleString(buffer,MagickPathExtent,"\" shape=\"rect\""

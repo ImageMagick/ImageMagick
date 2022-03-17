@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 2018 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.  You may
@@ -17,6 +17,7 @@
 #define MAGICK_CODERS_PRIVATE_H
 
 #include "MagickCore/attribute.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/string_.h"
 
@@ -37,16 +38,47 @@ static inline ImageType IdentifyImageCoderType(const Image *image,
   const char
     *value;
 
+  value=GetImageProperty(image,"colorspace:auto-grayscale",exception);
+  if (IsStringFalse(value) != MagickFalse)
+    return(image->type);
+  return(IdentifyImageType(image,exception));
+}
+
+static inline ImageType IdentifyImageCoderGrayType(const Image *image,
+  ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  value=GetImageProperty(image,"colorspace:auto-grayscale",exception);
+  if (IsStringFalse(value) != MagickFalse)
+    return(UndefinedType);
+  return(IdentifyImageGray(image,exception));
+}
+
+static inline MagickBooleanType IdentifyImageCoderGray(const Image *image,
+  ExceptionInfo *exception)
+{
   ImageType
     type;
 
-  type=IdentifyImageType(image,exception);
-  if ((type != GrayscaleType) && (type != BilevelType))
-    return(type);
-  value=GetImageProperty(image,"colorspace:auto-grayscale",exception);
-  if (IsStringFalse(value) == MagickFalse)
-    return(type);
-  return(TrueColorType);
+  type=IdentifyImageCoderGrayType(image,exception);
+  return(IsGrayImageType(type));
+}
+
+static inline MagickBooleanType SetImageCoderGray(Image *image,
+  ExceptionInfo *exception)
+{
+  ImageType
+    type;
+
+  if (IsImageGray(image) != MagickFalse)
+    return(MagickTrue);
+  type=IdentifyImageCoderGrayType(image,exception);
+  if (IsGrayImageType(type) == MagickFalse)
+    return(MagickFalse);
+  image->type=type;
+  return(SetImageColorspace(image,GRAYColorspace,exception));
 }
 
 #endif

@@ -17,7 +17,7 @@
 %                                   July 1992                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -192,12 +192,12 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     trough;
 
   ssize_t
-    x;
+    x_offset,
+    y_offset;
 
   size_t
     bevel_width,
-    height,
-    width;
+    height;
 
   ssize_t
     y;
@@ -213,9 +213,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
     ThrowImageException(OptionError,"FrameIsLessThanImageSize");
   bevel_width=(size_t) (frame_info->outer_bevel+frame_info->inner_bevel);
-  x=(ssize_t) frame_info->width-frame_info->x-bevel_width;
-  y=(ssize_t) frame_info->height-frame_info->y-bevel_width;
-  if ((x < (ssize_t) image->columns) ||  (y < (ssize_t) image->rows))
+  x_offset=(ssize_t) frame_info->width-frame_info->x-bevel_width;
+  y_offset=(ssize_t) frame_info->height-frame_info->y-bevel_width;
+  if ((x_offset < (ssize_t) image->columns) ||
+      (y_offset < (ssize_t) image->rows))
     ThrowImageException(OptionError,"FrameIsLessThanImageSize");
   /*
     Initialize framed image attributes.
@@ -246,24 +247,24 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   */
   matte=image->matte_color;
   accentuate=matte;
-  accentuate.red=(double) (QuantumScale*((QuantumRange-
-    AccentuateModulate)*matte.red+(QuantumRange*AccentuateModulate)));
-  accentuate.green=(double) (QuantumScale*((QuantumRange-
-    AccentuateModulate)*matte.green+(QuantumRange*AccentuateModulate)));
-  accentuate.blue=(double) (QuantumScale*((QuantumRange-
-    AccentuateModulate)*matte.blue+(QuantumRange*AccentuateModulate)));
-  accentuate.black=(double) (QuantumScale*((QuantumRange-
-    AccentuateModulate)*matte.black+(QuantumRange*AccentuateModulate)));
+  accentuate.red=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
+    matte.red+(QuantumRange*(double) AccentuateModulate)));
+  accentuate.green=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
+    matte.green+(QuantumRange*(double) AccentuateModulate)));
+  accentuate.blue=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
+    matte.blue+(QuantumRange*(double) AccentuateModulate)));
+  accentuate.black=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
+    matte.black+(QuantumRange*(double) AccentuateModulate)));
   accentuate.alpha=matte.alpha;
   highlight=matte;
-  highlight.red=(double) (QuantumScale*((QuantumRange-
-    HighlightModulate)*matte.red+(QuantumRange*HighlightModulate)));
-  highlight.green=(double) (QuantumScale*((QuantumRange-
-    HighlightModulate)*matte.green+(QuantumRange*HighlightModulate)));
-  highlight.blue=(double) (QuantumScale*((QuantumRange-
-    HighlightModulate)*matte.blue+(QuantumRange*HighlightModulate)));
-  highlight.black=(double) (QuantumScale*((QuantumRange-
-    HighlightModulate)*matte.black+(QuantumRange*HighlightModulate)));
+  highlight.red=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
+    matte.red+(QuantumRange*(double) HighlightModulate)));
+  highlight.green=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
+    matte.green+(QuantumRange*(double) HighlightModulate)));
+  highlight.blue=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
+    matte.blue+(QuantumRange*(double) HighlightModulate)));
+  highlight.black=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
+    matte.black+(QuantumRange*(double) HighlightModulate)));
   highlight.alpha=matte.alpha;
   shadow=matte;
   shadow.red=QuantumScale*matte.red*ShadowModulate;
@@ -285,6 +286,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     frame_info->inner_bevel);
   if (height != 0)
     {
+      size_t
+        width;
+
       ssize_t
         x;
 
@@ -467,6 +471,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     frame_info->y-image->rows-bevel_width+frame_info->outer_bevel);
   if (height != 0)
     {
+      size_t
+        width;
+
       ssize_t
         x;
 
@@ -561,13 +568,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     }
   frame_view=DestroyCacheView(frame_view);
   image_view=DestroyCacheView(image_view);
-  x=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
+  x_offset=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
     frame_info->inner_bevel);
-  y=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
+  y_offset=(ssize_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
     frame_info->inner_bevel);
   if (status != MagickFalse)
-    status=CompositeImage(frame_image,image,compose,MagickTrue,x,y,
-      exception);
+    status=CompositeImage(frame_image,image,compose,MagickTrue,x_offset,
+      y_offset,exception);
   if (status == MagickFalse)
     frame_image=DestroyImage(frame_image);
   return(frame_image);

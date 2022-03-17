@@ -17,7 +17,7 @@
 %                                 July 2001                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -48,6 +48,7 @@
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
+#include "MagickCore/locale-private.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
@@ -177,10 +178,10 @@ static int stringnicmp(const char *p,const char *q,size_t n)
       break;
     i=(*p);
     if (islower((int) ((unsigned char) i)) != 0)
-      i=LocaleUppercase(i);
+      i=LocaleToUppercase(i);
     j=(*q);
     if (islower((int) ((unsigned char) j)) != 0)
-      j=LocaleUppercase(j);
+      j=LocaleToUppercase(j);
     if (i != j)
       break;
     n--;
@@ -189,7 +190,7 @@ static int stringnicmp(const char *p,const char *q,size_t n)
     p++;
     q++;
   }
-  return(LocaleUppercase((int) *p)-LocaleUppercase((int) *q));
+  return(LocaleToUppercase((int) *p)-LocaleToUppercase((int) *q));
 }
 
 static size_t convertHTMLcodes(char *s)
@@ -360,19 +361,15 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
       if (state == 0)
         {
           int
-            state,
-            next;
+            s,
+            n;
 
-          char
-            brkused,
-            quoted;
-
-          state=0;
-          next=0;
+          s=0;
+          n=0;
           while (Tokenizer(token_info,0,newstr,inputlen,token,"","#",
-            "", 0,&brkused,&next,&quoted)==0)
+            "", 0,&brkused,&n,&quoted)==0)
           {
-            switch (state)
+            switch (s)
             {
               case 0:
                 if (strcmp(newstr,"8BIM")==0)
@@ -390,34 +387,30 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                   (void) strcpy(name,newstr);
                 break;
             }
-            state++;
+            s++;
           }
         }
       else
         if (state == 1)
           {
             int
-              next;
+              n;
 
             ssize_t
               len;
 
-            char
-              brkused,
-              quoted;
-
-            next=0;
+            n=0;
             len = (ssize_t) strlen(token);
             while (Tokenizer(token_info,0,newstr,inputlen,token,"","&",
-              "",0,&brkused,&next,&quoted)==0)
+              "",0,&brkused,&n,&quoted)==0)
             {
-              if (brkused && next > 0)
+              if (brkused && n > 0)
                 {
                   size_t
                     codes_length;
 
                   char
-                    *s = &token[next-1];
+                    *s = &token[n-1];
 
                   codes_length=convertHTMLcodes(s);
                   if ((ssize_t) codes_length > len)
@@ -487,10 +480,10 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                     (void) WriteBlobMSBLong(ofile, (unsigned int) len);
                     outputlen += 4;
 
-                    next=0;
+                    n=0;
                     outputlen += len;
                     while (len-- > 0)
-                      (void) WriteBlobByte(ofile,(unsigned char) token[next++]);
+                      (void) WriteBlobByte(ofile,(unsigned char) token[n++]);
 
                     if (outputlen & 1)
                       {
@@ -518,10 +511,10 @@ static ssize_t parse8BIM(Image *ifile, Image *ofile)
                     (void) WriteBlobByte(ofile,(unsigned char) (recnum & 0xff));
                     (void) WriteBlobMSBShort(ofile,(unsigned short) len);
                     outputlen += 5;
-                    next=0;
+                    n=0;
                     outputlen += len;
                     while (len-- > 0)
-                      (void) WriteBlobByte(ofile,(unsigned char) token[next++]);
+                      (void) WriteBlobByte(ofile,(unsigned char) token[n++]);
                   }
               }
           }
@@ -678,19 +671,15 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
       if (state == 0)
         {
           int
-            state,
-            next;
+            s,
+            n;
 
-          char
-            brkused,
-            quoted;
-
-          state=0;
-          next=0;
+          s=0;
+          n=0;
           while (Tokenizer(token_info,0,newstr,inputlen,token,"","#",
-            "",0,&brkused,&next,&quoted)==0)
+            "",0,&brkused,&n,&quoted)==0)
           {
-            switch (state)
+            switch (s)
             {
               case 0:
                 if (strcmp(newstr,"8BIM")==0)
@@ -708,34 +697,30 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                   (void) CopyMagickString(name,newstr,strlen(newstr)+MagickPathExtent);
                 break;
             }
-            state++;
+            s++;
           }
         }
       else
         if (state == 1)
           {
             int
-              next;
+              n;
 
             ssize_t
               len;
 
-            char
-              brkused,
-              quoted;
-
-            next=0;
+            n=0;
             len = (ssize_t) strlen(token);
             while (Tokenizer(token_info,0,newstr,inputlen,token,"","&",
-              "",0,&brkused,&next,&quoted)==0)
+              "",0,&brkused,&n,&quoted)==0)
             {
-              if (brkused && next > 0)
+              if (brkused && n > 0)
                 {
                   size_t
                     codes_length;
 
                   char
-                    *s = &token[next-1];
+                    *s = &token[n-1];
 
                   codes_length=convertHTMLcodes(s);
                   if ((ssize_t) codes_length > len)
@@ -796,10 +781,10 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                     (void) WriteBlobMSBLong(ofile,(unsigned int) len);
                     outputlen += 4;
 
-                    next=0;
+                    n=0;
                     outputlen += len;
                     while (len--)
-                      (void) WriteBlobByte(ofile,(unsigned char) token[next++]);
+                      (void) WriteBlobByte(ofile,(unsigned char) token[n++]);
 
                     if (outputlen & 1)
                       {
@@ -827,10 +812,10 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                     (void) WriteBlobByte(ofile,(unsigned char) (recnum & 0xff));
                     (void) WriteBlobMSBShort(ofile,(unsigned short) len);
                     outputlen += 5;
-                    next=0;
+                    n=0;
                     outputlen += len;
                     while (len--)
-                      (void) WriteBlobByte(ofile,(unsigned char) token[next++]);
+                      (void) WriteBlobByte(ofile,(unsigned char) token[n++]);
                   }
               }
           }
@@ -1828,11 +1813,7 @@ static void formatString(Image *ofile, const char *s, ssize_t len)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   (void) WriteBlobString(ofile,"\"\r\n");
 #else
-#if defined(macintosh)
-  (void) WriteBlobString(ofile,"\"\r");
-#else
   (void) WriteBlobString(ofile,"\"\n");
-#endif
 #endif
 }
 
@@ -2323,7 +2304,6 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  length=0;
   if (LocaleCompare(image_info->magick,"8BIM") == 0)
     {
       /*
@@ -2333,8 +2313,8 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
       if (profile == (StringInfo *) NULL)
         ThrowWriterException(CoderError,"No8BIMDataIsAvailable");
       assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+      assert(exception->signature == MagickCoreSignature);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
       (void) WriteBlob(image,GetStringInfoLength(profile),
@@ -2344,9 +2324,6 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
     }
   if (LocaleCompare(image_info->magick,"iptc") == 0)
     {
-      size_t
-        length;
-
       unsigned char
         *info;
 

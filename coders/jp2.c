@@ -17,7 +17,7 @@
 %                                 June 2001                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -347,6 +347,14 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
   jp2_status=OPJ_TRUE;
+  if ((AcquireMagickResource(WidthResource,(size_t) jp2_image->comps[0].w) == MagickFalse) ||
+      (AcquireMagickResource(HeightResource,(size_t) jp2_image->comps[0].h) == MagickFalse))
+    {
+      opj_stream_destroy(jp2_stream);
+      opj_destroy_codec(jp2_codec);
+      opj_image_destroy(jp2_image);
+      ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
+    }
   if (image->ping == MagickFalse)
     {
       if ((image->columns != 0) && (image->rows != 0))
@@ -367,14 +375,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           opj_image_destroy(jp2_image);
           ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
         }
-    }
-  if ((AcquireMagickResource(WidthResource,(size_t) jp2_image->comps[0].w) == MagickFalse) ||
-      (AcquireMagickResource(HeightResource,(size_t) jp2_image->comps[0].h) == MagickFalse))
-    {
-      opj_stream_destroy(jp2_stream);
-      opj_destroy_codec(jp2_codec);
-      opj_image_destroy(jp2_image);
-      ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
   if ((image_info->number_scenes != 0) && (image_info->scene != 0))
     jp2_status=opj_get_decoded_tile(jp2_codec,jp2_stream,jp2_image,
@@ -966,7 +966,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       parameters->cp_disto_alloc=OPJ_TRUE;
     }
   if (image_info->sampling_factor != (const char *) NULL)
-    (void) sscanf(image_info->sampling_factor,"%d,%d",
+    (void) sscanf(image_info->sampling_factor,"%d:%d",
       &parameters->subsampling_dx,&parameters->subsampling_dy);
   property=GetImageProperty(image,"comment",exception);
   if (property != (const char *) NULL)

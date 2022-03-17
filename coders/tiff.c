@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -71,7 +71,6 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
@@ -561,10 +560,7 @@ static MagickBooleanType ReadProfile(Image *image,const char *name,
       image->filename);
   status=SetImageProfile(image,name,profile,exception);
   profile=DestroyStringInfo(profile);
-  if (status == MagickFalse)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  return(MagickTrue);
+  return(status);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -682,7 +678,7 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
 {
   char
     message[MagickPathExtent],
-    *text;
+    *text = (char *) NULL;
 
   MagickBooleanType
     status;
@@ -691,7 +687,6 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
     count,
     type;
 
-  text=(char *) NULL;
   status=MagickTrue;
   if ((TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1) &&
       (text != (char *) NULL))
@@ -770,7 +765,7 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
   return(status);
 }
 
-static MagickBooleanType TIFFSetImageProperties(TIFF *tiff,Image *image,
+static void TIFFSetImageProperties(TIFF *tiff,Image *image,
   const char *tag,ExceptionInfo *exception)
 {
   char
@@ -795,7 +790,7 @@ static MagickBooleanType TIFFSetImageProperties(TIFF *tiff,Image *image,
       (void) RelinquishUniqueFileResource(filename);
       (void) ThrowMagickException(exception,GetMagickModule(),WandError,
         "UnableToCreateTemporaryFile","`%s'",filename);
-      return(MagickFalse);
+      return;
     }
   TIFFPrintDirectory(tiff,file,0);
   (void) fseek(file,0,SEEK_SET);
@@ -818,15 +813,14 @@ static MagickBooleanType TIFFSetImageProperties(TIFF *tiff,Image *image,
   }
   (void) fclose(file);
   (void) RelinquishUniqueFileResource(filename);
-  return(MagickTrue);
 }
 
-static MagickBooleanType TIFFGetEXIFProperties(TIFF *tiff,Image *image,
-  ExceptionInfo *exception)
+static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
+  const ImageInfo* image_info,ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY)
-  MagickBooleanType
-    status;
+  const char
+    *option;
 
   tdir_t
     directory;
@@ -841,31 +835,30 @@ static MagickBooleanType TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   /*
     Read EXIF properties.
   */
+  option=GetImageOption(image_info,"tiff:exif-properties");
+  if (IsStringFalse(option) != MagickFalse)
+    return;
   offset=0;
   if (TIFFGetField(tiff,TIFFTAG_EXIFIFD,&offset) != 1)
-    return(MagickFalse);
+    return;
   directory=TIFFCurrentDirectory(tiff);
-  if (TIFFReadEXIFDirectory(tiff,offset) != 1)
-    {
-      TIFFSetDirectory(tiff,directory);
-      return(MagickFalse);
-    }
-  status=TIFFSetImageProperties(tiff,image,"exif:",exception);
+  if (TIFFReadEXIFDirectory(tiff,offset) == 1)
+    TIFFSetImageProperties(tiff,image,"exif:",exception);
   TIFFSetDirectory(tiff,directory);
-  return(status);
 #else
-  (void) tiff;
-  (void) image;
-  return(MagickTrue);
+  magick_unreferenced(tiff);
+  magick_unreferenced(image);
+  magick_unreferenced(image_info);
+  magick_unreferenced(exception);
 #endif
 }
 
-static MagickBooleanType TIFFGetGPSProperties(TIFF *tiff,Image *image,
-  ExceptionInfo *exception)
+static void TIFFGetGPSProperties(TIFF *tiff,Image *image,
+  const ImageInfo* image_info,ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_HAVE_TIFFREADGPSDIRECTORY)
-  MagickBooleanType
-    status;
+  const char
+    *option;
 
   tdir_t
     directory;
@@ -880,23 +873,21 @@ static MagickBooleanType TIFFGetGPSProperties(TIFF *tiff,Image *image,
   /*
     Read GPS properties.
   */
+  option=GetImageOption(image_info,"tiff:gps-properties");
+  if (IsStringFalse(option) != MagickFalse)
+    return;
   offset=0;
   if (TIFFGetField(tiff,TIFFTAG_GPSIFD,&offset) != 1)
-    return(MagickFalse);
+    return;
   directory=TIFFCurrentDirectory(tiff);
-  if (TIFFReadGPSDirectory(tiff,offset) != 1)
-    {
-      TIFFSetDirectory(tiff,directory);
-      return(MagickFalse);
-    }
-  status=TIFFSetImageProperties(tiff,image,"exif:GPS",exception);
+  if (TIFFReadGPSDirectory(tiff,offset) == 1)
+    TIFFSetImageProperties(tiff,image,"exif:GPS",exception);
   TIFFSetDirectory(tiff,directory);
-  return(status);
 #else
   magick_unreferenced(tiff);
   magick_unreferenced(image);
+  magick_unreferenced(image_info);
   magick_unreferenced(exception);
-  return(MagickTrue);
 #endif
 }
 
@@ -993,10 +984,11 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
 
 #if defined(TIFF_VERSION_BIG)
   uint64
+    *value = (uint64 *) NULL;
 #else
   uint32
+    *value = (uint32 *) NULL;
 #endif
-    *value;
 
   unsigned char
     buffer[BUFFER_SIZE+32];
@@ -1013,7 +1005,6 @@ static TIFFMethodType GetJPEGMethod(Image* image,TIFF *tiff,uint16 photometric,
   /*
     Search for Adobe APP14 JPEG marker.
   */
-  value=NULL;
   if (!TIFFGetField(tiff,TIFFTAG_STRIPOFFSETS,&value) || (value == NULL))
     return(ReadStripMethod);
   position=TellBlob(image);
@@ -1204,11 +1195,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   ThrowReaderException(severity,message); \
 }
 
-  const char
-    *option;
-
   float
-    *chromaticity,
+    *chromaticity = (float *) NULL,
     x_position,
     y_position,
     x_resolution,
@@ -1218,7 +1206,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     *image;
 
   int
-    tiff_status;
+    tiff_status = 0;
 
   MagickBooleanType
     more_frames;
@@ -1250,21 +1238,21 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     method;
 
   uint16
-    compress_tag,
-    bits_per_sample,
-    endian,
-    extra_samples,
-    interlace,
-    max_sample_value,
-    min_sample_value,
-    orientation,
-    pages,
-    photometric,
-    *sample_info,
-    sample_format,
-    samples_per_pixel,
-    units,
-    value;
+    compress_tag = 0,
+    bits_per_sample = 0,
+    endian = 0,
+    extra_samples = 0,
+    interlace = 0,
+    max_sample_value = 0,
+    min_sample_value = 0,
+    orientation = 0,
+    pages = 0,
+    photometric = 0,
+    *sample_info = NULL,
+    sample_format = 0,
+    samples_per_pixel = 0,
+    units = 0,
+    value = 0;
 
   uint32
     height,
@@ -1275,7 +1263,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     *pixels;
 
   void
-    *sans[4] = { NULL, NULL, NULL, NULL };
+    *sans[5] = { NULL, NULL, NULL, NULL, NULL };
 
   /*
     Open image.
@@ -1300,6 +1288,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
     {
+      if (exception->severity == UndefinedException)
+        ThrowReaderException(CorruptImageError,"UnableToReadImageData");
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
@@ -1495,12 +1485,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         TIFFClose(tiff);
         return(DestroyImageList(image));
       }
-    option=GetImageOption(image_info,"tiff:exif-properties");
-    if (IsStringFalse(option) == MagickFalse) /* enabled by default */
-      (void) TIFFGetEXIFProperties(tiff,image,exception);
-    option=GetImageOption(image_info,"tiff:gps-properties");
-    if (IsStringFalse(option) == MagickFalse) /* enabled by default */
-      (void) TIFFGetGPSProperties(tiff,image,exception);
+    TIFFGetEXIFProperties(tiff,image,image_info,exception);
+    TIFFGetGPSProperties(tiff,image,image_info,exception);
     if ((TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&x_resolution,sans) == 1) &&
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution,sans) == 1))
       {
@@ -1622,9 +1608,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           range;
 
         uint16
-          *blue_colormap,
-          *green_colormap,
-          *red_colormap;
+          *blue_colormap = (uint16 *) NULL,
+          *green_colormap = (uint16 *) NULL,
+          *red_colormap = (uint16 *) NULL;
 
         /*
           Initialize colormap.
@@ -2002,6 +1988,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         extent=MagickMax(rows*TIFFTileRowSize(tiff),TIFFTileSize(tiff));
+#if defined(TIFF_VERSION_BIG)
+        extent+=image->columns*sizeof(uint64);
+#else
+        extent+=image->columns*sizeof(uint32);
+#endif
         tile_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*tile_pixels));
         if (tile_pixels == (unsigned char *) NULL)
@@ -2044,7 +2035,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               columns_remaining=image->columns-x;
               if ((ssize_t) (x+columns) < (ssize_t) image->columns)
                 columns_remaining=columns;
-              if (TIFFReadTile(tiff,tile_pixels,(uint32) x,(uint32) y,0,i) == -1)
+              tiff_status=TIFFReadTile(tiff,tile_pixels,(uint32) x,(uint32) y,
+                0,i);
+              if (tiff_status == -1)
                 break;
               p=tile_pixels;
               for (row=0; row < rows_remaining; row++)
@@ -2086,9 +2079,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         uint32
           *p;
 
-        uint32
-          *pixels;
-
         /*
           Convert generic TIFF image.
         */
@@ -2103,15 +2093,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         generic_info=AcquireVirtualMemory(number_pixels,sizeof(uint32));
         if (generic_info == (MemoryInfo *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        pixels=(uint32 *) GetVirtualMemoryBlob(generic_info);
-        status=TIFFReadRGBAImage(tiff,(uint32) image->columns,(uint32)
-          image->rows,(uint32 *) pixels,0);
-        if (status == -1)
+        p=(uint32 *) GetVirtualMemoryBlob(generic_info);
+        tiff_status=TIFFReadRGBAImage(tiff,(uint32) image->columns,(uint32)
+          image->rows,(uint32 *) p,0);
+        if (tiff_status == -1)
           {
             generic_info=RelinquishVirtualMemory(generic_info);
             break;
           }
-        p=pixels+(image->columns*image->rows)-1;
+        p+=(image->columns*image->rows)-1;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           ssize_t
@@ -2157,6 +2147,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   next_tiff_frame:
     if (quantum_info != (QuantumInfo *) NULL)
       quantum_info=DestroyQuantumInfo(quantum_info);
+    if (tiff_status == -1)
+      {
+        status=MagickFalse;
+        break;
+      }
     if (photometric == PHOTOMETRIC_CIELAB)
       DecodeLabImage(image,exception);
     if ((photometric == PHOTOMETRIC_LOGL) ||
@@ -3303,6 +3298,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   EndianType
     endian_type;
 
+  int
+    tiff_status = 0;
+
   MagickBooleanType
     adjoin,
     preserve_compression,
@@ -3593,12 +3591,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if ((image_info->type != TrueColorType) &&
             (image_info->type != TrueColorAlphaType))
           {
-            ImageType
-              type;
-
-            type=IdentifyImageCoderType(image,exception);
             if ((image_info->type != PaletteType) &&
-                (IsGrayImageType(type) != MagickFalse))
+                (IdentifyImageCoderGray(image,exception) != MagickFalse))
               {
                 photometric=(uint16) (quantum_info->min_is_white !=
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :
@@ -3979,7 +3973,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 quantum_type,pixels,exception);
               (void) length;
-              if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
+              tiff_status=TIFFWritePixels(tiff,&tiff_info,y,0,image);
+              if (tiff_status == -1)
                 break;
               if (image->previous == (Image *) NULL)
                 {
@@ -4007,7 +4002,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 RedQuantum,pixels,exception);
-              if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
+              tiff_status=TIFFWritePixels(tiff,&tiff_info,y,0,image);
+              if (tiff_status == -1)
                 break;
             }
             if (image->previous == (Image *) NULL)
@@ -4026,7 +4022,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 GreenQuantum,pixels,exception);
-              if (TIFFWritePixels(tiff,&tiff_info,y,1,image) == -1)
+              tiff_status=TIFFWritePixels(tiff,&tiff_info,y,1,image);
+              if (tiff_status == -1)
                 break;
             }
             if (image->previous == (Image *) NULL)
@@ -4045,7 +4042,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 break;
               length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 BlueQuantum,pixels,exception);
-              if (TIFFWritePixels(tiff,&tiff_info,y,2,image) == -1)
+              tiff_status=TIFFWritePixels(tiff,&tiff_info,y,2,image);
+              if (tiff_status == -1)
                 break;
             }
             if (image->previous == (Image *) NULL)
@@ -4065,7 +4063,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                   break;
                 length=ExportQuantumPixels(image,(CacheView *) NULL,
                   quantum_info,AlphaQuantum,pixels,exception);
-                if (TIFFWritePixels(tiff,&tiff_info,y,3,image) == -1)
+                tiff_status=TIFFWritePixels(tiff,&tiff_info,y,3,image);
+                if (tiff_status == -1)
                   break;
               }
             if (image->previous == (Image *) NULL)
@@ -4099,7 +4098,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
-          if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
+          tiff_status=TIFFWritePixels(tiff,&tiff_info,y,0,image);
+          if (tiff_status == -1)
             break;
           if (image->previous == (Image *) NULL)
             {
@@ -4178,7 +4178,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             break;
           length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
-          if (TIFFWritePixels(tiff,&tiff_info,y,0,image) == -1)
+          tiff_status=TIFFWritePixels(tiff,&tiff_info,y,0,image);
+          if (tiff_status == -1)
             break;
           if (image->previous == (Image *) NULL)
             {
@@ -4196,6 +4197,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       DecodeLabImage(image,exception);
     DestroyTIFFInfo(&tiff_info);
     /* TIFFPrintDirectory(tiff,stdout,MagickFalse); */
+    if (tiff_status == -1)
+      {
+        status=MagickFalse;
+        break;
+      }
     if (TIFFWriteDirectory(tiff) == 0)
       {
         status=MagickFalse;

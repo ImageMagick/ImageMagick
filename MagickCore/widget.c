@@ -18,7 +18,7 @@
 %                              September 1993                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -4231,9 +4231,6 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
     x,
     y;
 
-  ssize_t
-    i;
-
   static char
     glob_pattern[MagickPathExtent] = "*",
     format[MagickPathExtent] = "miff";
@@ -4244,17 +4241,20 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
   Status
     status;
 
+  size_t
+    delay,
+    files,
+    state;
+
+  ssize_t
+    i;
+
   unsigned int
     anomaly,
     height,
     text_width,
     visible_files,
     width;
-
-  size_t
-    delay,
-    files,
-    state;
 
   XEvent
     event;
@@ -4377,7 +4377,6 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
   visible_files=0;
   anomaly=(LocaleCompare(action,"Composite") == 0) ||
     (LocaleCompare(action,"Open") == 0) || (LocaleCompare(action,"Map") == 0);
-  *reply='\0';
   delay=SuspendTime << 2;
   state=UpdateConfigurationState;
   do

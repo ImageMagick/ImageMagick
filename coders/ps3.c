@@ -18,7 +18,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -935,8 +935,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
   imageListLength=GetImageListLength(image);
   do
   {
-    ImageType
-      type;
+    MagickBooleanType
+      is_gray;
 
     /*
       Scale relative to dots-per-inch.
@@ -948,18 +948,20 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     if ((resolution.x == 0.0) || (resolution.y == 0.0))
       {
         flags=ParseGeometry(PSDensityGeometry,&geometry_info);
-        resolution.x=geometry_info.rho;
-        resolution.y=geometry_info.sigma;
-        if ((flags & SigmaValue) == 0)
-          resolution.y=resolution.x;
+        if ((flags & RhoValue) != 0)
+          resolution.x=geometry_info.rho;
+        resolution.y=resolution.x;
+        if ((flags & SigmaValue) != 0)
+          resolution.y=geometry_info.sigma;
       }
     if (image_info->density != (char *) NULL)
       {
         flags=ParseGeometry(image_info->density,&geometry_info);
-        resolution.x=geometry_info.rho;
-        resolution.y=geometry_info.sigma;
-        if ((flags & SigmaValue) == 0)
-          resolution.y=resolution.x;
+        if ((flags & RhoValue) != 0)
+          resolution.x=geometry_info.rho;
+        resolution.y=resolution.x;
+        if ((flags & SigmaValue) != 0)
+          resolution.y=geometry_info.sigma;
       }
     if (image->units == PixelsPerCentimeterResolution)
       {
@@ -1003,7 +1005,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     if (value != (const char *) NULL)
       text_size=(size_t) (MultilineCensus(value)*pointsize+12);
     page++;
-    type=IdentifyImageCoderType(image,exception);
+    is_gray=IdentifyImageCoderGray(image,exception);
     if (page == 1)
       {
         /*
@@ -1050,7 +1052,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               (void) WriteBlobString(image,
                 "%%DocumentProcessColors: Cyan Magenta Yellow Black\n");
             else
-              if (IsGrayImageType(type) != MagickFalse)
+              if (is_gray != MagickFalse)
                 (void) WriteBlobString(image,
                   "%%DocumentProcessColors: Black\n");
           }
@@ -1128,7 +1130,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       (void) WriteBlobString(image,
         "%%PageProcessColors: Cyan Magenta Yellow Black\n");
     else
-      if (IsGrayImageType(type) != MagickFalse)
+      if (is_gray != MagickFalse)
         (void) WriteBlobString(image,"%%PageProcessColors: Black\n");
     /*
       Adjust document bounding box to bound page bounding box.
@@ -1155,9 +1157,6 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
       (void) WriteBlobString(image,"/ClipImage {} def\n");
     else
       {
-        const char
-          *value;
-
         value=GetImageProperty(image,image->magick_filename,exception);
         if (value == (const char *) NULL)
           return(MagickFalse);
@@ -1269,7 +1268,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
         (image_info->type != ColorSeparationType) &&
         (image_info->type != ColorSeparationAlphaType) &&
         (image->colorspace != CMYKColorspace) &&
-        (IsGrayImageType(type) != MagickFalse))
+        (is_gray != MagickFalse))
       {
         /*
           Gray images.

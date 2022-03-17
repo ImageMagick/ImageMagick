@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.  You may
@@ -88,7 +88,8 @@ static inline wchar_t *create_wchar_path(const char *utf8)
       longPath=(wchar_t *) RelinquishMagickMemory(longPath);
       if ((count < 5) || (count >= MAX_PATH))
         return((wchar_t *) NULL);
-      wideChar=(wchar_t *) AcquireQuantumMemory(count-3,sizeof(*wideChar));
+      wideChar=(wchar_t *) AcquireQuantumMemory((size_t) count-3,
+        sizeof(*wideChar));
       wcscpy(wideChar,shortPath+4);
       return(wideChar);
     }
@@ -101,6 +102,31 @@ static inline wchar_t *create_wchar_path(const char *utf8)
       wideChar=(wchar_t *) RelinquishMagickMemory(wideChar);
       return((wchar_t *) NULL);
     }
+  return(wideChar);
+}
+
+static inline wchar_t *create_wchar_mode(const char *mode)
+{
+  int
+    count;
+
+  wchar_t
+    *wideChar;
+
+  count=MultiByteToWideChar(CP_UTF8,0,mode,-1,NULL,0);
+  wideChar=(wchar_t *) AcquireQuantumMemory((size_t) count+1,
+    sizeof(*wideChar));
+  if (wideChar == (wchar_t *) NULL)
+    return((wchar_t *) NULL);
+  count=MultiByteToWideChar(CP_UTF8,0,mode,-1,wideChar,count);
+  if (count == 0)
+    {
+      wideChar=(wchar_t *) RelinquishMagickMemory(wideChar);
+      return((wchar_t *) NULL);
+    }
+  /* Specifies that the file is not inherited by child processes */
+  wideChar[count] = L'\0';
+  wideChar[count-1] = L'N';
   return(wideChar);
 }
 #endif
@@ -140,7 +166,7 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
    path_wide=create_wchar_path(path);
    if (path_wide == (wchar_t *) NULL)
      return((FILE *) NULL);
-   mode_wide=create_wchar_path(mode);
+   mode_wide=create_wchar_mode(mode);
    if (mode_wide == (wchar_t *) NULL)
      {
        path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
@@ -180,18 +206,19 @@ static inline int open_utf8(const char *path,int flags,mode_t mode)
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(open(path,flags,mode));
 #else
-   int
-     status;
+  int
+    status;
 
-   wchar_t
-     *path_wide;
+  wchar_t
+    *path_wide;
 
-   path_wide=create_wchar_path(path);
-   if (path_wide == (wchar_t *) NULL)
-     return(-1);
-   status=_wopen(path_wide,flags,mode);
-   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
-   return(status);
+  path_wide=create_wchar_path(path);
+  if (path_wide == (wchar_t *) NULL)
+    return(-1);
+  /* O_NOINHERIT specifies that the file is not inherited by child processes */
+  status=_wopen(path_wide,flags | O_NOINHERIT,mode);
+  path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
+  return(status);
 #endif
 }
 

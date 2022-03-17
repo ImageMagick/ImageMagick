@@ -21,7 +21,7 @@
 %                                April 2016                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2010 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -64,7 +64,6 @@ Include declarations.
 #include "MagickCore/opencl-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/prepress.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum-private.h"
@@ -3980,8 +3979,6 @@ static MagickBooleanType resizeHorizontalFilter(MagickCLDevice device,
     support;
 
   int
-    cacheRangeStart,
-    cacheRangeEnd,
     numCachedPixels,
     resizeFilterType,
     resizeWindowType;
@@ -4038,10 +4035,7 @@ DisableMSCWarning(4127)
 RestoreMSCWarning
   {
     /* calculate the local memory size needed per workgroup */
-    cacheRangeStart=(int) (((0 + 0.5)/xFactor+MagickEpsilon)-support+0.5);
-    cacheRangeEnd=(int) ((((pixelPerWorkgroup-1) + 0.5)/xFactor+
-      MagickEpsilon)+support+0.5);
-    numCachedPixels=cacheRangeEnd-cacheRangeStart+1;
+    numCachedPixels=(int) ceil((pixelPerWorkgroup-1)/xFactor+2*support);
     imageCacheLocalMemorySize=numCachedPixels*sizeof(CLQuantum)*
       number_channels;
     totalLocalMemorySize=imageCacheLocalMemorySize;
@@ -4164,8 +4158,6 @@ static MagickBooleanType resizeVerticalFilter(MagickCLDevice device,
     support;
 
   int
-    cacheRangeStart,
-    cacheRangeEnd,
     numCachedPixels,
     resizeFilterType,
     resizeWindowType;
@@ -4222,10 +4214,7 @@ DisableMSCWarning(4127)
 RestoreMSCWarning
   {
     /* calculate the local memory size needed per workgroup */
-    cacheRangeStart=(int) (((0 + 0.5)/yFactor+MagickEpsilon)-support+0.5);
-    cacheRangeEnd=(int) ((((pixelPerWorkgroup-1) + 0.5)/yFactor+
-      MagickEpsilon)+support+0.5);
-    numCachedPixels=cacheRangeEnd-cacheRangeStart+1;
+    numCachedPixels=(int)ceil((pixelPerWorkgroup-1)/yFactor+2*support);
     imageCacheLocalMemorySize=numCachedPixels*sizeof(CLQuantum)*
       number_channels;
     totalLocalMemorySize=imageCacheLocalMemorySize;

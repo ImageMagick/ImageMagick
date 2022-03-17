@@ -17,7 +17,7 @@
 %                                  July 1992                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -292,6 +292,8 @@ static void RadonProjection(const Image *image,MatrixInfo *source_matrixs,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
     magick_number_threads(image,image,GetMatrixColumns(p),1)
+#else
+  magick_unreferenced(image);
 #endif
   for (x=0; x < (ssize_t) GetMatrixColumns(p); x++)
   {

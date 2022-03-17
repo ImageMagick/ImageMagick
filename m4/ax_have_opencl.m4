@@ -7,9 +7,9 @@
 # "CL_CPPFLAGS" and "CL_LIBS", respectively.  If no usable CL implementation is
 # found then "no_cl" is set to "yes" (otherwise it is set to "no").
 #
-# If the header <CL/OpenCL.h> is found, "HAVE_CL_OPENCL_H" is defined.  If the
-# header <OpenCL/OpenCL.h> is found, HAVE_OPENCL_OPENCL_H is defined.  These
-# preprocessor definitions may not be mutually exclusive.
+# If the header <CL/cl.h> is found, "HAVE_CL_CL_H" is defined.  If the header 
+# <OpenCL/cl.h> is found, HAVE_OPENCL_CL_H is defined.  These preprocessor
+# definitions may not be mutually exclusive.
 #
 # This macro first checks /usr/include and /usr/lib for OpenCL support; if it is not
 # found in those locations, then it checks in the standard installation locations

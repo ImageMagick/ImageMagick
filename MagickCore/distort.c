@@ -18,7 +18,7 @@
 %                                 June 2007                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2007 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -61,7 +61,6 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resample-private.h"
 #include "MagickCore/registry.h"
@@ -2465,8 +2464,8 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
     status=MagickTrue;
     progress=0;
     GetPixelInfo(distort_image,&zero);
-    resample_filter=AcquireResampleFilterThreadSet(image,
-      UndefinedVirtualPixelMethod,MagickFalse,exception);
+    resample_filter=AcquireResampleFilterTLS(image,UndefinedVirtualPixelMethod,
+      MagickFalse,exception);
     distort_view=AcquireAuthenticCacheView(distort_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static) shared(progress,status) \
@@ -2546,10 +2545,10 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
           case PerspectiveDistortion:
           {
             double
-              p,q,r,abs_r,abs_c6,abs_c7,scale;
+              p,n,r,abs_r,abs_c6,abs_c7,scale;
             /* perspective is a ratio of affines */
             p=coeff[0]*d.x+coeff[1]*d.y+coeff[2];
-            q=coeff[3]*d.x+coeff[4]*d.y+coeff[5];
+            n=coeff[3]*d.x+coeff[4]*d.y+coeff[5];
             r=coeff[6]*d.x+coeff[7]*d.y+1.0;
             /* Pixel Validity -- is it a 'sky' or 'ground' pixel */
             validity = (r*coeff[8] < 0.0) ? 0.0 : 1.0;
@@ -2568,14 +2567,14 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
               /* divide by r affine, for perspective scaling */
               scale = 1.0/r;
               s.x = p*scale;
-              s.y = q*scale;
+              s.y = n*scale;
               /* Perspective Partial Derivatives or Scaling Vectors */
               scale *= scale;
               ScaleFilter( resample_filter[id],
                 (r*coeff[0] - p*coeff[6])*scale,
                 (r*coeff[1] - p*coeff[7])*scale,
-                (r*coeff[3] - q*coeff[6])*scale,
-                (r*coeff[4] - q*coeff[7])*scale );
+                (r*coeff[3] - n*coeff[6])*scale,
+                (r*coeff[4] - n*coeff[7])*scale );
             }
             break;
           }
@@ -2824,21 +2823,22 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
                Note: We can not determine derivatives using shepards method
                so only a point sample interpolatation can be used.
             */
-            size_t
-              i;
             double
               denominator;
 
+            size_t
+              k;
+
             denominator = s.x = s.y = 0;
-            for(i=0; i<number_arguments; i+=4) {
+            for(k=0; k<number_arguments; k+=4) {
               double weight =
-                  ((double)d.x-arguments[i+2])*((double)d.x-arguments[i+2])
-                + ((double)d.y-arguments[i+3])*((double)d.y-arguments[i+3]);
+                  ((double)d.x-arguments[k+2])*((double)d.x-arguments[k+2])
+                + ((double)d.y-arguments[k+3])*((double)d.y-arguments[k+3]);
               weight = pow(weight,coeff[0]); /* shepards power factor */
               weight = ( weight < 1.0 ) ? 1.0 : 1.0/weight;
 
-              s.x += (arguments[ i ]-arguments[i+2])*weight;
-              s.y += (arguments[i+1]-arguments[i+3])*weight;
+              s.x += (arguments[ k ]-arguments[k+2])*weight;
+              s.y += (arguments[k+1]-arguments[k+3])*weight;
               denominator += weight;
             }
             s.x /= denominator;
@@ -2895,7 +2895,7 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
         }
     }
     distort_view=DestroyCacheView(distort_view);
-    resample_filter=DestroyResampleFilterThreadSet(resample_filter);
+    resample_filter=DestroyResampleFilterTLS(resample_filter);
 
     if (status == MagickFalse)
       distort_image=DestroyImage(distort_image);

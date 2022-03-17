@@ -17,7 +17,7 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -94,10 +94,6 @@
 
 #ifndef MAGICKCORE_WINDOWS_SUPPORT
 #include <dlfcn.h>
-#endif
-
-#ifdef MAGICKCORE_HAVE_OPENCL_CL_H
-#define MAGICKCORE_OPENCL_MACOSX  1
 #endif
 
 /*
@@ -936,14 +932,12 @@ static MagickBooleanType CanWriteProfileToFile(const char *filename)
 
 static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv)
 {
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   char
     filename[MagickPathExtent];
 
   StringInfo
     *option;
-
-  size_t
-    i;
 
   (void) FormatLocaleString(filename,MagickPathExtent,"%s%s%s",
     GetOpenCLCacheDirectory(),DirectorySeparator,IMAGEMAGICK_PROFILE_FILE);
@@ -952,21 +946,24 @@ static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv)
     We don't run the benchmark when we can not write out a device profile. The
     first GPU device will be used.
   */
-#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   if (CanWriteProfileToFile(filename) == MagickFalse)
 #endif
     {
+      size_t
+        i;
+
       for (i = 0; i < clEnv->number_devices; i++)
         clEnv->devices[i]->score=1.0;
 
       SelectOpenCLDevice(clEnv,CL_DEVICE_TYPE_GPU);
       return(MagickFalse);
     }
-
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   option=ConfigureFileToStringInfo(filename);
   LoadOpenCLDeviceBenchmark(clEnv,(const char *) GetStringInfoDatum(option));
   option=DestroyStringInfo(option);
   return(MagickTrue);
+#endif
 }
 
 static void AutoSelectOpenCLDevices(MagickCLEnv clEnv)
@@ -2308,9 +2305,6 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
     number_devices,
     number_platforms;
 
-  size_t
-    length;
-
   number_platforms=0;
   if (openCL_library->clGetPlatformIDs(0,NULL,&number_platforms) != CL_SUCCESS)
     return;
@@ -2502,7 +2496,7 @@ void *OsLibraryGetFunctionAddress(void *library,const char *functionName)
 
 static MagickBooleanType BindOpenCLFunctions()
 {
-#ifdef MAGICKCORE_OPENCL_MACOSX
+#ifdef MAGICKCORE_HAVE_OPENCL_CL_H
 #define BIND(X) openCL_library->X= &X;
 #else
   (void) memset(openCL_library,0,sizeof(MagickLibrary));

@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -931,9 +931,6 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
     i,
     x;
 
-  unsigned char
-    *q;
-
   size_t
     imageListLength;
 
@@ -989,13 +986,8 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
       iris_info.depth=4;
     else
       {
-        ImageType
-          type;
-
-        type=UndefinedType;
-        if (image_info->type != TrueColorType)
-          type=IdentifyImageCoderType(image,exception);
-        if (IsGrayImageType(type) != MagickFalse)
+        if ((image_info->type != TrueColorType) &&
+            (IdentifyImageCoderGray(image,exception) != MagickFalse))
           {
             iris_info.dimension=2;
             iris_info.depth=1;
@@ -1131,6 +1123,9 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
         ssize_t
           offset,
           *offsets;
+
+        unsigned char
+          *q;
 
         /*
           Convert SGI uncompressed pixels.

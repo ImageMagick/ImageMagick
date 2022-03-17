@@ -17,7 +17,7 @@
 %                            Christopher R. Hawks                             %
 %                               December 2001                                 %
 %                                                                             %
-%  Copyright 1999-2004 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -232,6 +232,9 @@ static ssize_t FindColor(PixelInfo *packet)
 static Image *ReadPALMImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  const size_t
+    one=1;
+
   Image
     *image;
 
@@ -269,7 +272,6 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     redbits,
     greenbits,
     bluebits,
-    one,
     pad,
     size,
     bit;
@@ -338,7 +340,6 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     /*
       Initialize image colormap.
     */
-    one=1;
     if ((bits_per_pixel < 16) &&
         (AcquireImageColormap(image,one << bits_per_pixel,exception) == MagickFalse))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -360,7 +361,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     if (bits_per_pixel == 8)
       {
         ssize_t
-          index;
+          idx;
 
         if (flags & PALM_HAS_COLORMAP_FLAG)
           {
@@ -368,24 +369,24 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             for (i=0; i < (ssize_t) count; i++)
             {
               ReadBlobByte(image);
-              index=ConstrainColormapIndex(image,255-i,exception);
-              image->colormap[index].red=(MagickRealType)
+              idx=ConstrainColormapIndex(image,255-i,exception);
+              image->colormap[idx].red=(MagickRealType)
                 ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
-              image->colormap[index].green=(MagickRealType)
+              image->colormap[idx].green=(MagickRealType)
                 ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
-              image->colormap[index].blue=(MagickRealType)
+              image->colormap[idx].blue=(MagickRealType)
                 ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
           }
         }
       else
-        for (i=0; i < (ssize_t) (1L << bits_per_pixel); i++)
+        for (i=0; i < ((ssize_t) 1L << bits_per_pixel); i++)
         {
-          index=ConstrainColormapIndex(image,255-i,exception);
-          image->colormap[index].red=(MagickRealType)
+          idx=ConstrainColormapIndex(image,255-i,exception);
+          image->colormap[idx].red=(MagickRealType)
             ScaleCharToQuantum(PalmPalette[i][0]);
-          image->colormap[index].green=(MagickRealType)
+          image->colormap[idx].green=(MagickRealType)
             ScaleCharToQuantum(PalmPalette[i][1]);
-          image->colormap[index].blue=(MagickRealType)
+          image->colormap[idx].blue=(MagickRealType)
             ScaleCharToQuantum(PalmPalette[i][2]);
         }
       }
@@ -455,11 +456,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         else
           if (compressionType == PALM_COMPRESSION_SCANLINE)
             {
-              size_t
-                one;
-
               /* TODO move out of loop! */
-              one=1;
               image->compression=FaxCompression;
               for (i=0; i < (ssize_t) bytes_per_row; i+=8)
               {
@@ -542,10 +539,12 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       }
     if (flags & PALM_HAS_TRANSPARENCY_FLAG)
       {
-        ssize_t index=ConstrainColormapIndex(image,(ssize_t) (mask-
+        ssize_t
+           idx;
+        idx=ConstrainColormapIndex(image,(ssize_t) (mask-
           transparentIndex),exception);
         if (bits_per_pixel != 16)
-          transpix=image->colormap[index];
+          transpix=image->colormap[idx];
         (void) TransparentPaintImage(image,&transpix,(Quantum) TransparentAlpha,
           MagickFalse,exception);
       }

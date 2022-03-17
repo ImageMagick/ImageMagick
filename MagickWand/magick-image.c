@@ -23,7 +23,7 @@
 %                                 August 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1430,7 +1430,8 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
 %
 %    o height: the height of the tile divisions to use in vertical direction.
 %
-%    o number_bins: number of bins for histogram ("dynamic range").
+%    o number_bins: number of bins for histogram ("dynamic range"). Although
+%      parameter is currently a double, it is cast to size_t internally.
 %
 %    o clip_limit: contrast limit for localised changes in contrast. A limit
 %      less than 1 results in standard non-contrast limited AHE.
@@ -1858,18 +1859,18 @@ WandExport MagickBooleanType MagickColorMatrixImage(MagickWand *wand,
 %  MagickColorThresholdImage() forces all pixels in the color range to white
 %  otherwise black.
 %
-%  The format of the MagickWhiteThresholdImage method is:
+%  The format of the MagickColorThresholdImage method is:
 %
-%      MagickBooleanType MagickWhiteThresholdImage(MagickWand *wand,
+%      MagickBooleanType MagickColorThresholdImage(MagickWand *wand,
 %        const PixelWand *start_color,const PixelWand *stop_color)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o start-color: the start color pixel wand.
+%    o start_color: the start color pixel wand.
 %
-%    o stop-color: the stop color pixel wand.
+%    o stop_color: the stop color pixel wand.
 %
 */
 WandExport MagickBooleanType MagickColorThresholdImage(MagickWand *wand,
@@ -6366,17 +6367,17 @@ WandExport MagickBooleanType MagickHasPreviousImage(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Use MagickHoughLineImage() in conjunction with any binary edge extracted
-%  image (we recommand Canny) to identify lines in the image.  The algorithm
-%  accumulates counts for every white pixel for every possible orientation (for
-%  angles from 0 to 179 in 1 degree increments) and distance from the center of
-%  the image to the corner (in 1 px increments) and stores the counts in an
-%  accumulator matrix of angle vs distance. The size of the accumulator is
-%  180x(diagonal/2). Next it searches this space for peaks in counts and
-%  converts the locations of the peaks to slope and intercept in the normal x,y
-%  input image space. Use the slope/intercepts to find the endpoints clipped to
-%  the bounds of the image. The lines are then drawn. The counts are a measure
-%  of the length of the lines.
+%  MagickHoughLineImage() can be used in conjunction with any binary edge
+%  extracted image (we recommend Canny) to identify lines in the image. The
+%  algorithm accumulates counts for every white pixel for every possible
+%  orientation (for angles from 0 to 179 in 1 degree increments) and distance
+%  from the center of the image to the corner (in 1 px increments) and stores
+%  the counts in an accumulator matrix of angle vs distance. The size of the
+%  accumulator is 180x(diagonal/2). Next it searches this space for peaks in
+%  counts and converts the locations of the peaks to slope and intercept in the
+%  normal x,y input image space. Use the slope/intercepts to find the endpoints
+%  clipped to the bounds of the image. The lines are then drawn. The counts are
+%  a measure of the length of the lines.
 %
 %  The format of the MagickHoughLineImage method is:
 %
@@ -6762,7 +6763,7 @@ WandExport MagickBooleanType MagickInverseFourierTransformImage(
 %  MagickKmeansImage() applies k-means color reduction to an image. This is a
 %  colorspace clustering or segmentation technique.
 %
-%  The format of the MagickKuwaharaImage method is:
+%  The format of the MagickKmeansImage method is:
 %
 %      MagickBooleanType MagickKmeansImage(MagickWand *wand,
 %        const size_t number_colors, const size_t max_iterations,
@@ -8248,17 +8249,11 @@ WandExport MagickBooleanType MagickPingImageBlob(MagickWand *wand,
   Image
     *images;
 
-  ImageInfo
-    *read_info;
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  read_info=CloneImageInfo(wand->image_info);
-  SetImageInfoBlob(read_info,blob,length);
-  images=PingImage(read_info,wand->exception);
-  read_info=DestroyImageInfo(read_info);
+  images=PingBlob(wand->image_info,blob,length,wand->exception);
   if (images == (Image *) NULL)
     return(MagickFalse);
   return(InsertImageInWand(wand,images));
@@ -10513,6 +10508,7 @@ WandExport MagickBooleanType MagickSetImageFormat(MagickWand *wand,
     return(MagickFalse);
   ClearMagickException(wand->exception);
   (void) CopyMagickString(wand->images->magick,format,MagickPathExtent);
+  LocaleUpper(wand->images->magick);
   return(MagickTrue);
 }
 

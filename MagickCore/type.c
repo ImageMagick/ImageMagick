@@ -17,7 +17,7 @@
 %                                 May 2001                                    %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -190,15 +190,11 @@ static void *DestroyTypeNode(void *type_info)
 static SplayTreeInfo *AcquireTypeCache(const char *filename,
   ExceptionInfo *exception)
 {
-  MagickStatusType
-    status;
-
   SplayTreeInfo
     *cache;
 
   cache=NewSplayTree(CompareSplayTreeString,(void *(*)(void *)) NULL,
     DestroyTypeNode);
-  status=MagickTrue;
 #if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   {
     char
@@ -217,7 +213,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
     while (option != (const StringInfo *) NULL)
     {
       (void) CopyMagickString(path,GetStringInfoPath(option),MagickPathExtent);
-      status&=LoadTypeCache(cache,(const char *)
+      (void) LoadTypeCache(cache,(const char *)
         GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
@@ -236,15 +232,17 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
         xml=FileToString(path,~0UL,exception);
         if (xml != (void *) NULL)
           {
-            status&=LoadTypeCache(cache,xml,path,0,exception);
+            (void) LoadTypeCache(cache,xml,path,0,exception);
             xml=DestroyString(xml);
           }
         font_path=DestroyString(font_path);
       }
   }
+#else
+  magick_unreferenced(filename);
 #endif
   if (GetNumberOfNodesInSplayTree(cache) == 0)
-    status&=LoadTypeCache(cache,TypeMap,"built-in",0,exception);
+    (void) LoadTypeCache(cache,TypeMap,"built-in",0,exception);
   return(cache);
 }
 
@@ -1099,8 +1097,9 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
     Determine the Ghostscript font path.
   */
   *font_path='\0';
-  if (NTGhostscriptFonts(font_path,MagickPathExtent-2))
-    (void) ConcatenateMagickString(font_path,DirectorySeparator,MagickPathExtent);
+  if (NTGhostscriptFonts(font_path,MagickPathExtent-2) != MagickFalse)
+    (void) ConcatenateMagickString(font_path,DirectorySeparator,
+      MagickPathExtent);
 #endif
   for (q=(char *) xml; *q != '\0'; )
   {

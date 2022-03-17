@@ -17,7 +17,7 @@
 %                                 July 1999                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -106,9 +106,6 @@
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(MAGICKCORE_OPENCL_SUPPORT)
 static void InitializeDcrawOpenCL(ExceptionInfo *exception)
 {
-  MagickBooleanType
-    opencl_disabled;
-
   MagickCLDevice
     *devices;
 
@@ -343,6 +340,18 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
       raw_info->params.output_color=StringToInteger(option);
       if (raw_info->params.output_color == 5)
         image->colorspace=XYZColorspace;
+    }
+  option=GetImageOption(image_info,"dng:interpolation-quality");
+  if (option != (const char *) NULL)
+    {
+      int
+        value;
+
+      value=StringToInteger(option);
+      if (value == -1)
+        raw_info->params.no_interpolation=1;
+      else
+        raw_info->params.user_qual=value;
     }
 }
 

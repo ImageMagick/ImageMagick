@@ -17,7 +17,7 @@
 %                                 October 1996                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -72,7 +72,6 @@
 #include "MagickCore/morphology-private.h"
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum.h"
@@ -152,17 +151,11 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   MagickOffsetType
     progress;
 
-  ssize_t
-    i;
-
   size_t
     width;
 
   ssize_t
-    j,
-    k,
-    u,
-    v,
+    w,
     y;
 
   assert(image != (const Image *) NULL);
@@ -211,33 +204,39 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   (void) memset(kernel,0,(size_t) width*sizeof(*kernel));
-  for (i=0; i < (ssize_t) width; i+=2)
+  for (w=0; w < (ssize_t) width; w+=2)
   {
-    kernel[i]=(double *) MagickAssumeAligned(AcquireAlignedMemory(
-      (size_t) (width-i),(width-i)*sizeof(**kernel)));
-    if (kernel[i] == (double *) NULL)
+    ssize_t
+      j,
+      k,
+      u,
+      v;
+
+    kernel[w]=(double *) MagickAssumeAligned(AcquireAlignedMemory(
+      (size_t) (width-w),(width-w)*sizeof(**kernel)));
+    if (kernel[w] == (double *) NULL)
       break;
     normalize=0.0;
-    j=(ssize_t) (width-i-1)/2;
+    j=(ssize_t) (width-w-1)/2;
     k=0;
     for (v=(-j); v <= j; v++)
     {
       for (u=(-j); u <= j; u++)
       {
-        kernel[i][k]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+        kernel[w][k]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
           MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-        normalize+=kernel[i][k];
+        normalize+=kernel[w][k];
         k++;
       }
     }
-    kernel[i][(k-1)/2]+=(double) (1.0-normalize);
+    kernel[w][(k-1)/2]+=(double) (1.0-normalize);
     if (sigma < MagickEpsilon)
-      kernel[i][(k-1)/2]=1.0;
+      kernel[w][(k-1)/2]=1.0;
   }
-  if (i < (ssize_t) width)
+  if (w < (ssize_t) width)
     {
-      for (i-=2; i >= 0; i-=2)
-        kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+      for (w-=2; w >= 0; w-=2)
+        kernel[w]=(double *) RelinquishAlignedMemory(kernel[w]);
       kernel=(double **) RelinquishAlignedMemory(kernel);
       edge_image=DestroyImage(edge_image);
       blur_image=DestroyImage(blur_image);
@@ -405,8 +404,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   edge_view=DestroyCacheView(edge_view);
   image_view=DestroyCacheView(image_view);
   edge_image=DestroyImage(edge_image);
-  for (i=0; i < (ssize_t) width; i+=2)
-    kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+  for (w=0; w < (ssize_t) width; w+=2)
+    kernel[w]=(double *) RelinquishAlignedMemory(kernel[w]);
   kernel=(double **) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
@@ -473,17 +472,11 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   MagickOffsetType
     progress;
 
-  ssize_t
-    i;
-
   size_t
     width;
 
   ssize_t
-    j,
-    k,
-    u,
-    v,
+    w,
     y;
 
   assert(image != (const Image *) NULL);
@@ -532,33 +525,39 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   (void) memset(kernel,0,(size_t) width*sizeof(*kernel));
-  for (i=0; i < (ssize_t) width; i+=2)
+  for (w=0; w < (ssize_t) width; w+=2)
   {
-    kernel[i]=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
-      (width-i),(width-i)*sizeof(**kernel)));
-    if (kernel[i] == (double *) NULL)
+    ssize_t
+      j,
+      k,
+      u,
+      v;
+
+    kernel[w]=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+      (width-w),(width-w)*sizeof(**kernel)));
+    if (kernel[w] == (double *) NULL)
       break;
     normalize=0.0;
-    j=(ssize_t) (width-i-1)/2;
+    j=(ssize_t) (width-w-1)/2;
     k=0;
     for (v=(-j); v <= j; v++)
     {
       for (u=(-j); u <= j; u++)
       {
-        kernel[i][k]=(double) (-exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+        kernel[w][k]=(double) (-exp(-((double) u*u+v*v)/(2.0*MagickSigma*
           MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
-        normalize+=kernel[i][k];
+        normalize+=kernel[w][k];
         k++;
       }
     }
-    kernel[i][(k-1)/2]=(double) ((-2.0)*normalize);
+    kernel[w][(k-1)/2]=(double) ((-2.0)*normalize);
     if (sigma < MagickEpsilon)
-      kernel[i][(k-1)/2]=1.0;
+      kernel[w][(k-1)/2]=1.0;
   }
-  if (i < (ssize_t) width)
+  if (w < (ssize_t) width)
     {
-      for (i-=2; i >= 0; i-=2)
-        kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+      for (w-=2; w >= 0; w-=2)
+        kernel[w]=(double *) RelinquishAlignedMemory(kernel[w]);
       kernel=(double **) RelinquishAlignedMemory(kernel);
       edge_image=DestroyImage(edge_image);
       sharp_image=DestroyImage(sharp_image);
@@ -726,8 +725,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   edge_view=DestroyCacheView(edge_view);
   image_view=DestroyCacheView(image_view);
   edge_image=DestroyImage(edge_image);
-  for (i=0; i < (ssize_t) width; i+=2)
-    kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+  for (w=0; w < (ssize_t) width; w+=2)
+    kernel[w]=(double *) RelinquishAlignedMemory(kernel[w]);
   kernel=(double **) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     sharp_image=DestroyImage(sharp_image);
@@ -860,7 +859,7 @@ static inline double BlurGaussian(const double x,const double sigma)
     PerceptibleReciprocal(Magick2PI*sigma*sigma));
 }
 
-static double **DestroyBilateralThreadSet(const ssize_t number_threads,
+static double **DestroyBilateralTLS(const ssize_t number_threads,
   double **weights)
 {
   ssize_t
@@ -874,7 +873,7 @@ static double **DestroyBilateralThreadSet(const ssize_t number_threads,
   return(weights);
 }
 
-static double **AcquireBilateralThreadSet(const size_t number_threads,
+static double **AcquireBilateralTLS(const size_t number_threads,
   const size_t width,const size_t height)
 {
   double
@@ -891,7 +890,7 @@ static double **AcquireBilateralThreadSet(const size_t number_threads,
   {
     weights[i]=(double *) AcquireQuantumMemory(width,height*sizeof(**weights));
     if (weights[i] == (double *) NULL)
-      return(DestroyBilateralThreadSet(number_threads,weights));
+      return(DestroyBilateralTLS(number_threads,weights));
   }
   return(weights);
 }
@@ -925,15 +924,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
     mid;
 
   ssize_t
-    u;
-
-  ssize_t
-    n,
     number_threads,
-    v;
-
-  ssize_t
-    i,
+    w,
     y;
 
   assert(image != (const Image *) NULL);
@@ -951,22 +943,34 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
       return((Image *) NULL);
     }
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
-  weights=AcquireBilateralThreadSet(number_threads,width,height);
+  weights=AcquireBilateralTLS(number_threads,MagickMax(width,1),
+    MagickMax(height,1));
   if (weights == (double **) NULL)
     {
       blur_image=DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (i=(-MaxIntensity); i < MaxIntensity; i++)
-    intensity_gaussian[i+MaxIntensity]=BlurGaussian((double) i,intensity_sigma);
+  for (w=(-MaxIntensity); w < MaxIntensity; w++)
+    intensity_gaussian[w+MaxIntensity]=BlurGaussian((double) w,intensity_sigma);
   spatial_gaussian=weights[number_threads];
-  n=0;
-  mid.x=(ssize_t) (width/2L);
-  mid.y=(ssize_t) (height/2L);
-  for (v=0; v < (ssize_t) height; v++)
-    for (u=0; u < (ssize_t) width; u++)
-      spatial_gaussian[n++]=BlurGaussian(BlurDistance(0,0,u-mid.x,v-mid.y),
-        spatial_sigma);
+  {
+    ssize_t
+      n,
+      v;
+
+    n=0;
+    mid.x=(ssize_t) (MagickMax(width,1)/2L);
+    mid.y=(ssize_t) (MagickMax(height,1)/2L);
+    for (v=0; v < (ssize_t) MagickMax(height,1); v++)
+    {
+      ssize_t
+        u;
+
+      for (u=0; u < (ssize_t) MagickMax(width,1); u++)
+        spatial_gaussian[n++]=BlurGaussian(BlurDistance(0,0,u-mid.x,v-mid.y),
+          spatial_sigma);
+    }
+  }
   /*
     Bilateral blur image.
   */
@@ -1019,22 +1023,22 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
       /*
         Tonal weighting preserves edges while smoothing in the flat regions.
       */
-      p=GetCacheViewVirtualPixels(image_view,x-mid.x,y-mid.y,width,height,
-        exception);
+      p=GetCacheViewVirtualPixels(image_view,x-mid.x,y-mid.y,MagickMax(width,1),
+        MagickMax(height,1),exception);
       if (p == (const Quantum *) NULL)
         break;
-      p+=(ssize_t) GetPixelChannels(image)*width*mid.y+GetPixelChannels(image)*
-        mid.x;
+      p+=(ssize_t) GetPixelChannels(image)*MagickMax(width,1)*mid.y+
+        GetPixelChannels(image)*mid.x;
       n=0;
-      for (v=0; v < (ssize_t) height; v++)
+      for (v=0; v < (ssize_t) MagickMax(height,1); v++)
       {
-        for (u=0; u < (ssize_t) width; u++)
+        for (u=0; u < (ssize_t) MagickMax(width,1); u++)
         {
           double
             intensity;
 
-          r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) width*(mid.y-v)+
-            GetPixelChannels(image)*(mid.x-u);
+          r=p+(ssize_t) GetPixelChannels(image)*(ssize_t) MagickMax(width,1)*
+            (mid.y-v)+GetPixelChannels(image)*(mid.x-u);
           intensity=ScaleQuantumToChar(GetPixelIntensity(image,r))-
             (double) ScaleQuantumToChar(GetPixelIntensity(image,p));
           if ((intensity >= -MaxIntensity) && (intensity <= MaxIntensity))
@@ -1074,12 +1078,12 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
             /*
               No alpha blending.
             */
-            for (v=0; v < (ssize_t) height; v++)
+            for (v=0; v < (ssize_t) MagickMax(height,1); v++)
             {
-              for (u=0; u < (ssize_t) width; u++)
+              for (u=0; u < (ssize_t) MagickMax(width,1); u++)
               {
-                r=p+(ssize_t) GetPixelChannels(image)*width*(mid.y-v)+
-                  GetPixelChannels(image)*(mid.x-u);
+                r=p+(ssize_t) GetPixelChannels(image)*MagickMax(width,1)*
+                  (mid.y-v)+GetPixelChannels(image)*(mid.x-u);
                 pixel+=weights[id][n]*r[i];
                 gamma+=weights[id][n];
                 n++;
@@ -1092,15 +1096,15 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
         /*
           Alpha blending.
         */
-        for (v=0; v < (ssize_t) height; v++)
+        for (v=0; v < (ssize_t) MagickMax(height,1); v++)
         {
-          for (u=0; u < (ssize_t) width; u++)
+          for (u=0; u < (ssize_t) MagickMax(width,1); u++)
           {
             double
               alpha,
               beta;
 
-            r=p+(ssize_t) GetPixelChannels(image)*width*(mid.y-v)+
+            r=p+(ssize_t) GetPixelChannels(image)*MagickMax(width,1)*(mid.y-v)+
               GetPixelChannels(image)*(mid.x-u);
             alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
             beta=(double) (QuantumScale*GetPixelAlpha(image,r));
@@ -1134,7 +1138,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
   blur_image->type=image->type;
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
-  weights=DestroyBilateralThreadSet(number_threads,weights);
+  weights=DestroyBilateralTLS(number_threads,weights);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
@@ -2374,13 +2378,11 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   PointInfo
     point;
 
-  ssize_t
-    i;
-
   size_t
     width;
 
   ssize_t
+    w,
     y;
 
   assert(image != (Image *) NULL);
@@ -2400,11 +2402,11 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     }
   point.x=(double) width*sin(DegreesToRadians(angle));
   point.y=(double) width*cos(DegreesToRadians(angle));
-  for (i=0; i < (ssize_t) width; i++)
+  for (w=0; w < (ssize_t) width; w++)
   {
-    offset[i].x=CastDoubleToLong(ceil((double) (i*point.y)/
+    offset[w].x=CastDoubleToLong(ceil((double) (w*point.y)/
       hypot(point.x,point.y)-0.5));
-    offset[i].y=CastDoubleToLong(ceil((double) (i*point.x)/
+    offset[w].y=CastDoubleToLong(ceil((double) (w*point.x)/
       hypot(point.x,point.y)-0.5));
   }
   /*
@@ -3162,13 +3164,11 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   PointInfo
     blur_center;
 
-  ssize_t
-    i;
-
   size_t
     n;
 
   ssize_t
+    w,
     y;
 
   /*
@@ -3210,10 +3210,10 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   offset=theta*(double) (n-1)/2.0;
-  for (i=0; i < (ssize_t) n; i++)
+  for (w=0; w < (ssize_t) n; w++)
   {
-    cos_theta[i]=cos((double) (theta*i-offset));
-    sin_theta[i]=sin((double) (theta*i-offset));
+    cos_theta[w]=cos((double) (theta*w-offset));
+    sin_theta[w]=sin((double) (theta*w-offset));
   }
   /*
     Radial blur image.
@@ -3437,17 +3437,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   MagickRealType
     *kernel;
 
-  ssize_t
-    i;
-
   size_t
     width;
 
   ssize_t
     center,
-    j,
-    u,
-    v,
     y;
 
   /*
@@ -3464,13 +3458,23 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
     width,width*sizeof(*kernel)));
   if (kernel == (MagickRealType *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  j=(ssize_t) (width-1)/2;
-  i=0;
-  for (v=(-j); v <= j; v++)
   {
-    for (u=(-j); u <= j; u++)
-      kernel[i++]=(MagickRealType) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
-        MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
+    ssize_t
+      i,
+      j,
+      v;
+
+    j=(ssize_t) (width-1)/2;
+    i=0;
+    for (v=(-j); v <= j; v++)
+    {
+      ssize_t
+        u;
+
+      for (u=(-j); u <= j; u++)
+        kernel[i++]=(MagickRealType) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+          MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
+    }
   }
   if (image->debug != MagickFalse)
     {
@@ -4155,7 +4159,7 @@ MagickExport Image *SpreadImage(const Image *image,
   status=MagickTrue;
   progress=0;
   width=GetOptimalKernelWidth1D(radius,0.5);
-  random_info=AcquireRandomInfoThreadSet();
+  random_info=AcquireRandomInfoTLS();
   image_view=AcquireVirtualCacheView(image,exception);
   spread_view=AcquireAuthenticCacheView(spread_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -4215,7 +4219,7 @@ MagickExport Image *SpreadImage(const Image *image,
   }
   spread_view=DestroyCacheView(spread_view);
   image_view=DestroyCacheView(image_view);
-  random_info=DestroyRandomInfoThreadSet(random_info);
+  random_info=DestroyRandomInfoTLS(random_info);
   if (status == MagickFalse)
     spread_image=DestroyImage(spread_image);
   return(spread_image);
@@ -4327,7 +4331,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(unsharp_view,0,y,unsharp_image->columns,1,
+    q=GetCacheViewAuthenticPixels(unsharp_view,0,y,unsharp_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {

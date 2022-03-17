@@ -447,7 +447,6 @@ MAGICKCORE_NOINST_HDRS = \
   MagickCore/magic-private.h \
   MagickCore/matrix-private.h \
   MagickCore/memory-private.h \
-  MagickCore/methods-private.h \
   MagickCore/mime-private.h \
   MagickCore/mime-private.h \
   MagickCore/module-private.h \

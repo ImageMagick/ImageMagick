@@ -1,7 +1,9 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
-// Copyright Dirk Lemstra 2013-2017
+//
+// Copyright @ 2013 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
 //
 // Inclusion of ImageMagick headers (with namespace magic)
 
@@ -10,7 +12,7 @@
 
 #if !defined(_MAGICK_CONFIG_H)
 #  define _MAGICK_CONFIG_H
-#  if !defined(vms) && !defined(macintosh)
+#  if !defined(vms)
 #    include "MagickCore/magick-config.h"
 #  else
 #    include "magick-config.h"
@@ -542,6 +544,7 @@ namespace Magick
   using MagickCore::DXT1Compression;
   using MagickCore::DXT3Compression;
   using MagickCore::DXT5Compression;
+  using MagickCore::BC7Compression;
   using MagickCore::FaxCompression;
   using MagickCore::Group4Compression;
   using MagickCore::JBIG1Compression;

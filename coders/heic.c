@@ -22,7 +22,7 @@
 %                                                                             %
 %                      Copyright 2017-2018 YANDEX LLC.                        %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2018 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -325,8 +325,8 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
     return(MagickFalse);
   image->columns=(size_t) heif_image_get_width(heif_image,
     heif_channel_interleaved);
-  image->rows=(size_t) heif_image_get_height(heif_image
-    ,heif_channel_interleaved);
+  image->rows=(size_t) heif_image_get_height(heif_image,
+    heif_channel_interleaved);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
@@ -408,7 +408,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   heif_item_id
-    *image_ids,
     primary_image_id;
 
   Image
@@ -459,7 +458,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     }
 #if LIBHEIF_NUMERIC_VERSION >= 0x010b0000
-  if (heif_has_compatible_brand(file_data,(int) length,"avif") != MagickFalse)
+  if (heif_has_compatible_brand((unsigned char *) file_data,(int) length,"avif") != MagickFalse)
     (void) CopyMagickString(image->magick,"AVIF",MagickPathExtent);
 #endif
   /*
@@ -490,10 +489,13 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       return(DestroyImageList(image));
     }
   status=ReadHEICImageHandle(image_info,image,image_handle,exception);
-  image_ids=(heif_item_id *) NULL;
+  heif_image_handle_release(image_handle);
   count=(size_t) heif_context_get_number_of_top_level_images(heif_context);
   if ((status != MagickFalse) && (count > 1))
     {
+      heif_item_id
+        *image_ids;
+
       size_t
         i;
 
@@ -501,7 +503,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
         sizeof(*image_ids));
       if (image_ids == (heif_item_id *) NULL)
         {
-          heif_image_handle_release(image_handle);
           heif_context_free(heif_context);
           file_data=RelinquishMagickMemory(file_data);
           return(DestroyImageList(image));
@@ -530,14 +531,15 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
             break;
           }
         status=ReadHEICImageHandle(image_info,image,image_handle,exception);
+        heif_image_handle_release(image_handle);
         if (status == MagickFalse)
           break;
         if (image_info->number_scenes != 0)
           if (image->scene >= (image_info->scene+image_info->number_scenes-1))
             break;
       }
+      image_ids=(heif_item_id *) RelinquishMagickMemory(image_ids);
     }
-  heif_image_handle_release(image_handle);
   error=heif_context_get_image_handle(heif_context,primary_image_id,
     &image_handle);
   if (IsHeifSuccess(image,&error,exception) == MagickFalse)
@@ -548,12 +550,11 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     }
   ReadHEICDepthImage(image_info,image,image_handle,exception);
   heif_image_handle_release(image_handle);
-  if (image_ids != (heif_item_id *) NULL)
-    (void) RelinquishMagickMemory(image_ids);
   heif_context_free(heif_context);
   file_data=RelinquishMagickMemory(file_data);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
 #endif
@@ -585,18 +586,18 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
 */
 static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
 {
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+#if LIBHEIF_NUMERIC_VERSION >= 0x01040000
+  enum heif_filetype_result
+    heif_filetype;
+
   if (length < 12)
     return(MagickFalse);
-  if (LocaleNCompare((const char *) magick+4,"ftyp",4) != 0)
-    return(MagickFalse);
-  if (LocaleNCompare((const char *) magick+8,"avif",4) == 0)
+  heif_filetype=heif_check_filetype(magick,(int) length);
+  if (heif_filetype == heif_filetype_yes_supported)
     return(MagickTrue);
-  if (LocaleNCompare((const char *) magick+8,"heic",4) == 0)
-    return(MagickTrue);
-  if (LocaleNCompare((const char *) magick+8,"heix",4) == 0)
-    return(MagickTrue);
-  if (LocaleNCompare((const char *) magick+8,"mif1",4) == 0)
-    return(MagickTrue);
+#endif
+#endif
   return(MagickFalse);
 }
 

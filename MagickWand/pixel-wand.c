@@ -23,7 +23,7 @@
 %                                March 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -381,19 +381,10 @@ WandExport MagickBooleanType IsPixelWand(const PixelWand *wand)
 */
 WandExport PixelWand *NewPixelWand(void)
 {
-  const char
-    *quantum;
-
   PixelWand
     *wand;
 
-  size_t
-    depth;
-
-  depth=MAGICKCORE_QUANTUM_DEPTH;
-  quantum=GetMagickQuantumDepth(&depth);
-  if (depth != MAGICKCORE_QUANTUM_DEPTH)
-    ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
+  CheckMagickCoreCompatibility();
   wand=(PixelWand *) AcquireCriticalMemory(sizeof(*wand));
   (void) memset(wand,0,sizeof(*wand));
   wand->id=AcquireWandId();

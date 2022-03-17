@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -488,9 +488,6 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
   imageListLength=GetImageListLength(image);
   do
   {
-    ImageType
-      type;
-
     /*
       Scale relative to dots-per-inch.
     */
@@ -501,18 +498,20 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     if ((resolution.x == 0.0) || (resolution.y == 0.0))
       {
         flags=ParseGeometry(PSDensityGeometry,&geometry_info);
-        resolution.x=geometry_info.rho;
-        resolution.y=geometry_info.sigma;
-        if ((flags & SigmaValue) == 0)
-          resolution.y=resolution.x;
+        if ((flags & RhoValue) != 0)
+          resolution.x=geometry_info.rho;
+        resolution.y=resolution.x;
+        if ((flags & SigmaValue) != 0)
+          resolution.y=geometry_info.sigma;
       }
     if (image_info->density != (char *) NULL)
       {
         flags=ParseGeometry(image_info->density,&geometry_info);
-        resolution.x=geometry_info.rho;
-        resolution.y=geometry_info.sigma;
-        if ((flags & SigmaValue) == 0)
-          resolution.y=resolution.x;
+        if ((flags & RhoValue) != 0)
+          resolution.x=geometry_info.rho;
+        resolution.y=resolution.x;
+        if ((flags & SigmaValue) != 0)
+          resolution.y=geometry_info.sigma;
       }
     if (image->units == PixelsPerCentimeterResolution)
       {
@@ -728,11 +727,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     number_pixels=(MagickSizeType) image->columns*image->rows;
     if (number_pixels != (MagickSizeType) ((size_t) number_pixels))
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    type=UndefinedType;
-    if (image_info->type != TrueColorType)
-      type=IdentifyImageCoderType(image,exception);
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
-        (IsGrayImageType(type) != MagickFalse))
+        ((image_info->type != TrueColorType) &&
+         (IdentifyImageCoderGray(image,exception) != MagickFalse)))
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,
           "%.20g %.20g\n1\n%d\n",(double) image->columns,(double) image->rows,

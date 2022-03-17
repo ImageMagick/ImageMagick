@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -457,7 +457,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
   lzma_stream
     initialize_lzma = LZMA_STREAM_INIT,
-    lzma_info;
+    lzma_info = LZMA_STREAM_INIT;
 
   lzma_allocator
     allocator;
@@ -1701,7 +1701,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     {
       c=ReadBlobByte(image);
     } while ((isgraph((int) ((unsigned char) c)) == 0) && (c != EOF));
-    if (c != EOF)
+    if ((c != EOF) && ((c == 'i') || (c == 'I')))
       {
         /*
           Allocate next image structure.
@@ -1718,7 +1718,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (status == MagickFalse)
           break;
       }
-  } while (c != EOF);
+  } while (c != EOF && ((c == 'i') || (c == 'I')));
   (void) CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));

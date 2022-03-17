@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.  You may
@@ -57,27 +57,42 @@ extern "C" {
 #define _SC_PAGE_SIZE 1
 #define _SC_PHYS_PAGES 2
 #define _SC_OPEN_MAX 3
-#if !defined(SSIZE_MAX)
-# ifdef _WIN64
-#   define SSIZE_MAX LLONG_MAX
-# else
-#   define SSIZE_MAX LONG_MAX
-# endif
+#ifdef _WIN64
+#  if !defined(SSIZE_MAX)
+#    define SSIZE_MAX LLONG_MAX
+#  endif
+#  if defined(_MSC_VER)
+#    define MAGICKCORE_SIZEOF_SSIZE_T 8
+#  endif
+#else
+#  if !defined(SSIZE_MAX)
+#    define SSIZE_MAX LONG_MAX
+#  endif
+#  if defined(_MSC_VER)
+#    define MAGICKCORE_SIZEOF_SSIZE_T 4
+#  endif
+#endif
+#ifndef S_ISCHR
+#  define S_ISCHR(m) (((m) & S_IFMT) == S_IFCHR)
 #endif
 
-/*
-  _MSC_VER values:
-    1100 MSVC 5.0
-    1200 MSVC 6.0
-    1300 MSVC 7.0 Visual C++ .NET 2002
-    1310 Visual c++ .NET 2003
-    1400 Visual C++ 2005
-    1500 Visual C++ 2008
-    1600 Visual C++ 2010
-    1700 Visual C++ 2012
-    1800 Visual C++ 2013
-    1900 Visual C++ 2015
-*/
+#if defined(_MSC_VER)
+# if !defined(MAGICKCORE_MSC_VER)
+#   if (_MSC_VER >= 1930)
+#     define MAGICKCORE_MSC_VER 2022
+#   elif (_MSC_VER >= 1920)
+#     define MAGICKCORE_MSC_VER 2019
+#   elif (_MSC_VER >= 1910)
+#     define MAGICKCORE_MSC_VER 2017
+#   elif (_MSC_VER >= 1900)
+#     define MAGICKCORE_MSC_VER 2015
+#   elif (_MSC_VER >= 1800)
+#     define MAGICKCORE_MSC_VER 2013
+#   elif (_MSC_VER >= 1700)
+#     define MAGICKCORE_MSC_VER 2012
+#   endif
+# endif
+#endif
 
 #if !defined(chsize)
 # if defined(__BORLANDC__)
@@ -88,7 +103,7 @@ extern "C" {
 #endif
 
 #if !defined(access)
-#if defined(_VISUALC_) && (_MSC_VER >= 1400)
+#if defined(_MSC_VER)
 #  define access(path,mode)  _access_s(path,mode)
 #endif
 #endif
@@ -103,9 +118,6 @@ extern "C" {
 #endif
 #if !defined(MAGICKCORE_HAVE_ERF)
 #  define MAGICKCORE_HAVE_ERF
-#endif
-#if defined(_VISUALC_) && (_MSC_VER < 1700)
-#  define erf(x)  NTErf(x)
 #endif
 #if !defined(fdopen)
 #  define fdopen  _fdopen
@@ -183,6 +195,9 @@ extern "C" {
 #if !defined(popen)
 #  define popen  _popen
 #endif
+#if !defined(putenv)
+#  define putenv  _putenv
+#endif
 #if !defined(fprintf_l)
 #define fprintf_l  _fprintf_s_l
 #endif
@@ -233,10 +248,8 @@ extern "C" {
 #if !defined(vfprintf_l)
 #define vfprintf_l  _vfprintf_l
 #endif
-#if !defined(vsnprintf)
-#if !defined(_MSC_VER) || (defined(_MSC_VER) && _MSC_VER < 1500)
+#if !defined(vsnprintf) && !defined(_MSC_VER)
 #define vsnprintf _vsnprintf
-#endif
 #endif
 #if !defined(vsnprintf_l)
 #define vsnprintf_l  _vsnprintf_l
@@ -246,7 +259,6 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
   !(defined(__BORLANDC__)) && \
-  !(defined(_MSC_VER) && (_MSC_VER < 1400)) && \
   !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
 #  if !defined(fseek)
 #    define fseek  _fseeki64

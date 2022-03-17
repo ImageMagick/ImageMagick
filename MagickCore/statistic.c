@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -137,7 +137,7 @@ typedef struct _PixelChannels
     channel[MaxPixelChannels];
 } PixelChannels;
 
-static PixelChannels **DestroyPixelThreadSet(const Image *images,
+static PixelChannels **DestroyPixelTLS(const Image *images,
   PixelChannels **pixels)
 {
   ssize_t
@@ -156,7 +156,7 @@ static PixelChannels **DestroyPixelThreadSet(const Image *images,
   return(pixels);
 }
 
-static PixelChannels **AcquirePixelThreadSet(const Image *images)
+static PixelChannels **AcquirePixelTLS(const Image *images)
 {
   const Image
     *next;
@@ -188,7 +188,7 @@ static PixelChannels **AcquirePixelThreadSet(const Image *images)
 
     pixels[i]=(PixelChannels *) AcquireQuantumMemory(columns,sizeof(**pixels));
     if (pixels[i] == (PixelChannels *) NULL)
-      return(DestroyPixelThreadSet(images,pixels));
+      return(DestroyPixelTLS(images,pixels));
     for (j=0; j < (ssize_t) columns; j++)
     {
       ssize_t
@@ -481,7 +481,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     **image_view;
 
   const Image
-    *next;
+    *view;
 
   Image
     *image;
@@ -502,7 +502,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     number_images;
 
   ssize_t
-    j,
+    n,
     y;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -525,7 +525,7 @@ MagickExport Image *EvaluateImages(const Image *images,
       return((Image *) NULL);
     }
   number_images=GetImageListLength(images);
-  evaluate_pixels=AcquirePixelThreadSet(images);
+  evaluate_pixels=AcquirePixelTLS(images);
   if (evaluate_pixels == (PixelChannels **) NULL)
     {
       image=DestroyImage(image);
@@ -538,23 +538,23 @@ MagickExport Image *EvaluateImages(const Image *images,
   if (image_view == (CacheView **) NULL)
     {
       image=DestroyImage(image);
-      evaluate_pixels=DestroyPixelThreadSet(images,evaluate_pixels);
+      evaluate_pixels=DestroyPixelTLS(images,evaluate_pixels);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
       return(image);
     }
-  next=images;
-  for (j=0; j < (ssize_t) number_images; j++)
+  view=images;
+  for (n=0; n < (ssize_t) number_images; n++)
   {
-    image_view[j]=AcquireVirtualCacheView(next,exception);
-    next=GetNextImageInList(next);
+    image_view[n]=AcquireVirtualCacheView(view,exception);
+    view=GetNextImageInList(view);
   }
   /*
     Evaluate image pixels.
   */
   status=MagickTrue;
   progress=0;
-  random_info=AcquireRandomInfoThreadSet();
+  random_info=AcquireRandomInfoTLS();
   evaluate_view=AcquireAuthenticCacheView(image,exception);
   if (op == MedianEvaluateOperator)
     {
@@ -565,9 +565,6 @@ MagickExport Image *EvaluateImages(const Image *images,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        const Image
-          *next;
-
         const int
           id = GetOpenMPThreadId();
 
@@ -614,6 +611,9 @@ MagickExport Image *EvaluateImages(const Image *images,
         evaluate_pixel=evaluate_pixels[id];
         for (x=0; x < (ssize_t) image->columns; x++)
         {
+          const Image
+            *next;
+
           ssize_t
             i;
 
@@ -688,15 +688,15 @@ MagickExport Image *EvaluateImages(const Image *images,
         const Quantum
           **p;
 
-        ssize_t
-          i,
-          x;
-
         PixelChannels
           *evaluate_pixel;
 
         Quantum
           *magick_restrict q;
+
+        ssize_t
+          i,
+          x;
 
         ssize_t
           j;
@@ -735,9 +735,6 @@ MagickExport Image *EvaluateImages(const Image *images,
         {
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            ssize_t
-              i;
-
             for (i=0; i < (ssize_t) GetPixelChannels(next); i++)
             {
               PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -770,9 +767,6 @@ MagickExport Image *EvaluateImages(const Image *images,
             {
               for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
               {
-                ssize_t
-                  j;
-
                 for (j=0; j < (ssize_t) (number_images-1); j++)
                   evaluate_pixel[x].channel[i]*=QuantumScale;
               }
@@ -821,12 +815,12 @@ MagickExport Image *EvaluateImages(const Image *images,
           }
       }
     }
-  for (j=0; j < (ssize_t) number_images; j++)
-    image_view[j]=DestroyCacheView(image_view[j]);
+  for (n=0; n < (ssize_t) number_images; n++)
+    image_view[n]=DestroyCacheView(image_view[n]);
   image_view=(CacheView **) RelinquishMagickMemory(image_view);
   evaluate_view=DestroyCacheView(evaluate_view);
-  evaluate_pixels=DestroyPixelThreadSet(images,evaluate_pixels);
-  random_info=DestroyRandomInfoThreadSet(random_info);
+  evaluate_pixels=DestroyPixelTLS(images,evaluate_pixels);
+  random_info=DestroyRandomInfoTLS(random_info);
   if (status == MagickFalse)
     image=DestroyImage(image);
   return(image);
@@ -873,7 +867,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
   artifact=GetImageArtifact(image,"evaluate:clamp");
   if (artifact != (const char *) NULL)
     clamp=IsStringTrue(artifact);
-  random_info=AcquireRandomInfoThreadSet();
+  random_info=AcquireRandomInfoTLS();
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
@@ -941,7 +935,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  random_info=DestroyRandomInfoThreadSet(random_info);
+  random_info=DestroyRandomInfoTLS(random_info);
   return(status);
 }
 
@@ -1437,29 +1431,6 @@ MagickExport MagickBooleanType GetImageMedian(const Image *image,double *median,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static size_t GetImageChannels(const Image *image)
-{
-  ssize_t
-    i;
-
-  size_t
-    channels;
-
-  channels=0;
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-  {
-    PixelChannel channel = GetPixelChannelChannel(image,i);
-    PixelTrait traits = GetPixelChannelTraits(image,channel);
-    if (traits == UndefinedPixelTrait)
-      continue;
-    if ((traits & UpdatePixelTrait) == 0)
-      continue;
-    channels++;
-  }
-  return((size_t) (channels == 0 ? 1 : channels));
-}
-
 MagickExport ChannelMoments *GetImageMoments(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1489,7 +1460,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     centroid[MaxPixelChannels+1];
 
   ssize_t
-    channel,
+    c,
     y;
 
   assert(image != (Image *) NULL);
@@ -1552,13 +1523,13 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       p+=GetPixelChannels(image);
     }
   }
-  for (channel=0; channel <= MaxPixelChannels; channel++)
+  for (c=0; c <= MaxPixelChannels; c++)
   {
     /*
        Compute center of mass (centroid).
     */
-    centroid[channel].x=M10[channel]*PerceptibleReciprocal(M00[channel]);
-    centroid[channel].y=M01[channel]*PerceptibleReciprocal(M00[channel]);
+    centroid[c].x=M10[c]*PerceptibleReciprocal(M00[c]);
+    centroid[c].y=M01[c]*PerceptibleReciprocal(M00[c]);
   }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1635,106 +1606,91 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
   M21[MaxPixelChannels]/=channels;
   M22[MaxPixelChannels]/=channels;
   M30[MaxPixelChannels]/=channels;
-  for (channel=0; channel <= MaxPixelChannels; channel++)
+  for (c=0; c <= MaxPixelChannels; c++)
   {
     /*
       Compute elliptical angle, major and minor axes, eccentricity, & intensity.
     */
-    channel_moments[channel].centroid=centroid[channel];
-    channel_moments[channel].ellipse_axis.x=sqrt((2.0*
-      PerceptibleReciprocal(M00[channel]))*((M20[channel]+M02[channel])+
-      sqrt(4.0*M11[channel]*M11[channel]+(M20[channel]-M02[channel])*
-      (M20[channel]-M02[channel]))));
-    channel_moments[channel].ellipse_axis.y=sqrt((2.0*
-      PerceptibleReciprocal(M00[channel]))*((M20[channel]+M02[channel])-
-      sqrt(4.0*M11[channel]*M11[channel]+(M20[channel]-M02[channel])*
-      (M20[channel]-M02[channel]))));
-    channel_moments[channel].ellipse_angle=RadiansToDegrees(1.0/2.0*atan(2.0*
-      M11[channel]*PerceptibleReciprocal(M20[channel]-M02[channel])));
-    if (fabs(M11[channel]) < 0.0)
+    channel_moments[c].centroid=centroid[c];
+    channel_moments[c].ellipse_axis.x=sqrt((2.0*PerceptibleReciprocal(M00[c]))*
+      ((M20[c]+M02[c])+sqrt(4.0*M11[c]*M11[c]+(M20[c]-M02[c])*(M20[c]-M02[c]))));
+    channel_moments[c].ellipse_axis.y=sqrt((2.0*PerceptibleReciprocal(M00[c]))*
+      ((M20[c]+M02[c])-sqrt(4.0*M11[c]*M11[c]+(M20[c]-M02[c])*(M20[c]-M02[c]))));
+    channel_moments[c].ellipse_angle=RadiansToDegrees(1.0/2.0*atan(2.0*
+      M11[c]*PerceptibleReciprocal(M20[c]-M02[c])));
+    if (fabs(M11[c]) < 0.0)
       {
-        if ((fabs(M20[channel]-M02[channel]) >= 0.0) &&
-            ((M20[channel]-M02[channel]) < 0.0))
-          channel_moments[channel].ellipse_angle+=90.0;
+        if ((fabs(M20[c]-M02[c]) >= 0.0) &&
+            ((M20[c]-M02[c]) < 0.0))
+          channel_moments[c].ellipse_angle+=90.0;
       }
     else
-      if (M11[channel] < 0.0)
+      if (M11[c] < 0.0)
         {
-          if (fabs(M20[channel]-M02[channel]) >= 0.0)
+          if (fabs(M20[c]-M02[c]) >= 0.0)
             {
-              if ((M20[channel]-M02[channel]) < 0.0)
-                channel_moments[channel].ellipse_angle+=90.0;
+              if ((M20[c]-M02[c]) < 0.0)
+                channel_moments[c].ellipse_angle+=90.0;
               else
-                channel_moments[channel].ellipse_angle+=180.0;
+                channel_moments[c].ellipse_angle+=180.0;
             }
         }
       else
-        if ((fabs(M20[channel]-M02[channel]) >= 0.0) &&
-            ((M20[channel]-M02[channel]) < 0.0))
-          channel_moments[channel].ellipse_angle+=90.0;
-    channel_moments[channel].ellipse_eccentricity=sqrt(1.0-(
-      channel_moments[channel].ellipse_axis.y*
-      channel_moments[channel].ellipse_axis.y*PerceptibleReciprocal(
-      channel_moments[channel].ellipse_axis.x*
-      channel_moments[channel].ellipse_axis.x)));
-    channel_moments[channel].ellipse_intensity=M00[channel]*
-      PerceptibleReciprocal(MagickPI*channel_moments[channel].ellipse_axis.x*
-      channel_moments[channel].ellipse_axis.y+MagickEpsilon);
+        if ((fabs(M20[c]-M02[c]) >= 0.0) && ((M20[c]-M02[c]) < 0.0))
+          channel_moments[c].ellipse_angle+=90.0;
+    channel_moments[c].ellipse_eccentricity=sqrt(1.0-(
+      channel_moments[c].ellipse_axis.y*
+      channel_moments[c].ellipse_axis.y*PerceptibleReciprocal(
+      channel_moments[c].ellipse_axis.x*
+      channel_moments[c].ellipse_axis.x)));
+    channel_moments[c].ellipse_intensity=M00[c]*
+      PerceptibleReciprocal(MagickPI*channel_moments[c].ellipse_axis.x*
+      channel_moments[c].ellipse_axis.y+MagickEpsilon);
   }
-  for (channel=0; channel <= MaxPixelChannels; channel++)
+  for (c=0; c <= MaxPixelChannels; c++)
   {
     /*
       Normalize image moments.
     */
-    M10[channel]=0.0;
-    M01[channel]=0.0;
-    M11[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(1.0+1.0)/2.0));
-    M20[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(2.0+0.0)/2.0));
-    M02[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(0.0+2.0)/2.0));
-    M21[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(2.0+1.0)/2.0));
-    M12[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(1.0+2.0)/2.0));
-    M22[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(2.0+2.0)/2.0));
-    M30[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(3.0+0.0)/2.0));
-    M03[channel]*=PerceptibleReciprocal(pow(M00[channel],1.0+(0.0+3.0)/2.0));
-    M00[channel]=1.0;
+    M10[c]=0.0;
+    M01[c]=0.0;
+    M11[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(1.0+1.0)/2.0));
+    M20[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(2.0+0.0)/2.0));
+    M02[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(0.0+2.0)/2.0));
+    M21[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(2.0+1.0)/2.0));
+    M12[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(1.0+2.0)/2.0));
+    M22[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(2.0+2.0)/2.0));
+    M30[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(3.0+0.0)/2.0));
+    M03[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(0.0+3.0)/2.0));
+    M00[c]=1.0;
   }
   image_view=DestroyCacheView(image_view);
-  for (channel=0; channel <= MaxPixelChannels; channel++)
+  for (c=0; c <= MaxPixelChannels; c++)
   {
     /*
       Compute Hu invariant moments.
     */
-    channel_moments[channel].invariant[0]=M20[channel]+M02[channel];
-    channel_moments[channel].invariant[1]=(M20[channel]-M02[channel])*
-      (M20[channel]-M02[channel])+4.0*M11[channel]*M11[channel];
-    channel_moments[channel].invariant[2]=(M30[channel]-3.0*M12[channel])*
-      (M30[channel]-3.0*M12[channel])+(3.0*M21[channel]-M03[channel])*
-      (3.0*M21[channel]-M03[channel]);
-    channel_moments[channel].invariant[3]=(M30[channel]+M12[channel])*
-      (M30[channel]+M12[channel])+(M21[channel]+M03[channel])*
-      (M21[channel]+M03[channel]);
-    channel_moments[channel].invariant[4]=(M30[channel]-3.0*M12[channel])*
-      (M30[channel]+M12[channel])*((M30[channel]+M12[channel])*
-      (M30[channel]+M12[channel])-3.0*(M21[channel]+M03[channel])*
-      (M21[channel]+M03[channel]))+(3.0*M21[channel]-M03[channel])*
-      (M21[channel]+M03[channel])*(3.0*(M30[channel]+M12[channel])*
-      (M30[channel]+M12[channel])-(M21[channel]+M03[channel])*
-      (M21[channel]+M03[channel]));
-    channel_moments[channel].invariant[5]=(M20[channel]-M02[channel])*
-      ((M30[channel]+M12[channel])*(M30[channel]+M12[channel])-
-      (M21[channel]+M03[channel])*(M21[channel]+M03[channel]))+
-      4.0*M11[channel]*(M30[channel]+M12[channel])*(M21[channel]+M03[channel]);
-    channel_moments[channel].invariant[6]=(3.0*M21[channel]-M03[channel])*
-      (M30[channel]+M12[channel])*((M30[channel]+M12[channel])*
-      (M30[channel]+M12[channel])-3.0*(M21[channel]+M03[channel])*
-      (M21[channel]+M03[channel]))-(M30[channel]-3*M12[channel])*
-      (M21[channel]+M03[channel])*(3.0*(M30[channel]+M12[channel])*
-      (M30[channel]+M12[channel])-(M21[channel]+M03[channel])*
-      (M21[channel]+M03[channel]));
-    channel_moments[channel].invariant[7]=M11[channel]*((M30[channel]+
-      M12[channel])*(M30[channel]+M12[channel])-(M03[channel]+M21[channel])*
-      (M03[channel]+M21[channel]))-(M20[channel]-M02[channel])*
-      (M30[channel]+M12[channel])*(M03[channel]+M21[channel]);
+    channel_moments[c].invariant[0]=M20[c]+M02[c];
+    channel_moments[c].invariant[1]=(M20[c]-M02[c])*(M20[c]-M02[c])+4.0*M11[c]*
+      M11[c];
+    channel_moments[c].invariant[2]=(M30[c]-3.0*M12[c])*(M30[c]-3.0*M12[c])+
+      (3.0*M21[c]-M03[c])*(3.0*M21[c]-M03[c]);
+    channel_moments[c].invariant[3]=(M30[c]+M12[c])*(M30[c]+M12[c])+
+      (M21[c]+M03[c])*(M21[c]+M03[c]);
+    channel_moments[c].invariant[4]=(M30[c]-3.0*M12[c])*(M30[c]+M12[c])*
+      ((M30[c]+M12[c])*(M30[c]+M12[c])-3.0*(M21[c]+M03[c])*(M21[c]+M03[c]))+
+      (3.0*M21[c]-M03[c])*(M21[c]+M03[c])*(3.0*(M30[c]+M12[c])*(M30[c]+M12[c])-
+      (M21[c]+M03[c])*(M21[c]+M03[c]));
+    channel_moments[c].invariant[5]=(M20[c]-M02[c])*((M30[c]+M12[c])*
+      (M30[c]+M12[c])-(M21[c]+M03[c])*(M21[c]+M03[c]))+4.0*M11[c]*
+      (M30[c]+M12[c])*(M21[c]+M03[c]);
+    channel_moments[c].invariant[6]=(3.0*M21[c]-M03[c])*(M30[c]+M12[c])*
+      ((M30[c]+M12[c])*(M30[c]+M12[c])-3.0*(M21[c]+M03[c])*(M21[c]+M03[c]))-
+      (M30[c]-3*M12[c])*(M21[c]+M03[c])*(3.0*(M30[c]+M12[c])*(M30[c]+M12[c])-
+      (M21[c]+M03[c])*(M21[c]+M03[c]));
+    channel_moments[c].invariant[7]=M11[c]*((M30[c]+M12[c])*(M30[c]+M12[c])-
+      (M03[c]+M21[c])*(M03[c]+M21[c]))-(M20[c]-M02[c])*(M30[c]+M12[c])*
+      (M03[c]+M21[c]);
   }
   if (y < (ssize_t) image->rows)
     channel_moments=(ChannelMoments *) RelinquishMagickMemory(channel_moments);
@@ -2094,13 +2050,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   QuantumAny
     range;
 
-  ssize_t
-    i;
-
   size_t
     depth;
 
   ssize_t
+    i,
     y;
 
   assert(image != (Image *) NULL);
@@ -2147,9 +2101,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ssize_t
-        i;
-
       if (GetPixelReadMask(image,p) <= (QuantumRange/2))
         {
           p+=GetPixelChannels(image);
@@ -2283,9 +2234,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
   else
     {
-      ssize_t
-        i;
-
       median=(Quantum *) GetVirtualMemoryBlob(median_info);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
@@ -2428,7 +2376,7 @@ MagickExport Image *PolynomialImage(const Image *images,
       return((Image *) NULL);
     }
   number_images=GetImageListLength(images);
-  polynomial_pixels=AcquirePixelThreadSet(images);
+  polynomial_pixels=AcquirePixelTLS(images);
   if (polynomial_pixels == (PixelChannels **) NULL)
     {
       image=DestroyImage(image);
@@ -2457,10 +2405,6 @@ MagickExport Image *PolynomialImage(const Image *images,
     const int
       id = GetOpenMPThreadId();
 
-    ssize_t
-      i,
-      x;
-
     PixelChannels
       *polynomial_pixel;
 
@@ -2468,7 +2412,9 @@ MagickExport Image *PolynomialImage(const Image *images,
       *magick_restrict q;
 
     ssize_t
-      j;
+      i,
+      j,
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -2500,9 +2446,6 @@ MagickExport Image *PolynomialImage(const Image *images,
         }
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        ssize_t
-          i;
-
         for (i=0; i < (ssize_t) GetPixelChannels(next); i++)
         {
           MagickRealType
@@ -2529,9 +2472,6 @@ MagickExport Image *PolynomialImage(const Image *images,
     }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ssize_t
-        i;
-
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -2562,7 +2502,7 @@ MagickExport Image *PolynomialImage(const Image *images,
       }
   }
   polynomial_view=DestroyCacheView(polynomial_view);
-  polynomial_pixels=DestroyPixelThreadSet(images,polynomial_pixels);
+  polynomial_pixels=DestroyPixelTLS(images,polynomial_pixels);
   if (status == MagickFalse)
     image=DestroyImage(image);
   return(image);
@@ -2642,7 +2582,7 @@ static PixelList *DestroyPixelList(PixelList *pixel_list)
   return(pixel_list);
 }
 
-static PixelList **DestroyPixelListThreadSet(PixelList **pixel_list)
+static PixelList **DestroyPixelListTLS(PixelList **pixel_list)
 {
   ssize_t
     i;
@@ -2675,7 +2615,7 @@ static PixelList *AcquirePixelList(const size_t width,const size_t height)
   return(pixel_list);
 }
 
-static PixelList **AcquirePixelListThreadSet(const size_t width,
+static PixelList **AcquirePixelListTLS(const size_t width,
   const size_t height)
 {
   PixelList
@@ -2697,7 +2637,7 @@ static PixelList **AcquirePixelListThreadSet(const size_t width,
   {
     pixel_list[i]=AcquirePixelList(width,height);
     if (pixel_list[i] == (PixelList *) NULL)
-      return(DestroyPixelListThreadSet(pixel_list));
+      return(DestroyPixelListTLS(pixel_list));
   }
   return(pixel_list);
 }
@@ -2939,7 +2879,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
       statistic_image=DestroyImage(statistic_image);
       return((Image *) NULL);
     }
-  pixel_list=AcquirePixelListThreadSet(MagickMax(width,1),MagickMax(height,1));
+  pixel_list=AcquirePixelListTLS(MagickMax(width,1),MagickMax(height,1));
   if (pixel_list == (PixelList **) NULL)
     {
       statistic_image=DestroyImage(statistic_image);
@@ -3131,7 +3071,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
   }
   statistic_view=DestroyCacheView(statistic_view);
   image_view=DestroyCacheView(image_view);
-  pixel_list=DestroyPixelListThreadSet(pixel_list);
+  pixel_list=DestroyPixelListTLS(pixel_list);
   if (status == MagickFalse)
     statistic_image=DestroyImage(statistic_image);
   return(statistic_image);

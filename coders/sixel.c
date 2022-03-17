@@ -18,7 +18,7 @@
 %                    Based on kmiya's sixel (2014-03-28)                      %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -48,6 +48,7 @@
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
+#include "MagickCore/colormap-private.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
@@ -61,7 +62,6 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/pixel-private.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resize.h"
@@ -93,51 +93,54 @@ typedef unsigned short sixel_pixel_t;
   Structure declarations.
 */
 typedef struct sixel_node {
-    struct sixel_node *next;
-    int color;
-    int left;
-    int right;
-    sixel_pixel_t *map;
+  int
+    color,
+    left,
+    right;
+
+  sixel_pixel_t
+    *map;
+
+  struct sixel_node
+    *next;
 } sixel_node_t;
 
 typedef struct sixel_output {
+  Image
+    *image;
 
-    /* compatiblity flags */
+  int
+    active_palette,
+    pos,
+    save_count,
+    save_pixel;
 
-    /* 0: 7bit terminal,
-     * 1: 8bit terminal */
-    unsigned char has_8bit_control;
+  sixel_node_t
+    *node_free,
+    *node_top;
 
-    int save_pixel;
-    int save_count;
-    int active_palette;
-
-    sixel_node_t *node_top;
-    sixel_node_t *node_free;
-
-    Image *image;
-    int pos;
-    unsigned char buffer[1];
-
+  unsigned char
+    buffer[SIXEL_OUTPUT_PACKET_SIZE*2],
+    has_8bit_control; /* 0: 7bit terminal, 1: 8bit terminal */
 } sixel_output_t;
 
 static int const sixel_default_color_table[] = {
-    SIXEL_XRGB(0,  0,  0),   /*  0 Black    */
-    SIXEL_XRGB(20, 20, 80),  /*  1 Blue     */
-    SIXEL_XRGB(80, 13, 13),  /*  2 Red      */
-    SIXEL_XRGB(20, 80, 20),  /*  3 Green    */
-    SIXEL_XRGB(80, 20, 80),  /*  4 Magenta  */
-    SIXEL_XRGB(20, 80, 80),  /*  5 Cyan     */
-    SIXEL_XRGB(80, 80, 20),  /*  6 Yellow   */
-    SIXEL_XRGB(53, 53, 53),  /*  7 Gray 50% */
-    SIXEL_XRGB(26, 26, 26),  /*  8 Gray 25% */
-    SIXEL_XRGB(33, 33, 60),  /*  9 Blue*    */
-    SIXEL_XRGB(60, 26, 26),  /* 10 Red*     */
-    SIXEL_XRGB(33, 60, 33),  /* 11 Green*   */
-    SIXEL_XRGB(60, 33, 60),  /* 12 Magenta* */
-    SIXEL_XRGB(33, 60, 60),  /* 13 Cyan*    */
-    SIXEL_XRGB(60, 60, 33),  /* 14 Yellow*  */
-    SIXEL_XRGB(80, 80, 80),  /* 15 Gray 75% */
+  SIXEL_XRGB(0,  0,  0),   /*  0 Black    */
+  SIXEL_XRGB(20, 20, 80),  /*  1 Blue     */
+  SIXEL_XRGB(80, 13, 13),  /*  2 Red      */
+  SIXEL_XRGB(20, 80, 20),  /*  3 Green    */
+  SIXEL_XRGB(80, 20, 80),  /*  4 Magenta  */
+  SIXEL_XRGB(20, 80, 80),  /*  5 Cyan     */
+  SIXEL_XRGB(80, 80, 20),  /*  6 Yellow   */
+  SIXEL_XRGB(53, 53, 53),  /*  7 Gray 50% */
+  SIXEL_XRGB(26, 26, 26),  /*  8 Gray 25% */
+  SIXEL_XRGB(33, 33, 60),  /*  9 Blue*    */
+  SIXEL_XRGB(60, 26, 26),  /* 10 Red*     */
+  SIXEL_XRGB(33, 60, 33),  /* 11 Green*   */
+  SIXEL_XRGB(60, 33, 60),  /* 12 Magenta* */
+  SIXEL_XRGB(33, 60, 60),  /* 13 Cyan*    */
+  SIXEL_XRGB(60, 60, 33),  /* 14 Yellow*  */
+  SIXEL_XRGB(80, 80, 80),  /* 15 Gray 75% */
 };
 
 /*
@@ -146,765 +149,804 @@ static int const sixel_default_color_table[] = {
 static MagickBooleanType
   WriteSIXELImage(const ImageInfo *,Image *,ExceptionInfo *);
 
-static int hue_to_rgb(int n1, int n2, int hue)
+static int hue_to_rgb(int n1,int n2,int hue)
 {
-    const int HLSMAX = 100;
+  const int
+    HLSMAX=100;
 
-    if (hue < 0) {
-        hue += HLSMAX;
-    }
-
-    if (hue > HLSMAX) {
-        hue -= HLSMAX;
-    }
-
-    if (hue < (HLSMAX / 6)) {
-        return (n1 + (((n2 - n1) * hue + (HLSMAX / 12)) / (HLSMAX / 6)));
-    }
-    if (hue < (HLSMAX / 2)) {
-        return (n2);
-    }
-    if (hue < ((HLSMAX * 2) / 3)) {
-        return (n1 + (((n2 - n1) * (((HLSMAX * 2) / 3) - hue) + (HLSMAX / 12))/(HLSMAX / 6)));
-    }
-    return (n1);
+  if (hue < 0)
+    hue += HLSMAX;
+  if (hue > HLSMAX)
+    hue -= HLSMAX;
+  if (hue < (HLSMAX/6))
+    return(n1 + (((ssize_t) (n2-n1)*hue+(HLSMAX/12))/(HLSMAX/6)));
+  if (hue < (HLSMAX/2))
+    return(n2);
+  if (hue < ((HLSMAX*2)/3))
+    return(n1+(((ssize_t) (n2-n1)*(((HLSMAX*2)/3)-hue)+(HLSMAX/12))/(HLSMAX/6)));
+  return(n1);
 }
 
 static int hls_to_rgb(int hue, int lum, int sat)
 {
-    int R, G, B;
-    int Magic1, Magic2;
-    const int RGBMAX = 255;
-    const int HLSMAX = 100;
+  const int
+    HLSMAX = 100,
+    RGBMAX = 255;
 
-    if (sat == 0) {
-        R = G = B = (lum * RGBMAX) / HLSMAX;
-    } else {
-        if (lum <= (HLSMAX / 2)) {
-            Magic2 = (int) (((ssize_t) lum * (HLSMAX + sat) + (HLSMAX / 2)) / HLSMAX);
-        } else {
-            Magic2 = (int) (lum + sat - (((ssize_t) lum * sat) + (HLSMAX / 2)) / HLSMAX);
-        }
-        Magic1 = 2 * lum - Magic2;
+  int
+    b,
+    g,
+    magic1,
+    magic2,
+    r;
 
-        R = (hue_to_rgb(Magic1, Magic2, hue + (HLSMAX / 3)) * RGBMAX + (HLSMAX / 2)) / HLSMAX;
-        G = (hue_to_rgb(Magic1, Magic2, hue) * RGBMAX + (HLSMAX / 2)) / HLSMAX;
-        B = (hue_to_rgb(Magic1, Magic2, hue - (HLSMAX / 3)) * RGBMAX + (HLSMAX/2)) / HLSMAX;
+  if (sat == 0)
+    r=g=b=(lum*RGBMAX)/HLSMAX;
+  else
+    {
+      if (lum <= (HLSMAX / 2))
+        magic2=(int) (((ssize_t) lum*((ssize_t) HLSMAX+sat)+(HLSMAX/2))/HLSMAX);
+      else
+        magic2=(int) (lum+sat-(((ssize_t) lum*sat)+(HLSMAX/2))/HLSMAX);
+      magic1=2*lum-magic2;
+      r=(hue_to_rgb(magic1,magic2,(ssize_t) hue+(HLSMAX/3))*RGBMAX+(HLSMAX/2))/
+        HLSMAX;
+      g=(hue_to_rgb(magic1,magic2,hue)*RGBMAX+(ssize_t) (HLSMAX/2))/HLSMAX;
+      b=(hue_to_rgb(magic1,magic2,(ssize_t) hue-(HLSMAX/3))*RGBMAX+(HLSMAX/2))/
+        HLSMAX;
     }
-    return SIXEL_RGB(R, G, B);
+  return(SIXEL_RGB(r,g,b));
 }
 
 static unsigned char *get_params(unsigned char *p, int *param, int *len)
 {
-    int n;
+  int
+    n;
 
-    *len = 0;
-    while (*p != '\0') {
-        while (*p == ' ' || *p == '\t') {
-            p++;
+  *len=0;
+  while (*p != '\0')
+  {
+    while ((*p == ' ') || (*p == '\t'))
+      p++;
+    if (isdigit((int) ((unsigned char) *p)))
+      {
+        for (n = 0; isdigit((int) ((unsigned char) *p)); p++)
+        {
+          if (n <= (INT_MAX/10))
+            n=(int) ((ssize_t) n*10+(*p-'0'));
         }
-        if (isdigit((int) ((unsigned char) *p))) {
-            for (n = 0; isdigit((int) ((unsigned char) *p)); p++) {
-                if (n <= (INT_MAX/10))
-                  n = (int) ((ssize_t) n * 10 + (*p - '0'));
-            }
-            if (*len < 10) {
-                param[(*len)++] = n;
-            }
-            while (*p == ' ' || *p == '\t') {
-                p++;
-            }
-            if (*p == ';') {
-                p++;
-            }
-        } else if (*p == ';') {
-            if (*len < 10) {
-                param[(*len)++] = 0;
-            }
-            p++;
-        } else
-            break;
-    }
-    return p;
+        if (*len < 10)
+          param[(*len)++]=n;
+        while (*p == ' ' || *p == '\t')
+          p++;
+        if (*p == ';')
+          p++;
+      }
+    else if (*p == ';')
+      {
+        if (*len < 10)
+          param[(*len)++]=0;
+        p++;
+      }
+    else
+      break;
+  }
+  return p;
 }
 
 /* convert sixel data into indexed pixel bytes and palette data */
-MagickBooleanType sixel_decode(Image *image,
-                               unsigned char              /* in */  *p,         /* sixel bytes */
-                               sixel_pixel_t              /* out */ **pixels,   /* decoded pixels */
-                               size_t                     /* out */ *pwidth,    /* image width */
-                               size_t                     /* out */ *pheight,   /* image height */
-                               unsigned char              /* out */ **palette,  /* ARGB palette */
-                               size_t                     /* out */ *ncolors,   /* palette size (<= SIXEL_PALETTE_MAX) */
-  ExceptionInfo *exception)
+static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
+  sixel_pixel_t **pixels,size_t *pwidth,size_t *pheight,
+  unsigned char **palette,size_t *ncolors,ExceptionInfo *exception)
 {
-    int n, i, r, g, b, sixel_vertical_mask, c;
-    int posision_x, posision_y;
-    int max_x, max_y;
-    int attributed_pan, attributed_pad;
-    int attributed_ph, attributed_pv;
-    int repeat_count, color_index, max_color_index = 2, background_color_index;
-    int param[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    int sixel_palet[SIXEL_PALETTE_MAX];
-    sixel_pixel_t *imbuf, *dmbuf;
-    int imsx, imsy;
-    int dmsx, dmsy;
-    int x, y;
-    size_t extent,offset;
+  int
+    attributed_pad,
+    attributed_pan,
+    attributed_ph,
+    attributed_pv,
+    b,
+    background_color_index,
+    c,
+    color_index,
+    dmsx,
+    dmsy,
+    g,
+    i,
+    imsx,
+    imsy,
+    n,
+    max_color_index,
+    max_x,
+    max_y,
+    param[10],
+    posision_x,
+    posision_y,
+    r,
+    repeat_count,
+    sixel_palet[SIXEL_PALETTE_MAX],
+    sixel_vertical_mask,
+    x,
+    y;
 
-    extent=strlen((char *) p);
-    posision_x = posision_y = 0;
-    max_x = max_y = 0;
-    attributed_pan = 2;
-    attributed_pad = 1;
-    attributed_ph = attributed_pv = 0;
-    repeat_count = 1;
-    color_index = 0;
-    background_color_index = 0;
+  sixel_pixel_t
+    *dmbuf,
+    *imbuf;
 
-    imsx = 2048;
-    imsy = 2048;
-    if (SetImageExtent(image,imsx,imsy,exception) == MagickFalse)
-      return(MagickFalse);
-    imbuf=(sixel_pixel_t *) AcquireQuantumMemory(imsx,imsy*
-      sizeof(sixel_pixel_t));
-    if (imbuf == NULL) {
-        return(MagickFalse);
+  size_t
+    extent,
+    offset;
+
+  extent=strlen((char *) p);
+  posision_x=posision_y=0;
+  max_x=max_y=0;
+  attributed_pan=2;
+  attributed_pad=1;
+  attributed_ph=attributed_pv=0;
+  repeat_count=1;
+  color_index=0;
+  background_color_index=0;
+  max_color_index=2;
+  memset(param,0,sizeof(param));
+  imsx=2048;
+  imsy=2048;
+  if (SetImageExtent(image,imsx,imsy,exception) == MagickFalse)
+    return(MagickFalse);
+  imbuf=(sixel_pixel_t *) AcquireQuantumMemory(imsx,imsy*sizeof(sixel_pixel_t));
+  if (imbuf == (sixel_pixel_t *) NULL)
+    return(MagickFalse);
+  for (n = 0; n < 16; n++)
+    sixel_palet[n]=sixel_default_color_table[n];
+  /* colors 16-231 are a 6x6x6 color cube */
+  for (r=0; r < 6; r++)
+  {
+    for (g=0; g < 6; g++)
+    {
+      for (b=0; b < 6; b++)
+      {
+        sixel_palet[n++]=SIXEL_RGB(r*51,g*51,b*51);
+      }
     }
-
-    for (n = 0; n < 16; n++) {
-        sixel_palet[n] = sixel_default_color_table[n];
-    }
-
-    /* colors 16-231 are a 6x6x6 color cube */
-    for (r = 0; r < 6; r++) {
-        for (g = 0; g < 6; g++) {
-            for (b = 0; b < 6; b++) {
-                sixel_palet[n++] = SIXEL_RGB(r * 51, g * 51, b * 51);
-            }
-        }
-    }
-    /* colors 232-255 are a grayscale ramp, intentionally leaving out */
-    for (i = 0; i < 24; i++) {
-        sixel_palet[n++] = SIXEL_RGB(i * 11, i * 11, i * 11);
-    }
-
-    for (; n < SIXEL_PALETTE_MAX; n++) {
-        sixel_palet[n] = SIXEL_RGB(255, 255, 255);
-    }
-
-    for (i = 0; i < imsx * imsy; i++) {
-        imbuf[i] = background_color_index;
-    }
-
-    while (*p != '\0') {
-        if ((p[0] == '\033' && p[1] == 'P') || *p == 0x90) {
-            if (*p == '\033') {
-                p++;
-            }
-
-            p = get_params(++p, param, &n);
-
-            if (*p == 'q') {
-                p++;
-
-                if (n > 0) {        /* Pn1 */
-                    switch(param[0]) {
-                    case 0:
-                    case 1:
-                        attributed_pad = 2;
-                        break;
-                    case 2:
-                        attributed_pad = 5;
-                        break;
-                    case 3:
-                        attributed_pad = 4;
-                        break;
-                    case 4:
-                        attributed_pad = 4;
-                        break;
-                    case 5:
-                        attributed_pad = 3;
-                        break;
-                    case 6:
-                        attributed_pad = 3;
-                        break;
-                    case 7:
-                        attributed_pad = 2;
-                        break;
-                    case 8:
-                        attributed_pad = 2;
-                        break;
-                    case 9:
-                        attributed_pad = 1;
-                        break;
-                    }
-                }
-
-                if (n > 2) {        /* Pn3 */
-                    if (param[2] == 0) {
-                        param[2] = 10;
-                    }
-                    attributed_pan = (int) (((ssize_t) attributed_pan * param[2]) / 10);
-                    attributed_pad = (int) (((ssize_t) attributed_pad * param[2]) / 10);
-                    if (attributed_pan <= 0) attributed_pan = 1;
-                    if (attributed_pad <= 0) attributed_pad = 1;
-                }
-            }
-
-        } else if ((p[0] == '\033' && p[1] == '\\') || *p == 0x9C) {
-            break;
-        } else if (*p == '"') {
-            /* DECGRA Set Raster Attributes " Pan; Pad; Ph; Pv */
-            p = get_params(++p, param, &n);
-
-            if (n > 0) attributed_pad = param[0];
-            if (n > 1) attributed_pan = param[1];
-            if (n > 2 && param[2] > 0) attributed_ph = param[2] & 0xffff;
-            if (n > 3 && param[3] > 0) attributed_pv = param[3] & 0xffff;
-
-            if (attributed_pan <= 0) attributed_pan = 1;
-            if (attributed_pad <= 0) attributed_pad = 1;
-
-            if (imsx < attributed_ph || imsy < attributed_pv) {
-                dmsx = imsx > attributed_ph ? imsx : attributed_ph;
-                dmsy = imsy > attributed_pv ? imsy : attributed_pv;
-                if (SetImageExtent(image,dmsx,dmsy,exception) == MagickFalse)
-                  break;
-                dmbuf = (sixel_pixel_t *) AcquireQuantumMemory(dmsx,dmsy*sizeof(sixel_pixel_t));
-                if (dmbuf == (sixel_pixel_t *) NULL) {
-                    imbuf = (sixel_pixel_t *) RelinquishMagickMemory(imbuf);
-                    return (MagickFalse);
-                }
-                (void) memset(dmbuf, background_color_index, (size_t) dmsx * dmsy * sizeof(sixel_pixel_t));
-                for (y = 0; y < imsy; ++y) {
-                    (void) memcpy(dmbuf + dmsx * y, imbuf + imsx * y, imsx * sizeof(sixel_pixel_t));
-                }
-                imbuf = (sixel_pixel_t *) RelinquishMagickMemory(imbuf);
-                imsx = dmsx;
-                imsy = dmsy;
-                imbuf = dmbuf;
-            }
-
-        } else if (*p == '!') {
-            /* DECGRI Graphics Repeat Introducer ! Pn Ch */
-            p = get_params(++p, param, &n);
-
-            if ((n > 0) && (param[0] > 0)) {
-                repeat_count = param[0];
-                if (repeat_count > (ssize_t) extent)
-                  break;
-            }
-
-        } else if (*p == '#') {
-            /* DECGCI Graphics Color Introducer # Pc; Pu; Px; Py; Pz */
-            p = get_params(++p, param, &n);
-
-            if (n > 0) {
-                if ((color_index = param[0]) < 0) {
-                    color_index = 0;
-                } else if (color_index >= SIXEL_PALETTE_MAX) {
-                    color_index = SIXEL_PALETTE_MAX - 1;
-                }
-            }
-
-            if (n > 4) {
-                if (param[1] == 1) {            /* HLS */
-                    if (param[2] > 360) param[2] = 360;
-                    if (param[3] > 100) param[3] = 100;
-                    if (param[4] > 100) param[4] = 100;
-                    sixel_palet[color_index] = hls_to_rgb((int) ((ssize_t) param[2] * 100 / 360), param[3], param[4]);
-                } else if (param[1] == 2) {    /* RGB */
-                    if (param[2] > 100) param[2] = 100;
-                    if (param[3] > 100) param[3] = 100;
-                    if (param[4] > 100) param[4] = 100;
-                    sixel_palet[color_index] = SIXEL_XRGB(param[2], param[3], param[4]);
-                }
-            }
-
-        } else if (*p == '$') {
-            /* DECGCR Graphics Carriage Return */
-            p++;
-            posision_x = 0;
-            repeat_count = 1;
-
-        } else if (*p == '-') {
-            /* DECGNL Graphics Next Line */
-            p++;
-            posision_x  = 0;
-            posision_y += 6;
-            repeat_count = 1;
-
-        } else if (*p >= '?' && *p <= '\177') {
-            if (imsx < (posision_x + repeat_count) || imsy < (posision_y + 6)) {
-                int nx = imsx * 2;
-                int ny = imsy * 2;
-
-                while (nx < (posision_x + repeat_count) || ny < (posision_y + 6)) {
-                    nx *= 2;
-                    ny *= 2;
-                }
-
-                dmsx = nx;
-                dmsy = ny;
-                if (SetImageExtent(image,dmsx,dmsy,exception) == MagickFalse)
-                  break;
-                dmbuf = (sixel_pixel_t *) AcquireQuantumMemory(dmsx, dmsy*sizeof(sixel_pixel_t));
-                if (dmbuf == (sixel_pixel_t *) NULL) {
-                    imbuf = (sixel_pixel_t *) RelinquishMagickMemory(imbuf);
-                    return (MagickFalse);
-                }
-                (void) memset(dmbuf, background_color_index, (size_t) dmsx * dmsy * sizeof(sixel_pixel_t));
-                for (y = 0; y < imsy; ++y) {
-                    (void) memcpy(dmbuf + dmsx * y, imbuf + imsx * y, imsx * sizeof(sixel_pixel_t));
-                }
-                imbuf = (sixel_pixel_t *) RelinquishMagickMemory(imbuf);
-                imsx = dmsx;
-                imsy = dmsy;
-                imbuf = dmbuf;
-            }
-
-            if (color_index > max_color_index) {
-                max_color_index = color_index;
-            }
-            if ((b = *(p++) - '?') == 0) {
-                posision_x += repeat_count;
-
-            } else {
-                sixel_vertical_mask = 0x01;
-
-                if (repeat_count <= 1) {
-                    for (i = 0; i < 6; i++) {
-                        if ((b & sixel_vertical_mask) != 0) {
-                            offset=(size_t) imsx * (posision_y + i) + posision_x;
-                            if (offset >= (size_t) imsx * imsy)
-                              {
-                                imbuf = (sixel_pixel_t *) RelinquishMagickMemory(imbuf);
-                                return (MagickFalse);
-                              }
-                            imbuf[offset] = color_index;
-                            if (max_x < posision_x) {
-                                max_x = posision_x;
-                            }
-                            if (max_y < (posision_y + i)) {
-                                max_y = posision_y + i;
-                            }
-                        }
-                        sixel_vertical_mask <<= 1;
-                    }
-                    posision_x += 1;
-
-                } else { /* repeat_count > 1 */
-                    for (i = 0; i < 6; i++) {
-                        if ((b & sixel_vertical_mask) != 0) {
-                            c = sixel_vertical_mask << 1;
-                            for (n = 1; (i + n) < 6; n++) {
-                                if ((b & c) == 0) {
-                                    break;
-                                }
-                                c <<= 1;
-                            }
-                            for (y = posision_y + i; y < posision_y + i + n; ++y) {
-                                offset=(size_t) imsx * y + posision_x;
-                                if (offset + repeat_count >= (size_t) imsx * imsy)
-                                  {
-                                    imbuf = (sixel_pixel_t *) RelinquishMagickMemory(imbuf);
-                                    return (MagickFalse);
-                                  }
-                                for (x = 0; x < repeat_count; x++) {
-                                    imbuf[offset+x] = color_index;
-                                }
-                            }
-                            if (max_x < (posision_x + repeat_count - 1)) {
-                                max_x = posision_x + repeat_count - 1;
-                            }
-                            if (max_y < (posision_y + i + n - 1)) {
-                                max_y = posision_y + i + n - 1;
-                            }
-
-                            i += (n - 1);
-                            sixel_vertical_mask <<= (n - 1);
-                        }
-                        sixel_vertical_mask <<= 1;
-                    }
-                    posision_x += repeat_count;
-                }
-            }
-            repeat_count = 1;
-        } else {
-            p++;
-        }
-    }
-
-    if (++max_x < attributed_ph) {
-        max_x = attributed_ph;
-    }
-    if (++max_y < attributed_pv) {
-        max_y = attributed_pv;
-    }
-
-    if (imsx > max_x || imsy > max_y) {
-        dmsx = max_x;
-        dmsy = max_y;
-        if (SetImageExtent(image,dmsx,dmsy,exception) == MagickFalse)
+  }
+  /* colors 232-255 are a grayscale ramp, intentionally leaving out */
+  for (i=0; i < 24; i++)
+    sixel_palet[n++]=SIXEL_RGB(i*11,i*11,i*11);
+  for (; n < SIXEL_PALETTE_MAX; n++)
+    sixel_palet[n]=SIXEL_RGB(255,255,255);
+  for (i = 0; i < imsx * imsy; i++)
+    imbuf[i]=background_color_index;
+  while (*p != '\0')
+  {
+    if ((p[0] == '\033' && p[1] == 'P') || (*p == 0x90))
+      {
+        if (*p == '\033')
+          p++;
+        p=get_params(++p,param,&n);
+        if (*p == 'q')
           {
-            imbuf = (sixel_pixel_t *) RelinquishMagickMemory(imbuf);
-            return (MagickFalse);
+            p++;
+            if (n > 0)
+              {
+                /* Pn1 */
+                switch(param[0])
+                {
+                  case 0:
+                  case 1:
+                    attributed_pad = 2;
+                    break;
+                  case 2:
+                    attributed_pad = 5;
+                    break;
+                  case 3:
+                    attributed_pad = 4;
+                    break;
+                  case 4:
+                    attributed_pad = 4;
+                    break;
+                  case 5:
+                    attributed_pad = 3;
+                    break;
+                  case 6:
+                    attributed_pad = 3;
+                    break;
+                  case 7:
+                    attributed_pad = 2;
+                    break;
+                  case 8:
+                    attributed_pad = 2;
+                    break;
+                  case 9:
+                    attributed_pad = 1;
+                    break;
+                }
+              }
+            if (n > 2)
+              {
+                /* Pn3 */
+                if (param[2] == 0)
+                  param[2]=10;
+                attributed_pan=(int) (((ssize_t) attributed_pan*param[2])/10);
+                attributed_pad=(int) (((ssize_t) attributed_pad*param[2])/10);
+                if (attributed_pan <= 0)
+                  attributed_pan=1;
+                if (attributed_pad <= 0)
+                  attributed_pad=1;
+              }
           }
-        if ((dmbuf = (sixel_pixel_t *) AcquireQuantumMemory(dmsx,dmsy*sizeof(sixel_pixel_t))) == NULL) {
+      }
+    else if ((p[0] == '\033' && p[1] == '\\') || (*p == 0x9C))
+      break;
+    else if (*p == '"')
+      {
+        /* DECGRA Set Raster Attributes " Pan; Pad; Ph; Pv */
+        p=get_params(++p,param,&n);
+        if (n > 0)
+          attributed_pad=param[0];
+        if (n > 1)
+          attributed_pan=param[1];
+        if ((n > 2) && (param[2] > 0))
+          attributed_ph=param[2]&0xffff;
+        if ((n > 3) && (param[3] > 0))
+          attributed_pv=param[3]&0xffff;
+        if (attributed_pan <= 0)
+          attributed_pan=1;
+        if (attributed_pad <= 0)
+          attributed_pad=1;
+        if ((imsx < attributed_ph) || (imsy < attributed_pv))
+          {
+            dmsx=imsx > attributed_ph ? imsx : attributed_ph;
+            dmsy=imsy > attributed_pv ? imsy : attributed_pv;
+            if (SetImageExtent(image,dmsx,dmsy,exception) == MagickFalse)
+              break;
+            dmbuf=(sixel_pixel_t *) AcquireQuantumMemory(dmsx,dmsy*
+              sizeof(sixel_pixel_t));
+            if (dmbuf == (sixel_pixel_t *) NULL)
+              {
+                imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+                return(MagickFalse);
+              }
+            (void) memset(dmbuf,background_color_index,(size_t) dmsx*dmsy*
+              sizeof(sixel_pixel_t));
+            for (y = 0; y < imsy; ++y)
+              (void) memcpy(dmbuf+dmsx*y,imbuf+imsx*y,imsx*
+                sizeof(sixel_pixel_t));
+            imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+            imsx=dmsx;
+            imsy=dmsy;
+            imbuf=dmbuf;
+          }
+      }
+    else if (*p == '!')
+      {
+        /* DECGRI Graphics Repeat Introducer ! Pn Ch */
+        p=get_params(++p,param,&n);
+        if ((n > 0) && (param[0] > 0))
+          {
+            repeat_count=param[0];
+            if (repeat_count > (ssize_t) extent)
+              break;
+          }
+      }
+    else if (*p == '#')
+      {
+        /* DECGCI Graphics Color Introducer # Pc; Pu; Px; Py; Pz */
+        p=get_params(++p,param,&n);
+
+        if (n > 0)
+          {
+            if ((color_index = param[0]) < 0)
+              color_index=0;
+            else if (color_index >= SIXEL_PALETTE_MAX)
+              color_index=SIXEL_PALETTE_MAX-1;
+          }
+        if (n > 4)
+          {
+            if (param[1] == 1)
+              {
+                /* HLS */
+                if (param[2] > 360)
+                  param[2]=360;
+                if (param[3] > 100)
+                  param[3]=100;
+                if (param[4] > 100)
+                  param[4]=100;
+                sixel_palet[color_index]=hls_to_rgb((int) ((ssize_t) param[2]*
+                  100/360),param[3],param[4]);
+              }
+            else if (param[1] == 2)
+              {
+                /* RGB */
+                if (param[2] > 100)
+                  param[2]=100;
+                if (param[3] > 100)
+                  param[3]=100;
+                if (param[4] > 100)
+                  param[4]=100;
+                sixel_palet[color_index]=SIXEL_XRGB(param[2],param[3],
+                  param[4]);
+              }
+          }
+      }
+    else if (*p == '$')
+      {
+        /* DECGCR Graphics Carriage Return */
+        p++;
+        posision_x=0;
+        repeat_count=1;
+      }
+    else if (*p == '-')
+      {
+        /* DECGNL Graphics Next Line */
+        p++;
+        posision_x=0;
+        posision_y+=6;
+        repeat_count=1;
+      }
+    else if ((*p >= '?') && (*p <= '\177'))
+      {
+        if ((imsx < (posision_x + repeat_count)) || (imsy < (posision_y + 6)))
+          {
+            int
+              nx,
+              ny;
+
+            nx=imsx*2;
+            ny=imsy*2;
+
+            while ((nx < (posision_x + repeat_count)) || (ny < (posision_y + 6)))
+            {
+              nx *= 2;
+              ny *= 2;
+            }
+
+            dmsx=nx;
+            dmsy=ny;
+            if (SetImageExtent(image,dmsx,dmsy,exception) == MagickFalse)
+              break;
+            dmbuf=(sixel_pixel_t *) AcquireQuantumMemory(dmsx,dmsy*
+              sizeof(sixel_pixel_t));
+            if (dmbuf == (sixel_pixel_t *) NULL)
+              {
+                imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+                return(MagickFalse);
+              }
+            (void) memset(dmbuf,background_color_index,(size_t) dmsx*dmsy*
+              sizeof(sixel_pixel_t));
+            for (y = 0; y < imsy; ++y)
+              (void) memcpy(dmbuf+dmsx*y,imbuf+imsx*y,imsx*
+                sizeof(sixel_pixel_t));
             imbuf = (sixel_pixel_t *) RelinquishMagickMemory(imbuf);
-            return (MagickFalse);
+            imsx=dmsx;
+            imsy=dmsy;
+            imbuf=dmbuf;
+          }
+        if (color_index > max_color_index)
+          max_color_index = color_index;
+        if ((b = *(p++) - '?') == 0)
+          posision_x += repeat_count;
+        else
+          {
+            sixel_vertical_mask=0x01;
+            if (repeat_count <= 1)
+              {
+                for (i = 0; i < 6; i++)
+                {
+                  if ((b & sixel_vertical_mask) != 0)
+                    {
+                      offset=(size_t) imsx*(posision_y+i)+posision_x;
+                      if (offset >= (size_t) imsx * imsy)
+                        {
+                          imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+                          return(MagickFalse);
+                        }
+                      imbuf[offset]=color_index;
+                      if (max_x < posision_x)
+                          max_x = posision_x;
+                      if (max_y < (posision_y + i))
+                          max_y = posision_y + i;
+                    }
+                  sixel_vertical_mask <<= 1;
+                }
+                posision_x += 1;
+              }
+            else  /* repeat_count > 1 */
+              {
+                for (i = 0; i < 6; i++)
+                {
+                  if ((b & sixel_vertical_mask) != 0)
+                    {
+                      c=sixel_vertical_mask << 1;
+                      for (n=1; (i+n) < 6; n++)
+                      {
+                        if ((b & c) == 0)
+                          break;
+                        c <<= 1;
+                      }
+                      for (y = posision_y + i; y < posision_y + i + n; ++y)
+                      {
+                        offset=(size_t) imsx*y+posision_x;
+                        if (offset+repeat_count >= (size_t) imsx*imsy)
+                          {
+                            imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+                            return(MagickFalse);
+                          }
+                        for (x = 0; x < repeat_count; x++)
+                          imbuf[offset+x] = color_index;
+                      }
+                      if (max_x < (posision_x+repeat_count-1))
+                        max_x = posision_x+repeat_count-1;
+                      if (max_y < (posision_y+i+n-1))
+                        max_y = posision_y+i+n-1;
+                      i+=(n-1);
+                      sixel_vertical_mask <<= (n-1);
+                    }
+                  sixel_vertical_mask <<= 1;
+                }
+                posision_x += repeat_count;
+              }
+          }
+          repeat_count = 1;
+      }
+    else
+      p++;
+  }
+  if (++max_x < attributed_ph)
+    max_x = attributed_ph;
+  if (++max_y < attributed_pv)
+    max_y = attributed_pv;
+  if ((imsx > max_x) || (imsy > max_y))
+    {
+      dmsx=max_x;
+      dmsy=max_y;
+      if (SetImageExtent(image,dmsx,dmsy,exception) == MagickFalse)
+        {
+          imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+          return(MagickFalse);
         }
-        for (y = 0; y < dmsy; ++y) {
-            (void) memcpy(dmbuf + dmsx * y, imbuf + imsx * y, dmsx * sizeof(sixel_pixel_t));
+      dmbuf=(sixel_pixel_t *) AcquireQuantumMemory(dmsx,dmsy*
+        sizeof(sixel_pixel_t));
+      if (dmbuf == (sixel_pixel_t *) NULL)
+        {
+          imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+          return(MagickFalse);
         }
-        imbuf = (sixel_pixel_t *) RelinquishMagickMemory(imbuf);
-        imsx = dmsx;
-        imsy = dmsy;
-        imbuf = dmbuf;
+      for (y=0; y < dmsy; ++y)
+        (void) memcpy(dmbuf+dmsx*y,imbuf+imsx*y,dmsx*sizeof(sixel_pixel_t));
+      imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
+      imsx=dmsx;
+      imsy=dmsy;
+      imbuf=dmbuf;
     }
 
-    *pixels = imbuf;
-    *pwidth = imsx;
-    *pheight = imsy;
-    *ncolors = max_color_index + 1;
-    *palette = (unsigned char *) AcquireQuantumMemory(*ncolors,4);
-    if (*palette == (unsigned char *) NULL)
-      return(MagickFalse);
-    for (n = 0; n < (ssize_t) *ncolors; ++n) {
-        (*palette)[n * 4 + 0] = sixel_palet[n] >> 16 & 0xff;
-        (*palette)[n * 4 + 1] = sixel_palet[n] >> 8 & 0xff;
-        (*palette)[n * 4 + 2] = sixel_palet[n] & 0xff;
-        (*palette)[n * 4 + 3] = 0xff;
-    }
-    return(MagickTrue);
+  *pixels=imbuf;
+  *pwidth=imsx;
+  *pheight=imsy;
+  *ncolors=(size_t) max_color_index+1;
+  *palette=(unsigned char *) AcquireQuantumMemory(*ncolors,4);
+  if (*palette == (unsigned char *) NULL)
+    return(MagickFalse);
+  for (n = 0; n < (ssize_t) *ncolors; ++n)
+  {
+    (*palette)[n*4+0]=sixel_palet[n] >> 16 & 0xff;
+    (*palette)[n*4+1]=sixel_palet[n] >> 8 & 0xff;
+    (*palette)[n*4+2]=sixel_palet[n] & 0xff;
+    (*palette)[n*4+3]=0xff;
+  }
+  return(MagickTrue);
 }
 
-sixel_output_t *sixel_output_create(Image *image)
+static sixel_output_t *sixel_output_create(Image *image)
 {
-    sixel_output_t *output;
+  sixel_output_t
+    *output;
 
-    output = (sixel_output_t *) AcquireQuantumMemory(sizeof(sixel_output_t) + SIXEL_OUTPUT_PACKET_SIZE * 2, 1);
-    if (output == (sixel_output_t *) NULL)
-      return((sixel_output_t *) NULL);
-    output->has_8bit_control = 0;
-    output->save_pixel = 0;
-    output->save_count = 0;
-    output->active_palette = (-1);
-    output->node_top = NULL;
-    output->node_free = NULL;
-    output->image = image;
-    output->pos = 0;
-
-    return output;
+  output=(sixel_output_t *) AcquireMagickMemory(sizeof(sixel_output_t));
+  if (output == (sixel_output_t *) NULL)
+    return((sixel_output_t *) NULL);
+  output->has_8bit_control=0;
+  output->save_pixel=0;
+  output->save_count=0;
+  output->active_palette=(-1);
+  output->node_top=(sixel_node_t *) NULL;
+  output->node_free=(sixel_node_t *) NULL;
+  output->image=image;
+  output->pos=0;
+  return(output);
 }
 
 static void sixel_advance(sixel_output_t *context, int nwrite)
 {
-    if ((context->pos += nwrite) >= SIXEL_OUTPUT_PACKET_SIZE) {
-        WriteBlob(context->image,SIXEL_OUTPUT_PACKET_SIZE,context->buffer);
-        memmove(context->buffer,
-               context->buffer + SIXEL_OUTPUT_PACKET_SIZE,
-               (context->pos -= SIXEL_OUTPUT_PACKET_SIZE));
+  if ((context->pos += nwrite) >= SIXEL_OUTPUT_PACKET_SIZE)
+    {
+      WriteBlob(context->image,SIXEL_OUTPUT_PACKET_SIZE,context->buffer);
+      memmove(context->buffer,
+              context->buffer + SIXEL_OUTPUT_PACKET_SIZE,
+              (context->pos -= SIXEL_OUTPUT_PACKET_SIZE));
     }
 }
 
 static int sixel_put_flash(sixel_output_t *const context)
 {
-    int n;
-    int nwrite;
+  int
+    n,
+    nwrite;
 
-#if defined(USE_VT240)        /* VT240 Max 255 ? */
-    while (context->save_count > 255) {
-        nwrite = spritf((char *)context->buffer + context->pos, "!255%c", context->save_pixel);
-        if (nwrite <= 0) {
-            return (-1);
-        }
-        sixel_advance(context, nwrite);
-        context->save_count -= 255;
+  if (context->save_count > 3)
+    {
+      /* DECGRI Graphics Repeat Introducer ! Pn Ch */
+      nwrite=sprintf((char *) context->buffer+context->pos,"!%d%c",
+        context->save_count,context->save_pixel);
+      if (nwrite <= 0)
+        return (-1);
+      sixel_advance(context,nwrite);
     }
-#endif  /* defined(USE_VT240) */
-
-    if (context->save_count > 3) {
-        /* DECGRI Graphics Repeat Introducer ! Pn Ch */
-        nwrite = sprintf((char *)context->buffer + context->pos, "!%d%c", context->save_count, context->save_pixel);
-        if (nwrite <= 0) {
-            return (-1);
-        }
-        sixel_advance(context, nwrite);
-    } else {
-        for (n = 0; n < context->save_count; n++) {
-            context->buffer[context->pos] = (char)context->save_pixel;
-            sixel_advance(context, 1);
-        }
+  else
+    {
+      for (n = 0; n < context->save_count; n++)
+      {
+        context->buffer[context->pos]=(char)context->save_pixel;
+        sixel_advance(context,1);
+      }
     }
-
-    context->save_pixel = 0;
-    context->save_count = 0;
-
-    return 0;
+  context->save_pixel=0;
+  context->save_count=0;
+  return(0);
 }
 
-static void sixel_put_pixel(sixel_output_t *const context, int pix)
+static void sixel_put_pixel(sixel_output_t *const context,int pix)
 {
-    if (pix < 0 || pix > '?') {
-        pix = 0;
-    }
-
-    pix += '?';
-
-    if (pix == context->save_pixel) {
-        context->save_count++;
-    } else {
-        sixel_put_flash(context);
-        context->save_pixel = pix;
-        context->save_count = 1;
+  if ((pix < 0) || (pix > '?'))
+    pix=0;
+  pix+='?';
+  if (pix == context->save_pixel)
+    context->save_count++;
+  else
+    {
+      sixel_put_flash(context);
+      context->save_pixel=pix;
+      context->save_count=1;
     }
 }
 
-static void sixel_node_del(sixel_output_t *const context, sixel_node_t *np)
+static void sixel_node_del(sixel_output_t *const context,sixel_node_t *np)
 {
-    sixel_node_t *tp;
+  sixel_node_t
+    *tp;
 
-    if ((tp = context->node_top) == np) {
-        context->node_top = np->next;
+  if ((tp = context->node_top) == np)
+    context->node_top = np->next;
+  else
+    {
+      while (tp->next != (struct sixel_node *) NULL)
+      {
+        if (tp->next == np)
+          {
+            tp->next=np->next;
+            break;
+          }
+        tp=tp->next;
+      }
     }
+  np->next=context->node_free;
+  context->node_free=np;
+}
 
-    else {
-        while (tp->next != NULL) {
-            if (tp->next == np) {
-                tp->next = np->next;
-                break;
-            }
-            tp = tp->next;
+static int sixel_put_node(sixel_output_t *const context,int x,sixel_node_t *np,
+  int ncolors,int keycolor)
+{
+  int
+    nwrite;
+
+  if ((ncolors != 2) || (keycolor == -1))
+    {
+      /* designate palette index */
+      if (context->active_palette != np->color)
+        {
+          nwrite=sprintf((char *) context->buffer+context->pos,"#%d",
+            np->color);
+          sixel_advance(context,nwrite);
+          context->active_palette=np->color;
         }
     }
-
-    np->next = context->node_free;
-    context->node_free = np;
+  for (; x < np->left; x++)
+    sixel_put_pixel(context,0);
+  for (; x < np->right; x++)
+    sixel_put_pixel(context,np->map[x]);
+  sixel_put_flash(context);
+  return(x);
 }
 
-static int sixel_put_node(sixel_output_t *const context, int x,
-               sixel_node_t *np, int ncolors, int keycolor)
-{
-    int nwrite;
-
-    if (ncolors != 2 || keycolor == -1) {
-        /* designate palette index */
-        if (context->active_palette != np->color) {
-            nwrite = sprintf((char *)context->buffer + context->pos,
-                             "#%d", np->color);
-            sixel_advance(context, nwrite);
-            context->active_palette = np->color;
-        }
-    }
-
-    for (; x < np->left; x++) {
-        sixel_put_pixel(context, 0);
-    }
-
-    for (; x < np->right; x++) {
-        sixel_put_pixel(context, np->map[x]);
-    }
-
-    sixel_put_flash(context);
-
-    return x;
-}
-
-static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels, size_t width,size_t height,
-                  unsigned char *palette, size_t ncolors, int keycolor,
-                  sixel_output_t *context)
+static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
+  size_t height,unsigned char *palette,size_t ncolors,int keycolor,
+  sixel_output_t *context)
 {
 #define RelinquishNodesAndMap \
-    while ((np = context->node_free) != NULL) { \
-        context->node_free = np->next; \
-        np=(sixel_node_t *) RelinquishMagickMemory(np); \
-    } \
-    map = (sixel_pixel_t *) RelinquishMagickMemory(map)
+  while ((np = context->node_free) != NULL) \
+  { \
+    context->node_free=np->next; \
+    np=(sixel_node_t *) RelinquishMagickMemory(np); \
+  } \
+  map=(sixel_pixel_t *) RelinquishMagickMemory(map)
 
-    int x, y, i, n, c;
-    int left, right;
-    int pix;
-    sixel_pixel_t *map;
-    sixel_node_t *np, *tp, top;
-    int nwrite;
-    size_t len;
+  int
+    c,
+    i,
+    left,
+    pix,
+    n,
+    nwrite,
+    right,
+    x,
+    y;
 
-    context->pos = 0;
+  sixel_pixel_t
+    *map;
 
-    if (ncolors < 1) {
-        return (MagickFalse);
+  sixel_node_t
+    *np,
+    top,
+    *tp;
+
+  size_t
+    len;
+
+  context->pos = 0;
+  if (ncolors < 1)
+    return(MagickFalse);
+  len=ncolors*width;
+  context->active_palette=(-1);
+  map=(sixel_pixel_t *) AcquireQuantumMemory(len,sizeof(sixel_pixel_t));
+  if (map == (sixel_pixel_t *) NULL)
+    return (MagickFalse);
+  (void) memset(map,0,len*sizeof(sixel_pixel_t));
+  if (context->has_8bit_control)
+    nwrite=sprintf((char *)context->buffer,"\x90" "0;0;0" "q");
+  else
+    nwrite=sprintf((char *)context->buffer,"\x1bP" "0;0;0" "q");
+  if (nwrite <= 0)
+    return(MagickFalse);
+  sixel_advance(context,nwrite);
+  nwrite=sprintf((char *)context->buffer+context->pos,"\"1;1;%d;%d",
+    (int) width,(int) height);
+  if (nwrite <= 0)
+    {
+      RelinquishNodesAndMap;
+      return(MagickFalse);
     }
-    len = ncolors * width;
-    context->active_palette = (-1);
-
-    if ((map = (sixel_pixel_t *)AcquireQuantumMemory(len, sizeof(sixel_pixel_t))) == NULL) {
-        return (MagickFalse);
-    }
-    (void) memset(map, 0, len * sizeof(sixel_pixel_t));
-
-    if (context->has_8bit_control) {
-        nwrite = sprintf((char *)context->buffer, "\x90" "0;0;0" "q");
-    } else {
-        nwrite = sprintf((char *)context->buffer, "\x1bP" "0;0;0" "q");
-    }
-    if (nwrite <= 0) {
-        return (MagickFalse);
-    }
-    sixel_advance(context, nwrite);
-    nwrite = sprintf((char *)context->buffer + context->pos, "\"1;1;%d;%d", (int) width, (int) height);
-    if (nwrite <= 0) {
-        RelinquishNodesAndMap;
-        return (MagickFalse);
-    }
-    sixel_advance(context, nwrite);
-
-    if (ncolors != 2 || keycolor == -1) {
-        for (n = 0; n < (ssize_t) ncolors; n++) {
-            /* DECGCI Graphics Color Introducer  # Pc ; Pu; Px; Py; Pz */
-            nwrite = sprintf((char *)context->buffer + context->pos, "#%d;2;%d;%d;%d",
-                             n,
-                             (palette[n * 3 + 0] * 100 + 127) / 255,
-                             (palette[n * 3 + 1] * 100 + 127) / 255,
-                             (palette[n * 3 + 2] * 100 + 127) / 255);
-            if (nwrite <= 0) {
-                RelinquishNodesAndMap;
-                return (MagickFalse);
-            }
-            sixel_advance(context, nwrite);
-            if (nwrite <= 0) {
-                RelinquishNodesAndMap;
-                return (MagickFalse);
-            }
-        }
-    }
-    for (y = i = 0; y < (ssize_t) height; y++) {
-        for (x = 0; x < (ssize_t) width; x++) {
-            pix = pixels[y * width + x];
-            if (pix >= 0 && pix < (ssize_t) ncolors && pix != keycolor) {
-                map[pix * width + x] |= (1 << i);
-            }
-        }
-
-        if (++i < 6 && (y + 1) < (ssize_t) height) {
-            continue;
-        }
-
-        for (c = 0; c < (ssize_t) ncolors; c++) {
-            for (left = 0; left < (ssize_t) width; left++) {
-                if (*(map + c * width + left) == 0) {
-                    continue;
-                }
-
-                for (right = left + 1; right < (ssize_t) width; right++) {
-                    if (*(map + c * width + right) != 0) {
-                        continue;
-                    }
-
-                    for (n = 1; (right + n) < (ssize_t) width; n++) {
-                        if (*(map + c * width + right + n) != 0) {
-                            break;
-                        }
-                    }
-
-                    if (n >= 10 || right + n >= (ssize_t) width) {
-                        break;
-                    }
-                    right = right + n - 1;
-                }
-
-                if ((np = context->node_free) != NULL) {
-                    context->node_free = np->next;
-                } else if ((np = (sixel_node_t *)AcquireMagickMemory(sizeof(sixel_node_t))) == NULL) {
-                    RelinquishNodesAndMap;
-                    return (MagickFalse);
-                }
-
-                np->color = c;
-                np->left = left;
-                np->right = right;
-                np->map = map + c * width;
-
-                top.next = context->node_top;
-                tp = &top;
-
-                while (tp->next != NULL) {
-                    if (np->left < tp->next->left) {
-                        break;
-                    }
-                    if (np->left == tp->next->left && np->right > tp->next->right) {
-                        break;
-                    }
-                    tp = tp->next;
-                }
-
-                np->next = tp->next;
-                tp->next = np;
-                context->node_top = top.next;
-
-                left = right - 1;
-            }
-
-        }
-
-        for (x = 0; (np = context->node_top) != NULL;) {
-            if (x > np->left) {
-                /* DECGCR Graphics Carriage Return */
-                context->buffer[context->pos] = '$';
-                sixel_advance(context, 1);
-                x = 0;
-            }
-
-            x = sixel_put_node(context, x, np, (int) ncolors, keycolor);
-            sixel_node_del(context, np);
-            np = context->node_top;
-
-            while (np != NULL) {
-                if (np->left < x) {
-                    np = np->next;
-                    continue;
-                }
-
-                x = sixel_put_node(context, x, np, (int) ncolors, keycolor);
-                sixel_node_del(context, np);
-                np = context->node_top;
-            }
-        }
-
-        /* DECGNL Graphics Next Line */
-        context->buffer[context->pos] = '-';
-        sixel_advance(context, 1);
-        if (nwrite <= 0) {
+  sixel_advance(context,nwrite);
+  if ((ncolors != 2) || (keycolor == -1))
+    for (n = 0; n < (ssize_t) ncolors; n++)
+    {
+        /* DECGCI Graphics Color Introducer  # Pc ; Pu; Px; Py; Pz */
+        nwrite=sprintf((char *)context->buffer+context->pos,
+          "#%d;2;%d;%d;%d",n,(palette[n*3+0]*100+127)/255,
+          (palette[n*3+1]*100+127)/255,(palette[n*3+2]*100+127)/255);
+        if (nwrite <= 0)
+          {
+            RelinquishNodesAndMap;
+            return(MagickFalse);
+          }
+        sixel_advance(context,nwrite);
+        if (nwrite <= 0)
+          {
             RelinquishNodesAndMap;
             return (MagickFalse);
+          }
+    }
+  for (y=i=0; y < (int) height; y++)
+  {
+    for (x=0; x < (int) width; x++)
+    {
+      pix=pixels[y*width+x];
+      if ((pix >= 0) && (pix < (int) ncolors) && (pix != keycolor))
+        map[pix*width+x]|=(1 << i);
+    }
+    if (++i < 6 && (y + 1) < (int) height)
+      continue;
+    for (c=0; c < (int) ncolors; c++)
+    {
+      for (left=0; left < (int) width; left++)
+      {
+        if (*(map+c*width+left) == 0)
+          continue;
+        for (right=left+1; right < (int) width; right++)
+        {
+          if (*(map+c*width+right) != 0)
+            continue;
+          for (n = 1; (right+n) < (int) width; n++)
+          {
+            if (*(map+c*width+right+n) != 0)
+              break;
+          }
+          if ((n >= 10) || (right+n >= (int) width))
+            break;
+          right=right+n-1;
         }
 
-        i = 0;
-        (void) memset(map, 0, len * sizeof(sixel_pixel_t));
+        if ((np = context->node_free) != (sixel_node_t *) NULL)
+          context->node_free=np->next;
+        else
+          if ((np = (sixel_node_t *) AcquireMagickMemory(
+                sizeof(sixel_node_t))) == (sixel_node_t *) NULL)
+            {
+              RelinquishNodesAndMap;
+              return(MagickFalse);
+            }
+        np->color=c;
+        np->left=left;
+        np->right=right;
+        np->map=map+c*width;
+        top.next=context->node_top;
+        tp=&top;
+        while (tp->next != (struct sixel_node *) NULL)
+        {
+          if (np->left < tp->next->left)
+            break;
+          if ((np->left == tp->next->left) && (np->right > tp->next->right))
+              break;
+          tp=tp->next;
+        }
+        np->next=tp->next;
+        tp->next=np;
+        context->node_top=top.next;
+        left=right-1;
+      }
     }
-
-    if (context->has_8bit_control) {
-        context->buffer[context->pos] = 0x9c;
-        sixel_advance(context, 1);
-    } else {
-        context->buffer[context->pos] = 0x1b;
-        context->buffer[context->pos + 1] = '\\';
-        sixel_advance(context, 2);
+    for (x = 0; (np = context->node_top) != (sixel_node_t *) NULL;)
+    {
+      if (x > np->left)
+        {
+          /* DECGCR Graphics Carriage Return */
+          context->buffer[context->pos]='$';
+          sixel_advance(context,1);
+          x=0;
+        }
+      x=sixel_put_node(context,x,np,(int) ncolors,keycolor);
+      sixel_node_del(context,np);
+      np=context->node_top;
+      while (np != (sixel_node_t *) NULL)
+      {
+        if (np->left < x)
+          {
+            np=np->next;
+            continue;
+          }
+          x=sixel_put_node(context,x,np,(int) ncolors,keycolor);
+          sixel_node_del(context,np);
+          np=context->node_top;
+      }
     }
-    if (nwrite <= 0) {
+    /* DECGNL Graphics Next Line */
+    context->buffer[context->pos]='-';
+    sixel_advance(context,1);
+    if (nwrite <= 0)
+      {
         RelinquishNodesAndMap;
-        return (MagickFalse);
+        return(MagickFalse);
+      }
+    i=0;
+    (void) memset(map,0,len*sizeof(sixel_pixel_t));
+  }
+  if (context->has_8bit_control)
+    {
+      context->buffer[context->pos]=0x9c;
+      sixel_advance(context,1);
     }
-
-    /* flush buffer */
-    if (context->pos > 0) {
-        WriteBlob(context->image,context->pos,context->buffer);
+  else
+    {
+      context->buffer[context->pos]=0x1b;
+      context->buffer[context->pos+1]='\\';
+      sixel_advance(context,2);
     }
-
-    RelinquishNodesAndMap;
-
-    return(MagickTrue);
+  if (nwrite <= 0)
+    {
+      RelinquishNodesAndMap;
+      return(MagickFalse);
+    }
+  /* flush buffer */
+  if (context->pos > 0)
+    WriteBlob(context->image,context->pos,context->buffer);
+  RelinquishNodesAndMap;
+  return(MagickTrue);
 }
 
 /*
@@ -1063,7 +1105,9 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     Decode SIXEL
   */
   sixel_pixels=(sixel_pixel_t *) NULL;
-  if (sixel_decode(image,(unsigned char *) sixel_buffer,&sixel_pixels,&image->columns,&image->rows,&sixel_palette,&image->colors,exception) == MagickFalse)
+  if (sixel_decode(image,(unsigned char *) sixel_buffer,&sixel_pixels,
+    &image->columns,&image->rows,&sixel_palette,&image->colors,
+    exception) == MagickFalse)
     {
       sixel_buffer=(char *) RelinquishMagickMemory(sixel_buffer);
       if (sixel_pixels != (sixel_pixel_t *) NULL)
@@ -1080,7 +1124,6 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       sixel_palette=(unsigned char *) RelinquishMagickMemory(sixel_palette);
       return(DestroyImageList(image));
     }
-
   if (AcquireImageColormap(image,image->colors, exception) == MagickFalse)
     {
       sixel_pixels=(sixel_pixel_t *) RelinquishMagickMemory(sixel_pixels);
@@ -1092,7 +1135,6 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     image->colormap[i].green = ScaleCharToQuantum(sixel_palette[i * 4 + 1]);
     image->colormap[i].blue  = ScaleCharToQuantum(sixel_palette[i * 4 + 2]);
   }
-
   j=0;
   if (image_info->ping == MagickFalse)
     {
@@ -1107,7 +1149,11 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           j=(ssize_t) sixel_pixels[y * image->columns + x];
+          j=ConstrainColormapIndex(image,j,exception);
           SetPixelIndex(image,j,q);
+          SetPixelRed(image,image->colormap[j].red,q);
+          SetPixelGreen(image,image->colormap[j].green,q);
+          SetPixelBlue(image,image->colormap[j].blue,q);
           q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -1328,11 +1374,10 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
     sixel_palette[3*i+1]=ScaleQuantumToChar(image->colormap[i].green);
     sixel_palette[3*i+2]=ScaleQuantumToChar(image->colormap[i].blue);
   }
-
   /*
     Define SIXEL pixels.
   */
-  output = sixel_output_create(image);
+  output=sixel_output_create(image);
   if (output == (sixel_output_t *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   sixel_pixels=(sixel_pixel_t *) AcquireQuantumMemory(image->columns,

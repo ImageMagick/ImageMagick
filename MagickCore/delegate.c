@@ -16,7 +16,7 @@
 %                               October 1998                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -153,8 +153,8 @@ static const char
     "  <delegate decode=\"xps:cmyk\" stealth=\"True\" command=\"&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=bmpsep8&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;\"/>"
     "  <delegate decode=\"xps:color\" stealth=\"True\" command=\"&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ppmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;\"/>"
     "  <delegate decode=\"xps:mono\" stealth=\"True\" command=\"&quot;gxps&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;\"/>"
-    "  <delegate decode=\"mpeg:decode\" command=\"&quot;ffmpeg&quot; -v -1 -i &quot;%i&quot; -vframes %S -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%u&quot;\"/>"
-    "  <delegate encode=\"mpeg:encode\" stealth=\"True\" command=\"&quot;ffmpeg&quot; -v -1 -i &quot;%M%%d.jpg&quot; -plays %I &quot;%u.%m&quot; 2&gt; &quot;%u&quot;\"/>"
+    "  <delegate decode=\"video:decode\" command=\"&quot;ffmpeg&quot; -nostdin -loglevel error -i &quot;%s&quot; -an -f rawvideo -y %s &quot;%s&quot;\"/>"
+    "  <delegate encode=\"video:encode\" stealth=\"True\" command=\"&quot;ffmpeg&quot; -nostdin -loglevel error -i &quot;%s%%d.%s&quot; %s &quot;%s.%s&quot;\"/>"
     "</delegatemap>";
 
 /*
@@ -206,11 +206,7 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
   LinkedListInfo
     *cache;
 
-  MagickStatusType
-    status;
-
   cache=NewLinkedList(0);
-  status=MagickTrue;
 #if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   {
     const StringInfo
@@ -223,15 +219,17 @@ static LinkedListInfo *AcquireDelegateCache(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadDelegateCache(cache,(const char *)
+      (void) LoadDelegateCache(cache,(const char *)
         GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
   }
+#else
+  magick_unreferenced(filename);
 #endif
   if (IsLinkedListEmpty(cache) != MagickFalse)
-    status&=LoadDelegateCache(cache,DelegateMap,"built-in",0,exception);
+    (void) LoadDelegateCache(cache,DelegateMap,"built-in",0,exception);
   return(cache);
 }
 
@@ -1721,14 +1719,16 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   rights=ExecutePolicyRights;
-  if (IsRightsAuthorized(DelegatePolicyDomain,rights,decode) == MagickFalse)
+  if ((decode != (const char *) NULL) &&
+      (IsRightsAuthorized(DelegatePolicyDomain,rights,decode) == MagickFalse))
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",decode);
       return(MagickFalse);
     }
-  if (IsRightsAuthorized(DelegatePolicyDomain,rights,encode) == MagickFalse)
+  if ((encode != (const char *) NULL) &&
+      (IsRightsAuthorized(DelegatePolicyDomain,rights,encode) == MagickFalse))
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
@@ -2218,6 +2218,8 @@ static MagickBooleanType LoadDelegateCache(LinkedListInfo *cache,
             (void) SubstituteString((char **) &commands,"&amp;","&");
             (void) SubstituteString((char **) &commands,"&gt;",">");
             (void) SubstituteString((char **) &commands,"&lt;","<");
+            if (delegate_info->commands != (char *) NULL)
+              delegate_info->commands=DestroyString(delegate_info->commands);
             delegate_info->commands=commands;
             break;
           }

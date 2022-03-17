@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
   
   You may not use this file except in compliance with the License.  You may
@@ -38,6 +38,28 @@ extern MagickPrivate ssize_t
   FormatLocaleStringList(char *magick_restrict,const size_t,
     const char *magick_restrict,va_list)
     magick_attribute((__format__ (__printf__,3,0)));
+
+static inline int LocaleToLowercase(const int c)
+{
+  if ((c == EOF) || (c != (unsigned char) c))
+    return(c);
+#if defined(MAGICKCORE_LOCALE_SUPPORT)
+  if (c_locale != (locale_t) NULL)
+    return(tolower_l((int) ((unsigned char) c),c_locale));
+#endif
+  return(tolower((int) ((unsigned char) c)));
+}
+
+static inline int LocaleToUppercase(const int c)
+{
+  if ((c == EOF) || (c != (unsigned char) c))
+    return(c);
+#if defined(MAGICKCORE_LOCALE_SUPPORT)
+  if (c_locale != (locale_t) NULL)
+    return(toupper_l((int) ((unsigned char) c),c_locale));
+#endif
+  return(toupper((int) ((unsigned char) c)));
+}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

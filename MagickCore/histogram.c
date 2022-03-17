@@ -18,7 +18,7 @@
 %                                August 2009                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2009 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -648,8 +648,8 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const size_t level)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IdentifyPaletteImage() returns MagickTrue if the image has 256 unique colors
-%  or less.
+%  IdentifyPaletteImage() returns MagickTrue if the image does not have more
+%  unique colors than specified in max_colors.
 %
 %  The format of the IdentifyPaletteImage method is:
 %
@@ -660,34 +660,30 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const size_t level)
 %
 %    o image: the image.
 %
+%    o max_colors: the maximum unique colors.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 
 static MagickBooleanType CheckImageColors(const Image *image,
-  ExceptionInfo *exception,size_t max_colors)
+  const size_t max_colors,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
 
-  CubeInfo
-    *cube_info;
-
-  PixelInfo
-    pixel,
-    target;
-
   const Quantum
     *p;
 
-  ssize_t
-    x;
+  CubeInfo
+    *cube_info;
 
   NodeInfo
     *node_info;
 
-  ssize_t
-    i;
+  PixelInfo
+    pixel,
+    target;
 
   size_t
     id,
@@ -695,6 +691,7 @@ static MagickBooleanType CheckImageColors(const Image *image,
     level;
 
   ssize_t
+    i,
     y;
 
   if (image->storage_class == PseudoClass)
@@ -714,6 +711,9 @@ static MagickBooleanType CheckImageColors(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    ssize_t
+      x;
+
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
@@ -800,7 +800,7 @@ MagickExport MagickBooleanType IdentifyPaletteImage(const Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  return(CheckImageColors(image,exception,256));
+  return(CheckImageColors(image,256,exception));
 }
 
 /*
@@ -838,7 +838,7 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  return(CheckImageColors(image,exception,MaximumUniqueColors));
+  return(CheckImageColors(image,MaximumUniqueColors,exception));
 }
 
 /*

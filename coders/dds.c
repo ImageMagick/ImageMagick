@@ -19,7 +19,7 @@
 %                              September 2013                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2008 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -284,6 +284,15 @@ typedef struct _DDSColors
     a[4];
 } DDSColors;
 
+typedef struct _BC7Colors
+{
+  unsigned char
+    r[6],
+    g[6],
+    b[6],
+    a[6];
+} BC7Colors;
+
 typedef struct _DDSVector4
 {
   float
@@ -314,12 +323,24 @@ typedef struct _DDSSingleColorLookup
   DDSSourceBlock sources[2];
 } DDSSingleColorLookup;
 
+typedef struct _BC7ModeInfo
+{
+  unsigned char
+    partition_bits,
+    num_subsets,
+    color_precision,
+    alpha_precision,
+    num_pbits,
+    index_precision,
+    index2_precision;
+} BC7ModeInfo;
+
 typedef MagickBooleanType
-  DDSDecoder(const ImageInfo *,Image *,DDSInfo *,const MagickBooleanType,
+  DDSDecoder(const ImageInfo *,Image *,const DDSInfo *,const MagickBooleanType,
     ExceptionInfo *);
 
 typedef MagickBooleanType
-  DDSPixelDecoder(Image *,DDSInfo *,ExceptionInfo *);
+  DDSPixelDecoder(Image *,const DDSInfo *,ExceptionInfo *);
 
 static const DDSSingleColorLookup DDSLookup_5_4[] =
 {
@@ -849,6 +870,209 @@ static const DDSSingleColorLookup*
   DDSLookup_5_4
 };
 
+static const unsigned char BC7_weight2[] = { 0, 21, 43, 64 };
+static const unsigned char BC7_weight3[] = { 0, 9, 18, 27, 37, 46, 55, 64 };
+static const unsigned char BC7_weight4[] = { 0, 4, 9, 13, 17, 21, 26, 30, 34,
+  38, 43, 47, 51, 55, 60, 64 };
+
+/* stores info for each mode of BC7 */
+static const BC7ModeInfo BC7_mode_info[8] =
+{
+  { 4, 3, 4, 0, 6, 3, 0 },   /* mode 0 */
+  { 6, 2, 6, 0, 2, 3, 0 },   /* mode 1 */
+  { 6, 3, 5, 0, 0, 2, 0 },   /* mode 2 */
+  { 6, 2, 7, 0, 4, 2, 0 },   /* mode 3 */
+  { 0, 1, 5, 6, 0, 2, 3 },   /* mode 4 */
+  { 0, 1, 7, 8, 0, 2, 2 },   /* mode 5 */
+  { 0, 1, 7, 7, 2, 4, 0 },   /* mode 6 */
+  { 6, 2, 5, 5, 4, 2, 0 },   /* mode 7 */
+};
+
+static const unsigned char BC7_partition_table[2][64][16] =
+{
+  { /* BC7 Partition Set for 2 Subsets */
+    { 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1 },
+    { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 },
+    { 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1 },
+    { 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 },
+    { 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1 },
+    { 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1 },
+    { 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1 },
+    { 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1 },
+    { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },
+    { 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1 },
+    { 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0 },
+    { 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0 },
+    { 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0 },
+    { 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1 },
+    { 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0 },
+    { 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0 },
+    { 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0 },
+    { 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0 },
+    { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+    { 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0 },
+    { 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0 },
+    { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 },
+    { 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1 },
+    { 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0 },
+    { 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0 },
+    { 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0 },
+    { 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0 },
+    { 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1 },
+    { 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1 },
+    { 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0 },
+    { 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0 },
+    { 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0 },
+    { 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0 },
+    { 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0 },
+    { 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1 },
+    { 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1 },
+    { 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0 },
+    { 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0 },
+    { 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0 },
+    { 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1 },
+    { 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1 },
+    { 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0 },
+    { 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0 },
+    { 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1 },
+    { 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1 },
+    { 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1 },
+    { 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1 },
+    { 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1 },
+    { 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+    { 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0 },
+    { 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1 } 
+  },
+
+  {  /* BC7 Partition Set for 3 Subsets */
+    { 0, 0, 1, 1, 0, 0, 1, 1, 0, 2, 2, 1, 2, 2, 2, 2 },
+    { 0, 0, 0, 1, 0, 0, 1, 1, 2, 2, 1, 1, 2, 2, 2, 1 },
+    { 0, 0, 0, 0, 2, 0, 0, 1, 2, 2, 1, 1, 2, 2, 1, 1 },
+    { 0, 2, 2, 2, 0, 0, 2, 2, 0, 0, 1, 1, 0, 1, 1, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 1, 1, 2, 2 },
+    { 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 2, 2, 0, 0, 2, 2 },
+    { 0, 0, 2, 2, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1 },
+    { 0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2 },
+    { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2 },
+    { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2 },
+    { 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2 },
+    { 0, 1, 1, 2, 0, 1, 1, 2, 0, 1, 1, 2, 0, 1, 1, 2 },
+    { 0, 1, 2, 2, 0, 1, 2, 2, 0, 1, 2, 2, 0, 1, 2, 2 },
+    { 0, 0, 1, 1, 0, 1, 1, 2, 1, 1, 2, 2, 1, 2, 2, 2 },
+    { 0, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 0, 2, 2, 2, 0 },
+    { 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 2, 1, 1, 2, 2 },
+    { 0, 1, 1, 1, 0, 0, 1, 1, 2, 0, 0, 1, 2, 2, 0, 0 },
+    { 0, 0, 0, 0, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2 },
+    { 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 2, 2, 1, 1, 1, 1 },
+    { 0, 1, 1, 1, 0, 1, 1, 1, 0, 2, 2, 2, 0, 2, 2, 2 },
+    { 0, 0, 0, 1, 0, 0, 0, 1, 2, 2, 2, 1, 2, 2, 2, 1 },
+    { 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 2, 2, 0, 1, 2, 2 },
+    { 0, 0, 0, 0, 1, 1, 0, 0, 2, 2, 1, 0, 2, 2, 1, 0 },
+    { 0, 1, 2, 2, 0, 1, 2, 2, 0, 0, 1, 1, 0, 0, 0, 0 },
+    { 0, 0, 1, 2, 0, 0, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2 },
+    { 0, 1, 1, 0, 1, 2, 2, 1, 1, 2, 2, 1, 0, 1, 1, 0 },
+    { 0, 0, 0, 0, 0, 1, 1, 0, 1, 2, 2, 1, 1, 2, 2, 1 },
+    { 0, 0, 2, 2, 1, 1, 0, 2, 1, 1, 0, 2, 0, 0, 2, 2 },
+    { 0, 1, 1, 0, 0, 1, 1, 0, 2, 0, 0, 2, 2, 2, 2, 2 },
+    { 0, 0, 1, 1, 0, 1, 2, 2, 0, 1, 2, 2, 0, 0, 1, 1 },
+    { 0, 0, 0, 0, 2, 0, 0, 0, 2, 2, 1, 1, 2, 2, 2, 1 },
+    { 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 2, 2, 1, 2, 2, 2 },
+    { 0, 2, 2, 2, 0, 0, 2, 2, 0, 0, 1, 2, 0, 0, 1, 1 },
+    { 0, 0, 1, 1, 0, 0, 1, 2, 0, 0, 2, 2, 0, 2, 2, 2 },
+    { 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0 },
+    { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 0, 0, 0, 0 },
+    { 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0 },
+    { 0, 1, 2, 0, 2, 0, 1, 2, 1, 2, 0, 1, 0, 1, 2, 0 },
+    { 0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2, 0, 0, 1, 1 },
+    { 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 0, 0, 0, 0, 1, 1 },
+    { 0, 1, 0, 1, 0, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 1, 2, 1, 2, 1 },
+    { 0, 0, 2, 2, 1, 1, 2, 2, 0, 0, 2, 2, 1, 1, 2, 2 },
+    { 0, 0, 2, 2, 0, 0, 1, 1, 0, 0, 2, 2, 0, 0, 1, 1 },
+    { 0, 2, 2, 0, 1, 2, 2, 1, 0, 2, 2, 0, 1, 2, 2, 1 },
+    { 0, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 0, 1 },
+    { 0, 0, 0, 0, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1 },
+    { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 2, 2, 2 },
+    { 0, 2, 2, 2, 0, 1, 1, 1, 0, 2, 2, 2, 0, 1, 1, 1 },
+    { 0, 0, 0, 2, 1, 1, 1, 2, 0, 0, 0, 2, 1, 1, 1, 2 },
+    { 0, 0, 0, 0, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2 },
+    { 0, 2, 2, 2, 0, 1, 1, 1, 0, 1, 1, 1, 0, 2, 2, 2 },
+    { 0, 0, 0, 2, 1, 1, 1, 2, 1, 1, 1, 2, 0, 0, 0, 2 },
+    { 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 2, 2, 2, 2 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 2, 2, 1, 1, 2 },
+    { 0, 1, 1, 0, 0, 1, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2 },
+    { 0, 0, 2, 2, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 2, 2 },
+    { 0, 0, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 0, 0, 2, 2 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 2 },
+    { 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 1 },
+    { 0, 2, 2, 2, 1, 2, 2, 2, 0, 2, 2, 2, 1, 2, 2, 2 },
+    { 0, 1, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
+    { 0, 1, 1, 1, 2, 0, 1, 1, 2, 2, 0, 1, 2, 2, 2, 0 }
+  }
+};
+
+static const unsigned char BC7_anchor_index_table[4][64] =
+{
+  /* Anchor index values for the first subset */
+  {
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0
+  },
+  /* Anchor index values for the second subset of two-subset partitioning */
+  {
+    15,15,15,15,15,15,15,15,
+    15,15,15,15,15,15,15,15,
+    15, 2, 8, 2, 2, 8, 8,15,
+    2, 8, 2, 2, 8, 8, 2, 2,
+    15,15, 6, 8, 2, 8,15,15,
+    2, 8, 2, 2, 2,15,15, 6,
+    6, 2, 6, 8,15,15, 2, 2,
+    15,15,15,15,15, 2, 2,15
+  },
+  /* Anchor index values for the second subset of three-subset partitioning */
+  {
+    3, 3,15,15, 8, 3,15,15,
+    8, 8, 6, 6, 6, 5, 3, 3,
+    3, 3, 8,15, 3, 3, 6,10,
+    5, 8, 8, 6, 8, 5,15,15,
+    8,15, 3, 5, 6,10, 8,15,
+    15, 3,15, 5,15,15,15,15,
+    3,15, 5, 5, 5, 8, 5,10,
+    5,10, 8,13,15,12, 3, 3
+  },
+  /* Anchor index values for the third subset of three-subset partitioning */
+  {
+    15, 8, 8, 3,15,15, 3, 8,
+    15,15,15,15,15,15,15, 8,
+    15, 8,15, 3,15, 8,15, 8,
+    3,15, 6,10,15,15,10, 8,
+    15, 3,15,10,10, 8, 9,10,
+    6,15, 8,15, 3, 6, 6, 8,
+    15, 3,15,15,15,15,15,15,
+    15,15,15,15, 3,15,15, 8
+  }
+};
+
 /*
   Macros
 */
@@ -1031,6 +1255,16 @@ static inline size_t ColorTo565(const DDSVector3 point)
   return (r << 11) | (g << 5) | b;
 }
 
+static inline unsigned char GetSubsetIndex(unsigned char numSubsets,
+  unsigned char partition_id,size_t pixelIndex)
+{
+  if (numSubsets == 2)
+    return BC7_partition_table[0][partition_id][pixelIndex];
+  if (numSubsets == 3)
+    return BC7_partition_table[1][partition_id][pixelIndex];
+  return 0;
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1064,33 +1298,7 @@ static MagickBooleanType IsDDS(const unsigned char *magick, const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e a d D D S I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ReadDDSImage() reads a DirectDraw Surface image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the ReadDDSImage method is:
-%
-%      Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image_info: The image info.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
+
 static MagickBooleanType ReadDDSInfo(Image *image, DDSInfo *dds_info)
 {
   size_t
@@ -1195,7 +1403,7 @@ static MagickBooleanType SetDXT1Pixels(Image *image,ssize_t x,ssize_t y,
 }
 
 static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,DDSPixelDecoder decoder,ExceptionInfo *exception)
+  const DDSInfo *dds_info,DDSPixelDecoder decoder,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -1285,7 +1493,7 @@ static void CalculateColors(unsigned short c0, unsigned short c1,
 }
 
 static MagickBooleanType ReadDXT1Pixels(Image *image,
-  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+  const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   DDSColors
     colors;
@@ -1349,7 +1557,7 @@ static MagickBooleanType ReadDXT1Pixels(Image *image,
 /*
   Skip the mipmap images for compressed (DXTn) dds files
 */
-static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
+static MagickBooleanType SkipDXTMipmaps(Image *image,const DDSInfo *dds_info,
   int texel_size,ExceptionInfo *exception)
 {
   /*
@@ -1396,7 +1604,7 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,DDSInfo *dds_info,
 }
 
 static MagickBooleanType ReadDXT1(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (ReadDXT1Pixels(image,dds_info,exception) == MagickFalse)
@@ -1409,7 +1617,7 @@ static MagickBooleanType ReadDXT1(const ImageInfo *image_info,Image *image,
 }
 
 static MagickBooleanType ReadDXT3Pixels(Image *image,
-  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+  const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   DDSColors
     colors;
@@ -1497,7 +1705,7 @@ static MagickBooleanType ReadDXT3Pixels(Image *image,
 }
 
 static MagickBooleanType ReadDXT3(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (ReadDXT3Pixels(image,dds_info,exception) == MagickFalse)
@@ -1510,7 +1718,7 @@ static MagickBooleanType ReadDXT3(const ImageInfo *image_info,Image *image,
 }
 
 static MagickBooleanType ReadDXT5Pixels(Image *image,
-  DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+  const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   DDSColors
     colors;
@@ -1612,7 +1820,7 @@ static MagickBooleanType ReadDXT5Pixels(Image *image,
 }
 
 static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
-  DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (ReadDXT5Pixels(image,dds_info,exception) == MagickFalse)
@@ -1624,21 +1832,425 @@ static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
     return(SkipDXTMipmaps(image,dds_info,16,exception));
 }
 
+static unsigned char GetBit(const unsigned char *block,size_t *start_bit)
+{
+  size_t
+    base,
+    index;
+
+  index=(*start_bit) >> 3;
+  base=(*start_bit) - (index << 3);
+  (*start_bit)++;
+  if (index > 15)
+    return(0);
+  return((block[index] >> base) & 0x01);
+}
+
+static unsigned char GetBits(const unsigned char *block,size_t *start_bit,
+  unsigned char num_bits)
+{
+  size_t
+    base,
+    first_bits,
+    index,
+    next_bits;
+
+  unsigned char
+    ret;
+
+  index=(*start_bit) >> 3;
+  base=(*start_bit)-(index << 3);
+  if (index > 15)
+    return(0);
+  if (base + num_bits > 8)
+    {
+      first_bits=8-base;
+      next_bits=num_bits-first_bits;
+      ret=((block[index] >> base) | (((block[index + 1]) &
+        ((1u << next_bits) - 1)) << first_bits));
+    }
+  else
+    {
+      ret=((block[index] >> base) & ((1 << num_bits) - 1));
+    }
+  (*start_bit)+=num_bits;
+  return(ret);
+}
+
+static MagickBooleanType IsPixelAnchorIndex(unsigned char subset_index,
+  unsigned char num_subsets,size_t pixelIndex,unsigned char partition_id)
+{
+  size_t
+    table_index;
+
+  /* for first subset */
+  if (subset_index == 0)
+    table_index=0;
+  /* for second subset of two subset partitioning */
+  else if ((subset_index == 1) && (num_subsets == 2))
+    table_index=1;
+  /* for second subset of three subset partitioning */
+  else if ((subset_index == 1) && (num_subsets == 3))
+    table_index=2;
+  /* for third subset of three subset partitioning */
+  else
+    table_index=3;
+
+  if (BC7_anchor_index_table[table_index][partition_id] == pixelIndex)
+    return(MagickTrue);
+  else
+    return(MagickFalse);
+}
+
+static void ReadEndpoints(BC7Colors *endpoints,const unsigned char *block,
+  size_t mode,size_t *start_bit)
+{
+  MagickBooleanType
+    has_alpha,
+    has_pbits;
+
+  unsigned char
+    alpha_bits,
+    color_bits,
+    pbit,
+    pbit0,
+    pbit1;
+
+  size_t
+    num_subsets,
+    i;
+
+  num_subsets=(size_t) BC7_mode_info[mode].num_subsets;
+  color_bits=BC7_mode_info[mode].color_precision;
+
+  /* red */
+  for (i=0; i < num_subsets * 2; i++)
+    endpoints->r[i]=GetBits(block,start_bit,color_bits);
+
+  /* green */
+  for (i=0; i < num_subsets * 2; i++)
+    endpoints->g[i]=GetBits(block,start_bit,color_bits);
+
+  /* blue */
+  for (i=0; i < num_subsets * 2; i++)
+    endpoints->b[i]=GetBits(block,start_bit,color_bits);
+
+  /* alpha */
+  alpha_bits=BC7_mode_info[mode].alpha_precision;
+  has_alpha=mode >= 4 ? MagickTrue : MagickFalse;
+
+  if (has_alpha != MagickFalse)
+    {
+      for (i=0; i < num_subsets * 2; i++)
+        endpoints->a[i]=GetBits(block,start_bit,alpha_bits);
+    }
+
+  /* handle modes that have p bits */
+  has_pbits=(mode == 0) || (mode == 1) || (mode == 3) || (mode == 6) || (mode == 7) ? MagickTrue : MagickFalse;
+
+  if (has_pbits != MagickFalse)
+    {
+      for (i=0; i < num_subsets * 2; i++)
+      {
+        endpoints->r[i] <<= 1;
+        endpoints->g[i] <<= 1;
+        endpoints->b[i] <<= 1;
+        endpoints->a[i] <<= 1;
+      }
+
+      /* mode 1 shares a p-bit for both endpoints */
+      if (mode == 1)
+        {
+          pbit0=GetBit(block,start_bit);
+          pbit1=GetBit(block,start_bit);
+
+          endpoints->r[0] |= pbit0;
+          endpoints->g[0] |= pbit0;
+          endpoints->b[0] |= pbit0;
+          endpoints->r[1] |= pbit0;
+          endpoints->g[1] |= pbit0;
+          endpoints->b[1] |= pbit0;
+
+          endpoints->r[2] |= pbit1;
+          endpoints->g[2] |= pbit1;
+          endpoints->b[2] |= pbit1;
+          endpoints->r[3] |= pbit1;
+          endpoints->g[3] |= pbit1;
+          endpoints->b[3] |= pbit1;
+        }
+      else
+      {
+        for (i=0; i < num_subsets * 2; i++)
+        {
+          pbit=GetBit(block,start_bit);
+          endpoints->r[i] |= pbit;
+          endpoints->g[i] |= pbit;
+          endpoints->b[i] |= pbit;
+          endpoints->a[i] |= pbit;
+        }
+      }
+    }
+
+  /* 1 bit increased due to the pbit */
+  if (has_pbits != MagickFalse)
+    {
+      color_bits++;
+      alpha_bits++;
+    }
+
+  /* color and alpha bit shifting so that MSB lies in bit 7 */
+  for (i=0; i < num_subsets * 2; i++)
+  {
+    endpoints->r[i] <<= (8 - color_bits);
+    endpoints->g[i] <<= (8 - color_bits);
+    endpoints->b[i] <<= (8 - color_bits);
+    endpoints->a[i] <<= (8 - alpha_bits);
+
+    endpoints->r[i]=endpoints->r[i] | (endpoints->r[i] >> color_bits);
+    endpoints->g[i]=endpoints->g[i] | (endpoints->g[i] >> color_bits);
+    endpoints->b[i]=endpoints->b[i] | (endpoints->b[i] >> color_bits);
+    endpoints->a[i]=endpoints->a[i] | (endpoints->a[i] >> alpha_bits);
+  }
+
+  if (has_alpha == MagickFalse)
+    {
+      for (i=0; i < num_subsets * 2; i++)
+        endpoints->a[i]=255;
+    }
+}
+
+static MagickBooleanType ReadBC7Pixels(Image *image,
+  const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+{
+  BC7Colors
+    colors;
+
+  Quantum
+    *q;
+
+  size_t
+    mode,
+    start_bit;
+
+  ssize_t
+    count,
+    i,
+    x,
+    y;
+
+  unsigned char
+    a,
+    alpha_indices[16],
+    b,
+    block[16],
+    c0,
+    c1,
+    color_indices[16],
+    g,
+    index_prec,
+    index2_prec,
+    num_bits,
+    num_subsets,
+    partition_id,
+    r,
+    rotation,
+    selector_bit,
+    subset_indices[16],
+    weight;
+
+  magick_unreferenced(dds_info);
+
+  memset(alpha_indices,0,sizeof(alpha_indices));
+  memset(block,0,sizeof(block));
+  memset(color_indices,0,sizeof(color_indices));
+  memset(subset_indices,0,sizeof(subset_indices));
+
+  for (y = 0; y < (ssize_t) image->rows; y += 4)
+  {
+    for (x = 0; x < (ssize_t) image->columns; x += 4)
+    {
+      size_t
+        area;
+
+      /* Get 4x4 patch of pixels to write on */
+      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
+        MagickMin(4,image->rows-y),exception);
+
+      if (q == (Quantum *) NULL)
+        return(MagickFalse);
+
+      /* Read 16 bytes of data from the image */
+      count=ReadBlob(image,16,block);
+      
+      if (count != 16)
+        return(MagickFalse);
+
+      if (EOFBlob(image) != MagickFalse)
+        return(MagickFalse);
+
+      /* Get the mode of the block */
+      start_bit=0;
+      while (start_bit <= 8 && !GetBit(block, &start_bit)) {}
+      mode=start_bit-1;
+
+      if (mode > 7)
+        return(MagickFalse);
+
+      num_subsets=BC7_mode_info[mode].num_subsets;
+      partition_id=0;
+
+      /* only these modes have more than 1 subset */
+      if ((mode == 0) || (mode == 1) || (mode == 2) || (mode == 3) || (mode == 7))
+        {
+          partition_id=GetBits(block,&start_bit,BC7_mode_info[mode].partition_bits);
+          if (partition_id > 63)
+            return(MagickFalse);
+        }
+
+      rotation=0;
+      if ((mode == 4) || (mode == 5))
+        rotation=GetBits(block,&start_bit,2);
+      
+      selector_bit=0;
+      if (mode == 4)
+        selector_bit=GetBit(block, &start_bit);
+
+      ReadEndpoints(&colors,block,mode,&start_bit);
+
+      index_prec=BC7_mode_info[mode].index_precision;
+      index2_prec=BC7_mode_info[mode].index2_precision;
+
+      if ((mode == 4) && (selector_bit == 1))
+        {
+          index_prec=3;
+          alpha_indices[0]=GetBit(block,&start_bit);
+          for (i = 1; i < 16; i++)
+            alpha_indices[i]=GetBits(block,&start_bit,2);
+        }
+
+      /* get color and subset indices */
+      for (i=0; i < 16; i++)
+      {
+        subset_indices[i]=GetSubsetIndex(num_subsets,partition_id,i);
+        num_bits=index_prec;
+        if (IsPixelAnchorIndex(subset_indices[i],num_subsets,i,partition_id))
+          num_bits--;
+        color_indices[i]=GetBits(block,&start_bit,num_bits);
+      }
+
+      /* get alpha indices if the block has it */
+      if ((mode == 5) || ((mode == 4) && (selector_bit == 0)))
+        {
+          alpha_indices[0]=GetBits(block,&start_bit,index2_prec - 1);
+          for (i=1; i < 16; i++)
+            alpha_indices[i]=GetBits(block,&start_bit,index2_prec);
+        }
+
+      /* Write the pixels */
+      area=MagickMin(MagickMin(4,image->columns-x)*MagickMin(4,image->rows-y),
+        16);
+      for (i=0; i < (ssize_t) area; i++)
+      {
+        unsigned char
+          c2;
+
+        c0=2 * subset_indices[i];
+        c1=(2 * subset_indices[i]) + 1;
+        c2=color_indices[i];
+
+        weight=64;
+        /* Color Interpolation */
+        switch(index_prec)
+        {
+          case 2:
+            if (c2 < sizeof(BC7_weight2))
+              weight=BC7_weight2[c2];
+            break;
+          case 3:
+            if (c2 < sizeof(BC7_weight3))
+              weight=BC7_weight3[c2];
+            break;
+          default:
+            if (c2 < sizeof(BC7_weight4))
+              weight=BC7_weight4[c2];
+        }
+        r=((64 - weight) * colors.r[c0] + weight * colors.r[c1] + 32) >> 6;
+        g=((64 - weight) * colors.g[c0] + weight * colors.g[c1] + 32) >> 6;
+        b=((64 - weight) * colors.b[c0] + weight * colors.b[c1] + 32) >> 6;
+        a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
+
+        /* Interpolate alpha for mode 4 and 5 blocks */
+        if (mode == 4 || mode == 5)
+          {
+            unsigned char
+              a0;
+
+            a0=alpha_indices[i];
+            if (a0 < sizeof(BC7_weight2))
+              weight=BC7_weight2[a0];
+            if ((mode == 4) && (selector_bit == 0) && (a0 < sizeof(BC7_weight3)))
+              weight=BC7_weight3[a0];
+            if ((c0 < sizeof(colors.a)) && (c1 < sizeof(colors.a)))
+              a=((64 - weight) * colors.a[c0] + weight * colors.a[c1] + 32) >> 6;
+          }
+        switch (rotation)
+        {
+          case 1:
+            Swap(a,r);
+            break;
+          case 2:
+            Swap(a,g);
+            break;
+          case 3:
+            Swap(a,b);
+            break;
+        }
+
+        SetPixelRed(image,ScaleCharToQuantum((unsigned char)r),q);
+        SetPixelGreen(image,ScaleCharToQuantum((unsigned char)g),q);
+        SetPixelBlue(image,ScaleCharToQuantum((unsigned char)b),q);
+        SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)a),q);
+
+        q+=GetPixelChannels(image);
+      }
+      if (SyncAuthenticPixels(image,exception) == MagickFalse)
+        return(MagickFalse);
+    }
+    if (EOFBlob(image) != MagickFalse)
+      return(MagickFalse);
+  }
+  return(MagickTrue);
+}
+
+static MagickBooleanType ReadBC7(const ImageInfo *image_info,Image *image,
+  const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  ExceptionInfo *exception)
+{
+  if (ReadBC7Pixels(image,dds_info,exception) == MagickFalse)
+    return(MagickFalse);
+
+  if (read_mipmaps != MagickFalse)
+    return(ReadMipmaps(image_info,image,dds_info,ReadBC7Pixels,exception));
+  else
+    return(SkipDXTMipmaps(image,dds_info,16,exception));
+}
+
 static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
-  DDSInfo *dds_info,ExceptionInfo *exception)
+  const DDSInfo *dds_info,ExceptionInfo *exception)
 {
   Quantum
     *q;
 
   ssize_t
-    x, y;
+    x,
+    y;
 
   unsigned short
     color;
 
   for (y = 0; y < (ssize_t) image->rows; y++)
   {
-    q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
+    q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
 
     if (q == (Quantum *) NULL)
       return(MagickFalse);
@@ -1684,7 +2296,7 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
 /*
   Skip the mipmap images for uncompressed (RGB or RGBA) dds files
 */
-static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
+static MagickBooleanType SkipRGBMipmaps(Image *image,const DDSInfo *dds_info,
   int pixel_size,ExceptionInfo *exception)
 {
   /*
@@ -1731,7 +2343,7 @@ static MagickBooleanType SkipRGBMipmaps(Image *image,DDSInfo *dds_info,
 }
 
 static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
-  Image *image,DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  Image *image,const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (dds_info->pixelformat.rgb_bitcount == 8 || 
@@ -1753,7 +2365,7 @@ static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
 }
 
 static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
-  DDSInfo *dds_info,ExceptionInfo *exception)
+  const DDSInfo *dds_info,ExceptionInfo *exception)
 {
   Quantum
     *q;
@@ -1861,7 +2473,7 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
 }
 
 static MagickBooleanType ReadUncompressedRGBA(const ImageInfo *image_info,
-  Image *image,DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  Image *image,const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
   ExceptionInfo *exception)
 {
   if (ReadUncompressedRGBAPixels(image,dds_info,exception) == MagickFalse)
@@ -1873,7 +2485,33 @@ static MagickBooleanType ReadUncompressedRGBA(const ImageInfo *image_info,
   else
     return(SkipRGBMipmaps(image,dds_info,4,exception));
 }
-
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d D D S I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadDDSImage() reads a DirectDraw Surface image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadDDSImage method is:
+%
+%      Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
 static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   const char
@@ -2063,6 +2701,14 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
               alpha_trait = BlendPixelTrait;
               compression = DXT5Compression;
               decoder = ReadDXT5;
+              break;
+            }
+            case DXGI_FORMAT_BC7_UNORM:
+            case DXGI_FORMAT_BC7_UNORM_SRGB:
+            {
+              alpha_trait = BlendPixelTrait;
+              compression = BC7Compression;
+              decoder = ReadBC7;
               break;
             }
             default:
@@ -2264,7 +2910,7 @@ ModuleExport void UnregisterDDSImage(void)
 %
 %  WriteDDSImage() writes a DirectDraw Surface image file in the DXT5 format.
 %
-%  The format of the WriteBMPImage method is:
+%  The format of the WriteDDSImage method is:
 %
 %     MagickBooleanType WriteDDSImage(const ImageInfo *image_info,Image *image)
 %
@@ -3478,6 +4124,8 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
     {
        if (LocaleCompare(option,"dxt1") == 0)
          compression=FOURCC_DXT1;
+       if (LocaleCompare(option,"dxt5") == 0)
+         compression=FOURCC_DXT5;
        if (LocaleCompare(option,"none") == 0)
          pixelFormat=DDPF_RGB;
     }

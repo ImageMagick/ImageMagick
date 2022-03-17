@@ -16,7 +16,7 @@
 %                               October 1998                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -4337,9 +4337,6 @@ MagickExport void InitializePixelChannelMap(Image *image)
     trait;
 
   ssize_t
-    i;
-
-  ssize_t
     n;
 
   assert(image != (Image *) NULL);
@@ -4365,11 +4362,6 @@ MagickExport void InitializePixelChannelMap(Image *image)
     }
   if (image->colorspace == CMYKColorspace)
     SetPixelChannelAttributes(image,BlackPixelChannel,trait,n++);
-  for (i=0; i < (ssize_t) image->number_meta_channels; i++)
-  {
-    SetPixelChannelAttributes(image,(PixelChannel) n,UpdatePixelTrait,n);
-    n++;
-  }
   if (image->alpha_trait != UndefinedPixelTrait)
     SetPixelChannelAttributes(image,AlphaPixelChannel,CopyPixelTrait,n++);
   if (image->storage_class == PseudoClass)
@@ -4381,6 +4373,24 @@ MagickExport void InitializePixelChannelMap(Image *image)
   if ((image->channels & CompositeMaskChannel) != 0)
     SetPixelChannelAttributes(image,CompositeMaskPixelChannel,CopyPixelTrait,
       n++);
+  if (image->number_meta_channels > 0)
+    {
+      PixelChannel
+        meta_channel;
+
+      ssize_t
+        i;
+
+      meta_channel=StartMetaPixelChannel;
+      for (i=0; i < (ssize_t) image->number_meta_channels; i++)
+      {
+        assert(meta_channel < MaxPixelChannels);
+        SetPixelChannelAttributes(image,meta_channel,UpdatePixelTrait,n);
+        meta_channel=(PixelChannel) (meta_channel+1);
+        n++;
+      }
+    }
+  assert(n < MaxPixelChannels);
   image->number_channels=(size_t) n;
   (void) SetPixelChannelMask(image,image->channel_mask);
 }
@@ -6353,7 +6363,8 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
 MagickExport MagickBooleanType SetPixelMetaChannels(Image *image,
   const size_t number_meta_channels,ExceptionInfo *exception)
 {
-  image->number_meta_channels=number_meta_channels;
+  image->number_meta_channels=MagickMin(number_meta_channels,MaxPixelChannels
+    -(size_t) StartMetaPixelChannel);
   InitializePixelChannelMap(image);
   return(SyncImagePixelCache(image,exception));
 }

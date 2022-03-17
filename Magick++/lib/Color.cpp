@@ -1,7 +1,9 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2018
+//
+// Copyright @ 2013 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
 //
 // Color Implementation
 //
@@ -12,10 +14,10 @@
 #include "Magick++/Include.h"
 #include <string>
 
-using namespace std;
-
 #include "Magick++/Color.h"
 #include "Magick++/Exception.h"
+
+using namespace std;
 
 MagickPPExport int Magick::operator == (const Magick::Color &left_,
   const Magick::Color &right_)
@@ -261,8 +263,6 @@ Magick::Color::operator std::string() const
 
   pixel.colorspace=(_pixelType == RGBPixel || _pixelType == RGBAPixel) ?
     sRGBColorspace : CMYKColorspace;
-  pixel.alpha_trait=(_pixelType == RGBAPixel || _pixelType == CMYKAPixel) ?
-    BlendPixelTrait : UndefinedPixelTrait;
   pixel.depth=MAGICKCORE_QUANTUM_DEPTH;
   pixel.alpha=_pixel->alpha;
   pixel.alpha_trait=_pixel->alpha_trait;

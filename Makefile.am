@@ -1,4 +1,4 @@
-#  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+#  Copyright © 1999 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -96,7 +96,7 @@ XFAIL_TESTS = \
 
 TOP_EXTRA_DIST = \
   AUTHORS.txt \
-  ChangeLog \
+  ChangeLog.md \
   LICENSE \
   QuickStart.txt \
   NOTICE \
@@ -170,7 +170,7 @@ man_MANS = \
 
 doc_DATA = \
   LICENSE \
-  ChangeLog \
+  ChangeLog.md \
   NEWS.txt
 endif
 
@@ -282,7 +282,7 @@ magick-version: MagickCore/version.h
 	fi ; \
 	touch magick-version
 
-MagickCore/version.h:	$(top_srcdir)/ChangeLog $(top_srcdir)/m4/version.m4
+MagickCore/version.h:	$(top_srcdir)/ChangeLog.md $(top_srcdir)/m4/version.m4
 
 # Automagically reconfigure libtool
 LIBTOOL_DEPS = @LIBTOOL_DEPS@

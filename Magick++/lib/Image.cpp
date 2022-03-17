@@ -1,7 +1,9 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2013-2017
+//
+// Copyright @ 2013 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
 //
 // Implementation of Image
 //
@@ -16,13 +18,13 @@
 #include <errno.h>
 #include <math.h>
 
-using namespace std;
-
 #include "Magick++/Image.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Pixels.h"
 #include "Magick++/Options.h"
 #include "Magick++/ImageRef.h"
+
+using namespace std;
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define MagickPI  3.14159265358979323846264338327950288419716939937510

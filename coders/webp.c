@@ -17,7 +17,7 @@
 %                                 March 2011                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2011 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -361,35 +361,38 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
     (void) WebPMuxGetFeatures(mux,&webp_flags);
     if ((webp_flags & ICCP_FLAG) &&
         (WebPMuxGetChunk(mux,"ICCP",&chunk) == WEBP_MUX_OK))
-      {
-        profile=BlobToStringInfo(chunk.bytes,chunk.size);
-        if (profile != (StringInfo *) NULL)
-          {
-            SetImageProfile(image,"ICC",profile,exception);
-            profile=DestroyStringInfo(profile);
-          }
-      }
+      if (chunk.size != 0)
+        {
+          profile=BlobToStringInfo(chunk.bytes,chunk.size);
+          if (profile != (StringInfo *) NULL)
+            {
+              SetImageProfile(image,"ICC",profile,exception);
+              profile=DestroyStringInfo(profile);
+            }
+        }
     if ((webp_flags & EXIF_FLAG) &&
         (WebPMuxGetChunk(mux,"EXIF",&chunk) == WEBP_MUX_OK))
-      {
-        profile=BlobToStringInfo(chunk.bytes,chunk.size);
-        if (profile != (StringInfo *) NULL)
-          {
-            SetImageProfile(image,"EXIF",profile,exception);
-            profile=DestroyStringInfo(profile);
-          }
-      }
+      if (chunk.size != 0)
+        {
+          profile=BlobToStringInfo(chunk.bytes,chunk.size);
+          if (profile != (StringInfo *) NULL)
+            {
+              SetImageProfile(image,"EXIF",profile,exception);
+              profile=DestroyStringInfo(profile);
+            }
+        }
     if (((webp_flags & XMP_FLAG) &&
          (WebPMuxGetChunk(mux,"XMP ",&chunk) == WEBP_MUX_OK)) ||
          (WebPMuxGetChunk(mux,"XMP\0",&chunk) == WEBP_MUX_OK))
-      {
-        profile=BlobToStringInfo(chunk.bytes,chunk.size);
-        if (profile != (StringInfo *) NULL)
-          {
-            SetImageProfile(image,"XMP",profile,exception);
-            profile=DestroyStringInfo(profile);
-          }
-      }
+      if (chunk.size != 0)
+        {
+          profile=BlobToStringInfo(chunk.bytes,chunk.size);
+          if (profile != (StringInfo *) NULL)
+            {
+              SetImageProfile(image,"XMP",profile,exception);
+              profile=DestroyStringInfo(profile);
+            }
+        }
     WebPMuxDelete(mux);
   }
 #endif
@@ -931,6 +934,11 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   (void) WebPAnimEncoderOptionsInit(&enc_options);
   if (image_info->verbose)
     enc_options.verbose=1;
+  /*
+    Appropriate default kmin, kmax values for lossy and lossless.
+  */
+  enc_options.kmin = configure->lossless ? 9 : 3;
+  enc_options.kmax = configure->lossless ? 17 : 5;
   enc=WebPAnimEncoderNew((int) coalesce_image->page.width,
     (int) coalesce_image->page.height,&enc_options);
 
@@ -975,7 +983,7 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
 
   if (webp_status != 0)
     {
-      // add last null frame and assemble picture.
+      /* add last null frame and assemble picture. */
       webp_status=WebPAnimEncoderAdd(enc,(WebPPicture *) NULL,
         (int) frame_timestamp,configure);
       if (webp_status != 0)
@@ -1029,7 +1037,7 @@ static MagickBooleanType WriteWEBPImageProfile(Image *image,
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"UnableToEncodeImageFile","`%s'",image->filename);
 
-  // Clean up returned data
+  /* Clean up returned data */
   memset(webp_data, 0, sizeof(*webp_data));
   mux_error=WEBP_MUX_OK;
   if (image->iterations > 0)

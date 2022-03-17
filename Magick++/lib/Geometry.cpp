@@ -1,7 +1,9 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
-// Copyright Dirk Lemstra 2014-2015
+//
+// Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
 //
 // Geometry implementation
 //
@@ -16,10 +18,10 @@
 #include <strings.h>
 #endif
 
-using namespace std;
-
 #include "Magick++/Geometry.h"
 #include "Magick++/Exception.h"
+
+using namespace std;
 
 MagickPPExport int Magick::operator == (const Magick::Geometry& left_,
   const Magick::Geometry& right_)

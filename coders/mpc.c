@@ -17,7 +17,7 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -63,6 +63,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
@@ -154,9 +155,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     id[MagickPathExtent],
     keyword[MagickPathExtent],
     *options;
-
-  const unsigned char
-    *p;
 
   GeometryInfo
     geometry_info;
@@ -276,8 +274,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (comment == (char *) NULL)
             {
               options=DestroyString(options);
-              ThrowReaderException(ResourceLimitError,
-                "MemoryAllocationFailed");
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
             }
           *p='\0';
           (void) SetImageProperty(image,"comment",comment,exception);
@@ -581,15 +578,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleCompare(keyword,"number-meta-channels") == 0)
                   {
                     image->number_meta_channels=StringToUnsignedLong(options);
-                    if (image->number_meta_channels > MaxPixelChannels)
-                      {
-                        if (profiles != (LinkedListInfo *) NULL)
-                          profiles=DestroyLinkedList(profiles,
-                            RelinquishMagickMemory);
-                        options=DestroyString(options);
-                        ThrowReaderException(CorruptImageError,
-                          "ImproperImageHeader");
-                      }
                     break;
                   }
                 break;
@@ -798,7 +786,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (image->compression == UndefinedCompression) ||
         (image->columns == 0) || (image->rows == 0) ||
         (image->number_channels > MaxPixelChannels) ||
-        (image->number_meta_channels > (MaxPixelChannels-8)) ||
+        (image->number_meta_channels > (MaxPixelChannels-StartMetaPixelChannel)) ||
         ((image->number_channels+image->number_meta_channels) >= MaxPixelChannels) ||
         (image->depth == 0) || (image->depth > 64))
       {
@@ -892,6 +880,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     depth=GetImageQuantumDepth(image,MagickFalse);
     if (image->storage_class == PseudoClass)
       {
+        const unsigned char
+          *p;
+
         size_t
           packet_size;
 
@@ -1020,7 +1011,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       c=ReadBlobByte(image);
     } while ((isgraph((int) ((unsigned char) c)) == 0) && (c != EOF));
-    if (c != EOF)
+    if ((c != EOF) && ((c == 'i') || (c == 'I')))
       {
         /*
           Allocate next image structure.
@@ -1037,7 +1028,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == MagickFalse)
           break;
       }
-  } while (c != EOF);
+  } while ((c != EOF) && ((c == 'i') || (c == 'I')));
   (void) CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));

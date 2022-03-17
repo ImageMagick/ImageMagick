@@ -14,7 +14,7 @@
 %                                                                             %
 %                             Software Design                                 %
 %                                  Cristy                                     %
-%                              January 2003                                   %
+%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
@@ -151,6 +151,12 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       case '>':
       {
         flags|=GreaterValue;
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
+        break;
+      }
+      case '#':
+      {
+        flags|=MaximumValue;
         (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
@@ -839,11 +845,11 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
 %  relative to the values.
 %
 %  Values may also be separated by commas, colons, or slashes, and offsets.
-%  Offsets may be prefixed by multiple signs to make offset string
-%  substitutions easier to handle from shell scripts.
-%  For example: "-10-10", "-+10-+10", or "+-10+-10" will generate negtive
-%  offsets, while "+10+10", "++10++10", or "--10--10" will generate positive
-%  offsets.
+%  Chroma subsampling definitions have to be in the form of a:b:c.  Offsets may
+%  be prefixed by multiple signs to make offset string substitutions easier to
+%  handle from shell scripts.  For example: "-10-10", "-+10-+10", or "+-10+-10"
+%  will generate negtive offsets, while "+10+10", "++10++10", or "--10--10"
+%  will generate positive offsets.
 %
 %  The format of the ParseGeometry method is:
 %
@@ -933,6 +939,12 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       case '>':
       {
         flags|=GreaterValue;
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
+        break;
+      }
+      case '#':
+      {
+        flags|=MaximumValue;
         (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
@@ -1250,6 +1262,9 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
     height,
     width;
 
+  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",geometry);
+  if ((geometry == (char *) NULL) || (*geometry == '\0'))
+    return(NoValue);
   SetGeometry(image,region_info);
   if (image->page.width != 0)
     region_info->width=image->page.width;
@@ -1305,18 +1320,24 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       (void) ParseGeometry(geometry,&geometry_info);
       geometry_ratio=geometry_info.rho;
       image_ratio=(double) image->columns/image->rows;
-      if (geometry_ratio >= image_ratio)
+      region_info->width=image->columns;
+      region_info->height=image->rows;
+      if ((flags & MaximumValue) != 0)
         {
-          region_info->width=image->columns;
-          region_info->height=(size_t) floor((double) (image->rows*image_ratio/
-            geometry_ratio)+0.5);
+          if (geometry_ratio < image_ratio)
+            region_info->height=(size_t) floor((double) (image->rows*
+              image_ratio/geometry_ratio)+0.5);
+          else
+            region_info->width=(size_t) floor((double) (image->columns*
+              geometry_ratio/image_ratio)+0.5);
         }
       else
-        {
+        if (geometry_ratio >= image_ratio)
+          region_info->height=(size_t) floor((double) (image->rows*image_ratio/
+            geometry_ratio)+0.5);
+        else
           region_info->width=(size_t) floor((double) (image->columns*
             geometry_ratio/image_ratio)+0.5);
-          region_info->height=image->rows;
-        }
     }
   /*
     Adjust offset according to gravity setting.
@@ -1328,6 +1349,20 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
   if (height == 0)
     region_info->height=image->page.height | image->rows;
   GravityAdjustGeometry(image->columns,image->rows,image->gravity,region_info);
+  if ((flags & LessValue) != 0)
+    if ((region_info->width < image->columns) &&
+        (region_info->height < image->rows))
+      {
+        SetGeometry(image,region_info);
+        return(NoValue);
+      }
+  if ((flags & GreaterValue) != 0)
+    if ((region_info->width > image->columns) &&
+        (region_info->height > image->rows))
+      {
+        SetGeometry(image,region_info);
+        return(NoValue);
+      }
   region_info->width=width;
   region_info->height=height;
   return(flags);
@@ -1386,8 +1421,8 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
     flags;
 
   size_t
-    former_height,
-    former_width;
+    stasis_height,
+    stasis_width;
 
   /*
     Ensure the image geometry is valid.
@@ -1396,15 +1431,15 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
   assert(y != (ssize_t *) NULL);
   assert(width != (size_t *) NULL);
   assert(height != (size_t *) NULL);
+  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",geometry);
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",geometry);
   /*
     Parse geometry using GetGeometry.
   */
+  stasis_width=(*width);
+  stasis_height=(*height);
   SetGeometryInfo(&geometry_info);
-  former_width=(*width);
-  former_height=(*height);
   flags=GetGeometry(geometry,x,y,width,height);
   if ((flags & PercentValue) != 0)
     {
@@ -1424,10 +1459,10 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       scale.y=geometry_info.sigma;
       if ((percent_flags & SigmaValue) == 0)
         scale.y=scale.x;
-      *width=(size_t) floor(scale.x*former_width/100.0+0.5);
-      *height=(size_t) floor(scale.y*former_height/100.0+0.5);
-      former_width=(*width);
-      former_height=(*height);
+      *width=(size_t) floor(scale.x*stasis_width/100.0+0.5);
+      *height=(size_t) floor(scale.y*stasis_height/100.0+0.5);
+      stasis_width=(*width);
+      stasis_height=(*height);
     }
   if ((flags & AspectRatioValue) != 0)
     {
@@ -1440,30 +1475,30 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       */
       (void) ParseGeometry(geometry,&geometry_info);
       geometry_ratio=geometry_info.rho;
-      image_ratio=(double) former_width*
-        PerceptibleReciprocal((double) former_height);
+      image_ratio=(double) stasis_width*PerceptibleReciprocal((double)
+        stasis_height);
       if (geometry_ratio >= image_ratio)
         {
-          *width=former_width;
+          *width=stasis_width;
           *height=(size_t) floor((double) (PerceptibleReciprocal(
-            geometry_ratio)*former_height*image_ratio)+0.5);
+            geometry_ratio)*stasis_height*image_ratio)+0.5);
         }
       else
         {
-          *width=(size_t) floor((double) (PerceptibleReciprocal(
-            image_ratio)*former_width*geometry_ratio)+0.5);
-          *height=former_height;
+          *width=(size_t) floor((double) (PerceptibleReciprocal(image_ratio)*
+            stasis_width*geometry_ratio)+0.5);
+          *height=stasis_height;
         }
-      former_width=(*width);
-      former_height=(*height);
+      stasis_width=(*width);
+      stasis_height=(*height);
     }
-  if (((flags & AspectValue) != 0) || ((*width == former_width) &&
-      (*height == former_height)))
+  if (((flags & AspectValue) != 0) || ((*width == stasis_width) &&
+      (*height == stasis_height)))
     {
       if ((flags & RhoValue) == 0)
-        *width=former_width;
+        *width=stasis_width;
       if ((flags & SigmaValue) == 0)
-        *height=former_height;
+        *height=stasis_height;
     }
   else
     {
@@ -1473,52 +1508,52 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       /*
         Respect aspect ratio of the image.
       */
-      if ((former_width == 0) || (former_height == 0))
+      if ((stasis_width == 0) || (stasis_height == 0))
         scale_factor=1.0;
       else
         if (((flags & RhoValue) != 0) && (flags & SigmaValue) != 0)
           {
-            scale_factor=(double) *width/(double) former_width;
+            scale_factor=(double) *width/(double) stasis_width;
             if ((flags & MinimumValue) == 0)
               {
-                if (scale_factor > ((double) *height/(double) former_height))
-                  scale_factor=(double) *height/(double) former_height;
+                if (scale_factor > ((double) *height/(double) stasis_height))
+                  scale_factor=(double) *height/(double) stasis_height;
               }
             else
-              if (scale_factor < ((double) *height/(double) former_height))
-                scale_factor=(double) *height/(double) former_height;
+              if (scale_factor < ((double) *height/(double) stasis_height))
+                scale_factor=(double) *height/(double) stasis_height;
           }
         else
           if ((flags & RhoValue) != 0)
             {
-              scale_factor=(double) *width/(double) former_width;
+              scale_factor=(double) *width/(double) stasis_width;
               if (((flags & MinimumValue) != 0) &&
-                  (scale_factor < ((double) *width/(double) former_height)))
-                scale_factor=(double) *width/(double) former_height;
+                  (scale_factor < ((double) *width/(double) stasis_height)))
+                scale_factor=(double) *width/(double) stasis_height;
             }
           else
             {
-              scale_factor=(double) *height/(double) former_height;
+              scale_factor=(double) *height/(double) stasis_height;
               if (((flags & MinimumValue) != 0) &&
-                  (scale_factor < ((double) *height/(double) former_width)))
-                scale_factor=(double) *height/(double) former_width;
+                  (scale_factor < ((double) *height/(double) stasis_width)))
+                scale_factor=(double) *height/(double) stasis_width;
             }
-      *width=MagickMax((size_t) floor(scale_factor*former_width+0.5),1UL);
-      *height=MagickMax((size_t) floor(scale_factor*former_height+0.5),1UL);
+      *width=MagickMax((size_t) floor(scale_factor*stasis_width+0.5),1UL);
+      *height=MagickMax((size_t) floor(scale_factor*stasis_height+0.5),1UL);
     }
   if ((flags & GreaterValue) != 0)
     {
-      if (former_width < *width)
-        *width=former_width;
-      if (former_height < *height)
-        *height=former_height;
+      if (stasis_width < *width)
+        *width=stasis_width;
+      if (stasis_height < *height)
+        *height=stasis_height;
     }
   if ((flags & LessValue) != 0)
     {
-      if (former_width > *width)
-        *width=former_width;
-      if (former_height > *height)
-        *height=former_height;
+      if (stasis_width > *width)
+        *width=stasis_width;
+      if (stasis_height > *height)
+        *height=stasis_height;
     }
   if ((flags & AreaValue) != 0)
     {
@@ -1534,20 +1569,18 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       */
       (void) ParseGeometry(geometry,&geometry_info);
       area=geometry_info.rho+sqrt(MagickEpsilon);
-      distance=sqrt((double) former_width*former_height);
-      scale.x=(double) former_width*PerceptibleReciprocal(distance*
+      distance=sqrt((double) stasis_width*stasis_height);
+      scale.x=(double) stasis_width*PerceptibleReciprocal(distance*
         PerceptibleReciprocal(sqrt(area)));
-      scale.y=(double) former_height*PerceptibleReciprocal(distance*
+      scale.y=(double) stasis_height*PerceptibleReciprocal(distance*
         PerceptibleReciprocal(sqrt(area)));
       if ((scale.x < (double) *width) || (scale.y < (double) *height))
         {
-          *width=(unsigned long) (former_width*PerceptibleReciprocal(
+          *width=(unsigned long) (stasis_width*PerceptibleReciprocal(
             distance*PerceptibleReciprocal(sqrt(area))));
-          *height=(unsigned long) (former_height*PerceptibleReciprocal(
+          *height=(unsigned long) (stasis_height*PerceptibleReciprocal(
             distance*PerceptibleReciprocal(sqrt(area))));
         }
-      former_width=(*width);
-      former_height=(*height);
     }
   return(flags);
 }

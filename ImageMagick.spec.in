@@ -34,7 +34,7 @@ Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 %description
 ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, JPEG-2000, GIF, TIFF, DPX, EXR, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
 
-The functionality of ImageMagick is typically utilized from the command-line or you can use the features from programs written in your favorite language. Choose from these interfaces: G2F (Ada), MagickCore (C), MagickWand (C), ChMagick (Ch), ImageMagickObject (COM+), Magick++ (C++), JMagick (Java), L-Magick (Lisp), Lua (LuaJIT), NMagick (Neko/haXe), Magick.NET (.NET), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), IMagick (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and automagically.
+The functionality of ImageMagick is typically utilized from the command-line or you can use the features from programs written in your favorite language. Choose from these interfaces: G2F (Ada), MagickCore (C), MagickWand (C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), Lua (LuaJIT), NMagick (Neko/haXe), Magick.NET (.NET), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), IMagick (PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and automagically.
 
 ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.
 
@@ -136,7 +136,7 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
 
 %build
 autoconf -f -i
-export CFLAGS="%{optflags} -DIMPNG_SETJMP_IS_THREAD_SAFE"
+export CFLAGS="%{optflags}"
 %configure --enable-shared \
         --disable-static \
         --with-modules \
@@ -224,7 +224,7 @@ export LD_LIBRARY_PATH=%{buildroot}/%{_libdir}
 %ldconfig_scriptlets c++
 
 %files
-%doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt ChangeLog
+%doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt ChangeLog.md
 %{_bindir}/[a-z]*
 %{_mandir}/man[145]/[a-z]*
 %{_mandir}/man1/%{name}.*

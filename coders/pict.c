@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -750,7 +750,6 @@ static MagickBooleanType IsPICT(const unsigned char *magick,const size_t length)
   return(MagickFalse);
 }
 
-#if !defined(macintosh)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1147,7 +1146,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               *p;
 
             size_t
-              j;
+              k;
 
             ssize_t
               bytes_per_line;
@@ -1212,14 +1211,14 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   {
                     for (i=0; i < (ssize_t) tile_image->colors; i++)
                     {
-                      j=ReadBlobMSBShort(image) % tile_image->colors;
+                      k=ReadBlobMSBShort(image) % tile_image->colors;
                       if ((flags & 0x8000) != 0)
-                        j=(size_t) i;
-                      tile_image->colormap[j].red=(Quantum)
+                        k=(size_t) i;
+                      tile_image->colormap[k].red=(Quantum)
                         ScaleShortToQuantum(ReadBlobMSBShort(image));
-                      tile_image->colormap[j].green=(Quantum)
+                      tile_image->colormap[k].green=(Quantum)
                         ScaleShortToQuantum(ReadBlobMSBShort(image));
-                      tile_image->colormap[j].blue=(Quantum)
+                      tile_image->colormap[k].blue=(Quantum)
                         ScaleShortToQuantum(ReadBlobMSBShort(image));
                     }
                   }
@@ -1300,14 +1299,14 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                     if (pixmap.bits_per_pixel == 16)
                       {
                         i=(ssize_t) (*p++);
-                        j=(size_t) (*p);
+                        k=(size_t) (*p);
                         SetPixelRed(tile_image,ScaleCharToQuantum(
                           (unsigned char) ((i & 0x7c) << 1)),q);
                         SetPixelGreen(tile_image,ScaleCharToQuantum(
                           (unsigned char) (((i & 0x03) << 6) |
-                          ((j & 0xe0) >> 2))),q);
+                          ((k & 0xe0) >> 2))),q);
                         SetPixelBlue(tile_image,ScaleCharToQuantum(
-                          (unsigned char) ((j & 0x1f) << 3)),q);
+                          (unsigned char) ((k & 0x1f) << 3)),q);
                       }
                     else
                       if (tile_image->alpha_trait == UndefinedPixelTrait)
@@ -1470,9 +1469,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             const void
               *stream;
 
-            ssize_t
-              count;
-
             unsigned char
               *pixels;
 
@@ -1551,7 +1547,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

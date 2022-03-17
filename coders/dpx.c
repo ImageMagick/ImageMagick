@@ -17,7 +17,7 @@
 %                                March 2001                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1244,6 +1244,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     SetQuantumQuantum(quantum_info,32);
     SetQuantumPack(quantum_info,dpx.image.image_element[n].packing == 0 ?
       MagickTrue : MagickFalse);
+    status=SetQuantumPad(image,quantum_info,0);
     pixels=GetQuantumPixels(quantum_info);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
@@ -1306,6 +1307,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
         image=SyncNextImageInList(image);
+        image->columns=dpx.image.pixels_per_line;
+        image->rows=dpx.image.lines_per_element;
         status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
           GetBlobSize(image));
         if (status == MagickFalse)
@@ -1525,10 +1528,11 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   if (image_info->sampling_factor != (char *) NULL)
     {
       flags=ParseGeometry(image_info->sampling_factor,&geometry_info);
-      horizontal_factor=(ssize_t) geometry_info.rho;
-      vertical_factor=(ssize_t) geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        vertical_factor=horizontal_factor;
+      if ((flags & RhoValue) != 0)
+        horizontal_factor=(ssize_t) geometry_info.rho;
+      vertical_factor=horizontal_factor;
+      if ((flags & SigmaValue) != 0)
+        vertical_factor=(ssize_t) geometry_info.sigma;
       if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
           (horizontal_factor != 4) && (vertical_factor != 1) &&
           (vertical_factor != 2) && (vertical_factor != 4))
@@ -1665,18 +1669,12 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
         }
         default:
         {
-          ImageType
-            type;
-
           dpx.image.image_element[i].descriptor=RGBComponentType;
           if (image->alpha_trait != UndefinedPixelTrait)
             dpx.image.image_element[i].descriptor=RGBAComponentType;
-          type=UndefinedType;
-           if (image_info->type != TrueColorType)
-             type=IdentifyImageCoderType(image,exception);
           if ((image_info->type != TrueColorType) &&
               (image->alpha_trait == UndefinedPixelTrait) &&
-              (IsGrayImageType(type) != MagickFalse))
+              (IdentifyImageCoderGray(image,exception) != MagickFalse))
             dpx.image.image_element[i].descriptor=LumaComponentType;
           break;
         }

@@ -17,7 +17,7 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -2946,6 +2946,97 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           string=GetImageProperty(image,"convex-hull",exception);
           break;
         }
+      if (LocaleCompare("convex-hull:extreme-points",property) == 0)
+        {
+          char
+            *points;
+
+          PointInfo
+            extreme,
+            *convex_hull;
+
+          ssize_t
+            n;
+
+          size_t
+            number_points;
+
+          WarnNoImageReturn("\"%%[%s]\"",property);
+          convex_hull=GetImageConvexHull(image,&number_points,exception);
+          if (convex_hull == (PointInfo *) NULL)
+            break;
+          points=AcquireString("");
+          extreme=convex_hull[0];  /* top */
+          for (n=0; n < (ssize_t) number_points; n++)
+          {
+            if (convex_hull[n].y < extreme.y)
+              {
+                extreme=convex_hull[n];
+                continue; 
+              }
+            if (convex_hull[n].y != extreme.y)
+              continue; 
+            if (convex_hull[n].x < extreme.x)
+              extreme=convex_hull[n];
+          }
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            extreme.x,extreme.y);
+          (void) ConcatenateString(&points,value);
+          extreme=convex_hull[0]; /* right */
+          for (n=0; n < (ssize_t) number_points; n++)
+          {
+            if (convex_hull[n].x > extreme.x)
+              {
+                extreme=convex_hull[n];
+                continue; 
+              }
+            if (convex_hull[n].x != extreme.x)
+              continue; 
+            if (convex_hull[n].y < extreme.y)
+              extreme=convex_hull[n];
+          }
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            extreme.x,extreme.y);
+          (void) ConcatenateString(&points,value);
+          extreme=convex_hull[0];  /* bottom */
+          for (n=0; n < (ssize_t) number_points; n++)
+          {
+            if (convex_hull[n].y > extreme.y)
+              {
+                extreme=convex_hull[n];
+                continue; 
+              }
+            if (convex_hull[n].y != extreme.y)
+              continue; 
+            if (convex_hull[n].x > extreme.x)
+              extreme=convex_hull[n];
+          }
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            extreme.x,extreme.y);
+          (void) ConcatenateString(&points,value);
+          extreme=convex_hull[0];  /* left */
+          for (n=0; n < (ssize_t) number_points; n++)
+          {
+            if (convex_hull[n].x < extreme.x)
+              {
+                extreme=convex_hull[n];
+                continue; 
+              }
+            if (convex_hull[n].x != extreme.x)
+              continue; 
+            if (convex_hull[n].y > extreme.y)
+              extreme=convex_hull[n];
+          }
+          (void) FormatLocaleString(value,MagickPathExtent,"%g,%g ",
+            extreme.x,extreme.y);
+          (void) ConcatenateString(&points,value);
+          convex_hull=(PointInfo *) RelinquishMagickMemory(convex_hull);
+          (void) SetImageProperty(image,"convex-hull:extreme-points",points,
+            exception);
+          points=DestroyString(points);
+          string=GetImageProperty(image,"convex-hull:extreme-points",exception);
+          break;
+        }
       if (LocaleCompare("copyright",property) == 0)
         {
           (void) CopyMagickString(value,GetMagickCopyright(),MagickPathExtent);
@@ -3177,7 +3268,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
       if (LocaleNCompare("papersize:",property,10) == 0)
         {
-          const char
+          char
             *papersize;
 
           WarnNoImageReturn("\"%%[%s]\"",property);
@@ -3186,11 +3277,12 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
           if (papersize != (const char *) NULL)
             {
               RectangleInfo
-                page;
+                page = { 0, 0, 0, 0 };
 
               (void) ParseAbsoluteGeometry(papersize,&page);
               (void) FormatLocaleString(value,MagickPathExtent,"%.20gx%.20g",
                 (double) page.width,(double) page.height);
+              papersize=DestroyString(papersize);
             }
           break;
         }
@@ -3643,7 +3735,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
       (void) SetImageBackgroundColor(property_image,exception);
     }
   interpret_text=AcquireString(embed_text); /* new string with extra space */
-  extent=MagickPathExtent;                     /* allocated space in string */
+  extent=MagickPathExtent;                  /* allocated space in string */
   number=MagickFalse;                       /* is last char a number? */
   for (q=interpret_text; *p!='\0'; number=isdigit((int) ((unsigned char) *p)) ? MagickTrue : MagickFalse,p++)
   {
@@ -3847,6 +3939,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             FX - value calculator.
           */
           fx_info=AcquireFxInfo(property_image,pattern+3,exception);
+          if (fx_info == (FxInfo *) NULL)
+            continue;
           status=FxEvaluateChannelExpression(fx_info,CompositePixelChannel,0,0,
             &value,exception);
           fx_info=DestroyFxInfo(fx_info);
@@ -3880,6 +3974,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           */
           GetPixelInfo(property_image,&pixel);
           fx_info=AcquireFxInfo(property_image,pattern+4,exception);
+          if (fx_info == (FxInfo *) NULL)
+            continue;
           status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
             &value,exception);
           pixel.red=(double) QuantumRange*value;
@@ -3928,6 +4024,8 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
           */
           GetPixelInfo(property_image,&pixel);
           fx_info=AcquireFxInfo(property_image,pattern+6,exception);
+          if (fx_info == (FxInfo *) NULL)
+            continue;
           status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
             &value,exception);
           pixel.red=(double) QuantumRange*value;

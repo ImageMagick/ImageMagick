@@ -1,4 +1,4 @@
-#  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+#  Copyright © 1999 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -31,14 +31,13 @@ m4_define([magick_lib_version_number],
           [magick_major_version,magick_minor_version,magick_micro_version,magick_patchlevel_version])
 m4_define([magick_git_revision],
           m4_esyscmd([
-            c=$(git log --full-history --format=tformat:. HEAD | wc -l)
             h=$(git rev-parse --short HEAD)
-            d=$(date +%Y%m%d)
-            printf %s "$c:$h:$d"
+            d=$(git log -1 --format=:%cd --date=format:%Y%m%d || date -u +%Y%m%d -r ./ChangeLog.md)
+            printf %s "$h$d"
           ]))
 m4_define([magick_release_date],
           m4_esyscmd([
-            d=$(date +%F -r ./ChangeLog)
+            d=$(git log -1 --format=%cd --date=format:%Y-%m-%d || date -u +%F -r ./ChangeLog.md)
             printf %s "$d"
           ]))
 
@@ -60,7 +59,7 @@ AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([foreign no-define color-tests parallel-tests -Wall -Wno-portability subdir-objects dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
 
 AM_SILENT_RULES([yes])
-AC_SUBST([CONFIGURE_DEPENDENCIES],["$CONFIGURE_DEPENDENCIES \$(top_srcdir)/ChangeLog \$(top_srcdir)/m4/version.m4"])
+AC_SUBST([CONFIGURE_DEPENDENCIES],["$CONFIGURE_DEPENDENCIES \$(top_srcdir)/ChangeLog.md \$(top_srcdir)/m4/version.m4"])
 
 #
 # Save initial user-tunable values
@@ -308,7 +307,7 @@ gl_LD_VERSION_SCRIPT
 # Enable run-time checking.
 #
 AC_ARG_ENABLE([bounds-checking],
-    [AC_HELP_STRING([--enable-bounds-checking],
+    [AS_HELP_STRING([--enable-bounds-checking],
                     [enable run-time bounds-checking])],
     [enable_bounds_checking=$enableval],
     [enable_bounds_checking='no'])
@@ -391,7 +390,7 @@ case "$host" in
     CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=0"
     dnl OS X universal binary support, requires --disable-dependency-tracking
     AC_ARG_ENABLE([osx-universal-binary],
-        AC_HELP_STRING([--enable-osx-universal-binary],
+        AS_HELP_STRING([--enable-osx-universal-binary],
            [build universal binary on OS X [[default=no]]]),
         [build_osxuniversal="${enableval}"], [build_osxuniversal=no])
 
@@ -413,7 +412,7 @@ esac
 # ARCH specific include directory
 #
 AC_ARG_WITH([includearch-dir],
-    [AC_HELP_STRING([--includearch-dir=DIR],
+    [AS_HELP_STRING([--includearch-dir=DIR],
                     [ARCH specific include directory])],
                     [includearch_dir=$withval],
                     [includearch_dir=$INCLUDE_DIR])
@@ -425,7 +424,7 @@ AC_SUBST([INCLUDEARCH_DIR])
 # ARCH specific configuration directory
 #
 AC_ARG_WITH([sharearch-dir],
-    [AC_HELP_STRING([--sharearch-dir=DIR],
+    [AS_HELP_STRING([--sharearch-dir=DIR],
                     [ARCH specific config directory])],
                     [sharearch_dir=$withval],
                     [sharearch_dir="${LIB_DIR}"])
@@ -443,7 +442,7 @@ AC_SUBST([pkgconfigdir])
 # Enable support for POSIX thread APIs
 #
 AC_ARG_WITH([threads],
-    [AC_HELP_STRING([--without-threads], [disable POSIX threads API support])],
+    [AS_HELP_STRING([--without-threads], [disable POSIX threads API support])],
     [with_threads=$withval],
     [with_threads='yes'])
 
@@ -578,7 +577,7 @@ AM_CONDITIONAL([WITH_SHARED_LIBS],[test "${libtool_build_shared_libs}" = 'yes'])
 #
 build_modules='no'
 AC_ARG_WITH([modules],
-    [AC_HELP_STRING([--with-modules],
+    [AS_HELP_STRING([--with-modules],
                     [enable building dynamically loadable modules])],
     [with_modules=$withval],
     [with_modules='no'])
@@ -601,13 +600,13 @@ AM_CONDITIONAL([WITH_MODULES],[test "$build_modules" != 'no'])
 # Enable build using delegate libraries built in subdirectories rather than installed
 # delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms lzma png tiff ttf wmf xml zlib zip)
 AC_ARG_ENABLE([delegate-build],
-    [AC_HELP_STRING([--enable-delegate-build],
+    [AS_HELP_STRING([--enable-delegate-build],
                     [look for delegate libraries in build directory])],
     [enable_delegate_build=$enableval],
     [enable_delegate_build='no'])
 
 AC_ARG_ENABLE([deprecated],
-    [AC_HELP_STRING([--disable-deprecated],
+    [AS_HELP_STRING([--disable-deprecated],
                     [exclude deprecated methods in MagickCore and MagickWand APIs])],
     [enable_deprecated=$enableval],
     [enable_deprecated='no'])
@@ -621,7 +620,7 @@ fi
 # Build a version of ImageMagick which operates uninstalled.
 # Used to build distributions located via MAGICK_HOME / executable path
 AC_ARG_ENABLE([installed],
-    [AC_HELP_STRING([--disable-installed],
+    [AS_HELP_STRING([--disable-installed],
                     [Formally install ImageMagick under PREFIX])],
     [enable_installed=$enableval],
     [enable_installed='yes'])
@@ -634,7 +633,7 @@ fi
 
 # Permit enciphering and deciphering image pixels.
 AC_ARG_ENABLE([cipher],
-    [AC_HELP_STRING([--disable-cipher],
+    [AS_HELP_STRING([--disable-cipher],
                     [disable enciphering and deciphering image pixels])],
     [enable_cipher=$enableval],
     [enable_cipher='yes'])
@@ -646,7 +645,7 @@ fi
 
 # Build a zero-configuration version of ImageMagick.
 AC_ARG_ENABLE([zero-configuration],
-    [AC_HELP_STRING([--enable-zero-configuration],
+    [AS_HELP_STRING([--enable-zero-configuration],
                     [enable self-contained, embeddable, zero-configuration ImageMagick])],
     [enable_zero_configuration=$enableval],
     [enable_zero_configuration='no'])
@@ -659,7 +658,7 @@ AM_CONDITIONAL([MAGICKCORE_ZERO_CONFIGURATION_SUPPORT],[test "$enable_zero_confi
 
 # Build a high dynamic range version of ImageMagick.
 AC_ARG_ENABLE([hdri],
-    [AC_HELP_STRING([--enable-hdri],
+    [AS_HELP_STRING([--enable-hdri],
                     [accurately represent the wide range of intensity levels found in real scenes])],
     [enable_hdri=$enableval],
     [enable_hdri='yes'])
@@ -680,7 +679,7 @@ CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 
 # Enable pipes (|) in filenames.
 AC_ARG_ENABLE([pipes],
-    [AC_HELP_STRING([--enable-pipes],
+    [AS_HELP_STRING([--enable-pipes],
                     [enable pipes (|) in filenames])],
     [enable_pipes=$enableval],
     [enable_pipes='no'])
@@ -690,58 +689,47 @@ if test "$enable_pipes" = 'yes'; then
     MAGICK_FEATURES="Pipes $MAGICK_FEATURES"
 fi
 
-# Build a version of ImageMagick with assert statements.
-AC_ARG_ENABLE([assert],
-    [AC_HELP_STRING([--disable-assert],
-                    [disable assert() statements in build])],
-    [enable_assert=$enableval],
-    [enable_assert='yes'])
-
-if test "$enable_assert" = 'no'; then
-    AC_DEFINE([NDEBUG],[1],[Turn off assert statements])
-fi
-
 # Don't emit "rebuild rules" for configure, Makefile.ins, etc.
 AM_MAINTAINER_MODE
 
 # Enable hugepages support
 AC_ARG_ENABLE([hugepages],
-    [AC_HELP_STRING([--enable-hugepages],
+    [AS_HELP_STRING([--enable-hugepages],
                     [enable 'huge pages' support])],
     [enable_hugepages=$enableval],
     [enable_hugepages='no'])
 
 # Enable ccmalloc memory debugging support
 AC_ARG_ENABLE([ccmalloc],
-    [AC_HELP_STRING([--enable-ccmalloc],
+    [AS_HELP_STRING([--enable-ccmalloc],
                     [enable 'ccmalloc' memory debug support])],
     [enable_ccmalloc=$enableval],
     [enable_ccmalloc='no'])
 
 # Enable Electric Fence memory debugging support
 AC_ARG_ENABLE([efence],
-    [AC_HELP_STRING([--enable-efence],
+    [AS_HELP_STRING([--enable-efence],
                     [enable 'efence' memory debug support])],
     [enable_efence=$enableval],
     [enable_efence='no'])
 
 # Enable prof-based profiling support
 AC_ARG_ENABLE([prof],
-    [AC_HELP_STRING([--enable-prof],
+    [AS_HELP_STRING([--enable-prof],
                     [enable 'prof' profiling support])],
     [enable_prof=$enableval],
     [enable_prof='no'])
 
 # Enable gprof-based profiling support
 AC_ARG_ENABLE([gprof],
-    [AC_HELP_STRING([--enable-gprof],
+    [AS_HELP_STRING([--enable-gprof],
                     [enable 'gprof' profiling support])],
     [enable_gprof=$enableval],
     [enable_gprof='no'])
 
 # Enable gcov-based profiling support
 AC_ARG_ENABLE([gcov],
-    [AC_HELP_STRING([--enable-gcov],
+    [AS_HELP_STRING([--enable-gcov],
                     [enable 'gcov' profiling support])],
     [enable_gcov=$enableval],
     [enable_gcov='no'])
@@ -756,7 +744,7 @@ fi
 
 # Magick API method prefix
 AC_ARG_WITH([method-prefix],
-    [AC_HELP_STRING([--with-method-prefix=PREFIX],
+    [AS_HELP_STRING([--with-method-prefix=PREFIX],
                     [prefix MagickCore API methods])],
     [with_method_prefix=$withval],
     [with_method_prefix='no'])
@@ -782,7 +770,7 @@ AM_CONDITIONAL([WITH_UTILITIES],[test "$with_utilities" = 'yes'])
 
 # Number of bits in a Quantum
 AC_ARG_WITH([quantum-depth],
-    [AC_HELP_STRING([--with-quantum-depth=DEPTH],
+    [AS_HELP_STRING([--with-quantum-depth=DEPTH],
                     [number of bits in a pixel quantum (default 16)])],
     [with_quantum_depth=$withval],
     [with_quantum_depth=16])
@@ -814,7 +802,7 @@ AC_SUBST([MAGICK_ABI_SUFFIX])
 
 # Set pixel cache threshold
 AC_ARG_WITH([cache],
-    [AC_HELP_STRING([--with-cache=THRESHOLD],
+    [AS_HELP_STRING([--with-cache=THRESHOLD],
                     [set pixel cache threshhold in MB (default available memory)])],
     [with_cache=$withval],
     [with_cache=''])
@@ -826,35 +814,35 @@ fi
 
 # Disable/Enable support for full delegate paths
 AC_ARG_WITH([frozenpaths],
-    [AC_HELP_STRING([--with-frozenpaths],
+    [AS_HELP_STRING([--with-frozenpaths],
                     [freeze delegate paths])],
     [with_frozenpaths=$withval],
     [with_frozenpaths='no'])
 
 # Enable build/install of Magick++
 AC_ARG_WITH([magick-plus-plus],
-    [AC_HELP_STRING([--without-magick-plus-plus],
+    [AS_HELP_STRING([--without-magick-plus-plus],
                     [disable build/install of Magick++])],
     [with_magick_plus_plus=$withval],
     [with_magick_plus_plus='yes'])
 
 # Encode the this name into the shared library.
 AC_ARG_WITH([package-release-name],
-    [AC_HELP_STRING([--with-package-release-name=NAME],
+    [AS_HELP_STRING([--with-package-release-name=NAME],
                     [encode this name into the shared library])],
 [MAGICK_LT_RELEASE_OPTS="-release $withval"])
 AC_SUBST([MAGICK_LT_RELEASE_OPTS])
 
 # Disable build/install of PerlMagick.
 AC_ARG_WITH([perl],
-    [AC_HELP_STRING([--with-perl],
+    [AS_HELP_STRING([--with-perl],
                     [enable build/install of PerlMagick])],
     [with_perl=$withval],
     [with_perl='no'])
 
 # Options to pass when configuring PerlMagick
 AC_ARG_WITH([perl-options],
-    [AC_HELP_STRING([--with-perl-options=OPTIONS],
+    [AS_HELP_STRING([--with-perl-options=OPTIONS],
                     [options to pass on command-line when generating PerlMagick build file])],
 PERL_MAKE_OPTIONS=$withval)
 AC_SUBST([PERL_MAKE_OPTIONS])
@@ -891,7 +879,7 @@ fi
 # Specify path to shared libstdc++ if not in normal location
 #
 AC_ARG_WITH([libstdc],
-    [AC_HELP_STRING([--with-libstdc=DIR],
+    [AS_HELP_STRING([--with-libstdc=DIR],
                     [ use libstdc++ in DIR (for GNU C++)])],
     [with_libstdc=$withval],
     [with_libstdc=''])
@@ -1431,7 +1419,7 @@ dnl ===========================================================================
 #
 
 AC_ARG_WITH([bzlib],
-    [AC_HELP_STRING([--without-bzlib],
+    [AS_HELP_STRING([--without-bzlib],
                     [disable BZLIB support])],
     [with_bzlib=$withval],
     [with_bzlib='yes'])
@@ -1535,7 +1523,7 @@ dnl ===========================================================================
 # Check for ZIP
 #
 AC_ARG_WITH([zip],
-    [AC_HELP_STRING([--without-zip],
+    [AS_HELP_STRING([--without-zip],
                     [disable ZIP support])],
     [with_zip=$withval],
     [with_zip='yes'])
@@ -1570,7 +1558,7 @@ dnl ===========================================================================
 # Check for ZLIB
 #
 AC_ARG_WITH([zlib],
-    [AC_HELP_STRING([--without-zlib],
+    [AS_HELP_STRING([--without-zlib],
                     [disable ZLIB support])],
     [with_zlib=$withval],
     [with_zlib='yes'])
@@ -1605,7 +1593,7 @@ dnl ===========================================================================
 # Check for ZSTD
 #
 AC_ARG_WITH([zstd],
-    [AC_HELP_STRING([--without-zstd],
+    [AS_HELP_STRING([--without-zstd],
                     [disable ZSTD support])],
     [with_zstd=$withval],
     [with_zstd='yes'])
@@ -1690,7 +1678,7 @@ dnl ===========================================================================
 # Set Apple font directory.
 #
 AC_ARG_WITH([apple-font-dir],
-    [AC_HELP_STRING([--with-apple-font-dir=DIR],
+    [AS_HELP_STRING([--with-apple-font-dir=DIR],
                     [Apple font directory])],
     [with_apple_font_dir=$withval],
     [with_apple_font_dir='default'])
@@ -1705,7 +1693,7 @@ dnl ===========================================================================
 # Check for Autotrace delegate library.
 #
 AC_ARG_WITH([autotrace],
-    [AC_HELP_STRING([--with-autotrace],
+    [AS_HELP_STRING([--with-autotrace],
                     [enable autotrace support])],
         [with_autotrace=$withval],
         [with_autotrace='no'])
@@ -1739,7 +1727,7 @@ dnl ===========================================================================
 # Check for Display Postscript delegate library.
 #
 AC_ARG_WITH([dps],
-    [AC_HELP_STRING([--without-dps],
+    [AS_HELP_STRING([--without-dps],
                     [disable Display Postscript support])],
     [with_dps=$withval],
     [with_dps='yes'])
@@ -1808,7 +1796,7 @@ dnl ===========================================================================
 # Set DejaVu font directory.
 #
 AC_ARG_WITH([dejavu-font-dir],
-    [AC_HELP_STRING([--with-dejavu-font-dir=DIR],
+    [AS_HELP_STRING([--with-dejavu-font-dir=DIR],
                     [DejaVu font directory])],
     [with_dejavu_font_dir=$withval],
     [with_dejavu_font_dir='default'])
@@ -1823,7 +1811,7 @@ dnl ===========================================================================
 # Check for FFTW delegate library.
 #
 AC_ARG_WITH([fftw],
-    [AC_HELP_STRING([--with-fftw],
+    [AS_HELP_STRING([--with-fftw],
                     [enable FFTW support])],
     [with_fftw=$withval],
     [with_fftw='no'])
@@ -1859,10 +1847,10 @@ dnl ===========================================================================
 # Check for FLIF delegate library.
 #
 AC_ARG_WITH([flif],
-    [AC_HELP_STRING([--without-flif],
-                    [disable FLIF support])],
+    [AS_HELP_STRING([--with-flif],
+                    [enable FLIF support])],
     [with_flif=$withval],
-    [with_flif='yes'])
+    [with_flif='no'])
 
 if test "$with_flif" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-flif=$with_flif "
@@ -1903,7 +1891,7 @@ dnl ===========================================================================
 # Check for FlashPIX delegate library.
 #
 AC_ARG_WITH([fpx],
-    [AC_HELP_STRING([--without-fpx],
+    [AS_HELP_STRING([--without-fpx],
                     [disable FlashPIX support])],
     [with_fpx=$withval],
     [with_fpx='yes'])
@@ -1950,7 +1938,7 @@ dnl ===========================================================================
 # Check for DJVU delegate library.
 #
 AC_ARG_WITH([djvu],
-    [AC_HELP_STRING([--without-djvu],
+    [AS_HELP_STRING([--without-djvu],
                     [disable DjVu support])],
     [with_djvu=$withval],
     [with_djvu='yes'])
@@ -1986,7 +1974,7 @@ dnl ===========================================================================
 # Check for fontconfig delegate library.
 #
 AC_ARG_WITH([fontconfig],
-    [AC_HELP_STRING([--without-fontconfig],
+    [AS_HELP_STRING([--without-fontconfig],
                     [disable fontconfig support])],
         [with_fontconfig=$withval],
         [with_fontconfig='yes'])
@@ -2020,7 +2008,7 @@ dnl ===========================================================================
 # Check for the Freetype delegate library.
 #
 AC_ARG_WITH([freetype],
-    [AC_HELP_STRING([--without-freetype],
+    [AS_HELP_STRING([--without-freetype],
                     [disable Freetype support])],
     [with_freetype=$withval],
     [with_freetype='yes'])
@@ -2057,7 +2045,7 @@ dnl ===========================================================================
 # Check for the raqm delegate library.
 #
 AC_ARG_WITH([raqm],
-    [AC_HELP_STRING([--without-raqm],
+    [AS_HELP_STRING([--without-raqm],
                     [disable Raqm support])],
     [with_raqm=$withval],
     [with_raqm='yes'])
@@ -2144,7 +2132,7 @@ dnl ===========================================================================
 # or -framework Ghostscript
 
 AC_ARG_WITH([gslib],
-    [AC_HELP_STRING([--with-gslib],
+    [AS_HELP_STRING([--with-gslib],
                     [enable Ghostscript library support])],
     [with_gslib=$withval],
     [with_gslib='no'])
@@ -2196,7 +2184,7 @@ AC_SUBST([GS_LIBS])
 
 # Set default font search path
 AC_ARG_WITH([fontpath],
-    [AC_HELP_STRING([--with-fontpath=DIR],
+    [AS_HELP_STRING([--with-fontpath=DIR],
                     [prepend to default font search path])],
     [with_fontpath=$withval],
     [with_fontpath=''])
@@ -2212,7 +2200,7 @@ fi
 
 # Set Ghostscript font directory
 AC_ARG_WITH([gs-font-dir],
-    [AC_HELP_STRING([--with-gs-font-dir=DIR],
+    [AS_HELP_STRING([--with-gs-font-dir=DIR],
                     [Ghostscript font directory])],
     [with_gs_font_dir=$withval],
     [with_gs_font_dir='default'])
@@ -2227,7 +2215,7 @@ dnl ===========================================================================
 # Check for GVC delegate library.
 #
 AC_ARG_WITH([gvc],
-    [AC_HELP_STRING([--with-gvc],
+    [AS_HELP_STRING([--with-gvc],
                     [enable GVC support])],
     [with_gvc=$withval],
     [with_gvc='yes'])
@@ -2258,7 +2246,7 @@ dnl ===========================================================================
 # Check for the HEIC delegate library.
 #
 AC_ARG_WITH([heic],
-    [AC_HELP_STRING([--without-heic],
+    [AS_HELP_STRING([--without-heic],
                     [disable HEIC support])],
     [with_heic=$withval],
     [with_heic='yes'])
@@ -2292,7 +2280,7 @@ dnl ===========================================================================
 # Check for JBIG delegate library.
 #
 AC_ARG_WITH([jbig],
-    [AC_HELP_STRING([--without-jbig],
+    [AS_HELP_STRING([--without-jbig],
                     [disable JBIG support])],
     [with_jbig=$withval],
     [with_jbig='yes'])
@@ -2333,7 +2321,7 @@ dnl ===========================================================================
 # Check for JPEG delegate library.
 #
 AC_ARG_WITH([jpeg],
-    [AC_HELP_STRING([--without-jpeg],
+    [AS_HELP_STRING([--without-jpeg],
                     [disable JPEG support])],
     [with_jpeg=$withval],
     [with_jpeg='yes'])
@@ -2381,54 +2369,28 @@ dnl ===========================================================================
 # Check for JPEG-XL delegate library.
 #
 AC_ARG_WITH([jxl],
-    [AC_HELP_STRING([--with-jxl],
+    [AS_HELP_STRING([--with-jxl],
                     [enable JPEG-XL support])],
     [with_jxl=$withval],
     [with_jxl='no'])
 
-if test "$with_jxl" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jxl=$with_jxl "
-fi
-if test "$enable_static" = 'yes'; then
-    if test "$with_utilities" = 'yes'; then
-        with_jxl='no'
-    fi
-fi
-
 # Check for the JPEG-XL library.
 have_jxl='no'
+JXL_CFLAGS=''
 JXL_LIBS=''
+JXL_PKG=''
 if test "$with_jxl" != 'no'; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  AC_MSG_CHECKING([for jpeg-xl])
+  PKG_CHECK_MODULES([JXL],[libjxl >= 0.6.1 libjxl_threads],[have_jxl=yes],[have_jxl=no])
   AC_MSG_RESULT([])
-  failed=0
-  passed=0
-  AC_CHECK_HEADER([jxl/decode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-  AC_CHECK_HEADER([jxl/encode.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-  # This check should be changed once we have a .pc file for the JPEG-XL library.
-  if test "$enable_static" != 'yes'; then
-    AC_CHECK_LIB([jxl],[JxlDecoderCreate],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-    AC_CHECK_LIB([jxl],[JxlEncoderSetBasicInfo],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-  fi
-
-  AC_MSG_CHECKING([if jpeg-xl package is complete])
-  if test $passed -gt 0; then
-      if test $failed -gt 0; then
-          AC_MSG_RESULT([no -- some components failed test])
-          have_jxl='no (failed tests)'
-      else
-          JXL_LIBS='-ljxl -ljxl_threads'
-          LIBS="$JXL_LIBS $LIBS"
-          AC_DEFINE([JXL_DELEGATE],[1],[Define if you have jpeg-xl library])
-          AC_MSG_RESULT([yes])
-          have_jxl='yes'
-      fi
-  else
-      AC_MSG_RESULT([no])
-  fi
 fi
+
+if test "$have_jxl" = 'yes'; then
+  AC_DEFINE([JXL_DELEGATE],[1],[Define if you have jpeg-xl library])
+fi
+
 AM_CONDITIONAL([JXL_DELEGATE],[test "$have_jxl" = 'yes'])
+AC_SUBST([JXL_CFLAGS])
 AC_SUBST([JXL_LIBS])
 
 dnl ===========================================================================
@@ -2477,7 +2439,7 @@ dnl ===========================================================================
 # Check for the OpenJP2 delegate library.
 #
 AC_ARG_WITH([openjp2],
-    [AC_HELP_STRING([--without-openjp2],
+    [AS_HELP_STRING([--without-openjp2],
                     [disable OpenJP2 support])],
     [with_openjp2=$withval],
     [with_openjp2='yes'])
@@ -2512,7 +2474,7 @@ dnl ===========================================================================
 # Check for the LQR (Liquid Rescale) delegate library.
 #
 AC_ARG_WITH([lqr],
-    [AC_HELP_STRING([--without-lqr],
+    [AS_HELP_STRING([--without-lqr],
                     [disable Liquid Rescale support])],
     [with_lqr=$withval],
     [with_lqr='yes'])
@@ -2575,7 +2537,7 @@ dnl ===========================================================================
 # Check for the OpenEXR delegate library.
 #
 AC_ARG_WITH([openexr],
-    [AC_HELP_STRING([--without-openexr],
+    [AS_HELP_STRING([--without-openexr],
                     [disable OpenEXR support])],
     [with_openexr=$withval],
     [with_openexr='yes'])
@@ -2609,7 +2571,7 @@ dnl ===========================================================================
 # Check for PANGO delegate library.
 #
 AC_ARG_WITH([pango],
-    [AC_HELP_STRING([--without-pango],
+    [AS_HELP_STRING([--without-pango],
                     [disable PANGO support])],
     [with_pango=$withval],
     [with_pango='yes'])
@@ -2652,7 +2614,7 @@ dnl ===========================================================================
 # Check for PNG delegate library.
 #
 AC_ARG_WITH([png],
-    [AC_HELP_STRING([--without-png], [disable PNG support])],
+    [AS_HELP_STRING([--without-png], [disable PNG support])],
     [with_png=$withval],
     [with_png='yes'])
 
@@ -2685,7 +2647,7 @@ dnl ===========================================================================
 # Check for the Raw delegate library.
 #
 AC_ARG_WITH([raw],
-    [AC_HELP_STRING([--without-raw],
+    [AS_HELP_STRING([--without-raw],
                     [disable Raw support])],
     [with_raw=$withval],
     [with_raw='yes'])
@@ -2719,7 +2681,7 @@ dnl ===========================================================================
 # Check for RSVG delegate library.
 #
 AC_ARG_WITH([rsvg],
-    [AC_HELP_STRING([--with-rsvg],
+    [AS_HELP_STRING([--with-rsvg],
                     [enable RSVG support])],
     [with_rsvg=$withval],
     [with_rsvg='no'])
@@ -2762,7 +2724,7 @@ dnl ===========================================================================
 # Check for TIFF delegate library.
 #
 AC_ARG_WITH([tiff],
-    [AC_HELP_STRING([--without-tiff],
+    [AS_HELP_STRING([--without-tiff],
                     [disable TIFF support])],
     [with_tiff=$withval],
     [with_tiff='yes'])
@@ -2816,7 +2778,7 @@ dnl ===========================================================================
 # Set URW Base35 font directory.
 #
 AC_ARG_WITH([urw-base35-font-dir],
-    [AC_HELP_STRING([--with-urw-base35-font-dir=DIR],
+    [AS_HELP_STRING([--with-urw-base35-font-dir=DIR],
                     [URW-base35 font directory])],
     [with_urw_base35_font_dir=$withval],
     [with_urw_base35_font_dir='default'])
@@ -2831,7 +2793,7 @@ dnl ===========================================================================
 # Check for the WEBP delegate library.
 #
 AC_ARG_WITH([webp],
-    [AC_HELP_STRING([--without-webp],
+    [AS_HELP_STRING([--without-webp],
                     [disable WEBP support])],
     [with_webp=$withval],
     [with_webp='yes'])
@@ -2878,7 +2840,7 @@ dnl ===========================================================================
 # Set Windows font directory.
 #
 AC_ARG_WITH([windows-font-dir],
-    [AC_HELP_STRING([--with-windows-font-dir=DIR],
+    [AS_HELP_STRING([--with-windows-font-dir=DIR],
                     [Windows font directory])],
     [with_windows_font_dir=$withval],
     [with_windows_font_dir='default'])
@@ -2893,7 +2855,7 @@ dnl ===========================================================================
 # Check for WMF delegate library.
 #
 AC_ARG_WITH([wmf],
-    [AC_HELP_STRING([--with-wmf],
+    [AS_HELP_STRING([--with-wmf],
                     [enable WMF support])],
     [with_wmf=$withval],
     [with_wmf=$build_modules])
@@ -2946,7 +2908,7 @@ dnl ===========================================================================
 # Check for XML delegate library.
 #
 AC_ARG_WITH([xml],
-    [AC_HELP_STRING([--without-xml],
+    [AS_HELP_STRING([--without-xml],
                     [disable XML support])],
     [with_xml=$withval],
     [with_xml='yes'])

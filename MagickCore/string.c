@@ -17,7 +17,7 @@
 %                               August 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the license.  You may  %
@@ -1093,11 +1093,7 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
       bytes=1024.0;
       units=bi_units;
     }
-#if defined(_MSC_VER) && (_MSC_VER == 1200)
-  extent=(double) ((MagickOffsetType) size);
-#else
   extent=(double) size;
-#endif
   (void) FormatLocaleString(p,MagickPathExtent,"%.*g",GetMagickPrecision(),
     extent);
   (void) FormatLocaleString(q,MagickPathExtent,"%.20g",extent);

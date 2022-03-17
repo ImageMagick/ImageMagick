@@ -1,6 +1,7 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Dirk Lemstra 2018
+// Copyright @ 2018 ImageMagick Studio LLC, a non-profit organization
+// dedicated to making software imaging solutions freely available.
 //
 // Implementation of the security policy.
 //
@@ -8,10 +9,11 @@
 #define MAGICKCORE_IMPLEMENTATION  1
 #define MAGICK_PLUSPLUS_IMPLEMENTATION 1
 
-#include "Magick++/SecurityPolicy.h"
-#include "Magick++/Exception.h"
 #include <string>
 #include <sstream>
+
+#include "Magick++/SecurityPolicy.h"
+#include "Magick++/Exception.h"
 
 using namespace std;
 

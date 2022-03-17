@@ -24,7 +24,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -190,7 +190,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   */
   status=MagickTrue;
   progress=0;
-  random_info=AcquireRandomInfoThreadSet();
+  random_info=AcquireRandomInfoTLS();
   image_view=AcquireVirtualCacheView(image,exception);
   noise_view=AcquireAuthenticCacheView(noise_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -269,7 +269,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   }
   noise_view=DestroyCacheView(noise_view);
   image_view=DestroyCacheView(image_view);
-  random_info=DestroyRandomInfoThreadSet(random_info);
+  random_info=DestroyRandomInfoTLS(random_info);
   if (status == MagickFalse)
     noise_image=DestroyImage(noise_image);
   return(noise_image);
@@ -612,7 +612,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(colorize_image,exception);
+  image_view=AcquireAuthenticCacheView(colorize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(colorize_image,colorize_image,colorize_image->rows,1)
@@ -846,26 +846,26 @@ MagickExport Image *ColorMatrixImage(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
-        v;
+        h;
 
       size_t
         height;
 
       GetPixelInfoPixel(image,p,&pixel);
       height=color_matrix->height > 6 ? 6UL : color_matrix->height;
-      for (v=0; v < (ssize_t) height; v++)
+      for (h=0; h < (ssize_t) height; h++)
       {
         double
           sum;
 
-        sum=ColorMatrix[v][0]*GetPixelRed(image,p)+ColorMatrix[v][1]*
-          GetPixelGreen(image,p)+ColorMatrix[v][2]*GetPixelBlue(image,p);
+        sum=ColorMatrix[h][0]*GetPixelRed(image,p)+ColorMatrix[h][1]*
+          GetPixelGreen(image,p)+ColorMatrix[h][2]*GetPixelBlue(image,p);
         if (image->colorspace == CMYKColorspace)
-          sum+=ColorMatrix[v][3]*GetPixelBlack(image,p);
+          sum+=ColorMatrix[h][3]*GetPixelBlack(image,p);
         if (image->alpha_trait != UndefinedPixelTrait)
-          sum+=ColorMatrix[v][4]*GetPixelAlpha(image,p);
-        sum+=QuantumRange*ColorMatrix[v][5];
-        switch (v)
+          sum+=ColorMatrix[h][4]*GetPixelAlpha(image,p);
+        sum+=QuantumRange*ColorMatrix[h][5];
+        switch (h)
         {
           case 0: pixel.red=sum; break;
           case 1: pixel.green=sum; break;
@@ -2203,7 +2203,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   if (random_image == (Image *) NULL)
     return((Image *) NULL);
   status=MagickTrue;
-  random_info=AcquireRandomInfoThreadSet();
+  random_info=AcquireRandomInfoTLS();
   random_view=AcquireAuthenticCacheView(random_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
@@ -2253,7 +2253,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       status=MagickFalse;
   }
   random_view=DestroyCacheView(random_view);
-  random_info=DestroyRandomInfoThreadSet(random_info);
+  random_info=DestroyRandomInfoTLS(random_info);
   if (status == MagickFalse)
     {
       random_image=DestroyImage(random_image);
@@ -3639,8 +3639,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         magnitude;
 
       ssize_t
-        x,
-        y;
+        x;
 
       low_pass=(size_t) (number_pixels*((level & 0x01)+1));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3657,13 +3656,13 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
           *magick_restrict q;
 
         ssize_t
-          x;
+          c;
 
         p=kernel+id*image->columns;
         q=pixels+y*image->columns;
-        HatTransform(q+high_pass,1,image->columns,(size_t) (1UL << level),p);
+        HatTransform(q+high_pass,1,image->columns,((size_t) 1UL << level),p);
         q+=low_pass;
-        for (x=0; x < (ssize_t) image->columns; x++)
+        for (c=0; c < (ssize_t) image->columns; c++)
           *q++=(*p++);
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3680,12 +3679,12 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
           *magick_restrict q;
 
         ssize_t
-          y;
+          r;
 
         p=kernel+id*image->rows;
         q=pixels+x+low_pass;
-        HatTransform(q,image->columns,image->rows,(size_t) (1UL << level),p);
-        for (y=0; y < (ssize_t) image->rows; y++)
+        HatTransform(q,image->columns,image->rows,((size_t) 1UL << level),p);
+        for (r=0; r < (ssize_t) image->rows; r++)
         {
           *q=(*p++);
           q+=image->columns;

@@ -1,5 +1,5 @@
 /*
-  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.  You may
@@ -139,13 +139,12 @@ extern "C" {
 # include <arm/limits.h>
 #endif
 
-#if defined(MAGICKCORE__OPENCL)
 #if defined(MAGICKCORE_HAVE_CL_CL_H)
 #  include <CL/cl.h>
+#  define MAGICKCORE_OPENCL_SUPPORT  1
 #endif
 #if defined(MAGICKCORE_HAVE_OPENCL_CL_H)
 #  include <OpenCL/cl.h>
-#endif
 #  define MAGICKCORE_OPENCL_SUPPORT  1
 #endif
 
@@ -226,13 +225,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #else
 # include <types.h>
 # include <stat.h>
-# if defined(macintosh)
-#  if !defined(DISABLE_SIOUX)
-#   include <SIOUX.h>
-#   include <console.h>
-#  endif
-#  include <unix.h>
-# endif
 # include "MagickCore/magick-type.h"
 #endif
 
@@ -312,9 +304,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  define SetNotifyHandlers \
     SetErrorHandler(NTErrorHandler); \
     SetWarningHandler(NTWarningHandler)
-#  if !defined(MAGICKCORE_HAVE_TIFFCONF_H)
-#    define HAVE_TIFFCONF_H
-#  endif
 # endif
 
 #endif

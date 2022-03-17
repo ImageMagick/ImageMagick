@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -293,8 +293,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
                 geometry_info.sigma+0.5));
           }
         else
-          image->delay=(size_t) CastDoubleToLong(floor(
-            geometry_info.rho+0.5));
+          image->delay=(size_t) CastDoubleToLong(floor(geometry_info.rho+0.5));
       if ((flags & SigmaValue) != 0)
         image->ticks_per_second=CastDoubleToLong(floor(
           geometry_info.sigma+0.5));
@@ -736,7 +735,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
       if (SetImageStorageClass(clip_mask,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
     }
-  if (inside == MagickFalse)
+  if (inside != MagickFalse)
     (void) NegateImage(clip_mask,MagickFalse,exception);
   (void) FormatLocaleString(clip_mask->magick_filename,MagickPathExtent,
     "8BIM:1999,2998:%s\nPS",pathname);
@@ -788,11 +787,12 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
 MagickExport Image *CloneImage(const Image *image,const size_t columns,
   const size_t rows,const MagickBooleanType detach,ExceptionInfo *exception)
 {
+  double
+    scale_x,
+    scale_y;
+
   Image
     *clone_image;
-
-  double
-    scale;
 
   size_t
     length;
@@ -887,21 +887,23 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       clone_image->cache=ReferencePixelCache(image->cache);
       return(clone_image);
     }
-  scale=1.0;
+  scale_x=1.0;
+  scale_y=1.0;
   if (image->columns != 0)
-    scale=(double) columns/(double) image->columns;
-  clone_image->page.width=(size_t) CastDoubleToLong(floor(scale*
-    image->page.width+0.5));
-  clone_image->page.x=CastDoubleToLong(ceil(scale*image->page.x-0.5));
-  clone_image->tile_offset.x=CastDoubleToLong(ceil(scale*
-    image->tile_offset.x-0.5));
-  scale=1.0;
+    scale_x=(double) columns/(double) image->columns;
   if (image->rows != 0)
-    scale=(double) rows/(double) image->rows;
-  clone_image->page.height=(size_t) CastDoubleToLong(floor(scale*
+    scale_y=(double) rows/(double) image->rows;
+  clone_image->page.width=(size_t) CastDoubleToLong(floor(scale_x*
+    image->page.width+0.5));
+  clone_image->page.height=(size_t) CastDoubleToLong(floor(scale_y*
     image->page.height+0.5));
-  clone_image->page.y=CastDoubleToLong(ceil(scale*image->page.y-0.5));
-  clone_image->tile_offset.y=CastDoubleToLong(ceil(scale*
+  if (MagickAbsoluteValue(scale_x-scale_y) < 2.0)
+    scale_x=scale_y=MagickMin(scale_x,scale_y);
+  clone_image->page.x=CastDoubleToLong(ceil(scale_x*image->page.x-0.5));
+  clone_image->tile_offset.x=CastDoubleToLong(ceil(scale_x*
+    image->tile_offset.x-0.5));
+  clone_image->page.y=CastDoubleToLong(ceil(scale_y*image->page.y-0.5));
+  clone_image->tile_offset.y=CastDoubleToLong(ceil(scale_y*
     image->tile_offset.y-0.5));
   clone_image->cache=ClonePixelCache(image->cache);
   if (SetImageExtent(clone_image,columns,rows,exception) == MagickFalse)
@@ -4052,10 +4054,11 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     {
       flags=ParseGeometry(option,&geometry_info);
-      image->chromaticity.blue_primary.x=geometry_info.rho;
-      image->chromaticity.blue_primary.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        image->chromaticity.blue_primary.y=image->chromaticity.blue_primary.x;
+      if ((flags & RhoValue) != 0)
+        image->chromaticity.blue_primary.x=geometry_info.rho;
+      image->chromaticity.blue_primary.y=image->chromaticity.blue_primary.x;
+      if ((flags & SigmaValue) != 0)
+        image->chromaticity.blue_primary.y=geometry_info.sigma;
     }
   option=GetImageOption(image_info,"bordercolor");
   if (option != (const char *) NULL)
@@ -4079,10 +4082,11 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     {
       flags=ParseGeometry(option,&geometry_info);
-      image->resolution.x=geometry_info.rho;
-      image->resolution.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        image->resolution.y=image->resolution.x;
+      if ((flags & RhoValue) != 0)
+        image->resolution.x=geometry_info.rho;
+      image->resolution.y=image->resolution.x;
+      if ((flags & SigmaValue) != 0)
+        image->resolution.y=geometry_info.sigma;
     }
   option=GetImageOption(image_info,"depth");
   if (option != (const char *) NULL)
@@ -4106,10 +4110,11 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     {
       flags=ParseGeometry(option,&geometry_info);
-      image->chromaticity.green_primary.x=geometry_info.rho;
-      image->chromaticity.green_primary.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        image->chromaticity.green_primary.y=image->chromaticity.green_primary.x;
+      if ((flags & RhoValue) != 0)
+        image->chromaticity.green_primary.x=geometry_info.rho;
+      image->chromaticity.green_primary.y=image->chromaticity.green_primary.x;
+      if ((flags & SigmaValue) != 0)
+        image->chromaticity.green_primary.y=geometry_info.sigma;
     }
   option=GetImageOption(image_info,"intent");
   if (option != (const char *) NULL)
@@ -4155,10 +4160,11 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     {
       flags=ParseGeometry(option,&geometry_info);
-      image->chromaticity.red_primary.x=geometry_info.rho;
-      image->chromaticity.red_primary.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        image->chromaticity.red_primary.y=image->chromaticity.red_primary.x;
+      if ((flags & RhoValue) != 0)
+        image->chromaticity.red_primary.x=geometry_info.rho;
+      image->chromaticity.red_primary.y=image->chromaticity.red_primary.x;
+      if ((flags & SigmaValue) != 0)
+        image->chromaticity.red_primary.y=geometry_info.sigma;
     }
   if (image_info->quality != UndefinedCompressionQuality)
     image->quality=image_info->quality;
@@ -4225,10 +4231,11 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       if (option != (const char *) NULL)
         {
           flags=ParseGeometry(option,&geometry_info);
-          image->resolution.x=geometry_info.rho;
-          image->resolution.y=geometry_info.sigma;
-          if ((flags & SigmaValue) == 0)
-            image->resolution.y=image->resolution.x;
+          if ((flags & RhoValue) != 0)
+            image->resolution.x=geometry_info.rho;
+          image->resolution.y=image->resolution.x;
+          if ((flags & SigmaValue) != 0)
+            image->resolution.y=geometry_info.sigma;
         }
     }
   option=GetImageOption(image_info,"virtual-pixel");
@@ -4240,10 +4247,11 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     {
       flags=ParseGeometry(option,&geometry_info);
-      image->chromaticity.white_point.x=geometry_info.rho;
-      image->chromaticity.white_point.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        image->chromaticity.white_point.y=image->chromaticity.white_point.x;
+      if ((flags & RhoValue) != 0)
+        image->chromaticity.white_point.x=geometry_info.rho;
+      image->chromaticity.white_point.y=image->chromaticity.white_point.x;
+      if ((flags & SigmaValue) != 0)
+        image->chromaticity.white_point.y=geometry_info.sigma;
     }
   /*
     Pointer to allow the lookup of pre-image artifact will fallback to a global

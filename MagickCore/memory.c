@@ -17,7 +17,7 @@
 %                                 July 1998                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1050,7 +1050,7 @@ MagickExport size_t GetMaxMemoryRequest(void)
       char
         *value;
 
-      max_memory_request=(size_t) MagickULLConstant(~0);
+      max_memory_request=MAGICK_SSIZE_MAX;
       value=GetPolicyValue("system:max-memory-request");
       if (value != (char *) NULL)
         {

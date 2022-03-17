@@ -1,40 +1,37 @@
 # ImageMagick
 
-[![Build Status](https://travis-ci.org/ImageMagick/ImageMagick.svg?branch=main)](https://travis-ci.org/ImageMagick/ImageMagick)
-![main](https://github.com/ImageMagick/ImageMagick/workflows/main/badge.svg)
+[![Build Status](https://github.com/ImageMagick/ImageMagick/workflows/main/badge.svg)](https://github.com/ImageMagick/ImageMagick/actions)
 [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/imagemagick.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:imagemagick)
+[![Donate](https://img.shields.io/badge/%24-donate-ff00ff.svg)](https://github.com/sponsors/ImageMagick)
 
 <p align="center">
 <img align="center" src="https://imagemagick.org/image/wizard.png" alt="ImageMagick logo" width="265"/>
 </p>
 
-Use [ImageMagick®](https://imagemagick.org/) to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, GIF, HEIC, TIFF, DPX, EXR, WebP, Postscript, PDF, and SVG. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
+Use [ImageMagick®](https://imagemagick.org/) to create, edit, compose, or convert digital images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, GIF, WebP, HEIC, SVG, PDF, DPX, EXR and TIFF. ImageMagick can resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
 
 #### What is ImageMagick?
 
-The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite programming language. Choose from these interfaces: G2F (Ada), MagickCore (C), MagickWand (C), ChMagick (Ch), ImageMagickObject (COM+), Magick++ (C++), JMagick (Java), L-Magick (Lisp), NMagick (Neko/haXe), MagickNet (.NET), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP (PHP), IMagick (PHP), PythonMagick (Python), magick (R), RMagick (Ruby), or TclMagick (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and automagically.
-
-ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.
-
 ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under a derived Apache 2.0 [license](https://imagemagick.org/script/license.php).
 
-The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes memory error and thread data race detection to prevent security vulnerabilities.
+ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.
+The current release is the ImageMagick 7.1.0 series. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
 
-The current release is the ImageMagick 7.0.11 series. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
-
-The authoritative ImageMagick web site is https://imagemagick.org. The authoritative source code repository is https://github.com/ImageMagick/ImageMagick.
-
-We continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org.
+The authoritative ImageMagick web site is https://imagemagick.org. The authoritative source code repository is https://github.com/ImageMagick/ImageMagick. We continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org.
 
 #### Features and Capabilities
 
-Here are just a few examples of what ImageMagick can do:
+Here are just a few [examples](https://imagemagick.org/script/examples.php) of what ImageMagick can do:
 
+* [Animation](https://imagemagick.org/script/command-line-options.php#bilateral-blur): non-linear, edge-preserving, and noise-reducing smoothing filter.
 * [Bilateral Blur](https://imagemagick.org/script/command-line-options.php#bilateral-blur): non-linear, edge-preserving, and noise-reducing smoothing filter.
 * [Color management](https://imagemagick.org/script/color-management.php): accurate color management with color profiles or in lieu of-- built-in gamma compression or expansion as demanded by the colorspace.
+* [Color thresholding](https://imagemagick.org/script/color-management.php) force all pixels in the color range to white otherwise black.
+* [Command-line processing](https://imagemagick.org/script/command-line-processing.php) utilize ImageMagick from the command-line.
 * [Complex text layout](https://en.wikipedia.org/wiki/Complex_text_layout) bidirectional text support and shaping.
 * [Composite](https://imagemagick.org/script/composite.php): overlap one image over another.
 * [Connected component labeling](https://imagemagick.org/script/connected-components.php): uniquely label connected regions in an image.
+* [Convex hull](https://imagemagick.org/script/convex-hull.php) smallest area convex polygon containing the image foreground objects. In addition, the minimum bounding box and unrotate angle are also generated.
 * [Decorate](https://legacy.imagemagick.org/Usage/crop/): add a border or frame to an image.
 * [Delineate image features](https://legacy.imagemagick.org/Usage/transform/#vision): Canny edge detection, mean-shift, Hough lines.
 * [Discrete Fourier transform](https://legacy.imagemagick.org/Usage/fourier/): implements the forward and inverse [DFT](http://en.wikipedia.org/wiki/Discrete_Fourier_transform).
@@ -45,6 +42,7 @@ Here are just a few examples of what ImageMagick can do:
 * [Generalized pixel distortion](https://legacy.imagemagick.org/Usage/distorts/): correct for, or induce image distortions including perspective.
 * [Heterogeneous distributed processing](https://imagemagick.org/script/architecture.php#distributed): certain algorithms are OpenCL-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.
 * [High dynamic-range images](https://imagemagick.org/script/high-dynamic-range.php): accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.
+* [Histogram equalization](https://imagemagick.org/script/clahe.php) use adaptive histogram equalization to improve contrast in images.
 * [Image cache](https://imagemagick.org/script/magick-cache.php): secure methods and tools to cache images, image sequences, video, audio or metadata in a local folder.
 * [Image calculator](https://imagemagick.org/script/fx.php): apply a mathematical expression to an image or image channels.
 * [Image gradients](https://imagemagick.org/script/gradient.php): create a gradual blend of one color whose shape is horizontal, vertical, circular, or elliptical.
@@ -54,6 +52,7 @@ Here are just a few examples of what ImageMagick can do:
 * [Montage](https://imagemagick.org/script/montage.php): juxtapose image thumbnails on an image canvas.
 * [Morphology of shapes](https://legacy.imagemagick.org/Usage/morphology/): extract features, describe shapes and recognize patterns in images.
 * [Motion picture support](https://imagemagick.org/script/motion-picture.php): read and write the common image formats used in digital film work.
+* [Noise and color reduction](https://legacy.imagemagick.org/Usage/transform/#vision) Kuwahara Filter, mean-shift.
 * [Perceptual hash](http://www.fmwconcepts.com/misc_tests/perceptual_hash_test_results_510/index.html): maps visually identical images to the same or similar hash-- useful in image retrieval, authentication, indexing, or copy detection as well as digital watermarking.
 * [Special effects](https://legacy.imagemagick.org/Usage/blur/): blur, sharpen, threshold, or tint an image.
 * [Text & comments](https://legacy.imagemagick.org/Usage/text/): insert descriptive or artistic text in an image.
@@ -72,9 +71,9 @@ Now that ImageMagick version 7 is released, we continue to maintain the legacy r
 
 Want more performance from ImageMagick? Try these options:
 
-* add more memory to your system, see the pixel cache;
-* add more cores to your system, see threads of execution support;
-* reduce lock contention with the tcmalloc memory allocation library;
-* push large images to a solid-state drive, see large image support.
+* add more memory to your system, see the [pixel cache](https://imagemagick.org/script/architecture.php#cache);
+* add more cores to your system, see [threads of execution support](https://imagemagick.org/script/architecture.php#threads);
+* reduce lock contention with the [tcmalloc](http://goog-perftools.sourceforge.net/doc/tcmalloc.html) memory allocation library;
+* push large images to a solid-state drive, see [large image support](https://imagemagick.org/script/architecture.php#tera-pixel).
 
-If these options are prohibitive, you can reduce the quality of the image results. The default build is Q16 HDRI. If you disable HDRI, you use half the memory and instead of predominately floating point operations, you use the typically more efficient integer operations. The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative). If you build the Q8 non-HDRI version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values. For a Q8 non-HDRI build of ImageMagick, use these configure script options: --with-quantum-depth=8 --disable-hdri.
+If these options are prohibitive, you can reduce the quality of the image results. The default build is Q16 HDRI. If you disable [HDRI](https://imagemagick.org/script/high-dynamic-range.php), you use half the memory and instead of predominately floating point operations, you use the typically more efficient integer operations. The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative). If you build the Q8 non-HDRI version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values. For a Q8 non-HDRI build of ImageMagick, use these configure script options: --with-quantum-depth=8 --disable-hdri.
