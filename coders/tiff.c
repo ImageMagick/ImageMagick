@@ -2937,15 +2937,11 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
 static tmsize_t TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
   tsample_t sample,Image *image)
 {
-  tmsize_t
-    status;
-
   ssize_t
     i;
 
-  unsigned char
-    *p,
-    *q;
+  tmsize_t
+    status;
 
   size_t
     number_tiles,
@@ -2956,6 +2952,10 @@ static tmsize_t TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
     j,
     k,
     l;
+
+  unsigned char
+    *p,
+    *q;
 
   if (TIFFIsTiled(tiff) == 0)
     return(TIFFWriteScanline(tiff,tiff_info->scanline,(uint32) row,sample));
