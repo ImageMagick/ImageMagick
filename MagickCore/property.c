@@ -4565,7 +4565,8 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           ssize_t
             intensity;
 
-          intensity=ParseCommandOption(MagickIntensityOptions,MagickFalse,value);
+          intensity=ParseCommandOption(MagickIntensityOptions,MagickFalse,
+            value);
           if (intensity < 0)
             return(MagickFalse);
           image->intensity=(PixelIntensityMethod) intensity;
