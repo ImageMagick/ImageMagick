@@ -63,6 +63,9 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
+#if defined(MAGICKCORE_HAVE_GETENTROPY)
+#include <sys/random.h>
+#endif
 /*
   Define declarations.
 */
