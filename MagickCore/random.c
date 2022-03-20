@@ -346,7 +346,7 @@ static ssize_t ReadRandom(int file,unsigned char *source,size_t length)
 
 static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
 {
-#define MaxEntropyExtent  64
+#define MaxEntropyExtent  64  /* max permitted: 256 */
 
   MagickThreadType
     tid;
@@ -367,6 +367,20 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
   */
   entropy=AcquireStringInfo(0);
   LockSemaphoreInfo(random_info->semaphore);
+#if defined(MAGICKCORE_HAVE_GETENTROPY)
+  {
+    int
+      status;
+    
+    SetStringInfoLength(entropy,MaxEntropyExtent);
+    status=getentropy(GetStringInfoDatum(entropy),MaxEntropyExtent);
+    if (status == 0)
+      {
+        UnlockSemaphoreInfo(random_info->semaphore);
+        return(entropy);
+      }
+  }
+#endif
   chaos=AcquireStringInfo(sizeof(unsigned char *));
   SetStringInfoDatum(chaos,(unsigned char *) &entropy);
   ConcatenateStringInfo(entropy,chaos);
@@ -413,7 +427,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     if (gettimeofday(&timer,(struct timezone *) NULL) == 0)
       {
         seconds=(size_t) timer.tv_sec;
-        nanoseconds=((size_t) 1000UL*timer.tv_usec);
+        nanoseconds=(size_t) (1000UL*timer.tv_usec);
       }
   }
 #endif
