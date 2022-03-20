@@ -328,8 +328,6 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
     }
   error=heif_decode_image(image_handle,&heif_image,heif_colorspace_RGB,chroma,
     decode_options);
-  if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
-    return(MagickFalse);
   heif_decoding_options_free(decode_options);
   if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
     return(MagickFalse);
