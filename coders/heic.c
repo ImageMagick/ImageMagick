@@ -318,13 +318,17 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
   if (preserve_orientation == MagickTrue)
     decode_options->ignore_transformations=1;
   chroma=heif_chroma_interleaved_RGB;
+#if LIBHEIF_NUMERIC_VERSION > 0x01040000
   if (image->depth > 8)
     chroma=heif_chroma_interleaved_RRGGBB_LE;
+#endif
   if (image->alpha_trait != UndefinedPixelTrait)
     {
       chroma=heif_chroma_interleaved_RGBA;
+#if LIBHEIF_NUMERIC_VERSION > 0x01040000
       if (image->depth > 8)
         chroma=heif_chroma_interleaved_RRGGBBAA_LE;
+#endif
     }
   error=heif_decode_image(image_handle,&heif_image,heif_colorspace_RGB,chroma,
     decode_options);
@@ -1225,16 +1229,20 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
           status=TransformImageColorspace(image,sRGBColorspace,exception);
         colorspace=heif_colorspace_RGB;
         chroma=heif_chroma_interleaved_RGBA;
+#if LIBHEIF_NUMERIC_VERSION > 0x01040000
         if (image->depth > 8)
           chroma=heif_chroma_interleaved_RRGGBBAA_LE;
+#endif
       }
     else
       if (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse)
         {
           colorspace=heif_colorspace_RGB;
           chroma=heif_chroma_interleaved_RGB;
+#if LIBHEIF_NUMERIC_VERSION > 0x01040000
           if (image->depth > 8)
             chroma=heif_chroma_interleaved_RRGGBB_LE;
+#endif
           if (GetPixelChannels(image) == 1)
             {
               colorspace=heif_colorspace_monochrome;
@@ -1265,9 +1273,11 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     if (colorspace == heif_colorspace_YCbCr)
       status=WriteHEICImageYCbCr(image,heif_image,exception);
     else
+#if LIBHEIF_NUMERIC_VERSION > 0x01040000
       if (image->depth > 8)
         status=WriteHEICImageRRGGBBAA(image,heif_image,exception);
       else
+#endif
         status=WriteHEICImageRGBA(image,heif_image,exception);
     if (status == MagickFalse)
       break;
