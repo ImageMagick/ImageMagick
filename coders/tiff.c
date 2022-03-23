@@ -1987,7 +1987,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         number_pixels=(MagickSizeType) columns*rows;
         if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        extent=MagickMax(rows*TIFFTileRowSize(tiff),TIFFTileSize(tiff));
+        extent=4*MagickMax(rows*TIFFTileRowSize(tiff),TIFFTileSize(tiff));
 #if defined(TIFF_VERSION_BIG)
         extent+=image->columns*sizeof(uint64);
 #else
