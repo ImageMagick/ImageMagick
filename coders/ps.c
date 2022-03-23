@@ -344,7 +344,10 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
         {
           if ((c == '\r') || (c == '\n') ||
               ((i+1) == (ssize_t) sizeof(version)))
-            break;
+            {
+              new_line=MagickTrue;
+              break;
+            }
           version[i++]=(char) c;
         }
         version[i]='\0';
@@ -411,7 +414,10 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
         for (c=PeekMagickByteBuffer(&buffer); c != EOF; c=PeekMagickByteBuffer(&buffer))
         {
           if ((c == '\r') || (c == '\n') || ((i+1) == MagickPathExtent))
-            break;
+            {
+              new_line=MagickTrue;
+              break;
+            }
           name[i++]=(char) ReadMagickByteBuffer(&buffer);
         }
         name[i]='\0';

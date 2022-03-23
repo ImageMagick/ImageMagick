@@ -1,9 +1,49 @@
-# Changelog 
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [7.1.0-27](https://github.com/ImageMagick/ImageMagick/compare/7.1.0-26...7.1.0-27) - 2022-03-04
+
+### Commits
+
+- auto-generate the change log from git commits [`67bc403`](https://github.com/ImageMagick/ImageMagick/commit/67bc40387b9270e28f911199bac2de577f828b42)
+- https://github.com/ImageMagick/ImageMagick/issues/4876 [`17b8572`](https://github.com/ImageMagick/ImageMagick/commit/17b85720f0685d83797c3925a866f42971c23713)
+- Code style changes. [`161b2bd`](https://github.com/ImageMagick/ImageMagick/commit/161b2bdc8221078fb84119fd64be9376979d5819)
+- include reference to JXL coder source module [`18f7a0a`](https://github.com/ImageMagick/ImageMagick/commit/18f7a0afba8374f6b52053a383101d36aef0dab6)
+- https://github.com/ImageMagick/ImageMagick/discussions/4862 [`9d74db9`](https://github.com/ImageMagick/ImageMagick/commit/9d74db9c45eb207c6c9d3f1ac762d05f0ae3bf86)
+- The value is also utf8 when RegEnumValueW is used. [`9954343`](https://github.com/ImageMagick/ImageMagick/commit/995434350c3ac84cfeaaad0eeeb00483a0030110)
+- https://github.com/ImageMagick/ImageMagick/issues/4874 [`3630e5c`](https://github.com/ImageMagick/ImageMagick/commit/3630e5c63e6188d037fd225d4073b001275dc830)
+- Code style changes. [`fbb2bad`](https://github.com/ImageMagick/ImageMagick/commit/fbb2bad1388403d617fc87d72254ad86534de4a7)
+- https://github.com/ImageMagick/ImageMagick/issues/4896 [`14a8a35`](https://github.com/ImageMagick/ImageMagick/commit/14a8a358452405e99dfa52e799ed37c02db316e6)
+- https://github.com/ImageMagick/ImageMagick/issues/966 [`5c23779`](https://github.com/ImageMagick/ImageMagick/commit/5c2377996445ce1c3be00e78a08afde131fb813d)
+- ... [`fe3a627`](https://github.com/ImageMagick/ImageMagick/commit/fe3a627b4a9f9c15ef8d34daefc08f5471681f4a)
+- https://github.com/ImageMagick/ImageMagick/issues/4870 [`eb08826`](https://github.com/ImageMagick/ImageMagick/commit/eb0882667cddc4ea71b61a583a782c430220faf4)
+- Removed one of the buffers. [`3be14c7`](https://github.com/ImageMagick/ImageMagick/commit/3be14c7f5b2ac83e078471e96a8fc393869f8c3e)
+- improve "geometry does not contain image" exception message [`28be54d`](https://github.com/ImageMagick/ImageMagick/commit/28be54df1dbf9726ff9dd257955a1a78470e76f4)
+- proper check for libjxl minimum version [`ccf788b`](https://github.com/ImageMagick/ImageMagick/commit/ccf788bd768a2ff75bb529d39bdcdfbeadeede23)
+- https://github.com/ImageMagick/ImageMagick/discussions/4533 [`4b1dc4c`](https://github.com/ImageMagick/ImageMagick/commit/4b1dc4cb1e91af85f5cf05da92588da7696ce3ed)
+- More code style changes. [`0d2723e`](https://github.com/ImageMagick/ImageMagick/commit/0d2723e796313a72aceb73784d6d203c1bdfb477)
+- Use RegEnumValueW instead. [`bfad2a3`](https://github.com/ImageMagick/ImageMagick/commit/bfad2a34d6fdcabda36cff83e49fe5320804dc9d)
+- pending release [`b7174d2`](https://github.com/ImageMagick/ImageMagick/commit/b7174d211065e5b794cdb5ebc72f317124b2cd47)
+- ... [`165327a`](https://github.com/ImageMagick/ImageMagick/commit/165327a5247525ccd0bea04b88114df86896cfee)
+- Corrected adjoin check. [`ffaf35e`](https://github.com/ImageMagick/ImageMagick/commit/ffaf35e7dce75cf5492308ff90b1a38228e5c0bf)
+- escape \n character [`624e514`](https://github.com/ImageMagick/ImageMagick/commit/624e5144d9b76789b51c8c24e002ea2c854bc406)
+- https://github.com/ImageMagick/ImageMagick/issues/966 [`f6db6e0`](https://github.com/ImageMagick/ImageMagick/commit/f6db6e06dfabe0412d61b433b89efe5ad58d9b21)
+- Only set system_root_length once. [`6fe9a5f`](https://github.com/ImageMagick/ImageMagick/commit/6fe9a5fe6e2ce2c8faccd6f2e609222ade42ac75)
+- throw exception on reserved filename character (\xff) [`ee80bac`](https://github.com/ImageMagick/ImageMagick/commit/ee80bacc9d4c36c0405a46cd555e953a40fd129e)
+- ... [`d2ad523`](https://github.com/ImageMagick/ImageMagick/commit/d2ad523daad137e04a148e0ab15fe044393206aa)
+- https://github.com/ImageMagick/ImageMagick/issues/966 [`62a3cd5`](https://github.com/ImageMagick/ImageMagick/commit/62a3cd54416c067da75be895a27362a01aaebdc8)
+- https://github.com/ImageMagick/ImageMagick/issues/4888 [`2fa2184`](https://github.com/ImageMagick/ImageMagick/commit/2fa218431d622f33da90a79c1a2f5f5750710fdc)
+- cosmetic [`c1fe09e`](https://github.com/ImageMagick/ImageMagick/commit/c1fe09e3533d2b778f45d49f243e210dcb915cc7)
+- https://github.com/ImageMagick/ImageMagick/issues/4888 [`5512240`](https://github.com/ImageMagick/ImageMagick/commit/5512240ff88749d9450d51aa977969a9ad321d6c)
+- pending release [`dc2b955`](https://github.com/ImageMagick/ImageMagick/commit/dc2b9553e9b1e73ce264f41e5820a236db7403fd)
+- ChangeLog =&gt; ChangeLog.md [`0b5cb6e`](https://github.com/ImageMagick/ImageMagick/commit/0b5cb6edef00d63af0904dbd955cb57f186f7e9f)
+- Changed trigger for release. [`ccff96d`](https://github.com/ImageMagick/ImageMagick/commit/ccff96dfb318c906a396681a0dbfa12b08e1e90f)
+- canonical copyright notice [`cd32501`](https://github.com/ImageMagick/ImageMagick/commit/cd32501e861b3755c116baa47fa879323e11cffd)
+- Fixed memory leak in ThumbnailImage. [`47fed11`](https://github.com/ImageMagick/ImageMagick/commit/47fed11f7bae354cb40f1805aa9707faf593438c)
 
 ## [7.1.0-26](https://github.com/ImageMagick/ImageMagick/compare/7.1.0-25...7.1.0-26) - 2022-02-21
 
