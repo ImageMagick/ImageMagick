@@ -22,7 +22,7 @@
   MagickCoderHeader("BMP", 0, "CI") \
   MagickCoderHeader("BMP", 0, "CP") \
   MagickCoderHeader("BMP", 0, "IC") \
-  MagickCoderHeader("BMP", 0, "IP")
+  MagickCoderHeader("BMP", 0, "PT")
 
 #define MagickBMPAliases \
   MagickCoderAlias("BMP", "BMP2") \
