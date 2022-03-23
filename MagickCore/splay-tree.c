@@ -316,7 +316,7 @@ static void BalanceSplayTree(SplayTreeInfo *splay_tree)
 %  The format of the CloneSplayTree method is:
 %
 %      SplayTreeInfo *CloneSplayTree(SplayTreeInfo *splay_tree,
-%        void *(*clone_key)(void *),void *(*cline_value)(void *))
+%        void *(*clone_key)(void *),void *(*clone_value)(void *))
 %
 %  A description of each parameter follows:
 %

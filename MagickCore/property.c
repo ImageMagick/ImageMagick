@@ -2972,10 +2972,10 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             if (convex_hull[n].y < extreme.y)
               {
                 extreme=convex_hull[n];
-                continue; 
+                continue;
               }
             if (convex_hull[n].y != extreme.y)
-              continue; 
+              continue;
             if (convex_hull[n].x < extreme.x)
               extreme=convex_hull[n];
           }
@@ -2988,10 +2988,10 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             if (convex_hull[n].x > extreme.x)
               {
                 extreme=convex_hull[n];
-                continue; 
+                continue;
               }
             if (convex_hull[n].x != extreme.x)
-              continue; 
+              continue;
             if (convex_hull[n].y < extreme.y)
               extreme=convex_hull[n];
           }
@@ -3004,10 +3004,10 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             if (convex_hull[n].y > extreme.y)
               {
                 extreme=convex_hull[n];
-                continue; 
+                continue;
               }
             if (convex_hull[n].y != extreme.y)
-              continue; 
+              continue;
             if (convex_hull[n].x > extreme.x)
               extreme=convex_hull[n];
           }
@@ -3020,10 +3020,10 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             if (convex_hull[n].x < extreme.x)
               {
                 extreme=convex_hull[n];
-                continue; 
+                continue;
               }
             if (convex_hull[n].x != extreme.x)
-              continue; 
+              continue;
             if (convex_hull[n].y > extreme.y)
               extreme=convex_hull[n];
           }
