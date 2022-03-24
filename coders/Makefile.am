@@ -201,7 +201,6 @@ MAGICKCORE_CODER_SRCS = \
 	coders/jpeg.h \
 	coders/json.c \
 	coders/json.h \
-	coders/jxl.c \
 	coders/jxl.h \
 	coders/kernel.c \
 	coders/kernel.h \
