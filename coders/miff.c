@@ -1709,6 +1709,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         /*
           Allocate next image structure.
         */
+        *id='\0';
         AcquireNextImage(image_info,image,exception);
         if (GetNextImageInList(image) == (Image *) NULL)
           {
