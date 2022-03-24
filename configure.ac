@@ -2372,7 +2372,7 @@ AC_ARG_WITH([jxl],
     [AS_HELP_STRING([--with-jxl],
                     [enable JPEG-XL support])],
     [with_jxl=$withval],
-    [with_jxl='yes'])
+    [with_jxl='no'])
 
 # Check for the JPEG-XL library.
 have_jxl='no'
