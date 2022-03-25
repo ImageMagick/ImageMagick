@@ -576,6 +576,8 @@ set(MAGICKCORE_CODERS_SRCS
   ${CODERS_PATH}/sixel.h
   ${CODERS_PATH}/stegano.c
   ${CODERS_PATH}/stegano.h
+  ${CODERS_PATH}/strimg.c
+  ${CODERS_PATH}/strimg.h
   ${CODERS_PATH}/sun.c
   ${CODERS_PATH}/sun.h
   ${CODERS_PATH}/svg.c
@@ -628,8 +630,6 @@ set(MAGICKCORE_CODERS_SRCS
   ${CODERS_PATH}/xpm.h
   ${CODERS_PATH}/xps.c
   ${CODERS_PATH}/xps.h
-  ${CODERS_PATH}/xtrn.c
-  ${CODERS_PATH}/xtrn.h
   ${CODERS_PATH}/xwd.h
   ${CODERS_PATH}/yaml.c
   ${CODERS_PATH}/yaml.h
