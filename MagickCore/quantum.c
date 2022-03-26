@@ -689,6 +689,9 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
           else
             quantum_info->depth=16;
     }
+  /*
+    Speculative allocation since we don't yet know the quantum type.
+  */
   quantum=(GetPixelChannels(image)+quantum_info->pad+3)*
     ((quantum_info->depth+7)/8);
   extent=MagickMax(image->columns,image->rows)*quantum*sizeof(double);
