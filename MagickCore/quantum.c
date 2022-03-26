@@ -690,8 +690,8 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
             quantum_info->depth=16;
     }
   quantum=(GetPixelChannels(image)+quantum_info->pad)*
-    ((quantum_info->depth+7)/8)*sizeof(double);
-  extent=MagickMax(image->columns,image->rows)*quantum;
+    ((quantum_info->depth+7)/8);
+  extent=MagickMax(image->columns,image->rows)*quantum*sizeof(double);
   if ((MagickMax(image->columns,image->rows) != 0) &&
       (quantum != (extent/MagickMax(image->columns,image->rows))))
     return(MagickFalse);
