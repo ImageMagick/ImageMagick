@@ -1219,9 +1219,6 @@ cleanup:
   const char
     *p;
 
-  FT_Error
-    ft_status;
-
   ssize_t
     i;
 
@@ -1247,6 +1244,9 @@ cleanup:
       {
         if (FT_HAS_KERNING(face))
           {
+            FT_Error
+              ft_status;
+
             FT_Vector
               kerning;
 
