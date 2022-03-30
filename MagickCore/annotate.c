@@ -1336,6 +1336,16 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
   return(0);
 }
 
+static inline const char *FreetypeErrorMessage(FT_Error ft_status)
+{
+#if FREETYPE_MAJOR >= 2 && FREETYPE_MINOR >= 10
+  return(FT_Error_String(ft_status));
+#else
+  magick_unreferenced(ft_status);
+  return((const char *) NULL);
+#endif
+}
+
 static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char *encoding,const PointInfo *offset,TypeMetric *metrics,
   ExceptionInfo *exception)
@@ -1347,7 +1357,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 #define ThrowFreetypeErrorException(tag,ft_status,value) \
 { \
   const char \
-    *error_string=FT_Error_String(ft_status); \
+    *error_string=FreetypeErrorMessage(ft_status); \
   if (error_string != (const char *) NULL) \
     (void) ThrowMagickException(exception,GetMagickModule(),TypeError, \
       tag,"`%s (%s)'",value, error_string); \
