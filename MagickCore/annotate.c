@@ -1257,7 +1257,7 @@ cleanup:
                 RightToLeftDirection ? -1.0 : 1.0)*kerning.x);
           }
       }
-    ft_status=FT_Load_Glyph(face,(FT_UInt) (*grapheme)[i].index,flags);
+    (void) FT_Load_Glyph(face,(FT_UInt) (*grapheme)[i].index,flags);
     (*grapheme)[i].x_advance=face->glyph->advance.x;
     (*grapheme)[i].cluster=p-text;
     last_glyph=(*grapheme)[i].index;
