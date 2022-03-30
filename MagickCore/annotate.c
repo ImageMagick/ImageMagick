@@ -1338,7 +1338,7 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
 
 static inline const char *FreetypeErrorMessage(FT_Error ft_status)
 {
-#if FREETYPE_MAJOR >= 2 && FREETYPE_MINOR >= 10
+#if FREETYPE_MAJOR == 2 && FREETYPE_MINOR >= 10
   return(FT_Error_String(ft_status));
 #else
   magick_unreferenced(ft_status);
