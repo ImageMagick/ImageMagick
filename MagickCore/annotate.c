@@ -1344,6 +1344,18 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 #define FT_OPEN_PATHNAME  ft_open_pathname
 #endif
 
+#define ThrowFreetypeErrorException(tag,ft_status,value) \
+{ \
+  const char \
+    *error_string=FT_Error_String(ft_status); \
+  if (error_string != (const char *) NULL) \
+    (void) ThrowMagickException(exception,GetMagickModule(),TypeError, \
+      tag,"`%s (%s)'",value, error_string); \
+  else \
+    (void) ThrowMagickException(exception,GetMagickModule(),TypeError, \
+      tag,"`%s'",value); \
+}
+
   typedef struct _GlyphInfo
   {
     FT_UInt
@@ -1445,7 +1457,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   */
   ft_status=FT_Init_FreeType(&library);
   if (ft_status != 0)
-    ThrowBinaryException(TypeError,"UnableToInitializeFreetypeLibrary",
+    ThrowFreetypeErrorException("UnableToInitializeFreetypeLibrary",ft_status,
       image->filename);
   face_index=(FT_Long) draw_info->face;
   args.flags=FT_OPEN_PATHNAME;
@@ -1471,8 +1483,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (ft_status != 0)
     {
       (void) FT_Done_FreeType(library);
-      (void) ThrowMagickException(exception,GetMagickModule(),TypeError,
-        "UnableToReadFont","`%s'",args.pathname);
+      ThrowFreetypeErrorException("UnableToReadFont",ft_status,
+        args.pathname);
       args.pathname=DestroyString(args.pathname);
       return(MagickFalse);
     }
@@ -1527,7 +1539,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         {
           (void) FT_Done_Face(face);
           (void) FT_Done_FreeType(library);
-          ThrowBinaryException(TypeError,"UnrecognizedFontEncoding",encoding);
+          ThrowFreetypeErrorException("UnrecognizedFontEncoding",ft_status,
+            encoding);
+          return(MagickFalse);
         }
     }
   /*
@@ -1557,7 +1571,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
-      ThrowBinaryException(TypeError,"UnableToReadFont",draw_info->font);
+      ThrowFreetypeErrorException("UnableToReadFont",ft_status,
+        draw_info->font);
+      return(MagickFalse);
     }
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
