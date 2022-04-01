@@ -359,7 +359,7 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
       date_time.QuadPart=(attributes->st_atime*10000000LL)+116444736000000000LL;
       last_access_time.dwLowDateTime=date_time.LowPart;
       last_access_time.dwHighDateTime=date_time.HighPart;
-      date_time.QuadPart=(attributes->st_mtime,10000000LL)+116444736000000000LL;
+      date_time.QuadPart=(attributes->st_mtime*10000000LL)+116444736000000000LL;
       last_write_time.dwLowDateTime=date_time.LowPart;
       last_write_time.dwHighDateTime=date_time.HighPart;
       status=SetFileTime(handle,&creation_time,&last_access_time,&last_write_time);
