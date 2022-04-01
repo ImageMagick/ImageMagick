@@ -350,18 +350,18 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
         last_access_time,
         last_write_time;
 
-      LONGLONG
+      ULARGE_INTEGER
         date_time;
 
-      date_time=Int32x32To64(attributes->st_ctime,10000000)+116444736000000000;
-      creation_time.dwLowDateTime=(DWORD) date_time;
-      creation_time.dwHighDateTime=date_time>>32;
-      date_time=Int32x32To64(attributes->st_atime,10000000)+116444736000000000;
-      last_access_time.dwLowDateTime=(DWORD) date_time;
-      last_access_time.dwHighDateTime=date_time>>32;
-      date_time=Int32x32To64(attributes->st_mtime,10000000)+116444736000000000;
-      last_write_time.dwLowDateTime=(DWORD) date_time;
-      last_write_time.dwHighDateTime=date_time>>32;
+      date_time.QuadPart=(attributes->st_ctime*10000000LL)+116444736000000000LL;
+      creation_time.dwLowDateTime=date_time.LowPart;
+      creation_time.dwHighDateTime=date_time.HighPart;
+      date_time.QuadPart=(attributes->st_atime*10000000LL)+116444736000000000LL;
+      last_access_time.dwLowDateTime=date_time.LowPart;
+      last_access_time.dwHighDateTime=date_time.HighPart;
+      date_time.QuadPart=(attributes->st_mtime,10000000LL)+116444736000000000LL;
+      last_write_time.dwLowDateTime=date_time.LowPart;
+      last_write_time.dwHighDateTime=date_time.HighPart;
       status=SetFileTime(handle,&creation_time,&last_access_time,&last_write_time);
       CloseHandle(handle);
       status=0;
