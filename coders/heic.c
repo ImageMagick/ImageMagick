@@ -507,9 +507,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   if (ReadBlob(image,12,magic) != 12)
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   filetype_check=heif_check_filetype(magic,12);
-  if (filetype_check == heif_filetype_no)
-    ThrowReaderException(CoderError,"ImageTypeNotSupported");
-  if (filetype_check == heif_filetype_yes_unsupported)
+  if ((filetype_check == heif_filetype_no) ||
+      (filetype_check == heif_filetype_yes_unsupported))
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
   /*
     Decode HEIF image.
