@@ -504,9 +504,9 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  if (ReadBlob(image,12,magic) != 12)
+  if (ReadBlob(image,sizeof(magic), magic) != sizeof(magic))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-  filetype_check=heif_check_filetype(magic,12);
+  filetype_check=heif_check_filetype(magic,sizeof(magic));
   if ((filetype_check == heif_filetype_no) ||
       (filetype_check == heif_filetype_yes_unsupported))
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
