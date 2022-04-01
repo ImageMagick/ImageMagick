@@ -504,7 +504,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  if (ReadBlob(image,sizeof(magic), magic) != sizeof(magic))
+  if (ReadBlob(image,sizeof(magic),magic) != sizeof(magic))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   filetype_check=heif_check_filetype(magic,sizeof(magic));
   if ((filetype_check == heif_filetype_no) ||
