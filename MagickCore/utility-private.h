@@ -346,23 +346,23 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
   if (handle != (HANDLE) NULL)
     {
       FILETIME
-        creationTime,
-        lastAccessTime,
-        lastWriteTime;
+        creation_time,
+        last_access_time,
+        last_write_time;
 
       LONGLONG
-        dateTime;
+        date_time;
 
-      dateTime=Int32x32To64(attributes->st_ctime,10000000)+116444736000000000;
-      creationTime.dwLowDateTime=(DWORD) dateTime;
-      creationTime.dwHighDateTime=dateTime>>32;
-      dateTime=Int32x32To64(attributes->st_atime,10000000)+116444736000000000;
-      lastAccessTime.dwLowDateTime=(DWORD) dateTime;
-      lastAccessTime.dwHighDateTime=dateTime>>32;
-      dateTime=Int32x32To64(attributes->st_mtime,10000000)+116444736000000000;
-      lastWriteTime.dwLowDateTime=(DWORD) dateTime;
-      lastWriteTime.dwHighDateTime=dateTime>>32;
-      status=SetFileTime(handle,&creationTime,&lastAccessTime,&lastWriteTime);
+      date_time=Int32x32To64(attributes->st_ctime,10000000)+116444736000000000;
+      creation_time.dwLowDateTime=(DWORD) date_time;
+      creation_time.dwHighDateTime=date_time>>32;
+      date_time=Int32x32To64(attributes->st_atime,10000000)+116444736000000000;
+      last_access_time.dwLowDateTime=(DWORD) date_time;
+      last_access_time.dwHighDateTime=date_time>>32;
+      date_time=Int32x32To64(attributes->st_mtime,10000000)+116444736000000000;
+      last_write_time.dwLowDateTime=(DWORD) date_time;
+      last_write_time.dwHighDateTime=date_time>>32;
+      status=SetFileTime(handle,&creation_time,&last_access_time,&last_write_time);
       CloseHandle(handle);
       status=0;
     }
