@@ -4365,6 +4365,9 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
   MagickStatusType
     flags;
 
+  size_t
+    property_length;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
@@ -4374,7 +4377,6 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
       RelinquishMagickMemory,RelinquishMagickMemory);  /* create splay-tree */
   if (value == (const char *) NULL)
     return(DeleteImageProperty(image,property));  /* delete if NULL */
-  status=MagickTrue;
   if (strlen(property) <= 1)
     {
       /*
@@ -4384,11 +4386,20 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         "SetReadOnlyProperty","`%s'",property);
       return(MagickFalse);
     }
-
-  /* FUTURE: binary chars or quotes in key should produce a error */
-  /* Set attributes with known names or special prefixes
-     return result is found, or break to set a free form properity
+  property_length=strlen(property);
+  if ((property_length > 2) && (*(property+(property_length-2)) == ':') &&
+      (*(property+(property_length-1)) == '*'))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "SetReadOnlyProperty","`%s'",property);
+      return(MagickFalse);
+    }
+  /*
+    FUTURE: binary chars or quotes in key should produce a error
+    Set attributes with known names or special prefixes
+    return result is found, or break to set a free form property
   */
+  status=MagickTrue;
   switch (*property)
   {
 #if 0  /* Percent escape's sets values with this prefix: for later use
