@@ -2273,6 +2273,12 @@ static Image *NCCDivideImage(const Image *alpha_image,const Image *beta_image,
       ssize_t
         i;
 
+      if (GetPixelReadMask(beta_image,p) <= (QuantumRange/2))
+        {
+          p+=GetPixelChannels(beta_image);
+          q+=GetPixelChannels(divide_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(divide_image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(divide_image,i);
@@ -2340,6 +2346,11 @@ static MagickBooleanType NCCMaximaImage(const Image *image,double *maxima,
         channels = 0,
         i;
 
+      if (GetPixelReadMask(image,p) <= (QuantumRange/2))
+        {
+          p+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -2406,6 +2417,11 @@ static MagickBooleanType NCCMultiplyImage(Image *image,const double factor,
       ssize_t
         i;
 
+      if (GetPixelReadMask(image,q) <= (QuantumRange/2))
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -2473,6 +2489,11 @@ static Image *NCCSquareImage(const Image *image,ExceptionInfo *exception)
       ssize_t
         i;
 
+      if (GetPixelReadMask(square_image,q) <= (QuantumRange/2))
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(square_image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(square_image,i);
@@ -2550,6 +2571,12 @@ static Image *NCCSubtractImageMean(const Image *alpha_image,
       ssize_t
         i;
 
+      if (GetPixelReadMask(beta_image,q) <= (QuantumRange/2))
+        {
+          p+=GetPixelChannels(beta_image);
+          q+=GetPixelChannels(gamma_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(gamma_image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(gamma_image,i);
@@ -2625,6 +2652,11 @@ static Image *NCCUnityImage(const Image *alpha_image,const Image *beta_image,
       ssize_t
         i;
 
+      if (GetPixelReadMask(unity_image,q) <= (QuantumRange/2))
+        {
+          q+=GetPixelChannels(unity_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(unity_image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(unity_image,i);
@@ -2703,6 +2735,12 @@ static Image *NCCVarianceImage(Image *alpha_image,const Image *beta_image,
       ssize_t
         i;
 
+      if (GetPixelReadMask(beta_image,q) <= (QuantumRange/2))
+        {
+          p+=GetPixelChannels(beta_image);
+          q+=GetPixelChannels(variance_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(variance_image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(variance_image,i);
@@ -2788,7 +2826,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reference,
     Compute the cross correlation of the square and unity images.
   */
   ncc_image=CrossCorrelationImage(square_image,unity_image,exception);
-  square_image=DestroyImage(square_image); \
+  square_image=DestroyImage(square_image);
   if (ncc_image == (Image *) NULL)
     ThrowSimilarityException();
   status=NCCMultiplyImage(ncc_image,(double) QuantumRange*reference->columns*
