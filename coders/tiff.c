@@ -3659,7 +3659,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       {
         uint16
           extra_samples,
-          sample_info[image->number_meta_channels+1],
+          sample_info[MaxPixelChannels+1],
           samples_per_pixel;
 
         /*
