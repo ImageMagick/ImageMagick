@@ -52,6 +52,7 @@ Here are just a few [examples](https://imagemagick.org/script/examples.php) of w
 * [Montage](https://imagemagick.org/script/montage.php): juxtapose image thumbnails on an image canvas.
 * [Morphology of shapes](https://legacy.imagemagick.org/Usage/morphology/): extract features, describe shapes and recognize patterns in images.
 * [Motion picture support](https://imagemagick.org/script/motion-picture.php): read and write the common image formats used in digital film work.
+* [Multispecral imagery](https://imagemagick.org/script/architecture.php#multispectral): support multispectral imagery up to 64 bands.
 * [Noise and color reduction](https://legacy.imagemagick.org/Usage/transform/#vision) Kuwahara Filter, mean-shift.
 * [Perceptual hash](http://www.fmwconcepts.com/misc_tests/perceptual_hash_test_results_510/index.html): maps visually identical images to the same or similar hash-- useful in image retrieval, authentication, indexing, or copy detection as well as digital watermarking.
 * [Special effects](https://legacy.imagemagick.org/Usage/blur/): blur, sharpen, threshold, or tint an image.
