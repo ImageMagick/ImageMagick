@@ -789,6 +789,15 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       }
       case 'r':
       {
+        if (LocaleCompare("read-mask",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowIdentifyException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("regard-warnings",option+1) == 0)
           break;
         if (LocaleNCompare("respect-parentheses",option+1,17) == 0)
