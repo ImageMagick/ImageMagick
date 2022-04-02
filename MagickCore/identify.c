@@ -816,6 +816,18 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) FormatLocaleFile(file,"    Alpha: %.20g-bit\n",(double)
           channel_statistics[AlphaPixelChannel].depth);
+      if (image->number_meta_channels != 0)
+        (void) FormatLocaleFile(file,"    Meta: %.20g-bit\n",(double)
+          channel_statistics[MetaPixelChannel].depth);
+      if ((image->channels & ReadMaskChannel) != 0)
+        (void) FormatLocaleFile(file,"    Read mask: %.20g-bit\n",(double)
+          channel_statistics[ReadMaskPixelChannel].depth);
+      if ((image->channels & WriteMaskChannel) != 0)
+        (void) FormatLocaleFile(file,"    Write mask: %.20g-bit\n",(double)
+          channel_statistics[WriteMaskPixelChannel].depth);
+      if ((image->channels & CompositeMaskChannel) != 0)
+        (void) FormatLocaleFile(file,"    Composite mask: %.20g-bit\n",(double)
+          channel_statistics[CompositeMaskPixelChannel].depth);
       scale=1.0;
       if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
         scale=(double) (QuantumRange/((size_t) QuantumRange >> ((size_t)
@@ -873,6 +885,18 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelStatistics(file,AlphaPixelChannel,"Alpha",1.0/scale,
           channel_statistics);
+      if (image->number_meta_channels != 0)
+        (void) PrintChannelStatistics(file,MetaPixelChannel,"Meta",1.0/scale,
+          channel_statistics);
+      if ((image->channels & ReadMaskChannel) != 0)
+        (void) PrintChannelStatistics(file,ReadMaskPixelChannel,"Read mask",
+          1.0/scale,channel_statistics);
+      if ((image->channels & WriteMaskChannel) != 0)
+        (void) PrintChannelStatistics(file,WriteMaskPixelChannel,"Write mask",
+          1.0/scale,channel_statistics);
+      if ((image->channels & CompositeMaskChannel) != 0)
+        (void) PrintChannelStatistics(file,WriteMaskPixelChannel,
+          "Composite mask",1.0/scale,channel_statistics);
       if ((colorspace != LinearGRAYColorspace) && (colorspace != GRAYColorspace))
         {
           (void) FormatLocaleFile(file,"  Image statistics:\n");

@@ -76,7 +76,9 @@ typedef enum
   RGBOQuantum,
   RGBPadQuantum,
   RGBQuantum,
-  YellowQuantum
+  YellowQuantum,
+  MetaQuantum,
+  CMYKAMQuantum
 } QuantumType;
 
 typedef struct _QuantumInfo
