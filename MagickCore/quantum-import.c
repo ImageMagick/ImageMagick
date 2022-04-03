@@ -3771,7 +3771,7 @@ static void ImportMultispectralQuantum(const Image *image,
     default:
     {
       unsigned int
-        pixel;
+        pixel = 0;
 
       range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
