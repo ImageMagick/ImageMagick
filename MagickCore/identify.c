@@ -829,7 +829,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->number_meta_channels != 0)
         for (i=0; i < (ssize_t) image->number_meta_channels; i++)
           (void) FormatLocaleFile(file,"    Meta channel[%.20g]: %.20g-bit\n",
-            (double) i,(double) channel_statistics[StartMetaPixelChannel+i].depth);
+            (double) i,(double) channel_statistics[MetaPixelChannels+i].depth);
       scale=1.0;
       if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
         scale=(double) (QuantumRange/((size_t) QuantumRange >> ((size_t)
@@ -904,7 +904,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
           (void) FormatLocaleString(label,MagickPathExtent,
             "Meta channel[%.20g]",(double) i);
-          (void) PrintChannelStatistics(file,StartMetaPixelChannel+i,label,
+          (void) PrintChannelStatistics(file,MetaPixelChannels+i,label,
             1.0/scale,channel_statistics);
         }
       if ((colorspace != LinearGRAYColorspace) &&
