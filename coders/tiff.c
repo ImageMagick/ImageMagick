@@ -1815,11 +1815,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     quantum_type=CMYKAQuantum;
                     pad=(size_t) MagickMax((size_t) samples_per_pixel-5,0);
                   }
-                if (image->number_meta_channels != 0)
-                  {
-                    quantum_type=CMYKAMQuantum;
-                    pad=(size_t) MagickMax((size_t) samples_per_pixel-6,0);
-                  }
               }
             status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >>
               3));
@@ -1827,6 +1822,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           }
       }
+    if (image->number_meta_channels != 0)
+      quantum_type=MultispectralQuantum;
     switch (method)
     {
       case ReadYCCKMethod:
@@ -1930,8 +1927,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               break;
             }
             case 4: quantum_type=AlphaQuantum; break;
-            case 5: quantum_type=MetaQuantum; break;
-            default: break;
+            default: quantum_type=MetaQuantum; break;
           }
           rows_remaining=0;
           for (y=0; y < (ssize_t) image->rows; y++)
@@ -3976,6 +3972,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             quantum_type=RGBQuantum;
             if (image->alpha_trait != UndefinedPixelTrait)
               quantum_type=RGBAQuantum;
+            if (image->number_meta_channels != 0)
+              quantum_type=MultispectralQuantum;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               const Quantum
@@ -4099,11 +4097,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         */
         quantum_type=CMYKQuantum;
         if (image->alpha_trait != UndefinedPixelTrait)
-          {
-            quantum_type=CMYKAQuantum;
-            if (image->number_meta_channels != 0)
-              quantum_type=CMYKAMQuantum;
-          }
+          quantum_type=CMYKAQuantum;
+        if (image->number_meta_channels != 0)
+          quantum_type=MultispectralQuantum;
         if (image->colorspace != CMYKColorspace)
           (void) TransformImageColorspace(image,CMYKColorspace,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
@@ -4186,6 +4182,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
          else
            if (photometric != PHOTOMETRIC_PALETTE)
              quantum_type=GrayQuantum;
+        if (image->number_meta_channels != 0)
+          quantum_type=MultispectralQuantum;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           const Quantum

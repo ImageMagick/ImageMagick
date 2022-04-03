@@ -548,7 +548,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       heif_item_id
         *ids;
 
-      size_t
+      ssize_t
         i;
 
       ids=(heif_item_id *) AcquireQuantumMemory((size_t) count,sizeof(*ids));

@@ -323,7 +323,7 @@ MagickExport size_t GetQuantumExtent(const Image *image,
     case BGRAQuantum: packet_size=4; break;
     case CMYKQuantum: packet_size=4; break;
     case CMYKAQuantum: packet_size=5; break;
-    case CMYKAMQuantum: packet_size=6; break;
+    case MultispectralQuantum: packet_size=6; break;
     case CbYCrAQuantum: packet_size=4; break;
     case CbYCrQuantum: packet_size=3; break;
     case CbYCrYQuantum: packet_size=4; break;
@@ -539,8 +539,6 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
       quantum_type=CMYKQuantum;
       if (image->alpha_trait != UndefinedPixelTrait)
         quantum_type=CMYKAQuantum;
-      if (image->number_meta_channels != 0)
-        quantum_type=CMYKAMQuantum;
     }
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     {
@@ -554,6 +552,8 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
       if (image->alpha_trait != UndefinedPixelTrait)
         quantum_type=IndexAlphaQuantum;
     }
+  if (image->number_meta_channels != 0)
+    quantum_type=MultispectralQuantum;
   return(quantum_type);
 }
 
@@ -845,7 +845,7 @@ MagickExport void SetQuantumImageType(Image *image,
     case BlackQuantum:
     case CMYKQuantum:
     case CMYKAQuantum:
-    case CMYKAMQuantum:
+    case MultispectralQuantum:
     {
       image->type=ColorSeparationType;
       break;
