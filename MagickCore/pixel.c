@@ -4381,7 +4381,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
       ssize_t
         i;
 
-      meta_channel=StartMetaPixelChannel;
+      meta_channel=MetaPixelChannels;
       for (i=0; i < (ssize_t) image->number_meta_channels; i++)
       {
         assert(meta_channel < MaxPixelChannels);
@@ -6364,7 +6364,7 @@ MagickExport MagickBooleanType SetPixelMetaChannels(Image *image,
   const size_t number_meta_channels,ExceptionInfo *exception)
 {
   image->number_meta_channels=MagickMin(number_meta_channels,MaxPixelChannels
-    -(size_t) StartMetaPixelChannel);
+    -(size_t) MetaPixelChannels);
   InitializePixelChannelMap(image);
   return(SyncImagePixelCache(image,exception));
 }
