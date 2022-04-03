@@ -3504,6 +3504,12 @@ static void ImportMultispectralQuantum(const Image *image,
     i,
     x;
 
+  if (image->number_meta_channels == 0)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "MultispectralImageRequired","`%s'",image->filename);
+      return;
+    }
   switch (quantum_info->depth)
   {
     case 8:

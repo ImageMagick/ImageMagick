@@ -2505,8 +2505,6 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     bit;
 
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
   if (image->storage_class != PseudoClass)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -2675,8 +2673,6 @@ static void ExportIndexAlphaQuantum(const Image *image,
   ssize_t
     bit;
 
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
   if (image->storage_class != PseudoClass)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -2871,8 +2867,12 @@ static void ExportMultispectralQuantum(const Image *image,
     i,
     x;
 
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
+  if (image->number_meta_channels == 0)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "MultispectralImageRequired","`%s'",image->filename);
+      return;
+    }
   switch (quantum_info->depth)
   {
     case 8:
