@@ -3666,7 +3666,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           TIFF has a matte channel.
         */
         (void) memset(sample_info,0,sizeof(sample_info));
-        extra_samples=image->number_meta_channels+1;
+        extra_samples=(uint16) (image->number_meta_channels+1);
         sample_info[0]=EXTRASAMPLE_UNASSALPHA;
         option=GetImageOption(image_info,"tiff:alpha");
         if (option != (const char *) NULL)
