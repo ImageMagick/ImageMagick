@@ -77,7 +77,6 @@ typedef enum
   RGBPadQuantum,
   RGBQuantum,
   YellowQuantum,
-  MetaQuantum,
   MultispectralQuantum
 } QuantumType;
 

@@ -1823,7 +1823,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
       }
     if (image->number_meta_channels != 0)
-      quantum_type=MultispectralQuantum;
+      {
+        quantum_type=MultispectralQuantum;
+        quantum_info->pad=0;
+      }
     switch (method)
     {
       case ReadYCCKMethod:
@@ -1927,7 +1930,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               break;
             }
             case 4: quantum_type=AlphaQuantum; break;
-            default: quantum_type=MetaQuantum; break;
+            default:
+              break;
           }
           rows_remaining=0;
           for (y=0; y < (ssize_t) image->rows; y++)
@@ -3973,7 +3977,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             if (image->alpha_trait != UndefinedPixelTrait)
               quantum_type=RGBAQuantum;
             if (image->number_meta_channels != 0)
-              quantum_type=MultispectralQuantum;
+              {
+                quantum_type=MultispectralQuantum;
+                quantum_info->pad=0;
+              }
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               const Quantum
@@ -4099,7 +4106,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (image->alpha_trait != UndefinedPixelTrait)
           quantum_type=CMYKAQuantum;
         if (image->number_meta_channels != 0)
-          quantum_type=MultispectralQuantum;
+          {
+            quantum_type=MultispectralQuantum;
+            quantum_info->pad=0;
+          }
         if (image->colorspace != CMYKColorspace)
           (void) TransformImageColorspace(image,CMYKColorspace,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
