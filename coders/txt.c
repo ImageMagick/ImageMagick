@@ -58,6 +58,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
@@ -66,7 +67,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
+#include "MagickCore/token.h"
 #include "coders/txt.h"
 
 /*
@@ -384,42 +385,16 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
 static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    colorspace[MagickPathExtent],
-    text[MagickPathExtent];
-
-  double
-    max_value,
-    x_offset,
-    y_offset;
+    text[MagickPathExtent] = "\0";
 
   Image
     *image;
 
-  PixelInfo
-    pixel;
-
   MagickBooleanType
     status;
 
-  QuantumAny
-    range;
-
   ssize_t
-    i,
-    x;
-
-  Quantum
-    *q;
-
-  ssize_t
-    count,
-    type,
     y;
-
-  unsigned long
-    depth,
-    height,
-    width;
 
   /*
     Open image file.
@@ -438,25 +413,45 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  (void) memset(text,0,sizeof(text));
   (void) ReadBlobString(image,text);
   if (LocaleNCompare((char *) text,MagickTXTID,strlen(MagickTXTID)) != 0)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  x_offset=(-1.0);
-  y_offset=(-1.0);
-  q=(Quantum *) NULL;
   do
   {
-    width=0;
-    height=0;
-    max_value=0.0;
-    *colorspace='\0';
-    count=(ssize_t) sscanf(text+32,"%lu,%lu,%lf,%32s",&width,&height,&max_value,
-      colorspace);
-    if ((count != 4) || (width == 0) || (height == 0) || (max_value == 0.0))
+    char
+      colorspace[MagickPathExtent] = "\0";
+
+    double
+      max_value = 0.0;
+
+    QuantumAny
+      range = 0;
+
+    ssize_t
+      count = 0,
+      i = 0,
+      type = 0;
+
+    unsigned long
+      depth = 0,
+      height = 0,
+      number_meta_channels = 0,
+      width = 0;
+
+    count=(ssize_t) sscanf(text+32,"%lu,%lu,%lu,%lf,%32s",&width,&height,
+      &number_meta_channels,&max_value,colorspace);
+    if (count < 5)
+      {
+        number_meta_channels=0;
+        count=(ssize_t) sscanf(text+32,"%lu,%lu,%lf,%32s",&width,&height,
+          &max_value,colorspace);
+      }
+    if ((count < 4) || (width == 0) || (height == 0) || (max_value == 0.0) ||
+        (number_meta_channels >= (MaxPixelChannels-MetaPixelChannel)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->columns=width;
     image->rows=height;
+    image->number_meta_channels=number_meta_channels;
     if ((max_value == 0.0) || (max_value > 18446744073709551615.0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     for (depth=1; ((double) GetQuantumRange(depth)+1) < max_value; depth++) ;
@@ -479,110 +474,74 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     (void) SetImageColorspace(image,(ColorspaceType) type,exception);
     (void) SetImageBackgroundColor(image,exception);
-    GetPixelInfo(image,&pixel);
     range=GetQuantumRange(image->depth);
     status=MagickTrue;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       double
-        alpha,
-        black,
-        blue,
-        green,
-        red;
+        x_offset = 0.0,
+        y_offset = 0.0;
+
+      ssize_t
+        x;
 
       if (status == MagickFalse)
         break;
-      red=0.0;
-      green=0.0;
-      blue=0.0;
-      black=0.0;
-      alpha=0.0;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        if (ReadBlobString(image,text) == (char *) NULL)
+        char
+          token[MagickPathExtent] = "\0";
+
+        const char
+          *p;
+
+        double
+          channels[MaxPixelChannels+2];
+
+        Quantum
+          *q;
+
+        ssize_t
+          i,
+          n;
+
+        /*
+          Read one pixel per line in this format:
+            (x-offset,y-offset) (red,green,blue,...) #HEX #CSS
+        */
+        q=GetAuthenticPixels(image,CastDoubleToLong(x_offset),
+          CastDoubleToLong(y_offset),1,1,exception);
+        if ((q == (Quantum *) NULL) ||
+            (ReadBlobString(image,text) == (char *) NULL))
           {
             status=MagickFalse;
             break;
           }
-        switch (image->colorspace)
+        n=0;
+        for (p=text; (*p != ')') && (*p != '\0') && (n < MaxPixelChannels); )
         {
-          case LinearGRAYColorspace:
-          case GRAYColorspace:
-          {
-            if (image->alpha_trait != UndefinedPixelTrait)
-              {
-                count=(ssize_t) sscanf(text,"%lf,%lf: (%lf%*[%,]%lf%*[%,]",
-                  &x_offset,&y_offset,&red,&alpha);
-                green=red;
-                blue=red;
-                break;
-              }
-            count=(ssize_t) sscanf(text,"%lf,%lf: (%lf%*[%,]",&x_offset,
-              &y_offset,&red);
-            green=red;
-            blue=red;
-            break;
-          }
-          case CMYKColorspace:
-          {
-            if (image->alpha_trait != UndefinedPixelTrait)
-              {
-                count=(ssize_t) sscanf(text,
-                  "%lf,%lf: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
-                  &x_offset,&y_offset,&red,&green,&blue,&black,&alpha);
-                break;
-              }
-            count=(ssize_t) sscanf(text,
-              "%lf,%lf: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",&x_offset,
-              &y_offset,&red,&green,&blue,&black);
-            break;
-          }
-          default:
-          {
-            if (image->alpha_trait != UndefinedPixelTrait)
-              {
-                count=(ssize_t) sscanf(text,
-                  "%lf,%lf: (%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf%*[%,]",
-                  &x_offset,&y_offset,&red,&green,&blue,&alpha);
-                break;
-              }
-            count=(ssize_t) sscanf(text,"%lf,%lf: (%lf%*[%,]%lf%*[%,]%lf%*[%,]",
-              &x_offset,&y_offset,&red,&green,&blue);
-            break;
-          }
+          (void) GetNextToken(p,&p,MagickPathExtent,token);
+          if (isdigit((int) ((unsigned char) *token)) != 0)
+            {
+              char
+                *q = (char *) NULL;
+
+              channels[n]=strtod(token,&q);
+              (void) GetNextToken(p,&p,MagickPathExtent,token);
+              if (*q == '%')
+                channels[n]*=0.01*range;
+              n++;
+            }
         }
-        if (strchr(text,'%') != (char *) NULL)
-          {
-            red*=0.01*range;
-            green*=0.01*range;
-            blue*=0.01*range;
-            black*=0.01*range;
-            alpha*=0.01*range;
-          }
+        x_offset=channels[0];
+        y_offset=channels[1];
         if (image->colorspace == LabColorspace)
           {
-            green+=(range+1)/2.0;
-            blue+=(range+1)/2.0;
+            channels[3]+=(range+1)/2.0;
+            channels[4]+=(range+1)/2.0;
           }
-        pixel.red=(MagickRealType) ScaleAnyToQuantum(CastDoubleToQuantumAny(
-          red),range);
-        pixel.green=(MagickRealType) ScaleAnyToQuantum(CastDoubleToQuantumAny(
-          green),range);
-        pixel.blue=(MagickRealType) ScaleAnyToQuantum(CastDoubleToQuantumAny(
-          blue),range);
-        pixel.black=(MagickRealType) ScaleAnyToQuantum(CastDoubleToQuantumAny(
-          black),range);
-        pixel.alpha=(MagickRealType) ScaleAnyToQuantum(CastDoubleToQuantumAny(
-          alpha),range);
-        q=GetAuthenticPixels(image,CastDoubleToLong(x_offset),CastDoubleToLong(
-          y_offset),1,1,exception);
-        if (q == (Quantum *) NULL)
-          {
-            status=MagickFalse;
-            break;
-          }
-        SetPixelViaPixelInfo(image,&pixel,q);
+        for (i=0; i < (ssize_t) GetImageChannels(image); i++)
+          q[i]=ScaleAnyToQuantum(CastDoubleToQuantumAny(channels[i+2]),range);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           {
             status=MagickFalse;
@@ -613,7 +572,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
   } while (LocaleNCompare((char *) text,MagickTXTID,strlen(MagickTXTID)) == 0);
   (void) CloseBlob(image);
-  if (q == (Quantum *) NULL)
+  if (y < (ssize_t) image->rows)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
@@ -726,6 +685,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     colorspace[MagickPathExtent],
     tuple[MagickPathExtent];
 
+  const Quantum
+    *p;
+
   MagickBooleanType
     status;
 
@@ -734,12 +696,6 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
 
   PixelInfo
     pixel;
-
-  const Quantum
-    *p;
-
-  ssize_t
-    x;
 
   size_t
     imageListLength;
@@ -783,19 +739,26 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,
-          "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
-          image->columns,(double) image->rows,(double)
-          GetQuantumRange(image->depth),colorspace);
+          "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%.20g,%s\n",
+          (double) image->columns,(double) image->rows,
+          (double) image->number_meta_channels,
+          (double) GetQuantumRange(image->depth),colorspace);
         (void) WriteBlobString(image,buffer);
       }
     GetPixelInfo(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
+      ssize_t
+        x;
+
       p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
+        ssize_t
+          i;
+
         GetPixelInfoPixel(image,p,&pixel);
         if (LocaleCompare(image_info->magick,"SPARSE-COLOR") == 0)
           {
@@ -843,6 +806,12 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             ConcatenateColorComponent(&pixel,AlphaPixelChannel,compliance,
               tuple);
           }
+        for (i=0; i < (ssize_t) image->number_meta_channels; i++)
+        {
+          (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
+          ConcatenateColorComponent(&pixel,(const PixelChannel)
+            (MetaPixelChannels+i),compliance,tuple);
+        }
         (void) ConcatenateMagickString(tuple,")",MagickPathExtent);
         (void) WriteBlobString(image,tuple);
         (void) WriteBlobString(image,"  ");
