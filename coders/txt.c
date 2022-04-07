@@ -429,7 +429,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     ssize_t
       count = 0,
-      i = 0,
+      i,
       type = 0;
 
     unsigned long
@@ -502,7 +502,6 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *q;
 
         ssize_t
-          i,
           n;
 
         /*
@@ -524,11 +523,11 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (isdigit((int) ((unsigned char) *token)) != 0)
             {
               char
-                *q = (char *) NULL;
+                *end = (char *) NULL;
 
-              channels[n]=strtod(token,&q);
+              channels[n]=strtod(token,&end);
               (void) GetNextToken(p,&p,MagickPathExtent,token);
-              if (*q == '%')
+              if (*end == '%')
                 channels[n]*=0.01*range;
               n++;
             }
