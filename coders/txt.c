@@ -447,7 +447,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           &max_value,colorspace);
       }
     if ((count < 4) || (width == 0) || (height == 0) || (max_value == 0.0) ||
-        (number_meta_channels >= (MaxPixelChannels-MetaPixelChannel)))
+        ((int) number_meta_channels >= (MaxPixelChannels-MetaPixelChannel)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->columns=width;
     image->rows=height;
@@ -478,10 +478,6 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=MagickTrue;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      double
-        x_offset = 0.0,
-        y_offset = 0.0;
-
       ssize_t
         x;
 
@@ -508,10 +504,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read one pixel per line in this format:
             (x-offset,y-offset) (red,green,blue,...) #HEX #CSS
         */
-        q=GetAuthenticPixels(image,CastDoubleToLong(x_offset),
-          CastDoubleToLong(y_offset),1,1,exception);
-        if ((q == (Quantum *) NULL) ||
-            (ReadBlobString(image,text) == (char *) NULL))
+        if (ReadBlobString(image,text) == (char *) NULL)
           {
             status=MagickFalse;
             break;
@@ -532,13 +525,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
               n++;
             }
         }
-        x_offset=channels[0];
-        y_offset=channels[1];
-        if (image->colorspace == LabColorspace)
-          {
-            channels[3]+=(range+1)/2.0;
-            channels[4]+=(range+1)/2.0;
-          }
+        q=GetAuthenticPixels(image,CastDoubleToLong(channels[0]),
+          CastDoubleToLong(channels[1]),1,1,exception);
+        if (q == (Quantum *) NULL)
+          break;
         for (i=0; i < (ssize_t) GetImageChannels(image); i++)
           q[i]=ScaleAnyToQuantum(CastDoubleToQuantumAny(channels[i+2]),range);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -679,28 +669,14 @@ ModuleExport void UnregisterTXTImage(void)
 static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
-  char
-    buffer[MagickPathExtent],
-    colorspace[MagickPathExtent],
-    tuple[MagickPathExtent];
-
-  const Quantum
-    *p;
-
   MagickBooleanType
     status;
 
   MagickOffsetType
     scene;
 
-  PixelInfo
-    pixel;
-
   size_t
-    imageListLength;
-
-  ssize_t
-    y;
+    number_images;
 
   /*
     Open output image file.
@@ -715,26 +691,29 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_images=GetImageListLength(image);
   do
   {
-    ComplianceType
-      compliance;
+    char
+      buffer[MagickPathExtent],
+      colorspace[MagickPathExtent];
 
-    const char
-      *value;
+    PixelInfo
+      pixel;
+
+    QuantumAny
+      range = 0;
+
+    ssize_t
+      y;
 
     (void) CopyMagickString(colorspace,CommandOptionToMnemonic(
       MagickColorspaceOptions,(ssize_t) image->colorspace),MagickPathExtent);
     LocaleLower(colorspace);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
+    range=GetQuantumRange(image->depth);
     if (image->alpha_trait != UndefinedPixelTrait)
       (void) ConcatenateMagickString(colorspace,"a",MagickPathExtent);
-    compliance=NoCompliance;
-    value=GetImageOption(image_info,"txt:compliance");
-    if (value != (char *) NULL)
-      compliance=(ComplianceType) ParseCommandOption(MagickComplianceOptions,
-        MagickFalse,value);
     if (LocaleCompare(image_info->magick,"SPARSE-COLOR") != 0)
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,
@@ -747,6 +726,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     GetPixelInfo(image,&pixel);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
+      const Quantum
+        *p;
+
       ssize_t
         x;
 
@@ -755,6 +737,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
+        char
+          tuple[MagickPathExtent];
+
         ssize_t
           i;
 
@@ -766,61 +751,35 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             */
             if (GetPixelAlpha(image,p) == (Quantum) OpaqueAlpha)
               {
-                GetColorTuple(&pixel,MagickFalse,tuple);
                 (void) FormatLocaleString(buffer,MagickPathExtent,
                   "%.20g,%.20g,",(double) x,(double) y);
+                GetColorTuple(&pixel,MagickFalse,tuple);
+                (void) ConcatenateMagickString(buffer,tuple,MagickPathExtent);
+                (void) ConcatenateMagickString(buffer," ",MagickPathExtent);
                 (void) WriteBlobString(image,buffer);
-                (void) WriteBlobString(image,tuple);
-                (void) WriteBlobString(image," ");
               }
             p+=GetPixelChannels(image);
             continue;
           }
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g,%.20g: ",
+        (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g,%.20g: (",
           (double) x,(double) y);
-        (void) WriteBlobString(image,buffer);
-        (void) CopyMagickString(tuple,"(",MagickPathExtent);
-        if ((pixel.colorspace == LinearGRAYColorspace) ||
-            (pixel.colorspace == GRAYColorspace))
-          ConcatenateColorComponent(&pixel,GrayPixelChannel,compliance,tuple);
-        else
-          {
-            ConcatenateColorComponent(&pixel,RedPixelChannel,compliance,tuple);
-            (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
-            ConcatenateColorComponent(&pixel,GreenPixelChannel,compliance,
-              tuple);
-            (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
-            ConcatenateColorComponent(&pixel,BluePixelChannel,compliance,
-              tuple);
-          }
-        if (pixel.colorspace == CMYKColorspace)
-          {
-            (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
-            ConcatenateColorComponent(&pixel,BlackPixelChannel,compliance,
-              tuple);
-          }
-        if (pixel.alpha_trait != UndefinedPixelTrait)
-          {
-            (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
-            ConcatenateColorComponent(&pixel,AlphaPixelChannel,compliance,
-              tuple);
-          }
-        for (i=0; i < (ssize_t) image->number_meta_channels; i++)
+        for (i=0; i < (ssize_t) GetImageChannels(image); i++)
         {
-          (void) ConcatenateMagickString(tuple,",",MagickPathExtent);
-          ConcatenateColorComponent(&pixel,(const PixelChannel)
-            (MetaPixelChannels+i),compliance,tuple);
+          QuantumAny pixel = ScaleQuantumToAny(p[i],range);
+          (void) FormatLocaleString(tuple,MagickPathExtent,"%.20g",
+            (double) pixel);
+          (void) ConcatenateMagickString(buffer,tuple,MagickPathExtent);
+          if ((i+1) < (ssize_t) GetImageChannels(image))
+            (void) ConcatenateMagickString(buffer,",",MagickPathExtent);
         }
-        (void) ConcatenateMagickString(tuple,")",MagickPathExtent);
-        (void) WriteBlobString(image,tuple);
-        (void) WriteBlobString(image,"  ");
+        (void) ConcatenateMagickString(buffer,")  ",MagickPathExtent);
         GetColorTuple(&pixel,MagickTrue,tuple);
-        (void) FormatLocaleString(buffer,MagickPathExtent,"%s",tuple);
-        (void) WriteBlobString(image,buffer);
-        (void) WriteBlobString(image,"  ");
+        (void) ConcatenateMagickString(buffer,tuple,MagickPathExtent);
+        (void) ConcatenateMagickString(buffer,"  ",MagickPathExtent);
         (void) QueryColorname(image,&pixel,SVGCompliance,tuple,exception);
-        (void) WriteBlobString(image,tuple);
-        (void) WriteBlobString(image,"\n");
+        (void) ConcatenateMagickString(buffer,tuple,MagickPathExtent);
+        (void) ConcatenateMagickString(buffer,"\n",MagickPathExtent);
+        (void) WriteBlobString(image,buffer);
         p+=GetPixelChannels(image);
       }
       status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -831,7 +790,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_images);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
