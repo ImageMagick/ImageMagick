@@ -205,6 +205,8 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     raw_info->lens.makernotes.MaxAp4MaxFocal);
   (void) FormatImageProperty(image,"dng:focal.length.in.35mm.format","%d mm",
     raw_info->lens.FocalLengthIn35mmFormat);
+#endif
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,20)
   (void) FormatImageProperty(image,"dng:gps.latitude",
     "%.0f deg %.0f' %.2f\" N",
     raw_info->other.parsed_gps.latitude[0],
