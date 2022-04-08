@@ -765,9 +765,9 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
           (double) x,(double) y);
         for (i=0; i < (ssize_t) GetImageChannels(image); i++)
         {
-          QuantumAny pixel = ScaleQuantumToAny(p[i],range);
+          QuantumAny channel = ScaleQuantumToAny(p[i],range);
           (void) FormatLocaleString(tuple,MagickPathExtent,"%.20g",
-            (double) pixel);
+            (double) channel);
           (void) ConcatenateMagickString(buffer,tuple,MagickPathExtent);
           if ((i+1) < (ssize_t) GetImageChannels(image))
             (void) ConcatenateMagickString(buffer,",",MagickPathExtent);
