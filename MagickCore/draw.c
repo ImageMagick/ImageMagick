@@ -2970,6 +2970,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
             else
               graphic_context[n]->fill.alpha=(MagickRealType)
                 ClampToQuantum(QuantumRange*(1.0-opacity));
+            graphic_context[n]->fill.alpha_trait=BlendPixelTrait;
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -3795,6 +3796,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
             else
               graphic_context[n]->stroke.alpha=(MagickRealType)
                 ClampToQuantum(QuantumRange*(1.0-opacity));
+            graphic_context[n]->stroke.alpha_trait=BlendPixelTrait;
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
