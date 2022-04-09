@@ -419,7 +419,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
     if (fputc(c,file) != c)
       status=MagickFalse;
-  offset=(ssize_t) fseek(file,(ssize_t) offset,SEEK_SET);
+  offset=(ssize_t) fseek(file,(off_t) offset,SEEK_SET);
   length=WriteLSBLong(file,(unsigned int) length);
   if (ferror(file) != 0)
     {

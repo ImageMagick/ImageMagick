@@ -1266,6 +1266,27 @@ cleanup:
 #endif
 }
 
+static void FTCloseStream(FT_Stream stream)
+{
+  FILE *file = (FILE *) stream->descriptor.pointer;
+  if (file != (FILE *) NULL)
+    (void) fclose(file);  
+  stream->descriptor.pointer=NULL;
+}
+
+static unsigned long FTReadStream(FT_Stream stream,unsigned long offset,
+  unsigned char *buffer,unsigned long count)
+{
+  FILE *file = (FILE *) stream->descriptor.pointer;
+  if (file == (FILE *) NULL)
+    return(0);
+  if (count == 0)
+    return(0);
+  if (fseek(file,(off_t) offset,SEEK_SET) != 0)
+    return(0);
+  return((unsigned long) fread(buffer,1,count,file));
+}
+
 static inline MagickBooleanType IsEmptyOutline(FT_Outline outline)
 {
   return((outline.n_points == 0) || (outline.n_contours <= 0) ? MagickTrue :
@@ -1378,6 +1399,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       image;
   } GlyphInfo;
 
+  char
+    *p;
+
   const char
     *value;
 
@@ -1414,6 +1438,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   FT_Open_Args
     args;
 
+  FT_StreamRec
+    stream;
+
   FT_UInt
     first_glyph_id,
     last_glyph_id,
@@ -1434,9 +1461,6 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   PointInfo
     point,
     resolution;
-
-  char
-    *p;
 
   ssize_t
     i;
@@ -1459,6 +1483,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       0, 0
     };
 
+  struct stat
+    attributes;
+
   unsigned char
     *utf8;
 
@@ -1469,8 +1496,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (ft_status != 0)
     ThrowFreetypeErrorException("UnableToInitializeFreetypeLibrary",ft_status,
       image->filename);
+  /*
+    Open font face.
+  */
   face_index=(FT_Long) draw_info->face;
-  args.flags=FT_OPEN_PATHNAME;
+  (void) memset(&args,0,sizeof(args));
   if (draw_info->font == (char *) NULL)
     args.pathname=ConstantString("helvetica");
   else
@@ -1481,20 +1511,30 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         /*
           Extract face index, e.g. @msgothic[1].
         */
-        ImageInfo *image_info=AcquireImageInfo();
+        ImageInfo *image_info = AcquireImageInfo();
         (void) strcpy(image_info->filename,draw_info->font+1);
         (void) SetImageInfo(image_info,0,exception);
         face_index=(FT_Long) image_info->scene;
         args.pathname=ConstantString(image_info->filename);
         image_info=DestroyImageInfo(image_info);
      }
+  /*
+    Configure streaming interface.
+  */
+  (void) memset(&stream,0,sizeof(stream));
+  (void) stat(args.pathname,&attributes);
+  stream.size=attributes.st_size;
+  stream.descriptor.pointer=fopen_utf8(args.pathname,"rb");
+  stream.read=(&FTReadStream);
+  stream.close=(&FTCloseStream);
+  args.flags=FT_OPEN_STREAM;
+  args.stream=(&stream);
   face=(FT_Face) NULL;
   ft_status=FT_Open_Face(library,&args,face_index,&face);
   if (ft_status != 0)
     {
       (void) FT_Done_FreeType(library);
-      ThrowFreetypeErrorException("UnableToReadFont",ft_status,
-        args.pathname);
+      ThrowFreetypeErrorException("UnableToReadFont",ft_status,args.pathname);
       args.pathname=DestroyString(args.pathname);
       return(MagickFalse);
     }
