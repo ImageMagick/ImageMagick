@@ -1685,15 +1685,16 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
         {
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            float
-              float_pixel;
-
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelRed(image,p),q);
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelGreen(image,p),q);
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlue(image,p),q);
-            q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlack(image,p),q);
-            float_pixel=(float) (GetPixelAlpha(image,p));
-            q=PopQuantumFloatPixel(quantum_info,float_pixel,q);
+            q=PopQuantumFloatPixel(quantum_info,(float)
+              GetPixelRed(image,p),q);
+            q=PopQuantumFloatPixel(quantum_info,(float)
+              GetPixelGreen(image,p),q);
+            q=PopQuantumFloatPixel(quantum_info,(float)
+              GetPixelBlue(image,p),q);
+            q=PopQuantumFloatPixel(quantum_info,(float)
+              GetPixelBlack(image,p),q);
+            q=PopQuantumFloatPixel(quantum_info,(float)
+              GetPixelAlpha(image,p),q);
             p+=GetPixelChannels(image);
             q+=quantum_info->pad;
           }
@@ -1720,17 +1721,18 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
     {
       if (quantum_info->format == FloatingPointQuantumFormat)
         {
-          double
-            pixel;
-
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelRed(image,p),q);
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelGreen(image,p),q);
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlue(image,p),q);
-            q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlack(image,p),q);
-            pixel=(double) (GetPixelAlpha(image,p));
-            q=PopQuantumDoublePixel(quantum_info,pixel,q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelRed(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelGreen(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelBlue(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelBlack(image,p),q);
+            q=PopQuantumDoublePixel(quantum_info,(double)
+              GetPixelAlpha(image,p),q);
             p+=GetPixelChannels(image);
             q+=quantum_info->pad;
           }
@@ -2503,8 +2505,6 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
   ssize_t
     bit;
 
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
   if (image->storage_class != PseudoClass)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -2673,8 +2673,6 @@ static void ExportIndexAlphaQuantum(const Image *image,
   ssize_t
     bit;
 
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
   if (image->storage_class != PseudoClass)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -2852,6 +2850,131 @@ static void ExportIndexAlphaQuantum(const Image *image,
         q=PopQuantumPixel(quantum_info,(QuantumAny) GetPixelIndex(image,p),q);
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelAlpha(image,p),
           range),q);
+        p+=GetPixelChannels(image);
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+  }
+}
+
+static void ExportMultispectralQuantum(const Image *image,
+  QuantumInfo *quantum_info,const MagickSizeType number_pixels,
+  const Quantum *magick_restrict p,unsigned char *magick_restrict q,
+  ExceptionInfo *exception)
+{
+  ssize_t
+    i,
+    x;
+
+  if (image->number_meta_channels == 0)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "MultispectralImageRequired","`%s'",image->filename);
+      return;
+    }
+  switch (quantum_info->depth)
+  {
+    case 8:
+    {
+      unsigned char
+        pixel;
+
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        for (i=0; i < (ssize_t) GetImageChannels(image); i++)
+        {
+          pixel=ScaleQuantumToChar(p[i]);
+          q=PopCharPixel(pixel,q);
+        }
+        p+=GetPixelChannels(image);
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 16:
+    {
+      unsigned short
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            for (i=0; i < (ssize_t) GetImageChannels(image); i++)
+            {
+              pixel=SinglePrecisionToHalf(QuantumScale*p[i]);
+              q=PopShortPixel(quantum_info->endian,pixel,q);
+            }
+            p+=GetPixelChannels(image);
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        for (i=0; i < (ssize_t) GetImageChannels(image); i++)
+        {
+          pixel=ScaleQuantumToShort(p[i]);
+          q=PopShortPixel(quantum_info->endian,pixel,q);
+        }
+        p+=GetPixelChannels(image);
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 32:
+    {
+      unsigned int
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            for (i=0; i < (ssize_t) GetImageChannels(image); i++)
+              q=PopQuantumFloatPixel(quantum_info,(float) p[i],q);
+            p+=GetPixelChannels(image);
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        for (i=0; i < (ssize_t) GetImageChannels(image); i++)
+        {
+          pixel=ScaleQuantumToLong(p[i]);
+          q=PopLongPixel(quantum_info->endian,pixel,q);
+        }
+        p+=GetPixelChannels(image);
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 64:
+    {
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            for (i=0; i < (ssize_t) GetImageChannels(image); i++)
+              q=PopQuantumDoublePixel(quantum_info,(double) p[i],q);
+            p+=GetPixelChannels(image);
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+    }
+    default:
+    {
+      QuantumAny
+        range;
+
+      range=GetQuantumRange(quantum_info->depth);
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        for (i=0; i < (ssize_t) GetImageChannels(image); i++)
+          q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(p[i],range),q);
         p+=GetPixelChannels(image);
         q+=quantum_info->pad;
       }
@@ -3990,6 +4113,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     case CMYKAQuantum:
     {
       ExportCMYKAQuantum(image,quantum_info,number_pixels,p,q,exception);
+      break;
+    }
+    case MultispectralQuantum:
+    {
+      ExportMultispectralQuantum(image,quantum_info,number_pixels,p,q,exception);
       break;
     }
     case CMYKOQuantum:

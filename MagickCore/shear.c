@@ -141,7 +141,7 @@ static MagickBooleanType CropToFitImage(Image **image,
   extent[2].y=(double) height/2.0;
   extent[3].x=(double) width/2.0;
   extent[3].y=(double) height/2.0;
-  for (i=0; i < 4; i++)
+  for (i=3; i >= 0; i--)
   {
     extent[i].x+=x_shear*extent[i].y;
     extent[i].y+=y_shear*extent[i].x;

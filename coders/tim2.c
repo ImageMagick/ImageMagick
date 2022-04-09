@@ -60,8 +60,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
-
-
+
 /*
  Typedef declarations
 */
@@ -123,8 +122,7 @@ typedef enum
   RGB24=1,
   RGBA16=2,
 } TIM2ColorEncoding;
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -142,7 +140,8 @@ typedef enum
 %
 %  The format of the ReadTIM2Image method is:
 %
-%      Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadTIM2Image(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -600,13 +599,13 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
           image_info->filename);
         break;
     }
-    if (csm==CSM1)
+    if (csm == CSM1)
       {
         PixelInfo
           *oldColormap;
 
-        oldColormap=(PixelInfo *) AcquireQuantumMemory((size_t)(image->colors)+1,
-          sizeof(*image->colormap));
+        oldColormap=(PixelInfo *) AcquireQuantumMemory((size_t)(image->colors)+
+          1,sizeof(*image->colormap));
         if (oldColormap == (PixelInfo *) NULL)
           ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
             image_info->filename);
@@ -617,7 +616,8 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
   return(status);
 }
 
-static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadTIM2Image(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -626,6 +626,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     status;
 
   ssize_t
+    i,
     str_read;
 
   TIM2FileHeader
@@ -685,7 +686,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
    */
   if (file_header.image_count != 1)
     ThrowReaderException(CoderError,"NumberOfImagesIsNotSupported");
-  for (int i=0; i < file_header.image_count; ++i)
+  for (i=0; i < (ssize_t) file_header.image_count; i++)
   {
     char
       clut_depth,
@@ -780,8 +781,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
         break;
       }
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,LoadImagesTag,image->scene-1,
-      image->scene);
+    status=SetImageProgress(image,LoadImagesTag,image->scene-1,image->scene);
     if (status == MagickFalse)
       break;
   }
@@ -790,8 +790,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,ExceptionInfo *exception
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -825,8 +824,7 @@ ModuleExport size_t RegisterTIM2Image(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

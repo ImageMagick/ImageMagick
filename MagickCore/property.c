@@ -1486,7 +1486,20 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             case EXIF_FMT_BYTE:
             case EXIF_FMT_UNDEFINED:
             {
-              EXIFMultipleValues(1,"%.20g",(double) (*(unsigned char *) p1));
+              value=(char *) NULL;
+              if (~((size_t) number_bytes) >= 1)
+                value=(char *) AcquireQuantumMemory((size_t) number_bytes+1UL,
+                  sizeof(*value));
+              if (value != (char *) NULL)
+                {
+                  for (i=0; i < (ssize_t) number_bytes; i++)
+                  {
+                    value[i]='.';
+                    if (isprint((int) p[i]) != 0)
+                      value[i]=(char) p[i];
+                  }
+                  value[i]='\0';
+                }
               break;
             }
             case EXIF_FMT_SBYTE:
@@ -1679,6 +1692,9 @@ static MagickBooleanType GetICCProperty(const Image *image,const char *property,
   const StringInfo
     *profile;
 
+  /*
+    Return ICC profile property.
+  */
   magick_unreferenced(property);
   profile=GetImageProfile(image,"icc");
   if (profile == (StringInfo *) NULL)
@@ -1704,48 +1720,58 @@ static MagickBooleanType GetICCProperty(const Image *image,const char *property,
         if (name != (const char *) NULL)
           (void) SetImageProperty((Image *) image,"icc:name",name,exception);
 #else
-        char
-          info[MagickPathExtent];
+        StringInfo
+          *info;
 
         unsigned int
           extent;
 
-        (void) memset(info,0,sizeof(info));
+        info=AcquireStringInfo(0);
         extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,"en","US",
           NULL,0);
         if (extent != 0)
           {
+            SetStringInfoLength(info,extent+1);
             extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,"en",
-              "US",info,MagickMin(MagickPathExtent-1,extent));
-            (void) SetImageProperty((Image *) image,"icc:description",info,
-              exception);
+              "US",(char *) GetStringInfoDatum(info),extent);
+            if (extent != 0)
+              (void) SetImageProperty((Image *) image,"icc:description",
+                (char *) GetStringInfoDatum(info),exception);
          }
         extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,"en","US",
           NULL,0);
         if (extent != 0)
           {
+            SetStringInfoLength(info,extent+1);
             extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,"en",
-              "US",info,MagickMin(MagickPathExtent-1,extent));
-            (void) SetImageProperty((Image *) image,"icc:manufacturer",info,
-              exception);
+              "US",(char *) GetStringInfoDatum(info),extent);
+            if (extent != 0)
+              (void) SetImageProperty((Image *) image,"icc:manufacturer",
+                (char *) GetStringInfoDatum(info),exception);
           }
         extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en","US",
           NULL,0);
         if (extent != 0)
           {
+            SetStringInfoLength(info,extent+1);
             extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en","US",
-              info,MagickMin(MagickPathExtent-1,extent));
-            (void) SetImageProperty((Image *) image,"icc:model",info,exception);
+              (char *) GetStringInfoDatum(info),extent);
+            if (extent != 0)
+              (void) SetImageProperty((Image *) image,"icc:model",
+                (char *) GetStringInfoDatum(info),exception);
           }
         extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,"en","US",
           NULL,0);
         if (extent != 0)
           {
+            SetStringInfoLength(info,extent+1);
             extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,"en",
-              "US",info,MagickMin(MagickPathExtent-1,extent));
-            (void) SetImageProperty((Image *) image,"icc:copyright",info,
-              exception);
+              "US",(char *) GetStringInfoDatum(info),extent);
+            if (extent != 0)
+              (void) SetImageProperty((Image *) image,"icc:copyright",
+                (char *) GetStringInfoDatum(info),exception);
           }
+        info=DestroyStringInfo(info);
 #endif
         (void) cmsCloseProfile(icc_profile);
       }
@@ -2233,7 +2259,7 @@ MagickExport const char *GetImageProperty(const Image *image,
     return((const char *) NULL);
   read_from_properties=MagickTrue;
   property_length=strlen(property);
-  if (property_length > 2 && (*(property+(property_length-2)) == ':') &&
+  if ((property_length > 2) && (*(property+(property_length-2)) == ':') &&
       (*(property+(property_length-1)) == '*'))
     read_from_properties=MagickFalse;
   if (read_from_properties != MagickFalse)
@@ -4339,6 +4365,9 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
   MagickStatusType
     flags;
 
+  size_t
+    property_length;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
@@ -4348,21 +4377,29 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
       RelinquishMagickMemory,RelinquishMagickMemory);  /* create splay-tree */
   if (value == (const char *) NULL)
     return(DeleteImageProperty(image,property));  /* delete if NULL */
-  status=MagickTrue;
   if (strlen(property) <= 1)
     {
       /*
         Do not 'set' single letter properties - read only shorthand.
-       */
+      */
       (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
         "SetReadOnlyProperty","`%s'",property);
       return(MagickFalse);
     }
-
-  /* FUTURE: binary chars or quotes in key should produce a error */
-  /* Set attributes with known names or special prefixes
-     return result is found, or break to set a free form properity
+  property_length=strlen(property);
+  if ((property_length > 2) && (*(property+(property_length-2)) == ':') &&
+      (*(property+(property_length-1)) == '*'))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "SetReadOnlyProperty","`%s'",property);
+      return(MagickFalse);
+    }
+  /*
+    FUTURE: binary chars or quotes in key should produce a error
+    Set attributes with known names or special prefixes
+    return result is found, or break to set a free form property
   */
+  status=MagickTrue;
   switch (*property)
   {
 #if 0  /* Percent escape's sets values with this prefix: for later use

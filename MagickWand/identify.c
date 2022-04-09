@@ -134,7 +134,6 @@ static MagickBooleanType IdentifyUsage(void)
       "  -ping                efficiently determine image attributes\n"
       "  -precision value     maximum number of significant digits to print\n"
       "  -quiet               suppress all warning messages\n"
-      "  -read-mask filename  associate a read mask with the image\n"
       "  -regard-warnings     pay attention to warning messages\n"
       "  -respect-parentheses settings remain in effect until parenthesis boundary\n"
       "  -sampling-factor geometry\n"

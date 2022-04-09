@@ -77,6 +77,7 @@
 #include "MagickCore/montage.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/prepress.h"
 #include "MagickCore/profile.h"
 #include "MagickCore/property.h"
@@ -594,7 +595,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         default:
         {
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-            (void) PrintChannelLocations(file,image,(PixelChannel) i,"Gray",
+            (void) PrintChannelLocations(file,image,(PixelChannel) i,"Channel",
               statistic_type,max_locations,channel_statistics);
           break;
         }
@@ -816,6 +817,19 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) FormatLocaleFile(file,"    Alpha: %.20g-bit\n",(double)
           channel_statistics[AlphaPixelChannel].depth);
+      if ((image->channels & ReadMaskChannel) != 0)
+        (void) FormatLocaleFile(file,"    Read mask: %.20g-bit\n",(double)
+          channel_statistics[ReadMaskPixelChannel].depth);
+      if ((image->channels & WriteMaskChannel) != 0)
+        (void) FormatLocaleFile(file,"    Write mask: %.20g-bit\n",(double)
+          channel_statistics[WriteMaskPixelChannel].depth);
+      if ((image->channels & CompositeMaskChannel) != 0)
+        (void) FormatLocaleFile(file,"    Composite mask: %.20g-bit\n",(double)
+          channel_statistics[CompositeMaskPixelChannel].depth);
+      if (image->number_meta_channels != 0)
+        for (i=0; i < (ssize_t) image->number_meta_channels; i++)
+          (void) FormatLocaleFile(file,"    Meta channel[%.20g]: %.20g-bit\n",
+            (double) i,(double) channel_statistics[MetaPixelChannels+i].depth);
       scale=1.0;
       if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
         scale=(double) (QuantumRange/((size_t) QuantumRange >> ((size_t)
@@ -873,7 +887,28 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) PrintChannelStatistics(file,AlphaPixelChannel,"Alpha",1.0/scale,
           channel_statistics);
-      if ((colorspace != LinearGRAYColorspace) && (colorspace != GRAYColorspace))
+      if ((image->channels & ReadMaskChannel) != 0)
+        (void) PrintChannelStatistics(file,ReadMaskPixelChannel,"Read mask",
+          1.0/scale,channel_statistics);
+      if ((image->channels & WriteMaskChannel) != 0)
+        (void) PrintChannelStatistics(file,WriteMaskPixelChannel,"Write mask",
+          1.0/scale,channel_statistics);
+      if ((image->channels & CompositeMaskChannel) != 0)
+        (void) PrintChannelStatistics(file,WriteMaskPixelChannel,
+          "Composite mask",1.0/scale,channel_statistics);
+      if (image->number_meta_channels != 0)
+        for (i=0; i < (ssize_t) image->number_meta_channels; i++)
+        {
+          char
+            label[MagickPathExtent];
+
+          (void) FormatLocaleString(label,MagickPathExtent,
+            "Meta channel[%.20g]",(double) i);
+          (void) PrintChannelStatistics(file,MetaPixelChannels+i,label,
+            1.0/scale,channel_statistics);
+        }
+      if ((colorspace != LinearGRAYColorspace) &&
+          (colorspace != GRAYColorspace))
         {
           (void) FormatLocaleFile(file,"  Image statistics:\n");
           (void) PrintChannelStatistics(file,CompositePixelChannel,"Overall",

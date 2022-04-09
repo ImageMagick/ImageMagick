@@ -2788,7 +2788,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reference,
     Compute the cross correlation of the square and unity images.
   */
   ncc_image=CrossCorrelationImage(square_image,unity_image,exception);
-  square_image=DestroyImage(square_image); \
+  square_image=DestroyImage(square_image);
   if (ncc_image == (Image *) NULL)
     ThrowSimilarityException();
   status=NCCMultiplyImage(ncc_image,(double) QuantumRange*reference->columns*
@@ -2934,18 +2934,19 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
   SetGeometry(reference,offset);
   *similarity_metric=MagickMaximumValue;
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
-  {
-    const char *artifact = GetImageArtifact(image,"compare:accelerate-ncc");
-    MagickBooleanType accelerate = (artifact != (const char *) NULL) && 
-      (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
-    if ((accelerate != MagickFalse) &&
-        (metric == NormalizedCrossCorrelationErrorMetric))
-      {
-        similarity_image=NCCSimilarityImage(image,reference,metric,
-          similarity_threshold,offset,similarity_metric,exception);
-        return(similarity_image);
-      }
-  }
+  if ((image->channels & ReadMaskChannel) != 0)
+    {
+      const char *artifact = GetImageArtifact(image,"compare:accelerate-ncc");
+      MagickBooleanType accelerate = (artifact != (const char *) NULL) && 
+        (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
+      if ((accelerate != MagickFalse) &&
+          (metric == NormalizedCrossCorrelationErrorMetric))
+        {
+          similarity_image=NCCSimilarityImage(image,reference,metric,
+            similarity_threshold,offset,similarity_metric,exception);
+          return(similarity_image);
+        }
+    }
 #endif
   similarity_image=CloneImage(image,image->columns-reference->columns+1,
     image->rows-reference->rows+1,MagickTrue,exception);

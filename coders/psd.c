@@ -1533,7 +1533,7 @@ static MagickBooleanType GetPixelChannelFromPsdIndex(const PSDInfo *psd_info,
       if (index == 1)
         index=-1;
       else if (index > 1)
-        index=StartMetaPixelChannel+index-2;
+        index=MetaPixelChannels+index-2;
       break;
     }
     case LabMode:
@@ -1543,7 +1543,7 @@ static MagickBooleanType GetPixelChannelFromPsdIndex(const PSDInfo *psd_info,
       if (index == 3)
         index=-1;
       else if (index > 3)
-        index=StartMetaPixelChannel+index-4;
+        index=MetaPixelChannels+index-4;
       break;
     }
     case CMYKMode:
@@ -1551,7 +1551,7 @@ static MagickBooleanType GetPixelChannelFromPsdIndex(const PSDInfo *psd_info,
       if (index == 4)
         index=-1;
       else if (index > 4)
-        index=StartMetaPixelChannel+index-5;
+        index=MetaPixelChannels+index-5;
       break;
     }
   }

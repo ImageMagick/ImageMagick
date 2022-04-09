@@ -286,6 +286,8 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
   */
   image->columns=(size_t) heif_image_handle_get_width(image_handle);
   image->rows=(size_t) heif_image_handle_get_height(image_handle);
+  if (heif_image_handle_has_alpha_channel(image_handle) != 0)
+    image->alpha_trait=BlendPixelTrait;
   image->depth=8;
 #if LIBHEIF_NUMERIC_VERSION > 0x01040000
   {
@@ -297,8 +299,6 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
       image->depth=(size_t) bits_per_pixel;
   }
 #endif
-  if (heif_image_handle_has_alpha_channel(image_handle))
-    image->alpha_trait=BlendPixelTrait;
   preserve_orientation=IsStringTrue(GetImageOption(image_info,
     "heic:preserve-orientation"));
   if (preserve_orientation == MagickFalse)
@@ -463,6 +463,9 @@ static void ReadHEICDepthImage(const ImageInfo *image_info,Image *image,
 static Image *ReadHEICImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  enum heif_filetype_result
+    filetype_check;
+
   heif_item_id
     primary_image_id;
 
@@ -472,9 +475,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  size_t
-    count,
-    length;
+  ssize_t
+    count;
 
   struct heif_context
     *heif_context;
@@ -485,8 +487,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   struct heif_image_handle
     *image_handle;
 
-  void
-    *container;
+  unsigned char
+    magic[12];
 
   /*
     Open image file.
@@ -502,38 +504,33 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  if (GetBlobSize(image) > (MagickSizeType) MAGICK_SSIZE_MAX)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  length=(size_t) GetBlobSize(image);
-  container=AcquireMagickMemory(length);
-  if (container == (void *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  if (ReadBlob(image,length,container) != (ssize_t) length)
-    {
-      container=RelinquishMagickMemory(container);
-      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-    }
+  if (ReadBlob(image,sizeof(magic),magic) != sizeof(magic))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+  filetype_check=heif_check_filetype(magic,sizeof(magic));
+  if ((filetype_check == heif_filetype_no) ||
+      (filetype_check == heif_filetype_yes_unsupported))
+    ThrowReaderException(CoderError,"ImageTypeNotSupported");
 #if LIBHEIF_NUMERIC_VERSION >= 0x010b0000
-  if (heif_has_compatible_brand((unsigned char *) container,(int) length,"avif") != MagickFalse)
+  if (heif_has_compatible_brand(magic,sizeof(magic), "avif"))
     (void) CopyMagickString(image->magick,"AVIF",MagickPathExtent);
 #endif
   /*
     Decode HEIF image.
   */
   heif_context=heif_context_alloc();
-  error=heif_context_read_from_memory_without_copy(heif_context,container,
-    length,NULL);
+  if (heif_context == (struct heif_context *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  error=heif_context_read_from_file(heif_context,image->filename,
+    (const struct heif_reading_options *) NULL);
   if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
     {
       heif_context_free(heif_context);
-      container=RelinquishMagickMemory(container);
       return(DestroyImageList(image));
     }
   error=heif_context_get_primary_image_ID(heif_context,&primary_image_id);
   if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
     {
       heif_context_free(heif_context);
-      container=RelinquishMagickMemory(container);
       return(DestroyImageList(image));
     }
   error=heif_context_get_image_handle(heif_context,primary_image_id,
@@ -541,7 +538,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
     {
       heif_context_free(heif_context);
-      container=RelinquishMagickMemory(container);
       return(DestroyImageList(image));
     }
   status=ReadHEICImageHandle(image_info,image,image_handle,exception);
@@ -552,14 +548,13 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       heif_item_id
         *ids;
 
-      size_t
+      ssize_t
         i;
 
       ids=(heif_item_id *) AcquireQuantumMemory((size_t) count,sizeof(*ids));
       if (ids == (heif_item_id *) NULL)
         {
           heif_context_free(heif_context);
-          container=RelinquishMagickMemory(container);
           return(DestroyImageList(image));
         }
       (void) heif_context_get_list_of_top_level_image_IDs(heif_context,ids,
@@ -599,13 +594,11 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
     {
       heif_context_free(heif_context);
-      container=RelinquishMagickMemory(container);
       return(DestroyImageList(image));
     }
   ReadHEICDepthImage(image_info,image,image_handle,exception);
   heif_image_handle_release(image_handle);
   heif_context_free(heif_context);
-  container=RelinquishMagickMemory(container);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   (void) CloseBlob(image);
@@ -698,6 +691,7 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->version=ConstantString(LIBHEIF_VERSION);
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("HEIC","HEIF","High Efficiency Image Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
@@ -715,6 +709,7 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->version=ConstantString(LIBHEIF_VERSION);
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
 #if LIBHEIF_NUMERIC_VERSION > 0x01060200
   entry=AcquireMagickInfo("HEIC","AVIF","AV1 Image File Format");
@@ -730,6 +725,7 @@ ModuleExport size_t RegisterHEICImage(void)
   entry->version=ConstantString(LIBHEIF_VERSION);
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
 #endif
   return(MagickImageCoderSignature);

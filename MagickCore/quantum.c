@@ -323,6 +323,7 @@ MagickExport size_t GetQuantumExtent(const Image *image,
     case BGRAQuantum: packet_size=4; break;
     case CMYKQuantum: packet_size=4; break;
     case CMYKAQuantum: packet_size=5; break;
+    case MultispectralQuantum: packet_size=6; break;
     case CbYCrAQuantum: packet_size=4; break;
     case CbYCrQuantum: packet_size=3; break;
     case CbYCrYQuantum: packet_size=4; break;
@@ -551,6 +552,8 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
       if (image->alpha_trait != UndefinedPixelTrait)
         quantum_type=IndexAlphaQuantum;
     }
+  if (image->number_meta_channels != 0)
+    quantum_type=MultispectralQuantum;
   return(quantum_type);
 }
 
@@ -689,13 +692,21 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
           else
             quantum_info->depth=16;
     }
-  if (quantum_info->pixels != (MemoryInfo **) NULL)
-    DestroyQuantumPixels(quantum_info);
-  quantum=(quantum_info->pad+MaxPixelChannels)*(quantum_info->depth+7)/8;
+  /*
+    Speculative allocation since we don't yet know the quantum type.
+  */
+  quantum=(GetPixelChannels(image)+quantum_info->pad+3)*
+    ((quantum_info->depth+7)/8)*sizeof(double);
   extent=MagickMax(image->columns,image->rows)*quantum;
   if ((MagickMax(image->columns,image->rows) != 0) &&
       (quantum != (extent/MagickMax(image->columns,image->rows))))
     return(MagickFalse);
+  if (quantum_info->pixels != (MemoryInfo **) NULL)
+    {
+      if (extent <= quantum_info->extent)
+        return(MagickTrue);
+      DestroyQuantumPixels(quantum_info);
+    }
   return(AcquireQuantumPixels(quantum_info,extent));
 }
 
@@ -834,6 +845,7 @@ MagickExport void SetQuantumImageType(Image *image,
     case BlackQuantum:
     case CMYKQuantum:
     case CMYKAQuantum:
+    case MultispectralQuantum:
     {
       image->type=ColorSeparationType;
       break;
@@ -967,8 +979,7 @@ MagickExport void SetQuantumMinIsWhite(QuantumInfo *quantum_info,
 %
 %  The format of the SetQuantumQuantum method is:
 %
-%      void SetQuantumQuantum(QuantumInfo *quantum_info,
-%        const size_t quantum)
+%      void SetQuantumQuantum(QuantumInfo *quantum_info,const size_t quantum)
 %
 %  A description of each parameter follows:
 %

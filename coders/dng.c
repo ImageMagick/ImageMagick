@@ -168,7 +168,7 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     exception);
   (void) FormatMagickTime(raw_info->other.timestamp,sizeof(timestamp),timestamp);
   (void) SetImageProperty(image,"dng:create.date",timestamp,exception);
-  (void) FormatImageProperty(image,"dng:iso.setting","%0.1f",
+  (void) FormatImageProperty(image,"dng:iso.setting","%.0f",
     raw_info->other.iso_speed);
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
   (void) SetImageProperty(image,"dng:software",raw_info->idata.software,
@@ -176,13 +176,13 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   if (*raw_info->shootinginfo.BodySerial != '\0')
     (void) SetImageProperty(image,"dng:serial.number",
       raw_info->shootinginfo.BodySerial,exception);
-  (void) FormatImageProperty(image,"dng:exposure.time","1/%0.1f",
+  (void) FormatImageProperty(image,"dng:exposure.time","1/%.0f",
     PerceptibleReciprocal(raw_info->other.shutter));
   (void) FormatImageProperty(image,"dng:f.number","%0.1f",
     raw_info->other.aperture);
   (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1f",
     raw_info->lens.EXIF_MaxAp);
-  (void) FormatImageProperty(image,"dng:ocal.length","%0.1f",
+  (void) FormatImageProperty(image,"dng:focal.length","%0.1f m",
     raw_info->other.focal_len);
   (void) FormatImageProperty(image,"dng:wb.rb.levels","%f %f %f %f",
     raw_info->color.cam_mul[0],raw_info->color.cam_mul[2],
@@ -205,6 +205,20 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     raw_info->lens.makernotes.MaxAp4MaxFocal);
   (void) FormatImageProperty(image,"dng:focal.length.in.35mm.format","%d mm",
     raw_info->lens.FocalLengthIn35mmFormat);
+#endif
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,20)
+  (void) FormatImageProperty(image,"dng:gps.latitude",
+    "%.0f deg %.0f' %.2f\" N",
+    raw_info->other.parsed_gps.latitude[0],
+    raw_info->other.parsed_gps.latitude[1],
+    raw_info->other.parsed_gps.latitude[2]);
+  (void) FormatImageProperty(image,"dng:gps.longitude",
+    "%.0f deg %.0f' %.2f\" W",
+    raw_info->other.parsed_gps.longitude[0],
+    raw_info->other.parsed_gps.longitude[1],
+    raw_info->other.parsed_gps.longitude[2]);
+  (void) FormatImageProperty(image,"dng:gps.altitude","%.1f m",
+    raw_info->other.parsed_gps.altitude);
 #endif
 }
 #endif

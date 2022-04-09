@@ -1705,22 +1705,28 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               image->alpha_trait=BlendPixelTrait;
           }
         else
-          for (i=0; i < extra_samples; i++)
           {
-            image->alpha_trait=BlendPixelTrait;
-            if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
-              {
-                SetQuantumAlphaType(quantum_info,AssociatedQuantumAlpha);
-                (void) SetImageProperty(image,"tiff:alpha","associated",
-                  exception);
-              }
-            else
-              if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
+            (void) SetPixelMetaChannels(image,extra_samples,exception);
+            for (i=0; i < extra_samples; i++)
+            {
+              image->alpha_trait=BlendPixelTrait;
+              if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
                 {
-                  SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
-                  (void) SetImageProperty(image,"tiff:alpha","unassociated",
+                  SetQuantumAlphaType(quantum_info,AssociatedQuantumAlpha);
+                  (void) SetImageProperty(image,"tiff:alpha","associated",
                     exception);
                 }
+              else
+                if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
+                  {
+                    SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
+                    (void) SetImageProperty(image,"tiff:alpha","unassociated",
+                      exception);
+                  }
+            }
+            (void) SetPixelMetaChannels(image,extra_samples,exception);
+            if (image->alpha_trait != UndefinedPixelTrait)
+              (void) SetPixelMetaChannels(image,extra_samples-1,exception);
           }
       }
     if (image->alpha_trait != UndefinedPixelTrait)
@@ -1815,6 +1821,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           }
+      }
+    if (image->number_meta_channels != 0)
+      {
+        quantum_type=MultispectralQuantum;
+        quantum_info->pad=0;
       }
     switch (method)
     {
@@ -1919,7 +1930,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               break;
             }
             case 4: quantum_type=AlphaQuantum; break;
-            default: break;
+            default:
+              break;
           }
           rows_remaining=0;
           for (y=0; y < (ssize_t) image->rows; y++)
@@ -3647,13 +3659,14 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       {
         uint16
           extra_samples,
-          sample_info[1],
+          sample_info[MaxPixelChannels+1],
           samples_per_pixel;
 
         /*
           TIFF has a matte channel.
         */
-        extra_samples=1;
+        (void) memset(sample_info,0,sizeof(sample_info));
+        extra_samples=(uint16) (image->number_meta_channels+1);
         sample_info[0]=EXTRASAMPLE_UNASSALPHA;
         option=GetImageOption(image_info,"tiff:alpha");
         if (option != (const char *) NULL)
@@ -3666,7 +3679,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           }
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
           &samples_per_pixel,sans);
-        (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+1);
+        (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+
+          extra_samples);
         (void) TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,
           &sample_info);
         if (sample_info[0] == EXTRASAMPLE_ASSOCALPHA)
@@ -3962,6 +3976,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             quantum_type=RGBQuantum;
             if (image->alpha_trait != UndefinedPixelTrait)
               quantum_type=RGBAQuantum;
+            if (image->number_meta_channels != 0)
+              {
+                quantum_type=MultispectralQuantum;
+                quantum_info->pad=0;
+              }
             for (y=0; y < (ssize_t) image->rows; y++)
             {
               const Quantum
@@ -4086,6 +4105,11 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         quantum_type=CMYKQuantum;
         if (image->alpha_trait != UndefinedPixelTrait)
           quantum_type=CMYKAQuantum;
+        if (image->number_meta_channels != 0)
+          {
+            quantum_type=MultispectralQuantum;
+            quantum_info->pad=0;
+          }
         if (image->colorspace != CMYKColorspace)
           (void) TransformImageColorspace(image,CMYKColorspace,exception);
         for (y=0; y < (ssize_t) image->rows; y++)
@@ -4168,6 +4192,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
          else
            if (photometric != PHOTOMETRIC_PALETTE)
              quantum_type=GrayQuantum;
+        if (image->number_meta_channels != 0)
+          quantum_type=MultispectralQuantum;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           const Quantum

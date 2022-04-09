@@ -451,6 +451,8 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->endian=(magick[0] == 0x80) && (magick[1] == 0x2a) &&
     (magick[2] == 0x5f) && (magick[3] == 0xd7) ? MSBEndian : LSBEndian;
   cin.file.image_offset=ReadBlobLong(image);
+  if (cin.file.image_offset < 712)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   offset+=4;
   cin.file.generic_length=ReadBlobLong(image);
   offset+=4;

@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.1.0-28](https://github.com/ImageMagick/ImageMagick/compare/7.1.0-27...7.1.0-28) - 2022-03-20
+
+### Merged
+
+- Fix setting the pixel intensity method with SetImageProperty [`#4969`](https://github.com/ImageMagick/ImageMagick/pull/4969)
+- fix issue: outside the range of representable values of type 'unsigned int' at coders/psd.c:1025 [`#4963`](https://github.com/ImageMagick/ImageMagick/pull/4963)
+
+### Commits
+
+- Coders: support 10-bit AVIF per https://github.com/ImageMagick/ImageMagick/discussions/4932 [`418e3f4`](https://github.com/ImageMagick/ImageMagick/commit/418e3f40dc7302dae664eaaf0ea4cd4b7b59f852)
+- support grayscale and linear colorspaces [`298ac0b`](https://github.com/ImageMagick/ImageMagick/commit/298ac0bf3b2a00a4eda82934b6aae48e564ee7c5)
+- MagickCore: support getentropy() [`b1027c8`](https://github.com/ImageMagick/ImageMagick/commit/b1027c855af1c8c29e07217b9216b1743d8004e0)
+- build: release [`1627727`](https://github.com/ImageMagick/ImageMagick/commit/16277279886c57325d874e1acce04d979172a304)
+- ... [`daef664`](https://github.com/ImageMagick/ImageMagick/commit/daef66469b28411755b42f000daa5c1dceec8697)
+- Coders: eliminate compiler warnings [`8ed4f9a`](https://github.com/ImageMagick/ImageMagick/commit/8ed4f9a8d722e70d6072c374d4dccc9b5da50057)
+- improve checking for conditional function arguments [`a1d46a8`](https://github.com/ImageMagick/ImageMagick/commit/a1d46a8566c5fb79583e82fec3a561402ff9cec1)
+- Coders: https://github.com/ImageMagick/ImageMagick/issues/4947 [`8043433`](https://github.com/ImageMagick/ImageMagick/commit/8043433ba9ce0c550e09f2b3b6a3f5f62d802e6d)
+- export libjxl version # [`4f15721`](https://github.com/ImageMagick/ImageMagick/commit/4f15721bb54adf029a3e6d2b44ec674a4ccbbcbf)
+- https://github.com/ImageMagick/ImageMagick/issues/4927 [`d8624b4`](https://github.com/ImageMagick/ImageMagick/commit/d8624b4611882b4e15be6c22d306d56f1914056f)
+- Coders: PS and EPS %%BoundingBox not being parsed #4961 [`35fdd9f`](https://github.com/ImageMagick/ImageMagick/commit/35fdd9f89aca2f8ec6c7b770641e0c5c2853eb47)
+- Changed the format of MAGICK_GIT_REVISION and use this in -version. [`a7c4ca3`](https://github.com/ImageMagick/ImageMagick/commit/a7c4ca34d4e6670b3741027c2ad6dde931c92871)
+- https://github.com/ImageMagick/ImageMagick/issues/4927 [`7441e31`](https://github.com/ImageMagick/ImageMagick/commit/7441e318c500975be5d55378e37c2f4695f0b864)
+- Coders: proper check for out of bounds per https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=45640 [`ea43d4b`](https://github.com/ImageMagick/ImageMagick/commit/ea43d4b023e7b2fdbf8ff6d6fb23e7dd91add4c3)
+- Coders: cosmetic [`0dadfa7`](https://github.com/ImageMagick/ImageMagick/commit/0dadfa75c7fa54f57d771f6c6f97b969863d2601)
+- coders: sync JXL output [`9ca56be`](https://github.com/ImageMagick/ImageMagick/commit/9ca56be04a4229105e9cd20ccde47528a048f80f)
+- correct date format [`301a801`](https://github.com/ImageMagick/ImageMagick/commit/301a8014ffe901739e20ef08098bb54120243cdc)
+- Corrected name of the define. [`dfaeb2e`](https://github.com/ImageMagick/ImageMagick/commit/dfaeb2e05707f9bd4cff0cbdc4778b3bdb2b001f)
+- getentropy() requires sys/random.h include [`b62bc9d`](https://github.com/ImageMagick/ImageMagick/commit/b62bc9dc24e6c59db3a3185b87def27ff02789d3)
+- MagickCore: cosmetic [`08e77d2`](https://github.com/ImageMagick/ImageMagick/commit/08e77d21968bd9c7374692b46af51cd7a1ff1e3b)
+- regenerate compare docs [`f9d988b`](https://github.com/ImageMagick/ImageMagick/commit/f9d988b415174751c3efd7acb4d8b3231d465572)
+- no need to check for &lt; 0 [`69f805b`](https://github.com/ImageMagick/ImageMagick/commit/69f805b22c8c24fcd7c75587a0ad2fd53740dbb8)
+- pending release [`b83772f`](https://github.com/ImageMagick/ImageMagick/commit/b83772f8cdc35f27aa669c9e15eb6b8ad0f98786)
+- Coders: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=42549 [`a81927b`](https://github.com/ImageMagick/ImageMagick/commit/a81927b4801ffe7b2168c39588a3043d26d70df2)
+- Restore dds:compression=dxt5 behavior [`7dcb23a`](https://github.com/ImageMagick/ImageMagick/commit/7dcb23a29c6b1110c2c29f9862cf39b502a98982)
+- Corrected date format. [`a6f7e16`](https://github.com/ImageMagick/ImageMagick/commit/a6f7e1627f54cf08c883ec83988db424ff914fe0)
+- set pixel format in image out block [`e709dbf`](https://github.com/ImageMagick/ImageMagick/commit/e709dbf20aa1d025bfcf9bbe463ece3aa2f02125)
+
 ## [7.1.0-27](https://github.com/ImageMagick/ImageMagick/compare/7.1.0-26...7.1.0-27) - 2022-03-04
 
 ### Commits

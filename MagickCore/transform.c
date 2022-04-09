@@ -41,6 +41,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/attribute.h"
+#include "MagickCore/artifact.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/color.h"
@@ -2398,11 +2399,15 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
 */
 MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
 {
+  const char
+    *artifact;
+
   Image
     *trim_image;
 
   RectangleInfo
-    geometry;
+    geometry,
+    page;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -2424,6 +2429,69 @@ MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
       crop_image->page.x=(-1);
       crop_image->page.y=(-1);
       return(crop_image);
+    }
+  page=geometry;
+  artifact=GetImageArtifact(image,"trim:minSize");
+  if (artifact != (const char *) NULL)
+    (void) ParseAbsoluteGeometry(artifact,&page);
+  if ((geometry.width < page.width) && (geometry.height < page.height))
+    {
+      /*
+        Limit trim to a minimum size.
+      */
+      switch (image->gravity)
+      {
+        case CenterGravity:
+        {
+          geometry.x-=((ssize_t) page.width-geometry.width)/2;
+          geometry.y-=((ssize_t) page.height-geometry.height)/2;
+          break;
+        }
+        case NorthWestGravity:
+        {
+          geometry.x-=((ssize_t) page.width-geometry.width);
+          geometry.y-=((ssize_t) page.height-geometry.height);
+          break;
+        }
+        case NorthGravity:
+        {
+          geometry.x-=((ssize_t) page.width-geometry.width)/2;
+          geometry.y-=((ssize_t) page.height-geometry.height);
+          break;
+        }
+        case NorthEastGravity:
+        {
+          geometry.y-=((ssize_t) page.height-geometry.height);
+          break;
+        }
+        case EastGravity:
+        {
+          geometry.y-=((ssize_t) page.height-geometry.height)/2;
+          break;
+        }
+        case SouthEastGravity:
+          break;
+        case SouthGravity:
+        {
+          geometry.x-=((ssize_t) page.width-geometry.width)/2;
+          break;
+        }
+        case SouthWestGravity:
+        {
+          geometry.x-=((ssize_t) page.width-geometry.width);
+          break;
+        }
+        case WestGravity:
+        {
+          geometry.x-=((ssize_t) page.width-geometry.width);
+          geometry.y-=((ssize_t) page.height-geometry.height)/2;
+          break;
+        }
+        default:
+          break;
+      }
+      geometry.width=page.width;
+      geometry.height=page.height;
     }
   geometry.x+=image->page.x;
   geometry.y+=image->page.y;

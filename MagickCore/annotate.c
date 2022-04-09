@@ -1219,9 +1219,6 @@ cleanup:
   const char
     *p;
 
-  FT_Error
-    ft_status;
-
   ssize_t
     i;
 
@@ -1247,6 +1244,9 @@ cleanup:
       {
         if (FT_HAS_KERNING(face))
           {
+            FT_Error
+              ft_status;
+
             FT_Vector
               kerning;
 
@@ -1257,7 +1257,7 @@ cleanup:
                 RightToLeftDirection ? -1.0 : 1.0)*kerning.x);
           }
       }
-    ft_status=FT_Load_Glyph(face,(FT_UInt) (*grapheme)[i].index,flags);
+    (void) FT_Load_Glyph(face,(FT_UInt) (*grapheme)[i].index,flags);
     (*grapheme)[i].x_advance=face->glyph->advance.x;
     (*grapheme)[i].cluster=p-text;
     last_glyph=(*grapheme)[i].index;
@@ -1336,6 +1336,16 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
   return(0);
 }
 
+static inline const char *FreetypeErrorMessage(FT_Error ft_status)
+{
+#if FREETYPE_MAJOR == 2 && FREETYPE_MINOR >= 10
+  return(FT_Error_String(ft_status));
+#else
+  magick_unreferenced(ft_status);
+  return((const char *) NULL);
+#endif
+}
+
 static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char *encoding,const PointInfo *offset,TypeMetric *metrics,
   ExceptionInfo *exception)
@@ -1343,6 +1353,18 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 #if !defined(FT_OPEN_PATHNAME)
 #define FT_OPEN_PATHNAME  ft_open_pathname
 #endif
+
+#define ThrowFreetypeErrorException(tag,ft_status,value) \
+{ \
+  const char \
+    *error_string=FreetypeErrorMessage(ft_status); \
+  if (error_string != (const char *) NULL) \
+    (void) ThrowMagickException(exception,GetMagickModule(),TypeError, \
+      tag,"`%s (%s)'",value, error_string); \
+  else \
+    (void) ThrowMagickException(exception,GetMagickModule(),TypeError, \
+      tag,"`%s'",value); \
+}
 
   typedef struct _GlyphInfo
   {
@@ -1445,7 +1467,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   */
   ft_status=FT_Init_FreeType(&library);
   if (ft_status != 0)
-    ThrowBinaryException(TypeError,"UnableToInitializeFreetypeLibrary",
+    ThrowFreetypeErrorException("UnableToInitializeFreetypeLibrary",ft_status,
       image->filename);
   face_index=(FT_Long) draw_info->face;
   args.flags=FT_OPEN_PATHNAME;
@@ -1471,8 +1493,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (ft_status != 0)
     {
       (void) FT_Done_FreeType(library);
-      (void) ThrowMagickException(exception,GetMagickModule(),TypeError,
-        "UnableToReadFont","`%s'",args.pathname);
+      ThrowFreetypeErrorException("UnableToReadFont",ft_status,
+        args.pathname);
       args.pathname=DestroyString(args.pathname);
       return(MagickFalse);
     }
@@ -1527,7 +1549,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         {
           (void) FT_Done_Face(face);
           (void) FT_Done_FreeType(library);
-          ThrowBinaryException(TypeError,"UnrecognizedFontEncoding",encoding);
+          ThrowFreetypeErrorException("UnrecognizedFontEncoding",ft_status,
+            encoding);
+          return(MagickFalse);
         }
     }
   /*
@@ -1557,7 +1581,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
-      ThrowBinaryException(TypeError,"UnableToReadFont",draw_info->font);
+      ThrowFreetypeErrorException("UnableToReadFont",ft_status,
+        draw_info->font);
+      return(MagickFalse);
     }
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;

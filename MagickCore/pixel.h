@@ -91,6 +91,7 @@ typedef enum
   WriteMaskPixelChannel = 7,
   MetaPixelChannel = 8,
   CompositeMaskPixelChannel = 9,
+  MetaPixelChannels = 10,
   IntensityPixelChannel = MaxPixelChannels,  /* ???? */
   CompositePixelChannel = MaxPixelChannels,  /* ???? */
   SyncPixelChannel = MaxPixelChannels+1      /* not a real channel */

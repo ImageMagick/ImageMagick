@@ -886,6 +886,21 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 (void) SetImageProperty(image,keyword,options,exception);
                 break;
               }
+              case 'n':
+              case 'N':
+              {
+                if (LocaleCompare(keyword,"number-channels") == 0)
+                  {
+                    image->number_channels=StringToUnsignedLong(options);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"number-meta-channels") == 0)
+                  {
+                    image->number_meta_channels=StringToUnsignedLong(options);
+                    break;
+                  }
+                break;
+              }
               case 'o':
               case 'O':
               {
@@ -1117,6 +1132,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         (image->compression == UndefinedCompression) ||
         (image->colorspace == UndefinedColorspace) ||
         (image->columns == 0) || (image->rows == 0) ||
+        (image->number_meta_channels > (MaxPixelChannels-MetaPixelChannels)) ||
+        ((image->number_channels+image->number_meta_channels) >= MaxPixelChannels) ||
         (image->depth == 0) || (image->depth > 64))
       {
         if (profiles != (LinkedListInfo *) NULL)
@@ -1128,6 +1145,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
         break;
       }
+    *id='\0';
     if (image->montage != (char *) NULL)
       {
         char
@@ -1357,6 +1375,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (image->alpha_trait != UndefinedPixelTrait)
           quantum_type=IndexAlphaQuantum;
       }
+    if (image->number_meta_channels != 0)
+      quantum_type=MultispectralQuantum;
     status=MagickTrue;
     GetPixelInfo(image,&pixel);
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
@@ -2152,6 +2172,10 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       MagickClassOptions,image->storage_class),(double) image->colors,
       CommandOptionToMnemonic(MagickPixelTraitOptions,(ssize_t)
       image->alpha_trait));
+    (void) WriteBlobString(image,buffer);
+    (void) FormatLocaleString(buffer,MagickPathExtent,
+      "number-channels=%.20g  number-meta-channels=%.20g\n",
+      (double) image->number_channels,(double) image->number_meta_channels);
     (void) WriteBlobString(image,buffer);
     if (image->alpha_trait != UndefinedPixelTrait)
       (void) WriteBlobString(image,"matte=True\n");
