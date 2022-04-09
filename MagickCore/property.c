@@ -1545,12 +1545,12 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             }
             case EXIF_FMT_SINGLE:
             {
-              EXIFMultipleValues(4,"%f",(double) *(float *) p1);
+              EXIFMultipleValues(4,"%f",(double)ReadPropertySignedLong(endian,p1));
               break;
             }
             case EXIF_FMT_DOUBLE:
             {
-              EXIFMultipleValues(8,"%f",*(double *) p1);
+              EXIFMultipleValues(8,"%f",(double)ReadPropertySignedLong(endian,p1));
               break;
             }
             case EXIF_FMT_STRING:
