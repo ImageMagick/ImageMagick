@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.1.0-29](https://github.com/ImageMagick/ImageMagick/compare/7.1.0-28...7.1.0-29) - 2022-03-27
+
+### Merged
+
+- Remove unused EXPLICIT_TEMPLATE_INSTANTIATION [`#4982`](https://github.com/ImageMagick/ImageMagick/pull/4982)
+- Fixes #4985: 4e+26 is outside the range of representable values of type 'unsigned long' at coders/pcl.c:299 [`#4986`](https://github.com/ImageMagick/ImageMagick/pull/4986)
+
+### Fixed
+
+- Fixes #4985: 4e+26 is outside the range of representable values of type 'unsigned long' at coders/pcl.c:299 (#4986) [`#4985`](https://github.com/ImageMagick/ImageMagick/issues/4985)
+
+### Commits
+
+- https://github.com/ImageMagick/ImageMagick/issues/4936 [`83b114f`](https://github.com/ImageMagick/ImageMagick/commit/83b114f7ae99561d9c6abc67ab11c50f9d547655)
+- latest changelog [`d1d344b`](https://github.com/ImageMagick/ImageMagick/commit/d1d344b0ac1b5e98955009d57ed7f6954b54afcf)
+- ... [`280e7e6`](https://github.com/ImageMagick/ImageMagick/commit/280e7e6c2183a534efdf08db225dfa21350f0403)
+- enforce one `id` per MIFF image [`966a769`](https://github.com/ImageMagick/ImageMagick/commit/966a769a646aaaeff127862b8e475297bf5058d3)
+- https://github.com/ImageMagick/ImageMagick/issues/4987 [`25309b9`](https://github.com/ImageMagick/ImageMagick/commit/25309b9772d72072f8574352968aeca7134ba433)
+- over allocate quantum pixel buffer [`219d19f`](https://github.com/ImageMagick/ImageMagick/commit/219d19f96e6a87b17ab26dfa6eadc7ad3169092a)
+- https://github.com/ImageMagick/ImageMagick/issues/4972 [`ffc2aaa`](https://github.com/ImageMagick/ImageMagick/commit/ffc2aaae543dcd60c6cc7e5a426f66dbc51df560)
+- https://github.com/ImageMagick/ImageMagick/issues/4936 [`000557d`](https://github.com/ImageMagick/ImageMagick/commit/000557da249fa36ad8111c312cb43f179a1f7070)
+- set quantum extent [`c909df1`](https://github.com/ImageMagick/ImageMagick/commit/c909df15fc9e55b99c9d4480d4ed48a141fb943b)
+- revert [`96162eb`](https://github.com/ImageMagick/ImageMagick/commit/96162ebad2f05140a0d899b46a3e5dec9d4005f2)
+- revert [`cb65691`](https://github.com/ImageMagick/ImageMagick/commit/cb656913eb12c67f3d8a3098635e239c3d94bf18)
+- revert [`ab39cc4`](https://github.com/ImageMagick/ImageMagick/commit/ab39cc4abe3510b31d9e3dafe8a3b898ce627605)
+- cosmetic [`2c35b9a`](https://github.com/ImageMagick/ImageMagick/commit/2c35b9a24bd6abf17b1f135ced20611f4ad7fa17)
+- cosmetic [`e36bd84`](https://github.com/ImageMagick/ImageMagick/commit/e36bd84b0935b204a27a05aa041dfea6faf25099)
+- no suitable delegate utility for CGM or FIG formats [`004fc5d`](https://github.com/ImageMagick/ImageMagick/commit/004fc5d725fa2dc395391d1ac65f815823595189)
+- speculative allocation since we don't yet know the quantum type [`bd77531`](https://github.com/ImageMagick/ImageMagick/commit/bd77531ae8dd24adb583f87e7c0b73c306ac64cc)
+- release [`4c0b7d2`](https://github.com/ImageMagick/ImageMagick/commit/4c0b7d25daf11131af48820b2aa6cc0b1cf11a9e)
+- pending release [`a6551b2`](https://github.com/ImageMagick/ImageMagick/commit/a6551b2514ecf294c7ee11841d1e0b665fbbc7a8)
+- pending release [`8be1086`](https://github.com/ImageMagick/ImageMagick/commit/8be1086bee313dfcfe014e3c60197bf0b636776f)
+- account for case where gray image is imported as RGBA [`22cfaf3`](https://github.com/ImageMagick/ImageMagick/commit/22cfaf35dcea6d07e5353660794edca16b363c6b)
+- https://github.com/ImageMagick/ImageMagick/issues/4988 [`ca3654e`](https://github.com/ImageMagick/ImageMagick/commit/ca3654ebf7a439dc736f56f083c9aa98e4464b7f)
+- reset id [`a4736b4`](https://github.com/ImageMagick/ImageMagick/commit/a4736b4577b45def91148a4e5e71d8d4151ff96f)
+- latest changes [`2bfd2be`](https://github.com/ImageMagick/ImageMagick/commit/2bfd2beb581bbfd242ff7dd20a15dc602a154014)
+- https://github.com/ImageMagick/ImageMagick/issues/4975 [`44cb819`](https://github.com/ImageMagick/ImageMagick/commit/44cb81933777a199b9209d89a72fd2acf202d5de)
+- https://github.com/ImageMagick/ImageMagick/issues/4974 [`c871830`](https://github.com/ImageMagick/ImageMagick/commit/c8718305f120293d8bf13724f12eed885d830b09)
+- https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=45887 [`96ae906`](https://github.com/ImageMagick/ImageMagick/commit/96ae9066b001ff951c6a3c936081bacfaa69935f)
+- reset id [`83de35d`](https://github.com/ImageMagick/ImageMagick/commit/83de35d0ab6e5100450d604bf300670af7e1b3e8)
+
 ## [7.1.0-28](https://github.com/ImageMagick/ImageMagick/compare/7.1.0-27...7.1.0-28) - 2022-03-20
 
 ### Merged
