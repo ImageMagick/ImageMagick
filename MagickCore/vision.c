@@ -1441,7 +1441,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         }
       for (x=0; x < (ssize_t) bounding_box.width; x++)
       {
-        size_t
+        ssize_t
           k;
 
         if (status == MagickFalse)
