@@ -633,9 +633,7 @@ macro(magick_check_env)
 
   # Check if `vsnprintf' exists
   check_symbol_exists(vsnprintf stdio.h HAVE_VSNPRINTF)
-  if(NOT HAVE_VSNPRINTF)
-    check_function_exists(vsnprintf HAVE_DECL_VSNPRINTF)
-  endif()
+  check_function_exists(vsnprintf HAVE_DECL_VSNPRINTF)
 
   # Check if `vsnprintf_l' exists
   check_symbol_exists(vsnprintf_l stdio.h HAVE_VSNPRINTF_L)
