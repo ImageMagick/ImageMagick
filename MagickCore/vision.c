@@ -124,6 +124,26 @@ static int CCObjectInfoCompare(const void *x,const void *y)
 
   p=(CCObjectInfo *) x;
   q=(CCObjectInfo *) y;
+  if (p->key == -5)
+    return((int) (q->bounding_box.y-(ssize_t) p->bounding_box.y));
+  if (p->key == -4)
+    return((int) (q->bounding_box.x-(ssize_t) p->bounding_box.x));
+  if (p->key == -3)
+    return((int) (q->bounding_box.height-(ssize_t) p->bounding_box.height));
+  if (p->key == -2)
+    return((int) (q->bounding_box.width-(ssize_t) p->bounding_box.width));
+  if (p->key == -1)
+    return((int) (q->area-(ssize_t) p->area));
+  if (p->key == 1)
+    return((int) (p->area-(ssize_t) q->area));
+  if (p->key == 2)
+    return((int) (p->bounding_box.width-(ssize_t) q->bounding_box.width));
+  if (p->key == 3)
+    return((int) (p->bounding_box.height-(ssize_t) q->bounding_box.height));
+  if (p->key == 4)
+    return((int) (p->bounding_box.x-(ssize_t) q->bounding_box.x));
+  if (p->key == 5)
+    return((int) (p->bounding_box.y-(ssize_t) q->bounding_box.y));
   return((int) (q->area-(ssize_t) p->area));
 }
 
@@ -447,8 +467,8 @@ static void MajorAxisThreshold(const Image *component_image,
       }
     }
     component_view=DestroyCacheView(component_view);
-    object[i].metric[metric_index]=sqrt((2.0*PerceptibleReciprocal(M00))*((M20+M02)+
-      sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
+    object[i].metric[metric_index]=sqrt((2.0*PerceptibleReciprocal(M00))*
+      ((M20+M02)+sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
   }
 }
 
@@ -548,8 +568,8 @@ static void MinorAxisThreshold(const Image *component_image,
       }
     }
     component_view=DestroyCacheView(component_view);
-    object[i].metric[metric_index]=sqrt((2.0*PerceptibleReciprocal(M00))*((M20+M02)-
-      sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
+    object[i].metric[metric_index]=sqrt((2.0*PerceptibleReciprocal(M00))*
+      ((M20+M02)-sqrt(4.0*M11*M11+(M20-M02)*(M20-M02))));
   }
 }
 
@@ -815,9 +835,6 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   MatrixInfo
     *equivalences;
 
-  ssize_t
-    i;
-
   size_t
     size;
 
@@ -828,6 +845,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
     dx,
     dy,
     first,
+    i,
     last,
     n,
     step,
@@ -1507,6 +1525,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   if ((IsStringTrue(artifact) != MagickFalse) ||
       (objects != (CCObjectInfo **) NULL))
     {
+      ssize_t
+        key,
+        order;
+
       /*
         Report statistics on each unique object.
       */
@@ -1567,6 +1589,28 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         object[i].centroid.y=object[i].centroid.y/object[i].area;
       }
       component_view=DestroyCacheView(component_view);
+      order=1;
+      artifact=GetImageArtifact(image,"connected-components:sort-order");
+      if (artifact != (const char *) NULL)
+        if (LocaleCompare(artifact,"decreasing") == 0)
+          order=(-1);
+      key=0;
+      artifact=GetImageArtifact(image,"connected-components:sort");
+      if (artifact != (const char *) NULL)
+        {
+          if (LocaleCompare(artifact,"area") == 0)
+            key=1;
+          if (LocaleCompare(artifact,"width") == 0)
+            key=2;
+          if (LocaleCompare(artifact,"height") == 0)
+            key=3;
+          if (LocaleCompare(artifact,"x") == 0)
+            key=4;
+          if (LocaleCompare(artifact,"y") == 0)
+            key=5;
+        }
+      for (i=0; i < (ssize_t) component_image->colors; i++)
+         object[i].key=order*key;
       qsort((void *) object,component_image->colors,sizeof(*object),
         CCObjectInfoCompare);
       if (objects == (CCObjectInfo **) NULL)

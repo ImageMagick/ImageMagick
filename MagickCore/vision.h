@@ -47,6 +47,9 @@ typedef struct _CCObjectInfo
 
   double
     metric[CCMaxMetrics];
+
+  ssize_t
+    key;
 } CCObjectInfo;
 
 extern MagickExport Image
