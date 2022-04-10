@@ -41,7 +41,7 @@ static inline MagickBooleanType QuantumTick(const MagickOffsetType offset,
     return(MagickTrue);
   if (offset == (MagickOffsetType) (span-1))
     return(MagickTrue);
-  if ((offset % (span/100)) == 0)
+  if ((offset % (MagickOffsetType) (span/100)) == 0)
     return(MagickTrue);
   return(MagickFalse);
 }
