@@ -37,27 +37,38 @@
 %
 */
 
-#include <MagickCore/studio.h>
-#include <MagickCore/artifact.h>
-#include <MagickCore/attribute.h>
-#include <MagickCore/blob.h>
+#include "MagickCore/studio.h"
+#include "MagickCore/annotate.h"
+#include "MagickCore/artifact.h"
+#include "MagickCore/attribute.h"
+#include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
-#include <MagickCore/cache.h>
-#include <MagickCore/channel.h>
-#include <MagickCore/colorspace.h>
-#include <MagickCore/exception.h>
+#include "MagickCore/cache.h"
+#include "MagickCore/channel.h"
+#include "MagickCore/color.h"
+#include "MagickCore/color-private.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/constitute.h"
+#include "MagickCore/draw.h"
+#include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
-#include <MagickCore/image.h>
+#include "MagickCore/geometry.h"
+#include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
-#include <MagickCore/list.h>
-#include <MagickCore/magick.h>
-#include <MagickCore/memory_.h>
-#include <MagickCore/module.h>
-#include <MagickCore/monitor.h>
+#include "MagickCore/list.h"
+#include "MagickCore/magick.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
+#include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
-#include <MagickCore/pixel-accessor.h>
+#include "MagickCore/option.h"
+#include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
-#include <MagickCore/string_.h>
+#include "MagickCore/static.h"
+#include "MagickCore/statistic.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/token.h"
+#include "coders/ftxt.h"
 
 /*
   Define declaractions.
@@ -752,7 +763,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
 %      size_t RegisterFTXTImage(void)
 %
 */
-ModuleExport unsigned long RegisterFTXTImage(void)
+ModuleExport size_t RegisterFTXTImage(void)
 {
   MagickInfo
     *entry;
