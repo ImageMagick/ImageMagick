@@ -2138,8 +2138,11 @@ MagickExport Image *XAnimateImages(Display *display,
           */
           XGetPixelInfo(display,visual_info,map_info,resource_info,
             image_list[scene],windows->image.pixel_info);
-          windows->image.ximage->width=(int) image->columns;
-          windows->image.ximage->height=(int) image->rows;
+          if (image != (Image *) NULL)
+            {
+              windows->image.ximage->width=(int) image->columns;
+              windows->image.ximage->height=(int) image->rows;
+            }
           windows->image.pixmap=windows->image.pixmaps[scene];
           windows->image.matte_pixmap=windows->image.matte_pixmaps[scene];
           event.xexpose.x=0;

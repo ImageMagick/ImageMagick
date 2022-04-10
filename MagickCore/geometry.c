@@ -964,6 +964,8 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       {
         if (*(p+1) == ')')
           return(flags);
+        (void) CopyMagickString(p,p+1,MagickPathExtent);
+        break;
       }
       case ')':
       {

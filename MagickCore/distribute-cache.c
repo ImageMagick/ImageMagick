@@ -811,7 +811,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
   client_socket=(*(SOCKET_TYPE *) socket);
   count=dpc_send(client_socket,DPCSessionKeyLength,GetStringInfoDatum(secret));
   secret=DestroyStringInfo(secret);
-  for ( ; ; )
+  for (status=MagickFalse; ; )
   {
     count=dpc_read(client_socket,1,(unsigned char *) &command);
     if (count <= 0)
@@ -819,7 +819,6 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
     count=dpc_read(client_socket,sizeof(key),(unsigned char *) &key);
     if ((count != (MagickOffsetType) sizeof(key)) || (key != session_key))
       break;
-    status=MagickFalse;
     switch (command)
     {
       case 'o':

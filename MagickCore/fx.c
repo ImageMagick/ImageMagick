@@ -461,7 +461,8 @@ static const ImgAttrT ImgAttrs[] = {
   {aT,          "t", 0},
   {aW,          "w", 0},
   {aZ,          "z", 0},
-
+  {aNull,       "anull", 0},
+  {aNull,       "anull", 0},
   {aNull,       "anull", 0}
 };
 
@@ -2861,19 +2862,24 @@ static inline fxFltType ImageStat (
       ret = (fxFltType) GetBlobSize (pfx->image);
       break;
     case aKurtosis:
-      ret = cs[channel].kurtosis;
+      if (cs != (ChannelStatistics *) NULL)
+        ret = cs[channel].kurtosis;
       break;
     case aMaxima:
-      ret = cs[channel].maxima;
+      if (cs != (ChannelStatistics *) NULL)
+        ret = cs[channel].maxima;
       break;
     case aMean:
-      ret = cs[channel].mean;
+      if (cs != (ChannelStatistics *) NULL)
+        ret = cs[channel].mean;
       break;
     case aMedian:
-      ret = cs[channel].median;
+      if (cs != (ChannelStatistics *) NULL)
+        ret = cs[channel].median;
       break;
     case aMinima:
-      ret = cs[channel].minima;
+      if (cs != (ChannelStatistics *) NULL)
+        ret = cs[channel].minima;
       break;
     case aPage:
       /* Do nothing */

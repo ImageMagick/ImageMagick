@@ -6551,7 +6551,7 @@ static ssize_t TracePath(MVGInfo *mvg_info,const char *path,
 {
   char
     *next_token,
-    token[MagickPathExtent];
+    token[MagickPathExtent] = "";
 
   const char
     *p;

@@ -1111,8 +1111,9 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         channels++;
       }
   }
-  distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]/
-    channels);
+  if (channels != 0)
+    distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]/
+      channels);
   /*
     Free resources.
   */
