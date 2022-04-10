@@ -517,6 +517,7 @@ ssize_t TotalSize = 0;
     return NULL;
   }
 
+  (void) memset(&zip_info,0,sizeof(zip_info));
   zip_info.zalloc=AcquireZIPMemory;
   zip_info.zfree=RelinquishZIPMemory;
   zip_info.opaque = (voidpf) NULL;

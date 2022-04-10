@@ -1261,6 +1261,7 @@ MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
   if (compress_pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  (void) memset(&stream,0,sizeof(stream));
   stream.next_in=pixels;
   stream.avail_in=(unsigned int) length;
   stream.next_out=compress_pixels;
