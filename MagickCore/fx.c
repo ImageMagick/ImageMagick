@@ -2769,6 +2769,9 @@ static ChannelStatistics *CollectOneImgStats (FxInfo * pfx, Image * img)
   ChannelStatistics * cs = GetImageStatistics (img, pfx->exception);
   /* Use RelinquishMagickMemory() somewhere. */
 
+  if (cs == (ChannelStatistics *) NULL)
+    return((ChannelStatistics *) NULL);
+
   for (ch=0; ch <= (int) MaxPixelChannels; ch++) {
     cs[ch].mean *= QuantumScale;
     cs[ch].median *= QuantumScale;

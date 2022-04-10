@@ -1995,13 +1995,15 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   SetQuantumQuantum(quantum_info,32);
   SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
     MagickTrue : MagickFalse);
-  quantum_type=RGBQuantum;
-  if (image->alpha_trait != UndefinedPixelTrait)
+  if (image->alpha_trait == UndefinedPixelTrait)
+    quantum_type=RGBQuantum;
+  else
     quantum_type=RGBAQuantum;
   if (IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse)
     {
-      quantum_type=CbYCrQuantum;
-      if (image->alpha_trait != UndefinedPixelTrait)
+      if (image->alpha_trait == UndefinedPixelTrait)
+        quantum_type=CbYCrQuantum;
+      else
         quantum_type=CbYCrAQuantum;
       if ((horizontal_factor == 2) || (vertical_factor == 2))
         quantum_type=CbYCrYQuantum;

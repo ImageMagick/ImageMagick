@@ -1585,7 +1585,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 #endif
       default: image->compression=RLECompression; break;
     }
-    quantum_info=(QuantumInfo *) NULL;
+    quantum_info=AcquireQuantumInfo(image_info,image);
+    if (quantum_info == (QuantumInfo *) NULL)
+      ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     if ((photometric == PHOTOMETRIC_PALETTE) &&
         (pow(2.0,1.0*bits_per_sample) <= MaxColormapSize))
       {
@@ -1666,9 +1668,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     /*
       Allocate memory for the image and pixel buffer.
     */
-    quantum_info=AcquireQuantumInfo(image_info,image);
-    if (quantum_info == (QuantumInfo *) NULL)
-      ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     if (sample_format == SAMPLEFORMAT_UINT)
       status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
     if (sample_format == SAMPLEFORMAT_INT)
@@ -2592,7 +2591,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
     }
   (void) FormatLocaleString(huffman_image->filename,MagickPathExtent,"tiff:%s",
     filename);
-  if (IsImageMonochrome(image) == MagickFalse)
+  if (IsImageMonochrome(huffman_image) == MagickFalse)
     (void) SetImageType(huffman_image,BilevelType,exception);
   write_info=CloneImageInfo((ImageInfo *) NULL);
   SetImageInfoFile(write_info,file);
@@ -2905,8 +2904,8 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
       extent=TIFFScanlineSize(tiff);
       rows_per_strip=TIFFStripSizeDefault/(extent == 0 ? 1 : (uint32) extent);
       rows_per_strip=16*(((rows_per_strip < 16 ? 16 : rows_per_strip)+1)/16);
-      TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&rows);
-      if (rows_per_strip > rows)
+      if ((TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&rows) == 1) &&
+          (rows_per_strip > rows))
         rows_per_strip=rows;
       option=GetImageOption(image_info,"tiff:rows-per-strip");
       if (option != (const char *) NULL)

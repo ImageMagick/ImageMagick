@@ -881,7 +881,7 @@ static ssize_t ReadBlobBlock(Image *image,unsigned char *data)
     count;
 
   unsigned char
-    block_count;
+    block_count = 0;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);

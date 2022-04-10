@@ -1444,20 +1444,20 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
 
   double
     channels,
-    M00[MaxPixelChannels+1],
-    M01[MaxPixelChannels+1],
-    M02[MaxPixelChannels+1],
-    M03[MaxPixelChannels+1],
-    M10[MaxPixelChannels+1],
-    M11[MaxPixelChannels+1],
-    M12[MaxPixelChannels+1],
-    M20[MaxPixelChannels+1],
-    M21[MaxPixelChannels+1],
-    M22[MaxPixelChannels+1],
-    M30[MaxPixelChannels+1];
+    M00[2*MaxPixelChannels+1],
+    M01[2*MaxPixelChannels+1],
+    M02[2*MaxPixelChannels+1],
+    M03[2*MaxPixelChannels+1],
+    M10[2*MaxPixelChannels+1],
+    M11[2*MaxPixelChannels+1],
+    M12[2*MaxPixelChannels+1],
+    M20[2*MaxPixelChannels+1],
+    M21[2*MaxPixelChannels+1],
+    M22[2*MaxPixelChannels+1],
+    M30[2*MaxPixelChannels+1];
 
   PointInfo
-    centroid[MaxPixelChannels+1];
+    centroid[2*MaxPixelChannels+1];
 
   ssize_t
     c,

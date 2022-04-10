@@ -1093,7 +1093,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                     "ColorspaceColorProfileMismatch",name);
               }
             highres=MagickTrue;
-#if !defined(MAGICKCORE_HDRI_SUPPORT) || (MAGICKCORE_QUANTUM_DEPTH > 16)
             {
               const char
                 *artifact;
@@ -1102,7 +1101,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               if (IsStringFalse(artifact) != MagickFalse)
                 highres=MagickFalse;
             }
-#endif
             SetLCMSInfoScale(&source_info,1.0);
             SetLCMSInfoTranslate(&source_info,0.0);
             source_info.colorspace=sRGBColorspace;
