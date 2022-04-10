@@ -904,8 +904,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
           (void) FormatLocaleString(label,MagickPathExtent,
             "Meta channel[%.20g]",(double) i);
-          (void) PrintChannelStatistics(file,MetaPixelChannels+i,label,
-            1.0/scale,channel_statistics);
+          (void) PrintChannelStatistics(file,(const PixelChannel)
+            (MetaPixelChannels+i),label,1.0/scale,channel_statistics);
         }
       if ((colorspace != LinearGRAYColorspace) &&
           (colorspace != GRAYColorspace))
