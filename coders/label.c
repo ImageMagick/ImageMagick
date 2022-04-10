@@ -188,9 +188,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         option=GetImageOption(image_info,"label:max-pointsize");
         if (option != (const char*) NULL)
           {
-            high=StringToDouble(option,(char**) NULL)+1.0;
+            high=StringToDouble(option,(char**) NULL);
             if (high < 1.0)
               high=1.0;
+            high+=1.0;
           }
         else
           {
@@ -233,8 +234,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
                 image=DestroyImageList(image);
                 return((Image *) NULL);
               }
+            high=draw_info->pointsize;
           }
-        high=draw_info->pointsize;
         while((high-low) > 0.5)
         {
           draw_info->pointsize=(low+high)/2.0;

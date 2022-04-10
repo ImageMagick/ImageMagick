@@ -579,9 +579,8 @@ MagickExport PixelInfo *GetImageHistogram(const Image *image,
           root=histogram;
           DefineImageHistogram(image,cube_info->root,&root);
         }
+      cube_info=DestroyCubeInfo(image,cube_info);
     }
-  if (cube_info != (CubeInfo *) NULL)
-    cube_info=DestroyCubeInfo(image,cube_info);
   return(histogram);
 }
 

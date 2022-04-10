@@ -1995,19 +1995,6 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   SetQuantumQuantum(quantum_info,32);
   SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
     MagickTrue : MagickFalse);
-  if (image->alpha_trait == UndefinedPixelTrait)
-    quantum_type=RGBQuantum;
-  else
-    quantum_type=RGBAQuantum;
-  if (IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse)
-    {
-      if (image->alpha_trait == UndefinedPixelTrait)
-        quantum_type=CbYCrQuantum;
-      else
-        quantum_type=CbYCrAQuantum;
-      if ((horizontal_factor == 2) || (vertical_factor == 2))
-        quantum_type=CbYCrYQuantum;
-    }
   samples_per_pixel=1;
   quantum_type=GrayQuantum;
   component_type=dpx.image.image_element[0].descriptor;
@@ -2040,7 +2027,20 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
       break;
     }
     default:
+    {
+      quantum_type=RGBAQuantum;
+      if (image->alpha_trait != UndefinedPixelTrait)
+        quantum_type=RGBQuantum;
+      if (IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse)
+        {
+          quantum_type=CbYCrQuantum;
+          if (image->alpha_trait != UndefinedPixelTrait)
+            quantum_type=CbYCrAQuantum;
+          if ((horizontal_factor == 2) || (vertical_factor == 2))
+            quantum_type=CbYCrYQuantum;
+        }
       break;
+    }
   }
   extent=GetBytesPerRow(image->columns,samples_per_pixel,image->depth,
     dpx.image.image_element[0].packing == 0 ? MagickFalse : MagickTrue);
