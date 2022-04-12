@@ -696,7 +696,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       break;
     case FileStream:
     {
-      if (blob_info->file_info.file != (FILE *) NULL)
+      if (blob_info->file_info.file != -1)
         {
           if (fileno(blob_info->file_info.file) != -1)
             {
@@ -2378,6 +2378,8 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   if ((file == -1) || (i < length))
     {
+      if (file != -1)
+        file=close(file);
       ThrowFileException(exception,BlobError,"UnableToWriteBlob",filename);
       return(MagickFalse);
     }

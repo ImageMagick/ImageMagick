@@ -463,6 +463,7 @@ static const ImgAttrT ImgAttrs[] = {
   {aZ,          "z", 0},
   {aNull,       "anull", 0},
   {aNull,       "anull", 0},
+  {aNull,       "anull", 0},
   {aNull,       "anull", 0}
 };
 

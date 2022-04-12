@@ -5482,7 +5482,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
     back_pattern[MagickPathExtent],
     **fontlist,
     **listhead,
-    primary_selection[MagickPathExtent],
+    primary_selection[MagickPathExtent] = "",
     reset_pattern[MagickPathExtent],
     text[MagickPathExtent];
 
