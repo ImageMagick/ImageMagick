@@ -1439,7 +1439,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     args;
 
   FT_StreamRec
-    stream;
+    *stream;
 
   FT_UInt
     first_glyph_id,
@@ -1521,14 +1521,15 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Configure streaming interface.
   */
-  (void) memset(&stream,0,sizeof(stream));
+  stream=(FT_StreamRec *) AcquireCriticalMemory(sizeof(*stream));
+  (void) memset(stream,0,sizeof(*stream));
   (void) stat(args.pathname,&attributes);
-  stream.size=attributes.st_size;
-  stream.descriptor.pointer=fopen_utf8(args.pathname,"rb");
-  stream.read=(&FTReadStream);
-  stream.close=(&FTCloseStream);
+  stream->size=attributes.st_size;
+  stream->descriptor.pointer=fopen_utf8(args.pathname,"rb");
+  stream->read=(&FTReadStream);
+  stream->close=(&FTCloseStream);
   args.flags=FT_OPEN_STREAM;
-  args.stream=(&stream);
+  args.stream=stream;
   face=(FT_Face) NULL;
   ft_status=FT_Open_Face(library,&args,face_index,&face);
   if (ft_status != 0)
