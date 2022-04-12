@@ -1976,6 +1976,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   annotate_info=DestroyDrawInfo(annotate_info);
   (void) FT_Done_Face(face);
   (void) FT_Done_FreeType(library);
+  stream=(FT_StreamRec *) RelinquishMagickMemory(stream);
   return(status);
 }
 #else
