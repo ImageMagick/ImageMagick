@@ -536,6 +536,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   if (xcfdata == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  (void) memset(xcfdata,0,(size_t) data_length*sizeof(*xcfdata));
   xcfodata=xcfdata;
   count=ReadBlob(image, (size_t) data_length, xcfdata);
   xcfdatalimit = xcfodata+count-1;

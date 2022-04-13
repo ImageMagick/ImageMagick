@@ -3031,10 +3031,13 @@ static fxFltType GetHslInt (FxInfo * pfx, ssize_t ImgNum, const ssize_t imgx, co
   double hue=0, saturation=0, lightness=0;
 
   const Quantum * p = GetCacheViewVirtualPixels (pfx->Imgs[ImgNum].View, imgx, imgy, 1, 1, pfx->exception);
-  if (!p)
-    (void) ThrowMagickException (
-      pfx->exception, GetMagickModule(), OptionError,
-      "GetHslInt failure", "%lu %li,%li %i", ImgNum, imgx, imgy, channel);
+  if (p == (const Quantum *) NULL)
+    {
+      (void) ThrowMagickException (pfx->exception,GetMagickModule(),
+        OptionError,"GetHslInt failure","%lu %li,%li %i",ImgNum,imgx,imgy,
+        channel);
+      return(0.0);
+    }
 
   ConvertRGBToHSL (
     GetPixelRed (img, p), GetPixelGreen (img, p), GetPixelBlue (img, p),
@@ -3088,6 +3091,13 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
   */
   if (!p) p = GetCacheViewVirtualPixels (
     pfx->Imgs[pfx->ImgNum].View, imgx, imgy, 1, 1, pfx->exception);
+
+  if (p == (const Quantum *) NULL)
+    {
+      (void) ThrowMagickException (pfx->exception,GetMagickModule(),
+        OptionError,"GetHslInt failure","%lu %li,%li",pfx->ImgNum,imgx,imgy);
+      return(MagickFalse);
+    }
 
   if (pfx->GotStats) {
     cs = pfx->statistics[pfx->ImgNum];
