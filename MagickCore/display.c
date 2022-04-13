@@ -8934,8 +8934,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       unique_file=AcquireUniqueFileResource(image_info->filename);
       if (unique_file == -1)
-        XNoticeWidget(display,windows,"Unable to edit image comment",
-          image_info->filename);
+        {
+          XNoticeWidget(display,windows,"Unable to edit image comment",
+            image_info->filename);
+          break;
+        }
       value=GetImageProperty(*image,"comment",exception);
       if (value == (char *) NULL)
         unique_file=close(unique_file)-1;
