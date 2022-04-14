@@ -1592,6 +1592,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           (void) FT_Done_FreeType(library);
           ThrowFreetypeErrorException("UnrecognizedFontEncoding",ft_status,
             encoding);
+          stream=(FT_StreamRec *) RelinquishMagickMemory(stream);
           return(MagickFalse);
         }
     }
@@ -1624,6 +1625,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       (void) FT_Done_FreeType(library);
       ThrowFreetypeErrorException("UnableToReadFont",ft_status,
         draw_info->font);
+      stream=(FT_StreamRec *) RelinquishMagickMemory(stream);
       return(MagickFalse);
     }
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
@@ -1661,6 +1663,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
+      stream=(FT_StreamRec *) RelinquishMagickMemory(stream);
       return(MagickTrue);
     }
   /*
