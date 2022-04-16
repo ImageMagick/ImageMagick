@@ -749,7 +749,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
      (pixel_format.data_type == JXL_TYPE_UINT16) ? sizeof(short) :
      sizeof(char));
-  if (IsImageGray(image) != MagickFalse)
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
     bytes_per_row=image->columns*
       ((image->alpha_trait == BlendPixelTrait) ? 2 : 1)*
       ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
