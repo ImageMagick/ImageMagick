@@ -12984,10 +12984,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
             &length,exception);
           if (blob == (unsigned char *) NULL)
             {
-              if (jpeg_image != (Image *)NULL)
-                jpeg_image=DestroyImage(jpeg_image);
-              if (jpeg_image_info != (ImageInfo *)NULL)
-                jpeg_image_info=DestroyImageInfo(jpeg_image_info);
+              jpeg_image=DestroyImage(jpeg_image);
+              jpeg_image_info=DestroyImageInfo(jpeg_image_info);
               return(MagickFalse);
             }
           jng_alpha_sample_depth=8;

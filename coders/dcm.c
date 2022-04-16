@@ -3036,11 +3036,13 @@ static inline void RelinquishDCMMemory(DCMInfo *info,DCMMap *map,
     map->green=(int *) RelinquishMagickMemory(map->green);
   if (map->red != (int *) NULL)
     map->red=(int *) RelinquishMagickMemory(map->red);
-  if (stream_info->offsets != (ssize_t *) NULL)
-    stream_info->offsets=(ssize_t *) RelinquishMagickMemory(
-      stream_info->offsets);
   if (stream_info != (DCMStreamInfo *) NULL)
-    stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info);
+    {
+      if (stream_info->offsets != (ssize_t *) NULL)
+        stream_info->offsets=(ssize_t *) RelinquishMagickMemory(
+          stream_info->offsets);
+      stream_info=(DCMStreamInfo *) RelinquishMagickMemory(stream_info);
+    }
   if (stack != (LinkedListInfo *) NULL)
     stack=DestroyLinkedList(stack,RelinquishDCMInfo);
   if (data != (unsigned char *) NULL)

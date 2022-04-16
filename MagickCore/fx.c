@@ -2857,6 +2857,8 @@ static inline fxFltType ImageStat (
     cs = CollectOneImgStats (pfx, pfx->Images[ImgNum]);
     NeedRelinq = MagickTrue;
   }
+  if (cs == (ChannelStatistics *) NULL)
+    return(0);
 
   switch (ia) {
     case aDepth:
@@ -2866,24 +2868,19 @@ static inline fxFltType ImageStat (
       ret = (fxFltType) GetBlobSize (pfx->image);
       break;
     case aKurtosis:
-      if (cs != (ChannelStatistics *) NULL)
-        ret = cs[channel].kurtosis;
+      ret = cs[channel].kurtosis;
       break;
     case aMaxima:
-      if (cs != (ChannelStatistics *) NULL)
-        ret = cs[channel].maxima;
+      ret = cs[channel].maxima;
       break;
     case aMean:
-      if (cs != (ChannelStatistics *) NULL)
-        ret = cs[channel].mean;
+      ret = cs[channel].mean;
       break;
     case aMedian:
-      if (cs != (ChannelStatistics *) NULL)
-        ret = cs[channel].median;
+      ret = cs[channel].median;
       break;
     case aMinima:
-      if (cs != (ChannelStatistics *) NULL)
-        ret = cs[channel].minima;
+      ret = cs[channel].minima;
       break;
     case aPage:
       /* Do nothing */
@@ -2945,10 +2942,8 @@ static inline fxFltType ImageStat (
       ret = (fxFltType) GetImageDepth (pfx->Images[ImgNum], pfx->exception);
       break;
     default:
-      (void) ThrowMagickException (
-        pfx->exception, GetMagickModule(), OptionError,
-        "Unknown ia=", "%i",
-        ia);
+      (void) ThrowMagickException (pfx->exception,GetMagickModule(),OptionError,
+        "Unknown ia=","%i",ia);
   }
   if (NeedRelinq) cs = (ChannelStatistics *)RelinquishMagickMemory (cs);
 

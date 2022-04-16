@@ -1378,7 +1378,7 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,
 
         output_pixels=(unsigned char *) AcquireQuantumMemory(count,
           sizeof(*output_pixels));
-        if (pixels == (unsigned char *) NULL)
+        if (output_pixels == (unsigned char *) NULL)
           {
             compact_pixels=(unsigned char *) RelinquishMagickMemory(
               compact_pixels);
@@ -2122,7 +2122,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         /*
           Layer name.
         */
-        length=(MagickSizeType) (unsigned char) ReadBlobByte(image);
+        length=(MagickSizeType) ((unsigned char) ReadBlobByte(image));
         combined_length+=length+1;
         if (length > 0)
           (void) ReadBlob(image,(size_t) length++,layer_info[i].name);

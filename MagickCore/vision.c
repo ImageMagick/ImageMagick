@@ -299,8 +299,6 @@ static void CircularityThreshold(const Image *component_image,
       ssize_t
         x;
 
-      if (status == MagickFalse)
-        continue;
       p=GetCacheViewVirtualPixels(component_view,bounding_box.x-1,
         bounding_box.y+y,bounding_box.width+2,2,exception);
       if (p == (const Quantum *) NULL)
@@ -420,8 +418,6 @@ static void MajorAxisThreshold(const Image *component_image,
     bounding_box=object[i].bounding_box;
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
-      if (status == MagickFalse)
-        continue;
       p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
         bounding_box.y+y,bounding_box.width,1,exception);
       if (p == (const Quantum *) NULL)
@@ -521,8 +517,6 @@ static void MinorAxisThreshold(const Image *component_image,
     bounding_box=object[i].bounding_box;
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
-      if (status == MagickFalse)
-        continue;
       p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
         bounding_box.y+y,bounding_box.width,1,exception);
       if (p == (const Quantum *) NULL)
@@ -623,8 +617,6 @@ static void EccentricityThreshold(const Image *component_image,
     bounding_box=object[i].bounding_box;
     for (y=0; y < (ssize_t) bounding_box.height; y++)
     {
-      if (status == MagickFalse)
-        continue;
       p=GetCacheViewVirtualPixels(component_view,bounding_box.x,
         bounding_box.y+y,bounding_box.width,1,exception);
       if (p == (const Quantum *) NULL)

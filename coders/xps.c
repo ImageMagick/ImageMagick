@@ -331,21 +331,6 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       AppendImageToList(&postscript_image,next);
     }
-  else
-    for (i=1; ; i++)
-    {
-      (void) InterpretImageFilename(image_info,image,filename,(int) i,
-        read_info->filename,exception);
-      if (IsGhostscriptRendered(read_info->filename) == MagickFalse)
-        break;
-      read_info->blob=NULL;
-      read_info->length=0;
-      next=ReadImage(read_info,exception);
-      (void) RelinquishUniqueFileResource(read_info->filename);
-      if (next == (Image *) NULL)
-        break;
-      AppendImageToList(&postscript_image,next);
-    }
   (void) RelinquishUniqueFileResource(filename);
   read_info=DestroyImageInfo(read_info);
   if (postscript_image == (Image *) NULL)

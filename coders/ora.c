@@ -146,7 +146,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
   image_metadata=AcquireImage(image_info,exception);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  stat(image_info->filename,&stat_info);
+  (void) stat(image_info->filename,&stat_info);
   zip_archive=zip_open(image_info->filename,ZIP_RDONLY,&zip_error);
   if (zip_archive == NULL)
     {

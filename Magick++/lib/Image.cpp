@@ -3153,7 +3153,8 @@ void Magick::Image::fontTypeMetricsMultiline(const std::string &text_,
   drawInfo->text=DestroyString(drawInfo->text);
   drawInfo->text=const_cast<char *>(text_.c_str());
   GetPPException;
-  GetMultilineTypeMetrics(image(),drawInfo,&(metrics->_typeMetric),exceptionInfo);
+  (void) GetMultilineTypeMetrics(image(),drawInfo,&(metrics->_typeMetric),
+    exceptionInfo);
   drawInfo->text=(char *) NULL;
   ThrowImageException;
 }
