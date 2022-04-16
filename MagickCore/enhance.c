@@ -3680,21 +3680,20 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
     percent_saturation=geometry_info.sigma;
   if ((flags & XiValue) != 0)
     percent_hue=geometry_info.xi;
+  artifact=GetImageArtifact(image,"modulate:colorspace");
+  if (artifact != (const char *) NULL)
+    colorspace=(ColorspaceType) ParseCommandOption(MagickColorspaceOptions,
+      MagickFalse,artifact);
   artifact=GetImageArtifact(image,"color:illuminant");
   if (artifact != (const char *) NULL)
     {
       illuminant=(IlluminantType) ParseCommandOption(MagickIlluminantOptions,
         MagickFalse,artifact);
       if ((ssize_t) illuminant < 0)
-        illuminant=UndefinedIlluminant;
-    }
-  artifact=GetImageArtifact(image,"modulate:colorspace");
-  if (artifact != (const char *) NULL)
-    {
-      colorspace=(ColorspaceType) ParseCommandOption(MagickColorspaceOptions,
-        MagickFalse,artifact);
-      if ((ssize_t) illuminant < 0)
-        colorspace=UndefinedColorspace;
+        {
+          illuminant=UndefinedIlluminant;
+          colorspace=UndefinedColorspace;
+        }
     }
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
