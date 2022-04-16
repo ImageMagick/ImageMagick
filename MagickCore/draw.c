@@ -3795,7 +3795,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
               graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
             else
               graphic_context[n]->stroke.alpha=(MagickRealType)
-                ClampToQuantum(QuantumRange*(opacity));
+                ClampToQuantum(QuantumRange*opacity);
             graphic_context[n]->stroke.alpha_trait=BlendPixelTrait;
             break;
           }
