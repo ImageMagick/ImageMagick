@@ -197,6 +197,8 @@ static double GetEdgeBackgroundCensus(const Image *image,
       break;
     }
   }
+  if (p == (const Quantum *) NULL)
+    return(0.0);
   GetPixelInfoPixel(image,p,&background);
   artifact=GetImageArtifact(image,"background");
   if (artifact != (const char *) NULL)

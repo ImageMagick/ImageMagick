@@ -580,14 +580,14 @@ MagickPrivate void ClonePixelCacheMethods(Cache clone,const Cache cache)
 %
 %  The format of the ClonePixelCacheRepository() method is:
 %
-%      MagickBooleanType ClonePixelCacheRepository(CacheInfo *cache_info,
-%        CacheInfo *source_info,ExceptionInfo *exception)
+%      MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
+%        CacheInfo *cache_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o cache_info: the pixel cache.
+%    o clone_info: the pixel cache.
 %
-%    o source_info: the source pixel cache.
+%    o cache_info: the source pixel cache.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -4098,7 +4098,9 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   (void) memcpy(clone_info->channel_map,cache_info->channel_map,
     MaxPixelChannels*sizeof(*cache_info->channel_map));
   clone_info->offset=(*offset);
-  status=ClonePixelCacheRepository(clone_info,cache_info,exception);
+  status=OpenPixelCacheOnDisk(clone_info,WriteMode);
+  if (status != MagickFalse)
+    status=ClonePixelCacheRepository(clone_info,cache_info,exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
   clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
   return(status);
