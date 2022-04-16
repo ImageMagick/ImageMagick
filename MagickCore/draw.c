@@ -2969,7 +2969,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
               graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
             else
               graphic_context[n]->fill.alpha=(MagickRealType)
-                ClampToQuantum(QuantumRange*(1.0-opacity));
+                ClampToQuantum(QuantumRange*opacity);
             graphic_context[n]->fill.alpha_trait=BlendPixelTrait;
             break;
           }
