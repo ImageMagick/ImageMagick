@@ -108,6 +108,7 @@
 #define IPTC_MARKER  (JPEG_APP0+IPTC_INDEX)
 #define XML_INDEX  1
 #define XML_MARKER  (JPEG_APP0+XML_INDEX)
+#define MaxJPEGProfiles  16
 #define MaxJPEGScans  1024
 
 /*
@@ -138,7 +139,7 @@ typedef struct _JPEGClientInfo
     finished;
 
   StringInfo
-    *profiles[16];
+    *profiles[MaxJPEGProfiles];
 
   ExceptionInfo
     *exception;
@@ -415,7 +416,7 @@ static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
       }
 }
 
-static boolean ReadProfileData(j_decompress_ptr jpeg_info,const ssize_t index,
+static boolean ReadProfileData(j_decompress_ptr jpeg_info,const int index,
   const size_t length)
 {
   ExceptionInfo
@@ -436,6 +437,12 @@ static boolean ReadProfileData(j_decompress_ptr jpeg_info,const ssize_t index,
   client_info=(JPEGClientInfo *) jpeg_info->client_data;
   exception=client_info->exception;
   image=client_info->image;
+  if ((index < 0) || (index > MaxJPEGProfiles))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        CorruptImageError,"TooManyProfiles","`%s'",image->filename);
+      return(FALSE);
+    }
   if (client_info->profiles[index] == (StringInfo *) NULL)
     {
       client_info->profiles[index]=BlobToStringInfo((const void *) NULL,
@@ -443,8 +450,7 @@ static boolean ReadProfileData(j_decompress_ptr jpeg_info,const ssize_t index,
       if (client_info->profiles[index] == (StringInfo *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
-            image->filename);
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
           return(FALSE);
         }
       p=GetStringInfoDatum(client_info->profiles[index]);
@@ -472,8 +478,7 @@ static boolean ReadProfileData(j_decompress_ptr jpeg_info,const ssize_t index,
   if (i != (ssize_t) length)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        CorruptImageError,"InsufficientImageDataInFile","`%s'",
-        image->filename);
+        CorruptImageError,"InsufficientImageDataInFile","`%s'",image->filename);
       return(FALSE);
     }
   *p='\0';
@@ -612,11 +617,11 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 
 static boolean ReadProfile(j_decompress_ptr jpeg_info)
 {
+  int
+    marker;
+
   size_t
     length;
-
-  ssize_t
-    marker;
 
   /*
     Read generic profile.
