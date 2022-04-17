@@ -1407,10 +1407,10 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
   image=(Image *) png_get_io_ptr(png_ptr);
   if (length != 0)
     {
-      png_size_t
+      size_t
         check;
 
-      check=(png_size_t) ReadBlob(image,(size_t) length,data);
+      check=ReadBlob(image,length,data);
       if (check != length)
         {
           char
