@@ -415,7 +415,7 @@ static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
       }
 }
 
-static boolean ReadProfileData(j_decompress_ptr jpeg_info,const size_t index,
+static boolean ReadProfileData(j_decompress_ptr jpeg_info,const ssize_t index,
   const size_t length)
 {
   ExceptionInfo
@@ -612,11 +612,11 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 
 static boolean ReadProfile(j_decompress_ptr jpeg_info)
 {
-  int
-    marker;
-
   size_t
     length;
+
+  ssize_t
+    marker;
 
   /*
     Read generic profile.

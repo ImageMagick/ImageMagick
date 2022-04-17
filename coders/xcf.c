@@ -567,6 +567,8 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
           size-=length;
           if (size < 0)
             goto bogus_rle;
+          if ((length < 1) || (length > data_length))
+            goto bogus_rle;
           if (&xcfdata[length-1] > xcfdatalimit)
             goto bogus_rle;
           while (length-- > 0)
