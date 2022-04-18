@@ -65,8 +65,12 @@
 #  endif
 #  include <libxml/parser.h>
 #  include <libxml/xmlmemory.h>
+#if defined(LIBXML_FTP_ENABLED)
 #  include <libxml/nanoftp.h>
+#endif
+#if defined(LIBXML_HTTP_ENABLED)
 #  include <libxml/nanohttp.h>
+#endif
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
     !defined(__MINGW32__)
