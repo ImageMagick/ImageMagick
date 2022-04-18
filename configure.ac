@@ -2261,7 +2261,7 @@ HEIF_LIBS=""
 HEIF_PKG=""
 if test "x$with_heic" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([HEIF],[libheif],[have_heic=yes],[have_heic=no])
+  PKG_CHECK_MODULES([HEIF],[libheif >= 1.4.0],[have_heic=yes],[have_heic=no])
   AC_MSG_RESULT([])
 fi
 
