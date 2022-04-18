@@ -489,8 +489,10 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   struct heif_image_handle
     *image_handle;
 
+#if LIBHEIF_NUMERIC_VERSION >= 0x01040000
   unsigned char
     magic[12];
+#endif
 
   /*
     Open image file.
@@ -503,20 +505,21 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
+#if LIBHEIF_NUMERIC_VERSION >= 0x01040000
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   if (ReadBlob(image,sizeof(magic),magic) != sizeof(magic))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-#if LIBHEIF_NUMERIC_VERSION >= 0x01040000
   filetype_check=heif_check_filetype(magic,sizeof(magic));
   if ((filetype_check == heif_filetype_no) ||
       (filetype_check == heif_filetype_yes_unsupported))
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
-#endif
+  (void) CloseBlob(image);
 #if LIBHEIF_NUMERIC_VERSION >= 0x010b0000
   if (heif_has_compatible_brand(magic,sizeof(magic), "avif"))
     (void) CopyMagickString(image->magick,"AVIF",MagickPathExtent);
+#endif
 #endif
   /*
     Decode HEIF image.
@@ -605,7 +608,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   heif_context_free(heif_context);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
 #endif
