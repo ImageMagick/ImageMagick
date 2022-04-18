@@ -4568,7 +4568,7 @@ MAGICK_PATCHLEVEL_VERSION=31
 
 MAGICK_VERSION=7.1.0-31
 
-MAGICK_GIT_REVISION=90160a408:20220417
+MAGICK_GIT_REVISION=c67cae6b6:20220418
 
 
 # Substitute library versioning
@@ -4598,7 +4598,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,31
 
-PACKAGE_RELEASE_DATE=2022-04-17
+PACKAGE_RELEASE_DATE=2022-04-18
 
 
 # Ensure that make can run correctly
@@ -30359,19 +30359,19 @@ if test "x$with_heic" = "xyes"; then
 $as_echo "-------------------------------------------------------------" >&6; }
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libheif" >&5
-$as_echo_n "checking for libheif... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libheif >= 1.4.0" >&5
+$as_echo_n "checking for libheif >= 1.4.0... " >&6; }
 
 if test -n "$HEIF_CFLAGS"; then
     pkg_cv_HEIF_CFLAGS="$HEIF_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libheif\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libheif") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libheif >= 1.4.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libheif >= 1.4.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_HEIF_CFLAGS=`$PKG_CONFIG --cflags "libheif" 2>/dev/null`
+  pkg_cv_HEIF_CFLAGS=`$PKG_CONFIG --cflags "libheif >= 1.4.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -30383,12 +30383,12 @@ if test -n "$HEIF_LIBS"; then
     pkg_cv_HEIF_LIBS="$HEIF_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libheif\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libheif") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libheif >= 1.4.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libheif >= 1.4.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_HEIF_LIBS=`$PKG_CONFIG --libs "libheif" 2>/dev/null`
+  pkg_cv_HEIF_LIBS=`$PKG_CONFIG --libs "libheif >= 1.4.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -30409,9 +30409,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        HEIF_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libheif" 2>&1`
+	        HEIF_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libheif >= 1.4.0" 2>&1`
         else
-	        HEIF_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libheif" 2>&1`
+	        HEIF_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libheif >= 1.4.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$HEIF_PKG_ERRORS" >&5
