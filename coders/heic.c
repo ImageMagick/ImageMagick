@@ -463,8 +463,10 @@ static void ReadHEICDepthImage(const ImageInfo *image_info,Image *image,
 static Image *ReadHEICImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+#if LIBHEIF_NUMERIC_VERSION >= 0x01040000
   enum heif_filetype_result
     filetype_check;
+#endif
 
   heif_item_id
     primary_image_id;
@@ -506,10 +508,12 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     return(DestroyImageList(image));
   if (ReadBlob(image,sizeof(magic),magic) != sizeof(magic))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+#if LIBHEIF_NUMERIC_VERSION >= 0x01040000
   filetype_check=heif_check_filetype(magic,sizeof(magic));
   if ((filetype_check == heif_filetype_no) ||
       (filetype_check == heif_filetype_yes_unsupported))
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
+#endif
 #if LIBHEIF_NUMERIC_VERSION >= 0x010b0000
   if (heif_has_compatible_brand(magic,sizeof(magic), "avif"))
     (void) CopyMagickString(image->magick,"AVIF",MagickPathExtent);
