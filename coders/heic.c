@@ -1054,6 +1054,7 @@ static MagickBooleanType WriteHEICImageRGBA(Image *image,
   return(status);
 }
 
+#if LIBHEIF_NUMERIC_VERSION > 0x01040000
 static MagickBooleanType WriteHEICImageRRGGBBAA(Image *image,
   struct heif_image *heif_image,ExceptionInfo *exception)
 {
@@ -1144,6 +1145,7 @@ static MagickBooleanType WriteHEICImageRRGGBBAA(Image *image,
   }
   return(status);
 }
+#endif
 
 static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
