@@ -119,7 +119,12 @@ AC_SUBST([MAGICKPP_LIBRARY_VERSION_INFO],
 
 AC_SUBST([PACKAGE_BASE_VERSION],[magick_base_version])
 AC_SUBST([PACKAGE_PATCHLEVEL_VERSION],[magick_patchlevel_version])
-AC_SUBST([PACKAGE_VERSION_ADDENDUM],[-magick_patchlevel_version])
+if test "magick_is_beta" = 'y'; then
+  PACKAGE_VERSION_ADDENDUM='-magick_patchlevel_version beta'
+else
+  PACKAGE_VERSION_ADDENDUM=-magick_patchlevel_version
+fi
+AC_SUBST([PACKAGE_VERSION_ADDENDUM])
 AC_SUBST([PACKAGE_LIB_VERSION],[magick_lib_version])
 AC_SUBST([PACKAGE_LIB_VERSION_NUMBER],[magick_lib_version_number])
 AC_SUBST([PACKAGE_RELEASE_DATE],[magick_release_date])
