@@ -4,7 +4,8 @@ on:
     branches:
     - main
     paths:
-    - 'ChangeLog.md'
+    - 'configure'
+    - 'm4/version.m4'
 
 name: release
 jobs:
