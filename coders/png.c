@@ -5246,9 +5246,11 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 %
 */
 
-static Image *ReadJNGImage(const ImageInfo *image_info,
-                ExceptionInfo *exception)
+static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  char
+    magic_number[MagickPathExtent];
+
   Image
     *image;
 
@@ -5258,9 +5260,6 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
 
   MngInfo
     *mng_info;
-
-  char
-    magic_number[MagickPathExtent];
 
   size_t
     count;
@@ -5346,7 +5345,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
     page_geometry[MagickPathExtent];
 
   Image
-    *image;
+    *image,
+    *previous;
 
   MagickBooleanType
     logging;
@@ -6830,30 +6830,47 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
 
+    previous=(Image *) NULL;
     mng_info->image=image;
     mng_info->mng_type=mng_type;
     mng_info->object_id=object_id;
 
     if (memcmp(type,mng_IHDR,4) == 0)
-      image=ReadOnePNGImage(mng_info,image_info,exception);
+      {
+        Image *png_image = ReadOnePNGImage(mng_info,image_info,exception);
+        if (png_image != (Image *) NULL)
+          previous=image;
+        image=png_image;
+      }
 
 #if defined(JNG_SUPPORTED)
     else
-      image=ReadOneJNGImage(mng_info,image_info,exception);
+      {
+        Image *jng_image = ReadOneJNGImage(mng_info,image_info,exception);
+        if (jng_image != (Image *) NULL)
+          previous=image;
+        image=jng_image;
+      }
 #endif
 
     if (image == (Image *) NULL)
       {
+        if (previous != (Image *) NULL)
+          {
+            CloseBlob(previous);
+            previous=DestroyImageList(previous);
+          }
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "exit ReadJNGImage() with error");
-
+        mng_info=MngInfoFreeStruct(mng_info);
         return((Image *) NULL);
       }
 
     if (image->columns == 0 || image->rows == 0)
       {
         (void) CloseBlob(image);
+        mng_info=MngInfoFreeStruct(mng_info);
         return(DestroyImageList(image));
       }
 
