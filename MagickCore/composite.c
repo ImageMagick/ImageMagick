@@ -2344,10 +2344,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Dc,
         Dca,
         DcaDa,
+        Di,
         Sa,
         SaSca,
         Sc,
-        Sca;
+        Sca,
+        Si;
 
       ssize_t
         i;
@@ -2355,6 +2357,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       size_t
         channels;
 
+      Di=0.0;
+      Si=0.0;
       if (clip_to_self != MagickFalse)
         {
           if (x < x_offset)
@@ -2562,8 +2566,18 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         case RMSECompositeOp:
         case SaturateCompositeOp:
         {
+          Si=GetPixelIntensity(source_image,p);
           GetPixelInfoPixel(source_image,p,&source_pixel);
           GetPixelInfoPixel(image,q,&canvas_pixel);
+          break;
+        }
+        case BumpmapCompositeOp:
+        case CopyAlphaCompositeOp:
+        case DarkenIntensityCompositeOp:
+        case LightenIntensityCompositeOp:
+        {
+          Si=GetPixelIntensity(source_image,p);
+          Di=GetPixelIntensity(image,q);
           break;
         }
         default:
@@ -2610,7 +2624,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case BumpmapCompositeOp:
               {
-                pixel=GetPixelIntensity(source_image,p)*Da;
+                pixel=Si*Da;
                 break;
               }
               case ChangeMaskCompositeOp:
@@ -2653,7 +2667,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               case CopyAlphaCompositeOp:
               {
                 if (source_image->alpha_trait == UndefinedPixelTrait)
-                  pixel=GetPixelIntensity(source_image,p);
+                  pixel=Si;
                 else
                   pixel=QuantumRange*Sa;
                 break;
@@ -2673,12 +2687,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               {
                 if (compose_sync == MagickFalse)
                   {
-                    pixel=GetPixelIntensity(source_image,p) <
-                      GetPixelIntensity(image,q) ? Sa : Da;
+                    pixel=Si < Di? Sa : Da;
                     break;
                   }
-                pixel=Sa*GetPixelIntensity(source_image,p) <
-                  Da*GetPixelIntensity(image,q) ? Sa : Da;
+                pixel=Sa*Si < Da*Di ? Sa : Da;
                 break;
               }
               case DifferenceCompositeOp:
@@ -2704,12 +2716,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               {
                 if (compose_sync == MagickFalse)
                   {
-                    pixel=GetPixelIntensity(source_image,p) >
-                      GetPixelIntensity(image,q) ? Sa : Da;
+                    pixel=Si > Di ? Sa : Da;
                     break;
                   }
-                pixel=Sa*GetPixelIntensity(source_image,p) >
-                  Da*GetPixelIntensity(image,q) ? Sa : Da;
+                pixel=Sa*Si > Da*Di ? Sa : Da;
                 break;
               }
               case ModulateCompositeOp:
@@ -2839,7 +2849,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Dc;
                 break;
               }
-            pixel=QuantumScale*GetPixelIntensity(source_image,p)*Dc;
+            pixel=QuantumScale*Si*Dc;
             break;
           }
           case ChangeMaskCompositeOp:
@@ -2959,12 +2969,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (compose_sync == MagickFalse)
               {
-                pixel=GetPixelIntensity(source_image,p) <
-                  GetPixelIntensity(image,q) ? Sc : Dc;
+                pixel=Si < Di ? Sc : Dc;
                 break;
               }
-            pixel=Sa*GetPixelIntensity(source_image,p) <
-              Da*GetPixelIntensity(image,q) ? Sc : Dc;
+            pixel=Sa*Si < Da*Di ? Sc : Dc;
             break;
           }
           case DifferenceCompositeOp:
@@ -3171,12 +3179,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             */
             if (compose_sync == MagickFalse)
               {
-                pixel=GetPixelIntensity(source_image,p) >
-                  GetPixelIntensity(image,q) ? Sc : Dc;
+                pixel=Si > Di ? Sc : Dc;
                 break;
               }
-            pixel=Sa*GetPixelIntensity(source_image,p) >
-              Da*GetPixelIntensity(image,q) ? Sc : Dc;
+            pixel=Sa*Si > Da*Di ? Sc : Dc;
             break;
           }
           case LuminizeCompositeOp:
@@ -3272,7 +3278,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Dc;
                 break;
               }
-            offset=(ssize_t) (GetPixelIntensity(source_image,p)-midpoint);
+            offset=(ssize_t) (Si-midpoint);
             if (offset == 0)
               {
                 pixel=Dc;
