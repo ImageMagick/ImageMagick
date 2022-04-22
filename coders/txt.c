@@ -447,7 +447,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           &max_value,colorspace);
       }
     if ((count < 4) || (width == 0) || (height == 0) || (max_value == 0.0) ||
-        ((int) number_meta_channels >= (MaxPixelChannels-MetaPixelChannel)))
+        (number_meta_channels >= (unsigned long) (MaxPixelChannels-MetaPixelChannel)))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->columns=width;
     image->rows=height;
