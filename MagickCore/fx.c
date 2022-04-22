@@ -2852,13 +2852,15 @@ static inline fxFltType ImageStat (
 
   if (pfx->GotStats) {
     cs = pfx->statistics[ImgNum];
+    if (cs == (ChannelStatistics *) NULL)
+      return(0);
   } else if (pfx->NeedStats) {
     /* If we need more than one statistic per pixel, this is inefficient. */
     cs = CollectOneImgStats (pfx, pfx->Images[ImgNum]);
+    if (cs == (ChannelStatistics *) NULL)
+      return(0);
     NeedRelinq = MagickTrue;
   }
-  if (cs == (ChannelStatistics *) NULL)
-    return(0);
 
   switch (ia) {
     case aDepth:
