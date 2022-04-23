@@ -18,8 +18,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 1
 
     - name: Install dependencies
       run: npm install -g auto-changelog
@@ -35,7 +33,7 @@ jobs:
     - name: Upload ChangeLog.md
       uses: actions/upload-artifact@v1
       with:
-        name: change_log
+        name: ChangeLog
         path: artifacts
 
   release_windows_installer:
@@ -79,6 +77,12 @@ jobs:
       run: |
         cd ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
+
+    - name: Download ChangeLog.md
+      uses: actions/download-artifact@v3
+      with:
+        name: ChangeLog
+        path: ImageMagick-Windows\ImageMagick
 
     - name: Download FFmpeg
       shell: cmd
@@ -176,6 +180,12 @@ jobs:
         ref: refs/heads/main
         fetch-depth: 1
 
+    - name: Download ChangeLog.md
+      uses: actions/download-artifact@v3
+      with:
+        name: ChangeLog
+        path: ImageMagick-Windows\ImageMagick
+
     - name: Clone repositories
       shell: cmd
       run: |
@@ -229,6 +239,12 @@ jobs:
       run: |
         cd ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
+
+    - name: Download ChangeLog.md
+      uses: actions/download-artifact@v3
+      with:
+        name: ChangeLog
+        path: ImageMagick-Windows\ImageMagick
 
     - name: Install FFmpeg
       shell: cmd
