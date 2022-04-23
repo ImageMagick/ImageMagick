@@ -2010,9 +2010,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
-              geometry_info.sigma=100.0;
+              geometry_info.sigma=300.0;
             if ((flags & XiValue) == 0)
-              geometry_info.xi=0.01;
+              geometry_info.xi=0.0001;
             (void) KmeansImage(*image,(size_t) geometry_info.rho,
               (size_t) geometry_info.sigma,geometry_info.xi,exception);
             break;

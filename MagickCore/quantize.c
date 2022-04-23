@@ -2472,10 +2472,8 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     verbose,
     status;
 
-  ssize_t
-    n;
-
   size_t
+    n,
     number_threads;
 
   assert(image != (Image *) NULL);
@@ -2484,6 +2482,8 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (max_iterations == 0)
+    return(MagickFalse);
   colors=GetImageArtifact(image,"kmeans:seed-colors");
   if (colors == (const char *) NULL)
     {
@@ -2539,7 +2539,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       status=AcquireImageColormap(image,number_colors,exception);
       if (status == MagickFalse)
         return(status);
-      for (n=0, p=colors; n < (ssize_t) image->colors; n++)
+      for (n=0, p=colors; n < image->colors; n++)
       {
         const char
           *q;
@@ -2558,7 +2558,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
           }
         p=q+1;
       }
-      if (n < (ssize_t) image->colors)
+      if (n < image->colors)
         {
           RandomInfo
             *random_info;
@@ -2567,7 +2567,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
             Seed clusters from random values.
           */
           random_info=AcquireRandomInfo();
-          for ( ; n < (ssize_t) image->colors; n++)
+          for ( ; n < image->colors; n++)
           {
             (void) QueryColorCompliance("#000",AllCompliance,image->colormap+n,
               exception);
@@ -2593,7 +2593,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   verbose=IsStringTrue(GetImageArtifact(image,"debug"));
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   image_view=AcquireAuthenticCacheView(image,exception);
-  for (n=0; n < (ssize_t) max_iterations; n++)
+  for (n=0; n < max_iterations; n++)
   {
     double
       distortion;
@@ -3149,8 +3149,13 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         Reduce the number of colors in the image.
       */
       if (cube_info->colors > cube_info->maximum_colors)
-        ReduceImageColors(image,cube_info);
-      status=AssignImageColors(image,cube_info,exception);
+        {
+          ReduceImageColors(image,cube_info);
+          status=AssignImageColors(image,cube_info,exception);
+        }
+      else
+        status=KmeansImage(image,cube_info->maximum_colors,300,0.0001,
+          exception);
     }
   DestroyCubeInfo(cube_info);
   return(status);
