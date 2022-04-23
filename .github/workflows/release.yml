@@ -18,8 +18,9 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      path: ImageMagick
-      fetch-depth: 0
+      with:
+        path: ImageMagick
+        fetch-depth: 0
 
     - name: Install dependencies
       run: npm install -g auto-changelog
