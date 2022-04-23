@@ -19,7 +19,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        path: ImageMagick
         fetch-depth: 0
 
     - name: Install dependencies
@@ -27,7 +26,6 @@ jobs:
 
     - name: Create ChangeLog.md
       run: |
-        ls -all
         export NEXT_VERSION=$(grep -oP "PACKAGE_VERSION='\K[0-9\.-]*" configure)
         git tag $NEXT_VERSION
         auto-changelog
