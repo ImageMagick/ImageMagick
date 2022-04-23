@@ -986,8 +986,8 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,Image *image
                   if ((traits & UpdatePixelTrait) != UpdatePixelTrait)
                     continue;
                   if (hexFmt)
-                    FormatLocaleString(buffer,MaxTextExtent,"%s#%Lx",sSep,
-                      (signed long long)(((long double)p[i])+0.5));
+                    FormatLocaleString(buffer,MaxTextExtent,"%s#%llx",sSep,
+                      (signed long long)(((long double) p[i])+0.5));
                   else if (fltHexFmt)
                     FormatLocaleString(buffer,MaxTextExtent,"%s%a",sSep,
                       (double) p[i]);
