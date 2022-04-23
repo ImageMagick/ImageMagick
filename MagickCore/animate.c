@@ -523,8 +523,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *state&=(~ForwardAnimationState);
       if (command_type == StepForwardCommand)
         *state|=ForwardAnimationState;
-      if (resource_info->title != (char *) NULL)
-        break;
       break;
     }
     case RepeatCommand:
