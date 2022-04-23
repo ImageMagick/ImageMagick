@@ -23,8 +23,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
 
     - name: Install dependencies
       run: |
@@ -50,8 +48,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
 
     - name: Install dependencies
       run: |
@@ -83,14 +79,12 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: ImageMagick
-        fetch-depth: 1
 
     - uses: actions/checkout@v3
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
         ref: refs/heads/main
-        fetch-depth: 1
 
     - name: Clone repositories
       shell: cmd
@@ -133,7 +127,6 @@ jobs:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
         ref: refs/heads/main
-        fetch-depth: 1
 
     - uses: msys2/setup-msys2@v2
       with:

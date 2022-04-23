@@ -33,8 +33,6 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
 
     - name: Install ${{ matrix.compiler }}
       if: matrix.compiler == 'clang'

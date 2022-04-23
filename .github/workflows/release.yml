@@ -73,7 +73,6 @@ jobs:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
         ref: refs/heads/main
-        fetch-depth: 1
 
     - name: Clone repositories
       shell: cmd
@@ -181,7 +180,6 @@ jobs:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
         ref: refs/heads/main
-        fetch-depth: 1
 
     - name: Download ChangeLog.md
       uses: actions/download-artifact@v3
@@ -235,7 +233,6 @@ jobs:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
         ref: refs/heads/main
-        fetch-depth: 1
 
     - name: Clone repositories
       shell: cmd

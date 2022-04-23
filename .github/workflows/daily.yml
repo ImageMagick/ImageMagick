@@ -37,7 +37,6 @@ jobs:
       with:
         repository: ImageMagick/msttcorefonts
         ref: refs/heads/main
-        fetch-depth: 1
 
     - name: Install msttcorefonts
       run: |
@@ -45,8 +44,6 @@ jobs:
         ./install.sh
 
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
 
     - name: Configure ImageMagick
       run: |
@@ -89,7 +86,6 @@ jobs:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
         ref: refs/heads/main
-        fetch-depth: 1
 
     - name: Clone repositories
       shell: cmd
@@ -135,7 +131,6 @@ jobs:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
         ref: refs/heads/main
-        fetch-depth: 1
 
     - name: Clone repositories
       shell: cmd
@@ -189,7 +184,6 @@ jobs:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
         ref: refs/heads/main
-        fetch-depth: 1
 
     - uses: msys2/setup-msys2@v2
       with:
