@@ -2275,12 +2275,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       *pixels;
 
     MagickRealType
-      blue,
-      chroma,
-      green,
-      hue,
-      luma,
-      red;
+      blue = 0.0,
+      chroma = 0.0,
+      green = 0.0,
+      hue = 0.0,
+      luma = 0.0,
+      red = 0.0;
 
     PixelInfo
       canvas_pixel,
@@ -2328,28 +2328,25 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         status=MagickFalse;
         continue;
       }
-    hue=0.0;
-    chroma=0.0;
-    luma=0.0;
     GetPixelInfo(image,&canvas_pixel);
     GetPixelInfo(source_image,&source_pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       double
-        gamma;
+        gamma = 0.0;
 
       MagickRealType
-        alpha,
-        Da,
-        Dc,
-        Dca,
-        DcaDa,
-        Di,
-        Sa,
-        SaSca,
-        Sc,
-        Sca,
-        Si;
+        alpha = 0.0,
+        Da = 0.0,
+        Dc = 0.0,
+        Dca = 0.0,
+        DcaDa = 0.0,
+        Di = 0.0,
+        Sa = 0.0,
+        SaSca = 0.0,
+        Sc = 0.0,
+        Sca = 0.0,
+        Si = 0.0;
 
       ssize_t
         i;
@@ -2357,8 +2354,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       size_t
         channels;
 
-      Di=0.0;
-      Si=0.0;
       if (clip_to_self != MagickFalse)
         {
           if (x < x_offset)
@@ -2385,7 +2380,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             MagickRealType
-              pixel;
+              pixel = 0.0;
 
             PixelChannel channel = GetPixelChannelChannel(image,i);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
@@ -2586,8 +2581,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
-          pixel,
-          sans;
+          pixel = 0.0,
+          sans = 0.0;
 
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
