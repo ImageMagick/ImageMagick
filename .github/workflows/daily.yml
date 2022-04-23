@@ -33,7 +33,7 @@ jobs:
         apt-get install -y autoconf pkg-config gcc libfontconfig1-dev libfreetype6-dev libltdl-dev
 
     - name: Clone msttcorefonts
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: ImageMagick/msttcorefonts
         ref: refs/heads/main
@@ -44,7 +44,7 @@ jobs:
         set -e
         ./install.sh
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 1
 
@@ -84,7 +84,7 @@ jobs:
 
     steps:
     - name: Clone ImageMagick-Windows
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
@@ -130,7 +130,7 @@ jobs:
 
     steps:
     - name: Clone ImageMagick-Windows
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
@@ -182,9 +182,9 @@ jobs:
     - name: Prepare git
       run: git config --global core.autocrlf false
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows

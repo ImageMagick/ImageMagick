@@ -17,7 +17,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Install dependencies
       run: npm install -g auto-changelog
@@ -65,7 +65,7 @@ jobs:
             hdri_flag: '-HDRI'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
@@ -173,7 +173,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
@@ -227,7 +227,7 @@ jobs:
             hdri_flag: '-HDRI'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
