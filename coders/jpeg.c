@@ -139,7 +139,7 @@ typedef struct _JPEGClientInfo
     finished;
 
   StringInfo
-    *profiles[MaxJPEGProfiles];
+    *profiles[MaxJPEGProfiles+1];
 
   ExceptionInfo
     *exception;
