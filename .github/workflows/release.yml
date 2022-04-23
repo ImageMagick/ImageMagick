@@ -9,8 +9,39 @@ on:
 
 name: release
 jobs:
+  change_log:
+    name: 'Create ChangeLog.md'
+    container:
+      image: node:18
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Install dependencies
+      run: npm install -g auto-changelog
+
+    - name: Create ChangeLog.md
+      run: |
+        export NEXT_VERSION=$(grep -oP "PACKAGE_VERSION='\K[0-9\.-]*" configure)
+        git tag $NEXT_VERSION
+        auto-changelog
+        mkdir artifacts
+        mv ChangeLog.md artifacts/ChangeLog.md
+
+    - name: Upload ChangeLog.md
+      uses: actions/upload-artifact@v1
+      with:
+        name: change_log
+        path: artifacts
+
   release_windows_installer:
     name: 'Windows ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}} (${{matrix.type}})'
+    needs:
+      - change_log
     runs-on: windows-2022
 
     strategy:
@@ -133,6 +164,8 @@ jobs:
 
   release_windows_source:
     name: 'Windows source'
+    needs:
+      - change_log
     runs-on: windows-latest
 
     steps:
@@ -162,6 +195,8 @@ jobs:
 
   release_windows_portable:
     name: 'Windows portable ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}'
+    needs:
+      - change_log
     runs-on: windows-2022
 
     strategy:
