@@ -77,7 +77,7 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        cd \mageMagick-Windows
+        cd ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
 
     - name: Download FFmpeg
