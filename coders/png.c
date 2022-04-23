@@ -1407,10 +1407,10 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
   image=(Image *) png_get_io_ptr(png_ptr);
   if (length != 0)
     {
-      size_t
+      png_size_t
         check;
 
-      check=ReadBlob(image,length,data);
+      check=(png_size_t) ReadBlob(image,(size_t) length,data);
       if (check != length)
         {
           char
@@ -5246,7 +5246,8 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 %
 */
 
-static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadJNGImage(const ImageInfo *image_info,
+                ExceptionInfo *exception)
 {
   char
     magic_number[MagickPathExtent];
@@ -5345,8 +5346,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
     page_geometry[MagickPathExtent];
 
   Image
-    *image,
-    *previous;
+    *image;
 
   MagickBooleanType
     logging;
@@ -5376,9 +5376,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
     mng_background_color;
 #endif
 
-  unsigned char
-    *p;
-
   ssize_t
     i;
 
@@ -5387,6 +5384,9 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 
   ssize_t
     loop_level;
+
+  unsigned char
+    *p;
 
   volatile short
     skipping_loop;
@@ -6830,47 +6830,34 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       }
 
-    previous=(Image *) NULL;
     mng_info->image=image;
     mng_info->mng_type=mng_type;
     mng_info->object_id=object_id;
 
     if (memcmp(type,mng_IHDR,4) == 0)
-      {
-        Image *png_image = ReadOnePNGImage(mng_info,image_info,exception);
-        if (png_image != (Image *) NULL)
-          previous=image;
-        image=png_image;
-      }
+      image=ReadOnePNGImage(mng_info,image_info,exception);
 
 #if defined(JNG_SUPPORTED)
     else
-      {
-        Image *jng_image = ReadOneJNGImage(mng_info,image_info,exception);
-        if (jng_image != (Image *) NULL)
-          previous=image;
-        image=jng_image;
-      }
+      image=ReadOneJNGImage(mng_info,image_info,exception);
 #endif
 
     if (image == (Image *) NULL)
       {
-        if (previous != (Image *) NULL)
-          {
-            CloseBlob(previous);
-            previous=DestroyImageList(previous);
-          }
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "exit ReadJNGImage() with error");
-        mng_info=MngInfoFreeStruct(mng_info);
+        if (mng_info->image != (Image *) NULL)
+          {
+            CloseBlob(mng_info->image);
+            mng_info->image=DestroyImageList(mng_info->image);
+          }
         return((Image *) NULL);
       }
 
     if (image->columns == 0 || image->rows == 0)
       {
         (void) CloseBlob(image);
-        mng_info=MngInfoFreeStruct(mng_info);
         return(DestroyImageList(image));
       }
 
@@ -13411,8 +13398,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,
-  Image *image, ExceptionInfo *exception)
+static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     logging,
@@ -13461,8 +13448,7 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,
 }
 #endif
 
-static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
-  Image *image, ExceptionInfo *exception)
+static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,ExceptionInfo *exception)
 {
   Image
     *next_image;
