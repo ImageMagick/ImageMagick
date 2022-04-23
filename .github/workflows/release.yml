@@ -77,20 +77,20 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
+        cd \mageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
 
     - name: Download FFmpeg
       shell: cmd
       run: |
         powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/ffmpeg-4.2.3-win${{matrix.bit}}.exe -OutFile ffmpeg.exe
-        copy /Y ffmpeg.exe %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\bin
+        copy /Y ffmpeg.exe ImageMagick-Windows\VisualMagick\bin
 
     - name: Download hp2xx
       shell: cmd
       run: |
         powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/hp2xx.exe -OutFile hp2xx.exe
-        copy /Y hp2xx.exe %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\bin
+        copy /Y hp2xx.exe ImageMagick-Windows\VisualMagick\bin
 
     - name: Install Strawberry Perl
       if: ${{matrix.type == 'dll'}}
@@ -110,20 +110,20 @@ jobs:
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        cd ImageMagick-Windows\VisualMagick\configure
         msbuild configure.2022.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
 
     - name: Configure ImageMagick
       shell: cmd
       run: |
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        cd ImageMagick-Windows\VisualMagick\configure
         configure.exe /noWizard /VS2022 /includeOptional /installedSupport /deprecated /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /${{matrix.type_flag}}
 
     - name: Build ImageMagick
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
+        cd ImageMagick-Windows\VisualMagick
         set /p solution=<solution
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
@@ -133,7 +133,7 @@ jobs:
       run: |
         set PATH=
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\ImageMagick\PerlMagick
+        cd ImageMagick-Windows\ImageMagick\PerlMagick
         set PATH=%PATH%;C:\Strawberry${{matrix.bit}}\c\bin;C:\Strawberry${{matrix.bit}}\perl\site\bin;C:\Strawberry${{matrix.bit}}\perl\bin;C:\WINDOWS\System32\WindowsPowerShell\v1.0
         perl "Makefile.PL" "MAKE=nmake"
         nmake
@@ -149,7 +149,7 @@ jobs:
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\installer\im-${{matrix.platform}}${{matrix.hdri_flag}}-${{matrix.type}}-${{matrix.quantum}}.iss
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" ImageMagick-Windows\VisualMagick\installer\im-${{matrix.platform}}${{matrix.hdri_flag}}-${{matrix.type}}-${{matrix.quantum}}.iss
 
     - name: Sign installer
       uses: dlemstra/code-sign-action@v1
@@ -179,13 +179,13 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
+        cd ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick source
 
     - name: Create source archive
       shell: cmd
       run: |
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
+        cd ImageMagick-Windows
         7z a ImageMagick-Windows.7z .\source\*
 
     - uses: actions/upload-artifact@v2
@@ -227,33 +227,33 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows
+        cd ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
 
     - name: Install FFmpeg
       shell: cmd
       run: |
         powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/ffmpeg-4.2.3-win${{matrix.bit}}.exe -OutFile ffmpeg.exe
-        copy /Y ffmpeg.exe %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\bin
+        copy /Y ffmpeg.exe ImageMagick-Windows\VisualMagick\bin
 
     - name: Build configure
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        cd ImageMagick-Windows\VisualMagick\configure
         msbuild configure.2022.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
 
     - name: Configure ImageMagick
       shell: cmd
       run: |
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick\configure
+        cd ImageMagick-Windows\VisualMagick\configure
         configure.exe /noWizard /VS2022 /noOpenMP /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /smt
 
     - name: Build ImageMagick
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd %GITHUB_WORKSPACE%\ImageMagick-Windows\VisualMagick
+        cd ImageMagick-Windows\VisualMagick
         set /p solution=<solution
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
