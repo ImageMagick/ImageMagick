@@ -731,7 +731,8 @@ MagickExport ImageView *NewImageView(Image *image,ExceptionInfo *exception)
   image_view->extent.x=0;
   image_view->extent.y=0;
   image_view->exception=AcquireExceptionInfo();
-  image_view->debug=IsEventLogging();
+  image_view->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue : 
+    MagickFalse;
   image_view->signature=MagickCoreSignature;
   return(image_view);
 }
@@ -785,7 +786,8 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
   image_view->extent.x=x;
   image_view->extent.y=y;
   image_view->exception=AcquireExceptionInfo();
-  image_view->debug=IsEventLogging();
+  image_view->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue : 
+    MagickFalse;
   image_view->signature=MagickCoreSignature;
   return(image_view);
 }

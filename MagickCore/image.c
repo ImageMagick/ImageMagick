@@ -187,7 +187,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->channel_map=AcquirePixelChannelMap();
   image->blob=CloneBlobInfo((BlobInfo *) NULL);
   image->timestamp=GetMagickTime();
-  image->debug=IsEventLogging();
+  image->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue : MagickFalse;
   image->reference_count=1;
   image->semaphore=AcquireSemaphoreInfo();
   image->signature=MagickCoreSignature;
@@ -859,7 +859,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
     }
   clone_image->ping=image->ping;
-  clone_image->debug=IsEventLogging();
+  clone_image->debug=image->debug;
   clone_image->semaphore=AcquireSemaphoreInfo();
   if (image->colormap != (PixelInfo *) NULL)
     {
@@ -1006,7 +1006,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     MagickPathExtent);
   clone_info->channel=image_info->channel;
   (void) CloneImageOptions(clone_info,image_info);
-  clone_info->debug=IsEventLogging();
+  clone_info->debug=image_info->debug;
   clone_info->signature=image_info->signature;
   return(clone_info);
 }
@@ -1376,7 +1376,8 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   (void) QueryColorCompliance(TransparentColor,AllCompliance,
     &image_info->transparent_color,exception);
   exception=DestroyExceptionInfo(exception);
-  image_info->debug=IsEventLogging();
+  image_info->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue :
+    MagickFalse;
   image_info->signature=MagickCoreSignature;
 }
 

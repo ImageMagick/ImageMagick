@@ -173,7 +173,8 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
     cache_view->number_threads=1;
   cache_view->nexus_info=AcquirePixelCacheNexus(cache_view->number_threads);
   cache_view->virtual_pixel_method=GetImageVirtualPixelMethod(image);
-  cache_view->debug=IsEventLogging();
+  cache_view->debug=(GetLogEventMask() & CacheEvent) != 0 ? MagickTrue :
+    MagickFalse;
   cache_view->signature=MagickCoreSignature;
   if (cache_view->nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(CacheFatalError,"UnableToAcquireCacheView");

@@ -632,7 +632,7 @@ MagickExport MagickBooleanType IsRightsAuthorized(const PolicyDomain domain,
   PolicyInfo
     *p;
 
-  if (IsEventLogging() != MagickFalse)
+  if ((GetLogEventMask() & PolicyEvent) != 0)
     (void) LogMagickEvent(PolicyEvent,GetMagickModule(),
       "Domain: %s; rights=%s; pattern=\"%s\" ...",
       CommandOptionToMnemonic(MagickPolicyDomainOptions,domain),

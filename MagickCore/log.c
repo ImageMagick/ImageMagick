@@ -17,7 +17,7 @@
 %                                September 2002                               %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2002 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -376,6 +376,41 @@ MagickExport void CloseMagickLog(void)
       log_info->file=(FILE *) NULL;
     }
   UnlockSemaphoreInfo(log_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t L o g E v e n t M a s k                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetLogEventMask() returns the current log event mask.
+%
+%  The format of the GetLogEventMask method is:
+%
+%      const char *GetLogEventMask(void)
+%
+%
+*/
+MagickExport const LogEventType GetLogEventMask(void)
+{
+  ExceptionInfo
+    *exception;
+
+  LogInfo
+    *log_info;
+
+  exception=AcquireExceptionInfo();
+  log_info=GetLogInfo("*",exception);
+  exception=DestroyExceptionInfo(exception);
+  if (log_info == (const LogInfo *) NULL)
+    return(NoEvents);
+  return(log_info->event_mask);
 }
 
 /*
@@ -1192,6 +1227,7 @@ MagickPrivate void LogComponentTerminus(void)
 %    o format: the output format.
 %
 */
+
 static char *TranslateEvent(const char *module,const char *function,
   const size_t line,const char *domain,const char *event)
 {

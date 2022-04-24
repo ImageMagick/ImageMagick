@@ -917,7 +917,7 @@ MagickExport MagickBooleanType GetTypeMetrics(Image *image,
   offset.x=0.0;
   offset.y=0.0;
   status=RenderType(image,annotate_info,&offset,metrics,exception);
-  if (image->debug != MagickFalse)
+  if (draw_info->debug != MagickFalse)
     (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),"Metrics: text: %s; "
       "width: %g; height: %g; ascent: %g; descent: %g; max advance: %g; "
       "bounds: %g,%g  %g,%g; origin: %g,%g; pixels per em: %g,%g; "
@@ -1666,7 +1666,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Compute bounding box.
   */
-  if (image->debug != MagickFalse)
+  if (draw_info->debug != MagickFalse)
     (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),"Font %s; "
       "font-encoding %s; text-encoding %s; pointsize %g",
       draw_info->font != (char *) NULL ? draw_info->font : "none",
@@ -2108,7 +2108,7 @@ static MagickBooleanType RenderPostscript(Image *image,
   /*
     Render label with a Postscript font.
   */
-  if (image->debug != MagickFalse)
+  if (draw_info->debug != MagickFalse)
     (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),
       "Font %s; pointsize %g",draw_info->font != (char *) NULL ?
       draw_info->font : "none",draw_info->pointsize);

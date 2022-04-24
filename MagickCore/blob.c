@@ -1781,7 +1781,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
   blob_info->quantum=(size_t) MagickMaxBlobExtent;
   blob_info->properties.st_mtime=GetMagickTime();
   blob_info->properties.st_ctime=blob_info->properties.st_mtime;
-  blob_info->debug=IsEventLogging();
+  blob_info->debug=GetLogEventMask() & BlobEvent ? MagickTrue : MagickFalse;
   blob_info->reference_count=1;
   blob_info->semaphore=AcquireSemaphoreInfo();
   blob_info->signature=MagickCoreSignature;

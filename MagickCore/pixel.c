@@ -6328,7 +6328,7 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
     SetPixelChannelTraits(image,WriteMaskPixelChannel,CopyPixelTrait);
   if ((image->channels & CompositeMaskChannel) != 0)
     SetPixelChannelTraits(image,CompositeMaskPixelChannel,CopyPixelTrait);
-  if (image->debug != MagickFalse)
+  if ((GetLogEventMask() & PixelEvent) != 0)
     LogPixelChannels(image);
   return(mask);
 }

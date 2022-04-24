@@ -68,8 +68,11 @@ extern MagickExport char
   **GetLogList(const char *,size_t *,ExceptionInfo *);
 
 extern MagickExport const char
-  *GetLogName(void),
+  *GetLogName(void) magick_attribute((__pure__)),
   *SetLogName(const char *);
+
+extern MagickExport const LogEventType
+  GetLogEventMask(void) magick_attribute((__pure__));
 
 extern MagickExport const LogInfo
   **GetLogInfoList(const char *,size_t *,ExceptionInfo *);
