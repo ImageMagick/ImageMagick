@@ -4552,30 +4552,35 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   x_factor=(ssize_t) image->columns/columns;
   y_factor=(ssize_t) image->rows/rows;
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
-  if ((x_factor > 4) && (y_factor > 4))
+  if ((columns == image->columns) && (rows == image->rows))
+    thumbnail_image=clone_image;
+  else
     {
-      thumbnail_image=SampleImage(clone_image,4*columns,4*rows,exception);
-      if (thumbnail_image != (Image *) NULL)
+      if ((x_factor > 4) && (y_factor > 4))
         {
-          clone_image=DestroyImage(clone_image);
-          clone_image=thumbnail_image;
+          thumbnail_image=SampleImage(clone_image,4*columns,4*rows,exception);
+          if (thumbnail_image != (Image *) NULL)
+            {
+              clone_image=DestroyImage(clone_image);
+              clone_image=thumbnail_image;
+            }
         }
-    }
-  if ((x_factor > 2) && (y_factor > 2))
-    {
-      thumbnail_image=ResizeImage(clone_image,2*columns,2*rows,BoxFilter,
-        exception);
-      if (thumbnail_image != (Image *) NULL)
+      if ((x_factor > 2) && (y_factor > 2))
         {
-          clone_image=DestroyImage(clone_image);
-          clone_image=thumbnail_image;
+          thumbnail_image=ResizeImage(clone_image,2*columns,2*rows,BoxFilter,
+            exception);
+          if (thumbnail_image != (Image *) NULL)
+            {
+              clone_image=DestroyImage(clone_image);
+              clone_image=thumbnail_image;
+            }
         }
+      thumbnail_image=ResizeImage(clone_image,columns,rows,image->filter ==
+        UndefinedFilter ? LanczosSharpFilter : image->filter,exception);
+      clone_image=DestroyImage(clone_image);
+      if (thumbnail_image == (Image *) NULL)
+        return(thumbnail_image);
     }
-  thumbnail_image=ResizeImage(clone_image,columns,rows,image->filter ==
-    UndefinedFilter ? LanczosSharpFilter : image->filter,exception);
-  clone_image=DestroyImage(clone_image);
-  if (thumbnail_image == (Image *) NULL)
-    return(thumbnail_image);
   (void) ParseAbsoluteGeometry("0x0+0+0",&thumbnail_image->page);
   thumbnail_image->depth=8;
   thumbnail_image->interlace=NoInterlace;
