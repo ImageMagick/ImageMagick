@@ -374,7 +374,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
     }
     default: ;
   }
-  if (IsEventLogging() != MagickFalse)
+  if ((GetLogEventMask() & ResourceEvent) != 0)
     {
       char
         resource_current[MagickFormatExtent],
@@ -578,7 +578,8 @@ MagickExport int AcquireUniqueFileResource(char *path)
     *datum;
 
   assert(path != (char *) NULL);
-  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"...");
+  if ((GetLogEventMask() & ResourceEvent) != 0)
+    (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"...");
   if (random_info == (RandomInfo *) NULL)
     {
       if (resource_semaphore[FileResource] == (SemaphoreInfo *) NULL)
@@ -634,7 +635,8 @@ MagickExport int AcquireUniqueFileResource(char *path)
     if ((file >= 0) || (errno != EEXIST))
       break;
   }
-  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s",path);
+  if ((GetLogEventMask() & ResourceEvent) != 0)
+    (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s",path);
   if (file == -1)
     return(file);
   if (resource_semaphore[FileResource] == (SemaphoreInfo *) NULL)
@@ -1054,7 +1056,7 @@ MagickExport void RelinquishMagickResource(const ResourceType type,
     }
     default: ;
   }
-  if (IsEventLogging() != MagickFalse)
+  if ((GetLogEventMask() & ResourceEvent) != 0)
     {
       char
         resource_current[MagickFormatExtent],
@@ -1105,7 +1107,8 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
 
   assert(path != (const char *) NULL);
   status=MagickFalse;
-  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s",path);
+  if ((GetLogEventMask() & ResourceEvent) != 0)
+    (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s",path);
   if (resource_semaphore[FileResource] == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&resource_semaphore[FileResource]);
   LockSemaphoreInfo(resource_semaphore[FileResource]);
