@@ -5,6 +5,35 @@ on:
 
 name: daily
 jobs:
+  change_log:
+    name: 'Create ChangeLog.md'
+    container:
+      image: node:18
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install dependencies
+      run: npm install -g auto-changelog
+
+    - name: Create ChangeLog.md
+      run: |
+        export NEXT_VERSION=$(grep -oP "PACKAGE_VERSION='\K[0-9\.-]*" configure)
+        git tag $NEXT_VERSION
+        auto-changelog
+        mkdir artifacts
+        mv ChangeLog.md artifacts/ChangeLog.md
+
+    - name: Upload ChangeLog.md
+      uses: actions/upload-artifact@v1
+      with:
+        name: ChangeLog
+        path: artifacts
+
   build_linux:
     name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})'
     container:
@@ -62,6 +91,8 @@ jobs:
 
   build_windows:
     name: 'Windows Q${{matrix.quantum}}-${{matrix.platform}} hdri=${{matrix.hdri}} (${{matrix.buildType}})'
+    needs:
+      - change_log
     runs-on: windows-2022
 
     strategy:
@@ -92,6 +123,12 @@ jobs:
       run: |
         cd %GITHUB_WORKSPACE%\ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick shallow
+
+    - name: Download ChangeLog.md
+      uses: actions/download-artifact@v3
+      with:
+        name: ChangeLog
+        path: ImageMagick-Windows\ImageMagick
 
     - name: Build configure
       shell: cmd
