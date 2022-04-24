@@ -4533,12 +4533,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     *name;
 
   Image
-    *clone_image,
     *thumbnail_image;
-
-  ssize_t
-    x_factor,
-    y_factor;
 
   struct stat
     attributes;
@@ -4549,13 +4544,20 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  x_factor=(ssize_t) image->columns/columns;
-  y_factor=(ssize_t) image->rows/rows;
-  clone_image=CloneImage(image,0,0,MagickTrue,exception);
-  if ((columns == image->columns) && (rows == image->rows))
-    thumbnail_image=clone_image;
-  else
+  thumbnail_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (thumbnail_image == (Image *) NULL)
+    return(thumbnail_image);
+  if ((columns != image->columns) || (rows != image->rows))
     {
+      Image
+        *clone_image = thumbnail_image;
+
+      ssize_t
+        x_factor,
+        y_factor;
+
+      x_factor=(ssize_t) image->columns/columns;
+      y_factor=(ssize_t) image->rows/rows;
       if ((x_factor > 4) && (y_factor > 4))
         {
           thumbnail_image=SampleImage(clone_image,4*columns,4*rows,exception);
