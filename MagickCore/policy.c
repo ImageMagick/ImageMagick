@@ -381,8 +381,9 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
     Allocate policy list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_policies != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_policies=0;
   p=GetPolicyInfo("*",exception);
   if (p == (const PolicyInfo *) NULL)
@@ -477,8 +478,9 @@ MagickExport char **GetPolicyList(const char *pattern,size_t *number_policies,
     Allocate policy list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_policies != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_policies=0;
   p=GetPolicyInfo("*",exception);
   if (p == (const PolicyInfo *) NULL)
@@ -540,7 +542,8 @@ MagickExport char *GetPolicyValue(const char *name)
     *exception;
 
   assert(name != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
   exception=AcquireExceptionInfo();
   policy_info=GetPolicyInfo(name,exception);
   exception=DestroyExceptionInfo(exception);

@@ -286,7 +286,8 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
 
   assert(format != (char *) NULL);
   assert(filename != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   if ((*format == '\0') || (*filename == '\0'))
     return;
   if (LocaleCompare(filename,"-") == 0)
@@ -358,9 +359,10 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
   unsigned char
     *decode;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(source != (char *) NULL);
   assert(length != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   *length=0;
   decode=(unsigned char *) AcquireQuantumMemory((strlen(source)+3)/4,
     3*sizeof(*decode));
@@ -513,10 +515,11 @@ MagickExport char *Base64Encode(const unsigned char *blob,
   size_t
     remainder;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(blob != (const unsigned char *) NULL);
   assert(blob_length != 0);
   assert(encode_length != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   *encode_length=0;
   encode=(char *) AcquireQuantumMemory(blob_length/3+4,4*sizeof(*encode));
   if (encode == (char *) NULL)
@@ -763,9 +766,10 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
   /*
     Allocate argument vector.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(number_arguments != (int *) NULL);
   assert(arguments != (char ***) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   vector=(char **) AcquireQuantumMemory((size_t) (*number_arguments+1),
     sizeof(*vector));
   if (vector == (char **) NULL)
@@ -1233,8 +1237,9 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     subimage_length;
 
   assert(path != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",path);
   assert(component != (char *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",path);
   if (*path == '\0')
     {
       *component='\0';
@@ -1626,9 +1631,10 @@ MagickPrivate char **ListFiles(const char *directory,const char *pattern,
     Open directory.
   */
   assert(directory != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",directory);
   assert(pattern != (const char *) NULL);
   assert(number_entries != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",directory);
   *number_entries=0;
   current_directory=opendir(directory);
   if (current_directory == (DIR *) NULL)

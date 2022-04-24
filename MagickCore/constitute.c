@@ -175,10 +175,11 @@ MagickExport Image *ConstituteImage(const size_t columns,const size_t rows,
     Allocate image structure.
   */
   assert(map != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",map);
   assert(pixels != (void *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",map);
   image=AcquireImage((ImageInfo *) NULL,exception);
   if (image == (Image *) NULL)
     return((Image *) NULL);
@@ -299,10 +300,10 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
 
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  assert(exception != (ExceptionInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  assert(exception != (ExceptionInfo *) NULL);
   ping_info=CloneImageInfo(image_info);
   ping_info->ping=MagickTrue;
   image=ReadStream(ping_info,&PingStream,exception);
@@ -361,10 +362,10 @@ MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  assert(exception != (ExceptionInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  assert(exception != (ExceptionInfo *) NULL);
   (void) SetImageOption(image_info,"filename",filename);
   (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
   (void) InterpretImageFilename(image_info,(Image *) NULL,image_info->filename,
@@ -636,7 +637,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(image_info->filename != (char *) NULL);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
@@ -1026,10 +1027,10 @@ MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  assert(exception != (ExceptionInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  assert(exception != (ExceptionInfo *) NULL);
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
   (void) SetImageOption(read_info,"filename",filename);
@@ -1234,7 +1235,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(image->signature == MagickCoreSignature);
@@ -1503,7 +1504,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickCoreSignature);
   assert(images != (Image *) NULL);
   assert(images->signature == MagickCoreSignature);
-  if (images->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   write_info=CloneImageInfo(image_info);

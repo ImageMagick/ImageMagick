@@ -143,7 +143,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(
     MaxPixelChannels+1,sizeof(*channel_statistics));
@@ -530,7 +530,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (file == (FILE *) NULL)
     file=stdout;

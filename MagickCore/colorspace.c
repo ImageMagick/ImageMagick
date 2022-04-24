@@ -129,7 +129,7 @@ MagickExport ColorspaceType GetImageColorspaceType(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   colorspace=image->colorspace;
   type=IdentifyImageType(image,exception);
@@ -484,11 +484,11 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(colorspace != sRGBColorspace);
   assert(colorspace != TransparentColorspace);
   assert(colorspace != UndefinedColorspace);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   artifact=GetImageArtifact(image,"color:illuminant");
   if (artifact != (const char *) NULL)
     {
@@ -1426,10 +1426,10 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == colorspace)
     return(MagickTrue);
   image->colorspace=colorspace;
@@ -1506,7 +1506,7 @@ MagickExport MagickBooleanType SetImageGray(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (IsImageGray(image) != MagickFalse)
     return(MagickTrue);
@@ -1560,7 +1560,7 @@ MagickExport MagickBooleanType SetImageMonochrome(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (IsImageMonochrome(image) != MagickFalse)
     return(MagickTrue);
@@ -1612,7 +1612,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == colorspace)
     return(SetImageColorspace(image,colorspace,exception));
@@ -2066,7 +2066,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   artifact=GetImageArtifact(image,"color:illuminant");
   if (artifact != (const char *) NULL)

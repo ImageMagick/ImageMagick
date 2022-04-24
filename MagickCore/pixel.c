@@ -1982,7 +1982,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   length=strlen(map);
   quantum_map=(QuantumType *) AcquireQuantumMemory(length,sizeof(*quantum_map));
@@ -4159,7 +4159,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   length=strlen(map);
   quantum_map=(QuantumType *) AcquireQuantumMemory(length,sizeof(*quantum_map));
@@ -6416,7 +6416,7 @@ MagickExport MagickBooleanType SortImagePixels(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
   progress=0;

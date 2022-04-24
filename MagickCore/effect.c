@@ -160,10 +160,10 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
@@ -481,10 +481,10 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   sharp_image=CloneImage(image,0,0,MagickTrue,exception);
   if (sharp_image == (Image *) NULL)
     return((Image *) NULL);
@@ -780,10 +780,10 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
   blur_image=AccelerateBlurImage(image,radius,sigma,exception);
   if (blur_image != (Image *) NULL)
@@ -930,10 +930,10 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1233,10 +1233,10 @@ static void Hull(const Image *image,const ssize_t x_offset,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(f != (Quantum *) NULL);
   assert(g != (Quantum *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   p=f+(columns+2);
   q=g+(columns+2);
   r=p+(y_offset*((ssize_t) columns+2)+x_offset);
@@ -1351,10 +1351,10 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
   despeckle_image=AccelerateDespeckleImage(image,exception);
   if (despeckle_image != (Image *) NULL)
@@ -1543,10 +1543,10 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   width=GetOptimalKernelWidth1D(radius,0.5);
   kernel_info=AcquireKernelInfo((const char *) NULL,exception);
   if (kernel_info == (KernelInfo *) NULL)
@@ -1633,10 +1633,10 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   width=GetOptimalKernelWidth1D(radius,sigma);
   kernel_info=AcquireKernelInfo((const char *) NULL,exception);
   if (kernel_info == (KernelInfo *) NULL)
@@ -1729,10 +1729,10 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) FormatLocaleString(geometry,MagickPathExtent,"gaussian:%.20gx%.20g",
     radius,sigma);
   kernel_info=AcquireKernelInfo(geometry,exception);
@@ -1811,10 +1811,10 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   width=(size_t) radius+1;
   gaussian_image=BlurImage(image,radius,sigma,exception);
   if (gaussian_image == (Image *) NULL)
@@ -2052,10 +2052,10 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
   contrast_image=AccelerateLocalContrastImage(image,radius,strength,exception);
   if (contrast_image != (Image *) NULL)
@@ -2333,7 +2333,8 @@ static MagickRealType *GetMotionBlurKernel(const size_t width,
   /*
    Generate a 1-D convolution kernel.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
     width,sizeof(*kernel)));
   if (kernel == (MagickRealType *) NULL)
@@ -2387,9 +2388,10 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   width=GetOptimalKernelWidth1D(radius,sigma);
   kernel=GetMotionBlurKernel(width,sigma);
   if (kernel == (MagickRealType *) NULL)
@@ -2656,7 +2658,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   colors=2;
   degrees=0.0;
@@ -3176,10 +3178,10 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
   blur_image=AccelerateRotationalBlurImage(image,angle,exception);
   if (blur_image != (Image *) NULL)
@@ -3449,10 +3451,10 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   width=GetOptimalKernelWidth1D(radius,sigma);
   kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
     width,width*sizeof(*kernel)));
@@ -3785,10 +3787,10 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   linear_image=CloneImage(image,0,0,MagickTrue,exception);
   shade_image=CloneImage(image,0,0,MagickTrue,exception);
   if ((linear_image == (Image *) NULL) || (shade_image == (Image *) NULL))
@@ -4025,10 +4027,10 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   width=GetOptimalKernelWidth2D(radius,sigma);
   kernel_info=AcquireKernelInfo((const char *) NULL,exception);
   if (kernel_info == (KernelInfo *) NULL)
@@ -4141,10 +4143,10 @@ MagickExport Image *SpreadImage(const Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   spread_image=CloneImage(image,0,0,MagickTrue,exception);
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
@@ -4291,9 +4293,10 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 /* This kernel appears to be broken.
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
   unsharp_image=AccelerateUnsharpMaskImage(image,radius,sigma,gain,threshold,

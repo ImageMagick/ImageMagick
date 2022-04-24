@@ -113,9 +113,9 @@ MagickExport Image *BorderImage(const Image *image,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(border_info != (RectangleInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   frame_info.width=image->columns+(border_info->width << 1);
   frame_info.height=image->rows+(border_info->height << 1);
   frame_info.x=(ssize_t) border_info->width;
@@ -207,9 +207,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(frame_info != (FrameInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
     ThrowImageException(OptionError,"FrameIsLessThanImageSize");
   bevel_width=(size_t) (frame_info->outer_bevel+frame_info->inner_bevel);
@@ -642,9 +642,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(raise_info != (RectangleInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->columns <= (raise_info->width << 1)) ||
       (image->rows <= (raise_info->height << 1)))
     ThrowBinaryException(OptionError,"ImageSizeMustExceedBevelWidth",

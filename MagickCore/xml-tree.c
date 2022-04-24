@@ -23,7 +23,7 @@
 %                               December 2004                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2004 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -236,7 +236,7 @@ MagickPrivate XMLTreeInfo *AddPathToXMLTree(XMLTreeInfo *xml_info,
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   node=xml_info;
   components=GetPathComponents(path,&number_components);
@@ -434,7 +434,7 @@ static void DestroyXMLTreeRoot(XMLTreeInfo *xml_info)
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (xml_info->parent != (XMLTreeInfo *) NULL)
     return;
@@ -485,7 +485,7 @@ MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   DestroyXMLTreeChild(xml_info);
   DestroyXMLTreeOrdered(xml_info);
@@ -671,7 +671,7 @@ MagickExport XMLTreeInfo *GetNextXMLTreeTag(XMLTreeInfo *xml_info)
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(xml_info->next);
 }
@@ -716,7 +716,7 @@ MagickExport const char *GetXMLTreeAttribute(XMLTreeInfo *xml_info,
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (xml_info->attributes == (char **) NULL)
     return((const char *) NULL);
@@ -779,9 +779,9 @@ MagickPrivate MagickBooleanType GetXMLTreeAttributes(
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((const XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(attributes != (SplayTreeInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (xml_info->attributes == (char **) NULL)
     return(MagickTrue);
   i=0;
@@ -826,7 +826,7 @@ MagickExport XMLTreeInfo *GetXMLTreeChild(XMLTreeInfo *xml_info,const char *tag)
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   child=xml_info->child;
   if (tag != (const char *) NULL)
@@ -863,7 +863,7 @@ MagickExport const char *GetXMLTreeContent(XMLTreeInfo *xml_info)
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(xml_info->content);
 }
@@ -895,7 +895,7 @@ MagickPrivate XMLTreeInfo *GetXMLTreeOrdered(XMLTreeInfo *xml_info)
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(xml_info->ordered);
 }
@@ -948,7 +948,7 @@ MagickPrivate XMLTreeInfo *GetXMLTreePath(XMLTreeInfo *xml_info,
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   node=xml_info;
   components=GetPathComponents(path,&number_components);
@@ -1013,7 +1013,7 @@ MagickPrivate const char **GetXMLTreeProcessingInstructions(
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   root=(XMLTreeRoot *) xml_info;
   while (root->root.parent != (XMLTreeInfo *) NULL)
@@ -1054,7 +1054,7 @@ MagickExport XMLTreeInfo *GetXMLTreeSibling(XMLTreeInfo *xml_info)
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(xml_info->sibling);
 }
@@ -1086,7 +1086,7 @@ MagickExport const char *GetXMLTreeTag(XMLTreeInfo *xml_info)
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(xml_info->tag);
 }
@@ -2348,7 +2348,7 @@ MagickPrivate XMLTreeInfo *PruneTagFromXMLTree(XMLTreeInfo *xml_info)
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (xml_info->next != (XMLTreeInfo *) NULL)
     xml_info->next->sibling=xml_info->sibling;
@@ -2426,7 +2426,7 @@ MagickPrivate XMLTreeInfo *SetXMLTreeAttribute(XMLTreeInfo *xml_info,
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   i=0;
   while ((xml_info->attributes[i] != (char *) NULL) &&
@@ -2512,7 +2512,7 @@ MagickExport XMLTreeInfo *SetXMLTreeContent(XMLTreeInfo *xml_info,
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (xml_info->content != (char *) NULL)
     xml_info->content=DestroyString(xml_info->content);
@@ -2713,7 +2713,7 @@ MagickExport char *XMLTreeInfoToXML(XMLTreeInfo *xml_info)
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickCoreSignature) ||
          (((XMLTreeRoot *) xml_info)->signature == MagickCoreSignature));
-  if (xml_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (xml_info->tag == (char *) NULL)
     return((char *) NULL);

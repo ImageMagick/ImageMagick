@@ -185,7 +185,8 @@ MagickExport MagickInfo *AcquireMagickInfo(const char *magick_module,
   assert(magick_module != (const char *) NULL);
   assert(name != (const char *) NULL);
   assert(description != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
   magick_info=(MagickInfo *) AcquireCriticalMemory(sizeof(*magick_info));
   (void) memset(magick_info,0,sizeof(*magick_info));
   magick_info->magick_module=ConstantString(magick_module);
@@ -299,8 +300,9 @@ MagickExport MagickBooleanType GetImageMagick(const unsigned char *magick,
   const MagickInfo
     *p;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magick != (const unsigned char *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   exception=AcquireExceptionInfo();
   p=GetMagickInfo("*",exception);
   exception=DestroyExceptionInfo(exception);
@@ -713,8 +715,9 @@ MagickExport const MagickInfo **GetMagickInfoList(const char *pattern,
     Allocate magick list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_formats != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_formats=0;
   p=GetMagickInfo("*",exception);
   if (p == (const MagickInfo *) NULL)
@@ -806,8 +809,9 @@ MagickExport char **GetMagickList(const char *pattern,
     Allocate magick list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_formats != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_formats=0;
   p=GetMagickInfo("*",exception);
   if (p == (const MagickInfo *) NULL)
@@ -941,7 +945,8 @@ MagickExport const char *GetMagickName(const MagickInfo *magick_info)
 */
 MagickExport int GetMagickPrecision(void)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(SetMagickPrecision(0));
 }
 
@@ -1690,7 +1695,8 @@ MagickExport MagickBooleanType RegisterMagickInfo(MagickInfo *magick_info)
   */
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickCoreSignature);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",magick_info->name);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",magick_info->name);
   if (magick_list == (SplayTreeInfo *) NULL)
     return(MagickFalse);
   if ((GetMagickDecoderThreadSupport(magick_info) == MagickFalse) ||
@@ -1756,7 +1762,8 @@ MagickExport int SetMagickPrecision(const int precision)
 {
 #define MagickPrecision  (4+MAGICKCORE_QUANTUM_DEPTH/8)
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (precision > 0)
     magick_precision=precision;
   if ((precision < 0) || (magick_precision == 0))

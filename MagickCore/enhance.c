@@ -238,7 +238,7 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   alpha=contrast;
   slope=tan((double) (MagickPI*(alpha/100.0+1.0)/4.0));
@@ -657,7 +657,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   range_info.min=0;
   range_info.max=NumberCLAHEGrays-1;
@@ -856,10 +856,10 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(clut_image != (Image *) NULL);
   assert(clut_image->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
@@ -1072,7 +1072,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (color_correction_collection == (const char *) NULL)
     return(MagickFalse);
@@ -1425,7 +1425,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   if (AccelerateContrastImage(image,sharpen,exception) != MagickFalse)
     return(MagickTrue);
 #endif
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   sign=sharpen != MagickFalse ? 1 : -1;
   if (image->storage_class == PseudoClass)
@@ -1583,7 +1583,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   type=IdentifyImageType(image,exception);
   if (IsGrayImageType(type) != MagickFalse)
@@ -1886,7 +1886,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
@@ -2066,7 +2066,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   if (AccelerateEqualizeImage(image,exception) != MagickFalse)
     return(MagickTrue);
 #endif
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   equalize_map=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
     sizeof(*equalize_map));
@@ -2340,7 +2340,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (gamma == 1.0)
     return(MagickTrue);
@@ -2483,7 +2483,7 @@ MagickExport MagickBooleanType GrayscaleImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
     {
@@ -2715,7 +2715,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(hald_image != (Image *) NULL);
   assert(hald_image->signature == MagickCoreSignature);
@@ -2931,7 +2931,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
@@ -3085,7 +3085,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
@@ -3221,7 +3221,7 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       ((IsGrayColorspace(black_color->colorspace) == MagickFalse) ||
@@ -3667,7 +3667,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (modulate == (char *) NULL)
     return(MagickFalse);
@@ -3941,7 +3941,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
@@ -4273,7 +4273,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   /*
     Side effect: may clamp values unless contrast<MagickEpsilon, in which
@@ -4442,7 +4442,7 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);

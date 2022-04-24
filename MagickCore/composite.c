@@ -1568,10 +1568,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(composite != (Image *) NULL);
   assert(composite->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   source_image=CloneImage(composite,0,0,MagickTrue,exception);
@@ -3666,9 +3666,9 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
     y;
 
   assert(image != (Image *) NULL);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (texture == (const Image *) NULL)
     return(MagickFalse);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)

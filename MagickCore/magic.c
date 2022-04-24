@@ -462,8 +462,9 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
     Allocate magic list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_aliases != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_aliases=0;
   p=GetMagicInfo((const unsigned char *) NULL,0,exception);
   if (p == (const MagicInfo *) NULL)
@@ -557,8 +558,9 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
     Allocate configure list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_aliases != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_aliases=0;
   p=GetMagicInfo((const unsigned char *) NULL,0,exception);
   if (p == (const MagicInfo *) NULL)
@@ -608,9 +610,10 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
 */
 MagickExport const char *GetMagicName(const MagicInfo *magic_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(magic_info != (MagicInfo *) NULL);
   assert(magic_info->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   return(magic_info->name);
 }
 

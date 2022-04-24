@@ -4106,7 +4106,7 @@ FxInfo *DestroyFxInfo (FxInfo * pfx)
 
 /* Following is substitute for FxImage().
 */
-MagickExport Image *FxImage (const Image *image, const char *expression,
+MagickExport Image *FxImage(const Image *image,const char *expression,
   ExceptionInfo *exception)
 {
 #define FxImageTag  "FxNew/Image"
@@ -4132,7 +4132,7 @@ MagickExport Image *FxImage (const Image *image, const char *expression,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (expression == (const char *) NULL)
     return(CloneImage(image,0,0,MagickTrue,exception));

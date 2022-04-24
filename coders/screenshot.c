@@ -106,7 +106,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
     *image;
 
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);

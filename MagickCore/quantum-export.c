@@ -4001,10 +4001,10 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (pixels == (unsigned char *) NULL)
     pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   if (image_view == (CacheView *) NULL)

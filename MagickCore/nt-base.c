@@ -512,8 +512,9 @@ MagickPrivate char **NTArgvToUTF8(const int argc,wchar_t **argv)
 */
 MagickPrivate int NTCloseDirectory(DIR *entry)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(entry != (DIR *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   FindClose(entry->hSearch);
   entry=(DIR *) RelinquishMagickMemory(entry);
   return(0);
@@ -2081,7 +2082,8 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
     *value;
 
   assert(id != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",id);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",id);
 #ifdef MAGICKCORE_LIBRARY_NAME
   handle=GetModuleHandle(MAGICKCORE_LIBRARY_NAME);
 #else

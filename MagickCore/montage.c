@@ -164,9 +164,9 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
 MagickExport MontageInfo *DestroyMontageInfo(MontageInfo *montage_info)
 {
   assert(montage_info != (MontageInfo *) NULL);
-  if (montage_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(montage_info->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (montage_info->geometry != (char *) NULL)
     montage_info->geometry=(char *)
       RelinquishMagickMemory(montage_info->geometry);
@@ -216,10 +216,10 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  assert(montage_info != (MontageInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  assert(montage_info != (MontageInfo *) NULL);
   (void) memset(montage_info,0,sizeof(*montage_info));
   (void) CopyMagickString(montage_info->filename,image_info->filename,
     MagickPathExtent);
@@ -403,12 +403,12 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   */
   assert(images != (Image *) NULL);
   assert(images->signature == MagickCoreSignature);
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(montage_info != (MontageInfo *) NULL);
   assert(montage_info->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   number_images=GetImageListLength(images);
   primary_list=ImageListToArray(images,exception);
   if (primary_list == (Image **) NULL)

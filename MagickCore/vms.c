@@ -72,7 +72,7 @@
 */
 void closedir(DIR *directory)
 {
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(directory != (DIR *) NULL);
   directory->pattern=DestroyString(directory->pattern);

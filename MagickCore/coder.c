@@ -332,8 +332,9 @@ MagickExport const CoderInfo **GetCoderInfoList(const char *pattern,
     Allocate coder list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_coders != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_coders=0;
   p=GetCoderInfo("*",exception);
   if (p == (const CoderInfo *) NULL)
@@ -417,8 +418,9 @@ MagickExport char **GetCoderList(const char *pattern,
     Allocate coder list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_coders != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_coders=0;
   p=GetCoderInfo("*",exception);
   if (p == (const CoderInfo *) NULL)

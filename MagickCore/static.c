@@ -133,7 +133,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
 
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickCoreSignature);
-  if ((*image)->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   rights=ReadPolicyRights;
   if (IsRightsAuthorized(FilterPolicyDomain,rights,tag) == MagickFalse)
@@ -168,12 +168,12 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
           signature;
 
         if ((*image)->debug != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          (void) LogMagickEvent(TransformEvent,GetMagickModule(),
             "Invoking \"%s\" static image filter",tag);
         signature=image_filter(image,argc,argv,exception);
         if ((*image)->debug != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"\"%s\" completes",
-            tag);
+          (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+            "\"%s\" completes",tag);
         if (signature != MagickImageFilterSignature)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,

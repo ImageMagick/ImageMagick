@@ -571,8 +571,9 @@ MagickExport const TypeInfo **GetTypeInfoList(const char *pattern,
     Allocate type list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_fonts != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_fonts=0;
   p=GetTypeInfo("*",exception);
   if (p == (const TypeInfo *) NULL)
@@ -664,8 +665,9 @@ MagickExport char **GetTypeList(const char *pattern,size_t *number_fonts,
     Allocate type list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_fonts != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_fonts=0;
   p=GetTypeInfo("*",exception);
   if (p == (const TypeInfo *) NULL)

@@ -474,7 +474,8 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
     i;
 
   assert(page_geometry != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",page_geometry);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",page_geometry);
   (void) CopyMagickString(page,page_geometry,MagickPathExtent);
   for (i=0; i < (ssize_t) (sizeof(PageSizes)/sizeof(PageSizes[0])); i++)
   {
@@ -1264,7 +1265,8 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
     height,
     width;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",geometry);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",geometry);
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
   SetGeometry(image,region_info);
@@ -1433,7 +1435,8 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
   assert(y != (ssize_t *) NULL);
   assert(width != (size_t *) NULL);
   assert(height != (size_t *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",geometry);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",geometry);
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
   /*
@@ -1732,7 +1735,7 @@ MagickExport void SetGeometry(const Image *image,RectangleInfo *geometry)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(geometry != (RectangleInfo *) NULL);
   (void) memset(geometry,0,sizeof(*geometry));
@@ -1765,6 +1768,7 @@ MagickExport void SetGeometry(const Image *image,RectangleInfo *geometry)
 MagickExport void SetGeometryInfo(GeometryInfo *geometry_info)
 {
   assert(geometry_info != (GeometryInfo *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   (void) memset(geometry_info,0,sizeof(*geometry_info));
 }

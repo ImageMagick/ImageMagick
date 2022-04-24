@@ -300,7 +300,7 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickCoreSignature);
   assert(images != (Image *) NULL);
   assert(images->signature == MagickCoreSignature);
-  if (images->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
@@ -795,7 +795,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   assert(images != (Image *) NULL);
   assert(images->signature == MagickCoreSignature);
-  if (images->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   resources=(*resource_info);
   window_info.id=(Window) NULL;
@@ -972,7 +972,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       images->filename);
   window_info.x=0;
   window_info.y=0;
-  if (display_image->debug != MagickFalse)
+  if (resource_info->debug != MagickFalse)
     {
       (void) LogMagickEvent(X11Event,GetMagickModule(),
         "Image: %s[%.20g] %.20gx%.20g ",image_list[0]->filename,(double)
@@ -1095,7 +1095,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     if (status == MagickFalse)
       ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
         images->filename);
-    if (display_image->debug != MagickFalse)
+    if (resource_info->debug != MagickFalse)
       {
         (void) LogMagickEvent(X11Event,GetMagickModule(),
           "Image: [%.20g] %s %.20gx%.20g ",(double) image_list[scene]->scene,
@@ -1410,7 +1410,7 @@ MagickExport Image *XAnimateImages(Display *display,
 
   assert(images != (Image *) NULL);
   assert(images->signature == MagickCoreSignature);
-  if (images->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   warning_handler=(WarningHandler) NULL;
   windows=XSetWindows((XWindows *) ~0);
@@ -1551,7 +1551,7 @@ MagickExport Image *XAnimateImages(Display *display,
         (display_image->rows < image_list[scene]->rows))
       display_image=image_list[scene];
   }
-  if (display_image->debug != MagickFalse)
+  if (resource_info->debug != MagickFalse)
     {
       (void) LogMagickEvent(X11Event,GetMagickModule(),
         "Image: %s[%.20g] %.20gx%.20g ",display_image->filename,(double)
@@ -1580,7 +1580,7 @@ MagickExport Image *XAnimateImages(Display *display,
   manager_hints->initial_state=WithdrawnState;
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->context);
-  if (display_image->debug != MagickFalse)
+  if (resource_info->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),
       "Window id: 0x%lx (context)",windows->context.id);
   context_values.background=pixel->background_color.pixel;
@@ -1631,7 +1631,7 @@ MagickExport Image *XAnimateImages(Display *display,
   manager_hints->initial_state=IconicState;
   XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
     &windows->icon);
-  if (display_image->debug != MagickFalse)
+  if (resource_info->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),"Window id: 0x%lx (icon)",
       windows->icon.id);
   /*
@@ -1729,7 +1729,7 @@ MagickExport Image *XAnimateImages(Display *display,
         resource_info->iconic ? IconicState : NormalState;
       XMakeWindow(display,root_window,argv,argc,class_hints,manager_hints,
         &windows->backdrop);
-      if (display_image->debug != MagickFalse)
+      if (resource_info->debug != MagickFalse)
         (void) LogMagickEvent(X11Event,GetMagickModule(),
           "Window id: 0x%lx (backdrop)",windows->backdrop.id);
       (void) XMapWindow(display,windows->backdrop.id);
@@ -1761,7 +1761,7 @@ MagickExport Image *XAnimateImages(Display *display,
       manager_hints->flags|=(MagickStatusType) WindowGroupHint;
       manager_hints->window_group=windows->group_leader.id;
       (void) XSelectInput(display,windows->group_leader.id,StructureNotifyMask);
-      if (display_image->debug != MagickFalse)
+      if (resource_info->debug != MagickFalse)
         (void) LogMagickEvent(X11Event,GetMagickModule(),
           "Window id: 0x%lx (group leader)",windows->group_leader.id);
     }
@@ -1773,7 +1773,7 @@ MagickExport Image *XAnimateImages(Display *display,
   if (windows->group_leader.id != (Window) NULL)
     (void) XSetTransientForHint(display,windows->image.id,
       windows->group_leader.id);
-  if (display_image->debug != MagickFalse)
+  if (resource_info->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),"Window id: 0x%lx (image)",
       windows->image.id);
   /*
@@ -1803,7 +1803,7 @@ MagickExport Image *XAnimateImages(Display *display,
   (void) XSetTransientForHint(display,windows->info.id,windows->image.id);
   if (windows->image.mapped)
     (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
-  if (display_image->debug != MagickFalse)
+  if (resource_info->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),"Window id: 0x%lx (info)",
       windows->info.id);
   /*
@@ -1835,7 +1835,7 @@ MagickExport Image *XAnimateImages(Display *display,
   windows->command.shadow_stipple=XCreateBitmapFromData(display,
     windows->command.id,(char *) ShadowBitmap,ShadowWidth,ShadowHeight);
   (void) XSetTransientForHint(display,windows->command.id,windows->image.id);
-  if (display_image->debug != MagickFalse)
+  if (resource_info->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),
       "Window id: 0x%lx (command)",windows->command.id);
   /*
@@ -1864,7 +1864,7 @@ MagickExport Image *XAnimateImages(Display *display,
   windows->widget.shadow_stipple=XCreateBitmapFromData(display,
     windows->widget.id,(char *) ShadowBitmap,ShadowWidth,ShadowHeight);
   (void) XSetTransientForHint(display,windows->widget.id,windows->image.id);
-  if (display_image->debug != MagickFalse)
+  if (resource_info->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),
       "Window id: 0x%lx (widget)",windows->widget.id);
   /*
@@ -1888,7 +1888,7 @@ MagickExport Image *XAnimateImages(Display *display,
   windows->popup.shadow_stipple=XCreateBitmapFromData(display,
     windows->popup.id,(char *) ShadowBitmap,ShadowWidth,ShadowHeight);
   (void) XSetTransientForHint(display,windows->popup.id,windows->image.id);
-  if (display_image->debug != MagickFalse)
+  if (resource_info->debug != MagickFalse)
     (void) LogMagickEvent(X11Event,GetMagickModule(),
       "Window id: 0x%lx (pop up)",windows->popup.id);
   /*
@@ -2225,7 +2225,7 @@ MagickExport Image *XAnimateImages(Display *display,
     {
       case ButtonPress:
       {
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Button Press: 0x%lx %u +%d+%d",event.xbutton.window,
             event.xbutton.button,event.xbutton.x,event.xbutton.y);
@@ -2268,7 +2268,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       case ButtonRelease:
       {
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Button Release: 0x%lx %u +%d+%d",event.xbutton.window,
             event.xbutton.button,event.xbutton.x,event.xbutton.y);
@@ -2276,7 +2276,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       case ClientMessage:
       {
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Client Message: 0x%lx 0x%lx %d 0x%lx",(unsigned long)
             event.xclient.window,(unsigned long) event.xclient.message_type,
@@ -2405,7 +2405,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       case ConfigureNotify:
       {
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Configure Notify: 0x%lx %dx%d+%d+%d %d",event.xconfigure.window,
             event.xconfigure.width,event.xconfigure.height,event.xconfigure.x,
@@ -2471,7 +2471,7 @@ MagickExport Image *XAnimateImages(Display *display,
         /*
           Group leader has exited.
         */
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Destroy Notify: 0x%lx",event.xdestroywindow.window);
         if (event.xdestroywindow.window == windows->group_leader.id)
@@ -2493,7 +2493,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       case Expose:
       {
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Expose: 0x%lx %dx%d+%d+%d",event.xexpose.window,
             event.xexpose.width,event.xexpose.height,event.xexpose.x,
@@ -2527,7 +2527,7 @@ MagickExport Image *XAnimateImages(Display *display,
         length=XLookupString((XKeyEvent *) &event.xkey,command,(int)
           sizeof(command),&key_symbol,(XComposeStatus *) NULL);
         *(command+length)='\0';
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Key press: 0x%lx (%c)",(unsigned long) key_symbol,*command);
         command_type=NullCommand;
@@ -2596,7 +2596,7 @@ MagickExport Image *XAnimateImages(Display *display,
         */
         (void) XLookupString((XKeyEvent *) &event.xkey,command,(int)
           sizeof(command),&key_symbol,(XComposeStatus *) NULL);
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Key release: 0x%lx (%c)",(unsigned long) key_symbol,*command);
         break;
@@ -2613,7 +2613,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       case MapNotify:
       {
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),"Map Notify: 0x%lx",
             event.xmap.window);
         if (event.xmap.window == windows->backdrop.id)
@@ -2701,7 +2701,7 @@ MagickExport Image *XAnimateImages(Display *display,
           after,
           length;
 
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Property Notify: 0x%lx 0x%lx %d",(unsigned long)
             event.xproperty.window,(unsigned long) event.xproperty.atom,
@@ -2727,7 +2727,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       case ReparentNotify:
       {
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Reparent Notify: 0x%lx=>0x%lx",event.xreparent.parent,
             event.xreparent.window);
@@ -2735,7 +2735,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       case UnmapNotify:
       {
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),
             "Unmap Notify: 0x%lx",event.xunmap.window);
         if (event.xunmap.window == windows->backdrop.id)
@@ -2788,7 +2788,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       default:
       {
-        if (display_image->debug != MagickFalse)
+        if (resource_info->debug != MagickFalse)
           (void) LogMagickEvent(X11Event,GetMagickModule(),"Event type: %d",
             event.type);
         break;
@@ -3053,7 +3053,7 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
   (void) image_info;
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","'%s' (X11)",image->filename);

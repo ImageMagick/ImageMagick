@@ -17,7 +17,7 @@
 %                               December 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -148,14 +148,12 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(reconstruct_image != (const Image *) NULL);
   assert(reconstruct_image->signature == MagickCoreSignature);
   assert(distortion != (double *) NULL);
-  *distortion=0.0;
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  *distortion=0.0;
   status=GetImageDistortion(image,reconstruct_image,metric,distortion,
     exception);
   if (status == MagickFalse)
@@ -1623,14 +1621,12 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(reconstruct_image != (const Image *) NULL);
   assert(reconstruct_image->signature == MagickCoreSignature);
   assert(distortion != (double *) NULL);
-  *distortion=0.0;
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  *distortion=0.0;
   /*
     Get image distortion.
   */
@@ -1771,11 +1767,9 @@ MagickExport double *GetImageDistortions(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(reconstruct_image != (const Image *) NULL);
   assert(reconstruct_image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   /*
     Get image distortion.
@@ -2927,11 +2921,11 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   assert(offset != (RectangleInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   SetGeometry(reference,offset);
   *similarity_metric=MagickMaximumValue;
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)

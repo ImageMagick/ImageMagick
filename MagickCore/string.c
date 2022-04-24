@@ -17,7 +17,7 @@
 %                               August 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the license.  You may  %
@@ -969,8 +969,9 @@ MagickExport char *FileToString(const char *filename,const size_t extent,
     length;
 
   assert(filename != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   assert(exception != (ExceptionInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   return((char *) FileToBlob(filename,extent,&length,exception));
 }
 
@@ -1008,8 +1009,9 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
     *string_info;
 
   assert(filename != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   assert(exception != (ExceptionInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   string_info=AcquireStringInfoContainer();
   string_info->path=ConstantString(filename);
   string_info->datum=(unsigned char *) FileToBlob(filename,extent,

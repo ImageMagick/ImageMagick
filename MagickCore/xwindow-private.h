@@ -325,10 +325,11 @@ typedef struct _XResourceInfo
     gravity;
 
   char
-    home_directory[MagickPathExtent];
-
-  char
+    home_directory[MagickPathExtent],
     *matte_color;
+
+  MagickBooleanType
+    debug;
 } XResourceInfo;
 
 typedef struct _XWindowInfo

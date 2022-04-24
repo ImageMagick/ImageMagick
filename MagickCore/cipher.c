@@ -232,9 +232,10 @@ static AESInfo *AcquireAESInfo(void)
 */
 static AESInfo *DestroyAESInfo(AESInfo *aes_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(aes_info != (AESInfo *) NULL);
   assert(aes_info->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (aes_info->decipher_key != (unsigned int *) NULL)
     aes_info->decipher_key=(unsigned int *) RelinquishMagickMemory(
       aes_info->decipher_key);
@@ -606,10 +607,10 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (passkey == (const StringInfo *) NULL)
     return(MagickTrue);
   aes_info=AcquireAESInfo();
@@ -819,10 +820,10 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (passkey == (const StringInfo *) NULL)
     return(MagickTrue);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
@@ -1010,10 +1011,11 @@ static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
   /*
     Determine the number of rounds based on the number of bits in key.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(aes_info != (AESInfo *) NULL);
   assert(aes_info->signature == MagickCoreSignature);
   assert(key != (StringInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   n=4;
   aes_info->rounds=10;
   if ((8*GetStringInfoLength(key)) >= 256)
@@ -1111,10 +1113,10 @@ MagickExport MagickBooleanType DecipherImage(Image *image,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) passphrase;
   ThrowBinaryException(ImageError,"CipherSupportNotEnabled",image->filename);
 }
@@ -1124,10 +1126,10 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) passkey;
   ThrowBinaryException(ImageError,"CipherSupportNotEnabled",image->filename);
 }
@@ -1167,10 +1169,10 @@ MagickExport MagickBooleanType EncipherImage(Image *image,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) passphrase;
   ThrowBinaryException(ImageError,"CipherSupportNotEnabled",image->filename);
 }
@@ -1180,10 +1182,10 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) passkey;
   ThrowBinaryException(ImageError,"CipherSupportNotEnabled",image->filename);
 }

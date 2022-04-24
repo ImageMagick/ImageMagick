@@ -173,10 +173,10 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
 
   assert(images != (Image *) NULL);
   assert(images->signature == MagickCoreSignature);
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   if (images->next == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
@@ -1489,7 +1489,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
 
   assert(magnitude_image != (Image *) NULL);
   assert(magnitude_image->signature == MagickCoreSignature);
-  if (magnitude_image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       magnitude_image->filename);
   if (phase_image == (Image *) NULL)

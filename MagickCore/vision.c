@@ -844,10 +844,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (objects != (CCObjectInfo **) NULL)
     *objects=(CCObjectInfo *) NULL;
   component_image=CloneImage(image,0,0,MagickTrue,exception);
@@ -1702,10 +1702,10 @@ MagickExport Image *IntegralImage(const Image *image,ExceptionInfo *exception)
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   integral_image=CloneImage(image,0,0,MagickTrue,exception);
   if (integral_image == (Image *) NULL)
     return((Image *) NULL);

@@ -4823,10 +4823,10 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (pixels == (const unsigned char *) NULL)
     pixels=(const unsigned char *) GetQuantumPixels(quantum_info);
   x=0;

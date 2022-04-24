@@ -123,9 +123,9 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickCoreSignature);
-  if ((*image)->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   assert(exception != (ExceptionInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   (void) image_info;
   status=MagickTrue;
   composite_options->clip_to_self=GetCompositeClipToSelf(
@@ -470,9 +470,9 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(exception != (ExceptionInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (argc == 2)
     {
       option=argv[1];

@@ -202,7 +202,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(geometry != (const RectangleInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);

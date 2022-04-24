@@ -3685,7 +3685,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception->signature == MagickCoreSignature);

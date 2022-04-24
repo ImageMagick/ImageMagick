@@ -2219,11 +2219,11 @@ MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image_info->filename);
   assert(clone_info != (const ImageInfo *) NULL);
   assert(clone_info->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
   if (clone_info->options != (void *) NULL)
     {
       if (image_info->options != (void *) NULL)
@@ -2316,7 +2316,7 @@ MagickExport MagickBooleanType DeleteImageOption(ImageInfo *image_info,
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   if (image_info->options == (void *) NULL)
@@ -2351,7 +2351,7 @@ MagickExport void DestroyImageOptions(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   if (image_info->options != (void *) NULL)
@@ -2391,7 +2391,7 @@ MagickExport const char *GetImageOption(const ImageInfo *image_info,
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   if (image_info->options == (void *) NULL)
@@ -2695,7 +2695,7 @@ MagickExport char *GetNextImageOption(const ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   if (image_info->options == (void *) NULL)
@@ -3236,7 +3236,7 @@ MagickExport char *RemoveImageOption(ImageInfo *image_info,const char *option)
 
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   if (image_info->options == (void *) NULL)
@@ -3273,7 +3273,7 @@ MagickExport void ResetImageOptions(const ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   if (image_info->options == (void *) NULL)
@@ -3309,7 +3309,7 @@ MagickExport void ResetImageOptionIterator(const ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   if (image_info->options == (void *) NULL)
@@ -3349,7 +3349,7 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
 {
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   /*

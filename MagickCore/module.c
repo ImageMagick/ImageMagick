@@ -301,8 +301,9 @@ MagickExport const ModuleInfo **GetModuleInfoList(const char *pattern,
     Allocate module list.
   */
   assert(pattern != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   assert(number_modules != (size_t *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_modules=0;
   p=GetModuleInfo("*",exception);
   if (p == (const ModuleInfo *) NULL)
@@ -531,9 +532,10 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
     *module_path;
 
   assert(filename != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   assert(path != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   if (strchr(filename,'/') != (char *) NULL)
     return(MagickFalse);
   (void) CopyMagickString(path,filename,MagickPathExtent);
@@ -958,7 +960,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
   */
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickCoreSignature);
-  if ((*images)->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       (*images)->filename);
   rights=ReadPolicyRights;
@@ -1019,11 +1021,11 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
       size_t
         signature;
 
-      if ((*images)->debug != MagickFalse)
+      if (IsEventLogging() != MagickFalse)
         (void) LogMagickEvent(ModuleEvent,GetMagickModule(),
           "Invoking \"%s\" dynamic image filter",tag);
       signature=image_filter(images,argc,argv,exception);
-      if ((*images)->debug != MagickFalse)
+      if (IsEventLogging() != MagickFalse)
         (void) LogMagickEvent(ModuleEvent,GetMagickModule(),"\"%s\" completes",
           tag);
       if (signature != MagickImageFilterSignature)
@@ -1426,7 +1428,8 @@ static const ModuleInfo *RegisterModule(const ModuleInfo *module_info,
 
   assert(module_info != (ModuleInfo *) NULL);
   assert(module_info->signature == MagickCoreSignature);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",module_info->tag);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",module_info->tag);
   if (module_list == (SplayTreeInfo *) NULL)
     return((const ModuleInfo *) NULL);
   status=AddValueToSplayTree(module_list,module_info->tag,module_info);
@@ -1464,8 +1467,9 @@ static const ModuleInfo *RegisterModule(const ModuleInfo *module_info,
 static void TagToCoderModuleName(const char *tag,char *name)
 {
   assert(tag != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
   assert(name != (char *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
 #if defined(MAGICKCORE_LTDL_DELEGATE)
   (void) FormatLocaleString(name,MagickPathExtent,"%s.la",tag);
   (void) LocaleLower(name);
@@ -1513,8 +1517,9 @@ static void TagToCoderModuleName(const char *tag,char *name)
 static void TagToFilterModuleName(const char *tag,char *name)
 {
   assert(tag != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
   assert(name != (char *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   (void) FormatLocaleString(name,MagickPathExtent,"FILTER_%s_.dll",tag);
 #elif !defined(MAGICKCORE_LTDL_DELEGATE)
@@ -1558,9 +1563,10 @@ static void TagToModuleName(const char *tag,const char *format,char *module)
     name[MagickPathExtent];
 
   assert(tag != (const char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
   assert(format != (const char *) NULL);
   assert(module != (char *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",tag);
   (void) CopyMagickString(name,tag,MagickPathExtent);
   LocaleUpper(name);
 #if !defined(MAGICKCORE_NAMESPACE_PREFIX)
@@ -1610,8 +1616,9 @@ static MagickBooleanType UnregisterModule(const ModuleInfo *module_info,
     Locate and execute UnregisterFORMATImage module.
   */
   assert(module_info != (const ModuleInfo *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",module_info->tag);
   assert(exception != (ExceptionInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",module_info->tag);
   if (module_info->unregister_module == NULL)
     return(MagickTrue);
   module_info->unregister_module();
@@ -1646,7 +1653,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
 
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickCoreSignature);
-  if ((*image)->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",(*image)->filename);
   rights=ReadPolicyRights;
   if (IsRightsAuthorized(FilterPolicyDomain,rights,tag) == MagickFalse)
@@ -1678,12 +1685,12 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
           signature;
 
         if ((*image)->debug != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          (void) LogMagickEvent(TransformEvent,GetMagickModule(),
             "Invoking \"%s\" static image filter",tag);
         signature=image_filter(image,argc,argv,exception);
         if ((*image)->debug != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"\"%s\" completes",
-            tag);
+          (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+            "\"%s\" completes",tag);
         if (signature != MagickImageFilterSignature)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,

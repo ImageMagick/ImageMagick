@@ -276,9 +276,10 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
 */
 MagickExport RandomInfo *DestroyRandomInfo(RandomInfo *random_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(random_info != (RandomInfo *) NULL);
   assert(random_info->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   LockSemaphoreInfo(random_info->semaphore);
   if (random_info->reservoir != (StringInfo *) NULL)
     random_info->reservoir=DestroyStringInfo(random_info->reservoir);

@@ -507,11 +507,12 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   /*
     Initialize annotated image.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(pixel != (XPixelInfo *) NULL);
   assert(annotate_info != (XAnnotateInfo *) NULL);
   assert(image != (Image *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   /*
     Initialize annotated pixmap.
   */
@@ -926,10 +927,11 @@ MagickPrivate void XBestIconSize(Display *display,XWindowInfo *window,
   /*
     Determine if the window manager has specified preferred icon sizes.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(window != (XWindowInfo *) NULL);
   assert(image != (Image *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   window->width=MaxIconSize;
   window->height=MaxIconSize;
   icon_size=(XIconSize *) NULL;
@@ -1053,9 +1055,10 @@ MagickPrivate void XBestPixel(Display *display,const Colormap colormap,
   /*
     Find closest representation for the requested RGB color.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(color != (XColor *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   status=XAllocColor(display,colormap,color);
   if (status != False)
     return;
@@ -1184,10 +1187,11 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
   /*
     Restrict visual search by screen number.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(map_info != (XStandardColormap *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   map_type=resource_info->map_type;
   visual_type=resource_info->visual_type;
   visual_mask=VisualScreenMask;
@@ -1458,8 +1462,9 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
 MagickPrivate int XCheckDefineCursor(Display *display,Window window,
   Cursor cursor)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (window == XRootWindow(display,XDefaultScreen(display)))
     return(0);
   return(XDefineCursor(display,window,cursor));
@@ -1499,9 +1504,10 @@ MagickPrivate void XCheckRefreshWindows(Display *display,XWindows *windows)
   XEvent
     event;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(windows != (XWindows *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   XDelay(display,SuspendTime);
   id=windows->command.id;
   while (XCheckTypedWindowEvent(display,id,Expose,&event) != MagickFalse)
@@ -1621,8 +1627,9 @@ static Window XClientWindow(Display *display,Window target_window)
   Window
     client_window;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   state=XInternAtom(display,"WM_STATE",MagickTrue);
   if (state == (Atom) NULL)
     return(target_window);
@@ -1752,9 +1759,10 @@ MagickPrivate void XConstrainWindowPosition(Display *display,
   int
     limit;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(window_info != (XWindowInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   limit=XDisplayWidth(display,window_info->screen)-window_info->width;
   if (window_info->x < 0)
     window_info->x=0;
@@ -1890,8 +1898,9 @@ MagickPrivate void XDestroyWindowColors(Display *display,Window window)
   /*
     If there are previous resources on the root window, destroy them.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   property=XInternAtom(display,"_XSETROOT_ID",MagickFalse);
   if (property == (Atom) NULL)
     {
@@ -1981,7 +1990,7 @@ MagickPrivate void XDisplayImageInfo(Display *display,
   assert(resource_info != (XResourceInfo *) NULL);
   assert(windows != (XWindows *) NULL);
   assert(image != (Image *) NULL);
-  if (image->debug)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   file=(FILE *) NULL;
   unique_file=AcquireUniqueFileResource(filename);
@@ -2326,7 +2335,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   assert(pixel != (XPixelInfo *) NULL);
   assert(draw_info != (XDrawInfo *) NULL);
   assert(image != (Image *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   /*
     Initialize drawd pixmap.
@@ -2664,9 +2673,10 @@ extern "C" {
 
 MagickExport int XError(Display *display,XErrorEvent *error)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(error != (XErrorEvent *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   xerror_alert=MagickTrue;
   switch (error->request_code)
   {
@@ -2741,9 +2751,10 @@ MagickPrivate void XFreeResources(Display *display,XVisualInfo *visual_info,
   XStandardColormap *map_info,XPixelInfo *pixel,XFontStruct *font_info,
   XResourceInfo *resource_info,XWindowInfo *window_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (window_info != (XWindowInfo *) NULL)
     {
       /*
@@ -2837,10 +2848,11 @@ MagickPrivate void XFreeStandardColormap(Display *display,
   /*
     Free colormap.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(visual_info != (XVisualInfo *) NULL);
   assert(map_info != (XStandardColormap *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   (void) XFlush(display);
   if (map_info->colormap != (Colormap) NULL)
     {
@@ -2889,8 +2901,9 @@ MagickPrivate void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
   /*
     Initialize annotate structure.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(annotate_info != (XAnnotateInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   annotate_info->x=0;
   annotate_info->y=0;
   annotate_info->width=0;
@@ -2940,9 +2953,10 @@ MagickPrivate void XGetMapInfo(const XVisualInfo *visual_info,
   /*
     Initialize map info.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(visual_info != (XVisualInfo *) NULL);
   assert(map_info != (XStandardColormap *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   map_info->colormap=colormap;
   map_info->red_max=visual_info->red_mask;
   map_info->red_mult=(size_t) (map_info->red_max != 0 ? 1 : 0);
@@ -3044,12 +3058,13 @@ MagickPrivate void XGetPixelInfo(Display *display,
   /*
     Initialize pixel info.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(visual_info != (XVisualInfo *) NULL);
   assert(map_info != (XStandardColormap *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
   assert(pixel != (XPixelInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   pixel->colors=0;
   if (image != (Image *) NULL)
     if (image->storage_class == PseudoClass)
@@ -3456,8 +3471,9 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   /*
     Initialize resource info fields.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(resource_info != (XResourceInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   (void) memset(resource_info,0,sizeof(*resource_info));
   resource_info->resource_database=database;
   resource_info->image_info=(ImageInfo *) image_info;
@@ -3612,6 +3628,8 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     (char *) NULL);
   resource_info->write_filename=XGetResourceClass(database,client_name,
     "writeFilename",(char *) NULL);
+  resource_info->debug=(GetLogEventMask() & X11Event) != 0 ? MagickTrue :
+    MagickFalse;
 }
 
 /*
@@ -3861,7 +3879,8 @@ MagickPrivate MagickBooleanType XGetWindowColor(Display *display,
   */
   assert(display != (Display *) NULL);
   assert(name != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
   *name='\0';
   target_window=XSelectWindow(display,&crop_info);
   if (target_window == (Window) NULL)
@@ -4027,8 +4046,9 @@ static Image *XGetWindowImage(Display *display,const Window window,
   /*
     Verify window is viewable.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   status=XGetWindowAttributes(display,window,&window_attributes);
   if ((status == False) || (window_attributes.map_state != IsViewable))
     return((Image *) NULL);
@@ -4561,13 +4581,14 @@ MagickPrivate void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   /*
     Initialize window info.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(visual_info != (XVisualInfo *) NULL);
   assert(map_info != (XStandardColormap *) NULL);
   assert(pixel != (XPixelInfo *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
   assert(window != (XWindowInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (window->id != (Window) NULL)
     {
       if (window->cursor != (Cursor) NULL)
@@ -4707,11 +4728,12 @@ MagickPrivate void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
 MagickPrivate void XHighlightEllipse(Display *display,Window window,
   GC annotate_context,const RectangleInfo *highlight_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(window != (Window) NULL);
   assert(annotate_context != (GC) NULL);
   assert(highlight_info != (RectangleInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((highlight_info->width < 4) || (highlight_info->height < 4))
     return;
   (void) XDrawArc(display,window,annotate_context,(int) highlight_info->x,
@@ -4757,11 +4779,12 @@ MagickPrivate void XHighlightEllipse(Display *display,Window window,
 MagickPrivate void XHighlightLine(Display *display,Window window,
   GC annotate_context,const XSegment *highlight_info)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(window != (Window) NULL);
   assert(annotate_context != (GC) NULL);
   assert(highlight_info != (XSegment *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   (void) XDrawLine(display,window,annotate_context,highlight_info->x1,
     highlight_info->y1,highlight_info->x2,highlight_info->y2);
 }
@@ -4802,10 +4825,11 @@ MagickPrivate void XHighlightRectangle(Display *display,Window window,
   GC annotate_context,const RectangleInfo *highlight_info)
 {
   assert(display != (Display *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(window != (Window) NULL);
   assert(annotate_context != (GC) NULL);
   assert(highlight_info != (RectangleInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((highlight_info->width < 4) || (highlight_info->height < 4))
     return;
   (void) XDrawRectangle(display,window,annotate_context,(int) highlight_info->x,
@@ -4881,10 +4905,10 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
+  assert(ximage_info != (XImportInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  assert(ximage_info != (XImportInfo *) NULL);
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
     {
@@ -5347,7 +5371,8 @@ MagickPrivate Cursor XMakeCursor(Display *display,Window window,
   assert(colormap != (Colormap) NULL);
   assert(background_color != (char *) NULL);
   assert(foreground_color != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",background_color);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",background_color);
   source=XCreateBitmapFromData(display,window,(char *) scope_bits,scope_width,
     scope_height);
   mask=XCreateBitmapFromData(display,window,(char *) scope_mask_bits,
@@ -5424,12 +5449,13 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
     *matte_image,
     *ximage;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
   assert(window != (XWindowInfo *) NULL);
   assert(width != 0);
   assert(height != 0);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((window->width == 0) || (window->height == 0))
     return(MagickFalse);
   /*
@@ -5886,7 +5912,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   assert(resource_info != (XResourceInfo *) NULL);
   assert(window != (XWindowInfo *) NULL);
   assert(image != (Image *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
   if ((window->immutable == MagickFalse) &&
@@ -6503,7 +6529,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   assert(resource_info != (XResourceInfo *) NULL);
   assert(window != (XWindowInfo *) NULL);
   assert(image != (Image *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
   if ((window->immutable != MagickFalse) &&
@@ -7129,9 +7155,10 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
   /*
     Check boundary conditions.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(windows != (XWindows *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   magnify=1;
   for (n=1; n < (ssize_t) windows->magnify.data; n++)
     magnify<<=1;
@@ -7562,10 +7589,11 @@ static MagickBooleanType XMakePixmap(Display *display,
     height,
     width;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
   assert(window != (XWindowInfo  *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (window->pixmap != (Pixmap) NULL)
     {
       /*
@@ -7737,12 +7765,13 @@ MagickPrivate void XMakeStandardColormap(Display *display,
     *colors,
     *p;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(visual_info != (XVisualInfo *) NULL);
   assert(map_info != (XStandardColormap *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
   assert(pixel != (XPixelInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (resource_info->map_type != (char *) NULL)
     {
       /*
@@ -8347,9 +8376,10 @@ MagickPrivate void XMakeWindow(Display *display,Window parent,char **argv,
   /*
     Set window info hints.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(window_info != (XWindowInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   size_hints=XAllocSizeHints();
   if (size_hints == (XSizeHints *) NULL)
     ThrowXWindowFatalException(XServerFatalError,"UnableToMakeXWindow",argv[0]);
@@ -8735,11 +8765,12 @@ MagickPrivate void XQueryPosition(Display *display,const Window window,int *x,
   Window
     root_window;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(window != (Window) NULL);
   assert(x != (int *) NULL);
   assert(y != (int *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   (void) XQueryPointer(display,window,&root_window,&root_window,&x_root,&y_root,
     x,y,&mask);
 }
@@ -8784,9 +8815,10 @@ MagickPrivate void XRefreshWindow(Display *display,const XWindowInfo *window,
     height,
     width;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(window != (XWindowInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (window->ximage == (XImage *) NULL)
     return;
   if (event != (XEvent *) NULL)
@@ -8899,7 +8931,8 @@ MagickExport MagickBooleanType XRemoteCommand(Display *display,
     root_window;
 
   assert(filename != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   if (display == (Display *) NULL)
     display=XOpenDisplay((char *) NULL);
   if (display == (Display *) NULL)
@@ -9100,7 +9133,7 @@ MagickPrivate MagickBooleanType XRenderImage(Image *image,
           return(MagickFalse);
         }
     }
-  if (image->debug != MagickFalse)
+  if (draw_info->debug != MagickFalse)
     (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),
       "Font %s; pointsize %g",draw_info->font != (char *) NULL ?
       draw_info->font : "none",draw_info->pointsize);
@@ -9197,9 +9230,10 @@ MagickExport void XRetainWindowColors(Display *display,const Window window)
   /*
     Put property on the window.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(window != (Window) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   property=XInternAtom(display,"_XSETROOT_ID",MagickFalse);
   if (property == (Atom) NULL)
     {
@@ -9279,9 +9313,10 @@ static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
   /*
     Initialize graphic context.
   */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(crop_info != (RectangleInfo *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   root_window=XRootWindow(display,XDefaultScreen(display));
   context_values.background=XBlackPixel(display,XDefaultScreen(display));
   context_values.foreground=XWhitePixel(display,XDefaultScreen(display));
@@ -9430,9 +9465,10 @@ static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
 MagickPrivate void XSetCursorState(Display *display,XWindows *windows,
   const MagickStatusType state)
 {
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(windows != (XWindows *) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (state)
     {
       (void) XCheckDefineCursor(display,windows->image.id,
@@ -9713,9 +9749,10 @@ MagickPrivate Window XWindowByID(Display *display,const Window root_window,
     *children,
     window;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(root_window != (Window) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (id == 0)
     return(XSelectWindow(display,&rectangle_info));
   if (root_window == id)
@@ -9794,7 +9831,8 @@ MagickPrivate Window XWindowByName(Display *display,const Window root_window,
   assert(display != (Display *) NULL);
   assert(root_window != (Window) NULL);
   assert(name != (char *) NULL);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",name);
   if (XGetWMName(display,root_window,&window_name) != 0)
     if (LocaleCompare((char *) window_name.value,name) == 0)
       return(root_window);
@@ -9877,10 +9915,11 @@ MagickPrivate Window XWindowByProperty(Display *display,const Window window,
     parent,
     root;
 
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(display != (Display *) NULL);
   assert(window != (Window) NULL);
   assert(property != (Atom) NULL);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   status=XQueryTree(display,window,&root,&parent,&children,&number_children);
   if (status == False)
     return((Window) NULL);
@@ -9935,12 +9974,12 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  if (image_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image_info->filename);
   assert(ximage_info != (XImportInfo *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
   (void) ximage_info;
   (void) exception;
   return((Image *) NULL);

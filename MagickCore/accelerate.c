@@ -661,7 +661,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   device=RequestOpenCLDevice(clEnv);
@@ -796,7 +796,7 @@ MagickPrivate Image* AccelerateBlurImage(const Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (checkAccelerateCondition(image) == MagickFalse)
@@ -853,7 +853,7 @@ static MagickBooleanType ComputeContrastImage(Image *image,MagickCLEnv clEnv,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   contrastKernel=NULL;
@@ -919,7 +919,7 @@ MagickPrivate MagickBooleanType AccelerateContrastImage(Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (checkAccelerateCondition(image) == MagickFalse)
@@ -1011,7 +1011,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   histogram=NULL;
@@ -1482,7 +1482,7 @@ MagickPrivate MagickBooleanType AccelerateContrastStretchImage(
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
@@ -2332,7 +2332,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   map=NULL;
@@ -2691,7 +2691,7 @@ MagickPrivate MagickBooleanType AccelerateEqualizeImage(Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if ((checkAccelerateConditionRGBA(image) == MagickFalse) ||
@@ -2754,7 +2754,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   outputReady=MagickFalse;
@@ -2843,7 +2843,7 @@ MagickPrivate MagickBooleanType AccelerateFunctionImage(Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (checkAccelerateCondition(image) == MagickFalse)
@@ -2902,7 +2902,7 @@ static MagickBooleanType ComputeGrayscaleImage(Image *image,MagickCLEnv clEnv,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   outputReady=MagickFalse;
@@ -2970,7 +2970,7 @@ MagickPrivate MagickBooleanType AccelerateGrayscaleImage(Image* image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if ((checkAccelerateCondition(image) == MagickFalse) ||
@@ -3405,7 +3405,7 @@ static MagickBooleanType ComputeModulateImage(Image *image,MagickCLEnv clEnv,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   inputPixels = NULL;
@@ -3539,7 +3539,7 @@ MagickPrivate MagickBooleanType AccelerateModulateImage(Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (checkAccelerateConditionRGBA(image) == MagickFalse)
@@ -3641,7 +3641,7 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   outputReady = MagickFalse;
@@ -4570,7 +4570,7 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   filteredImage=NULL;
@@ -4697,7 +4697,7 @@ MagickPrivate Image* AccelerateRotationalBlurImage(const Image *image,
 
   assert(image != NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
   if (checkAccelerateCondition(image) == MagickFalse)
