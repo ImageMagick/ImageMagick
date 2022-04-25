@@ -5247,7 +5247,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 */
 
 static Image *ReadJNGImage(const ImageInfo *image_info,
-                ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
   char
     magic_number[MagickPathExtent];
