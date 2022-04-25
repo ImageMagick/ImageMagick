@@ -204,6 +204,8 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
   if (count != 1)
     return(MagickTrue);
   length=heif_image_handle_get_metadata_size(image_handle,id);
+  if (length == 0)
+    return(MagickTrue);
   if ((MagickSizeType) length > GetBlobSize(image))
     ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
       image->filename);
