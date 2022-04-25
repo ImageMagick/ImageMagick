@@ -8,14 +8,14 @@ to making software imaging solutions freely available.
 You may not use this file except in compliance with the License. You may obtain
 a copy of the License at
 
-  https://imagemagick.org/script/license.php
+  <https://imagemagick.org/script/license.php>
 
 Unless required by applicable law or agreed to in writing, software distributed
 under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations under the License.
 
-The full text of this license is availaible in the LICENSE file.
+The full text of this license is available in the LICENSE file.
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -91,7 +91,7 @@ right and license to deal in this software and documentation files (the
 "Software"), including without limitation the rights to use, copy, modify,
 merge, publish, distribute, sublicense, and/or sell copies of the Software, and
 to permit persons who receive copies from any such party to do so, with the
-only requirement being that this copyright notice remain intact.
+only requirement being that this copyright notice remains intact.
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -233,7 +233,7 @@ SOFTWARE.
 11. Bootstrap copyright (ImageMagick utilizes CSS for its web pages under this
     copyright):
 
-Bootstrap v3.3.5 (http://getbootstrap.com)
+Bootstrap v3.3.5 (<http://getbootstrap.com>)
 Copyright 2011-2015 Twitter, Inc.
 Licensed under the MIT license
 

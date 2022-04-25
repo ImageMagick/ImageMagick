@@ -4,7 +4,7 @@ ImageMagick recommended practices **strongly** encourages you to configure a [se
 
 ## Supported Versions
 
-We encourage users to upgrade to the lastest ImageMagick release to ensure that all known security vulnerabilities are addressed.  On request, we can backport a vulnerability to other ImageMagick versions.
+We encourage users to upgrade to the latest ImageMagick release to ensure that all known security vulnerabilities are addressed.  On request, we can backport a vulnerability to other ImageMagick versions.
 
 ## Reporting a Vulnerability
 

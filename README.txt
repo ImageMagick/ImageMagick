@@ -129,7 +129,7 @@ News
 
   If these options are prohibitive, you can reduce the quality of the image
   results. The default build is Q16 HDRI. If you disable HDRI, you use
-  half the memory and instead of predominately floating point operations,
+  half the memory and instead of predominantly floating point operations,
   you use the typically more efficient integer operations. The tradeoff
   is reduced precision and you cannot process out of range pixel values
   (e.g. negative). If you build the Q8 non-HDRI version of ImageMagick,
