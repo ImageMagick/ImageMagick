@@ -188,7 +188,7 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
     count;
 
   size_t
-    extent;
+    length;
 
   struct heif_error
     error;
@@ -203,11 +203,11 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
     &id,1);
   if (count != 1)
     return(MagickTrue);
-  extent=heif_image_handle_get_metadata_size(image_handle,id);
-  if ((MagickSizeType) extent > GetBlobSize(image))
+  length=heif_image_handle_get_metadata_size(image_handle,id);
+  if ((MagickSizeType) length > GetBlobSize(image))
     ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
       image->filename);
-  exif_profile=(unsigned char *) AcquireQuantumMemory(1,extent);
+  exif_profile=(unsigned char *) AcquireQuantumMemory(1,length);
   if (exif_profile == (unsigned char *) NULL)
     return(MagickFalse);
   error=heif_image_handle_get_metadata(image_handle,id,exif_profile);
@@ -220,8 +220,8 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
         Skip first 4 bytes, the offset to the TIFF header.
       */
       profile=(StringInfo*) NULL;
-      if (extent > 8)
-        profile=BlobToStringInfo(exif_profile+4,(size_t) extent-4);
+      if (length > 8)
+        profile=BlobToStringInfo(exif_profile+4,(size_t) length-4);
       if (profile != (StringInfo*) NULL)
         {
           (void) SetImageProfile(image,"exif",profile,exception);
