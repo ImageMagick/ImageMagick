@@ -336,7 +336,7 @@ static const FunctionT Functions[] = {
   {fAtan2,   "atan2" , 2},
   {fAtan,    "atan"  , 1},
   {fCeil,    "ceil"  , 1},
-  {fChannel, "channel"  , 5},
+  {fChannel, "channel", 5}, /* Special case: allow zero to five arguments. */
   {fClamp,   "clamp" , 1},
   {fCosh,    "cosh"  , 1},
   {fCos,     "cos"   , 1},
@@ -1861,18 +1861,26 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
     return MagickFalse;
   }
 
-  if (fe == fP || fe == fS || fe == fU) {
+  if (fe == fP || fe == fS || fe == fU || fe == fChannel) {
     while (FndArgs < Functions[fe-FirstFunc].nArgs) {
       (void) AddElement (pfx, (fxFltType) 0, oNull);
       FndArgs++;
     }
   }
 
-  if (FndArgs > Functions[fe-FirstFunc].nArgs) {
-    (void) ThrowMagickException (
-      pfx->exception, GetMagickModule(), OptionError,
-      "For function", "'%s' expected %i arguments, found '%i' at '%s'",
-      funStr, Functions[fe-FirstFunc].nArgs, FndArgs, SetShortExp(pfx));
+  if (FndArgs > Functions[fe-FirstFunc].nArgs)
+  {
+    if (fe==fChannel) {
+      (void) ThrowMagickException (
+        pfx->exception, GetMagickModule(), OptionError,
+        "For function", "'%s' expected up to %i arguments, found '%i' at '%s'",
+        funStr, Functions[fe-FirstFunc].nArgs, FndArgs, SetShortExp(pfx));
+    } else {
+      (void) ThrowMagickException (
+        pfx->exception, GetMagickModule(), OptionError,
+        "For function", "'%s' expected %i arguments, found '%i' at '%s'",
+        funStr, Functions[fe-FirstFunc].nArgs, FndArgs, SetShortExp(pfx));
+    }
     return MagickFalse;
   }
   if (FndArgs < Functions[fe-FirstFunc].nArgs) {
