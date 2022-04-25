@@ -145,35 +145,36 @@ static MagickBooleanType IsFITS(const unsigned char *magick,const size_t length)
 
 static inline double GetFITSPixel(Image *image,int bits_per_pixel)
 {
-  double pixel = 0;
+  double
+    pixel;
+
   switch (image->depth >> 3)
   {
     case 1:
-      pixel=((double) ReadBlobByte(image));
+      return((double) ReadBlobByte(image));
     case 2:
-      pixel=((double) ((short) ReadBlobShort(image)));
+      return((double) ((short) ReadBlobShort(image)));
     case 4:
     {
       if (bits_per_pixel > 0)
-        pixel=((double) ReadBlobSignedLong(image));
-      pixel=((double) ReadBlobFloat(image));
+        return((double) ReadBlobSignedLong(image));
+      return((double) ReadBlobFloat(image));
     }
     case 8:
     {
       if (bits_per_pixel > 0)
-        pixel=((double) ((MagickOffsetType) ReadBlobLongLong(image)));
+        return((double) ((MagickOffsetType) ReadBlobLongLong(image)));
     }
     default:
       break;
   }
+
   pixel=(ReadBlobDouble(image));
-
-  // Override any undefined pixels to black.
-  if (isnan(pixel))
-      pixel=0;
-
+  if (IsNaN(pixel))
+    pixel=0;
   return pixel;
 }
+
 
 static MagickOffsetType GetFITSPixelExtrema(Image *image,
   const int bits_per_pixel,double *minima,double *maxima)
