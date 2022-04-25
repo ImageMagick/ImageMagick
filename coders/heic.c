@@ -204,7 +204,7 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
   if (count != 1)
     return(MagickTrue);
   length=heif_image_handle_get_metadata_size(image_handle,id);
-  if (length == 0)
+  if (length <= 8)
     return(MagickTrue);
   if ((MagickSizeType) length > GetBlobSize(image))
     ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
@@ -221,9 +221,7 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       /*
         Skip first 4 bytes, the offset to the TIFF header.
       */
-      profile=(StringInfo*) NULL;
-      if (length > 8)
-        profile=BlobToStringInfo(exif_profile+4,(size_t) length-4);
+      profile=BlobToStringInfo(exif_profile+4,(size_t) length-4);
       if (profile != (StringInfo*) NULL)
         {
           (void) SetImageProfile(image,"exif",profile,exception);
@@ -799,6 +797,8 @@ static void WriteProfile(struct heif_context *context,Image *image,
   /*
     Save image profile as a APP marker.
   */
+        (void) heif_context_add_exif_metadata(context,image_handle,
+          (void*) 0,0);
   ResetImageProfileIterator(image);
   for (name=GetNextImageProfile(image); name != (const char *) NULL; )
   {
