@@ -797,8 +797,6 @@ static void WriteProfile(struct heif_context *context,Image *image,
   /*
     Save image profile as a APP marker.
   */
-        (void) heif_context_add_exif_metadata(context,image_handle,
-          (void*) 0,0);
   ResetImageProfileIterator(image);
   for (name=GetNextImageProfile(image); name != (const char *) NULL; )
   {
