@@ -145,27 +145,34 @@ static MagickBooleanType IsFITS(const unsigned char *magick,const size_t length)
 
 static inline double GetFITSPixel(Image *image,int bits_per_pixel)
 {
+  double pixel = 0;
   switch (image->depth >> 3)
   {
     case 1:
-      return((double) ReadBlobByte(image));
+      pixel=((double) ReadBlobByte(image));
     case 2:
-      return((double) ((short) ReadBlobShort(image)));
+      pixel=((double) ((short) ReadBlobShort(image)));
     case 4:
     {
       if (bits_per_pixel > 0)
-        return((double) ReadBlobSignedLong(image));
-      return((double) ReadBlobFloat(image));
+        pixel=((double) ReadBlobSignedLong(image));
+      pixel=((double) ReadBlobFloat(image));
     }
     case 8:
     {
       if (bits_per_pixel > 0)
-        return((double) ((MagickOffsetType) ReadBlobLongLong(image)));
+        pixel=((double) ((MagickOffsetType) ReadBlobLongLong(image)));
     }
     default:
       break;
   }
-  return(ReadBlobDouble(image));
+  pixel=(ReadBlobDouble(image));
+
+  // Override any undefined pixels to black.
+  if (isnan(pixel))
+      pixel=0;
+
+  return pixel;
 }
 
 static MagickOffsetType GetFITSPixelExtrema(Image *image,
@@ -187,8 +194,8 @@ static MagickOffsetType GetFITSPixelExtrema(Image *image,
   if (offset == -1)
     return(-1);
   number_pixels=(MagickSizeType) image->columns*image->rows;
-  *minima=GetFITSPixel(image,bits_per_pixel);
-  *maxima=(*minima);
+  *minima=DBL_MAX;
+  *maxima=DBL_MIN;
   for (i=1; i < (MagickOffsetType) number_pixels; i++)
   {
     pixel=GetFITSPixel(image,bits_per_pixel);
