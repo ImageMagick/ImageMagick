@@ -66,7 +66,7 @@ Here are just a few [examples](https://imagemagick.org/script/examples.php) of w
 
 #### News
 
-ImageMagick best practices **strongly** encourage you to configure a [security policy](https://imagemagick.org/script/security-policy.php) that suits your local environment.
+ImageMagick best practices **strongly** encourages you to configure a [security policy](https://imagemagick.org/script/security-policy.php) that suits your local environment.
 
 Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org. Learn how ImageMagick version 7 differs from previous versions with our [porting guide](https://imagemagick.org/script/porting.php).
 
