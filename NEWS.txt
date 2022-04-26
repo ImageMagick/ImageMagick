@@ -15,9 +15,9 @@ ImageMagick release, we perform a comprehensive security assessment that
 includes memory error, thread data race detection, and continuous fuzzing
 to detect and prevent security vulnerabilities.
 
-As an analog to linear (RGB) and nonlinear (sRGB) color colorspaces, as
+As an analog to linear (RGB) and non-linear (sRGB) color colorspaces, as
 of ImageMagick 7.0.7-17, we introduce the LinearGray colorspace. Gray is
-nonlinear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).
+non-linear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).
 
 Want more performance from ImageMagick? Try these options:
 

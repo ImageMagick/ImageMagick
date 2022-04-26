@@ -10,16 +10,16 @@
 
 Use [ImageMagick®](https://imagemagick.org/) to create, edit, compose, or convert digital images. It can read and write images in a variety of formats (over 200) including PNG, JPEG, GIF, WebP, HEIC, SVG, PDF, DPX, EXR and TIFF. ImageMagick can resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
 
-## What is ImageMagick?
+#### What is ImageMagick?
 
 ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under a derived Apache 2.0 [license](https://imagemagick.org/script/license.php).
 
 ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.
 The current release is the ImageMagick 7.1.0 series. It runs on Linux, Windows, Mac Os X, iOS, Android OS, and others.
 
-The authoritative ImageMagick web site is <https://imagemagick.org>. The authoritative source code repository is <https://github.com/ImageMagick/ImageMagick>. We continue to maintain the legacy release of ImageMagick, version 6, at <https://legacy.imagemagick.org>.
+The authoritative ImageMagick web site is https://imagemagick.org. The authoritative source code repository is https://github.com/ImageMagick/ImageMagick. We continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org.
 
-## Features and Capabilities
+#### Features and Capabilities
 
 Here are just a few [examples](https://imagemagick.org/script/examples.php) of what ImageMagick can do:
 
@@ -64,11 +64,11 @@ Here are just a few [examples](https://imagemagick.org/script/examples.php) of w
 
 [Examples of ImageMagick Usage](https://legacy.imagemagick.org/Usage/), shows how to use ImageMagick from the command-line to accomplish any of these tasks and much more. Also, see [Fred's ImageMagick Scripts](http://www.fmwconcepts.com/imagemagick/): a plethora of command-line scripts that perform geometric transforms, blurs, sharpens, edging, noise removal, and color manipulations. With [Magick.NET](https://github.com/dlemstra/Magick.NET), use ImageMagick without having to install ImageMagick on your server or desktop.
 
-## News
+#### News
 
 ImageMagick best practices **strongly** encourage you to configure a [security policy](https://imagemagick.org/script/security-policy.php) that suits your local environment.
 
-Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at <https://legacy.imagemagick.org>. Learn how ImageMagick version 7 differs from previous versions with our [porting guide](https://imagemagick.org/script/porting.php).
+Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org. Learn how ImageMagick version 7 differs from previous versions with our [porting guide](https://imagemagick.org/script/porting.php).
 
 Want more performance from ImageMagick? Try these options:
 
