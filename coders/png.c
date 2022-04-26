@@ -6847,11 +6847,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
         if (logging != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "exit ReadJNGImage() with error");
-        if (mng_info->image != (Image *) NULL)
-          {
-            CloseBlob(mng_info->image);
-            mng_info->image=DestroyImageList(mng_info->image);
-          }
         return((Image *) NULL);
       }
 
