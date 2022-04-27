@@ -13,7 +13,7 @@ VMS COMPILATION
 
   where node_name is the DECNET X server to contact.
 
-  Note : the MAKE.COM files compile every thing with /name=(as_is,short).  all
+  Note : the MAKE.COM files compile everything with /name=(as_is,short).  all
   the requested graphical lib's should be compiled with this qualifier (see
   http://nchrem.tnw.tudelft/openvms for details on additional libraries
   needed).  All the .olb files of the libs are expected to be in SYS$LIBRARY.

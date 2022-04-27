@@ -6092,7 +6092,7 @@ href="command-line-options.html#resize">-resize</a> option, the image is resized
 filter.</p>
 
 <p>Many image processing algorithms assume your image is in a linear-light
-coding.  If your image is gamma-corrected, you can remove the nonlinear gamma
+coding.  If your image is gamma-corrected, you can remove the non-linear gamma
 correction, apply the transform, then restore it like this:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>magick portrait.jpg -gamma .45455 -resize 25% -gamma 2.2  \
