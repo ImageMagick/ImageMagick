@@ -1362,6 +1362,7 @@ ModuleExport size_t RegisterDPXImage(void)
   entry->magick=(IsImageFormatHandler *) IsDPX;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags|=CoderEndianSupportFlag;
   entry->note=ConstantString(DPXNote);
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
