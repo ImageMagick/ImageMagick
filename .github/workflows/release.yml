@@ -28,7 +28,7 @@ jobs:
       run: |
         export NEXT_VERSION=$(grep -oP "PACKAGE_VERSION='\K[0-9\.-]*" configure)
         git tag $NEXT_VERSION
-        auto-changelog
+        auto-changelog --sort-commits date
         mkdir artifacts
         mv ChangeLog.md artifacts/ChangeLog.md
 
