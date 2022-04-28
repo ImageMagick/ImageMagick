@@ -145,9 +145,6 @@ static MagickBooleanType IsFITS(const unsigned char *magick,const size_t length)
 
 static inline double GetFITSPixel(Image *image,int bits_per_pixel)
 {
-  double
-    pixel;
-
   switch (image->depth >> 3)
   {
     case 1:
@@ -168,13 +165,8 @@ static inline double GetFITSPixel(Image *image,int bits_per_pixel)
     default:
       break;
   }
-
-  pixel=(ReadBlobDouble(image));
-  if (IsNaN(pixel))
-    pixel=0;
-  return pixel;
+  return(ReadBlobDouble(image));
 }
-
 
 static MagickOffsetType GetFITSPixelExtrema(Image *image,
   const int bits_per_pixel,double *minima,double *maxima)
