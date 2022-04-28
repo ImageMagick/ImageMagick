@@ -3973,14 +3973,15 @@ static FxInfo *AcquireFxInfoPrivate (const Image * images, const char * expressi
   if (!BuildRPN (pfx)) {
     (void) DeInitFx (pfx);
     pfx = (FxInfo*) RelinquishMagickMemory(pfx);
-    return NULL;
+    return((FxInfo *) NULL);
   }
 
-  if (*expression == '@')
+  if ((*expression == '@') && (strlen(expression) > 1))
     pfx->expression = FileToString (expression+1, ~0UL, exception);
   else
     pfx->expression = ConstantString (expression);
-
+  if (pfx->expression == (char *) NULL)
+    return((FxInfo *) NULL);
   pfx->pex = (char *)pfx->expression;
 
   pfx->teDepth = 0;
