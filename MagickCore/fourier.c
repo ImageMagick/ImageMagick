@@ -540,10 +540,10 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   /*
     Create "Fourier Transform" image from constituent arrays.
   */
-  magnitude_info=AcquireVirtualMemory((size_t) fourier_info->width,
-    fourier_info->height*sizeof(*magnitude_pixels));
-  phase_info=AcquireVirtualMemory((size_t) fourier_info->width,
-    fourier_info->height*sizeof(*phase_pixels));
+  magnitude_info=AcquireVirtualMemory(fourier_info->width,fourier_info->height*
+    sizeof(*magnitude_pixels));
+  phase_info=AcquireVirtualMemory(fourier_info->width,fourier_info->height*
+    sizeof(*phase_pixels));
   if ((magnitude_info == (MemoryInfo *) NULL) ||
       (phase_info == (MemoryInfo *) NULL))
     {
@@ -723,8 +723,14 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   /*
     Generate the forward Fourier transform.
   */
-  source_info=AcquireVirtualMemory((size_t) fourier_info->width,
-    fourier_info->height*sizeof(*source_pixels));
+  if ((fourier_info->width >= INT_MAX) || ((fourier_info->height >= INT_MAX))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  source_info=AcquireVirtualMemory(fourier_info->width,fourier_info->height*
+    sizeof(*source_pixels));
   if (source_info == (MemoryInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -778,8 +784,8 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     }
   }
   image_view=DestroyCacheView(image_view);
-  forward_info=AcquireVirtualMemory((size_t) fourier_info->width,
-    (fourier_info->height/2+1)*sizeof(*forward_pixels));
+  forward_info=AcquireVirtualMemory(fourier_info->width,(fourier_info->height/2+
+    1)*sizeof(*forward_pixels));
   if (forward_info == (MemoryInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -874,10 +880,10 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   fourier_info.center=(ssize_t) (fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
-  magnitude_info=AcquireVirtualMemory((size_t) fourier_info.width,
-    (fourier_info.height/2+1)*sizeof(*magnitude_pixels));
-  phase_info=AcquireVirtualMemory((size_t) fourier_info.width,
-    (fourier_info.height/2+1)*sizeof(*phase_pixels));
+  magnitude_info=AcquireVirtualMemory(fourier_info.width,(fourier_info.height/2+
+    1)*sizeof(*magnitude_pixels));
+  phase_info=AcquireVirtualMemory(fourier_info.width,(fourier_info.height/2+1)*
+    sizeof(*phase_pixels));
   if ((magnitude_info == (MemoryInfo *) NULL) ||
       (phase_info == (MemoryInfo *) NULL))
     {
@@ -1136,12 +1142,12 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   /*
     Inverse fourier - read image and break down into a double array.
   */
-  magnitude_info=AcquireVirtualMemory((size_t) fourier_info->width,
-    fourier_info->height*sizeof(*magnitude_pixels));
-  phase_info=AcquireVirtualMemory((size_t) fourier_info->width,
-    fourier_info->height*sizeof(*phase_pixels));
-  inverse_info=AcquireVirtualMemory((size_t) fourier_info->width,
-    (fourier_info->height/2+1)*sizeof(*inverse_pixels));
+  magnitude_info=AcquireVirtualMemory(fourier_info->width,fourier_info->height*
+    sizeof(*magnitude_pixels));
+  phase_info=AcquireVirtualMemory(fourier_info->width,fourier_info->height*
+    sizeof(*phase_pixels));
+  inverse_info=AcquireVirtualMemory(fourier_info->width,(fourier_info->height/2+
+    1)*sizeof(*inverse_pixels));
   if ((magnitude_info == (MemoryInfo *) NULL) ||
       (phase_info == (MemoryInfo *) NULL) ||
       (inverse_info == (MemoryInfo *) NULL))
@@ -1332,8 +1338,14 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   ssize_t
     y;
 
-  source_info=AcquireVirtualMemory((size_t) fourier_info->width,
-    fourier_info->height*sizeof(*source_pixels));
+  if ((fourier_info->width >= INT_MAX) || ((fourier_info->height >= INT_MAX))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(MagickFalse);
+    }
+  source_info=AcquireVirtualMemory(fourier_info->width,fourier_info->height*
+    sizeof(*source_pixels));
   if (source_info == (MemoryInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -1460,8 +1472,8 @@ static MagickBooleanType InverseFourierTransformChannel(
   fourier_info.center=(ssize_t) (fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
-  inverse_info=AcquireVirtualMemory((size_t) fourier_info.width,
-    (fourier_info.height/2+1)*sizeof(*inverse_pixels));
+  inverse_info=AcquireVirtualMemory(fourier_info.width,(fourier_info.height/2+
+    1)*sizeof(*inverse_pixels));
   if (inverse_info == (MemoryInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
