@@ -2721,7 +2721,6 @@ static Image *NCCVarianceImage(Image *alpha_image,const Image *beta_image,
 }
 
 static Image *NCCSimilarityImage(const Image *image,const Image *reference,
-  const MetricType metric,const double similarity_threshold,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
 #define DestroySimilarityResources() \
@@ -2937,8 +2936,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
       if ((accelerate != MagickFalse) &&
           (metric == NormalizedCrossCorrelationErrorMetric))
         {
-          similarity_image=NCCSimilarityImage(image,reference,metric,
-            similarity_threshold,offset,similarity_metric,exception);
+          similarity_image=NCCSimilarityImage(image,reference,offset,
+            similarity_metric,exception);
           return(similarity_image);
         }
     }
