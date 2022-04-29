@@ -1338,6 +1338,9 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   ssize_t
     y;
 
+  /*
+    Generate the inverse Fourier transform.
+  */
   if ((fourier_info->width >= INT_MAX) || (fourier_info->height >= INT_MAX))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
