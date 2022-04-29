@@ -1329,6 +1329,8 @@ MagickPrivate const GhostInfo *NTGhostscriptDLLVectors(void)
   ghost_info.new_instance=NTGhostscriptNewInstance;
   ghost_info.run_string=(int (MagickDLLCall *)(gs_main_instance *,const char *,
     int,int *)) (lt_dlsym(ghost_handle,"gsapi_run_string"));
+  ghost_info.set_arg_encoding=(int (MagickDLLCall*)(gs_main_instance*, int)) (
+    lt_dlsym(ghost_handle, "gsapi_set_arg_encoding"));
   ghost_info.set_stdio=(int (MagickDLLCall *)(gs_main_instance *,int(
     MagickDLLCall *)(void *,char *,int),int(MagickDLLCall *)(void *,
     const char *,int),int(MagickDLLCall *)(void *,const char *,int)))

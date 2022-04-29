@@ -69,6 +69,9 @@ typedef struct _GhostInfo
     (MagickDLLCall *run_string)(gs_main_instance *,const char *,int,int *);
 
   int
+    (MagickDLLCall* set_arg_encoding)(gs_main_instance*, int);
+
+  int
     (MagickDLLCall *set_stdio)(gs_main_instance *,int(MagickDLLCall *)(void *,
       char *,int),int(MagickDLLCall *)(void *,const char *,int),
       int(MagickDLLCall *)(void *,const char *,int));

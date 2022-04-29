@@ -132,6 +132,8 @@ static inline MagickBooleanType InvokeGhostscriptDelegate(
     gsapi_init_with_args;
   ghost_info_struct.run_string=(int (*)(gs_main_instance *,const char *,int,
     int *)) gsapi_run_string;
+  ghost_info_struct.set_arg_encoding=(int (*)(gs_main_instance*, int))
+    gsapi_set_arg_encoding;
   ghost_info_struct.set_stdio=(int (*)(gs_main_instance *,int (*)(void *,char *,
     int),int (*)(void *,const char *,int),int (*)(void *, const char *, int)))
     gsapi_set_stdio;
@@ -160,6 +162,7 @@ static inline MagickBooleanType InvokeGhostscriptDelegate(
     }
   (void) (ghost_info->set_stdio)(interpreter,(int (MagickDLLCall *)(void *,
     char *,int)) NULL,GhostscriptDelegateMessage,GhostscriptDelegateMessage);
+  (void) ghost_info->set_arg_encoding(interpreter,1);
   status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
     status=(ghost_info->run_string)(interpreter,"systemdict /start get exec\n",
