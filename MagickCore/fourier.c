@@ -723,7 +723,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   /*
     Generate the forward Fourier transform.
   */
-  if ((fourier_info->width >= INT_MAX) || ((fourier_info->height >= INT_MAX))
+  if ((fourier_info->width >= INT_MAX) || (fourier_info->height >= INT_MAX))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
@@ -1338,7 +1338,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   ssize_t
     y;
 
-  if ((fourier_info->width >= INT_MAX) || ((fourier_info->height >= INT_MAX))
+  if ((fourier_info->width >= INT_MAX) || (fourier_info->height >= INT_MAX))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
