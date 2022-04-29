@@ -791,8 +791,8 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_ForwardFourierTransform)
 #endif
-  fftw_r2c_plan=fftw_plan_dft_r2c_2d(fourier_info->width,fourier_info->height,
-    source_pixels,forward_pixels,FFTW_ESTIMATE);
+  fftw_r2c_plan=fftw_plan_dft_r2c_2d((int) fourier_info->width,
+    (int) fourier_info->height,source_pixels,forward_pixels,FFTW_ESTIMATE);
   fftw_execute_dft_r2c(fftw_r2c_plan,source_pixels,forward_pixels);
   fftw_destroy_plan(fftw_r2c_plan);
   source_info=(MemoryInfo *) RelinquishVirtualMemory(source_info);
@@ -1368,8 +1368,8 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_InverseFourierTransform)
 #endif
-  fftw_c2r_plan=fftw_plan_dft_c2r_2d(fourier_info->width,fourier_info->height,
-    fourier_pixels,source_pixels,FFTW_ESTIMATE);
+  fftw_c2r_plan=fftw_plan_dft_c2r_2d((int) fourier_info->width,
+    (int) fourier_info->height,fourier_pixels,source_pixels,FFTW_ESTIMATE);
   fftw_execute_dft_c2r(fftw_c2r_plan,fourier_pixels,source_pixels);
   fftw_destroy_plan(fftw_c2r_plan);
   i=0L;
