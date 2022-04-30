@@ -7491,7 +7491,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
       else
         {
           slope.q=dy.q/dx.q;
-          inverse_slope.q=(-1.0/slope.q);
+          inverse_slope.q=(-1.0*PerceptibleReciprocal(slope.q));
         }
     offset.x=sqrt((double) (mid*mid/(inverse_slope.q*inverse_slope.q+1.0)));
     offset.y=(double) (offset.x*inverse_slope.q);
