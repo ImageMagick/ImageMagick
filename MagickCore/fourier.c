@@ -725,8 +725,8 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   */
   if ((fourier_info->width >= INT_MAX) || (fourier_info->height >= INT_MAX))
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ImageError,"WidthOrHeightExceedsLimit","`%s'",image->filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "WidthOrHeightExceedsLimit","`%s'",image->filename);
       return(MagickFalse);
     }
   source_info=AcquireVirtualMemory(fourier_info->width,fourier_info->height*
@@ -1343,8 +1343,8 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   */
   if ((fourier_info->width >= INT_MAX) || (fourier_info->height >= INT_MAX))
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "WidthOrHeightExceedsLimit","`%s'",image->filename);
       return(MagickFalse);
     }
   source_info=AcquireVirtualMemory(fourier_info->width,fourier_info->height*
