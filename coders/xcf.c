@@ -390,7 +390,7 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(max != 0);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   length=ReadBlobMSBLong(image);
   for (i=0; i < (ssize_t) MagickMin(length,max-1); i++)
@@ -1168,11 +1168,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)

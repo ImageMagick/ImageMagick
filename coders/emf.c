@@ -706,10 +706,10 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  assert(exception != (ExceptionInfo *) NULL);
 
   image=AcquireImage(image_info,exception);
   if (Gdiplus::GdiplusStartup(&token,&startup_input,NULL) != 

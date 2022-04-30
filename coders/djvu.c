@@ -750,7 +750,7 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
     *images;
 
   int
-    logging,
+    logging = MagickFalse,
     use_cache;
 
   LoadContext
@@ -767,21 +767,16 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
    */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-
-
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s", image_info->filename);
-
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-
-
-  logging = LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadDJVUImage()");
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
   (void) logging;
-
   image = AcquireImage(image_info,exception); /* mmc: ?? */
-
-
+  if (image->debug != MagickFalse)
+    logging=LogMagickEvent(CoderEvent,GetMagickModule(),
+      "enter ReadDJVUImage()");
   lc = (LoadContext *) NULL;
   status = OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)

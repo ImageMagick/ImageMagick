@@ -532,7 +532,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (image->debug != MagickFalse)
+  if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image_info->extract != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->extract,&geometry);

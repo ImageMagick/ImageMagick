@@ -2188,7 +2188,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     unit_type = 0;
 
   MagickBooleanType
-    logging,
+    logging = MagickFalse,
     ping_found_cHRM,
     ping_found_gAMA,
     ping_found_iCCP,
@@ -4251,7 +4251,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
     *image;
 
   MagickBooleanType
-    logging,
+    logging = MagickFalse,
     status;
 
   MngInfo
@@ -4268,15 +4268,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadPNGImage()");
   image=AcquireImage(image_info,exception);
+  if (image->debug != MagickFalse)
+    logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadPNGImage()");
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
 
@@ -5246,8 +5245,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 %
 */
 
-static Image *ReadJNGImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     magic_number[MagickPathExtent];
@@ -5256,7 +5254,7 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
     *image;
 
   MagickBooleanType
-    logging,
+    logging = MagickFalse,
     status;
 
   MngInfo
@@ -5270,12 +5268,14 @@ static Image *ReadJNGImage(const ImageInfo *image_info,
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-     image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadJNGImage()");
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+       image_info->filename);
   image=AcquireImage(image_info,exception);
+  if (image->debug != MagickFalse)
+    logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadJNGImage()");
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
 
@@ -7780,7 +7780,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   MagickBooleanType
-    logging,
+    logging = MagickFalse,
     status;
 
   MngInfo
@@ -7790,12 +7790,14 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-     image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadMNGImage()");
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+       image_info->filename);
   image=AcquireImage(image_info,exception);
+  if (image->debug != MagickFalse)
+    logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter ReadMNGImage()");
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
 
@@ -8470,7 +8472,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   MagickBooleanType
     image_matte,
-    logging,
+    logging = MagickFalse,
     matte,
 
     ping_have_blob,
@@ -12112,7 +12114,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 {
   MagickBooleanType
     excluding,
-    logging,
+    logging = MagickFalse,
     status;
 
   MngInfo
@@ -12131,8 +12133,11 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter WritePNGImage()");
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image->debug != MagickFalse)
+    logging=LogMagickEvent(CoderEvent,GetMagickModule(),
+      "Enter WritePNGImage()");
   /*
     Allocate a MngInfo structure.
   */
@@ -12811,7 +12816,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
     *jpeg_image_info;
 
   MagickBooleanType
-    logging,
+    logging = MagickFalse,
     status;
 
   size_t
@@ -13397,7 +13402,7 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   MagickBooleanType
-    logging,
+    logging = MagickFalse,
     status;
 
   MngInfo
@@ -13410,8 +13415,11 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image,
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter WriteJNGImage()");
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image->debug != MagickFalse)
+    logging=LogMagickEvent(CoderEvent,GetMagickModule(),
+      "Enter WriteJNGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
@@ -13502,8 +13510,11 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
   assert(image_info->signature == MagickCoreSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"Enter WriteMNGImage()");
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image->debug != MagickFalse)
+    logging=LogMagickEvent(CoderEvent,GetMagickModule(),
+      "Enter WriteMNGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
