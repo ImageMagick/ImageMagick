@@ -589,8 +589,8 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CompareImagesBounds() Given two images return the smallest rectangular area
-%  by which the two images differ, accourding to the given 'Compare...'
-%  layer method.
+%  by which the two images differ, according to the given 'Compare...' layer
+%  method.
 %
 %  This currently only used internally in this module, but may eventually
 %  be used by other modules.
@@ -598,14 +598,15 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
 %  The format of the CompareImagesBounds method is:
 %
 %      RectangleInfo *CompareImagesBounds(const LayerMethod method,
-%        const Image *image1,const Image *image2,ExceptionInfo *exception)
+%        const Image *alpha_image,const Image *beta_image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o method: What differences to look for. Must be one of CompareAnyLayer,
 %      CompareClearLayer, CompareOverlayLayer.
 %
-%    o image1, image2: the two images to compare.
+%    o alpha_image, beta_image: the two images to compare.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -614,131 +615,116 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
 static RectangleInfo CompareImagesBounds(const Image *alpha_image,
   const Image *beta_image,const LayerMethod method,ExceptionInfo *exception)
 {
-  CacheView
-    *alpha_view,
-    *beta_view;
-
-  MagickBooleanType
-    status;
+  const Quantum
+    *p,
+    *q;
 
   PixelInfo
-    zero;
+    alpha_pixel,
+    beta_pixel;
 
   RectangleInfo
     bounds;
 
   ssize_t
+    x,
     y;
 
-  assert(alpha_image != (Image *) NULL);
-  assert(alpha_image->signature == MagickCoreSignature);
-  assert(beta_image != (Image *) NULL);
-  assert(beta_image->signature == MagickCoreSignature);
+  /*
+    Set bounding box of the differences between images.
+  */
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       alpha_image->filename);
-  SetGeometry(alpha_image,&bounds);
-  bounds.x=(ssize_t) bounds.width;
-  bounds.y=(ssize_t) bounds.height;
-  bounds.width=0;
-  bounds.height=0;
-  alpha_view=AcquireVirtualCacheView(alpha_image,exception);
-  beta_view=AcquireVirtualCacheView(beta_image,exception);
-  GetPixelInfo(alpha_image,&zero);
-  status=MagickTrue;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(alpha_image,alpha_image,alpha_image->rows,1)
-#endif
+  GetPixelInfo(alpha_image,&alpha_pixel);
+  GetPixelInfo(beta_image,&beta_pixel);
+  for (x=0; x < (ssize_t) alpha_image->columns; x++)
+  {
+    p=GetVirtualPixels(alpha_image,x,0,1,alpha_image->rows,exception);
+    q=GetVirtualPixels(beta_image,x,0,1,beta_image->rows,exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      break;
+    for (y=0; y < (ssize_t) alpha_image->rows; y++)
+    {
+      GetPixelInfoPixel(alpha_image,p,&alpha_pixel);
+      GetPixelInfoPixel(beta_image,q,&beta_pixel);
+      if (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse)
+        break;
+      p+=GetPixelChannels(alpha_image);
+      q+=GetPixelChannels(beta_image);
+    }
+    if (y < (ssize_t) alpha_image->rows)
+      break;
+  }
+  if (x >= (ssize_t) alpha_image->columns)
+    {
+      /*
+        Images are identical, return a null image.
+      */
+      bounds.x=-1;
+      bounds.y=-1;
+      bounds.width=1;
+      bounds.height=1;
+      return(bounds);
+    }
+  bounds.x=x;
+  for (x=(ssize_t) alpha_image->columns-1; x >= 0; x--)
+  {
+    p=GetVirtualPixels(alpha_image,x,0,1,alpha_image->rows,exception);
+    q=GetVirtualPixels(beta_image,x,0,1,beta_image->rows,exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      break;
+    for (y=0; y < (ssize_t) alpha_image->rows; y++)
+    {
+      GetPixelInfoPixel(alpha_image,p,&alpha_pixel);
+      GetPixelInfoPixel(beta_image,q,&beta_pixel);
+      if (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse)
+        break;
+      p+=GetPixelChannels(alpha_image);
+      q+=GetPixelChannels(beta_image);
+    }
+    if (y < (ssize_t) alpha_image->rows)
+      break;
+  }
+  bounds.width=(size_t) (x-bounds.x+1);
   for (y=0; y < (ssize_t) alpha_image->rows; y++)
   {
-    const Quantum
-      *magick_restrict p,
-      *magick_restrict q;
-
-    PixelInfo
-      alpha_pixel,
-      beta_pixel;
-
-    RectangleInfo
-      bounding_box;
-
-    ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-#   pragma omp critical (MagickCore_CompareImagesBound)
-#endif
-    bounding_box=bounds;
-    p=GetCacheViewVirtualPixels(alpha_view,0,y,alpha_image->columns,1,
-      exception);
-    q=GetCacheViewVirtualPixels(beta_view,0,y,alpha_image->columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    alpha_pixel=zero;
-    beta_pixel=zero;
+    p=GetVirtualPixels(alpha_image,0,y,alpha_image->columns,1,exception);
+    q=GetVirtualPixels(beta_image,0,y,beta_image->columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      break;
     for (x=0; x < (ssize_t) alpha_image->columns; x++)
     {
       GetPixelInfoPixel(alpha_image,p,&alpha_pixel);
       GetPixelInfoPixel(beta_image,q,&beta_pixel);
-      if ((x < bounding_box.x) &&
-          (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse))
-        bounding_box.x=x;
-      if ((x > (ssize_t) bounding_box.width) &&
-          (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse))
-        bounding_box.width=(size_t) x;
-      if ((y < bounding_box.y) &&
-          (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse))
-        bounding_box.y=y;
-      if ((y > (ssize_t) bounding_box.height) &&
-          (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse))
-        bounding_box.height=(size_t) y;
-      if ((x < (ssize_t) bounding_box.width) &&
-          (y > (ssize_t) bounding_box.height) &&
-          (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse))
-        {
-          bounding_box.width=(size_t) x;
-          bounding_box.height=(size_t) y;
-        }
+      if (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse)
+        break;
       p+=GetPixelChannels(alpha_image);
       q+=GetPixelChannels(beta_image);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-#   pragma omp critical (MagickCore_CompareImagesBound)
-#endif
-    {
-      if (bounding_box.x < bounds.x)
-        bounds.x=bounding_box.x;
-      if (bounding_box.y < bounds.y)
-        bounds.y=bounding_box.y;
-      if (bounding_box.width > bounds.width)
-        bounds.width=bounding_box.width;
-      if (bounding_box.height > bounds.height)
-        bounds.height=bounding_box.height;
-    }
+    if (x < (ssize_t) alpha_image->columns)
+      break;
   }
-  beta_view=DestroyCacheView(beta_view);
-  alpha_view=DestroyCacheView(alpha_view);
-  if ((bounds.width != 0) && (bounds.height != 0))
+  bounds.y=y;
+  for (y=(ssize_t) alpha_image->rows-1; y >= 0; y--)
+  {
+    p=GetVirtualPixels(alpha_image,0,y,alpha_image->columns,1,exception);
+    q=GetVirtualPixels(beta_image,0,y,beta_image->columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      break;
+    for (x=0; x < (ssize_t) alpha_image->columns; x++)
     {
-      bounds.width-=(bounds.x-1);
-      bounds.height-=(bounds.y-1);
+      GetPixelInfoPixel(alpha_image,p,&alpha_pixel);
+      GetPixelInfoPixel(beta_image,q,&beta_pixel);
+      if (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse)
+        break;
+      p+=GetPixelChannels(alpha_image);
+      q+=GetPixelChannels(beta_image);
     }
-  else
-    {
-      /*
-        Images are identical.
-      */
-      bounds.x=(-1);
-      bounds.y=(-1);
-      bounds.width=1;
-      bounds.height=1;
-    }
+    if (x < (ssize_t) alpha_image->columns)
+      break;
+  }
+  bounds.height=(size_t) (y-bounds.y+1);
   return(bounds);
 }
 
