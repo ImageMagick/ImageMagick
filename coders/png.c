@@ -937,7 +937,7 @@ LosslessReduceDepthOK(Image *image,ExceptionInfo *exception)
             }
           }
 
-        if (ok_to_reduce != MagickFalse)
+        if ((image->debug != MagickFalse) && (ok_to_reduce != MagickFalse))
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "    OK to reduce PNG bit depth to 8 without loss of info");
@@ -1709,8 +1709,9 @@ static void MagickPNGErrorHandler(png_struct *ping,png_const_charp message)
   image=error_info->image;
   exception=error_info->exception;
 
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  libpng-%s error: %s", png_get_libpng_ver(NULL),message);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  libpng-%s error: %s", png_get_libpng_ver(NULL),message);
 
   (void) ThrowMagickException(exception,GetMagickModule(),CoderError,message,
     "`%s'",image->filename);
@@ -1742,8 +1743,9 @@ static void MagickPNGWarningHandler(png_struct *ping,png_const_charp message)
   error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
   image=error_info->image;
   exception=error_info->exception;
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  libpng-%s warning: %s", png_get_libpng_ver(NULL),message);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  libpng-%s warning: %s", png_get_libpng_ver(NULL),message);
 
   (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
     message,"`%s'",image->filename);
@@ -1832,8 +1834,9 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
 
   length=StringToLong(sp);
 
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-       "      length: %lu",(unsigned long) length);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+         "      length: %lu",(unsigned long) length);
 
   while ((*sp != ' ' && *sp != '\n') && extent--)
     sp++;
@@ -2012,9 +2015,10 @@ static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
          return(n);  success
   */
 
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-     "    read_user_chunk: found %c%c%c%c chunk",
-       chunk->name[0],chunk->name[1],chunk->name[2],chunk->name[3]);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+       "    read_user_chunk: found %c%c%c%c chunk",
+         chunk->name[0],chunk->name[1],chunk->name[2],chunk->name[3]);
 
   if ((chunk->name[0] == 101) &&
       ((chunk->name[1] == 88) || (chunk->name[1] == 120)) &&
@@ -2775,22 +2779,25 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                    {
                      if (got_crc == 0)
                      {
-                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                         "    Got a %lu-byte ICC profile (potentially sRGB)",
-                         (unsigned long) profile_length);
+                       if (logging != MagickFalse)
+                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                           "    Got a %lu-byte ICC profile (potentially sRGB)",
+                           (unsigned long) profile_length);
 
                        data=GetStringInfoDatum(profile);
                        profile_crc=crc32(0,data,profile_length);
 
-                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                       if (logging != MagickFalse)
+                         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                            "      with crc=%8x",(unsigned int) profile_crc);
                        got_crc++;
                      }
 
                      if (profile_crc == sRGB_info[icheck].crc)
                      {
-                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                            "      It is sRGB with rendering intent = %s",
+                        if (logging != MagickFalse)
+                          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "      It is sRGB with rendering intent = %s",
                         Magick_RenderingIntentString_from_PNG_RenderingIntent(
                              sRGB_info[icheck].intent));
                         if (image->rendering_intent==UndefinedIntent)
@@ -2805,9 +2812,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                  }
                  if (sRGB_info[icheck].len == 0)
                  {
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "    Got %lu-byte ICC profile not recognized as sRGB",
-                        (unsigned long) profile_length);
+                    if (logging != MagickFalse)
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "    Got %lu-byte ICC profile not recognized as sRGB",
+                          (unsigned long) profile_length);
                     (void) SetImageProfile(image,"icc",profile,exception);
                  }
             }
@@ -2927,8 +2935,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             (image->rendering_intent));
          file_gamma=0.45455f;
          ping_found_sRGB=MagickTrue;
-         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-           "    Setting sRGB as if in input");
+         if (logging != MagickFalse)
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "    Setting sRGB as if in input");
       }
     }
 
@@ -2940,9 +2949,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       if (logging != MagickFalse)
         if (image->page.x || image->page.y)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Reading PNG oFFs chunk: x: %.20g, y: %.20g.",(double)
-            image->page.x,(double) image->page.y);
+          if (logging != MagickFalse)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    Reading PNG oFFs chunk: x: %.20g, y: %.20g.",(double)
+              image->page.x,(double) image->page.y);
     }
 #endif
 #if defined(PNG_pHYs_SUPPORTED)
@@ -3214,8 +3224,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       double
         image_gamma = image->gamma;
 
-      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-         "    image->gamma=%f",(float) image_gamma);
+      if (logging != MagickFalse)
+        (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+           "    image->gamma=%f",(float) image_gamma);
 
       if (image_gamma > 0.75)
         {
@@ -3243,8 +3254,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       double
         image_gamma = image->gamma;
 
-      (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-         "    image->gamma=%f",(float) image_gamma);
+      if (logging != MagickFalse)
+        (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+           "    image->gamma=%f",(float) image_gamma);
 
       if (image_gamma > 0.75)
         {
@@ -3270,7 +3282,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       image->gamma = image_gamma;
     }
 
-  (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+  if (logging != MagickFalse)
+    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
       "    image->colorspace=%d",(int) image->colorspace);
 
   if (((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
@@ -4352,9 +4365,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
            image->chromaticity.white_point.y>0.3289f &&
            image->chromaticity.white_point.y<0.3291f))
     {
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "SetImageColorspace to RGBColorspace");
-       SetImageColorspace(image,RGBColorspace,exception);
+      SetImageColorspace(image,RGBColorspace,exception);
     }
 
   if (logging != MagickFalse)
@@ -4449,7 +4463,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     *color_image_info;
 
   MagickBooleanType
-    logging;
+    logging = MagickFalse;
 
   ssize_t
     y;
@@ -4501,8 +4515,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   alpha_image_info=(ImageInfo *) NULL;
   color_image_info=(ImageInfo *) NULL;
 
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  Enter ReadOneJNGImage()");
+  if (IsEventLogging() != MagickFalse)
+    logging=LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  Enter ReadOneJNGImage()");
 
   image=mng_info->image;
 
