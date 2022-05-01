@@ -709,15 +709,24 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
     (void) FormatLocaleString(scenes,MagickPathExtent,"%g-%g",(double) i,
       (double) (i+tiles_per_page-1));
     clone_images=CloneImages(image,scenes,exception);
+    if (clone_images == (Image *) NULL)
+      {
+        if (ashlar_images != (Image *) NULL)
+          ashlar_images=DestroyImageList(ashlar_images);
+        break;
+      }
     ashlar_image=ASHLARImage(image_info,clone_images,exception);
+    clone_images=DestroyImageList(clone_images);
     if (ashlar_image == (Image *) NULL)
       {
         if (ashlar_images != (Image *) NULL)
           ashlar_images=DestroyImageList(ashlar_images);
-        return(MagickFalse);
+        break;
       }
     AppendImageToList(&ashlar_images,ashlar_image);
   }
+  if (ashlar_images == (Image *) NULL)
+    return(MagickFalse);
   ashlar_images=GetFirstImageInList(ashlar_images);
   (void) CopyMagickString(ashlar_images->filename,image_info->filename,
     MagickPathExtent);
