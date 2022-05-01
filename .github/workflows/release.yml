@@ -214,7 +214,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ x64, x86 ]
+        platform: [ x64, arm64, x86 ]
         quantum: [ Q8, Q16 ]
         hdri: [ HDRI, noHDRI ]
         exclude:
@@ -222,6 +222,8 @@ jobs:
             hdri: HDRI
         include:
           - platform: x64
+            bit: 64
+          - platform: arm64
             bit: 64
           - platform: x86
             bit: 32
@@ -247,7 +249,7 @@ jobs:
         name: ChangeLog
         path: ImageMagick-Windows\ImageMagick
 
-    - name: Install FFmpeg
+    - name: Download FFmpeg
       shell: cmd
       run: |
         powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/ffmpeg-4.2.3-win${{matrix.bit}}.exe -OutFile ffmpeg.exe
