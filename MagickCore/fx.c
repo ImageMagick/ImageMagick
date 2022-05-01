@@ -2702,6 +2702,8 @@ static MagickBooleanType TranslateExpression (
     }
   }
 
+  if (ternary.addrQuery != NULL_ADDRESS) *needPopAll = MagickTrue;
+
   (void) ResolveTernaryAddresses (pfx, &ternary);
 
   pfx->teDepth--;
