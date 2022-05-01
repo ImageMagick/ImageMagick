@@ -78,6 +78,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
@@ -3978,10 +3979,26 @@ static FxInfo *AcquireFxInfoPrivate (const Image * images, const char * expressi
   }
 
   if ((*expression == '@') && (strlen(expression) > 1))
-    pfx->expression = FileToString (expression+1, ~0UL, exception);
+    {
+      MagickBooleanType
+        status;
+
+      /*
+        Read expression from a file.
+      */
+      status=IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,expression);
+      if (status != MagickFalse)
+        pfx->expression=FileToString(expression+1,~0UL,exception);
+      else
+        {
+          errno=EPERM;
+          (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+            "NotAuthorized","`%s'",expression);
+        }
+    }
   if (pfx->expression == (char *) NULL)
-    pfx->expression = ConstantString (expression);
-  pfx->pex = (char *)pfx->expression;
+    pfx->expression=ConstantString(expression);
+  pfx->pex = (char *) pfx->expression;
 
   pfx->teDepth = 0;
   if (!TranslateStatementList (pfx, ";", &chLimit)) {
