@@ -695,7 +695,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   tiles_per_page=GetImageListLength(image);
   value=GetImageOption(image_info,"ashlar:tiles");
   if (value != (const char *) NULL)
-    tiles_per_page=(size_t) StringToInteger(value);
+    tiles_per_page=(size_t) MagickMax(StringToInteger(value),1);
   ashlar_images=NewImageList();
   for (i=0; i < (ssize_t) GetImageListLength(image); i+=tiles_per_page)
   {
