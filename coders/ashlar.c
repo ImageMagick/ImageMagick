@@ -58,6 +58,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/xwindow.h"
@@ -492,8 +493,8 @@ static inline MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
   return(status);  /* return true if room is found for all tiles */
 }
 
-static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
-  Image *image,ExceptionInfo *exception)
+static Image *ASHLARImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   AshlarInfo
     ashlar_info;
@@ -507,9 +508,6 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   Image
     *ashlar_image,
     *next;
-
-  ImageInfo
-    *write_info;
 
   MagickBooleanType
     status;
@@ -528,12 +526,6 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   /*
     Convert image sequence laid out in continuous irregular courses.
   */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickCoreSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image_info->extract != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->extract,&geometry);
   else
@@ -560,7 +552,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     {
       ashlar_image=DestroyImageList(ashlar_image);
-      return(MagickFalse);
+      return((Image *) NULL);
     }
   (void) SetImageBackgroundColor(ashlar_image,exception);
   tiles=(CanvasInfo *) AcquireQuantumMemory(GetImageListLength(image),
@@ -575,7 +567,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
       if (nodes != (NodeInfo *) NULL)
         nodes=(NodeInfo *) RelinquishMagickMemory(tiles);
       ashlar_image=DestroyImageList(ashlar_image);
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   /*
     Interate until we find a tile size that fits the canvas.
@@ -667,20 +659,79 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   (void) SetImageExtent(ashlar_image,extent.width,extent.height,exception);
   nodes=(NodeInfo *) RelinquishMagickMemory(nodes);
   tiles=(CanvasInfo *) RelinquishMagickMemory(tiles);
+  return(ashlar_image);
+}
+
+static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
+  Image *image,ExceptionInfo *exception)
+{
+  const char
+    *value;
+
+  Image
+    *ashlar_images;
+
+  ImageInfo
+    *write_info;
+
+  MagickBooleanType
+    status;
+
+  size_t
+    tiles_per_page;
+
+  ssize_t
+    i;
+
   /*
     Write ASHLAR canvas.
   */
-  (void) CopyMagickString(ashlar_image->filename,image_info->filename,
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  tiles_per_page=GetImageListLength(image);
+  value=GetImageOption(image_info,"ashlar:tiles");
+  if (value != (const char *) NULL)
+    tiles_per_page=(size_t) StringToInteger(value);
+  ashlar_images=NewImageList();
+  for (i=0; i < (ssize_t) GetImageListLength(image); i+=tiles_per_page)
+  {
+    char
+      scenes[MagickPathExtent];
+
+    Image
+      *ashlar_image,
+      *clone_images;
+
+    (void) FormatLocaleString(scenes,MagickPathExtent,"%g-%g",(double) i,
+      (double) (i+tiles_per_page-1));
+    clone_images=CloneImages(image,scenes,exception);
+    ashlar_image=ASHLARImage(image_info,clone_images,exception);
+    if (ashlar_image == (Image *) NULL)
+      {
+        if (ashlar_images != (Image *) NULL)
+          ashlar_images=DestroyImageList(ashlar_images);
+        return(MagickFalse);
+      }
+    AppendImageToList(&ashlar_images,ashlar_image);
+  }
+  ashlar_images=GetFirstImageInList(ashlar_images);
+  (void) CopyMagickString(ashlar_images->filename,image_info->filename,
     MagickPathExtent);
   write_info=CloneImageInfo(image_info);
   *write_info->magick='\0';
-  (void) SetImageInfo(write_info,1,exception);
+  (void) SetImageInfo(write_info,(unsigned int)
+    GetImageListLength(ashlar_images),exception);
   if ((*write_info->magick == '\0') ||
       (LocaleCompare(write_info->magick,"ASHLAR") == 0))
-    (void) FormatLocaleString(ashlar_image->filename,MagickPathExtent,
+    (void) FormatLocaleString(ashlar_images->filename,MagickPathExtent,
       "miff:%s",write_info->filename);
-  status=WriteImage(write_info,ashlar_image,exception);
-  ashlar_image=DestroyImage(ashlar_image);
+  status=WriteImages(write_info,ashlar_images,ashlar_images->filename,
+    exception);
+  ashlar_images=DestroyImageList(ashlar_images);
   write_info=DestroyImageInfo(write_info);
-  return(MagickTrue);
+  return(status);
 }
