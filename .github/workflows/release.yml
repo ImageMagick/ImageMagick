@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ x64, x86 ]
+        platform: [ x64, arm64, x86 ]
         type: [ dll, static ]
         quantum: [ Q8, Q16 ]
         hdri: [ HDRI, noHDRI ]
@@ -56,6 +56,8 @@ jobs:
             hdri: HDRI
         include:
           - platform: x64
+            bit: 64
+          - platform: arm64
             bit: 64
           - platform: x86
             bit: 32
@@ -98,7 +100,7 @@ jobs:
         copy /Y hp2xx.exe ImageMagick-Windows\VisualMagick\bin
 
     - name: Install Strawberry Perl
-      if: ${{matrix.type == 'dll'}}
+      if: ${{matrix.type == 'dll' && matrix.platform != 'arm64'}}
       shell: cmd
       run: |
         powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi -OutFile strawberry-perl-5.30.2.1-${{matrix.bit}}bit.msi
@@ -133,7 +135,7 @@ jobs:
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
     - name: Build PerlMagick
-      if: ${{matrix.type == 'dll'}}
+      if: ${{matrix.type == 'dll' && matrix.platform != 'arm64'}}
       shell: cmd
       run: |
         set PATH=
