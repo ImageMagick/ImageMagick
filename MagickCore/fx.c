@@ -2936,7 +2936,8 @@ static inline fxFltType ImageStat (
         ret = cs[channel].skewness;
       break;
     case aStdDev:
-      ret = cs[channel].standard_deviation;
+      if (cs != (ChannelStatistics *) NULL)
+        ret = cs[channel].standard_deviation;
       break;
     case aH:
       ret = (fxFltType) pfx->Images[ImgNum]->rows;
