@@ -1557,6 +1557,10 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     MagickBooleanOptions,(ssize_t) image->taint));
   (void) FormatMagickSize(image->extent,MagickTrue,"B",MagickPathExtent,buffer);
   (void) FormatLocaleFile(file,"  Filesize: %s\n",buffer);
+  (void) FormatLocaleString(buffer,MagickPathExtent,"%s",
+    CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
+    GetImagePixelCacheType(image)));
+  (void) FormatLocaleFile(file,"  Pixel cache type: %s\n",buffer);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
     MagickFalse,"P",MagickPathExtent,buffer);
   if (strlen(buffer) > 1)
