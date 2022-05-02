@@ -1562,16 +1562,16 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   if (strlen(buffer) > 1)
     buffer[strlen(buffer)-1]='\0';
   (void) FormatLocaleFile(file,"  Number pixels: %s\n",buffer);
+  (void) FormatLocaleString(buffer,MagickPathExtent,"%s",
+    CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
+    GetImagePixelCacheType(image)));
+  (void) FormatLocaleFile(file,"  Pixel cache type: %s\n",buffer);
   if (elapsed_time > MagickEpsilon)
     {
       (void) FormatMagickSize((MagickSizeType) ((double) image->columns*
         image->rows/elapsed_time+0.5),MagickFalse,"P",MagickPathExtent,buffer);
       (void) FormatLocaleFile(file,"  Pixels per second: %s\n",buffer);
     }
-  (void) FormatLocaleString(buffer,MagickPathExtent,"%s",
-    CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
-    GetImagePixelCacheType(image)));
-  (void) FormatLocaleFile(file,"  Pixel cache type: %s\n",buffer);
   (void) FormatLocaleFile(file,"  User time: %0.3fu\n",user_time);
   (void) FormatLocaleFile(file,"  Elapsed time: %lu:%02lu.%03lu\n",
     (unsigned long) (elapsed_time/60.0),(unsigned long) ceil(fmod(elapsed_time,
