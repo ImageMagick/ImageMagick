@@ -1557,10 +1557,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     MagickBooleanOptions,(ssize_t) image->taint));
   (void) FormatMagickSize(image->extent,MagickTrue,"B",MagickPathExtent,buffer);
   (void) FormatLocaleFile(file,"  Filesize: %s\n",buffer);
-  (void) FormatLocaleString(buffer,MagickPathExtent,"%s",
-    CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
-    GetImagePixelCacheType(image)));
-  (void) FormatLocaleFile(file,"  Pixel cache type: %s\n",buffer);
   (void) FormatMagickSize((MagickSizeType) image->columns*image->rows,
     MagickFalse,"P",MagickPathExtent,buffer);
   if (strlen(buffer) > 1)
@@ -1572,6 +1568,10 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         image->rows/elapsed_time+0.5),MagickFalse,"P",MagickPathExtent,buffer);
       (void) FormatLocaleFile(file,"  Pixels per second: %s\n",buffer);
     }
+  (void) FormatLocaleString(buffer,MagickPathExtent,"%s",
+    CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
+    GetImagePixelCacheType(image)));
+  (void) FormatLocaleFile(file,"  Pixel cache type: %s\n",buffer);
   (void) FormatLocaleFile(file,"  User time: %0.3fu\n",user_time);
   (void) FormatLocaleFile(file,"  Elapsed time: %lu:%02lu.%03lu\n",
     (unsigned long) (elapsed_time/60.0),(unsigned long) ceil(fmod(elapsed_time,
