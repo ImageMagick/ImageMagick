@@ -1357,7 +1357,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   (void) SetImageProperty(image,"jpeg:colorspace",value,exception);
 #if defined(D_ARITH_CODING_SUPPORTED)
   if (jpeg_info->arith_code == TRUE)
-    (void) SetImageProperty(image,"jpeg:coding","arithmetic",exception);
+    (void) SetImageProperty(image,"jpeg:arithmetic-coding","true",exception);
 #endif
   if (JPEGSetImageProfiles(client_info) == MagickFalse)
     {
