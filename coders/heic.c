@@ -1254,8 +1254,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
       else
         error=heif_encoder_set_lossy_quality(heif_encoder,(int)
           image_info->quality);
-    if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
-      break;
     status=IsHEIFSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
