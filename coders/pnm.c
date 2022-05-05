@@ -329,6 +329,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read PNM image.
   */
+  comment_info.comment=(char *) NULL;
   quantum_info=(QuantumInfo *) NULL;
   count=ReadBlob(image,1,(unsigned char *) &format);
   do
@@ -1634,11 +1635,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
   } while ((count == 1) && (format == 'P'));
+  (void) CloseBlob(image);
   if (comment_info.comment != (char *) NULL)
     comment_info.comment=DestroyString(comment_info.comment);
   if (quantum_info != (QuantumInfo *) NULL)
     quantum_info=DestroyQuantumInfo(quantum_info);
-  (void) CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
