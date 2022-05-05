@@ -992,8 +992,8 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,Image *image
                     FormatLocaleString(buffer,MaxTextExtent,"%s%a",sSep,
                       (double) p[i]);
                   else
-                    FormatLocaleString(buffer,MaxTextExtent,"%s%.*Lg%s",sSep,
-                      precision,p[i]*valMult,sSuff);
+                    FormatLocaleString(buffer,MaxTextExtent,"%s%.*g%s",sSep,
+                      precision,(double) (p[i]*valMult),sSuff);
                   WriteBlobString(image,buffer);
                   sSep[0]=chSep;
                 }
