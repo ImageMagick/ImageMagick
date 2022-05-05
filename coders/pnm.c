@@ -261,7 +261,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (comment_info.comment != (char *) NULL)  \
     comment_info.comment=DestroyString(comment_info.comment); \
   if (quantum_info != (QuantumInfo *) NULL) \
-     quantum_info=DestroyQuantumInfo(quantum_info); \
+    quantum_info=DestroyQuantumInfo(quantum_info); \
   ThrowReaderException((exception),(message)); \
 }
 
@@ -492,7 +492,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       {
-        comment_info.comment=DestroyString(comment_info.comment);
+        if (comment_info.comment != (char *) NULL)
+          comment_info.comment=DestroyString(comment_info.comment);
+        if (quantum_info != (QuantumInfo *) NULL)
+          quantum_info=DestroyQuantumInfo(quantum_info);
         return(DestroyImageList(image));
       }
     if (colorspace != UndefinedColorspace)
@@ -1631,6 +1634,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
   } while ((count == 1) && (format == 'P'));
+  if (comment_info.comment != (char *) NULL)
+    comment_info.comment=DestroyString(comment_info.comment);
+  if (quantum_info != (QuantumInfo *) NULL)
+    quantum_info=DestroyQuantumInfo(quantum_info);
   (void) CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));
