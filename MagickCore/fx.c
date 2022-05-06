@@ -3505,7 +3505,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                     if (!pv) {
                       (void) ThrowMagickException (
                         pfx->exception, GetMagickModule(), OptionError,
-                        "fU can't get cache", "%lu", ImgNum);
+                        "fU can't get cache", "%lu", (unsigned long) ImgNum);
                       break;
                     }
                     regA = QuantumScale * pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
@@ -3559,7 +3559,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               if (!pv) {
                 (void) ThrowMagickException (
                   pfx->exception, GetMagickModule(), OptionError,
-                  "fU can't get cache", "%lu", ImgNum);
+                  "fU can't get cache", "%lu", (unsigned long) ImgNum);
                 break;
               }
               regA = QuantumScale *
