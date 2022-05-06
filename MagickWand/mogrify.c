@@ -8275,8 +8275,22 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                     break;
                   }
                 }
-                status&=CompositeImage(canvas_image,new_images,OverCompositeOp,
-                  clip_to_self,0,0,exception);
+                switch (compose)
+                {
+                  case DisplaceCompositeOp:
+                  case DistortCompositeOp:
+                  { 
+                    status&=CompositeImage(canvas_image,new_images,
+                      CopyCompositeOp,clip_to_self,0,0,exception);
+                    break;
+                  }
+                  default:
+                  {
+                    status&=CompositeImage(canvas_image,new_images,
+                      OverCompositeOp,clip_to_self,0,0,exception);
+                    break;
+                  }
+                }
                 new_images=DestroyImageList(new_images);
                 new_images=canvas_image;
                 mask_image=DestroyImage(mask_image);
