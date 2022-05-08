@@ -71,7 +71,7 @@ extern MagickExport const char
   *GetLogName(void) magick_attribute((__pure__)),
   *SetLogName(const char *);
 
-extern MagickExport const LogEventType
+extern MagickExport LogEventType
   GetLogEventMask(void) magick_attribute((__pure__));
 
 extern MagickExport const LogInfo

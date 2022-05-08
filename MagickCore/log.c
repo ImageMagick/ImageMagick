@@ -393,11 +393,10 @@ MagickExport void CloseMagickLog(void)
 %
 %  The format of the GetLogEventMask method is:
 %
-%      const char *GetLogEventMask(void)
-%
+%      LogEventType GetLogEventMask(void)
 %
 */
-MagickExport const LogEventType GetLogEventMask(void)
+MagickExport LogEventType GetLogEventMask(void)
 {
   ExceptionInfo
     *exception;
