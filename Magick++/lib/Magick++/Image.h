@@ -985,14 +985,16 @@ namespace Magick
       const double sigma_);
 
     // Transfers read-only pixels from the image to the pixel cache as
-    // defined by the specified region
+    // defined by the specified region.
     const Quantum *getConstPixels(const ::ssize_t x_, const ::ssize_t y_,
       const size_t columns_,const size_t rows_) const;
 
-    // Obtain immutable image pixel metacontent (valid for PseudoClass images)
+    // Obtain immutable image pixel metacontent. The selected region is defined
+    // by the prior getPixels(), getConstPixels(), or setPixels() call.
     const void *getConstMetacontent(void) const;
 
-    // Obtain mutable image pixel metacontent (valid for PseudoClass images)
+    // Obtain mutable image pixel metacontent. The selected region is defined
+    // by a prior getPixels(), getConstPixels(), or setPixels() call.
     void *getMetacontent(void);
 
     // Transfers pixels from the image to the pixel cache as defined
