@@ -1,5 +1,5 @@
 #! /bin/sh
-# Copyright (C) 2011-2020 Free Software Foundation, Inc.
+# Copyright (C) 2011-2021 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -369,7 +369,7 @@ function setup_result_obj(line)
   sub("^(not )?ok[ \t]*", "", line)
 
   # If the result has an explicit number, get it and strip it; otherwise,
-  # automatically assing the next progresive number to it.
+  # automatically assign the next test number to it.
   if (line ~ /^[0-9]+$/ || line ~ /^[0-9]+[^a-zA-Z0-9_]/)
     {
       match(line, "^[0-9]+")

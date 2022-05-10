@@ -1,7 +1,7 @@
 #! /bin/sh
 # mkinstalldirs --- make directory hierarchy
 
-scriptversion=2018-03-07.03; # UTC
+scriptversion=2020-07-26.22; # UTC
 
 # Original author: Noah Friedman <friedman@prep.ai.mit.edu>
 # Created: 1993-05-16
@@ -92,6 +92,8 @@ case $dirmode in
   *)
     if mkdir -m "$dirmode" -p --version . >/dev/null 2>&1 &&
        test ! -d ./--version; then
+      echo "umask 22"
+      umask 22
       echo "mkdir -m $dirmode -p -- $*"
       exec mkdir -m "$dirmode" -p -- "$@"
     else
@@ -103,6 +105,9 @@ case $dirmode in
     fi
     ;;
 esac
+
+echo "umask 22"
+umask 22
 
 for file
 do
@@ -132,21 +137,16 @@ do
 
       if test ! -d "$pathcomp"; then
 	errstatus=$lasterr
-      else
-	if test ! -z "$dirmode"; then
-	  echo "chmod $dirmode $pathcomp"
-	  lasterr=
-	  chmod "$dirmode" "$pathcomp" || lasterr=$?
-
-	  if test ! -z "$lasterr"; then
-	    errstatus=$lasterr
-	  fi
-	fi
       fi
     fi
 
     pathcomp=$pathcomp/
   done
+
+  if test ! -z "$dirmode"; then
+    echo "chmod $dirmode $file"
+    chmod "$dirmode" "$file" || errstatus=$?
+  fi
 done
 
 exit $errstatus
