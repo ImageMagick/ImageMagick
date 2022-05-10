@@ -625,18 +625,19 @@ ModuleExport void UnregisterFITSImage(void)
 %
 */
 
-static inline void CopyFitsRecord(char *buffer,const char *data,
+static inline ssize_t CopyFITSRecord(char *buffer,const char *data,
   const ssize_t offset)
 {
   size_t
     length;
 
   if (data == (char *) NULL)
-    return;
+    return(0);
   length=MagickMin(strlen(data),80);
   if (length > (size_t) (FITSBlocksize-offset))
     length=(size_t) (FITSBlocksize-offset);
-  (void) strncpy(buffer+offset,data,length);
+  (void) memcpy(buffer+offset,data,length);
+  return(80);
 }
 
 static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
@@ -686,7 +687,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   /*
     Allocate image memory.
   */
-  fits_info=(char *) AcquireQuantumMemory(FITSBlocksize,sizeof(*fits_info));
+  fits_info=(char *) AcquireQuantumMemory(30*FITSBlocksize,sizeof(*fits_info));
   if (fits_info == (char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   (void) memset(fits_info,' ',FITSBlocksize*sizeof(*fits_info));
@@ -704,60 +705,47 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   offset=0;
   (void) FormatLocaleString(header,FITSBlocksize,
     "SIMPLE  =                    T");
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   (void) FormatLocaleString(header,FITSBlocksize,"BITPIX  =           %10ld",
     (long) ((quantum_info->format == FloatingPointQuantumFormat ? -1 : 1)*
     image->depth));
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   is_gray=IdentifyImageCoderGray(image,exception);
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS   =           %10lu",
     (is_gray != MagickFalse) ? 2UL : 3UL);
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS1  =           %10lu",
     (unsigned long) image->columns);
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   (void) FormatLocaleString(header,FITSBlocksize,"NAXIS2  =           %10lu",
     (unsigned long) image->rows);
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   if (is_gray == MagickFalse)
     {
       (void) FormatLocaleString(header,FITSBlocksize,
         "NAXIS3  =           %10lu",3UL);
-      CopyFitsRecord(fits_info,header,offset);
-      offset+=80;
+      offset+=CopyFITSRecord(fits_info,header,offset);
     }
   (void) FormatLocaleString(header,FITSBlocksize,"BSCALE  =         %E",1.0);
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   (void) FormatLocaleString(header,FITSBlocksize,"BZERO   =         %E",
     image->depth > 8 ? (GetFITSPixelRange(image->depth)+1)/2.0 : 0.0);
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   (void) FormatLocaleString(header,FITSBlocksize,"DATAMAX =         %E",
     1.0*((MagickOffsetType) GetQuantumRange(image->depth)));
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   (void) FormatLocaleString(header,FITSBlocksize,"DATAMIN =         %E",0.0);
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   if (image->endian == LSBEndian)
     {
       (void) FormatLocaleString(header,FITSBlocksize,"XENDIAN = 'SMALL'");
-      CopyFitsRecord(fits_info,header,offset);
-      offset+=80;
+      offset+=CopyFITSRecord(fits_info,header,offset);
     }
   (void) FormatLocaleString(header,FITSBlocksize,"HISTORY %.72s",
     MagickAuthoritativeURL);
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   (void) strncpy(header,"END",FITSBlocksize);
-  CopyFitsRecord(fits_info,header,offset);
-  offset+=80;
+  offset+=CopyFITSRecord(fits_info,header,offset);
   (void) WriteBlob(image,FITSBlocksize,(unsigned char *) fits_info);
   /*
     Convert image to fits scale PseudoColor class.
