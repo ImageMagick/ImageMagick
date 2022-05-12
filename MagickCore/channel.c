@@ -909,8 +909,7 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 */
 
 static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
-  const double alpha,const Quantum *q,const double beta,
-  Quantum *composite)
+  const double alpha,const Quantum *q,const double beta,Quantum *composite)
 {
   double
     Da,
