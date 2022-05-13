@@ -525,23 +525,23 @@ AC_SUBST([LFS_CPPFLAGS])
 # Check for sendfile support
 #
 ########
-#AC_CACHE_CHECK([Linux compatible sendfile()],ac_cv_have_linux_sendfile,[
-#  AC_LINK_IFELSE([
-#    #undef _FILE_OFFSET_BITS
-#    #include <sys/types.h>
-#    #include <sys/socket.h>
-#    #include <sys/sendfile.h>
-#  ], [
-#    sendfile(0, 0, (void *) 0, 0);
-#  ], [
-#    ac_cv_have_linux_sendfile=yes
-#  ], [
-#    ac_cv_have_linux_sendfile=no
-#  ])
-#])
-#if test $ac_cv_have_linux_sendfile = yes; then
-#  AC_DEFINE([HAVE_LINUX_SENDFILE],[1], [Define if you have Linux-compatible sendfile()])
-#fi
+AC_CACHE_CHECK([Linux compatible sendfile()],ac_cv_have_linux_sendfile,[
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+    #undef _FILE_OFFSET_BITS
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <sys/sendfile.h>
+  ], [
+    sendfile(0, 0, (void *) 0, 0);
+  ], [
+    ac_cv_have_linux_sendfile=yes
+  ], [
+    ac_cv_have_linux_sendfile=no
+  ])])
+])
+if test $ac_cv_have_linux_sendfile = yes; then
+  AC_DEFINE([HAVE_LINUX_SENDFILE],[1], [Define if you have Linux-compatible sendfile()])
+fi
 
 #
 # Set SETJMP_IS_THREAD_SAFE define.
@@ -1001,9 +1001,23 @@ AC_CHECK_SIZEOF([ssize_t])
 AC_CHECK_SIZEOF([void *])
 
 #
-# Check for functions
+# Check for __func__ support
 #
 ########
+AC_MSG_CHECKING([whether our compiler supports __func__])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],
+ [{ const char *func = __func__; return(func != 0 ? 0 : 1); }],
+ AC_MSG_RESULT([yes]),
+ AC_MSG_RESULT([no])
+ AC_MSG_CHECKING([whether our compiler supports __FUNCTION__])
+ AC_COMPILE_IFELSE([],
+   [{ const char *func = __FUNCTION__; return(func != 0 ? 0 : 1); }],
+   AC_MSG_RESULT([yes])
+   AC_DEFINE(__func__, __FUNCTION__,
+     [Define to appropriate substitute if compiler does not have __func__]),
+   AC_MSG_RESULT([no])
+   AC_DEFINE(__func__, __FILE__,
+     [Define to appropriate substitute if compiler does not have __func__])))])
 
 ########
 #

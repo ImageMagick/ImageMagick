@@ -272,6 +272,9 @@
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
+/* Define if you have Linux-compatible sendfile() */
+#undef HAVE_LINUX_SENDFILE
+
 /* Define to 1 if you have the <linux/unistd.h> header file. */
 #undef HAVE_LINUX_UNISTD_H
 
@@ -1128,6 +1131,9 @@
 #ifndef __CHAR_UNSIGNED__
 # undef __CHAR_UNSIGNED__
 #endif
+
+/* Define to appropriate substitute if compiler does not have __func__ */
+#undef __func__
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
