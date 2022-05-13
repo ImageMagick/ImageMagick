@@ -1105,7 +1105,6 @@ if test "$with_magick_plus_plus" = 'yes'; then
     if \
         test $ax_cv_cxx_bool = 'yes' && \
         test $ax_cv_cxx_namespaces = 'yes' && \
-        test $ac_cv_cxx_have_std_libs = 'yes' && \
         test $ax_cv_cxx_have_std_namespace = 'yes'; then
         have_magick_plus_plus='yes'
     else

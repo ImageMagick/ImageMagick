@@ -5143,7 +5143,7 @@ MAGICK_PATCHLEVEL_VERSION=34
 
 MAGICK_VERSION=7.1.0-34
 
-MAGICK_GIT_REVISION=a772a53cd:20220513
+MAGICK_GIT_REVISION=9d882e45d:20220513
 
 
 # Substitute library versioning
@@ -27590,7 +27590,6 @@ printf %s "checking whether C++ compiler is sufficient for Magick++... " >&6; }
     if \
         test $ax_cv_cxx_bool = 'yes' && \
         test $ax_cv_cxx_namespaces = 'yes' && \
-        test $ac_cv_cxx_have_std_libs = 'yes' && \
         test $ax_cv_cxx_have_std_namespace = 'yes'; then
         have_magick_plus_plus='yes'
     else
