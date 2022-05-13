@@ -17,7 +17,7 @@
 #  Copying and distribution of this file, with or without modification,
 #  are permitted in any medium without royalty provided the copyright
 #  notice and this notice are preserved.
-AC_PREREQ([2.71])
+AC_PREREQ([2.69])
 
 # ==============================================================================
 # Initialize Automake
