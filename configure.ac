@@ -17,7 +17,7 @@
 #  Copying and distribution of this file, with or without modification,
 #  are permitted in any medium without royalty provided the copyright
 #  notice and this notice are preserved.
-AC_PREREQ(2.69)
+AC_PREREQ([2.71])
 
 # ==============================================================================
 # Initialize Automake
@@ -41,11 +41,7 @@ m4_define([magick_release_date],
             printf %s "$d"
           ]))
 
-AC_INIT([magick_name],
-        [magick_version],
-        [magick_bugreport],
-        [magick_tarname],
-        [magick_url])
+AC_INIT([magick_name],[magick_version],[magick_bugreport],[magick_tarname],[magick_url])
 
 AC_CONFIG_SRCDIR([MagickCore/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
@@ -53,7 +49,6 @@ AC_REQUIRE_AUX_FILE([tap-driver.sh])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config/config.h])
 AX_PREFIX_CONFIG_H([MagickCore/magick-baseconfig.h],[MagickCore])
-AC_CANONICAL_SYSTEM
 AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE([foreign no-define color-tests parallel-tests -Wall -Wno-portability subdir-objects dist-bzip2 dist-lzip dist-xz dist-zip tar-ustar])
@@ -275,10 +270,8 @@ AC_USE_SYSTEM_EXTENSIONS
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_CC
 AC_PROG_CPP
-AC_PROG_LD
 LT_PATH_LD
 AC_SUBST([LD])
-AC_PROG_CC_C99
 AM_PROG_CC_C_O
 AX_CFLAGS_WARN_ALL
 AC_PROG_INSTALL
@@ -532,23 +525,23 @@ AC_SUBST([LFS_CPPFLAGS])
 # Check for sendfile support
 #
 ########
-AC_CACHE_CHECK([Linux compatible sendfile()],ac_cv_have_linux_sendfile,[
-  AC_TRY_LINK([
-    #undef _FILE_OFFSET_BITS
-    #include <sys/types.h>
-    #include <sys/socket.h>
-    #include <sys/sendfile.h>
-  ], [
-    sendfile(0, 0, (void *) 0, 0);
-  ], [
-    ac_cv_have_linux_sendfile=yes
-  ], [
-    ac_cv_have_linux_sendfile=no
-  ])
-])
-if test $ac_cv_have_linux_sendfile = yes; then
-  AC_DEFINE([HAVE_LINUX_SENDFILE],[1], [Define if you have Linux-compatible sendfile()])
-fi
+#AC_CACHE_CHECK([Linux compatible sendfile()],ac_cv_have_linux_sendfile,[
+#  AC_LINK_IFELSE([
+#    #undef _FILE_OFFSET_BITS
+#    #include <sys/types.h>
+#    #include <sys/socket.h>
+#    #include <sys/sendfile.h>
+#  ], [
+#    sendfile(0, 0, (void *) 0, 0);
+#  ], [
+#    ac_cv_have_linux_sendfile=yes
+#  ], [
+#    ac_cv_have_linux_sendfile=no
+#  ])
+#])
+#if test $ac_cv_have_linux_sendfile = yes; then
+#  AC_DEFINE([HAVE_LINUX_SENDFILE],[1], [Define if you have Linux-compatible sendfile()])
+#fi
 
 #
 # Set SETJMP_IS_THREAD_SAFE define.
@@ -936,12 +929,6 @@ AC_SUBST([MODULE_EXTRA_CPPFLAGS])
 AC_SUBST([LIBRARY_EXTRA_CPPFLAGS])
 
 # Check standard headers
-AC_HEADER_STDC
-if ! test x"$ac_cv_header_stdc" = x"yes"; then
-    AC_MSG_WARN([configure has detected that you do not have the ANSI standard C
-    header files.  Compilation cannot proceed.  Please install the ANSI C
-    headers and rerun this script.]);
-fi
 AC_HEADER_ASSERT
 AC_HEADER_DIRENT
 
@@ -958,7 +945,6 @@ AC_HEADER_STDBOOL
 AC_C_VOLATILE
 AC_C_STRINGIZE
 AC_HEADER_STAT
-AC_HEADER_TIME
 AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
 AC_SYS_INTERPRETER
@@ -1014,20 +1000,10 @@ AC_CHECK_SIZEOF([ssize_t])
 
 AC_CHECK_SIZEOF([void *])
 
-AC_MSG_CHECKING([whether our compiler supports __func__])
-AC_TRY_COMPILE([],
- [{ const char *func = __func__; return(func != 0 ? 0 : 1); }],
- AC_MSG_RESULT([yes]),
- AC_MSG_RESULT([no])
- AC_MSG_CHECKING([whether our compiler supports __FUNCTION__])
- AC_TRY_COMPILE([],
-   [{ const char *func = __FUNCTION__; return(func != 0 ? 0 : 1); }],
-   AC_MSG_RESULT([yes])
-   AC_DEFINE(__func__, __FUNCTION__,
-     [Define to appropriate substitute if compiler does not have __func__]),
-   AC_MSG_RESULT([no])
-   AC_DEFINE(__func__, __FILE__,
-     [Define to appropriate substitute if compiler does not have __func__])))
+#
+# Check for functions
+#
+########
 
 ########
 #
@@ -1041,7 +1017,6 @@ AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_REALLOC
 AC_FUNC_SELECT_ARGTYPES
-AC_FUNC_SETVBUF_REVERSED
 AC_FUNC_STRTOD
 AC_FUNC_STRERROR_R
 AC_FUNC_VPRINTF
@@ -1123,7 +1098,6 @@ if test "$with_magick_plus_plus" = 'yes'; then
     AX_CXX_BOOL
     AX_CXX_NAMESPACES
     AX_CXX_NAMESPACE_STD
-    AC_CXX_HAVE_STD_LIBS
     AC_OPENMP([C++])
     AC_LANG_POP
 

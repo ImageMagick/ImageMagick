@@ -272,9 +272,6 @@
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
-/* Define if you have Linux-compatible sendfile() */
-#undef HAVE_LINUX_SENDFILE
-
 /* Define to 1 if you have the <linux/unistd.h> header file. */
 #undef HAVE_LINUX_UNISTD_H
 
@@ -477,9 +474,6 @@
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
-
-/* define if the compiler supports ISO C++ standard library */
-#undef HAVE_STD_LIBS
 
 /* Define to 1 if you have the `strcasecmp' function. */
 #undef HAVE_STRCASECMP
@@ -960,10 +954,6 @@
 /* Define if you have TIFF library */
 #undef TIFF_DELEGATE
 
-/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. This
-   macro is obsolete. */
-#undef TIME_WITH_SYS_TIME
-
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #undef TM_IN_SYS_TIME
 
@@ -1138,9 +1128,6 @@
 #ifndef __CHAR_UNSIGNED__
 # undef __CHAR_UNSIGNED__
 #endif
-
-/* Define to appropriate substitute if compiler does not have __func__ */
-#undef __func__
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

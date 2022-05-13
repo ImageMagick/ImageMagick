@@ -998,6 +998,7 @@ OPENMP_CFLAGS
 THREAD_LIBS
 PTHREAD_CFLAGS
 PTHREAD_LIBS
+PTHREAD_CXX
 PTHREAD_CC
 ax_pthread_config
 pkgconfigdir
@@ -4018,7 +4019,6 @@ main (int argc, char **argv)
 }
 "
 
-as_fn_append ac_header_c_list " sys/time.h sys_time_h HAVE_SYS_TIME_H"
 as_fn_append ac_header_c_list " sys/param.h sys_param_h HAVE_SYS_PARAM_H"
 as_fn_append ac_func_c_list " getpagesize HAVE_GETPAGESIZE"
 as_fn_append ac_header_c_list " vfork.h vfork_h HAVE_VFORK_H"
@@ -4321,8 +4321,6 @@ test -n "$target_alias" &&
   test "$program_prefix$program_suffix$program_transform_name" = \
     NONENONEs,x,x, &&
   program_prefix=${target_alias}-
-
-
 
 am__api_version='1.16'
 
@@ -5145,7 +5143,7 @@ MAGICK_PATCHLEVEL_VERSION=34
 
 MAGICK_VERSION=7.1.0-34
 
-MAGICK_GIT_REVISION=4fe856bdf:20220510
+MAGICK_GIT_REVISION=78a19889d:20220512
 
 
 # Substitute library versioning
@@ -5179,7 +5177,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,34
 
-PACKAGE_RELEASE_DATE=2022-05-10
+PACKAGE_RELEASE_DATE=2022-05-12
 
 
 # Ensure that make can run correctly
@@ -8538,120 +8536,6 @@ with_gnu_ld=$lt_cv_prog_gnu_ld
 
 
 
-# Check whether --with-gnu-ld was given.
-if test ${with_gnu_ld+y}
-then :
-  withval=$with_gnu_ld; test no = "$withval" || with_gnu_ld=yes
-else $as_nop
-  with_gnu_ld=no
-fi
-
-ac_prog=ld
-if test yes = "$GCC"; then
-  # Check if gcc -print-prog-name=ld gives a path.
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for ld used by $CC" >&5
-printf %s "checking for ld used by $CC... " >&6; }
-  case $host in
-  *-*-mingw*)
-    # gcc leaves a trailing carriage return, which upsets mingw
-    ac_prog=`($CC -print-prog-name=ld) 2>&5 | tr -d '\015'` ;;
-  *)
-    ac_prog=`($CC -print-prog-name=ld) 2>&5` ;;
-  esac
-  case $ac_prog in
-    # Accept absolute paths.
-    [\\/]* | ?:[\\/]*)
-      re_direlt='/[^/][^/]*/\.\./'
-      # Canonicalize the pathname of ld
-      ac_prog=`$ECHO "$ac_prog"| $SED 's%\\\\%/%g'`
-      while $ECHO "$ac_prog" | $GREP "$re_direlt" > /dev/null 2>&1; do
-	ac_prog=`$ECHO $ac_prog| $SED "s%$re_direlt%/%"`
-      done
-      test -z "$LD" && LD=$ac_prog
-      ;;
-  "")
-    # If it fails, then pretend we aren't using GCC.
-    ac_prog=ld
-    ;;
-  *)
-    # If it is relative, then search for the first ld in PATH.
-    with_gnu_ld=unknown
-    ;;
-  esac
-elif test yes = "$with_gnu_ld"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for GNU ld" >&5
-printf %s "checking for GNU ld... " >&6; }
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for non-GNU ld" >&5
-printf %s "checking for non-GNU ld... " >&6; }
-fi
-if test ${lt_cv_path_LD+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if test -z "$LD"; then
-  lt_save_ifs=$IFS; IFS=$PATH_SEPARATOR
-  for ac_dir in $PATH; do
-    IFS=$lt_save_ifs
-    test -z "$ac_dir" && ac_dir=.
-    if test -f "$ac_dir/$ac_prog" || test -f "$ac_dir/$ac_prog$ac_exeext"; then
-      lt_cv_path_LD=$ac_dir/$ac_prog
-      # Check to see if the program is GNU ld.  I'd rather use --version,
-      # but apparently some variants of GNU ld only accept -v.
-      # Break only if it was the GNU/non-GNU ld that we prefer.
-      case `"$lt_cv_path_LD" -v 2>&1 </dev/null` in
-      *GNU* | *'with BFD'*)
-	test no != "$with_gnu_ld" && break
-	;;
-      *)
-	test yes != "$with_gnu_ld" && break
-	;;
-      esac
-    fi
-  done
-  IFS=$lt_save_ifs
-else
-  lt_cv_path_LD=$LD # Let the user override the test with a path.
-fi
-fi
-
-LD=$lt_cv_path_LD
-if test -n "$LD"; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $LD" >&5
-printf "%s\n" "$LD" >&6; }
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-fi
-test -z "$LD" && as_fn_error $? "no acceptable ld found in \$PATH" "$LINENO" 5
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if the linker ($LD) is GNU ld" >&5
-printf %s "checking if the linker ($LD) is GNU ld... " >&6; }
-if test ${lt_cv_prog_gnu_ld+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  # I'd rather use --version here, but apparently some GNU lds only accept -v.
-case `$LD -v 2>&1 </dev/null` in
-*GNU* | *'with BFD'*)
-  lt_cv_prog_gnu_ld=yes
-  ;;
-*)
-  lt_cv_prog_gnu_ld=no
-  ;;
-esac
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $lt_cv_prog_gnu_ld" >&5
-printf "%s\n" "$lt_cv_prog_gnu_ld" >&6; }
-with_gnu_ld=$lt_cv_prog_gnu_ld
-
-
-
-
-
-
-
-
-
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for C compiler vendor" >&5
 printf %s "checking for C compiler vendor... " >&6; }
 if test ${ax_cv_c_compiler_vendor+y}
@@ -10022,6 +9906,10 @@ if test "x$PTHREAD_CFLAGS$PTHREAD_LIBS" != "x"; then
 then :
   CC="$PTHREAD_CC"
 fi
+        if test "x$PTHREAD_CXX" != "x"
+then :
+  CXX="$PTHREAD_CXX"
+fi
         CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
         LIBS="$PTHREAD_LIBS $LIBS"
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for pthread_join using $CC $PTHREAD_CFLAGS $PTHREAD_LIBS" >&5
@@ -10426,7 +10314,7 @@ else $as_nop
              # step
              ax_pthread_save_ac_link="$ac_link"
              ax_pthread_sed='s/conftest\.\$ac_ext/conftest.$ac_objext/g'
-             ax_pthread_link_step=`$as_echo "$ac_link" | sed "$ax_pthread_sed"`
+             ax_pthread_link_step=`printf "%s\n" "$ac_link" | sed "$ax_pthread_sed"`
              ax_pthread_2step_ac_link="($ac_compile) && (echo ==== >&5) && ($ax_pthread_link_step)"
              ax_pthread_save_CFLAGS="$CFLAGS"
              for ax_pthread_try in '' -Qunused-arguments -Wno-unused-command-line-argument unknown; do
@@ -10603,12 +10491,22 @@ fi
     #handle absolute path differently from PATH based program lookup
                      case "x$CC" in #(
   x/*) :
-    if as_fn_executable_p ${CC}_r
+
+			   if as_fn_executable_p ${CC}_r
 then :
   PTHREAD_CC="${CC}_r"
-fi ;; #(
+fi
+			   if test "x${CXX}" != "x"
+then :
+  if as_fn_executable_p ${CXX}_r
+then :
+  PTHREAD_CXX="${CXX}_r"
+fi
+fi
+			  ;; #(
   *) :
-    for ac_prog in ${CC}_r
+
+			   for ac_prog in ${CC}_r
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -10655,8 +10553,62 @@ fi
   test -n "$PTHREAD_CC" && break
 done
 test -n "$PTHREAD_CC" || PTHREAD_CC="$CC"
- ;;
-esac ;; #(
+
+			   if test "x${CXX}" != "x"
+then :
+  for ac_prog in ${CXX}_r
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_prog_PTHREAD_CXX+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if test -n "$PTHREAD_CXX"; then
+  ac_cv_prog_PTHREAD_CXX="$PTHREAD_CXX" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_prog_PTHREAD_CXX="$ac_prog"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+PTHREAD_CXX=$ac_cv_prog_PTHREAD_CXX
+if test -n "$PTHREAD_CXX"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $PTHREAD_CXX" >&5
+printf "%s\n" "$PTHREAD_CXX" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+  test -n "$PTHREAD_CXX" && break
+done
+test -n "$PTHREAD_CXX" || PTHREAD_CXX="$CXX"
+
+fi
+
+                      ;;
+esac
+                     ;; #(
   *) :
      ;;
 esac
@@ -10666,6 +10618,8 @@ esac
 fi
 
 test -n "$PTHREAD_CC" || PTHREAD_CC="$CC"
+test -n "$PTHREAD_CXX" || PTHREAD_CXX="$CXX"
+
 
 
 
@@ -11357,52 +11311,23 @@ fi
 # Check for sendfile support
 #
 ########
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking Linux compatible sendfile()" >&5
-printf %s "checking Linux compatible sendfile()... " >&6; }
-if test ${ac_cv_have_linux_sendfile+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-    #undef _FILE_OFFSET_BITS
-    #include <sys/types.h>
-    #include <sys/socket.h>
-    #include <sys/sendfile.h>
-
-int
-main (void)
-{
-
-    sendfile(0, 0, (void *) 0, 0);
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-
-    ac_cv_have_linux_sendfile=yes
-
-else $as_nop
-
-    ac_cv_have_linux_sendfile=no
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_have_linux_sendfile" >&5
-printf "%s\n" "$ac_cv_have_linux_sendfile" >&6; }
-if test $ac_cv_have_linux_sendfile = yes; then
-
-printf "%s\n" "#define HAVE_LINUX_SENDFILE 1" >>confdefs.h
-
-fi
+#AC_CACHE_CHECK([Linux compatible sendfile()],ac_cv_have_linux_sendfile,[
+#  AC_LINK_IFELSE([
+#    #undef _FILE_OFFSET_BITS
+#    #include <sys/types.h>
+#    #include <sys/socket.h>
+#    #include <sys/sendfile.h>
+#  ], [
+#    sendfile(0, 0, (void *) 0, 0);
+#  ], [
+#    ac_cv_have_linux_sendfile=yes
+#  ], [
+#    ac_cv_have_linux_sendfile=no
+#  ])
+#])
+#if test $ac_cv_have_linux_sendfile = yes; then
+#  AC_DEFINE([HAVE_LINUX_SENDFILE],[1], [Define if you have Linux-compatible sendfile()])
+#fi
 
 #
 # Set SETJMP_IS_THREAD_SAFE define.
@@ -23600,91 +23525,6 @@ fi
 
 
 # Check standard headers
-# Autoupdate added the next two lines to ensure that your configure
-# script's behavior did not change.  They are probably safe to remove.
-
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for egrep" >&5
-printf %s "checking for egrep... " >&6; }
-if test ${ac_cv_path_EGREP+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  if echo a | $GREP -E '(a|b)' >/dev/null 2>&1
-   then ac_cv_path_EGREP="$GREP -E"
-   else
-     if test -z "$EGREP"; then
-  ac_path_EGREP_found=false
-  # Loop through the user's path and test for each of PROGNAME-LIST
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
-do
-  IFS=$as_save_IFS
-  case $as_dir in #(((
-    '') as_dir=./ ;;
-    */) ;;
-    *) as_dir=$as_dir/ ;;
-  esac
-    for ac_prog in egrep
-   do
-    for ac_exec_ext in '' $ac_executable_extensions; do
-      ac_path_EGREP="$as_dir$ac_prog$ac_exec_ext"
-      as_fn_executable_p "$ac_path_EGREP" || continue
-# Check for GNU ac_path_EGREP and select it if it is found.
-  # Check for GNU $ac_path_EGREP
-case `"$ac_path_EGREP" --version 2>&1` in
-*GNU*)
-  ac_cv_path_EGREP="$ac_path_EGREP" ac_path_EGREP_found=:;;
-*)
-  ac_count=0
-  printf %s 0123456789 >"conftest.in"
-  while :
-  do
-    cat "conftest.in" "conftest.in" >"conftest.tmp"
-    mv "conftest.tmp" "conftest.in"
-    cp "conftest.in" "conftest.nl"
-    printf "%s\n" 'EGREP' >> "conftest.nl"
-    "$ac_path_EGREP" 'EGREP$' < "conftest.nl" >"conftest.out" 2>/dev/null || break
-    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
-    as_fn_arith $ac_count + 1 && ac_count=$as_val
-    if test $ac_count -gt ${ac_path_EGREP_max-0}; then
-      # Best one so far, save it but keep looking for a better one
-      ac_cv_path_EGREP="$ac_path_EGREP"
-      ac_path_EGREP_max=$ac_count
-    fi
-    # 10*(2^10) chars as input seems more than enough
-    test $ac_count -gt 10 && break
-  done
-  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
-esac
-
-      $ac_path_EGREP_found && break 3
-    done
-  done
-  done
-IFS=$as_save_IFS
-  if test -z "$ac_cv_path_EGREP"; then
-    as_fn_error $? "no acceptable egrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
-  fi
-else
-  ac_cv_path_EGREP=$EGREP
-fi
-
-   fi
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_EGREP" >&5
-printf "%s\n" "$ac_cv_path_EGREP" >&6; }
- EGREP="$ac_cv_path_EGREP"
-
-
-
-if ! test x"$ac_cv_header_stdc" = x"yes"; then
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: configure has detected that you do not have the ANSI standard C
-    header files.  Compilation cannot proceed.  Please install the ANSI C
-    headers and rerun this script." >&5
-printf "%s\n" "$as_me: WARNING: configure has detected that you do not have the ANSI standard C
-    header files.  Compilation cannot proceed.  Please install the ANSI C
-    headers and rerun this script." >&2;};
-fi
 
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether to enable assertions" >&5
 printf %s "checking whether to enable assertions... " >&6; }
@@ -24330,16 +24170,6 @@ if test $ac_cv_header_stat_broken = yes; then
 printf "%s\n" "#define STAT_MACROS_BROKEN 1" >>confdefs.h
 
 fi
-
-
-
-# Obsolete code to be removed.
-if test $ac_cv_header_sys_time_h = yes; then
-
-printf "%s\n" "#define TIME_WITH_SYS_TIME 1" >>confdefs.h
-
-fi
-# End of obsolete code.
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether struct tm is in sys/time.h or time.h" >&5
 printf %s "checking whether struct tm is in sys/time.h or time.h... " >&6; }
@@ -25775,56 +25605,10 @@ printf "%s\n" "#define SIZEOF_VOID_P $ac_cv_sizeof_void_p" >>confdefs.h
 
 
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether our compiler supports __func__" >&5
-printf %s "checking whether our compiler supports __func__... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-{ const char *func = __func__; return(func != 0 ? 0 : 1); }
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-else $as_nop
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
- { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether our compiler supports __FUNCTION__" >&5
-printf %s "checking whether our compiler supports __FUNCTION__... " >&6; }
- cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main (void)
-{
-{ const char *func = __FUNCTION__; return(func != 0 ? 0 : 1); }
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-
-printf "%s\n" "#define __func__ __FUNCTION__" >>confdefs.h
-
-else $as_nop
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-
-printf "%s\n" "#define __func__ __FILE__" >>confdefs.h
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+#
+# Check for functions
+#
+########
 
 ########
 #
@@ -26526,14 +26310,6 @@ printf "%s\n" "#define SELECT_TYPE_ARG234 ($2)" >>confdefs.h
 printf "%s\n" "#define SELECT_TYPE_ARG5 ($3)" >>confdefs.h
 
 rm -rf conftest*
-
-if test ${ac_cv_func_setvbuf_reversed+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_cv_func_setvbuf_reversed=no
-fi
-
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for working strtod" >&5
 printf %s "checking for working strtod... " >&6; }
@@ -27727,60 +27503,6 @@ printf "%s\n" "$ax_cv_cxx_have_std_namespace" >&6; }
 printf "%s\n" "#define HAVE_NAMESPACE_STD /**/" >>confdefs.h
 
   fi
-
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports ISO C++ standard library" >&5
-printf %s "checking whether the compiler supports ISO C++ standard library... " >&6; }
-if test ${ac_cv_cxx_have_std_libs+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-
-
- ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
- cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <iostream>
-#include <map>
-#include <iomanip>
-#include <cmath>
-#ifdef HAVE_NAMESPACES
-using namespace std;
-#endif
-int
-main (void)
-{
-return 0;
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"
-then :
-  ac_cv_cxx_have_std_libs=yes
-else $as_nop
-  ac_cv_cxx_have_std_libs=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
- ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_cxx_have_std_libs" >&5
-printf "%s\n" "$ac_cv_cxx_have_std_libs" >&6; }
-if test "$ac_cv_cxx_have_std_libs" = yes; then
-
-printf "%s\n" "#define HAVE_STD_LIBS /**/" >>confdefs.h
-
-fi
 
     # Check whether --enable-openmp was given.
 if test ${enable_openmp+y}
