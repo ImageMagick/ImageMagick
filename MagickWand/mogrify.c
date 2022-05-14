@@ -8243,6 +8243,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                   {
                     status&=CompositeImage(source_image,mask_image,
                       CopyGreenCompositeOp,MagickTrue,0,0,exception);
+                    (void) SetImageColorspace(source_image,sRGBColorspace,
+                      exception);
                     status&=CompositeImage(new_images,source_image,compose,
                       clip_to_self,geometry.x,geometry.y,exception);
                     break;

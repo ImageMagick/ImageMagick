@@ -8894,6 +8894,9 @@ Mogrify(ref,...)
                   (void) CompositeImage(composite_image,
                     argument_list[10].image_reference,CopyGreenCompositeOp,
                     clip_to_self,0,0,exception);
+                  (void) SetImageColorspace(composite_image,sRGBColorspace,
+                    exception);
+
                 }
               else
                 {
