@@ -1,33 +1,32 @@
 %global VERSION  @PACKAGE_BASE_VERSION@
 %global Patchlevel  @MAGICK_PATCHLEVEL_VERSION@
 
-
 Name:           @PACKAGE_NAME@
 Version:        %{VERSION}
 Release:        %{Patchlevel}
 Summary:        Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images.
 License:        https://imagemagick.org/script/license.php
 Url:            https://imagemagick.org/
-Source0:        https://imagemagick.org/download/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.bz2
+Source0:        https://imagemagick.org/download/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.xz
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
-BuildRequires:  libtiff-devel, giflib-devel, zlib-devel, perl-devel >= 5.8.1
+BuildRequires:  pkgconfig(bzip2), pkgconfig(freetype2), pkgconfig(libjpeg), pkgconfig(libpng)
+BuildRequires:  pkgconfig(libtiff-4), giflib-devel, pkgconfig(zlib), perl-devel >= 5.8.1
 BuildRequires:  perl-generators
-BuildRequires:  ghostscript-devel
-BuildRequires:  djvulibre-devel
-BuildRequires:  libwmf-devel, jasper-devel, libtool-ltdl-devel
-BuildRequires:  libX11-devel, libXext-devel, libXt-devel
-BuildRequires:  lcms2-devel, libxml2-devel, librsvg2-devel
-BuildRequires:  fftw-devel, ilmbase-devel, OpenEXR-devel, libwebp-devel
+BuildRequires:  libgs-devel, ghostscript-x11
+BuildRequires:  pkgconfig(ddjvuapi)
+BuildRequires:  pkgconfig(libwmf), pkgconfig(jasper), libtool-ltdl-devel
+BuildRequires:  pkgconfig(x11), pkgconfig(xext), pkgconfig(xt)
+BuildRequires:  pkgconfig(lcms2), pkgconfig(libxml-2.0), pkgconfig(librsvg-2.0)
+BuildRequires:  pkgconfig(OpenEXR)
+BuildRequires:  pkgconfig(fftw3), pkgconfig(libwebp)
 BuildRequires:  jbigkit-devel
-BuildRequires:  openjpeg2-devel >= 2.1.0
-BuildRequires:  graphviz-devel >= 2.9.0
-BuildRequires:  libraqm-devel
-BuildRequires:  liblqr-1-devel
-BuildRequires:  LibRaw-devel >= 0.14.8
+BuildRequires:  pkgconfig(libopenjp2) >= 2.1.0
+BuildRequires:  pkgconfig(libcgraph) >= 2.9.0
+BuildRequires:  pkgconfig(raqm)
+BuildRequires:  pkgconfig(lqr-1)
+BuildRequires:  pkgconfig(libraw) >= 0.14.8
+BuildRequires:  pkgconfig(libzstd)
 BuildRequires:  autoconf automake gcc gcc-c++
-BuildRequires: make
 
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -128,7 +127,7 @@ however.
 
 
 %prep
-%setup -q -n %{name}-%{VERSION}-%{Patchlevel}
+%autosetup -p1 -n %{name}-%{VERSION}-%{Patchlevel}
 
 # for %%doc
 mkdir Magick++/examples
@@ -136,7 +135,7 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
 
 %build
 autoconf -f -i
-export CFLAGS="%{optflags}"
+export CFLAGS="%{optflags} -DIMPNG_SETJMP_IS_THREAD_SAFE"
 %configure --enable-shared \
         --disable-static \
         --with-modules \
@@ -165,7 +164,7 @@ make
 
 
 %install
-make %{?_smp_mflags} install DESTDIR=%{buildroot} INSTALL="install -p"
+%make_install
 cp -a www/source %{buildroot}%{_datadir}/doc/%{name}-%{VERSION}
 rm %{buildroot}%{_libdir}/*.la
 
@@ -214,7 +213,6 @@ EOF
 multilibFileVersions %{buildroot}%{_includedir}/%{name}-7/MagickCore/magick-config.h
 multilibFileVersions %{buildroot}%{_includedir}/%{name}-7/MagickCore/magick-baseconfig.h
 multilibFileVersions %{buildroot}%{_includedir}/%{name}-7/MagickCore/version.h
-
 
 %check
 export LD_LIBRARY_PATH=%{buildroot}/%{_libdir}
