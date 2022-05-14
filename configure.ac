@@ -1422,38 +1422,37 @@ fi
 
 have_bzlib='no'
 if test "$with_bzlib" != 'no'; then
-    BZLIB_LIBS=''
-    AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for BZLIB])
-    AC_MSG_RESULT([])
-    failed=0
-    passed=0
-    found_libbz=0
-    AC_CHECK_HEADER([bzlib.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-    AC_CHECK_LIB([bz2],[BZ2_bzDecompress],[found_libbz=`expr $found_libbz + 1`],[],[])
-    if test "$native_win32_build" = 'yes'; then
-      AC_CHECK_LIB([bz2],[_imp__BZ2_decompress],[found_libbz=`expr $found_libbz + 1`],[],[])
-    fi
-    if test $found_libbz -gt 0; then
-      passed=`expr $passed + 1`
+  BZLIB_LIBS=''
+  AC_MSG_CHECKING([for BZLIB support ])
+  AC_MSG_RESULT()
+  failed=0
+  passed=0
+  found_libbz=0
+  AC_CHECK_HEADER([bzlib.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+  AC_CHECK_LIB([bz2],[BZ2_bzDecompress],[found_libbz=`expr $found_libbz + 1`],,)
+  if test "$native_win32_build" = 'yes'; then
+    AC_CHECK_LIB([bz2],[_imp__BZ2_decompress],[found_libbz=`expr $found_libbz + 1`],,)
+  fi
+  if test $found_libbz -gt 0; then
+    passed=`expr $passed + 1`
+  else
+    failed=`expr $failed + 1`
+  fi
+  AC_MSG_CHECKING([if BZLIB package is complete])
+  if test $passed -gt 0; then
+    if test $failed -gt 0; then
+      AC_MSG_RESULT([no -- some components failed test])
+      have_bzlib='no (failed tests)'
     else
-      failed=`expr $failed + 1`
+      BZLIB_LIBS='-lbz2'
+      LIBS="$BZLIB_LIBS $LIBS"
+      AC_DEFINE([BZLIB_DELEGATE],[1],[Define if you have the bzip2 library])
+      AC_MSG_RESULT([yes])
+      have_bzlib='yes'
     fi
-    AC_MSG_CHECKING([if BZLIB package is complete])
-    if test $passed -gt 0; then
-      if test $failed -gt 0; then
-        AC_MSG_RESULT([no -- some components failed test])
-        have_bzlib='no (failed tests)'
-      else
-        BZLIB_LIBS='-lbz2'
-        LIBS="$BZLIB_LIBS $LIBS"
-        AC_DEFINE([BZLIB_DELEGATE],[1],[Define if you have the bzip2 library])
-        AC_MSG_RESULT([yes])
-        have_bzlib='yes'
-      fi
-    else
-      AC_MSG_RESULT([no])
-    fi
+  else
+    AC_MSG_RESULT([no])
+  fi
 fi
 AM_CONDITIONAL([BZLIB_DELEGATE],[test "$have_bzlib" = 'yes'])
 AC_SUBST([BZLIB_LIBS])

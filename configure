@@ -5143,7 +5143,7 @@ MAGICK_PATCHLEVEL_VERSION=34
 
 MAGICK_VERSION=7.1.0-34
 
-MAGICK_GIT_REVISION=f4d8e6ec8:20220513
+MAGICK_GIT_REVISION=40bc17c86:20220513
 
 
 # Substitute library versioning
@@ -28499,17 +28499,15 @@ fi
 
 have_bzlib='no'
 if test "$with_bzlib" != 'no'; then
-    BZLIB_LIBS=''
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-printf "%s\n" "-------------------------------------------------------------" >&6; }
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for BZLIB" >&5
-printf %s "checking for BZLIB... " >&6; }
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: " >&5
+  BZLIB_LIBS=''
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for BZLIB support " >&5
+printf %s "checking for BZLIB support ... " >&6; }
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: " >&5
 printf "%s\n" "" >&6; }
-    failed=0
-    passed=0
-    found_libbz=0
-    ac_fn_c_check_header_compile "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
+  failed=0
+  passed=0
+  found_libbz=0
+  ac_fn_c_check_header_compile "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
 if test "x$ac_cv_header_bzlib_h" = xyes
 then :
   passed=`expr $passed + 1`
@@ -28517,7 +28515,7 @@ else $as_nop
   failed=`expr $failed + 1`
 fi
 
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for BZ2_bzDecompress in -lbz2" >&5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for BZ2_bzDecompress in -lbz2" >&5
 printf %s "checking for BZ2_bzDecompress in -lbz2... " >&6; }
 if test ${ac_cv_lib_bz2_BZ2_bzDecompress+y}
 then :
@@ -28557,8 +28555,8 @@ then :
   found_libbz=`expr $found_libbz + 1`
 fi
 
-    if test "$native_win32_build" = 'yes'; then
-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for _imp__BZ2_decompress in -lbz2" >&5
+  if test "$native_win32_build" = 'yes'; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for _imp__BZ2_decompress in -lbz2" >&5
 printf %s "checking for _imp__BZ2_decompress in -lbz2... " >&6; }
 if test ${ac_cv_lib_bz2__imp__BZ2_decompress+y}
 then :
@@ -28598,33 +28596,33 @@ then :
   found_libbz=`expr $found_libbz + 1`
 fi
 
-    fi
-    if test $found_libbz -gt 0; then
-      passed=`expr $passed + 1`
-    else
-      failed=`expr $failed + 1`
-    fi
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if BZLIB package is complete" >&5
+  fi
+  if test $found_libbz -gt 0; then
+    passed=`expr $passed + 1`
+  else
+    failed=`expr $failed + 1`
+  fi
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if BZLIB package is complete" >&5
 printf %s "checking if BZLIB package is complete... " >&6; }
-    if test $passed -gt 0; then
-      if test $failed -gt 0; then
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+  if test $passed -gt 0; then
+    if test $failed -gt 0; then
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
 printf "%s\n" "no -- some components failed test" >&6; }
-        have_bzlib='no (failed tests)'
-      else
-        BZLIB_LIBS='-lbz2'
-        LIBS="$BZLIB_LIBS $LIBS"
+      have_bzlib='no (failed tests)'
+    else
+      BZLIB_LIBS='-lbz2'
+      LIBS="$BZLIB_LIBS $LIBS"
 
 printf "%s\n" "#define BZLIB_DELEGATE 1" >>confdefs.h
 
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-        have_bzlib='yes'
-      fi
-    else
-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
+      have_bzlib='yes'
     fi
+  else
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+  fi
 fi
  if test "$have_bzlib" = 'yes'; then
   BZLIB_DELEGATE_TRUE=
