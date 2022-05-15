@@ -2712,6 +2712,8 @@ int main(int argc,char **argv)
             (double) tests,(double) (tests-fail),(double) fail);
         }
       (void) RelinquishUniqueFileResource(output_filename);
+      (void) ConcatenateMagickString(output_filename,"-0",MagickPathExtent);
+      (void) RelinquishUniqueFileResource(output_filename);
       (void) RelinquishUniqueFileResource(reference_filename);
     }
   if (exception->severity != UndefinedException)
