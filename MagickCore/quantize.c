@@ -3151,13 +3151,8 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         Reduce the number of colors in the image.
       */
       if (cube_info->colors > cube_info->maximum_colors)
-        {
-          ReduceImageColors(image,cube_info);
-          status=AssignImageColors(image,cube_info,exception);
-        }
-      else
-        status=KmeansImage(image,cube_info->maximum_colors,300,0.0001,
-          exception);
+        ReduceImageColors(image,cube_info);
+      status=AssignImageColors(image,cube_info,exception);
     }
   DestroyCubeInfo(cube_info);
   return(status);
