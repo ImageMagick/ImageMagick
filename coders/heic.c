@@ -499,7 +499,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
   (void) CloseBlob(image);
 #if LIBHEIF_NUMERIC_VERSION >= 0x010b0000
-  if (heif_has_compatible_brand(magic,sizeof(magic), "avif"))
+  if (heif_has_compatible_brand(magic,sizeof(magic), "avif") == 1)
     (void) CopyMagickString(image->magick,"AVIF",MagickPathExtent);
 #endif
   /*
