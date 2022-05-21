@@ -2735,10 +2735,10 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       image->colormap[j].count=(MagickSizeType) kmeans_pixels[0][j].count;
       distortion+=kmeans_pixels[0][j].distortion;
     }
-    if (verbose != MagickFalse)
-      (void) FormatLocaleFile(stderr,"distortion[%.20g]: %*g %*g\n",(double) n,
-        GetMagickPrecision(),distortion,GetMagickPrecision(),
-        fabs(distortion-previous_tolerance));
+    if (image->debug != MagickFalse)
+      (void) LogMagickEvent(ImageEvent,GetMagickModule(),
+        "distortion[%.20g]: %*g %*g\n",(double) n,GetMagickPrecision(),
+        distortion,GetMagickPrecision(),fabs(distortion-previous_tolerance));
     if (fabs(distortion-previous_tolerance) <= tolerance)
       break;
     previous_tolerance=distortion;
@@ -2758,8 +2758,8 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     for (n=0; n < (ssize_t) image->colors; n++)
     {
       GetColorTuple(image->colormap+n,MagickTrue,tuple);
-      (void) FormatLocaleFile(stderr,"centroid[%.20g]: %s %.20g\n",(double) n,
-        tuple,(double) image->colormap[n].count);
+      (void) FormatLocaleFile(stderr,"%s %.20g\n",tuple,(double)
+        image->colormap[n].count);
     }
   dominant_image=CloneImage(image,0,0,MagickTrue,exception);
   if (dominant_image != (Image *) NULL)
