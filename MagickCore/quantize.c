@@ -196,6 +196,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
@@ -2380,6 +2381,17 @@ static KmeansInfo **DestroyKmeansTLS(KmeansInfo **kmeans_info)
   return(kmeans_info);
 }
 
+static int DominantColorCompare(const void *x,const void *y)
+{
+  PixelInfo
+    *pixel_1,
+    *pixel_2;
+
+  pixel_1=(PixelInfo *) x;
+  pixel_2=(PixelInfo *) y;
+  return((int) pixel_2->count-(int) pixel_1->count);
+}
+
 static KmeansInfo **AcquireKmeansTLS(const size_t number_colors)
 {
   KmeansInfo
@@ -2461,11 +2473,17 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
   CacheView
     *image_view;
 
+  char
+    tuple[MagickPathExtent];
+
   const char
     *colors;
 
   double
     previous_tolerance;
+
+  Image
+    *dominant_image;
 
   KmeansInfo
     **kmeans_pixels;
@@ -2475,8 +2493,10 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     status;
 
   size_t
-    n,
     number_threads;
+
+  ssize_t
+    n;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -2505,7 +2525,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       quantize_info->colorspace=image->colorspace;
       quantize_info->number_colors=number_colors;
       quantize_info->dither_method=NoDitherMethod;
-      n=number_colors;
+      n=(ssize_t) number_colors;
       for (depth=1; n != 0; depth++)
         n>>=2;
       cube_info=GetCubeInfo(quantize_info,depth,number_colors);
@@ -2541,7 +2561,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       status=AcquireImageColormap(image,number_colors,exception);
       if (status == MagickFalse)
         return(status);
-      for (n=0, p=colors; n < image->colors; n++)
+      for (n=0, p=colors; n < (ssize_t) image->colors; n++)
       {
         const char
           *q;
@@ -2560,7 +2580,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
           }
         p=q+1;
       }
-      if (n < image->colors)
+      if (n < (ssize_t) image->colors)
         {
           RandomInfo
             *random_info;
@@ -2569,7 +2589,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
             Seed clusters from random values.
           */
           random_info=AcquireRandomInfo();
-          for ( ; n < image->colors; n++)
+          for ( ; n < (ssize_t) image->colors; n++)
           {
             (void) QueryColorCompliance("#000",AllCompliance,image->colormap+n,
               exception);
@@ -2592,10 +2612,10 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   previous_tolerance=0.0;
-  verbose=IsStringTrue(GetImageArtifact(image,"debug"));
+  verbose=IsStringTrue(GetImageArtifact(image,"verbose"));
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   image_view=AcquireAuthenticCacheView(image,exception);
-  for (n=0; n < max_iterations; n++)
+  for (n=0; n < (ssize_t) max_iterations; n++)
   {
     double
       distortion;
@@ -2712,6 +2732,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         image->colormap[j].alpha=gamma*QuantumRange*kmeans_pixels[0][j].alpha;
       if (image->colorspace == CMYKColorspace)
         image->colormap[j].black=gamma*QuantumRange*kmeans_pixels[0][j].black;
+      image->colormap[j].count=(MagickSizeType) kmeans_pixels[0][j].count;
       distortion+=kmeans_pixels[0][j].distortion;
     }
     if (verbose != MagickFalse)
@@ -2733,6 +2754,25 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
+  if (verbose != MagickFalse)
+    for (n=0; n < (ssize_t) image->colors; n++)
+    {
+      GetColorTuple(image->colormap+n,MagickTrue,tuple);
+      (void) FormatLocaleFile(stderr,"centroid[%.20g]: %s %.20g\n",(double) n,
+        tuple,(double) image->colormap[n].count);
+    }
+  dominant_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (dominant_image != (Image *) NULL)
+    {
+      /*
+        Note dominant color.
+      */
+      qsort((void *) dominant_image->colormap,dominant_image->colors,
+        sizeof(*dominant_image->colormap),DominantColorCompare);
+      GetColorTuple(dominant_image->colormap,MagickTrue,tuple);
+      dominant_image=DestroyImage(dominant_image);
+      (void) SetImageProperty(image,"dominant-color",tuple,exception);
+    }
   kmeans_pixels=DestroyKmeansTLS(kmeans_pixels);
   if (image->progress_monitor != (MagickProgressMonitor) NULL)
     (void) SetImageProgress(image,KmeansImageTag,(MagickOffsetType)
