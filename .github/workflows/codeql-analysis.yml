@@ -9,6 +9,9 @@ jobs:
     name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})'
     runs-on: ubuntu-latest
 
+    permissions:
+      security_events: write
+
     strategy:
       fail-fast: false
       matrix:
