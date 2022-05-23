@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      security_events: write
+      security-events: write
 
     strategy:
       fail-fast: false
