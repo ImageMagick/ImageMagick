@@ -73,7 +73,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ x86, x64 ]
+        platform: [ x86, x64, arm64 ]
 
     steps:
     - uses: actions/checkout@v3
