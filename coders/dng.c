@@ -35,6 +35,7 @@
 %
 %
 */
+
 /*
   Include declarations.
 */
@@ -73,8 +74,7 @@
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
 #include <libraw.h>
 #endif
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -619,8 +619,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   return(InvokeDNGDelegate(image_info,image,exception));
 #endif
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -803,8 +802,7 @@ ModuleExport size_t RegisterDNGImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
