@@ -4,6 +4,9 @@ on:
   - cron: 0 6 * * *
 
 name: daily
+permissions:
+  contents: read
+
 jobs:
   change_log:
     name: 'Create ChangeLog.md'
