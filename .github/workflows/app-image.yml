@@ -6,6 +6,9 @@ on:
     tags:
     - '*'
 
+permissions:
+  contents: write
+
 name: app image
 jobs:
   build:
