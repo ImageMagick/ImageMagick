@@ -182,17 +182,17 @@ jobs:
         path: ImageMagick-Windows
         ref: refs/heads/main
 
-    - name: Download ChangeLog.md
-      uses: actions/download-artifact@v3
-      with:
-        name: ChangeLog
-        path: ImageMagick-Windows\ImageMagick
-
     - name: Clone repositories
       shell: cmd
       run: |
         cd ImageMagick-Windows
         CloneRepositories.cmd https://github.com/ImageMagick source
+
+    - name: Download ChangeLog.md
+      uses: actions/download-artifact@v3
+      with:
+        name: ChangeLog
+        path: ImageMagick-Windows\ImageMagick
 
     - name: Create source archive
       shell: cmd
