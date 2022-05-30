@@ -95,7 +95,7 @@
 
 <h2><a href="../../api/MagickCore/fx_8c.html" id="pfx-&gt;exception,_GetMagickModule">pfx-&gt;exception, GetMagickModule</a></h2>
 
-<p>pfx-&gt;exception, GetMagickModule(), OptionError, "ImgNum", "lu bad for ImgListLen lu", i, pfx-&gt;ImgListLen); i = -1; } return i; }</p>
+<p>pfx-&gt;exception, GetMagickModule(), OptionError, "ImgNum", "lu bad for ImgListLen lu", (unsigned long) i, (unsigned long) pfx-&gt;ImgListLen); i = -1; } return i; }</p>
 
 <p>#define WHICH_ATTR_CHAN \ (pel-&gt;ChannelQual == NO_CHAN_QUAL) ? CompositePixelChannel : \ (pel-&gt;ChannelQual == THIS_CHANNEL) ? channel : pel-&gt;ChannelQual</p>
 
@@ -107,7 +107,7 @@
 
 <p>MagickBooleanType okay = MagickTrue; if(!InterpolatePixelChannel (img, pfx-&gt;Imgs[ImgNum].View, RedPixelChannel, img-&gt;interpolate, (double) fx, (double) fy, &amp;red, pfx-&gt;exception)) okay = MagickFalse; if(!InterpolatePixelChannel (img, pfx-&gt;Imgs[ImgNum].View, GreenPixelChannel, img-&gt;interpolate, (double) fx, (double) fy, &amp;green, pfx-&gt;exception)) okay = MagickFalse; if(!InterpolatePixelChannel (img, pfx-&gt;Imgs[ImgNum].View, BluePixelChannel, img-&gt;interpolate, (double) fx, (double) fy, &amp;blue, pfx-&gt;exception)) okay = MagickFalse;</p>
 
-<p>if (!okay) (void) ThrowMagickException ( pfx-&gt;exception, GetMagickModule(), OptionError, "GetHslFlt failure", "lu Lg,Lg i", ImgNum, fx, fy, channel);</p>
+<p>if (!okay) (void) ThrowMagickException ( pfx-&gt;exception, GetMagickModule(), OptionError, "GetHslFlt failure", "lu g,g i", (unsigned long) ImgNum, (double) fx, (double) fy, channel);</p>
 
 <p>ConvertRGBToHSL ( red, green, blue, &amp;hue, &amp;saturation, &amp;lightness);</p>
 
@@ -119,7 +119,7 @@
 
 <p>double hue=0, saturation=0, lightness=0;</p>
 
-<p>const Quantum * p = GetCacheViewVirtualPixels (pfx-&gt;Imgs[ImgNum].View, imgx, imgy, 1, 1, pfx-&gt;exception); if (!p) (void) ThrowMagickException ( pfx-&gt;exception, GetMagickModule(), OptionError, "GetHslInt failure", "lu li,li i", ImgNum, imgx, imgy, channel);</p>
+<p>const Quantum * p = GetCacheViewVirtualPixels (pfx-&gt;Imgs[ImgNum].View, imgx, imgy, 1, 1, pfx-&gt;exception); if (p == (const Quantum *) NULL) { (void) ThrowMagickException (pfx-&gt;exception,GetMagickModule(), OptionError,"GetHslInt failure","lu li,li i",(unsigned long) ImgNum, (long) imgx,(long) imgy,channel); return(0.0); }</p>
 
 <p>ConvertRGBToHSL ( GetPixelRed (img, p), GetPixelGreen (img, p), GetPixelBlue (img, p), &amp;hue, &amp;saturation, &amp;lightness);</p>
 
@@ -135,7 +135,7 @@
 
 <p>(void) GetPixelInfo (img, &amp;pixelinf);</p>
 
-<p>if (!InterpolatePixelInfo (img, pfx-&gt;Imgs[pfx-&gt;ImgNum].View, img-&gt;interpolate, (double) fx, (double) fy, &amp;pixelinf, pfx-&gt;exception)) { (void) ThrowMagickException ( pfx-&gt;exception, GetMagickModule(), OptionError, "GetIntensity failure", "lu Lg,Lg", ImgNum, fx, fy); }</p>
+<p>if (!InterpolatePixelInfo (img, pfx-&gt;Imgs[pfx-&gt;ImgNum].View, img-&gt;interpolate, (double) fx, (double) fy, &amp;pixelinf, pfx-&gt;exception)) { (void) ThrowMagickException ( pfx-&gt;exception, GetMagickModule(), OptionError, "GetIntensity failure", "lu g,g", (unsigned long) ImgNum, (double) fx, (double) fy); }</p>
 
 <p>SetPixelViaPixelInfo (img, &amp;pixelinf, quantum_pixel); return QuantumScale * GetPixelIntensity (img, quantum_pixel); }</p>
 

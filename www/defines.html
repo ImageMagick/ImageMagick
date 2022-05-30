@@ -29,7 +29,7 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../www/defines.html" rel="canonical" />
+  <link href="defines.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -66,7 +66,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="../www/search.html">
+      <form class="d-flex form-inline" action="search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -75,7 +75,7 @@
   </nav>
 
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>
+    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>
     <ins class="adsbygoogle"
       style="display:block"
       data-ad-client="ca-pub-3129977114552745"
@@ -104,7 +104,7 @@ definition of a flag is created with that name. This used to control on/off
 options.  Use <a href="command-line-options.html#define">-define keys</a> to remove definitions
 previously created.  Use <a href="command-line-options.html#define">+define "*"</a> to remove all existing definitions.</p>
 
-<p>The same 'artifact' settings can also be defined using the <a href="command-line-options.html#set">-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="../www/escape.html" >Format and Print Image Properties</a> in the defined value. </p>
+<p>The same 'artifact' settings can also be defined using the <a href="command-line-options.html#set">-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="escape.html" >Format and Print Image Properties</a> in the defined value. </p>
 
 <p>The <var>option</var> and <var>key</var> are case-independent (they are
 converted to lowercase for use within the decoders) while the <var>value</var>
@@ -132,6 +132,16 @@ use:</p>
 
   <tr>
    <td colspan=2><p></p></td>
+  </tr>
+
+  <tr>
+    <td>ashlar:best-fit</td>
+    <td>align tiles on both the left  and right edges.</td>
+  </tr>
+
+  <tr>
+    <td>ashlar:tiles</td>
+    <td>set the maximum number of image tiles to render per canvas.</td>
   </tr>
 
   <tr>
@@ -676,6 +686,11 @@ use:</p>
   </tr>
 
   <tr>
+    <td>trim:minSize=<var>geometry</var></td>
+    <td>Limit the trim to the specified size.</td>
+  </tr>
+
+  <tr>
     <td>type:features=<var>string</var></td>
     <td>Add a font feature to be used by the RAQM delegate during complex 
     text layout. This is usually used to turn on optional font features that 
@@ -920,6 +935,11 @@ use:</p>
     <td>jp2:reduce-factor=<var>value</var></td>
     <td>Set the number of highest resolution levels to be discarded.Same for
     JPT, JC2, and J2K.</td>
+  </tr>
+
+  <tr>
+    <td>jpeg:arithmetic-coding=<var>on|off</var></td>
+     <td>enable/disable Huffman optimization.</td>
   </tr>
 
   <tr>
@@ -1189,7 +1209,7 @@ use:</p>
     if they appear in either the "include-chunk" or "exclude-chunk" list.
     The ancillary chunks currently known to ImageMagick are
     <samp>bKGD</samp>, <samp>cHRM</samp>, <samp>gAMA</samp>, <samp>iCCP</samp>,
-    <samp>oFFs</samp>, <samp>pHYs</samp>, <samp>sRGB</samp>, <samp>tEXt</samp>,
+    <samp>oFFs</samp>, <samp>orNT</samp>, <samp>pHYs</samp>, <samp>sRGB</samp>, <samp>tEXt</samp>,
     <samp>tRNS</samp>, <samp>vpAg</samp>, and <samp>zTXt</samp>.</p>
 
     <p>You can also put <samp>date</samp> in the list to include or exclude
@@ -1617,4 +1637,4 @@ use:</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 18th February 2022 23:53 -->
+<!-- Magick Cache 30th May 2022 17:36 -->
