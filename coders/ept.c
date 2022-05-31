@@ -207,6 +207,8 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlobLSBLong(image);
   ept_info.tiff_offset=(MagickOffsetType) ReadBlobLSBLong(image);
   ept_info.tiff_length=ReadBlobLSBLong(image);
+  if ((ept_info.postscript_length+ept_info.tiff_length) == 0)
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((MagickSizeType) ept_info.tiff_length > GetBlobSize(image))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   (void) ReadBlobLSBShort(image);
@@ -261,22 +263,35 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   read_info->number_scenes=1;
   read_info->scene=0;
   (void) CopyMagickString(read_info->magick,"EPS",MagickPathExtent);
-  image=BlobToImage(read_info,postscript_data,ept_info.postscript_length,
-    exception);
-  if (image != (Image *) NULL)
+  if (ept_info.postscript_length != 0)
     {
-      (void) CopyMagickString(image->filename,image_info->filename,
-        MagickPathExtent);
-      (void) CopyMagickString(image->magick,"EPT",MagickPathExtent);
+      /*
+        Convert Postscript blob to image.
+      */
+      image=BlobToImage(read_info,postscript_data,ept_info.postscript_length,
+        exception);
+      if (image != (Image *) NULL)
+        {
+          (void) CopyMagickString(image->filename,image_info->filename,
+            MagickPathExtent);
+          (void) CopyMagickString(image->magick,"EPT",MagickPathExtent);
+        }
     }
-  (void) CopyMagickString(read_info->magick,"TIFF",MagickPathExtent);
-  tiff_image=BlobToImage(read_info,tiff_data,ept_info.tiff_length,exception);
-  if (tiff_image != (Image *) NULL)
+  if (ept_info.tiff_length != 0)
     {
-      if (image == (Image *) NULL)
-        image=tiff_image;
-      else
-        AppendImageToList(&image,tiff_image);
+      /*
+        Convert TIFF blob to image.
+      */
+      (void) CopyMagickString(read_info->magick,"TIFF",MagickPathExtent);
+      tiff_image=BlobToImage(read_info,tiff_data,ept_info.tiff_length,
+        exception);
+      if (tiff_image != (Image *) NULL)
+        {
+          if (image == (Image *) NULL)
+            image=tiff_image;
+          else
+            AppendImageToList(&image,tiff_image);
+        }
     }
   read_info=DestroyImageInfo(read_info);
   ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
