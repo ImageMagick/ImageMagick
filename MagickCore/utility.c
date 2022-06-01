@@ -135,7 +135,7 @@ MagickExport MagickBooleanType AcquireUniqueFilename(char *path)
 %  source path and returns MagickTrue on success otherwise MagickFalse.  If the
 %  symlink() method fails or is not available, a unique file name is generated
 %  and the source file copied to it.  When you are finished with the file, use
-%  RelinquishUniqueFilename() to destroy it.
+%  RelinquishUniqueFileResource() to destroy it.
 %
 %  The format of the AcquireUniqueSymbolicLink method is:
 %
