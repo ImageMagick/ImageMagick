@@ -289,7 +289,7 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
   if (webp_status != VP8_STATUS_OK)
     return(webp_status);
 
-  if (IsWEBPImageLossless((unsigned chaer *) stream,length) != MagickFalse)
+  if (IsWEBPImageLossless((unsigned char *) stream,length) != MagickFalse)
     image->quality=100;
 
   webp_status=WebPDecode(stream,length,configure);
