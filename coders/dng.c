@@ -655,7 +655,7 @@ ModuleExport size_t RegisterDNGImage(void)
 
   *version='\0';
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
-  (void) CopyMagickString(version,LIBRAW_VERSION_STR,MagickPathExtent);
+  (void) CopyMagickString(version,libraw_version(),MagickPathExtent);
 #endif
   entry=AcquireMagickInfo("DNG","3FR","Hasselblad CFV/H3D39II");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
