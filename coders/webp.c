@@ -1241,8 +1241,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   }
 #else
   WebPMemoryWriterInit(&writer);
-  status=WriteSingleWEBPImage(image_info,image,&configure,&writer,
-    exception);
+  status=WriteSingleWEBPImage(image_info,image,&configure,&writer,exception);
   if (status != MagickFalse)
     (void) WriteBlob(image,writer.size,writer.mem);
   WebPMemoryWriterClear(&writer);
