@@ -1681,12 +1681,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     {
       case PHOTOMETRIC_MINISBLACK:
       {
-        quantum_info->min_is_white=MagickFalse;
+        SetQuantumMinIsWhite(quantum_info,MagickFalse);
         break;
       }
       case PHOTOMETRIC_MINISWHITE:
       {
-        quantum_info->min_is_white=MagickTrue;
+        SetQuantumMinIsWhite(quantum_info,MagickTrue);
         break;
       }
       default:
@@ -1764,7 +1764,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->compression == JPEGCompression)
       method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
-    quantum_info->endian=LSBEndian;
+    (void) SetQuantumEndian(image,quantum_info,LSBEndian);
     scanline_size=TIFFScanlineSize(tiff);
     if (scanline_size <= 0)
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1824,7 +1824,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->number_meta_channels != 0)
       {
         quantum_type=MultispectralQuantum;
-        quantum_info->pad=0;
+        (void) SetQuantumPad(image,quantum_info,0);
       }
     switch (method)
     {
@@ -3955,7 +3955,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     if (compress_tag == COMPRESSION_CCITTFAX4)
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,(uint32) image->rows);
-    quantum_info->endian=LSBEndian;
+    (void) SetQuantumEndian(image,quantum_info,LSBEndian);
     pixels=(unsigned char *) GetQuantumPixels(quantum_info);
     tiff_info.scanline=(unsigned char *) GetQuantumPixels(quantum_info);
     switch (photometric)
@@ -3978,7 +3978,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             if (image->number_meta_channels != 0)
               {
                 quantum_type=MultispectralQuantum;
-                quantum_info->pad=0;
+                (void) SetQuantumPad(image,quantum_info,0);
               }
             for (y=0; y < (ssize_t) image->rows; y++)
             {
@@ -4107,7 +4107,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (image->number_meta_channels != 0)
           {
             quantum_type=MultispectralQuantum;
-            quantum_info->pad=0;
+            (void) SetQuantumPad(image,quantum_info,0);
           }
         if (image->colorspace != CMYKColorspace)
           (void) TransformImageColorspace(image,CMYKColorspace,exception);

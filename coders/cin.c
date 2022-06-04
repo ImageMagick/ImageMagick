@@ -1205,8 +1205,8 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  quantum_info->quantum=32;
-  quantum_info->pack=MagickFalse;
+  SetQuantumQuantum(quantum_info,32);
+  SetQuantumPack(quantum_info,MagickFalse);
   quantum_type=RGBQuantum;
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
   length=GetBytesPerRow(image->columns,3,image->depth,MagickTrue);
