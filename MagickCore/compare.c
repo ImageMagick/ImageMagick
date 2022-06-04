@@ -1315,7 +1315,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         if (normalize == MagickFalse)
           difference+=(beta-alpha)*(beta-alpha);
         else
-          difference=sqrt((beta-alpha)*(beta-alpha)/
+          difference+=sqrt((beta-alpha)*(beta-alpha)/
             channel_phash[0].number_channels);
       }
     }
