@@ -91,7 +91,7 @@ jobs:
 
     - name: Upload ImageMagick AppImage
       if: "!contains(github.ref, 'tags')"
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: AppImage-${{ matrix.compiler }}
         path: artifacts
