@@ -166,7 +166,8 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   (void) SetImageProperty(image,"dng:make",raw_info->idata.make,exception);
   (void) SetImageProperty(image,"dng:camera.model.name",raw_info->idata.model,
     exception);
-  (void) FormatMagickTime(raw_info->other.timestamp,sizeof(timestamp),timestamp);
+  (void) FormatMagickTime(raw_info->other.timestamp,sizeof(timestamp),
+    timestamp);
   (void) SetImageProperty(image,"dng:create.date",timestamp,exception);
   (void) FormatImageProperty(image,"dng:iso.setting","%.0f",
     raw_info->other.iso_speed);
@@ -504,6 +505,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->page.height=raw_info->sizes.raw_height;
     image->page.x=raw_info->sizes.left_margin;
     image->page.y=raw_info->sizes.top_margin;
+    image->orientation=(OrientationType) raw_info->sizes.flip;
     ReadLibRawThumbnail(image_info,image,raw_info,exception);
     if (image_info->ping != MagickFalse)
       {
