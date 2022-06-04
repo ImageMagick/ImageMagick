@@ -1331,15 +1331,15 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (status == MagickFalse)
           ThrowMIFFException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    packet_size=(size_t) (quantum_info->depth/8);
+    packet_size=(size_t) (image->depth/8);
     if (image->storage_class == DirectClass)
-      packet_size=(size_t) (3*quantum_info->depth/8);
+      packet_size=(size_t) (3*image->depth/8);
     if (IsGrayColorspace(image->colorspace) != MagickFalse)
-      packet_size=quantum_info->depth/8;
+      packet_size=image->depth/8;
     if (image->alpha_trait != UndefinedPixelTrait)
-      packet_size+=quantum_info->depth/8;
+      packet_size+=image->depth/8;
     if (image->colorspace == CMYKColorspace)
-      packet_size+=quantum_info->depth/8;
+      packet_size+=image->depth/8;
     if (image->compression == RLECompression)
       packet_size++;
     compress_extent=MagickMax(MagickMax(BZipMaxExtent(packet_size*
@@ -2143,15 +2143,15 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    packet_size=(size_t) (quantum_info->depth/8);
+    packet_size=(size_t) (image->depth/8);
     if (image->storage_class == DirectClass)
-      packet_size=(size_t) (3*quantum_info->depth/8);
+      packet_size=(size_t) (3*image->depth/8);
     if (IsGrayColorspace(image->colorspace) != MagickFalse)
-      packet_size=(size_t) (quantum_info->depth/8);
+      packet_size=(size_t) (image->depth/8);
     if (image->alpha_trait != UndefinedPixelTrait)
-      packet_size+=quantum_info->depth/8;
+      packet_size+=image->depth/8;
     if (image->colorspace == CMYKColorspace)
-      packet_size+=quantum_info->depth/8;
+      packet_size+=image->depth/8;
     if (compression == RLECompression)
       packet_size++;
     length=MagickMax(BZipMaxExtent(packet_size*image->columns),ZipMaxExtent(
@@ -2450,7 +2450,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         /*
           Allocate colormap.
         */
-        colormap_size=(size_t) (3*quantum_info->depth/8);
+        colormap_size=(size_t) (3*image->depth/8);
         colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
           colormap_size*sizeof(*colormap));
         if (colormap == (unsigned char *) NULL)
@@ -2461,7 +2461,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         q=colormap;
         for (i=0; i < (ssize_t) image->colors; i++)
         {
-          switch (quantum_info->depth)
+          switch (image->depth)
           {
             case 32:
             default:
