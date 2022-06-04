@@ -1244,7 +1244,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     SetQuantumQuantum(quantum_info,32);
     SetQuantumPack(quantum_info,dpx.image.image_element[n].packing == 0 ?
       MagickTrue : MagickFalse);
-    status=SetQuantumPad(image,quantum_info,0);
     pixels=GetQuantumPixels(quantum_info);
     for (y=0; y < (ssize_t) image->rows; y++)
     {

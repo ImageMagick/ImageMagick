@@ -624,7 +624,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CopyMagickString(property,cin.origination.model,
     sizeof(cin.origination.model));
   (void) SetImageProperty(image,"dpx:origination.model",property,exception);
-  (void) memset(cin.origination.serial,0, 
+  (void) memset(cin.origination.serial,0,
     sizeof(cin.origination.serial));
   offset+=ReadBlob(image,sizeof(cin.origination.serial),(unsigned char *)
     cin.origination.serial);
@@ -760,7 +760,6 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       quantum_type=GrayQuantum;
       length=GetBytesPerRow(image->columns,1,image->depth,MagickTrue);
     }
-  status=SetQuantumPad(image,quantum_info,0);
   pixels=GetQuantumPixels(quantum_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
