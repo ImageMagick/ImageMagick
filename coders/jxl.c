@@ -393,15 +393,16 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) memset(&color_encoding,0,sizeof(color_encoding));
         jxl_status=JxlDecoderGetColorAsEncodedProfile(jxl_info,&pixel_format,
           JXL_COLOR_PROFILE_TARGET_DATA,&color_encoding);
-        if (jxl_status != JXL_DEC_SUCCESS)
-          break;
-        if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_LINEAR)
-          image->colorspace=RGBColorspace;
-        if (color_encoding.color_space == JXL_COLOR_SPACE_GRAY)
+        if (jxl_status == JXL_DEC_SUCCESS)
           {
-            image->colorspace=GRAYColorspace;
             if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_LINEAR)
-              image->colorspace=LinearGRAYColorspace;
+              image->colorspace=RGBColorspace;
+            if (color_encoding.color_space == JXL_COLOR_SPACE_GRAY)
+              {
+                image->colorspace=GRAYColorspace;
+                if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_LINEAR)
+                  image->colorspace=LinearGRAYColorspace;
+              }
           }
         jxl_status=JxlDecoderGetICCProfileSize(jxl_info,&pixel_format,
           JXL_COLOR_PROFILE_TARGET_ORIGINAL,&profile_size);
