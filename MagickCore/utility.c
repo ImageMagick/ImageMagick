@@ -1856,11 +1856,11 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   MagickSizeType
     length;
 
-  ssize_t
-    i;
-
   size_t
     quantum;
+
+  ssize_t
+    i;
 
   static ssize_t
     passes = -1;
