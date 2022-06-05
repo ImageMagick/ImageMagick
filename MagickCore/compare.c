@@ -819,14 +819,12 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
   MagickBooleanType
     status;
 
-  ssize_t
-    j;
-
   size_t
     columns,
     rows;
 
   ssize_t
+    j,
     y;
 
   status=MagickTrue;
@@ -1269,7 +1267,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     normalize;
 
   ssize_t
-    channel;
+    channel,
+    j;
 
   /*
     Compute perceptual hash in the sRGB colorspace.
@@ -1315,8 +1314,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         if (normalize == MagickFalse)
           difference+=(beta-alpha)*(beta-alpha);
         else
-          difference+=sqrt((beta-alpha)*(beta-alpha)/
-            channel_phash[0].number_channels);
+          difference+=(beta-alpha)*(beta-alpha)/
+            channel_phash[0].number_channels;
       }
     }
     distortion[channel]+=difference;
@@ -1325,6 +1324,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
 #endif
     distortion[CompositePixelChannel]+=difference;
   }
+  if (normalize != MagickFalse)
+    for (j=0; j <= MaxPixelChannels; j++)
+      distortion[j]=sqrt(distortion[j]);
   /*
     Free resources.
   */
@@ -2835,7 +2837,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reference,
   gamma_image=DestroyImage(gamma_image);
   if (beta_image == (Image *) NULL)
     ThrowSimilarityException();
-  (void) ResetImagePage(beta_image,"0x0+0+0"); 
+  (void) ResetImagePage(beta_image,"0x0+0+0");
   SetGeometry(image,&geometry);
   geometry.width=image->columns-reference->columns;
   geometry.height=image->rows-reference->rows;
@@ -2846,7 +2848,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reference,
   beta_image=DestroyImage(beta_image);
   if (correlation_image == (Image *) NULL)
     ThrowSimilarityException();
-  (void) ResetImagePage(correlation_image,"0x0+0+0"); 
+  (void) ResetImagePage(correlation_image,"0x0+0+0");
   /*
     Identify the maxima value in the image and its location.
   */
@@ -2931,7 +2933,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
   if ((image->channels & ReadMaskChannel) != 0)
     {
       const char *artifact = GetImageArtifact(image,"compare:accelerate-ncc");
-      MagickBooleanType accelerate = (artifact != (const char *) NULL) && 
+      MagickBooleanType accelerate = (artifact != (const char *) NULL) &&
         (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
       if ((accelerate != MagickFalse) &&
           (metric == NormalizedCrossCorrelationErrorMetric))
