@@ -404,6 +404,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->colorspace=LinearGRAYColorspace;
               }
           }
+        else if (jxl_status != JXL_DEC_ERROR)
+          break;
         jxl_status=JxlDecoderGetICCProfileSize(jxl_info,&pixel_format,
           JXL_COLOR_PROFILE_TARGET_ORIGINAL,&profile_size);
         if (jxl_status != JXL_DEC_SUCCESS)
