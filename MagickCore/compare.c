@@ -1263,9 +1263,6 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   const char
     *artifact;
 
-  MagickBooleanType
-    normalize;
-
   ssize_t
     channel,
     j;
@@ -1283,9 +1280,6 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         channel_phash);
       return(MagickFalse);
     }
-  artifact=GetImageArtifact(image,"phash:normalize");
-  normalize=(artifact == (const char *) NULL) ||
-    (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static)
 #endif
@@ -1311,11 +1305,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       {
         alpha=channel_phash[channel].phash[j][i];
         beta=reconstruct_phash[channel].phash[j][i];
-        if (normalize == MagickFalse)
-          difference+=(beta-alpha)*(beta-alpha);
-        else
-          difference+=(beta-alpha)*(beta-alpha)/
-            channel_phash[0].number_channels;
+        difference+=(beta-alpha)*(beta-alpha);
       }
     }
     distortion[channel]+=difference;
@@ -1324,9 +1314,11 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
 #endif
     distortion[CompositePixelChannel]+=difference;
   }
-  if (normalize != MagickFalse)
+  artifact=GetImageArtifact(image,"phash:normalize");
+  if ((artifact != (const char *) NULL) &&
+      (IsStringTrue(artifact) != MagickFalse))
     for (j=0; j <= MaxPixelChannels; j++)
-      distortion[j]=sqrt(distortion[j]);
+      distortion[j]=sqrt(distortion[j]/channel_phash[0].number_channels);
   /*
     Free resources.
   */
