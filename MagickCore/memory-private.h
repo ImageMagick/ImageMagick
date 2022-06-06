@@ -57,6 +57,9 @@ static inline size_t OverAllocateMemory(const size_t length)
   return(extent);
 }
 
+extern MagickPrivate MagickBooleanType
+  ShredMagickMemory(void *,const size_t);
+
 extern MagickPrivate void
   ResetMaxMemoryRequest(void),
   ResetVirtualAnonymousMemory(void);

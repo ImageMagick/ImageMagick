@@ -1050,7 +1050,7 @@ MagickExport size_t GetMaxMemoryRequest(void)
       char
         *value;
 
-      max_memory_request=MAGICK_SSIZE_MAX;
+      max_memory_request=(size_t) MAGICK_SSIZE_MAX;
       value=GetPolicyValue("system:max-memory-request");
       if (value != (char *) NULL)
         {
@@ -1062,7 +1062,7 @@ MagickExport size_t GetMaxMemoryRequest(void)
           value=DestroyString(value);
         }
     }
-  return(MagickMin(max_memory_request,MAGICK_SSIZE_MAX));
+  return(MagickMin(max_memory_request,(size_t) MAGICK_SSIZE_MAX));
 }
 
 /*
@@ -1550,4 +1550,93 @@ MagickExport void SetMagickMemoryMethods(
     memory_methods.resize_memory_handler=resize_memory_handler;
   if (destroy_memory_handler != (DestroyMemoryHandler) NULL)
     memory_methods.destroy_memory_handler=destroy_memory_handler;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S h r e d F i l e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ShredMagickMemory() overwrites the specified memory buffer with random data.
+%  The overwrite is optional and is only required to help keep the contents of
+%  the memory buffer private.
+%
+%  The format of the ShredMagickMemory method is:
+%
+%      MagickBooleanType ShredMagickMemory(void *memory,const size_t length)
+%
+%  A description of each parameter follows.
+%
+%    o memory:  Specifies the memory buffer.
+%
+%    o length:  Specifies the length of the memory buffer.
+%
+*/
+MagickPrivate MagickBooleanType ShredMagickMemory(void *memory,
+  const size_t length)
+{
+  size_t
+    quantum;
+
+  ssize_t
+    i;
+
+  static ssize_t
+    passes = -1;
+
+  if ((memory == NULL) || (length == 0))
+    return(MagickFalse);
+  if (passes == -1)
+    {
+      char
+        *property;
+
+      property=GetPolicyValue("system:shred");
+      if (property == (char *) NULL)
+        property=GetEnvironmentValue("MAGICK_SHRED_PASSES");
+      if (property != (char *) NULL)
+        {
+          passes=(ssize_t) StringToInteger(property);
+          property=DestroyString(property);
+        }
+    }
+  if (passes <= 0)
+    return(MagickTrue);
+  /*
+    Overwrite the memory buffer with random data.
+  */
+  quantum=(size_t) MagickMin(length,MagickMaxBufferExtent);
+  for (i=0; i < passes; i++)
+  {
+    size_t
+      j;
+
+    RandomInfo
+      *random_info;
+
+    unsigned char
+      *p = (unsigned char *) memory;
+
+    random_info=AcquireRandomInfo();
+    for (j=0; j < length; j+=quantum)
+    {
+      StringInfo
+        *key;
+
+      key=GetRandomKey(random_info,quantum);
+      (void) memcpy(p,GetStringInfoDatum(key),(size_t)
+        MagickMin(quantum,length-j));
+      key=DestroyStringInfo(key);
+    }
+    random_info=DestroyRandomInfo(random_info);
+    if (j < length)
+      break;
+  }
+  return(i < passes ? MagickFalse : MagickTrue);
 }
