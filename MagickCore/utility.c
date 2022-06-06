@@ -1919,11 +1919,11 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   length=(MagickSizeType) file_stats.st_size;
   for (i=0; i < passes; i++)
   {
-    RandomInfo
-      *random_info;
-
     MagickOffsetType
       j;
+
+    RandomInfo
+      *random_info;
 
     ssize_t
       count;
