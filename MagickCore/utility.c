@@ -1876,12 +1876,19 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
         *property;
 
       property=GetPolicyValue("system:shred");
-      if (property == (char *) NULL)
-        property=GetEnvironmentValue("MAGICK_SHRED_PASSES");
       if (property != (char *) NULL)
         {
           passes=(ssize_t) StringToInteger(property);
           property=DestroyString(property);
+        }
+      if (passes == -1)
+        {
+          property=GetEnvironmentValue("MAGICK_SHRED_PASSES");
+          if (property != (char *) NULL)
+            {
+              passes=(ssize_t) StringToInteger(property);
+              property=DestroyString(property);
+            }
         }
     }
   if (passes <= 0)
