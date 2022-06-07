@@ -210,6 +210,7 @@ static inline void RelinquishStreamPixels(CacheInfo *cache_info)
           cache_info->pixels=(Quantum *) NULL;
         }
     }
+  cache_info->mapped=MagickFalse;
   cache_info->metacontent=(void *) NULL;
   cache_info->length=0;
 }
