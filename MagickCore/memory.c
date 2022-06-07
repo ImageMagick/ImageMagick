@@ -1620,8 +1620,10 @@ MagickPrivate MagickBooleanType ShredMagickMemory(void *memory,
               property=DestroyString(property);
             }
         }
+      if (passes == -1)
+        passes=0;
     }
-  if (passes <= 0)
+  if (passes == 0)
     return(MagickTrue);
   /*
     Overwrite the memory buffer with random data.

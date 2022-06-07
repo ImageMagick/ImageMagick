@@ -1834,9 +1834,8 @@ MagickExport size_t MultilineCensus(const char *label)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ShredFile() overwrites the specified file with random data and then removes
-%  it.  The overwrite is optional and is only required to help keep the
-%  contents of the file private.
+%  ShredFile() overwrites the specified file with random data.  The overwrite is
+%  optional and is only required to help keep the contents of the file private.
 %
 %  The format of the ShredFile method is:
 %
@@ -1896,33 +1895,14 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
               property=DestroyString(property);
             }
         }
+      if (passes == -1)
+        passes=0;
     }
-  if (passes <= 0)
-    {
-      /*
-        Don't shred the file, just remove it.
-      */
-      status=remove_utf8(path);
-      if (status == -1)
-        {
-          (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
-            "Failed to remove: %s",path);
-          return(MagickFalse);
-        }
-      return(MagickTrue);
-    }
+  if (passes == 0)
+    return(MagickTrue);
   file=open_utf8(path,O_WRONLY | O_EXCL | O_BINARY,S_MODE);
   if (file == -1)
-    {
-      /*
-        Don't shred the file, just remove it.
-      */
-      status=remove_utf8(path);
-      if (status == -1)
-        (void) LogMagickEvent(ExceptionEvent,GetMagickModule(),
-          "Failed to remove: %s",path);
-      return(MagickFalse);
-    }
+    return(MagickFalse);
   /*
     Shred the file.
   */
@@ -1961,6 +1941,5 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   key=DestroyStringInfo(key);
   random_info=DestroyRandomInfo(random_info);
   status=close(file);
-  status=remove_utf8(path);
   return((status == -1 || i < passes) ? MagickFalse : MagickTrue);
 }
