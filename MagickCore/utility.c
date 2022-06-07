@@ -1944,7 +1944,8 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
       break;
     for (j=0; j < (MagickOffsetType) length; j+=count)
     {
-      SetRandomKey(random_info,quantum,GetStringInfoDatum(key));
+      if (i != 0)
+        SetRandomKey(random_info,quantum,GetStringInfoDatum(key));
       count=write(file,GetStringInfoDatum(key),(size_t)
         MagickMin((MagickSizeType) quantum,length-j));
       if (count <= 0)
