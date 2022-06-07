@@ -980,6 +980,7 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
   {
     case MemoryCache:
     {
+      (void) ShredMagickMemory(cache_info->pixels,(size_t) cache_info->length);
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
       if (cache_info->opencl != (MagickCLCacheInfo) NULL)
         {
@@ -989,14 +990,13 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
           break;
         }
 #endif
-      if (cache_info->mapped != MagickFalse)
-        (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+      if (cache_info->mapped == MagickFalse)
+        cache_info->pixels=(Quantum *) RelinquishAlignedMemory(
+          cache_info->pixels);
       else
         {
-          (void) ShredMagickMemory(cache_info->pixels,(size_t)
-            cache_info->length);
-          cache_info->pixels=(Quantum *) RelinquishAlignedMemory(
-            cache_info->pixels);
+          (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+          cache_info->pixels=(Quantum *) NULL;
         }
       RelinquishMagickResource(MemoryResource,cache_info->length);
       break;
