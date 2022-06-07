@@ -1559,7 +1559,7 @@ MagickExport void SetMagickMemoryMethods(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S h r e d F i l e                                                         %
+%   S h r e d M a g i c k M e m o r y                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
