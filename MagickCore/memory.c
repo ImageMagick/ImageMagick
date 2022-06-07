@@ -1235,6 +1235,7 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
     {
       case AlignedVirtualMemory:
       {
+        (void) ShredMagickMemory(memory_info->blob,memory_info->length);
         memory_info->blob=RelinquishAlignedMemory(memory_info->blob);
         break;
       }
@@ -1249,6 +1250,7 @@ MagickExport MemoryInfo *RelinquishVirtualMemory(MemoryInfo *memory_info)
       case UnalignedVirtualMemory:
       default:
       {
+        (void) ShredMagickMemory(memory_info->blob,memory_info->length);
         memory_info->blob=RelinquishMagickMemory(memory_info->blob);
         break;
       }
@@ -1581,6 +1583,9 @@ MagickExport void SetMagickMemoryMethods(
 MagickPrivate MagickBooleanType ShredMagickMemory(void *memory,
   const size_t length)
 {
+  RandomInfo
+    *random_info;
+
   size_t
     quantum;
 
@@ -1589,6 +1594,9 @@ MagickPrivate MagickBooleanType ShredMagickMemory(void *memory,
 
   static ssize_t
     passes = -1;
+
+  StringInfo
+    *key;
 
   if ((memory == NULL) || (length == 0))
     return(MagickFalse);
@@ -1619,31 +1627,26 @@ MagickPrivate MagickBooleanType ShredMagickMemory(void *memory,
     Overwrite the memory buffer with random data.
   */
   quantum=(size_t) MagickMin(length,MagickMaxBufferExtent);
+  random_info=AcquireRandomInfo();
+  key=GetRandomKey(random_info,quantum);
   for (i=0; i < passes; i++)
   {
     size_t
       j;
 
-    RandomInfo
-      *random_info;
-
     unsigned char
       *p = (unsigned char *) memory;
 
-    random_info=AcquireRandomInfo();
     for (j=0; j < length; j+=quantum)
     {
-      StringInfo
-        *key;
-
-      key=GetRandomKey(random_info,quantum);
+      SetRandomKey(random_info,quantum,GetStringInfoDatum(key));
       (void) memcpy(p,GetStringInfoDatum(key),(size_t)
         MagickMin(quantum,length-j));
-      key=DestroyStringInfo(key);
     }
-    random_info=DestroyRandomInfo(random_info);
     if (j < length)
       break;
   }
+  key=DestroyStringInfo(key);
+  random_info=DestroyRandomInfo(random_info);
   return(i < passes ? MagickFalse : MagickTrue);
 }

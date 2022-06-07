@@ -989,11 +989,15 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
           break;
         }
 #endif
-      if (cache_info->mapped == MagickFalse)
-        cache_info->pixels=(Quantum *) RelinquishAlignedMemory(
-          cache_info->pixels);
-      else
+      if (cache_info->mapped != MagickFalse)
         (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+      else
+        {
+          (void) ShredMagickMemory(cache_info->pixels,(size_t)
+            cache_info->length);
+          cache_info->pixels=(Quantum *) RelinquishAlignedMemory(
+            cache_info->pixels);
+        }
       RelinquishMagickResource(MemoryResource,cache_info->length);
       break;
     }

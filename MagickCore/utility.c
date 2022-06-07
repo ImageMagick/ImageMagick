@@ -1856,6 +1856,9 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   MagickSizeType
     length;
 
+  RandomInfo
+    *random_info;
+
   size_t
     quantum;
 
@@ -1864,6 +1867,9 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
 
   static ssize_t
     passes = -1;
+
+  StringInfo
+    *key;
 
   struct stat
     file_stats;
@@ -1924,29 +1930,23 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   if ((fstat(file,&file_stats) == 0) && (file_stats.st_size > 0))
     quantum=(size_t) MagickMin(file_stats.st_size,MagickMaxBufferExtent);
   length=(MagickSizeType) file_stats.st_size;
+  random_info=AcquireRandomInfo();
+  key=GetRandomKey(random_info,quantum);
   for (i=0; i < passes; i++)
   {
     MagickOffsetType
       j;
-
-    RandomInfo
-      *random_info;
 
     ssize_t
       count;
 
     if (lseek(file,0,SEEK_SET) < 0)
       break;
-    random_info=AcquireRandomInfo();
     for (j=0; j < (MagickOffsetType) length; j+=count)
     {
-      StringInfo
-        *key;
-
-      key=GetRandomKey(random_info,quantum);
+      SetRandomKey(random_info,quantum,GetStringInfoDatum(key));
       count=write(file,GetStringInfoDatum(key),(size_t)
         MagickMin((MagickSizeType) quantum,length-j));
-      key=DestroyStringInfo(key);
       if (count <= 0)
         {
           count=0;
@@ -1954,10 +1954,11 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
             break;
         }
     }
-    random_info=DestroyRandomInfo(random_info);
     if (j < (MagickOffsetType) length)
       break;
   }
+  key=DestroyStringInfo(key);
+  random_info=DestroyRandomInfo(random_info);
   status=close(file);
   status=remove_utf8(path);
   return((status == -1 || i < passes) ? MagickFalse : MagickTrue);
