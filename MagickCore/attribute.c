@@ -423,8 +423,8 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   artifact=GetImageArtifact(image, "trim:edges");
   if (artifact == (const char *) NULL)
     {
-      bounds.width=image->columns == 1 ? 1 : 0;
-      bounds.height=image->rows == 1 ? 1 : 0;
+      bounds.width=(size_t) (image->columns == 1 ? 1 : 0);
+      bounds.height=(size_t) (image->rows == 1 ? 1 : 0);
       bounds.x=(ssize_t) image->columns;
       bounds.y=(ssize_t) image->rows;
     }
