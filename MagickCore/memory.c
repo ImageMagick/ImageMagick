@@ -1624,7 +1624,7 @@ MagickPrivate MagickBooleanType ShredMagickMemory(void *memory,
   /*
     Overwrite the memory buffer with random data.
   */
-  quantum=(size_t) MagickMin(length,MagickMaxBufferExtent);
+  quantum=(size_t) MagickMin(length,MagickMinBufferExtent);
   random_info=AcquireRandomInfo();
   key=GetRandomKey(random_info,quantum);
   for (i=0; i < passes; i++)

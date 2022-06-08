@@ -1896,15 +1896,15 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
     }
   if (passes == 0)
     return(MagickTrue);
-  file=open_utf8(path,O_WRONLY | O_EXCL | O_BINARY,S_MODE);
-  if (file == -1)
-    return(MagickFalse);
   /*
     Shred the file.
   */
-  quantum=(size_t) MagickMaxBufferExtent;
+  file=open_utf8(path,O_WRONLY | O_EXCL | O_BINARY,S_MODE);
+  if (file == -1)
+    return(MagickFalse);
+  quantum=(size_t) MagickMinBufferExtent;
   if ((fstat(file,&file_stats) == 0) && (file_stats.st_size > 0))
-    quantum=(size_t) MagickMin(file_stats.st_size,MagickMaxBufferExtent);
+    quantum=(size_t) MagickMin(file_stats.st_size,MagickMinBufferExtent);
   length=(MagickSizeType) file_stats.st_size;
   random_info=AcquireRandomInfo();
   key=GetRandomKey(random_info,quantum);
