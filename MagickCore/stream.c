@@ -200,7 +200,6 @@ static inline void RelinquishStreamPixels(CacheInfo *cache_info)
   assert(cache_info != (CacheInfo *) NULL);
   if (cache_info->pixels != (Quantum *) NULL)
     {
-      (void) ShredMagickMemory(cache_info->pixels,(size_t) cache_info->length);
       if (cache_info->mapped == MagickFalse)
         cache_info->pixels=(Quantum *) RelinquishAlignedMemory(
           cache_info->pixels);
