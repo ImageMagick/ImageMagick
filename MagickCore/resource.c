@@ -1129,7 +1129,7 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
       status=ShredFile(path);
       status|=remove_utf8(path);
     }
-  return(status);
+  return(status == 0 ? MagickFalse : MagickTrue);
 }
 
 /*
