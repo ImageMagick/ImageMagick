@@ -43,6 +43,8 @@ static inline MagickBooleanType GetColorRange(const char *color,
   MagickBooleanType
     status;
 
+  if (color == (const char *) NULL)
+    return(MagickFalse);
   if (*color != '\0')
     {
       char

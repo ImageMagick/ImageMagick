@@ -337,6 +337,8 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
 #define SaveChar(c) \
 { \
   if ((size_t) offset >= (token_info->length-1)) { \
+    if (token_info == (ScriptTokenInfo *) NULL) \
+      break; \
     if ( token_info->length >= MagickPathExtent ) \
       token_info->length += MagickPathExtent; \
     else \
@@ -348,7 +350,10 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
       break; \
     } \
   } \
-  token_info->token[offset++]=(char) (c); \
+  if ( token_info->token == (char *) NULL ) \
+    token_info->status=TokenStatusMemoryFailed; \
+  else \
+    token_info->token[offset++]=(char) (c); \
 }
 
 WandExport MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)

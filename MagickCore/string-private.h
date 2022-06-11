@@ -102,11 +102,15 @@ static inline double StringToDoubleInterval(const char *string,
 
 static inline int StringToInteger(const char *magick_restrict value)
 {
+  if (value == (const char *) NULL)
+    return(0);
   return((int) strtol(value,(char **) NULL,10));
 }
 
 static inline long StringToLong(const char *magick_restrict value)
 {
+  if (value == (const char *) NULL)
+    return(0);
   return(strtol(value,(char **) NULL,10));
 }
 
@@ -136,6 +140,8 @@ static inline size_t StringToSizeType(const char *string,const double interval)
 static inline unsigned long StringToUnsignedLong(
   const char *magick_restrict value)
 {
+  if (value == (const char *) NULL)
+    return(0);
   return(strtoul(value,(char **) NULL,10));
 }
 

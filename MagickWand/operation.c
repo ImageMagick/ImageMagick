@@ -1085,6 +1085,8 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("log",option+1) == 0)
         {
           if (IfSetOption) {
+            if (arg1 == (char *) NULL)
+              break;
             if ((strchr(arg1,'%') == (char *) NULL))
               CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             (void) SetLogFormat(arg1);
@@ -3124,6 +3126,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           max_threshold=geometry_info.sigma;
           if ((flags & SigmaValue) == 0)
             max_threshold=min_threshold;
+          if (arg1 == (char *) NULL)
+            break;
           if (strchr(arg1,'%') != (char *) NULL)
             {
               max_threshold*=(double) (0.01*QuantumRange);
@@ -4204,6 +4208,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                 CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,
                   arg1);
               number_duplicates=(size_t) StringToLong(arg1);
+              if (arg1 == (char *) NULL)
+                break;
               p=strchr(arg1,',');
               if (p == (const char *) NULL)
                 new_images=DuplicateImages(_images,number_duplicates,"-1",

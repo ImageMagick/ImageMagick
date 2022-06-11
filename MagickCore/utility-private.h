@@ -133,6 +133,8 @@ static inline wchar_t *create_wchar_mode(const char *mode)
 
 static inline int access_utf8(const char *path,int mode)
 {
+  if (path == (const char *) NULL)
+    return(-1);
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
   return(access(path,mode));
 #else

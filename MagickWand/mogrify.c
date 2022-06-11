@@ -4066,6 +4066,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           AppendImageFormat(format,images->filename);
         AppendImageStack(images);
         FinalizeImageSettings(image_info,image,MagickFalse);
+        if (image == (Image *) NULL)
+          continue;
         if (global_colormap != MagickFalse)
           {
             QuantizeInfo
