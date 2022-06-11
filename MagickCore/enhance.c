@@ -318,6 +318,8 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
   /*
     Compute total number of excess pixels.
   */
+  if (number_bins == 0)
+    return;
   cumulative_excess=0;
   for (i=0; i < (ssize_t) number_bins; i++)
   {

@@ -3745,19 +3745,24 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (fxFltType) img->extent;
           break;
         case aKurtosis:
-          regA = cs[WHICH_ATTR_CHAN].kurtosis;
+          if (cs != (ChannelStatistics *) NULL)
+            regA = cs[WHICH_ATTR_CHAN].kurtosis;
           break;
         case aMaxima:
-          regA = cs[WHICH_ATTR_CHAN].maxima;
+          if (cs != (ChannelStatistics *) NULL)
+            regA = cs[WHICH_ATTR_CHAN].maxima;
           break;
         case aMean:
-          regA = cs[WHICH_ATTR_CHAN].mean;
+          if (cs != (ChannelStatistics *) NULL)
+            regA = cs[WHICH_ATTR_CHAN].mean;
           break;
         case aMedian:
-          regA = cs[WHICH_ATTR_CHAN].median;
+          if (cs != (ChannelStatistics *) NULL)
+            regA = cs[WHICH_ATTR_CHAN].median;
           break;
         case aMinima:
-          regA = cs[WHICH_ATTR_CHAN].minima;
+          if (cs != (ChannelStatistics *) NULL)
+            regA = cs[WHICH_ATTR_CHAN].minima;
           break;
         case aPage:
           break;
@@ -3793,10 +3798,12 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (fxFltType) img->resolution.y;
           break;
         case aSkewness:
-          regA = cs[WHICH_ATTR_CHAN].skewness;
+          if (cs != (ChannelStatistics *) NULL)
+            regA = cs[WHICH_ATTR_CHAN].skewness;
           break;
         case aStdDev:
-          regA = cs[WHICH_ATTR_CHAN].standard_deviation;
+          if (cs != (ChannelStatistics *) NULL)
+            regA = cs[WHICH_ATTR_CHAN].standard_deviation;
           break;
         case aH: /* image->rows */
           regA = (fxFltType) img->rows;

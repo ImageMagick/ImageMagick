@@ -261,7 +261,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   if ( p != (char *) NULL && p < end)
     {
       /* ParseGeometry() needs the geometry separated! -- Arrgghh */
-      memcpy(token, kernel_string, (size_t) (p-kernel_string));
+      (void) memcpy(token, kernel_string, (size_t) (p-kernel_string));
       token[p-kernel_string] = '\0';
       SetGeometryInfo(&args);
       flags = ParseGeometry(token, &args);
@@ -406,7 +406,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string,
     end = strchr(p, '\0');
 
   /* ParseGeometry() needs the geometry separated! -- Arrgghh */
-  memcpy(token, p, (size_t) (end-p));
+  (void) memcpy(token, p, (size_t) (end-p));
   token[end-p] = '\0';
   SetGeometryInfo(&args);
   flags = ParseGeometry(token, &args);
@@ -1983,6 +1983,10 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
                 exception);
               if (kernel == (KernelInfo *) NULL)
                 return(kernel);
+              if (kernel->next == (KernelInfo *) NULL)
+                return(DestroyKernelInfo(kernel));
+              if (kernel->next->next == (KernelInfo *) NULL)
+                return(DestroyKernelInfo(kernel));
               kernel->type = type;
               kernel->next->type = type;
               kernel->next->next->type = type;

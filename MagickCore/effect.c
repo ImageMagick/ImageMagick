@@ -2475,8 +2475,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
-          alpha,
-          gamma,
+          alpha = 0.0,
+          gamma = 0.0,
           pixel;
 
         PixelChannel
@@ -2525,8 +2525,6 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
             SetPixelChannel(blur_image,channel,ClampToQuantum(pixel),q);
             continue;
           }
-        alpha=0.0;
-        gamma=0.0;
         for (j=0; j < (ssize_t) width; j++)
         {
           r=GetCacheViewVirtualPixels(motion_view,x+offset[j].x,y+offset[j].y,1,
@@ -2643,15 +2641,13 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
   RectangleInfo
     geometry;
 
-  ssize_t
-    i,
-    x;
-
   size_t
     colors;
 
   ssize_t
-    y;
+    i,
+    x = 0,
+    y = 0;
 
   /*
     Open output image file.
@@ -2673,8 +2669,6 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
   radius=0.0;
   sigma=1.0;
   threshold=0.0;
-  x=0;
-  y=0;
   for (i=0; i < NumberTiles; i++)
   {
     thumbnail=ThumbnailImage(image,geometry.width,geometry.height,exception);
