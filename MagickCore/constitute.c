@@ -940,7 +940,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         char
           timestamp[MagickTimeExtent];
 
-        (void) FormatMagickTime(GetMagickTime(),sizeof(timestamp),timestamp);
+        (void) FormatMagickTime(next->timestamp,sizeof(timestamp),timestamp);
         (void) SetImageProperty(next,"date:timestamp",timestamp,exception);
         (void) FormatMagickTime((time_t) GetBlobProperties(next)->st_mtime,
           sizeof(timestamp),timestamp);
