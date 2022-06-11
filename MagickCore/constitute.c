@@ -76,6 +76,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/timer.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
@@ -939,6 +940,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         char
           timestamp[MagickTimeExtent];
 
+        (void) FormatMagickTime(GetMagickTime(),sizeof(timestamp),timestamp);
+        (void) SetImageProperty(next,"date:timestamp",timestamp,exception);
         (void) FormatMagickTime((time_t) GetBlobProperties(next)->st_mtime,
           sizeof(timestamp),timestamp);
         (void) SetImageProperty(next,"date:modify",timestamp,exception);
