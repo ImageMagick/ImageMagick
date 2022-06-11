@@ -172,7 +172,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   IconFile
-    icon_file;
+    icon_file = { 0 };
 
   IconInfo
     icon_info;

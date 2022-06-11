@@ -3265,7 +3265,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) memcpy(&info,info_copy,sizeof(info));
           info_copy=(DCMInfo *) RelinquishMagickMemory(info_copy);
         }
-      if (strcmp(explicit_vr,"SQ") == 0)
+      if ((info.scale != (Quantum *) NULL) && (strcmp(explicit_vr,"SQ") == 0))
         {
           /*
             If we're entering a sequence, push the current image parameters

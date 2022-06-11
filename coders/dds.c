@@ -1936,6 +1936,8 @@ static void ReadEndpoints(BC7Colors *endpoints,const unsigned char *block,
     endpoints->b[i]=GetBits(block,start_bit,color_bits);
 
   /* alpha */
+  for (i=0; i < num_subsets * 2; i++)
+    endpoints->a[i]=255;
   alpha_bits=BC7_mode_info[mode].alpha_precision;
   has_alpha=mode >= 4 ? MagickTrue : MagickFalse;
 
@@ -2023,7 +2025,7 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
   const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   BC7Colors
-    colors;
+    colors = { 0 };
 
   Quantum
     *q;

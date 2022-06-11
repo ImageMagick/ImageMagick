@@ -3624,6 +3624,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     rounded_size,
     size;
 
+  assert(image != (Image *) NULL);
   status=MagickTrue;
   base_image=GetNextImageInList(image);
   if (base_image == (Image *) NULL)

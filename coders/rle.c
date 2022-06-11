@@ -191,7 +191,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   unsigned char
-    background_color[256],
+    background_color[256] = { 0 },
     *colormap,
     pixel,
     plane,

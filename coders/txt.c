@@ -490,7 +490,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *p;
 
         double
-          channels[MaxPixelChannels+2];
+          channels[MaxPixelChannels+2] = { 0 };
 
         Quantum
           *q;

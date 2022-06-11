@@ -2799,8 +2799,10 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
       return(MagickFalse);
     }
   scanline[0]=(JSAMPROW) jpeg_pixels;
-  scale=65535/(unsigned short) GetQuantumRange((size_t)
-    jpeg_info->data_precision);
+  scale=0;
+  if (GetQuantumRange((size_t) jpeg_info->data_precision) != 0)
+    scale=65535/(unsigned short) GetQuantumRange((size_t)
+      jpeg_info->data_precision);
   if (scale == 0)
     scale=1;
   if (jpeg_info->data_precision <= 8)
