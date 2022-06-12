@@ -48,6 +48,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
+#include "MagickCore/registry.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/timer.h"
 #include "MagickCore/timer-private.h"
@@ -256,17 +257,40 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
   char *timestamp)
 {
   ssize_t
-    count;
+    count,
+    date_precision = -1;
 
   struct tm
     utc_time;
 
   assert(timestamp != (char *) NULL);
+  if (date_precision == -1)
+    {
+      char
+        *limit;
+
+      ExceptionInfo
+        *exception = AcquireExceptionInfo();
+
+      date_precision=0;
+      limit=(char *) GetImageRegistry(StringRegistryType,"date:precision",
+        exception);
+      exception=DestroyExceptionInfo(exception);
+      if (limit == (char *) NULL)
+        limit=GetEnvironmentValue("MAGICK_DATE_PRECISION");
+      if (limit != (char *) NULL)
+        {
+          date_precision=StringToInteger(limit);
+          limit=DestroyString(limit);
+        }
+    }
   GetMagickUTCtime(&time,&utc_time);
   count=FormatLocaleString(timestamp,length,
     "%04d-%02d-%02dT%02d:%02d:%02d%+03d:00",utc_time.tm_year+1900,
     utc_time.tm_mon+1,utc_time.tm_mday,utc_time.tm_hour,utc_time.tm_min,
     utc_time.tm_sec,0);
+  if ((date_precision > 0) && (date_precision < strlen(timestamp)))
+    timestamp[date_precision]='\0';     
   return(count);
 }
 
