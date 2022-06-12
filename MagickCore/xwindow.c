@@ -5445,7 +5445,7 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
     format;
 
   size_t
-    length;
+    length = 0;
 
   XImage
     *matte_image,
@@ -5460,7 +5460,6 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((window->width == 0) || (window->height == 0))
     return(MagickFalse);
-  (void) length;
   /*
     Apply user transforms to the image.
   */

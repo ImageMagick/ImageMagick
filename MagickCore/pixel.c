@@ -6314,8 +6314,8 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
       }
     if (image->alpha_trait != UndefinedPixelTrait)
       {
-        SetPixelChannelTraits(image,channel,(const PixelTrait)
-          (UpdatePixelTrait | BlendPixelTrait));
+        SetPixelChannelTraits(image,channel,(PixelTrait) (UpdatePixelTrait |
+          BlendPixelTrait));
         continue;
       }
     SetPixelChannelTraits(image,channel,UpdatePixelTrait);

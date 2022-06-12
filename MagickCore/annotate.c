@@ -349,7 +349,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
         offset.y=annotate_info->affine.ty+i*annotate_info->affine.sy*height;
         break;
       }
-      case NorthWestGravity:
+      case (GravityType) NorthWestGravity:
       {
         offset.x=(geometry.width == 0 ? -1.0 : 1.0)*annotate_info->affine.tx+i*
           annotate_info->affine.ry*height+annotate_info->affine.ry*
@@ -359,7 +359,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           metrics.ascent;
         break;
       }
-      case NorthGravity:
+      case (GravityType) NorthGravity:
       {
         offset.x=(geometry.width == 0 ? -1.0 : 1.0)*annotate_info->affine.tx+
           geometry.width/2.0+i*annotate_info->affine.ry*height-
@@ -370,7 +370,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           metrics.ascent-annotate_info->affine.rx*metrics.width/2.0;
         break;
       }
-      case NorthEastGravity:
+      case (GravityType) NorthEastGravity:
       {
         offset.x=(geometry.width == 0 ? 1.0 : -1.0)*annotate_info->affine.tx+
           geometry.width+i*annotate_info->affine.ry*height-
@@ -381,7 +381,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           metrics.ascent-annotate_info->affine.rx*metrics.width;
         break;
       }
-      case WestGravity:
+      case (GravityType) WestGravity:
       {
         offset.x=(geometry.width == 0 ? -1.0 : 1.0)*annotate_info->affine.tx+i*
           annotate_info->affine.ry*height+annotate_info->affine.ry*
@@ -392,7 +392,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           (number_lines-1.0)*height)/2.0;
         break;
       }
-      case CenterGravity:
+      case (GravityType) CenterGravity:
       {
         offset.x=(geometry.width == 0 ? -1.0 : 1.0)*annotate_info->affine.tx+
           geometry.width/2.0+i*annotate_info->affine.ry*height-
@@ -404,7 +404,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           (metrics.ascent+metrics.descent-(number_lines-1.0)*height)/2.0;
         break;
       }
-      case EastGravity:
+      case (GravityType) EastGravity:
       {
         offset.x=(geometry.width == 0 ? 1.0 : -1.0)*annotate_info->affine.tx+
           geometry.width+i*annotate_info->affine.ry*height-
@@ -418,7 +418,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           (number_lines-1.0)*height)/2.0;
         break;
       }
-      case SouthWestGravity:
+      case (GravityType) SouthWestGravity:
       {
         offset.x=(geometry.width == 0 ? -1.0 : 1.0)*annotate_info->affine.tx+i*
           annotate_info->affine.ry*height-annotate_info->affine.ry*
@@ -428,7 +428,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           annotate_info->affine.sy*(number_lines-1.0)*height+metrics.descent;
         break;
       }
-      case SouthGravity:
+      case (GravityType) SouthGravity:
       {
         offset.x=(geometry.width == 0 ? -1.0 : 1.0)*annotate_info->affine.tx+
           geometry.width/2.0+i*annotate_info->affine.ry*height-
@@ -440,7 +440,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           annotate_info->affine.sy*(number_lines-1.0)*height+metrics.descent;
         break;
       }
-      case SouthEastGravity:
+      case (GravityType) SouthEastGravity:
       {
         offset.x=(geometry.width == 0 ? 1.0 : -1.0)*annotate_info->affine.tx+
           geometry.width+i*annotate_info->affine.ry*height-

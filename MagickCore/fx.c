@@ -3280,15 +3280,14 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           break;
         case oNull: {
           if (pel->type == etColourConstant) {
-            switch (channel) {
-              default:
-              case 0:
+            switch (channel) { default:
+              case (PixelChannel) 0:
                 regA = pel->val;
                 break;
-              case 1:
+              case (PixelChannel) 1:
                 regA = pel->val1;
                 break;
-              case 2:
+              case (PixelChannel) 2:
                 regA = pel->val2;
                 break;
             }
@@ -3344,11 +3343,11 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           break;
         case fChannel:
           switch (channel) {
-            case 0: break;
-            case 1: regA = regB; break;
-            case 2: regA = regC; break;
-            case 3: regA = regD; break;
-            case 4: regA = regE; break;
+            case (PixelChannel) 0: break;
+            case (PixelChannel) 1: regA = regB; break;
+            case (PixelChannel) 2: regA = regC; break;
+            case (PixelChannel) 3: regA = regD; break;
+            case (PixelChannel) 4: regA = regE; break;
             default: regA = 0.0;
           }
           break;

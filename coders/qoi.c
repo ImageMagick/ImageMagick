@@ -491,8 +491,8 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,"qoif");
   (void) WriteBlobMSBLong(image,(unsigned int) image->columns);
   (void) WriteBlobMSBLong(image,(unsigned int) image->rows);
-  (void) WriteBlobByte(image,(const unsigned char) channels);
-  (void) WriteBlobByte(image,(const unsigned char) colorspace);
+  (void) WriteBlobByte(image,(unsigned char) channels);
+  (void) WriteBlobByte(image,(unsigned char) colorspace);
   /*
     Initialize encoding state.
   */
@@ -523,22 +523,20 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
         run++;
         if (run == 62)
           {
-            (void) WriteBlobByte(image,QOI_OP_RUN |
-              (const unsigned char) (run - 1));
+            (void) WriteBlobByte(image,QOI_OP_RUN | (unsigned char) (run - 1));
             run=0;
           }
         continue;
       }
     if (run > 0)
       {
-        (void) WriteBlobByte(image,QOI_OP_RUN |
-          (const unsigned char) (run - 1));
+        (void) WriteBlobByte(image,QOI_OP_RUN | (unsigned char) (run - 1));
         run=0;
       }
     idx=QOI_COLOR_HASH(px) % 64;
     if (lut[idx].v == px.v)
       {
-        (void) WriteBlobByte(image,QOI_OP_INDEX | (const unsigned char) idx);
+        (void) WriteBlobByte(image,QOI_OP_INDEX | (unsigned char) idx);
         continue;
       }
     lut[QOI_COLOR_HASH(px) % 64]=px;
@@ -593,7 +591,7 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
       }
   }
   if (run > 0)
-    (void) WriteBlobByte(image,QOI_OP_RUN | (const unsigned char) (run - 1));
+    (void) WriteBlobByte(image,QOI_OP_RUN | (unsigned char) (run - 1));
   /*
     Write the QOI end marker: seven 0x00 bytes followed by 0x01.
   */

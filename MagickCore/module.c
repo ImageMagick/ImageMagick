@@ -1257,7 +1257,7 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   p=GetCoderInfo(module,exception);
   if (p != (CoderInfo *) NULL)
     (void) CopyMagickString(module_name,p->name,MagickPathExtent);
-  rights=ReadPolicyRights | WritePolicyRights;
+  rights=(PolicyRights) (ReadPolicyRights | WritePolicyRights);
   if (IsRightsAuthorized(ModulePolicyDomain,rights,module_name) == MagickFalse)
     {
       errno=EPERM;

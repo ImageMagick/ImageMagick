@@ -1489,8 +1489,8 @@ static MagickBooleanType ReadPSDChannel(Image *image,
     case ZipWithPrediction:
     case ZipWithoutPrediction:
 #ifdef MAGICKCORE_ZLIB_DELEGATE
-      status=ReadPSDChannelZip(channel_image,channel,compression,
-        (const size_t) end_offset,exception);
+      status=ReadPSDChannelZip(channel_image,channel,compression,(size_t)
+        end_offset,exception);
 #else
       (void) ThrowMagickException(exception,GetMagickModule(),
           MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn",
@@ -2154,9 +2154,9 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
                 ThrowBinaryException(CorruptImageError,
                   "InsufficientImageDataInFile",image->filename);
               }
-            layer_info[i].info=AcquireStringInfo((const size_t) length);
+            layer_info[i].info=AcquireStringInfo((size_t) length);
             info=GetStringInfoDatum(layer_info[i].info);
-            (void) ReadBlob(image,(const size_t) length,info);
+            (void) ReadBlob(image,(size_t) length,info);
             ParseAdditionalInfo(&layer_info[i]);
           }
       }
@@ -2501,7 +2501,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Duotone image data;  the format of this data is undocumented.
             32 bits per pixel;  the colormap is ignored.
           */
-          (void) SeekBlob(image,(const MagickOffsetType) length,SEEK_CUR);
+          (void) SeekBlob(image,(MagickOffsetType) length,SEEK_CUR);
         }
       else
         {
@@ -3375,7 +3375,7 @@ static inline size_t WriteChannelSize(const PSDInfo *psd_info,Image *image,
   size_t
     count;
 
-  count=(size_t) WriteBlobShort(image,(const unsigned short) channel);
+  count=(size_t) WriteBlobShort(image,(unsigned short) channel);
   count+=SetPSDSize(psd_info,image,0);
   return(count);
 }
@@ -3584,7 +3584,7 @@ static const StringInfo *GetAdditionalInformation(const ImageInfo *image_info,
   profile=RemoveImageProfile(image,"psd:additional-info");
   if (length == 0)
     return(DestroyStringInfo(profile));
-  SetStringInfoLength(profile,(const size_t) length);
+  SetStringInfoLength(profile,(size_t) length);
   (void) SetImageProfile(image,"psd:additional-info",info,exception);
   return(profile);
 }
@@ -3706,8 +3706,8 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
     else
       size+=WriteBlobByte(image,255);
     size+=WriteBlobByte(image,0);
-    size+=WriteBlobByte(image,(const unsigned char)
-      (next_image->compose == NoCompositeOp ? 1 << 0x02 : 1)); /* layer properties - visible, etc. */
+    size+=WriteBlobByte(image,(unsigned char) (next_image->compose ==
+      NoCompositeOp ? 1 << 0x02 : 1)); /* layer properties - visible, etc. */
     size+=WriteBlobByte(image,0);
     info=GetAdditionalInformation(image_info,next_image,exception);
     property=(const char *) GetImageProperty(next_image,"label",exception);
@@ -3736,15 +3736,14 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
         mask->page.y+=image->page.y;
         mask->page.x+=image->page.x;
         size+=WriteBlobLong(image,20);
-        size+=WriteBlobSignedLong(image,(const signed int) mask->page.y);
-        size+=WriteBlobSignedLong(image,(const signed int) mask->page.x);
-        size+=WriteBlobSignedLong(image,(const signed int) (mask->rows+
-          mask->page.y));
-        size+=WriteBlobSignedLong(image,(const signed int) (mask->columns+
+        size+=WriteBlobSignedLong(image,(signed int) mask->page.y);
+        size+=WriteBlobSignedLong(image,(signed int) mask->page.x);
+        size+=WriteBlobSignedLong(image,(signed int) (mask->rows+mask->page.y));
+        size+=WriteBlobSignedLong(image,(signed int) (mask->columns+
           mask->page.x));
         size+=WriteBlobByte(image,default_color);
-        size+=WriteBlobByte(image,(const unsigned char)
-          (mask->compose == NoCompositeOp ? 2 : 0));
+        size+=WriteBlobByte(image,(unsigned char) (mask->compose ==
+          NoCompositeOp ? 2 : 0));
         size+=WriteBlobMSBShort(image,0);
       }
     size+=WriteBlobLong(image,0);

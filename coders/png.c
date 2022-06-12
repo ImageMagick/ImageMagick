@@ -2749,7 +2749,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Reading PNG iCCP chunk.");
 
-          profile=BlobToStringInfo(info,(const size_t) profile_length);
+          profile=BlobToStringInfo(info,(size_t) profile_length);
 
           if (profile == (StringInfo *) NULL)
           {
