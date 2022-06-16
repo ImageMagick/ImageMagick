@@ -3429,12 +3429,13 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
             if (((int) magick[0] == 0x1F) && ((int) magick[1] == 0x8B) &&
                 ((int) magick[2] == 0x08))
               {
-                if (blob_info->file_info.file != (FILE *) NULL)
-                  (void) fclose(blob_info->file_info.file);
-                blob_info->file_info.file=(FILE *) NULL;
                 blob_info->file_info.gzfile=gzopen(filename,"rb");
                 if (blob_info->file_info.gzfile != (gzFile) NULL)
-                  blob_info->type=ZipStream;
+                  {
+                    (void) fclose(blob_info->file_info.file);
+                    blob_info->file_info.file=(FILE *) NULL;
+                    blob_info->type=ZipStream;
+                  }
                }
 #endif
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
