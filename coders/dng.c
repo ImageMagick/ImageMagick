@@ -419,6 +419,19 @@ static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
     libraw_dcraw_clear_mem(thumbnail);
 }
 
+static OrientationType LibRawFlipToOrientation(int flip)
+{
+  switch(flip)
+  {
+    case 6:
+      return(LeftBottomOrientation);
+    case 8:
+      return(RightTopOrientation);
+    default:
+      return((OrientationType) flip);
+  }
+}
+
 #endif
 
 static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -505,7 +518,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->page.height=raw_info->sizes.raw_height;
     image->page.x=raw_info->sizes.left_margin;
     image->page.y=raw_info->sizes.top_margin;
-    image->orientation=(OrientationType) raw_info->sizes.flip;
+    image->orientation=LibRawFlipToOrientation(raw_info->sizes.flip);
     ReadLibRawThumbnail(image_info,image,raw_info,exception);
     if (image_info->ping != MagickFalse)
       {
