@@ -349,26 +349,31 @@ MagickExport double GetElapsedTime(TimerInfo *time_info)
 */
 MagickExport time_t GetMagickTime(void)
 {
-  static const char
-    *source_date_epoch = (const char *) NULL;
+  static time_t
+    constant_magick_time = 0;
 
   static MagickBooleanType
     epoch_initalized = MagickFalse;
 
   if (epoch_initalized == MagickFalse)
     {
+      const char
+        *source_date_epoch;
+
       source_date_epoch=getenv("SOURCE_DATE_EPOCH");
+      if (source_date_epoch != (const char *) NULL)
+        {
+          time_t
+            epoch;
+
+          epoch=(time_t) StringToDouble(source_date_epoch,(char **) NULL);
+          if ((epoch > 0) && (epoch <= time((time_t *) NULL)))
+            constant_magick_time=epoch;
+        }
       epoch_initalized=MagickTrue;
     }
-  if (source_date_epoch != (const char *) NULL)
-    {
-      time_t
-        epoch;
-
-      epoch=(time_t) StringToDouble(source_date_epoch,(char **) NULL);
-      if ((epoch > 0) && (epoch <= time((time_t *) NULL)))
-        return(epoch);
-    }
+  if (constant_magick_time != 0)
+    return(constant_magick_time);
   return(time((time_t *) NULL));
 }
 
