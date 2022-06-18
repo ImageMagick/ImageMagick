@@ -3464,12 +3464,14 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
             if (strncmp((char *) magick,"BZh",3) == 0)
               {
-                if (blob_info->file_info.file != (FILE *) NULL)
-                  (void) fclose(blob_info->file_info.file);
-                blob_info->file_info.file=(FILE *) NULL;
                 blob_info->file_info.bzfile=BZ2_bzopen(filename,"r");
                 if (blob_info->file_info.bzfile != (BZFILE *) NULL)
-                  blob_info->type=BZipStream;
+                  {
+                    if (blob_info->file_info.file != (FILE *) NULL)
+                      (void) fclose(blob_info->file_info.file);
+                    blob_info->file_info.file=(FILE *) NULL;
+                    blob_info->type=BZipStream;
+                  }
               }
 #endif
             if (blob_info->type == FileStream)
