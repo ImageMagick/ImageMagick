@@ -1284,6 +1284,69 @@ static const time_t GetPdfModDate(const ImageInfo *image_info,
   return(GetBlobProperties(image)->st_mtime);
 }
 
+static void WritePDFValue(const ImageInfo *image_info,Image* image,
+  const char *keyword,const char *value)
+{
+  char
+    *escaped;
+
+  size_t
+    length;
+
+  ssize_t
+    i;
+
+  wchar_t
+    *utf16;
+
+  if (LocaleCompare(image_info->magick,"PDFA") == 0)
+    {
+      escaped=EscapeParenthesis(value);
+      (void) WriteBlobString(image,"/");
+      (void) WriteBlobString(image,keyword);
+      (void) WriteBlobString(image," (");
+      (void) WriteBlobString(image,escaped);
+      escaped=DestroyString(escaped);
+      (void) WriteBlobString(image,")\n");
+      return;
+    }
+  utf16=ConvertUTF8ToUTF16((const unsigned char *) value,&length);
+  if (utf16 != (wchar_t *) NULL)
+    {
+      unsigned char
+        hex_digits[16];
+
+      hex_digits[0]='0';
+      hex_digits[1]='1';
+      hex_digits[2]='2';
+      hex_digits[3]='3';
+      hex_digits[4]='4';
+      hex_digits[5]='5';
+      hex_digits[6]='6';
+      hex_digits[7]='7';
+      hex_digits[8]='8';
+      hex_digits[9]='9';
+      hex_digits[10]='A';
+      hex_digits[11]='B';
+      hex_digits[12]='C';
+      hex_digits[13]='D';
+      hex_digits[14]='E';
+      hex_digits[15]='F';
+      (void) WriteBlobString(image,"/");
+      (void) WriteBlobString(image,keyword);
+      (void) WriteBlobString(image," <FEFF");
+      for (i=0; i < (ssize_t) length; i++)
+      {
+        (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 12) & 0x0f]);
+        (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 8) & 0x0f]);
+        (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 4) & 0x0f]);
+        (void) WriteBlobByte(image,hex_digits[utf16[i] & 0x0f]);
+      }
+      (void) WriteBlobString(image,">\n");
+      utf16=(wchar_t *) RelinquishMagickMemory(utf16);
+    }
+}
+
 static const StringInfo *GetCompatibleColorProfile(const Image* image)
 {
   ColorspaceType
@@ -3133,54 +3196,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
-  if (LocaleCompare(image_info->magick,"PDFA") == 0)
-    {
-      title=EscapeParenthesis(GetPDFTitle(image_info,basename));
-      (void) FormatLocaleString(buffer,MagickPathExtent,"/Title (%s)\n",title);
-      title=DestroyString(title);
-    }
-  else
-    {
-      wchar_t
-        *utf16;
-
-      utf16=ConvertUTF8ToUTF16((const unsigned char *) GetPDFTitle(image_info,
-        basename),&length);
-      if (utf16 != (wchar_t *) NULL)
-        {
-          unsigned char
-            hex_digits[16];
-
-          hex_digits[0]='0';
-          hex_digits[1]='1';
-          hex_digits[2]='2';
-          hex_digits[3]='3';
-          hex_digits[4]='4';
-          hex_digits[5]='5';
-          hex_digits[6]='6';
-          hex_digits[7]='7';
-          hex_digits[8]='8';
-          hex_digits[9]='9';
-          hex_digits[10]='A';
-          hex_digits[11]='B';
-          hex_digits[12]='C';
-          hex_digits[13]='D';
-          hex_digits[14]='E';
-          hex_digits[15]='F';
-          (void) FormatLocaleString(buffer,MagickPathExtent,"/Title <FEFF");
-          (void) WriteBlobString(image,buffer);
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 12) & 0x0f]);
-            (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 8) & 0x0f]);
-            (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 4) & 0x0f]);
-            (void) WriteBlobByte(image,hex_digits[utf16[i] & 0x0f]);
-          }
-          (void) FormatLocaleString(buffer,MagickPathExtent,">\n");
-          utf16=(wchar_t *) RelinquishMagickMemory(utf16);
-        }
-    }
-  (void) WriteBlobString(image,buffer);
+  WritePDFValue(image_info,image,"Title",GetPDFTitle(image_info,basename));
   seconds=GetPdfCreationDate(image_info,image);
   GetMagickUTCtime(&seconds,&utc_time);
   (void) FormatLocaleString(temp,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
