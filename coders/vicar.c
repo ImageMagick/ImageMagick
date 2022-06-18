@@ -53,11 +53,13 @@
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
+#include "MagickCore/locale_.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
@@ -208,7 +210,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   length=0;
   image->columns=0;
   image->rows=0;
-  while (isgraph((int) ((unsigned char) c)) && ((image->columns == 0) || (image->rows == 0)))
+  while ((isgraph((int) ((unsigned char) c) != 0)) &&
+         ((image->columns == 0) || (image->rows == 0)))
   {
     if (isalnum((int) ((unsigned char) c)) == MagickFalse)
       {
@@ -218,7 +221,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     else
       {
         char
-          *p;
+          *p,
+          property[MagickPathExtent];
 
         /*
           Determine a keyword and its value.
@@ -243,32 +247,45 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         if (value_expected == MagickFalse)
           continue;
         p=value;
-        while (isalnum((int) ((unsigned char) c)))
-        {
-          if ((size_t) (p-value) < (MagickPathExtent-1))
-            *p++=c;
-          c=ReadBlobByte(image);
-          count++;
-        }
+        if (c != '\'')
+          while (isalnum((int) ((unsigned char) c)))
+          {
+            if ((size_t) (p-value) < (MagickPathExtent-1))
+              *p++=c;
+            c=ReadBlobByte(image);
+            count++;
+          }
+       else
+          {
+            c=ReadBlobByte(image);
+            count++;
+            while (c != '\'')
+            {
+              if ((size_t) (p-value) < (MagickPathExtent-1))
+                *p++=c;
+              c=ReadBlobByte(image);
+              count++;
+            }
+          }
         *p='\0';
         /*
           Assign a value to the specified keyword.
         */
+        (void) FormatLocaleString(property,MagickPathExtent,"vicar:%s",keyword);
+        LocaleLower(property);
+        (void) SetImageProperty(image,property,value,exception);
         if (LocaleCompare(keyword,"LABEL_RECORDS") == 0)
           length*=(ssize_t) StringToLong(value);
         if (LocaleCompare(keyword,"LBLSIZE") == 0)
           length=(ssize_t) StringToLong(value);
-        if (LocaleCompare(keyword,"RECORD_BYTES") == 0)
-          {
-            image->columns=StringToUnsignedLong(value);
-            length=(ssize_t) image->columns;
-          }
-        if (LocaleCompare(keyword,"NS") == 0)
-          image->columns=StringToUnsignedLong(value);
         if (LocaleCompare(keyword,"LINES") == 0)
           image->rows=StringToUnsignedLong(value);
         if (LocaleCompare(keyword,"NL") == 0)
           image->rows=StringToUnsignedLong(value);
+        if (LocaleCompare(keyword,"NS") == 0)
+          image->columns=StringToUnsignedLong(value);
+        if (LocaleCompare(keyword,"END") == 0)
+          break;
       }
     while (isspace((int) ((unsigned char) c)) != 0)
     {
@@ -361,7 +378,8 @@ ModuleExport size_t RegisterVICARImage(void)
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("VICAR","VICAR","VICAR rasterfile format");
+  entry=AcquireMagickInfo("VICAR","VICAR",
+    "Video Image Communication And Retrieval");
   entry->decoder=(DecodeImageHandler *) ReadVICARImage;
   entry->encoder=(EncodeImageHandler *) WriteVICARImage;
   entry->magick=(IsImageFormatHandler *) IsVICAR;
