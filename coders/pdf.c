@@ -1235,6 +1235,44 @@ static const char *GetPDFTitle(const ImageInfo *image_info,
   return(default_title);
 }
 
+static const time_t GetPdfCreationDate(const ImageInfo *image_info,
+  const Image* image)
+{
+  const char
+    *option;
+
+  option=GetImageOption(image_info,"pdf:create-epoch");
+  if (option != (const char *) NULL)
+    {
+      time_t
+        epoch;
+
+      epoch=(time_t) StringToDouble(option,(char **) NULL);
+      if (epoch > 0)
+        return(epoch);
+    }
+  return(GetBlobProperties(image)->st_ctime);
+}
+
+static const time_t GetPdfModDate(const ImageInfo *image_info,
+  const Image* image)
+{
+  const char
+    *option;
+
+  option=GetImageOption(image_info,"pdf:modify-epoch");
+  if (option != (const char *) NULL)
+    {
+      time_t
+        epoch;
+
+      epoch=(time_t) StringToDouble(option,(char **) NULL);
+      if (epoch > 0)
+        return(epoch);
+    }
+  return(GetBlobProperties(image)->st_mtime);
+}
+
 static const StringInfo *GetCompatibleColorProfile(const Image* image)
 {
   ColorspaceType
@@ -1322,8 +1360,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       "            xmlns:xapMM=\"http://ns.adobe.com/xap/1.0/mm/\"\n"
       "            xmlns:pdf=\"http://ns.adobe.com/pdf/1.3/\"\n"
       "            xmlns:pdfaid=\"http://www.aiim.org/pdfa/ns/id/\">\n"
-      "         <xap:ModifyDate>%s</xap:ModifyDate>\n"
       "         <xap:CreateDate>%s</xap:CreateDate>\n"
+      "         <xap:ModifyDate>%s</xap:ModifyDate>\n"
       "         <xap:MetadataDate>%s</xap:MetadataDate>\n"
       "         <xap:CreatorTool>%s</xap:CreatorTool>\n"
       "         <dc:format>application/pdf</dc:format>\n"
@@ -1544,20 +1582,16 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"<<\n");
       (void) WriteBlobString(image,"/Subtype /XML\n");
-      *modify_date='\0';
-      value=GetImageProperty(image,"date:modify",exception);
-      if (value != (const char *) NULL)
-        (void) CopyMagickString(modify_date,value,sizeof(modify_date));
-      *create_date='\0';
-      value=GetImageProperty(image,"date:create",exception);
-      if (value != (const char *) NULL)
-        (void) CopyMagickString(create_date,value,sizeof(create_date));
+      (void) FormatMagickTime(GetPdfCreationDate(image_info,image),
+        sizeof(create_date),create_date);
+      (void) FormatMagickTime(GetPdfModDate(image_info,image),
+        sizeof(modify_date),modify_date);
       (void) FormatMagickTime(GetMagickTime(),sizeof(timestamp),timestamp);
       author=SubstituteXMLEntities(GetPDFAuthor(image_info),MagickFalse);
       title=SubstituteXMLEntities(GetPDFTitle(image_info,basename),MagickFalse);
       producer=SubstituteXMLEntities(GetPDFProducer(image_info),MagickFalse);
       i=FormatLocaleString(temp,MagickPathExtent,XMPProfile,XMPProfileMagick,
-        modify_date,create_date,timestamp,author,title,producer);
+        create_date,modify_date,timestamp,author,title,producer);
       producer=DestroyString(producer);
       title=DestroyString(title);
       author=DestroyString(author);
@@ -3135,7 +3169,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
         }
     }
   (void) WriteBlobString(image,buffer);
-  seconds=GetMagickTime();
+  seconds=GetPdfCreationDate(image_info,image);
   GetMagickUTCtime(&seconds,&utc_time);
   (void) FormatLocaleString(temp,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
     utc_time.tm_year+1900,utc_time.tm_mon+1,utc_time.tm_mday,
@@ -3143,6 +3177,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(buffer,MagickPathExtent,"/CreationDate (%s)\n",
     temp);
   (void) WriteBlobString(image,buffer);
+  seconds=GetPdfModDate(image_info,image);
+  GetMagickUTCtime(&seconds,&utc_time);
+  (void) FormatLocaleString(temp,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
+    utc_time.tm_year+1900,utc_time.tm_mon+1,utc_time.tm_mday,
+    utc_time.tm_hour,utc_time.tm_min,utc_time.tm_sec);
   (void) FormatLocaleString(buffer,MagickPathExtent,"/ModDate (%s)\n",temp);
   (void) WriteBlobString(image,buffer);
   author=EscapeParenthesis(GetPDFAuthor(image_info));
