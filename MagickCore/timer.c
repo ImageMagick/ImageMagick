@@ -290,7 +290,7 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
     utc_time.tm_mon+1,utc_time.tm_mday,utc_time.tm_hour,utc_time.tm_min,
     utc_time.tm_sec,0);
   if ((date_precision > 0) && (date_precision < (ssize_t) strlen(timestamp)))
-    timestamp[date_precision]='\0';     
+    timestamp[date_precision]='\0';
   return(count);
 }
 
