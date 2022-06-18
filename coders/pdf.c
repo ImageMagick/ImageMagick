@@ -1284,6 +1284,17 @@ static const time_t GetPdfModDate(const ImageInfo *image_info,
   return(GetBlobProperties(image)->st_mtime);
 }
 
+static const char *GetPDFKeywords(const ImageInfo *image_info)
+{
+  const char
+    *option;
+
+  option=GetImageOption(image_info,"pdf:keywords");
+  if (option != (const char *) NULL)
+    return(option);
+  return("");
+}
+
 static void WritePDFValue(const ImageInfo *image_info,Image* image,
   const char *keyword,const char *value)
 {
@@ -1299,6 +1310,8 @@ static void WritePDFValue(const ImageInfo *image_info,Image* image,
   wchar_t
     *utf16;
 
+  if (*value == '\0')
+    return;
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     {
       escaped=EscapeParenthesis(value);
@@ -1447,6 +1460,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       "         <xapMM:DocumentID>uuid:6ec119d7-7982-4f56-808d-dfe64f5b35cf</xapMM:DocumentID>\n"
       "         <xapMM:InstanceID>uuid:a79b99b4-6235-447f-9f6c-ec18ef7555cb</xapMM:InstanceID>\n"
       "         <pdf:Producer>%s</pdf:Producer>\n"
+      "         <pdf:Keywords>%s</pdf:Keywords>\n"
       "         <pdfaid:part>3</pdfaid:part>\n"
       "         <pdfaid:conformance>B</pdfaid:conformance>\n"
       "      </rdf:Description>\n"
@@ -1642,6 +1656,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       char
         create_date[MagickTimeExtent],
         *creator,
+        *keywords,
         modify_date[MagickTimeExtent],
         *producer,
         timestamp[MagickTimeExtent],
@@ -1664,11 +1679,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       creator=SubstituteXMLEntities(GetPDFCreator(image_info),MagickFalse);
       title=SubstituteXMLEntities(GetPDFTitle(image_info,basename),MagickFalse);
       producer=SubstituteXMLEntities(GetPDFProducer(image_info),MagickFalse);
+      keywords=SubstituteXMLEntities(GetPDFKeywords(image_info),MagickFalse);
       i=FormatLocaleString(temp,MagickPathExtent,XMPProfile,XMPProfileMagick,
-        create_date,modify_date,timestamp,creator,title,producer);
+        create_date,modify_date,timestamp,creator,title,producer,keywords);
       producer=DestroyString(producer);
       title=DestroyString(title);
       creator=DestroyString(creator);
+      keywords=DestroyString(keywords);
       (void) FormatLocaleString(buffer,MagickPathExtent,"/Length %.20g\n",
         (double) i);
       (void) WriteBlobString(image,buffer);
@@ -3199,6 +3216,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   WritePDFValue(image_info,image,"Author",GetPDFAuthor(image_info));
   WritePDFValue(image_info,image,"Creator",GetPDFCreator(image_info));
   WritePDFValue(image_info,image,"Producer",GetPDFProducer(image_info));
+  WritePDFValue(image_info,image,"Keywords",GetPDFKeywords(image_info));
   seconds=GetPdfCreationDate(image_info,image);
   GetMagickUTCtime(&seconds,&utc_time);
   (void) FormatLocaleString(temp,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
