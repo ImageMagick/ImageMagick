@@ -1295,8 +1295,8 @@ static const char *GetPDFKeywords(const ImageInfo *image_info)
   return("");
 }
 
-static void WritePDFValue(const ImageInfo *image_info,Image* image,
-  const char *keyword,const char *value)
+static void WritePDFValue(Image* image,const char *keyword,
+  const char *value,const MagickBooleanType is_pdfa)
 {
   char
     *escaped;
@@ -1312,7 +1312,7 @@ static void WritePDFValue(const ImageInfo *image_info,Image* image,
 
   if (*value == '\0')
     return;
-  if (LocaleCompare(image_info->magick,"PDFA") == 0)
+  if (is_pdfa != MagickFalse)
     {
       escaped=EscapeParenthesis(value);
       (void) WriteBlobString(image,"/");
@@ -1498,6 +1498,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     *next;
 
   MagickBooleanType
+    is_pdfa,
     status;
 
   MagickOffsetType
@@ -1586,7 +1587,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       version=1.4;
   if (image_info->compression == JPEG2000Compression)
     version=1.5;
-  if (LocaleCompare(image_info->magick,"PDFA") == 0)
+  is_pdfa=LocaleCompare(image_info->magick,"PDFA") == 0 ? MagickTrue :
+    MagickFalse;
+  if (is_pdfa != MagickFalse)
     version=1.6;
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
@@ -1612,7 +1615,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     }
   (void) FormatLocaleString(buffer,MagickPathExtent,"%%PDF-%.2g \n",version);
   (void) WriteBlobString(image,buffer);
-  if (LocaleCompare(image_info->magick,"PDFA") == 0)
+  if (is_pdfa != MagickFalse)
     {
       (void) WriteBlobByte(image,'%');
       (void) WriteBlobByte(image,0xe2);
@@ -1630,7 +1633,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
-  if (LocaleCompare(image_info->magick,"PDFA") != 0)
+  if (is_pdfa == MagickFalse)
     (void) FormatLocaleString(buffer,MagickPathExtent,"/Pages %.20g 0 R\n",
       (double) object+1);
   else
@@ -1651,7 +1654,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");
   GetPathComponent(image->filename,BasePath,basename);
-  if (LocaleCompare(image_info->magick,"PDFA") == 0)
+  if (is_pdfa != MagickFalse)
     {
       char
         create_date[MagickTimeExtent],
@@ -1797,13 +1800,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
 #endif
       case LZWCompression:
       {
-        if (LocaleCompare(image_info->magick,"PDFA") == 0)
+        if (is_pdfa != MagickFalse)
           compression=RLECompression;  /* LZW compression is forbidden */
         break;
       }
       case NoCompression:
       {
-        if (LocaleCompare(image_info->magick,"PDFA") == 0)
+        if (is_pdfa != MagickFalse)
           compression=RLECompression; /* ASCII 85 compression is forbidden */
         break;
       }
@@ -3212,11 +3215,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
-  WritePDFValue(image_info,image,"Title",GetPDFTitle(image_info,basename));
-  WritePDFValue(image_info,image,"Author",GetPDFAuthor(image_info));
-  WritePDFValue(image_info,image,"Creator",GetPDFCreator(image_info));
-  WritePDFValue(image_info,image,"Producer",GetPDFProducer(image_info));
-  WritePDFValue(image_info,image,"Keywords",GetPDFKeywords(image_info));
+  WritePDFValue(image,"Title",GetPDFTitle(image_info,basename),is_pdfa);
+  WritePDFValue(image,"Author",GetPDFAuthor(image_info),is_pdfa);
+  WritePDFValue(image,"Creator",GetPDFCreator(image_info),is_pdfa);
+  WritePDFValue(image,"Producer",GetPDFProducer(image_info),is_pdfa);
+  WritePDFValue(image,"Keywords",GetPDFKeywords(image_info),is_pdfa);
   seconds=GetPdfCreationDate(image_info,image);
   GetMagickUTCtime(&seconds,&utc_time);
   (void) FormatLocaleString(temp,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
@@ -3237,8 +3240,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   /*
     Write Xref object.
   */
-  offset=TellBlob(image)-xref[0]+
-   (LocaleCompare(image_info->magick,"PDFA") == 0 ? 6 : 0)+10;
+  offset=TellBlob(image)-xref[0]+((is_pdfa != MagickFalse) ? 6 : 0)+10;
   (void) WriteBlobString(image,"xref\n");
   (void) FormatLocaleString(buffer,MagickPathExtent,"0 %.20g\n",(double)
     object+1);
