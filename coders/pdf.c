@@ -1284,6 +1284,17 @@ static const time_t GetPdfModDate(const ImageInfo *image_info,
   return(GetBlobProperties(image)->st_mtime);
 }
 
+static const char *GetPDFSubject(const ImageInfo *image_info)
+{
+  const char
+    *option;
+
+  option=GetImageOption(image_info,"pdf:subject");
+  if (option != (const char *) NULL)
+    return(option);
+  return("");
+}
+
 static const char *GetPDFKeywords(const ImageInfo *image_info)
 {
   const char
@@ -3219,6 +3230,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   WritePDFValue(image,"Author",GetPDFAuthor(image_info),is_pdfa);
   WritePDFValue(image,"Creator",GetPDFCreator(image_info),is_pdfa);
   WritePDFValue(image,"Producer",GetPDFProducer(image_info),is_pdfa);
+  WritePDFValue(image,"Subject",GetPDFSubject(image_info),is_pdfa);
   WritePDFValue(image,"Keywords",GetPDFKeywords(image_info),is_pdfa);
   seconds=GetPdfCreationDate(image_info,image);
   GetMagickUTCtime(&seconds,&utc_time);
