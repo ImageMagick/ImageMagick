@@ -3451,25 +3451,29 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
             if (((int) magick[0] == 0x1F) && ((int) magick[1] == 0x8B) &&
                 ((int) magick[2] == 0x08))
               {
-                blob_info->file_info.gzfile=gzopen_utf8(filename,"rb");
-                if (blob_info->file_info.gzfile != (gzFile) NULL)
+                gzFile
+                  gzfile = gzopen_utf8(filename,"rb");
+
+                if (gzfile != (gzFile) NULL)
                   {
                     if (blob_info->file_info.file != (FILE *) NULL)
                       (void) fclose(blob_info->file_info.file);
-                    blob_info->file_info.file=(FILE *) NULL;
+                    blob_info->file_info.gzfile=gzfile;
                     blob_info->type=ZipStream;
                   }
-               }
+              }
 #endif
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
             if (strncmp((char *) magick,"BZh",3) == 0)
               {
-                blob_info->file_info.bzfile=BZ2_bzopen(filename,"r");
-                if (blob_info->file_info.bzfile != (BZFILE *) NULL)
+                BZFILE
+                  *bzfile = BZ2_bzopen(filename,"r");
+
+                if (bzfile != (BZFILE *) NULL)
                   {
                     if (blob_info->file_info.file != (FILE *) NULL)
                       (void) fclose(blob_info->file_info.file);
-                    blob_info->file_info.file=(FILE *) NULL;
+                    blob_info->file_info.bzfile=bzfile;
                     blob_info->type=BZipStream;
                   }
               }

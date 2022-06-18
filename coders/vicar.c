@@ -210,7 +210,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   length=0;
   image->columns=0;
   image->rows=0;
-  while ((isgraph((int) ((unsigned char) c) != 0)) &&
+  while ((isgraph((int) ((unsigned char) c)) != 0) &&
          ((image->columns == 0) || (image->rows == 0)))
   {
     if (isalnum((int) ((unsigned char) c)) == MagickFalse)
@@ -274,6 +274,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         (void) FormatLocaleString(property,MagickPathExtent,"vicar:%s",keyword);
         LocaleLower(property);
         (void) SetImageProperty(image,property,value,exception);
+        if (LocaleCompare(keyword,"END") == 0)
+          break;
         if (LocaleCompare(keyword,"LABEL_RECORDS") == 0)
           length*=(ssize_t) StringToLong(value);
         if (LocaleCompare(keyword,"LBLSIZE") == 0)
@@ -284,8 +286,6 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
           image->rows=StringToUnsignedLong(value);
         if (LocaleCompare(keyword,"NS") == 0)
           image->columns=StringToUnsignedLong(value);
-        if (LocaleCompare(keyword,"END") == 0)
-          break;
       }
     while (isspace((int) ((unsigned char) c)) != 0)
     {
