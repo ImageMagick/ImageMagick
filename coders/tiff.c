@@ -242,6 +242,10 @@ static void InitPSDInfo(const Image *image,PSDInfo *info)
       info->min_channels=info->channels;
       if (image->alpha_trait == BlendPixelTrait)
         info->min_channels--;
+      if (image->colorspace == CMYColorspace)
+        info->min_channels=MagickMin(4,info->min_channels);
+      else
+        info->min_channels=MagickMin(3,info->min_channels);
     }
 }
 #endif
