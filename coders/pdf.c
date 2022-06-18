@@ -1457,14 +1457,10 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     XMPProfileMagick[4]= { (char) -17, (char) -69, (char) -65, (char) 0 };
 
   char
-    *author,
     basename[MagickPathExtent],
     buffer[MagickPathExtent],
-    *creator,
     **labels,
-    *producer,
-    temp[MagickPathExtent],
-    *title;
+    temp[MagickPathExtent];
 
   CompressionType
     compression;
@@ -1645,8 +1641,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     {
       char
         create_date[MagickTimeExtent],
+        *creator,
         modify_date[MagickTimeExtent],
-        timestamp[MagickTimeExtent];
+        *producer,
+        timestamp[MagickTimeExtent],
+        *title;
 
       /*
         Write XMP object.
@@ -3197,6 +3196,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
   WritePDFValue(image_info,image,"Title",GetPDFTitle(image_info,basename));
+  WritePDFValue(image_info,image,"Author",GetPDFAuthor(image_info));
+  WritePDFValue(image_info,image,"Creator",GetPDFCreator(image_info));
+  WritePDFValue(image_info,image,"Producer",GetPDFProducer(image_info));
   seconds=GetPdfCreationDate(image_info,image);
   GetMagickUTCtime(&seconds,&utc_time);
   (void) FormatLocaleString(temp,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
@@ -3211,20 +3213,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     utc_time.tm_year+1900,utc_time.tm_mon+1,utc_time.tm_mday,
     utc_time.tm_hour,utc_time.tm_min,utc_time.tm_sec);
   (void) FormatLocaleString(buffer,MagickPathExtent,"/ModDate (%s)\n",temp);
-  (void) WriteBlobString(image,buffer);
-  author=EscapeParenthesis(GetPDFAuthor(image_info));
-  (void) FormatLocaleString(buffer,MagickPathExtent,"/Author (%s)\n",author);
-  author=DestroyString(author);
-  (void) WriteBlobString(image,buffer);
-  creator=EscapeParenthesis(GetPDFCreator(image_info));
-  (void) FormatLocaleString(buffer,MagickPathExtent,"/Creator (%s)\n",
-    creator);
-  creator=DestroyString(creator);
-  (void) WriteBlobString(image,buffer);
-  producer=EscapeParenthesis(GetPDFProducer(image_info));
-  (void) FormatLocaleString(buffer,MagickPathExtent,"/Producer (%s)\n",
-    producer);
-  producer=DestroyString(producer);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");
