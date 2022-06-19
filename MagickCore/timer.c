@@ -565,25 +565,22 @@ static void StopTimer(TimerInfo *time_info)
 */
 MagickPrivate MagickBooleanType TimerComponentGenesis(void)
 {
-  if (date_precision == -1)
+  char
+    *limit;
+
+  ExceptionInfo
+    *exception = AcquireExceptionInfo();
+
+  date_precision=0;
+  limit=(char *) GetImageRegistry(StringRegistryType,"date:precision",
+    exception);
+  exception=DestroyExceptionInfo(exception);
+  if (limit == (char *) NULL)
+    limit=GetEnvironmentValue("MAGICK_DATE_PRECISION");
+  if (limit != (char *) NULL)
     {
-      char
-        *limit;
-
-      ExceptionInfo
-        *exception = AcquireExceptionInfo();
-
-      date_precision=0;
-      limit=(char *) GetImageRegistry(StringRegistryType,"date:precision",
-        exception);
-      exception=DestroyExceptionInfo(exception);
-      if (limit == (char *) NULL)
-        limit=GetEnvironmentValue("MAGICK_DATE_PRECISION");
-      if (limit != (char *) NULL)
-        {
-          date_precision=StringToInteger(limit);
-          limit=DestroyString(limit);
-        }
+      date_precision=StringToInteger(limit);
+      limit=DestroyString(limit);
     }
   return(MagickTrue);
 }
