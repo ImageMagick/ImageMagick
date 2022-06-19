@@ -148,6 +148,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
+    format[MagickPathExtent] = "byte",
     keyword[MagickPathExtent],
     value[MagickPathExtent];
 
@@ -213,13 +214,16 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   while ((isgraph((int) ((unsigned char) c)) != 0) &&
          ((image->columns == 0) || (image->rows == 0)))
   {
-    if (isalnum((int) ((unsigned char) c)) == MagickFalse)
+    if (isalnum((int) ((unsigned char) c)) == 0)
       {
         c=ReadBlobByte(image);
         count++;
       }
     else
       {
+        MagickOffsetType
+          offset;
+
         char
           *p,
           property[MagickPathExtent];
@@ -227,12 +231,15 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         /*
           Determine a keyword and its value.
         */
+        offset=TellBlob(image)-1;
         p=keyword;
         do
         {
           if ((size_t) (p-keyword) < (MagickPathExtent-1))
             *p++=c;
           c=ReadBlobByte(image);
+          if (c == EOF)
+            break;
           count++;
         } while (isalnum((int) ((unsigned char) c)) || (c == '_'));
         *p='\0';
@@ -242,20 +249,16 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
           if (c == '=')
             value_expected=MagickTrue;
           c=ReadBlobByte(image);
+          if (c == EOF)
+            break;
           count++;
         }
         if (value_expected == MagickFalse)
           continue;
         p=value;
-        if (c != '\'')
-          while (isalnum((int) ((unsigned char) c)))
-          {
-            if ((size_t) (p-value) < (MagickPathExtent-1))
-              *p++=c;
-            c=ReadBlobByte(image);
-            count++;
-          }
-       else
+        switch (c)
+        {
+          case '\'':
           {
             c=ReadBlobByte(image);
             count++;
@@ -264,9 +267,56 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
               if ((size_t) (p-value) < (MagickPathExtent-1))
                 *p++=c;
               c=ReadBlobByte(image);
+              if (c == EOF)
+                break;
               count++;
             }
+            break;
           }
+          case '"':
+          {
+            c=ReadBlobByte(image);
+            count++;
+            while (c != '"')
+            {
+              if ((size_t) (p-value) < (MagickPathExtent-1))
+                *p++=c;
+              c=ReadBlobByte(image);
+              if (c == EOF)
+                break;
+              count++;
+            }
+            break;
+          }
+          case '(':
+          {
+            c=ReadBlobByte(image);
+            count++;
+            while (c != ')')
+            {
+              if ((size_t) (p-value) < (MagickPathExtent-1))
+                *p++=c;
+              c=ReadBlobByte(image);
+              if (c == EOF)
+                break;
+              count++;
+            }
+            break;
+          }
+          default:
+          {
+            while (isalnum((int) ((unsigned char) c)))
+            {
+              if ((size_t) (p-value) < (MagickPathExtent-1))
+                *p++=c;
+              c=ReadBlobByte(image);
+              if (c == EOF)
+                break;
+              count++;
+            }
+            break;
+          }
+        }
         *p='\0';
         /*
           Assign a value to the specified keyword.
@@ -276,10 +326,12 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         (void) SetImageProperty(image,property,value,exception);
         if (LocaleCompare(keyword,"END") == 0)
           break;
+        if (LocaleCompare(keyword,"FORMAT") == 0)
+          (void) CopyMagickString(format,value,MagickPathExtent);
         if (LocaleCompare(keyword,"LABEL_RECORDS") == 0)
           length*=(ssize_t) StringToLong(value);
         if (LocaleCompare(keyword,"LBLSIZE") == 0)
-          length=(ssize_t) StringToLong(value);
+          length=(ssize_t) StringToLong(value)+offset;
         if (LocaleCompare(keyword,"LINES") == 0)
           image->rows=StringToUnsignedLong(value);
         if (LocaleCompare(keyword,"NL") == 0)
@@ -287,9 +339,13 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         if (LocaleCompare(keyword,"NS") == 0)
           image->columns=StringToUnsignedLong(value);
       }
+    if (c == EOF)
+      break;
     while (isspace((int) ((unsigned char) c)) != 0)
     {
       c=ReadBlobByte(image);
+      if (c == EOF)
+        break;
       count++;
     }
   }
@@ -303,6 +359,17 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   image->depth=8;
+  if (LocaleCompare(format,"byte") == 0)
+    ;
+  else
+    if (LocaleCompare(format,"half") == 0)
+      image->depth=16;
+    else
+      if ((LocaleCompare(format,"full") == 0) ||
+          (LocaleCompare(format,"real") == 0))
+        image->depth=32;
+      else
+        image->depth=64;
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
@@ -321,6 +388,13 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   length=GetQuantumExtent(image,quantum_info,quantum_type);
   pixels=GetQuantumPixels(quantum_info);
+  if (LocaleCompare(format,"byte") == 0)
+    ;  
+  else
+    if (LocaleCompare(format,"half") == 0)
+      SetQuantumFormat(image,quantum_info,SignedQuantumFormat);
+    else
+      SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const void
