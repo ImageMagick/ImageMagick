@@ -3278,7 +3278,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           clone_info->scale=(Quantum *) AcquireQuantumMemory(
             clone_info->scale_size+1,sizeof(*clone_info->scale));
           if (clone_info->scale == (Quantum *) NULL)
-            ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed")
+            {
+              clone_info=(DCMInfo *) RelinquishMagickMemory(clone_info);
+              ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed")
+            }
           (void) memcpy(clone_info->scale,info.scale,clone_info->scale_size*
             sizeof(*clone_info->scale));
           AppendValueToLinkedList(stack,clone_info);
