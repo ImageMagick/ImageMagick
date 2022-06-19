@@ -269,6 +269,19 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
     utc_time;
 
   assert(timestamp != (char *) NULL);
+  if (date_precision == -1)
+    {
+      char
+        *limit;
+
+      date_precision=0;
+      limit=GetEnvironmentValue("MAGICK_DATE_PRECISION");
+      if (limit != (char *) NULL)
+        {
+          date_precision=StringToInteger(limit);
+          limit=DestroyString(limit);
+        }
+    }
   GetMagickUTCtime(&time,&utc_time);
   count=FormatLocaleString(timestamp,length,
     "%04d-%02d-%02dT%02d:%02d:%02d%+03d:00",utc_time.tm_year+1900,
@@ -467,6 +480,33 @@ MagickExport void ResetTimer(TimerInfo *time_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S e t M a g i c k D a t e P r e c i s i o n                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetMagickDatePrecision() sets the pseudo-random number generator secret key.
+%
+%  The format of the SetMagickDatePrecision method is:
+%
+%      void SetMagickDatePrecision(const unsigned long precision)
+%
+%  A description of each parameter follows:
+%
+%    o key: the date precision.
+%
+*/
+MagickPrivate void SetMagickDatePrecision(const unsigned long precision)
+{
+  date_precision=precision;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   S t a r t T i m e r                                                       %
 %                                                                             %
 %                                                                             %
@@ -544,45 +584,6 @@ static void StopTimer(TimerInfo *time_info)
         time_info->elapsed.start+MagickEpsilon;
     }
   time_info->state=StoppedTimerState;
-}
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   T i m e r C o m p o n e n t G e n e s i s                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  TimerComponentGenesis() instantiates the timer component.
-%
-%  The format of the TimerComponentGenesis method is:
-%
-%      MagickBooleanTimer TimerComponentGenesis(void)
-%
-*/
-MagickPrivate MagickBooleanType TimerComponentGenesis(void)
-{
-  char
-    *limit;
-
-  ExceptionInfo
-    *exception = AcquireExceptionInfo();
-
-  date_precision=0;
-  limit=(char *) GetImageRegistry(StringRegistryType,"date:precision",
-    exception);
-  exception=DestroyExceptionInfo(exception);
-  if (limit == (char *) NULL)
-    limit=GetEnvironmentValue("MAGICK_DATE_PRECISION");
-  if (limit != (char *) NULL)
-    {
-      date_precision=StringToInteger(limit);
-      limit=DestroyString(limit);
-    }
-  return(MagickTrue);
 }
 
 /*
