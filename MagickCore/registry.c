@@ -477,9 +477,9 @@ MagickExport MagickBooleanType SetImageRegistry(const RegistryType type,
       const char
         *string;
 
-      if (LocaleCompare(key,"date:precision") == 0)
-        SetMagickDatePrecision(StringToInteger(value));
       string=(const char *) value;
+      if (LocaleCompare(key,"date:precision") == 0)
+        SetMagickDatePrecision(StringToInteger(string));
       clone_value=(void *) ConstantString(string);
       break;
     }
