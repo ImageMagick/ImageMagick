@@ -70,6 +70,12 @@ static void
   StopTimer(TimerInfo *);
 
 /*
+  Static declarations.
+*/
+static ssize_t
+  date_precision = -1;
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -257,33 +263,12 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
   char *timestamp)
 {
   ssize_t
-    count,
-    date_precision = -1;
+    count;
 
   struct tm
     utc_time;
 
   assert(timestamp != (char *) NULL);
-  if (date_precision == -1)
-    {
-      char
-        *limit;
-
-      ExceptionInfo
-        *exception = AcquireExceptionInfo();
-
-      date_precision=0;
-      limit=(char *) GetImageRegistry(StringRegistryType,"date:precision",
-        exception);
-      exception=DestroyExceptionInfo(exception);
-      if (limit == (char *) NULL)
-        limit=GetEnvironmentValue("MAGICK_DATE_PRECISION");
-      if (limit != (char *) NULL)
-        {
-          date_precision=StringToInteger(limit);
-          limit=DestroyString(limit);
-        }
-    }
   GetMagickUTCtime(&time,&utc_time);
   count=FormatLocaleString(timestamp,length,
     "%04d-%02d-%02dT%02d:%02d:%02d%+03d:00",utc_time.tm_year+1900,
@@ -559,6 +544,48 @@ static void StopTimer(TimerInfo *time_info)
         time_info->elapsed.start+MagickEpsilon;
     }
   time_info->state=StoppedTimerState;
+}
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   T i m e r C o m p o n e n t G e n e s i s                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  TimerComponentGenesis() instantiates the timer component.
+%
+%  The format of the TimerComponentGenesis method is:
+%
+%      MagickBooleanTimer TimerComponentGenesis(void)
+%
+*/
+MagickPrivate MagickBooleanType TimerComponentGenesis(void)
+{
+  if (date_precision == -1)
+    {
+      char
+        *limit;
+
+      ExceptionInfo
+        *exception = AcquireExceptionInfo();
+
+      date_precision=0;
+      limit=(char *) GetImageRegistry(StringRegistryType,"date:precision",
+        exception);
+      exception=DestroyExceptionInfo(exception);
+      if (limit == (char *) NULL)
+        limit=GetEnvironmentValue("MAGICK_DATE_PRECISION");
+      if (limit != (char *) NULL)
+        {
+          date_precision=StringToInteger(limit);
+          limit=DestroyString(limit);
+        }
+    }
+  return(MagickTrue);
 }
 
 /*

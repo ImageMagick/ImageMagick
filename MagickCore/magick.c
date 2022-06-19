@@ -87,6 +87,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread_.h"
 #include "MagickCore/thread-private.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/type-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
@@ -1593,6 +1594,7 @@ MagickExport void MagickCoreGenesis(const char *path,
 #endif
   (void) RegistryComponentGenesis();
   (void) MonitorComponentGenesis();
+  (void) TimerComponentGenesis();
   magickcore_instantiated=MagickTrue;
   UnlockMagickMutex();
 }
