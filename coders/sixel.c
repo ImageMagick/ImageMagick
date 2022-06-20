@@ -83,7 +83,7 @@
 /*
   Macros
 */
-#define SIXEL_RGB(r, g, b) ((int) (((ssize_t) (r) << 16) + ((g) << 8) +  (b)))
+#define SIXEL_RGB(r, g, b) ((int) (((ssize_t) ((r) & 0xff) << 16) + (((g) & 0xff) << 8) +  ((b) & 0xff)))
 #define SIXEL_PALVAL(n,a,m) ((int) (((ssize_t) (n) * (a) + ((m) / 2)) / (m)))
 #define SIXEL_XRGB(r,g,b) SIXEL_RGB(SIXEL_PALVAL(r, 255, 100), SIXEL_PALVAL(g, 255, 100), SIXEL_PALVAL(b, 255, 100))
 
@@ -1023,9 +1023,11 @@ static MagickBooleanType IsSIXEL(const unsigned char *magick,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadSIXELImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
+    *p,
     *sixel_buffer;
 
   Image
@@ -1033,12 +1035,6 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
 
   MagickBooleanType
     status;
-
-  char
-    *p;
-
-  ssize_t
-    x;
 
   Quantum
     *q;
@@ -1143,12 +1139,15 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       */
       for (y=0; y < (ssize_t) image->rows; y++)
       {
+        ssize_t
+          x;
+
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          j=(ssize_t) sixel_pixels[y * image->columns + x];
+          j=(ssize_t) sixel_pixels[y*image->columns+x];
           j=ConstrainColormapIndex(image,j,exception);
           SetPixelIndex(image,j,q);
           SetPixelRed(image,image->colormap[j].red,q);
@@ -1166,6 +1165,7 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
           ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
         }
     }
+puts("d");
   /*
     Relinquish resources.
   */
