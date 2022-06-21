@@ -1905,7 +1905,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 #if defined(TIFF_VERSION_BIG)
         extent+=samples_per_pixel*sizeof(uint64);
 #else
-        extent+=samples_per_pixel*sizeof(uint64);
+        extent+=samples_per_pixel*sizeof(uint32);
 #endif
         strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*strip_pixels));
