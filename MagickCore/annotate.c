@@ -1534,6 +1534,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   ft_status=FT_Open_Face(library,&args,face_index,&face);
   if (ft_status != 0)
     {
+      stream=RelinquishMagickMemory(stream);
       (void) FT_Done_FreeType(library);
       ThrowFreetypeErrorException("UnableToReadFont",ft_status,args.pathname);
       args.pathname=DestroyString(args.pathname);
