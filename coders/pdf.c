@@ -1604,7 +1604,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     version=1.6;
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    (void) SetImageCoderGray(next,exception);
+    (void) SetImageGray(next,exception);
     icc_profile=GetCompatibleColorProfile(next);
     if (icc_profile != (StringInfo *) NULL)
       {
@@ -2135,7 +2135,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if ((4*number_pixels) != (MagickSizeType) ((size_t) (4*number_pixels)))
       ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
-        (IsImageGray(image) != MagickFalse))
+        ((image_info->type != TrueColorType) &&
+         (SetImageGray(image,exception) != MagickFalse)))
       {
         switch (compression)
         {
@@ -2498,7 +2499,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     else
       if ((compression == FaxCompression) ||
           (compression == Group4Compression) ||
-          (IsImageGray(image) != MagickFalse))
+          ((image_info->type != TrueColorType) &&
+           (SetImageGray(image,exception) != MagickFalse)))
         {
           device="DeviceGray";
           channels=1;
