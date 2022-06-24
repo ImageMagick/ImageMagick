@@ -1604,7 +1604,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     version=1.6;
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    (void) SetImageGray(next,exception);
     icc_profile=GetCompatibleColorProfile(next);
     if (icc_profile != (StringInfo *) NULL)
       {
@@ -1614,6 +1613,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if ((next->colorspace != CMYKColorspace) &&
         (IssRGBCompatibleColorspace(next->colorspace) == MagickFalse))
       (void) TransformImageColorspace(next,sRGBColorspace,exception);
+    (void) SetImageCoderGray(next,exception);
   }
   option=GetImageOption(image_info,"pdf:version");
   if (option != (const char *) NULL)
@@ -2135,8 +2135,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if ((4*number_pixels) != (MagickSizeType) ((size_t) (4*number_pixels)))
       ThrowPDFException(ResourceLimitError,"MemoryAllocationFailed");
     if ((compression == FaxCompression) || (compression == Group4Compression) ||
-        ((image_info->type != TrueColorType) &&
-         (SetImageGray(image,exception) != MagickFalse)))
+        (IsImageGray(image) != MagickFalse))
       {
         switch (compression)
         {
@@ -2499,8 +2498,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     else
       if ((compression == FaxCompression) ||
           (compression == Group4Compression) ||
-          ((image_info->type != TrueColorType) &&
-           (SetImageGray(image,exception) != MagickFalse)))
+          (IsImageGray(image) != MagickFalse))
         {
           device="DeviceGray";
           channels=1;
