@@ -741,10 +741,6 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
 MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   ExceptionInfo *exception)
 {
-#define RegistryKey  "ConfigurePath"
-#define MagickCoreDLL  "CORE_RL_MagickCore_.dll"
-#define MagickCoreDebugDLL  "CORE_DB_MagickCore_.dll"
-
   char
     path[MagickPathExtent];
 
@@ -811,7 +807,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     /*
       Locate file via registry key.
     */
-    key_value=NTRegistryKeyLookup(RegistryKey);
+    key_value=NTRegistryKeyLookup("ConfigurePath");
     if (key_value != (unsigned char *) NULL)
       {
         (void) FormatLocaleString(path,MagickPathExtent,"%s%s",(char *)
@@ -922,8 +918,8 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     char
       module_path[MagickPathExtent];
 
-    if ((NTGetModulePath(MagickCoreDLL,module_path) != MagickFalse) ||
-        (NTGetModulePath(MagickCoreDebugDLL,module_path) != MagickFalse))
+    if ((NTGetModulePath("CORE_RL_MagickCore_.dll",module_path) != MagickFalse) ||
+        (NTGetModulePath("CORE_DB_MagickCore_.dll",module_path) != MagickFalse))
       {
         unsigned char
           *key_value;
@@ -933,7 +929,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
         */
         (void) FormatLocaleString(path,MagickPathExtent,"%s%s",module_path,
           DirectorySeparator);
-        key_value=NTRegistryKeyLookup(RegistryKey);
+        key_value=NTRegistryKeyLookup("ConfigurePath");
         if (key_value == (unsigned char *) NULL)
           (void) AppendValueToLinkedList(paths,ConstantString(path));
         else
