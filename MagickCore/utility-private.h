@@ -79,7 +79,7 @@ static inline wchar_t *create_wchar_path(const char *utf8)
 
       (void) FormatLocaleString(buffer,MagickPathExtent,"\\\\?\\%s",utf8);
       count+=4;
-      longPath=(wchar_t *) AcquireQuantumMemory(count,sizeof(*longPath));
+      longPath=(wchar_t *) NTAcquireQuantumMemory(count,sizeof(*longPath));
       if (longPath == (wchar_t *) NULL)
         return((wchar_t *) NULL);
       count=MultiByteToWideChar(CP_UTF8,0,buffer,-1,longPath,count);
@@ -88,12 +88,12 @@ static inline wchar_t *create_wchar_path(const char *utf8)
       longPath=(wchar_t *) RelinquishMagickMemory(longPath);
       if ((count < 5) || (count >= MAX_PATH))
         return((wchar_t *) NULL);
-      wideChar=(wchar_t *) AcquireQuantumMemory((size_t) count-3,
+      wideChar=(wchar_t *) NTAcquireQuantumMemory((size_t) count-3,
         sizeof(*wideChar));
       wcscpy(wideChar,shortPath+4);
       return(wideChar);
     }
-  wideChar=(wchar_t *) AcquireQuantumMemory(count,sizeof(*wideChar));
+  wideChar=(wchar_t *) NTAcquireQuantumMemory(count,sizeof(*wideChar));
   if (wideChar == (wchar_t *) NULL)
     return((wchar_t *) NULL);
   count=MultiByteToWideChar(CP_UTF8,0,utf8,-1,wideChar,count);

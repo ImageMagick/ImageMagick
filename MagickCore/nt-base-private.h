@@ -21,6 +21,7 @@
 #include "MagickCore/delegate.h"
 #include "MagickCore/delegate-private.h"
 #include "MagickCore/exception.h"
+#include "MagickCore/memory_.h"
 #include "MagickCore/splay-tree.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -66,6 +67,20 @@ struct timezone
 #endif
 
 #endif
+
+static inline void *NTAcquireQuantumMemory(const size_t count,
+  const size_t quantum)
+{
+  size_t
+    size;
+
+  if (HeapOverflowSanityCheckGetSize(count,quantum,&size) != MagickFalse)
+    {
+      errno=ENOMEM;
+      return(NULL);
+    }
+  return(AcquireMagickMemory(size));
+}
 
 extern MagickPrivate char
   *NTGetLastError(void);
