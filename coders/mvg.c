@@ -276,6 +276,7 @@ ModuleExport size_t RegisterMVGImage(void)
   entry->encoder=(EncodeImageHandler *) WriteMVGImage;
   entry->magick=(IsImageFormatHandler *) IsMVG;
   entry->format_type=ImplicitFormatType;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
