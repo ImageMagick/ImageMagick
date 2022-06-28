@@ -164,10 +164,16 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) CloneString(&read_info->size,DefaultTileGeometry);
   for (i=0; i < (ssize_t) number_files; i++)
   {
+    char
+      extension[MagickPathExtent];
+
     if (IsEventLogging() != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"name: %s",
         filelist[i]);
     if (LocaleNCompare(filelist[i],"VID:",4) == 0)
+      continue;
+    GetPathComponent(filelist[i],ExtensionPath,extension);
+    if (LocaleNCompare(extension,"VID",3) == 0)
       continue;
     (void) CopyMagickString(read_info->filename,filelist[i],MagickPathExtent);
     *read_info->magick='\0';
