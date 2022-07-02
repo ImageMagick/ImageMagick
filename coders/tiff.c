@@ -1589,9 +1589,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 #endif
       default: image->compression=RLECompression; break;
     }
-    quantum_info=AcquireQuantumInfo(image_info,image);
-    if (quantum_info == (QuantumInfo *) NULL)
-      ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     if ((photometric == PHOTOMETRIC_PALETTE) &&
         (pow(2.0,1.0*bits_per_sample) <= MaxColormapSize))
       {
@@ -1672,6 +1669,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     /*
       Allocate memory for the image and pixel buffer.
     */
+    quantum_info=AcquireQuantumInfo(image_info,image);
+    if (quantum_info == (QuantumInfo *) NULL)
+      ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     if (sample_format == SAMPLEFORMAT_UINT)
       status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
     if (sample_format == SAMPLEFORMAT_INT)
