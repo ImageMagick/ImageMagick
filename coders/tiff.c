@@ -1589,6 +1589,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 #endif
       default: image->compression=RLECompression; break;
     }
+    quantum_info=(QuantumInfo *) NULL;
     if ((photometric == PHOTOMETRIC_PALETTE) &&
         (pow(2.0,1.0*bits_per_sample) <= MaxColormapSize))
       {
