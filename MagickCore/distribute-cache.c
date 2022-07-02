@@ -99,7 +99,7 @@
 #ifdef __VMS
 #define CLOSE_SOCKET(socket) (void) close(socket)
 #else
-#define CLOSE_SOCKET(socket) 
+#define CLOSE_SOCKET(socket)
 #endif
 #define HANDLER_RETURN_TYPE  void *
 #define HANDLER_RETURN_VALUE  (void *) NULL
