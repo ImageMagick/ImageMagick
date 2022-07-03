@@ -173,9 +173,11 @@ static const OptionInfo
     { "Meta", MetaChannel, UndefinedOptionFlag, MagickFalse },
     { "Opacity", AlphaChannel, DeprecateOptionFlag, MagickTrue },/*depreciate*/
     { "R", RedChannel, UndefinedOptionFlag, MagickFalse },
+    { "ReadMask", ReadMaskChannel, UndefinedOptionFlag, MagickFalse },
     { "Red", RedChannel, UndefinedOptionFlag, MagickFalse },
     { "S", GreenChannel, UndefinedOptionFlag, MagickFalse },
     { "Saturation", GreenChannel, UndefinedOptionFlag, MagickFalse },
+    { "WriteMask", WriteMaskChannel, UndefinedOptionFlag, MagickFalse },
     { "Y", YellowChannel, UndefinedOptionFlag, MagickFalse },
     { "Yellow", YellowChannel, UndefinedOptionFlag, MagickFalse },
     { "0", (((ssize_t) 1) << 0), UndefinedOptionFlag, MagickFalse },
