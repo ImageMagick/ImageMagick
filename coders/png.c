@@ -11437,7 +11437,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Allocating %.20g bytes of memory for pixels",(double) rowbytes);
     }
-  pixel_info=AcquireVirtualMemory(rowbytes,2*GetPixelChannels(image)*
+  pixel_info=AcquireVirtualMemory(rowbytes,GetPixelChannels(image)*
     sizeof(*ping_pixels));
   if (pixel_info == (MemoryInfo *) NULL)
     png_error(ping,"Allocation of memory for pixels failed");
