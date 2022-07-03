@@ -4015,10 +4015,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
       Parse the primitive attributes.
     */
     for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-      if ((primitive_info[i].primitive == TextPrimitive) ||
-          (primitive_info[i].primitive == ImagePrimitive))
-        if (primitive_info[i].text != (char *) NULL)
-          primitive_info[i].text=DestroyString(primitive_info[i].text);
+      if (primitive_info[i].text != (char *) NULL)
+        primitive_info[i].text=DestroyString(primitive_info[i].text);
     i=0;
     mvg_info.offset=i;
     j=0;
@@ -4061,10 +4059,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
     }
     if (status == MagickFalse)
       break;
-    if ((primitive_info[j].primitive == TextPrimitive) ||
-        (primitive_info[j].primitive == ImagePrimitive))
-      if (primitive_info[j].text != (char *) NULL)
-        primitive_info[j].text=DestroyString(primitive_info[j].text);
+    if (primitive_info[j].text != (char *) NULL)
+      primitive_info[j].text=DestroyString(primitive_info[j].text);
     primitive_info[j].primitive=primitive_type;
     primitive_info[j].coordinates=(size_t) x;
     primitive_info[j].method=FloodfillMethod;
@@ -4496,10 +4492,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
   if (primitive_info != (PrimitiveInfo *) NULL)
     {
       for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-        if ((primitive_info[i].primitive == TextPrimitive) ||
-            (primitive_info[i].primitive == ImagePrimitive))
-          if (primitive_info[i].text != (char *) NULL)
-            primitive_info[i].text=DestroyString(primitive_info[i].text);
+        if (primitive_info[i].text != (char *) NULL)
+          primitive_info[i].text=DestroyString(primitive_info[i].text);
       primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(primitive_info);
     }
   primitive=DestroyString(primitive);
