@@ -2656,8 +2656,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     {
       image->rendering_intent=UndefinedIntent;
       intent=Magick_RenderingIntent_to_PNG_RenderingIntent(UndefinedIntent);
-      (void) memset(&image->chromaticity,0,
-        sizeof(image->chromaticity));
+      (void) memset(&image->chromaticity,0,sizeof(image->chromaticity));
     }
 
   if (logging != MagickFalse)
@@ -11438,7 +11437,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Allocating %.20g bytes of memory for pixels",(double) rowbytes);
     }
-  pixel_info=AcquireVirtualMemory(rowbytes,GetPixelChannels(image)*
+  pixel_info=AcquireVirtualMemory(rowbytes,2*GetPixelChannels(image)*
     sizeof(*ping_pixels));
   if (pixel_info == (MemoryInfo *) NULL)
     png_error(ping,"Allocation of memory for pixels failed");
@@ -11616,8 +11615,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 else if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
                   {
                     (void) ExportQuantumPixels(image,(CacheView *) NULL,
-                      quantum_info,GrayAlphaQuantum,ping_pixels,
-                      exception);
+                      quantum_info,GrayAlphaQuantum,ping_pixels,exception);
 
                     if (logging != MagickFalse && y == 0)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -12283,9 +12281,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->write_png_colortype = /* 6 */  7;
       mng_info->write_png_depth = 8;
       image->depth = 8;
-      image->alpha_trait = BlendPixelTrait;
-
-      (void) SetImageType(image,TrueColorAlphaType,exception);
+      if (image->alpha_trait != UndefinedPixelTrait)
+        (void) SetImageType(image,TrueColorAlphaType,exception);
+      else
+        (void) SetImageType(image,TrueColorType,exception);
       (void) SyncImage(image,exception);
     }
 
@@ -12294,13 +12293,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->write_png_colortype = /* 2 */ 3;
       mng_info->write_png_depth = 16;
       image->depth = 16;
-
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) SetImageType(image,TrueColorAlphaType,exception);
-
       else
         (void) SetImageType(image,TrueColorType,exception);
-
       (void) SyncImage(image,exception);
     }
 
@@ -12309,9 +12305,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->write_png_colortype = /* 6 */  7;
       mng_info->write_png_depth = 16;
       image->depth = 16;
-      image->alpha_trait = BlendPixelTrait;
-
-      (void) SetImageType(image,TrueColorAlphaType,exception);
+      if (image->alpha_trait != UndefinedPixelTrait)
+        (void) SetImageType(image,TrueColorAlphaType,exception);
+      else
+        (void) SetImageType(image,TrueColorType,exception);
       (void) SyncImage(image,exception);
     }
 

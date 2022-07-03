@@ -145,6 +145,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   (void) SetImageColorspace(image,GRAYColorspace,exception);
   if (image_info->interlace != PartitionInterlace)
     {
