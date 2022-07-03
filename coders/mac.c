@@ -139,9 +139,16 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
   length=ReadBlobLSBShort(image);
   if ((length & 0xff) != 0)
     ThrowReaderException(CorruptImageError,"CorruptImage");
-  for (x=0; x < (ssize_t) 638; x++)
-    if (ReadBlobByte(image) == EOF)
-      ThrowReaderException(CorruptImageError,"CorruptImage");
+  if (length == 0)
+    {
+      for (x=0; x < (ssize_t) 510; x++)
+        if (ReadBlobByte(image) == EOF)
+          ThrowReaderException(CorruptImageError,"CorruptImage");
+    }
+  else
+    for (x=0; x < (ssize_t) 638; x++)
+      if (ReadBlobByte(image) == EOF)
+        ThrowReaderException(CorruptImageError,"CorruptImage");
   image->columns=576;
   image->rows=720;
   image->depth=1;
