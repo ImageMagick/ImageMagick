@@ -4250,7 +4250,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /* }  for navigation to beginning of SETJMP-protected block, revert to
    *    Throwing an Exception when an error occurs.
    */
-
+  image->depth=ping_file_depth;
   return(image);
 
 /* end of reading one PNG image */
