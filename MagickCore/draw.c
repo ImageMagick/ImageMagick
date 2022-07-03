@@ -2262,7 +2262,7 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   const double pad)
 {
   char
-    *text = (char *) NULL;
+    **text = (char **) NULL;
 
   double
     extent;
@@ -2282,15 +2282,20 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
     return(MagickTrue);
   if ((extent >= (double) MAGICK_SSIZE_MAX) || (IsNaN(extent) != 0))
     return(MagickFalse);
-  for (i=0; i < mvg_info->offset; i++)
-    if (((*mvg_info->primitive_info)[i].primitive == TextPrimitive) ||
-        ((*mvg_info->primitive_info)[i].primitive == ImagePrimitive))
-      if ((*mvg_info->primitive_info)[i].text != (char *) NULL)
-        text=(*mvg_info->primitive_info)[i].text;
+  if (mvg_info->offset > 0)
+    {
+      text=(char **) AcquireQuantumMemory(mvg_info->offset,sizeof(*text));
+      if (text == (char **) NULL)
+        return(MagickFalse);
+      for (i=0; i < mvg_info->offset; i++)
+        text[i]=(*mvg_info->primitive_info)[i].text;
+    }
   *mvg_info->primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(
     *mvg_info->primitive_info,(size_t) (extent+1),quantum);
   if (*mvg_info->primitive_info != (PrimitiveInfo *) NULL)
     {
+      if (text != (char **) NULL)
+        text=(char **) RelinquishMagickMemory(text);
       *mvg_info->extent=(size_t) extent;
       for (i=mvg_info->offset+1; i <= (ssize_t) extent; i++)
       {
@@ -2302,6 +2307,13 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   /*
     Reallocation failed, allocate a primitive to facilitate unwinding.
   */
+  if (text != (char **) NULL)
+    {
+      for (i=0; i < mvg_info->offset; i++)
+        if (text[i] != (char *) NULL)
+          text[i]=DestroyString(text[i]);
+      text=(char **) RelinquishMagickMemory(text);
+    }
   (void) ThrowMagickException(mvg_info->exception,GetMagickModule(),
     ResourceLimitError,"MemoryAllocationFailed","`%s'","");
   *mvg_info->primitive_info=(PrimitiveInfo *) AcquireCriticalMemory((size_t)
@@ -2309,7 +2321,6 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
   (void) memset(*mvg_info->primitive_info,0,(size_t) ((PrimitiveExtentPad+1)*
     quantum));
   *mvg_info->extent=1;
-  (*mvg_info->primitive_info)[0].text=text;
   mvg_info->offset=0;
   return(MagickFalse);
 }
