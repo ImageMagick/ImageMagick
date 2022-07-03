@@ -179,7 +179,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
   if (LocaleCompare(image_info->magick,"YCbCrA") == 0)
     {
       quantum_type=RGBAQuantum;
-      image->alpha_trait=BlendPixelTrait;
+      canvas_image->alpha_trait=BlendPixelTrait;
     }
   pixels=GetQuantumPixels(quantum_info);
   if (image_info->number_scenes != 0)
@@ -207,6 +207,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
     /*
       Read pixels to virtual canvas image then push to image.
     */
+    image->alpha_trait=canvas_image->alpha_trait;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
@@ -254,21 +255,21 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             quantum_info,quantum_type,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
-          if (((y-image->extract_info.y) >= 0) && 
+          if (((y-image->extract_info.y) >= 0) &&
               ((y-image->extract_info.y) < (ssize_t) image->rows))
             {
               p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
                 canvas_image->columns,1,exception);
               q=QueueAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 SetPixelRed(image,GetPixelRed(canvas_image,p),q);
                 SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
                 SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
+                SetPixelAlpha(image,OpaqueAlpha,q);
                 if (image->alpha_trait != UndefinedPixelTrait)
                   SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
                 p+=GetPixelChannels(canvas_image);
@@ -296,7 +297,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             RedQuantum,
             GreenQuantum,
             BlueQuantum,
-            OpacityQuantum
+            AlphaQuantum
           };
 
         /*
@@ -336,15 +337,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
               quantum_info,quantum_type,(unsigned char *) stream,exception);
             if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
               break;
-            if (((y-image->extract_info.y) >= 0) && 
+            if (((y-image->extract_info.y) >= 0) &&
                 ((y-image->extract_info.y) < (ssize_t) image->rows))
               {
                 p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,
                   0,canvas_image->columns,1,exception);
                 q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                   image->columns,1,exception);
-                if ((p == (const Quantum *) NULL) ||
-                    (q == (Quantum *) NULL))
+                if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
@@ -365,7 +365,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                       SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
                       break;
                     }
-                    case OpacityQuantum:
+                    case AlphaQuantum:
                     {
                       SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
                       break;
@@ -427,15 +427,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             quantum_info,RedQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
-          if (((y-image->extract_info.y) >= 0) && 
+          if (((y-image->extract_info.y) >= 0) &&
               ((y-image->extract_info.y) < (ssize_t) image->rows))
             {
               p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -480,15 +479,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             quantum_info,GreenQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
-          if (((y-image->extract_info.y) >= 0) && 
+          if (((y-image->extract_info.y) >= 0) &&
               ((y-image->extract_info.y) < (ssize_t) image->rows))
             {
               p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -533,15 +531,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             quantum_info,BlueQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
-          if (((y-image->extract_info.y) >= 0) && 
+          if (((y-image->extract_info.y) >= 0) &&
               ((y-image->extract_info.y) < (ssize_t) image->rows))
             {
               p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -588,16 +585,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 quantum_info,AlphaQuantum,(unsigned char *) stream,exception);
               if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
                 break;
-              if (((y-image->extract_info.y) >= 0) && 
+              if (((y-image->extract_info.y) >= 0) &&
                   ((y-image->extract_info.y) < (ssize_t) image->rows))
                 {
-                  p=GetVirtualPixels(canvas_image,
-                    canvas_image->extract_info.x,0,canvas_image->columns,1,
-                    exception);
+                  p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,
+                    0,canvas_image->columns,1,exception);
                   q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                     image->columns,1,exception);
-                  if ((p == (const Quantum *) NULL) ||
-                      (q == (Quantum *) NULL))
+                  if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
@@ -680,15 +675,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             quantum_info,RedQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
-          if (((y-image->extract_info.y) >= 0) && 
+          if (((y-image->extract_info.y) >= 0) &&
               ((y-image->extract_info.y) < (ssize_t) image->rows))
             {
               p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -751,15 +745,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             quantum_info,GreenQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
-          if (((y-image->extract_info.y) >= 0) && 
+          if (((y-image->extract_info.y) >= 0) &&
               ((y-image->extract_info.y) < (ssize_t) image->rows))
             {
               p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -822,15 +815,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
             quantum_info,BlueQuantum,(unsigned char *) stream,exception);
           if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
             break;
-          if (((y-image->extract_info.y) >= 0) && 
+          if (((y-image->extract_info.y) >= 0) &&
               ((y-image->extract_info.y) < (ssize_t) image->rows))
             {
               p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,0,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -895,16 +887,14 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
                 quantum_info,BlueQuantum,(unsigned char *) stream,exception);
               if (SyncAuthenticPixels(canvas_image,exception) == MagickFalse)
                 break;
-              if (((y-image->extract_info.y) >= 0) && 
+              if (((y-image->extract_info.y) >= 0) &&
                   ((y-image->extract_info.y) < (ssize_t) image->rows))
                 {
-                  p=GetVirtualPixels(canvas_image,
-                    canvas_image->extract_info.x,0,canvas_image->columns,1,
-                    exception);
+                  p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,
+                    0,canvas_image->columns,1,exception);
                   q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                     image->columns,1,exception);
-                  if ((p == (const Quantum *) NULL) ||
-                      (q == (Quantum *) NULL))
+                  if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
@@ -1116,10 +1106,7 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
     }
   quantum_type=RGBQuantum;
   if (LocaleCompare(image_info->magick,"YCbCrA") == 0)
-    {
-      quantum_type=RGBAQuantum;
-      image->alpha_trait=BlendPixelTrait;
-    }
+    quantum_type=RGBAQuantum;
   scene=0;
   imageListLength=GetImageListLength(image);
   do

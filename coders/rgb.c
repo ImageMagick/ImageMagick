@@ -505,7 +505,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
-           }
+            }
           stream=ReadBlobStream(image,length,pixels,&count);
         }
         if (image->previous == (Image *) NULL)
@@ -527,7 +527,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
           if (count != (ssize_t) length)
             {
-            status=MagickFalse;
+              status=MagickFalse;
               ThrowFileException(exception,CorruptImageError,
                 "UnexpectedEndOfFile",image->filename);
               break;
@@ -597,9 +597,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (((y-image->extract_info.y) >= 0) &&
                   ((y-image->extract_info.y) < (ssize_t) image->rows))
                 {
-                  p=GetVirtualPixels(canvas_image,
-                    canvas_image->extract_info.x,0,canvas_image->columns,1,
-                    exception);
+                  p=GetVirtualPixels(canvas_image,canvas_image->extract_info.x,
+                    0,canvas_image->columns,1,exception);
                   q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                     image->columns,1,exception);
                   if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -924,7 +923,6 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
               }
           }
-        (void) CloseBlob(image);
         if (image->previous == (Image *) NULL)
           {
             status=SetImageProgress(image,LoadImageTag,5,5);
@@ -981,13 +979,13 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadGRAYImage() reads an image of raw RGB 5-6-5 samples and returns it.  It
+%  ReadRGB565Image() reads an image of raw RGB 5-6-5 samples and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadGRAYImage method is:
+%  The format of the ReadRGB565Image method is:
 %
-%      Image *ReadGRAYImage(const ImageInfo *image_info,
+%      Image *ReadRGB565Image(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
