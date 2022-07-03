@@ -5445,7 +5445,7 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
     format;
 
   size_t
-    length = 0;
+    length;
 
   XImage
     *matte_image,
@@ -5456,7 +5456,6 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
   assert(window != (XWindowInfo *) NULL);
   assert(width != 0);
   assert(height != 0);
-  magick_unreferenced(length);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((window->width == 0) || (window->height == 0))
