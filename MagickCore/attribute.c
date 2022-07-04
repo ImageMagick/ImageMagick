@@ -144,6 +144,9 @@ static double GetEdgeBackgroundCensus(const Image *image,
   const char
     *artifact;
 
+  const Quantum
+    *p;
+
   double
     census;
 
@@ -156,9 +159,6 @@ static double GetEdgeBackgroundCensus(const Image *image,
 
   RectangleInfo
     edge_geometry;
-
-  const Quantum
-    *p;
 
   ssize_t
     y;
