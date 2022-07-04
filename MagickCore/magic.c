@@ -80,6 +80,9 @@ typedef struct _MagicMapInfo
 
   const size_t
     length;
+
+  const MagickBooleanType
+    skip_spaces;
 } MagicMapInfo;
 
 struct _MagicInfo
@@ -95,6 +98,9 @@ struct _MagicInfo
 
   MagickOffsetType
     offset;
+
+  MagickBooleanType
+    skip_spaces;
 
   size_t
     signature;
@@ -214,6 +220,7 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
     magic_info->offset=p->offset;
     magic_info->magic=(unsigned char *) p->magic;
     magic_info->length=p->length;
+    magic_info->skip_spaces=p->skip_spaces;
     magic_info->signature=MagickCoreSignature;
     status&=InsertValueInSortedLinkedList(list,CompareMagickInfoExtent,
       NULL,magic_info);
@@ -291,7 +298,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
       p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
       while (p != (const MagicInfo *) NULL)
       {
-        if (LocaleCompare(p->name,"SVG") == 0)
+        if (p->skip_spaces != MagickFalse)
           while (isspace(*magic) != 0) magic++;
         offset=p->offset+(MagickOffsetType) p->length;
         if ((offset <= (MagickOffsetType) length) &&
@@ -317,7 +324,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   while (p != (const MagicInfo *) NULL)
   {
     assert(p->offset >= 0);
-    if (LocaleCompare(p->name,"SVG") == 0)
+    if (p->skip_spaces != MagickFalse)
       while (isspace(*magic) != 0) magic++;
     offset=p->offset+(MagickOffsetType) p->length;
     if ((offset <= (MagickOffsetType) length) &&

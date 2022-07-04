@@ -21,8 +21,11 @@
 #include "MagickCore/property.h"
 #include "MagickCore/string_.h"
 
-#define MagickCoderHeader(coder,offset,magic)  { coder, offset, \
-  (const unsigned char *) (magic), sizeof(magic)-1 },
+#define MagickCoderHeader(coder,offset,magic) \
+  { coder, offset, (const unsigned char *) (magic), sizeof(magic)-1, MagickFalse },
+
+#define MagickExtendedCoderHeader(coder,offset,magic,skip_spaces) \
+  { coder, offset, (const unsigned char *) (magic), sizeof(magic)-1, skip_spaces },
 
 #define MagickCoderAlias(coder,alias)  { alias, coder },
 

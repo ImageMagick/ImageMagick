@@ -17,10 +17,10 @@
 #include "coders/coders-private.h"
 
 #define MagickSVGHeaders \
-  MagickCoderHeader("SVG", 1, "?XML") \
-  MagickCoderHeader("SVG", 1, "?xml") \
-  MagickCoderHeader("SVG", 1, "SVG") \
-  MagickCoderHeader("SVG", 1, "svg")
+  MagickExtendedCoderHeader("SVG", 1, "?XML", MagickTrue) \
+  MagickExtendedCoderHeader("SVG", 1, "?xml", MagickTrue) \
+  MagickExtendedCoderHeader("SVG", 1, "SVG", MagickTrue) \
+  MagickExtendedCoderHeader("SVG", 1, "svg", MagickTrue)
 
 #define MagickSVGAliases \
   MagickCoderAlias("SVG", "SVGZ") \
