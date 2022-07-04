@@ -300,6 +300,8 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
       p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
       while (p != (const MagicInfo *) NULL)
       {
+        if (LocaleCompare(p->name,"SVG") == 0)
+          while (isspace(*magic) != 0) magic++;
         offset=p->offset+(MagickOffsetType) p->length;
         if ((offset <= (MagickOffsetType) length) &&
             (memcmp(magic+p->offset,p->magic,p->length) == 0))
@@ -324,6 +326,8 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   while (p != (const MagicInfo *) NULL)
   {
     assert(p->offset >= 0);
+    if (LocaleCompare(p->name,"SVG") == 0)
+      while (isspace(*magic) != 0) magic++;
     offset=p->offset+(MagickOffsetType) p->length;
     if ((offset <= (MagickOffsetType) length) &&
         (memcmp(magic+p->offset,p->magic,p->length) == 0))
