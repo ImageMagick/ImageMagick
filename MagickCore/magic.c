@@ -96,9 +96,6 @@ struct _MagicInfo
   MagickOffsetType
     offset;
 
-  MagickBooleanType
-    exempt;
-
   size_t
     signature;
 };
@@ -217,7 +214,6 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
     magic_info->offset=p->offset;
     magic_info->magic=(unsigned char *) p->magic;
     magic_info->length=p->length;
-    magic_info->exempt=MagickTrue;
     magic_info->signature=MagickCoreSignature;
     status&=InsertValueInSortedLinkedList(list,CompareMagickInfoExtent,
       NULL,magic_info);
@@ -765,18 +761,7 @@ MagickPrivate MagickBooleanType MagicComponentGenesis(void)
 
 static void *DestroyMagicElement(void *magic_info)
 {
-  MagicInfo
-    *p;
-
-  p=(MagicInfo *) magic_info;
-  if (p->exempt == MagickFalse)
-    {
-      if (p->name != (char *) NULL)
-        p->name=DestroyString(p->name);
-      if (p->magic != (unsigned char *) NULL)
-        p->magic=(unsigned char *) RelinquishMagickMemory(p->magic);
-    }
-  p=(MagicInfo *) RelinquishMagickMemory(p);
+  RelinquishMagickMemory((MagicInfo *) magic_info);
   return((void *) NULL);
 }
 
