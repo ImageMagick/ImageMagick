@@ -298,11 +298,15 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
       p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
       while (p != (const MagicInfo *) NULL)
       {
+        const unsigned char
+          *q;
+
+        q=magic;
         if (p->skip_spaces != MagickFalse)
-          while (isspace(*magic) != 0) magic++;
+          while (isspace(*q) != 0) q++;
         offset=p->offset+(MagickOffsetType) p->length;
         if ((offset <= (MagickOffsetType) length) &&
-            (memcmp(magic+p->offset,p->magic,p->length) == 0))
+            (memcmp(q+p->offset,p->magic,p->length) == 0))
           break;
         p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
       }
@@ -323,12 +327,16 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     }
   while (p != (const MagicInfo *) NULL)
   {
+    const unsigned char
+      *q;
+
+    q=magic;
     assert(p->offset >= 0);
     if (p->skip_spaces != MagickFalse)
-      while (isspace(*magic) != 0) magic++;
+      while (isspace(*q) != 0) q++;
     offset=p->offset+(MagickOffsetType) p->length;
     if ((offset <= (MagickOffsetType) length) &&
-        (memcmp(magic+p->offset,p->magic,p->length) == 0))
+        (memcmp(q+p->offset,p->magic,p->length) == 0))
       break;
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
