@@ -304,6 +304,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
         q=magic;
         if (p->skip_spaces != MagickFalse)
           while (isspace(*q) != 0) q++;
+        assert(p->offset >= 0);
         offset=p->offset+(MagickOffsetType) p->length;
         if ((offset <= (MagickOffsetType) length) &&
             (memcmp(q+p->offset,p->magic,p->length) == 0))
@@ -331,9 +332,9 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
       *q;
 
     q=magic;
-    assert(p->offset >= 0);
     if (p->skip_spaces != MagickFalse)
       while (isspace(*q) != 0) q++;
+    assert(p->offset >= 0);
     offset=p->offset+(MagickOffsetType) p->length;
     if ((offset <= (MagickOffsetType) length) &&
         (memcmp(q+p->offset,p->magic,p->length) == 0))
