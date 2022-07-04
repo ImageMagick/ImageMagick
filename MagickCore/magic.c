@@ -85,8 +85,7 @@ typedef struct _MagicMapInfo
 struct _MagicInfo
 {
   char
-    *name,
-    *target;
+    *name;
 
   unsigned char
     *magic;
@@ -216,7 +215,6 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
     (void) memset(magic_info,0,sizeof(*magic_info));
     magic_info->name=(char *) p->name;
     magic_info->offset=p->offset;
-    magic_info->target=(char *) p->magic;
     magic_info->magic=(unsigned char *) p->magic;
     magic_info->length=p->length;
     magic_info->exempt=MagickTrue;
@@ -705,14 +703,14 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
     for (j=(ssize_t) strlen(magic_info[i]->name); j <= 9; j++)
       (void) FormatLocaleFile(file," ");
     (void) FormatLocaleFile(file,"%6ld ",(long) magic_info[i]->offset);
-    if (magic_info[i]->target != (char *) NULL)
+    if (magic_info[i]->magic != (unsigned char *) NULL)
       {
-        for (j=0; magic_info[i]->target[j] != '\0'; j++)
-          if (isprint((int) ((unsigned char) magic_info[i]->target[j])) != 0)
-            (void) FormatLocaleFile(file,"%c",magic_info[i]->target[j]);
+        for (j=0; magic_info[i]->magic[j] != '\0'; j++)
+          if (isprint((int) (magic_info[i]->magic[j])) != 0)
+            (void) FormatLocaleFile(file,"%c",magic_info[i]->magic[j]);
           else
             (void) FormatLocaleFile(file,"\\%03o",(unsigned int)
-              ((unsigned char) magic_info[i]->target[j]));
+              ((unsigned char) magic_info[i]->magic[j]));
       }
     (void) FormatLocaleFile(file,"\n");
   }
@@ -775,8 +773,6 @@ static void *DestroyMagicElement(void *magic_info)
     {
       if (p->name != (char *) NULL)
         p->name=DestroyString(p->name);
-      if (p->target != (char *) NULL)
-        p->target=DestroyString(p->target);
       if (p->magic != (unsigned char *) NULL)
         p->magic=(unsigned char *) RelinquishMagickMemory(p->magic);
     }
