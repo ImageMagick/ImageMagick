@@ -85,7 +85,6 @@ typedef struct _MagicMapInfo
 struct _MagicInfo
 {
   char
-    *path,
     *name,
     *target;
 
@@ -215,7 +214,6 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
         continue;
       }
     (void) memset(magic_info,0,sizeof(*magic_info));
-    magic_info->path=(char *) "[built-in]";
     magic_info->name=(char *) p->name;
     magic_info->offset=p->offset;
     magic_info->target=(char *) p->magic;
@@ -440,9 +438,7 @@ static int MagicInfoCompare(const void *x,const void *y)
 
   p=(const MagicInfo **) x,
   q=(const MagicInfo **) y;
-  if (LocaleCompare((*p)->path,(*q)->path) == 0)
-    return(LocaleCompare((*p)->name,(*q)->name));
-  return(LocaleCompare((*p)->path,(*q)->path));
+  return(LocaleCompare((*p)->name,(*q)->name));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -682,9 +678,6 @@ static MagickBooleanType IsMagicListInstantiated(ExceptionInfo *exception)
 MagickExport MagickBooleanType ListMagicInfo(FILE *file,
   ExceptionInfo *exception)
 {
-  const char
-    *path;
-
   const MagicInfo
     **magic_info;
 
@@ -702,20 +695,12 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
   magic_info=GetMagicInfoList("*",&number_aliases,exception);
   if (magic_info == (const MagicInfo **) NULL)
     return(MagickFalse);
-  path=(const char *) NULL;
+  (void) FormatLocaleFile(file,"Name      Offset Target\n");
+  (void) FormatLocaleFile(file,
+    "-------------------------------------------------"
+    "------------------------------\n");
   for (i=0; i < (ssize_t) number_aliases; i++)
   {
-    if ((path == (const char *) NULL) ||
-        (LocaleCompare(path,magic_info[i]->path) != 0))
-      {
-        if (magic_info[i]->path != (char *) NULL)
-          (void) FormatLocaleFile(file,"\nPath: %s\n\n",magic_info[i]->path);
-        (void) FormatLocaleFile(file,"Name      Offset Target\n");
-        (void) FormatLocaleFile(file,
-          "-------------------------------------------------"
-          "------------------------------\n");
-      }
-    path=magic_info[i]->path;
     (void) FormatLocaleFile(file,"%s",magic_info[i]->name);
     for (j=(ssize_t) strlen(magic_info[i]->name); j <= 9; j++)
       (void) FormatLocaleFile(file," ");
@@ -788,8 +773,6 @@ static void *DestroyMagicElement(void *magic_info)
   p=(MagicInfo *) magic_info;
   if (p->exempt == MagickFalse)
     {
-      if (p->path != (char *) NULL)
-        p->path=DestroyString(p->path);
       if (p->name != (char *) NULL)
         p->name=DestroyString(p->name);
       if (p->target != (char *) NULL)
