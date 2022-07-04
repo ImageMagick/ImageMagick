@@ -99,8 +99,7 @@ struct _MagicInfo
     offset;
 
   MagickBooleanType
-    exempt,
-    stealth;
+    exempt;
 
   size_t
     signature;
@@ -485,8 +484,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   for (i=0; p != (const MagicInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
-        (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
+    if (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse)
       aliases[i++]=p;
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
@@ -578,8 +576,7 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
   p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   for (i=0; p != (const MagicInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
-        (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
+    if (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse)
       aliases[i++]=ConstantString(p->name);
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
@@ -708,8 +705,6 @@ MagickExport MagickBooleanType ListMagicInfo(FILE *file,
   path=(const char *) NULL;
   for (i=0; i < (ssize_t) number_aliases; i++)
   {
-    if (magic_info[i]->stealth != MagickFalse)
-      continue;
     if ((path == (const char *) NULL) ||
         (LocaleCompare(path,magic_info[i]->path) != 0))
       {
