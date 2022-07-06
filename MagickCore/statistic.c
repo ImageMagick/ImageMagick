@@ -2268,8 +2268,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
                 continue;
               }
             median[n++]=p[i];
+            p+=GetPixelChannels(image);
           }
-          p+=GetPixelChannels(image);
         }
         channel_statistics[channel].median=(double) median[
           GetMedianPixel(median,n)];
