@@ -4187,21 +4187,11 @@ static MagickBooleanType RenderMVGContent(Image *image,
       }
       case LinePrimitive:
       {
-        double
-          dx,
-          dy,
-          maximum_length;
-
         if (primitive_info[j].coordinates != 2)
           {
             status=MagickFalse;
             break;
           }
-        dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
-        dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
-        maximum_length=hypot(dx,dy);
-        if (maximum_length > (MaxBezierCoordinates/100.0))
-          ThrowPointExpectedException(keyword,exception);
         status&=TraceLine(primitive_info+j,primitive_info[j].point,
           primitive_info[j+1].point);
         primitive_info=(*mvg_info.primitive_info);
