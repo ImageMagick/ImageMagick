@@ -17,7 +17,7 @@
 %                               September 2011                                %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2011 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -194,18 +194,16 @@ static Image *SparseColorOption(const Image *image,
   Image
     *sparse_image;
 
-  PixelInfo
-    color;
-
   MagickBooleanType
     error;
 
-  size_t
-    x;
+  PixelInfo
+    color;
 
   size_t
     number_arguments,
-    number_colors;
+    number_colors,
+    x;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -1482,8 +1480,6 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
              Note that +transparent-color, means fall-back to image
              attribute so ImageOption is deleted, not set to a default.
           */
-          if (IfSetOption && (IsGeometry(arg1) == MagickFalse))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           (void) QueryColorCompliance(ArgOption("none"),AllCompliance,
               &_image_info->transparent_color,_exception);
