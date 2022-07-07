@@ -479,12 +479,18 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     StringInfo
       *profile;
 
+    unsigned int
+      flags;
+
     unsigned short
       *p;
 
     errcode=0;
-    raw_info=libraw_init(LIBRAW_OPIONS_NO_MEMERR_CALLBACK |
-      LIBRAW_OPIONS_NO_DATAERR_CALLBACK);
+    flags=LIBRAW_OPIONS_NO_DATAERR_CALLBACK;
+#if LIBRAW_SHLIB_CURRENT < 23
+    flags|=LIBRAW_OPIONS_NO_MEMERR_CALLBACK;
+#endif
+    raw_info=libraw_init(flags);
     if (raw_info == (libraw_data_t *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
