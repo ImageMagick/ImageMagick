@@ -4565,14 +4565,16 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < (ssize_t) count; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(double) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(double) p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < (ssize_t) count; i++)
         {
           alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
+          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       for (i=0; i < (ssize_t) count; i++)
       {
@@ -4598,14 +4600,16 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < 4; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(double) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(double) p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < 4; i++)
         {
           alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
+          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       delta.x=x-x_offset;
       delta.y=y-y_offset;
@@ -4630,14 +4634,16 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < 4; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(MagickRealType) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(MagickRealType) p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < 4; i++)
         {
           alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
+          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       gamma=1.0;  /* number of pixels blended together (its variable) */
       for (i=0; i <= 1L; i++) {
@@ -4690,14 +4696,16 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < 16; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(double) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(double) p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < 16; i++)
         {
           alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
+          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       CatromWeights((double) (x-x_offset),&cx);
       CatromWeights((double) (y-y_offset),&cy);
@@ -4754,14 +4762,16 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < 4; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(double) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(double) p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < 4; i++)
         {
           alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
+          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       delta.x=x-x_offset;
       delta.y=y-y_offset;
@@ -4844,14 +4854,16 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < 16; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(double) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(double) p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < 16; i++)
         {
           alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
+          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+            GetPixelChannelOffset(image,channel)];
         }
       SplineWeights((double) (x-x_offset),&cx);
       SplineWeights((double) (y-y_offset),&cy);
