@@ -58,11 +58,6 @@ extern "C" {
 # endif
 #endif
 
-/* Define to 1 if assertions should be disabled. */
-#if defined(MAGICKCORE_NDEBUG)
-#define NDEBUG 1
-#endif
-
 /* Compatibility block */
 #if !defined(MAGICKCORE_QUANTUM_DEPTH) && defined(MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H)
 # warning "you should set MAGICKCORE_QUANTUM_DEPTH to sensible default set it to configure time default"

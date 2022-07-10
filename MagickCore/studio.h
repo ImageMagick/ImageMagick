@@ -55,6 +55,11 @@ extern "C" {
 #  define STDC
 #endif
 
+/* Define to 1 if assertions should be disabled. */
+#if defined(MAGICKCORE_NDEBUG)
+#define NDEBUG 1
+#endif
+
 #include <stdarg.h>
 #include <stdio.h>
 #if defined(MAGICKCORE_HAVE_SYS_STAT_H)
