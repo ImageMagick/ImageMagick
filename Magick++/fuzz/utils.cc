@@ -32,7 +32,7 @@ public:
     Magick::InitializeMagick((const char *) NULL);
     Magick::SecurityPolicy::anonymousCacheMemoryMap();
     Magick::SecurityPolicy::anonymousSystemMemoryMap();
-    Magick::SecurityPolicy::maxMemoryRequest(256000000);
+    Magick::SecurityPolicy::maxMemoryRequest(128000000);
     Magick::ResourceLimits::memory(1000000000);
     Magick::ResourceLimits::map(500000000);
     Magick::ResourceLimits::width(FUZZ_MAX_SIZE);
