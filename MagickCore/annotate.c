@@ -107,7 +107,12 @@
 #  include FT_BBOX_H
 #else
 #  include <freetype/ftbbox.h>
-#endif /* defined(FT_BBOX_H) */
+#endif
+#if defined(FT_MODULE_H)
+#  include FT_MODULE_H
+#else
+#  include <freetype/ftmodapi.h>
+#endif
 #endif
 #if defined(MAGICKCORE_RAQM_DELEGATE)
 #include <raqm.h>
@@ -1266,7 +1271,7 @@ cleanup:
 #endif
 }
 
-static void FTCloseStream(FT_Stream stream)
+static void FreetypeCloseStream(FT_Stream stream)
 {
   FILE *file = (FILE *) stream->descriptor.pointer;
   if (file != (FILE *) NULL)
@@ -1274,7 +1279,7 @@ static void FTCloseStream(FT_Stream stream)
   stream->descriptor.pointer=NULL;
 }
 
-static unsigned long FTReadStream(FT_Stream stream,unsigned long offset,
+static unsigned long FreetypeReadStream(FT_Stream stream,unsigned long offset,
   unsigned char *buffer,unsigned long count)
 {
   FILE *file = (FILE *) stream->descriptor.pointer;
@@ -1367,6 +1372,65 @@ static inline const char *FreetypeErrorMessage(FT_Error ft_status)
 #endif
 }
 
+static void *FreetypeAlloc(FT_Memory magick_unused(memory),long size)
+{
+  magick_unreferenced(memory);
+  if ((size_t) size > GetMaxMemoryRequest())
+    return((void *) NULL);
+  return(AcquireMagickMemory(size));
+}
+
+static void *FreetypeRealloc(FT_Memory magick_unused(memory),
+  long magick_unused(cur_size),long new_size,void *block)
+{
+  magick_unreferenced(memory);
+  magick_unreferenced(cur_size);
+  if ((size_t) new_size > GetMaxMemoryRequest())
+    return((void *) NULL);
+  return(ResizeMagickMemory(block,new_size));
+}
+
+static void FreetypeFree(FT_Memory magick_unused(memory),void *block)
+{
+  magick_unreferenced(memory);
+  (void) RelinquishMagickMemory(block);
+}
+
+static FT_Memory FreetypeAcquireMemoryManager()
+{
+  FT_Memory
+    memory;
+
+  memory=AcquireMagickMemory(sizeof(*memory));
+  if (memory == (FT_Memory) NULL)
+    return(memory);
+  memset(memory,0,sizeof(*memory));
+  memory->alloc=(&FreetypeAlloc);
+  memory->realloc=(&FreetypeRealloc);
+  memory->free=(&FreetypeFree);
+  return(memory);
+}
+
+static void FreetypeDone(FT_Memory memory,FT_Library library)
+{
+  (void) FT_Done_Library(library);
+  memory=RelinquishMagickMemory(memory);
+}
+
+static FT_Error FreetypeInit(FT_Memory memory,FT_Library *alibrary)
+{
+  FT_Error
+    ft_status;
+
+  ft_status=FT_New_Library(memory,alibrary);
+  if (ft_status != 0)
+    RelinquishMagickMemory(memory);
+  else
+    FT_Add_Default_Modules(*alibrary);
+  FT_Set_Default_Properties(*alibrary);
+  return(ft_status);
+}
+
 static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char *encoding,const PointInfo *offset,TypeMetric *metrics,
   ExceptionInfo *exception)
@@ -1435,6 +1499,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   FT_Matrix
     affine;
 
+  FT_Memory
+    memory;
+
   FT_Open_Args
     args;
 
@@ -1492,7 +1559,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   /*
     Initialize Truetype library.
   */
-  ft_status=FT_Init_FreeType(&library);
+  memory=FreetypeAcquireMemoryManager();
+  if (memory == (FT_Memory) NULL)
+    ThrowBinaryException(ResourceLimitError,"UnableToInitializeFreetypeLibrary",
+      image->filename);
+  ft_status=FreetypeInit(memory,&library);
   if (ft_status != 0)
     ThrowFreetypeErrorException("UnableToInitializeFreetypeLibrary",ft_status,
       image->filename);
@@ -1526,8 +1597,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   (void) stat(args.pathname,&attributes);
   stream->size=attributes.st_size;
   stream->descriptor.pointer=fopen_utf8(args.pathname,"rb");
-  stream->read=(&FTReadStream);
-  stream->close=(&FTCloseStream);
+  stream->read=(&FreetypeReadStream);
+  stream->close=(&FreetypeCloseStream);
   args.flags=FT_OPEN_STREAM;
   args.stream=stream;
   face=(FT_Face) NULL;
@@ -1535,7 +1606,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (ft_status != 0)
     {
       stream=RelinquishMagickMemory(stream);
-      (void) FT_Done_FreeType(library);
+      FreetypeDone(memory,library);
       ThrowFreetypeErrorException("UnableToReadFont",ft_status,args.pathname);
       args.pathname=DestroyString(args.pathname);
       return(MagickFalse);
@@ -1590,7 +1661,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       if (ft_status != 0)
         {
           (void) FT_Done_Face(face);
-          (void) FT_Done_FreeType(library);
+          FreetypeDone(memory,library);
           ThrowFreetypeErrorException("UnrecognizedFontEncoding",ft_status,
             encoding);
           return(MagickFalse);
@@ -1622,7 +1693,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (ft_status != 0)
     {
       (void) FT_Done_Face(face);
-      (void) FT_Done_FreeType(library);
+      FreetypeDone(memory,library);
       ThrowFreetypeErrorException("UnableToReadFont",ft_status,
         draw_info->font);
       return(MagickFalse);
@@ -1661,7 +1732,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       (first_glyph_id == 0))
     {
       (void) FT_Done_Face(face);
-      (void) FT_Done_FreeType(library);
+      FreetypeDone(memory,library);
       return(MagickTrue);
     }
   /*
@@ -1976,7 +2047,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   */
   annotate_info=DestroyDrawInfo(annotate_info);
   (void) FT_Done_Face(face);
-  (void) FT_Done_FreeType(library);
+  FreetypeDone(memory,library);
   return(status);
 }
 #else
