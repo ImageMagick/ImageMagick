@@ -274,14 +274,37 @@ static MagickBooleanType IsMagicCacheInstantiated()
   return(magic_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
+static inline MagickBooleanType MatchesMagic(const unsigned char *magic,
+  const size_t length,const MagicInfo *magic_info)
+{
+  const unsigned char
+    *q;
+
+  MagickOffsetType
+    remaining;
+
+  assert(magic_info->offset >= 0);
+  q=magic+magic_info->offset;
+  remaining=(MagickOffsetType) length-magic_info->offset;
+  if (magic_info->skip_spaces != MagickFalse)
+    {
+      while ((remaining > 0) && (isspace(*q) != 0))
+        {
+          q++;
+          remaining--;
+        }
+    }
+  if ((remaining >= magic_info->length) &&
+      (memcmp(q,magic_info->magic,magic_info->length) == 0))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   const size_t length,ExceptionInfo *exception)
 {
   const MagicInfo
     *p;
-
-  MagickOffsetType
-    offset;
 
   assert(exception != (ExceptionInfo *) NULL);
   if (IsMagicListInstantiated(exception) == MagickFalse)
@@ -298,16 +321,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
       p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
       while (p != (const MagicInfo *) NULL)
       {
-        const unsigned char
-          *q;
-
-        q=magic;
-        if (p->skip_spaces != MagickFalse)
-          while (isspace(*q) != 0) q++;
-        assert(p->offset >= 0);
-        offset=p->offset+(MagickOffsetType) p->length;
-        if ((offset <= (MagickOffsetType) length) &&
-            (memcmp(q+p->offset,p->magic,p->length) == 0))
+        if (MatchesMagic(magic,length,p) != MagickFalse)
           break;
         p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
       }
@@ -328,16 +342,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     }
   while (p != (const MagicInfo *) NULL)
   {
-    const unsigned char
-      *q;
-
-    q=magic;
-    if (p->skip_spaces != MagickFalse)
-      while (isspace(*q) != 0) q++;
-    assert(p->offset >= 0);
-    offset=p->offset+(MagickOffsetType) p->length;
-    if ((offset <= (MagickOffsetType) length) &&
-        (memcmp(q+p->offset,p->magic,p->length) == 0))
+    if (MatchesMagic(magic,length,p) != MagickFalse)
       break;
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
