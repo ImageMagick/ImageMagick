@@ -260,21 +260,8 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType IsMagicCacheInstantiated()
-{
-  if (magic_cache == (LinkedListInfo *) NULL)
-    {
-      if (magic_cache_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&magic_cache_semaphore);
-      LockSemaphoreInfo(magic_cache_semaphore);
-      if (magic_cache == (LinkedListInfo *) NULL)
-        magic_cache=NewLinkedList(0);
-      UnlockSemaphoreInfo(magic_cache_semaphore);
-    }
-  return(magic_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
-}
 
-static inline MagickBooleanType MatchesMagic(const unsigned char *magic,
+static inline MagickBooleanType CompareMagic(const unsigned char *magic,
   const size_t length,const MagicInfo *magic_info)
 {
   const unsigned char
@@ -287,17 +274,29 @@ static inline MagickBooleanType MatchesMagic(const unsigned char *magic,
   q=magic+magic_info->offset;
   remaining=(MagickOffsetType) length-magic_info->offset;
   if (magic_info->skip_spaces != MagickFalse)
+    while ((remaining > 0) && (isspace(*q) != 0))
     {
-      while ((remaining > 0) && (isspace(*q) != 0))
-        {
-          q++;
-          remaining--;
-        }
+      q++;
+      remaining--;
     }
   if ((remaining >= magic_info->length) &&
       (memcmp(q,magic_info->magic,magic_info->length) == 0))
     return(MagickTrue);
   return(MagickFalse);
+}
+
+static MagickBooleanType IsMagicCacheInstantiated()
+{
+  if (magic_cache == (LinkedListInfo *) NULL)
+    {
+      if (magic_cache_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&magic_cache_semaphore);
+      LockSemaphoreInfo(magic_cache_semaphore);
+      if (magic_cache == (LinkedListInfo *) NULL)
+        magic_cache=NewLinkedList(0);
+      UnlockSemaphoreInfo(magic_cache_semaphore);
+    }
+  return(magic_cache != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
 }
 
 MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
@@ -321,7 +320,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
       p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
       while (p != (const MagicInfo *) NULL)
       {
-        if (MatchesMagic(magic,length,p) != MagickFalse)
+        if (CompareMagic(magic,length,p) != MagickFalse)
           break;
         p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
       }
@@ -342,7 +341,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     }
   while (p != (const MagicInfo *) NULL)
   {
-    if (MatchesMagic(magic,length,p) != MagickFalse)
+    if (CompareMagic(magic,length,p) != MagickFalse)
       break;
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
