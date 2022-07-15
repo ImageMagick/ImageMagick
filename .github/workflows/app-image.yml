@@ -11,8 +11,53 @@ permissions:
 
 name: app image
 jobs:
-  build:
+  build-imagemagick:
+    name: 'Build Imagemagick'
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:22.04
+      options: --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined
+
+    strategy:
+      matrix:
+        compiler:
+          - 'gcc'
+          - 'clang'
+
+    steps:
+
+    - name: Install dependencies
+      run: |
+        set -e
+        apt-get update -y
+        apt-get install -y make autoconf curl fuse git kmod libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev liblcms-dev libopenexr-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev wget libaom-dev libheif-dev git
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install ${{ matrix.compiler }}
+      if: matrix.compiler == 'clang'
+      run: apt-get install -y ${{ matrix.compiler }}
+
+    - name: Build ImageMagick
+      env:
+        CFLAGS: -Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable
+        CC: ${{ matrix.compiler }}
+      run: |
+        set -e
+        ./configure --with-quantum-depth=16 --without-magick-plus-plus --without-perl --prefix=/usr
+        make
+        make install DESTDIR=$(readlink -f /appdir)
+
+    - name: Upload ImageMagick Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        path: /appdir
+        key: imagemagick-artifact
+
+  create-appimage:
     name: 'Create AppImage'
+    needs: build-imagemagick
     runs-on: ubuntu-latest
     container:
       image: ubuntu:18.04
@@ -29,17 +74,8 @@ jobs:
     - name: Install dependencies
       run: |
         set -e
-        apt-get update -y
-        apt-get install -y autoconf curl fuse git kmod libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev liblcms-dev libopenexr-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev software-properties-common wget libtool
-        add-apt-repository ppa:git-core/ppa -y
-        apt-get install -y git
-
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    - name: Install ${{ matrix.compiler }}
-      if: matrix.compiler == 'clang'
-      run: apt-get install -y ${{ matrix.compiler }}
+        apt-get update
+        apt-get install -y wget
 
     - name: Download AppImage
       run: |
@@ -49,60 +85,25 @@ jobs:
         chmod a+x linuxdeployqt-continuous-x86_64.AppImage
         ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
 
-    - name: Build libaom
-      env:
-        LIB_AOM_VERSION: 3.4.0
-      run: |
-        set -e
-        apt install -y yasm cmake
-        git clone -b v${LIB_AOM_VERSION} --depth 1 https://aomedia.googlesource.com/aom
-        mkdir build_aom
-        cd build_aom
-        cmake ../aom/ -DENABLE_TESTS=0 -DBUILD_SHARED_LIBS=1
-        make
-        make install
-        ldconfig /usr/local/lib
-        cd ..
-
-    - name: Build libheif
-      env:
-        LIB_HEIF_VERSION: 1.12.0
-      run: |
-        set -e
-        curl -L https://github.com/strukturag/libheif/releases/download/v${LIB_HEIF_VERSION}/libheif-${LIB_HEIF_VERSION}.tar.gz -o libheif.tar.gz
-        tar -xzvf libheif.tar.gz
-        cd libheif-${LIB_HEIF_VERSION}/
-        ./autogen.sh
-        ./configure
-        make
-        make install
-        ldconfig /usr/local/lib
-        cd ..
-
-    - name: Build ImageMagick
-      env:
-        CFLAGS: -Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable
-        CC: ${{ matrix.compiler }}
-      run: |
-        set -e
-        ./configure --with-quantum-depth=16 --without-magick-plus-plus --without-perl --prefix=/usr
-        make
-        make install DESTDIR=$(readlink -f /appdir)
+    - name: Download ImageMagick Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: imagemagick-artifact
 
     - name: Create ImageMagick AppImage
       run: |
         set -e
         mkdir -p /appdir/usr/share/applications/
-        cp ./app-image/imagemagick.desktop /appdir/usr/share/applications/
+        cp /app-image/imagemagick.desktop /appdir/usr/share/applications/
         mkdir -p /appdir/usr/share/icons/hicolor/128x128/apps/
-        cp ./app-image/icon.png /appdir/usr/share/icons/hicolor/128x128/apps/imagemagick.png
+        cp /app-image/icon.png /appdir/usr/share/icons/hicolor/128x128/apps/imagemagick.png
         unset QTDIR
         unset QT_PLUGIN_PATH
         unset LD_LIBRARY_PATH
         export VERSION=$(git rev-parse --short HEAD)-${{ matrix.compiler }}
         /app-image/linuxdeployqt-continuous-x86_64.AppImage /appdir/usr/share/applications/imagemagick.desktop -bundle-non-qt-libs
         rm /appdir/AppRun
-        cp ./app-image/AppRun /appdir
+        cp /app-image/AppRun /appdir
         chmod a+x /appdir/AppRun
         PATH=/app-image/squashfs-root/usr/bin:$PATH
         /app-image/squashfs-root/usr/bin/appimagetool -g /appdir/
