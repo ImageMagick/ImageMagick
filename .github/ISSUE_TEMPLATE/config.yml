@@ -3,3 +3,9 @@ contact_links:
   - name: Ask question
     url: https://github.com/ImageMagick/ImageMagick/discussions/category_choices
     about: Ask a question about this project.
+  - name: Bug report (ImageMagick 6)
+    url: https://github.com/ImageMagick/ImageMagick6/issues/new?assignees=&labels=&template=bug-report.yml
+    about: Create a report to help us improve ImagemMagick 6.
+  - name: Bug report (Freds-Scripts)
+    url: https://github.com/ImageMagick/Freds-Scripts/issues/new
+    about: Create a report to help us improve Freds-Scripts.
