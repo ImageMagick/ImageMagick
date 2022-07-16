@@ -110,6 +110,8 @@ MAGICKCORE_CODER_SRCS = \
 	coders/ashlar.h \
 	coders/avs.c \
 	coders/avs.h \
+	coders/bayer.c \
+	coders/bayer.h \
 	coders/bgr.c \
 	coders/bgr.h \
 	coders/bmp.c \
@@ -390,6 +392,7 @@ CODERS_NOINST_HDRS = \
 	coders/art.h \
 	coders/ashlar.h \
 	coders/avs.h \
+	coders/bayer.h \
 	coders/bgr.h \
 	coders/bmp.h \
 	coders/braille.h \
@@ -538,6 +541,7 @@ coders_LTLIBRARIES = \
 	coders/art.la \
 	coders/ashlar.la \
 	coders/avs.la \
+	coders/bayer.la \
 	coders/bgr.la \
 	coders/bmp.la \
 	coders/braille.la \
@@ -696,6 +700,12 @@ coders_avs_la_SOURCES      = coders/avs.c
 coders_avs_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_avs_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_avs_la_LIBADD       = $(MAGICKCORE_LIBS)
+
+# BAYER coder module
+coders_bayer_la_SOURCES     = coders/bayer.c
+coders_bayer_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
+coders_bayer_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_bayer_la_LIBADD      = $(MAGICKCORE_LIBS)
 
 # BRG coder module
 coders_bgr_la_SOURCES      = coders/bgr.c

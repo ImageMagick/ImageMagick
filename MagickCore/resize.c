@@ -3878,15 +3878,13 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   MagickOffsetType
     progress;
 
-  ssize_t
-    x1;
-
-  ssize_t
-    *x_offset,
-    y;
-
   PointInfo
     sample_offset;
+
+  ssize_t
+    j,
+    *x_offset,
+    y;
 
   /*
     Initialize sampled image attributes.
@@ -3907,7 +3905,8 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   /*
     Set the sampling offset, default is in the mid-point of sample regions.
   */
-  sample_offset.x=sample_offset.y=0.5-MagickEpsilon;
+  sample_offset.x=0.5-MagickEpsilon;
+  sample_offset.y=sample_offset.x;
   {
     const char
       *value;
@@ -3938,8 +3937,8 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
       sample_image=DestroyImage(sample_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (x1=0; x1 < (ssize_t) sample_image->columns; x1++)
-    x_offset[x1]=(ssize_t) ((((double) x1+sample_offset.x)*image->columns)/
+  for (j=0; j < (ssize_t) sample_image->columns; j++)
+    x_offset[j]=(ssize_t) ((((double) j+sample_offset.x)*image->columns)/
       sample_image->columns);
   /*
     Sample each row.
@@ -3961,9 +3960,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
       *magick_restrict q;
 
     ssize_t
-      x;
-
-    ssize_t
+      x,
       y_offset;
 
     if (status == MagickFalse)

@@ -23,6 +23,7 @@
 #include "coders/art.h"
 #include "coders/ashlar.h"
 #include "coders/avs.h"
+#include "coders/bayer.h"
 #include "coders/bgr.h"
 #include "coders/bmp.h"
 #include "coders/braille.h"
