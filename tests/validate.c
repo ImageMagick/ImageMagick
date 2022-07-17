@@ -1378,7 +1378,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
         fail++;
         continue;
       }
-    status=ConvertImageCommand(image_info,number_arguments,arguments,
+    status=MagickImageCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
     for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
