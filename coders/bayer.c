@@ -111,38 +111,35 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static Image *BayerSample(const Image *image, const char *offset,
+  RectangleInfo geometry, ExceptionInfo *exception)
+{
+  Image
+    *clone,
+    *sample;
+
+  clone=CloneImage(image,0,0,MagickTrue,exception);
+  if (clone == (Image *) NULL)
+    return(clone);
+  (void) SetImageArtifact(clone,"sample:offset",offset);
+  sample=SampleImage(clone,geometry.width,geometry.height,exception);
+  clone=DestroyImage(clone);
+  return(sample);
+}
+
 static Image *ReadBAYERImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  char
-    **arguments;
-
-  const char
-    *command =
-      "mpr:" BayerRGGBImage " "
-      "( -clone 0 -define sample:offset=25 -sample 50% ) "
-      "( -clone 0 "
-      "  ( -clone 0 -define sample:offset=75x25 -sample 50% ) "
-      "  ( -clone 0 -define sample:offset=25x75 -sample 50% ) "
-      "  -delete 0 -evaluate-sequence mean ) "
-      "( -clone 0 -define sample:offset=75 -sample 50% ) "
-      "-delete 0 -combine -resize 200% -colorspace sRGB "
-      "mpr:" BayerRGBImage;
-
   Image
-    *image;
+    *image,
+    *imageA,
+    *imageB;
 
   ImageInfo
     *read_info;
 
-  int
-    number_arguments;
-
-  MagickBooleanType
-    status;
-
-  ssize_t
-    i;
+  RectangleInfo
+    geometry;
 
   /*
     Reconstruct a full color image from the incomplete camera sensor.
@@ -158,44 +155,52 @@ static Image *ReadBAYERImage(const ImageInfo *image_info,
   (void) CopyMagickString(read_info->magick,"GRAY",MagickPathExtent);
   read_info->verbose=MagickFalse;
   image=ReadImage(read_info,exception);
-  if (image == (Image *) NULL)
-    {
-      read_info=DestroyImageInfo(read_info);
-      return((Image *) NULL);
-    }
-  status=SetImageRegistry(ImageRegistryType,BayerRGGBImage,image,exception);
-  if (status == MagickFalse)
-    {
-      read_info=DestroyImageInfo(read_info);
-      image=DestroyImage(image);
-      return((Image *) NULL);
-    }
-  arguments=StringToArgv(command,&number_arguments);
-  if (arguments == (char **) NULL)
-    {
-      read_info=DestroyImageInfo(read_info);
-      (void) DeleteImageRegistry(BayerRGGBImage);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  status=MagickImageCommand(read_info,number_arguments,arguments,(char **) NULL,
-    exception);
-  (void) DeleteImageRegistry(BayerRGGBImage);
-  for (i=0; i < (ssize_t) number_arguments; i++)
-    arguments[i]=DestroyString(arguments[i]);
-  arguments=(char **) RelinquishMagickMemory(arguments);
   read_info=DestroyImageInfo(read_info);
-  image=DestroyImage(image);
-  if (status == MagickFalse)
-    return((Image *) NULL);
-  image=GetImageRegistry(ImageRegistryType,BayerRGBImage,exception);
   if (image == (Image *) NULL)
-    return(image);
-  (void) DeleteImageRegistry(BayerRGBImage);
-  (void) CopyMagickString(image->magick,image_info->magick,
+    return((Image *) NULL);
+  (void) ParseRegionGeometry(image,"50%",&geometry,exception);
+  imageA=BayerSample(image,"75x25",geometry,exception);
+  if (imageA == (Image *) NULL)
+    return(DestroyImage(image));
+  imageB=BayerSample(image,"25x75",geometry,exception);
+  if (imageB == (Image *) NULL)
+    {
+      imageA=DestroyImage(imageA);
+      return(DestroyImage(image));
+    }
+  AppendImageToList(&imageA,imageB);
+  imageB=EvaluateImages(imageA,MeanEvaluateOperator,exception);
+  imageA=DestroyImageList(imageA);
+  imageA=BayerSample(image,"25",geometry,exception);
+  if (imageA == (Image *) NULL)
+    {
+      imageB=DestroyImage(imageB);
+      return(DestroyImage(image));
+    }
+  AppendImageToList(&imageA,imageB);
+  imageB=BayerSample(image,"75",geometry,exception);
+  if (imageB == (Image *) NULL)
+    {
+      imageA=DestroyImageList(imageA);
+      return(DestroyImage(image));
+    }
+  AppendImageToList(&imageA,imageB);
+  imageB=CombineImages(imageA,sRGBColorspace,exception);
+  imageA=DestroyImageList(imageA);
+  if (imageB == (Image *) NULL)
+    return(DestroyImage(image));
+  (void) ParseRegionGeometry(imageB,"200%",&geometry,exception);
+  imageA=ResizeImage(imageB,geometry.width,geometry.height,image->filter,
+    exception);
+  imageB=DestroyImageList(imageB);
+  if (imageA == (Image *) NULL)
+    return(DestroyImage(image));
+  (void) CopyMagickString(imageA->magick,image_info->magick,
     MagickPathExtent);
-  (void) CopyMagickString(image->filename,image_info->filename,
+  (void) CopyMagickString(imageA->filename,image_info->filename,
     MagickPathExtent);
-  return(GetFirstImageInList(image));
+  image=DestroyImageList(image);
+  return(imageA);
 }
 
 /*
