@@ -538,7 +538,7 @@ AC_CACHE_CHECK([Linux compatible sendfile()],ac_cv_have_linux_sendfile,[
   ], [
     ac_cv_have_linux_sendfile=no
   ])])
-if test "$ac_cv_have_linux_sendfile" = yes; then
+if test "$ac_cv_have_linux_sendfile" = 'yes'; then
   AC_DEFINE([HAVE_LINUX_SENDFILE],[1], [Define if you have Linux-compatible sendfile()])
 fi
 
