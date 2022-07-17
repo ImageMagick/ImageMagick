@@ -2590,10 +2590,12 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         *magick_restrict p;
 
       ssize_t
+        count,
         x;
 
       if (status == MagickFalse)
         break;
+      count=0;
       p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
@@ -2619,10 +2621,11 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             if (code < 0)
               status=MagickFalse;
             length=(size_t) (bzip_info.next_out-(char *) compress_pixels);
+            count=0;
             if (length != 0)
               {
                 (void) WriteBlobMSBLong(image,(unsigned int) length);
-                (void) WriteBlob(image,length,compress_pixels);
+                count=WriteBlob(image,length,compress_pixels);
               }
           } while (bzip_info.avail_in != 0);
           break;
@@ -2646,10 +2649,11 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             if (code != LZMA_OK)
               status=MagickFalse;
             length=(size_t) (lzma_info.next_out-compress_pixels);
+            count=0;
             if (length != 0)
               {
                 (void) WriteBlobMSBLong(image,(unsigned int) length);
-                (void) WriteBlob(image,length,compress_pixels);
+                count=WriteBlob(image,length,compress_pixels);
               }
           } while (lzma_info.avail_in != 0);
           break;
@@ -2674,10 +2678,11 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             if (code != Z_OK)
               status=MagickFalse;
             length=(size_t) (zip_info.next_out-compress_pixels);
+            count=0;
             if (length != 0)
               {
                 (void) WriteBlobMSBLong(image,(unsigned int) length);
-                (void) WriteBlob(image,length,compress_pixels);
+                count=WriteBlob(image,length,compress_pixels);
               }
           } while (zip_info.avail_in != 0);
           break;
@@ -2703,17 +2708,24 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             p+=GetPixelChannels(image);
           }
           q=PopRunlengthPacket(image,q,length,&pixel);
-          (void) WriteBlob(image,(size_t) (q-pixels),pixels);
+          length=(size_t) (q-pixels);
+          count=WriteBlob(image,length,pixels);
           break;
         }
         default:
         {
           (void) ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
-          (void) WriteBlob(image,packet_size*image->columns,pixels);
+          length=packet_size*image->columns;
+          count=WriteBlob(image,length,pixels);
           break;
         }
       }
+      if (length != (size_t) count)
+        {
+          status=MagickFalse;
+          break;
+        }
       if (image->previous == (Image *) NULL)
         {
           status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
