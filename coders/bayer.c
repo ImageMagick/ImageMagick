@@ -58,11 +58,13 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/registry.h"
 #include "MagickCore/static.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
+#include "MagickWand/MagickWand.h"
 
 /*
   Forward declarations.
@@ -100,11 +102,36 @@ static MagickBooleanType
 static Image *ReadBAYERImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+#define BayerRGGBImage "bayer:moasic"
+#define BayerRGBImage "bayer:rgb"
+
+  char
+    **arguments,
+    command[MagickPathExtent] =  /* http://im.snibgo.com/demosaic.htm */
+      "mpr:" BayerRGGBImage " "
+      "( -clone 0 -define sample:offset=25 -sample 50% ) "
+      "( -clone 0 "
+      "  ( -clone 0 -define sample:offset=75x25 -sample 50% ) "
+      "  ( -clone 0 -define sample:offset=25x75 -sample 50% ) "
+      "  -delete 0 -evaluate-sequence mean ) "
+      "( -clone 0 -define sample:offset=75 -sample 50% ) "
+      "-delete 0 -combine -resize 200% -colorspace sRGB "
+      "mpr:" BayerRGBImage;
+
   Image
     *image;
 
   ImageInfo
     *read_info;
+
+  int
+    number_arguments;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    i;
 
   /*
     Open image file.
@@ -117,14 +144,38 @@ static Image *ReadBAYERImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   read_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(read_info->magick,"GRAY",MagickPathExtent);    
+  (void) CopyMagickString(read_info->magick,"GRAY",MagickPathExtent);
+  read_info->verbose=MagickFalse;
   image=ReadImage(read_info,exception);
-  read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)
     return(image);
-  /*
-    Demosaic processing (near future).
-  */
+  status=SetImageRegistry(ImageRegistryType,BayerRGGBImage,image,exception);
+  if (status == MagickFalse)
+    {
+      read_info=DestroyImageInfo(read_info);
+      image=DestroyImage(image);
+      return((Image *) NULL);
+    }
+  arguments=StringToArgv(command,&number_arguments);
+  if (arguments == (char **) NULL)
+    {
+      read_info=DestroyImageInfo(read_info);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  status=MagickImageCommand(read_info,number_arguments,arguments,(char **) NULL,
+    exception);
+  (void) DeleteImageRegistry(BayerRGGBImage);
+  for (i=0; i < (ssize_t) number_arguments; i++)
+    arguments[i]=DestroyString(arguments[i]);
+  arguments=(char **) RelinquishMagickMemory(arguments);
+  read_info=DestroyImageInfo(read_info);
+  image=DestroyImage(image);
+  if (status == MagickFalse)
+    return((Image *) NULL);
+  image=GetImageRegistry(ImageRegistryType,BayerRGBImage,exception);
+  if (image == (Image *) NULL)
+    return(image);
+  (void) DeleteImageRegistry(BayerRGBImage);
   return(GetFirstImageInList(image));
 }
 
@@ -246,7 +297,7 @@ static MagickBooleanType WriteBAYERImage(const ImageInfo *image_info,
     Mosaic processing (near future).
   */
   write_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(write_info->magick,"GRAY",MagickPathExtent);    
+  (void) CopyMagickString(write_info->magick,"GRAY",MagickPathExtent);
   status=WriteImage(write_info,image,exception);
   write_info=DestroyImageInfo(write_info);
   return(status);

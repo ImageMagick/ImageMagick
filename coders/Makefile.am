@@ -705,7 +705,7 @@ coders_avs_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_bayer_la_SOURCES     = coders/bayer.c
 coders_bayer_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_bayer_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_bayer_la_LIBADD      = $(MAGICKCORE_LIBS)
+coders_bayer_la_LIBADD      = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 
 # BRG coder module
 coders_bgr_la_SOURCES      = coders/bgr.c
