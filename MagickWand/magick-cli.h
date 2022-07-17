@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+typedef MagickBooleanType
+  (*MagickCommand)(ImageInfo *,int,char **,char **,ExceptionInfo *);
+
 extern WandExport void
   ProcessScriptOptions(MagickCLI *,const char *,int,char **,int);
 
@@ -29,6 +32,8 @@ extern WandExport int
   ProcessCommandOptions(MagickCLI *,int,char **,int);
 
 extern WandExport MagickBooleanType
+  MagickCommandGenesis(ImageInfo *,MagickCommand,int,char **,char **,
+    ExceptionInfo *),
   MagickImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

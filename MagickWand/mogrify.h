@@ -22,12 +22,7 @@
 extern "C" {
 #endif
 
-typedef MagickBooleanType
-  (*MagickCommand)(ImageInfo *,int,char **,char **,ExceptionInfo *);
-
 extern WandExport MagickBooleanType
-  MagickCommandGenesis(ImageInfo *,MagickCommand,int,char **,char **,
-    ExceptionInfo *),
   MogrifyImage(ImageInfo *,const int,const char **,Image **,ExceptionInfo *),
   MogrifyImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *),
   MogrifyImageInfo(ImageInfo *,const int,const char **,ExceptionInfo *),
