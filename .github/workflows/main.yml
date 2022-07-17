@@ -103,7 +103,7 @@ jobs:
       shell: cmd
       run: |
         cd ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2022 /${{matrix.platform}} /smtd
+        configure.exe /noWizard /VS2022 /${{matrix.platform}} /dmt
 
     - name: Build ImageMagick
       shell: cmd
