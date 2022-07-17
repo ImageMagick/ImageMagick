@@ -67,6 +67,15 @@
 #include "MagickWand/MagickWand.h"
 
 /*
+  Global defines.
+*/
+#define BayerBImage "bayer:B"
+#define BayerG0Image "bayer:G0"
+#define BayerG1Image "bayer:G1"
+#define BayerRGBImage "bayer:rgb"
+#define BayerRGGBImage "bayer:moasic"
+
+/*
   Forward declarations.
 */
 static MagickBooleanType
@@ -83,9 +92,12 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadBAYERImage() reads an image of raw BAYER (RGGB) samples and returns it.
-%  It allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
+%  ReadBAYERImage() reconstructs a full color image from the incomplete color
+%  samples output from an image sensor overlaid with a color filter array
+%  (CFA).  It allocates the memory necessary for the new Image structure and
+%  returns a pointer to the new image.
+%
+%  Reference: http://im.snibgo.com/demosaic.htm.
 %
 %  The format of the ReadBAYERImage method is:
 %
@@ -102,12 +114,11 @@ static MagickBooleanType
 static Image *ReadBAYERImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#define BayerRGGBImage "bayer:moasic"
-#define BayerRGBImage "bayer:rgb"
-
   char
-    **arguments,
-    command[MagickPathExtent] =  /* http://im.snibgo.com/demosaic.htm */
+    **arguments;
+
+  const char
+    *command =
       "mpr:" BayerRGGBImage " "
       "( -clone 0 -define sample:offset=25 -sample 50% ) "
       "( -clone 0 "
@@ -134,7 +145,7 @@ static Image *ReadBAYERImage(const ImageInfo *image_info,
     i;
 
   /*
-    Open image file.
+    Reconstruct a full color image from the incomplete camera sensor.
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -148,7 +159,10 @@ static Image *ReadBAYERImage(const ImageInfo *image_info,
   read_info->verbose=MagickFalse;
   image=ReadImage(read_info,exception);
   if (image == (Image *) NULL)
-    return(image);
+    {
+      read_info=DestroyImageInfo(read_info);
+      return((Image *) NULL);
+    }
   status=SetImageRegistry(ImageRegistryType,BayerRGGBImage,image,exception);
   if (status == MagickFalse)
     {
@@ -160,6 +174,7 @@ static Image *ReadBAYERImage(const ImageInfo *image_info,
   if (arguments == (char **) NULL)
     {
       read_info=DestroyImageInfo(read_info);
+      (void) DeleteImageRegistry(BayerRGGBImage);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   status=MagickImageCommand(read_info,number_arguments,arguments,(char **) NULL,
@@ -176,6 +191,10 @@ static Image *ReadBAYERImage(const ImageInfo *image_info,
   if (image == (Image *) NULL)
     return(image);
   (void) DeleteImageRegistry(BayerRGBImage);
+  (void) CopyMagickString(image->magick,image_info->magick,
+    MagickPathExtent);
+  (void) CopyMagickString(image->filename,image_info->filename,
+    MagickPathExtent);
   return(GetFirstImageInList(image));
 }
 
@@ -210,14 +229,14 @@ ModuleExport size_t RegisterBAYERImage(void)
   entry=AcquireMagickInfo("BAYER","BAYER","Raw mosaiced samples");
   entry->decoder=(DecodeImageHandler *) ReadBAYERImage;
   entry->encoder=(EncodeImageHandler *) WriteBAYERImage;
-  entry->flags|=CoderRawSupportFlag;
-  entry->flags|=CoderEndianSupportFlag;
+  entry->flags|=CoderRawSupportFlag | CoderEndianSupportFlag |
+    CoderDecoderThreadSupportFlag | CoderEncoderThreadSupportFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("BAYER","BAYERA","Raw mosaiced and alpha samples");
   entry->decoder=(DecodeImageHandler *) ReadBAYERImage;
   entry->encoder=(EncodeImageHandler *) WriteBAYERImage;
-  entry->flags|=CoderRawSupportFlag;
-  entry->flags|=CoderEndianSupportFlag;
+  entry->flags|=CoderRawSupportFlag | CoderEndianSupportFlag |
+    CoderDecoderThreadSupportFlag | CoderEncoderThreadSupportFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -258,8 +277,10 @@ ModuleExport void UnregisterBAYERImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteBAYERImage() writes an image to a file in the BAYER, BAYERAlpha
-%  rasterfile format.
+%  WriteBAYERImage() deconstructs a full color image into a single channel
+%  RGGB raw image format.
+%
+%  Reference: http://im.snibgo.com/mosaic.htm.
 %
 %  The format of the WriteBAYERImage method is:
 %
@@ -278,14 +299,64 @@ ModuleExport void UnregisterBAYERImage(void)
 static MagickBooleanType WriteBAYERImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
+  char
+    **arguments;
+
+  const char
+    *command =
+      "-size 2x2 xc:black "
+      "-fill White -draw \"point 1,0\" "
+      "-fill None "
+      "+write mpr:" BayerG0Image " "
+      "-roll +0+1 +write mpr:" BayerBImage " "
+      "-roll -1+0 +write mpr:" BayerG1Image " "
+      "+delete "
+      "mpr:" BayerRGBImage " "
+      "-colorspace sRGB "
+      "-channel RGB "
+      "-separate "
+      "-compose Over "
+      "( -clone 0,1 "
+      "  ( +clone "
+      "    -tile mpr:" BayerG0Image " "
+      "    -draw \"color 0,0 reset\" "
+      "  ) "
+      "  -alpha off -composite "
+      ") "
+      "( -clone 3,1 "
+      "  ( +clone "
+      "    -tile mpr:" BayerG1Image " "
+      "    -draw \"color 0,0 reset\" "
+      "  ) "
+      "  -alpha off -composite "
+      ") "
+      "( -clone 4,2 "
+      "  ( +clone "
+      "    -tile mpr:" BayerBImage " "
+      "    -draw \"color 0,0 reset\" "
+      "  ) "
+      "  -alpha off -composite "
+      ") "
+      "-delete 0--2 "
+      "mpr:" BayerRGGBImage;
+
+  Image
+    *bayer_image;
+
   ImageInfo
     *write_info;
+
+  int
+    number_arguments;
 
   MagickBooleanType
     status;
 
+  ssize_t
+    i;
+
   /*
-    Allocate memory for pixels.
+    Deconstruct RGB image into a single channel RGGB raw image.
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -293,12 +364,42 @@ static MagickBooleanType WriteBAYERImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  /*
-    Mosaic processing (near future).
-  */
+  status=SetImageRegistry(ImageRegistryType,BayerRGBImage,image,exception);
+  if (status == MagickFalse)
+    return(MagickFalse);
+  arguments=StringToArgv(command,&number_arguments);
+  if (arguments == (char **) NULL)
+    {
+      (void) DeleteImageRegistry(BayerRGBImage);
+      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   write_info=CloneImageInfo(image_info);
-  (void) CopyMagickString(write_info->magick,"GRAY",MagickPathExtent);
-  status=WriteImage(write_info,image,exception);
-  write_info=DestroyImageInfo(write_info);
+  write_info->verbose=MagickFalse;
+  status=MagickImageCommand(write_info,number_arguments,arguments,
+    (char **) NULL,exception);
+  (void) DeleteImageRegistry(BayerG1Image);
+  (void) DeleteImageRegistry(BayerG0Image);
+  (void) DeleteImageRegistry(BayerBImage);
+  (void) DeleteImageRegistry(BayerRGBImage);
+  for (i=0; i < (ssize_t) number_arguments; i++)
+    arguments[i]=DestroyString(arguments[i]);
+  arguments=(char **) RelinquishMagickMemory(arguments);
+  if (status == MagickFalse)
+    {
+      write_info=DestroyImageInfo(write_info);
+      (void) DeleteImageRegistry(BayerRGGBImage);
+      return(status);
+    }
+  bayer_image=GetImageRegistry(ImageRegistryType,BayerRGGBImage,exception);
+  (void) DeleteImageRegistry(BayerRGGBImage);
+  if (bayer_image != (Image *) NULL)
+    {
+      (void) CopyMagickString(write_info->magick,"GRAY",MagickPathExtent);
+      (void) CopyMagickString(bayer_image->filename,image->filename,
+        MagickPathExtent);
+      status=WriteImage(write_info,bayer_image,exception);
+      bayer_image=DestroyImage(bayer_image);
+      write_info=DestroyImageInfo(write_info);
+    }
   return(status);
 }
