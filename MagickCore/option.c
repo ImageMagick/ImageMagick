@@ -2144,6 +2144,7 @@ static const OptionInfo
     { "FormatsMemory", FormatsMemoryValidate, UndefinedOptionFlag, MagickFalse },
     { "Identify", IdentifyValidate, UndefinedOptionFlag, MagickFalse },
     { "ImportExport", ImportExportValidate, UndefinedOptionFlag, MagickFalse },
+    { "Magick", MagickValidate, UndefinedOptionFlag, MagickFalse },
     { "Montage", MontageValidate, UndefinedOptionFlag, MagickFalse },
     { "Stream", StreamValidate, UndefinedOptionFlag, MagickFalse },
     { "None", NoValidate, UndefinedOptionFlag, MagickFalse },

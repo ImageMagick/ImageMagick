@@ -4178,8 +4178,8 @@ CODERS_NOINST_HDRS = \
 @WITH_MODULES_TRUE@	coders/aai.la \
 @WITH_MODULES_TRUE@	coders/art.la \
 @WITH_MODULES_TRUE@	coders/ashlar.la \
-@WITH_MODULES_TRUE@	coders/bayer.la \
 @WITH_MODULES_TRUE@	coders/avs.la \
+@WITH_MODULES_TRUE@	coders/bayer.la \
 @WITH_MODULES_TRUE@	coders/bgr.la \
 @WITH_MODULES_TRUE@	coders/bmp.la \
 @WITH_MODULES_TRUE@	coders/braille.la \
@@ -6095,6 +6095,7 @@ TESTS_TESTS = \
   tests/validate-formats-memory.tap \
   tests/validate-identify.tap \
   tests/validate-import.tap \
+  tests/validate-magick.tap \
   tests/validate-montage.tap \
   tests/validate-stream.tap \
   tests/drawtest.tap \

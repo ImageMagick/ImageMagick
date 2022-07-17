@@ -1378,7 +1378,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
         fail++;
         continue;
       }
-    status=MagickImageCommand(image_info,number_arguments,arguments,
+    status=ConvertImageCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
     for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
@@ -2224,6 +2224,100 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   V a l i d a t e M a g i c k C o m m a n d                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ValidateMagickCommand() validates the ImageMagick magick command line
+%  program and returns the number of validation tests that passed and failed.
+%
+%  The format of the ValidateMagickCommand method is:
+%
+%      size_t ValidateMagickCommand(ImageInfo *image_info,
+%        const char *reference_filename,const char *output_filename,
+%        size_t *fails,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: the image info.
+%
+%    o reference_filename: the reference image filename.
+%
+%    o output_filename: the output image filename.
+%
+%    o fail: return the number of validation tests that pass.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+static size_t ValidateMagickCommand(ImageInfo *image_info,
+  const char *reference_filename,const char *output_filename,size_t *fails,
+  ExceptionInfo *exception)
+{
+  char
+    **arguments,
+    command[MagickPathExtent];
+
+  int
+    number_arguments;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    i,
+    j;
+
+  size_t
+    fail,
+    test;
+
+  fail=0;
+  test=0;
+  (void) FormatLocaleFile(stdout,"validate magick command line program:\n");
+  for (i=0; convert_options[i] != (char *) NULL; i++)
+  {
+    CatchException(exception);
+    (void) FormatLocaleFile(stdout,"  test %.20g: %s",(double) test++,
+      convert_options[i]);
+    (void) FormatLocaleString(command,MagickPathExtent,"%s %s %s %s",
+      reference_filename,convert_options[i],reference_filename,output_filename);
+    arguments=StringToArgv(command,&number_arguments);
+    if (arguments == (char **) NULL)
+      {
+        (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
+          GetMagickModule());
+        fail++;
+        continue;
+      }
+    status=MagickImageCommand(image_info,number_arguments,arguments,
+      (char **) NULL,exception);
+    for (j=0; j < (ssize_t) number_arguments; j++)
+      arguments[j]=DestroyString(arguments[j]);
+    arguments=(char **) RelinquishMagickMemory(arguments);
+    if (status == MagickFalse)
+      {
+        (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
+          GetMagickModule());
+        fail++;
+        continue;
+      }
+    (void) FormatLocaleFile(stdout,"... pass.\n");
+  }
+  (void) FormatLocaleFile(stdout,
+    "  summary: %.20g subtests; %.20g passed; %.20g failed.\n",(double) test,
+    (double) (test-fail),(double) fail);
+  *fails+=fail;
+  return(test);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   V a l i d a t e M o n t a g e C o m m a n d                               %
 %                                                                             %
 %                                                                             %
@@ -2700,6 +2794,9 @@ int main(int argc,char **argv)
               output_filename,&fail,exception);
           if ((type & ImportExportValidate) != 0)
             tests+=ValidateImportExportPixels(image_info,reference_filename,
+              output_filename,&fail,exception);
+          if ((type & MagickValidate) != 0)
+            tests+=ValidateMagickCommand(image_info,reference_filename,
               output_filename,&fail,exception);
           if ((type & MontageValidate) != 0)
             tests+=ValidateMontageCommand(image_info,reference_filename,

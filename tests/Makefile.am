@@ -49,6 +49,7 @@ TESTS_TESTS = \
   tests/validate-formats-memory.tap \
   tests/validate-identify.tap \
   tests/validate-import.tap \
+  tests/validate-magick.tap \
   tests/validate-montage.tap \
   tests/validate-stream.tap \
   tests/drawtest.tap \
