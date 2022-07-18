@@ -152,6 +152,8 @@ static Image *ReadBAYERImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   read_info=CloneImageInfo(image_info);
+  (void) FormatLocaleString(read_info->filename,MagickPathExtent,"gray:%.1024s",
+    image_info->filename);
   (void) CopyMagickString(read_info->magick,"GRAY",MagickPathExtent);
   read_info->verbose=MagickFalse;
   image=ReadImage(read_info,exception);
