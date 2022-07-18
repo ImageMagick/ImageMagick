@@ -125,8 +125,8 @@ static Image *ReadBAYERImage(const ImageInfo *image_info,
 {
   Image
     *image,
-    *imageA,
-    *imageB;
+    *image_a,
+    *image_b;
 
   ImageInfo
     *read_info;
@@ -154,48 +154,48 @@ static Image *ReadBAYERImage(const ImageInfo *image_info,
   if (image == (Image *) NULL)
     return((Image *) NULL);
   (void) ParseRegionGeometry(image,"50%",&geometry,exception);
-  imageA=BayerSample(image,"75x25",geometry,exception);
-  if (imageA == (Image *) NULL)
+  image_a=BayerSample(image,"75x25",geometry,exception);
+  if (image_a == (Image *) NULL)
     return(DestroyImage(image));
-  imageB=BayerSample(image,"25x75",geometry,exception);
-  if (imageB == (Image *) NULL)
+  image_b=BayerSample(image,"25x75",geometry,exception);
+  if (image_b == (Image *) NULL)
     {
-      imageA=DestroyImage(imageA);
+      image_a=DestroyImage(image_a);
       return(DestroyImage(image));
     }
-  AppendImageToList(&imageA,imageB);
-  imageB=EvaluateImages(imageA,MeanEvaluateOperator,exception);
-  imageA=DestroyImageList(imageA);
-  imageA=BayerSample(image,"25",geometry,exception);
-  if (imageA == (Image *) NULL)
+  AppendImageToList(&image_a,image_b);
+  image_b=EvaluateImages(image_a,MeanEvaluateOperator,exception);
+  image_a=DestroyImageList(image_a);
+  image_a=BayerSample(image,"25",geometry,exception);
+  if (image_a == (Image *) NULL)
     {
-      imageB=DestroyImage(imageB);
+      image_b=DestroyImage(image_b);
       return(DestroyImage(image));
     }
-  AppendImageToList(&imageA,imageB);
-  imageB=BayerSample(image,"75",geometry,exception);
-  if (imageB == (Image *) NULL)
+  AppendImageToList(&image_a,image_b);
+  image_b=BayerSample(image,"75",geometry,exception);
+  if (image_b == (Image *) NULL)
     {
-      imageA=DestroyImageList(imageA);
+      image_a=DestroyImageList(image_a);
       return(DestroyImage(image));
     }
-  AppendImageToList(&imageA,imageB);
-  imageB=CombineImages(imageA,sRGBColorspace,exception);
-  imageA=DestroyImageList(imageA);
-  if (imageB == (Image *) NULL)
+  AppendImageToList(&image_a,image_b);
+  image_b=CombineImages(image_a,sRGBColorspace,exception);
+  image_a=DestroyImageList(image_a);
+  if (image_b == (Image *) NULL)
     return(DestroyImage(image));
-  (void) ParseRegionGeometry(imageB,"200%",&geometry,exception);
-  imageA=ResizeImage(imageB,geometry.width,geometry.height,image->filter,
+  (void) ParseRegionGeometry(image_b,"200%",&geometry,exception);
+  image_a=ResizeImage(image_b,geometry.width,geometry.height,image->filter,
     exception);
-  imageB=DestroyImageList(imageB);
-  if (imageA == (Image *) NULL)
+  image_b=DestroyImageList(image_b);
+  if (image_a == (Image *) NULL)
     return(DestroyImage(image));
-  (void) CopyMagickString(imageA->magick,image_info->magick,
+  (void) CopyMagickString(image_a->magick,image_info->magick,
     MagickPathExtent);
-  (void) CopyMagickString(imageA->filename,image_info->filename,
+  (void) CopyMagickString(image_a->filename,image_info->filename,
     MagickPathExtent);
   image=DestroyImageList(image);
-  return(imageA);
+  return(image_a);
 }
 
 /*
