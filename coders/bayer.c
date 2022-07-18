@@ -13,8 +13,8 @@
 %                     Read/Write Raw Bayer Image Format                       %
 %                                                                             %
 %                              Software Design                                %
-%                                   Cristy                                    %
-%                                 July 2020                                   %
+%                            Cristy, Dirk Lemstra                             %
+%                                 July 2022                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
@@ -104,6 +104,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
 static Image *BayerSample(const Image *image, const char *offset,
   RectangleInfo geometry, ExceptionInfo *exception)
 {
