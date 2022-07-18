@@ -110,7 +110,7 @@ jobs:
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd ImageMagick-Windows\VisualMagick
-        msbuild VisualStaticMTD.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+        msbuild VisualDynamicMT.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
   build_msys2:
     name: Build MSYS2
