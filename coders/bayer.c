@@ -298,19 +298,43 @@ ModuleExport void UnregisterBAYERImage(void)
 %
 */
 static Image* BayerApplyMask(Image *images,size_t index_a,size_t index_b,
-  Image *tile_image,ExceptionInfo *exception)
+  size_t fill_x,size_t fill_y,ExceptionInfo *exception)
 {
+  DrawInfo
+    *draw_info;
+
   Image
     *canvas,
     *mask_image,
     *result;
 
-  DrawInfo
-    *draw_info;
+  PixelInfo
+    pixel;
+
+  Quantum
+    *q;
 
   draw_info=AcquireDrawInfo();
   if (draw_info == (DrawInfo *) NULL)
     return((Image *) NULL);
+  draw_info->fill_pattern=AcquireImage((ImageInfo *) NULL,exception);
+  if (draw_info->fill_pattern == (Image *) NULL)
+    {
+      draw_info=DestroyDrawInfo(draw_info);
+      return((Image *) NULL);
+    }
+  (void) SetImageExtent(draw_info->fill_pattern,2,2,exception);
+  (void) QueryColorCompliance("#000",AllCompliance,
+    &draw_info->fill_pattern->background_color,exception);
+  (void) SetImageBackgroundColor(draw_info->fill_pattern,exception);
+  q=GetAuthenticPixels(draw_info->fill_pattern,fill_x,fill_y,1,1,exception);
+  if (q == (Quantum *) NULL)
+    {
+      draw_info=DestroyDrawInfo(draw_info);
+      return((Image *) NULL);
+    }
+  (void) QueryColorCompliance("#fff",AllCompliance,&pixel,exception);
+  SetPixelViaPixelInfo(draw_info->fill_pattern,&pixel,q);
   mask_image=CloneImage(GetImageFromList(images,index_a),0,0,MagickTrue,
     exception);
   if (mask_image == (Image *) NULL)
@@ -318,11 +342,9 @@ static Image* BayerApplyMask(Image *images,size_t index_a,size_t index_b,
       draw_info=DestroyDrawInfo(draw_info);
       return((Image *) NULL);
     }
-  draw_info->fill_pattern=tile_image;
   draw_info->primitive=ConstantString("color 0,0 reset");
   (void) DrawImage(mask_image,draw_info,exception);
   (void) SetImageAlphaChannel(mask_image,OffAlphaChannel,exception);
-  draw_info->fill_pattern=(Image *) NULL;
   draw_info=DestroyDrawInfo(draw_info);
   canvas=CloneImage(GetImageFromList(images,index_b),0,0,MagickTrue,exception);
   if (canvas == (Image *) NULL)
@@ -347,35 +369,12 @@ static Image* BayerApplyMask(Image *images,size_t index_a,size_t index_b,
 static MagickBooleanType WriteBAYERImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
-#define ThrowBAYERException \
-{ \
-  if (bayer_b != (Image *) NULL) \
-    bayer_b=DestroyImage(bayer_b); \
-  if (bayer_g0 != (Image *) NULL) \
-    bayer_g0=DestroyImage(bayer_g0); \
-  if (bayer_g1 != (Image *) NULL) \
-    bayer_g1=DestroyImage(bayer_g1); \
-  if (bayer_image != (Image *) NULL) \
-    bayer_image=DestroyImage(bayer_image); \
-  if (images != (Image *) NULL) \
-    images=DestroyImageList(images); \
-  return(MagickFalse); \
-}
   Image
-    *bayer_b=(Image *) NULL,
-    *bayer_g0=(Image *) NULL,
-    *bayer_g1=(Image *) NULL,
     *bayer_image=(Image *) NULL,
     *images=(Image *) NULL;
 
   MagickBooleanType
     status;
-
-  PixelInfo
-    pixel;
-
-  Quantum
-    *q;
 
   /*
     Deconstruct RGB image into a single channel RGGB raw image.
@@ -386,49 +385,35 @@ static MagickBooleanType WriteBAYERImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  bayer_g0=AcquireImage((ImageInfo *) NULL,exception);
-  if (bayer_g0 == (Image *) NULL)
-    return(MagickFalse);
-  (void) SetImageExtent(bayer_g0,2,2,exception);
-  (void) QueryColorCompliance("#000",AllCompliance,
-    &bayer_g0->background_color,exception);
-  (void) SetImageBackgroundColor(bayer_g0,exception);
-  q=GetAuthenticPixels(bayer_g0,1,0,1,1,exception);
-  if (q == (Quantum *) NULL)
-    ThrowBAYERException;
-  (void) QueryColorCompliance("#fff",AllCompliance,&pixel,exception);
-  SetPixelViaPixelInfo(bayer_g0,&pixel,q);
-  bayer_b=RollImage(bayer_g0,0,1,exception);
-  if (bayer_b == (Image *) NULL)
-    ThrowBAYERException;
-  bayer_g1=RollImage(bayer_b,-1,0,exception);
-  if (bayer_g1 == (Image *) NULL)
-    ThrowBAYERException;
   bayer_image=CloneImage(image,0,0,MagickTrue,exception);
   status=MagickFalse;
   if (bayer_image == (Image *) NULL)
-    ThrowBAYERException;
+    return(MagickFalse);
   (void) SetImageColorspace(bayer_image,sRGBColorspace,exception);
   (void) SetPixelChannelMask(bayer_image,RedChannel|GreenChannel|BlueChannel);
   images=SeparateImages(bayer_image,exception);
-  if (images == (Image *) NULL)
-    ThrowBAYERException;
   bayer_image=DestroyImage(bayer_image);
-  bayer_image=BayerApplyMask(images,0,1,bayer_g0,exception);
+  if (images == (Image *) NULL)
+    return(MagickFalse);
+  bayer_image=BayerApplyMask(images,0,1,1,0,exception);
   if (bayer_image == (Image *) NULL)
-    ThrowBAYERException;
+    {
+      images=DestroyImageList(images);
+      return(MagickFalse);
+    }
   AppendImageToList(&images,bayer_image);
-  bayer_image=BayerApplyMask(images,3,1,bayer_g1,exception);
+  bayer_image=BayerApplyMask(images,3,1,0,1,exception);
   if (bayer_image == (Image *) NULL)
-    ThrowBAYERException;
+    {
+      images=DestroyImageList(images);
+      return(MagickFalse);
+    }
   AppendImageToList(&images,bayer_image);
-  bayer_image=BayerApplyMask(images,4,2,bayer_b,exception);
+  status=MagickFalse;
+  bayer_image=BayerApplyMask(images,4,2,1,1,exception);
   if (bayer_image != (Image *) NULL)
     status=MagickTrue;
   images=DestroyImageList(images);
-  bayer_g1=DestroyImage(bayer_g1);
-  bayer_g0=DestroyImage(bayer_g0);
-  bayer_b=DestroyImage(bayer_b);
   if (bayer_image != (Image *) NULL)
     {
       ImageInfo
