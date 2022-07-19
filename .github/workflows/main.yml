@@ -103,14 +103,14 @@ jobs:
       shell: cmd
       run: |
         cd ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2022 /${{matrix.platform}} /dmt
+        configure.exe /noWizard /VS2022 /${{matrix.platform}} /smt
 
     - name: Build ImageMagick
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd ImageMagick-Windows\VisualMagick
-        msbuild VisualDynamicMT.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+        msbuild VisualStaticMT.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
   build_msys2:
     name: Build MSYS2
