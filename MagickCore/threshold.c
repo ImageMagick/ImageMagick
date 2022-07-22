@@ -2116,14 +2116,18 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        q->red=(double) PerceptibleThreshold(ClampToQuantum(q->red),
-          epsilon);
-        q->green=(double) PerceptibleThreshold(ClampToQuantum(q->green),
-          epsilon);
-        q->blue=(double) PerceptibleThreshold(ClampToQuantum(q->blue),
-          epsilon);
-        q->alpha=(double) PerceptibleThreshold(ClampToQuantum(q->alpha),
-          epsilon);
+        if ((GetPixelChannelTraits(image,RedPixelChannel) & UpdatePixelTrait) != 0)
+          q->red=(MagickRealType) PerceptibleThreshold(ClampToQuantum(q->red),
+            epsilon);
+        if ((GetPixelChannelTraits(image,GreenPixelChannel) & UpdatePixelTrait) != 0)
+          q->green=(MagickRealType) PerceptibleThreshold(ClampToQuantum(q->green),
+            epsilon);
+        if ((GetPixelChannelTraits(image,BluePixelChannel) & UpdatePixelTrait) != 0)
+          q->blue=(MagickRealType) PerceptibleThreshold(ClampToQuantum(q->blue),
+            epsilon);
+        if ((GetPixelChannelTraits(image,AlphaPixelChannel) & UpdatePixelTrait) != 0)
+          q->alpha=(MagickRealType) PerceptibleThreshold(ClampToQuantum(q->alpha),
+            epsilon);
         q++;
       }
       return(SyncImage(image,exception));
@@ -2163,9 +2167,8 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        q[i]=PerceptibleThreshold(q[i],epsilon);
+        if ((traits & UpdatePixelTrait) != 0)
+          q[i]=PerceptibleThreshold(q[i],epsilon);
       }
       q+=GetPixelChannels(image);
     }
