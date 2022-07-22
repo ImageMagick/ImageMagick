@@ -373,7 +373,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string,
   ExceptionInfo *exception)
 {
   char
-    token[MagickPathExtent];
+    token[MagickPathExtent] = "";
 
   const char
     *p,
