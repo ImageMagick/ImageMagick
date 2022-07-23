@@ -93,6 +93,7 @@
 #include <io.h>
 #define _O_BINARY O_BINARY
 #endif
+
 /*
   Typedef declarations.
 */
@@ -3331,7 +3332,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       char
         fileMode[2];
 
-      *fileMode =(*type);
+      *fileMode=(*type);
       fileMode[1]='\0';
       blob_info->file_info.file=fdopen(StringToLong(filename+3),fileMode);
       if (blob_info->file_info.file == (FILE *) NULL)
@@ -3361,7 +3362,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       if (*type == 'w')
         (void) signal(SIGPIPE,SIG_IGN);
 #endif
-      *fileMode =(*type);
+      *fileMode=(*type);
       fileMode[1]='\0';
       sanitize_command=SanitizeString(filename+1);
       blob_info->file_info.file=(FILE *) popen_utf8(sanitize_command,fileMode);
@@ -3559,7 +3560,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
               }
           }
   blob_info->status=MagickFalse;
-  blob_info->error_number=MagickFalse;
+  blob_info->error_number=0;
   if (blob_info->type != UndefinedStream)
     blob_info->size=GetBlobSize(image);
   else
