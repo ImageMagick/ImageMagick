@@ -1816,7 +1816,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   (void) FormatLocaleString(property,MagickPathExtent,"%gx%g%%",100.0*
     black_point/image->columns/image->rows,100.0* white_point/image->columns/
     image->rows);
-  (void) SetImageProperty(image,"contrast-stretch",property,exception);
+  (void) SetImageProperty(image,"histogram:contrast-stretch",property,
+    exception);
   return(status);
 }
 
@@ -3428,7 +3429,7 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
     (double) ScaleMapToQuantum((MagickRealType) white),1.0,exception);
   (void) FormatLocaleString(property,MagickPathExtent,"%gx%g%%",100.0*
     QuantumScale*black_point,100.0*QuantumScale*white_point);
-  (void) SetImageProperty(image,"linear-stretch",property,exception);
+  (void) SetImageProperty(image,"histogram:linear-stretch",property,exception);
   return(status);
 }
 
