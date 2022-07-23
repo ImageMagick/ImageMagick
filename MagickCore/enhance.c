@@ -69,6 +69,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resample.h"
@@ -1559,6 +1560,9 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   CacheView
     *image_view;
 
+  char
+    property[MagickPathExtent];
+
   double
     *black,
     *histogram,
@@ -1809,6 +1813,10 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   stretch_map=(double *) RelinquishMagickMemory(stretch_map);
   white=(double *) RelinquishMagickMemory(white);
   black=(double *) RelinquishMagickMemory(black);
+  (void) FormatLocaleString(property,MagickPathExtent,"%gx%g%%",100.0*
+    black_point/image->columns/image->rows,100.0* white_point/image->columns/
+    image->rows);
+  (void) SetImageProperty(image,"contrast-stretch",property,exception);
   return(status);
 }
 
@@ -2923,9 +2931,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
     progress;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     y;
 
   /*
@@ -3352,6 +3358,9 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   CacheView
     *image_view;
 
+  char
+    property[MagickPathExtent];
+
   double
     *histogram,
     intensity;
@@ -3417,10 +3426,12 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   histogram=(double *) RelinquishMagickMemory(histogram);
   status=LevelImage(image,(double) ScaleMapToQuantum((MagickRealType) black),
     (double) ScaleMapToQuantum((MagickRealType) white),1.0,exception);
+  (void) FormatLocaleString(property,MagickPathExtent,"%gx%g%%",100.0*
+    QuantumScale*black_point,100.0*QuantumScale*white_point);
+  (void) SetImageProperty(image,"linear-stretch",property,exception);
   return(status);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
