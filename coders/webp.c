@@ -1139,11 +1139,11 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((image->columns > 16383UL) || (image->rows > 16383UL))
-    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  if ((image->columns > 16383UL) || (image->rows > 16383UL))
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   if (WebPConfigInit(&configure) == 0)
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
   if (image->quality != UndefinedCompressionQuality)
