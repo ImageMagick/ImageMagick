@@ -3667,9 +3667,6 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   ssize_t
     y;
 
-  /*
-    Tile texture onto the image background.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
@@ -3684,6 +3681,55 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   (void) TransformImageColorspace(texture_image,image->colorspace,exception);
   (void) SetImageVirtualPixelMethod(texture_image,TileVirtualPixelMethod,
     exception);
+  status=MagickTrue;
+  if ((image->compose != CopyCompositeOp) &&
+      ((image->compose != OverCompositeOp) ||
+       (image->alpha_trait != UndefinedPixelTrait) ||
+       (texture_image->alpha_trait != UndefinedPixelTrait)))
+    {
+      /*
+        Tile texture onto the image background.
+      */
+      for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) texture_image->rows)
+      {
+        ssize_t
+          x;
+
+        if (status == MagickFalse)
+          continue;
+        for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) texture_image->columns)
+        {
+          MagickBooleanType
+            thread_status;
+
+          thread_status=CompositeImage(image,texture_image,image->compose,
+            MagickTrue,x+texture_image->tile_offset.x,y+
+            texture_image->tile_offset.y,exception);
+          if (thread_status == MagickFalse)
+            {
+              status=thread_status;
+              break;
+            }
+        }
+        if (image->progress_monitor != (MagickProgressMonitor) NULL)
+          {
+            MagickBooleanType
+              proceed;
+
+            proceed=SetImageProgress(image,TextureImageTag,(MagickOffsetType) y,
+              image->rows);
+            if (proceed == MagickFalse)
+              status=MagickFalse;
+          }
+      }
+      (void) SetImageProgress(image,TextureImageTag,(MagickOffsetType)
+        image->rows,image->rows);
+      texture_image=DestroyImage(texture_image);
+      return(status);
+    }
+  /*
+    Tile texture onto the image background (optimized).
+  */
   status=MagickTrue;
   texture_view=AcquireVirtualCacheView(texture_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -3700,14 +3746,14 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
       *p,
       *pixels;
 
+    ssize_t
+      x;
+
     Quantum
       *q;
 
     size_t
       width;
-
-    ssize_t
-      x;
 
     if (status == MagickFalse)
       continue;
