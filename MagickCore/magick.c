@@ -1622,8 +1622,13 @@ MagickExport void MagickCoreGenesis(const char *path,
 */
 MagickExport void MagickCoreTerminus(void)
 {
+  InitializeMagickMutex();
+  LockMagickMutex();
   if (magickcore_instantiated == MagickFalse)
-    return;
+    {
+      UnlockMagickMutex();
+      return;
+    }
   MonitorComponentTerminus();
   RegistryComponentTerminus();
 #if defined(MAGICKCORE_X11_DELEGATE)
@@ -1660,8 +1665,9 @@ MagickExport void MagickCoreTerminus(void)
   LocaleComponentTerminus();
   LogComponentTerminus();
   ExceptionComponentTerminus();
-  SemaphoreComponentTerminus();
   magickcore_instantiated=MagickFalse;
+  UnlockMagickMutex();
+  SemaphoreComponentTerminus();
 }
 
 /*
