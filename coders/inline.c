@@ -309,6 +309,9 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    return(status);
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"INLINE") == 0)
@@ -327,6 +330,7 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   if (write_image == (Image *) NULL)
     {
       write_info=DestroyImageInfo(write_info);
+      (void) CloseBlob(image);
       return(MagickTrue);
     }
   blob=(unsigned char *) ImageToBlob(write_info,write_image,&blob_length,
@@ -343,16 +347,11 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   /*
     Write base64-encoded image.
   */
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    {
-      base64=DestroyString(base64);
-      return(status);
-    }
   (void) FormatLocaleString(message,MagickPathExtent,"data:%s;base64,",
     GetMagickMimeType(magick_info));
   (void) WriteBlobString(image,message);
   (void) WriteBlobString(image,base64);
   base64=DestroyString(base64);
+  (void) CloseBlob(image);
   return(MagickTrue);
 }
