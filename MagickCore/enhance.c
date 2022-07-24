@@ -3433,8 +3433,8 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   histogram=(double *) RelinquishMagickMemory(histogram);
   status=LevelImage(image,(double) ScaleMapToQuantum((MagickRealType) black),
     (double) ScaleMapToQuantum((MagickRealType) white),1.0,exception);
-  (void) FormatLocaleString(property,MagickPathExtent,"%gx%g%%",100.0*
-    QuantumScale*black_point,100.0-100.0*QuantumScale*white_point);
+  (void) FormatLocaleString(property,MagickPathExtent,"%gx%g%%",100.0*black/
+    MaxMap,100.0*white/MaxMap);
   (void) SetImageProperty(image,"histogram:linear-stretch",property,exception);
   return(status);
 }
