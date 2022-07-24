@@ -8,7 +8,7 @@
 // Simple demo program for Magick++
 //
 // Concept and algorithms lifted from PerlMagick demo script written
-// by John Christy.
+// by Cristy.
 //
 // Max run-time size 60MB (as compared with 95MB for PerlMagick) under SPARC Solaris
 //
