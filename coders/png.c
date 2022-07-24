@@ -5167,8 +5167,12 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
           else
             for (x=(ssize_t) image->columns; x != 0; x--)
             {
-              SetPixelAlpha(image,GetPixelRed(jng_image,s),q);
-              if (GetPixelAlpha(image,q) != OpaqueAlpha)
+              Quantum
+                alpha;
+
+              alpha=GetPixelRed(jng_image,s);
+              SetPixelAlpha(image,alpha,q);
+              if (alpha != OpaqueAlpha)
                 image->alpha_trait=BlendPixelTrait;
               q+=GetPixelChannels(image);
               s+=GetPixelChannels(jng_image);
