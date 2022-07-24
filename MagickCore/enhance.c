@@ -1564,10 +1564,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     property[MagickPathExtent];
 
   double
-    *black,
-    *histogram,
-    *stretch_map,
-    *white;
+    *histogram;
 
   ImageType
     type;
@@ -1577,6 +1574,11 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 
   MagickOffsetType
     progress;
+
+  Quantum
+    *black,
+    *stretch_map,
+    *white;
 
   ssize_t
     i;
@@ -1594,23 +1596,23 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   type=IdentifyImageType(image,exception);
   if (IsGrayImageType(type) != MagickFalse)
     (void) SetImageColorspace(image,GRAYColorspace,exception);
-  black=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*black));
-  white=(double *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*white));
+  black=(Quantum *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*black));
+  white=(Quantum *) AcquireQuantumMemory(MaxPixelChannels,sizeof(*white));
+  stretch_map=(Quantum *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
+    sizeof(*stretch_map));
   histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
     sizeof(*histogram));
-  stretch_map=(double *) AcquireQuantumMemory(MaxMap+1UL,MaxPixelChannels*
-    sizeof(*stretch_map));
-  if ((black == (double *) NULL) || (white == (double *) NULL) ||
-      (histogram == (double *) NULL) || (stretch_map == (double *) NULL))
+  if ((black == (Quantum *) NULL) || (white == (Quantum *) NULL) ||
+      (stretch_map == (Quantum *) NULL) || (histogram == (double *) NULL))
     {
-      if (stretch_map != (double *) NULL)
-        stretch_map=(double *) RelinquishMagickMemory(stretch_map);
       if (histogram != (double *) NULL)
         histogram=(double *) RelinquishMagickMemory(histogram);
-      if (white != (double *) NULL)
-        white=(double *) RelinquishMagickMemory(white);
-      if (black != (double *) NULL)
-        black=(double *) RelinquishMagickMemory(black);
+      if (stretch_map != (Quantum *) NULL)
+        stretch_map=(Quantum *) RelinquishMagickMemory(stretch_map);
+      if (white != (Quantum *) NULL)
+        white=(Quantum *) RelinquishMagickMemory(white);
+      if (black != (Quantum *) NULL)
+        black=(Quantum *) RelinquishMagickMemory(black);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
@@ -1674,7 +1676,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       if (intensity > black_point)
         break;
     }
-    black[i]=(double) j;
+    black[i]=(Quantum) j;
     intensity=0.0;
     for (j=(ssize_t) MaxMap; j != 0; j--)
     {
@@ -1682,7 +1684,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       if (intensity > ((double) image->columns*image->rows-white_point))
         break;
     }
-    white[i]=(double) j;
+    white[i]=(Quantum) j;
   }
   histogram=(double *) RelinquishMagickMemory(histogram);
   /*
@@ -1705,11 +1707,11 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
         stretch_map[GetPixelChannels(image)*j+i]=0.0;
       else
         if (j > (ssize_t) white[i])
-          stretch_map[GetPixelChannels(image)*j+i]=(double) QuantumRange;
+          stretch_map[GetPixelChannels(image)*j+i]=QuantumRange;
         else
           if (black[i] != white[i])
-            stretch_map[GetPixelChannels(image)*j+i]=(double) ScaleMapToQuantum(
-              (double) (MaxMap*gamma*(j-black[i])));
+            stretch_map[GetPixelChannels(image)*j+i]=ScaleMapToQuantum((double)
+              (MaxMap*gamma*(j-black[i])));
     }
   }
   if (image->storage_class == PseudoClass)
@@ -1725,26 +1727,30 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           {
             i=GetPixelChannelOffset(image,RedPixelChannel);
-            image->colormap[j].red=stretch_map[GetPixelChannels(image)*
-              ScaleQuantumToMap(ClampToQuantum(image->colormap[j].red))+i];
+            image->colormap[j].red=(MagickRealType) stretch_map[
+              GetPixelChannels(image)*ScaleQuantumToMap(ClampToQuantum(
+              image->colormap[j].red))+i];
           }
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           {
             i=GetPixelChannelOffset(image,GreenPixelChannel);
-            image->colormap[j].green=stretch_map[GetPixelChannels(image)*
-              ScaleQuantumToMap(ClampToQuantum(image->colormap[j].green))+i];
+            image->colormap[j].green=(MagickRealType) stretch_map[
+              GetPixelChannels(image)*ScaleQuantumToMap(ClampToQuantum(
+              image->colormap[j].green))+i];
           }
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           {
             i=GetPixelChannelOffset(image,BluePixelChannel);
-            image->colormap[j].blue=stretch_map[GetPixelChannels(image)*
-              ScaleQuantumToMap(ClampToQuantum(image->colormap[j].blue))+i];
+            image->colormap[j].blue=(MagickRealType) stretch_map[
+              GetPixelChannels(image)*ScaleQuantumToMap(ClampToQuantum(
+              image->colormap[j].blue))+i];
           }
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
           {
             i=GetPixelChannelOffset(image,AlphaPixelChannel);
-            image->colormap[j].alpha=stretch_map[GetPixelChannels(image)*
-              ScaleQuantumToMap(ClampToQuantum(image->colormap[j].alpha))+i];
+            image->colormap[j].alpha=(MagickRealType) stretch_map[
+              GetPixelChannels(image)*ScaleQuantumToMap(ClampToQuantum(
+              image->colormap[j].alpha))+i];
           }
       }
     }
@@ -1810,14 +1816,14 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  stretch_map=(double *) RelinquishMagickMemory(stretch_map);
-  white=(double *) RelinquishMagickMemory(white);
-  black=(double *) RelinquishMagickMemory(black);
   (void) FormatLocaleString(property,MagickPathExtent,"%gx%g%%",100.0*
-    black_point/image->columns/image->rows,100.0* white_point/image->columns/
-    image->rows);
+    QuantumScale*GetPixelIntensity(image,black),100.0*QuantumScale*
+    GetPixelIntensity(image,white));
   (void) SetImageProperty(image,"histogram:contrast-stretch",property,
     exception);
+  white=(Quantum *) RelinquishMagickMemory(white);
+  black=(Quantum *) RelinquishMagickMemory(black);
+  stretch_map=(Quantum *) RelinquishMagickMemory(stretch_map);
   return(status);
 }
 
