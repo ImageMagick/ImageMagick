@@ -2475,7 +2475,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
         Native blob support for this images format.
       */
       blob_info->length=0;
-      blob_info->blob=(void *) AcquireQuantumMemory(MagickMaxBlobExtent,
+      blob_info->blob=AcquireQuantumMemory(MagickMaxBlobExtent,
         sizeof(unsigned char));
       if (blob_info->blob == (void *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
