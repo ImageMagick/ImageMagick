@@ -2013,7 +2013,7 @@ FREETYPE_LIBS=""
 FREETYPE_PKG=""
 if test "x$with_freetype" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([FREETYPE],[freetype2],[have_freetype=yes],[have_freetype=no])
+  PKG_CHECK_MODULES([FREETYPE],[freetype2 >= 2.8.0],[have_freetype=yes],[have_freetype=no])
   AC_MSG_RESULT([])
 fi
 

@@ -1413,13 +1413,14 @@ static PixelChannel GetChannelQualifier (FxInfo * pfx, int op)
         if (op >= FirstImgAttr && op <= (OperatorE)aNull &&
               (pch->pixChan == HUE_CHANNEL ||
                pch->pixChan == SAT_CHANNEL ||
-               pch->pixChan == LIGHT_CHANNEL)
+               pch->pixChan == LIGHT_CHANNEL ||
+               pch->pixChan == INTENSITY_CHANNEL)
            )
         {
           (void) ThrowMagickException (
             pfx->exception, GetMagickModule(), OptionError,
-            "Can't have image attribute with HLS qualifier at", "'%s'",
-            SetShortExp(pfx));
+            "Can't have image attribute with channel qualifier at", "'%s' at '%s'",
+            pfx->token, SetShortExp(pfx));
           return NO_CHAN_QUAL;
         }
 
