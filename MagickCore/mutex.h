@@ -55,7 +55,8 @@ static inline void DestroyMagickMutex(void)
 static inline void InitializeMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_init_lock(&translation_unit_mutex);
+  if (translation_unit_initialized == MagickFalse)
+    omp_init_lock(&translation_unit_mutex);
   translation_unit_initialized=MagickTrue;
 #endif
 }
