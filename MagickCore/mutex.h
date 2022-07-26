@@ -47,7 +47,8 @@ static LONG
 static inline void DestroyMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  omp_destroy_lock(&translation_unit_mutex);
+  if (translation_unit_initialized != MagickFalse)
+    omp_destroy_lock(&translation_unit_mutex);
   translation_unit_initialized=MagickFalse;
 #endif
 }
@@ -87,6 +88,8 @@ static inline void LockMagickMutex(void)
 
 static inline void UnlockMagickMutex(void)
 {
+  if (translation_unit_initialized == MagickFalse)
+    InitializeMagickMutex();
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   omp_unset_lock(&translation_unit_mutex);
 #elif defined(MAGICKCORE_THREAD_SUPPORT)

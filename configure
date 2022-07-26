@@ -796,9 +796,10 @@ WEBPMUX_LIBS
 WEBPMUX_CFLAGS
 WEBP_LIBS
 WEBP_CFLAGS
-TIFF_LIBS
 TIFF_DELEGATE_FALSE
 TIFF_DELEGATE_TRUE
+TIFF_LIBS
+TIFF_CFLAGS
 CAIRO_DELEGATE_FALSE
 CAIRO_DELEGATE_TRUE
 RSVG_DELEGATE_FALSE
@@ -1335,6 +1336,8 @@ RSVG_CFLAGS
 RSVG_LIBS
 CAIRO_SVG_CFLAGS
 CAIRO_SVG_LIBS
+TIFF_CFLAGS
+TIFF_LIBS
 WEBP_CFLAGS
 WEBP_LIBS
 WEBPMUX_CFLAGS
@@ -2186,6 +2189,8 @@ Some influential environment variables:
               C compiler flags for CAIRO_SVG, overriding pkg-config
   CAIRO_SVG_LIBS
               linker flags for CAIRO_SVG, overriding pkg-config
+  TIFF_CFLAGS C compiler flags for TIFF, overriding pkg-config
+  TIFF_LIBS   linker flags for TIFF, overriding pkg-config
   WEBP_CFLAGS C compiler flags for WEBP, overriding pkg-config
   WEBP_LIBS   linker flags for WEBP, overriding pkg-config
   WEBPMUX_CFLAGS
@@ -5144,7 +5149,7 @@ MAGICK_PATCHLEVEL_VERSION=45
 
 MAGICK_VERSION=7.1.0-45
 
-MAGICK_GIT_REVISION=fc4744f79:20220725
+MAGICK_GIT_REVISION=ee1f26ff1:20220726
 
 
 # Substitute library versioning
@@ -5178,7 +5183,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,45
 
-PACKAGE_RELEASE_DATE=2022-07-25
+PACKAGE_RELEASE_DATE=2022-07-26
 
 
 # Ensure that make can run correctly
@@ -28545,7 +28550,7 @@ fi
         OLIBS="$LIBS"
         # Assume that gcc is used with ccmalloc.
         LIBS="$LIBS $CCMALLOC_PREFIX/lib/ccmalloc-gcc.o"
-       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for ccmalloc_malloc in -lccmalloc" >&5
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for ccmalloc_malloc in -lccmalloc" >&5
 printf %s "checking for ccmalloc_malloc in -lccmalloc... " >&6; }
 if test ${ac_cv_lib_ccmalloc_ccmalloc_malloc+y}
 then :
@@ -33575,326 +33580,94 @@ if test "$with_tiff" != 'yes'; then
 fi
 
 have_tiff='no'
-TIFF_LIBS=''
-if test "$with_tiff" != 'no'; then
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+TIFF_CFLAGS=""
+TIFF_LIBS=""
+TIFF_PKG=""
+if test "x$with_tiff" = "xyes"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 printf "%s\n" "-------------------------------------------------------------" >&6; }
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for TIFF" >&5
-printf %s "checking for TIFF... " >&6; }
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: " >&5
-printf "%s\n" "" >&6; }
-    failed=0
-    passed=0
-    ac_fn_c_check_header_compile "$LINENO" "tiff.h" "ac_cv_header_tiff_h" "$ac_includes_default"
-if test "x$ac_cv_header_tiff_h" = xyes
-then :
-  passed=`expr $passed + 1`
-else $as_nop
-  failed=`expr $failed + 1`
+
+pkg_failed=no
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libtiff-4 >= 4.0.0" >&5
+printf %s "checking for libtiff-4 >= 4.0.0... " >&6; }
+
+if test -n "$TIFF_CFLAGS"; then
+    pkg_cv_TIFF_CFLAGS="$TIFF_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libtiff-4 >= 4.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libtiff-4 >= 4.0.0") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_TIFF_CFLAGS=`$PKG_CONFIG --cflags "libtiff-4 >= 4.0.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$TIFF_LIBS"; then
+    pkg_cv_TIFF_LIBS="$TIFF_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libtiff-4 >= 4.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libtiff-4 >= 4.0.0") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_TIFF_LIBS=`$PKG_CONFIG --libs "libtiff-4 >= 4.0.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
 fi
 
-    ac_fn_c_check_header_compile "$LINENO" "tiffio.h" "ac_cv_header_tiffio_h" "$ac_includes_default"
-if test "x$ac_cv_header_tiffio_h" = xyes
-then :
-  passed=`expr $passed + 1`
-else $as_nop
-  failed=`expr $failed + 1`
-fi
 
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for TIFFOpen in -ltiff" >&5
-printf %s "checking for TIFFOpen in -ltiff... " >&6; }
-if test ${ac_cv_lib_tiff_TIFFOpen+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ltiff  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char TIFFOpen ();
-int
-main (void)
-{
-return TIFFOpen ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_tiff_TIFFOpen=yes
-else $as_nop
-  ac_cv_lib_tiff_TIFFOpen=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tiff_TIFFOpen" >&5
-printf "%s\n" "$ac_cv_lib_tiff_TIFFOpen" >&6; }
-if test "x$ac_cv_lib_tiff_TIFFOpen" = xyes
-then :
-  passed=`expr $passed + 1`
-else $as_nop
-  failed=`expr $failed + 1`
-fi
+if test $pkg_failed = yes; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
 
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for TIFFClientOpen in -ltiff" >&5
-printf %s "checking for TIFFClientOpen in -ltiff... " >&6; }
-if test ${ac_cv_lib_tiff_TIFFClientOpen+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ltiff  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char TIFFClientOpen ();
-int
-main (void)
-{
-return TIFFClientOpen ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_tiff_TIFFClientOpen=yes
-else $as_nop
-  ac_cv_lib_tiff_TIFFClientOpen=no
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
 fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tiff_TIFFClientOpen" >&5
-printf "%s\n" "$ac_cv_lib_tiff_TIFFClientOpen" >&6; }
-if test "x$ac_cv_lib_tiff_TIFFClientOpen" = xyes
-then :
-  passed=`expr $passed + 1`
-else $as_nop
-  failed=`expr $failed + 1`
-fi
-
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for TIFFIsByteSwapped in -ltiff" >&5
-printf %s "checking for TIFFIsByteSwapped in -ltiff... " >&6; }
-if test ${ac_cv_lib_tiff_TIFFIsByteSwapped+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ltiff  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char TIFFIsByteSwapped ();
-int
-main (void)
-{
-return TIFFIsByteSwapped ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_tiff_TIFFIsByteSwapped=yes
-else $as_nop
-  ac_cv_lib_tiff_TIFFIsByteSwapped=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tiff_TIFFIsByteSwapped" >&5
-printf "%s\n" "$ac_cv_lib_tiff_TIFFIsByteSwapped" >&6; }
-if test "x$ac_cv_lib_tiff_TIFFIsByteSwapped" = xyes
-then :
-  passed=`expr $passed + 1`
-else $as_nop
-  failed=`expr $failed + 1`
-fi
-
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for TIFFReadRGBATile in -ltiff" >&5
-printf %s "checking for TIFFReadRGBATile in -ltiff... " >&6; }
-if test ${ac_cv_lib_tiff_TIFFReadRGBATile+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ltiff  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char TIFFReadRGBATile ();
-int
-main (void)
-{
-return TIFFReadRGBATile ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_tiff_TIFFReadRGBATile=yes
-else $as_nop
-  ac_cv_lib_tiff_TIFFReadRGBATile=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tiff_TIFFReadRGBATile" >&5
-printf "%s\n" "$ac_cv_lib_tiff_TIFFReadRGBATile" >&6; }
-if test "x$ac_cv_lib_tiff_TIFFReadRGBATile" = xyes
-then :
-  passed=`expr $passed + 1`
-else $as_nop
-  failed=`expr $failed + 1`
-fi
-
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for TIFFReadRGBAStrip in -ltiff" >&5
-printf %s "checking for TIFFReadRGBAStrip in -ltiff... " >&6; }
-if test ${ac_cv_lib_tiff_TIFFReadRGBAStrip+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ltiff  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char TIFFReadRGBAStrip ();
-int
-main (void)
-{
-return TIFFReadRGBAStrip ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_tiff_TIFFReadRGBAStrip=yes
-else $as_nop
-  ac_cv_lib_tiff_TIFFReadRGBAStrip=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_tiff_TIFFReadRGBAStrip" >&5
-printf "%s\n" "$ac_cv_lib_tiff_TIFFReadRGBAStrip" >&6; }
-if test "x$ac_cv_lib_tiff_TIFFReadRGBAStrip" = xyes
-then :
-  passed=`expr $passed + 1`
-else $as_nop
-  failed=`expr $failed + 1`
-fi
-
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if TIFF package is complete" >&5
-printf %s "checking if TIFF package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-printf "%s\n" "no -- some components failed test" >&6; }
-            have_tiff='no (failed tests)'
+        if test $_pkg_short_errors_supported = yes; then
+	        TIFF_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libtiff-4 >= 4.0.0" 2>&1`
         else
-            TIFF_LIBS='-ltiff'
-            LIBS="$TIFF_LIBS $LIBS"
+	        TIFF_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libtiff-4 >= 4.0.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$TIFF_PKG_ERRORS" >&5
+
+	have_tiff=no
+elif test $pkg_failed = untried; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+	have_tiff=no
+else
+	TIFF_CFLAGS=$pkg_cv_TIFF_CFLAGS
+	TIFF_LIBS=$pkg_cv_TIFF_LIBS
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+	have_tiff=yes
+fi
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: " >&5
+printf "%s\n" "" >&6; }
+fi
+
+if test "$have_tiff" = 'yes'; then
 
 printf "%s\n" "#define TIFF_DELEGATE 1" >>confdefs.h
 
-            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-            have_tiff='yes'
-            ac_fn_c_check_header_compile "$LINENO" "tiffconf.h" "ac_cv_header_tiffconf_h" "$ac_includes_default"
-if test "x$ac_cv_header_tiffconf_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_TIFFCONF_H 1" >>confdefs.h
-
+  CFLAGS="$TIFF_CFLAGS $CFLAGS"
 fi
 
-            ac_fn_c_check_func "$LINENO" "TIFFIsCODECConfigured" "ac_cv_func_TIFFIsCODECConfigured"
-if test "x$ac_cv_func_TIFFIsCODECConfigured" = xyes
-then :
-  printf "%s\n" "#define HAVE_TIFFISCODECCONFIGURED 1" >>confdefs.h
-
-fi
-ac_fn_c_check_func "$LINENO" "TIFFMergeFieldInfo" "ac_cv_func_TIFFMergeFieldInfo"
-if test "x$ac_cv_func_TIFFMergeFieldInfo" = xyes
-then :
-  printf "%s\n" "#define HAVE_TIFFMERGEFIELDINFO 1" >>confdefs.h
-
-fi
-ac_fn_c_check_func "$LINENO" "TIFFIsBigEndian" "ac_cv_func_TIFFIsBigEndian"
-if test "x$ac_cv_func_TIFFIsBigEndian" = xyes
-then :
-  printf "%s\n" "#define HAVE_TIFFISBIGENDIAN 1" >>confdefs.h
-
-fi
-ac_fn_c_check_func "$LINENO" "TIFFSetErrorHandlerExt" "ac_cv_func_TIFFSetErrorHandlerExt"
-if test "x$ac_cv_func_TIFFSetErrorHandlerExt" = xyes
-then :
-  printf "%s\n" "#define HAVE_TIFFSETERRORHANDLEREXT 1" >>confdefs.h
-
-fi
-ac_fn_c_check_func "$LINENO" "TIFFSetTagExtender" "ac_cv_func_TIFFSetTagExtender"
-if test "x$ac_cv_func_TIFFSetTagExtender" = xyes
-then :
-  printf "%s\n" "#define HAVE_TIFFSETTAGEXTENDER 1" >>confdefs.h
-
-fi
-ac_fn_c_check_func "$LINENO" "TIFFReadEXIFDirectory" "ac_cv_func_TIFFReadEXIFDirectory"
-if test "x$ac_cv_func_TIFFReadEXIFDirectory" = xyes
-then :
-  printf "%s\n" "#define HAVE_TIFFREADEXIFDIRECTORY 1" >>confdefs.h
-
-fi
-ac_fn_c_check_func "$LINENO" "TIFFReadGPSDirectory" "ac_cv_func_TIFFReadGPSDirectory"
-if test "x$ac_cv_func_TIFFReadGPSDirectory" = xyes
-then :
-  printf "%s\n" "#define HAVE_TIFFREADGPSDIRECTORY 1" >>confdefs.h
-
-fi
-ac_fn_c_check_func "$LINENO" "TIFFSetWarningHandlerExt" "ac_cv_func_TIFFSetWarningHandlerExt"
-if test "x$ac_cv_func_TIFFSetWarningHandlerExt" = xyes
-then :
-  printf "%s\n" "#define HAVE_TIFFSETWARNINGHANDLEREXT 1" >>confdefs.h
-
-fi
-ac_fn_c_check_func "$LINENO" "TIFFSwabArrayOfTriples" "ac_cv_func_TIFFSwabArrayOfTriples"
-if test "x$ac_cv_func_TIFFSwabArrayOfTriples" = xyes
-then :
-  printf "%s\n" "#define HAVE_TIFFSWABARRAYOFTRIPLES 1" >>confdefs.h
-
-fi
-
-        fi
-    else
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-    fi
-fi
  if test "$have_tiff" = 'yes'; then
   TIFF_DELEGATE_TRUE=
   TIFF_DELEGATE_FALSE='#'
@@ -33902,6 +33675,7 @@ else
   TIFF_DELEGATE_TRUE='#'
   TIFF_DELEGATE_FALSE=
 fi
+
 
 
 

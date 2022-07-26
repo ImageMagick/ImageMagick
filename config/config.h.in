@@ -615,36 +615,6 @@
 /* Define to 1 if you have the `tempnam' function. */
 #undef HAVE_TEMPNAM
 
-/* Define to 1 if you have the <tiffconf.h> header file. */
-#undef HAVE_TIFFCONF_H
-
-/* Define to 1 if you have the `TIFFIsBigEndian' function. */
-#undef HAVE_TIFFISBIGENDIAN
-
-/* Define to 1 if you have the `TIFFIsCODECConfigured' function. */
-#undef HAVE_TIFFISCODECCONFIGURED
-
-/* Define to 1 if you have the `TIFFMergeFieldInfo' function. */
-#undef HAVE_TIFFMERGEFIELDINFO
-
-/* Define to 1 if you have the `TIFFReadEXIFDirectory' function. */
-#undef HAVE_TIFFREADEXIFDIRECTORY
-
-/* Define to 1 if you have the `TIFFReadGPSDirectory' function. */
-#undef HAVE_TIFFREADGPSDIRECTORY
-
-/* Define to 1 if you have the `TIFFSetErrorHandlerExt' function. */
-#undef HAVE_TIFFSETERRORHANDLEREXT
-
-/* Define to 1 if you have the `TIFFSetTagExtender' function. */
-#undef HAVE_TIFFSETTAGEXTENDER
-
-/* Define to 1 if you have the `TIFFSetWarningHandlerExt' function. */
-#undef HAVE_TIFFSETWARNINGHANDLEREXT
-
-/* Define to 1 if you have the `TIFFSwabArrayOfTriples' function. */
-#undef HAVE_TIFFSWABARRAYOFTRIPLES
-
 /* Define to 1 if you have the `times' function. */
 #undef HAVE_TIMES
 
