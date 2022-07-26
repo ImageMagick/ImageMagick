@@ -89,9 +89,6 @@
 #include "coders/coders-private.h"
 #include "coders/psd-private.h"
 #if defined(MAGICKCORE_TIFF_DELEGATE)
-# if defined(MAGICKCORE_HAVE_TIFFCONF_H)
-#  include <tiffconf.h>
-# endif
 # include <tiff.h>
 # include <tiffio.h>
 # if !defined(COMPRESSION_ADOBE_DEFLATE)
@@ -822,7 +819,6 @@ static void TIFFSetImageProperties(TIFF *tiff,Image *image,
 static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   const ImageInfo* image_info,ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY)
   const char
     *option;
 
@@ -849,18 +845,12 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   if (TIFFReadEXIFDirectory(tiff,offset) == 1)
     TIFFSetImageProperties(tiff,image,"exif:",exception);
   TIFFSetDirectory(tiff,directory);
-#else
-  magick_unreferenced(tiff);
-  magick_unreferenced(image);
-  magick_unreferenced(image_info);
-  magick_unreferenced(exception);
-#endif
 }
 
 static void TIFFGetGPSProperties(TIFF *tiff,Image *image,
   const ImageInfo* image_info,ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_HAVE_TIFFREADGPSDIRECTORY)
+#if (TIFFLIB_VERSION >= 20210416)
   const char
     *option;
 
@@ -1454,7 +1444,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image->endian=MSBEndian;
     if (endian == FILLORDER_LSB2MSB)
       image->endian=LSBEndian;
-#if defined(MAGICKCORE_HAVE_TIFFISBIGENDIAN)
     if (TIFFIsBigEndian(tiff) == 0)
       {
         (void) SetImageProperty(image,"tiff:endian","lsb",exception);
@@ -1465,7 +1454,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         (void) SetImageProperty(image,"tiff:endian","msb",exception);
         image->endian=MSBEndian;
       }
-#endif
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
       (void) SetImageColorspace(image,GRAYColorspace,exception);
@@ -1534,14 +1522,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             image->chromaticity.blue_primary.y=chromaticity[5];
           }
       }
-#if defined(MAGICKCORE_HAVE_TIFFISCODECCONFIGURED) || (TIFFLIB_VERSION > 20040919)
     if ((compress_tag != COMPRESSION_NONE) &&
         (TIFFIsCODECConfigured(compress_tag) == 0))
       {
         TIFFClose(tiff);
         ThrowReaderException(CoderError,"CompressNotSupported");
       }
-#endif
     switch (compress_tag)
     {
       case COMPRESSION_NONE: image->compression=NoCompression; break;
@@ -2226,7 +2212,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 */
 
 #if defined(MAGICKCORE_TIFF_DELEGATE)
-#if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
 static TIFFExtendProc
   tag_extender = (TIFFExtendProc) NULL;
 
@@ -2320,7 +2305,6 @@ static void TIFFTagExtender(TIFF *tiff)
   TIFFIgnoreTags(tiff);
 }
 #endif
-#endif
 
 ModuleExport size_t RegisterTIFFImage(void)
 {
@@ -2342,10 +2326,8 @@ ModuleExport size_t RegisterTIFFImage(void)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       error_handler=TIFFSetErrorHandler(TIFFErrors);
       warning_handler=TIFFSetWarningHandler(TIFFWarnings);
-#if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
       if (tag_extender == (TIFFExtendProc) NULL)
         tag_extender=TIFFSetTagExtender(TIFFTagExtender);
-#endif
       instantiate_key=MagickTrue;
     }
   UnlockSemaphoreInfo(tiff_semaphore);
@@ -2469,10 +2451,8 @@ ModuleExport void UnregisterTIFFImage(void)
   LockSemaphoreInfo(tiff_semaphore);
   if (instantiate_key != MagickFalse)
     {
-#if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
       if (tag_extender == (TIFFExtendProc) NULL)
         (void) TIFFSetTagExtender(tag_extender);
-#endif
       if (DeleteMagickThreadKey(tiff_exception) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
       (void) TIFFSetWarningHandler(warning_handler);
@@ -3519,7 +3499,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         break;
       }
     }
-#if defined(MAGICKCORE_HAVE_TIFFISCODECCONFIGURED) || (TIFFLIB_VERSION > 20040919)
     if ((compress_tag != COMPRESSION_NONE) &&
         (TIFFIsCODECConfigured(compress_tag) == 0))
       {
@@ -3529,41 +3508,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         compress_tag=COMPRESSION_NONE;
         compression=NoCompression;
       }
-#else
-      switch (compress_tag)
-      {
-#if defined(CCITT_SUPPORT)
-        case COMPRESSION_CCITTFAX3:
-        case COMPRESSION_CCITTFAX4:
-#endif
-#if defined(YCBCR_SUPPORT) && defined(JPEG_SUPPORT)
-        case COMPRESSION_JPEG:
-#endif
-#if defined(LZMA_SUPPORT) && defined(COMPRESSION_LZMA)
-        case COMPRESSION_LZMA:
-#endif
-#if defined(LZW_SUPPORT)
-        case COMPRESSION_LZW:
-#endif
-#if defined(PACKBITS_SUPPORT)
-        case COMPRESSION_PACKBITS:
-#endif
-#if defined(ZIP_SUPPORT)
-        case COMPRESSION_ADOBE_DEFLATE:
-#endif
-        case COMPRESSION_NONE:
-          break;
-        default:
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-            "CompressionNotSupported","`%s'",CommandOptionToMnemonic(
-            MagickCompressOptions,(ssize_t) compression));
-          compress_tag=COMPRESSION_NONE;
-          compression=NoCompression;
-          break;
-        }
-      }
-#endif
     if (image->colorspace == CMYKColorspace)
       {
         photometric=PHOTOMETRIC_SEPARATED;
