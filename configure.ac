@@ -2714,8 +2714,7 @@ dnl ===========================================================================
 # Check for TIFF delegate library.
 #
 AC_ARG_WITH([tiff],
-    [AS_HELP_STRING([--without-tiff],
-                    [disable TIFF support])],
+    [AS_HELP_STRING([--without-tiff], [disable TIFF support])],
     [with_tiff=$withval],
     [with_tiff='yes'])
 
@@ -2724,42 +2723,22 @@ if test "$with_tiff" != 'yes'; then
 fi
 
 have_tiff='no'
-TIFF_LIBS=''
-if test "$with_tiff" != 'no'; then
-    AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for TIFF])
-    AC_MSG_RESULT([])
-    failed=0
-    passed=0
-    AC_CHECK_HEADER([tiff.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-    AC_CHECK_HEADER([tiffio.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-    AC_CHECK_LIB([tiff],[TIFFOpen],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-    AC_CHECK_LIB([tiff],[TIFFClientOpen],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-    AC_CHECK_LIB([tiff],[TIFFIsByteSwapped],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-    AC_CHECK_LIB([tiff],[TIFFReadRGBATile],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-    AC_CHECK_LIB([tiff],[TIFFReadRGBAStrip],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-    AC_MSG_CHECKING([if TIFF package is complete])
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            AC_MSG_RESULT([no -- some components failed test])
-            have_tiff='no (failed tests)'
-        else
-            TIFF_LIBS='-ltiff'
-            LIBS="$TIFF_LIBS $LIBS"
-            AC_DEFINE([TIFF_DELEGATE],[1],[Define if you have TIFF library])
-            AC_MSG_RESULT([yes])
-            have_tiff='yes'
-            AC_CHECK_HEADERS(tiffconf.h)
-            AC_CHECK_FUNCS([TIFFIsCODECConfigured TIFFMergeFieldInfo \
-              TIFFIsBigEndian TIFFSetErrorHandlerExt TIFFSetTagExtender \
-              TIFFReadEXIFDirectory TIFFReadGPSDirectory \
-              TIFFSetWarningHandlerExt TIFFSwabArrayOfTriples])
-        fi
-    else
-        AC_MSG_RESULT([no])
-    fi
+TIFF_CFLAGS=""
+TIFF_LIBS=""
+TIFF_PKG=""
+if test "x$with_tiff" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES([TIFF],[libtiff-4 >= 4.0.0],[have_tiff=yes],[have_tiff=no])
+  AC_MSG_RESULT([])
 fi
+
+if test "$have_tiff" = 'yes'; then
+  AC_DEFINE([TIFF_DELEGATE],[1],[Define if you have TIFF library])
+  CFLAGS="$TIFF_CFLAGS $CFLAGS"
+fi
+
 AM_CONDITIONAL([TIFF_DELEGATE],[test "$have_tiff" = 'yes'])
+AC_SUBST([TIFF_CFLAGS])
 AC_SUBST([TIFF_LIBS])
 
 dnl ===========================================================================
