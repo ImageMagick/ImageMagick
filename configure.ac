@@ -1377,7 +1377,7 @@ if test "$enable_ccmalloc" = 'yes'; then
         OLIBS="$LIBS"
         # Assume that gcc is used with ccmalloc.
         LIBS="$LIBS $CCMALLOC_PREFIX/lib/ccmalloc-gcc.o"
-       AC_CHECK_LIB([ccmalloc],[ccmalloc_malloc],[CCMALLOC_LIBS="$CCMALLOC_PREFIX/lib/ccmalloc-gcc.o -lccmalloc -ldl"],[,-ldl])
+        AC_CHECK_LIB([ccmalloc],[ccmalloc_malloc],[CCMALLOC_LIBS="$CCMALLOC_PREFIX/lib/ccmalloc-gcc.o -lccmalloc -ldl"],[,-ldl])
         if test -n "$CCMALLOC_LIBS"; then
             LIBS="$OLIBS"
             LIBS="$LIBS $CCMALLOC_LIBS"
