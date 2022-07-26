@@ -208,9 +208,6 @@ MagickExport void CatchException(ExceptionInfo *exception)
   const ExceptionInfo
     *p;
 
-  ssize_t
-    i;
-
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   if (exception->exceptions  == (void *) NULL)
@@ -219,7 +216,7 @@ MagickExport void CatchException(ExceptionInfo *exception)
   exceptions=(LinkedListInfo *) exception->exceptions;
   ResetLinkedListIterator(exceptions);
   p=(const ExceptionInfo *) GetNextValueInLinkedList(exceptions);
-  for (i=0; p != (const ExceptionInfo *) NULL; i++)
+  while (p != (const ExceptionInfo *) NULL)
   {
     if ((p->severity >= WarningException) && (p->severity < ErrorException))
       MagickWarning(p->severity,p->reason,p->description);

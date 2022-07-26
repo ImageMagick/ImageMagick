@@ -1258,9 +1258,6 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     SegmentInfo
       inverse_edge;
 
-    ssize_t
-      x_offset;
-
     if (status == MagickFalse)
       continue;
     inverse_edge=AffineEdge(source,&inverse_affine,(double) y,&edge);
@@ -1273,7 +1270,6 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
       continue;
     pixel=zero;
     composite=zero;
-    x_offset=0;
     for (x=CastDoubleToLong(ceil(inverse_edge.x1-0.5));
          x <= CastDoubleToLong(floor(inverse_edge.x2+0.5)); x++)
     {
@@ -1289,7 +1285,6 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
       CompositePixelInfoOver(&pixel,pixel.alpha,&composite,composite.alpha,
         &composite);
       SetPixelViaPixelInfo(image,&composite,q);
-      x_offset++;
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
