@@ -375,7 +375,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case PowEvaluateOperator:
     {
-      if (pixel < 0)
+      if ((pixel < 0) && ((value-floor(value)) > MagickEpsilon))
         result=(double) -(QuantumRange*pow((double) -(QuantumScale*pixel),
           (double) value));
       else
