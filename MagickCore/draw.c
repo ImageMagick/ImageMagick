@@ -1249,14 +1249,14 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     PointInfo
       point;
 
-    ssize_t
-      x;
-
     Quantum
       *magick_restrict q;
 
     SegmentInfo
       inverse_edge;
+
+    ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
