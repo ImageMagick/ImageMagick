@@ -1389,6 +1389,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   */
   component_view=AcquireAuthenticCacheView(component_image,exception);
   object_view=AcquireVirtualCacheView(component_image,exception);
+  (void) SetCacheViewVirtualPixelMethod(object_view,TileVirtualPixelMethod);
   for (i=0; i < (ssize_t) component_image->colors; i++)
   {
     RectangleInfo
