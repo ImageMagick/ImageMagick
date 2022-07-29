@@ -1401,7 +1401,7 @@ static FT_Memory FreetypeAcquireMemoryManager()
   FT_Memory
     memory;
 
-  memory=AcquireMagickMemory(sizeof(*memory));
+  memory=(FT_Memory) AcquireMagickMemory(sizeof(*memory));
   if (memory == (FT_Memory) NULL)
     return(memory);
   memset(memory,0,sizeof(*memory));
@@ -1414,7 +1414,7 @@ static FT_Memory FreetypeAcquireMemoryManager()
 static void FreetypeDone(FT_Memory memory,FT_Library library)
 {
   (void) FT_Done_Library(library);
-  memory=RelinquishMagickMemory(memory);
+  memory=(FT_Memory) RelinquishMagickMemory(memory);
 }
 
 static FT_Error FreetypeInit(FT_Memory memory,FT_Library *alibrary)
@@ -1605,7 +1605,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   ft_status=FT_Open_Face(library,&args,face_index,&face);
   if (ft_status != 0)
     {
-      stream=RelinquishMagickMemory(stream);
+      stream=(FT_StreamRec *) RelinquishMagickMemory(stream);
       FreetypeDone(memory,library);
       ThrowFreetypeErrorException("UnableToReadFont",ft_status,args.pathname);
       args.pathname=DestroyString(args.pathname);

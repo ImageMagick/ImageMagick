@@ -14,10 +14,10 @@
 %                                                                             %
 %                              Software Design                                %
 %                                   Cristy                                    %
-%                                 May  2004                                   %
+%                                  May 2004                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2004 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -32,6 +32,9 @@
 %  limitations under the License.                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Assign unique ID's to each magick wand.  We store the ID's in a splay-tree
+% to track which ID's persist and which were destroyed.
 %
 %
 */
@@ -73,11 +76,11 @@ static SemaphoreInfo
 */
 WandExport size_t AcquireWandId(void)
 {
-  static size_t
-    id = 0;
-
   size_t
-    wand_id;
+    id;
+
+  static size_t
+    *wand_id = NULL;
 
   if (wand_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&wand_semaphore);
@@ -85,12 +88,12 @@ WandExport size_t AcquireWandId(void)
   if (wand_ids == (SplayTreeInfo *) NULL)
     wand_ids=NewSplayTree((int (*)(const void *,const void *)) NULL,
       (void *(*)(void *)) NULL,(void *(*)(void *)) NULL);
-  wand_id=id++;
-  (void) AddValueToSplayTree(wand_ids,(const void *) wand_id,
-    (const void *) wand_id);
+  wand_id++;
+  id=(size_t) (wand_id-(size_t *) NULL);
+  (void) AddValueToSplayTree(wand_ids,wand_id,wand_id);
   instantiate_wand=MagickTrue;
   UnlockSemaphoreInfo(wand_semaphore);
-  return(wand_id);
+  return(id);
 }
 
 /*
@@ -149,8 +152,12 @@ WandExport void DestroyWandIds(void)
 */
 WandExport void RelinquishWandId(const size_t id)
 {
+  size_t
+    *wand_id = NULL;
+
   LockSemaphoreInfo(wand_semaphore);
+  wand_id+=id;
   if (wand_ids != (SplayTreeInfo *) NULL)
-    (void) DeleteNodeFromSplayTree(wand_ids,(const void *) id);
+    (void) DeleteNodeFromSplayTree(wand_ids,wand_id);
   UnlockSemaphoreInfo(wand_semaphore);
 }

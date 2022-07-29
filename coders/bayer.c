@@ -388,7 +388,8 @@ static MagickBooleanType WriteBAYERImage(const ImageInfo *image_info,
   if (bayer_image == (Image *) NULL)
     return(MagickFalse);
   (void) SetImageColorspace(bayer_image,sRGBColorspace,exception);
-  (void) SetPixelChannelMask(bayer_image,RedChannel|GreenChannel|BlueChannel);
+  (void) SetPixelChannelMask(bayer_image,(ChannelType) (RedChannel |
+    GreenChannel | BlueChannel));
   images=SeparateImages(bayer_image,exception);
   bayer_image=DestroyImage(bayer_image);
   if (images == (Image *) NULL)

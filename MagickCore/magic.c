@@ -279,7 +279,7 @@ static inline MagickBooleanType CompareMagic(const unsigned char *magic,
       q++;
       remaining--;
     }
-  if ((remaining >= magic_info->length) &&
+  if ((remaining >= (MagickOffsetType) magic_info->length) &&
       (memcmp(q,magic_info->magic,magic_info->length) == 0))
     return(MagickTrue);
   return(MagickFalse);
