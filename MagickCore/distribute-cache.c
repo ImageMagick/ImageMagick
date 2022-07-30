@@ -186,6 +186,9 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   SOCKET_TYPE
     client_socket;
 
+  StringInfo
+    *nonce;
+
   ssize_t
     count;
 
@@ -193,21 +196,10 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     hint,
     *result;
 
-  unsigned char
-    secret[MagickPathExtent];
-
   /*
     Connect to distributed pixel cache and get session key.
   */
   *session_key=0;
-  shared_secret=GetPolicyValue("cache:shared-secret");
-  if (shared_secret == (char *) NULL)
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "DistributedPixelCache","'%s'","shared secret expected");
-      return(-1);
-    }
-  shared_secret=DestroyString(shared_secret);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTInitializeWinsock(MagickTrue);
 #endif
@@ -233,31 +225,43 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
       return(-1);
     }
   status=connect(client_socket,result->ai_addr,(socklen_t) result->ai_addrlen);
+  freeaddrinfo(result);
   if (status == -1)
     {
       CLOSE_SOCKET(client_socket);
-      freeaddrinfo(result);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "DistributedPixelCache","'%s'",hostname);
       return(-1);
     }
-  count=recv(client_socket,CHAR_TYPE_CAST secret,MagickPathExtent,0);
-  if (count != -1)
-    {
-      StringInfo
-        *nonce;
-
-      nonce=AcquireStringInfo((size_t) count);
-      (void) memcpy(GetStringInfoDatum(nonce),secret,(size_t) count);
-      *session_key=GetMagickSignature(nonce);
-      nonce=DestroyStringInfo(nonce);
-    }
-  if (*session_key == 0)
+  count=recv(client_socket,(unsigned char *) session_key,sizeof(size_t),0);
+  if (count == -1)
     {
       CLOSE_SOCKET(client_socket);
-      client_socket=(SOCKET_TYPE) (-1);
+      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+        "DistributedPixelCache","'%s'",hostname);
+      return(-1);
     }
-  freeaddrinfo(result);
+  /*
+    Authenticate client session key to server session key.
+  */
+  shared_secret=GetPolicyValue("cache:shared-secret");
+  if (shared_secret == (char *) NULL)
+    {
+      CLOSE_SOCKET(client_socket);
+      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+        "DistributedPixelCache","'shared secret expected: %s'",hostname);
+      return(-1);
+    }
+  nonce=StringToStringInfo(shared_secret);
+  if (GetMagickSignature(nonce) != *session_key)
+    {
+      CLOSE_SOCKET(client_socket);
+      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
+        "DistributedPixelCache","'authentication failed: %s'",hostname);
+      return(-1);
+    }
+  shared_secret=DestroyString(shared_secret);
+  nonce=DestroyStringInfo(nonce);
   return(client_socket);
 #else
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
@@ -788,9 +792,6 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
   MagickOffsetType
     count;
 
-  RandomInfo
-    *random_info;
-
   size_t
     key,
     session_key;
@@ -802,34 +803,29 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
     *registry;
 
   StringInfo
-    *secret;
+    *nonce;
 
   unsigned char
-    command,
-    *p,
-    session[2*MagickPathExtent];
+    command;
 
   /*
-    Distributed pixel cache client.
+    Generate session key.
   */
   shared_secret=GetPolicyValue("cache:shared-secret");
   if (shared_secret == (char *) NULL)
     ThrowFatalException(CacheFatalError,"shared secret expected");
-  p=session;
-  (void) CopyMagickString((char *) p,shared_secret,MagickPathExtent);
-  p+=strlen(shared_secret);
+  nonce=StringToStringInfo(shared_secret);
   shared_secret=DestroyString(shared_secret);
-  random_info=AcquireRandomInfo();
-  secret=GetRandomKey(random_info,DPCSessionKeyLength);
-  (void) memcpy(p,GetStringInfoDatum(secret),DPCSessionKeyLength);
-  session_key=GetMagickSignature(secret);
-  random_info=DestroyRandomInfo(random_info);
+  session_key=GetMagickSignature(nonce);
+  nonce=DestroyStringInfo(nonce);
   exception=AcquireExceptionInfo();
+  /*
+    Process client commands.
+  */
   registry=NewSplayTree((int (*)(const void *,const void *)) NULL,
     (void *(*)(void *)) NULL,RelinquishImageRegistry);
   client_socket=(*(SOCKET_TYPE *) socket);
-  count=dpc_send(client_socket,DPCSessionKeyLength,GetStringInfoDatum(secret));
-  secret=DestroyStringInfo(secret);
+  count=dpc_send(client_socket,sizeof(size_t),(unsigned char *) &session_key);
   for (status=MagickFalse; ; )
   {
     count=dpc_read(client_socket,1,(unsigned char *) &command);
@@ -995,8 +991,7 @@ MagickExport void DistributePixelCacheServer(const int port,
     if (status == -1)
       ThrowFatalException(CacheFatalError,"UnableToCreateClientThread");
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-    if (CreateThread(0,0,DistributePixelCacheClient,(void*) &client_socket,0,
-        &threadID) == (HANDLE) NULL)
+    if (CreateThread(0,0,DistributePixelCacheClient,(void*) &client_socket,0,&threadID) == (HANDLE) NULL)
       ThrowFatalException(CacheFatalError,"UnableToCreateClientThread");
 #else
     Not implemented!
