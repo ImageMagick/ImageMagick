@@ -15,7 +15,7 @@ Use [ImageMagick®](https://imagemagick.org/) to create, edit, compose, or conve
 ImageMagick is free software delivered as a ready-to-run binary distribution or as source code that you may use, copy, modify, and distribute in both open and proprietary applications. It is distributed under a derived Apache 2.0 [license](https://imagemagick.org/script/license.php).
 
 ImageMagick utilizes multiple computational threads to increase performance and can read, process, or write mega-, giga-, or tera-pixel image sizes.
-The current release is the ImageMagick 7.1.0 series. It runs on Linux, Windows, Mac OS X, iOS, Android OS, and others.
+The current release is the ImageMagick 7.1.0 series. It runs on Linux, Windows, macOS X, iOS, Android OS, and others.
 
 The authoritative ImageMagick web site is https://imagemagick.org. The authoritative source code repository is https://github.com/ImageMagick/ImageMagick. We continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org.
 
