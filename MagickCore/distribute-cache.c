@@ -153,7 +153,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   ssize_t
     count;
 
-#if !MAGICKCORE_HAVE_DISTRIBUTE_CACHE
+#if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
   magick_unreferenced(file);
   magick_unreferenced(message);
 #endif
@@ -175,7 +175,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
 static int ConnectPixelCacheServer(const char *hostname,const int port,
   size_t *session_key,ExceptionInfo *exception)
 {
-#if MAGICKCORE_HAVE_DISTRIBUTE_CACHE
+#if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
   char
     service[MagickPathExtent],
     *shared_secret;
@@ -431,7 +431,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
     count,
     i;
 
-#if !MAGICKCORE_HAVE_DISTRIBUTE_CACHE
+#if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
   magick_unreferenced(file);
   magick_unreferenced(message);
 #endif
@@ -454,7 +454,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   return(i);
 }
 
-#if !MAGICKCORE_HAVE_DISTRIBUTE_CACHE
+#if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
 MagickExport void DistributePixelCacheServer(const int port,
   ExceptionInfo *Exception)
 {
