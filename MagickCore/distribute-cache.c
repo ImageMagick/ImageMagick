@@ -212,7 +212,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   if (status != 0)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "DistributedPixelCache","'%s'",hostname);
+        "DistributedPixelCache","'%s': %s",hostname,GetExceptionMessage(errno));
       return(-1);
     }
   client_socket=socket(result->ai_family,result->ai_socktype,
@@ -221,7 +221,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     {
       freeaddrinfo(result);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "DistributedPixelCache","'%s'",hostname);
+        "DistributedPixelCache","'%s': %s",hostname,GetExceptionMessage(errno));
       return(-1);
     }
   status=connect(client_socket,result->ai_addr,(socklen_t) result->ai_addrlen);
@@ -230,7 +230,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     {
       CLOSE_SOCKET(client_socket);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "DistributedPixelCache","'%s'",hostname);
+        "DistributedPixelCache","'%s': %s",hostname,GetExceptionMessage(errno));
       return(-1);
     }
   count=recv(client_socket,CHAR_TYPE_CAST session_key,sizeof(size_t),0);
@@ -238,7 +238,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     {
       CLOSE_SOCKET(client_socket);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "DistributedPixelCache","'%s'",hostname);
+        "DistributedPixelCache","'%s': %s",hostname,GetExceptionMessage(errno));
       return(-1);
     }
   /*
@@ -249,7 +249,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     {
       CLOSE_SOCKET(client_socket);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "DistributedPixelCache","'shared secret expected: %s'",hostname);
+        "DistributedPixelCache","'%s': shared secret required",hostname);
       return(-1);
     }
   nonce=StringToStringInfo(shared_secret);
@@ -257,7 +257,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     {
       CLOSE_SOCKET(client_socket);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "DistributedPixelCache","'authentication failed: %s'",hostname);
+        "DistributedPixelCache","'%s' authentication failed",hostname);
       return(-1);
     }
   shared_secret=DestroyString(shared_secret);
@@ -813,7 +813,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
   */
   shared_secret=GetPolicyValue("cache:shared-secret");
   if (shared_secret == (char *) NULL)
-    ThrowFatalException(CacheFatalError,"shared secret expected");
+    ThrowFatalException(CacheFatalError,"shared secret required");
   nonce=StringToStringInfo(shared_secret);
   shared_secret=DestroyString(shared_secret);
   session_key=GetMagickSignature(nonce);
