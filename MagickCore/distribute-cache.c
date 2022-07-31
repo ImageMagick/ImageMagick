@@ -233,7 +233,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
         "DistributedPixelCache","'%s'",hostname);
       return(-1);
     }
-  count=recv(client_socket,(unsigned char *) session_key,sizeof(size_t),0);
+  count=recv(client_socket,CHAR_TYPE_CAST session_key,sizeof(size_t),0);
   if (count == -1)
     {
       CLOSE_SOCKET(client_socket);
