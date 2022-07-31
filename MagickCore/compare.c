@@ -947,12 +947,10 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   MagickOffsetType
     progress;
 
-  ssize_t
-    channels,
-    i;
-
   size_t
+    channels,
     columns,
+    i,
     rows;
 
   ssize_t
@@ -1109,7 +1107,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   }
   if (channels != 0)
     distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]/
-      channels);
+      channels)/(double) GetImageChannels(image);
   /*
     Free resources.
   */
