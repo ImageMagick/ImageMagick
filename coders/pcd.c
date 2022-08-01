@@ -122,7 +122,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   { \
     if (p >= (buffer+0x800)) \
       { \
-        count=ReadBlob(image,0x800,buffer); \
+        (void) ReadBlob(image,0x800,buffer); \
         p=buffer; \
       } \
     sum|=(((unsigned int) (*p)) << (24-bits)); \
@@ -167,7 +167,6 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
     sum;
 
   ssize_t
-    count,
     quantum;
 
   unsigned char
@@ -247,7 +246,6 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   /*
     Recover the Huffman encoded luminance and chrominance deltas.
   */
-  count=0;
   length=0;
   plane=0;
   row=0;
@@ -270,20 +268,17 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
           case 0:
           {
             q=luma+row*image->columns;
-            count=(ssize_t) image->columns;
             break;
           }
           case 2:
           {
             q=chroma1+(row >> 1)*image->columns;
-            count=(ssize_t) (image->columns >> 1);
             plane--;
             break;
           }
           case 3:
           {
             q=chroma2+(row >> 1)*image->columns;
-            count=(ssize_t) (image->columns >> 1);
             plane--;
             break;
           }
@@ -322,7 +317,6 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
     *q=(unsigned char) ((quantum < 0) ? 0 : (quantum > 255) ? 255 : quantum);
     q++;
     PCDGetBits(r->length);
-    count--;
   }
   /*
     Relinquish resources.
