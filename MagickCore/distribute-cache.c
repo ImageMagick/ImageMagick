@@ -233,7 +233,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
         "DistributedPixelCache","'%s': %s",hostname,GetExceptionMessage(errno));
       return(-1);
     }
-  count=recv(client_socket,CHAR_TYPE_CAST session_key,sizeof(size_t),0);
+  count=recv(client_socket,CHAR_TYPE_CAST session_key,sizeof(session_key),0);
   if (count == -1)
     {
       CLOSE_SOCKET(client_socket);
@@ -425,7 +425,7 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 */
 
 static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
-  const unsigned char *magick_restrict message)
+  const void *magick_restrict message)
 {
   MagickOffsetType
     count,
@@ -650,7 +650,7 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
     exception);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  count=dpc_send(file,length,(unsigned char *) p);
+  count=dpc_send(file,length,p);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   return(MagickTrue);
@@ -825,7 +825,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
   registry=NewSplayTree((int (*)(const void *,const void *)) NULL,
     (void *(*)(void *)) NULL,RelinquishImageRegistry);
   client_socket=(*(SOCKET_TYPE *) socket);
-  count=dpc_send(client_socket,sizeof(size_t),(unsigned char *) &session_key);
+  count=dpc_send(client_socket,sizeof(session_key),&session_key);
   for (status=MagickFalse; ; )
   {
     count=dpc_read(client_socket,1,(unsigned char *) &command);
@@ -840,7 +840,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
       {
         status=OpenDistributeCache(registry,client_socket,session_key,
           exception);
-        count=dpc_send(client_socket,sizeof(status),(unsigned char *) &status);
+        count=dpc_send(client_socket,sizeof(status),&status);
         break;
       }
       case 'r':
@@ -880,7 +880,7 @@ static HANDLER_RETURN_TYPE DistributePixelCacheClient(void *socket)
     if (command == 'd')
       break;
   }
-  count=dpc_send(client_socket,sizeof(status),(unsigned char *) &status);
+  count=dpc_send(client_socket,sizeof(status),&status);
   CLOSE_SOCKET(client_socket);
   exception=DestroyExceptionInfo(exception);
   registry=DestroySplayTree(registry);
