@@ -76,14 +76,11 @@ static SemaphoreInfo
 */
 WandExport size_t AcquireWandId(void)
 {
-  const size_t
-    *wand_id = (const size_t *) NULL;
-
-  size_t
-    id;
+  MagickAddressType
+    wand_id;
 
   static size_t
-    isn = 0;
+    id = 0;
 
   if (wand_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&wand_semaphore);
@@ -91,11 +88,12 @@ WandExport size_t AcquireWandId(void)
   if (wand_ids == (SplayTreeInfo *) NULL)
     wand_ids=NewSplayTree((int (*)(const void *,const void *)) NULL,
       (void *(*)(void *)) NULL,(void *(*)(void *)) NULL);
-  id=isn++;
-  (void) AddValueToSplayTree(wand_ids,wand_id+id,wand_id+id);
+  wand_id=id++;
+  (void) AddValueToSplayTree(wand_ids,(const void *) wand_id,(const void *)
+    wand_id);
   instantiate_wand=MagickTrue;
   UnlockSemaphoreInfo(wand_semaphore);
-  return(id);
+  return((size_t) wand_id);
 }
 
 /*
@@ -154,11 +152,11 @@ WandExport void DestroyWandIds(void)
 */
 WandExport void RelinquishWandId(const size_t id)
 {
-  const size_t
-    *wand_id = (const size_t *) NULL;
+  MagickAddressType
+    wand_id = (MagickAddressType) id;
 
   LockSemaphoreInfo(wand_semaphore);
   if (wand_ids != (SplayTreeInfo *) NULL)
-    (void) DeleteNodeFromSplayTree(wand_ids,wand_id+id);
+    (void) DeleteNodeFromSplayTree(wand_ids,(const void *) wand_id);
   UnlockSemaphoreInfo(wand_semaphore);
 }
