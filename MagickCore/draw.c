@@ -3786,8 +3786,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->clip_path != MagickFalse)
               break;
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            opacity=1.0-MagickMin(MagickMax(factor*
-              GetDrawValue(token,&next_token),0.0),1.0);
+            opacity=MagickMin(MagickMax(factor*GetDrawValue(token,&next_token),
+              0.0),1.0);
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             if (graphic_context[n]->compliance == SVGCompliance)
