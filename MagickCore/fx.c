@@ -2860,6 +2860,13 @@ static inline fxFltType ImageStat (
   fxFltType ret = 0;
   MagickBooleanType NeedRelinq = MagickFalse;
 
+  if ((channel < 0) || (channel > MaxPixelChannels))
+    {
+      (void) ThrowMagickException(pfx->exception,GetMagickModule(),OptionError,
+        "NoSuchImageChannel","%i",channel);
+      channel=0;
+    }
+
   if (pfx->GotStats) {
     cs = pfx->statistics[ImgNum];
   } else if (pfx->NeedStats) {
