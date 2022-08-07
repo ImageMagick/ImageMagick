@@ -1839,16 +1839,20 @@ static UINT ChangeErrorMode(void)
 
 static inline void *NTLoadLibrary(const char *filename)
 {
-  int
-    length;
+  void
+    *library;
 
   wchar_t
-    path[MagickPathExtent];
+    *path;
 
-  length=MultiByteToWideChar(CP_UTF8,0,filename,-1,path,MagickPathExtent);
-  if (length == 0)
-    return((void *) NULL);
-  return (void *) LoadLibraryExW(path,NULL,LOAD_WITH_ALTERED_SEARCH_PATH);
+  library=(void *) NULL;
+  path=create_wchar_path(filename);
+  if (path != (wchar_t *) NULL)
+    {
+      library=LoadLibraryExW(path,NULL,LOAD_WITH_ALTERED_SEARCH_PATH);
+      path=(wchar_t *) RelinquishMagickMemory(path);
+    }
+  return(library);
 }
 
 MagickPrivate void *NTOpenLibrary(const char *filename)
@@ -2651,16 +2655,15 @@ MagickPrivate void NTWindowsGenesis(void)
     path=NTRegistryKeyLookup("LibPath");
     if (path != (unsigned char *) NULL)
       {
-        size_t
-          length;
-
         wchar_t
-          lib_path[MagickPathExtent];
+          *lib_path;
 
-        length=MultiByteToWideChar(CP_UTF8,0,(char *) path,-1,lib_path,
-          MagickPathExtent);
-        if (length != 0)
-          SetDllDirectoryW(lib_path);
+        lib_path=create_wchar_path((const char *) path);
+        if (lib_path != (wchar_t *) NULL)
+          {
+            SetDllDirectoryW(lib_path);
+            lib_path=(wchar_t *) RelinquishMagickMemory(lib_path);
+          }
         path=(unsigned char *) RelinquishMagickMemory(path);
       }
   }
