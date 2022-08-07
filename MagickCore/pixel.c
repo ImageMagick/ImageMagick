@@ -4522,14 +4522,16 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(image_view != (CacheView *) NULL);
-  status=MagickTrue;
   *pixel=0.0;
+  if ((channel < 0) || (channel >= MaxPixelChannels))
+    ThrowBinaryException(OptionError,"NoSuchImageChanne",image->filename);
   traits=GetPixelChannelTraits(image,channel);
   x_offset=CastDoubleToLong(floor(x));
   y_offset=CastDoubleToLong(floor(y));
   interpolate=method;
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=image->interpolate;
+  status=MagickTrue;
   switch (interpolate)
   {
     case AverageInterpolatePixel:  /* nearest 4 neighbours */
