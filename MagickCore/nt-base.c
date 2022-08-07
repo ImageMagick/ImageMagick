@@ -173,7 +173,7 @@ static int MagickDLLCall NTGhostscriptNewInstance(gs_main_instance **pinstance,
   return(status);
 }
 
-static inline char *create_utf8_string(const wchar_t *wideChar)
+static inline char *create_utf8_string(const wchar_t *wide)
 {
   char
     *utf8;
@@ -181,13 +181,13 @@ static inline char *create_utf8_string(const wchar_t *wideChar)
   int
     count;
 
-  count=WideCharToMultiByte(CP_UTF8,0,wideChar,-1,NULL,0,NULL,NULL);
+  count=WideCharToMultiByte(CP_UTF8,0,wide,-1,NULL,0,NULL,NULL);
   if (count < 0)
     return((char *) NULL);
   utf8=(char *) NTAcquireQuantumMemory(count+1,sizeof(*utf8));
   if (utf8 == (char *) NULL)
     return((char *) NULL);
-  count=WideCharToMultiByte(CP_UTF8,0,wideChar,-1,utf8,count,NULL,NULL);
+  count=WideCharToMultiByte(CP_UTF8,0,wide,-1,utf8,count,NULL,NULL);
   if (count == 0)
     {
       utf8=(char *) RelinquishMagickMemory(utf8);

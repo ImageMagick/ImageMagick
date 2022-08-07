@@ -64,7 +64,7 @@ static inline wchar_t *create_wchar_path(const char *utf8)
     count;
 
   wchar_t
-    *wideChar;
+    *wide;
 
   count=MultiByteToWideChar(CP_UTF8,0,utf8,-1,NULL,0);
   if ((count > MAX_PATH) && (strncmp(utf8,"\\\\?\\",4) != 0) &&
@@ -88,21 +88,20 @@ static inline wchar_t *create_wchar_path(const char *utf8)
       longPath=(wchar_t *) RelinquishMagickMemory(longPath);
       if ((count < 5) || (count >= MAX_PATH))
         return((wchar_t *) NULL);
-      wideChar=(wchar_t *) NTAcquireQuantumMemory((size_t) count-3,
-        sizeof(*wideChar));
-      wcscpy(wideChar,shortPath+4);
-      return(wideChar);
+      wide=(wchar_t *) NTAcquireQuantumMemory((size_t) count-3,sizeof(*wide));
+      wcscpy(wide,shortPath+4);
+      return(wide);
     }
-  wideChar=(wchar_t *) NTAcquireQuantumMemory(count,sizeof(*wideChar));
-  if (wideChar == (wchar_t *) NULL)
+  wide=(wchar_t *) NTAcquireQuantumMemory(count,sizeof(*wide));
+  if (wide == (wchar_t *) NULL)
     return((wchar_t *) NULL);
-  count=MultiByteToWideChar(CP_UTF8,0,utf8,-1,wideChar,count);
+  count=MultiByteToWideChar(CP_UTF8,0,utf8,-1,wide,count);
   if (count == 0)
     {
-      wideChar=(wchar_t *) RelinquishMagickMemory(wideChar);
+      wide=(wchar_t *) RelinquishMagickMemory(wide);
       return((wchar_t *) NULL);
     }
-  return(wideChar);
+  return(wide);
 }
 
 static inline wchar_t *create_wchar_mode(const char *mode)
@@ -111,23 +110,23 @@ static inline wchar_t *create_wchar_mode(const char *mode)
     count;
 
   wchar_t
-    *wideChar;
+    *wide;
 
   count=MultiByteToWideChar(CP_UTF8,0,mode,-1,NULL,0);
-  wideChar=(wchar_t *) AcquireQuantumMemory((size_t) count+1,
-    sizeof(*wideChar));
-  if (wideChar == (wchar_t *) NULL)
+  wide=(wchar_t *) AcquireQuantumMemory((size_t) count+1,
+    sizeof(*wide));
+  if (wide == (wchar_t *) NULL)
     return((wchar_t *) NULL);
-  count=MultiByteToWideChar(CP_UTF8,0,mode,-1,wideChar,count);
+  count=MultiByteToWideChar(CP_UTF8,0,mode,-1,wide,count);
   if (count == 0)
     {
-      wideChar=(wchar_t *) RelinquishMagickMemory(wideChar);
+      wide=(wchar_t *) RelinquishMagickMemory(wide);
       return((wchar_t *) NULL);
     }
   /* Specifies that the file is not inherited by child processes */
-  wideChar[count] = L'\0';
-  wideChar[count-1] = L'N';
-  return(wideChar);
+  wide[count] = L'\0';
+  wide[count-1] = L'N';
+  return(wide);
 }
 #endif
 
