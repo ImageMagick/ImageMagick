@@ -190,7 +190,7 @@ static inline char *create_utf8_string(const wchar_t *wideChar)
   count=WideCharToMultiByte(CP_UTF8,0,wideChar,-1,utf8,count,NULL,NULL);
   if (count == 0)
     {
-      utf8=DestroyString(utf8);
+      utf8=(char *) RelinquishMagickMemory(utf8);
       return((char *) NULL);
     }
   utf8[count]=0;
