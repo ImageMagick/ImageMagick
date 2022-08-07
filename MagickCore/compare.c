@@ -2891,7 +2891,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
   SetGeometry(reference,offset);
   *similarity_metric=MagickMaximumValue;
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
-  if ((image->channels & ReadMaskChannel) != 0)
+  if ((image->channels & ReadMaskChannel) == 0)
     {
       const char *artifact = GetImageArtifact(image,"compare:accelerate-ncc");
       MagickBooleanType accelerate = (artifact != (const char *) NULL) &&
