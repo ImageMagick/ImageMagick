@@ -155,14 +155,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixel;
 
   Quantum
-    index;
-
-  Quantum
+    index,
     *q;
-
-  ssize_t
-    i,
-    x;
 
   size_t
     base,
@@ -171,7 +165,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
+    i,
     offset,
+    x,
     y;
 
   TGAInfo
@@ -734,19 +730,15 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   QuantumAny
     range;
 
-  ssize_t
-    x;
-
-  ssize_t
-    i;
-
   size_t
     channels;
 
   ssize_t
     base,
     count,
+    i,
     offset,
+    x,
     y;
 
   TGAInfo
