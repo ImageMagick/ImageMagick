@@ -69,6 +69,7 @@
 #include "MagickCore/module.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
@@ -485,7 +486,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     unsigned short
       *p;
 
-    errcode=0;
+    errcode=LIBRAW_UNSPECIFIED_ERROR;
     flags=LIBRAW_OPIONS_NO_DATAERR_CALLBACK;
 #if LIBRAW_SHLIB_CURRENT < 23
     flags|=LIBRAW_OPIONS_NO_MEMERR_CALLBACK;
@@ -502,11 +503,14 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_MSC_VER) && (_MSC_VER > 1310)
     {
       wchar_t
-        fileName[MagickPathExtent];
+        *path;
 
-      MultiByteToWideChar(CP_UTF8,0,image->filename,-1,fileName,
-        MagickPathExtent);
-      errcode=libraw_open_wfile(raw_info,fileName);
+      path=create_wchar_path(image->filename);
+      if (path != (wchar_t *) NULL)
+        {
+          errcode=libraw_open_wfile(raw_info,path);
+          path=(wchar_t *) RelinquishMagickMemory(path);
+        }
     }
 #else
     errcode=libraw_open_file(raw_info,image->filename);

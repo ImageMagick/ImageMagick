@@ -71,6 +71,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
+#include "MagickCore/utility-private.h"
 #include "coders/emf.h"
 
 /*
@@ -702,7 +703,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
     *p;
 
   wchar_t
-    fileName[MagickPathExtent];
+    *path;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -715,8 +716,13 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   if (Gdiplus::GdiplusStartup(&token,&startup_input,NULL) != 
     Gdiplus::Status::Ok)
     ThrowReaderException(CoderError, "GdiplusStartupFailed");
-  MultiByteToWideChar(CP_UTF8,0,image->filename,-1,fileName,MagickPathExtent);
-  source=Gdiplus::Image::FromFile(fileName);
+  source=(Gdiplus::Image *) NULL;
+  path=create_wchar_path(image->filename);
+  if (path != (wchar_t *) NULL)
+    {
+      source=Gdiplus::Image::FromFile(path);
+      path=(wchar_t *) RelinquishMagickMemory(path);
+    }
   if (source == (Gdiplus::Image *) NULL)
     {
       Gdiplus::GdiplusShutdown(token);
