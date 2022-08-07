@@ -182,7 +182,7 @@ static inline char *create_utf8_string(const wchar_t *wide)
     count;
 
   count=WideCharToMultiByte(CP_UTF8,0,wide,-1,NULL,0,NULL,NULL);
-  if (count < 0)
+  if (count <= 0)
     return((char *) NULL);
   utf8=(char *) NTAcquireQuantumMemory(count+1,sizeof(*utf8));
   if (utf8 == (char *) NULL)
