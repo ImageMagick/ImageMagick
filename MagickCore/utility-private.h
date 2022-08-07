@@ -94,7 +94,7 @@ static inline wchar_t *create_wchar_path(const char *utf8)
     }
   wide=(wchar_t *) NTAcquireQuantumMemory(count,sizeof(*wide));
   if ((wide != (wchar_t *) NULL) &&
-      (MultiByteToWideChar(CP_UTF8,0,utf8,-1,wide,count) != count))
+      (MultiByteToWideChar(CP_UTF8,0,utf8,-1,wide,count) == 0))
     wide=(wchar_t *) RelinquishMagickMemory(wide);
   return(wide);
 }
@@ -112,7 +112,7 @@ static inline wchar_t *create_wchar_mode(const char *mode)
     sizeof(*wide));
   if (wide == (wchar_t *) NULL)
     return((wchar_t *) NULL);
-  if (MultiByteToWideChar(CP_UTF8,0,mode,-1,wide,count) != count)
+  if (MultiByteToWideChar(CP_UTF8,0,mode,-1,wide,count) == 0)
     {
       wide=(wchar_t *) RelinquishMagickMemory(wide);
       return((wchar_t *) NULL);
