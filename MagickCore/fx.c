@@ -703,6 +703,14 @@ static MagickBooleanType TranslateExpression
 
 static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe);
 
+static MagickBooleanType inline ChanIsVirtual (PixelChannel pc)
+{
+  if (pc==HUE_CHANNEL || pc==SAT_CHANNEL || pc==LIGHT_CHANNEL || pc==INTENSITY_CHANNEL)
+    return MagickTrue;
+
+  return MagickFalse;
+}
+
 static MagickBooleanType InitFx (FxInfo * pfx, const Image * img,
   MagickBooleanType CalcAllStats, ExceptionInfo *exception)
 {
@@ -1411,10 +1419,7 @@ static PixelChannel GetChannelQualifier (FxInfo * pfx, int op)
       if (LocaleCompare (pch->str, pfx->token)==0) {
 
         if (op >= FirstImgAttr && op <= (OperatorE)aNull &&
-              (pch->pixChan == HUE_CHANNEL ||
-               pch->pixChan == SAT_CHANNEL ||
-               pch->pixChan == LIGHT_CHANNEL ||
-               pch->pixChan == INTENSITY_CHANNEL)
+              ChanIsVirtual (pch->pixChan)
            )
         {
           (void) ThrowMagickException (
@@ -1984,6 +1989,26 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
           pfx->exception, GetMagickModule(), OptionError,
           "Can't have image attribute with HLS qualifier at", "'%s'",
           SetShortExp(pfx));
+        return MagickFalse;
+      }
+    }
+  }
+
+  if (iaQual != aNull && chQual != NO_CHAN_QUAL) {
+    if (ImgAttrs[iaQual-FirstImgAttr].NeedStats==0) {
+      (void) ThrowMagickException (
+        pfx->exception, GetMagickModule(), OptionError,
+        "Can't have image attribute ", "'%s' with channel qualifier '%s' at '%s'",
+        ImgAttrs[iaQual-FirstImgAttr].str,
+        pfx->token, SetShortExp(pfx));
+      return MagickFalse;
+    } else {
+      if (ChanIsVirtual (chQual)) {
+        (void) ThrowMagickException (
+          pfx->exception, GetMagickModule(), OptionError,
+          "Can't have statistical image attribute ", "'%s' with virtual channel qualifier '%s' at '%s'",
+          ImgAttrs[iaQual-FirstImgAttr].str,
+          pfx->token, SetShortExp(pfx));
         return MagickFalse;
       }
     }
@@ -2860,17 +2885,23 @@ static inline fxFltType ImageStat (
   fxFltType ret = 0;
   MagickBooleanType NeedRelinq = MagickFalse;
 
-  if ((channel < 0) || (channel > MaxPixelChannels))
-    {
-      (void) ThrowMagickException(pfx->exception,GetMagickModule(),OptionError,
-        "NoSuchImageChannel","%i",channel);
-      channel=0;
-    }
-
   if (pfx->GotStats) {
+    if ((channel < 0) || (channel > MaxPixelChannels))
+      {
+        (void) ThrowMagickException(pfx->exception,GetMagickModule(),
+          OptionError,"NoSuchImageChannel","%i",channel);
+        channel=0;
+      }
     cs = pfx->statistics[ImgNum];
   } else if (pfx->NeedStats) {
     /* If we need more than one statistic per pixel, this is inefficient. */
+    if ((channel < 0) || (channel > MaxPixelChannels))
+      {
+        (void) ThrowMagickException(pfx->exception,GetMagickModule(),
+          OptionError,"NoSuchImageChannel","%i",channel);
+        channel=0;
+      }
+    cs = pfx->statistics[ImgNum];
     cs = CollectOneImgStats (pfx, pfx->Images[ImgNum]);
     NeedRelinq = MagickTrue;
   }
@@ -3720,6 +3751,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               break;
             } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
               regA = GetIntensity (pfx, ImgNum, fx, fy);
+              break;
             }
           }
 
