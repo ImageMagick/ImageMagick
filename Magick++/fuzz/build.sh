@@ -1,5 +1,8 @@
 #!/bin/bash -eu
 
+echo "CFLAGS=$CFLAGS"
+echo "LDFLAGS=$LDFLAGS"
+
 . build_dependencies.sh
 
 . build_imagemagick.sh
