@@ -2,10 +2,7 @@
 
 . build_dependencies.sh
 
-# Build ImageMagick
-./configure --prefix="$WORK" --disable-shared --disable-docs --with-utilities=no LDFLAGS="${LDFLAGS:-} -L$WORK/lib" CFLAGS="$CFLAGS -I$WORK/include" PKG_CONFIG_PATH="$WORK/lib/pkgconfig"
-make "-j$(nproc)"
-make install
+. build_imagemagick.sh
 
 MAGICK_COMPILER=$CXX
 MAGICK_COMPILER_FLAGS=$CXXFLAGS
