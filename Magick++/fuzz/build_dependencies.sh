@@ -32,7 +32,7 @@ popd
 # Build libtiff
 pushd "$SRC/libtiff"
 autoreconf -fiv
-./configure --disable-shared --prefix="$WORK"
+./configure --prefix="$WORK"
 make -j$(nproc)
 make install
 popd
