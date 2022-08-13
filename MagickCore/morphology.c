@@ -2908,12 +2908,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             pixel=0.0;
             break;
           }
-          case HitAndMissMorphology:
-          case ErodeMorphology:
-          {
-            pixel=QuantumRange;
-            break;
-          }
           default:
           {
             pixel=(double) p[center+i];
@@ -3091,6 +3085,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             minimum-=maximum;
             if (minimum < 0.0)
               minimum=0.0;
+            pixel=minimum;
             if (method == ThinningMorphology)
               pixel=(double) p[center+i]-maximum;
             else
