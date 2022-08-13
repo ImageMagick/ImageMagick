@@ -788,7 +788,7 @@ static void SVGInternalSubset(void *context,const xmlChar *name,
     *svg_info;
 
   /*
-    Does this document has an internal subset?
+    Does this document have an internal subset?
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.internalSubset(%s, %s, %s)",(const char *) name,

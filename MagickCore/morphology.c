@@ -2573,6 +2573,12 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     *image_view,
     *morphology_view;
 
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
   OffsetInfo
     offset;
 
@@ -2581,16 +2587,14 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     y;
 
   size_t
-    *changes,
     changed,
+    *changes,
     width;
 
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
+  /*
+    Some methods (including convolve) needs to use a reflected kernel.
+    Adjust 'origin' offsets to loop though kernel as a reflection.
+  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(morphology_image != (Image *) NULL);
@@ -2614,7 +2618,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     case IterativeDistanceMorphology:
     {
       /*
-        Kernel needs to used with reflection about origin.
+        Kernel needs to use a reflection about origin.
       */
       offset.x=(ssize_t) kernel->width-kernel->x-1;
       offset.y=(ssize_t) kernel->height-kernel->y-1;
@@ -2626,6 +2630,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     case ThinningMorphology:
     case ThickenMorphology:
     {
+      /*
+        Use kernel as is, not reflection required.
+      */
       offset.x=kernel->x;
       offset.y=kernel->y;
       break;
@@ -2633,7 +2640,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     default:
     {
       ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-        "InvalidOption","`%s'","Not a Primitive Morphology Method");
+        "InvalidOption","`%s'","not a primitive morphology method");
       break;
     }
   }
@@ -2644,7 +2651,6 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   for (j=0; j < (ssize_t) GetOpenMPMaximumThreads(); j++)
     changes[j]=0;
-
   if ((method == ConvolveMorphology) && (kernel->width == 1))
     {
       ssize_t
@@ -3066,8 +3072,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   {
                     if (*k > 0.7)
                       {
-                        if ((double) pixels[i] < pixel)
-                          pixel=(double) pixels[i];
+                        if ((double) pixels[i] < minimum)
+                          minimum=(double) pixels[i];
                       }
                     else
                       if (*k < 0.3)
@@ -3082,14 +3088,14 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               }
               pixels+=(image->columns-1)*GetPixelChannels(image);
             }
-            pixel-=maximum;
-            if (pixel < 0.0)
-              pixel=0.0;
+            minimum-=maximum;
+            if (minimum < 0.0)
+              minimum=0.0;
             if (method == ThinningMorphology)
-              pixel=(double) p[center+i]-pixel;
+              pixel=(double) p[center+i]-maximum;
             else
               if (method == ThickenMorphology)
-                pixel+=(double) p[center+i]+pixel;
+                pixel=(double) p[center+i]+minimum;
             break;
           }
           case ErodeIntensityMorphology:
