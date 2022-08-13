@@ -3087,7 +3087,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               minimum=0.0;
             pixel=minimum;
             if (method == ThinningMorphology)
-              pixel=(double) p[center+i]-maximum;
+              pixel=(double) p[center+i]-minimum;
             else
               if (method == ThickenMorphology)
                 pixel=(double) p[center+i]+minimum;
@@ -3200,17 +3200,27 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           default:
             break;
         }
-        if (fabs(pixel-p[center+i]) > MagickEpsilon)
-          changes[id]++;
         if (quantum_pixels != (const Quantum *) NULL)
           {
             SetPixelChannel(morphology_image,channel,quantum_pixels[i],q);
             continue;
           }
-        gamma=PerceptibleReciprocal(gamma);
-        if (count != 0)
-          gamma*=(double) kernel->height*kernel->width/count;
-        SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*pixel),q);
+        switch (method)
+        {
+          case UndefinedMorphology:
+          case ConvolveMorphology:
+          case DilateIntensityMorphology:
+          case ErodeIntensityMorphology:
+            break;
+          default:
+          {
+            SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
+              pixel),q);
+            break;
+          }
+        }
+        if (fabs(pixel-p[center+i]) > MagickEpsilon)
+          changes[id]++;
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(morphology_image);

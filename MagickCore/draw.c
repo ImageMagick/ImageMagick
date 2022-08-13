@@ -89,6 +89,7 @@
 /*
   Define declarations.
 */
+#define AntialiasThreshold  (1.0/3.0)
 #define BezierQuantum  200
 #define PrimitiveExtentPad  4296.0
 #define MaxBezierCoordinates  67108864
@@ -5132,8 +5133,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         x,y,&stroke_alpha);
       if (draw_info->stroke_antialias == MagickFalse)
         {
-          fill_alpha=fill_alpha > 0.5 ? 1.0 : 0.0;
-          stroke_alpha=stroke_alpha > 0.5 ? 1.0 : 0.0;
+          fill_alpha=fill_alpha >= AntialiasThreshold ? 1.0 : 0.0;
+          stroke_alpha=stroke_alpha >= AntialiasThreshold ? 1.0 : 0.0;
         }
       GetFillColor(draw_info,x-poly_extent.x1,y-poly_extent.y1,&fill_color,
         exception);
