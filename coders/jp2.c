@@ -1023,8 +1023,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   if (channels == 4)
     jp2_image->comps[3].alpha=1;
   else
-   if ((channels == 2) && (jp2_colorspace == OPJ_CLRSPC_GRAY))
-     jp2_image->comps[1].alpha=1;
+    if ((channels == 2) && (jp2_colorspace == OPJ_CLRSPC_GRAY))
+      jp2_image->comps[1].alpha=1;
   /*
     Convert to JP2 pixels.
   */
