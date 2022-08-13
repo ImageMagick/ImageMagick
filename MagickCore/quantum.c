@@ -250,24 +250,26 @@ static void DestroyQuantumPixels(QuantumInfo *quantum_info)
   ssize_t
     i;
 
-  ssize_t
-    extent;
-
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
   assert(quantum_info->pixels != (MemoryInfo **) NULL);
-  extent=(ssize_t) quantum_info->extent;
   for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
     if (quantum_info->pixels[i] != (MemoryInfo *) NULL)
       {
+#ifndef NDEBUG
+        ssize_t
+          extent;
+
         unsigned char
           *pixels;
 
         /*
           Did we overrun our quantum buffer?
         */
+        extent=(ssize_t) quantum_info->extent;
         pixels=(unsigned char *) GetVirtualMemoryBlob(quantum_info->pixels[i]);
         assert(pixels[extent] == QuantumSignature);
+#endif
         quantum_info->pixels[i]=RelinquishVirtualMemory(
           quantum_info->pixels[i]);
       }
