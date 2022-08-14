@@ -2803,7 +2803,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       for (j=0; j < (ssize_t) GetOpenMPMaximumThreads(); j++)
         changed+=changes[j];
       changes=(size_t *) RelinquishMagickMemory(changes);
-      return(status ? (ssize_t) changed : 0);
+      return(status ? (ssize_t) changed/GetImageChannels(image) : 0);
     }
   /*
     Normal handling of horizontal or rectangular kernels (row by row).
@@ -3205,20 +3205,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             SetPixelChannel(morphology_image,channel,quantum_pixels[i],q);
             continue;
           }
-        switch (method)
-        {
-          case UndefinedMorphology:
-          case ConvolveMorphology:
-          case DilateIntensityMorphology:
-          case ErodeIntensityMorphology:
-            break;
-          default:
-          {
-            SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
-              pixel),q);
-            break;
-          }
-        }
+        gamma=PerceptibleReciprocal(gamma);
+        SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*pixel),q);
         if (fabs(pixel-p[center+i]) > MagickEpsilon)
           changes[id]++;
       }
@@ -3246,7 +3234,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   for (j=0; j < (ssize_t) GetOpenMPMaximumThreads(); j++)
     changed+=changes[j];
   changes=(size_t *) RelinquishMagickMemory(changes);
-  return(status ? (ssize_t) changed : -1);
+  return(status ? (ssize_t) changed/GetImageChannels(image) : -1);
 }
 
 /*
@@ -3642,7 +3630,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   }
   morphology_view=DestroyCacheView(morphology_view);
   image_view=DestroyCacheView(image_view);
-  return(status ? (ssize_t) changed : -1);
+  return(status ? (ssize_t) changed/GetImageChannels(image) : -1);
 }
 
 /*
