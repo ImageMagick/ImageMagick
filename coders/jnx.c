@@ -90,12 +90,6 @@ typedef struct _JNXLevelInfo
   int
     count,
     offset;
-
-  unsigned int
-    scale;
-
-  unsigned short
-    copyright[MagickPathExtent];
 } JNXLevelInfo;
 
 /*
@@ -198,22 +192,13 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (jnx_level_info[i].count > 50000)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     jnx_level_info[i].offset=ReadBlobLSBSignedLong(image);
-    jnx_level_info[i].scale=ReadBlobLSBLong(image);
-    *jnx_level_info[i].copyright='\0';
+    /* scale */
+    (void) ReadBlobLSBLong(image);
     if (jnx_info.version > 3)
       {
-        ssize_t
-          j;
-
-        unsigned short
-          c;
-
+        /* copyright */
         (void) ReadBlobLSBLong(image);
-        j=0;
-        while ((c=ReadBlobLSBShort(image)) != 0)
-          if (j < (MagickPathExtent-1))
-            jnx_level_info[i].copyright[j++]=c;
-        jnx_level_info[i].copyright[j]='\0';
+        while (ReadBlobLSBShort(image) != 0);
       }
     if (EOFBlob(image) != MagickFalse)
       ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
