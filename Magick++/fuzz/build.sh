@@ -1,11 +1,6 @@
 #!/bin/bash -eu
 
-echo "CFLAGS=$CFLAGS"
-echo "CXXFLAGS=$CXXFLAGS"
-echo "LDFLAGS=$LDFLAGS"
-
 . build_dependencies.sh
-
 . build_imagemagick.sh
 
 MAGICK_COMPILER=$CXX
