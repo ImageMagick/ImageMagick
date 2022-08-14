@@ -32,7 +32,7 @@ popd
 # Build libtiff
 pushd "$SRC/libtiff"
 autoreconf -fiv
-./configure --prefix="$WORK"
+./configure --disable-shared --prefix="$WORK"
 make -j$(nproc)
 make install
 popd
@@ -80,7 +80,7 @@ popd
 # Build webp
 pushd "$SRC/libwebp"
 ./autogen.sh
-./configure --disable-shared --prefix="$WORK"
+./configure --disable-shared  --disable-png --disable-jpeg --disable-tiff --prefix="$WORK"
 make -j$(nproc)
 make install
 popd
