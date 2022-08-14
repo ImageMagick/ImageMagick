@@ -135,6 +135,13 @@ typedef enum
   RepeatSpread
 } SpreadMethod;
 
+typedef enum
+{
+  UndefinedWordBreakType,
+  NormalWordBreakType,
+  BreakWordBreakType
+} WordBreakType;
+
 typedef struct _StopInfo
 {
   PixelInfo
@@ -340,6 +347,9 @@ typedef struct _DrawInfo
 
   char
     *id;
+
+  WordBreakType
+    word_break;
 } DrawInfo;
 
 typedef struct _PrimitiveInfo

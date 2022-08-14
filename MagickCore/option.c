@@ -1180,6 +1180,8 @@ static const OptionInfo
     { "-window", 1L, NonMagickOptionFlag, MagickFalse },
     { "+window-group", 0L, NonMagickOptionFlag, MagickFalse },
     { "-window-group", 1L, NonMagickOptionFlag, MagickFalse },
+    { "+word-break", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
+    { "-word-break", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
     { "+write", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag | FireOptionFlag, MagickFalse },
     { "+write-mask", 0L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
@@ -1732,6 +1734,7 @@ static const OptionInfo
     { "Validate", MagickValidateOptions, UndefinedOptionFlag, MagickFalse },
     { "VirtualPixel", MagickVirtualPixelOptions, UndefinedOptionFlag, MagickFalse },
     { "Weight", MagickWeightOptions, UndefinedOptionFlag, MagickFalse },
+    { "WordBreak", MagickWordBreakOptions, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, MagickUndefinedOptions, UndefinedOptionFlag, MagickFalse }
   },
   LogEventOptions[] =
@@ -2190,6 +2193,13 @@ static const OptionInfo
     { "Heavy", 900L, UndefinedOptionFlag, MagickFalse },
     { "Black", 900L, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
+  },
+  WordBreakOptions[] =
+  {
+    { "Undefined", UndefinedWordBreakType, UndefinedOptionFlag, MagickTrue },
+    { "Normal", NormalWordBreakType, UndefinedOptionFlag, MagickFalse },
+    { "BreakWord", BreakWordBreakType, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedWordBreakType, UndefinedOptionFlag, MagickFalse }
   };
 
 /*
@@ -2503,6 +2513,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickValidateOptions: return(ValidateOptions);
     case MagickVirtualPixelOptions: return(VirtualPixelOptions);
     case MagickWeightOptions: return(WeightOptions);
+    case MagickWordBreakOptions: return(WordBreakOptions);
     default: break;
   }
   return((const OptionInfo *) NULL);

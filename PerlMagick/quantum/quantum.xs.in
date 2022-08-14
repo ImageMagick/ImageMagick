@@ -289,7 +289,8 @@ static struct
       {"interline-spacing", RealReference},
       {"interword-spacing", RealReference},
       {"direction", MagickDirectionOptions},
-      {"decorate", MagickDecorateOptions} } },
+      {"decorate", MagickDecorateOptions},
+      {"word-break", MagickWordBreakOptions} } },
     { "ColorFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"fill", StringReference}, {"bordercolor", StringReference},
@@ -324,7 +325,8 @@ static struct
       {"vector-graphics", StringReference}, {"kerning", RealReference},
       {"interline-spacing", RealReference},
       {"interword-spacing", RealReference},
-      {"direction", MagickDirectionOptions} } },
+      {"direction", MagickDirectionOptions},
+      {"word-break", MagickWordBreakOptions} } },
     { "Equalize", { {"channel", MagickChannelOptions} } },
     { "Gamma", { {"gamma", StringReference}, {"channel", MagickChannelOptions},
       {"red", RealReference}, {"green", RealReference},
@@ -8664,6 +8666,9 @@ Mogrify(ref,...)
           if (attribute_flag[33] != 0)
             draw_info->decorate=(DecorationType)
               argument_list[33].integer_reference;
+          if (attribute_flag[34] != 0)
+            draw_info->word_break=(WordBreakType)
+              argument_list[34].integer_reference;
           (void) AnnotateImage(image,draw_info,exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;
@@ -9211,6 +9216,9 @@ Mogrify(ref,...)
           if (attribute_flag[32] != 0)
             draw_info->direction=(DirectionType)
               argument_list[32].integer_reference;
+          if (attribute_flag[33] != 0)
+            draw_info->word_break=(WordBreakType)
+              argument_list[33].integer_reference;
           DrawImage(image,draw_info,exception);
           draw_info=DestroyDrawInfo(draw_info);
           break;

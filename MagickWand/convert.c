@@ -446,7 +446,8 @@ static MagickBooleanType ConvertUsage(void)
       "                       virtual pixel access method\n"
       "  -weight type         render text with this font weight\n"
       "  -white-point point   chromaticity white point\n"
-      "  -write-mask filename associate a write mask with the image",
+      "  -write-mask filename associate a write mask with the image"
+      "  -word-break type     sets whether line breaks appear wherever the text would otherwise overflow",
     stack_operators[] =
       "  -clone indexes       clone an image\n"
       "  -delete indexes      delete the image from the image sequence\n"
@@ -3286,6 +3287,22 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("word-break",option+1) == 0)
+          {
+            ssize_t
+              word_break;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            word_break=ParseCommandOption(MagickWordBreakOptions,MagickFalse,
+              argv[i]);
+            if (word_break < 0)
+              ThrowConvertException(OptionError,"UnrecognizedArgument",argv[i]);
             break;
           }
         if (LocaleCompare("write",option+1) == 0)

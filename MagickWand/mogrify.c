@@ -3267,6 +3267,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             mask=DestroyImage(mask);
             break;
           }
+        if (LocaleCompare("word-break",option+1) == 0)
+          {
+            (void) SetImageOption(image_info,option+1,argv[i+1]);
+            break;
+          }
         break;
       }
       default:
@@ -3643,6 +3648,7 @@ static MagickBooleanType MogrifyUsage(void)
       "                       virtual pixel access method\n"
       "  -weight type         render text with this font weight\n"
       "  -white-point point   chromaticity white point\n"
+      "  -word-break type     sets whether line breaks appear wherever the text would otherwise overflow"
       "  -write-mask filename associate a write mask with the image",
     stack_operators[] =
       "  -delete indexes      delete the image from the image sequence\n"
@@ -6459,6 +6465,22 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("word-break",option+1) == 0)
+          {
+            ssize_t
+              word_break;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            word_break=ParseCommandOption(MagickWordBreakOptions,MagickFalse,
+              argv[i]);
+            if (word_break < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedArgument",argv[i]);
+            break;
+          }
         if (LocaleCompare("white-balance",option+1) == 0)
           break;
         if (LocaleCompare("white-point",option+1) == 0)
@@ -7611,6 +7633,16 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
               (void) SetImageOption(image_info,option+1,"0.0");
             else
               (void) SetImageOption(image_info,option+1,argv[i+1]);
+            break;
+          }
+        if (LocaleCompare("word-break",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                (void) SetImageOption(image_info,option+1,"undefined");
+                break;
+              }
+            (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
         break;

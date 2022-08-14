@@ -657,7 +657,8 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
         q=draw_info->text;
         continue;
       }
-    if ((IsUTFSpace(code) != MagickFalse) &&
+    if ((draw_info->word_break != BreakWordBreakType) &&
+        (IsUTFSpace(code) != MagickFalse) &&
         (IsNonBreakingUTFSpace(code) == MagickFalse))
       {
         s=p;

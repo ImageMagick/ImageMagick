@@ -326,6 +326,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->interline_spacing=draw_info->interline_spacing;
   clone_info->interword_spacing=draw_info->interword_spacing;
   clone_info->direction=draw_info->direction;
+  clone_info->word_break=draw_info->word_break;
   if (draw_info->density != (char *) NULL)
     (void) CloneString(&clone_info->density,draw_info->density);
   clone_info->align=draw_info->align;
@@ -6076,6 +6077,10 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
         weight=(ssize_t) StringToUnsignedLong(option);
       draw_info->weight=(size_t) weight;
     }
+  option=GetImageOption(clone_info,"word-break");
+  if (option != (const char *) NULL)
+    draw_info->word_break=(WordBreakType) ParseCommandOption(
+      MagickWordBreakOptions,MagickFalse,option);
   exception=DestroyExceptionInfo(exception);
   draw_info->signature=MagickCoreSignature;
   clone_info=DestroyImageInfo(clone_info);
