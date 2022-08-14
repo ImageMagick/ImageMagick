@@ -58,6 +58,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 
@@ -135,6 +136,9 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
+  MagickSizeType
+    num_images;
+
   ssize_t
     i;
 
@@ -185,6 +189,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read JNX levels.
   */
+  num_images=0;
   (void) memset(&jnx_level_info,0,sizeof(jnx_level_info));
   for (i=0; i < (ssize_t) jnx_info.levels; i++)
   {
@@ -202,7 +207,10 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (EOFBlob(image) != MagickFalse)
       ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+    num_images+=(MagickSizeType) jnx_level_info[i].count;
   }
+  if (AcquireMagickResource(ListLengthResource,num_images) == MagickFalse)
+    ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
   /*
     Read JNX tiles.
   */
