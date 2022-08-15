@@ -1,8 +1,5 @@
 #!/bin/bash -eu
 
-. build_dependencies.sh
-. build_imagemagick.sh
-
 MAGICK_COMPILER=$CXX
 MAGICK_COMPILER_FLAGS=$CXXFLAGS
 MAGICK_INCLUDE="$WORK/include/ImageMagick-7"
@@ -12,6 +9,8 @@ MAGICK_LIBS="$LIB_FUZZING_ENGINE $MAGICK_LIBS_NO_FUZZ"
 MAGICK_OUTPUT=$OUT
 MAGICK_FAST_BUILD=0
 
+. $MAGICK_SRC/build_dependencies.sh
+. $MAGICK_SRC/build_imagemagick.sh
 . $MAGICK_SRC/build_fuzzers.sh
 
 mkdir afl_testcases
