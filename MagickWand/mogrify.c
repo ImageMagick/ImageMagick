@@ -1694,8 +1694,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   exception);
                 break;
               }
-            text=InterpretImageProperties(mogrify_info,*image,format,
-              exception);
+            text=InterpretImageProperties(mogrify_info,*image,format,exception);
             if (text == (char *) NULL)
               break;
             (void) fputs(text,stdout);
@@ -3861,6 +3860,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             char
               name[MagickPathExtent];
 
+            if (format != (char *) NULL)
+              (void) CopyMagickString(magic,format,MagickPathExtent);
             (void) FormatLocaleString(name,MagickPathExtent,"%s:%s",magic,
               image->filename);
             (void) CopyMagickString(image->filename,name,MagickPathExtent);
