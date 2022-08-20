@@ -278,60 +278,65 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
     {
       ssize_t
         i;
-
+      
       for (i=0; i < (ssize_t) number_channels; i++)
       {
+        double
+          ai = QuantumScale*Ai[i],
+          ar = QuantumScale*Ar[i],
+          bi = QuantumScale*Bi[i],
+          br = QuantumScale*Br[i],
+          ci,
+          cr;
+
         switch (op)
         {
           case AddComplexOperator:
           {
-            Cr[i]=Ar[i]+Br[i];
-            Ci[i]=Ai[i]+Bi[i];
+            cr=ar+br;
+            ci=ai+bi;
             break;
           }
           case ConjugateComplexOperator:
           default:
           {
-            Cr[i]=Ar[i];
-            Ci[i]=(-Ai[i]);
+            cr=ar;
+            ci=(-ai);
             break;
           }
           case DivideComplexOperator:
           {
-            double
-              gamma;
-
-            gamma=QuantumRange*PerceptibleReciprocal(QuantumScale*Br[i]*Br[i]+
-              QuantumScale*Bi[i]*Bi[i]+snr);
-            Cr[i]=gamma*(QuantumScale*Ar[i]*Br[i]+QuantumScale*Ai[i]*Bi[i]);
-            Ci[i]=gamma*(QuantumScale*Ai[i]*Br[i]-QuantumScale*Ar[i]*Bi[i]);
+            cr=PerceptibleReciprocal(br*br+bi*bi+snr)*(ar*br+ai*bi);
+            ci=PerceptibleReciprocal(br*br+bi*bi+snr)*(ai*br-ar*bi);
             break;
           }
           case MagnitudePhaseComplexOperator:
           {
-            Cr[i]=sqrt(QuantumScale*Ar[i]*Ar[i]+QuantumScale*Ai[i]*Ai[i]);
-            Ci[i]=atan2((double) Ai[i],(double) Ar[i])/(2.0*MagickPI)+0.5;
+            cr=sqrt(ar*ar+ai*ai);
+            ci=atan2((double) ai,(double) ar)/(2.0*MagickPI)+0.5;
             break;
           }
           case MultiplyComplexOperator:
           {
-            Cr[i]=(QuantumScale*Ar[i]*Br[i]-QuantumScale*Ai[i]*Bi[i]);
-            Ci[i]=(QuantumScale*Ai[i]*Br[i]+QuantumScale*Ar[i]*Bi[i]);
+            cr=(ar*br-ai*bi);
+            ci=(ai*br+ar*bi);
             break;
           }
           case RealImaginaryComplexOperator:
           {
-            Cr[i]=Ar[i]*cos(2.0*MagickPI*(Ai[i]-0.5));
-            Ci[i]=Ar[i]*sin(2.0*MagickPI*(Ai[i]-0.5));
+            cr=ar*cos(2.0*MagickPI*(ai-0.5));
+            ci=ar*sin(2.0*MagickPI*(ai-0.5));
             break;
           }
           case SubtractComplexOperator:
           {
-            Cr[i]=Ar[i]-Br[i];
-            Ci[i]=Ai[i]-Bi[i];
+            cr=ar-br;
+            ci=ai-bi;
             break;
           }
         }
+        Cr[i]=QuantumRange*cr;
+        Ci[i]=QuantumRange*ci;
       }
       Ar+=GetPixelChannels(Ar_image);
       Ai+=GetPixelChannels(Ai_image);
