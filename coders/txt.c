@@ -450,7 +450,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=width;
     image->rows=height;
     image->number_meta_channels=number_meta_channels;
-    if ((max_value == 0.0) || (max_value > 18446744073709551615.0))
+    if ((max_value == 0.0) || (max_value >= 18446744073709551615.0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     for (depth=1; ((double) GetQuantumRange(depth)+1) < max_value; depth++) ;
     image->depth=depth;
