@@ -929,7 +929,7 @@ MagickExport MagickBooleanType SetQuantumPad(const Image *image,
   assert(quantum_info->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (pad >= MAGICK_SSIZE_MAX)
+  if (pad >= (MAGICK_SSIZE_MAX/GetImageChannels(image)))
     return(MagickFalse);
   quantum_info->pad=pad;
   return(SetQuantumDepth(image,quantum_info,quantum_info->depth));
