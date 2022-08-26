@@ -184,7 +184,7 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     raw_info->other.aperture);
   (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1f",
     raw_info->lens.EXIF_MaxAp);
-  (void) FormatImageProperty(image,"dng:focal.length","%0.1f m",
+  (void) FormatImageProperty(image,"dng:focal.length","%0.1f mm",
     raw_info->other.focal_len);
   (void) FormatImageProperty(image,"dng:wb.rb.levels","%f %f %f %f",
     raw_info->color.cam_mul[0],raw_info->color.cam_mul[2],
