@@ -1,16 +1,17 @@
 /config/ImageMagick.rdf
 /config/*.dox
 /config/config.h
+/config/configure.xml
 /config/delegates.xml
 /config/stamp-h1
 /config/type-apple.xml
 /config/type-dejavu.xml
 /config/type-ghostscript.xml
+/config/type-urw-base35.xml
 /config/type-windows.xml
 /config/type.xml
 
 /Magick++/bin/Magick++-config
-/Magick++/demo/*_out*
 /Magick++/demo/analyze
 /Magick++/demo/button
 /Magick++/demo/demo
@@ -33,7 +34,6 @@
 /Magick++/tests/morphImages
 /Magick++/tests/readWriteBlob
 /Magick++/tests/readWriteImages
-/Magick++/tests/testmagick_anim_out*
 
 /MagickCore/MagickCore-config
 /MagickCore/magick-baseconfig.h
@@ -55,7 +55,6 @@
 /PerlMagick/blib
 /PerlMagick/check.sh
 
-/tests/*_out*
 /tests/drawtest
 /tests/validate
 /tests/wandtest
@@ -85,6 +84,8 @@
 
 .vscode
 
+*~
+*_out*
 *.o
 *.lo
 *.log
