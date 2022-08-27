@@ -91,3 +91,10 @@ cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off -DBUILD_CODEC=off -
 make -j$(nproc)
 make install
 popd
+
+# Build libjxl
+pushd "$SRC/libjxl"
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_TESTING=off -DJPEGXL_STATIC=true -DJPEGXL_FORCE_SYSTEM_LCMS2=true -DJPEGXL_ENABLE_EXAMPLES=false -DCMAKE_C_FLAGS="$CPPFLAGS $CFLAGS" -DCMAKE_CXX_FLAGS="$CPPFLAGS $CXXFLAGS"
+make -j$(nproc)
+make install
+popd
