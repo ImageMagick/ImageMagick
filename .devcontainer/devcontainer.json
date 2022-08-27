@@ -1,6 +1,13 @@
 {
-    "build": {
-      "dockerfile": "Dockerfile"
-    },
-    "onCreateCommand": "cd /workspaces/ImageMagick && ./Magick++/fuzz/build_imagemagick.sh"
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "onCreateCommand": "cd /workspaces/ImageMagick && ./Magick++/fuzz/build_imagemagick.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "extensions.ignoreRecommendations": true
+      }
+    }
+  }
 }
