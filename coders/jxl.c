@@ -614,7 +614,7 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
 
 static inline float JXLGetDistance(const ImageInfo *image_info)
 {
-  if (image_info->quality != 0)
+  if (image_info->quality == 0)
     return(1.0f);
   if (image_info->quality >= 30)
     return(0.1f+(float) (100-MagickMin(100,image_info->quality))*0.09f);
