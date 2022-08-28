@@ -1,6 +1,6 @@
 root = true
 
-[*.{c,h,json,txt,md,yml}]
+[*.{c,cc,h,json,txt,md,yml}]
 
 indent_size = 2
 indent_style = space
