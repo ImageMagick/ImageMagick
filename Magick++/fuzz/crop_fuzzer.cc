@@ -24,9 +24,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
 {
   uint16_t Width;
   uint16_t Height;
-  if (Size < (sizeof(Width) + sizeof(Height))) {
+  if (IsInvalidSize(Size, sizeof(Width) + sizeof(Height)))
     return 0;
-  }
   Width = *reinterpret_cast<const uint16_t *>(Data);
   Height = *reinterpret_cast<const uint16_t *>(Data + sizeof(Width));
   const Magick::Blob blob(Data + sizeof(Width) + sizeof(Height),

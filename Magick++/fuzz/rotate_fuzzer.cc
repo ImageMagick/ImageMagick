@@ -23,9 +23,8 @@
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
 {
-  if (Size < sizeof(double)) {
+  if (IsInvalidSize(Size, sizeof(double), 0))
     return 0;
-  }
   double Degrees = *reinterpret_cast<const double *>(Data);
   if (!isfinite(Degrees)) {
     return 0;

@@ -23,6 +23,8 @@
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
 {
+  if (IsInvalidSize(Size, 1, 0))
+    return 0;
   const Magick::Blob blob(Data, Size);
   Magick::Image image;
   try {

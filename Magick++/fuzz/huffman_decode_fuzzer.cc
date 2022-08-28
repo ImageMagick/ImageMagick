@@ -27,6 +27,8 @@ namespace MagickCore
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
 {
+  if (IsInvalidSize(Size, 1, 0))
+    return 0;
   Magick::Image image;
   MagickCore::AttachBlob(image.image()->blob,(const void *) Data,Size);
 
