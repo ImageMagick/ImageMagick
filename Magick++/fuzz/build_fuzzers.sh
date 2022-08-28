@@ -7,8 +7,8 @@ $MAGICK_COMPILER $MAGICK_COMPILER_FLAGS -std=c++11 -I$MAGICK_INCLUDE "$MAGICK_SR
 
 for f in $MAGICK_SRC/*_fuzzer.cc; do
     fuzzer=$(basename "$f" _fuzzer.cc)
-    # encoder_fuzzer and ping_fuzzer are special
-    if [ "$fuzzer" == "encoder" ] || [ "$fuzzer" == "ping" ]; then
+    # encoder_fuzzer is special
+    if [ "$fuzzer" == "encoder" ]; then
         continue
     fi
     $MAGICK_COMPILER $MAGICK_COMPILER_FLAGS -std=c++11 -I$MAGICK_INCLUDE \
@@ -25,12 +25,6 @@ for item in $("$MAGICK_SRC/encoder_list"); do
       encoder_flags="$encoder_flags -DFUZZ_IMAGEMAGICK_ENCODER_INITIALIZER=$initializer"
     fi
 
-    $MAGICK_COMPILER $MAGICK_COMPILER_FLAGS -std=c++11 -I$MAGICK_INCLUDE \
-        "$MAGICK_SRC/ping_fuzzer.cc" -o "$MAGICK_OUTPUT/ping_${encoder,,}_fuzzer" \
-         $encoder_flags $MAGICK_LIBS
-
-    echo -e "[libfuzzer]\nclose_fd_mask=3" > "$MAGICK_OUTPUT/ping_${encoder,,}_fuzzer.options"
-
     if [ "${item:0:1}" == "+" ]; then
         encoder_flags="$encoder_flags -DFUZZ_IMAGEMAGICK_ENCODER_WRITE=1"
     fi
@@ -42,7 +36,6 @@ for item in $("$MAGICK_SRC/encoder_list"); do
     echo -e "[libfuzzer]\nclose_fd_mask=3" > "$MAGICK_OUTPUT/encoder_${encoder,,}_fuzzer.options"
 
     if [ -f "$MAGICK_SRC/dictionaries/${encoder,,}.dict" ]; then
-        cp "$MAGICK_SRC/dictionaries/${encoder,,}.dict" "$MAGICK_OUTPUT/ping_${encoder,,}_fuzzer.dict"
         cp "$MAGICK_SRC/dictionaries/${encoder,,}.dict" "$MAGICK_OUTPUT/encoder_${encoder,,}_fuzzer.dict"
     fi
 
