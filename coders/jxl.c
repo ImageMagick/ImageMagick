@@ -612,6 +612,16 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
   return(jxl_status);
 }
 
+static inline float JXLGetDistance(const ImageInfo *image_info)
+{
+  if (image_info->quality != 0)
+    return(1.0f);
+  if (image_info->quality >= 30)
+    return(0.1f+(float) (100-MagickMin(100,image_info->quality))*0.09f);
+  return(MagickMin(25.0,6.4f+(float) pow(2.5f,(30.0-image_info->quality)/5.0f)/
+    6.25f));
+}
+
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
@@ -723,15 +733,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   if (image->quality == 100)
     (void) JxlEncoderOptionsSetLossless(jxl_options,JXL_TRUE);
   else
-    {
-      float
-        distance;
-
-      distance=(image_info->quality >= 30) ? 0.1f+(float) (100-MagickMin(100,
-        image_info->quality))*0.09f : 6.4f+(float) pow(2.5f,(30.0-
-        image_info->quality)/5.0f)/6.25f;
-      (void) JxlEncoderOptionsSetDistance(jxl_options,distance);
-    }
+    (void) JxlEncoderOptionsSetDistance(jxl_options,JXLGetDistance(image_info));
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
     (void) JxlEncoderOptionsSetEffort(jxl_options,StringToInteger(option));
