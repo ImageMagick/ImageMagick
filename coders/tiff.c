@@ -1890,7 +1890,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert stripped TIFF image.
         */
-        extent=MagickMax(image->columns*(samples_per_pixel+extra_samples)*
+        extent=4*MagickMax(image->columns*(samples_per_pixel+extra_samples)*
           (image->depth+7)/8,TIFFStripSize(tiff));
         strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*strip_pixels));
