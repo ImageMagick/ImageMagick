@@ -1194,12 +1194,12 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   assert(affine != (AffineMatrix *) NULL);
   extent[0].x=0.0;
   extent[0].y=0.0;
-  extent[1].x=(double) source->columns-1.0;
+  extent[1].x=(double) source->columns;
   extent[1].y=0.0;
-  extent[2].x=(double) source->columns-1.0;
-  extent[2].y=(double) source->rows-1.0;
+  extent[2].x=(double) source->columns;
+  extent[2].y=(double) source->rows;
   extent[3].x=0.0;
-  extent[3].y=(double) source->rows-1.0;
+  extent[3].y=(double) source->rows;
   for (i=0; i < 4; i++)
   {
     PointInfo
@@ -1228,11 +1228,15 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
-  edge.x1=MagickMax(min.x,0.0);
-  edge.y1=MagickMax(min.y,0.0);
-  edge.x2=MagickMin(max.x,(double) image->columns-1.0);
-  edge.y2=MagickMin(max.y,(double) image->rows-1.0);
+  edge.x1=min.x;
+  edge.y1=min.y;
+  edge.x2=max.x;
+  edge.y2=max.y;
   inverse_affine=InverseAffineMatrix(affine);
+  if (edge.y1 < 0.0)
+    edge.y1=0.0;
+  if (edge.y2 > (image->rows-1.0))
+    edge.y2=image->rows-1.0;
   GetPixelInfo(image,&zero);
   start=CastDoubleToLong(ceil(edge.y1-0.5));
   stop=CastDoubleToLong(floor(edge.y2+0.5));
@@ -1265,6 +1269,10 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     inverse_edge=AffineEdge(source,&inverse_affine,(double) y,&edge);
     if (inverse_edge.x2 < inverse_edge.x1)
       continue;
+    if (inverse_edge.x1 < 0.0)
+      inverse_edge.x1=0.0;
+    if (inverse_edge.x2 > image->columns-1.0)
+      inverse_edge.x2=image->columns-1.0;
     q=GetCacheViewAuthenticPixels(image_view,CastDoubleToLong(
       ceil(inverse_edge.x1-0.5)),y,(size_t) CastDoubleToLong(floor(
       inverse_edge.x2+0.5)-ceil(inverse_edge.x1-0.5)+1),1,exception);
