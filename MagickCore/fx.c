@@ -2885,6 +2885,13 @@ static inline fxFltType ImageStat (
   fxFltType ret = 0;
   MagickBooleanType NeedRelinq = MagickFalse;
 
+  if (ImgNum < 0)
+    {
+      (void) ThrowMagickException(pfx->exception,GetMagickModule(),
+        OptionError,"NoSuchImage","%lu",(unsigned long) ImgNum);
+      ImgNum=0;
+    }
+
   if (pfx->GotStats) {
     if ((channel < 0) || (channel > MaxPixelChannels))
       {
