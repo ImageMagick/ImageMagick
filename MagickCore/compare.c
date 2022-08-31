@@ -1211,9 +1211,7 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
   for (i=0; i <= MaxPixelChannels; i++)
-    if (fabs(distortion[i]) < MagickEpsilon)
-      distortion[i]=INFINITY;
-    else
+    if (fabs(distortion[i]) >= MagickEpsilon)
       distortion[i]=(-10.0*MagickLog10(distortion[i]));
   return(status);
 }
@@ -2967,7 +2965,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
       if (metric == PeakSignalToNoiseRatioErrorMetric)
         similarity*=0.01;
       if ((metric == NormalizedCrossCorrelationErrorMetric) ||
-          (metric == PeakSignalToNoiseRatioErrorMetric) ||
           (metric == UndefinedErrorMetric))
         similarity=1.0-similarity;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
