@@ -332,6 +332,7 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
   const char
     *option;
 
+  raw_info->params.user_flip=0;
   raw_info->params.output_bps=16;
   option=GetImageOption(image_info,"dng:use-camera-wb");
   if (option == (const char *) NULL)
