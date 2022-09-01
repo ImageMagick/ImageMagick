@@ -3080,6 +3080,13 @@ static fxFltType GetHslFlt (FxInfo * pfx, ssize_t ImgNum, const fxFltType fx, co
   return 0.0;
 }
 
+static inline double MagickLog10(const double x)
+{
+ if (fabs(x) < MagickEpsilon)
+   return(-INFINITY);
+ return(log10(fabs(x)));
+}
+
 static fxFltType GetHslInt (FxInfo * pfx, ssize_t ImgNum, const ssize_t imgx, const ssize_t imgy, int channel)
 {
   Image * img = pfx->Images[ImgNum];
@@ -3463,10 +3470,10 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = log ((double) regA);
           break;
         case fLogtwo:
-          regA = log10((double) regA) / log10(2.0);
+          regA = MagickLog10((double) regA) / log10(2.0);
           break;
         case fLog:
-          regA = log10 ((double) regA);
+          regA = MagickLog10 ((double) regA);
           break;
         case fMax:
           regA = (regA > regB) ? regA : regB;
