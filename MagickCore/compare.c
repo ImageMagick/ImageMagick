@@ -1194,7 +1194,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
 static inline double MagickLog10(const double x)
 {
  if (fabs(x) < MagickEpsilon)
-   return(log10(MagickEpsilon));
+   return(-INFINITY);
  return(log10(fabs(x)));
 }
 
