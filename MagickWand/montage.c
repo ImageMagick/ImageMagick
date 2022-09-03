@@ -147,6 +147,7 @@ static MagickBooleanType MontageUsage(void)
       "  -encoding type       text encoding type\n"
       "  -endian type         endianness (MSB or LSB) of the image\n"
       "  -extract geometry    extract area from image\n"
+      "  -family name         render text with this font family\n"
       "  -fill color          color to use when filling a graphic primitive\n"
       "  -filter type         use this filter when resizing an image\n"
       "  -font name           render text with this font\n"
@@ -933,6 +934,15 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       }
       case 'f':
       {
+        if (LocaleCompare("family",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("fill",option+1) == 0)
           {
             (void) QueryColorCompliance("none",AllCompliance,
