@@ -1012,7 +1012,7 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
   if ((type_info == (const TypeInfo *) NULL) &&
       (draw_info->family != (const char *) NULL))
     {
-      if (strstr(draw_info->family,",'\"") == (char *) NULL)
+      if (strpbrk(draw_info->family,",'\"") == (char *) NULL)
         type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
           draw_info->stretch,draw_info->weight,exception);
       if (type_info == (const TypeInfo *) NULL)
