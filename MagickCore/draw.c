@@ -3818,7 +3818,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->clip_path != MagickFalse)
               break;
             graphic_context[n]->stroke_width=GetDrawValue(token,&next_token);
-            if (token == next_token)
+            if ((token == next_token) ||
+                (graphic_context[n]->stroke_width < 0.0))
               ThrowPointExpectedException(token,exception);
             break;
           }
@@ -7598,8 +7599,8 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(box_q[2].y-center.y,box_q[2].x-center.x);
           if (theta.q < theta.p)
             theta.q+=2.0*MagickPI;
-          arc_segments=(size_t) CastDoubleToLong(ceil((double) ((theta.
-            q-theta.p)/(2.0*sqrt(PerceptibleReciprocal(mid))))));
+          arc_segments=(size_t) CastDoubleToLong(ceil((double) ((theta.q-
+            theta.p)/(2.0*sqrt(PerceptibleReciprocal(mid))))));
           DisableMSCWarning(4127)
           CheckPathExtent(MaxStrokePad,arc_segments+MaxStrokePad);
           RestoreMSCWarning
