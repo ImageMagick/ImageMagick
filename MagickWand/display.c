@@ -105,6 +105,7 @@ static MagickBooleanType DisplayUsage(void)
       "  -log format          format of debugging information\n"
       "  -version             print version information",
     operators[] =
+      "  -auto-level          automagically adjust color levels of image\n"
       "  -auto-orient         automagically orient image\n"
       "  -border geometry     surround image with a border of color\n"
       "  -clip                clip along the first path from the 8BIM profile\n"
@@ -682,6 +683,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               ThrowDisplayException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("auto-level",option+1) == 0)
+          break;
         if (LocaleCompare("auto-orient",option+1) == 0)
           break;
         ThrowDisplayException(OptionError,"UnrecognizedOption",option);
