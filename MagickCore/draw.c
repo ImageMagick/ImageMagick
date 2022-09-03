@@ -2732,7 +2732,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
               *mvg_class;
 
             (void) GetNextToken(q,&q,extent,token);
-            if (*token == '\0')
+            if ((*token == '\0') || (*token == ';'))
               {
                 status=MagickFalse;
                 break;
