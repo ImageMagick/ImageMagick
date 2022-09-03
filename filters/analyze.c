@@ -119,8 +119,6 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
   const char **argv,ExceptionInfo *exception)
 {
 #define AnalyzeImageFilterTag  "Filter/Analyze"
-#define magick_number_threads(source,destination,chunk,multithreaded) \
-  num_threads(GetMagickNumberThreads(source,destination,chunk,multithreaded))
 
   char
     text[MagickPathExtent];
@@ -166,7 +164,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
     shared(progress,status,brightness,saturation) \
-    magick_number_threads(image,image,image->rows,1)
+    num_threads(GetMagickNumberThreads(image,image,image->rows,1))
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
