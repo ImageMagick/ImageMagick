@@ -1773,7 +1773,7 @@ static inline MagickBooleanType PSDSkipImage(const PSDInfo *psd_info,
   return(MagickFalse);
 }
 
-static void CheckMergedImageAlpha(const PSDInfo *psd_info,Image *image)
+static inline void CheckMergedImageAlpha(const PSDInfo *psd_info,Image *image)
 {
   /*
     The number of layers cannot be used to determine if the merged image
