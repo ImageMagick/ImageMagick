@@ -1787,7 +1787,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               quantum_type=samples_per_pixel == 1 ? AlphaQuantum :
                 GrayAlphaQuantum;
           }
-        if ((samples_per_pixel > 2) && (interlace != PLANARCONFIG_SEPARATE))
+        if (samples_per_pixel > 2)
           {
             if (image->colorspace == CMYKColorspace)
               {
