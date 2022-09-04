@@ -8273,7 +8273,7 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    dp+=description_length;
    *dp++='\n';
    (void) FormatLocaleString(dp,allocated_length-
-     (png_size_t) (dp-text[0].text),"%8lu ",(unsigned long) length);
+     (png_size_t) (dp-text[0].text),"%8lu",(unsigned long) length);
    dp+=8;
 
    for (i=0; i < (ssize_t) length; i++)
