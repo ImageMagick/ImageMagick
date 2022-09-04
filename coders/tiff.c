@@ -1714,9 +1714,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                       exception);
                   }
             }
-            (void) SetPixelMetaChannels(image,extra_samples,exception);
             if (image->alpha_trait != UndefinedPixelTrait)
-              (void) SetPixelMetaChannels(image,extra_samples-1,exception);
+              extra_samples--;
+            (void) SetPixelMetaChannels(image,extra_samples,exception);
           }
       }
     if (image->alpha_trait != UndefinedPixelTrait)
