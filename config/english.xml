@@ -676,6 +676,9 @@
         <message name="KernelWidthMustBeAnOddNumber">
           kernel width must be an odd number
         </message>
+        <message name="LabelExpected">
+          label expected
+        </message>
         <message name="MapImageRequired">
           map image required
         </message>

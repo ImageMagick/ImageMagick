@@ -673,6 +673,9 @@
         <message name="KernelWidthMustBeAnOddNumber">
           la largeur du grain doit être un nombre impair
         </message>
+        <message name="LabelExpected">
+          label expected
+        </message>
         <message name="MapImageRequired">
           image map requise
         </message>
