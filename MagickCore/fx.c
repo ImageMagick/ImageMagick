@@ -90,6 +90,7 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/statistic.h"
+#include "MagickCore/statistic-private.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
@@ -3078,13 +3079,6 @@ static fxFltType GetHslFlt (FxInfo * pfx, ssize_t ImgNum, const fxFltType fx, co
   if (channel == LIGHT_CHANNEL) return lightness;
 
   return 0.0;
-}
-
-static inline double MagickLog10(const double x)
-{
- if (fabs(x) < MagickEpsilon)
-   return(-INFINITY);
- return(log10(fabs(x)));
 }
 
 static fxFltType GetHslInt (FxInfo * pfx, ssize_t ImgNum, const ssize_t imgx, const ssize_t imgy, int channel)

@@ -505,7 +505,8 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	MagickCore/signature.h MagickCore/signature-private.h \
 	MagickCore/splay-tree.c MagickCore/splay-tree.h \
 	MagickCore/static.c MagickCore/static.h MagickCore/statistic.c \
-	MagickCore/statistic.h MagickCore/stream.c MagickCore/stream.h \
+	MagickCore/statistic.h MagickCore/statistic-private.h \
+	MagickCore/stream.c MagickCore/stream.h \
 	MagickCore/stream-private.h MagickCore/string.c \
 	MagickCore/string_.h MagickCore/string-private.h \
 	MagickCore/studio.h MagickCore/thread.c MagickCore/thread_.h \
@@ -2128,10 +2129,10 @@ am__utilities_magick_SOURCES_DIST = utilities/magick.c
 utilities_magick_OBJECTS = $(am_utilities_magick_OBJECTS)
 @WITH_UTILITIES_TRUE@utilities_magick_DEPENDENCIES =  \
 @WITH_UTILITIES_TRUE@	$(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_magick_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(utilities_magick_LDFLAGS) $(LDFLAGS) \
-	-o $@
+utilities_magick_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(utilities_magick_LDFLAGS) \
+	$(LDFLAGS) -o $@
 SCRIPTS = $(bin_SCRIPTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -2148,7 +2149,8 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/config
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = Magick++/demo/$(DEPDIR)/analyze-analyze.Po \
+am__depfiles_remade = ./$(DEPDIR)/dummy.Po \
+	Magick++/demo/$(DEPDIR)/analyze-analyze.Po \
 	Magick++/demo/$(DEPDIR)/button-button.Po \
 	Magick++/demo/$(DEPDIR)/demo-demo.Po \
 	Magick++/demo/$(DEPDIR)/detrans-detrans.Po \
@@ -2721,7 +2723,8 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 	$(Magick___tests_readWriteBlob_SOURCES) \
 	$(Magick___tests_readWriteImages_SOURCES) \
 	$(tests_drawtest_SOURCES) $(tests_validate_SOURCES) \
-	$(tests_wandtest_SOURCES) $(utilities_magick_SOURCES)
+	$(tests_wandtest_SOURCES) $(utilities_magick_SOURCES) \
+	$(nodist_EXTRA_utilities_magick_SOURCES)
 DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
 	$(am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST) \
 	$(MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES) \
@@ -5385,6 +5388,7 @@ MAGICKCORE_BASE_SRCS = \
   MagickCore/static.h \
   MagickCore/statistic.c \
   MagickCore/statistic.h \
+  MagickCore/statistic-private.h \
   MagickCore/stream.c \
   MagickCore/stream.h \
   MagickCore/stream-private.h \
@@ -5590,6 +5594,7 @@ MAGICKCORE_NOINST_HDRS = \
   MagickCore/semaphore-private.h \
   MagickCore/semaphore-private.h \
   MagickCore/signature-private.h \
+  MagickCore/statistic-private.h \
   MagickCore/stream-private.h \
   MagickCore/string-private.h \
   MagickCore/thread_.h \
@@ -6002,6 +6007,7 @@ filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 @WITH_UTILITIES_TRUE@utilities_magick_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 @WITH_UTILITIES_TRUE@utilities_magick_LDFLAGS = $(LDFLAGS)
 @WITH_UTILITIES_TRUE@utilities_magick_SOURCES = utilities/magick.c
+@WITH_UTILITIES_TRUE@nodist_EXTRA_utilities_magick_SOURCES = dummy.cxx
 @WITH_UTILITIES_FALSE@UTILITIES_MANS = 
 @WITH_UTILITIES_TRUE@UTILITIES_MANS = \
 @WITH_UTILITIES_TRUE@  utilities/ImageMagick.1 \
@@ -6195,7 +6201,7 @@ all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cpp .lo .log .o .obj .sh .sh$(EXEEXT) .tap .tap$(EXEEXT) .trs
+.SUFFIXES: .c .cpp .cxx .lo .log .o .obj .sh .sh$(EXEEXT) .tap .tap$(EXEEXT) .trs
 am--refresh: Makefile
 	@:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/coders/Makefile.am $(srcdir)/MagickCore/Makefile.am $(srcdir)/MagickWand/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
@@ -8137,7 +8143,7 @@ utilities/magick.$(OBJEXT): utilities/$(am__dirstamp) \
 
 utilities/magick$(EXEEXT): $(utilities_magick_OBJECTS) $(utilities_magick_DEPENDENCIES) $(EXTRA_utilities_magick_DEPENDENCIES) utilities/$(am__dirstamp)
 	@rm -f utilities/magick$(EXEEXT)
-	$(AM_V_CCLD)$(utilities_magick_LINK) $(utilities_magick_OBJECTS) $(utilities_magick_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(utilities_magick_LINK) $(utilities_magick_OBJECTS) $(utilities_magick_LDADD) $(LIBS)
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_SCRIPTS)'; test -n "$(bindir)" || list=; \
@@ -8194,6 +8200,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dummy.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/analyze-analyze.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/button-button.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@Magick++/demo/$(DEPDIR)/demo-demo.Po@am__quote@ # am--include-marker
@@ -11977,6 +11984,30 @@ Magick++/tests/readWriteImages-readWriteImages.obj: Magick++/tests/readWriteImag
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Magick___tests_readWriteImages_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Magick++/tests/readWriteImages-readWriteImages.obj `if test -f 'Magick++/tests/readWriteImages.cpp'; then $(CYGPATH_W) 'Magick++/tests/readWriteImages.cpp'; else $(CYGPATH_W) '$(srcdir)/Magick++/tests/readWriteImages.cpp'; fi`
 
+.cxx.o:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ $<
+
+.cxx.obj:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.cxx.lo:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCXX_TRUE@	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -12755,7 +12786,8 @@ clean-am: clean-binPROGRAMS clean-checkPROGRAMS \
 
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-		-rm -f Magick++/demo/$(DEPDIR)/analyze-analyze.Po
+		-rm -f ./$(DEPDIR)/dummy.Po
+	-rm -f Magick++/demo/$(DEPDIR)/analyze-analyze.Po
 	-rm -f Magick++/demo/$(DEPDIR)/button-button.Po
 	-rm -f Magick++/demo/$(DEPDIR)/demo-demo.Po
 	-rm -f Magick++/demo/$(DEPDIR)/detrans-detrans.Po
@@ -13255,7 +13287,8 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-		-rm -f Magick++/demo/$(DEPDIR)/analyze-analyze.Po
+		-rm -f ./$(DEPDIR)/dummy.Po
+	-rm -f Magick++/demo/$(DEPDIR)/analyze-analyze.Po
 	-rm -f Magick++/demo/$(DEPDIR)/button-button.Po
 	-rm -f Magick++/demo/$(DEPDIR)/demo-demo.Po
 	-rm -f Magick++/demo/$(DEPDIR)/detrans-detrans.Po
