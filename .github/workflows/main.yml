@@ -20,6 +20,11 @@ jobs:
       fail-fast: false
       matrix:
         compiler: [ gcc, clang ]
+        include:
+          - compiler: gcc
+            cxx_compiler: g++
+          - compiler: clang
+            cxx_compiler: clang++
 
     steps:
     - uses: actions/checkout@v3
@@ -33,6 +38,7 @@ jobs:
     - name: Configure ImageMagick
       run: |
         export CC=${{matrix.compiler}}
+        export CXX=${{matrix.cxx_compiler}}
         export CFLAGS="-Wno-deprecated-declarations"
         autoreconf -fiv
         ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
