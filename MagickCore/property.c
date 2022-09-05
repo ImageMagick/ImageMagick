@@ -1232,7 +1232,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     *exif;
 
   DirectoryInfo
-    directory_stack[MaxDirectoryStack] = { 0 };
+    directory_stack[MaxDirectoryStack] = {{ 0 }};
 
   EndianType
     endian;
