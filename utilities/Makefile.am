@@ -22,8 +22,8 @@ UTILITIES_XFAIL_TESTS = \
   $(UTILITIES_TTF_XFAIL_TESTS) \
   $(UTILITIES_XML_XFAIL_TESTS)
 
-utilities_magick_LDADD    = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_magick_LDFLAGS  = $(LDFLAGS) -stdlib=libc++
+utilities_magick_LDADD    = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) -stdlib=libc++
+utilities_magick_LDFLAGS  = $(LDFLAGS)
 utilities_magick_SOURCES  = utilities/magick.c
 nodist_EXTRA_utilities_magick_SOURCES = dummy.cxx
 
