@@ -33,13 +33,14 @@ jobs:
       run: |
         set -e
         apt-get update -y
-        apt-get install -y autoconf git libtool pkg-config ${{matrix.compiler}}
+        apt-get install -y autoconf git libtool pkg-config ${{ matrix.compiler }}
 
     - name: Configure ImageMagick
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.cxx_compiler }}
+        CFLAGS: -Wno-deprecated-declarations
       run: |
-        export CC=${{matrix.compiler}}
-        export CXX=${{matrix.cxx_compiler}}
-        export CFLAGS="-Wno-deprecated-declarations"
         autoreconf -fiv
         ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
 
