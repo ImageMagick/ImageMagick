@@ -56,7 +56,7 @@ jobs:
       env:
         CFLAGS: -Wno-deprecated-declarations -Wdeclaration-after-statement -Wno-error=unused-variable
         CC: ${{ matrix.compiler }}
-        CXX: ${{ cxx_compiler }}
+        CXX: ${{ matrix.cxx_compiler }}
       run: |
         set -e
         ./configure --with-quantum-depth=16 --without-magick-plus-plus --without-perl --prefix=/usr
