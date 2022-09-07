@@ -74,7 +74,7 @@
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
 #if defined(MAGICKCORE_HEIC_DELEGATE)
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
 #include <heif.h>
 #else
 #include <libheif/heif.h>
@@ -86,19 +86,19 @@
   Define declarations.
 */
 #define XmpNamespaceExtent  28
-
+
 /*
   Const declarations.
 */
 static const char
   xmp_namespace[] = "http://ns.adobe.com/xap/1.0/ ";
-
+
 /*
   Forward declarations.
 */
 static MagickBooleanType
   WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
-
+
 /*x
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
