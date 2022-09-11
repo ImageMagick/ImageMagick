@@ -5444,9 +5444,6 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
     depth,
     format;
 
-  size_t
-    length;
-
   XImage
     *matte_image,
     *ximage;
@@ -5456,7 +5453,6 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
   assert(window != (XWindowInfo *) NULL);
   assert(width != 0);
   assert(height != 0);
-  magick_unreferenced(length);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((window->width == 0) || (window->height == 0))
@@ -5542,6 +5538,9 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
 #if defined(MAGICKCORE_HAVE_SHARED_MEMORY)
   if (window->shared_memory != MagickFalse)
     {
+      size_t
+        length;
+
       XShmSegmentInfo
         *segment_info;
 
@@ -5635,7 +5634,6 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
       (void) XCheckDefineCursor(display,window->id,window->cursor);
       return(MagickFalse);
     }
-  length=(size_t) ximage->bytes_per_line*ximage->height;
   if ((GetLogEventMask() & X11Event) != 0)
     {
       (void) LogMagickEvent(X11Event,GetMagickModule(),"XImage:");
@@ -5692,7 +5690,6 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
       /*
         Destroy previous X image.
       */
-      length=(size_t) window->ximage->bytes_per_line*window->ximage->height;
 #if defined(MAGICKCORE_HAVE_SHARED_MEMORY)
       if (window->segment_info != (XShmSegmentInfo *) NULL)
         {
