@@ -1422,6 +1422,7 @@ MagickExport void *FileToBlob(const char *filename,const size_t extent,
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   *length=0;
@@ -2041,6 +2042,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
