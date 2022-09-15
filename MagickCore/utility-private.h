@@ -314,19 +314,10 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
   struct timespec
     timestamp[2];
 
-  /*
-   * AIX uses a different struct layout in struct stat than struct timespec.
-   * As such, we have to manually assign the fields instead.
-   */
-#ifdef _AIX
   timestamp[0].tv_sec=attributes->st_atim.tv_sec;
   timestamp[0].tv_nsec=attributes->st_atim.tv_nsec;
   timestamp[1].tv_sec=attributes->st_mtim.tv_sec;
   timestamp[1].tv_nsec=attributes->st_mtim.tv_nsec;
-#else
-  timestamp[0]=attributes->st_atim;
-  timestamp[1]=attributes->st_mtim;
-#endif
   status=utimensat(AT_FDCWD,path,timestamp,0);
 #else
   struct utimbuf
