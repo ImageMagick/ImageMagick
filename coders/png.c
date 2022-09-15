@@ -7533,8 +7533,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
           image->depth=16;
         }
 
-      if (LosslessReduceDepthOK(image,exception) != MagickFalse)
-         image->depth = 8;
 #endif
 
       if (image_info->number_scenes != 0)
