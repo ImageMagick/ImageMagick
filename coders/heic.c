@@ -1140,9 +1140,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   struct heif_image
     *heif_image = (struct heif_image*) NULL;
 
-  struct heif_writer
-    writer;
-
   /*
     Open output image file.
   */
@@ -1305,10 +1302,11 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   } while (image_info->adjoin != MagickFalse);
   if (status != MagickFalse)
     {
+      struct heif_writer
+        writer;
+
       writer.writer_api_version=1;
       writer.write=heif_write_func;
-      if (image->profiles != (void *) NULL)
-        WriteProfile(heif_context,image,exception);
       error=heif_context_write(heif_context,&writer,image);
       status=IsHEIFSuccess(image,&error,exception);
     }
