@@ -48,6 +48,8 @@
 #include "MagickCore/channel.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
@@ -2987,7 +2989,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   rectangle.width=image->columns;
   rectangle.height=image->rows;
   (void) CopyImagePixels(source_image,image,&rectangle,&offset,exception);
-  (void) SetImageColorspace(source_image,RGBColorspace,exception);
+  if (IssRGBCompatibleColorspace(source_image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(source_image,sRGBColorspace,exception);
   magnify_image=CloneImage(source_image,magnification*source_image->columns,
     magnification*source_image->rows,MagickTrue,exception);
   if (magnify_image == (Image *) NULL)
