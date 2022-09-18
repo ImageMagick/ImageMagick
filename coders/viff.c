@@ -751,11 +751,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     if (image->storage_class == PseudoClass)
       (void) SyncImage(image,exception);
     if (EOFBlob(image) != MagickFalse)
-      {
-        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-          image->filename);
-        break;
-      }
+      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
     /*
       Proceed to next image.
     */
