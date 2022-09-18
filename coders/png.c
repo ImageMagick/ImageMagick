@@ -5530,32 +5530,18 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 
         p=NULL;
         chunk=(unsigned char *) NULL;
-
         if (length != 0)
           {
             chunk=(unsigned char *) AcquireQuantumMemory(length,sizeof(*chunk));
-
             if (chunk == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-
-            for (i=0; i < (ssize_t) length; i++)
-            {
-              int
-                c;
-
-              c=ReadBlobByte(image);
-              if (c == EOF)
-                {
-                  chunk=(unsigned char *) RelinquishMagickMemory(chunk);
-                  ThrowReaderException(CorruptImageError,
-                    "InsufficientImageDataInFile");
-                }
-              chunk[i]=(unsigned char) c;
-            }
-
+            if (ReadBlob(image,length,chunk) != length)
+              {
+                chunk=(unsigned char *) RelinquishMagickMemory(chunk);
+                ThrowReaderException(CorruptImageError,"CorruptImage");
+              }
             p=chunk;
           }
-
         (void) ReadBlobMSBLong(image);  /* read crc word */
 
 #if !defined(JNG_SUPPORTED)
@@ -5796,15 +5782,12 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 
             if (length > 5)
               {
-                mng_info->mng_global_bkgd.red=
-                  ScaleShortToQuantum((unsigned short) ((p[0] << 8) | p[1]));
-
-                mng_info->mng_global_bkgd.green=
-                  ScaleShortToQuantum((unsigned short) ((p[2] << 8) | p[3]));
-
-                mng_info->mng_global_bkgd.blue=
-                  ScaleShortToQuantum((unsigned short) ((p[4] << 8) | p[5]));
-
+                mng_info->mng_global_bkgd.red=ScaleShortToQuantum(
+                  (unsigned short) (((unsigned int) p[0] << 8) | p[1]));
+                mng_info->mng_global_bkgd.green=ScaleShortToQuantum(
+                  (unsigned short) (((unsigned int) p[2] << 8) | p[3]));
+                mng_info->mng_global_bkgd.blue=ScaleShortToQuantum(
+                  (unsigned short) (((unsigned int) p[4] << 8) | p[5]));
                 mng_info->have_global_bkgd=MagickTrue;
               }
 
@@ -5822,15 +5805,12 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 
             if (mandatory_back && length > 5)
               {
-                mng_background_color.red=
-                    ScaleShortToQuantum((unsigned short) ((p[0] << 8) | p[1]));
-
-                mng_background_color.green=
-                    ScaleShortToQuantum((unsigned short) ((p[2] << 8) | p[3]));
-
-                mng_background_color.blue=
-                    ScaleShortToQuantum((unsigned short) ((p[4] << 8) | p[5]));
-
+                mng_background_color.red=ScaleShortToQuantum((unsigned short)
+                  (((unsigned int) p[0] << 8) | p[1]));
+                mng_background_color.green=ScaleShortToQuantum((unsigned short)
+                  (((unsigned int) p[2] << 8) | p[3]));
+                mng_background_color.blue=ScaleShortToQuantum((unsigned short)
+                  (((unsigned int) p[4] << 8) | p[5]));
                 mng_background_color.alpha=OpaqueAlpha;
               }
 
