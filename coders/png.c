@@ -5535,7 +5535,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
             chunk=(unsigned char *) AcquireQuantumMemory(length,sizeof(*chunk));
             if (chunk == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-            if (ReadBlob(image,length,chunk) != length)
+            if (ReadBlob(image,length,chunk) != (ssize_t) length)
               {
                 chunk=(unsigned char *) RelinquishMagickMemory(chunk);
                 ThrowReaderException(CorruptImageError,"CorruptImage");
