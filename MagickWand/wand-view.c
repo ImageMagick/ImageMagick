@@ -193,6 +193,7 @@ WandExport WandView *DestroyWandView(WandView *wand_view)
   wand_view->pixel_wands=DestroyPixelsTLS(wand_view->pixel_wands,
     wand_view->extent.width);
   wand_view->view=DestroyCacheView(wand_view->view);
+  wand_view->image=DestroyImage(wand_view->image);
   wand_view->exception=DestroyExceptionInfo(wand_view->exception);
   wand_view->signature=(~MagickWandSignature);
   RelinquishWandId(wand_view->id);
@@ -760,7 +761,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
   wand_view->extent.width=wand->images->columns;
   wand_view->extent.height=wand->images->rows;
   wand_view->pixel_wands=AcquirePixelsTLS(wand_view->extent.width);
-  wand_view->image=wand_view->wand->images;
+  wand_view->image=CloneImage(wand_view->wand->images,0,0,MagickTrue,exception);
   wand_view->exception=exception;
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
