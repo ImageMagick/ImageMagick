@@ -192,7 +192,6 @@ WandExport WandView *DestroyWandView(WandView *wand_view)
   assert(wand_view->signature == MagickWandSignature);
   wand_view->pixel_wands=DestroyPixelsTLS(wand_view->pixel_wands,
     wand_view->extent.width);
-  wand_view->image=DestroyImage(wand_view->image);
   wand_view->view=DestroyCacheView(wand_view->view);
   wand_view->exception=DestroyExceptionInfo(wand_view->exception);
   wand_view->signature=(~MagickWandSignature);
@@ -761,6 +760,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
   wand_view->extent.width=wand->images->columns;
   wand_view->extent.height=wand->images->rows;
   wand_view->pixel_wands=AcquirePixelsTLS(wand_view->extent.width);
+  wand_view->image=wand_view->wand->images;
   wand_view->exception=exception;
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -1248,6 +1248,8 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
       x;
 
     Quantum
+      *p,
+      *q,
       *magick_restrict pixels;
 
     if (status == MagickFalse)
@@ -1259,17 +1261,19 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
         status=MagickFalse;
         continue;
       }
+    p=pixels;
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
-      PixelSetQuantumPixel(source->image,pixels,source->pixel_wands[id][x]);
-      pixels+=GetPixelChannels(source->image);
+      PixelSetQuantumPixel(source->image,p,source->pixel_wands[id][x]);
+      p+=GetPixelChannels(source->image);
     }
     if (update(source,y,id,context) == MagickFalse)
       status=MagickFalse;
+    q=pixels;
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
-      PixelGetQuantumPixel(source->image,source->pixel_wands[id][x],pixels);
-      pixels+=GetPixelChannels(source->image);
+      PixelGetQuantumPixel(source->image,source->pixel_wands[id][x],q);
+      q+=GetPixelChannels(source->image);
     }
     sync=SyncCacheViewAuthenticPixels(source->view,source->exception);
     if (sync == MagickFalse)
