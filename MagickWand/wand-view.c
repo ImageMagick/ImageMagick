@@ -1241,6 +1241,9 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
     const int
       id = GetOpenMPThreadId();
 
+    const Quantum
+      *magick_restrict p;
+
     MagickBooleanType
       sync;
 
@@ -1248,20 +1251,17 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
       x;
 
     Quantum
-      *p,
-      *q,
-      *magick_restrict pixels;
+      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
-    pixels=GetCacheViewAuthenticPixels(source->view,source->extent.x,y,
+    p=GetCacheViewVirtualPixels(source->view,source->extent.x,y,
       source->extent.width,1,source->exception);
-    if (pixels == (Quantum *) NULL)
+    if (p == (const Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    p=pixels;
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
       PixelSetQuantumPixel(source->image,p,source->pixel_wands[id][x]);
@@ -1269,7 +1269,13 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
     }
     if (update(source,y,id,context) == MagickFalse)
       status=MagickFalse;
-    q=pixels;
+    q=GetCacheViewAuthenticPixels(source->view,source->extent.x,y,
+      source->extent.width,1,source->exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
       PixelGetQuantumPixel(source->image,source->pixel_wands[id][x],q);
