@@ -1251,17 +1251,19 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
       x;
 
     Quantum
+      *magick_restrict pixels,
       *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(source->view,source->extent.x,y,
+    pixels=GetCacheViewAuthenticPixels(source->view,source->extent.x,y,
       source->extent.width,1,source->exception);
-    if (p == (const Quantum *) NULL)
+    if (pixels == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
+    p=(const Quantum *) pixels;
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
       PixelSetQuantumPixel(source->image,p,source->pixel_wands[id][x]);
@@ -1269,13 +1271,7 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
     }
     if (update(source,y,id,context) == MagickFalse)
       status=MagickFalse;
-    q=GetCacheViewAuthenticPixels(source->view,source->extent.x,y,
-      source->extent.width,1,source->exception);
-    if (q == (Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
+    q=pixels;
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
       PixelGetQuantumPixel(source->image,source->pixel_wands[id][x],q);
