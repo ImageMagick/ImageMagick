@@ -712,6 +712,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         basic_info.bits_per_sample=32;
         basic_info.exponent_bits_per_sample=8;
       }
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    basic_info.num_color_channels=1;
   if (image->alpha_trait == BlendPixelTrait)
     {
       basic_info.alpha_bits=basic_info.bits_per_sample;
