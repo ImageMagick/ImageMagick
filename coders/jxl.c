@@ -634,8 +634,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   JxlEncoder
     *jxl_info;
 
-  JxlEncoderOptions
-    *jxl_options;
+  JxlEncoderFrameSettings
+    *frame_settings;
 
   JxlEncoderStatus
     jxl_status;
@@ -723,24 +723,27 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(jxl_info);
       ThrowWriterException(CoderError,"UnableToWriteImageData");
     }
-  jxl_options=JxlEncoderOptionsCreate(jxl_info,(JxlEncoderOptions *) NULL);
-  if (jxl_options == (JxlEncoderOptions *) NULL)
+  frame_settings=JxlEncoderFrameSettingsCreate(jxl_info,
+    (JxlEncoderFrameSettings *) NULL);
+  if (frame_settings == (JxlEncoderFrameSettings *) NULL)
     {
       JxlThreadParallelRunnerDestroy(runner);
       JxlEncoderDestroy(jxl_info);
       ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
   if (image->quality == 100)
-    (void) JxlEncoderOptionsSetLossless(jxl_options,JXL_TRUE);
+    (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
   else
-    (void) JxlEncoderOptionsSetDistance(jxl_options,JXLGetDistance(image_info));
+    (void) JxlEncoderSetFrameDistance(frame_settings,
+      JXLGetDistance(image_info));
   option=GetImageOption(image_info,"jxl:effort");
   if (option != (const char *) NULL)
-    (void) JxlEncoderOptionsSetEffort(jxl_options,StringToInteger(option));
+    (void) JxlEncoderFrameSettingsSetOption(frame_settings,
+      JXL_ENC_FRAME_SETTING_EFFORT,StringToInteger(option));
   option=GetImageOption(image_info,"jxl:decoding-speed");
   if (option != (const char *) NULL)
-    (void) JxlEncoderOptionsSetDecodingSpeed(jxl_options,
-      StringToInteger(option));
+    (void) JxlEncoderFrameSettingsSetOption(frame_settings,
+      JXL_ENC_FRAME_SETTING_DECODING_SPEED,StringToInteger(option));
   jxl_status=JXLWriteMetadata(image,jxl_info);
   jxl_status=JXL_ENC_SUCCESS;
   if (jxl_status != JXL_ENC_SUCCESS)
@@ -783,7 +786,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(jxl_info);
       ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
-  jxl_status=JxlEncoderAddImageFrame(jxl_options,&pixel_format,pixels,
+  jxl_status=JxlEncoderAddImageFrame(frame_settings,&pixel_format,pixels,
     bytes_per_row*image->rows);
   if (jxl_status == JXL_ENC_SUCCESS)
     {
