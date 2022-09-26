@@ -713,7 +713,11 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         basic_info.exponent_bits_per_sample=8;
       }
   if (image->alpha_trait == BlendPixelTrait)
-    basic_info.alpha_bits=basic_info.bits_per_sample;
+    {
+      basic_info.alpha_bits=basic_info.bits_per_sample;
+      basic_info.alpha_exponent_bits=basic_info.exponent_bits_per_sample;
+      basic_info.num_extra_channels=1;
+    }
   if (image->quality == 100)
     basic_info.uses_original_profile=JXL_TRUE;
   jxl_status=JxlEncoderSetBasicInfo(jxl_info,&basic_info);
