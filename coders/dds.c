@@ -2385,12 +2385,8 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
     {
       if (IsBitMask(dds_info->pixelformat,0x7c00,0x03e0,0x001f,0x8000))
         alphaBits=1;
-      else if (IsBitMask(dds_info->pixelformat,0x00ff,0x00ff,0x00ff,0xff00))
-        {
-          alphaBits=2;
-          (void) SetImageType(image,GrayscaleAlphaType,exception);
-        }
-        else if (IsBitMask(dds_info->pixelformat,0x00ff,0x0000,0x0000,0xff00))
+      else if ((IsBitMask(dds_info->pixelformat,0x00ff,0x00ff,0x00ff,0xff00)) ||
+               (IsBitMask(dds_info->pixelformat,0x00ff,0x0000,0x0000,0xff00)))
         {
           alphaBits=2;
           (void) SetImageType(image,GrayscaleAlphaType,exception);
