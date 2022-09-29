@@ -164,6 +164,8 @@ typedef struct
 
 #define TILE_WIDTH   64
 #define TILE_HEIGHT  64
+#define GIMP_MIN_RESOLUTION  5e-3f
+#define GIMP_MAX_RESOLUTION  65536.0f
 
 typedef struct
 {
@@ -1299,25 +1301,19 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     case PROP_RESOLUTION:
       {
-        /* float xres = (float) */ (void) ReadBlobMSBLong(image);
-        /* float yres = (float) */ (void) ReadBlobMSBLong(image);
+        float
+          x,
+          y;
 
-        /*
-        if (xres < GIMP_MIN_RESOLUTION || xres > GIMP_MAX_RESOLUTION ||
-            yres < GIMP_MIN_RESOLUTION || yres > GIMP_MAX_RESOLUTION)
-        {
-        g_message ("Warning, resolution out of range in XCF file");
-        xres = gimage->gimp->config->default_xresolution;
-        yres = gimage->gimp->config->default_yresolution;
-        }
-        */
-
-
-        /* BOGUS: we don't write these yet because we aren't
-              reading them properly yet :(
-              image->resolution.x = xres;
-              image->resolution.y = yres;
-        */
+        x=ReadBlobFloat(image);
+        y=ReadBlobFloat(image);
+        if ((x >= GIMP_MIN_RESOLUTION) && (x <= GIMP_MAX_RESOLUTION) &&
+            (y >= GIMP_MIN_RESOLUTION) && (y <= GIMP_MAX_RESOLUTION))
+          {
+            image->resolution.x=(double) x;
+            image->resolution.y=(double) y;
+            image->units=PixelsPerInchResolution;
+          }
       }
       break;
 
