@@ -1736,6 +1736,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (rows_per_strip > (uint32) image->rows)
           rows_per_strip=(uint32) image->rows;
       }
+    else if (image->depth > 8)
+      method=ReadStripMethod;
     if (TIFFIsTiled(tiff) != MagickFalse)
       {
         uint32
