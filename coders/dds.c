@@ -2390,6 +2390,11 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
           alphaBits=2;
           (void) SetImageType(image,GrayscaleAlphaType,exception);
         }
+        else if (IsBitMask(dds_info->pixelformat,0x00ff,0x0000,0x0000,0xff00))
+        {
+          alphaBits=2;
+          (void) SetImageType(image,GrayscaleAlphaType,exception);
+        }
       else if (IsBitMask(dds_info->pixelformat,0x0f00,0x00f0,0x000f,0xf000))
         alphaBits=4;
       else
@@ -2599,8 +2604,8 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       compression = NoCompression;
       if (dds_info.pixelformat.flags & DDPF_ALPHAPIXELS)
         {
-          /* Not sure how to handle this */
-          ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+          alpha_trait = BlendPixelTrait;
+          decoder = ReadUncompressedRGBA;
         }
       else
         {
