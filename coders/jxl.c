@@ -618,8 +618,7 @@ static inline float JXLGetDistance(const ImageInfo *image_info)
     return(1.0f);
   if (image_info->quality >= 30)
     return(0.1f+(float) (100-MagickMin(100,image_info->quality))*0.09f);
-  return(MagickMin(25.0,6.4f+(float) pow(2.5f,(30.0-image_info->quality)/5.0f)/
-    6.25f));
+  return(6.24f+(float) pow(2.5f,(30.0-image_info->quality)/5.0f)/6.25f);
 }
 
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
