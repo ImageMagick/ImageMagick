@@ -377,6 +377,19 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
         }
     }
+  for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
+  {
+    if ((jp2_image->comps[i].dx == 0) || (jp2_image->comps[i].dy == 0) ||
+        (jp2_image->comps[0].prec != jp2_image->comps[i].prec) ||
+        (jp2_image->comps[0].prec > 64) ||
+        (jp2_image->comps[0].sgnd != jp2_image->comps[i].sgnd))
+      {
+        opj_stream_destroy(jp2_stream);
+        opj_destroy_codec(jp2_codec);
+        opj_image_destroy(jp2_image);
+        ThrowReaderException(CoderError,"IrregularChannelGeometryNotSupported")
+      }
+  }
   if ((image_info->number_scenes != 0) && (image_info->scene != 0))
     jp2_status=opj_get_decoded_tile(jp2_codec,jp2_stream,jp2_image,
       (unsigned int) image_info->scene-1);
@@ -395,19 +408,16 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
   opj_stream_destroy(jp2_stream);
-  for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
-  {
-    if ((jp2_image->comps[i].dx == 0) || (jp2_image->comps[i].dy == 0) ||
-        (jp2_image->comps[0].prec != jp2_image->comps[i].prec) ||
-        (jp2_image->comps[0].prec > 64) ||
-        (jp2_image->comps[0].sgnd != jp2_image->comps[i].sgnd) ||
-        ((image->ping == MagickFalse) && (jp2_image->comps[i].data == NULL)))
-      {
-        opj_destroy_codec(jp2_codec);
-        opj_image_destroy(jp2_image);
-        ThrowReaderException(CoderError,"IrregularChannelGeometryNotSupported")
-      }
-  }
+  if (image->ping == MagickFalse)
+    {
+      for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
+        if (jp2_image->comps[i].data == NULL)
+          {
+            opj_destroy_codec(jp2_codec);
+            opj_image_destroy(jp2_image);
+            ThrowReaderException(CoderError,"IrregularChannelGeometryNotSupported")
+          }
+    }
   /*
     Convert JP2 image.
   */
