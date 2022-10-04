@@ -218,14 +218,23 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       StringInfo
         *profile;
 
-      /*
-        Skip first 4 bytes, the offset to the TIFF header.
-      */
-      profile=BlobToStringInfo(exif_profile+4,(size_t) length-4);
-      if (profile != (StringInfo*) NULL)
+      unsigned int
+        offset;
+
+      offset=(unsigned int) (*exif_profile) << 24;
+      offset|=(unsigned int) (*(exif_profile+1)) << 16;
+      offset|=(unsigned int) (*(exif_profile+2)) << 8;
+      offset|=(unsigned int) *(exif_profile+3);
+      offset+=4;
+      if (offset < length-4)
         {
-          (void) SetImageProfile(image,"exif",profile,exception);
-          profile=DestroyStringInfo(profile);
+          length-=offset;
+          profile=BlobToStringInfo(exif_profile+offset,(size_t) length);
+          if (profile != (StringInfo*) NULL)
+            {
+              (void) SetImageProfile(image,"exif",profile,exception);
+              profile=DestroyStringInfo(profile);
+            }
         }
     }
   exif_profile=(unsigned char *) RelinquishMagickMemory(exif_profile);
