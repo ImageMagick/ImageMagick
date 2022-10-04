@@ -1236,7 +1236,7 @@ static MagickBooleanType NTGhostscriptGetString(const char *name,
     return(MagickFalse);
   if (is_64_bit != NULL)
     *is_64_bit=is_64_bit_version;
-  (void) FormatLocaleString(buffer,MagickPathExtent,"SOFTWARE\\%s\\%d.%d.%d",
+  (void) FormatLocaleString(buffer,MagickPathExtent,"SOFTWARE\\%s\\%d.%.2d.%d",
     product_family,major_version,minor_version,patch_version);
   registry_value=NTGetRegistryValue(registry_roots[root_index].hkey,buffer,
     flags,name);
