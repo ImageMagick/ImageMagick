@@ -1568,7 +1568,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
         bounds.x1=(double) geometry.x;
         bounds.y1=(double) geometry.y;
         bounds.x2=(double) geometry.x+scale.x;
-        bounds.y2=(double) geometry.y+(geometry.height+text_size);
+        bounds.y2=(double) geometry.y+(scale.y+text_size);
         if ((image_info->adjoin != MagickFalse) &&
             (GetNextImageInList(image) != (Image *) NULL))
           (void) CopyMagickString(buffer,"%%%%BoundingBox: (atend)\n",
