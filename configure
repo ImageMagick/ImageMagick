@@ -5149,7 +5149,7 @@ MAGICK_PATCHLEVEL_VERSION=50
 
 MAGICK_VERSION=7.1.0-50
 
-MAGICK_GIT_REVISION=7a3f3f1bd:20220924
+MAGICK_GIT_REVISION=740ac6550:20221008
 
 
 # Substitute library versioning
@@ -5173,7 +5173,7 @@ PACKAGE_BASE_VERSION=7.1.0
 
 PACKAGE_PATCHLEVEL_VERSION=50
 
-if test "y" = 'y'; then
+if test "n" = 'y'; then
   PACKAGE_VERSION_ADDENDUM='-50 beta'
 else
   PACKAGE_VERSION_ADDENDUM=-50
@@ -5183,7 +5183,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,50
 
-PACKAGE_RELEASE_DATE=2022-09-24
+PACKAGE_RELEASE_DATE=2022-10-08
 
 
 # Ensure that make can run correctly
@@ -32218,19 +32218,19 @@ if test "$with_jxl" != 'no'; then
 printf "%s\n" "-------------------------------------------------------------" >&6; }
 
 pkg_failed=no
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libjxl >= 0.6.1 libjxl_threads" >&5
-printf %s "checking for libjxl >= 0.6.1 libjxl_threads... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libjxl >= 0.7.0 libjxl_threads" >&5
+printf %s "checking for libjxl >= 0.7.0 libjxl_threads... " >&6; }
 
 if test -n "$JXL_CFLAGS"; then
     pkg_cv_JXL_CFLAGS="$JXL_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libjxl >= 0.6.1 libjxl_threads\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libjxl >= 0.6.1 libjxl_threads") 2>&5
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libjxl >= 0.7.0 libjxl_threads\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libjxl >= 0.7.0 libjxl_threads") 2>&5
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_JXL_CFLAGS=`$PKG_CONFIG --cflags "libjxl >= 0.6.1 libjxl_threads" 2>/dev/null`
+  pkg_cv_JXL_CFLAGS=`$PKG_CONFIG --cflags "libjxl >= 0.7.0 libjxl_threads" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -32242,12 +32242,12 @@ if test -n "$JXL_LIBS"; then
     pkg_cv_JXL_LIBS="$JXL_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libjxl >= 0.6.1 libjxl_threads\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libjxl >= 0.6.1 libjxl_threads") 2>&5
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libjxl >= 0.7.0 libjxl_threads\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libjxl >= 0.7.0 libjxl_threads") 2>&5
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_JXL_LIBS=`$PKG_CONFIG --libs "libjxl >= 0.6.1 libjxl_threads" 2>/dev/null`
+  pkg_cv_JXL_LIBS=`$PKG_CONFIG --libs "libjxl >= 0.7.0 libjxl_threads" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -32268,9 +32268,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        JXL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libjxl >= 0.6.1 libjxl_threads" 2>&1`
+	        JXL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libjxl >= 0.7.0 libjxl_threads" 2>&1`
         else
-	        JXL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libjxl >= 0.6.1 libjxl_threads" 2>&1`
+	        JXL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libjxl >= 0.7.0 libjxl_threads" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$JXL_PKG_ERRORS" >&5
