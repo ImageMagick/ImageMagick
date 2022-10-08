@@ -3243,7 +3243,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               quantum=4;
             }
         }
-      if ((group == 0xFFFE) && (element == 0xE0DD))
+      if ((group == 0xFFFE) && (element == 0xE0DD) && (sequence_depth != 0))
         {
           /*
             If we're exiting a sequence, restore the previous image parameters,
