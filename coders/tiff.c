@@ -2188,7 +2188,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   if (status != MagickFalse)
     TIFFReadPhotoshopLayers(image_info,image,exception);
   if ((image_info->number_scenes != 0) &&
-      (image_info->scene >= GetImageListLength(image)))
+      (image->scene >= GetImageListLength(image)))
     status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
