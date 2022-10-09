@@ -31,10 +31,10 @@ typedef struct _ElementInfo
     *next;
 } ElementInfo;
 
-extern MagickExport ElementInfo
+extern MagickPrivate ElementInfo
   *GetHeadElementInLinkedList(LinkedListInfo *);
 
-extern MagickExport void
+extern MagickPrivate void
   SetHeadElementInLinkedList(LinkedListInfo *,ElementInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
