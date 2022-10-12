@@ -455,7 +455,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 index=(Quantum) pixels[0];
               }
             else
-              index=(Quantum) ((ssize_t) index << 1);
+              index=(Quantum) ((size_t) index << 1);
             if (tga_info.colormap_type != 0)
               pixel=image->colormap[(ssize_t) ConstrainColormapIndex(image,
                 ((unsigned char) index) & 0x80 ? 1 : 0,exception)];
