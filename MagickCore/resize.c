@@ -3760,8 +3760,8 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   /*
     Acquire resize filter.
   */
-  x_factor=(double) columns/(double) image->columns;
-  y_factor=(double) rows/(double) image->rows;
+  x_factor=(double) (columns*PerceptibleReciprocal((double) image->columns));
+  y_factor=(double) (rows*PerceptibleReciprocal((double) image->rows));
   filter_type=LanczosFilter;
   if (filter != UndefinedFilter)
     filter_type=filter;
