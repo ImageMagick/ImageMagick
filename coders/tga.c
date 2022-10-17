@@ -124,6 +124,9 @@ typedef struct _TGAInfo
     author[42],
     comment[325],
     software[42];
+
+  unsigned char
+    attributes_type;
 } TGAInfo;
 
 /*
@@ -622,6 +625,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               tga_info.comment[41]='\0';
               (void) SetImageProperty(image,"tga:software",tga_info.software,
                 exception);
+              (void) DiscardBlobBytes(image,27);
+              tga_info.attributes_type=(unsigned char) ReadBlobByte(image);
+              if (((image->alpha_trait & BlendPixelTrait) != 0) &&
+                  (tga_info.attributes_type != 3))
+                image->alpha_trait=UndefinedPixelTrait;
             }
         }
     }
