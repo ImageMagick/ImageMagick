@@ -2160,7 +2160,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
   {
     case BilevelType:
     {
-      if (IsGrayImageType(image->colorspace) == MagickFalse)
+      if (IsGrayImageType(image->type) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace,exception);
       (void) NormalizeImage(image,exception);
       (void) BilevelImage(image,(double) QuantumRange/2.0,exception);
@@ -2174,14 +2174,14 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
     }
     case GrayscaleType:
     {
-      if (IsGrayImageType(image->colorspace) == MagickFalse)
+      if (IsGrayImageType(image->type) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace,exception);
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
     case GrayscaleAlphaType:
     {
-      if (IsGrayImageType(image->colorspace) == MagickFalse)
+      if (IsGrayImageType(image->type) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace,exception);
       if (image->alpha_trait == UndefinedPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
