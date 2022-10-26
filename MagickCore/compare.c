@@ -2545,6 +2545,8 @@ static Image *NCCUnityImage(const Image *alpha_image,const Image *beta_image,
     MagickTrue,exception);
   if (unity_image == (Image *) NULL)
     return(unity_image);
+  if (SetImageStorageClass(unity_image,DirectClass,exception) == MagickFalse)
+    return(DestroyImage(unity_image));
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(unity_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
