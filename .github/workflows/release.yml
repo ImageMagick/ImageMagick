@@ -150,6 +150,7 @@ jobs:
       uses: dlemstra/code-sign-action@v1
       with:
         certificate: '${{ secrets.CERTIFICATE }}'
+        password: '${{ secrets.CERTIFICATE_PASSWORD }}'
         folder: 'ImageMagick-Windows\VisualMagick\bin'
 
     - name: Create installer
@@ -162,6 +163,7 @@ jobs:
       uses: dlemstra/code-sign-action@v1
       with:
         certificate: '${{ secrets.CERTIFICATE }}'
+        password: '${{ secrets.CERTIFICATE_PASSWORD }}'
         folder: 'ImageMagick-Windows\VisualMagick\installer\output'
 
     - uses: actions/upload-artifact@v3
@@ -280,6 +282,7 @@ jobs:
       uses: dlemstra/code-sign-action@v1
       with:
         certificate: '${{ secrets.CERTIFICATE }}'
+        password: '${{ secrets.CERTIFICATE_PASSWORD }}'
         folder: 'ImageMagick-Windows\VisualMagick\bin'
 
     - name: Copy Files
