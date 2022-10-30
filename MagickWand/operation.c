@@ -4196,6 +4196,11 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
               DeleteImages(&_images,"-1",_exception);
               break;
             }
+          if (LocaleNCompare(arg1,"registry:",9) == 0)
+            {
+              (void) DeleteImageRegistry(arg1+9);
+              break;
+            }
           if (IsSceneGeometry(arg1,MagickFalse) == MagickFalse)
             CLIWandExceptionBreak(OptionError,"InvalidArgument",option);
           DeleteImages(&_images,arg1,_exception);
