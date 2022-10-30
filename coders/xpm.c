@@ -186,10 +186,10 @@ static char *NextXPMLine(char *p)
   return(p);
 }
 
-static char *ParseXPMColor(char *,MagickBooleanType)
+static char *ParseXPMColor(char *,const MagickBooleanType)
   magick_attribute((__pure__));
 
-static char *ParseXPMColor(char *color,MagickBooleanType search_start)
+static char *ParseXPMColor(char *color,const MagickBooleanType search_start)
 {
 #define NumberTargets  6
 
@@ -256,6 +256,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   char
     *grey,
     key[MagickPathExtent],
+    *next,
+    *p,
+    *q,
     target[MagickPathExtent],
     *xpm_buffer;
 
@@ -265,11 +268,6 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     active,
     status;
-
-  char
-    *next,
-    *p,
-    *q;
 
   Quantum
     *r;
@@ -322,6 +320,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   p=xpm_buffer;
   while (ReadBlobString(image,p) != (char *) NULL)
   {
+    ssize_t
+      offset;
+
     if ((*p == '#') && ((p == xpm_buffer) || (*(p-1) == '\n')))
       continue;
     if ((*p == '}') && (*(p+1) == ';'))
@@ -329,12 +330,13 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     p+=strlen(p);
     if ((size_t) (p-xpm_buffer+MagickPathExtent) < length)
       continue;
+    offset=p-xpm_buffer;
     length<<=1;
     xpm_buffer=(char *) ResizeQuantumMemory(xpm_buffer,length+MagickPathExtent,
       sizeof(*xpm_buffer));
     if (xpm_buffer == (char *) NULL)
       break;
-    p=xpm_buffer+strlen(xpm_buffer);
+    p=xpm_buffer+offset;
   }
   if (xpm_buffer == (char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -942,24 +944,20 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
 {
 #define MaxCixels  92
 
-  static const char
-    Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
-                         "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
-
   char
     buffer[MagickPathExtent],
     basename[MagickPathExtent],
     name[MagickPathExtent],
     symbol[MagickPathExtent];
 
+  const Quantum
+    *p;
+
   MagickBooleanType
     status;
 
   PixelInfo
     pixel;
-
-  const Quantum
-    *p;
 
   ssize_t
     i,
@@ -973,6 +971,10 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     k,
     opacity,
     y;
+
+  static const char
+    Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
+                         "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
 
   /*
     Open output image file.
