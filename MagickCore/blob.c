@@ -4889,7 +4889,8 @@ MagickExport char *ReadBlobString(Image *image,char *string)
     case FileStream:
     {
       char *p = fgets(string,MagickPathExtent,blob_info->file_info.file);
-      if (p == (char *) NULL)
+      if ((p == (char *) NULL) &&
+          (ferror(blob_info->file_info.file) != 0))
         {
           ThrowBlobException(blob_info);
           return((char *) NULL);
