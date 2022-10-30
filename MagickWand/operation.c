@@ -4191,10 +4191,14 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("delete",option+1) == 0)
         {
-          if (IfNormalOp)
-            DeleteImages(&_images,arg1,_exception);
-          else
-            DeleteImages(&_images,"-1",_exception);
+          if (!IfNormalOp)
+            {
+              DeleteImages(&_images,"-1",_exception);
+              break;
+            }
+          if (IsSceneGeometry(arg1,MagickFalse) == MagickFalse)
+            CLIWandExceptionBreak(OptionError,"InvalidArgument",option);
+          DeleteImages(&_images,arg1,_exception);
           break;
         }
       if (LocaleCompare("duplicate",option+1) == 0)
