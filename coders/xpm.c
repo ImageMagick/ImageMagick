@@ -328,9 +328,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((*p == '}') && (*(p+1) == ';'))
       break;
     p+=strlen(p);
-    if ((size_t) (p-xpm_buffer+MagickPathExtent) < length)
-      continue;
     offset=p-xpm_buffer;
+    if ((size_t) (offset+MagickPathExtent) < length)
+      continue;
     length<<=1;
     xpm_buffer=(char *) ResizeQuantumMemory(xpm_buffer,length+MagickPathExtent,
       sizeof(*xpm_buffer));

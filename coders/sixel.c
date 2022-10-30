@@ -1042,13 +1042,13 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
   size_t
     length;
 
+  sixel_pixel_t
+    *sixel_pixels;
+
   ssize_t
     i,
     j,
     y;
-
-  sixel_pixel_t
-    *sixel_pixels;
 
   unsigned char
     *sixel_palette;
@@ -1080,30 +1080,35 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
   if (sixel_buffer != (char *) NULL)
     while (ReadBlobString(image,p) != (char *) NULL)
     {
+      ssize_t
+       offset;
+
       if ((*p == '#') && ((p == sixel_buffer) || (*(p-1) == '\n')))
         continue;
       if ((*p == '}') && (*(p+1) == ';'))
         break;
       p+=strlen(p);
-      if ((size_t) (p-sixel_buffer+MagickPathExtent+1) < length)
+      offset=p-sixel_buffer;
+      if ((size_t) (offset+MagickPathExtent+1) < length)
         continue;
       length<<=1;
       sixel_buffer=(char *) ResizeQuantumMemory(sixel_buffer,length+
         MagickPathExtent+1,sizeof(*sixel_buffer));
       if (sixel_buffer == (char *) NULL)
         break;
-      p=sixel_buffer+strlen(sixel_buffer);
+      p=sixel_buffer+offset;
     }
   if (sixel_buffer == (char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   sixel_buffer[length]='\0';
   /*
-    Decode SIXEL
+    Decode SIXEL.
   */
   sixel_pixels=(sixel_pixel_t *) NULL;
-  if (sixel_decode(image,(unsigned char *) sixel_buffer,&sixel_pixels,
+  status=sixel_decode(image,(unsigned char *) sixel_buffer,&sixel_pixels,
     &image->columns,&image->rows,&sixel_palette,&image->colors,
-    exception) == MagickFalse)
+    exception);
+  if (status == MagickFalse)
     {
       sixel_buffer=(char *) RelinquishMagickMemory(sixel_buffer);
       if (sixel_pixels != (sixel_pixel_t *) NULL)
@@ -1126,10 +1131,11 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
       sixel_palette=(unsigned char *) RelinquishMagickMemory(sixel_palette);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  for (i = 0; i < (ssize_t) image->colors; ++i) {
-    image->colormap[i].red   = ScaleCharToQuantum(sixel_palette[i * 4 + 0]);
-    image->colormap[i].green = ScaleCharToQuantum(sixel_palette[i * 4 + 1]);
-    image->colormap[i].blue  = ScaleCharToQuantum(sixel_palette[i * 4 + 2]);
+  for (i = 0; i < (ssize_t) image->colors; ++i)
+  {
+    image->colormap[i].red=ScaleCharToQuantum(sixel_palette[i * 4 + 0]);
+    image->colormap[i].green=ScaleCharToQuantum(sixel_palette[i * 4 + 1]);
+    image->colormap[i].blue=ScaleCharToQuantum(sixel_palette[i * 4 + 2]);
   }
   j=0;
   if (image_info->ping == MagickFalse)
@@ -1165,7 +1171,6 @@ static Image *ReadSIXELImage(const ImageInfo *image_info,
           ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
         }
     }
-puts("d");
   /*
     Relinquish resources.
   */
