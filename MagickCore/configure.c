@@ -47,6 +47,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/linked-list.h"
+#include "MagickCore/linked-list-private.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/semaphore.h"
@@ -353,6 +354,9 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   ExceptionInfo *exception)
 {
   const ConfigureInfo
+    *config;
+
+  ElementInfo
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -361,25 +365,28 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   /*
     Search for configure tag.
   */
+  config=(const ConfigureInfo *) NULL;
   LockSemaphoreInfo(configure_semaphore);
-  ResetLinkedListIterator(configure_cache);
-  p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
+  p=GetHeadElementInLinkedList(configure_cache);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
+      config=(const ConfigureInfo *) p->value;
       UnlockSemaphoreInfo(configure_semaphore);
-      return(p);
+      return(config);
     }
-  while (p != (const ConfigureInfo *) NULL)
+  while (p != (ElementInfo *) NULL)
   {
-    if (LocaleCompare(name,p->name) == 0)
+    config=(const ConfigureInfo *) p->value;
+    if (LocaleCompare(name,config->name) == 0)
       break;
-    p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
+    p=p->next;
   }
-  if (p != (ConfigureInfo *) NULL)
-    (void) InsertValueInLinkedList(configure_cache,0,
-      RemoveElementByValueFromLinkedList(configure_cache,p));
+  if (p == (ElementInfo *) NULL)
+    config=(const ConfigureInfo *) NULL;
+  else
+    SetHeadElementInLinkedList(configure_cache,p);
   UnlockSemaphoreInfo(configure_semaphore);
-  return(p);
+  return(config);
 }
 
 /*
