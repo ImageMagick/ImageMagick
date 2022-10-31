@@ -354,7 +354,7 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   ExceptionInfo *exception)
 {
   const ConfigureInfo
-    *config;
+    *option;
 
   ElementInfo
     *p;
@@ -365,28 +365,28 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   /*
     Search for configure tag.
   */
-  config=(const ConfigureInfo *) NULL;
+  option=(const ConfigureInfo *) NULL;
   LockSemaphoreInfo(configure_semaphore);
   p=GetHeadElementInLinkedList(configure_cache);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
-      config=(const ConfigureInfo *) p->value;
+      option=(const ConfigureInfo *) p->value;
       UnlockSemaphoreInfo(configure_semaphore);
-      return(config);
+      return(option);
     }
   while (p != (ElementInfo *) NULL)
   {
-    config=(const ConfigureInfo *) p->value;
-    if (LocaleCompare(name,config->name) == 0)
+    option=(const ConfigureInfo *) p->value;
+    if (LocaleCompare(name,option->name) == 0)
       break;
     p=p->next;
   }
   if (p == (ElementInfo *) NULL)
-    config=(const ConfigureInfo *) NULL;
+    option=(const ConfigureInfo *) NULL;
   else
     SetHeadElementInLinkedList(configure_cache,p);
   UnlockSemaphoreInfo(configure_semaphore);
-  return(config);
+  return(option);
 }
 
 /*
@@ -486,7 +486,8 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
   *number_options=(size_t) i;
   return(options);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
