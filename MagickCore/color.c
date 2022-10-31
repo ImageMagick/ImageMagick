@@ -1324,7 +1324,7 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   {
     const ColorInfo
       *color;
-    
+
     color=(const ColorInfo *) p->value;
     if ((color->stealth == MagickFalse) &&
         (GlobExpression(color->name,pattern,MagickFalse) != MagickFalse))
