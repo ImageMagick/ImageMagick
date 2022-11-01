@@ -4879,10 +4879,10 @@ MagickExport char *ReadBlobString(Image *image,char *string)
     *magick_restrict blob_info;
 
   int
-    c;
+    c = -1;
 
   ssize_t
-    i;
+    i = 0;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -4900,12 +4900,13 @@ MagickExport char *ReadBlobString(Image *image,char *string)
     case FileStream:
     {
       char *p = fgets(string,MagickPathExtent,blob_info->file_info.file);
-      if ((p == (char *) NULL) &&
-          (ferror(blob_info->file_info.file) != 0))
+      if (p == (char *) NULL)
         {
-          ThrowBlobException(blob_info);
+          if (ferror(blob_info->file_info.file) != 0)
+            ThrowBlobException(blob_info);
           return((char *) NULL);
         }
+      i=strlen(string);
       break;
     }
     case ZipStream:
@@ -4917,11 +4918,10 @@ MagickExport char *ReadBlobString(Image *image,char *string)
           int status = Z_OK;
           (void) gzerror(blob_info->file_info.gzfile,&status);
           if (status != Z_OK)
-            {
-              ThrowBlobException(blob_info);
-              return((char *) NULL);
-            }
+            ThrowBlobException(blob_info);
+          return((char *) NULL);
         }
+      i=strlen(string);
       break;
 #endif
     }
@@ -4938,16 +4938,21 @@ MagickExport char *ReadBlobString(Image *image,char *string)
           }
         string[i]=c;
         if (c == '\n')
-          {
-            if ((i > 0) && (string[i-1] == '\r'))
-              i--;
-            break;
-          }
+          break;
       }
-      string[i]='\0';
+      string[++i]='\0';
+      i--;
       break;
     }
   }
+  /*
+    Strip trailing newline.
+  */
+  if ((string[i] == '\r') || (string[i] == '\n'))
+    string[i]='\0';
+  if (i >= 1)
+    if ((string[i-1] == '\r') || (string[i-1] == '\n'))
+      string[i-1]='\0';
   return(string);
 }
 
