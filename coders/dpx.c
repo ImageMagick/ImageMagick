@@ -2028,6 +2028,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     }
     default:
     {
+      if (channels == 1)
+        break;
       quantum_type=RGBAQuantum;
       if (image->alpha_trait != UndefinedPixelTrait)
         quantum_type=RGBQuantum;
