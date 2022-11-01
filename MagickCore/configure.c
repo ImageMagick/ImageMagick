@@ -446,7 +446,7 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
   const ConfigureInfo
     **options;
 
-  const ConfigureInfo
+  ElementInfo
     *p;
 
   ssize_t
@@ -460,34 +460,40 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_options=0;
-  p=GetConfigureInfo("*",exception);
-  if (p == (const ConfigureInfo *) NULL)
-    return((const ConfigureInfo **) NULL);
-  options=(const ConfigureInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(configure_cache)+1UL,sizeof(*options));
-  if (options == (const ConfigureInfo **) NULL)
+  if (IsConfigureCacheInstantiated(exception) == MagickFalse)
     return((const ConfigureInfo **) NULL);
   /*
     Generate configure list.
   */
+  options=(const ConfigureInfo **) AcquireQuantumMemory((size_t)
+    GetNumberOfElementsInLinkedList(configure_cache)+1UL,sizeof(*options));
+  if (options == (const ConfigureInfo **) NULL)
+    return((const ConfigureInfo **) NULL);
   LockSemaphoreInfo(configure_semaphore);
-  ResetLinkedListIterator(configure_cache);
-  p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
-  for (i=0; p != (const ConfigureInfo *) NULL; )
+  p=GetHeadElementInLinkedList(configure_cache);
+  for (i=0; p != (ElementInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
-        (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
-      options[i++]=p;
-    p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
+    const ConfigureInfo
+      *option;
+
+    option=(const ConfigureInfo *) p->value;
+    if ((option->stealth == MagickFalse) &&
+        (GlobExpression(option->name,pattern,MagickFalse) != MagickFalse))
+      options[i++]=option;
+    p=p->next;
   }
   UnlockSemaphoreInfo(configure_semaphore);
-  qsort((void *) options,(size_t) i,sizeof(*options),ConfigureInfoCompare);
-  options[i]=(ConfigureInfo *) NULL;
+  if (i == 0)
+    options=(const ConfigureInfo **) RelinquishMagickMemory(options);
+  else
+    {
+      qsort((void *) options,(size_t) i,sizeof(*options),ConfigureInfoCompare);
+      options[i]=(ConfigureInfo *) NULL;
+    }
   *number_options=(size_t) i;
   return(options);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -542,7 +548,7 @@ MagickExport char **GetConfigureList(const char *pattern,
   char
     **options;
 
-  const ConfigureInfo
+  const ElementInfo
     *p;
 
   ssize_t
@@ -556,26 +562,33 @@ MagickExport char **GetConfigureList(const char *pattern,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_options=0;
-  p=GetConfigureInfo("*",exception);
-  if (p == (const ConfigureInfo *) NULL)
+  if (IsConfigureCacheInstantiated(exception) == MagickFalse)
     return((char **) NULL);
   options=(char **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(configure_cache)+1UL,sizeof(*options));
   if (options == (char **) NULL)
     return((char **) NULL);
   LockSemaphoreInfo(configure_semaphore);
-  ResetLinkedListIterator(configure_cache);
-  p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
-  for (i=0; p != (const ConfigureInfo *) NULL; )
+  p=GetHeadElementInLinkedList(configure_cache);
+  for (i=0; p != (const ElementInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
-        (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse))
-      options[i++]=ConstantString(p->name);
-    p=(const ConfigureInfo *) GetNextValueInLinkedList(configure_cache);
+    const ConfigureInfo
+      *option;
+
+    option=(const ConfigureInfo *) p->value;
+    if ((option->stealth == MagickFalse) &&
+        (GlobExpression(option->name,pattern,MagickFalse) != MagickFalse))
+      options[i++]=ConstantString(option->name);
+    p=p->next;
   }
   UnlockSemaphoreInfo(configure_semaphore);
-  qsort((void *) options,(size_t) i,sizeof(*options),ConfigureCompare);
-  options[i]=(char *) NULL;
+  if (i == 0)
+    options=(char **) RelinquishMagickMemory(options);
+  else
+    {
+      qsort((void *) options,(size_t) i,sizeof(*options),ConfigureCompare);
+      options[i]=(char *) NULL;
+    }
   *number_options=(size_t) i;
   return(options);
 }
