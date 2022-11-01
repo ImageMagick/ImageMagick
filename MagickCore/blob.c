@@ -3994,11 +3994,8 @@ MagickExport int ReadBlobByte(Image *image)
   BlobInfo
     *magick_restrict blob_info;
 
-  const unsigned char
-    *p;
-
-  unsigned char
-    buffer[1];
+  int
+    c;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -4011,14 +4008,24 @@ MagickExport int ReadBlobByte(Image *image)
     case FileStream:
     case PipeStream:
     {
-      int
-        c;
-
-      p=(const unsigned char *) buffer;
       c=getc(blob_info->file_info.file);
       if (c == EOF)
-        return(EOF);
-      *buffer=(unsigned char) c;
+        {
+          if (ferror(blob_info->file_info.file) != 0)
+            ThrowBlobException(blob_info);
+          return(EOF);
+        }
+      break;
+    }
+    case BlobStream:
+    {
+      if (blob_info->offset >= (MagickOffsetType) blob_info->length)
+        {
+          blob_info->eof=MagickTrue;
+          return(EOF);
+        }
+      c=(int) (*((unsigned char *) blob_info->data+blob_info->offset));
+      blob_info->offset++;
       break;
     }
     default:
@@ -4026,13 +4033,17 @@ MagickExport int ReadBlobByte(Image *image)
       ssize_t
         count;
 
-      p=(const unsigned char *) ReadBlobStream(image,1,buffer,&count);
+      unsigned char
+        buffer[1];
+
+      count=ReadBlob(image,1,buffer);
       if (count != 1)
         return(EOF);
+      c=(int) *buffer;
       break;
     }
   }
-  return((int) (*p));
+  return(c);
 }
 
 /*
