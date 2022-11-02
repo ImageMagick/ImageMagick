@@ -4927,7 +4927,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
     }
     default:
     {
-      for (i=0; i < (MagickPathExtent-1L); i++)
+      for (i=0; i < (MagickPathExtent-2L); i++)
       {
         c=ReadBlobByte(image);
         if (c == EOF)
