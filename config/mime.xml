@@ -1143,4 +1143,7 @@
   <mime type="application/x-t602" description="T602 document" priority="100" pattern="*.602" />
   <mime type="application/x-cisco-vpn-settings" description="Cisco VPN Settings" data-type="string" offset="0" magic="[main]" priority="50" />
   <mime type="application/x-cisco-vpn-settings" description="Cisco VPN Settings" priority="100" pattern="*.pcf" />
+  <mime type="image/apng" acronym="APNG" description="PNG image" priority="100" pattern="*.apng" />
+  <mime type="image/avif" acronym="AVIF" description="AVIF image" priority="100" pattern="*.avif" />
+  <mime type="image/webp" acronym="WEBP" description="Web/P image" priority="100" pattern="*.webp" />
 </mimemap>
