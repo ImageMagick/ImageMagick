@@ -370,7 +370,8 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   p=GetHeadElementInLinkedList(configure_cache);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
-      option=(const ConfigureInfo *) p->value;
+      if (p != (ElementInfo *) NULL)
+        option=(const ConfigureInfo *) p->value;
       UnlockSemaphoreInfo(configure_semaphore);
       return(option);
     }
@@ -548,7 +549,7 @@ MagickExport char **GetConfigureList(const char *pattern,
   char
     **options;
 
-  const ElementInfo
+  ElementInfo
     *p;
 
   ssize_t
@@ -570,7 +571,7 @@ MagickExport char **GetConfigureList(const char *pattern,
     return((char **) NULL);
   LockSemaphoreInfo(configure_semaphore);
   p=GetHeadElementInLinkedList(configure_cache);
-  for (i=0; p != (const ElementInfo *) NULL; )
+  for (i=0; p != (ElementInfo *) NULL; )
   {
     const ConfigureInfo
       *option;

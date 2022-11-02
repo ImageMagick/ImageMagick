@@ -1046,7 +1046,8 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
   p=GetHeadElementInLinkedList(color_cache);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
-      color=(const ColorInfo *) p->value;
+      if (p != (ElementInfo *) NULL)
+        color=(const ColorInfo *) p->value;
       UnlockSemaphoreInfo(color_semaphore);
       return(color);
     }
