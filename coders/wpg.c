@@ -1162,7 +1162,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               image->columns=BitmapHeader1.Width;
               image->rows=BitmapHeader1.Height;
               bpp=BitmapHeader1.Depth;
-
+              if (bpp == 1)
+                image->storage_class=DirectClass;
               goto UnpackRaster;
 
             case 0x0E:  /*Color palette */
@@ -1283,20 +1284,14 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     }
                 }
 
-              if ((bpp == 1) && (image->colors > 1))
+              if (bpp == 1)
                 {
-                  if(image->colormap[0].red==0 &&
-                     image->colormap[0].green==0 &&
-                     image->colormap[0].blue==0 &&
-                     image->colormap[1].red==0 &&
-                     image->colormap[1].green==0 &&
-                     image->colormap[1].blue==0)
-                    {  /* fix crippled monochrome palette */
-                      image->colormap[1].red =
-                        image->colormap[1].green =
-                        image->colormap[1].blue = QuantumRange;
-                      image->colormap[1].alpha=OpaqueAlpha;
-                    }
+                  image->colormap[0].red=image->colormap[0].green=
+                    image->colormap[0].blue=0;
+                  image->colormap[0].alpha=OpaqueAlpha;
+                  image->colormap[1].red=image->colormap[1].green=
+                    image->colormap[1].blue=QuantumRange;
+                  image->colormap[1].alpha=OpaqueAlpha;
                 }
               if(!image_info->ping)
                 if(UnpackWPGRaster(image,bpp,exception) < 0)
