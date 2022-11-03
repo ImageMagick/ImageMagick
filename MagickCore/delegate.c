@@ -1236,11 +1236,13 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   /*
     Search for named delegate.
   */
+  delegate_info=(const DelegateInfo *) NULL;
   LockSemaphoreInfo(delegate_semaphore);
   p=GetHeadElementInLinkedList(delegate_cache);
-  delegate_info=(const DelegateInfo* ) p->value;
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     {
+      if (p != (ElementInfo *) NULL)
+        delegate_info=(const DelegateInfo* ) p->value;
       UnlockSemaphoreInfo(delegate_semaphore);
       return(delegate_info);
     }
