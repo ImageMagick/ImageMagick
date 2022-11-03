@@ -176,7 +176,7 @@ static int MagickMain(int argc,char **argv)
   return(exit_code);
 }
 
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
 int main(int argc,char **argv)
 {
   return(MagickMain(argc,argv));

@@ -24,6 +24,11 @@ UTILITIES_XFAIL_TESTS = \
 
 utilities_magick_LDADD    = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 utilities_magick_LDFLAGS  = $(LDFLAGS)
+
+if WIN32_NATIVE_BUILD
+utilities_magick_LDFLAGS += -municode
+endif
+
 utilities_magick_SOURCES  = utilities/magick.c
 nodist_EXTRA_utilities_magick_SOURCES = dummy.cxx
 
