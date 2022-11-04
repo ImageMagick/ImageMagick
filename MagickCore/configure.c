@@ -370,9 +370,9 @@ MagickExport const ConfigureInfo *GetConfigureInfo(const char *name,
   p=GetHeadElementInLinkedList(configure_cache);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     {
+      UnlockSemaphoreInfo(configure_semaphore);
       if (p != (ElementInfo *) NULL)
         option=(const ConfigureInfo *) p->value;
-      UnlockSemaphoreInfo(configure_semaphore);
       return(option);
     }
   while (p != (ElementInfo *) NULL)

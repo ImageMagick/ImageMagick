@@ -1241,9 +1241,9 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   p=GetHeadElementInLinkedList(delegate_cache);
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     {
+      UnlockSemaphoreInfo(delegate_semaphore);
       if (p != (ElementInfo *) NULL)
         delegate_info=(const DelegateInfo* ) p->value;
-      UnlockSemaphoreInfo(delegate_semaphore);
       return(delegate_info);
     }
   while (p != (ElementInfo *) NULL)
