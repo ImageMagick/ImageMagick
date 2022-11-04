@@ -4927,21 +4927,19 @@ MagickExport char *ReadBlobString(Image *image,char *string)
     }
     default:
     {
-      for (i=0; i < (MagickPathExtent-2L); i++)
+      do
       {
         c=ReadBlobByte(image);
         if (c == EOF)
           {
-            if (i == 0)
-              return((char *) NULL);
+            blob_info->eof=MagickTrue;
             break;
           }
-        string[i]=c;
+        string[i++]=c;
         if (c == '\n')
           break;
-      }
-      string[++i]='\0';
-      i--;
+      } while (i < (MaxTextExtent-2));
+      string[i]='\0';
       break;
     }
   }
@@ -4953,6 +4951,8 @@ MagickExport char *ReadBlobString(Image *image,char *string)
   if (i >= 1)
     if ((string[i-1] == '\r') || (string[i-1] == '\n'))
       string[i-1]='\0';
+  if ((*string == '\0') && (blob_info->eof != MagickFalse))
+    return((char *) NULL);
   return(string);
 }
 
