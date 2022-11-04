@@ -404,10 +404,10 @@ MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
       max_offset=offset;
     p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
   }
+  UnlockSemaphoreInfo(magic_list_semaphore);
   if (max_offset > (MagickOffsetType) (MAGICK_SSIZE_MAX/2))
     return(0);
   extent=(size_t) max_offset;
-  UnlockSemaphoreInfo(magic_list_semaphore);
   return(extent);
 }
 
