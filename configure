@@ -5149,7 +5149,7 @@ MAGICK_PATCHLEVEL_VERSION=52
 
 MAGICK_VERSION=7.1.0-52
 
-MAGICK_GIT_REVISION=a91d45bbe:20221104
+MAGICK_GIT_REVISION=f9d96c703:20221105
 
 
 # Substitute library versioning
@@ -5183,7 +5183,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,52
 
-PACKAGE_RELEASE_DATE=2022-11-04
+PACKAGE_RELEASE_DATE=2022-11-05
 
 
 # Ensure that make can run correctly
@@ -9821,6 +9821,9 @@ Please re-run configure with these options:
       CXXFLAGS="$CXXFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
       LDFLAGS="$LDFLAGS -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
   fi
+  ;;
+  mingw* )
+      LDFLAGS="$LDFLAGS -municode"
   ;;
 esac
 

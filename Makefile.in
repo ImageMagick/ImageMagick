@@ -259,7 +259,6 @@ check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4)
 @WIN32_NATIVE_BUILD_TRUE@am__append_1 = -lws2_32
 @MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@am__append_2 = MagickCore/threshold-map.h
 @MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@am__append_3 = MagickCore/threshold-map.h
-@WIN32_NATIVE_BUILD_TRUE@@WITH_UTILITIES_TRUE@am__append_4 = -municode
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
@@ -6007,8 +6006,7 @@ filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 @WITH_UTILITIES_TRUE@  $(UTILITIES_XML_XFAIL_TESTS)
 
 @WITH_UTILITIES_TRUE@utilities_magick_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-@WITH_UTILITIES_TRUE@utilities_magick_LDFLAGS = $(LDFLAGS) \
-@WITH_UTILITIES_TRUE@	$(am__append_4)
+@WITH_UTILITIES_TRUE@utilities_magick_LDFLAGS = $(LDFLAGS)
 @WITH_UTILITIES_TRUE@utilities_magick_SOURCES = utilities/magick.c
 @WITH_UTILITIES_TRUE@nodist_EXTRA_utilities_magick_SOURCES = dummy.cxx
 @WITH_UTILITIES_FALSE@UTILITIES_MANS = 

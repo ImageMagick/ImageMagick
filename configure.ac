@@ -404,6 +404,9 @@ Please re-run configure with these options:
       LDFLAGS="$LDFLAGS -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
   fi
   ;;
+  mingw* )
+      LDFLAGS="$LDFLAGS -municode"
+  ;;
 esac
 
 #
