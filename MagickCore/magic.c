@@ -330,7 +330,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
         p=p->next;
       }
       UnlockSemaphoreInfo(magic_cache_semaphore);
-      if (p != (const ElementInfo *) NULL)
+      if (p != (ElementInfo *) NULL)
         return(magic_info);
     }
   /*
@@ -345,7 +345,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
         magic_info=(const MagicInfo *) p->value;
       return(magic_info);
     }
-  while (p != (const ElementInfo *) NULL)
+  while (p != (ElementInfo *) NULL)
   {
     magic_info=(const MagicInfo *) p->value;
     if (CompareMagic(magic,length,magic_info) != MagickFalse)
@@ -353,7 +353,9 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     p=p->next;
   }
   UnlockSemaphoreInfo(magic_list_semaphore);
-  if (p != (const ElementInfo *) NULL)
+  if (p == (ElementInfo *) NULL)
+    magic_info=(const MagicInfo *) NULL;
+  else
     {
       LockSemaphoreInfo(magic_cache_semaphore);
       (void) InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoExtent,
