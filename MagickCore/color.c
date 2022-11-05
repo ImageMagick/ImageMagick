@@ -1302,9 +1302,6 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   ssize_t
     i;
 
-  /*
-    Allocate color list.
-  */
   assert(pattern != (char *) NULL);
   assert(number_colors != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)
@@ -1312,9 +1309,6 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   *number_colors=0;
   if (IsColorCacheInstantiated(exception) == MagickFalse)
     return((const ColorInfo **) NULL);
-  /*
-    Generate color list.
-  */
   colors=(const ColorInfo **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(color_cache)+1UL,sizeof(*colors));
   if (colors == (const ColorInfo **) NULL)
@@ -1403,9 +1397,6 @@ MagickExport char **GetColorList(const char *pattern,
   ssize_t
     i;
 
-  /*
-    Allocate color list.
-  */
   assert(pattern != (char *) NULL);
   assert(number_colors != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)
@@ -1417,9 +1408,6 @@ MagickExport char **GetColorList(const char *pattern,
     GetNumberOfElementsInLinkedList(color_cache)+1UL,sizeof(*colors));
   if (colors == (char **) NULL)
     return((char **) NULL);
-  /*
-    Generate color list.
-  */
   LockSemaphoreInfo(color_semaphore);
   p=GetHeadElementInLinkedList(color_cache);
   for (i=0; p != (ElementInfo *) NULL; )

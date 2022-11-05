@@ -450,9 +450,6 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
   ssize_t
     i;
 
-  /*
-    Allocate mime list.
-  */
   assert(pattern != (char *) NULL);
   assert(number_aliases != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)
@@ -460,9 +457,6 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
   *number_aliases=0;
   if (IsMimeCacheInstantiated(exception) == MagickFalse)
     return((const MimeInfo **) NULL);
-  /*
-    Generate mime list.
-  */
   aliases=(const MimeInfo **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(mime_cache)+1UL,sizeof(*aliases));
   if (aliases == (const MimeInfo **) NULL)
@@ -553,9 +547,6 @@ MagickExport char **GetMimeList(const char *pattern,
   ssize_t
     i;
 
-  /*
-    Allocate configure list.
-  */
   assert(pattern != (char *) NULL);
   assert(number_aliases != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)

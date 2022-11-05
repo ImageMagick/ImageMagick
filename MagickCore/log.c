@@ -537,9 +537,6 @@ MagickExport const LogInfo **GetLogInfoList(const char *pattern,
   ssize_t
     i;
 
-  /*
-    Allocate log list.
-  */
   assert(pattern != (char *) NULL);
   assert(number_preferences != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)
@@ -547,9 +544,6 @@ MagickExport const LogInfo **GetLogInfoList(const char *pattern,
   *number_preferences=0;
   if (IsLogCacheInstantiated(exception) == MagickFalse)
     return((const LogInfo **) NULL);
-  /*
-    Generate log list.
-  */
   preferences=(const LogInfo **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(log_cache)+1UL,sizeof(*preferences));
   if (preferences == (const LogInfo **) NULL)
@@ -638,9 +632,6 @@ MagickExport char **GetLogList(const char *pattern,size_t *number_preferences,
   ssize_t
     i;
 
-  /*
-    Allocate log list.
-  */
   assert(pattern != (char *) NULL);
   assert(number_preferences != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)

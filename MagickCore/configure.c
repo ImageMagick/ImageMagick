@@ -453,9 +453,6 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
   ssize_t
     i;
 
-  /*
-    Allocate configure list.
-  */
   assert(pattern != (char *) NULL);
   assert(number_options != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)
@@ -463,9 +460,6 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
   *number_options=0;
   if (IsConfigureCacheInstantiated(exception) == MagickFalse)
     return((const ConfigureInfo **) NULL);
-  /*
-    Generate configure list.
-  */
   options=(const ConfigureInfo **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(configure_cache)+1UL,sizeof(*options));
   if (options == (const ConfigureInfo **) NULL)
@@ -555,9 +549,6 @@ MagickExport char **GetConfigureList(const char *pattern,
   ssize_t
     i;
 
-  /*
-    Allocate configure list.
-  */
   assert(pattern != (char *) NULL);
   assert(number_options != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)

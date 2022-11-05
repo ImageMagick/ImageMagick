@@ -481,9 +481,6 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   ssize_t
     i;
 
-  /*
-    Allocate magic list.
-  */
   assert(pattern != (char *) NULL);
   assert(number_aliases != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)
@@ -491,9 +488,6 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   *number_aliases=0;
   if (IsMagicCacheInstantiated(exception) == MagickFalse)
     return((const MagicInfo **) NULL);
-  /*
-    Generate magic list.
-  */
   aliases=(const MagicInfo **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
   if (aliases == (const MagicInfo **) NULL)
@@ -583,9 +577,6 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
   ssize_t
     i;
 
-  /*
-    Allocate configure list.
-  */
   assert(pattern != (char *) NULL);
   assert(number_aliases != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)

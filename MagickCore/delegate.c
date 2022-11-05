@@ -1356,9 +1356,6 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   ssize_t
     i;
 
-  /*
-    Allocate delegate list.
-  */
   assert(number_delegates != (size_t *) NULL);
   assert(pattern != (char *) NULL);
   if (IsEventLogging() != MagickFalse)
@@ -1366,9 +1363,6 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   *number_delegates=0;
   if (IsDelegateCacheInstantiated(exception) == MagickFalse)
     return((const DelegateInfo **) NULL);
-  /*
-    Generate delegate list.
-  */
   delegates=(const DelegateInfo **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(delegate_cache)+1UL,sizeof(*delegates));
   if (delegates == (const DelegateInfo **) NULL)
@@ -1460,9 +1454,6 @@ MagickExport char **GetDelegateList(const char *pattern,
   ssize_t
     i;
 
-  /*
-    Allocate delegate list.
-  */
   assert(pattern != (char *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
