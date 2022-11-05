@@ -45,6 +45,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/linked-list.h"
+#include "MagickCore/linked-list-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/mime.h"
 #include "MagickCore/mime-private.h"
@@ -220,17 +221,15 @@ MagickExport LinkedListInfo *AcquireMimeCache(const char *filename,
 MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   const unsigned char *magic,const size_t length,ExceptionInfo *exception)
 {
-  const MimeInfo
-    *mime_info;
+  ElementInfo
+    *element_info,
+    *p;
 
   EndianType
     endian;
 
-  const MimeInfo
-    *p;
-
   const unsigned char
-    *q;
+    *r;
 
   ssize_t
     i;
@@ -247,139 +246,145 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
   /*
     Search for mime tag.
   */
-  mime_info=(const MimeInfo *) NULL;
   lsb_first=1;
   LockSemaphoreInfo(mime_semaphore);
-  ResetLinkedListIterator(mime_cache);
-  p=(const MimeInfo *) GetNextValueInLinkedList(mime_cache);
+  p=GetHeadElementInLinkedList(mime_cache);
   if ((magic == (const unsigned char *) NULL) || (length == 0))
     {
       UnlockSemaphoreInfo(mime_semaphore);
-      return(p);
+      if (p != (ElementInfo *) NULL)
+        return((const MimeInfo *) p->value);
+      return((const MimeInfo *) NULL);
     }
-  while (p != (const MimeInfo *) NULL)
+  element_info=(ElementInfo *) NULL;
+  while (p != (ElementInfo *) NULL)
   {
-    assert(p->offset >= 0);
-    if (mime_info != (const MimeInfo *) NULL)
-      if (p->priority > mime_info->priority)
+    const MimeInfo
+      *q;
+
+    q=(const MimeInfo *) p->value;
+    assert(q->offset >= 0);
+    if (element_info != (const ElementInfo *) NULL)
+      if (q->priority > ((const MimeInfo *) element_info->value)->priority)
         {
-          p=(const MimeInfo *) GetNextValueInLinkedList(mime_cache);
+          p=p->next;
           continue;
         }
-    if ((p->pattern != (char *) NULL) && (filename != (char *) NULL))
+    if ((q->pattern != (char *) NULL) && (filename != (char *) NULL))
       {
-        if (GlobExpression(filename,p->pattern,MagickFalse) != MagickFalse)
-          mime_info=p;
-        p=(const MimeInfo *) GetNextValueInLinkedList(mime_cache);
+        if (GlobExpression(filename,q->pattern,MagickFalse) != MagickFalse)
+          element_info=p;
+        p=p->next;
         continue;
       }
-    switch (p->data_type)
+    switch (q->data_type)
     {
       case ByteData:
       {
-        if ((size_t) (p->offset+4) > length)
+        if ((size_t) (q->offset+4) > length)
           break;
-        q=magic+p->offset;
-        value=(ssize_t) (*q++);
-        if (p->mask == 0)
+        r=magic+q->offset;
+        value=(ssize_t) (*r++);
+        if (q->mask == 0)
           {
-            if (p->value == value)
-              mime_info=p;
+            if (q->value == value)
+              element_info=p;
           }
         else
           {
-            if ((p->value & p->mask) == value)
-              mime_info=p;
+            if ((q->value & q->mask) == value)
+              element_info=p;
           }
         break;
       }
       case ShortData:
       {
-        if ((size_t) (p->offset+4) > length)
+        if ((size_t) (q->offset+4) > length)
           break;
-        q=magic+p->offset;
-        endian=p->endian;
-        if (p->endian == UndefinedEndian)
+        r=magic+q->offset;
+        endian=q->endian;
+        if (q->endian == UndefinedEndian)
           endian=(*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian;
         if (endian == LSBEndian)
           {
-            value=(ssize_t) (*q++);
-            value|=(*q++) << 8;
+            value=(ssize_t) (*r++);
+            value|=(*r++) << 8;
           }
         else
           {
-            value=(ssize_t) (*q++) << 8;
-            value|=(*q++);
+            value=(ssize_t) (*r++) << 8;
+            value|=(*r++);
           }
-        if (p->mask == 0)
+        if (q->mask == 0)
           {
-            if (p->value == value)
-              mime_info=p;
+            if (q->value == value)
+              element_info=p;
           }
         else
           {
-            if ((p->value & p->mask) == value)
-              mime_info=p;
+            if ((q->value & q->mask) == value)
+              element_info=p;
           }
         break;
       }
       case LongData:
       {
-        if ((size_t) (p->offset+4) > length)
+        if ((size_t) (q->offset+4) > length)
           break;
-        q=magic+p->offset;
-        endian=p->endian;
-        if (p->endian == UndefinedEndian)
+        r=magic+q->offset;
+        endian=q->endian;
+        if (q->endian == UndefinedEndian)
           endian=(*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian;
         if (endian == LSBEndian)
           {
-            value=(ssize_t) (*q++);
-            value|=((ssize_t) *q++) << 8;
-            value|=((ssize_t) *q++) << 16;
-            value|=((ssize_t) *q++) << 24;
+            value=(ssize_t) (*r++);
+            value|=((ssize_t) *r++) << 8;
+            value|=((ssize_t) *r++) << 16;
+            value|=((ssize_t) *r++) << 24;
           }
         else
           {
-            value=(ssize_t) (*q++) << 24;
-            value|=((ssize_t) *q++) << 16;
-            value|=((ssize_t) *q++) << 8;
-            value|=((ssize_t) *q++);
+            value=(ssize_t) (*r++) << 24;
+            value|=((ssize_t) *r++) << 16;
+            value|=((ssize_t) *r++) << 8;
+            value|=((ssize_t) *r++);
           }
-        if (p->mask == 0)
+        if (q->mask == 0)
           {
-            if (p->value == value)
-              mime_info=p;
+            if (q->value == value)
+              element_info=p;
           }
         else
           {
-            if ((p->value & p->mask) == value)
-              mime_info=p;
+            if ((q->value & q->mask) == value)
+              element_info=p;
           }
         break;
       }
       case StringData:
       default:
       {
-        for (i=0; i <= (ssize_t) p->extent; i++)
+        for (i=0; i <= (ssize_t) q->extent; i++)
         {
-          if ((size_t) (p->offset+i+p->length) > length)
+          if ((size_t) (q->offset+i+q->length) > length)
             break;
-          if (memcmp(magic+p->offset+i,p->magic,p->length) == 0)
+          if (memcmp(magic+q->offset+i,q->magic,q->length) == 0)
             {
-              mime_info=p;
+              element_info=p;
               break;
             }
         }
         break;
       }
     }
-    p=(const MimeInfo *) GetNextValueInLinkedList(mime_cache);
+    p=p->next;
   }
-  if (mime_info != (const MimeInfo *) NULL)
-    (void) InsertValueInLinkedList(mime_cache,0,
-      RemoveElementByValueFromLinkedList(mime_cache,p));
+  if (element_info != (ElementInfo *) NULL)
+    SetHeadElementInLinkedList(mime_cache,element_info);
   UnlockSemaphoreInfo(mime_semaphore);
-  return(mime_info);
+  if (element_info == (ElementInfo *) NULL)
+    return((const MimeInfo *) NULL);
+  return((const MimeInfo *) element_info->value);
 }
 
 /*
@@ -439,7 +444,7 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
   const MimeInfo
     **aliases;
 
-  const MimeInfo
+  ElementInfo
     *p;
 
   ssize_t
@@ -453,29 +458,36 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_aliases=0;
-  p=GetMimeInfo((char *) NULL,(unsigned char *) "*",0,exception);
-  if (p == (const MimeInfo *) NULL)
-    return((const MimeInfo **) NULL);
-  aliases=(const MimeInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(mime_cache)+1UL,sizeof(*aliases));
-  if (aliases == (const MimeInfo **) NULL)
+  if (IsMimeCacheInstantiated(exception) == MagickFalse)
     return((const MimeInfo **) NULL);
   /*
     Generate mime list.
   */
+  aliases=(const MimeInfo **) AcquireQuantumMemory((size_t)
+    GetNumberOfElementsInLinkedList(mime_cache)+1UL,sizeof(*aliases));
+  if (aliases == (const MimeInfo **) NULL)
+    return((const MimeInfo **) NULL);
   LockSemaphoreInfo(mime_semaphore);
-  ResetLinkedListIterator(mime_cache);
-  p=(const MimeInfo *) GetNextValueInLinkedList(mime_cache);
-  for (i=0; p != (const MimeInfo *) NULL; )
+  p=GetHeadElementInLinkedList(mime_cache);
+  for (i=0; p != (ElementInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
-        (GlobExpression(p->type,pattern,MagickFalse) != MagickFalse))
-      aliases[i++]=p;
-    p=(const MimeInfo *) GetNextValueInLinkedList(mime_cache);
+    MimeInfo
+      *mime_info;
+
+    mime_info=(MimeInfo *) p->value;
+    if ((mime_info->stealth == MagickFalse) &&
+        (GlobExpression(mime_info->type,pattern,MagickFalse) != MagickFalse))
+      aliases[i++]=mime_info;
+    p=p->next;
   }
   UnlockSemaphoreInfo(mime_semaphore);
-  qsort((void *) aliases,(size_t) i,sizeof(*aliases),MimeInfoCompare);
-  aliases[i]=(MimeInfo *) NULL;
+  if (i == 0)
+    aliases=(const MimeInfo **) RelinquishMagickMemory(aliases);
+  else
+    {
+      qsort((void *) aliases,(size_t) i,sizeof(*aliases),MimeInfoCompare);
+      aliases[i]=(MimeInfo *) NULL;
+    }
   *number_aliases=(size_t) i;
   return(aliases);
 }
@@ -535,7 +547,7 @@ MagickExport char **GetMimeList(const char *pattern,
   char
     **aliases;
 
-  const MimeInfo
+  ElementInfo
     *p;
 
   ssize_t
@@ -549,26 +561,33 @@ MagickExport char **GetMimeList(const char *pattern,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_aliases=0;
-  p=GetMimeInfo((char *) NULL,(unsigned char *) "*",0,exception);
-  if (p == (const MimeInfo *) NULL)
+  if (IsMimeCacheInstantiated(exception) == MagickFalse)
     return((char **) NULL);
   aliases=(char **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(mime_cache)+1UL,sizeof(*aliases));
   if (aliases == (char **) NULL)
     return((char **) NULL);
   LockSemaphoreInfo(mime_semaphore);
-  ResetLinkedListIterator(mime_cache);
-  p=(const MimeInfo *) GetNextValueInLinkedList(mime_cache);
-  for (i=0; p != (const MimeInfo *) NULL; )
+  p=GetHeadElementInLinkedList(mime_cache);
+  for (i=0; p != (ElementInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
-        (GlobExpression(p->type,pattern,MagickFalse) != MagickFalse))
-      aliases[i++]=ConstantString(p->type);
-    p=(const MimeInfo *) GetNextValueInLinkedList(mime_cache);
+    const MimeInfo
+      *mime_info;
+
+    mime_info=(const MimeInfo *) p->value;
+    if ((mime_info->stealth == MagickFalse) &&
+        (GlobExpression(mime_info->type,pattern,MagickFalse) != MagickFalse))
+      aliases[i++]=ConstantString(mime_info->type);
+    p=p->next;
   }
   UnlockSemaphoreInfo(mime_semaphore);
-  qsort((void *) aliases,(size_t) i,sizeof(*aliases),MimeCompare);
-  aliases[i]=(char *) NULL;
+  if (i == 0)
+    aliases=(char **) RelinquishMagickMemory(aliases);
+  else
+    {
+      qsort((void *) aliases,(size_t) i,sizeof(*aliases),MimeCompare);
+      aliases[i]=(char *) NULL;
+    }
   *number_aliases=(size_t) i;
   return(aliases);
 }
