@@ -47,6 +47,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/linked-list.h"
+#include "MagickCore/linked-list-private.h"
 #include "MagickCore/magic.h"
 #include "MagickCore/magic-private.h"
 #include "MagickCore/memory_.h"
@@ -302,7 +303,10 @@ static MagickBooleanType IsMagicCacheInstantiated()
 MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   const size_t length,ExceptionInfo *exception)
 {
-  const MagicInfo
+  const MagicInfo *
+    magic_info;
+
+  ElementInfo
     *p;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -313,47 +317,50 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   /*
     Search for cached entries.
   */
+  magic_info=(const MagicInfo *) NULL;
   if (magic != (const unsigned char *) NULL)
     {
       LockSemaphoreInfo(magic_cache_semaphore);
-      ResetLinkedListIterator(magic_cache);
-      p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
-      while (p != (const MagicInfo *) NULL)
+      p=GetHeadElementInLinkedList(magic_cache);
+      while (p != (ElementInfo *) NULL)
       {
-        if (CompareMagic(magic,length,p) != MagickFalse)
+        magic_info=(const MagicInfo *) p->value;
+        if (CompareMagic(magic,length,magic_info) != MagickFalse)
           break;
-        p=(const MagicInfo *) GetNextValueInLinkedList(magic_cache);
+        p=p->next;
       }
       UnlockSemaphoreInfo(magic_cache_semaphore);
-      if (p != (const MagicInfo *) NULL)
-        return(p);
+      if (p != (const ElementInfo *) NULL)
+        return(magic_info);
     }
   /*
     Search for magic tag.
   */
   LockSemaphoreInfo(magic_list_semaphore);
-  ResetLinkedListIterator(magic_list);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+  p=GetHeadElementInLinkedList(magic_list);
   if (magic == (const unsigned char *) NULL)
     {
       UnlockSemaphoreInfo(magic_list_semaphore);
-      return(p);
+      if (p != (ElementInfo *) NULL)
+        magic_info=(const MagicInfo *) p->value;
+      return(magic_info);
     }
-  while (p != (const MagicInfo *) NULL)
+  while (p != (const ElementInfo *) NULL)
   {
-    if (CompareMagic(magic,length,p) != MagickFalse)
+    magic_info=(const MagicInfo *) p->value;
+    if (CompareMagic(magic,length,magic_info) != MagickFalse)
       break;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+    p=p->next;
   }
   UnlockSemaphoreInfo(magic_list_semaphore);
-  if (p != (const MagicInfo *) NULL)
+  if (p != (const ElementInfo *) NULL)
     {
       LockSemaphoreInfo(magic_cache_semaphore);
       (void) InsertValueInSortedLinkedList(magic_cache,CompareMagickInfoExtent,
-        NULL,p);
+        NULL,magic_info);
       UnlockSemaphoreInfo(magic_cache_semaphore);
     }
-  return(p);
+  return(magic_info);
 }
 
 /*
@@ -381,7 +388,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
 */
 MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
 {
-  const MagicInfo
+  ElementInfo
     *p;
 
   MagickOffsetType
@@ -395,14 +402,17 @@ MagickExport size_t GetMagicPatternExtent(ExceptionInfo *exception)
   if ((extent != 0) || (IsMagicListInstantiated(exception) == MagickFalse))
     return(extent);
   LockSemaphoreInfo(magic_list_semaphore);
-  ResetLinkedListIterator(magic_list);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
-  for (max_offset=0; p != (const MagicInfo *) NULL; )
+  p=GetHeadElementInLinkedList(magic_list);
+  for (max_offset=0; p != (ElementInfo *) NULL; )
   {
-    offset=p->offset+(MagickOffsetType) p->length;
+    const MagicInfo
+      *magic_info;
+
+    magic_info=(const MagicInfo *) p->value;
+    offset=magic_info->offset+(MagickOffsetType) magic_info->length;
     if (offset > max_offset)
       max_offset=offset;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+    p=p->next;
   }
   UnlockSemaphoreInfo(magic_list_semaphore);
   if (max_offset > (MagickOffsetType) (MAGICK_SSIZE_MAX/2))
@@ -465,7 +475,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   const MagicInfo
     **aliases;
 
-  const MagicInfo
+  ElementInfo
     *p;
 
   ssize_t
@@ -479,28 +489,35 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_aliases=0;
-  p=GetMagicInfo((const unsigned char *) NULL,0,exception);
-  if (p == (const MagicInfo *) NULL)
-    return((const MagicInfo **) NULL);
-  aliases=(const MagicInfo **) AcquireQuantumMemory((size_t)
-    GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
-  if (aliases == (const MagicInfo **) NULL)
+  if (IsMagicCacheInstantiated(exception) == MagickFalse)
     return((const MagicInfo **) NULL);
   /*
     Generate magic list.
   */
+  aliases=(const MagicInfo **) AcquireQuantumMemory((size_t)
+    GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
+  if (aliases == (const MagicInfo **) NULL)
+    return((const MagicInfo **) NULL);
   LockSemaphoreInfo(magic_list_semaphore);
-  ResetLinkedListIterator(magic_list);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
-  for (i=0; p != (const MagicInfo *) NULL; )
+  p=GetHeadElementInLinkedList(magic_list);
+  for (i=0; p != (ElementInfo *) NULL; )
   {
-    if (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse)
-      aliases[i++]=p;
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+    const MagicInfo
+      *magic_info;
+    
+    magic_info=(const MagicInfo *) p->value;
+    if (GlobExpression(magic_info->name,pattern,MagickFalse) != MagickFalse)
+      aliases[i++]=magic_info;
+    p=p->next;
   }
   UnlockSemaphoreInfo(magic_list_semaphore);
-  qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicInfoCompare);
-  aliases[i]=(MagicInfo *) NULL;
+  if (i == 0)
+    aliases=(const MagicInfo **) RelinquishMagickMemory(aliases);
+  else
+    {
+      qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicInfoCompare);
+      aliases[i]=(MagicInfo *) NULL;
+    }
   *number_aliases=(size_t) i;
   return(aliases);
 }
@@ -560,7 +577,7 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
   char
     **aliases;
 
-  const MagicInfo
+  ElementInfo
     *p;
 
   ssize_t
@@ -574,25 +591,32 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_aliases=0;
-  p=GetMagicInfo((const unsigned char *) NULL,0,exception);
-  if (p == (const MagicInfo *) NULL)
+  if (IsMagicCacheInstantiated(exception) == MagickFalse)
     return((char **) NULL);
   aliases=(char **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
   if (aliases == (char **) NULL)
     return((char **) NULL);
   LockSemaphoreInfo(magic_list_semaphore);
-  ResetLinkedListIterator(magic_list);
-  p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
-  for (i=0; p != (const MagicInfo *) NULL; )
+  p=GetHeadElementInLinkedList(magic_list);
+  for (i=0; p != (ElementInfo *) NULL; )
   {
-    if (GlobExpression(p->name,pattern,MagickFalse) != MagickFalse)
-      aliases[i++]=ConstantString(p->name);
-    p=(const MagicInfo *) GetNextValueInLinkedList(magic_list);
+    const MagicInfo
+      *magic_info;
+
+    magic_info=(const MagicInfo *) p->value;
+    if (GlobExpression(magic_info->name,pattern,MagickFalse) != MagickFalse)
+      aliases[i++]=ConstantString(magic_info->name);
+    p=p->next;
   }
   UnlockSemaphoreInfo(magic_list_semaphore);
-  qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicCompare);
-  aliases[i]=(char *) NULL;
+  if (i == 0)
+    aliases=(char **) RelinquishMagickMemory(aliases);
+  else
+    {
+      qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicCompare);
+      aliases[i]=(char *) NULL;
+    }
   *number_aliases=(size_t) i;
   return(aliases);
 }
