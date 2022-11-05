@@ -404,9 +404,6 @@ Please re-run configure with these options:
       LDFLAGS="$LDFLAGS -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
   fi
   ;;
-  mingw* )
-      LDFLAGS="$LDFLAGS -municode"
-  ;;
 esac
 
 #
@@ -906,6 +903,7 @@ AC_PROG_GCC_TRADITIONAL
 MODULE_EXTRA_CPPFLAGS=''
 LIBRARY_EXTRA_CPPFLAGS=''
 if test "${native_win32_build}" = 'yes'; then
+    MAGICK_LDFLAGS="$MAGICK_LDFLAGS -municode"
     if test "${libtool_build_shared_libs}" = 'yes'; then
         CPPFLAGS="$CPPFLAGS -D_DLL"
         MAGICK_CPPFLAGS="$MAGICK_CPPFLAGS -D_DLL"

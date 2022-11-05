@@ -5149,7 +5149,7 @@ MAGICK_PATCHLEVEL_VERSION=52
 
 MAGICK_VERSION=7.1.0-52
 
-MAGICK_GIT_REVISION=f9d96c703:20221105
+MAGICK_GIT_REVISION=9f0f4b238:20221105
 
 
 # Substitute library versioning
@@ -9821,9 +9821,6 @@ Please re-run configure with these options:
       CXXFLAGS="$CXXFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
       LDFLAGS="$LDFLAGS -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
   fi
-  ;;
-  mingw* )
-      LDFLAGS="$LDFLAGS -municode"
   ;;
 esac
 
@@ -23669,6 +23666,7 @@ fi
 MODULE_EXTRA_CPPFLAGS=''
 LIBRARY_EXTRA_CPPFLAGS=''
 if test "${native_win32_build}" = 'yes'; then
+    MAGICK_LDFLAGS="$MAGICK_LDFLAGS -municode"
     if test "${libtool_build_shared_libs}" = 'yes'; then
         CPPFLAGS="$CPPFLAGS -D_DLL"
         MAGICK_CPPFLAGS="$MAGICK_CPPFLAGS -D_DLL"
