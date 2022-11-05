@@ -116,6 +116,9 @@
         <message name="ImageDoesNotHaveAnAlphaChannel">
           image does not have an alpha channel
         </message>
+        <message name="ImageDoesNotHaveAMaskChannel">
+          image does not have an mask channel
+        </message>
         <message name="ImageDoesNotHaveAThumbnail">
           image does not have a EXIF thumbnail
         </message>

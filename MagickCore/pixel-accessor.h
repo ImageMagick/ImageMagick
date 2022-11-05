@@ -144,6 +144,12 @@ static inline Quantum GetPixelCompositeMask(
   return(pixel[image->channel_map[CompositeMaskPixelChannel].offset]);
 }
 
+static inline PixelTrait GetPixelCompositeMaskTraits(
+  const Image *magick_restrict image)
+{
+  return(image->channel_map[CompositeMaskPixelChannel].traits);
+}
+
 static inline Quantum GetPixelCr(const Image *magick_restrict image,
   const Quantum *magick_restrict pixel)
 {
@@ -442,6 +448,12 @@ static inline PixelTrait GetPixelTraits(const Image *magick_restrict image,
   const PixelChannel channel)
 {
   return(image->channel_map[channel].traits);
+}
+
+static inline PixelTrait GetPixelWriteMaskTraits(
+  const Image *magick_restrict image)
+{
+  return(image->channel_map[WriteMaskPixelChannel].traits);
 }
 
 static inline Quantum GetPixelY(const Image *magick_restrict image,

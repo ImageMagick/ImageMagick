@@ -116,6 +116,9 @@
         <message name="ImageDoesNotHaveAnAlphaChannel">
           l'image n'a pas de canal de transparence
         </message>
+        <message name="ImageDoesNotHaveAMaskChannel">
+          image sans masque de canal
+        </message>
         <message name="ImageIsNotTiled">
           l'image n'a pas tiled
         </message>

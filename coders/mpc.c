@@ -395,6 +395,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case 'c':
               case 'C':
               {
+                if (LocaleCompare(keyword,"channel-mask") == 0)
+                  {
+                    image->channel_mask=(ChannelType)
+                      StringToUnsignedLong(options);
+                    break;
+                  }
                 if (LocaleCompare(keyword,"class") == 0)
                   {
                     ssize_t
@@ -1193,17 +1199,18 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     nonce=DestroyStringInfo(nonce);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
-      "class=%s  colors=%.20g  alpha-trait=%s\n",CommandOptionToMnemonic(
+      "class=%s colors=%.20g alpha-trait=%s\n",CommandOptionToMnemonic(
       MagickClassOptions,image->storage_class),(double) image->colors,
       CommandOptionToMnemonic(MagickPixelTraitOptions,(ssize_t)
       image->alpha_trait));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
-      "number-channels=%.20g  number-meta-channels=%.20g\n",
-      (double) image->number_channels,(double) image->number_meta_channels);
+      "number-channels=%.20g number-meta-channels=%.20g channel-mask=%.20g\n",
+      (double) image->number_channels,(double) image->number_meta_channels,
+      (double) image->channel_mask);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
-      "columns=%.20g  rows=%.20g depth=%.20g\n",(double) image->columns,
+      "columns=%.20g rows=%.20g depth=%.20g\n",(double) image->columns,
       (double) image->rows,(double) image->depth);
     (void) WriteBlobString(image,buffer);
     if (image->type != UndefinedType)
@@ -1231,7 +1238,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     if (image->compression != UndefinedCompression)
       {
         (void) FormatLocaleString(buffer,MagickPathExtent,
-          "compression=%s  quality=%.20g\n",CommandOptionToMnemonic(
+          "compression=%s quality=%.20g\n",CommandOptionToMnemonic(
           MagickCompressOptions,image->compression),(double) image->quality);
         (void) WriteBlobString(image,buffer);
       }
@@ -1273,12 +1280,12 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       {
         if (image->scene == 0)
           (void) FormatLocaleString(buffer,MagickPathExtent,
-            "iterations=%.20g  delay=%.20g  ticks-per-second=%.20g\n",(double)
+            "iterations=%.20g delay=%.20g  ticks-per-second=%.20g\n",(double)
             image->iterations,(double) image->delay,(double)
             image->ticks_per_second);
         else
           (void) FormatLocaleString(buffer,MagickPathExtent,"scene=%.20g  "
-            "iterations=%.20g  delay=%.20g  ticks-per-second=%.20g\n",
+            "iterations=%.20g delay=%.20g  ticks-per-second=%.20g\n",
             (double) image->scene,(double) image->iterations,(double)
             image->delay,(double) image->ticks_per_second);
         (void) WriteBlobString(image,buffer);
@@ -1340,8 +1347,8 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
         /*
           Note chomaticity points.
         */
-        (void) FormatLocaleString(buffer,MagickPathExtent,"red-primary="
-          "%g,%g  green-primary=%g,%g  blue-primary=%g,%g\n",
+        (void) FormatLocaleString(buffer,MagickPathExtent,"red-primary=%g,%g "
+          "green-primary=%g,%g blue-primary=%g,%g\n",
           image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
           image->chromaticity.green_primary.x,
           image->chromaticity.green_primary.y,
