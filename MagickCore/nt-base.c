@@ -1978,7 +1978,7 @@ MagickPrivate struct dirent *NTReadDirectory(DIR *entry)
 MagickPrivate unsigned char *NTRegistryKeyLookup(const char *subkey)
 {
   char
-    package_key[MagickPathExtent];
+    package_key[MagickPathExtent] = "";
 
   unsigned char
     *value;
