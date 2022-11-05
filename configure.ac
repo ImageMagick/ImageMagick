@@ -903,7 +903,6 @@ AC_PROG_GCC_TRADITIONAL
 MODULE_EXTRA_CPPFLAGS=''
 LIBRARY_EXTRA_CPPFLAGS=''
 if test "${native_win32_build}" = 'yes'; then
-    MAGICK_LDFLAGS="$MAGICK_LDFLAGS -municode"
     if test "${libtool_build_shared_libs}" = 'yes'; then
         CPPFLAGS="$CPPFLAGS -D_DLL"
         MAGICK_CPPFLAGS="$MAGICK_CPPFLAGS -D_DLL"

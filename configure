@@ -5149,7 +5149,7 @@ MAGICK_PATCHLEVEL_VERSION=52
 
 MAGICK_VERSION=7.1.0-52
 
-MAGICK_GIT_REVISION=9f0f4b238:20221105
+MAGICK_GIT_REVISION=914e376e2:20221105
 
 
 # Substitute library versioning
@@ -23666,7 +23666,6 @@ fi
 MODULE_EXTRA_CPPFLAGS=''
 LIBRARY_EXTRA_CPPFLAGS=''
 if test "${native_win32_build}" = 'yes'; then
-    MAGICK_LDFLAGS="$MAGICK_LDFLAGS -municode"
     if test "${libtool_build_shared_libs}" = 'yes'; then
         CPPFLAGS="$CPPFLAGS -D_DLL"
         MAGICK_CPPFLAGS="$MAGICK_CPPFLAGS -D_DLL"
