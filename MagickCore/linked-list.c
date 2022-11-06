@@ -1024,7 +1024,7 @@ MagickPrivate void SetHeadElementInLinkedList(LinkedListInfo *list_info,
   if (element == list_info->head)
     return;
   prev=list_info->head;
-  while(prev != (ElementInfo *) NULL)
+  while (prev != (ElementInfo *) NULL)
   {
     if (prev->next == element)
       {
