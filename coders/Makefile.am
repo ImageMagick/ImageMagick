@@ -1390,6 +1390,9 @@ coders_url_la_SOURCES      = coders/url.c
 coders_url_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_url_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_url_la_LIBADD       = $(MAGICKCORE_LIBS) $(XML_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+if WIN32_NATIVE_BUILD
+coders_url_la_LIBADD += -lurlmon
+endif
 
 # UYVY coder module
 coders_uyvy_la_SOURCES     = coders/uyvy.c
