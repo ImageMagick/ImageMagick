@@ -3626,6 +3626,7 @@ MagickExport MagickBooleanType RemapImage(const QuantizeInfo *quantize_info,
   if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  cube_info->quantize_info->colorspace=remap_image->colorspace;
   status=ClassifyImageColors(cube_info,remap_image,exception);
   if (status != MagickFalse)
     {
