@@ -2068,7 +2068,7 @@ Optional Packages:
   --with-apple-font-dir=DIR
                           Apple font directory
   --with-autotrace        enable autotrace support
-  --without-dps           enable Display Postscript support
+  --with-dps              enable Display Postscript support
   --with-dejavu-font-dir=DIR
                           DejaVu font directory
   --with-fftw             enable FFTW support
@@ -5149,7 +5149,7 @@ MAGICK_PATCHLEVEL_VERSION=53
 
 MAGICK_VERSION=7.1.0-53
 
-MAGICK_GIT_REVISION=238aaf632:20221109
+MAGICK_GIT_REVISION=e8dd49656:20221109
 
 
 # Substitute library versioning

@@ -1717,7 +1717,7 @@ dnl ===========================================================================
 # Check for Display Postscript delegate library.
 #
 AC_ARG_WITH([dps],
-    [AS_HELP_STRING([--without-dps],
+    [AS_HELP_STRING([--with-dps],
                     [enable Display Postscript support])],
     [with_dps=$withval],
     [with_dps='no'])
