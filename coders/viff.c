@@ -934,6 +934,9 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
   const char
     *value;
 
+  const Quantum
+    *p;
+
   MagickBooleanType
     status;
 
@@ -947,26 +950,17 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
   MemoryInfo
     *pixel_info;
 
-  const Quantum
-    *p;
-
-  ssize_t
-    x;
-
-  ssize_t
-    i;
-
-  unsigned char
-    *q;
-
   size_t
-    imageListLength;
+    number_scenes;
 
   ssize_t
+    i,
+    x,
     y;
 
   unsigned char
-    *pixels;
+    *pixels,
+    *q;
 
   ViffInfo
     viff_info;
@@ -987,7 +981,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     return(status);
   (void) memset(&viff_info,0,sizeof(ViffInfo));
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     MagickBooleanType
@@ -1259,7 +1253,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

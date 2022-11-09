@@ -450,6 +450,9 @@ ModuleExport void UnregisterRAWImage(void)
 static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
+  const Quantum
+    *p;
+
   MagickOffsetType
     scene;
 
@@ -462,12 +465,9 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image,
   MagickBooleanType
     status;
 
-  const Quantum
-    *p;
-
   size_t
-    imageListLength,
-    length;
+    length,
+    number_scenes;
 
   ssize_t
     count,
@@ -567,7 +567,7 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image,
     }
   }
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     /*
@@ -599,7 +599,7 @@ static MagickBooleanType WriteRAWImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

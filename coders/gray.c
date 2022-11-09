@@ -817,8 +817,8 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
     quantum_type;
 
   size_t
-    imageListLength,
-    length;
+    length,
+    number_scenes;
 
   ssize_t
     count,
@@ -849,7 +849,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
   if (LocaleCompare(image_info->magick,"GRAYA") == 0)
     quantum_type=GrayAlphaQuantum;
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     /*
@@ -1065,7 +1065,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

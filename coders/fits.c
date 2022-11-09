@@ -300,196 +300,238 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  /*
-    Initialize image header.
-  */
-  (void) memset(&fits_info,0,sizeof(fits_info));
-  fits_info.extend=MagickFalse;
-  fits_info.simple=MagickFalse;
-  fits_info.bits_per_pixel=8;
-  fits_info.columns=1;
-  fits_info.rows=1;
-  fits_info.number_axes=1;
-  fits_info.number_planes=1;
-  fits_info.min_data=0.0;
-  fits_info.max_data=0.0;
-  fits_info.zero=0.0;
-  fits_info.scale=1.0;
-  fits_info.endian=MSBEndian;
-  /*
-    Decode image header.
-  */
-  for (comment=(char *) NULL; EOFBlob(image) == MagickFalse; )
+  do
   {
-    for ( ; EOFBlob(image) == MagickFalse; )
+    /*
+      Initialize image header.
+    */
+    (void) memset(&fits_info,0,sizeof(fits_info));
+    fits_info.extend=MagickFalse;
+    fits_info.simple=MagickFalse;
+    fits_info.bits_per_pixel=8;
+    fits_info.columns=1;
+    fits_info.rows=1;
+    fits_info.number_axes=1;
+    fits_info.number_planes=1;
+    fits_info.min_data=0.0;
+    fits_info.max_data=0.0;
+    fits_info.zero=0.0;
+    fits_info.scale=1.0;
+    fits_info.endian=MSBEndian;
+    /*
+      Decode image header.
+    */
+    for (comment=(char *) NULL; EOFBlob(image) == MagickFalse; )
     {
-      char
-        *p;
+      for ( ; EOFBlob(image) == MagickFalse; )
+      {
+        char
+          *p;
 
-      count=ReadBlob(image,8,(unsigned char *) keyword);
-      if (count != 8)
-        break;
-      for (i=0; i < 8; i++)
-      {
-        if (isspace((int) ((unsigned char) keyword[i])) != 0)
+        count=ReadBlob(image,8,(unsigned char *) keyword);
+        if (count != 8)
           break;
-        keyword[i]=LocaleToLowercase((int) ((unsigned char) keyword[i]));
+        for (i=0; i < 8; i++)
+        {
+          if (isspace((int) ((unsigned char) keyword[i])) != 0)
+            break;
+          keyword[i]=LocaleToLowercase((int) ((unsigned char) keyword[i]));
+        }
+        keyword[i]='\0';
+        count=ReadBlob(image,72,(unsigned char *) value);
+        value[72]='\0';
+        if (count != 72)
+          break;
+        p=value;
+        if (*p == '=')
+          {
+            p+=2;
+            while (isspace((int) ((unsigned char) *p)) != 0)
+              p++;
+          }
+        if (LocaleCompare(keyword,"end") == 0)
+          break;
+        if (LocaleCompare(keyword,"extend") == 0)
+          fits_info.extend=(*p == 'T') || (*p == 't') ? MagickTrue :
+            MagickFalse;
+        if (LocaleCompare(keyword,"simple") == 0)
+          fits_info.simple=(*p == 'T') || (*p == 't') ? MagickTrue :
+            MagickFalse;
+        if (LocaleCompare(keyword,"bitpix") == 0)
+          fits_info.bits_per_pixel=StringToLong(p);
+        if (LocaleCompare(keyword,"naxis") == 0)
+          fits_info.number_axes=StringToLong(p);
+        if (LocaleCompare(keyword,"naxis1") == 0)
+          fits_info.columns=StringToLong(p);
+        if (LocaleCompare(keyword,"naxis2") == 0)
+          fits_info.rows=StringToLong(p);
+        if (LocaleCompare(keyword,"naxis3") == 0)
+          fits_info.number_planes=StringToLong(p);
+        if (LocaleCompare(keyword,"datamax") == 0)
+          fits_info.max_data=StringToDouble(p,(char **) NULL);
+        if (LocaleCompare(keyword,"datamin") == 0)
+          fits_info.min_data=StringToDouble(p,(char **) NULL);
+        if (LocaleCompare(keyword,"bzero") == 0)
+          fits_info.zero=StringToDouble(p,(char **) NULL);
+        if (LocaleCompare(keyword,"bscale") == 0)
+          fits_info.scale=StringToDouble(p,(char **) NULL);
+        if (LocaleCompare(keyword,"comment") == 0)
+          {
+            if (comment == (char *) NULL)
+              comment=ConstantString(p);
+            else
+              (void) ConcatenateString(&comment,p);
+          }
+        if (LocaleCompare(keyword,"xendian") == 0)
+          {
+            if (LocaleNCompare(p,"big",3) == 0)
+              fits_info.endian=MSBEndian;
+            else
+              fits_info.endian=LSBEndian;
+          }
+        (void) FormatLocaleString(property,MagickPathExtent,"fits:%s",keyword);
+        (void) SetImageProperty(image,property,p,exception);
       }
-      keyword[i]='\0';
-      count=ReadBlob(image,72,(unsigned char *) value);
-      value[72]='\0';
-      if (count != 72)
+      c=0;
+      while (((TellBlob(image) % FITSBlocksize) != 0) && (c != EOF))
+        c=ReadBlobByte(image);
+      if (fits_info.extend == MagickFalse)
         break;
-      p=value;
-      if (*p == '=')
+      if ((fits_info.bits_per_pixel != 8) &&
+          (fits_info.bits_per_pixel != 16) &&
+          (fits_info.bits_per_pixel != 32) &&
+          (fits_info.bits_per_pixel != 64) &&
+          (fits_info.bits_per_pixel != -32) &&
+          (fits_info.bits_per_pixel != -64))
         {
-          p+=2;
-          while (isspace((int) ((unsigned char) *p)) != 0)
-            p++;
+          if (comment != (char *) NULL)
+            comment=DestroyString(comment);
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-      if (LocaleCompare(keyword,"end") == 0)
+      if ((fits_info.columns <= 0) || (fits_info.rows <= 0) ||
+          (fits_info.number_axes <= 0) || (fits_info.number_planes <= 0))
+        {
+          if (comment != (char *) NULL)
+            comment=DestroyString(comment);
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        }
+      number_pixels=(MagickSizeType) fits_info.columns*fits_info.rows;
+      if ((fits_info.simple != MagickFalse) && (fits_info.number_axes >= 1) &&
+          (fits_info.number_axes <= 4) && (number_pixels != 0))
         break;
-      if (LocaleCompare(keyword,"extend") == 0)
-        fits_info.extend=(*p == 'T') || (*p == 't') ? MagickTrue : MagickFalse;
-      if (LocaleCompare(keyword,"simple") == 0)
-        fits_info.simple=(*p == 'T') || (*p == 't') ? MagickTrue : MagickFalse;
-      if (LocaleCompare(keyword,"bitpix") == 0)
-        fits_info.bits_per_pixel=StringToLong(p);
-      if (LocaleCompare(keyword,"naxis") == 0)
-        fits_info.number_axes=StringToLong(p);
-      if (LocaleCompare(keyword,"naxis1") == 0)
-        fits_info.columns=StringToLong(p);
-      if (LocaleCompare(keyword,"naxis2") == 0)
-        fits_info.rows=StringToLong(p);
-      if (LocaleCompare(keyword,"naxis3") == 0)
-        fits_info.number_planes=StringToLong(p);
-      if (LocaleCompare(keyword,"datamax") == 0)
-        fits_info.max_data=StringToDouble(p,(char **) NULL);
-      if (LocaleCompare(keyword,"datamin") == 0)
-        fits_info.min_data=StringToDouble(p,(char **) NULL);
-      if (LocaleCompare(keyword,"bzero") == 0)
-        fits_info.zero=StringToDouble(p,(char **) NULL);
-      if (LocaleCompare(keyword,"bscale") == 0)
-        fits_info.scale=StringToDouble(p,(char **) NULL);
-      if (LocaleCompare(keyword,"comment") == 0)
-        {
-          if (comment == (char *) NULL)
-            comment=ConstantString(p);
-          else
-            (void) ConcatenateString(&comment,p);
-        }
-      if (LocaleCompare(keyword,"xendian") == 0)
-        {
-          if (LocaleNCompare(p,"big",3) == 0)
-            fits_info.endian=MSBEndian;
-          else
-            fits_info.endian=LSBEndian;
-        }
-      (void) FormatLocaleString(property,MagickPathExtent,"fits:%s",keyword);
-      (void) SetImageProperty(image,property,p,exception);
     }
-    c=0;
-    while (((TellBlob(image) % FITSBlocksize) != 0) && (c != EOF))
-      c=ReadBlobByte(image);
-    if (fits_info.extend == MagickFalse)
-      break;
-    if ((fits_info.bits_per_pixel != 8) && (fits_info.bits_per_pixel != 16) &&
-        (fits_info.bits_per_pixel != 32) && (fits_info.bits_per_pixel != 64) &&
-        (fits_info.bits_per_pixel != -32) && (fits_info.bits_per_pixel != -64))
+    /*
+      Verify that required image information is defined.
+    */
+    if (comment != (char *) NULL)
       {
-        if (comment != (char *) NULL)
-          comment=DestroyString(comment);
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        (void) SetImageProperty(image,"comment",comment,exception);
+        comment=DestroyString(comment);
       }
-    if ((fits_info.columns <= 0) || (fits_info.rows <= 0) ||
-        (fits_info.number_axes <= 0) || (fits_info.number_planes <= 0))
-      {
-        if (comment != (char *) NULL)
-          comment=DestroyString(comment);
-        ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-      }
+    if (EOFBlob(image) != MagickFalse)
+      ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        image->filename);
     number_pixels=(MagickSizeType) fits_info.columns*fits_info.rows;
-    if ((fits_info.simple != MagickFalse) && (fits_info.number_axes >= 1) &&
-        (fits_info.number_axes <= 4) && (number_pixels != 0))
-      break;
-  }
-  /*
-    Verify that required image information is defined.
-  */
-  if (comment != (char *) NULL)
+    if ((fits_info.simple == MagickFalse) || (fits_info.number_axes < 1) ||
+        (fits_info.number_axes > 4) || (number_pixels == 0) ||
+        (fits_info.number_planes <= 0))
+      ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
+    for (scene=0; scene < (ssize_t) fits_info.number_planes; scene++)
     {
-      (void) SetImageProperty(image,"comment",comment,exception);
-      comment=DestroyString(comment);
-    }
-  if (EOFBlob(image) != MagickFalse)
-    ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-      image->filename);
-  number_pixels=(MagickSizeType) fits_info.columns*fits_info.rows;
-  if ((fits_info.simple == MagickFalse) || (fits_info.number_axes < 1) ||
-      (fits_info.number_axes > 4) || (number_pixels == 0) ||
-      (fits_info.number_planes <= 0))
-    ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
-  for (scene=0; scene < (ssize_t) fits_info.number_planes; scene++)
-  {
-    image->columns=(size_t) fits_info.columns;
-    image->rows=(size_t) fits_info.rows;
-    image->depth=(size_t) (fits_info.bits_per_pixel < 0 ? -1 : 1)*
-      fits_info.bits_per_pixel;
-    image->endian=fits_info.endian;
-    image->scene=(size_t) scene;
-    if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
-      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-        break;
-    status=SetImageExtent(image,image->columns,image->rows,exception);
-    if (status == MagickFalse)
-      return(DestroyImageList(image));
-    /*
-      Initialize image structure.
-    */
-    (void) SetImageColorspace(image,GRAYColorspace,exception);
-    if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
-      {
-        if ((fits_info.bits_per_pixel == -32) ||
-            (fits_info.bits_per_pixel == -64))
-          (void) GetFITSPixelExtrema(image,fits_info.bits_per_pixel,
-            &fits_info.min_data,&fits_info.max_data);
-        else
-          fits_info.max_data=GetFITSPixelRange((size_t)
-            fits_info.bits_per_pixel);
-      }
-    else
-      fits_info.max_data=GetFITSPixelRange((size_t) fits_info.bits_per_pixel);
-    /*
-      Convert FITS pixels to pixel packets.
-    */
-    scale=QuantumRange*PerceptibleReciprocal(fits_info.max_data-
-      fits_info.min_data);
-    for (y=(ssize_t) image->rows-1; y >= 0; y--)
-    {
-      q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
-      if (q == (Quantum *) NULL)
-        break;
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
-        if ((image->depth == 16) || (image->depth == 32) ||
-            (image->depth == 64))
-          SetFITSUnsignedPixels(1,image->depth,image->endian,
-            (unsigned char *) &pixel);
-        SetPixelGray(image,ClampToQuantum(scale*(fits_info.scale*(pixel-
-          fits_info.min_data)+fits_info.zero)),q);
-        q+=GetPixelChannels(image);
-      }
-      if (SyncAuthenticPixels(image,exception) == MagickFalse)
-        break;
-      if (image->previous == (Image *) NULL)
+      image->columns=(size_t) fits_info.columns;
+      image->rows=(size_t) fits_info.rows;
+      image->depth=(size_t) (fits_info.bits_per_pixel < 0 ? -1 : 1)*
+        fits_info.bits_per_pixel;
+      image->endian=fits_info.endian;
+      image->scene=(size_t) scene;
+      if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
+        if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+          break;
+      status=SetImageExtent(image,image->columns,image->rows,exception);
+      if (status == MagickFalse)
+        return(DestroyImageList(image));
+      /*
+        Initialize image structure.
+      */
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
+      if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
         {
-          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-            image->rows);
+          if ((fits_info.bits_per_pixel == -32) ||
+              (fits_info.bits_per_pixel == -64))
+            (void) GetFITSPixelExtrema(image,fits_info.bits_per_pixel,
+              &fits_info.min_data,&fits_info.max_data);
+          else
+            fits_info.max_data=GetFITSPixelRange((size_t)
+              fits_info.bits_per_pixel);
+        }
+      else
+        fits_info.max_data=GetFITSPixelRange((size_t) fits_info.bits_per_pixel);
+      /*
+        Convert FITS pixels to pixel packets.
+      */
+      scale=QuantumRange*PerceptibleReciprocal(fits_info.max_data-
+        fits_info.min_data);
+      for (y=(ssize_t) image->rows-1; y >= 0; y--)
+      {
+        q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+        if (q == (Quantum *) NULL)
+          break;
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
+          if ((image->depth == 16) || (image->depth == 32) ||
+              (image->depth == 64))
+            SetFITSUnsignedPixels(1,image->depth,image->endian,
+              (unsigned char *) &pixel);
+          SetPixelGray(image,ClampToQuantum(scale*(fits_info.scale*(pixel-
+            fits_info.min_data)+fits_info.zero)),q);
+          q+=GetPixelChannels(image);
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+        if (image->previous == (Image *) NULL)
+          {
+            status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+              image->rows);
+            if (status == MagickFalse)
+              break;
+          }
+      }
+      if (EOFBlob(image) != MagickFalse)
+        {
+          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
+          break;
+        }
+      /*
+        Proceed to next image.
+      */
+      if (image_info->number_scenes != 0)
+        if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+          break;
+      if (scene < (ssize_t) (fits_info.number_planes-1))
+        {
+          /*
+            Allocate next image structure.
+          */
+          AcquireNextImage(image_info,image,exception);
+          if (GetNextImageInList(image) == (Image *) NULL)
+            {
+              status=MagickFalse;
+              break;
+            }
+          image=SyncNextImageInList(image);
+          status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
+            GetBlobSize(image));
           if (status == MagickFalse)
             break;
         }
     }
+    c=0;
+    while (((TellBlob(image) % FITSBlocksize) != 0) && (c != EOF))
+      c=ReadBlobByte(image);
+    if (TellBlob(image) >= GetBlobSize(image))
+      break;
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
@@ -502,24 +544,21 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (image_info->number_scenes != 0)
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    if (scene < (ssize_t) (fits_info.number_planes-1))
+    /*
+      Allocate next image structure.
+    */
+    AcquireNextImage(image_info,image,exception);
+    if (GetNextImageInList(image) == (Image *) NULL)
       {
-        /*
-          Allocate next image structure.
-        */
-        AcquireNextImage(image_info,image,exception);
-        if (GetNextImageInList(image) == (Image *) NULL)
-          {
-            status=MagickFalse;
-            break;
-          }
-        image=SyncNextImageInList(image);
-        status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
-          GetBlobSize(image));
-        if (status == MagickFalse)
-          break;
+        status=MagickFalse;
+        break;
       }
-  }
+    image=SyncNextImageInList(image);
+    status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
+      GetBlobSize(image));
+    if (status == MagickFalse)
+      break;
+  } while (1);
   (void) CloseBlob(image);
   if (status == MagickFalse)
     return(DestroyImageList(image));
@@ -558,14 +597,12 @@ ModuleExport size_t RegisterFITSImage(void)
   entry->decoder=(DecodeImageHandler *) ReadFITSImage;
   entry->encoder=(EncodeImageHandler *) WriteFITSImage;
   entry->magick=(IsImageFormatHandler *) IsFITS;
-  entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("FITS","FTS","Flexible Image Transport System");
   entry->decoder=(DecodeImageHandler *) ReadFITSImage;
   entry->encoder=(EncodeImageHandler *) WriteFITSImage;
   entry->magick=(IsImageFormatHandler *) IsFITS;
-  entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
@@ -654,11 +691,15 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     is_gray,
     status;
 
+  MagickOffsetType
+    scene; 
+
   QuantumInfo
     *quantum_info;
 
   size_t
-    length;
+    length,
+    number_scenes;
 
   ssize_t
     count,
@@ -690,172 +731,183 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   fits_info=(char *) AcquireQuantumMemory(30*FITSBlocksize,sizeof(*fits_info));
   if (fits_info == (char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) memset(fits_info,' ',FITSBlocksize*sizeof(*fits_info));
-  /*
-    Initialize image header.
-  */
-  image->depth=GetImageQuantumDepth(image,MagickFalse);
-  image->endian=MSBEndian;
-  quantum_info=AcquireQuantumInfo(image_info,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    {
-      fits_info=DestroyString(fits_info);
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  offset=0;
-  (void) FormatLocaleString(header,FITSBlocksize,
-    "SIMPLE  =                    T");
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  (void) FormatLocaleString(header,FITSBlocksize,"BITPIX  =           %10ld",
-    (long) ((quantum_info->format == FloatingPointQuantumFormat ? -1 : 1)*
-    image->depth));
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  is_gray=IdentifyImageCoderGray(image,exception);
-  (void) FormatLocaleString(header,FITSBlocksize,"NAXIS   =           %10lu",
-    (is_gray != MagickFalse) ? 2UL : 3UL);
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  (void) FormatLocaleString(header,FITSBlocksize,"NAXIS1  =           %10lu",
-    (unsigned long) image->columns);
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  (void) FormatLocaleString(header,FITSBlocksize,"NAXIS2  =           %10lu",
-    (unsigned long) image->rows);
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  if (is_gray == MagickFalse)
-    {
-      (void) FormatLocaleString(header,FITSBlocksize,
-        "NAXIS3  =           %10lu",3UL);
-      offset+=CopyFITSRecord(fits_info,header,offset);
-    }
-  (void) FormatLocaleString(header,FITSBlocksize,"BSCALE  =         %E",1.0);
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  (void) FormatLocaleString(header,FITSBlocksize,"BZERO   =         %E",
-    image->depth > 8 ? (GetFITSPixelRange(image->depth)+1)/2.0 : 0.0);
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  (void) FormatLocaleString(header,FITSBlocksize,"DATAMAX =         %E",
-    1.0*((MagickOffsetType) GetQuantumRange(image->depth)));
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  (void) FormatLocaleString(header,FITSBlocksize,"DATAMIN =         %E",0.0);
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  if (image->endian == LSBEndian)
-    {
-      (void) FormatLocaleString(header,FITSBlocksize,"XENDIAN = 'SMALL'");
-      offset+=CopyFITSRecord(fits_info,header,offset);
-    }
-  (void) FormatLocaleString(header,FITSBlocksize,"HISTORY %.72s",
-    MagickAuthoritativeURL);
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  (void) strncpy(header,"END",FITSBlocksize);
-  offset+=CopyFITSRecord(fits_info,header,offset);
-  (void) WriteBlob(image,FITSBlocksize,(unsigned char *) fits_info);
-  /*
-    Convert image to fits scale PseudoColor class.
-  */
-  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
-  if (is_gray != MagickFalse)
-    {
-      length=GetQuantumExtent(image,quantum_info,GrayQuantum);
-      for (y=(ssize_t) image->rows-1; y >= 0; y--)
+  scene=0;
+  number_scenes=GetImageListLength(image);
+  do
+  {
+    /*
+      Initialize image header.
+    */
+    image->depth=GetImageQuantumDepth(image,MagickFalse);
+    image->endian=MSBEndian;
+    quantum_info=AcquireQuantumInfo(image_info,image);
+    if (quantum_info == (QuantumInfo *) NULL)
       {
-        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          break;
-        length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-          GrayQuantum,pixels,exception);
-        if (image->depth == 16)
-          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
-            pixels);
-        if (((image->depth == 32) || (image->depth == 64)) &&
-            (quantum_info->format != FloatingPointQuantumFormat))
-          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
-            pixels);
-        count=WriteBlob(image,length,pixels);
-        if (count != (ssize_t) length)
-          break;
-        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-          image->rows);
-        if (status == MagickFalse)
-          break;
+        fits_info=DestroyString(fits_info);
+        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    }
-  else
-    {
-      length=GetQuantumExtent(image,quantum_info,RedQuantum);
-      for (y=(ssize_t) image->rows-1; y >= 0; y--)
+    (void) memset(fits_info,' ',FITSBlocksize*sizeof(*fits_info));
+    offset=0;
+    (void) FormatLocaleString(header,FITSBlocksize,
+      "SIMPLE  =                    T");
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    (void) FormatLocaleString(header,FITSBlocksize,"BITPIX  =           %10ld",
+      (long) ((quantum_info->format == FloatingPointQuantumFormat ? -1 : 1)*
+      image->depth));
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    is_gray=IdentifyImageCoderGray(image,exception);
+    (void) FormatLocaleString(header,FITSBlocksize,"NAXIS   =           %10lu",
+      (is_gray != MagickFalse) ? 2UL : 3UL);
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    (void) FormatLocaleString(header,FITSBlocksize,"NAXIS1  =           %10lu",
+      (unsigned long) image->columns);
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    (void) FormatLocaleString(header,FITSBlocksize,"NAXIS2  =           %10lu",
+      (unsigned long) image->rows);
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    if (is_gray == MagickFalse)
       {
-        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          break;
-        length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-          RedQuantum,pixels,exception);
-        if (image->depth == 16)
-          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
-            pixels);
-        if (((image->depth == 32) || (image->depth == 64)) &&
-            (quantum_info->format != FloatingPointQuantumFormat))
-          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
-            pixels);
-        count=WriteBlob(image,length,pixels);
-        if (count != (ssize_t) length)
-          break;
-        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-          image->rows);
-        if (status == MagickFalse)
-          break;
+        (void) FormatLocaleString(header,FITSBlocksize,
+          "NAXIS3  =           %10lu",3UL);
+        offset+=CopyFITSRecord(fits_info,header,offset);
       }
-      length=GetQuantumExtent(image,quantum_info,GreenQuantum);
-      for (y=(ssize_t) image->rows-1; y >= 0; y--)
+    (void) FormatLocaleString(header,FITSBlocksize,"BSCALE  =         %E",1.0);
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    (void) FormatLocaleString(header,FITSBlocksize,"BZERO   =         %E",
+      image->depth > 8 ? (GetFITSPixelRange(image->depth)+1)/2.0 : 0.0);
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    (void) FormatLocaleString(header,FITSBlocksize,"DATAMAX =         %E",
+      1.0*((MagickOffsetType) GetQuantumRange(image->depth)));
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    (void) FormatLocaleString(header,FITSBlocksize,"DATAMIN =         %E",0.0);
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    if (image->endian == LSBEndian)
       {
-        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          break;
-        length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-          GreenQuantum,pixels,exception);
-        if (image->depth == 16)
-          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
-            pixels);
-        if (((image->depth == 32) || (image->depth == 64)) &&
-            (quantum_info->format != FloatingPointQuantumFormat))
-          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
-            pixels);
-        count=WriteBlob(image,length,pixels);
-        if (count != (ssize_t) length)
-          break;
-        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-          image->rows);
-        if (status == MagickFalse)
-          break;
+        (void) FormatLocaleString(header,FITSBlocksize,"XENDIAN = 'SMALL'");
+        offset+=CopyFITSRecord(fits_info,header,offset);
       }
-      length=GetQuantumExtent(image,quantum_info,BlueQuantum);
-      for (y=(ssize_t) image->rows-1; y >= 0; y--)
+    (void) FormatLocaleString(header,FITSBlocksize,"HISTORY %.72s",
+      MagickAuthoritativeURL);
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    (void) strncpy(header,"END",FITSBlocksize);
+    offset+=CopyFITSRecord(fits_info,header,offset);
+    (void) WriteBlob(image,FITSBlocksize,(unsigned char *) fits_info);
+    /*
+      Convert image to fits scale PseudoColor class.
+    */
+    pixels=(unsigned char *) GetQuantumPixels(quantum_info);
+    if (is_gray != MagickFalse)
       {
-        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          break;
-        length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-          BlueQuantum,pixels,exception);
-        if (image->depth == 16)
-          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
-            pixels);
-        if (((image->depth == 32) || (image->depth == 64)) &&
-            (quantum_info->format != FloatingPointQuantumFormat))
-          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
-            pixels);
-        count=WriteBlob(image,length,pixels);
-        if (count != (ssize_t) length)
-          break;
-        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-          image->rows);
-        if (status == MagickFalse)
-          break;
+        length=GetQuantumExtent(image,quantum_info,GrayQuantum);
+        for (y=(ssize_t) image->rows-1; y >= 0; y--)
+        {
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          if (p == (const Quantum *) NULL)
+            break;
+          length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            GrayQuantum,pixels,exception);
+          if (image->depth == 16)
+            SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+              pixels);
+          if (((image->depth == 32) || (image->depth == 64)) &&
+              (quantum_info->format != FloatingPointQuantumFormat))
+            SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+              pixels);
+          count=WriteBlob(image,length,pixels);
+          if (count != (ssize_t) length)
+            break;
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
       }
-    }
-  quantum_info=DestroyQuantumInfo(quantum_info);
-  length=(size_t) (FITSBlocksize-TellBlob(image) % FITSBlocksize);
-  if (length != 0)
-    {
-      (void) memset(fits_info,0,length*sizeof(*fits_info));
-      (void) WriteBlob(image,length,(unsigned char *) fits_info);
-    }
+    else
+      {
+        length=GetQuantumExtent(image,quantum_info,RedQuantum);
+        for (y=(ssize_t) image->rows-1; y >= 0; y--)
+        {
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          if (p == (const Quantum *) NULL)
+            break;
+          length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            RedQuantum,pixels,exception);
+          if (image->depth == 16)
+            SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+              pixels);
+          if (((image->depth == 32) || (image->depth == 64)) &&
+              (quantum_info->format != FloatingPointQuantumFormat))
+            SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+              pixels);
+          count=WriteBlob(image,length,pixels);
+          if (count != (ssize_t) length)
+            break;
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
+        length=GetQuantumExtent(image,quantum_info,GreenQuantum);
+        for (y=(ssize_t) image->rows-1; y >= 0; y--)
+        {
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          if (p == (const Quantum *) NULL)
+            break;
+          length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            GreenQuantum,pixels,exception);
+          if (image->depth == 16)
+            SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+              pixels);
+          if (((image->depth == 32) || (image->depth == 64)) &&
+              (quantum_info->format != FloatingPointQuantumFormat))
+            SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+              pixels);
+          count=WriteBlob(image,length,pixels);
+          if (count != (ssize_t) length)
+            break;
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
+        length=GetQuantumExtent(image,quantum_info,BlueQuantum);
+        for (y=(ssize_t) image->rows-1; y >= 0; y--)
+        {
+          p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+          if (p == (const Quantum *) NULL)
+            break;
+          length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+            BlueQuantum,pixels,exception);
+          if (image->depth == 16)
+            SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+              pixels);
+          if (((image->depth == 32) || (image->depth == 64)) &&
+              (quantum_info->format != FloatingPointQuantumFormat))
+            SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+              pixels);
+          count=WriteBlob(image,length,pixels);
+          if (count != (ssize_t) length)
+            break;
+          status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+            image->rows);
+          if (status == MagickFalse)
+            break;
+        }
+      }
+    quantum_info=DestroyQuantumInfo(quantum_info);
+    length=(size_t) (FITSBlocksize-TellBlob(image) % FITSBlocksize);
+    if (length != FITSBlocksize)
+      {
+        (void) memset(fits_info,0,length*sizeof(*fits_info));
+        (void) WriteBlob(image,length,(unsigned char *) fits_info);
+      }
+    if (GetNextImageInList(image) == (Image *) NULL)
+      break;
+    image=SyncNextImageInList(image);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
+    if (status == MagickFalse)
+      break;
+  } while (image_info->adjoin != MagickFalse);
   fits_info=DestroyString(fits_info);
   (void) CloseBlob(image);
   return(MagickTrue);

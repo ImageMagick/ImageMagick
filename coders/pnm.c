@@ -1804,17 +1804,17 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
   QuantumType
     quantum_type;
 
-  unsigned char
-    *q;
-
   size_t
     extent,
-    imageListLength,
+    number_scenes,
     packet_size;
 
   ssize_t
     count,
     y;
+
+  unsigned char
+    *q;
 
   /*
     Open output image file.
@@ -1831,7 +1831,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     QuantumAny
@@ -2798,7 +2798,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

@@ -1425,16 +1425,13 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     media_info,
     page_info;
 
-  unsigned char
-    *q;
-
   SegmentInfo
     bounds;
 
   size_t
     bit,
     byte,
-    imageListLength,
+    number_scenes,
     length,
     page,
     text_size;
@@ -1449,7 +1446,9 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     timer;
 
   unsigned char
-    pixels[2048];
+    pixels[2048],
+    *q;
+
 
   /*
     Open output image file.
@@ -1471,7 +1470,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     compression=image_info->compression;
   page=1;
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     ImageType
@@ -1621,7 +1620,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
             (void) WriteBlobString(image,"%%PageOrder: Ascend\n");
             (void) FormatLocaleString(buffer,MagickPathExtent,
               "%%%%Pages: %.20g\n",image_info->adjoin != MagickFalse ?
-              (double) imageListLength : 1.0);
+              (double) number_scenes : 1.0);
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -2161,7 +2160,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

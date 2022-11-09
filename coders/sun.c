@@ -779,6 +779,9 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
       maplength;
   } SUNInfo;
 
+  const Quantum
+    *p;
+
   MagickBooleanType
     status;
 
@@ -788,17 +791,12 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
   MagickSizeType
     number_pixels;
 
-  const Quantum
-    *p;
+  size_t
+    number_scenes;
 
   ssize_t
     i,
-    x;
-
-  size_t
-    imageListLength;
-
-  ssize_t
+    x,
     y;
 
   SUNInfo
@@ -819,7 +817,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     /*
@@ -1033,7 +1031,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

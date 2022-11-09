@@ -1662,6 +1662,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
   const char
     *option;
 
+  const Quantum
+    *p;
+
   const StringInfo
     *profile;
 
@@ -1670,37 +1673,28 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     status;
 
   MagickOffsetType
+    profile_data,
+    profile_size,
+    profile_size_pad,
     scene;
 
   MemoryInfo
     *pixel_info;
 
-  const Quantum
-    *p;
-
-  ssize_t
-    i,
-    x;
-
-  unsigned char
-    *q;
-
   size_t
     bytes_per_line,
-    imageListLength,
+    number_scenes,
     type;
 
   ssize_t
+    i,
+    x,
     y;
 
   unsigned char
     *bmp_data,
-    *pixels;
-
-  MagickOffsetType
-    profile_data,
-    profile_size,
-    profile_size_pad;
+    *pixels,
+    *q;
 
   /*
     Open output image file.
@@ -1738,7 +1732,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         type=4;
     }
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     /*
@@ -2472,8 +2466,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
       {
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                "  Profile:  %g bytes",(double) profile_size+profile_size_pad);
-        (void) WriteBlob(image,(size_t) profile_size,GetStringInfoDatum(profile));
+            "  Profile:  %g bytes",(double) profile_size+profile_size_pad);
+        (void) WriteBlob(image,(size_t) profile_size,
+          GetStringInfoDatum(profile));
         if (profile_size_pad > 0)  /* padding for 4 bytes multiple */
           (void) WriteBlob(image,(size_t) profile_size_pad,"\0\0\0");
       }
@@ -2481,7 +2476,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

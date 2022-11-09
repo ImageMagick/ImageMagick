@@ -388,6 +388,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     *filter,
     *value;
 
+  const Quantum
+    *p;
+
   double
     pointsize;
 
@@ -422,26 +425,19 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     media_info,
     page_info;
 
-  const Quantum
-    *p;
-
-  ssize_t
-    x;
-
-  ssize_t
-    i;
-
   SegmentInfo
     bounds;
 
   size_t
-    imageListLength,
     length,
+    number_scenes,
     page,
     text_size;
 
   ssize_t
+    i,
     j,
+    x,
     y;
 
   time_t
@@ -485,7 +481,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
   (void) memset(&bounds,0,sizeof(bounds));
   page=1;
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     /*
@@ -608,7 +604,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
               (void) CopyMagickString(buffer,"%%Pages: 1\n",MagickPathExtent);
             else
               (void) FormatLocaleString(buffer,MagickPathExtent,
-                "%%%%Pages: %.20g\n",(double) imageListLength);
+                "%%%%Pages: %.20g\n",(double) number_scenes);
             (void) WriteBlobString(image,buffer);
           }
         if (image->colorspace == CMYKColorspace)
@@ -1111,7 +1107,7 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

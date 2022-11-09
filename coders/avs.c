@@ -327,6 +327,9 @@ ModuleExport void UnregisterAVSImage(void)
 static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
+  const Quantum
+    *magick_restrict p;
+
   MagickBooleanType
     status;
 
@@ -336,24 +339,17 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image,
   MemoryInfo
     *pixel_info;
 
-  const Quantum
-    *magick_restrict p;
-
-  ssize_t
-    x;
-
-  unsigned char
-    *magick_restrict q;
-
   size_t
-    imageListLength;
+    number_scenes;
 
   ssize_t
     count,
+    x,
     y;
 
   unsigned char
-    *pixels;
+    *pixels,
+    *magick_restrict q;
 
   /*
     Open output image file.
@@ -370,7 +366,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     /*
@@ -420,7 +416,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

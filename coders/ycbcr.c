@@ -1058,6 +1058,9 @@ ModuleExport void UnregisterYCBCRImage(void)
 static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
+  const Quantum
+    *p;
+
   MagickBooleanType
     status;
 
@@ -1070,12 +1073,9 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  const Quantum
-    *p;
-
   size_t
-    imageListLength,
-    length;
+    length,
+    number_scenes;
 
   ssize_t
     count,
@@ -1108,7 +1108,7 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
   if (LocaleCompare(image_info->magick,"YCbCrA") == 0)
     quantum_type=RGBAQuantum;
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     /*
@@ -1390,7 +1390,7 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

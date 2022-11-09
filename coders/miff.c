@@ -2064,15 +2064,13 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  ssize_t
-    i;
-
   size_t
-    imageListLength,
     length,
+    number_scenes,
     packet_size;
 
   ssize_t
+    i,
     y;
 
   unsigned char
@@ -2100,7 +2098,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   scene=0;
-  imageListLength=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     /*
@@ -2835,7 +2833,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,imageListLength);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);

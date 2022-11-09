@@ -674,7 +674,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     scene;
 
   size_t
-    number_images;
+    number_scenes;
 
   /*
     Open output image file.
@@ -689,7 +689,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   scene=0;
-  number_images=GetImageListLength(image);
+  number_scenes=GetImageListLength(image);
   do
   {
     char
@@ -788,7 +788,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    status=SetImageProgress(image,SaveImagesTag,scene++,number_images);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
