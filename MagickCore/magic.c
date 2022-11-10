@@ -488,7 +488,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_aliases=0;
-  if (IsMagicCacheInstantiated(exception) == MagickFalse)
+  if (IsMagicCacheInstantiated() == MagickFalse)
     return((const MagicInfo **) NULL);
   aliases=(const MagicInfo **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
@@ -584,7 +584,7 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
   *number_aliases=0;
-  if (IsMagicCacheInstantiated(exception) == MagickFalse)
+  if (IsMagicCacheInstantiated() == MagickFalse)
     return((char **) NULL);
   aliases=(char **) AcquireQuantumMemory((size_t)
     GetNumberOfElementsInLinkedList(magic_list)+1UL,sizeof(*aliases));
