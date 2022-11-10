@@ -2290,7 +2290,7 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
               }
           }
         }
-        gamma=PerceptibleReciprocal(count);
+        gamma=PerceptibleReciprocal((double) count);
         mean_location.x=gamma*sum_location.x;
         mean_location.y=gamma*sum_location.y;
         mean_pixel.red=gamma*sum_pixel.red;
