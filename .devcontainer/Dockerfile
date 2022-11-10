@@ -4,9 +4,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y autoconf autopoint binutils clang cmake gettext git gperf libc++-dev libc++abi-dev libtool make nasm pkg-config po4a
 
-RUN mkdir /dependencies
+RUN mkdir /ImageMagick
+RUN chown vscode.vscode /ImageMagick
 
-WORKDIR /dependencies
+USER vscode
+RUN mkdir /ImageMagick/dependencies 
+WORKDIR /ImageMagick/dependencies
 
 RUN git clone --depth 1 https://gitlab.com/libtiff/libtiff
 RUN git clone --depth 1 https://github.com/strukturag/libde265
@@ -27,8 +30,9 @@ RUN git -c http.sslVerify=false clone https://www.cl.cam.ac.uk/~mgk25/git/jbigki
 RUN curl https://raw.githubusercontent.com/ImageMagick/ImageMagick/main/Magick%2B%2B/fuzz/build_dependencies.sh -o build_dependencies.sh && \
     chmod +x build_dependencies.sh
 
-ENV SRC=/dependencies
-ENV WORK=/usr/local
+ENV SRC=/ImageMagick/dependencies
+ENV WORK=/ImageMagick
+ENV PATH=$PATH:/ImageMagick/bin
 ENV CXX=clang++
 ENV CC=clang
 ENV CFLAGS="-O1 -fno-omit-frame-pointer -fsanitize=address -fsanitize-address-use-after-scope"
