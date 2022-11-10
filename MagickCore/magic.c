@@ -472,7 +472,7 @@ static int MagicInfoCompare(const void *x,const void *y)
 #endif
 
 MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
-  size_t *number_aliases,ExceptionInfo *exception)
+  size_t *number_aliases,ExceptionInfo *magick_unused(exception))
 {
   const MagicInfo
     **aliases;
@@ -483,6 +483,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   ssize_t
     i;
 
+  magick_unreferenced(exception);
   assert(pattern != (char *) NULL);
   assert(number_aliases != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)
@@ -568,7 +569,7 @@ static int MagicCompare(const void *x,const void *y)
 #endif
 
 MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
-  ExceptionInfo *exception)
+  ExceptionInfo *magick_unused(exception))
 {
   char
     **aliases;
@@ -578,7 +579,8 @@ MagickExport char **GetMagicList(const char *pattern,size_t *number_aliases,
 
   ssize_t
     i;
-
+  
+  magick_unreferenced(exception);
   assert(pattern != (char *) NULL);
   assert(number_aliases != (size_t *) NULL);
   if (IsEventLogging() != MagickFalse)
