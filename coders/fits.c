@@ -530,7 +530,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     c=0;
     while (((TellBlob(image) % FITSBlocksize) != 0) && (c != EOF))
       c=ReadBlobByte(image);
-    if (TellBlob(image) >= GetBlobSize(image))
+    if (TellBlob(image) >= (MagickOffsetType) GetBlobSize(image))
       break;
     if (EOFBlob(image) != MagickFalse)
       {
