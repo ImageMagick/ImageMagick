@@ -338,7 +338,8 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
       Next image is the dispose image, overlaid with next frame in sequence.
     */
     coalesce_image->next=CloneImage(dispose_image,0,0,MagickTrue,exception);
-    coalesce_image->next->previous=coalesce_image;
+    if (coalesce_image->next != (Image *) NULL)
+      coalesce_image->next->previous=coalesce_image;
     previous=coalesce_image;
     coalesce_image=GetNextImageInList(coalesce_image);
     coalesce_image->background_color.alpha_trait=BlendPixelTrait;
