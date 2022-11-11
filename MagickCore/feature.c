@@ -2241,7 +2241,7 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
       {
         double
           distance,
-          gamma;
+          gamma = 1.0;
 
         PixelInfo
           sum_pixel;
@@ -2290,7 +2290,8 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
               }
           }
         }
-        gamma=PerceptibleReciprocal((double) count);
+        if (count != 0)
+          gamma=PerceptibleReciprocal((double) count);
         mean_location.x=gamma*sum_location.x;
         mean_location.y=gamma*sum_location.y;
         mean_pixel.red=gamma*sum_pixel.red;
