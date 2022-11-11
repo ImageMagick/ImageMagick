@@ -604,7 +604,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((count == 18) &&
           (LocaleCompare(tga_info.signature,"TRUEVISION-XFILE.") == 0) &&
           (tga_info.extension > 3) &&
-          (SeekBlob(image,tga_info.extension,SEEK_SET) == tga_info.extension))
+          (SeekBlob(image,tga_info.extension,SEEK_SET) == (MagickOffsetType) tga_info.extension))
         {
           tga_info.size=(unsigned long) ReadBlobLSBShort(image);
           if (tga_info.size == 495)
