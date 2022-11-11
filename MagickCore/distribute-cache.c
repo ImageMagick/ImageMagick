@@ -80,7 +80,7 @@
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#define CHAR_TYPE_CAST
+#define CHAR_TYPE_CAST (char *)
 #define CLOSE_SOCKET(socket) (void) close(socket)
 #define HANDLER_RETURN_TYPE void *
 #define HANDLER_RETURN_VALUE (void *) NULL

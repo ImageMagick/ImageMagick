@@ -2898,7 +2898,7 @@ static inline fxFltType ImageStat (
       {
         (void) ThrowMagickException(pfx->exception,GetMagickModule(),
           OptionError,"NoSuchImageChannel","%i",channel);
-        channel=0;
+        channel=(PixelChannel) 0;
       }
     cs = pfx->statistics[ImgNum];
   } else if (pfx->NeedStats) {
@@ -2907,7 +2907,7 @@ static inline fxFltType ImageStat (
       {
         (void) ThrowMagickException(pfx->exception,GetMagickModule(),
           OptionError,"NoSuchImageChannel","%i",channel);
-        channel=0;
+        channel=(PixelChannel) 0;
       }
     cs = pfx->statistics[ImgNum];
     cs = CollectOneImgStats (pfx, pfx->Images[ImgNum]);
