@@ -164,7 +164,7 @@ static int XBMInteger(Image *image,short int *hex_digits)
     c=ReadBlobByte(image);
     if (c == EOF)
       return(-1);
-  } while (hex_digits[c] >= 0);
+  } while (hex_digits[c & 0xff] >= 0);
   return((int) value);
 }
 
