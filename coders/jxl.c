@@ -54,6 +54,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
+#include "MagickCore/property.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
@@ -166,11 +167,16 @@ static void *JXLAcquireMemory(void *opaque,size_t size)
   return(data);
 }
 
-static inline StorageType JXLDataTypeToStorageType(const JxlDataType data_type)
+static inline StorageType JXLDataTypeToStorageType(Image *image,
+  const JxlDataType data_type,ExceptionInfo *exception)
 {
   switch (data_type)
   {
     case JXL_TYPE_FLOAT:
+      return FloatPixel;
+    case JXL_TYPE_FLOAT16:
+      (void) SetImageProperty(image,"quantum:format","floating-point",
+        exception);
       return FloatPixel;
     case JXL_TYPE_UINT16:
       return ShortPixel;
@@ -222,14 +228,31 @@ static inline void JXLSetMemoryManager(JxlMemoryManager *memory_manager,
   memory_manager->free=JXLRelinquishMemory;
 }
 
-static inline void JXLSetFormat(Image *image,JxlPixelFormat *pixel_format)
+static inline void JXLSetFormat(Image *image,JxlPixelFormat *pixel_format,
+  ExceptionInfo *exception)
 {
+  const char
+    *property;
+
   pixel_format->num_channels=(image->alpha_trait == BlendPixelTrait) ? 4U : 3U;
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     pixel_format->num_channels=(image->alpha_trait == BlendPixelTrait) ?
       2U : 1U;
   pixel_format->data_type=(image->depth > 16) ? JXL_TYPE_FLOAT :
     (image->depth > 8) ? JXL_TYPE_UINT16 : JXL_TYPE_UINT8;
+  property=GetImageProperty(image,"quantum:format",exception);
+  if (property != (char *) NULL)
+    {
+      QuantumFormatType format = (QuantumFormatType) ParseCommandOption(
+        MagickQuantumFormatOptions,MagickFalse,property);
+      if ((format == FloatingPointQuantumFormat) &&
+          (pixel_format->data_type == JXL_TYPE_UINT16))
+        {
+          pixel_format->data_type=JXL_TYPE_FLOAT16;
+          (void) SetImageProperty(image,"quantum:format","floating-point",
+            exception);
+        }
+    }
 }
 
 static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -389,7 +412,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         StringInfo
           *profile;
 
-        JXLSetFormat(image,&pixel_format);
+        JXLSetFormat(image,&pixel_format,exception);
         (void) memset(&color_encoding,0,sizeof(color_encoding));
         jxl_status=JxlDecoderGetColorAsEncodedProfile(jxl_info,&pixel_format,
           JXL_COLOR_PROFILE_TARGET_DATA,&color_encoding);
@@ -428,7 +451,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         status=SetImageExtent(image,image->columns,image->rows,exception);
         if (status == MagickFalse)
           break;
-        JXLSetFormat(image,&pixel_format);
+        JXLSetFormat(image,&pixel_format,exception);
         jxl_status=JxlDecoderImageOutBufferSize(jxl_info,&pixel_format,&extent);
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
@@ -455,7 +478,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
               CorruptImageError,"UnableToReadImageData","`%s'",image->filename);
             break;
           }
-        type=JXLDataTypeToStorageType(pixel_format.data_type);
+        type=JXLDataTypeToStorageType(image,pixel_format.data_type,exception);
         if (type == UndefinedPixel)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),
@@ -697,7 +720,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       return(MagickFalse);
     }
   (void) memset(&pixel_format,0,sizeof(pixel_format));
-  JXLSetFormat(image,&pixel_format);
+  JXLSetFormat(image,&pixel_format,exception);
   (void) memset(&basic_info,0,sizeof(basic_info));
   JxlEncoderInitBasicInfo(&basic_info);
   basic_info.xsize=(uint32_t) image->columns;
@@ -711,6 +734,12 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         basic_info.bits_per_sample=32;
         basic_info.exponent_bits_per_sample=8;
       }
+    else
+      if (pixel_format.data_type == JXL_TYPE_FLOAT16)
+        {
+          basic_info.bits_per_sample=16;
+          basic_info.exponent_bits_per_sample=8;
+        }
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     basic_info.num_color_channels=1;
   if (image->alpha_trait == BlendPixelTrait)
@@ -779,11 +808,11 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     status=ExportImagePixels(image,0,0,image->columns,image->rows,
       image->alpha_trait == BlendPixelTrait ? "IA" : "I",
-      JXLDataTypeToStorageType(pixel_format.data_type),pixels,exception);
+      JXLDataTypeToStorageType(image,pixel_format.data_type),pixels,exception);
   else
     status=ExportImagePixels(image,0,0,image->columns,image->rows,
       image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
-      JXLDataTypeToStorageType(pixel_format.data_type),pixels,exception);
+      JXLDataTypeToStorageType(image,pixel_format.data_type),pixels,exception);
   if (status == MagickFalse)
     {
       pixel_info=RelinquishVirtualMemory(pixel_info);
