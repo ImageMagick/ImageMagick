@@ -1881,10 +1881,10 @@ dnl ===========================================================================
 # Check for FlashPIX delegate library.
 #
 AC_ARG_WITH([fpx],
-    [AS_HELP_STRING([--without-fpx],
-                    [disable FlashPIX support])],
+    [AS_HELP_STRING([--with-fpx],
+                    [enable FlashPIX support])],
     [with_fpx=$withval],
-    [with_fpx='yes'])
+    [with_fpx='no'])
 
 if test "$with_fpx" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fpx=$with_fpx "

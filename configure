@@ -2073,7 +2073,7 @@ Optional Packages:
                           DejaVu font directory
   --with-fftw             enable FFTW support
   --with-flif             enable FLIF support
-  --without-fpx           disable FlashPIX support
+  --with-fpx              enable FlashPIX support
   --without-djvu          disable DjVu support
   --without-fontconfig    disable fontconfig support
   --without-freetype      disable Freetype support
@@ -5149,7 +5149,7 @@ MAGICK_PATCHLEVEL_VERSION=53
 
 MAGICK_VERSION=7.1.0-53
 
-MAGICK_GIT_REVISION=e8dd49656:20221109
+MAGICK_GIT_REVISION=7cb70aa0b:20221112
 
 
 # Substitute library versioning
@@ -5183,7 +5183,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,53
 
-PACKAGE_RELEASE_DATE=2022-11-09
+PACKAGE_RELEASE_DATE=2022-11-12
 
 
 # Ensure that make can run correctly
@@ -30835,7 +30835,7 @@ if test ${with_fpx+y}
 then :
   withval=$with_fpx; with_fpx=$withval
 else $as_nop
-  with_fpx='yes'
+  with_fpx='no'
 fi
 
 
