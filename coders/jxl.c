@@ -808,11 +808,13 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     status=ExportImagePixels(image,0,0,image->columns,image->rows,
       image->alpha_trait == BlendPixelTrait ? "IA" : "I",
-      JXLDataTypeToStorageType(image,pixel_format.data_type),pixels,exception);
+      JXLDataTypeToStorageType(image,pixel_format.data_type,exception),pixels,
+      exception);
   else
     status=ExportImagePixels(image,0,0,image->columns,image->rows,
       image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
-      JXLDataTypeToStorageType(image,pixel_format.data_type),pixels,exception);
+      JXLDataTypeToStorageType(image,pixel_format.data_type,exception),pixels,
+      exception);
   if (status == MagickFalse)
     {
       pixel_info=RelinquishVirtualMemory(pixel_info);
