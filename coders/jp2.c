@@ -499,9 +499,10 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(CoderError,
               "IrregularChannelGeometryNotSupported")
           }
-        scale=QuantumRange/(double) ((1UL << jp2_image->comps[i].prec)-1);
-        pixel=scale*(jp2_image->comps[i].data[index]+
-          (jp2_image->comps[i].sgnd ? 1UL << (jp2_image->comps[i].prec-1) : 0));
+        scale=QuantumRange/(double) ((MagickULLConstant(1) <<
+          jp2_image->comps[i].prec)-1);
+        pixel=scale*(jp2_image->comps[i].data[index]+(jp2_image->comps[i].sgnd ?
+          MagickULLConstant(1) << (jp2_image->comps[i].prec-1) : 0));
         switch (i)
         {
            case 0:
@@ -809,7 +810,8 @@ static inline int CalculateNumResolutions(size_t width,size_t height)
     i;
 
   for (i=1; i < 6; i++)
-    if ((width < ((size_t) 1UL << i)) || (height < ((size_t) 1UL << i)))
+    if ((width < ((size_t) MagickULLConstant(1) << i)) ||
+        (height < ((size_t) MagickULLConstant(1) << i)))
       break;
   return(i);
 }
@@ -1062,8 +1064,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
         int
           *q;
 
-        scale=(double) (((size_t) 1UL << jp2_image->comps[i].prec)-1)/
-          QuantumRange;
+        scale=(double) (((size_t) MagickULLConstant(1) <<
+          jp2_image->comps[i].prec)-1)/QuantumRange;
         q=jp2_image->comps[i].data+(ssize_t) (y*PerceptibleReciprocal(
           jp2_image->comps[i].dy)*image->columns*PerceptibleReciprocal(
           jp2_image->comps[i].dx)+x*PerceptibleReciprocal(
