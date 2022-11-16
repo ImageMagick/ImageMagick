@@ -2086,7 +2086,7 @@ Optional Packages:
   --without-heic          disable HEIC support
   --without-jbig          disable JBIG support
   --without-jpeg          disable JPEG support
-  --with-jxl              enable JPEG-XL support
+  --without-jxl           disable JPEG-XL support
   --without-lcms          disable lcms (v1.1X) support
   --without-openjp2       disable OpenJP2 support
   --without-lqr           disable Liquid Rescale support
@@ -5149,7 +5149,7 @@ MAGICK_PATCHLEVEL_VERSION=53
 
 MAGICK_VERSION=7.1.0-53
 
-MAGICK_GIT_REVISION=1414950fe:20221114
+MAGICK_GIT_REVISION=28a3af8a7:20221115
 
 
 # Substitute library versioning
@@ -5183,7 +5183,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,53
 
-PACKAGE_RELEASE_DATE=2022-11-14
+PACKAGE_RELEASE_DATE=2022-11-15
 
 
 # Ensure that make can run correctly
@@ -32204,7 +32204,7 @@ if test ${with_jxl+y}
 then :
   withval=$with_jxl; with_jxl=$withval
 else $as_nop
-  with_jxl='no'
+  with_jxl='yes'
 fi
 
 

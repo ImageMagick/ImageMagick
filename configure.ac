@@ -2359,10 +2359,10 @@ dnl ===========================================================================
 # Check for JPEG-XL delegate library.
 #
 AC_ARG_WITH([jxl],
-    [AS_HELP_STRING([--with-jxl],
-                    [enable JPEG-XL support])],
+    [AS_HELP_STRING([--without-jxl],
+                    [disable JPEG-XL support])],
     [with_jxl=$withval],
-    [with_jxl='no'])
+    [with_jxl='yes'])
 
 # Check for the JPEG-XL library.
 have_jxl='no'
