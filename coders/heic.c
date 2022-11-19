@@ -226,7 +226,7 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       offset|=(unsigned int) (*(exif_profile+2)) << 8;
       offset|=(unsigned int) *(exif_profile+3);
       offset+=4;
-      if (offset < length-4)
+      if (offset < (length-4))
         {
           length-=offset;
           profile=BlobToStringInfo(exif_profile+offset,(size_t) length);

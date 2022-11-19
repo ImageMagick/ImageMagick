@@ -19,7 +19,7 @@ chdir 't/x11' || die 'Cd failed';
 #
 if ( 0 && defined($ENV{'DISPLAY'}) && ($^O ne 'MSWin32') ) {
   $image=Image::Magick->new;
-  $x=$image->ReadImage('congrats.miff');
+  $x=$image->ReadImage('congrats.gif');
   if( "$x" ) {
     print "not ok $test\n";
   } else {
