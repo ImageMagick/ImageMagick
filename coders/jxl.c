@@ -354,17 +354,18 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case JXL_DEC_NEED_MORE_INPUT:
       {
         size_t
-          remaining = JxlDecoderReleaseInput(jxl_info);
+          remaining;
 
         ssize_t
           count;
 
+        remaining=JxlDecoderReleaseInput(jxl_info);
         if (remaining > 0)
           memmove(pixels,pixels+input_size-remaining,remaining);
         count=ReadBlob(image,input_size-remaining,pixels+remaining);
         if (count <= 0)
           {
-            jxl_status=JXL_DEC_ERROR;
+            JxlDecoderCloseInput(jxl_info);
             break;
           }
         jxl_status=JxlDecoderSetInput(jxl_info,(const uint8_t *) pixels,
@@ -496,6 +497,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case JXL_DEC_ERROR:
         break;
       default:
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"Unsupported status type","`%d'",jxl_status);
         jxl_status=JXL_DEC_ERROR;
         break;
     }
@@ -864,6 +867,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
     }
   pixel_info=RelinquishVirtualMemory(pixel_info);
+  //JxlEncoderAddBox
   JxlThreadParallelRunnerDestroy(runner);
   JxlEncoderDestroy(jxl_info);
   if (jxl_status != JXL_ENC_SUCCESS)
