@@ -150,7 +150,7 @@ t/rad/input.rad
 t/rad/read.t
 t/rad/write.t
 t/read.t
-t/reference/cgm/read.miff
+t/reference/cgm/read.gif
 t/reference/composite/Add.miff
 t/reference/composite/Atop.miff
 t/reference/composite/Bumpmap.miff
@@ -330,8 +330,8 @@ t/reference/read/input_xwd.miff
 t/reference/ttf/annotate.miff
 t/reference/ttf/label.miff
 t/reference/ttf/read.miff
-t/reference/wmf/clock.miff
-t/reference/wmf/wizard.miff
+t/reference/wmf/clock.gif
+t/reference/wmf/wizard.gif
 t/reference/write/cgm/read.miff
 t/reference/write/composite/Add.miff
 t/reference/write/composite/Atop.miff
@@ -537,7 +537,7 @@ t/wmf/read.t
 t/wmf/wizard.wmf
 t/write.t
 t/x11/congrats.fig
-t/x11/congrats.miff
+t/x11/congrats.gif
 t/x11/input.xwd
 t/x11/read.t
 t/x11/write.t
