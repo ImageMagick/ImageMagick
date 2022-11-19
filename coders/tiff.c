@@ -62,6 +62,7 @@
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
+#include "MagickCore/locale_.h"
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
@@ -807,8 +808,8 @@ static void TIFFSetImageProperties(TIFF *tiff,Image *image,
     if (p == (char *) NULL)
       continue;
     *p='\0';
-    (void) sprintf(property,"%s%.1024s",tag,buffer);
-    (void) sprintf(value,"%s",p+1);
+    (void) FormatLocaleString(property,MagickPathExtent,"%s%s",tag,buffer);
+    (void) FormatLocaleString(value,MagickPathExtent,"%s",p+1);
     (void) StripMagickString(value);
     (void) SetImageProperty(image,property,value,exception);
   }
@@ -2928,9 +2929,6 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
 static tmsize_t TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
   tsample_t sample,Image *image)
 {
-  ssize_t
-    i;
-
   tmsize_t
     status;
 
@@ -2940,6 +2938,7 @@ static tmsize_t TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
 
   ssize_t
     bytes_per_pixel,
+    i = 0,
     j,
     k,
     l;
@@ -2948,18 +2947,21 @@ static tmsize_t TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
     *p,
     *q;
 
-  if (TIFFIsTiled(tiff) == 0)
+  if ((TIFFIsTiled(tiff) == 0) || (tiff_info->tile_geometry.height == 0))
     return(TIFFWriteScanline(tiff,tiff_info->scanline,(uint32) row,sample));
-  /*
-    Fill scanlines to tile height.
-  */
-  i=(ssize_t) (row % tiff_info->tile_geometry.height)*TIFFScanlineSize(tiff);
-  (void) memcpy(tiff_info->scanlines+i,(char *) tiff_info->scanline,
-    (size_t) TIFFScanlineSize(tiff));
-  if (((size_t) (row % tiff_info->tile_geometry.height) !=
-      (tiff_info->tile_geometry.height-1)) &&
-      (row != (ssize_t) (image->rows-1)))
-    return(0);
+  if (tiff_info->scanline != NULL)
+    {
+      /*
+        Fill scanlines to tile height.
+      */
+      i=(ssize_t) (row % tiff_info->tile_geometry.height)*
+        TIFFScanlineSize(tiff);
+      (void) memcpy(tiff_info->scanlines+i,(char *) tiff_info->scanline,
+        (size_t) TIFFScanlineSize(tiff));
+      if (((size_t) (row % tiff_info->tile_geometry.height) != (tiff_info->tile_geometry.height-1)) &&
+          (row != (ssize_t) (image->rows-1)))
+        return(0);
+    }
   /*
     Write tile to TIFF image.
   */

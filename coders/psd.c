@@ -3981,7 +3981,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         size_offset;
 
       size_t
-        size;
+        size = 0;
 
       size_offset=TellBlob(image);
       (void) SetPSDSize(&psd_info,image,0);

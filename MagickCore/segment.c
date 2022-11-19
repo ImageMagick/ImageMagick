@@ -1150,7 +1150,8 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
   }
   object=head;
   background=head;
-  if (count > 1)
+  if ((count > 1) && (head != (Cluster *) NULL) && 
+      (head->next != (Cluster *) NULL))
     {
       object=head->next;
       for (cluster=object; cluster->next != (Cluster *) NULL; )

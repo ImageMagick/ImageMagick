@@ -880,7 +880,7 @@ LosslessReduceDepthOK(Image *image,ExceptionInfo *exception)
            QuantumToCharToQuantumEqQuantum(image->background_color.blue) ?
            MagickTrue : MagickFalse;
 
-        if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass)
+        if (ok_to_reduce != MagickFalse && image->storage_class == PseudoClass && image->colormap != NULL)
           {
             int indx;
 
@@ -10345,7 +10345,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 png_error(ping,"image has 0 colors");
            }
 
-           while ((int) (one << ping_bit_depth) < (ssize_t) image_colors)
+           while ((ping_bit_depth < 64) && (int) (one << ping_bit_depth) < (ssize_t) image_colors)
              ping_bit_depth <<= 1;
         }
 

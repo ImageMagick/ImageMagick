@@ -260,9 +260,10 @@ static inline const unsigned char *PushQuantumPixel(QuantumInfo *quantum_info,
       quantum_bits=quantum_info->state.bits;
     i-=(ssize_t) quantum_bits;
     quantum_info->state.bits-=quantum_bits;
-    *quantum=(unsigned int) ((*quantum << quantum_bits) |
-      ((quantum_info->state.pixel >> quantum_info->state.bits) &~ ((~0UL) <<
-      quantum_bits)));
+    if (quantum_bits < 64)
+      *quantum=(unsigned int) (((MagickSizeType) *quantum << quantum_bits) |
+        ((quantum_info->state.pixel >> quantum_info->state.bits) &~
+        ((~0UL) << quantum_bits)));
   }
   return(pixels);
 }

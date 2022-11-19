@@ -59,6 +59,7 @@
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/layer.h"
+#include "MagickCore/locale_.h"
 #include "MagickCore/mime-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
@@ -1597,12 +1598,13 @@ MagickPrivate void DumpOpenCLProfileData()
         profile;
 
       profile=device->profile_records[j];
-      strcpy(indent,"                    ");
+      (void) CopyMagickString(indent,"                              ",
+        sizeof(indent));
       CopyMagickString(indent,profile->kernel_name,MagickMin(strlen(
         profile->kernel_name),strlen(indent)));
-      sprintf(buf,"%s %7d %7d %7d %7d",indent,(int) (profile->total/
-        profile->count),(int) profile->count,(int) profile->min,
-        (int) profile->max);
+      (void) FormatLocaleString(buf,sozeof(buf),"%s %7d %7d %7d %7d",indent,
+        (int) (profile->total/profile->count),(int) profile->count,
+        (int) profile->min,(int) profile->max);
       OpenCLLog(buf);
       j++;
     }
@@ -2176,7 +2178,8 @@ static MagickBooleanType HasOpenCLDevices(MagickCLEnv clEnv,
     strlen(accelerateKernels)+strlen(accelerateKernels2)+1);
   if (accelerateKernelsBuffer == (char*) NULL)
     return(MagickFalse);
-  sprintf(accelerateKernelsBuffer,"%s%s",accelerateKernels,accelerateKernels2);
+  (void) FormatLocaleString(accelerateKernelsBuffer,strlen(accelerateKernels)+
+    strlen(accelerateKernels2)+1,"%s%s",accelerateKernels,accelerateKernels2);
   signature^=StringSignature(accelerateKernelsBuffer);
 
   status=MagickTrue;

@@ -57,6 +57,7 @@
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
+#include "MagickCore/locale_.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/monitor.h"
@@ -673,10 +674,11 @@ static int sixel_put_flash(sixel_output_t *const context)
   if (context->save_count > 3)
     {
       /* DECGRI Graphics Repeat Introducer ! Pn Ch */
-      nwrite=sprintf((char *) context->buffer+context->pos,"!%d%c",
-        context->save_count,context->save_pixel);
+      nwrite=FormatLocaleString((char *) context->buffer+context->pos,
+        sizeof(context->buffer),"!%d%c",context->save_count,
+        context->save_pixel);
       if (nwrite <= 0)
-        return (-1);
+        return(-1);
       sixel_advance(context,nwrite);
     }
   else
@@ -741,8 +743,8 @@ static int sixel_put_node(sixel_output_t *const context,int x,sixel_node_t *np,
       /* designate palette index */
       if (context->active_palette != np->color)
         {
-          nwrite=sprintf((char *) context->buffer+context->pos,"#%d",
-            np->color);
+          nwrite=FormatLocaleString((char *) context->buffer+context->pos,
+            sizeof(context->buffer),"#%d",np->color);
           sixel_advance(context,nwrite);
           context->active_palette=np->color;
         }
@@ -799,14 +801,16 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
     return (MagickFalse);
   (void) memset(map,0,len*sizeof(sixel_pixel_t));
   if (context->has_8bit_control)
-    nwrite=sprintf((char *)context->buffer,"\x90" "0;0;0" "q");
+    nwrite=FormatLocaleString((char *) context->buffer,sizeof(context->buffer),
+      "\x90" "0;0;0" "q");
   else
-    nwrite=sprintf((char *)context->buffer,"\x1bP" "0;0;0" "q");
+    nwrite=FormatLocaleString((char *) context->buffer,sizeof(context->buffer),
+      "\x1bP" "0;0;0" "q");
   if (nwrite <= 0)
     return(MagickFalse);
   sixel_advance(context,nwrite);
-  nwrite=sprintf((char *)context->buffer+context->pos,"\"1;1;%d;%d",
-    (int) width,(int) height);
+  nwrite=FormatLocaleString((char *) context->buffer+context->pos,
+    sizeof(context->buffer),"\"1;1;%d;%d",(int) width,(int) height);
   if (nwrite <= 0)
     {
       RelinquishNodesAndMap;
@@ -817,9 +821,9 @@ static MagickBooleanType sixel_encode_impl(sixel_pixel_t *pixels,size_t width,
     for (n = 0; n < (ssize_t) ncolors; n++)
     {
         /* DECGCI Graphics Color Introducer  # Pc ; Pu; Px; Py; Pz */
-        nwrite=sprintf((char *)context->buffer+context->pos,
-          "#%d;2;%d;%d;%d",n,(palette[n*3+0]*100+127)/255,
-          (palette[n*3+1]*100+127)/255,(palette[n*3+2]*100+127)/255);
+        nwrite=FormatLocaleString((char *) context->buffer+context->pos,
+          sizeof(context->buffer),"#%d;2;%d;%d;%d",n,(palette[n*3+0]*100+127)/
+          255,(palette[n*3+1]*100+127)/255,(palette[n*3+2]*100+127)/255);
         if (nwrite <= 0)
           {
             RelinquishNodesAndMap;

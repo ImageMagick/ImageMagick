@@ -3650,13 +3650,14 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
       if (svg_info->comment != (char *) NULL)
         (void) SetImageProperty(image,"svg:comment",svg_info->comment,
           exception);
+      for (next=GetFirstImageInList(image); next != (Image *) NULL; )
+      {
+        (void) CopyMagickString(next->filename,image->filename,
+          MagickPathExtent);
+        (void) CopyMagickString(next->magick,"SVG",MagickPathExtent);
+        next=GetNextImageInList(next);
+      }
     }
-  for (next=GetFirstImageInList(image); next != (Image *) NULL; )
-  {
-    (void) CopyMagickString(next->filename,image->filename,MagickPathExtent);
-    (void) CopyMagickString(next->magick,"SVG",MagickPathExtent);
-    next=GetNextImageInList(next);
-  }
   svg_info=DestroySVGInfo(svg_info);
   (void) RelinquishUniqueFileResource(filename);
   return(GetFirstImageInList(image));
