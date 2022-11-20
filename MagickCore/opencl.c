@@ -1602,7 +1602,7 @@ MagickPrivate void DumpOpenCLProfileData()
         sizeof(indent));
       CopyMagickString(indent,profile->kernel_name,MagickMin(strlen(
         profile->kernel_name),strlen(indent)));
-      (void) FormatLocaleString(buf,sozeof(buf),"%s %7d %7d %7d %7d",indent,
+      (void) FormatLocaleString(buf,sizeof(buf),"%s %7d %7d %7d %7d",indent,
         (int) (profile->total/profile->count),(int) profile->count,
         (int) profile->min,(int) profile->max);
       OpenCLLog(buf);
