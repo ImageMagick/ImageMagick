@@ -669,6 +669,9 @@ ModuleExport size_t RegisterHEICImage(void)
   MagickInfo
     *entry;
 
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+  heif_init(NULL);
+#endif
   entry=AcquireMagickInfo("HEIC","HEIC","High Efficiency Image Format");
 #if defined(MAGICKCORE_HEIC_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadHEICImage;
@@ -743,6 +746,9 @@ ModuleExport void UnregisterHEICImage(void)
 #endif
   (void) UnregisterMagickInfo("HEIC");
   (void) UnregisterMagickInfo("HEIF");
+#if defined(MAGICKCORE_HEIC_DELEGATE)
+  heif_deinit();
+#endif
 }
 
 /*
