@@ -282,6 +282,9 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     input_size;
 
+  StringInfo
+    *exif_profile;
+
   unsigned char
     *pixels,
     *output_buffer;
@@ -326,7 +329,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       JxlDecoderDestroy(jxl_info);
       ThrowReaderException(CoderError,"MemoryAllocationFailed");
     }
-  events_wanted=JXL_DEC_BASIC_INFO;
+  events_wanted=JXL_DEC_BASIC_INFO | JXL_DEC_BOX;
   if (image_info->ping == MagickFalse)
     events_wanted|=JXL_DEC_FULL_IMAGE | JXL_DEC_COLOR_ENCODING;
   if (JxlDecoderSubscribeEvents(jxl_info,events_wanted) != JXL_DEC_SUCCESS)
@@ -343,6 +346,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       JxlDecoderDestroy(jxl_info);
       ThrowReaderException(CoderError,"MemoryAllocationFailed");
     }
+  exif_profile=(StringInfo *) NULL;
   output_buffer=(unsigned char *) NULL;
   (void) memset(&pixel_format,0,sizeof(pixel_format));
   jxl_status=JXL_DEC_NEED_MORE_INPUT;
@@ -493,6 +497,33 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           jxl_status=JXL_DEC_ERROR;
         break;
       }
+      case JXL_DEC_BOX:
+      {
+        JxlBoxType
+          type;
+
+        (void) JxlDecoderReleaseBoxBuffer(jxl_info);
+        jxl_status=JxlDecoderGetBoxType(jxl_info,type,JXL_FALSE);
+        if (jxl_status != JXL_DEC_SUCCESS)
+          break;
+        if (LocaleNCompare(type,"Exif",sizeof(type)) == 0)
+        {
+          size_t
+            size;
+
+          status=JxlDecoderGetBoxSizeRaw(jxl_info,&size);
+          if (size > 0)
+            {
+              exif_profile=AcquireStringInfo(size);
+              if (exif_profile != (StringInfo *) NULL)
+                 jxl_status=JxlDecoderSetBoxBuffer(jxl_info,GetStringInfoDatum(
+                   exif_profile),size);
+            }
+        }
+        if (jxl_status == JXL_DEC_SUCCESS)
+          jxl_status=JXL_DEC_BOX;
+        break;
+      }
       case JXL_DEC_SUCCESS:
       case JXL_DEC_ERROR:
         break;
@@ -503,6 +534,12 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     }
   }
+  (void) JxlDecoderReleaseBoxBuffer(jxl_info);
+  if (exif_profile != (StringInfo *) NULL)
+    {
+      (void) SetImageProfile(image,"exif",exif_profile,exception);
+      DestroyStringInfo(exif_profile);
+    }
   output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   JxlThreadParallelRunnerDestroy(runner);
