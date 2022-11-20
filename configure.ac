@@ -410,8 +410,8 @@ esac
 # ARCH specific include directory
 #
 AC_ARG_WITH([includearch-dir],
-    [AS_HELP_STRING([--includearch-dir=DIR],
-                    [ARCH specific include directory])],
+    [AS_HELP_STRING([--with-includearch-dir=DIR],
+                    [ARCH specific include directory @<:@INCLUDEDIR@:>@])],
                     [includearch_dir=$withval],
                     [includearch_dir=$INCLUDE_DIR])
 
@@ -422,8 +422,8 @@ AC_SUBST([INCLUDEARCH_DIR])
 # ARCH specific configuration directory
 #
 AC_ARG_WITH([sharearch-dir],
-    [AS_HELP_STRING([--sharearch-dir=DIR],
-                    [ARCH specific config directory])],
+    [AS_HELP_STRING([--with-sharearch-dir=DIR],
+                    [ARCH specific config directory @<:@LIBDIR@:>@])],
                     [sharearch_dir=$withval],
                     [sharearch_dir="${LIB_DIR}"])
 
