@@ -508,13 +508,13 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         if (LocaleNCompare(type,"Exif",sizeof(type)) == 0)
         {
-          size_t
+          uint64_t
             size;
 
           status=JxlDecoderGetBoxSizeRaw(jxl_info,&size);
           if (size > 0)
             {
-              exif_profile=AcquireStringInfo(size);
+              exif_profile=AcquireStringInfo((size_t) size);
               if (exif_profile != (StringInfo *) NULL)
                  jxl_status=JxlDecoderSetBoxBuffer(jxl_info,GetStringInfoDatum(
                    exif_profile),size);
