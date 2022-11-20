@@ -16,7 +16,7 @@
 %                               December 2020                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2020 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -507,19 +507,19 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
         if (LocaleNCompare(type,"Exif",sizeof(type)) == 0)
-        {
-          uint64_t
-            size;
+          {
+            uint64_t
+              size;
 
-          status=JxlDecoderGetBoxSizeRaw(jxl_info,&size);
-          if (size > 0)
-            {
-              exif_profile=AcquireStringInfo((size_t) size);
-              if (exif_profile != (StringInfo *) NULL)
-                 jxl_status=JxlDecoderSetBoxBuffer(jxl_info,GetStringInfoDatum(
-                   exif_profile),size);
-            }
-        }
+            status=JxlDecoderGetBoxSizeRaw(jxl_info,&size);
+            if (size > 0)
+              {
+                exif_profile=AcquireStringInfo((size_t) size);
+                if (exif_profile != (StringInfo *) NULL)
+                  jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
+                    GetStringInfoDatum(exif_profile),size);
+              }
+          }
         if (jxl_status == JXL_DEC_SUCCESS)
           jxl_status=JXL_DEC_BOX;
         break;
@@ -904,7 +904,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
     }
   pixel_info=RelinquishVirtualMemory(pixel_info);
-  //JxlEncoderAddBox
+  /* JxlEncoderAddBox */
   JxlThreadParallelRunnerDestroy(runner);
   JxlEncoderDestroy(jxl_info);
   if (jxl_status != JXL_ENC_SUCCESS)
