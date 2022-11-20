@@ -2028,8 +2028,10 @@ Optional Packages:
   --with-dmalloc          use dmalloc, as in http://www.dmalloc.com
   --with-gcc-arch=<arch>  use architecture <arch> for gcc -march/-mtune,
                           instead of guessing
-  --includearch-dir=DIR   ARCH specific include directory
-  --sharearch-dir=DIR     ARCH specific config directory
+  --with-includearch-dir=DIR
+                          ARCH specific include directory [INCLUDEDIR]
+  --with-sharearch-dir=DIR
+                          ARCH specific config directory [LIBDIR]
   --with-pkgconfigdir=DIR Path to the pkgconfig directory [LIBDIR/pkgconfig]
   --without-threads       disable POSIX threads API support
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
@@ -5149,7 +5151,7 @@ MAGICK_PATCHLEVEL_VERSION=53
 
 MAGICK_VERSION=7.1.0-53
 
-MAGICK_GIT_REVISION=28a3af8a7:20221115
+MAGICK_GIT_REVISION=97d1574ba:20221120
 
 
 # Substitute library versioning
@@ -5183,7 +5185,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,53
 
-PACKAGE_RELEASE_DATE=2022-11-15
+PACKAGE_RELEASE_DATE=2022-11-20
 
 
 # Ensure that make can run correctly
