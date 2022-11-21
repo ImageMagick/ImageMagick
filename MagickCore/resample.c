@@ -1009,7 +1009,7 @@ static inline void ClampUpAxes(const double dux,
 %
 %  Note that scaling vectors are different to argument order.  Argument order
 %  is the general order the derivatives are extracted from the distortion
-%  equations, and not the scaling vectors. As such the middle two vaules
+%  equations, and not the scaling vectors. As such the middle two values
 %  may be swapped from what you expect.  Caution is advised.
 %
 %  WARNING: It is assumed that any SetResampleFilter() method call will
