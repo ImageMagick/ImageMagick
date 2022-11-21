@@ -7619,7 +7619,7 @@ WandExport MagickWand *MagickMorphImages(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickMorphologyImage() applies a user supplied kernel to the image
-%  according to the given mophology method.
+%  according to the given morphology method.
 %
 %  The format of the MagickMorphologyImage method is:
 %
