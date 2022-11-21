@@ -2590,7 +2590,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR;
     hostPtr = equalize_map;
   }
-  /* create a CL buffer for eqaulize_map  */
+  /* create a CL buffer for equalize_map  */
   length = (MaxMap+1);
   equalizeMapBuffer = clEnv->library->clCreateBuffer(device->context, mem_flags, length * sizeof(PixelPacket), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)
