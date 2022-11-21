@@ -1147,7 +1147,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
                 cleared=MagickFalse;
                 bounds[i]=try_bounds;
                 disposals[i-1]=DupDispose;
-                /* to be finalised later, if found to be optimial */
+                /* to be finalised later, if found to be optimal */
               }
             else
               dup_bounds.width=dup_bounds.height=0;
