@@ -4006,7 +4006,7 @@ MagickPrivate MagickBooleanType FxEvaluateChannelExpression (
   if (!ExecuteRPN (pfx, &pfx->fxrts[id], &ret, channel, x, y)) {
     (void) ThrowMagickException (
       exception, GetMagickModule(), OptionError,
-      "ExcuteRPN failed", " ");
+      "ExecuteRPN failed", " ");
     return MagickFalse;
   }
 
