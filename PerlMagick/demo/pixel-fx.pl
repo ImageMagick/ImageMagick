@@ -3,7 +3,7 @@
 # Example of modifying all the pixels in an image (like -fx).
 #
 # Currently this is slow as each pixel is being looked up one pixel at a time.
-# The better technique of extracting and modifing a whole row of pixels at
+# The better technique of extracting and modifying a whole row of pixels at
 # a time has not been figured out, though perl functions have been provided
 # for this.
 #
