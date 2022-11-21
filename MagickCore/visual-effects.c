@@ -713,7 +713,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-/* FUTURE: modify to make use of a MagickMatrix Mutliply function
+/* FUTURE: modify to make use of a MagickMatrix Multiply function
    That should be provided in "matrix.c"
    (ASIDE: actually distorts should do this too but currently doesn't)
 */
