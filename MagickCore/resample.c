@@ -869,7 +869,7 @@ static inline void ClampUpAxes(const double dux,
    *
    * The idea of clamping up the EWA ellipse's major and minor axes so
    * that the result contains the reconstruction kernel filter support
-   * is taken from Andreas Gustaffson's Masters thesis "Interactive
+   * is taken from Andreas Gustafsson's Masters thesis "Interactive
    * Image Warping", Helsinki University of Technology, Faculty of
    * Information Technology, 59 pages, 1993 (see Section 3.6).
    *
