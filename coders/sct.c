@@ -198,7 +198,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,174,buffer);
   count=ReadBlob(image,768,buffer);
   /*
-    Read paramter block.
+    Read parameter block.
   */
   units=1UL*ReadBlobByte(image);
   if (units == 0)
