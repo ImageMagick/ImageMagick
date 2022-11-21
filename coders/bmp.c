@@ -1463,7 +1463,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     /*
-      Read embeded ICC profile
+      Read embedded ICC profile
     */
     if ((bmp_info.colorspace == 0x4D424544L) && (profile_data > 0) &&
         (profile_size > 0))
