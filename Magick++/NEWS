@@ -346,7 +346,7 @@ This file records noteworthy changes in Magick++.
   * Changed coordinate parameters from unsigned int to double in Drawable.
   * Changed polygon methods in Drawable to use STL list argument.
   * Added STL list based draw method to Image.
-  * Changed Exception heirarchy to support Warning and Error sub-classes.
+  * Changed Exception hierarchy to support Warning and Error sub-classes.
     Most exception class names have changed.
 
 (0.7)
