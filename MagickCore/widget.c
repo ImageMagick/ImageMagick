@@ -8156,7 +8156,7 @@ MagickPrivate void XNoticeWidget(Display *display,XWindows *windows,
   assert(reason != (char *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",reason);
-  XDelay(display,SuspendTime << 3);  /* avoid surpise with delay */
+  XDelay(display,SuspendTime << 3);  /* avoid surprise with delay */
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
   font_info=windows->widget.font_info;
