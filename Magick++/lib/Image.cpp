@@ -816,7 +816,7 @@ void Magick::Image::fillPattern(const Image &fillPattern_)
 
 Magick::Image Magick::Image::fillPattern(void) const
 {
-  // FIXME: This is inordinately innefficient
+  // FIXME: This is inordinately inefficient
   const MagickCore::Image
     *tmpTexture;
 
@@ -1482,7 +1482,7 @@ void Magick::Image::strokePattern(const Image &strokePattern_)
 
 Magick::Image Magick::Image::strokePattern(void) const
 {
-  // FIXME: This is inordinately innefficient
+  // FIXME: This is inordinately inefficient
   const MagickCore::Image 
     *tmpTexture;
 
