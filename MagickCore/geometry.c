@@ -351,7 +351,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetPageGeometry() replaces any page mneumonic with the equivalent size in
+%  GetPageGeometry() replaces any page mnemonic with the equivalent size in
 %  picas.
 %
 %  The format of the GetPageGeometry method is:
@@ -492,7 +492,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
           geometry;
 
         /*
-          Replace mneumonic with the equivalent size in dots-per-inch.
+          Replace mnemonic with the equivalent size in dots-per-inch.
         */
         (void) FormatLocaleString(page,MagickPathExtent,"%s%.80s",
           PageSizes[i].geometry,page_geometry+PageSizes[i].extent);
