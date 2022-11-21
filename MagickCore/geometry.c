@@ -75,7 +75,7 @@
 %
 %  Offsets may be prefixed by multiple signs to make offset string
 %  substitutions easier to handle from shell scripts.
-%  For example: "-10-10", "-+10-+10", or "+-10+-10" will generate negtive
+%  For example: "-10-10", "-+10-+10", or "+-10+-10" will generate negative
 %  offsets, while "+10+10", "++10++10", or "--10--10" will generate positive
 %  offsets.
 %
@@ -849,7 +849,7 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
 %  Chroma subsampling definitions have to be in the form of a:b:c.  Offsets may
 %  be prefixed by multiple signs to make offset string substitutions easier to
 %  handle from shell scripts.  For example: "-10-10", "-+10-+10", or "+-10+-10"
-%  will generate negtive offsets, while "+10+10", "++10++10", or "--10--10"
+%  will generate negative offsets, while "+10+10", "++10++10", or "--10--10"
 %  will generate positive offsets.
 %
 %  The format of the ParseGeometry method is:
