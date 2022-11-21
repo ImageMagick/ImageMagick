@@ -2480,7 +2480,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             constant=PerceptibleReciprocal(constant);
           (void) GammaImage(_image,constant,_exception);
 #else
-          /* Using Evaluate POW, direct update of values - more accurite */
+          /* Using Evaluate POW, direct update of values - more accurate */
           if (IfNormalOp)
             constant=PerceptibleReciprocal(constant);
           (void) EvaluateImage(_image,PowEvaluateOperator,constant,_exception);
