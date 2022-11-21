@@ -4194,7 +4194,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         }
       /*
         Look for a known property or image attribute such as
-        %[basename] %[denisty] %[delay].  Also handles a braced single
+        %[basename] %[density] %[delay].  Also handles a braced single
         letter: %[b] %[G] %[g].
       */
       string=GetMagickProperty(property_info,property_image,pattern,exception);

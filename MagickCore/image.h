@@ -404,7 +404,7 @@ struct _ImageInfo
     endian;             /* integer endian order for raw image data */
 
   ResolutionType
-    units;              /* denisty pixels/inch or pixel/cm */
+    units;              /* density pixels/inch or pixel/cm */
 
   size_t
     quality;            /* compression quality */
