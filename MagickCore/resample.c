@@ -1065,7 +1065,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   /* Direct conversion of derivatives into elliptical coefficients
      However when magnifying images, the scaling vectors will be small
      resulting in a ellipse that is too small to sample properly.
-     As such we need to clamp the major/minor axis to a minumum of 1.0
+     As such we need to clamp the major/minor axis to a minimum of 1.0
      to prevent it getting too small.
   */
 #if EWA_CLAMP
