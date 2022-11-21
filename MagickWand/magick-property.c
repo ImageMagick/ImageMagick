@@ -2767,7 +2767,7 @@ WandExport MagickBooleanType MagickSetResolution(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o number_factoes: the number of factors.
+%    o number_factors: the number of factors.
 %
 %    o sampling_factors: An array of doubles representing the sampling factor
 %      for each color component (in RGB order).
