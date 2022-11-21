@@ -2172,9 +2172,9 @@ static MagickBooleanType GetOperand (
              and https://en.wikipedia.org/wiki/Binary_prefix
           */
           double Pow = 0.0;
-          const char Prefices[] = "yzafpnum.kMGTPEZY";
-          const char * pSi = strchr (Prefices, *tailptr);
-          if (pSi && *pSi != '.') Pow = (pSi - Prefices) * 3 - 24;
+          const char Prefixes[] = "yzafpnum.kMGTPEZY";
+          const char * pSi = strchr (Prefixes, *tailptr);
+          if (pSi && *pSi != '.') Pow = (pSi - Prefixes) * 3 - 24;
           else if (*tailptr == 'c') Pow = -2;
           else if (*tailptr == 'h') Pow =  2;
           else if (*tailptr == 'k') Pow =  3;
