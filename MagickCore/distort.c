@@ -428,7 +428,7 @@ static double *GenerateCoefficients(const Image *image,
       if ( i == 0 ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
                    "InvalidArgument","%s : '%s'","Polynomial",
-                   "Invalid order, should be interger 1 to 5, or 1.5");
+                   "Invalid order, should be integer 1 to 5, or 1.5");
         return((double *) NULL);
       }
       if ( number_arguments < 1+i*cp_size ) {
