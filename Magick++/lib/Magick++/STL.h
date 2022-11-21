@@ -868,7 +868,7 @@ namespace Magick
     ~ReadOptions();
 
     // Vertical and horizontal resolution in pixels of the image
-    void density(const Geometry &geomery_);
+    void density(const Geometry &geometry_);
     Geometry density(void) const;
 
     // Image depth (8 or 16)
