@@ -1002,9 +1002,9 @@ static inline void ClampUpAxes(const double dux,
 %  If   u,v =  DistortEquation(x,y)   OR   u = Fu(x,y); v = Fv(x,y)
 %  Then the scaling vectors are determined from the derivatives...
 %      du/dx, dv/dx     and    du/dy, dv/dy
-%  If the resulting scaling vectors is othogonally aligned then...
+%  If the resulting scaling vectors is orthogonally aligned then...
 %      dv/dx = 0   and   du/dy  =  0
-%  Producing an othogonally aligned ellipse in source space for the area to
+%  Producing an orthogonally aligned ellipse in source space for the area to
 %  be resampled.
 %
 %  Note that scaling vectors are different to argument order.  Argument order
@@ -1224,7 +1224,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 %
 %  SetResampleFilter() set the resampling filter lookup table based on a
 %  specific filter.  Note that the filter is used as a radial filter not as a
-%  two pass othogonally aligned resampling filter.
+%  two pass orthogonally aligned resampling filter.
 %
 %  The format of the SetResampleFilter method is:
 %
