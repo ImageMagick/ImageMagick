@@ -920,7 +920,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       diamond like distances, where diagonals are further than expected.
 %
 %    Octagonal:[{radius}][x{scale}[%!]]
-%       An interleving of Manhatten and Chebyshev metrics producing an
+%       An interleaving of Manhatten and Chebyshev metrics producing an
 %       increasing octagonally shaped distance.  Distances matches those of
 %       the "Octagon" shaped kernel of the same radius.  The minimum radius
 %       and default is 2, producing a 5x5 kernel.
