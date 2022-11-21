@@ -2613,7 +2613,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
 #endif
       break;
     }
-    case 't': /* Base filename without directory or extention */
+    case 't': /* Base filename without directory or extension */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       GetPathComponent(image->magick_filename,BasePath,value);
