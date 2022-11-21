@@ -863,13 +863,13 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %    Diagonals:type
 %       A special kernel to thin the 'outside' of diagonals
 %    LineEnds:type
-%       Find end points of lines (for pruning a skeletion)
+%       Find end points of lines (for pruning a skeleton)
 %       Two types of lines ends (default to both) can be searched for
 %         Type 0: All line ends
 %         Type 1: single kernel for 4-connected line ends
 %         Type 2: single kernel for simple line ends
 %    LineJunctions
-%       Find three line junctions (within a skeletion)
+%       Find three line junctions (within a skeleton)
 %         Type 0: all line junctions
 %         Type 1: Y Junction kernel
 %         Type 2: Diagonal T Junction kernel
