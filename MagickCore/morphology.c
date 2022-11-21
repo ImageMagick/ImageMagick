@@ -1210,7 +1210,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** result of not generating a actual 'discrete' kernel, and thus
         ** producing a very bright 'impulse'.
         **
-        ** Becuase of these two factors Normalization is required!
+        ** Because of these two factors Normalization is required!
         */
 
         /* Normalize the 1D Gaussian Kernel
