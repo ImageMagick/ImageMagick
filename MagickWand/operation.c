@@ -3791,7 +3791,7 @@ WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CLIListOperatorImages() applies a single operation that is apply to the
-%  entire image list as a whole. The result is often a complete replacment
+%  entire image list as a whole. The result is often a complete replacement
 %  of the image list with a completely new list, or with just a single image
 %  result.
 %
