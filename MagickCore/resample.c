@@ -554,7 +554,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   v1 = (ssize_t)ceil(v0 - resample_filter->Vlimit);  /* range of scan lines */
   v2 = (ssize_t)floor(v0 + resample_filter->Vlimit);
 
-  /* scan line start and width accross the parallelogram */
+  /* scan line start and width across the parallelogram */
   u1 = u0 + (v1-v0)*resample_filter->slope - resample_filter->Uwidth;
   uw = (ssize_t)(2.0*resample_filter->Uwidth)+1;
 
