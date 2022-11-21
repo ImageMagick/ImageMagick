@@ -252,7 +252,7 @@ static Image *SparseColorOption(const Image *image,
   /*
     SparseColorOption() parses the complex -sparse-color argument into an an
     array of floating point values then calls SparseColorImage().  Argument is
-    a complex mix of floating-point pixel coodinates, and color specifications
+    a complex mix of floating-point pixel coordinates, and color specifications
     (or direct floating point numbers).  The number of floats needed to
     represent a color varies depending on the current channel setting.
   */
