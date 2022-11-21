@@ -3089,7 +3089,7 @@ func_cygpath ()
     fi
   else
     func_cygpath_result=
-    func_error "LT_CYGPATH is empty or specifies non-existent file: '$LT_CYGPATH'"
+    func_error "LT_CYGPATH is empty or specifies nonexistent file: '$LT_CYGPATH'"
   fi
 }
 #end: func_cygpath

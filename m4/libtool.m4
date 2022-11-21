@@ -2177,7 +2177,7 @@ if test -n "$_LT_TAGVAR(hardcode_libdir_flag_spec, $1)" ||
    test -n "$_LT_TAGVAR(runpath_var, $1)" ||
    test yes = "$_LT_TAGVAR(hardcode_automatic, $1)"; then
 
-  # We can hardcode non-existent directories.
+  # We can hardcode nonexistent directories.
   if test no != "$_LT_TAGVAR(hardcode_direct, $1)" &&
      # If the only mechanism to avoid hardcoding is shlibpath_var, we
      # have to relink, otherwise we might link with an installed library
