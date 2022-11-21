@@ -775,7 +775,7 @@ RestoreMSCWarning
 %  MagickImageCommand() Handle special use CLI arguments and prepare a
 %  CLI MagickCLI to process the command line or directly specified script.
 %
-%  This is essentualy interface function between the MagickCore library
+%  This is essentially interface function between the MagickCore library
 %  initialization function MagickCommandGenesis(), and the option MagickCLI
 %  processing functions  ProcessCommandOptions()  or  ProcessScriptOptions()
 %
