@@ -650,7 +650,7 @@ namespace Magick
     void autoOrient(void);
 
     // Automatically selects a threshold and replaces each pixel in the image
-    // with a black pixel if the image intentsity is less than the selected
+    // with a black pixel if the image intensity is less than the selected
     // threshold otherwise white.
     void autoThreshold(const AutoThresholdMethod method_);
 
