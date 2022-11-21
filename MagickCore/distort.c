@@ -1705,7 +1705,7 @@ MagickExport Image *DistortResizeImage(const Image *image,const size_t columns,
 %        relative to the polar mapping center.
 %
 %        Affine, Perspective, and Bilinear, do least squares fitting of the
-%        distrotion when more than the minimum number of control point pairs
+%        distortion when more than the minimum number of control point pairs
 %        are provided.
 %
 %        Perspective, and Bilinear, fall back to a Affine distortion when less
@@ -2772,7 +2772,7 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
           }
           case BarrelDistortion:
           case BarrelInverseDistortion:
-          { /* Lens Barrel Distionion Correction */
+          { /* Lens Barrel Distortion Correction */
             double r,fx,fy,gx,gy;
             /* Radial Polynomial Distortion (de-normalized) */
             d.x -= coeff[8];
