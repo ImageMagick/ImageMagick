@@ -3842,7 +3842,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           case EdgeOutMorphology:    /* dilate and image difference */
             primitive = DilateMorphology;
             break;
-          case OpenMorphology:       /* erode then dialate */
+          case OpenMorphology:       /* erode then dilate */
           case TopHatMorphology:     /* open and image difference */
             primitive = ErodeMorphology;
             if ( stage_loop == 2 )

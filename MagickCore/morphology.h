@@ -76,7 +76,7 @@ typedef enum
   ErodeMorphology,              /* Minimum Value in Neighbourhood */
   DilateMorphology,             /* Maximum Value in Neighbourhood */
   ErodeIntensityMorphology,     /* Pixel Pick using GreyScale Erode */
-  DilateIntensityMorphology,    /* Pixel Pick using GreyScale Dialate */
+  DilateIntensityMorphology,    /* Pixel Pick using GreyScale Dilate */
   IterativeDistanceMorphology,  /* Add Kernel Value, take Minimum */
 /* Second-level Morphology methods */
   OpenMorphology,               /* Dilate then Erode */
