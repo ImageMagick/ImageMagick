@@ -462,7 +462,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 #define _process_flags    (cli_wand->process_flags)
 #define _option_type      ((CommandOptionFlags) cli_wand->command->flags)
   /* Interpret Percent Escapes in Arguments - using first image */
-  if ( (((_process_flags & ProcessInterpretProperities) != 0 )
+  if ( (((_process_flags & ProcessInterpretProperties) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
     /* Interpret Percent escapes in argument 1 */
@@ -1711,7 +1711,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
   arg2 = arg2n;
 
   /* Interpret Percent Escapes in Arguments - using first image */
-  if ( (((_process_flags & ProcessInterpretProperities) != 0 )
+  if ( (((_process_flags & ProcessInterpretProperties) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
     /* Interpret Percent escapes in argument 1 */
@@ -3852,7 +3852,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
   arg2 = arg2n;
 
   /* Interpret Percent Escapes in Arguments - using first image */
-  if ( (((_process_flags & ProcessInterpretProperities) != 0 )
+  if ( (((_process_flags & ProcessInterpretProperties) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
     /* Interpret Percent escapes in argument 1 */
@@ -4846,7 +4846,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
   arg2 = arg2n;
 
   /* Interpret Percent Escapes in Arguments - using first image */
-  if ( (((_process_flags & ProcessInterpretProperities) != 0 )
+  if ( (((_process_flags & ProcessInterpretProperties) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
     /* Interpret Percent escapes in argument 1 */
@@ -5415,7 +5415,7 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
     if ( (option_type & SettingOptionFlags) != 0 ) {
       CLISettingOptionInfo(cli_wand, option, arg1, arg2);
       /*
-        FUTURE: Sync Specific Settings into Image Properities (not global)
+        FUTURE: Sync Specific Settings into Image Properties (not global)
       */
     }
 

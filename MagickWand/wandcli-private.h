@@ -64,7 +64,7 @@ typedef enum
                                             If not set then skip implied read
                                             without producing an error.
                                             For use with "mogrify" handling */
-  ProcessInterpretProperities = 0x0010,  /* allow general escapes in args */
+  ProcessInterpretProperties = 0x0010,  /* allow general escapes in args */
 
   /* Special Option Handling */
   ProcessExitOption           = 0x0100,  /* allow '-exit' use */
