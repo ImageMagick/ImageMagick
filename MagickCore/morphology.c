@@ -3713,7 +3713,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
   reflected_kernel = (KernelInfo *) NULL;
 
   /* Initialize specific methods
-   * + which loop should use the given iteratations
+   * + which loop should use the given iterations
    * + how many primitives make up the compound morphology
    * + multi-kernel compose method to use (by default)
    */
