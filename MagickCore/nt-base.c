@@ -1959,7 +1959,7 @@ MagickPrivate struct dirent *NTReadDirectory(DIR *entry)
 %  installed ImageMagick version so that multiple Image Magick installations
 %  may coexist.
 %
-%  Values are stored in the registry under a base path path similar to
+%  Values are stored in the registry under a base path similar to
 %  "HKEY_LOCAL_MACHINE/SOFTWARE\ImageMagick\6.7.4\Q:16" or
 %  "HKEY_CURRENT_USER/SOFTWARE\ImageMagick\6.7.4\Q:16". The provided subkey
 %  is appended to this base path to form the full key.
