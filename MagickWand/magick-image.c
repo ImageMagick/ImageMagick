@@ -9160,7 +9160,7 @@ WandExport MagickBooleanType MagickRemoveImage(MagickWand *wand)
 %    Bessel   Blackman   Box
 %    Catrom   Cubic      Gaussian
 %    Hanning  Hermite    Lanczos
-%    Mitchell Point      Quandratic
+%    Mitchell Point      Quadratic
 %    Sinc     Triangle
 %
 %  Most of the filters are FIR (finite impulse response), however, Bessel,
@@ -9263,7 +9263,7 @@ WandExport MagickBooleanType MagickResetImagePage(MagickWand *wand,
 %    Bessel   Blackman   Box
 %    Catrom   Cubic      Gaussian
 %    Hanning  Hermite    Lanczos
-%    Mitchell Point      Quandratic
+%    Mitchell Point      Quadratic
 %    Sinc     Triangle
 %
 %  Most of the filters are FIR (finite impulse response), however, Bessel,
