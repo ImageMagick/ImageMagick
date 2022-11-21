@@ -810,7 +810,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
 %  CLUT image.
 %
 %  When the 'channel' mask includes the matte/alpha transparency channel but
-%  one image has no such channel it is assumed that that image is a simple
+%  one image has no such channel it is assumed that image is a simple
 %  gray-scale image that will effect the alpha channel values, either for
 %  gray-scale coloring (with transparent or semi-transparent colors), or
 %  a histogram adjustment of existing alpha channel values.   If both images
