@@ -949,7 +949,7 @@
  	coordinates
 	(PathLinetoHorizontalRel): New class. Horizontal lineto, relative
  	coordinates
-	(PathLinetoVerticalAbs): New class. Veritical lineto, absolute
+	(PathLinetoVerticalAbs): New class. Vertical lineto, absolute
  	coordinates.
 	(PathLinetoVerticalRel): New class. Vertical lineto, relative
  	coordinates.
