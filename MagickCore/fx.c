@@ -1133,7 +1133,7 @@ static size_t GetToken (FxInfo * pfx)
      or 0 if it isn't a token that starts with an alpha.
    j0 and j1 have trailing digit.
    Also colours like "gray47" have more trailing digits.
-   After intial alpha(s) also allow single "_", eg "standard_deviation".
+   After initial alpha(s) also allow single "_", eg "standard_deviation".
    Does not advance pfx->pex.
    This splits "mean.r" etc.
 */

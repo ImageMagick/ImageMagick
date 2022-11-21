@@ -1575,7 +1575,7 @@ static Image *ComputeConvolveImage(const Image* image,MagickCLEnv clEnv,
     *filteredPixels,
     *hostPtr;
 
-  /* intialize all CL objects to NULL */
+  /* initialize all CL objects to NULL */
   imageBuffer = NULL;
   filteredImageBuffer = NULL;
   convolutionKernel = NULL;
