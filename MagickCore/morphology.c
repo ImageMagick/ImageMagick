@@ -3243,7 +3243,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
   That is after each row is 'Sync'ed' into the image, the next row makes use of
   those values as part of the calculation of the next row.  It repeats, but
-  going in the oppisite (bottom-up) direction.
+  going in the opposite (bottom-up) direction.
 
   Because of this 're-use of results' this function can not make use of multi-
   threaded, parellel processing.
