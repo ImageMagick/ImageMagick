@@ -422,7 +422,7 @@ static double *GenerateCoefficients(const Image *image,
       number_coefficients=3*number_values;
       break;
     case PolynomialDistortion:
-      /* number of coefficents depend on the given polynomal 'order' */
+      /* number of coefficients depend on the given polynomal 'order' */
       i = poly_number_terms(arguments[0]);
       number_coefficients = 2 + i*number_values;
       if ( i == 0 ) {
@@ -714,7 +714,7 @@ static double *GenerateCoefficients(const Image *image,
       /* FUTURE: trap test for sx*sy-rx*ry == 0 (determinant = 0, no inverse) */
       for(i=0; i<6UL; i++ )
         inverse[i] = arguments[i];
-      AffineArgsToCoefficients(inverse); /* map into coefficents */
+      AffineArgsToCoefficients(inverse); /* map into coefficients */
       InvertAffineCoefficients(inverse, coeff); /* invert */
       *method = AffineDistortion;
 
@@ -1032,7 +1032,7 @@ static double *GenerateCoefficients(const Image *image,
       if ( *method == BilinearForwardDistortion ) {
          /* Bilinear Forward Mapped Distortion
 
-         The above least-squares solved for coefficents but in the forward
+         The above least-squares solved for coefficients but in the forward
          direction, due to changes to indexing constants.
 
             i = c0*x + c1*y + c2*x*y + c3;
@@ -1095,7 +1095,7 @@ static double *GenerateCoefficients(const Image *image,
     {
       /* Polynomial Distortion
 
-         First two coefficents are used to hole global polynomal information
+         First two coefficients are used to hole global polynomal information
            c0 = Order of the polynimial being created
            c1 = number_of_terms in one polynomial equation
 
@@ -1405,7 +1405,7 @@ static double *GenerateCoefficients(const Image *image,
             8:  Ax,Bx,Cx,Dx  Ay,By,Cy,Dy
            10:  Ax,Bx,Cx,Dx  Ay,By,Cy,Dy   X,Y
 
-        Returns 10 coefficent values, which are de-normalized (pixel scale)
+        Returns 10 coefficient values, which are de-normalized (pixel scale)
           Ax, Bx, Cx, Dx,   Ay, By, Cy, Dy,    Xc, Yc
       */
       /* Radius de-normalization scaling factor */
@@ -1469,7 +1469,7 @@ static double *GenerateCoefficients(const Image *image,
     }
     case ShepardsDistortion:
     {
-      /* Shepards Distortion  input arguments are the coefficents!
+      /* Shepards Distortion  input arguments are the coefficients!
          Just check the number of arguments is valid!
          Args:  u1,v1, x1,y1, ...
           OR :  u1,v1, r1,g1,c1, ...
@@ -1728,7 +1728,7 @@ MagickExport Image *DistortResizeImage(const Image *image,const size_t columns,
 %  Extra Controls from Image meta-data (artifacts)...
 %
 %    o "verbose"
-%        Output to stderr alternatives, internal coefficents, and FX
+%        Output to stderr alternatives, internal coefficients, and FX
 %        equivalents for the distortion operation (if feasible).
 %        This forms an extra check of the distortion method, and allows users
 %        access to the internal constants IM calculates for the distortion.
@@ -2815,7 +2815,7 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
           case ShepardsDistortion:
           { /* Shepards Method, or Inverse Weighted Distance for
                displacement around the destination image control points
-               The input arguments are the coefficents to the function.
+               The input arguments are the coefficients to the function.
                This is more of a 'displacement' function rather than an
                absolute distortion function.
 
@@ -3019,7 +3019,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
 %
 %        The methods used for SparseColor() are often simular to methods
 %        used for DistortImage(), and even share the same code for determination
-%        of the function coefficents, though with more dimensions (or resulting
+%        of the function coefficients, though with more dimensions (or resulting
 %        values).
 %
 %    o number_arguments: the number of arguments given.

@@ -97,7 +97,7 @@ struct _ResizeFilter
     window_support, /* window support, usally equal to support (expert only) */
     scale,          /* dimension scaling to fit window support (usally 1.0) */
     blur,           /* x-scale (blur-sharpen) */
-    coefficient[7]; /* cubic coefficents for BC-cubic filters */
+    coefficient[7]; /* cubic coefficients for BC-cubic filters */
 
   ResizeWeightingFunctionType
     filterWeightingType,
@@ -1044,7 +1044,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     artifact=GetImageArtifact(image,"filter:sigma");
     if (artifact != (const char *) NULL)
       value=StringToDouble(artifact,(char **) NULL);
-    /* Define coefficents for Gaussian */
+    /* Define coefficients for Gaussian */
     resize_filter->coefficient[0]=value;                 /* note sigma too */
     resize_filter->coefficient[1]=PerceptibleReciprocal(2.0*value*value); /* sigma scaling */
     resize_filter->coefficient[2]=PerceptibleReciprocal(Magick2PI*value*value);
@@ -1066,7 +1066,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     artifact=GetImageArtifact(image,"filter:kaiser-alpha");
     if (artifact != (const char *) NULL)
       value=StringToDouble(artifact,(char **) NULL)*MagickPI;
-    /* Define coefficents for Kaiser Windowing Function */
+    /* Define coefficients for Kaiser Windowing Function */
     resize_filter->coefficient[0]=value;         /* alpha */
     resize_filter->coefficient[1]=PerceptibleReciprocal(I0(value));
       /* normalization */

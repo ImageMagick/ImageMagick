@@ -458,15 +458,15 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %  the given set of coefficient weighted terms.
 %
 %     double **matrix = AcquireMagickMatrix(8UL,8UL);
-%     double coefficents[8];
+%     double coefficients[8];
 %     ...
-%     GaussJordanElimination(matrix, &coefficents, 8UL, 1UL);
+%     GaussJordanElimination(matrix, &coefficients, 8UL, 1UL);
 %
 %  However by specifing more 'columns' (as an 'array of vector columns',
 %  you can use this function to solve a set of 'separable' equations.
 %
 %  For example a distortion function where    u = U(x,y)   v = V(x,y)
-%  And the functions U() and V() have separate coefficents, but are being
+%  And the functions U() and V() have separate coefficients, but are being
 %  generated from a common x,y->u,v  data set.
 %
 %  Another example is generation of a color gradient from a set of colors at
@@ -781,11 +781,11 @@ MagickExport size_t GetMatrixRows(const MatrixInfo *matrix_info)
 %
 %    o vectors: the result vectors to add terms/results to.
 %
-%    o terms: the pre-calculated terms (without the unknown coefficent
+%    o terms: the pre-calculated terms (without the unknown coefficient
 %             weights) that forms the equation being added.
 %
 %    o results: the result(s) that should be generated from the given terms
-%               weighted by the yet-to-be-solved coefficents.
+%               weighted by the yet-to-be-solved coefficients.
 %
 %    o rank: the rank or size of the dimensions of the square matrix.
 %            Also the length of vectors, and number of terms being added.
