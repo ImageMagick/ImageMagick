@@ -895,7 +895,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image)
 %  If the adjustment values are both zero this function is equivalent to a
 %  perfect normalization (or autolevel) of the image.
 %
-%  Each channel is stretched independantally of each other (producing color
+%  Each channel is stretched independently of each other (producing color
 %  distortion) unless the special 'SyncChannels' flag is also provided in the
 %  channels setting. If this flag is present the minimum and maximum point
 %  will be extracted from all the given channels, and those channels will be

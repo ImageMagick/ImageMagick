@@ -176,7 +176,7 @@
     3) When the special channel flag 'sync' (syncronize channel updates)
        is turned off (enabled by default) then mathematical compositions are
        only performed on the channels specified, and are applied
-       independantally of each other.  In other words the mathematics is
+       independently of each other.  In other words the mathematics is
        performed as 'pure' mathematical operations, rather than as image
        operations.
 */
