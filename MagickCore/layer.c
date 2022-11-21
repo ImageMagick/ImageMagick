@@ -1758,7 +1758,7 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
 %
 %  Composition uses given x and y offsets, as the 'origin' location of the
 %  source images virtual canvas (not the real image) allowing you to compose a
-%  list of 'layer images' into the destiantioni images.  This makes it well
+%  list of 'layer images' into the destination images.  This makes it well
 %  sutiable for directly composing 'Clears Frame Animations' or 'Coalesced
 %  Animations' onto a static or other 'Coalesced Animation' destination image
 %  list.  GIF disposal handling is not looked at.
@@ -1822,7 +1822,7 @@ MagickExport void CompositeLayers(Image *destination,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s - %s",
       source->filename,destination->filename);
   /*
-    Overlay single source image over destation image/list
+    Overlay single source image over destination image/list
   */
   if ( source->next == (Image *) NULL )
     while ( destination != (Image *) NULL )
