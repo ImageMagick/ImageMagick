@@ -127,7 +127,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyMagickCLI() destorys everything in a CLI wand, including image_info
+%  DestroyMagickCLI() destroys everything in a CLI wand, including image_info
 %  and any exceptions, if still present in the wand.
 %
 %  The format of the NewMagickWand method is:
