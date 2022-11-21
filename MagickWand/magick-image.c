@@ -7421,7 +7421,7 @@ WandExport MagickBooleanType MagickMinifyImage(MagickWand *wand)
 %
 %    o wand: the magick wand.
 %
-%    o brightness: the percent change in brighness.
+%    o brightness: the percent change in brightness.
 %
 %    o saturation: the percent change in saturation.
 %
