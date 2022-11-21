@@ -397,7 +397,7 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
 %  It does not handle non-profile prefixes, such as "fx:", "option:", or
 %  "artifact:".
 %
-%  The returned string is stored as a properity of the same name for faster
+%  The returned string is stored as a prosperity of the same name for faster
 %  lookup later. It should NOT be freed by the caller.
 %
 %  The format of the GetImageProperty method is:
@@ -3592,7 +3592,7 @@ MagickExport const char *GetNextImageProperty(const Image *image)
 %     &lt; &gt; &amp;   replaced by '<', '>', '&' resp.
 %     %%                replaced by percent
 %
-%     %x %[x]       where 'x' is a single letter properity, case sensitive).
+%     %x %[x]       where 'x' is a single letter prosperity, case sensitive).
 %     %[type:name]  where 'type' a is special and known prefix.
 %     %[name]       where 'name' is a specifically known attribute, calculated
 %                   value, or a per-image property string name, or a per-image

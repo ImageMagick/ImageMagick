@@ -342,7 +342,7 @@ struct _Image
   struct _ImageInfo
     *image_info;       /* (Optional) Image belongs to this ImageInfo 'list'
                         * For access to 'global options' when no per-image
-                        * attribute, properity, or artifact has been set.
+                        * attribute, prosperity, or artifact has been set.
                         */
 
   struct _Image
