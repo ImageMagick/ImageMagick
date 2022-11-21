@@ -1217,7 +1217,7 @@ MagickExport MagickBooleanType GetPathAttributes(const char *path,
 %    o path: Specifies a pointer to a character array that contains the
 %      file path.
 %
-%    o type: Specififies which file path component to return.
+%    o type: Specifies which file path component to return.
 %
 %    o component: the selected file path component is returned here.
 %
