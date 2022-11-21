@@ -2626,7 +2626,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     RelinquishMagickMemory(ddata->draw_info->text);
 
 #if defined(MAGICKCORE_WMF_DELEGATE)
-  /* Must initialize font subystem for WMFlite interface */
+  /* Must initialize font subsystem for WMFlite interface */
   lite_font_init (API,&wmf_api_options); /* similar to wmf_ipa_font_init in src/font.c */
   /* wmf_arg_fontdirs (API,options); */ /* similar to wmf_arg_fontdirs in src/wmf.c */
 
