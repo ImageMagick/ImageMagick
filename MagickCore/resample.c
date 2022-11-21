@@ -567,7 +567,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
 
   /*
     Do weighted resampling of all pixels,  within the scaled ellipse,
-    bound by a Parellelogram fitted to the ellipse.
+    bound by a Parallelogram fitted to the ellipse.
   */
   DDQ = 2*resample_filter->A;
   for( v=v1; v<=v2;  v++ ) {
