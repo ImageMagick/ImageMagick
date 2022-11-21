@@ -430,7 +430,7 @@ struct _ImageInfo
 
   MagickBooleanType
     dither,             /* dither enable-disable */
-    monochrome;         /* read/write pcl,pdf,ps,xps as monocrome image */
+    monochrome;         /* read/write pcl,pdf,ps,xps as monochrome image */
 
   ColorspaceType
     colorspace;
