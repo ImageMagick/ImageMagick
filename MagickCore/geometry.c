@@ -1243,7 +1243,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
 %  The format of the ParseGravityGeometry method is:
 %
 %      MagickStatusType ParseGravityGeometry(Image *image,const char *geometry,
-%        RectangeInfo *region_info,ExceptionInfo *exception)
+%        RectangleInfo *region_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1610,7 +1610,7 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
 %  The format of the ParsePageGeometry method is:
 %
 %      MagickStatusType ParsePageGeometry(const Image *image,
-%        const char *geometry,RectangeInfo *region_info,
+%        const char *geometry,RectangleInfo *region_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1680,7 +1680,7 @@ MagickExport MagickStatusType ParsePageGeometry(const Image *image,
 %  The format of the ParseRegionGeometry method is:
 %
 %      MagickStatusType ParseRegionGeometry(const Image *image,
-%        const char *geometry,RectangeInfo *region_info,
+%        const char *geometry,RectangleInfo *region_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
