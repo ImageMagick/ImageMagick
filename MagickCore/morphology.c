@@ -1881,7 +1881,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
               /* Kernels to find a stepped 'thick' line, 4 rotates + mirrors */
               /* Unfortunatally we can not yet rotate a non-square kernel */
-              /* But then we can't flip a non-symetrical kernel either */
+              /* But then we can't flip a non-symmetrical kernel either */
               new_kernel=ParseKernelArray("4x3+1+1:0,1,1,- -,1,1,- -,1,1,0");
               if (new_kernel == (KernelInfo *) NULL)
                 return(DestroyKernelInfo(kernel));
@@ -2294,7 +2294,7 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 %  sequence of 90-degree rotated kernels but providing a reflected 180
 %  rotation, before the -/+ 90-degree rotations.
 %
-%  This special rotation order produces a better, more symetrical thinning of
+%  This special rotation order produces a better, more symmetrical thinning of
 %  objects.
 %
 %  The format of the ExpandMirrorKernelInfo method is:
@@ -4270,7 +4270,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
   if ( kernel->next != (KernelInfo *) NULL)
     RotateKernelInfo(kernel->next, angle);
 
-  /* WARNING: Currently assumes the kernel (rightly) is horizontally symetrical
+  /* WARNING: Currently assumes the kernel (rightly) is horizontally symmetrical
   **
   ** TODO: expand beyond simple 90 degree rotates, flips and flops
   */
