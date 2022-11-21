@@ -123,7 +123,7 @@ This file records noteworthy changes in Magick++.
 
   * Added clipMask method to add a clip mask to the current
     image. Prevents modification to image pixels wherever the
-    associated clip mask image is tranparent.
+    associated clip mask image is transparent.
 
   * Documented methods which were added previously, but left
     undocumented.

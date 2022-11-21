@@ -714,7 +714,7 @@
 
 	* lib/Image.cpp (clipMask): New method to add a clip mask to the
  	image.  Adds clipping to any image operation wherever the clip
- 	mask image is tranparent.
+ 	mask image is transparent.
 
 2001-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
