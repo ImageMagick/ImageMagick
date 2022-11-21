@@ -949,7 +949,7 @@ static double *GenerateCoefficients(const Image *image,
       /*
         Calculate 9'th coefficient! The ground-sky determination.
         What is sign of the 'ground' in r() denominator affine function?
-        Just use any valid image cocodinate in destination for determination.
+        Just use any valid image coordinate in destination for determination.
         For a forward mapped perspective the images 0,0 coord will map to
         c2,c5 in the distorted image, so set the sign of denominator of that.
       */
