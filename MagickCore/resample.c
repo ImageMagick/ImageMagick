@@ -989,7 +989,7 @@ static inline void ClampUpAxes(const double dux,
 %  a orthogonal scaling, but two distorted scaling vectors, to allow the
 %  generation of a angled ellipse.
 %
-%  As only two deritive scaling vectors are used the center of the ellipse
+%  As only two derivative scaling vectors are used the center of the ellipse
 %  must be the center of the lookup.  That is any curvature that the
 %  distortion may produce is discounted.
 %
@@ -1000,7 +1000,7 @@ static inline void ClampUpAxes(const double dux,
 %  polar coordinate vector scaling vectors
 %
 %  If   u,v =  DistortEquation(x,y)   OR   u = Fu(x,y); v = Fv(x,y)
-%  Then the scaling vectors are determined from the deritives...
+%  Then the scaling vectors are determined from the derivatives...
 %      du/dx, dv/dx     and    du/dy, dv/dy
 %  If the resulting scaling vectors is othogonally aligned then...
 %      dv/dx = 0   and   du/dy  =  0
@@ -1008,7 +1008,7 @@ static inline void ClampUpAxes(const double dux,
 %  be resampled.
 %
 %  Note that scaling vectors are different to argument order.  Argument order
-%  is the general order the deritives are extracted from the distortion
+%  is the general order the derivatives are extracted from the distortion
 %  equations, and not the scaling vectors. As such the middle two vaules
 %  may be swapped from what you expect.  Caution is advised.
 %
@@ -1028,8 +1028,8 @@ static inline void ClampUpAxes(const double dux,
 %      image being resampled
 %
 %    o dux,duy,dvx,dvy:
-%         The deritives or scaling vectors defining the EWA ellipse.
-%         NOTE: watch the order, which is based on the order deritives
+%         The derivatives or scaling vectors defining the EWA ellipse.
+%         NOTE: watch the order, which is based on the order derivatives
 %         are usally determined from distortion equations (see above).
 %         The middle two values may need to be swapped if you are thinking
 %         in terms of scaling vectors.
