@@ -34,7 +34,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Use the mogrify program to resize an image, blur, crop, despeckle, dither,
-%  draw on, flip, join, re-sample, and much more. This tool is similiar to
+%  draw on, flip, join, re-sample, and much more. This tool is similar to
 %  convert except that the original image file is overwritten (unless you
 %  change the file suffix with the -format option) with any changes you
 %  request.
