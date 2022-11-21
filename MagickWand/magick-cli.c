@@ -336,7 +336,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
 %
 %    o argv: A text array containing the command line arguments. (optional)
 %
-%    o index: offset of next argment in argv (script arguments) (optional)
+%    o index: offset of next argument in argv (script arguments) (optional)
 %
 */
 WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
@@ -621,7 +621,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
 
   end = argc;
   if ( (cli_wand->process_flags & ProcessImplictWrite) != 0 )
-    end--; /* the last arument is an implied write, do not process directly */
+    end--; /* the last argument is an implied write, do not process directly */
 
   for (i=index; i < end; i += count +1) {
     /* Finished processing one option? */
