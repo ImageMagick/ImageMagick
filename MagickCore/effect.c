@@ -1199,7 +1199,7 @@ MagickExport Image *ConvolveImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DespeckleImage() reduces the speckle noise in an image while perserving the
+%  DespeckleImage() reduces the speckle noise in an image while preserving the
 %  edges of the original image.  A speckle removing filter uses a complementary
 %  hulling technique (raising pixels that are darker than their surrounding
 %  neighbors, then complementarily lowering pixels that are brighter than their
