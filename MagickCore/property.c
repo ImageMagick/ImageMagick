@@ -2412,7 +2412,7 @@ MagickExport const char *GetImageProperty(const Image *image,
 %  directly freed.  If the string was generated (common) the string will be
 %  stored as as either as artifact or option 'magick-property'.  These may be
 %  deleted (cleaned up) when no longer required, but neither artifact or
-%  option is guranteed to exist.
+%  option is guaranteed to exist.
 %
 %  The format of the GetMagickProperty method is:
 %
