@@ -2820,7 +2820,7 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
                absolute distortion function.
 
                Note: We can not determine derivatives using shepards method
-               so only a point sample interpolatation can be used.
+               so only a point sample interpolation can be used.
             */
             double
               denominator;

@@ -4092,7 +4092,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %
 %    o image: the image.
 %
-%    o method:  intepolation method.
+%    o method:  interpolation method.
 %
 %    o radius:  choose a random pixel in a neighborhood of this extent.
 %
