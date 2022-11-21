@@ -462,7 +462,7 @@ sub deal_with_options
         }
 
         print STDERR "Unrecognized option: $ARGV[0]\n";
-        print STDERR " or bad paramater: $ARGV[1]\n" if($ARGV[1]);
+        print STDERR " or bad parameter: $ARGV[1]\n" if($ARGV[1]);
 
         &usage;
         exit(1);
