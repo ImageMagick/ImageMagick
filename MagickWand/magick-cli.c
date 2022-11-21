@@ -582,7 +582,7 @@ loop_exit:
 %    o index: index in the argv array to start processing from
 %
 % The function returns the index ot the next option to be processed. This
-% is really only releven if process_flags contains a ProcessOneOptionOnly
+% is really only relevant if process_flags contains a ProcessOneOptionOnly
 % flag.
 %
 */
