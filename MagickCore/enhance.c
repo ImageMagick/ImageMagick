@@ -223,7 +223,7 @@ MagickExport MagickBooleanType AutoLevelImage(Image *image,
 MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   const double brightness,const double contrast,ExceptionInfo *exception)
 {
-#define BrightnessContastImageTag  "BrightnessContast/Image"
+#define BrightnessContrastImageTag  "BrightnessContrast/Image"
 
   double
     alpha,
@@ -500,7 +500,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     *lut;
 
   /*
-    Constrast limited adapted histogram equalization.
+    Contrast limited adapted histogram equalization.
   */
   if (clip_limit == 1.0)
     return(MagickTrue);
