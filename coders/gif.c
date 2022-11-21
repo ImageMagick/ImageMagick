@@ -1284,7 +1284,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image->columns == 0) || (image->rows == 0))
       ThrowGIFException(CorruptImageError,"NegativeOrZeroImageSize");
     /*
-      Inititialize colormap.
+      Initialize colormap.
     */
     if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
       ThrowGIFException(ResourceLimitError,"MemoryAllocationFailed");
