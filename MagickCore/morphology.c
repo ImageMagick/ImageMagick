@@ -652,7 +652,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %  45 degrees to generate the 8 angled varients of each of the kernels.
 %
 %    Laplacian:{type}
-%      Discrete Lapacian Kernels, (without normalization)
+%      Discrete Laplacian Kernels, (without normalization)
 %        Type 0 :  3x3 with center:8 surounded by -1  (8 neighbourhood)
 %        Type 1 :  3x3 with center:4 edge:-1 corner:0 (4 neighbourhood)
 %        Type 2 :  3x3 with center:4 edge:1 corner:-2
@@ -4540,7 +4540,7 @@ MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
 %  the kernel will be scaled by the absolute of the sum of kernel values, so
 %  that it will generally fall within the +/- 1.0 range.
 %
-%  For kernels whose values sum to zero, (such as 'Laplician' kernels) kernel
+%  For kernels whose values sum to zero, (such as 'Laplacian' kernels) kernel
 %  will be scaled by just the sum of the postive values, so that its output
 %  range will again fall into the  +/- 1.0 range.
 %
