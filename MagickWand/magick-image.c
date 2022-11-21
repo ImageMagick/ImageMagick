@@ -8147,7 +8147,7 @@ WandExport MagickBooleanType MagickOptimizeImageTransparency(MagickWand *wand)
 %      level. While checker,8,8,4 will produce a 332 colormaped image with
 %      only a single checkerboard hash pattern (50% grey) between each color
 %      level, to basically double the number of color levels with a bare
-%      minimim of dithering.
+%      minimum of dithering.
 %
 */
 WandExport MagickBooleanType MagickOrderedDitherImage(MagickWand *wand,
