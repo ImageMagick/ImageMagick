@@ -630,7 +630,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       radius of the kernel.
 %
 %    Binomial:[{radius}]
-%       Generate a discrete kernel using a 2 dimentional Pascel's Triangle
+%       Generate a discrete kernel using a 2 dimensional Pascel's Triangle
 %       of values. Used for special forma of image filters.
 %
 %    # Still to be implemented...
