@@ -1605,7 +1605,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
 %  No check is made with regards to image disposal setting, though it is the
 %  dispose setting of later image that is kept.  Also any time delays are also
 %  added together. As such coalesced image animations should still produce the
-%  same result, though with duplicte frames merged into a single frame.
+%  same result, though with duplicate frames merged into a single frame.
 %
 %  The format of the RemoveDuplicateLayers method is:
 %
