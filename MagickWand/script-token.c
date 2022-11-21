@@ -77,7 +77,7 @@
 %
 %  Comments start with a '#' character at the start of a new token, will be
 %  completely ignored upto the end of line, regardless of any backslash at the
-%  end of the line.  You can escape a comment '#', using quotes or backlsashes
+%  end of the line.  You can escape a comment '#', using quotes or backslashes
 %  just as you can in a shell.
 %
 %  The parser will accept both newlines, returns, or return-newlines to mark
