@@ -1526,7 +1526,7 @@ WandExport FillRule DrawGetFillRule(const DrawingWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawGetFont() returns a null-terminaged string specifying the font used
+%  DrawGetFont() returns a null-terminated string specifying the font used
 %  when annotating with text. The value returned must be freed by the user
 %  when no longer needed.
 %
