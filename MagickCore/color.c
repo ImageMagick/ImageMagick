@@ -1456,7 +1456,7 @@ MagickExport char **GetColorList(const char *pattern,
 %
 %    o pixel: the pixel.
 %
-%    o hex: A value other than zero returns the tuple in a hexidecimal format.
+%    o hex: A value other than zero returns the tuple in a hexadecimal format.
 %
 %    o tuple: Return the color tuple as this string.
 %
