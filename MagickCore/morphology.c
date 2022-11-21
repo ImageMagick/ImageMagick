@@ -188,7 +188,7 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %  The special flags will expand a single kernel, into a list of rotated
 %  kernels. A '@' flag will expand a 3x3 kernel into a list of 45-degree
 %  cyclic rotations, while a '>' will generate a list of 90-degree rotations.
-%  The '<' also exands using 90-degree rotates, but giving a 180-degree
+%  The '<' also expands using 90-degree rotates, but giving a 180-degree
 %  reflected kernel before the +/- 90-degree rotations, which can be important
 %  for Thinning operations.
 %
