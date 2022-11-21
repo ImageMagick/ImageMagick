@@ -839,7 +839,7 @@ MagickExport void SetImageViewDescription(ImageView *image_view,
 %  SetImageViewIterator() iterates over the image view in parallel and calls
 %  your set method for each scanline of the view.  The pixel extent is
 %  confined to the image canvas-- that is no negative offsets or widths or
-%  heights that exceed the image dimension.  The pixels are initiallly
+%  heights that exceed the image dimension.  The pixels are initially
 %  undefined and any settings you make in the callback method are automagically
 %  synced back to your image.
 %
