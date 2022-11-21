@@ -556,7 +556,7 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
     rows[i]=row;
     columns[i]=column;
     if (matrix[column][column] == 0.0)
-      return(MagickFalse);  /* sigularity */
+      return(MagickFalse);  /* singularity */
     scale=PerceptibleReciprocal(matrix[column][column]);
     matrix[column][column]=1.0;
     for (j=0; j < (ssize_t) rank; j++)
