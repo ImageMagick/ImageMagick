@@ -1187,7 +1187,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
             (void) FormatLocaleFile(stderr, "expand_clear: %.20gx%.20g%+.20g%+.20g%s\n",
                 (double) try_bounds.width,(double) try_bounds.height,
                 (double) try_bounds.x,(double) try_bounds.y,
-                try_bounds.x<0?"  (no expand nessary)":"");
+                try_bounds.x<0?"  (no expand necessary)":"");
 #endif
             if ( bgnd_bounds.x < 0 )
               bgnd_bounds = try_bounds;
