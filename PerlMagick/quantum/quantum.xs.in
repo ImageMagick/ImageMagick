@@ -8874,7 +8874,7 @@ Mogrify(ref,...)
               break;
             }
           /*
-            Parameter Handling used used ONLY for normal composition.
+            Parameter Handling used ONLY for normal composition.
           */
           if (attribute_flag[5] != 0) /* gravity */
             image->gravity=(GravityType) argument_list[5].integer_reference;
