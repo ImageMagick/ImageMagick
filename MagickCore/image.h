@@ -245,7 +245,7 @@ struct _Image
     ticks_per_second;  /* units for delay time, default 100 for GIF */
 
   size_t
-    iterations,        /* number of interations for GIF animations */
+    iterations,        /* number of interactions for GIF animations */
     total_colors;
 
   ssize_t
