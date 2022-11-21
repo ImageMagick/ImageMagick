@@ -967,7 +967,7 @@ static void XDrawTriangleSouth(Display *display,const XWindowInfo *window_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  XDrawWidgetText() first clears the widget and draws a text string justifed
+%  XDrawWidgetText() first clears the widget and draws a text string justified
 %  left (or center) in the x-direction and centered within the y-direction.
 %
 %  The format of the XDrawWidgetText function is:
