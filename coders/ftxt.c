@@ -71,14 +71,14 @@
 #include "coders/ftxt.h"
 
 /*
-  Define declaractions.
+  Define declarations.
 */
 #define chEsc '\\'
 #define dfltChSep ","
 #define dfltFmt "\\x,\\y:\\c\\n"
 
 /*
-  Enumerated declaractions.
+  Enumerated declarations.
 */
 typedef enum
   {

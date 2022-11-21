@@ -136,7 +136,7 @@ typedef struct _IconInfo
 } IconInfo;
 
 /*
-  Forward declaractions.
+  Forward declarations.
 */
 static MagickBooleanType
   WriteICONImage(const ImageInfo *,Image *,ExceptionInfo *);

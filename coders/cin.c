@@ -226,7 +226,7 @@ typedef struct CINInfo
 } CINInfo;
 
 /*
-  Forward declaractions.
+  Forward declarations.
 */
 static MagickBooleanType
   WriteCINImage(const ImageInfo *,Image *,ExceptionInfo *);

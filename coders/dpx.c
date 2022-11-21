@@ -330,7 +330,7 @@ typedef struct DPXInfo
 } DPXInfo;
 
 /*
-  Forward declaractions.
+  Forward declarations.
 */
 static MagickBooleanType
   WriteDPXImage(const ImageInfo *,Image *,ExceptionInfo *);

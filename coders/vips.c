@@ -64,7 +64,7 @@
 #include "coders/coders-private.h"
 
 /*
-  Define declaractions.
+  Define declarations.
 */
 #define VIPS_MAGIC_LSB 0x08f2a6b6U
 #define VIPS_MAGIC_MSB 0xb6a6f208U

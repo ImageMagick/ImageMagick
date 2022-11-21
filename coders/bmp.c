@@ -107,7 +107,7 @@
 #endif
 
 /*
-  Enumerated declaractions.
+  Enumerated declarations.
 */
 typedef enum
 {
