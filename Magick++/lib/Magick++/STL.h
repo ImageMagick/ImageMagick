@@ -2333,7 +2333,7 @@ namespace Magick
   // Merge a sequence of image frames which represent image layers.
   // This is useful for combining Photoshop layers into a single image.
   template <class InputIterator>
-  void flattenImages( Image *flattendImage_,
+  void flattenImages( Image *flattenedImage_,
           InputIterator first_,
           InputIterator last_ ) {
     if (linkImages(first_,last_) == false)
@@ -2342,8 +2342,8 @@ namespace Magick
     MagickCore::Image* image = MagickCore::MergeImageLayers( first_->image(),
       FlattenLayer,exceptionInfo );
     unlinkImages( first_, last_ );
-    flattendImage_->replaceImage( image );
-    ThrowPPException(flattendImage_->quiet());
+    flattenedImage_->replaceImage( image );
+    ThrowPPException(flattenedImage_->quiet());
   }
 
   // Implements the discrete Fourier transform (DFT) of the image either as a
