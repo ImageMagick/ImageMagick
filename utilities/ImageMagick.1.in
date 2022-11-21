@@ -77,7 +77,7 @@ a file or pipeline.
 This command is similar to magick(1) but with an implied "-script" option.  It
 is useful in special "#!/usr/bin/env magick-script" scripts that search for the
 magick-script(1) command anywhere along the users PATH, rather than in a
-hardcorded command location.
+hardcoded command location.
 
 .TP
 .B convert
