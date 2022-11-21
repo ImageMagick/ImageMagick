@@ -470,7 +470,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %  generated from a common x,y->u,v  data set.
 %
 %  Another example is generation of a color gradient from a set of colors at
-%  specific coordients, such as a list x,y -> r,g,b,a.
+%  specific coordinates, such as a list x,y -> r,g,b,a.
 %
 %  You can also use the 'vectors' to generate an inverse of the given 'matrix'
 %  though as a 'column first array' rather than a 'row first array'. For

@@ -581,7 +581,7 @@ static double *GenerateCoefficients(const Image *image,
                    + ( arguments[cp_size+cp_x] - arguments[cp_x] ); /* y2 */
           terms[2] = 1;                                             /* 1 */
           if ( cp_values == 0 ) {
-            /* Image Distortion - rotate the u,v coordients too */
+            /* Image Distortion - rotate the u,v coordinates too */
             double
               uv2[2];
             uv2[0] = arguments[0] - arguments[5] + arguments[1];   /* u2 */
@@ -1447,7 +1447,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff[6] = coeff[2];
         coeff[7] = coeff[3];
       }
-      /* X,Y Center of Distortion (image coodinates) */
+      /* X,Y Center of Distortion (image coordinates) */
       if ( number_arguments == 5 )  {
         coeff[8] = arguments[3];
         coeff[9] = arguments[4];
@@ -1461,7 +1461,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff[9] = arguments[9];
       }
       else {
-        /* center of the image provided (image coodinates) */
+        /* center of the image provided (image coordinates) */
         coeff[8] = (double)image->columns/2.0 + image->page.x;
         coeff[9] = (double)image->rows/2.0    + image->page.y;
       }
