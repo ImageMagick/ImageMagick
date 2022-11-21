@@ -1031,7 +1031,7 @@
 
 2000-09-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* lib/Magick++/Drawable.h: Reverted Coordinate implemenation back
+	* lib/Magick++/Drawable.h: Reverted Coordinate implementation back
  	from and STL pair based implementation to a simple class.  Maybe
  	this will improve portability.  It is more understandable anyway.
 
