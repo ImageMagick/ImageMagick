@@ -1182,7 +1182,7 @@ static double *GenerateCoefficients(const Image *image,
             arc_width      The angle over which to arc the image side-to-side
             rotate         Angle to rotate image from vertical center
             top_radius     Set top edge of source image at this radius
-            bottom_radius  Set bootom edge to this radius (radial scaling)
+            bottom_radius  Set bottom edge to this radius (radial scaling)
 
          By default, if the radii arguments are nor provided the image radius
          is calculated so the horizontal center-line is fits the given arc
