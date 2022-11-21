@@ -2292,7 +2292,7 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 %
 %  ExpandMirrorKernelInfo() takes a single kernel, and expands it into a
 %  sequence of 90-degree rotated kernels but providing a reflected 180
-%  rotatation, before the -/+ 90-degree rotations.
+%  rotation, before the -/+ 90-degree rotations.
 %
 %  This special rotation order produces a better, more symetrical thinning of
 %  objects.

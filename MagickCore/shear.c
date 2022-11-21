@@ -1556,7 +1556,7 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
 %  necessary for the new Image structure and returns a pointer to the new image.
 %
 %  ShearImage() is based on the paper "A Fast Algorithm for General Raster
-%  Rotatation" by Alan W. Paeth.
+%  Rotation" by Alan W. Paeth.
 %
 %  The format of the ShearImage method is:
 %
@@ -1687,7 +1687,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
 %  pointer to the new image.
 %
 %  ShearRotateImage() is based on the paper "A Fast Algorithm for General
-%  Raster Rotatation" by Alan W. Paeth.  ShearRotateImage is adapted from a
+%  Raster Rotation" by Alan W. Paeth.  ShearRotateImage is adapted from a
 %  similar method based on the Paeth paper written by Michael Halle of the
 %  Spatial Imaging Group, MIT Media Lab.
 %
