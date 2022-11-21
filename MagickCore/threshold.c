@@ -411,7 +411,7 @@ static double KapurThreshold(const Image *image,const double *histogram,
     threshold;
 
   /*
-    Compute optimal threshold from the entopy of the histogram.
+    Compute optimal threshold from the entropy of the histogram.
   */
   cumulative_histogram=(double *) AcquireQuantumMemory(MaxIntensity+1UL,
     sizeof(*cumulative_histogram));
