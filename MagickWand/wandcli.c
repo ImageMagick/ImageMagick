@@ -102,7 +102,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->image_info_stack=(Stack *) NULL;
 
   /* default exception location...
-     EG: sprintf(locaiton, filename, line, column);
+     EG: sprintf(location, filename, line, column);
   */
   cli_wand->location="from \"%s\"";   /* location format using arguments: */
                                       /*      filename, line, column */

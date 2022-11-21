@@ -374,7 +374,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
   }
 
   /* define the error location string for use in exceptions
-     order of localtion format escapes: filename, line, column */
+     order of location format escapes: filename, line, column */
   cli_wand->location="in \"%s\" at line %u,column %u";
   if ( LocaleCompare("-", filename) == 0 )
     cli_wand->filename="stdin";
@@ -610,7 +610,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
   assert(cli_wand->signature == MagickWandSignature);
 
   /* define the error location string for use in exceptions
-     order of localtion format escapes: filename, line, column */
+     order of location format escapes: filename, line, column */
   cli_wand->location="at %s arg %u";
   cli_wand->filename="CLI";
   cli_wand->line=index;  /* note first argument we will process */
