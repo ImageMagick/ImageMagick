@@ -231,7 +231,7 @@ push(@$results, $clone);
 # ----------------------------------------
 # Output the changed pixels
 
-# to every image underlay a checkboard pattern
+# to every image underlay a checkerboard pattern
 # so as to show if any transparency is present
 for my $image ( @$results ) {
   $image->Composite(
