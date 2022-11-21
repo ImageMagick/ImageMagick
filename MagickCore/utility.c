@@ -719,7 +719,7 @@ MagickPrivate void ExpandFilename(char *path)
 %     ?    matches by any single character
 %
 %  WARNING: filenames starting with '.' (hidden files in a UNIX file system)
-%  will never be expanded.  Attempting to epand '.*' will produce no change.
+%  will never be expanded.  Attempting to expand '.*' will produce no change.
 %
 %  Expansion is ignored for coders "label:" "caption:" "pango:" and "vid:".
 %  Which provide their own '@' meta-character handling.
