@@ -653,7 +653,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %
 %    Laplacian:{type}
 %      Discrete Laplacian Kernels, (without normalization)
-%        Type 0 :  3x3 with center:8 surounded by -1  (8 neighbourhood)
+%        Type 0 :  3x3 with center:8 surrounded by -1  (8 neighbourhood)
 %        Type 1 :  3x3 with center:4 edge:-1 corner:0 (4 neighbourhood)
 %        Type 2 :  3x3 with center:4 edge:1 corner:-2
 %        Type 3 :  3x3 with center:4 edge:-2 corner:1
