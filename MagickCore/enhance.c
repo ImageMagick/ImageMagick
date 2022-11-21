@@ -202,7 +202,7 @@ MagickExport MagickBooleanType AutoLevelImage(Image *image,
 %
 %  BrightnessContrastImage() changes the brightness and/or contrast of an
 %  image.  It converts the brightness and contrast parameters into slope and
-%  intercept and calls a polynomical function to apply to the image.
+%  intercept and calls a polynomial function to apply to the image.
 %
 %  The format of the BrightnessContrastImage method is:
 %

@@ -422,7 +422,7 @@ static double *GenerateCoefficients(const Image *image,
       number_coefficients=3*number_values;
       break;
     case PolynomialDistortion:
-      /* number of coefficients depend on the given polynomal 'order' */
+      /* number of coefficients depend on the given polynomial 'order' */
       i = poly_number_terms(arguments[0]);
       number_coefficients = 2 + i*number_values;
       if ( i == 0 ) {
@@ -1095,8 +1095,8 @@ static double *GenerateCoefficients(const Image *image,
     {
       /* Polynomial Distortion
 
-         First two coefficients are used to hole global polynomal information
-           c0 = Order of the polynimial being created
+         First two coefficients are used to hole global polynomial information
+           c0 = Order of the polynomial being created
            c1 = number_of_terms in one polynomial equation
 
          Rest of the coefficients map to the equations....
