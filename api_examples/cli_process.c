@@ -5,7 +5,7 @@
    group calls.
 
 
-   Compile with ImageMagick-devlop installed...
+   Compile with ImageMagick-develop installed...
 
      gcc -lMagickWand -lMagickCore cli_process.c -o cli_process
 

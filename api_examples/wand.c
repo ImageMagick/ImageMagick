@@ -6,7 +6,7 @@
             +append   show:
 
 
-   Compile with ImageMagick-devlop installed...
+   Compile with ImageMagick-develop installed...
 
      gcc -lMagickWand -lMagickCore wand.c -o wand
 
