@@ -173,7 +173,7 @@
        with regard to blending.  This now includes 'ModulusAdd' and
        'ModulusSubtract'.
 
-    3) When the special channel flag 'sync' (syncronize channel updates)
+    3) When the special channel flag 'sync' (synchronize channel updates)
        is turned off (enabled by default) then mathematical compositions are
        only performed on the channels specified, and are applied
        independently of each other.  In other words the mathematics is
