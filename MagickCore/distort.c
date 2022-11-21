@@ -3071,7 +3071,7 @@ MagickExport Image *SparseColorImage(const Image *image,
     number_colors++;
 
   /*
-    Convert input arguments into mapping coefficients, this this case
+    Convert input arguments into mapping coefficients, in this case
     we are mapping (distorting) colors, rather than coordinates.
   */
   { DistortMethod
