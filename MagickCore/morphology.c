@@ -1975,7 +1975,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               break;
             case 3:
               /* Dan Bloomberg Skeleton, from his paper on 3x3 thinning SE's
-              ** "Connectivity-Preserving Morphological Image Thransformations"
+              ** "Connectivity-Preserving Morphological Image Transformations"
               ** by Dan S. Bloomberg, available on Leptonica, Selected Papers,
               **   http://www.leptonica.com/papers/conn.pdf
               */
@@ -1997,7 +1997,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         }
       case ThinSEKernel:
         { /* Special kernels for general thinning, while preserving connections
-          ** "Connectivity-Preserving Morphological Image Thransformations"
+          ** "Connectivity-Preserving Morphological Image Transformations"
           ** by Dan S. Bloomberg, available on Leptonica, Selected Papers,
           **   http://www.leptonica.com/papers/conn.pdf
           ** And
