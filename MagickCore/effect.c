@@ -4255,7 +4255,7 @@ MagickExport Image *SpreadImage(const Image *image,
 %    o gain: the percentage of the difference between the original and the
 %      blur image that is added back into the original.
 %
-%    o threshold: the threshold in pixels needed to apply the diffence gain.
+%    o threshold: the threshold in pixels needed to apply the difference gain.
 %
 %    o exception: return any errors or warnings in this structure.
 %
