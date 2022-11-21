@@ -5406,7 +5406,7 @@ WandExport InterlaceType MagickGetImageInterlaceScheme(MagickWand *wand)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickGetImageInterpolateMethod() returns the interpolation method for the
-%  sepcified image.
+%  specified image.
 %
 %  The format of the MagickGetImageInterpolateMethod method is:
 %
@@ -6067,7 +6067,7 @@ WandExport ResolutionType MagickGetImageUnits(MagickWand *wand)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickGetImageVirtualPixelMethod() returns the virtual pixel method for the
-%  sepcified image.
+%  specified image.
 %
 %  The format of the MagickGetImageVirtualPixelMethod method is:
 %

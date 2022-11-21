@@ -5060,7 +5060,7 @@ WandExport void DrawSetFillRule(DrawingWand *wand,const FillRule fill_rule)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetFont() sets the fully-sepecified font to use when annotating with
+%  DrawSetFont() sets the fully-specified font to use when annotating with
 %  text.
 %
 %  The format of the DrawSetFont method is:
