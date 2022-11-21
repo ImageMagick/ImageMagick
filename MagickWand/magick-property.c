@@ -1798,7 +1798,7 @@ WandExport unsigned char *MagickRemoveImageProfile(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetAntialias() sets the antialias propery of the wand.
+%  MagickSetAntialias() sets the antialias property of the wand.
 %
 %  The format of the MagickSetAntialias method is:
 %
