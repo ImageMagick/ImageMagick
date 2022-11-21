@@ -631,7 +631,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("colorspace",option+1) == 0)
         {
-          /* Setting used for new images via AquireImage()
+          /* Setting used for new images via AcquireImage()
              But also used as a SimpleImageOperator
              Undefined colorspace means don't modify images on
              read or as a operation */
@@ -3580,7 +3580,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("unique",option+1) == 0)
         {
-          /* FUTURE: move to SyncImageSettings() and AcqireImage()???
+          /* FUTURE: move to SyncImageSettings() and AcquireImage()???
              Option is not documented, bt appears to be for "identify".
              We may need a identify specific verbose!
           */
