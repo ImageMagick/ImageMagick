@@ -762,7 +762,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CustomStreamToImage() is the equivalent of ReadImage(), but reads the
-%  formatted "file" from the suplied method rather than to an actual file.
+%  formatted "file" from the supplied method rather than to an actual file.
 %
 %  The format of the CustomStreamToImage method is:
 %
