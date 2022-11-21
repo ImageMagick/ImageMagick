@@ -1688,7 +1688,7 @@ OPENCL_ENDIF()
 
   STRINGIFY(
   /*
-  apply FunctionImageChannel(braightness-contrast)
+  apply FunctionImageChannel(brightness-contrast)
   */
   CLQuantum ApplyFunction(float pixel,const MagickFunction function,
     const unsigned int number_parameters,__constant float *parameters)
