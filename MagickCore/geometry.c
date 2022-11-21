@@ -71,7 +71,7 @@
 %
 %  The value must form a proper geometry style specification of WxH+X+Y
 %  of integers only, and values can not be separated by comma, colon, or
-%  slash charcaters.  See ParseGeometry() below.
+%  slash characters.  See ParseGeometry() below.
 %
 %  Offsets may be prefixed by multiple signs to make offset string
 %  substitutions easier to handle from shell scripts.
