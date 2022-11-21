@@ -31,7 +31,7 @@
 
   Each of the "levels" integer values (each value representing the threshold
   intensity "level/divisor" at which that pixel is turned on.  The "levels"
-  integers given can be any postive integers between "0" and the "divisor",
+  integers given can be any positive integers between "0" and the "divisor",
   excluding those limits.
 
   The "divisor" not only defines the upper limit and threshold divisor for each
