@@ -601,7 +601,7 @@ static char *GetMagickPropertyLetter(ImageInfo *image_info,Image *image,
   string=(const char *) value;
   switch (letter)
   {
-    case 'a': /* authentication passphase */
+    case 'a': /* authentication passphrase */
     {
       WarnNoImageInfoReturn("\"%%%c\"",letter);
       string=GetImageOption(image_info,"authenticate");
