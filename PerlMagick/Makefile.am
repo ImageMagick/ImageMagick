@@ -110,7 +110,7 @@ check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 perl-build: $(PERLMAGICK)/$(PERLSTATICNAME)
 
 endif # WITH_PERL_STATIC
-endif # WTIH_PERL_DYNAMIC
+endif # WITH_PERL_DYNAMIC
 
 
 clean-perl:
