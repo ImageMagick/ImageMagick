@@ -596,7 +596,7 @@ sub head2 {
 
 #
 # Return item
-# Simlar to: <I>
+# Similar to: <I>
 #
 sub item {
     my($item) = @_;
