@@ -1706,7 +1706,7 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
   cygwin* | mingw* | cegcc*)
     # On Win9x/ME, this test blows up -- it succeeds, but takes
     # about 5 minutes as the teststring grows exponentially.
-    # Worse, since 9x/ME are not pre-emptively multitasking,
+    # Worse, since 9x/ME are not preemptively multitasking,
     # you end up with a "frozen" computer, even though with patience
     # the test eventually succeeds (with a max line length of 256k).
     # Instead, let's just punt: use the minimum linelength reported by
