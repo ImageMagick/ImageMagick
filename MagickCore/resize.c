@@ -689,7 +689,7 @@ static double Welch(const double x,
 %    "filter:window"  Select this windowing function for the filter. While any
 %       filter could be used as a windowing function, using the 'first lobe' of
 %       that filter over the whole support window, using a non-windowing
-%       function is not advisible. If no weighting filter function is specified
+%       function is not advisable. If no weighting filter function is specified
 %       a 'SincFast' filter is used.
 %
 %    "filter:lobes"  Number of lobes to use for the Sinc/Jinc filter.  This a
