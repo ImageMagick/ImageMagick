@@ -804,7 +804,7 @@ static double *GenerateCoefficients(const Image *image,
         }
         break;
       }
-      /* Trap if sx or sy == 0 -- image is scaled out of existance! */
+      /* Trap if sx or sy == 0 -- image is scaled out of existence! */
       if ( fabs(sx) < MagickEpsilon || fabs(sy) < MagickEpsilon ) {
         coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
