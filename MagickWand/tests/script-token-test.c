@@ -57,7 +57,7 @@
 #include <assert.h>
 #include <errno.h>
 
-/* Defines to replace MagickWand / MagickCore defintions */
+/* Defines to replace MagickWand / MagickCore definitions */
 #define MagickPathExtent     4096
 #define MagickFalse       0
 #define MagickTrue        1
