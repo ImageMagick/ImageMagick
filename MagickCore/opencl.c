@@ -1075,15 +1075,15 @@ static double RunOpenCLBenchmark(MagickBooleanType is_cpu)
   for (i=0; i<=2; i++)
   {
     Image
-      *bluredImage,
+      *blurredImage,
       *resizedImage,
       *unsharpedImage;
 
     if (i > 0)
       StartAccelerateTimer(&timer);
 
-    bluredImage=BlurImage(inputImage,10.0f,3.5f,exception);
-    unsharpedImage=UnsharpMaskImage(bluredImage,2.0f,2.0f,50.0f,10.0f,
+    blurredImage=BlurImage(inputImage,10.0f,3.5f,exception);
+    unsharpedImage=UnsharpMaskImage(blurredImage,2.0f,2.0f,50.0f,10.0f,
       exception);
     resizedImage=ResizeImage(unsharpedImage,640,480,LanczosFilter,
       exception);
@@ -1106,8 +1106,8 @@ static double RunOpenCLBenchmark(MagickBooleanType is_cpu)
     if (i > 0)
       StopAccelerateTimer(&timer);
 
-    if (bluredImage != (Image *) NULL)
-      DestroyImage(bluredImage);
+    if (blurredImage != (Image *) NULL)
+      DestroyImage(blurredImage);
     if (unsharpedImage != (Image *) NULL)
       DestroyImage(unsharpedImage);
     if (resizedImage != (Image *) NULL)
