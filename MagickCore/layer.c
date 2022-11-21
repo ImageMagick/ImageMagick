@@ -1759,7 +1759,7 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
 %  Composition uses given x and y offsets, as the 'origin' location of the
 %  source images virtual canvas (not the real image) allowing you to compose a
 %  list of 'layer images' into the destination images.  This makes it well
-%  sutiable for directly composing 'Clears Frame Animations' or 'Coalesced
+%  suitable for directly composing 'Clears Frame Animations' or 'Coalesced
 %  Animations' onto a static or other 'Coalesced Animation' destination image
 %  list.  GIF disposal handling is not looked at.
 %
