@@ -860,7 +860,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           /* Set "fill" OR "fill-pattern" in _draw_info
              The original fill color is preserved if a fill-pattern is given.
              That way it does not effect other operations that directly using
-             the fill color and, can be retored using "+tile".
+             the fill color and, can be restored using "+tile".
           */
           MagickBooleanType
             status;
