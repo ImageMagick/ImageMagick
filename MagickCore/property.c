@@ -4110,7 +4110,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             }
           string=GetImageOption(property_info,pattern+7);
           if (string == (char *) NULL)
-            goto PropertyLookupFailure; /* no artifact of this specifc name */
+            goto PropertyLookupFailure; /* no artifact of this specific name */
           AppendString2Text(string);
           continue;
         }
@@ -4134,7 +4134,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             }
           string=GetImageArtifact(property_image,pattern+9);
           if (string == (char *) NULL)
-            goto PropertyLookupFailure; /* no artifact of this specifc name */
+            goto PropertyLookupFailure; /* no artifact of this specific name */
           AppendString2Text(string);
           continue;
         }
@@ -4158,7 +4158,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             }
           string=GetImageProperty(property_image,pattern+9,exception);
           if (string == (char *) NULL)
-            goto PropertyLookupFailure; /* no artifact of this specifc name */
+            goto PropertyLookupFailure; /* no artifact of this specific name */
           AppendString2Text(string);
           continue;
         }
