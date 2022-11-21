@@ -3750,7 +3750,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       break;
   }
 
-  /* Apply special methods with special requirments
+  /* Apply special methods with special requirements
   ** For example, single run only, or post-processing requirements
   */
   if ( special != MagickFalse )
