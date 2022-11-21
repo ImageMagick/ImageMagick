@@ -2275,7 +2275,7 @@ WandExport MagickBooleanType MagickCompositeImageGravity(MagickWand *wand,
 %
 %  Composition uses given x and y offsets, as the 'origin' location of the
 %  source images virtual canvas (not the real image) allowing you to compose a
-%  list of 'layer images' into the destiantioni images.  This makes it well
+%  list of 'layer images' into the destination images.  This makes it well
 %  sutiable for directly composing 'Clears Frame Animations' or 'Coalesced
 %  Animations' onto a static or other 'Coalesced Animation' destination image
 %  list.  GIF disposal handling is not looked at.
@@ -2299,7 +2299,7 @@ WandExport MagickBooleanType MagickCompositeImageGravity(MagickWand *wand,
 %
 %  A description of each parameter follows:
 %
-%    o wand: the magick wand holding destaintion images
+%    o wand: the magick wand holding destination images
 %
 %    o source_wand: the wand holding the source images
 %
