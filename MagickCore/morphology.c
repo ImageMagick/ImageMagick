@@ -595,7 +595,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       result, which is usally much larger than is normally needed.
 %
 %    LoG:{radius},{sigma}
-%        "Laplacian of a Gaussian" or "Mexician Hat" Kernel.
+%        "Laplacian of a Gaussian" or "Mexican Hat" Kernel.
 %        The supposed ideal edge detection, zero-summing kernel.
 %
 %        An alternative to this kernel is to use a "DoG" with a sigma ratio of
@@ -1102,7 +1102,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           }
 
         if ( type == LoGKernel )
-          { /* Calculate a Laplacian of a Gaussian - Or Mexician Hat */
+          { /* Calculate a Laplacian of a Gaussian - Or Mexican Hat */
             if ( sigma > MagickEpsilon )
               { A = 1.0/(2.0*sigma*sigma);  /* simplify loop expressions */
                 B = (double) (1.0/(MagickPI*sigma*sigma*sigma*sigma));
