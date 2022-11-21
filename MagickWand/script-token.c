@@ -50,7 +50,7 @@
 %
 %  For example:    This\ is' a 'single" token"
 %
-%  A token is returned immediatally the end of token is found. That is as soon
+%  A token is returned immediately the end of token is found. That is as soon
 %  as a unquoted white-space or EOF condition has been found.  That is to say
 %  the file stream is parsed purely character-by-character, regardless any
 %  buffering constraints set by the system.  It is not parsed line-by-line.

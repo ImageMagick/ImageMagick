@@ -7836,7 +7836,7 @@ WandExport MagickBooleanType MagickNewImage(MagickWand *wand,const size_t width,
 %  When the above condition (end of image list) is reached, the iterator is
 %  automatically set so that you can start using MagickPreviousImage() to
 %  again iterate over the images in the reverse direction, starting with the
-%  last image (again).  You can jump to this condition immeditally using
+%  last image (again).  You can jump to this condition immediately using
 %  MagickSetLastIterator().
 %
 %  The format of the MagickNextImage method is:
