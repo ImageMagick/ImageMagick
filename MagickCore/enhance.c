@@ -802,7 +802,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
 %  ClutImage() replaces each color value in the given image, by using it as an
 %  index to lookup a replacement color value in a Color Look UP Table in the
 %  form of an image.  The values are extracted along a diagonal of the CLUT
-%  image so either a horizontal or vertial gradient image can be used.
+%  image so either a horizontal or vertical gradient image can be used.
 %
 %  Typically this is used to either re-color a gray-scale image according to a
 %  color gradient in the CLUT image, or to perform a freeform histogram
