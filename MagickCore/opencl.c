@@ -2226,7 +2226,7 @@ static MagickBooleanType HasOpenCLDevices(MagickCLEnv clEnv,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  InitializeOpenCL() is used to initialize the OpenCL environment. This method
-%  makes sure the devices are propertly initialized and benchmarked.
+%  makes sure the devices are properly initialized and benchmarked.
 %
 %  The format of the InitializeOpenCL method is:
 %
