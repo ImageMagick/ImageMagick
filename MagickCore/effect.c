@@ -838,9 +838,9 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %    o spatial_sigma: sigma in the coordinate space. A larger value means that
 %      farther pixels influence each other as long as their colors are close
-%      enough (see intensity_sigma ). When the neigborhood diameter is greater
+%      enough (see intensity_sigma ). When the neighborhood diameter is greater
 %      than zero, it specifies the neighborhood size regardless of
-%      spatial_sigma. Otherwise, the neigborhood diameter is proportional to
+%      spatial_sigma. Otherwise, the neighborhood diameter is proportional to
 %      spatial_sigma.
 %
 %    o exception: return any errors or warnings in this structure.
