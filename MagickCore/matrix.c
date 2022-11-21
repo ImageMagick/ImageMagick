@@ -298,7 +298,7 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
 %
 %  This used to generate the two dimensional matrix, and vectors required
 %  for the GaussJordanElimination() method below, solving some system of
-%  simultanious equations.
+%  simultaneous equations.
 %
 %  The format of the AcquireMagickMatrix method is:
 %
@@ -454,7 +454,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %  column 'vector' is all that is required to produce the desired solution.
 %
 %  For example, the 'vectors' can consist of a pointer to a simple array of
-%  doubles.  when only one set of simultanious equations is to be solved from
+%  doubles.  when only one set of simultaneous equations is to be solved from
 %  the given set of coefficient weighted terms.
 %
 %     double **matrix = AcquireMagickMatrix(8UL,8UL);

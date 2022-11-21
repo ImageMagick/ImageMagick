@@ -848,7 +848,7 @@ static double *GenerateCoefficients(const Image *image,
          Perspective Distortion Notes...
            + Can be thought of as ratio of  3 affine transformations
            + Not separable: r() or c6 and c7 are used by both equations
-           + All 8 coefficients must be determined simultaniously
+           + All 8 coefficients must be determined simultaneously
            + Will only work with a 2 number_valuesal Image Distortion
            + Can not be used for generating a sparse gradient (interpolation)
            + It is not linear, but is simple to generate an inverse
