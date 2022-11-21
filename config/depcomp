@@ -198,7 +198,7 @@ gcc3)
   ;;
 
 gcc)
-## Note that this doesn't just cater to obsosete pre-3.x GCC compilers.
+## Note that this doesn't just cater to obsolete pre-3.x GCC compilers.
 ## but also to in-use compilers like IMB xlc/xlC and the HP C compiler.
 ## (see the conditional assignment to $gccflag above).
 ## There are various ways to get dependency output from gcc.  Here's
