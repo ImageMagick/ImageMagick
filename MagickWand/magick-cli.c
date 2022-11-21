@@ -787,14 +787,14 @@ RestoreMSCWarning
 %  A description of each parameter follows:
 %
 %    o image_info: the starting image_info structure
-%      (for compatibilty with MagickCommandGenisis())
+%      (for compatibility with MagickCommandGenisis())
 %
 %    o argc: the number of elements in the argument vector.
 %
 %    o argv: A text array containing the command line arguments.
 %
 %    o metadata: any metadata (for VBS) is returned here.
-%      (for compatibilty with MagickCommandGenisis())
+%      (for compatibility with MagickCommandGenisis())
 %
 %    o exception: return any errors or warnings in this structure.
 %
