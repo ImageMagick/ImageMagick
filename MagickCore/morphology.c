@@ -884,7 +884,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       Octagonal Thickening Kernel, to generate convex hulls of 45 degrees
 %    Skeleton:type
 %       Traditional skeleton generating kernels.
-%         Type 1: Tradional Skeleton kernel (4 connected skeleton)
+%         Type 1: Traditional Skeleton kernel (4 connected skeleton)
 %         Type 2: HIPR2 Skeleton kernel (8 connected skeleton)
 %         Type 3: Thinning skeleton based on a research paper by
 %                 Dan S. Bloomberg (Default Type)
