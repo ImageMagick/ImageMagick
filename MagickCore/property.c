@@ -3608,7 +3608,7 @@ MagickExport const char *GetNextImageProperty(const Image *image)
 %  used as a search pattern to print multiple lines of "name=value\n" pairs of
 %  the associated set of properties.
 %
-%  The returned string must be freed using DestoryString() by the caller.
+%  The returned string must be freed using DestroyString() by the caller.
 %
 %  The format of the InterpretImageProperties method is:
 %

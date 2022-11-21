@@ -2203,7 +2203,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %
 %  CloneKernelInfo() creates a new clone of the given Kernel List so that its
 %  can be modified without effecting the original.  The cloned kernel should
-%  be destroyed using DestoryKernelInfo() when no longer needed.
+%  be destroyed using DestroyKernelInfo() when no longer needed.
 %
 %  The format of the CloneKernelInfo method is:
 %

@@ -80,7 +80,7 @@
 %  An extended string is the string length, plus an extra MagickPathExtent space
 %  to allow for the string to be actively worked on.
 %
-%  The returned string shoud be freed using DestoryString().
+%  The returned string shoud be freed using DestroyString().
 %
 %  The format of the AcquireString method is:
 %
@@ -233,7 +233,7 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 %  If source is a NULL pointer the destination string will be freed and set to
 %  a NULL pointer.  A pointer to the stored in the destination is also returned.
 %
-%  When finished the non-NULL string should be freed using DestoryString()
+%  When finished the non-NULL string should be freed using DestroyString()
 %  or using CloneString() with a NULL pointed for the source.
 %
 %  The format of the CloneString method is:
@@ -664,7 +664,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
 %  copies the source string to that memory location.  A NULL string pointer
 %  will allocate an empty string containing just the NUL character.
 %
-%  When finished the string should be freed using DestoryString()
+%  When finished the string should be freed using DestroyString()
 %
 %  The format of the ConstantString method is:
 %
