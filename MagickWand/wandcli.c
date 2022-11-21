@@ -192,7 +192,7 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CLICatchException() will report exceptions, either just non-fatal warnings
-%  only, or all errors, according to 'all_execeptions' boolean argument.
+%  only, or all errors, according to 'all_exceptions' boolean argument.
 %
 %  The function returns true if errors are fatal, in which case the caller
 %  should abort and re-call with an 'all_exceptions' argument of true before
