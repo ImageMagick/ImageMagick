@@ -251,7 +251,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   if ( end == (char *) NULL )
     end = strchr(kernel_string, '\0');
 
-  /* clear flags - for Expanding kernel lists thorugh rotations */
+  /* clear flags - for Expanding kernel lists through rotations */
    flags = NoValue;
 
   /* Has a ':' in argument - New user kernel specification
