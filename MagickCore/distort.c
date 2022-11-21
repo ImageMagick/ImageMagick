@@ -355,7 +355,7 @@ MagickExport Image *AffineTransformImage(const Image *image,
 %  calling method using RelinquishMagickMemory().  This however may change in
 %  the future to require a more 'method' specific method.
 %
-%  Because of this this method should not be classed as stable or used
+%  Because of this, this method should not be classed as stable or used
 %  outside other MagickCore library methods.
 */
 
