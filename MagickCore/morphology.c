@@ -4541,7 +4541,7 @@ MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
 %  that it will generally fall within the +/- 1.0 range.
 %
 %  For kernels whose values sum to zero, (such as 'Laplacian' kernels) kernel
-%  will be scaled by just the sum of the postive values, so that its output
+%  will be scaled by just the sum of the positive values, so that its output
 %  range will again fall into the  +/- 1.0 range.
 %
 %  For special kernels designed for locating shapes using 'Correlate', (often
