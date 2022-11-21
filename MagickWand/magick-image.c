@@ -10326,7 +10326,7 @@ WandExport MagickBooleanType MagickSetImageDepth(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o dispose: the image disposeal type.
+%    o dispose: the image disposal type.
 %
 */
 WandExport MagickBooleanType MagickSetImageDispose(MagickWand *wand,
