@@ -2538,7 +2538,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
           {
             s.x=coeff[0]*d.x+coeff[1]*d.y+coeff[2];
             s.y=coeff[3]*d.x+coeff[4]*d.y+coeff[5];
-            /* Affine partial derivitives are constant -- set above */
+            /* Affine partial derivatives are constant -- set above */
             break;
           }
           case PerspectiveDistortion:
@@ -2583,7 +2583,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
             s.x=coeff[0]*d.x+coeff[1]*d.y+coeff[2]*d.x*d.y+coeff[3];
             s.y=coeff[4]*d.x+coeff[5]*d.y
                     +coeff[6]*d.x*d.y+coeff[7];
-            /* Bilinear partial derivitives of scaling vectors */
+            /* Bilinear partial derivatives of scaling vectors */
             ScaleFilter( resample_filter[id],
                 coeff[0] + coeff[2]*d.y,
                 coeff[1] + coeff[2]*d.x,
@@ -2618,7 +2618,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
             /* NOTE: the sign of the square root should be -ve for parts
                      where the source image becomes 'flipped' or 'mirrored'.
                FUTURE: Horizon handling
-               FUTURE: Scaling factors or Deritives (how?)
+               FUTURE: Scaling factors or Derivatives (how?)
             */
             break;
           }

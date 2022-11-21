@@ -993,8 +993,8 @@ static inline void ClampUpAxes(const double dux,
 %  must be the center of the lookup.  That is any curvature that the
 %  distortion may produce is discounted.
 %
-%  The input vectors are produced by either finding the derivitives of the
-%  distortion function, or the partial derivitives from a distortion mapping.
+%  The input vectors are produced by either finding the derivatives of the
+%  distortion function, or the partial derivatives from a distortion mapping.
 %  They do not need to be the orthogonal dx,dy scaling vectors, but can be
 %  calculated from other derivatives.  For example you could use  dr,da/r
 %  polar coordinate vector scaling vectors
