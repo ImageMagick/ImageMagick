@@ -2819,7 +2819,7 @@ WandExport MagickBooleanType MagickDeskewImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickDespeckleImage() reduces the speckle noise in an image while
-%  perserving the edges of the original image.
+%  preserving the edges of the original image.
 %
 %  The format of the MagickDespeckleImage method is:
 %
