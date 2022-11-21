@@ -1151,7 +1151,7 @@ WandExport MagickBooleanType MagickBorderImage(MagickWand *wand,
 %
 %  Use MagickBrightnessContrastImage() to change the brightness and/or contrast
 %  of an image.  It converts the brightness and contrast parameters into slope
-%  and intercept and calls a polynomical function to apply to the image.
+%  and intercept and calls a polynomial function to apply to the image.
 
 %
 %  The format of the MagickBrightnessContrastImage method is:
