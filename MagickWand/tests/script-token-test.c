@@ -37,7 +37,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Test the raw tokanization of the  ScriptToken Subroutines
+%  Test the raw tokenization of the  ScriptToken Subroutines
 %
 %  This actually uses very little of the magic core functions
 %  and in fact creates a completely stand-alone program by substituting
