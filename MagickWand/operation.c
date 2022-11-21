@@ -654,7 +654,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
              SyncImageSettings() used to set per-image attribute. - REMOVE
 
              This setting should NOT be used to set image 'compose'
-             "-layer" operators shoud use _image_info if defined otherwise
+             "-layer" operators should use _image_info if defined otherwise
              they should use a per-image compose setting.
           */
           parse = ParseCommandOption(MagickComposeOptions,MagickFalse,

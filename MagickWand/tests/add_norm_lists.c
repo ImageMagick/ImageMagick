@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     status;
 
   printf("Just read images in three groups, no settings used\n");
-  printf("Result shoud be: 012 345 678\n");
+  printf("Result should be: 012 345 678\n");
 
   MagickWandGenesis();
 

@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     status;
 
   printf("Add 3 sets of images after setting 'last' on empty wand\n");
-  printf("Result shoud be: 012 345 678\n");
+  printf("Result should be: 012 345 678\n");
 
   MagickWandGenesis();
 

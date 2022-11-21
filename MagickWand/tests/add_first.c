@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     status;
 
   printf("Check prepend when using 'FirstIterator' on empty wand\n");
-  printf("Result shoud be: 3210\n");
+  printf("Result should be: 3210\n");
 
   MagickWandGenesis();
 
