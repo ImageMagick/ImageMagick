@@ -1560,7 +1560,7 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
 static ssize_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *v1, fxFltType *v2)
 /* Finds named colour such as "blue" and colorspace function such as "lab(10,20,30)".
    Returns number of characters to swallow.
-   Return -1 means apparantly a constant colour, but with an error.
+   Return -1 means apparently a constant colour, but with an error.
    Return 0 means not a constant colour, but not an error.
 */
 {
