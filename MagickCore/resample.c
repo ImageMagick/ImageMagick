@@ -126,7 +126,7 @@ struct _ResampleFilter
   PixelInfo
     average_pixel;
 
-  /* current ellipitical area being resampled around center point */
+  /* current elliptical area being resampled around center point */
   double
     A, B, C,
     Vlimit, Ulimit, Uwidth, slope;
