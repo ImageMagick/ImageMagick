@@ -1102,7 +1102,7 @@ namespace Magick
     // Returns the normalized moments of one or more image channels.
     ImageMoments moments(void) const;
 
-    // Applies a kernel to the image according to the given mophology method.
+    // Applies a kernel to the image according to the given morphology method.
     void morphology(const MorphologyMethod method_,const std::string kernel_,
       const ssize_t iterations_=1);
     void morphology(const MorphologyMethod method_,
