@@ -419,7 +419,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GaussJordanElimination() returns a matrix in reduced row echelon form,
-%  while simultaneously reducing and thus solving the augumented results
+%  while simultaneously reducing and thus solving the augmented results
 %  matrix.
 %
 %  See also  http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
