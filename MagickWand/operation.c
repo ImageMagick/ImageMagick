@@ -1431,7 +1431,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 #endif
       if (LocaleCompare("synchronize",option+1) == 0)
         {
-          /* FUTURE: syncronize to storage - but what does that mean? */
+          /* FUTURE: synchronize to storage - but what does that mean? */
           _image_info->synchronize = ArgBoolean;
           break;
         }
