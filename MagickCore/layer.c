@@ -525,7 +525,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ComparePixels() Compare the two pixels and return true if the pixels
-%  differ according to the given LayerType comparision method.
+%  differ according to the given LayerType comparison method.
 %
 %  This currently only used internally by CompareImagesBounds(). It is
 %  doubtful that this sub-routine will be useful outside this module.
@@ -802,7 +802,7 @@ MagickExport Image *CompareImagesLayers(const Image *image,
   if (bounds == (RectangleInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   /*
-    Set up first comparision images.
+    Set up first comparison images.
   */
   image_a=CloneImage(next,next->page.width,next->page.height,
     MagickTrue,exception);

@@ -1344,7 +1344,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
         /* Debug output of the filter weighting LUT
           Gnuplot the LUT data, the x scale index has been adjusted
             plot [0:2][-.2:1] "lut.dat" with lines
-          The filter values should be normalized for comparision
+          The filter values should be normalized for comparison
         */
         printf("#\n");
         printf("# Resampling Filter LUT (%d values) for '%s' filter\n",
