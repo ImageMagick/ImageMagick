@@ -1752,7 +1752,7 @@ OPENCL_ENDIF()
   /*
   Improve brightness / contrast of the image
   channel : define which channel is improved
-  function : the function called to enchance the brightness contrast
+  function : the function called to enhance the brightness contrast
   number_parameters : numbers of parameters 
   parameters : the parameter
   */
