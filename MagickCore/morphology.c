@@ -3983,7 +3983,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
     (void) FormatLocaleFile(stderr, "      union=0x%lx\n", (unsigned long)rslt_image);
 #endif
 
-      } /* End Loop 3: Primative (staging) Loop for Coumpound Methods */
+      } /* End Loop 3: Primative (staging) Loop for Compound Methods */
 
       /*  Final Post-processing for some Compound Methods
       **
