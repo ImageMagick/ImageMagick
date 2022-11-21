@@ -1275,7 +1275,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("quiet",option+1) == 0)
         {
           /* FUTURE: if two -quiet is performed you can not do +quiet!
-             This needs to be checked over thoughly.
+             This needs to be checked over thoroughly.
           */
           static WarningHandler
             warning_handler = (WarningHandler) NULL;
