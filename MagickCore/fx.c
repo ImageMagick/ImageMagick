@@ -3578,7 +3578,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                 }
               }
             } else {
-              /* we have an image atttribute */
+              /* we have an image attribute */
               regA = ImageStat (pfx, 0, WHICH_ATTR_CHAN, pel->ImgAttrQual);
             }
           } else {
