@@ -862,7 +862,7 @@ static void MagickUsage(MagickBooleanType verbose)
 }
 
 /*
-   Concatanate given file arguments to the given output argument.
+   Concatenate given file arguments to the given output argument.
    Used for a special -concatenate option used for specific 'delegates'.
    The option is not formally documented.
 
