@@ -3604,7 +3604,7 @@ MagickExport const char *GetNextImageProperty(const Image *image)
 %  This prevents the typical usage of percent in a interpreted geometry
 %  argument from being substituted when the percent is a geometry flag.
 %
-%  If 'glob-expresions' ('*' or '?' characters) is used for 'name' it may be
+%  If 'glob-expressions' ('*' or '?' characters) is used for 'name' it may be
 %  used as a search pattern to print multiple lines of "name=value\n" pairs of
 %  the associated set of properties.
 %
