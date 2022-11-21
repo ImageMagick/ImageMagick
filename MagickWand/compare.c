@@ -128,7 +128,7 @@ static MagickBooleanType CompareUsage(void)
       "  -fuzz distance       colors within this distance are considered equal\n"
       "  -gravity type        horizontal and vertical text placement\n"
       "  -highlight-color color\n"
-      "                       empasize pixel differences with this color\n"
+      "                       emphasize pixel differences with this color\n"
       "  -identify            identify the format and characteristics of the image\n"
       "  -interlace type      type of image interlacing scheme\n"
       "  -limit type value    pixel cache resource limit\n"
