@@ -598,7 +598,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %        "Laplacian of a Gaussian" or "Mexician Hat" Kernel.
 %        The supposed ideal edge detection, zero-summing kernel.
 %
-%        An alturnative to this kernel is to use a "DoG" with a sigma ratio of
+%        An alternative to this kernel is to use a "DoG" with a sigma ratio of
 %        approx 1.6 (according to wikipedia).
 %
 %    DoG:{radius},{sigma1},{sigma2}
