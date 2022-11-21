@@ -60,7 +60,7 @@ extern "C" {
 typedef enum
 {
   /* General Option Handling */
-  ProcessImplictRead          = 0x0001,  /* Non-options are image reads.
+  ProcessImplicitRead          = 0x0001,  /* Non-options are image reads.
                                             If not set then skip implied read
                                             without producing an error.
                                             For use with "mogrify" handling */
@@ -74,7 +74,7 @@ typedef enum
 
   /* Option Processing Flags */
   ProcessOneOptionOnly        = 0x4000,  /* Process one option only */
-  ProcessImplictWrite         = 0x8000,  /* Last arg is an implict write */
+  ProcessImplicitWrite         = 0x8000,  /* Last arg is an implicit write */
 
   /* Flag Groups for specific Situations */
   MagickCommandOptionFlags    = 0x8FFF,  /* Magick Command Flags */

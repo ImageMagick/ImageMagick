@@ -620,7 +620,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
          "- Starting (\"%s\")", argv[index]);
 
   end = argc;
-  if ( (cli_wand->process_flags & ProcessImplictWrite) != 0 )
+  if ( (cli_wand->process_flags & ProcessImplicitWrite) != 0 )
     end--; /* the last argument is an implied write, do not process directly */
 
   for (i=index; i < end; i += count +1) {
@@ -649,7 +649,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
              i, option);
 #endif
         if (IsCommandOption(option) == MagickFalse) {
-          if ( (cli_wand->process_flags & ProcessImplictRead) != 0 ) {
+          if ( (cli_wand->process_flags & ProcessImplicitRead) != 0 ) {
             /* non-option -- treat as a image read */
             cli_wand->command=(const OptionInfo *) NULL;
             CLIOption(cli_wand,"-read",option);
@@ -664,7 +664,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
            ((cli_wand->process_flags & ProcessScriptOption) != 0) &&
            (LocaleCompare(option,"-script") == 0) ) {
         /* Call Script from CLI, with a filename as a zeroth argument.
-           NOTE: -script may need to use the 'implict write filename' argument
+           NOTE: -script may need to use the 'implicit write filename' argument
            so it must be handled specially to prevent a 'missing argument' error.
         */
         if ( (i+count) >= argc )
@@ -720,7 +720,7 @@ RestoreMSCWarning
   }
   assert(i==end);
 
-  if ( (cli_wand->process_flags & ProcessImplictWrite) == 0 )
+  if ( (cli_wand->process_flags & ProcessImplicitWrite) == 0 )
     return(end); /* no implied write -- just return to caller */
 
   assert(end==argc-1); /* end should not include last argument */
