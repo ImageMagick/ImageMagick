@@ -260,8 +260,8 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
     max_x,
     max_y,
     param[10],
-    posision_x,
-    posision_y,
+    position_x,
+    position_y,
     r,
     repeat_count,
     sixel_palet[SIXEL_PALETTE_MAX],
@@ -278,7 +278,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
     offset;
 
   extent=strlen((char *) p);
-  posision_x=posision_y=0;
+  position_x=position_y=0;
   max_x=max_y=0;
   attributed_pan=2;
   attributed_pad=1;
@@ -471,20 +471,20 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
       {
         /* DECGCR Graphics Carriage Return */
         p++;
-        posision_x=0;
+        position_x=0;
         repeat_count=1;
       }
     else if (*p == '-')
       {
         /* DECGNL Graphics Next Line */
         p++;
-        posision_x=0;
-        posision_y+=6;
+        position_x=0;
+        position_y+=6;
         repeat_count=1;
       }
     else if ((*p >= '?') && (*p <= '\177'))
       {
-        if ((imsx < (posision_x + repeat_count)) || (imsy < (posision_y + 6)))
+        if ((imsx < (position_x + repeat_count)) || (imsy < (position_y + 6)))
           {
             int
               nx,
@@ -493,7 +493,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
             nx=imsx*2;
             ny=imsy*2;
 
-            while ((nx < (posision_x + repeat_count)) || (ny < (posision_y + 6)))
+            while ((nx < (position_x + repeat_count)) || (ny < (position_y + 6)))
             {
               nx *= 2;
               ny *= 2;
@@ -523,7 +523,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
         if (color_index > max_color_index)
           max_color_index = color_index;
         if ((b = *(p++) - '?') == 0)
-          posision_x += repeat_count;
+          position_x += repeat_count;
         else
           {
             sixel_vertical_mask=0x01;
@@ -533,21 +533,21 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                 {
                   if ((b & sixel_vertical_mask) != 0)
                     {
-                      offset=(size_t) imsx*(posision_y+i)+posision_x;
+                      offset=(size_t) imsx*(position_y+i)+position_x;
                       if (offset >= (size_t) imsx * imsy)
                         {
                           imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
                           return(MagickFalse);
                         }
                       imbuf[offset]=color_index;
-                      if (max_x < posision_x)
-                          max_x = posision_x;
-                      if (max_y < (posision_y + i))
-                          max_y = posision_y + i;
+                      if (max_x < position_x)
+                          max_x = position_x;
+                      if (max_y < (position_y + i))
+                          max_y = position_y + i;
                     }
                   sixel_vertical_mask <<= 1;
                 }
-                posision_x += 1;
+                position_x += 1;
               }
             else  /* repeat_count > 1 */
               {
@@ -562,9 +562,9 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                           break;
                         c <<= 1;
                       }
-                      for (y = posision_y + i; y < posision_y + i + n; ++y)
+                      for (y = position_y + i; y < position_y + i + n; ++y)
                       {
-                        offset=(size_t) imsx*y+posision_x;
+                        offset=(size_t) imsx*y+position_x;
                         if (offset+repeat_count >= (size_t) imsx*imsy)
                           {
                             imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
@@ -573,16 +573,16 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                         for (x = 0; x < repeat_count; x++)
                           imbuf[offset+x] = color_index;
                       }
-                      if (max_x < (posision_x+repeat_count-1))
-                        max_x = posision_x+repeat_count-1;
-                      if (max_y < (posision_y+i+n-1))
-                        max_y = posision_y+i+n-1;
+                      if (max_x < (position_x+repeat_count-1))
+                        max_x = position_x+repeat_count-1;
+                      if (max_y < (position_y+i+n-1))
+                        max_y = position_y+i+n-1;
                       i+=(n-1);
                       sixel_vertical_mask <<= (n-1);
                     }
                   sixel_vertical_mask <<= 1;
                 }
-                posision_x += repeat_count;
+                position_x += repeat_count;
               }
           }
           repeat_count = 1;
