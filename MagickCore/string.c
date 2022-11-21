@@ -2113,7 +2113,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 %  StringToArrayOfDoubles() converts a string of space or comma separated
 %  numbers into array of floating point numbers (doubles). Any number that
-%  failes to parse properly will produce a syntax error. As will two commas
+%  fails to parse properly will produce a syntax error. As will two commas
 %  without a  number between them.  However a final comma at the end will
 %  not be regarded as an error so as to simplify automatic list generation.
 %
