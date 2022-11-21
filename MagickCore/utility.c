@@ -714,7 +714,7 @@ MagickPrivate void ExpandFilename(char *path)
 %
 %  Meta-characters handled...
 %     @    read a list of filenames (no further expansion performed)
-%     ~    At start of filename expands to HOME environemtn variable
+%     ~    At start of filename expands to HOME environment variable
 %     *    matches any string including an empty string
 %     ?    matches by any single character
 %
