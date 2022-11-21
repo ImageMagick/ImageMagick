@@ -16,7 +16,7 @@
 #
 #    make test
 #
-#  Exersise one regression test:
+#  Exercise one regression test:
 #
 #    make TEST_VERBOSE=1 TEST_FILES=t/filter.t test
 #
