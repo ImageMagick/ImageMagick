@@ -198,7 +198,7 @@
 	* lib/Magick++/STL.h (coalesceImages): Replaced implementation
 	with one from Felix Heimbrecht. The template signature has
 	changed to return a new image sequence. This template API
-	silently ceased to funtion due to an ImageMagick CoalesceImages
+	silently ceased to function due to an ImageMagick CoalesceImages
 	API change.
 
 2003-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
