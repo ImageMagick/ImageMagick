@@ -2978,7 +2978,7 @@ WandExport MagickBooleanType MagickDisplayImages(MagickWand *wand,
 %
 %  MagickDistortImage() distorts an image using various distortion methods, by
 %  mapping color lookups of the source image to a new destination image
-%  usally of the same size as the source image, unless 'bestfit' is set to
+%  usually of the same size as the source image, unless 'bestfit' is set to
 %  true.
 %
 %  If 'bestfit' is enabled, and distortion allows it, the destination image is
