@@ -62,7 +62,7 @@
 #include "MagickCore/module.h"
 
 /* 
-Tyedef declarations
+Typedef declarations
  */
 
 typedef struct _IPLInfo

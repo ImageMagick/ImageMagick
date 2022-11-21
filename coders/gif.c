@@ -80,7 +80,7 @@
 #define MaximumLZWCode  (1UL << MaximumLZWBits)
 
 /*
-  Typdef declarations.
+  Typedef declarations.
 */
 typedef struct _LZWCodeInfo
 {
