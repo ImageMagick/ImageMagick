@@ -36,7 +36,7 @@
 
 2007-04-10  6.3.3-7 Cristy  <quetzlzacatenango@image...>
   * Add colorspaceType(RGBColorspace) to set RGB colorspace before an
-    image read (useful to convert CMYK Potscript to RGB).
+    image read (useful to convert CMYK Postscript to RGB).
 
 2006-02-05  6.3.2-3 Cristy  <quetzlzacatenango@image...>
   * Clear exception in throwException() method.
