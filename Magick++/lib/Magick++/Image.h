@@ -1269,7 +1269,7 @@ namespace Magick
     void resize(const Geometry &geometry_);
 
     // Roll image (rolls image vertically and horizontally) by specified
-    // number of columnms and rows)
+    // number of columns and rows)
     void roll(const Geometry &roll_);
     void roll(const size_t columns_,const size_t rows_);
 

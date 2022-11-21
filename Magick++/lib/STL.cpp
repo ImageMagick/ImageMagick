@@ -888,7 +888,7 @@ void Magick::reduceNoiseImage::operator()( Image &image_ ) const
 }
 
 // Roll image (rolls image vertically and horizontally) by specified
-// number of columnms and rows)
+// number of columns and rows)
 Magick::rollImage::rollImage( const Magick::Geometry &roll_ )
   : _columns( roll_.width() ),
     _rows( roll_.height() )

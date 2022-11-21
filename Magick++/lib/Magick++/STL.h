@@ -929,7 +929,7 @@ namespace Magick
   };
 
   // Roll image (rolls image vertically and horizontally) by specified
-  // number of columnms and rows)
+  // number of columns and rows)
   class MagickPPExport rollImage
   {
   public:
