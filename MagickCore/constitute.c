@@ -10,7 +10,7 @@
 %     CCCC   OOO   N   N  SSSSS    T    IIIII    T     UUU     T    EEEEE     %
 %                                                                             %
 %                                                                             %
-%                  MagickCore Methods to Consitute an Image                   %
+%                  MagickCore Methods to Constitute an Image                  %
 %                                                                             %
 %                             Software Design                                 %
 %                                  Cristy                                     %
