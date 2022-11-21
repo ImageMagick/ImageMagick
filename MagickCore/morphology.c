@@ -3044,7 +3044,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           case ThickenMorphology:
           {
             /*
-               Minimum of foreground pixel minus maxumum of background pixels.
+               Minimum of foreground pixel minus maximum of background pixels.
 
                The kernel is not reflected for this operation, and consists
                of both foreground and background pixel neighbourhoods, 0.0 for
