@@ -2281,7 +2281,7 @@ WandExport MagickBooleanType MagickCompositeImageGravity(MagickWand *wand,
 %  list.  GIF disposal handling is not looked at.
 %
 %  Special case:- If one of the image sequences is the last image (just a
-%  single image remaining), that image is repeatally composed with all the
+%  single image remaining), that image is repeatedly composed with all the
 %  images in the other image list.  Either the source or destination lists may
 %  be the single image, for this situation.
 %
