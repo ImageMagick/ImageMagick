@@ -1163,7 +1163,7 @@
 2000-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp : Call-back based LastError class is eliminated in
- 	favor of ImageMagick 5.2's re-entrant ExceptionInfo reporting.
+ 	favor of ImageMagick 5.2's reentrant ExceptionInfo reporting.
   	This should make Magick++ thread safe under Win32.
 
 2000-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

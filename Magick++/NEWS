@@ -226,7 +226,7 @@ This file records noteworthy changes in Magick++.
   * Fix text annotation bug which did not allow spaces in annotation text.
   * Added gaussianBlurImage() method.
   * Fixed bug in floodFillTexture().
-  * Re-worked error reporting methodology to use re-entrant error
+  * Re-worked error reporting methodology to use reentrant error
     reporting rather than the previous method (based on call-backs)
     which required thread specific data.
   * Should be thread-safe under Win32 now.
