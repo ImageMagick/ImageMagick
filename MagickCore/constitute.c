@@ -83,7 +83,7 @@
 #include "MagickCore/utility-private.h"
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
 typedef struct _ConstituteInfo
 {

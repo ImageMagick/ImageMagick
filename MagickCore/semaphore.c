@@ -55,7 +55,7 @@
 #include "MagickCore/utility-private.h"
 
 /*
-  Struct declaractions.
+  Struct declarations.
 */
 struct SemaphoreInfo
 {

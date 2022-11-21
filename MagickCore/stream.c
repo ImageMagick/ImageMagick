@@ -64,7 +64,7 @@
 #include "MagickCore/string_.h"
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
 struct _StreamInfo
 {

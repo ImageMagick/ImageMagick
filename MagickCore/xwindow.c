@@ -196,7 +196,7 @@ typedef struct _DiversityPacket
 } DiversityPacket;
 
 /*
-  Constant declaractions.
+  Constant declarations.
 */
 static MagickBooleanType
   xerror_alert = MagickFalse;

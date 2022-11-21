@@ -159,7 +159,7 @@ static const char
     "</delegatemap>";
 
 /*
-  Global declaractions.
+  Global declarations.
 */
 static LinkedListInfo
   *delegate_cache = (LinkedListInfo *) NULL;
@@ -168,7 +168,7 @@ static SemaphoreInfo
   *delegate_semaphore = (SemaphoreInfo *) NULL;
 
 /*
-  Forward declaractions.
+  Forward declarations.
 */
 static MagickBooleanType
   IsDelegateCacheInstantiated(ExceptionInfo *),

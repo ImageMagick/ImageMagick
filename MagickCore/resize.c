@@ -108,7 +108,7 @@ struct _ResizeFilter
 };
 
 /*
-  Forward declaractions.
+  Forward declarations.
 */
 static double
   I0(double x),
