@@ -2921,7 +2921,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
                Weighted Average of pixels using reflected kernel
 
-               For correct working of this operation for asymetrical kernels,
+               For correct working of this operation for asymmetrical kernels,
                the kernel needs to be applied in its reflected form.  That is
                its values needs to be reversed.
 
@@ -3014,7 +3014,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
                Maximum value within kernel neighbourhood.
 
-               For correct working of this operation for asymetrical kernels,
+               For correct working of this operation for asymmetrical kernels,
                the kernel needs to be applied in its reflected form.  That is
                its values needs to be reversed.
 
