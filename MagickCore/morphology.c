@@ -4545,7 +4545,7 @@ MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
 %  range will again fall into the  +/- 1.0 range.
 %
 %  For special kernels designed for locating shapes using 'Correlate', (often
-%  only containing +1 and -1 values, representing foreground/brackground
+%  only containing +1 and -1 values, representing foreground/background
 %  matching) a special normalization method is provided to scale the positive
 %  values separately to those of the negative values, so the kernel will be
 %  forced to become a zero-sum kernel better suited to such searches.
