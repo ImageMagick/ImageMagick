@@ -1117,7 +1117,7 @@ static double RunOpenCLBenchmark(MagickBooleanType is_cpu)
   return(ReadAccelerateTimer(&timer));
 }
 
-static void RunDeviceBenckmark(MagickCLEnv clEnv,MagickCLEnv testEnv,
+static void RunDeviceBenchmark(MagickCLEnv clEnv,MagickCLEnv testEnv,
   MagickCLDevice device)
 {
   testEnv->devices[0]=device;
@@ -1213,7 +1213,7 @@ static void BenchmarkOpenCLDevices(MagickCLEnv clEnv)
   {
     device=clEnv->devices[i];
     if (device->score == MAGICKCORE_OPENCL_UNDEFINED_SCORE)
-      RunDeviceBenckmark(clEnv,testEnv,device);
+      RunDeviceBenchmark(clEnv,testEnv,device);
 
     /* Set the score on all the other devices that are the same */
     for (j = i+1; j < clEnv->number_devices; j++)
