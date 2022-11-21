@@ -297,7 +297,7 @@
     previously GetLastImageInList().
 
 2004-10-28  Cristy  <yarrow@image...>
-  * MagickTrimImage() was not properly trimmming the image.
+  * MagickTrimImage() was not properly trimming the image.
 
 2004-10-27  Cristy  <yarrow@image...>
   * Added DrawSetTextAlignment() and DrawGetTextAlignment() methods (suggested
