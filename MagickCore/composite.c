@@ -137,7 +137,7 @@
    Composition based on the SVG specification:
 
    A Composition is defined by...
-      Color Function :  f(Sc,Dc)  where Sc and Dc are the normizalized colors
+      Color Function :  f(Sc,Dc)  where Sc and Dc are the normalized colors
       Blending areas :  X = 1     for area of overlap, ie: f(Sc,Dc)
                         Y = 1     for source preserved
                         Z = 1     for canvas preserved

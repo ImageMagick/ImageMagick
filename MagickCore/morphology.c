@@ -705,7 +705,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %
 %      Frei-Chen Pre-weighted kernels...
 %
-%        Type 0:  default un-nomalized version shown above.
+%        Type 0:  default un-normalized version shown above.
 %
 %        Type 1: Orthogonal Kernel (same as type 11 below)
 %          |   1,     0,   -1     |
