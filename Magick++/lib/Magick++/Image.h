@@ -1376,7 +1376,7 @@ namespace Magick
     void splice(const Geometry &geometry_,const Color &backgroundColor_,
       const GravityType gravity_);
 
-    // Spread pixels randomly within image by specified ammount
+    // Spread pixels randomly within image by specified amount
     void spread(const double amount_=3.0);
 
     // Returns the statistics for this image.

@@ -1094,7 +1094,7 @@ namespace Magick
     Geometry _geometry;
   };
 
-  // Spread pixels randomly within image by specified ammount
+  // Spread pixels randomly within image by specified amount
   class MagickPPExport spreadImage
   {
   public:

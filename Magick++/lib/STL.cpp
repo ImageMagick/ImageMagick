@@ -1023,7 +1023,7 @@ void Magick::solarizeImage::operator()( Magick::Image &image_ ) const
   image_.solarize( _factor );
 }
 
-// Spread pixels randomly within image by specified ammount
+// Spread pixels randomly within image by specified amount
 Magick::spreadImage::spreadImage( const size_t amount_ )
   : _amount( amount_ )
 {
