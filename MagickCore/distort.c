@@ -2677,7 +2677,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
             break;
           }
           case PolarDistortion:
-          { /* 2D Cartesain to Polar View */
+          { /* 2D Cartesian to Polar View */
             d.x -= coeff[2];
             d.y -= coeff[3];
             s.x  = atan2(d.x,d.y) - (coeff[4]+coeff[5])/2;
@@ -2702,7 +2702,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
             break;
           }
           case DePolarDistortion:
-          { /* @D Polar to Carteasain  */
+          { /* @D Polar to Cartesian  */
             /* ignore all destination virtual offsets */
             d.x = ((double)i+0.5)*output_scaling*coeff[6]+coeff[4];
             d.y = ((double)j+0.5)*output_scaling*coeff[7]+coeff[1];
