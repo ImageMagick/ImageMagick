@@ -1602,7 +1602,7 @@ MagickExport Image *DistortResizeImage(const Image *image,const size_t columns,
   else
     {
       /*
-        Image has transparency so handle colors and alpha separatly.
+        Image has transparency so handle colors and alpha separately.
         Basically we need to separate Virtual-Pixel alpha in the resized
         image, so only the actual original images alpha channel is used.
 
@@ -1633,7 +1633,7 @@ MagickExport Image *DistortResizeImage(const Image *image,const size_t columns,
           resize_alpha=DestroyImage(resize_alpha);
           return((Image *) NULL);
         }
-      /* replace resize images alpha with the separally distorted alpha */
+      /* replace resize images alpha with the separately distorted alpha */
       (void) SetImageAlphaChannel(resize_image,OffAlphaChannel,exception);
       (void) SetImageAlphaChannel(resize_alpha,OffAlphaChannel,exception);
       (void) CompositeImage(resize_image,resize_alpha,CopyAlphaCompositeOp,
