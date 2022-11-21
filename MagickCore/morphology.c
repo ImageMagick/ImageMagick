@@ -2305,7 +2305,7 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 %
 %    o kernel: the Morphology/Convolution kernel
 %
-% This function is only internel to this module, as it is not finalized,
+% This function is only internal to this module, as it is not finalized,
 % especially with regard to non-orthogonal angles, and rotation of larger
 % 2D kernels.
 */
@@ -2387,7 +2387,7 @@ static void ExpandMirrorKernelInfo(KernelInfo *kernel)
 %
 %    o angle: angle to rotate in degrees
 %
-% This function is only internel to this module, as it is not finalized,
+% This function is only internal to this module, as it is not finalized,
 % especially with regard to non-orthogonal angles, and rotation of larger
 % 2D kernels.
 */
@@ -2520,7 +2520,7 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  their processing.
 %
 %  It is basically equivalent to as MorphologyImage() (see below) but without
-%  any user controls.  This allows internel programs to use this method to
+%  any user controls.  This allows internal programs to use this method to
 %  perform a specific task without possible interference by any API user
 %  supplied settings.
 %
