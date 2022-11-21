@@ -3246,7 +3246,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   going in the opposite (bottom-up) direction.
 
   Because of this 're-use of results' this function can not make use of multi-
-  threaded, parellel processing.
+  threaded, parallel processing.
 */
 static ssize_t MorphologyPrimitiveDirect(Image *image,
   const MorphologyMethod method,const KernelInfo *kernel,

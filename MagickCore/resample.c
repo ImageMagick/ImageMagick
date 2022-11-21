@@ -548,7 +548,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
     pixel->alpha = 0.0;
 
   /*
-    Determine the parellelogram bounding box fitted to the ellipse
+    Determine the parallelogram bounding box fitted to the ellipse
     centered at u0,v0.  This area is bounding by the lines...
   */
   v1 = (ssize_t)ceil(v0 - resample_filter->Vlimit);  /* range of scan lines */
