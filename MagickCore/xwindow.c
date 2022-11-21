@@ -1482,7 +1482,7 @@ MagickPrivate int XCheckDefineCursor(Display *display,Window window,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  XCheckRefreshWindows() checks the X server for exposure events for a
-%  particular window and updates the areassociated with the exposure event.
+%  particular window and updates the are associated with the exposure event.
 %
 %  The format of the XCheckRefreshWindows method is:
 %
