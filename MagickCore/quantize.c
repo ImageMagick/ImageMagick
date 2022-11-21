@@ -2188,7 +2188,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const size_t id,
 %      measure is normalized to a range between 0 and 1.  It is independent
 %      of the range of red, green, and blue values in the image.
 %
-%    o normalized_maximum_square_error:  Thsi value is the normalized
+%    o normalized_maximum_square_error:  This value is the normalized
 %      maximum quantization error for any single pixel in the image.  This
 %      distance measure is normalized to a range between 0 and 1.  It is
 %      independent of the range of red, green, and blue values in your image.
