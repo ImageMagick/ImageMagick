@@ -2013,7 +2013,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
                  ((double) 1 / (ddata->scale_y))) / 2;
 
   /* Don't allow pen_width to be much less than pixel_width in order
-     to avoid dissapearing or spider-web lines */
+     to avoid disappearing or spider-web lines */
   pen_width = MagickMax(pen_width, pixel_width*0.8);
 
   pen_style = (unsigned int) WMF_PEN_STYLE(pen);
