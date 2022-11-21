@@ -3199,7 +3199,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 %  If the boolean 'invert' is set true the image values will modifyed in the
 %  reverse direction. That is any existing "black" and "white" colors in the
 %  image will become the color values given, with all other values compressed
-%  appropriately.  This effectivally maps a greyscale gradient into the given
+%  appropriately.  This effectively maps a greyscale gradient into the given
 %  color gradient.
 %
 %  The format of the LevelImageColors method is:
