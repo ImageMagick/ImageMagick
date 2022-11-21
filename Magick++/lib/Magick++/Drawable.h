@@ -12,7 +12,7 @@
 // "HOWTO: Exporting STL Components Inside & Outside of a Class".
 // "http://support.microsoft.com/kb/168958"
 //
-// Note that version 3.0 of this article says that that only STL
+// Note that version 3.0 of this article says that only STL
 // container template which supports DLL export is <vector> and we are
 // not using <vector> as part of the Drawable implementation.
 //
