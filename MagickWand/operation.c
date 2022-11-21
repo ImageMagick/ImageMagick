@@ -669,7 +669,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("compress",option+1) == 0)
         {
           /* FUTURE: What should be used?  _image_info  or ImageOption ???
-             The former is more efficent, but Crisy prefers the latter!
+             The former is more efficient, but Crisy prefers the latter!
              SyncImageSettings() used to set per-image attribute.
 
              The coders appears to use _image_info, not Image_Option
