@@ -1798,7 +1798,7 @@ MagickExport void MagickDelay(const MagickSizeType milliseconds)
 %  MultilineCensus() returns the number of lines within a label.  A line is
 %  represented by a \n character.
 %
-%  The format of the MultilineCenus method is:
+%  The format of the MultilineCensus method is:
 %
 %      size_t MultilineCensus(const char *label)
 %
