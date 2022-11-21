@@ -3013,7 +3013,7 @@ WandExport MagickBooleanType MagickDisplayImages(MagickWand *wand,
 %        Perspective, and Bilinear, falls back to a Affine distortion when less
 %        that 4 control point pairs are provided. While Affine distortions let
 %        you use any number of control point pairs, that is Zero pairs is a
-%        no-Op (viewport only) distrotion, one pair is a translation and two
+%        no-Op (viewport only) distortion, one pair is a translation and two
 %        pairs of control points do a scale-rotate-translate, without any
 %        shearing.
 %
@@ -12041,13 +12041,13 @@ WandExport MagickBooleanType MagickSolarizeImage(MagickWand *wand,
 %        style of image sparseion.
 %
 %        Affine, Perspective, and Bilinear, will do least squares fitting of
-%        the distrotion when more than the minimum number of control point
+%        the distortion when more than the minimum number of control point
 %        pairs are provided.
 %
 %        Perspective, and Bilinear, will fall back to a Affine sparseion when
 %        less than 4 control point pairs are provided. While Affine sparseions
 %        will let you use any number of control point pairs, that is Zero pairs
-%        is a No-Op (viewport only) distrotion, one pair is a translation and
+%        is a No-Op (viewport only) distortion, one pair is a translation and
 %        two pairs of control points will do a scale-rotate-translate, without
 %        any shearing.
 %
