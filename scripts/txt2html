@@ -757,7 +757,7 @@ sub unhyphenate
     # our own guessing systems that rely on indentation.
     ($second) = $nextline =~ /^\s*([a-zA-Z]+[\)\}\]\.,:;\'\"\>]*\s*)/; # "
     $nextline =~ s/^(\s*)[a-zA-Z]+[\)\}\]\.,:;\'\"\>]*\s*/$1/; # "
-    # (The silly comments are for my less-than-perfect code hilighter)
+    # (The silly comments are for my less-than-perfect code highlighter)
 
     $line =~ s/\-\s*$/$second/;
     $line .= "\n";
