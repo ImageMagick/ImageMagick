@@ -1120,7 +1120,7 @@ namespace Magick
     // pixels, not counting the center pixel.  The sigma_ parameter
     // specifies the standard deviation of the Laplacian, in pixels.
     // The angle_ parameter specifies the angle the object appears
-    // to be comming from (zero degrees is from the right).
+    // to be coming from (zero degrees is from the right).
     void motionBlur(const double radius_,const double sigma_,
       const double angle_);
 
