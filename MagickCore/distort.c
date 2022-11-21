@@ -2594,7 +2594,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
           case BilinearForwardDistortion:
           {
             /* Forward mapped needs reversed polynomial equations
-             * which unfortunatally requires a square root!  */
+             * which unfortunately requires a square root!  */
             double b,c;
             d.x -= coeff[3];  d.y -= coeff[7];
             b = coeff[6]*d.x - coeff[2]*d.y + coeff[8];

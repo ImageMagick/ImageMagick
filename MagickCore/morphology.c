@@ -1880,7 +1880,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               ExpandRotateKernelInfo(kernel, 90.0); /* 4 rotated kernels */
 
               /* Kernels to find a stepped 'thick' line, 4 rotates + mirrors */
-              /* Unfortunatally we can not yet rotate a non-square kernel */
+              /* Unfortunately we can not yet rotate a non-square kernel */
               /* But then we can't flip a non-symmetrical kernel either */
               new_kernel=ParseKernelArray("4x3+1+1:0,1,1,- -,1,1,- -,1,1,0");
               if (new_kernel == (KernelInfo *) NULL)
