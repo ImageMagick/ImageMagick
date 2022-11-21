@@ -127,7 +127,7 @@
 
   These patterns initially start as circles, but then form diamonds
   pattern at the 50% threshold level, before forming negated circles,
-  as it approached the other threshold extereme.
+  as it approached the other threshold extreme.
 -->
   <threshold map="h4x4a" alias="4x1">
     <description>Halftone 4x4 (angled)</description>
@@ -174,7 +174,7 @@
 
   These patterns initially start as circles, but then form square
   pattern at the 50% threshold level, before forming negated circles,
-  as it approached the other threshold extereme.
+  as it approached the other threshold extreme.
 -->
   <threshold map="h4x4o">
     <description>Halftone 4x4 (orthogonal)</description>
