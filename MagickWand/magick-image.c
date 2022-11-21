@@ -11819,7 +11819,7 @@ WandExport MagickBooleanType MagickSigmoidalContrastImage(
 %
 %      MagickWand *MagickSimilarityImage(MagickWand *wand,
 %        const MagickWand *reference,const MetricType metric,
-%        const double similarity_threshold,RectangeInfo *offset,
+%        const double similarity_threshold,RectangleInfo *offset,
 %        double *similarity)
 %
 %  A description of each parameter follows:
