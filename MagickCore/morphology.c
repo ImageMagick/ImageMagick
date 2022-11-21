@@ -1068,7 +1068,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
          * What we really want is a 'discrete gaussian' kernel.
          *
          * How to do this is I don't know, but appears to be basied on the
-         * Error Function 'erf()' (intergral of a gaussian)
+         * Error Function 'erf()' (integral of a gaussian)
          */
 
         if ( type == GaussianKernel || type == DoGKernel )
