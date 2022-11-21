@@ -307,7 +307,7 @@ This file records noteworthy changes in Magick++.
   * Added Blob class to support supplying formatted binary data to methods.
   * Added support for setting ICC and IPTC profiles from a binary BLOB.
   * Added support for transformations of image data to/from alternate
-    colorspace (e.g. CYMK).
+    colorspace (e.g. CMYK).
   * Added support for 'pinging' an image (get image dimensions/size quickly).
   * Added 'uncondense' method to de-compress in-memory image data.
   * Added support for annotation using rotated text.
