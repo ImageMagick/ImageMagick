@@ -478,7 +478,7 @@ struct _ImageInfo
 
   char
     magick[MagickPathExtent],    /* image file format (file magick) */
-    unique[MagickPathExtent],    /* unique tempory filename - delegates */
+    unique[MagickPathExtent],    /* unique temporary filename - delegates */
     filename[MagickPathExtent];  /* filename when reading/writing image */
 
   MagickBooleanType
