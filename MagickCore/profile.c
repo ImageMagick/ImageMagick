@@ -183,7 +183,7 @@ MagickExport MagickBooleanType CloneImageProfiles(Image *image,
 %
 %  The format of the DeleteImageProfile method is:
 %
-%      MagickBooleanTyupe DeleteImageProfile(Image *image,const char *name)
+%      MagickBooleanType DeleteImageProfile(Image *image,const char *name)
 %
 %  A description of each parameter follows:
 %
