@@ -56,7 +56,7 @@
 %  buffering constraints set by the system.  It is not parsed line-by-line.
 %
 %  The function will return 'MagickTrue' if a valid token was found, while
-%  the token status will be set accordingally to 'OK' or 'EOF', according to
+%  the token status will be set accordingly to 'OK' or 'EOF', according to
 %  the cause of the end of token.  The token may be an empty string if the
 %  input was a quoted empty string.  Other error conditions return a value of
 %  MagickFalse, indicating any token found but was incomplete due to some
