@@ -397,7 +397,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %
 %    o type: the gradient type: linear or radial.
 %
-%    o spread: the gradient spread meathod: pad, reflect, or repeat.
+%    o spread: the gradient spread method: pad, reflect, or repeat.
 %
 %    o start_color: the start color.
 %
