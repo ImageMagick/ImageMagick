@@ -624,7 +624,7 @@ OPENCL_ENDIF()
 
   // Pre: a<M,b<M
   // Post: r=(a*b) mod M
-  // This could be done more efficently, but it is portable, and should
+  // This could be done more efficiently, but it is portable, and should
   // be easy to understand. It can be replaced with any of the better
   // modular multiplication algorithms (for example if you know you have
   // double precision available or something).

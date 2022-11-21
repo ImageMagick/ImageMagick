@@ -291,7 +291,7 @@ MagickExport ResampleFilter *DestroyResampleFilter(
 %
 %  ResamplePixelColor() samples the pixel values surrounding the location
 %  given using an elliptical weighted average, at the scale previously
-%  calculated, and in the most efficent manner possible for the
+%  calculated, and in the most efficient manner possible for the
 %  VirtualPixelMethod setting.
 %
 %  The format of the ResamplePixelColor method is:
