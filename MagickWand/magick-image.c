@@ -4252,7 +4252,7 @@ WandExport unsigned char *MagickGetImagesBlob(MagickWand *wand,size_t *length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageBluePrimary() returns the chromaticy blue primary point for the
+%  MagickGetImageBluePrimary() returns the chromaticity blue primary point for the
 %  image.
 %
 %  The format of the MagickGetImageBluePrimary method is:
@@ -5229,7 +5229,7 @@ WandExport GravityType MagickGetImageGravity(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageGreenPrimary() returns the chromaticy green primary point.
+%  MagickGetImageGreenPrimary() returns the chromaticity green primary point.
 %
 %  The format of the MagickGetImageGreenPrimary method is:
 %
@@ -5691,7 +5691,7 @@ WandExport MagickBooleanType MagickGetImagePixelColor(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageRedPrimary() returns the chromaticy red primary point.
+%  MagickGetImageRedPrimary() returns the chromaticity red primary point.
 %
 %  The format of the MagickGetImageRedPrimary method is:
 %
@@ -6104,7 +6104,7 @@ WandExport VirtualPixelMethod MagickGetImageVirtualPixelMethod(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageWhitePoint() returns the chromaticy white point.
+%  MagickGetImageWhitePoint() returns the chromaticity white point.
 %
 %  The format of the MagickGetImageWhitePoint method is:
 %
