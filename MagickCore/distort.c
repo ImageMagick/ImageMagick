@@ -1686,7 +1686,7 @@ MagickExport Image *DistortResizeImage(const Image *image,const size_t columns,
 %  account in the mapping.
 %
 %  If the '-verbose' control option has been set print to standard error the
-%  equicelent '-fx' formula with coefficients for the function, if practical.
+%  equivalent '-fx' formula with coefficients for the function, if practical.
 %
 %  The format of the DistortImage() method is:
 %
@@ -2138,7 +2138,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
         (void) FormatLocaleFile(stderr, "%.*g'\n",GetMagickPrecision(),
           inverse[7]);
         inverse=(double *) RelinquishMagickMemory(inverse);
-        (void) FormatLocaleFile(stderr,"Perspective Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"Perspective Distort, FX Equivalent:\n");
         (void) FormatLocaleFile(stderr,"%.1024s",image_gen);
         (void) FormatLocaleFile(stderr,
           "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
@@ -2170,7 +2170,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
             coeff[8], coeff[9]);
 #endif
         (void) FormatLocaleFile(stderr,
-          "BilinearForward Distort, FX Equivelent:\n");
+          "BilinearForward Distort, FX Equivalent:\n");
         (void) FormatLocaleFile(stderr,"%s", image_gen);
         (void) FormatLocaleFile(stderr,
           "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",0.5-coeff[3],0.5-
@@ -2210,7 +2210,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
             coeff[7], coeff[4], coeff[5], coeff[6]);
 #endif
         (void) FormatLocaleFile(stderr,
-          "BilinearReverse Distort, FX Equivelent:\n");
+          "BilinearReverse Distort, FX Equivalent:\n");
         (void) FormatLocaleFile(stderr,"%s", image_gen);
         (void) FormatLocaleFile(stderr,
           "  -fx 'ii=i+page.x+0.5; jj=j+page.y+0.5;\n");
@@ -2227,7 +2227,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
       {
         size_t nterms = (size_t) coeff[1];
         (void) FormatLocaleFile(stderr,
-          "Polynomial (order %lg, terms %lu), FX Equivelent\n",coeff[0],
+          "Polynomial (order %lg, terms %lu), FX Equivalent\n",coeff[0],
           (unsigned long) nterms);
         (void) FormatLocaleFile(stderr,"%s", image_gen);
         (void) FormatLocaleFile(stderr,
@@ -2257,7 +2257,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
         for (i=0; i < 5; i++)
           (void) FormatLocaleFile(stderr,
             "  c%.20g = %+lf\n",(double) i,coeff[i]);
-        (void) FormatLocaleFile(stderr,"Arc Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"Arc Distort, FX Equivalent:\n");
         (void) FormatLocaleFile(stderr,"%s", image_gen);
         (void) FormatLocaleFile(stderr,"  -fx 'ii=i+page.x; jj=j+page.y;\n");
         (void) FormatLocaleFile(stderr,"       xx=(atan2(jj,ii)%+lf)/(2*pi);\n",
@@ -2276,7 +2276,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
         for (i=0; i < 8; i++)
           (void) FormatLocaleFile(stderr,"  c%.20g = %+lf\n",(double) i,
             coeff[i]);
-        (void) FormatLocaleFile(stderr,"Polar Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"Polar Distort, FX Equivalent:\n");
         (void) FormatLocaleFile(stderr,"%s", image_gen);
         (void) FormatLocaleFile(stderr,
           "  -fx 'ii=i+page.x%+lf; jj=j+page.y%+lf;\n",-coeff[2],-coeff[3]);
@@ -2297,7 +2297,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
         for (i=0; i < 8; i++)
           (void) FormatLocaleFile(stderr,"  c%.20g = %+lf\n",(double) i,
             coeff[i]);
-        (void) FormatLocaleFile(stderr,"DePolar Distort, FX Equivelent:\n");
+        (void) FormatLocaleFile(stderr,"DePolar Distort, FX Equivalent:\n");
         (void) FormatLocaleFile(stderr,"%s", image_gen);
         (void) FormatLocaleFile(stderr,"  -fx 'aa=(i+.5)*%lf %+lf;\n",
           coeff[6],+coeff[4]);
@@ -2316,7 +2316,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
           "Cylinder to Plane Distort, Internal Coefficients\n");
         (void) FormatLocaleFile(stderr,"  cylinder_radius = %+lf\n",coeff[1]);
         (void) FormatLocaleFile(stderr,
-          "Cylinder to Plane Distort, FX Equivelent:\n");
+          "Cylinder to Plane Distort, FX Equivalent:\n");
         (void) FormatLocaleFile(stderr, "%s", image_gen);
         (void) FormatLocaleFile(stderr,
           "  -fx 'ii=i+page.x%+lf+0.5; jj=j+page.y%+lf+0.5;\n",-coeff[4],
@@ -2334,7 +2334,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
           "Plane to Cylinder Distort, Internal Coefficients\n");
         (void) FormatLocaleFile(stderr,"  cylinder_radius = %+lf\n",coeff[1]);
         (void) FormatLocaleFile(stderr,
-          "Plane to Cylinder Distort, FX Equivelent:\n");
+          "Plane to Cylinder Distort, FX Equivalent:\n");
         (void) FormatLocaleFile(stderr,"%s", image_gen);
         (void) FormatLocaleFile(stderr,
           "  -fx 'ii=i+page.x%+lf+0.5; jj=j+page.y%+lf+0.5;\n",-coeff[4],
@@ -2360,7 +2360,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
         */
         xc=((double)image->columns-1.0)/2.0+image->page.x;
         yc=((double)image->rows-1.0)/2.0+image->page.y;
-        (void) FormatLocaleFile(stderr, "Barrel%s Distort, FX Equivelent:\n",
+        (void) FormatLocaleFile(stderr, "Barrel%s Distort, FX Equivalent:\n",
           method == BarrelDistortion ? "" : "Inv");
         (void) FormatLocaleFile(stderr, "%s", image_gen);
         if ( fabs(coeff[8]-xc-0.5) < 0.1 && fabs(coeff[9]-yc-0.5) < 0.1 )

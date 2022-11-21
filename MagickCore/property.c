@@ -213,7 +213,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DefineImageProperty() associates an assignment string of the form
-%  "key=value" with an artifact or options. It is equivelent to
+%  "key=value" with an artifact or options. It is equivalent to
 %  SetImageProperty().
 %
 %  The format of the DefineImageProperty method is:
@@ -3429,7 +3429,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
       if (LocaleCompare("scenes",property) == 0)
         {
-          /* FUTURE: equivelent to %n? */
+          /* FUTURE: equivalent to %n? */
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
             GetImageListLength(image));

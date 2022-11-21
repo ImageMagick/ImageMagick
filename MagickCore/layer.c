@@ -1772,7 +1772,7 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
 %  will ve cloned to match the number of images remaining in the source image
 %  list.
 %
-%  This is equivelent to the "-layer Composite" Shell API operator.
+%  This is equivalent to the "-layer Composite" Shell API operator.
 %
 %
 %  The format of the CompositeLayers method is:

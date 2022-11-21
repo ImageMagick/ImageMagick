@@ -134,7 +134,7 @@ MagickExport MagickBooleanType CloneImageArtifacts(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DefineImageArtifact() associates an assignment string of the form
-%  "key=value" with per-image artifact. It is equivelent to
+%  "key=value" with per-image artifact. It is equivalent to
 %  SetImageArtifact().
 %
 %  The format of the DefineImageArtifact method is:

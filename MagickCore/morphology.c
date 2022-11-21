@@ -1189,7 +1189,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
 #else
         /* Direct calculation without curve averaging
-           This is equivelent to a KernelRank of 1 */
+           This is equivalent to a KernelRank of 1 */
 
         /* Calculate a Positive Gaussian */
         if ( sigma > MagickEpsilon )
