@@ -1008,7 +1008,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case PeaksKernel:
     case ChebyshevKernel:
     case ManhattanKernel:
-    case OctangonalKernel:
+    case OctagonalKernel:
     case EuclideanKernel:
 #else
     default:
