@@ -1166,7 +1166,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
             return((Image *) NULL);
           }
         bgnd_image->background_color.alpha_trait=BlendPixelTrait;
-        bgnd_bounds=bounds[i-1]; /* interum bounds of the previous image */
+        bgnd_bounds=bounds[i-1]; /* interim bounds of the previous image */
         ClearBounds(bgnd_image,&bgnd_bounds,exception);
         try_bounds=CompareImagesBounds(bgnd_image,curr,CompareAnyLayer,exception);
         try_cleared=IsBoundsCleared(bgnd_image,curr,&try_bounds,exception);
@@ -1331,7 +1331,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
          (double) bounds[i-1].x,(double) bounds[i-1].y );
 #endif
 #if DEBUG_OPT_FRAME
-    (void) FormatLocaleFile(stderr, "interum %.20g : %s  %.20gx%.20g%+.20g%+.20g\n",
+    (void) FormatLocaleFile(stderr, "interim %.20g : %s  %.20gx%.20g%+.20g%+.20g\n",
          (double) i,
          CommandOptionToMnemonic(MagickDisposeOptions,disposals[i]),
          (double) bounds[i].width,(double) bounds[i].height,
