@@ -1329,7 +1329,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff=(double *) RelinquishMagickMemory(coeff);
         return((double *) NULL);
       }
-      /* converstion ratios */
+      /* conversion ratios */
       if ( *method == PolarDistortion ) {
         coeff[6]=(double) image->columns/(coeff[5]-coeff[4]);
         coeff[7]=(double) image->rows/(coeff[0]-coeff[1]);
