@@ -158,7 +158,7 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %  The returned kernel should be freed using the DestroyKernelInfo() when you
 %  are finished with it.  Do not free this memory yourself.
 %
-%  Input kernel defintion strings can consist of any of three types.
+%  Input kernel definition strings can consist of any of three types.
 %
 %    "name:args[[@><]"
 %         Select from one of the built in kernels, using the name and
@@ -182,7 +182,7 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %
 %     " kernel ; kernel ; kernel ; "
 %
-%  Any extra ';' characters, at start, end or between kernel defintions are
+%  Any extra ';' characters, at start, end or between kernel definitions are
 %  simply ignored.
 %
 %  The special flags will expand a single kernel, into a list of rotated
@@ -401,7 +401,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string,
           (*p == ',') || (*p == ':' )) && (*p != '\0') && (*p != ';'))
     p++;
 
-  end = strchr(p, ';'); /* end of this kernel defintion */
+  end = strchr(p, ';'); /* end of this kernel definition */
   if ( end == (char *) NULL )
     end = strchr(p, '\0');
 
@@ -4651,7 +4651,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ShowKernelInfo() outputs the details of the given kernel defination to
+%  ShowKernelInfo() outputs the details of the given kernel definition to
 %  standard error, generally due to a users 'morphology:showKernel' option
 %  request.
 %

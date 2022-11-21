@@ -402,7 +402,7 @@ static double *GenerateCoefficients(const Image *image,
     cp_values = 2;       /* and the other values are after x,y */
     /* Typically in this case the values are R,G,B color values */
   }
-  cp_size = number_values+2; /* each CP defintion involves this many numbers */
+  cp_size = number_values+2; /* each CP definition involves this many numbers */
 
   /* If not enough control point pairs are found for specific distortions
      fall back to Affine distortion (allowing 0 to 3 point pairs)
