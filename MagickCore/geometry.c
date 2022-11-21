@@ -1233,7 +1233,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
 %  with respect to the given image page (canvas) dimensions and the images
 %  gravity setting.
 %
-%  This is typically used for specifing a area within a given image for
+%  This is typically used for specifying a area within a given image for
 %  cropping images to a smaller size, chopping out rows and or columns, or
 %  resizing and positioning overlay images.
 %

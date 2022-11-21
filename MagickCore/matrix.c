@@ -462,7 +462,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %     ...
 %     GaussJordanElimination(matrix, &coefficients, 8UL, 1UL);
 %
-%  However by specifing more 'columns' (as an 'array of vector columns',
+%  However by specifying more 'columns' (as an 'array of vector columns',
 %  you can use this function to solve a set of 'separable' equations.
 %
 %  For example a distortion function where    u = U(x,y)   v = V(x,y)
