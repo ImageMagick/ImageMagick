@@ -31,7 +31,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% General methds for handling the WandCLI structure used for Command Line.
+% General methods for handling the WandCLI structure used for Command Line.
 %
 % Anthony Thyssen, April 2011
 */
