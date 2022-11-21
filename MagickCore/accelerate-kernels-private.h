@@ -2564,7 +2564,7 @@ OPENCL_ENDIF()
       }
       barrier(CLK_LOCAL_MEM_FENCE);
 
-      // accumulatte the filtered pixel value and the density
+      // accumulate the filtered pixel value and the density
       for (unsigned int i = 0; i < numItems; i++) {
         if (pixelIndex != -1) {
           if (itemID%numItems == i) {
@@ -2730,7 +2730,7 @@ OPENCL_ENDIF()
       }
       barrier(CLK_LOCAL_MEM_FENCE);
 
-      // accumulatte the filtered pixel value and the density
+      // accumulate the filtered pixel value and the density
       for (unsigned int i = 0; i < numItems; i++) {
         if (pixelIndex != -1) {
           if (itemID%numItems == i) {
