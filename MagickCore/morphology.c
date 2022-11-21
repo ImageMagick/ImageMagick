@@ -3807,7 +3807,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       break;
   }
 
-  /* Loops around more primitive morpholgy methods
+  /* Loops around more primitive morphology methods
   **  erose, dilate, open, close, smooth, edge, etc...
   */
   /* Loop 1:  iterate the compound method */
@@ -4098,7 +4098,7 @@ exit_cleanup:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MorphologyImage() applies a user supplied kernel to the image according to
-%  the given mophology method.
+%  the given morphology method.
 %
 %  This function applies any and all user defined settings before calling
 %  the above internal function MorphologyApply().
