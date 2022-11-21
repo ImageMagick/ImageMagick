@@ -3606,7 +3606,7 @@ MagickExport const char *GetNextImageProperty(const Image *image)
 %
 %  If 'glob-expresions' ('*' or '?' characters) is used for 'name' it may be
 %  used as a search pattern to print multiple lines of "name=value\n" pairs of
-%  the associacted set of properties.
+%  the associated set of properties.
 %
 %  The returned string must be freed using DestoryString() by the caller.
 %
