@@ -3236,7 +3236,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 }
 
 /*
-  This is almost identical to the MorphologyPrimative() function above, but
+  This is almost identical to the MorphologyPrimitive() function above, but
   applies the primitive directly to the actual image using two passes, once in
   each direction, with the results of the previous (and current) row being
   re-used.
@@ -3744,7 +3744,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       break;
     case DistanceMorphology:
     case VoronoiMorphology:
-      special = MagickTrue;         /* use special direct primative */
+      special = MagickTrue;         /* use special direct primitive */
       break;
     default:
       break;
@@ -3825,7 +3825,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
     kernel_number = 0;
     while ( norm_kernel != NULL ) {
 
-      /* Loop 3: Compound Morphology Staging - Select Primative to apply */
+      /* Loop 3: Compound Morphology Staging - Select Primitive to apply */
       stage_loop = 0;          /* the compound morphology stage number */
       while ( stage_loop < stage_limit ) {
         stage_loop++;   /* The stage of the compound morphology */
@@ -3983,7 +3983,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
     (void) FormatLocaleFile(stderr, "      union=0x%lx\n", (unsigned long)rslt_image);
 #endif
 
-      } /* End Loop 3: Primative (staging) Loop for Compound Methods */
+      } /* End Loop 3: Primitive (staging) Loop for Compound Methods */
 
       /*  Final Post-processing for some Compound Methods
       **
