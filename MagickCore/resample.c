@@ -1167,7 +1167,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 
   /* Scale ellipse to match the filters support
      (that is, multiply F by the square of the support)
-     Simplier to just multiply it by the support twice!
+     Simpler to just multiply it by the support twice!
   */
   F *= resample_filter->support;
   F *= resample_filter->support;
