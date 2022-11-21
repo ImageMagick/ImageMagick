@@ -34,7 +34,7 @@
 %  Read a stream of characters and return tokens one at a time.
 %
 %  The input stream is divided into individual 'tokens' (representing 'words'
-%  or 'options'), in a way that is as close to a UNIX shell, as is feasable.
+%  or 'options'), in a way that is as close to a UNIX shell, as is feasible.
 %  Only shell variable, and command substitutions will not be performed.
 %  Tokens can be any length.
 %
