@@ -649,7 +649,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %  being 'clipped'.
 %
 %  The 3x3 kernels (most of these) can be circularly rotated in multiples of
-%  45 degrees to generate the 8 angled varients of each of the kernels.
+%  45 degrees to generate the 8 angled variants of each of the kernels.
 %
 %    Laplacian:{type}
 %      Discrete Laplacian Kernels, (without normalization)
