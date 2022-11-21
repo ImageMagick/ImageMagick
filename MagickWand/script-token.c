@@ -38,7 +38,7 @@
 %  Only shell variable, and command substitutions will not be performed.
 %  Tokens can be any length.
 %
-%  The main function call is GetScriptToken() (see below) whcih returns one
+%  The main function call is GetScriptToken() (see below) which returns one
 %  and only one token at a time.  The other functions provide support to this
 %  function, opening scripts, and setting up the required structures.
 %
