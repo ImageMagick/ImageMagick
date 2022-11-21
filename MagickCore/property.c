@@ -2461,7 +2461,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
   *value='\0';           /* formatted string */
   string=(char *) NULL;  /* constant string reference */
   /*
-    Get properities that are directly defined by images.
+    Get properties that are directly defined by images.
   */
   switch (letter)
   {
