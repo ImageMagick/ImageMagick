@@ -1108,7 +1108,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     a circle of radius 2.0, and F smaller than this means magnification is
     being used.
 
-    NOTE: This method produces a very blury result at near unity scale while
+    NOTE: This method produces a very blurry result at near unity scale while
     producing perfect results for strong minitification and magnifications.
 
     However filter support is fixed to 2.0 (no good for Windowed Sinc filters)
