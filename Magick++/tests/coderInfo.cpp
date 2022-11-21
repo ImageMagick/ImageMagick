@@ -31,7 +31,7 @@ int test( CoderInfo::MatchType isReadable_,
         {
           cout << "Entry \""
                << entry->name()
-               << "\" has unexpected readablity state ("
+               << "\" has unexpected readability state ("
                << static_cast<int>(entry->isReadable())
                << ")"
                << endl;
