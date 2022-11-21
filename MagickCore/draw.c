@@ -6106,7 +6106,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Permutate() returns the permuation of the (n,k).
+%  Permutate() returns the permutation of the (n,k).
 %
 %  The format of the Permutate method is:
 %
