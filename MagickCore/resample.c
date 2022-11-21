@@ -1004,7 +1004,7 @@ static inline void ClampUpAxes(const double dux,
 %      du/dx, dv/dx     and    du/dy, dv/dy
 %  If the resulting scaling vectors is othogonally aligned then...
 %      dv/dx = 0   and   du/dy  =  0
-%  Producing an othogonally alligned ellipse in source space for the area to
+%  Producing an othogonally aligned ellipse in source space for the area to
 %  be resampled.
 %
 %  Note that scaling vectors are different to argument order.  Argument order
