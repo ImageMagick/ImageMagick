@@ -7244,7 +7244,7 @@ WandExport MagickBooleanType MagickMagnifyImage(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickMeanShiftImage() elineate arbitrarily shaped clusters in the image. For
+%  MagickMeanShiftImage() delineate arbitrarily shaped clusters in the image. For
 %  each pixel, it visits all the pixels in the neighborhood specified by
 %  the window centered at the pixel and excludes those that are outside the
 %  radius=(window-1)/2 surrounding the pixel. From those pixels, it finds those
