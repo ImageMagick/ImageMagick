@@ -58,7 +58,7 @@ times to the same or different image. For these types of operations, a
 command-line utility is more suitable.
 
 The remaining of this manpage is a list of the available command-line utilities
-and their short descriptions.  For further documentation conserning a
+and their short descriptions.  For further documentation concerning a
 particular command and its options, consult the corresponding manpage. If you
 are just getting acquainted with ImageMagick, start at the top of that list, the
 magick(1) program, and work your way down. Also, make sure to check out Anthony
