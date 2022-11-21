@@ -549,7 +549,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         {
           /* FUTURE: bias OBSOLETED, replaced by Artifact "convolve:bias"
              as it is actually rarely used except in direct convolve operations
-             Usage outside a direct convolve operation is actally non-sensible!
+             Usage outside a direct convolve operation is actually non-sensible!
 
              SyncImageSettings() used to set per-image attribute.
           */
