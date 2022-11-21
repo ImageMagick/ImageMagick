@@ -453,7 +453,7 @@ LINE:
       $para =~ s/^\s+//g;		# Eliminate any leading space
       $para =~ s/\s+/ /g;		# Canonicalize whitespace
       $para =~ s/ $//;		# Trim final space
-      $para =~ s/([a-zA-Z0-9][.!?][)'"]*) /$1  /g; #' Fix sentance ends
+      $para =~ s/([a-zA-Z0-9][.!?][)'"]*) /$1  /g; #' Fix sentence ends
 		  print( TMP "\n$para\n\n" );
 		}
     }
