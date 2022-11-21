@@ -1251,7 +1251,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** As we are normalizing and not subtracting gaussians,
         ** there is no need for a divisor in the gaussian formula
         **
-        ** It is less comples
+        ** It is less complex
         */
         if ( sigma > MagickEpsilon )
           {
