@@ -1,6 +1,6 @@
 #!/usr/bin/perl
     eval 'exec perl -S $0 "$@"'
-    if $runnning_under_some_shell;
+    if $running_under_some_shell;
 #
 # txt2html.pl
 # Convert raw text to something with a little HTML formatting
