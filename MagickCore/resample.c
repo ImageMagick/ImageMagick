@@ -1271,7 +1271,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   }
 
   /* Get the practical working support for the filter,
-   * after any API call blur factors have been accoded for.
+   * after any API call blur factors have been accounted for.
    */
 #if EWA
   resample_filter->support = GetResizeFilterSupport(resize_filter);
