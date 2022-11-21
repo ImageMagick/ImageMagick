@@ -2434,7 +2434,7 @@ WandExport MagickBooleanType MagickSetInterpolateMethod(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickSetOption() associates one or options with the wand (.e.g
-%  MagickSetOption(wand,"jpeg:perserve","yes")).
+%  MagickSetOption(wand,"jpeg:preserve","yes")).
 %
 %  The format of the MagickSetOption method is:
 %
