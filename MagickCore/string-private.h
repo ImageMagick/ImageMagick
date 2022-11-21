@@ -41,9 +41,9 @@ static inline double SiPrefixToDoubleInterval(const char *string,
 }
 
 static inline double StringToDouble(const char *magick_restrict string,
-  char *magick_restrict *sentinal)
+  char *magick_restrict *sentinel)
 {
-  return(InterpretLocaleValue(string,sentinal));
+  return(InterpretLocaleValue(string,sentinel));
 }
 
 static inline const char *StringLocateSubstring(const char *haystack,

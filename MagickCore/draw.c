@@ -2331,7 +2331,7 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
 }
 
 static inline double GetDrawValue(const char *magick_restrict string,
-  char **magick_restrict sentinal)
+  char **magick_restrict sentinel)
 {
   char
     **magick_restrict q;
@@ -2339,9 +2339,9 @@ static inline double GetDrawValue(const char *magick_restrict string,
   double
     value;
 
-  q=sentinal;
+  q=sentinel;
   value=InterpretLocaleValue(string,q);
-  sentinal=q;
+  sentinel=q;
   return(value);
 }
 

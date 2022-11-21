@@ -1286,18 +1286,18 @@ MagickExport const char *GetStringInfoPath(const StringInfo *string_info)
 %
 %  The format of the InterpretSiPrefixValue method is:
 %
-%      double InterpretSiPrefixValue(const char *value,char **sentinal)
+%      double InterpretSiPrefixValue(const char *value,char **sentinel)
 %
 %  A description of each parameter follows:
 %
 %    o value: the string value.
 %
-%    o sentinal:  if sentinal is not NULL, return a pointer to the character
+%    o sentinel:  if sentinel is not NULL, return a pointer to the character
 %      after the last character used in the conversion.
 %
 */
 MagickExport double InterpretSiPrefixValue(const char *magick_restrict string,
-  char **magick_restrict sentinal)
+  char **magick_restrict sentinel)
 {
   char
     *q;
@@ -1354,8 +1354,8 @@ MagickExport double InterpretSiPrefixValue(const char *magick_restrict string,
       if ((*q == 'B') || (*q == 'P'))
         q++;
     }
-  if (sentinal != (char **) NULL)
-    *sentinal=q;
+  if (sentinel != (char **) NULL)
+    *sentinel=q;
   return(value);
 }
 
