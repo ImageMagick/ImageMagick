@@ -570,7 +570,7 @@ static Image *ASHLARImage(const ImageInfo *image_info,Image *image,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   /*
-    Interate until we find a tile size that fits the canvas.
+    Iterate until we find a tile size that fits the canvas.
   */
   value=GetImageOption(image_info,"ashlar:best-fit");
   for (i=20; i > 0; i--)
