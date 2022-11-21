@@ -579,7 +579,7 @@ ModuleExport void UnregisterHDRImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteHDRImage() writes an image in the Radience RGBE image format.
+%  WriteHDRImage() writes an image in the Radiance RGBE image format.
 %
 %  The format of the WriteHDRImage method is:
 %
