@@ -2708,7 +2708,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
             d.y = ((double)j+0.5)*output_scaling*coeff[7]+coeff[1];
             s.x = d.y*sin(d.x) + coeff[2];
             s.y = d.y*cos(d.x) + coeff[3];
-            /* derivatives are usless - better to use SuperSampling */
+            /* derivatives are useless - better to use SuperSampling */
             break;
           }
           case Cylinder2PlaneDistortion:

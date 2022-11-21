@@ -4249,7 +4249,7 @@ MagickExport Image *MorphologyImage(const Image *image,
 %
 %  Currently it is restricted to 90 degree angles, of either 1D kernels
 %  or square kernels. And 'circular' rotations of 45 degrees for 3x3 kernels.
-%  It will ignore usless rotations for specific 'named' built-in kernels.
+%  It will ignore useless rotations for specific 'named' built-in kernels.
 %
 %  The format of the RotateKernelInfo method is:
 %
