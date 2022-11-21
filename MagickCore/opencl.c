@@ -1655,7 +1655,7 @@ MagickPrivate void DumpOpenCLProfileData()
 %
 %    o input_image: the input image of the operation.
 %
-%    o output_image: the output or secondairy image of the operation.
+%    o output_image: the output or secondary image of the operation.
 %
 %    o exception: return any errors or warnings in this structure.
 %
