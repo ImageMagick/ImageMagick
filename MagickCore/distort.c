@@ -1062,7 +1062,7 @@ static double *GenerateCoefficients(const Image *image,
          NB: if 'r' is negative there is no solution!
          NB: the sign of the sqrt() should be negative if image becomes
              flipped or flopped, or crosses over itself.
-         NB: techniqually coefficient c5 is not needed, anymore,
+         NB: technically coefficient c5 is not needed, anymore,
              but kept for completeness.
 
          See Anthony Thyssen <A.Thyssen@griffith.edu.au>
