@@ -1345,7 +1345,7 @@ static double *GenerateCoefficients(const Image *image,
     {
       /* 3D Cylinder to/from a Tangential Plane
 
-         Projection between a clinder and flat plain from a point on the
+         Projection between a cylinder and flat plain from a point on the
          center line of the cylinder.
 
          The two surfaces coincide in 3D space at the given centers of
