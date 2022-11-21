@@ -4407,7 +4407,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
       /* For a 180 degree rotation - also know as a reflection
        * This is actually a very very common operation!
        * Basically all that is needed is a reversal of the kernel data!
-       * And a reflection of the origon
+       * And a reflection of the origin
        */
       MagickRealType
         t;
