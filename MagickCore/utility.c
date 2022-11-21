@@ -1422,7 +1422,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
 %  The format of the GetPathComponents method is:
 %
 %      char **GetPathComponents(const char *path,
-%        size_t *number_componenets)
+%        size_t *number_components)
 %
 %  A description of each parameter follows:
 %
