@@ -1041,7 +1041,7 @@ static double *GenerateCoefficients(const Image *image,
          where i,j are in the destination image, NOT the source.
 
          Reverse Pixel mapping however needs to use reverse of these
-         functions.  It required a full page of algbra to work out the
+         functions.  It required a full page of algebra to work out the
          reversed mapping formula, but resolves down to the following...
 
             c8 = c0*c5-c1*c4;
