@@ -72,7 +72,7 @@ This file records noteworthy changes in Magick++.
   * DrawableCompositeImage can be constructed based on an Image in memory
     rather than just a filename.
   * Added Drawable objects (DrawablePushPattern & DrawablePopPattern)
-    for definining arbitrary named patterns to be used for stroke and fill.
+    for defining arbitrary named patterns to be used for stroke and fill.
   * Added Image strokePattern() and fillPattern() methods for specifying
     image to use while drawing stroked object outlines and while filling
     objects, respectively.
