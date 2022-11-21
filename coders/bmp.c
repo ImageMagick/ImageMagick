@@ -1027,7 +1027,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           We should ignore the alpha value in BMP3 files but there have been
           reports about 32 bit files with alpha. We do a quick check to see if
           the alpha channel contains a value that is not zero (default value).
-          If we find a non zero value we asume the program that wrote the file
+          If we find a non zero value we assume the program that wrote the file
           wants to use the alpha channel.
         */
         if ((image->alpha_trait == UndefinedPixelTrait) &&
