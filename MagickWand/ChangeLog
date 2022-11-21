@@ -320,7 +320,7 @@
     persist the vector graphics state.
 
 2004-09-30  Cristy  <yarrow@image...>
-  * Add new MagickQueryConfigureOption() method to return a valur associated
+  * Add new MagickQueryConfigureOption() method to return a value associated
     with a particular option.
 
 2004-09-29  Cristy  <yarrow@image...>

@@ -748,7 +748,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("depth",option+1) == 0)
         {
-          /* This is also a SimpleImageOperator! for 8->16 vaule trunc !!!!
+          /* This is also a SimpleImageOperator! for 8->16 value trunc !!!!
              SyncImageSettings() used to set per-image attribute.
           */
           if (IfSetOption && (IsGeometry(arg1) == MagickFalse))
