@@ -637,7 +637,7 @@ namespace Magick
     std::string attribute(const std::string name_) const;
 
     // Extracts the 'mean' from the image and adjust the image to try
-    // make set its gamma appropriatally.
+    // make set its gamma appropriately.
     void autoGamma(void);
     void autoGammaChannel(const ChannelType channel_);
 
