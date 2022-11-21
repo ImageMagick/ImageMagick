@@ -2523,7 +2523,7 @@ MagickExport ChannelType SetImageChannelMask(Image *image,
 %  The format of the SetImageColor method is:
 %
 %      MagickBooleanType SetImageColor(Image *image,const PixelInfo *color,
-%        ExeptionInfo *exception)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %

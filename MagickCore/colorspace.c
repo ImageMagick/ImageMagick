@@ -157,7 +157,7 @@ MagickExport ColorspaceType GetImageColorspaceType(const Image *image,
 %  The format of the sRGBTransformImage method is:
 %
 %      MagickBooleanType sRGBTransformImage(Image *image,
-%        const ColorspaceType colorspace,EsceptionInfo *exception)
+%        const ColorspaceType colorspace,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1404,7 +1404,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 %  The format of the SetImageColorspace method is:
 %
 %      MagickBooleanType SetImageColorspace(Image *image,
-%        const ColorspaceType colorspace,ExceptiionInfo *exception)
+%        const ColorspaceType colorspace,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %

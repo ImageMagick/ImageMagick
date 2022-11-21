@@ -402,7 +402,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %  The format of the ConvertPathToPolygon method is:
 %
 %      PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
-%        ExceptionInfo *excetion)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
