@@ -723,7 +723,7 @@ WandExport MagickWand *MagickAppendImages(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickAutoGammaImage() extracts the 'mean' from the image and adjust the
-%  image to try make set its gamma appropriatally.
+%  image to try make set its gamma appropriately.
 %
 %  The format of the MagickAutoGammaImage method is:
 %
