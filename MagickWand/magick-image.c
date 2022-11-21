@@ -12160,7 +12160,7 @@ WandExport MagickBooleanType MagickSpliceImage(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o method:  intepolation method.
+%    o method:  interpolation method.
 %
 %    o radius:  Choose a random pixel in a neighborhood of this extent.
 %
