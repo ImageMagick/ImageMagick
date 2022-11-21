@@ -90,7 +90,7 @@ $clone->Composite(
 push(@$results, $clone);
 
 # ---------------
-# Masked and Blending Demonstartion
+# Masked and Blending Demonstration
 
 $clone=$dest->Clone();
 $clone->Label('Circle Masked\n(three image)');
@@ -133,7 +133,7 @@ $clone->Composite(
 push(@$results, $clone);
 
 # ---------------
-# Displacement Demonstartion
+# Displacement Demonstration
 
 $clone=$dest->Clone();
 $clone->Label('Displace 50x0\n(displace horiz)');
