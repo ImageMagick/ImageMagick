@@ -662,7 +662,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   }
 
   /*
-    Finialize results of resampling
+    Finalize results of resampling
   */
   divisor_m = 1.0/divisor_m;
   if (pixel->alpha_trait != UndefinedPixelTrait)

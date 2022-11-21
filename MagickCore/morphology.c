@@ -4611,7 +4611,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   else
     neg_scale = pos_scale;
 
-  /* finialize scaling_factor for positive and negative components */
+  /* finalize scaling_factor for positive and negative components */
   pos_scale = scaling_factor/pos_scale;
   neg_scale = scaling_factor/neg_scale;
 
