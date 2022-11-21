@@ -624,7 +624,7 @@ MagickExport size_t GetMatrixColumns(const MatrixInfo *matrix_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMatrixElement() returns the specifed element in the matrix.
+%  GetMatrixElement() returns the specified element in the matrix.
 %
 %  The format of the GetMatrixElement method is:
 %
@@ -1088,7 +1088,7 @@ MagickExport double **RelinquishMagickMatrix(double **matrix,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMatrixElement() sets the specifed element in the matrix.
+%  SetMatrixElement() sets the specified element in the matrix.
 %
 %  The format of the SetMatrixElement method is:
 %
