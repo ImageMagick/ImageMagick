@@ -1081,11 +1081,11 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
   static const char
     *bi_units[] =
     {
-      "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi", (char *) NULL
+      "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi", "Ri", "Qi", (char *) NULL
     },
     *traditional_units[] =
     {
-      "", "K", "M", "G", "T", "P", "E", "Z", "Y", (char *) NULL
+      "", "K", "M", "G", "T", "P", "E", "Z", "Y", "R", "Q", (char *) NULL
     };
 
   bytes=1000.0;
@@ -1315,6 +1315,8 @@ MagickExport double InterpretSiPrefixValue(const char *magick_restrict string,
 
           switch ((int) ((unsigned char) *q))
           {
+            case 'q': e=(-30.0); break;
+            case 'r': e=(-27.0); break;
             case 'y': e=(-24.0); break;
             case 'z': e=(-21.0); break;
             case 'a': e=(-18.0); break;
@@ -1335,6 +1337,8 @@ MagickExport double InterpretSiPrefixValue(const char *magick_restrict string,
             case 'E': e=18.0; break;
             case 'Z': e=21.0; break;
             case 'Y': e=24.0; break;
+            case 'R': e=27.0; break;
+            case 'Q': e=30.0; break;
             default: e=0.0; break;
           }
           if (e >= MagickEpsilon)
