@@ -80,7 +80,7 @@
 %  An extended string is the string length, plus an extra MagickPathExtent space
 %  to allow for the string to be actively worked on.
 %
-%  The returned string shoud be freed using DestroyString().
+%  The returned string should be freed using DestroyString().
 %
 %  The format of the AcquireString method is:
 %
