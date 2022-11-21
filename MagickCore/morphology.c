@@ -3987,7 +3987,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
 
       /*  Final Post-processing for some Compound Methods
       **
-      ** The removal of any 'Sync' channel flag in the Image Compositon
+      ** The removal of any 'Sync' channel flag in the Image Composition
       ** below ensures the methematical compose method is applied in a
       ** purely mathematical way, and only to the selected channels.
       ** Turn off SVG composition 'alpha blending'.
@@ -4038,7 +4038,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       else
         { /* Add the new 'current' result to the composition
           **
-          ** The removal of any 'Sync' channel flag in the Image Compositon
+          ** The removal of any 'Sync' channel flag in the Image Composition
           ** below ensures the methematical compose method is applied in a
           ** purely mathematical way, and only to the selected channels.
           ** IE: Turn off SVG composition 'alpha blending'.
