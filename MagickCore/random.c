@@ -720,7 +720,7 @@ MagickExport StringInfo *GetRandomKey(RandomInfo *random_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetRandomSecretKey() returns the random secet key.
+%  GetRandomSecretKey() returns the random secret key.
 %
 %  The format of the GetRandomSecretKey method is:
 %
