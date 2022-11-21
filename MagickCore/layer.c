@@ -559,7 +559,7 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
   o1 = (p->alpha_trait != UndefinedPixelTrait) ? p->alpha : OpaqueAlpha;
   o2 = (q->alpha_trait != UndefinedPixelTrait) ? q->alpha : OpaqueAlpha;
   /*
-    Pixel goes from opaque to transprency.
+    Pixel goes from opaque to transparency.
   */
   if (method == CompareClearLayer)
     return((MagickBooleanType) ( (o1 >= ((double) QuantumRange/2.0)) &&
@@ -1479,9 +1479,9 @@ MagickExport Image *OptimizePlusImageLayers(const Image *image,
 %  WARNING: This modifies the current images directly, rather than generate
 %  a new image sequence.
 %
-%  The format of the OptimizeImageTransperency method is:
+%  The format of the OptimizeImageTransparency method is:
 %
-%      void OptimizeImageTransperency(Image *image,ExceptionInfo *exception)
+%      void OptimizeImageTransparency(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
