@@ -2909,7 +2909,6 @@ static inline fxFltType ImageStat (
           OptionError,"NoSuchImageChannel","%i",channel);
         channel=(PixelChannel) 0;
       }
-    cs = pfx->statistics[ImgNum];
     cs = CollectOneImgStats (pfx, pfx->Images[ImgNum]);
     NeedRelinq = MagickTrue;
   }
