@@ -197,7 +197,7 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %  If neither is the case, it is assumed an old style of a simple list of
 %  numbers generating a odd-sized square kernel has been given.
 %
-%  The format of the AcquireKernal method is:
+%  The format of the AcquireKernel method is:
 %
 %      KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
@@ -564,7 +564,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %  typically decoded from a user supplied string, or from a more complex
 %  Morphology Method that was requested.
 %
-%  The format of the AcquireKernalBuiltIn method is:
+%  The format of the AcquireKernelBuiltIn method is:
 %
 %      KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %           const GeometryInfo args)

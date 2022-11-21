@@ -1112,7 +1112,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   if (status == MagickFalse)
     goto cleanup;
 
-  /* read from the kenel output */
+  /* read from the kernel output */
   if (ALIGNED(histogram,cl_uint4))
   {
     length = (MaxMap+1);
@@ -2420,7 +2420,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
   if (status == MagickFalse)
     goto cleanup;
 
-  /* read from the kenel output */
+  /* read from the kernel output */
   if (ALIGNED(histogram,cl_uint4))
   {
     length = (MaxMap+1);
