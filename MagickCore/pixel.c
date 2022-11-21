@@ -4524,7 +4524,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
   assert(image_view != (CacheView *) NULL);
   *pixel=0.0;
   if ((channel < 0) || (channel >= MaxPixelChannels))
-    ThrowBinaryException(OptionError,"NoSuchImageChanne",image->filename);
+    ThrowBinaryException(OptionError,"NoSuchImageChannel",image->filename);
   traits=GetPixelChannelTraits(image,channel);
   x_offset=CastDoubleToLong(floor(x));
   y_offset=CastDoubleToLong(floor(y));
