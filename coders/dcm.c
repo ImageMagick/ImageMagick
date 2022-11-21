@@ -692,7 +692,7 @@ static const DicomInfo
     { 0x0018, 0x1602, "IS", "Shutter Left Vertical Edge" },
     { 0x0018, 0x1604, "IS", "Shutter Right Vertical Edge" },
     { 0x0018, 0x1606, "IS", "Shutter Upper Horizontal Edge" },
-    { 0x0018, 0x1608, "IS", "Shutter Lower Horizonta lEdge" },
+    { 0x0018, 0x1608, "IS", "Shutter Lower Horizontal Edge" },
     { 0x0018, 0x1610, "IS", "Center of Circular Shutter" },
     { 0x0018, 0x1612, "IS", "Radius of Circular Shutter" },
     { 0x0018, 0x1620, "IS", "Vertices of Polygonal Shutter" },
