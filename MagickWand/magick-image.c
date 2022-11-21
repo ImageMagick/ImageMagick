@@ -2152,7 +2152,7 @@ WandExport MagickWand *MagickComplexImages(MagickWand *wand,
 %
 %    o compose: This operator affects how the composite is applied to the
 %      image.  The default is Over.  These are some of the compose methods
-%      availble.
+%      available.
 %
 %        OverCompositeOp       InCompositeOp         OutCompositeOp
 %        AtopCompositeOp       XorCompositeOp        PlusCompositeOp
@@ -2214,7 +2214,7 @@ WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
 %
 %    o compose: This operator affects how the composite is applied to the
 %      image.  The default is Over.  These are some of the compose methods
-%      availble.
+%      available.
 %
 %        OverCompositeOp       InCompositeOp         OutCompositeOp
 %        AtopCompositeOp       XorCompositeOp        PlusCompositeOp
