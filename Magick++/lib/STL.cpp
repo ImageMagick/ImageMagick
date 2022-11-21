@@ -300,7 +300,7 @@ void Magick::despeckleImage::operator()( Magick::Image &image_ ) const
 
 // Distort image.  distorts an image using various distortion methods, by
 // mapping color lookups of the source image to a new destination image
-// usally of the same size as the source image, unless 'bestfit' is set to
+// usually of the same size as the source image, unless 'bestfit' is set to
 // true.
 Magick::distortImage::distortImage( const Magick::DistortMethod method_,
                                     const size_t number_arguments_,
