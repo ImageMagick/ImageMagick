@@ -270,7 +270,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #undef BLACKNESS
 #undef WHITENESS
 
-/* The following additinal undefs were required for MinGW */
+/* The following additional undefs were required for MinGW */
 #undef BS_HOLLOW
 #undef PS_STYLE_MASK
 #undef PS_ENDCAP_ROUND
