@@ -10,7 +10,7 @@
 %                             GGG   IIIII  F                                  %
 %                                                                             %
 %                                                                             %
-%            Read/Write Compuserv Graphics Interchange Format                 %
+%            Read/Write Compuserve Graphics Interchange Format                %
 %                                                                             %
 %                              Software Design                                %
 %                                   Cristy                                    %
