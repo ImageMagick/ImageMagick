@@ -520,7 +520,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
           i;
 
         /*
-          Squeeze some entropy from the sometimes unpredicatble environment.
+          Squeeze some entropy from the sometimes unpredictable environment.
         */
         for (i=0; environ[i] != (char *) NULL; i++)
         {
