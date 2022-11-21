@@ -94,7 +94,7 @@
 %
 %  A description of each parameter follows:
 %
-%    o image: the image, to recieve the cloned artifacts.
+%    o image: the image, to receive the cloned artifacts.
 %
 %    o clone_image: the source image for artifacts to clone.
 %

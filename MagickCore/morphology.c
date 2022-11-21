@@ -355,7 +355,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
     return(DestroyKernelInfo(kernel));
 #endif
 
-  /* check that we recieved at least one real (non-nan) value! */
+  /* check that we received at least one real (non-nan) value! */
   if (kernel->minimum == MagickMaximumValue)
     return(DestroyKernelInfo(kernel));
 

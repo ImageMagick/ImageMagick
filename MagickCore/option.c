@@ -2222,7 +2222,7 @@ static const OptionInfo
 %
 %  A description of each parameter follows:
 %
-%    o image_info: the image info to recieve the cloned options.
+%    o image_info: the image info to receive the cloned options.
 %
 %    o clone_info: the source image info for options to clone.
 %
