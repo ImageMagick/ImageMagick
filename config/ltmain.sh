@@ -377,24 +377,24 @@ sed_double_backslash="\
 # require_check_ifs_backslash
 # ---------------------------
 # Check if we can use backslash as IFS='\' separator, and set
-# $check_ifs_backshlash_broken to ':' or 'false'.
+# $check_ifs_backslash_broken to ':' or 'false'.
 require_check_ifs_backslash=func_require_check_ifs_backslash
 func_require_check_ifs_backslash ()
 {
   _G_save_IFS=$IFS
   IFS='\'
-  _G_check_ifs_backshlash='a\\b'
-  for _G_i in $_G_check_ifs_backshlash
+  _G_check_ifs_backslash='a\\b'
+  for _G_i in $_G_check_ifs_backslash
   do
   case $_G_i in
   a)
-    check_ifs_backshlash_broken=false
+    check_ifs_backslash_broken=false
     ;;
   '')
     break
     ;;
   *)
-    check_ifs_backshlash_broken=:
+    check_ifs_backslash_broken=:
     break
     ;;
   esac
@@ -1161,7 +1161,7 @@ func_quote_portable ()
         *[\\\`\"\$]*)
           # Fallback to sed for $func_check_bs_ifs_broken=:, or when the string
           # contains the shell wildcard characters.
-          case $check_ifs_backshlash_broken$func_quote_portable_result in
+          case $check_ifs_backslash_broken$func_quote_portable_result in
             :*|*[\[\*\?]*)
               func_quote_portable_result=`$ECHO "$func_quote_portable_result" \
                   | $SED "$sed_quote_subst"`
