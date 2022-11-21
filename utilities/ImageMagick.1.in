@@ -60,7 +60,7 @@ command-line utility is more suitable.
 The remaining of this manpage is a list of the available command-line utilities
 and their short descriptions.  For further documentation conserning a
 particular command and its options, consult the corresponding manpage. If you
-are just getting aquainted with ImageMagick, start at the top of that list, the
+are just getting acquainted with ImageMagick, start at the top of that list, the
 magick(1) program, and work your way down. Also, make sure to check out Anthony
 Thyssen's tutorial on how to use ImageMagick utilities to convert, compose, or
 edit images from the command-line.
