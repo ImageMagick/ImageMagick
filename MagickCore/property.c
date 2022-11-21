@@ -2597,7 +2597,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     }
     case 's': /* Image scene number */
     {
-#if 0  /* this seems non-sensical -- simplifing */
+#if 0  /* this seems non-sensical -- simplifying */
       if (image_info->number_scenes != 0)
         (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
           image_info->scene);
@@ -2743,7 +2743,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'S': /* Number of scenes in image list.  */
     {
       WarnNoImageInfoReturn("\"%%%c\"",letter);
-#if 0 /* What is this number? -- it makes no sense - simplifing */
+#if 0 /* What is this number? -- it makes no sense - simplifying */
       if (image_info->number_scenes == 0)
          string="2147483647";
       else if ( image != (Image *) NULL )
