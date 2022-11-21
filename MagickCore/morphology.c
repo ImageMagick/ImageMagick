@@ -889,7 +889,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %         Type 3: Thinning skeleton based on a ressearch paper by
 %                 Dan S. Bloomberg (Default Type)
 %    ThinSE:type
-%       A huge variety of Thinning Kernels designed to preserve conectivity.
+%       A huge variety of Thinning Kernels designed to preserve connectivity.
 %       many other kernel sets use these kernels as source definitions.
 %       Type numbers are 41-49, 81-89, 481, and 482 which are based on
 %       the super and sub notations used in the source research paper.
