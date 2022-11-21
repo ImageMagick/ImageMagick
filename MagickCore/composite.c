@@ -151,7 +151,7 @@
       Dca = Dc*Da     normalized Dest color divided by Dest alpha
       Dc' = Dca'/Da'  the desired color value for this channel.
 
-   Da' in in the follow formula as 'gamma'  The resulting alpla value.
+   Da' in in the follow formula as 'gamma'  The resulting alpha value.
 
    Most functions use a blending mode of over (X=1,Y=1,Z=1) this results in
    the following optimizations...
