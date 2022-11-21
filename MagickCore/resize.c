@@ -1019,7 +1019,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
       default:
         break;
     }
-  /* Global Sharpening (regardless of orthoginal/cylindrical) */
+  /* Global Sharpening (regardless of orthogonal/cylindrical) */
   switch (filter_type)
   {
     case LanczosSharpFilter:
