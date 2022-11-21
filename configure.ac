@@ -800,7 +800,7 @@ AC_SUBST([MAGICK_ABI_SUFFIX])
 # Set pixel cache threshold
 AC_ARG_WITH([cache],
     [AS_HELP_STRING([--with-cache=THRESHOLD],
-                    [set pixel cache threshhold in MB (default available memory)])],
+                    [set pixel cache threshold in MB (default available memory)])],
     [with_cache=$withval],
     [with_cache=''])
 
