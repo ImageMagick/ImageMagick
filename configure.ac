@@ -982,7 +982,7 @@ AC_TYPE_UINT64_T
 AC_TYPE_UINTMAX_T
 AC_TYPE_UINTPTR_T
 
-# Float_t and double_t are intended to be the the most efficient type.
+# Float_t and double_t are intended to be the most efficient type.
 AC_CHECK_SIZEOF([float_t], [], [[#include <math.h>]])
 AC_CHECK_SIZEOF([double_t], [], [[#include <math.h>]])
 
