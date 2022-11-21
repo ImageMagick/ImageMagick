@@ -1861,7 +1861,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           angle_range=DegreesToRadians(geometry_info.psi)-angle_start;
         }
       /*
-        Set up a gaussian cylindrical filter for EWA Bluring.
+        Set up a gaussian cylindrical filter for EWA Blurring.
 
         As the minimum ellipse radius of support*1.0 the EWA algorithm
         can only produce a minimum blur of 0.5 for Gaussian (support=2.0)

@@ -37,7 +37,7 @@
 % image in various ways (typically binary, but not always).
 %
 % Convolution (weighted sum or average) is just one specific type of
-% morphology. Just one that is very common for image bluring and sharpening
+% morphology. Just one that is very common for image blurring and sharpening
 % effects.  Not only 2D Gaussian blurring, but also 2-pass 1D Blurring.
 %
 % This module provides not only a general morphology function, and the ability
