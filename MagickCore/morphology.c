@@ -2375,7 +2375,7 @@ static void ExpandMirrorKernelInfo(KernelInfo *kernel)
 %  incrementally by the angle given, until the kernel repeats.
 %
 %  WARNING: 45 degree rotations only works for 3x3 kernels.
-%  While 90 degree roatations only works for linear and square kernels
+%  While 90 degree rotations only works for linear and square kernels
 %
 %  The format of the ExpandRotateKernelInfo method is:
 %
