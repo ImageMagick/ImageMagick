@@ -3826,16 +3826,16 @@ _LT_DECL([], [sharedlib_from_linklib_cmd], [1],
 m4_defun([_LT_PATH_MANIFEST_TOOL],
 [AC_CHECK_TOOL(MANIFEST_TOOL, mt, :)
 test -z "$MANIFEST_TOOL" && MANIFEST_TOOL=mt
-AC_CACHE_CHECK([if $MANIFEST_TOOL is a manifest tool], [lt_cv_path_mainfest_tool],
-  [lt_cv_path_mainfest_tool=no
+AC_CACHE_CHECK([if $MANIFEST_TOOL is a manifest tool], [lt_cv_path_manifest_tool],
+  [lt_cv_path_manifest_tool=no
   echo "$as_me:$LINENO: $MANIFEST_TOOL '-?'" >&AS_MESSAGE_LOG_FD
   $MANIFEST_TOOL '-?' 2>conftest.err > conftest.out
   cat conftest.err >&AS_MESSAGE_LOG_FD
   if $GREP 'Manifest Tool' conftest.out > /dev/null; then
-    lt_cv_path_mainfest_tool=yes
+    lt_cv_path_manifest_tool=yes
   fi
   rm -f conftest*])
-if test yes != "$lt_cv_path_mainfest_tool"; then
+if test yes != "$lt_cv_path_manifest_tool"; then
   MANIFEST_TOOL=:
 fi
 _LT_DECL([], [MANIFEST_TOOL], [1], [Manifest tool])dnl
