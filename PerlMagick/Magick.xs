@@ -10496,7 +10496,7 @@ Mogrify(ref,...)
           image=TransposeImage(image,exception);
           break;
         }
-        case 100:  /* Tranverse */
+        case 100:  /* Transverse */
         {
           image=TransverseImage(image,exception);
           break;
