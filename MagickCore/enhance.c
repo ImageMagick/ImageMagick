@@ -3196,7 +3196,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 %  bases, as per LevelImage().  The given colors allows you to specify
 %  different level ranges for each of the color channels separately.
 %
-%  If the boolean 'invert' is set true the image values will modifyed in the
+%  If the boolean 'invert' is set true the image values will modified in the
 %  reverse direction. That is any existing "black" and "white" colors in the
 %  image will become the color values given, with all other values compressed
 %  appropriately.  This effectively maps a greyscale gradient into the given
