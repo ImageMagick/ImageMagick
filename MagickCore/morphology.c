@@ -971,7 +971,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       ThrowMagickException(exception,GetMagickModule(),OptionWarning,
         "InvalidOption","`%s'","Should not call this function");
       return((KernelInfo *) NULL);
-    case LaplacianKernel:   /* Named Descrete Convolution Kernels */
+    case LaplacianKernel:   /* Named Discrete Convolution Kernels */
     case SobelKernel:       /* these are defined using other kernels */
     case RobertsKernel:
     case PrewittKernel:
