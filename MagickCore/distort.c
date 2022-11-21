@@ -2602,7 +2602,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
 
             validity = 1.0;
             /* Handle Special degenerate (non-quadratic) case
-             * Currently without horizon anti-alising */
+             * Currently without horizon anti-aliasing */
             if ( fabs(coeff[9]) < MagickEpsilon )
               s.y =  -c/b;
             else {
