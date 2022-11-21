@@ -381,7 +381,7 @@ struct _ImageInfo
     orientation;        /* orientation setting */
 
   MagickBooleanType
-    temporary,          /* image file to be deleted after read "empemeral:" */
+    temporary,          /* image file to be deleted after read "ephemeral:" */
     adjoin,             /* save images to separate scene files */
     affirm,
     antialias;
