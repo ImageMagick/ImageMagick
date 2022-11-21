@@ -40,7 +40,7 @@ $image->Draw(primitive=>'Path',stroke=>'none',fill=>'blue',strokewidth=>4,
 $image->Draw(primitive=>'circle',stroke=>'black',fill=>'none',strokewidth=>4,
   points=>"170,70 200,70");
 #
-# Draw pentogram.
+# Draw pentagram.
 #
 $image->Draw(primitive=>'polygon',
   points=>"160,120 130,190 210,145 110,145 190,190 160,120",stroke=>red,
