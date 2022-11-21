@@ -9536,7 +9536,7 @@ Mogrify(ref,...)
           TextureImage(image,argument_list[0].image_reference,exception);
           break;
         }
-        case 55:  /* Evalute */
+        case 55:  /* Evaluate */
         {
           MagickEvaluateOperator
             op;
