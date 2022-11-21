@@ -394,7 +394,7 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
 %  GetImageProperty() gets a value associated with an image property.
 %
 %  This includes,  profile prefixes, such as "exif:", "iptc:" and "8bim:"
-%  It does not handle non-prifile prefixes, such as "fx:", "option:", or
+%  It does not handle non-profile prefixes, such as "fx:", "option:", or
 %  "artifact:".
 %
 %  The returned string is stored as a properity of the same name for faster
