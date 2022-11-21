@@ -221,7 +221,7 @@
 #define NodesInAList  1920
 
 /*
-  Typdef declarations.
+  Typedef declarations.
 */
 typedef struct _DoublePixelPacket
 {

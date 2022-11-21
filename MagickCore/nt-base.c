@@ -74,7 +74,7 @@
 #endif
 
 /*
-  Typdef declarations.
+  Typedef declarations.
 */
 
 /*
