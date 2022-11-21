@@ -3165,7 +3165,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
     NeedRelinq = MagickTrue;
   }
 
-  /*  Folllowing is only for expressions like "saturation", with no image specifier.
+  /*  Following is only for expressions like "saturation", with no image specifier.
   */
   if (pfx->NeedHsl) {
     ConvertRGBToHSL (
