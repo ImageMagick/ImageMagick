@@ -3326,7 +3326,7 @@ WandExport MagickBooleanType MagickEqualizeImage(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickEvaluateImage() applys an arithmetic, relational, or logical
+%  MagickEvaluateImage() applies an arithmetic, relational, or logical
 %  expression to an image.  Use these operators to lighten or darken an image,
 %  to increase or decrease contrast in an image, or to produce the "negative"
 %  of an image.
@@ -3798,7 +3798,7 @@ WandExport MagickBooleanType MagickFrameImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickFunctionImage() applys an arithmetic, relational, or logical
+%  MagickFunctionImage() applies an arithmetic, relational, or logical
 %  expression to an image.  Use these operators to lighten or darken an image,
 %  to increase or decrease contrast in an image, or to produce the "negative"
 %  of an image.

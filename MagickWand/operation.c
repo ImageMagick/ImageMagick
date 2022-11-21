@@ -1627,7 +1627,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CLISimpleOperatorImages() applys one simple image operation given to all
+%  CLISimpleOperatorImages() applies one simple image operation given to all
 %  the images in the CLI wand, using any per-image or global settings that was
 %  previously saved in the CLI wand.
 %
