@@ -2528,7 +2528,7 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  pass them to this function for processing.
 %
 %  More specifically all given kernels should already be scaled, normalised,
-%  and blended appropriatally before being parred to this routine. The
+%  and blended appropriately before being parred to this routine. The
 %  appropriate bias, and compose (typically 'UndefinedComposeOp') given.
 %
 %  The format of the MorphologyApply method is:
