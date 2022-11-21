@@ -247,7 +247,7 @@ WriteMakefile
 
    ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 
-# sane vesion
+# sane version
    depend => { '$(FIRST_MAKEFILE)' => '$(VERSION_FROM)' }
 );
 
