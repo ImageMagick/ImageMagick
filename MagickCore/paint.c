@@ -383,7 +383,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %  vector from one color to another.
 %
 %  Note, the interface of this method will change in the future to support
-%  more than one transistion.
+%  more than one transition.
 %
 %  The format of the GradientImage method is:
 %
