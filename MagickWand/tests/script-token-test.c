@@ -41,7 +41,7 @@
 %
 %  This actually uses very little of the magic core functions
 %  and in fact creates a completely stand-alone program by substituting
-%  required MagickCore with direct system equivelents.
+%  required MagickCore with direct system equivalents.
 %
 %  Build
 %     cc     script-token-test.c   -o script-token-test

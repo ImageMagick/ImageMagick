@@ -5121,7 +5121,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
           }
         if (LocaleNCompare(arg1,"option:",7) == 0)
           {
-            /* delete equivelent artifact from all images (if any) */
+            /* delete equivalent artifact from all images (if any) */
             if (_images != (Image *) NULL)
               {
                 MagickResetIterator(&cli_wand->wand);
