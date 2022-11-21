@@ -866,7 +866,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       Find end points of lines (for pruning a skeletion)
 %       Two types of lines ends (default to both) can be searched for
 %         Type 0: All line ends
-%         Type 1: single kernel for 4-conneected line ends
+%         Type 1: single kernel for 4-connected line ends
 %         Type 2: single kernel for simple line ends
 %    LineJunctions
 %       Find three line junctions (within a skeletion)
