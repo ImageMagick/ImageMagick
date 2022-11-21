@@ -583,7 +583,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
     U = (double)u-u0;
     V = (double)v-v0;
 
-    /* Q = ellipse quotent ( if Q<F then pixel is inside ellipse) */
+    /* Q = ellipse quotient ( if Q<F then pixel is inside ellipse) */
     Q = (resample_filter->A*U + resample_filter->B*V)*U + resample_filter->C*V*V;
     DQ = resample_filter->A*(2.0*U+1) + resample_filter->B*V;
 
