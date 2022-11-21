@@ -1734,7 +1734,7 @@ MagickExport Image *DistortResizeImage(const Image *image,const size_t columns,
 %        access to the internal constants IM calculates for the distortion.
 %
 %    o "distort:viewport"
-%        Directly set the output image canvas area and offest to use for the
+%        Directly set the output image canvas area and offset to use for the
 %        resulting image, rather than use the original images canvas, or a
 %        calculated 'bestfit' canvas.
 %
