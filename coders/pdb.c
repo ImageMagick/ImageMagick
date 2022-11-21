@@ -35,7 +35,7 @@
 %
 %
 %   20071202 TS * rewrote RLE decoder - old version could cause buffer overflows
-%               * failure of RLE decoding now thows error RLEDecoderError
+%               * failure of RLE decoding now throws error RLEDecoderError
 %               * fixed bug in RLE decoding - now all rows are decoded, not just
 %     the first one
 %   * fixed bug in reader - record offsets now handled correctly
