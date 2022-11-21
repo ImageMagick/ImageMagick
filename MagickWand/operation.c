@@ -5091,7 +5091,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         /* Settings are applied to each image in memory in turn (if any).
            While a option: only need to be applied once globally.
 
-           NOTE: rguments have not been automatically percent expaneded
+           NOTE: Arguments have not been automatically percent expaneded
         */
 
         /* escape the 'key' once only, using first image. */
