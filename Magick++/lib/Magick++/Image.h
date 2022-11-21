@@ -676,7 +676,7 @@ namespace Magick
 
     // Changes the brightness and/or contrast of an image. It converts the
     // brightness and contrast parameters into slope and intercept and calls
-    // a polynomical function to apply to the image.
+    // a polynomial function to apply to the image.
     void brightnessContrast(const double brightness_=0.0,
       const double contrast_=0.0);
     void brightnessContrastChannel(const ChannelType channel_,
