@@ -2450,7 +2450,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     value[MagickPathExtent];  /* formatted string to store as an artifact */
 
   const char
-    *string;     /* return a string already stored somewher */
+    *string;     /* return a string already stored somewhere */
 
   if ((image != (Image *) NULL) && (IsEventLogging() != MagickFalse))
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
