@@ -3,7 +3,7 @@
 # Test reading MPEG files
 #
 # Whenever a new test is added/removed, be sure to update the
-# 1..n ouput.
+# 1..n output.
 #
 BEGIN { $| = 1; $test=1; print "1..2\n"; }
 END {print "not ok $test\n" unless $loaded;}
