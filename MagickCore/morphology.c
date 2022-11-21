@@ -847,7 +847,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %
 %    Ring:{radius1},{radius2}[,{scale}]
 %       A ring of the values given that falls between the two radii.
-%       Defaults to a ring of approximataly 3 radius in a 7x7 kernel.
+%       Defaults to a ring of approximately 3 radius in a 7x7 kernel.
 %       This is the 'edge' pixels of the default "Disk" kernel,
 %       More specifically, "Ring" -> "Ring:2.5,3.5,1.0"
 %
