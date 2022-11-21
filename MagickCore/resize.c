@@ -220,7 +220,7 @@ static double CubicBC(const double x,const ResizeFilter *resize_filter)
     http://www.cs.utexas.edu/users/fussell/courses/cs384g/lectures/mitchell/
     Mitchell.pdf.
 
-    Coefficents are determined from B,C values:
+    Coefficients are determined from B,C values:
        P0 = (  6 - 2*B       )/6 = coeff[0]
        P1 =         0
        P2 = (-18 +12*B + 6*C )/6 = coeff[1]
@@ -1165,7 +1165,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
           twoB = B+B;
 
         /*
-          Convert B,C values into Cubic Coefficents. See CubicBC().
+          Convert B,C values into Cubic Coefficients. See CubicBC().
         */
         resize_filter->coefficient[0]=1.0-(1.0/3.0)*B;
         resize_filter->coefficient[1]=-3.0+twoB+C;

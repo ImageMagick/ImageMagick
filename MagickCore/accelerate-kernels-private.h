@@ -2283,7 +2283,7 @@ OPENCL_ENDIF()
     http://www.cs.utexas.edu/users/fussell/courses/cs384g/lectures/mitchell/
     Mitchell.pdf.
 
-    Coefficents are determined from B,C values:
+    Coefficients are determined from B,C values:
     P0 = (  6 - 2*B       )/6 = coeff[0]
     P1 =         0
     P2 = (-18 +12*B + 6*C )/6 = coeff[1]

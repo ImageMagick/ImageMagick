@@ -935,7 +935,7 @@ static double *GenerateCoefficients(const Image *image,
     case PerspectiveProjectionDistortion:
     {
       /*
-        Arguments: Perspective Coefficents (forward mapping)
+        Arguments: Perspective Coefficients (forward mapping)
       */
       if (number_arguments != 8) {
         coeff = (double *) RelinquishMagickMemory(coeff);
@@ -1352,7 +1352,7 @@ static double *GenerateCoefficients(const Image *image,
          distortion (perpendicular to projection point) on both images.
 
          Args:  FOV_arc_width
-         Coefficents: FOV(radians), Radius, center_x,y, dest_center_x,y
+         Coefficients: FOV(radians), Radius, center_x,y, dest_center_x,y
 
          FOV (Field Of View) the angular field of view of the distortion,
          across the width of the image, in degrees.  The centers are the
@@ -1363,7 +1363,7 @@ static double *GenerateCoefficients(const Image *image,
          Coeff 0 is the FOV angle of view of image width in radians
          Coeff 1 is calculated radius of cylinder.
          Coeff 2,3  center of distortion of input image
-         Coefficents 4,5 Center of Distortion of dest (determined later)
+         Coefficients 4,5 Center of Distortion of dest (determined later)
       */
       if ( arguments[0] < MagickEpsilon || arguments[0] > 160.0 ) {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
@@ -2272,7 +2272,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
       }
       case PolarDistortion:
       {
-        (void) FormatLocaleFile(stderr,"Polar Distort, Internal Coefficents\n");
+        (void) FormatLocaleFile(stderr,"Polar Distort, Internal Coefficients\n");
         for (i=0; i < 8; i++)
           (void) FormatLocaleFile(stderr,"  c%.20g = %+lf\n",(double) i,
             coeff[i]);
@@ -2293,7 +2293,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
       case DePolarDistortion:
       {
         (void) FormatLocaleFile(stderr,
-          "DePolar Distort, Internal Coefficents\n");
+          "DePolar Distort, Internal Coefficients\n");
         for (i=0; i < 8; i++)
           (void) FormatLocaleFile(stderr,"  c%.20g = %+lf\n",(double) i,
             coeff[i]);
@@ -2313,7 +2313,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
       case Cylinder2PlaneDistortion:
       {
         (void) FormatLocaleFile(stderr,
-          "Cylinder to Plane Distort, Internal Coefficents\n");
+          "Cylinder to Plane Distort, Internal Coefficients\n");
         (void) FormatLocaleFile(stderr,"  cylinder_radius = %+lf\n",coeff[1]);
         (void) FormatLocaleFile(stderr,
           "Cylinder to Plane Distort, FX Equivelent:\n");
@@ -2331,7 +2331,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
       case Plane2CylinderDistortion:
       {
         (void) FormatLocaleFile(stderr,
-          "Plane to Cylinder Distort, Internal Coefficents\n");
+          "Plane to Cylinder Distort, Internal Coefficients\n");
         (void) FormatLocaleFile(stderr,"  cylinder_radius = %+lf\n",coeff[1]);
         (void) FormatLocaleFile(stderr,
           "Plane to Cylinder Distort, FX Equivelent:\n");

@@ -1055,7 +1055,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
        dux, dvx, duy, dvy);
 #endif
 
-  /* Find Ellipse Coefficents such that
+  /* Find Ellipse Coefficients such that
         A*u^2 + B*u*v + C*v^2 = F
      With u,v relative to point around which we are resampling.
      And the given scaling dx,dy vectors in u,v space
