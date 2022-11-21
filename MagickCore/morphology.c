@@ -782,7 +782,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %      I have yet to find any secondary confirmation of the above. The only
 %      other source found was actual source code at
 %          http://ltswww.epfl.ch/~courstiv/exos_labos/sol3.pdf
-%      Neigher paper defines the kernels in a way that looks locical or
+%      Neigher paper defines the kernels in a way that looks logical or
 %      correct when taken as a whole.
 %
 %  Boolean Kernels
