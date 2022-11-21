@@ -986,7 +986,7 @@ AC_TYPE_UINTPTR_T
 AC_CHECK_SIZEOF([float_t], [], [[#include <math.h>]])
 AC_CHECK_SIZEOF([double_t], [], [[#include <math.h>]])
 
-# Get size of float, double and long double for comparaison.
+# Get size of float, double and long double for comparison.
 AC_CHECK_SIZEOF([float])
 AC_CHECK_SIZEOF([double])
 AC_CHECK_SIZEOF([long double])
