@@ -40,7 +40,7 @@
 %
 %  The main function call is GetScriptToken() (see below) whcih returns one
 %  and only one token at a time.  The other functions provide support to this
-%  function, opening scripts, and seting up the required structures.
+%  function, opening scripts, and setting up the required structures.
 %
 %  More specifically...
 %
