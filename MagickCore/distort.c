@@ -1254,7 +1254,7 @@ static double *GenerateCoefficients(const Image *image,
          Args:  Rmax, Rmin,  Xcenter,Ycenter,  Afrom,Ato
          DePolar can also have the extra arguments of Width, Height
 
-         Coefficients 0 to 5 is the sanatized version first 6 input args
+         Coefficients 0 to 5 is the sanitized version first 6 input args
          Coefficient 6  is the angle to coord ratio  and visa-versa
          Coefficient 7  is the radius to coord ratio and visa-versa
 
