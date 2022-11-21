@@ -3144,7 +3144,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
   int i;
 
   /* For -fx, this sets p to ImgNum 0.
-     for %[fx:...], this sets p to the currrent image.
+     for %[fx:...], this sets p to the current image.
      Similarly img.
   */
   if (!p) p = GetCacheViewVirtualPixels (
