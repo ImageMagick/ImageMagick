@@ -1234,7 +1234,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
 #if DEBUG_OPT_FRAME
 /* Something strange is happening with a specific animation
  * CompareAnyLayers (normal method) and CompareClearLayers returns the whole
- * image, which is not posibly correct!  As verified by previous tests.
+ * image, which is not possibly correct!  As verified by previous tests.
  * Something changed beyond the bgnd_bounds clearing.  But without being able
  * to see, or writet he image at this point it is hard to tell what is wrong!
  * Only CompareOverlay seemed to return something sensible.

@@ -4431,7 +4431,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
     }
   /* At this point angle should at least between -45 (315) and +45 degrees
    * In the future some form of non-orthogonal angled rotates could be
-   * performed here, posibily with a linear kernel restriction.
+   * performed here, possibly with a linear kernel restriction.
    */
 
   return;
