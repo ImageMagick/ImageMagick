@@ -1023,7 +1023,7 @@ static const char
     "value any neighbor pixel that is not the border color.  Finally\n"
     "reset changes the entire image to the designated matte value.\n"
     "\n"
-    "Choose Matte Value and pick Opaque or Transarent.  For other values\n"
+    "Choose Matte Value and pick Opaque or Transparent.  For other values\n"
     "select the Dialog entry.  Here a dialog appears requesting a matte\n"
     "value.  The value you select is assigned as the opacity value of the\n"
     "selected pixel or pixels.\n"
