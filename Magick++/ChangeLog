@@ -542,10 +542,10 @@
 2001-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableCompositeImage): Read image
- 	immediately if provided by filename, register with peristent
- 	registry, and pass as perisistant image type.
+ 	immediately if provided by filename, register with persistent
+ 	registry, and pass as persistent image type.
 	(DrawableCompositeImage): Support specifying Image in memory.
-  	Passed as perisistant image type.
+  	Passed as persistent image type.
 
 2001-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
