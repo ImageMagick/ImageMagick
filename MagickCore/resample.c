@@ -305,7 +305,7 @@ MagickExport ResampleFilter *DestroyResampleFilter(
 %    o resample_filter: the resample filter.
 %
 %    o u0,v0: A double representing the center of the area to resample,
-%        The distortion transformed transformed x,y coordinate.
+%        The distortion transformed x,y coordinate.
 %
 %    o pixel: the resampled pixel is returned here.
 %
