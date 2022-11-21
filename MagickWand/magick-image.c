@@ -11515,7 +11515,7 @@ WandExport MagickBooleanType MagickSetImageWhitePoint(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickShadeImage(MagickWand *wand,
-  const MagickBooleanType gray,const double asimuth,const double elevation)
+  const MagickBooleanType gray,const double azimuth,const double elevation)
 {
   Image
     *shade_image;
@@ -11526,7 +11526,7 @@ WandExport MagickBooleanType MagickShadeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  shade_image=ShadeImage(wand->images,gray,asimuth,elevation,wand->exception);
+  shade_image=ShadeImage(wand->images,gray,azimuth,elevation,wand->exception);
   if (shade_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,shade_image);
