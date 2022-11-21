@@ -592,7 +592,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       The radius should be at least 2 times that of the sigma value, or
 %       sever clipping and aliasing may result.  If not given or set to 0 the
 %       radius will be determined so as to produce the best minimal error
-%       result, which is usally much larger than is normally needed.
+%       result, which is usually much larger than is normally needed.
 %
 %    LoG:{radius},{sigma}
 %        "Laplacian of a Gaussian" or "Mexican Hat" Kernel.

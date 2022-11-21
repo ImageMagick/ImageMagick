@@ -1030,7 +1030,7 @@ static inline void ClampUpAxes(const double dux,
 %    o dux,duy,dvx,dvy:
 %         The derivatives or scaling vectors defining the EWA ellipse.
 %         NOTE: watch the order, which is based on the order derivatives
-%         are usally determined from distortion equations (see above).
+%         are usually determined from distortion equations (see above).
 %         The middle two values may need to be swapped if you are thinking
 %         in terms of scaling vectors.
 %

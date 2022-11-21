@@ -345,7 +345,7 @@ MagickExport Image *AffineTransformImage(const Image *image,
 %         0: 2 dimensional mapping of control points (Distort)
 %            Format:  u,v,x,y  where u,v is the 'source' of the
 %            the color to be plotted, for DistortImage()
-%         N: Interpolation of control points with N values (usally r,g,b)
+%         N: Interpolation of control points with N values (usually r,g,b)
 %            Format: x,y,r,g,b    mapping x,y to color values r,g,b
 %            IN future, variable number of values may be given (1 to N)
 %
@@ -534,7 +534,7 @@ static double *GenerateCoefficients(const Image *image,
         }
       }
       else {
-        /* 2 or more points (usally 3) given.
+        /* 2 or more points (usually 3) given.
            Solve a least squares simultaneous equation for coefficients.
         */
         double
@@ -1274,7 +1274,7 @@ static double *GenerateCoefficients(const Image *image,
         coeff[0] = arguments[0];
       else
         coeff[0] = 0.0;
-      /* Rmin  - usally 0 */
+      /* Rmin  - usually 0 */
       coeff[1] = number_arguments >= 2 ? arguments[1] : 0.0;
       /* Center X,Y */
       if ( number_arguments >= 4 ) {
@@ -1676,7 +1676,7 @@ MagickExport Image *DistortResizeImage(const Image *image,const size_t columns,
 %
 %  DistortImage() distorts an image using various distortion methods, by
 %  mapping color lookups of the source image to a new destination image
-%  usally of the same size as the source image, unless 'bestfit' is set to
+%  usually of the same size as the source image, unless 'bestfit' is set to
 %  true.
 %
 %  If 'bestfit' is enabled, and distortion allows it, the destination image is
@@ -1810,7 +1810,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
 
   /*
     Determine the size and offset for a 'bestfit' destination.
-    Usally the four corners of the source image is enough.
+    Usually the four corners of the source image is enough.
   */
 
   /* default output image bounds, when no 'bestfit' is requested */

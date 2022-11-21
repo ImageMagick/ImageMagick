@@ -440,7 +440,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %             Also represents the number terms that need to be solved.
 %
 %    o number_vectors: Number of vectors columns, argumenting the above matrix.
-%             Usally 1, but can be more for more complex equation solving.
+%             Usually 1, but can be more for more complex equation solving.
 %
 %  Note that the 'matrix' is given as a 'array of row pointers' of rank size.
 %  That is values can be assigned as   matrix[row][column]   where 'row' is

@@ -94,8 +94,8 @@ struct _ResizeFilter
     (*filter)(const double,const ResizeFilter *),
     (*window)(const double,const ResizeFilter *),
     support,        /* filter region of support - the filter support limit */
-    window_support, /* window support, usally equal to support (expert only) */
-    scale,          /* dimension scaling to fit window support (usally 1.0) */
+    window_support, /* window support, usually equal to support (expert only) */
+    scale,          /* dimension scaling to fit window support (usually 1.0) */
     blur,           /* x-scale (blur-sharpen) */
     coefficient[7]; /* cubic coefficients for BC-cubic filters */
 
@@ -1630,7 +1630,7 @@ MagickPrivate double GetResizeFilterSupport(const ResizeFilter *resize_filter)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetResizeFilterWeight evaluates the specified resize filter at the point x
-%  which usally lies between zero and the filters current 'support' and
+%  which usually lies between zero and the filters current 'support' and
 %  returns the weight of the filter function at that point.
 %
 %  The format of the GetResizeFilterWeight method is:
