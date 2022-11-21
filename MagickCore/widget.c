@@ -2523,7 +2523,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
         if ((key_symbol == XK_Return) || (key_symbol == XK_KP_Enter))
           {
             /*
-              Read new color or glob patterm.
+              Read new color or glob pattern.
             */
             if (*reply_info.text == '\0')
               break;
@@ -5157,7 +5157,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
         if ((key_symbol == XK_Return) || (key_symbol == XK_KP_Enter))
           {
             /*
-              Read new directory or glob patterm.
+              Read new directory or glob pattern.
             */
             if (*reply_info.text == '\0')
               break;
@@ -6398,7 +6398,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
         if ((key_symbol == XK_Return) || (key_symbol == XK_KP_Enter))
           {
             /*
-              Read new font or glob patterm.
+              Read new font or glob pattern.
             */
             if (*reply_info.text == '\0')
               break;
