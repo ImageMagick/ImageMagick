@@ -1462,7 +1462,7 @@ namespace Magick
     //    the percentage of the difference between the original and
     //    the blur image that is added back into the original.
     // threshold_
-    //   the threshold in pixels needed to apply the diffence amount.
+    //   the threshold in pixels needed to apply the difference amount.
     void unsharpmask(const double radius_,const double sigma_,
       const double amount_,const double threshold_);
     void unsharpmaskChannel(const ChannelType channel_,const double radius_,
