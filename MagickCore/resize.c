@@ -1040,7 +1040,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   /* User Gaussian Sigma Override - no support change */
   if ((resize_filter->filter == Gaussian) ||
       (resize_filter->window == Gaussian) ) {
-    value=0.5;    /* guassian sigma default, half pixel */
+    value=0.5;    /* gaussian sigma default, half pixel */
     artifact=GetImageArtifact(image,"filter:sigma");
     if (artifact != (const char *) NULL)
       value=StringToDouble(artifact,(char **) NULL);
