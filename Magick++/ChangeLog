@@ -1408,7 +1408,7 @@
  	ImageMagick to avoid namespace-induced problems.
 
 	* configure.in : CPPFLAGS and LDFLAGS specified via the
- 	environment take precidence over flags from Magick-config.
+ 	environment take precedence over flags from Magick-config.
 
 1999-05-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
