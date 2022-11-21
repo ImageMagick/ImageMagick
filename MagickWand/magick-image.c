@@ -7306,7 +7306,7 @@ WandExport MagickBooleanType MagickMeanShiftImage(MagickWand *wand,
 %
 %  The inital canvas's size depends on the given LayerMethod, and is
 %  initialized using the first images background color.  The images
-%  are then compositied onto that image in sequence using the given
+%  are then composited onto that image in sequence using the given
 %  composition that has been assigned to each individual image.
 %
 %  The format of the MagickMergeImageLayers method is:
