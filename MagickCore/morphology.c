@@ -3895,7 +3895,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           case CorrelateMorphology:
             /* A Correlation is a Convolution with a reflected kernel.
             ** However a Convolution is a weighted sum using a reflected
-            ** kernel.  It may seem stange to convert a Correlation into a
+            ** kernel.  It may seem strange to convert a Correlation into a
             ** Convolution as the Correlation is the simpler method, but
             ** Convolution is much more commonly used, and it makes sense to
             ** implement it directly so as to avoid the need to duplicate the
