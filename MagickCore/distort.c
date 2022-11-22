@@ -2721,7 +2721,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
             cx=cos(ax);             /* cx = cos(atan(x/r)) = 1/sqrt(x^2+u^2) */
             s.x = coeff[1]*ax;      /* u  = r*atan(x/r) */
             s.y = d.y*cx;           /* v  = y*cos(u/r) */
-            /* derivatives... (see personnal notes) */
+            /* derivatives... (see personal notes) */
             ScaleFilter( resample_filter[id],
                   1.0/(1.0+d.x*d.x), 0.0, -d.x*s.y*cx*cx/coeff[1], s.y/d.y );
 #if 0
