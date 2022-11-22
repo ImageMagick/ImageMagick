@@ -2455,7 +2455,7 @@ static const DicomInfo
     { 0x300c, 0x00a0, "IS", "Referenced Tolerance Table Number" },
     { 0x300c, 0x00b0, "SQ", "Referenced Bolus Sequence" },
     { 0x300c, 0x00c0, "IS", "Referenced Wedge Number" },
-    { 0x300c, 0x00d0, "IS", "Referenced Compensato rNumber" },
+    { 0x300c, 0x00d0, "IS", "Referenced Compensator Number" },
     { 0x300c, 0x00e0, "IS", "Referenced Block Number" },
     { 0x300c, 0x00f0, "IS", "Referenced Control Point" },
     { 0x300e, 0x0002, "CS", "Approval Status" },
