@@ -478,7 +478,7 @@ hp2)
 tru64)
   # The Tru64 compiler uses -MD to generate dependencies as a side
   # effect.  'cc -MD -o foo.o ...' puts the dependencies into 'foo.o.d'.
-  # At least on Alpha/Redhat 6.1, Compaq CCC V6.2-504 seems to put
+  # At least on Alpha/RedHat 6.1, Compaq CCC V6.2-504 seems to put
   # dependencies in 'foo.d' instead, so we check for that too.
   # Subdirectories are respected.
   set_dir_from  "$object"

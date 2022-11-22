@@ -283,4 +283,4 @@ export LD_LIBRARY_PATH=%{buildroot}/%{_libdir}
 
 %changelog
 * Sun May 01 2005 Cristy <cristy@mystic.es.dupont.com> 1.0-0
--  Port of Redhat's RPM script to support ImageMagick.
+-  Port of RedHat's RPM script to support ImageMagick.
