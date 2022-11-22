@@ -1024,7 +1024,7 @@ static inline void ClampUpAxes(const double dux,
 %
 %  A description of each parameter follows:
 %
-%    o resample_filter: the resampling resample_filterrmation defining the
+%    o resample_filter: the resampling information defining the
 %      image being resampled
 %
 %    o dux,duy,dvx,dvy:
@@ -1233,7 +1233,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 %
 %  A description of each parameter follows:
 %
-%    o resample_filter: resampling resample_filterrmation structure
+%    o resample_filter: resampling information structure
 %
 %    o filter: the resize filter for elliptical weighting LUT
 %
