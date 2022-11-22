@@ -2188,7 +2188,7 @@ static const DicomInfo
     { 0x3006, 0x0039, "SQ", "ROI Contour Sequence" },
     { 0x3006, 0x0040, "SQ", "Contour Sequence" },
     { 0x3006, 0x0042, "CS", "Contour Geometric Type" },
-    { 0x3006, 0x0044, "DS", "Contour SlabT hickness" },
+    { 0x3006, 0x0044, "DS", "Contour Slab Thickness" },
     { 0x3006, 0x0045, "DS", "Contour Offset Vector" },
     { 0x3006, 0x0046, "IS", "Number of Contour Points" },
     { 0x3006, 0x0050, "DS", "Contour Data" },
