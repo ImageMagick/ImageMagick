@@ -3087,7 +3087,7 @@ MagickExport Image *SparseColorImage(const Image *image,
     /*
       Note some Distort Methods may fall back to other simpler methods,
       Currently the only fallback of concern is Bilinear to Affine
-      (Barycentric), which is alaso sparse_colr method.  This also ensures
+      (Barycentric), which is also sparse_colr method.  This also ensures
       correct two and one color Barycentric handling.
     */
     sparse_method = (SparseColorMethod) distort_method;
