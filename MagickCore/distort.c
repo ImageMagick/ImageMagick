@@ -451,7 +451,7 @@ static double *GenerateCoefficients(const Image *image,
       cp_values = 2;
       break;
 #if 0
-    case QuadraterialDistortion:
+    case QuadrilateralDistortion:
       number_coefficients=19; /* BilinearForward + BilinearReverse */
 #endif
       break;
