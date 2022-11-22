@@ -1093,7 +1093,7 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
     if (number != MagickFalse)
       {
         /*
-          But only if not preceeded by a number!
+          But only if not preceded by a number!
         */
         *q++='%'; /* do NOT substitute the percent */
         p--;      /* back up one */
