@@ -22,7 +22,7 @@ And\\\ \''even '\'\""more \""complex
 \" '"' "\""
 
 Back\ slash\ escapes
-\\ '\'  "\\"       # NOTE that backslash in single quotes are literial!
+\\ '\'  "\\"       # NOTE that backslash in single quotes are literal!
 
 'Space Character Escapes'
 \  ' '  " "
