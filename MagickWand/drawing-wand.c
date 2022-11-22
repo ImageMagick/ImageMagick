@@ -3012,7 +3012,7 @@ WandExport void DrawPathCurveToRelative(DrawingWand *wand,const double x1,
 %  The format of the DrawPathCurveToQuadraticBezierAbsolute method is:
 %
 %      void DrawPathCurveToQuadraticBezierAbsolute(DrawingWand *wand,
-%        const double x1,const double y1,onst double x,const double y)
+%        const double x1,const double y1,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
