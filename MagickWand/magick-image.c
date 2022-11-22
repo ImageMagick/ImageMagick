@@ -11926,7 +11926,7 @@ WandExport MagickBooleanType MagickSketchImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickSmushImages() takes all images from the current image pointer to the
-%  end of the image list and smushs them to each other top-to-bottom if the
+%  end of the image list and smushes them to each other top-to-bottom if the
 %  stack parameter is true, otherwise left-to-right.
 %
 %  The format of the MagickSmushImages method is:
