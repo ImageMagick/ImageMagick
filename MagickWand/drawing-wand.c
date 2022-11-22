@@ -4457,7 +4457,7 @@ WandExport void DrawRotate(DrawingWand *wand,const double degrees)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawRoundRectangle() draws a rounted rectangle given two coordinates,
+%  DrawRoundRectangle() draws a rounded rectangle given two coordinates,
 %  x & y corner radiuses and using the current stroke, stroke width,
 %  and fill settings.
 %
