@@ -1261,7 +1261,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
           }
         /*
           Test if this background dispose is smaller than any of the
-          other methods we tryed before this (including duplicated frame)
+          other methods we tried before this (including duplicated frame)
         */
         if ( cleared ||
               bgnd_bounds.width*bgnd_bounds.height
