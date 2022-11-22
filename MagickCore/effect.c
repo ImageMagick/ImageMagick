@@ -1700,7 +1700,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %
 %  The format of the GaussianBlurImage method is:
 %
-%      Image *GaussianBlurImage(const Image *image,onst double radius,
+%      Image *GaussianBlurImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
