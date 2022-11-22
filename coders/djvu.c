@@ -642,7 +642,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
         image->columns=(size_t) info.width;
         image->rows=(size_t) info.height;
 
-        /* mmc: bitonal should be palettized, and compressed! */
+        /* mmc: bitonal should be palletized, and compressed! */
         if (type == DDJVU_PAGETYPE_BITONAL){
                 image->colorspace = GRAYColorspace;
                 image->storage_class = PseudoClass;
