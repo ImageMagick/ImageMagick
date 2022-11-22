@@ -273,7 +273,7 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
   /* HACK - prepend the CLI location to format string.
      The better way would be add more arguments to to the 'va' oparands
      list, but that does not appear to be possible! So we do some
-     pre-formating of the location info here.
+     pre-formatting of the location info here.
   */
   (void) FormatLocaleString(new_format,MagickPathExtent,cli_wand->location,
        cli_wand->filename, cli_wand->line, cli_wand->column);
@@ -321,7 +321,7 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
   /* HACK - append location to format string.
      The better way would be add more arguments to to the 'va' oparands
      list, but that does not appear to be possible! So we do some
-     pre-formating of the location info here.
+     pre-formatting of the location info here.
   */
   (void) CopyMagickString(new_format,format,MagickPathExtent);
   (void) ConcatenateMagickString(new_format," ",MagickPathExtent);
