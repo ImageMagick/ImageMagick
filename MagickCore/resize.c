@@ -777,7 +777,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
 
   /*
     Table Mapping given Filter, into Weighting and Windowing functions.
-    A 'Box' windowing function means its a simble non-windowed filter.
+    A 'Box' windowing function means its a simple non-windowed filter.
     An 'SincFast' filter function could be upgraded to a 'Jinc' filter if a
     "cylindrical" is requested, unless a 'Sinc' or 'SincFast' filter was
     specifically requested by the user.
