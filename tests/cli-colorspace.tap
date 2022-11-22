@@ -36,7 +36,7 @@ error=false
 average=`eval ${MAGICK} "$in" -noop "$out"`
 too_dark=`eval ${MAGICK} "$in" -colorspace RGB "$out"`
 too_light=`eval ${MAGICK} "$in" -set colorspace RGB -colorspace sRGB "$out"`
-format='%-30s%s\n'        # results formating
+format='%-30s%s\n'        # results formatting
 format2='%-30s%-14s%s\n'
 
 printf "$format2" "Average \"rose:\" Color"  "$average" "sRGB(rose)"
