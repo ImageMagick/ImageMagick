@@ -863,10 +863,10 @@ namespace Magick
     // Draw on image using a drawable list
     void draw(const std::vector<Magick::Drawable> &drawable_);
 
-    // Edge image (hilight edges in image)
+    // Edge image (highlight edges in image)
     void edge(const double radius_=0.0);
 
-    // Emboss image (hilight edges with 3D effect)
+    // Emboss image (highlight edges with 3D effect)
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
     // specifies the standard deviation of the Laplacian, in pixels.

@@ -385,7 +385,7 @@ namespace Magick
     DrawableList _drawableList;
   };
 
-  // Edge image (hilight edges in image)
+  // Edge image (highlight edges in image)
   class MagickPPExport edgeImage
   {
   public:
@@ -397,7 +397,7 @@ namespace Magick
     double _radius;
   };
 
-  // Emboss image (hilight edges with 3D effect)
+  // Emboss image (highlight edges with 3D effect)
   class MagickPPExport embossImage
   {
   public:
