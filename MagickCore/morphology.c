@@ -4454,7 +4454,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %
 %  The first argument (and any normalization flags) are passed to
 %  ScaleKernelInfo() to scale/normalize the kernel.  The second argument
-%  is then passed to UnityAddKernelInfo() to add a scled unity kernel
+%  is then passed to UnityAddKernelInfo() to add a scaled unity kernel
 %  into the scaled/normalized kernel.
 %
 %  The format of the ScaleGeometryKernelInfo method is:
