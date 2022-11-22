@@ -1391,7 +1391,7 @@ typedef enum
   AddFrameCommand,
   CommentCommand,
   LaunchCommand,
-  RegionofInterestCommand,
+  RegionOfInterestCommand,
   ROIHelpCommand,
   ROIDismissCommand,
   InfoCommand,
@@ -6517,7 +6517,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
     case CompositeCommand:
     case CommentCommand:
     case LaunchCommand:
-    case RegionofInterestCommand:
+    case RegionOfInterestCommand:
     case SaveToUndoBufferCommand:
     case RedoCommand:
     {
@@ -6933,7 +6933,7 @@ static CommandType XImageWindowCommand(Display *display,
         return(AnnotateCommand);
       if ((state & ControlMask) == 0)
         return(NullCommand);
-      return(RegionofInterestCommand);
+      return(RegionOfInterestCommand);
     }
     case XK_question:
       return(InfoCommand);
@@ -9009,7 +9009,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickFalse);
       break;
     }
-    case RegionofInterestCommand:
+    case RegionOfInterestCommand:
     {
       /*
         Apply an image processing technique to a region of interest.
@@ -14379,7 +14379,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       AddFrameCommand,
       CommentCommand,
       LaunchCommand,
-      RegionofInterestCommand
+      RegionOfInterestCommand
     },
     MiscellanyCommands[] =
     {
