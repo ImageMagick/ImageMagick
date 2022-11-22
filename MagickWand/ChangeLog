@@ -157,7 +157,7 @@
 2005-09-10  Cristy  <yarrow@image...>
   * Added MagickGetImageTicksPerSecond() and MagickSetImageTicksPerSecond().
   * Added MagickGetMagickResource().
-  * Added MagickThumbnaiImage().
+  * Added MagickThumbnailImage().
 
 2005-09-01  Cristy  <yarrow@image...>
   * DrawSetStrokeDashArray() no longer faults for an array of one element
