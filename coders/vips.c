@@ -173,7 +173,7 @@ static MagickBooleanType IsVIPS(const unsigned char *magick,const size_t length)
 %
 %  The format of the ReadVIPSImage method is:
 %
-%      Image *ReadVIPSmage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadVIPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -535,7 +535,7 @@ static Image *ReadVIPSImage(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterVIPSmage() adds attributes for the VIPS image format to the list
+%  RegisterVIPSImage() adds attributes for the VIPS image format to the list
 %  of supported formats.  The attributes include the image format tag, a
 %  method to read and/or write the format, whether the format supports the
 %  saving of more than one frame to the same file or blob, whether the format
