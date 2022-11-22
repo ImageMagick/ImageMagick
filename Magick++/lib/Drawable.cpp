@@ -746,7 +746,7 @@ Magick::DrawableBase* Magick::DrawableFillPatternUrl::copy() const
   return(new DrawableFillPatternUrl(*this));
 }
 
-// Specify drawing fill fule
+// Specify drawing fill rule
 Magick::DrawableFillRule::~DrawableFillRule ( void )
 {
 }
