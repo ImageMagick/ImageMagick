@@ -2816,7 +2816,7 @@ WandExport MagickBooleanType MagickSetSamplingFactors(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickSetSeed() sets the pseudo-random number generator seed.  Use it to
-%  generate a pedictable sequence of random numbers.
+%  generate a predictable sequence of random numbers.
 %
 %  The format of the MagickSetSeed method is:
 %
