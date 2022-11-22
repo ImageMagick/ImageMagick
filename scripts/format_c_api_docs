@@ -111,7 +111,7 @@ $tmpname_html = "/tmp/fmtdocs_html.$$";
  'profile',	'Dealing with Image Profiles',
  'quantize',	'Reduce the Number of Unique Colors in an Image',
  'registry',	'The Registry',
- 'resource',	'Minitor or Limit Resource Consumption',
+ 'resource',	'Monitor or Limit Resource Consumption',
  'segment',	'Segment an Image with Thresholding Fuzzy c-Means',
  'shear',	'Shear or Rotate an Image by an Arbitrary Angle',
  'signature',	'Compute a Digital Signature for an Image',
