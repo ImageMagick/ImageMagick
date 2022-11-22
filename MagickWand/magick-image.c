@@ -1904,7 +1904,7 @@ WandExport MagickBooleanType MagickColorThresholdImage(MagickWand *wand,
 %
 %  MagickCombineImages() combines one or more images into a single image.  The
 %  grayscale value of the pixels of each image in the sequence is assigned in
-%  order to the specified  hannels of the combined image.   The typical
+%  order to the specified channels of the combined image.   The typical
 %  ordering would be image 1 => Red, 2 => Green, 3 => Blue, etc.
 %
 %  The format of the MagickCombineImages method is:
