@@ -23,5 +23,5 @@ testReadWrite( 'input.miff',
   q/compression=>'BZip'/,
   'fb6fc68beb3b1001c5ebaa671c8ac8fddea06995027127765ff508f77723cc52' );
 
-$test = 0;  # Quench PERL compliaint
+$test = 0;  # Quench PERL complaint
 

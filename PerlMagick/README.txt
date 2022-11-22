@@ -40,7 +40,7 @@ Installation
     (often -R or -rpath) corresponding to the equivalent library search
     path option so that the library can be located at run-time.
 
-    To create and install the dymamically-loaded version of PerlMagick
+    To create and install the dynamically-loaded version of PerlMagick
     (the preferred way), execute
         
         perl Makefile.PL

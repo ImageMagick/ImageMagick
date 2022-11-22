@@ -193,7 +193,7 @@ testMontage( q//,
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80>', mode=>'Concatenate'/,
   'dfede51035a4ce942e3ba9909f85eb497c134a60bb8363afded0ae81f73f0e46');
 #
-# 19) Test concatenated thumbnail Montage (concatentated by setting params to zero)
+# 19) Test concatenated thumbnail Montage (concatenated by setting params to zero)
 #     Thumbnails should be compacted tightly together in a grid
 #
 ++$test;

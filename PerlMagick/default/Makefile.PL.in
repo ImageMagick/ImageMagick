@@ -16,7 +16,7 @@
 #
 #    make test
 #
-#  Exersise one regression test:
+#  Exercise one regression test:
 #
 #    make TEST_VERBOSE=1 TEST_FILES=t/filter.t test
 #
@@ -202,7 +202,7 @@ WriteMakefile
    # Preprocessor defines
    'DEFINE'	=> '@LFS_CPPFLAGS@ @DEFS@',     # e.g., '-DHAVE_SOMETHING'
 
-   # Header search specfication and preprocessor flags
+   # Header search specification and preprocessor flags
    'INC'	=> $INC_magick,
 
    # C compiler
