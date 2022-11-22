@@ -271,7 +271,7 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
     return(MagickFalse);
 
   /* HACK - prepend the CLI location to format string.
-     The better way would be add more arguments to to the 'va' operands
+     The better way would be add more arguments to the 'va' operands
      list, but that does not appear to be possible! So we do some
      pre-formatting of the location info here.
   */
@@ -319,7 +319,7 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
     operands;
 
   /* HACK - append location to format string.
-     The better way would be add more arguments to to the 'va' operands
+     The better way would be add more arguments to the 'va' operands
      list, but that does not appear to be possible! So we do some
      pre-formatting of the location info here.
   */
