@@ -289,7 +289,7 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetScriptToken() a fairly general, finite state token parser. That returns
-%  tokens one at a time, as soon as posible.
+%  tokens one at a time, as soon as possible.
 %
 %
 %  The format of the GetScriptToken method is:
