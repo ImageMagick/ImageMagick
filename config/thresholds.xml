@@ -169,7 +169,7 @@
   Halftones - Orthogonally Aligned, or Un-angled
 
   Initially added by Anthony Thyssen, IM v6.2.9-5 using techniques from
-  "Dithering & Halftoning" by Gernot Haffmann
+  "Dithering & Halftoning" by Gernot Hoffmann
   http://www.fho-emden.de/~hoffmann/hilb010101.pdf
 
   These patterns initially start as circles, but then form square
@@ -214,7 +214,7 @@
 
   <threshold map="h16x16o">
     <!--
-       Direct extract from "Dithering & Halftoning" by Gernot Haffmann.
+       Direct extract from "Dithering & Halftoning" by Gernot Hoffmann.
        This may need some fine tuning for symmetry of the halftone dots,
        as it was a mathematically formulated pattern.
     -->
