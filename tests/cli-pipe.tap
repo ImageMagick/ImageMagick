@@ -32,7 +32,7 @@ ${MAGICK} ${SRCDIR}/rose.pnm -write -      null: | ${IDENTIFY} - && echo "ok" ||
 # IMv7 "magick" testing
 # -read option
 ${MAGICK} -read ${SRCDIR}/rose.pnm info: && echo "ok" || echo "not ok"
-# -exit can be used insted of implicit write
+# -exit can be used instead of implicit write
 ${MAGICK} ${SRCDIR}/rose.pnm -write info: -exit && echo "ok" || echo "not ok"
 # null: does not require an image during write
 ${MAGICK} -write null: -exit && echo "ok" || echo "not ok"
