@@ -26,7 +26,7 @@ exit  if $w =~ /^Exception/;
 my $dest = $orig->Clone();
 
 # You could enlarge destination image here if you like.
-# And it is posible to modify the existing image directly
+# And it is possible to modify the existing image directly
 # rather than modifying a clone as FX does.
 
 # Iterate over destination image...
