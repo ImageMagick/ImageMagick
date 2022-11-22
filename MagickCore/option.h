@@ -131,7 +131,7 @@ typedef enum
 /*
   Flags to describe classes of image processing options.
   These are used to determine how a option should be processed, and
-  avoid attempting to process all options in every way posible.
+  avoid attempting to process all options in every way possible.
 */
 typedef enum
 {
