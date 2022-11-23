@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     status;
 
   printf("Read 3 sets of 3 Images, each set with settings: none, first, last\n");
-  printf("Result shoud be: 543 012 678\n");
+  printf("Result should be: 543 012 678\n");
 
   MagickWandGenesis();
 

@@ -172,7 +172,7 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
 /*
   SparseColorOption() parse the complex -sparse-color argument into an
   an array of floating point values than call SparseColorImage().
-  Argument is a complex mix of floating-point pixel coodinates, and color
+  Argument is a complex mix of floating-point pixel coordinates, and color
   specifications (or direct floating point numbers).  The number of floats
   needed to represent a color varies depending on the current channel
   setting.
@@ -462,7 +462,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 #define _process_flags    (cli_wand->process_flags)
 #define _option_type      ((CommandOptionFlags) cli_wand->command->flags)
   /* Interpret Percent Escapes in Arguments - using first image */
-  if ( (((_process_flags & ProcessInterpretProperities) != 0 )
+  if ( (((_process_flags & ProcessInterpretProperties) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
     /* Interpret Percent escapes in argument 1 */
@@ -549,7 +549,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         {
           /* FUTURE: bias OBSOLETED, replaced by Artifact "convolve:bias"
              as it is actually rarely used except in direct convolve operations
-             Usage outside a direct convolve operation is actally non-sensible!
+             Usage outside a direct convolve operation is actually non-sensible!
 
              SyncImageSettings() used to set per-image attribute.
           */
@@ -631,7 +631,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("colorspace",option+1) == 0)
         {
-          /* Setting used for new images via AquireImage()
+          /* Setting used for new images via AcquireImage()
              But also used as a SimpleImageOperator
              Undefined colorspace means don't modify images on
              read or as a operation */
@@ -654,7 +654,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
              SyncImageSettings() used to set per-image attribute. - REMOVE
 
              This setting should NOT be used to set image 'compose'
-             "-layer" operators shoud use _image_info if defined otherwise
+             "-layer" operators should use _image_info if defined otherwise
              they should use a per-image compose setting.
           */
           parse = ParseCommandOption(MagickComposeOptions,MagickFalse,
@@ -669,7 +669,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("compress",option+1) == 0)
         {
           /* FUTURE: What should be used?  _image_info  or ImageOption ???
-             The former is more efficent, but Crisy prefers the latter!
+             The former is more efficient, but Crisy prefers the latter!
              SyncImageSettings() used to set per-image attribute.
 
              The coders appears to use _image_info, not Image_Option
@@ -748,7 +748,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("depth",option+1) == 0)
         {
-          /* This is also a SimpleImageOperator! for 8->16 vaule trunc !!!!
+          /* This is also a SimpleImageOperator! for 8->16 value trunc !!!!
              SyncImageSettings() used to set per-image attribute.
           */
           if (IfSetOption && (IsGeometry(arg1) == MagickFalse))
@@ -860,7 +860,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
           /* Set "fill" OR "fill-pattern" in _draw_info
              The original fill color is preserved if a fill-pattern is given.
              That way it does not effect other operations that directly using
-             the fill color and, can be retored using "+tile".
+             the fill color and, can be restored using "+tile".
           */
           MagickBooleanType
             status;
@@ -1275,7 +1275,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("quiet",option+1) == 0)
         {
           /* FUTURE: if two -quiet is performed you can not do +quiet!
-             This needs to be checked over thoughly.
+             This needs to be checked over thoroughly.
           */
           static WarningHandler
             warning_handler = (WarningHandler) NULL;
@@ -1431,7 +1431,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 #endif
       if (LocaleCompare("synchronize",option+1) == 0)
         {
-          /* FUTURE: syncronize to storage - but what does that mean? */
+          /* FUTURE: synchronize to storage - but what does that mean? */
           _image_info->synchronize = ArgBoolean;
           break;
         }
@@ -1627,7 +1627,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CLISimpleOperatorImages() applys one simple image operation given to all
+%  CLISimpleOperatorImages() applies one simple image operation given to all
 %  the images in the CLI wand, using any per-image or global settings that was
 %  previously saved in the CLI wand.
 %
@@ -1711,7 +1711,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
   arg2 = arg2n;
 
   /* Interpret Percent Escapes in Arguments - using first image */
-  if ( (((_process_flags & ProcessInterpretProperities) != 0 )
+  if ( (((_process_flags & ProcessInterpretProperties) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
     /* Interpret Percent escapes in argument 1 */
@@ -2480,7 +2480,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             constant=PerceptibleReciprocal(constant);
           (void) GammaImage(_image,constant,_exception);
 #else
-          /* Using Evaluate POW, direct update of values - more accurite */
+          /* Using Evaluate POW, direct update of values - more accurate */
           if (IfNormalOp)
             constant=PerceptibleReciprocal(constant);
           (void) EvaluateImage(_image,PowEvaluateOperator,constant,_exception);
@@ -3580,7 +3580,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("unique",option+1) == 0)
         {
-          /* FUTURE: move to SyncImageSettings() and AcqireImage()???
+          /* FUTURE: move to SyncImageSettings() and AcquireImage()???
              Option is not documented, bt appears to be for "identify".
              We may need a identify specific verbose!
           */
@@ -3791,7 +3791,7 @@ WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CLIListOperatorImages() applies a single operation that is apply to the
-%  entire image list as a whole. The result is often a complete replacment
+%  entire image list as a whole. The result is often a complete replacement
 %  of the image list with a completely new list, or with just a single image
 %  result.
 %
@@ -3852,7 +3852,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
   arg2 = arg2n;
 
   /* Interpret Percent Escapes in Arguments - using first image */
-  if ( (((_process_flags & ProcessInterpretProperities) != 0 )
+  if ( (((_process_flags & ProcessInterpretProperties) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
     /* Interpret Percent escapes in argument 1 */
@@ -4681,7 +4681,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           base_image=GetImageFromList(_images,0);
           compare_image=GetImageFromList(_images,1);
 
-          /* Comparision Metric */
+          /* Comparison Metric */
           metric=UndefinedErrorMetric;
           value=GetImageOption(_image_info,"metric");
           if (value != (const char *) NULL)
@@ -4846,7 +4846,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
   arg2 = arg2n;
 
   /* Interpret Percent Escapes in Arguments - using first image */
-  if ( (((_process_flags & ProcessInterpretProperities) != 0 )
+  if ( (((_process_flags & ProcessInterpretProperties) != 0 )
         || ((_option_type & AlwaysInterpretArgsFlag) != 0)
        )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
     /* Interpret Percent escapes in argument 1 */
@@ -5091,7 +5091,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         /* Settings are applied to each image in memory in turn (if any).
            While a option: only need to be applied once globally.
 
-           NOTE: rguments have not been automatically percent expaneded
+           NOTE: Arguments have not been automatically percent expanded
         */
 
         /* escape the 'key' once only, using first image. */
@@ -5121,7 +5121,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
           }
         if (LocaleNCompare(arg1,"option:",7) == 0)
           {
-            /* delete equivelent artifact from all images (if any) */
+            /* delete equivalent artifact from all images (if any) */
             if (_images != (Image *) NULL)
               {
                 MagickResetIterator(&cli_wand->wand);
@@ -5415,7 +5415,7 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
     if ( (option_type & SettingOptionFlags) != 0 ) {
       CLISettingOptionInfo(cli_wand, option, arg1, arg2);
       /*
-        FUTURE: Sync Specific Settings into Image Properities (not global)
+        FUTURE: Sync Specific Settings into Image Properties (not global)
       */
     }
 

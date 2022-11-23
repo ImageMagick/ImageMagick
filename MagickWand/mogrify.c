@@ -34,7 +34,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Use the mogrify program to resize an image, blur, crop, despeckle, dither,
-%  draw on, flip, join, re-sample, and much more. This tool is similiar to
+%  draw on, flip, join, re-sample, and much more. This tool is similar to
 %  convert except that the original image file is overwritten (unless you
 %  change the file suffix with the -format option) with any changes you
 %  request.
@@ -252,7 +252,7 @@ static Image *SparseColorOption(const Image *image,
   /*
     SparseColorOption() parses the complex -sparse-color argument into an an
     array of floating point values then calls SparseColorImage().  Argument is
-    a complex mix of floating-point pixel coodinates, and color specifications
+    a complex mix of floating-point pixel coordinates, and color specifications
     (or direct floating point numbers).  The number of floats needed to
     represent a color varies depending on the current channel setting.
   */

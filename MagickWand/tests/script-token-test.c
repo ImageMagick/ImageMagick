@@ -37,11 +37,11 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Test the raw tokanization of the  ScriptToken Subroutines
+%  Test the raw tokenization of the  ScriptToken Subroutines
 %
 %  This actually uses very little of the magic core functions
 %  and in fact creates a completely stand-alone program by substituting
-%  required MagickCore with direct system equivelents.
+%  required MagickCore with direct system equivalents.
 %
 %  Build
 %     cc     script-token-test.c   -o script-token-test
@@ -57,7 +57,7 @@
 #include <assert.h>
 #include <errno.h>
 
-/* Defines to replace MagickWand / MagickCore defintions */
+/* Defines to replace MagickWand / MagickCore definitions */
 #define MagickPathExtent     4096
 #define MagickFalse       0
 #define MagickTrue        1

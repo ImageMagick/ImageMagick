@@ -336,7 +336,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
 %
 %    o argv: A text array containing the command line arguments. (optional)
 %
-%    o index: offset of next argment in argv (script arguments) (optional)
+%    o index: offset of next argument in argv (script arguments) (optional)
 %
 */
 WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
@@ -374,7 +374,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,const char *filename,
   }
 
   /* define the error location string for use in exceptions
-     order of localtion format escapes: filename, line, column */
+     order of location format escapes: filename, line, column */
   cli_wand->location="in \"%s\" at line %u,column %u";
   if ( LocaleCompare("-", filename) == 0 )
     cli_wand->filename="stdin";
@@ -582,7 +582,7 @@ loop_exit:
 %    o index: index in the argv array to start processing from
 %
 % The function returns the index ot the next option to be processed. This
-% is really only releven if process_flags contains a ProcessOneOptionOnly
+% is really only relevant if process_flags contains a ProcessOneOptionOnly
 % flag.
 %
 */
@@ -610,7 +610,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
   assert(cli_wand->signature == MagickWandSignature);
 
   /* define the error location string for use in exceptions
-     order of localtion format escapes: filename, line, column */
+     order of location format escapes: filename, line, column */
   cli_wand->location="at %s arg %u";
   cli_wand->filename="CLI";
   cli_wand->line=index;  /* note first argument we will process */
@@ -620,8 +620,8 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
          "- Starting (\"%s\")", argv[index]);
 
   end = argc;
-  if ( (cli_wand->process_flags & ProcessImplictWrite) != 0 )
-    end--; /* the last arument is an implied write, do not process directly */
+  if ( (cli_wand->process_flags & ProcessImplicitWrite) != 0 )
+    end--; /* the last argument is an implied write, do not process directly */
 
   for (i=index; i < end; i += count +1) {
     /* Finished processing one option? */
@@ -649,7 +649,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
              i, option);
 #endif
         if (IsCommandOption(option) == MagickFalse) {
-          if ( (cli_wand->process_flags & ProcessImplictRead) != 0 ) {
+          if ( (cli_wand->process_flags & ProcessImplicitRead) != 0 ) {
             /* non-option -- treat as a image read */
             cli_wand->command=(const OptionInfo *) NULL;
             CLIOption(cli_wand,"-read",option);
@@ -664,7 +664,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
            ((cli_wand->process_flags & ProcessScriptOption) != 0) &&
            (LocaleCompare(option,"-script") == 0) ) {
         /* Call Script from CLI, with a filename as a zeroth argument.
-           NOTE: -script may need to use the 'implict write filename' argument
+           NOTE: -script may need to use the 'implicit write filename' argument
            so it must be handled specially to prevent a 'missing argument' error.
         */
         if ( (i+count) >= argc )
@@ -720,7 +720,7 @@ RestoreMSCWarning
   }
   assert(i==end);
 
-  if ( (cli_wand->process_flags & ProcessImplictWrite) == 0 )
+  if ( (cli_wand->process_flags & ProcessImplicitWrite) == 0 )
     return(end); /* no implied write -- just return to caller */
 
   assert(end==argc-1); /* end should not include last argument */
@@ -775,7 +775,7 @@ RestoreMSCWarning
 %  MagickImageCommand() Handle special use CLI arguments and prepare a
 %  CLI MagickCLI to process the command line or directly specified script.
 %
-%  This is essentualy interface function between the MagickCore library
+%  This is essentially interface function between the MagickCore library
 %  initialization function MagickCommandGenesis(), and the option MagickCLI
 %  processing functions  ProcessCommandOptions()  or  ProcessScriptOptions()
 %
@@ -787,14 +787,14 @@ RestoreMSCWarning
 %  A description of each parameter follows:
 %
 %    o image_info: the starting image_info structure
-%      (for compatibilty with MagickCommandGenisis())
+%      (for compatibility with MagickCommandGenisis())
 %
 %    o argc: the number of elements in the argument vector.
 %
 %    o argv: A text array containing the command line arguments.
 %
 %    o metadata: any metadata (for VBS) is returned here.
-%      (for compatibilty with MagickCommandGenisis())
+%      (for compatibility with MagickCommandGenisis())
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -862,7 +862,7 @@ static void MagickUsage(MagickBooleanType verbose)
 }
 
 /*
-   Concatanate given file arguments to the given output argument.
+   Concatenate given file arguments to the given output argument.
    Used for a special -concatenate option used for specific 'delegates'.
    The option is not formally documented.
 

@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     status;
 
   printf("Read 4 images, then set index 1 and read more individual images\n");
-  printf("Result shoud be: 01 654 23\n");
+  printf("Result should be: 01 654 23\n");
 
   MagickWandGenesis();
 

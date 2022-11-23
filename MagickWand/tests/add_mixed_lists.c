@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     status;
 
   printf("Add 3 sets of image using settings: none, first, last\n");
-  printf("Result shoud be: 345 012 678\n");
+  printf("Result should be: 345 012 678\n");
 
   MagickWandGenesis();
 

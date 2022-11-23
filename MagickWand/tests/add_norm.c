@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     status;
 
   printf("Just read images one at a time, no settings\n");
-  printf("Result shoud be: 0123\n");
+  printf("Result should be: 0123\n");
 
   MagickWandGenesis();
 

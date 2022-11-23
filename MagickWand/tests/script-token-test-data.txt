@@ -22,7 +22,7 @@ And\\\ \''even '\'\""more \""complex
 \" '"' "\""
 
 Back\ slash\ escapes
-\\ '\'  "\\"       # NOTE that backslash in single quotes are literial!
+\\ '\'  "\\"       # NOTE that backslash in single quotes are literal!
 
 'Space Character Escapes'
 \  ' '  " "
@@ -30,7 +30,7 @@ Back\ slash\ escapes
 'Empty Tokens, using quotes'
 ''   ""
 
-"Unicode charcaters are handled"
+"Unicode characters are handled"
 "° ' ²  ³  ` ´"
 "µ  ¶  ⨀  ⨁  ⨂"
 测试用的汉字

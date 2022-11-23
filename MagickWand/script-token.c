@@ -34,13 +34,13 @@
 %  Read a stream of characters and return tokens one at a time.
 %
 %  The input stream is divided into individual 'tokens' (representing 'words'
-%  or 'options'), in a way that is as close to a UNIX shell, as is feasable.
+%  or 'options'), in a way that is as close to a UNIX shell, as is feasible.
 %  Only shell variable, and command substitutions will not be performed.
 %  Tokens can be any length.
 %
-%  The main function call is GetScriptToken() (see below) whcih returns one
+%  The main function call is GetScriptToken() (see below) which returns one
 %  and only one token at a time.  The other functions provide support to this
-%  function, opening scripts, and seting up the required structures.
+%  function, opening scripts, and setting up the required structures.
 %
 %  More specifically...
 %
@@ -50,13 +50,13 @@
 %
 %  For example:    This\ is' a 'single" token"
 %
-%  A token is returned immediatally the end of token is found. That is as soon
+%  A token is returned immediately the end of token is found. That is as soon
 %  as a unquoted white-space or EOF condition has been found.  That is to say
 %  the file stream is parsed purely character-by-character, regardless any
 %  buffering constraints set by the system.  It is not parsed line-by-line.
 %
 %  The function will return 'MagickTrue' if a valid token was found, while
-%  the token status will be set accordingally to 'OK' or 'EOF', according to
+%  the token status will be set accordingly to 'OK' or 'EOF', according to
 %  the cause of the end of token.  The token may be an empty string if the
 %  input was a quoted empty string.  Other error conditions return a value of
 %  MagickFalse, indicating any token found but was incomplete due to some
@@ -77,7 +77,7 @@
 %
 %  Comments start with a '#' character at the start of a new token, will be
 %  completely ignored upto the end of line, regardless of any backslash at the
-%  end of the line.  You can escape a comment '#', using quotes or backlsashes
+%  end of the line.  You can escape a comment '#', using quotes or backslashes
 %  just as you can in a shell.
 %
 %  The parser will accept both newlines, returns, or return-newlines to mark
@@ -289,7 +289,7 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetScriptToken() a fairly general, finite state token parser. That returns
-%  tokens one at a time, as soon as posible.
+%  tokens one at a time, as soon as possible.
 %
 %
 %  The format of the GetScriptToken method is:

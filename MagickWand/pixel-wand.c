@@ -665,7 +665,7 @@ WandExport Quantum PixelGetBlueQuantum(const PixelWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelGetColorAsString() returnsd the color of the pixel wand as a string.
+%  PixelGetColorAsString() returns the color of the pixel wand as a string.
 %
 %  The format of the PixelGetColorAsString method is:
 %

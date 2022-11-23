@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     status;
 
   printf("Check append when using 'LastIterator' on empty wand\n");
-  printf("Result shoud be: 0123\n");
+  printf("Result should be: 0123\n");
 
   MagickWandGenesis();
 
