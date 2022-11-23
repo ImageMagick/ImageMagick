@@ -76,7 +76,7 @@ namespace Magick
     void texture(const std::string &texture_);
     std::string texture(void) const;
 
-    // Thumbnail rows and colmns
+    // Thumbnail rows and columns
     void tile(const Geometry &tile_);
     Geometry tile(void) const;
 

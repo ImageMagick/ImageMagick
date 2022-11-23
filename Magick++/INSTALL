@@ -156,7 +156,7 @@ instructions in README.txt (under the heading "Windows Win2K/95 VISUAL C++
 Cygwin & GCC
 
 It is possible to build both ImageMagick and Magick++ under the Cygwin
-Unix-emulation environment for Windows NT. Obtain and install Cgywin from
+Unix-emulation environment for Windows NT. Obtain and install Cygwin from
 http://www.cygwin.com/ .   An X11R6 environment for Cygwin is available
 from  http://www.cygwin.com/xfree/ .To build using Cygwin and GCC, follow
 the instructions for building under Unix. ImageMagick and Magick++ do not

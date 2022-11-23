@@ -345,7 +345,7 @@ namespace Magick
 
   // Distort image.  distorts an image using various distortion methods, by
   // mapping color lookups of the source image to a new destination image
-  // usally of the same size as the source image, unless 'bestfit' is set to
+  // usually of the same size as the source image, unless 'bestfit' is set to
   // true.
   class MagickPPExport distortImage
   {
@@ -385,7 +385,7 @@ namespace Magick
     DrawableList _drawableList;
   };
 
-  // Edge image (hilight edges in image)
+  // Edge image (highlight edges in image)
   class MagickPPExport edgeImage
   {
   public:
@@ -397,7 +397,7 @@ namespace Magick
     double _radius;
   };
 
-  // Emboss image (hilight edges with 3D effect)
+  // Emboss image (highlight edges with 3D effect)
   class MagickPPExport embossImage
   {
   public:
@@ -868,7 +868,7 @@ namespace Magick
     ~ReadOptions();
 
     // Vertical and horizontal resolution in pixels of the image
-    void density(const Geometry &geomery_);
+    void density(const Geometry &geometry_);
     Geometry density(void) const;
 
     // Image depth (8 or 16)
@@ -929,7 +929,7 @@ namespace Magick
   };
 
   // Roll image (rolls image vertically and horizontally) by specified
-  // number of columnms and rows)
+  // number of columns and rows)
   class MagickPPExport rollImage
   {
   public:
@@ -1094,7 +1094,7 @@ namespace Magick
     Geometry _geometry;
   };
 
-  // Spread pixels randomly within image by specified ammount
+  // Spread pixels randomly within image by specified amount
   class MagickPPExport spreadImage
   {
   public:
@@ -2333,7 +2333,7 @@ namespace Magick
   // Merge a sequence of image frames which represent image layers.
   // This is useful for combining Photoshop layers into a single image.
   template <class InputIterator>
-  void flattenImages( Image *flattendImage_,
+  void flattenImages( Image *flattenedImage_,
           InputIterator first_,
           InputIterator last_ ) {
     if (linkImages(first_,last_) == false)
@@ -2342,8 +2342,8 @@ namespace Magick
     MagickCore::Image* image = MagickCore::MergeImageLayers( first_->image(),
       FlattenLayer,exceptionInfo );
     unlinkImages( first_, last_ );
-    flattendImage_->replaceImage( image );
-    ThrowPPException(flattendImage_->quiet());
+    flattenedImage_->replaceImage( image );
+    ThrowPPException(flattenedImage_->quiet());
   }
 
   // Implements the discrete Fourier transform (DFT) of the image either as a

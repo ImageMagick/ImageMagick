@@ -36,7 +36,7 @@
 
 2007-04-10  6.3.3-7 Cristy  <quetzlzacatenango@image...>
   * Add colorspaceType(RGBColorspace) to set RGB colorspace before an
-    image read (useful to convert CMYK Potscript to RGB).
+    image read (useful to convert CMYK Postscript to RGB).
 
 2006-02-05  6.3.2-3 Cristy  <quetzlzacatenango@image...>
   * Clear exception in throwException() method.
@@ -198,7 +198,7 @@
 	* lib/Magick++/STL.h (coalesceImages): Replaced implementation
 	with one from Felix Heimbrecht. The template signature has
 	changed to return a new image sequence. This template API
-	silently ceased to funtion due to an ImageMagick CoalesceImages
+	silently ceased to function due to an ImageMagick CoalesceImages
 	API change.
 
 2003-03-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
@@ -542,10 +542,10 @@
 2001-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableCompositeImage): Read image
- 	immediately if provided by filename, register with peristent
- 	registry, and pass as perisistant image type.
+ 	immediately if provided by filename, register with persistent
+ 	registry, and pass as persistent image type.
 	(DrawableCompositeImage): Support specifying Image in memory.
-  	Passed as perisistant image type.
+  	Passed as persistent image type.
 
 2001-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -714,7 +714,7 @@
 
 	* lib/Image.cpp (clipMask): New method to add a clip mask to the
  	image.  Adds clipping to any image operation wherever the clip
- 	mask image is tranparent.
+ 	mask image is transparent.
 
 2001-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -949,7 +949,7 @@
  	coordinates
 	(PathLinetoHorizontalRel): New class. Horizontal lineto, relative
  	coordinates
-	(PathLinetoVerticalAbs): New class. Veritical lineto, absolute
+	(PathLinetoVerticalAbs): New class. Vertical lineto, absolute
  	coordinates.
 	(PathLinetoVerticalRel): New class. Vertical lineto, relative
  	coordinates.
@@ -1031,7 +1031,7 @@
 
 2000-09-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* lib/Magick++/Drawable.h: Reverted Coordinate implemenation back
+	* lib/Magick++/Drawable.h: Reverted Coordinate implementation back
  	from and STL pair based implementation to a simple class.  Maybe
  	this will improve portability.  It is more understandable anyway.
 
@@ -1163,7 +1163,7 @@
 2000-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp : Call-back based LastError class is eliminated in
- 	favor of ImageMagick 5.2's re-entrant ExceptionInfo reporting.
+ 	favor of ImageMagick 5.2's reentrant ExceptionInfo reporting.
   	This should make Magick++ thread safe under Win32.
 
 2000-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
@@ -1408,7 +1408,7 @@
  	ImageMagick to avoid namespace-induced problems.
 
 	* configure.in : CPPFLAGS and LDFLAGS specified via the
- 	environment take precidence over flags from Magick-config.
+ 	environment take precedence over flags from Magick-config.
 
 1999-05-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

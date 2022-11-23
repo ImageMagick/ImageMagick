@@ -38,12 +38,12 @@ namespace Magick
   public:
 
     // PixelType specifies the interpretation of PixelInfo members
-    // CYMKPixel:
+    // CMYKPixel:
     //   Cyan     = red
     //   Magenta  = green
     //   Yellow   = blue
     //   Black(K) = black
-    // CYMKPixel:
+    // CMYKPixel:
     //   Cyan     = red
     //   Magenta  = green
     //   Yellow   = blue

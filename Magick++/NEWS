@@ -72,7 +72,7 @@ This file records noteworthy changes in Magick++.
   * DrawableCompositeImage can be constructed based on an Image in memory
     rather than just a filename.
   * Added Drawable objects (DrawablePushPattern & DrawablePopPattern)
-    for definining arbitrary named patterns to be used for stroke and fill.
+    for defining arbitrary named patterns to be used for stroke and fill.
   * Added Image strokePattern() and fillPattern() methods for specifying
     image to use while drawing stroked object outlines and while filling
     objects, respectively.
@@ -123,7 +123,7 @@ This file records noteworthy changes in Magick++.
 
   * Added clipMask method to add a clip mask to the current
     image. Prevents modification to image pixels wherever the
-    associated clip mask image is tranparent.
+    associated clip mask image is transparent.
 
   * Documented methods which were added previously, but left
     undocumented.
@@ -226,7 +226,7 @@ This file records noteworthy changes in Magick++.
   * Fix text annotation bug which did not allow spaces in annotation text.
   * Added gaussianBlurImage() method.
   * Fixed bug in floodFillTexture().
-  * Re-worked error reporting methodology to use re-entrant error
+  * Re-worked error reporting methodology to use reentrant error
     reporting rather than the previous method (based on call-backs)
     which required thread specific data.
   * Should be thread-safe under Win32 now.
@@ -307,7 +307,7 @@ This file records noteworthy changes in Magick++.
   * Added Blob class to support supplying formatted binary data to methods.
   * Added support for setting ICC and IPTC profiles from a binary BLOB.
   * Added support for transformations of image data to/from alternate
-    colorspace (e.g. CYMK).
+    colorspace (e.g. CMYK).
   * Added support for 'pinging' an image (get image dimensions/size quickly).
   * Added 'uncondense' method to de-compress in-memory image data.
   * Added support for annotation using rotated text.
@@ -346,7 +346,7 @@ This file records noteworthy changes in Magick++.
   * Changed coordinate parameters from unsigned int to double in Drawable.
   * Changed polygon methods in Drawable to use STL list argument.
   * Added STL list based draw method to Image.
-  * Changed Exception heirarchy to support Warning and Error sub-classes.
+  * Changed Exception hierarchy to support Warning and Error sub-classes.
     Most exception class names have changed.
 
 (0.7)
