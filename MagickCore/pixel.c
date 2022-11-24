@@ -6110,7 +6110,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
         scale=(QuantumScale*p->alpha);
       if (q->alpha_trait != UndefinedPixelTrait)
         scale*=(QuantumScale*q->alpha);
-      if (scale <= MagickEpsilon )
+      if (scale <= MagickEpsilon)
         return(MagickTrue);
     }
   /*
