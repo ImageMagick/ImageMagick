@@ -732,12 +732,12 @@ void TraceConvexHull(PointInfo *vertices,size_t number_vertices,
   PointInfo
     **chain;
 
-  ssize_t
-    i;
-
   size_t
     demark,
     n;
+
+  ssize_t
+    i;
 
   /*
     Construct the upper and lower hulls: rightmost to leftmost counterclockwise.
