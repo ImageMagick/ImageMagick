@@ -420,7 +420,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   artifact=GetImageArtifact(image,"trim:percent-background");
   if (artifact != (const char *) NULL)
     return(GetEdgeBoundingBox(image,exception));
-  artifact=GetImageArtifact(image, "trim:edges");
+  artifact=GetImageArtifact(image,"trim:edges");
   if (artifact == (const char *) NULL)
     {
       bounds.width=(size_t) (image->columns == 1 ? 1 : 0);
