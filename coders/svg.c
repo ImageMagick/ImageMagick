@@ -258,7 +258,7 @@ static MagickBooleanType IsSVG(const unsigned char *magick,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadSVGImage() reads a Scalable Vector Gaphics file and returns it.  It
+%  ReadSVGImage() reads a Scalable Vector Graphics file and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %

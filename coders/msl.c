@@ -104,14 +104,14 @@
 #endif
 
 /*
-  Define Declatations.
+  Define Declarations.
 */
 #define ThrowMSLException(severity,tag,reason) \
   (void) ThrowMagickException(msl_info->exception,GetMagickModule(),severity, \
     tag,"`%s'",reason);
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
 typedef struct _MSLGroupInfo
 {

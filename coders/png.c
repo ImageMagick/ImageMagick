@@ -10843,7 +10843,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     Note that using the -quality option, not all combinations of
     PNG filter type, zlib compression level, and zlib compression
     strategy are possible.  This will be addressed soon in a
-    release that accomodates "-define png:compression-strategy", etc.
+    release that accommodates "-define png:compression-strategy", etc.
 
    */
 

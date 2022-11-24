@@ -270,7 +270,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #undef BLACKNESS
 #undef WHITENESS
 
-/* The following additinal undefs were required for MinGW */
+/* The following additional undefs were required for MinGW */
 #undef BS_HOLLOW
 #undef PS_STYLE_MASK
 #undef PS_ENDCAP_ROUND
@@ -2013,7 +2013,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
                  ((double) 1 / (ddata->scale_y))) / 2;
 
   /* Don't allow pen_width to be much less than pixel_width in order
-     to avoid dissapearing or spider-web lines */
+     to avoid disappearing or spider-web lines */
   pen_width = MagickMax(pen_width, pixel_width*0.8);
 
   pen_style = (unsigned int) WMF_PEN_STYLE(pen);
@@ -2626,7 +2626,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     RelinquishMagickMemory(ddata->draw_info->text);
 
 #if defined(MAGICKCORE_WMF_DELEGATE)
-  /* Must initialize font subystem for WMFlite interface */
+  /* Must initialize font subsystem for WMFlite interface */
   lite_font_init (API,&wmf_api_options); /* similar to wmf_ipa_font_init in src/font.c */
   /* wmf_arg_fontdirs (API,options); */ /* similar to wmf_arg_fontdirs in src/wmf.c */
 

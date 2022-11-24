@@ -1298,7 +1298,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     {
       /*
         Generate blank images for subimage specification (e.g. image.tif[4].
-        We need to check the number of directores because it is possible that
+        We need to check the number of directories because it is possible that
         the subimage(s) are stored in the photoshop profile.
       */
       if (image_info->scene < (size_t) TIFFNumberOfDirectories(tiff))
@@ -2658,7 +2658,7 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WritePTIFImage() writes an image in the pyrimid-encoded Tagged image file
+%  WritePTIFImage() writes an image in the pyramid-encoded Tagged image file
 %  format.
 %
 %  The format of the WritePTIFImage method is:

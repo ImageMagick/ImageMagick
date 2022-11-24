@@ -83,7 +83,7 @@
 #include "coders/ghostscript-private.h"
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
 typedef struct _PSInfo
 {

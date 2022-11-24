@@ -186,7 +186,7 @@ typedef struct _AshlarInfo
     *current,
     *free,
     head,
-    sentinal;
+    sentinel;
 } AshlarInfo;
 
 typedef struct _CanvasInfo
@@ -570,7 +570,7 @@ static Image *ASHLARImage(const ImageInfo *image_info,Image *image,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   /*
-    Interate until we find a tile size that fits the canvas.
+    Iterate until we find a tile size that fits the canvas.
   */
   value=GetImageOption(image_info,"ashlar:best-fit");
   for (i=20; i > 0; i--)
@@ -599,10 +599,10 @@ static Image *ASHLARImage(const ImageInfo *image_info,Image *image,
       ashlar_info.number_nodes);
     ashlar_info.head.x=0;
     ashlar_info.head.y=0;
-    ashlar_info.head.next=(&ashlar_info.sentinal);
-    ashlar_info.sentinal.x=(ssize_t) geometry.width;
-    ashlar_info.sentinal.y=(ssize_t) MAGICK_SSIZE_MAX;
-    ashlar_info.sentinal.next=(NodeInfo *) NULL;
+    ashlar_info.head.next=(&ashlar_info.sentinel);
+    ashlar_info.sentinel.x=(ssize_t) geometry.width;
+    ashlar_info.sentinel.y=(ssize_t) MAGICK_SSIZE_MAX;
+    ashlar_info.sentinel.next=(NodeInfo *) NULL;
     status=PackAshlarTiles(&ashlar_info,(size_t) n,tiles);
     if (status != MagickFalse)
       break;

@@ -1345,7 +1345,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
     if (image->chromaticity.white_point.x != 0.0)
       {
         /*
-          Note chomaticity points.
+          Note chromaticity points.
         */
         (void) FormatLocaleString(buffer,MagickPathExtent,"red-primary=%g,%g "
           "green-primary=%g,%g blue-primary=%g,%g\n",

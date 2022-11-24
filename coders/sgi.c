@@ -67,7 +67,7 @@
 #include "coders/coders-private.h"
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
 typedef struct _SGIInfo
 {

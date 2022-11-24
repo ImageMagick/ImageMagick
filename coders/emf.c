@@ -10,7 +10,7 @@
 %                            EEEEE  M   M  F                                  %
 %                                                                             %
 %                                                                             %
-%                  Read Windows Enahanced Metafile Format                     %
+%                   Read Windows Enhanced Metafile Format                     %
 %                                                                             %
 %                              Software Design                                %
 %                              Bill Radcliffe                                 %
