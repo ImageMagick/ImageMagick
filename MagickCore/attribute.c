@@ -473,6 +473,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     exception);
   if (p != (const Quantum *) NULL)
     GetPixelInfoPixel(image,p,&target[2]);
+  GetPixelInfo(image,&target[3]);
   p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,(ssize_t)
     image->rows-1,1,1,exception);
   if (p != (const Quantum *) NULL)
