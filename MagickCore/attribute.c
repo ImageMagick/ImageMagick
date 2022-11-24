@@ -485,14 +485,14 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    const Quantum
+      *magick_restrict q;
+
     PixelInfo
       pixel;
 
     RectangleInfo
       bounding_box;
-
-    const Quantum
-      *magick_restrict q;
 
     ssize_t
       x;
