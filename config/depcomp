@@ -198,7 +198,7 @@ gcc3)
   ;;
 
 gcc)
-## Note that this doesn't just cater to obsolete pre-3.x GCC compilers.
+## Note that this doesn't just cater to obsosete pre-3.x GCC compilers.
 ## but also to in-use compilers like IMB xlc/xlC and the HP C compiler.
 ## (see the conditional assignment to $gccflag above).
 ## There are various ways to get dependency output from gcc.  Here's
@@ -478,7 +478,7 @@ hp2)
 tru64)
   # The Tru64 compiler uses -MD to generate dependencies as a side
   # effect.  'cc -MD -o foo.o ...' puts the dependencies into 'foo.o.d'.
-  # At least on Alpha/RedHat 6.1, Compaq CCC V6.2-504 seems to put
+  # At least on Alpha/Redhat 6.1, Compaq CCC V6.2-504 seems to put
   # dependencies in 'foo.d' instead, so we check for that too.
   # Subdirectories are respected.
   set_dir_from  "$object"

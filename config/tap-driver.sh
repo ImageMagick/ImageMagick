@@ -592,7 +592,7 @@ while (1)
           bailout_message = bailout_message " " $0
         testsuite_error(bailout_message)
       }
-    # Maybe we have too look for diagnostic comments too.
+    # Maybe we have too look for dianogtic comments too.
     else if (comments != 0)
       {
         comment = extract_tap_comment($0);

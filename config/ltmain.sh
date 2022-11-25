@@ -377,24 +377,24 @@ sed_double_backslash="\
 # require_check_ifs_backslash
 # ---------------------------
 # Check if we can use backslash as IFS='\' separator, and set
-# $check_ifs_backslash_broken to ':' or 'false'.
+# $check_ifs_backshlash_broken to ':' or 'false'.
 require_check_ifs_backslash=func_require_check_ifs_backslash
 func_require_check_ifs_backslash ()
 {
   _G_save_IFS=$IFS
   IFS='\'
-  _G_check_ifs_backslash='a\\b'
-  for _G_i in $_G_check_ifs_backslash
+  _G_check_ifs_backshlash='a\\b'
+  for _G_i in $_G_check_ifs_backshlash
   do
   case $_G_i in
   a)
-    check_ifs_backslash_broken=false
+    check_ifs_backshlash_broken=false
     ;;
   '')
     break
     ;;
   *)
-    check_ifs_backslash_broken=:
+    check_ifs_backshlash_broken=:
     break
     ;;
   esac
@@ -515,7 +515,7 @@ opt_warning_types=all
 #
 # It's entirely deliberate that calling these functions can set
 # variables that don't obey the namespace limitations obeyed by the rest
-# of this file, in order that they be as useful as possible to
+# of this file, in order that that they be as useful as possible to
 # callers.
 
 
@@ -1161,7 +1161,7 @@ func_quote_portable ()
         *[\\\`\"\$]*)
           # Fallback to sed for $func_check_bs_ifs_broken=:, or when the string
           # contains the shell wildcard characters.
-          case $check_ifs_backslash_broken$func_quote_portable_result in
+          case $check_ifs_backshlash_broken$func_quote_portable_result in
             :*|*[\[\*\?]*)
               func_quote_portable_result=`$ECHO "$func_quote_portable_result" \
                   | $SED "$sed_quote_subst"`
@@ -3089,7 +3089,7 @@ func_cygpath ()
     fi
   else
     func_cygpath_result=
-    func_error "LT_CYGPATH is empty or specifies nonexistent file: '$LT_CYGPATH'"
+    func_error "LT_CYGPATH is empty or specifies non-existent file: '$LT_CYGPATH'"
   fi
 }
 #end: func_cygpath
@@ -6022,7 +6022,7 @@ EOF
         {
           /* however, if there is an option in the LTWRAPPER_OPTION_PREFIX
              namespace, but it is not one of the ones we know about and
-             have already dealt with, above (including dump-script), then
+             have already dealt with, above (inluding dump-script), then
              report an error. Otherwise, targets might begin to believe
              they are allowed to use options in the LTWRAPPER_OPTION_PREFIX
              namespace. The first time any user complains about this, we'll

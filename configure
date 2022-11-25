@@ -2047,7 +2047,7 @@ Optional Packages:
   --with-utilities	enable building command-line utilities (default yes)
   --with-quantum-depth=DEPTH
                           number of bits in a pixel quantum (default 16)
-  --with-cache=THRESHOLD  set pixel cache threshhold in MB (default available
+  --with-cache=THRESHOLD  set pixel cache threshold in MB (default available
                           memory)
   --with-frozenpaths      freeze delegate paths
   --without-magick-plus-plus
@@ -5151,7 +5151,7 @@ MAGICK_PATCHLEVEL_VERSION=53
 
 MAGICK_VERSION=7.1.0-53
 
-MAGICK_GIT_REVISION=97d1574ba:20221120
+MAGICK_GIT_REVISION=39ac60a89:20221125
 
 
 # Substitute library versioning
@@ -5185,7 +5185,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,53
 
-PACKAGE_RELEASE_DATE=2022-11-20
+PACKAGE_RELEASE_DATE=2022-11-25
 
 
 # Ensure that make can run correctly
@@ -10102,7 +10102,7 @@ then :
 fi
 
 
-# The presence of a feature test macro requesting re-entrant function
+# The presence of a feature test macro requesting reentrant function
 # definitions is, on some systems, a strong hint that pthreads support is
 # correctly enabled
 
@@ -25498,7 +25498,7 @@ fi
 
 
 
-# Float_t and double_t are intended to be the the most efficient type.
+# Float_t and double_t are intended to be the most efficient type.
 # The cast to long int works around a bug in the HP C Compiler
 # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
 # declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
@@ -25568,7 +25568,7 @@ printf "%s\n" "#define SIZEOF_DOUBLE_T $ac_cv_sizeof_double_t" >>confdefs.h
 
 
 
-# Get size of float, double and long double for comparaison.
+# Get size of float, double and long double for comparison.
 # The cast to long int works around a bug in the HP C Compiler
 # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
 # declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
@@ -36920,7 +36920,7 @@ else
 fi
 
 
-# Installed ImageMagick utiltity paths
+# Installed ImageMagick utility paths
 ConvertDelegate="${BIN_DIR}/${ConvertDelegateDefault}"
 DisplayDelegate="${BIN_DIR}/${DisplayDelegateDefault}"
 MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
@@ -38001,7 +38001,7 @@ if test "$have_zstd"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES zstd"
 fi
 
-# Remove extraneous spaces from output variables (asthetic)
+# Remove extraneous spaces from output variables (aesthetic)
 MAGICK_DELEGATES=`echo $MAGICK_DELEGATES | sed -e 's/  */ /g'`
 MAGICK_FEATURES=`echo $MAGICK_FEATURES | sed -e 's/  */ /g'`
 
