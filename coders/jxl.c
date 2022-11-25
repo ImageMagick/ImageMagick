@@ -530,7 +530,10 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             offset|=(unsigned int) *(p+3);
             offset+=4;
             if (offset < (size-4))
-              (void) DestroyStringInfo(SplitStringInfo(exif_profile,offset));
+              {
+                (void) DestroyStringInfo(SplitStringInfo(exif_profile,offset));
+                SetStringInfoLength(exif_profile,size-offset-8);
+              }
           }
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
           {
