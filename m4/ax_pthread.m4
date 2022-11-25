@@ -244,7 +244,7 @@ AS_IF([test "x$ax_pthread_clang" = "xyes"],
       [ax_pthread_flags="-pthread,-lpthread -pthread"])
 
 
-# The presence of a feature test macro requesting re-entrant function
+# The presence of a feature test macro requesting reentrant function
 # definitions is, on some systems, a strong hint that pthreads support is
 # correctly enabled
 

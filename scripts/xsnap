@@ -568,7 +568,7 @@ proc SnapWindow {} {
 }
 
 #
-# Initalize snap options.
+# Initialize snap options.
 #
 set snap(border) 0
 set snap(colors) 0

@@ -36,7 +36,7 @@ error=false
 average=`eval ${MAGICK} "$in" -noop "$out"`
 too_dark=`eval ${MAGICK} "$in" -colorspace RGB "$out"`
 too_light=`eval ${MAGICK} "$in" -set colorspace RGB -colorspace sRGB "$out"`
-format='%-30s%s\n'        # results formating
+format='%-30s%s\n'        # results formatting
 format2='%-30s%-14s%s\n'
 
 printf "$format2" "Average \"rose:\" Color"  "$average" "sRGB(rose)"
@@ -51,7 +51,7 @@ echo ''
 #    eval ${MAGICK} "$in" -gamma .454545 "$out"
 # produces a value of  74,25,20   which is close to 73,26,21 below.
 #    eval ${MAGICK} "$in" -gamma 2.2 "$out"
-# produces a value of  198,158,151  whcih is close to 199,160,152 below.
+# produces a value of  198,158,151  which is close to 199,160,152 below.
 #
 # Actual values used below come from IM v6.5.4-7 colorspace conversions
 #

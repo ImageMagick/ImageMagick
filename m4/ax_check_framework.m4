@@ -7,7 +7,7 @@ dnl @synopsis AX_CHECK_FRAMEWORK(framework, [action-if-found], [action-if-not-fo
 dnl
 dnl This macro is similar to the AC_CHECK_LIB macro, except that it works
 dnl for Mac OS X frameworks.  It checks to see if the given framework exists
-dnl on the host sytem and if so prepends "-framework framework" to the FRAMEWORKS
+dnl on the host system and if so prepends "-framework framework" to the FRAMEWORKS
 dnl variable.
 dnl 
 dnl @author John Reppy <http://cs.uchicago.edu/~jhr>

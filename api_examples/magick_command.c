@@ -3,7 +3,7 @@
    which is basically what the "magick" command does via
    a wrapper function MagickCommandGenesis()
 
-   Compile with ImageMagick-devlop installed...
+   Compile with ImageMagick-develop installed...
 
      gcc -lMagickWand -lMagickCore magick_command.c -o magick_command
 

@@ -5373,7 +5373,7 @@ int main(int argc,char **argv)
   MagickResetIterator(magick_wand);
   (void) MagickSetIteratorIndex(magick_wand,4);
   (void) FormatLocaleFile(stdout,
-    "Utilitize pixel iterator to draw diagonal...\n");
+    "Utilize pixel iterator to draw diagonal...\n");
   iterator=NewPixelIterator(magick_wand);
   if (iterator == (PixelIterator *) NULL)
     ThrowAPIException(magick_wand);

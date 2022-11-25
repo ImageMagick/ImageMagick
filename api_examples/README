@@ -1,5 +1,5 @@
 
-Every program in this directory is the equivelent of this Shell API
+Every program in this directory is the equivalent of this Shell API
 command...
 
   magick -size 100x100 xc:red \

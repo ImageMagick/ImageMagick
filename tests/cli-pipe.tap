@@ -32,15 +32,15 @@ ${MAGICK} ${SRCDIR}/rose.pnm -write -      null: | ${IDENTIFY} - && echo "ok" ||
 # IMv7 "magick" testing
 # -read option
 ${MAGICK} -read ${SRCDIR}/rose.pnm info: && echo "ok" || echo "not ok"
-# -exit can be used insted of implicit write
+# -exit can be used instead of implicit write
 ${MAGICK} ${SRCDIR}/rose.pnm -write info: -exit && echo "ok" || echo "not ok"
 # null: does not require an image during write
 ${MAGICK} -write null: -exit && echo "ok" || echo "not ok"
 # implied write null: without image
 ${MAGICK} ${SRCDIR}/rose.pnm -write info: +delete null: && echo "ok" || echo "not ok"
-# Write to file decriptor
+# Write to file descriptor
 ${MAGICK} ${SRCDIR}/rose.pnm fd:6  6>&1 | ${IDENTIFY} - && echo "ok" || echo "not ok"
-# Read from file decriptor
+# Read from file descriptor
 exec 5<${SRCDIR}/rose.pnm
 ${MAGICK} fd:5 info: && echo "ok" || echo "not ok"
 exec 5<&-

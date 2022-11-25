@@ -278,7 +278,7 @@ jobs:
         set /p solution=<solution
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
-    - name: Sign exectables
+    - name: Sign executables
       uses: dlemstra/code-sign-action@v1
       with:
         certificate: '${{ secrets.CERTIFICATE }}'

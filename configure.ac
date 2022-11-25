@@ -800,7 +800,7 @@ AC_SUBST([MAGICK_ABI_SUFFIX])
 # Set pixel cache threshold
 AC_ARG_WITH([cache],
     [AS_HELP_STRING([--with-cache=THRESHOLD],
-                    [set pixel cache threshhold in MB (default available memory)])],
+                    [set pixel cache threshold in MB (default available memory)])],
     [with_cache=$withval],
     [with_cache=''])
 
@@ -982,11 +982,11 @@ AC_TYPE_UINT64_T
 AC_TYPE_UINTMAX_T
 AC_TYPE_UINTPTR_T
 
-# Float_t and double_t are intended to be the the most efficient type.
+# Float_t and double_t are intended to be the most efficient type.
 AC_CHECK_SIZEOF([float_t], [], [[#include <math.h>]])
 AC_CHECK_SIZEOF([double_t], [], [[#include <math.h>]])
 
-# Get size of float, double and long double for comparaison.
+# Get size of float, double and long double for comparison.
 AC_CHECK_SIZEOF([float])
 AC_CHECK_SIZEOF([double])
 AC_CHECK_SIZEOF([long double])
@@ -3201,7 +3201,7 @@ else
 fi
 AC_SUBST([PrintDelegate])
 
-# Installed ImageMagick utiltity paths
+# Installed ImageMagick utility paths
 ConvertDelegate="${BIN_DIR}/${ConvertDelegateDefault}"
 DisplayDelegate="${BIN_DIR}/${DisplayDelegateDefault}"
 MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
@@ -3817,7 +3817,7 @@ if test "$have_zstd"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES zstd"
 fi
 
-# Remove extraneous spaces from output variables (asthetic)
+# Remove extraneous spaces from output variables (aesthetic)
 MAGICK_DELEGATES=`echo $MAGICK_DELEGATES | sed -e 's/  */ /g'`
 MAGICK_FEATURES=`echo $MAGICK_FEATURES | sed -e 's/  */ /g'`
 AC_SUBST([MAGICK_DELEGATES])

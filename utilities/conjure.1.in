@@ -23,7 +23,7 @@ Miscellaneous Options:
   \-list type           print a list of supported option arguments
   \-version             print version information
 
-In additiion, define any key value pairs required by your script.  For example,
+In addition, define any key value pairs required by your script.  For example,
 
     conjure \-size 100x100 \-color blue \-foo bar script.msl
 .SH SEE ALSO

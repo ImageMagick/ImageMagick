@@ -111,7 +111,7 @@ $tmpname_html = "/tmp/fmtdocs_html.$$";
  'profile',	'Dealing with Image Profiles',
  'quantize',	'Reduce the Number of Unique Colors in an Image',
  'registry',	'The Registry',
- 'resource',	'Minitor or Limit Resource Consumption',
+ 'resource',	'Monitor or Limit Resource Consumption',
  'segment',	'Segment an Image with Thresholding Fuzzy c-Means',
  'shear',	'Shear or Rotate an Image by an Arbitrary Angle',
  'signature',	'Compute a Digital Signature for an Image',
@@ -453,7 +453,7 @@ LINE:
       $para =~ s/^\s+//g;		# Eliminate any leading space
       $para =~ s/\s+/ /g;		# Canonicalize whitespace
       $para =~ s/ $//;		# Trim final space
-      $para =~ s/([a-zA-Z0-9][.!?][)'"]*) /$1  /g; #' Fix sentance ends
+      $para =~ s/([a-zA-Z0-9][.!?][)'"]*) /$1  /g; #' Fix sentence ends
 		  print( TMP "\n$para\n\n" );
 		}
     }
@@ -596,7 +596,7 @@ sub head2 {
 
 #
 # Return item
-# Simlar to: <I>
+# Similar to: <I>
 #
 sub item {
     my($item) = @_;

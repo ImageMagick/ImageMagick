@@ -31,7 +31,7 @@
 
   Each of the "levels" integer values (each value representing the threshold
   intensity "level/divisor" at which that pixel is turned on.  The "levels"
-  integers given can be any postive integers between "0" and the "divisor",
+  integers given can be any positive integers between "0" and the "divisor",
   excluding those limits.
 
   The "divisor" not only defines the upper limit and threshold divisor for each
@@ -127,7 +127,7 @@
 
   These patterns initially start as circles, but then form diamonds
   pattern at the 50% threshold level, before forming negated circles,
-  as it approached the other threshold extereme.
+  as it approached the other threshold extreme.
 -->
   <threshold map="h4x4a" alias="4x1">
     <description>Halftone 4x4 (angled)</description>
@@ -169,12 +169,12 @@
   Halftones - Orthogonally Aligned, or Un-angled
 
   Initially added by Anthony Thyssen, IM v6.2.9-5 using techniques from
-  "Dithering & Halftoning" by Gernot Haffmann
+  "Dithering & Halftoning" by Gernot Hoffmann
   http://www.fho-emden.de/~hoffmann/hilb010101.pdf
 
   These patterns initially start as circles, but then form square
   pattern at the 50% threshold level, before forming negated circles,
-  as it approached the other threshold extereme.
+  as it approached the other threshold extreme.
 -->
   <threshold map="h4x4o">
     <description>Halftone 4x4 (orthogonal)</description>
@@ -214,7 +214,7 @@
 
   <threshold map="h16x16o">
     <!--
-       Direct extract from "Dithering & Halftoning" by Gernot Haffmann.
+       Direct extract from "Dithering & Halftoning" by Gernot Hoffmann.
        This may need some fine tuning for symmetry of the halftone dots,
        as it was a mathematically formulated pattern.
     -->

@@ -190,7 +190,7 @@ if [ -z perl-pkg-files ] ; then
 fi
 
 # fix multilib issues: Rename provided file with platform-bits in name.
-# Create platform independant file inplace of provided and conditionally include required.
+# Create platform independent file inplace of provided and conditionally include required.
 # $1 - filename.h to process.
 function multilibFileVersions(){
 mv $1 ${1%%.h}-%{__isa_bits}.h
@@ -283,4 +283,4 @@ export LD_LIBRARY_PATH=%{buildroot}/%{_libdir}
 
 %changelog
 * Sun May 01 2005 Cristy <cristy@mystic.es.dupont.com> 1.0-0
--  Port of Redhat's RPM script to support ImageMagick.
+-  Port of RedHat's RPM script to support ImageMagick.
