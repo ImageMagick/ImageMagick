@@ -127,6 +127,20 @@ static MagickBooleanType
 %
 */
 
+static inline MagickBooleanType HEICSkipImage(const ImageInfo *image_info,
+  Image *image)
+{
+  if (image_info->number_scenes == 0)
+    return(MagickFalse);
+  if (image->scene == 0)
+    return(MagickFalse);
+  if (image->scene < image_info->scene)
+    return(MagickTrue);
+  if (image->scene > image_info->scene+image_info->number_scenes-1)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static inline MagickBooleanType IsHEIFSuccess(Image *image,
   struct heif_error *error,ExceptionInfo *exception)
 {
@@ -241,18 +255,57 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
   return(MagickTrue);
 }
 
-static inline MagickBooleanType HEICSkipImage(const ImageInfo *image_info,
-  Image *image)
+static MagickBooleanType ReadHEICXMPProfile(Image *image,
+  struct heif_image_handle *image_handle,ExceptionInfo *exception)
 {
-  if (image_info->number_scenes == 0)
-    return(MagickFalse);
-  if (image->scene == 0)
-    return(MagickFalse);
-  if (image->scene < image_info->scene)
+  heif_item_id
+    id;
+
+  int
+    count;
+
+  size_t
+    length;
+
+  struct heif_error
+    error;
+
+  unsigned char
+    *xmp_profile;
+
+  /*
+    Read XMP profile.
+  */
+  count=heif_image_handle_get_list_of_metadata_block_IDs(image_handle,"mime",
+    &id,1);
+  if (count != 1)
     return(MagickTrue);
-  if (image->scene > image_info->scene+image_info->number_scenes-1)
+  length=heif_image_handle_get_metadata_size(image_handle,id);
+  if (length <= 8)
     return(MagickTrue);
-  return(MagickFalse);
+  if ((MagickSizeType) length > GetBlobSize(image))
+    ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
+      image->filename);
+  xmp_profile=(unsigned char *) AcquireQuantumMemory(1,length);
+  if (xmp_profile == (unsigned char *) NULL)
+    return(MagickFalse);
+  error=heif_image_handle_get_metadata(image_handle,id,xmp_profile);
+  if ((IsHEIFSuccess(image,&error,exception) != MagickFalse) &&
+      (length > (XmpNamespaceExtent+2)))
+    {
+      StringInfo
+        *profile;
+
+      length-=(XmpNamespaceExtent+1);
+      profile=BlobToStringInfo(xmp_profile+XmpNamespaceExtent+1,length);
+      if (profile != (StringInfo*) NULL)
+        {
+          (void) SetImageProfile(image,"xmp",profile,exception);
+          profile=DestroyStringInfo(profile);
+        }
+    }
+  xmp_profile=(unsigned char *) RelinquishMagickMemory(xmp_profile);
+  return(MagickTrue);
 }
 
 static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
@@ -307,6 +360,8 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
   if (ReadHEICColorProfile(image,image_handle,exception) == MagickFalse)
     return(MagickFalse);
   if (ReadHEICExifProfile(image,image_handle,exception) == MagickFalse)
+    return(MagickFalse);
+  if (ReadHEICXMPProfile(image,image_handle,exception) == MagickFalse)
     return(MagickFalse);
   if (image_info->ping != MagickFalse)
     return(MagickTrue);
