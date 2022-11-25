@@ -271,7 +271,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     memory_manager;
 
   JxlPixelFormat
-    pixel_format;
+    pixel_format = { 0 };
 
   MagickBooleanType
     status;
@@ -283,11 +283,12 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     input_size;
 
   StringInfo
-    *exif_profile;
+    *exif_profile = (StringInfo *) NULL,
+    *xmp_profile = (StringInfo *) NULL;
 
   unsigned char
     *pixels,
-    *output_buffer;
+    *output_buffer = (unsigned char *) NULL;
 
   void
     *runner;
@@ -346,9 +347,6 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       JxlDecoderDestroy(jxl_info);
       ThrowReaderException(CoderError,"MemoryAllocationFailed");
     }
-  exif_profile=(StringInfo *) NULL;
-  output_buffer=(unsigned char *) NULL;
-  (void) memset(&pixel_format,0,sizeof(pixel_format));
   jxl_status=JXL_DEC_NEED_MORE_INPUT;
   while ((jxl_status != JXL_DEC_SUCCESS) && (jxl_status != JXL_DEC_ERROR))
   {
@@ -502,23 +500,46 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         JxlBoxType
           type;
 
+        uint64_t
+          size;
+
         (void) JxlDecoderReleaseBoxBuffer(jxl_info);
         jxl_status=JxlDecoderGetBoxType(jxl_info,type,JXL_FALSE);
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
+        jxl_status=JxlDecoderGetBoxSizeRaw(jxl_info,&size);
+        if ((jxl_status != JXL_DEC_SUCCESS) || (size < 4))
+          break;
         if (LocaleNCompare(type,"Exif",sizeof(type)) == 0)
           {
-            uint64_t
-              size;
+            unsigned char
+              *p;
 
-            status=JxlDecoderGetBoxSizeRaw(jxl_info,&size);
-            if (size > 0)
+            unsigned int
+              offset;
+
+            /*
+              Prepend a 4-byte TIFF header offset.
+            */
+            exif_profile=AcquireStringInfo((size_t) size);
+            p=GetStringInfoDatum(exif_profile);
+            status=JxlDecoderSetBoxBuffer(jxl_info,p,size);
+            offset=(unsigned int) (*p) << 24;
+            offset|=(unsigned int) (*(p+1)) << 16;
+            offset|=(unsigned int) (*(p+2)) << 8;
+            offset|=(unsigned int) *(p+3);
+            offset+=4;
+            if (offset < (size-4))
               {
-                exif_profile=AcquireStringInfo((size_t) size);
-                if (exif_profile != (StringInfo *) NULL)
-                  jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
-                    GetStringInfoDatum(exif_profile),size);
+                (void) memcpy(p,p+offset,size-offset);
+                SetStringInfoLength(exif_profile,size-offset);
               }
+          }
+        if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
+          {
+            xmp_profile=AcquireStringInfo((size_t) size);
+            status=JxlDecoderSetBoxBuffer(jxl_info,
+              GetStringInfoDatum(xmp_profile),size);
           }
         if (jxl_status == JXL_DEC_SUCCESS)
           jxl_status=JXL_DEC_BOX;
@@ -528,17 +549,24 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case JXL_DEC_ERROR:
         break;
       default:
+      {
         (void) ThrowMagickException(exception,GetMagickModule(),
           CorruptImageError,"Unsupported status type","`%d'",jxl_status);
         jxl_status=JXL_DEC_ERROR;
         break;
+      }
     }
   }
   (void) JxlDecoderReleaseBoxBuffer(jxl_info);
   if (exif_profile != (StringInfo *) NULL)
     {
       (void) SetImageProfile(image,"exif",exif_profile,exception);
-      DestroyStringInfo(exif_profile);
+      exif_profile=DestroyStringInfo(exif_profile);
+    }
+  if (xmp_profile != (StringInfo *) NULL)
+    {
+      (void) SetImageProfile(image,"xmp",xmp_profile,exception);
+      xmp_profile=DestroyStringInfo(xmp_profile);
     }
   output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
@@ -690,6 +718,10 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   const char
     *option;
 
+  const StringInfo
+    *exif_profile = (StringInfo *) NULL,
+    *xmp_profile = (StringInfo *) NULL;
+
   JxlBasicInfo
     basic_info;
 
@@ -818,6 +850,32 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   if (option != (const char *) NULL)
     (void) JxlEncoderFrameSettingsSetOption(frame_settings,
       JXL_ENC_FRAME_SETTING_DECODING_SPEED,StringToInteger(option));
+  exif_profile=GetImageProfile(image,"exif");
+  xmp_profile=GetImageProfile(image,"xmp");
+  if ((exif_profile != (StringInfo *) NULL) ||
+      (xmp_profile != (StringInfo *) NULL))
+    {
+      /*
+        Add metadata boxes.
+      */
+      (void) JxlEncoderUseBoxes(jxl_info);
+      if (exif_profile != (StringInfo *) NULL)
+        {
+          /*
+            Prepend a 4-byte TIFF header offset.
+          */
+          StringInfo *profile = AcquireStringInfo(sizeof(unsigned int));
+          (void) memset(GetStringInfoDatum(profile),0,sizeof(unsigned int));
+          ConcatenateStringInfo(profile,exif_profile);
+          (void) JxlEncoderAddBox(jxl_info,"Exif",GetStringInfoDatum(profile),
+            GetStringInfoLength(profile),0);
+          profile=DestroyStringInfo(profile);
+        }
+      if (xmp_profile != (StringInfo *) NULL)
+        (void) JxlEncoderAddBox(jxl_info,"xml ",
+          GetStringInfoDatum(xmp_profile),GetStringInfoLength(xmp_profile),0);
+      (void) JxlEncoderCloseBoxes(jxl_info);
+    }
   jxl_status=JXLWriteMetadata(image,jxl_info);
   jxl_status=JXL_ENC_SUCCESS;
   if (jxl_status != JXL_ENC_SUCCESS)
@@ -904,7 +962,6 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
     }
   pixel_info=RelinquishVirtualMemory(pixel_info);
-  /* JxlEncoderAddBox */
   JxlThreadParallelRunnerDestroy(runner);
   JxlEncoderDestroy(jxl_info);
   if (jxl_status != JXL_ENC_SUCCESS)

@@ -539,7 +539,8 @@ MagickExport void ConcatenateStringInfo(StringInfo *string_info,
       sizeof(*string_info->datum));
   if (string_info->datum == (unsigned char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) memcpy(string_info->datum+string_info->length,source->datum,source->length);
+  (void) memcpy(string_info->datum+string_info->length,source->datum,
+    source->length);
   string_info->length=length;
 }
 
