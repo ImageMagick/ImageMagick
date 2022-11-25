@@ -530,8 +530,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             offset|=(unsigned int) *(p+3);
             offset+=4;
             if (offset < (size-4))
-              (void) DestroyStringInfo(SplitStringInfo(exif_profile,(size_t)
-                offset));
+              (void) DestroyStringInfo(SplitStringInfo(exif_profile,offset));
           }
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
           {
@@ -870,8 +869,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
           profile=DestroyStringInfo(profile);
         }
       if (xmp_profile != (StringInfo *) NULL)
-        (void) JxlEncoderAddBox(jxl_info,"xml ",
-          GetStringInfoDatum(xmp_profile),GetStringInfoLength(xmp_profile),0);
+        (void) JxlEncoderAddBox(jxl_info,"xml ",GetStringInfoDatum(xmp_profile),
+          GetStringInfoLength(xmp_profile),0);
       (void) JxlEncoderCloseBoxes(jxl_info);
     }
   jxl_status=JXLWriteMetadata(image,jxl_info);

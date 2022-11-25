@@ -85,7 +85,7 @@
 /*
   Define declarations.
 */
-#define XmpNamespaceExtent  28
+#define XMPNamespaceExtent  28
 
 /*
   Const declarations.
@@ -291,13 +291,13 @@ static MagickBooleanType ReadHEICXMPProfile(Image *image,
     return(MagickFalse);
   error=heif_image_handle_get_metadata(image_handle,id,xmp_profile);
   if ((IsHEIFSuccess(image,&error,exception) != MagickFalse) &&
-      (length > (XmpNamespaceExtent+2)))
+      (length > (XMPNamespaceExtent+2)))
     {
       StringInfo
         *profile;
 
-      length-=(XmpNamespaceExtent+1);
-      profile=BlobToStringInfo(xmp_profile+XmpNamespaceExtent+1,length);
+      length-=(XMPNamespaceExtent+1);
+      profile=BlobToStringInfo(xmp_profile+XMPNamespaceExtent+1,length);
       if (profile != (StringInfo*) NULL)
         {
           (void) SetImageProfile(image,"xmp",profile,exception);
@@ -898,7 +898,7 @@ static void WriteProfile(struct heif_context *context,Image *image,
           {
             if (profile != (StringInfo *) NULL)
               ConcatenateStringInfo(xmp_profile,profile);
-            GetStringInfoDatum(xmp_profile)[XmpNamespaceExtent]='\0';
+            GetStringInfoDatum(xmp_profile)[XMPNamespaceExtent]='\0';
             for (i=0; i < (ssize_t) GetStringInfoLength(xmp_profile); i+=65533L)
             {
               length=MagickMin(GetStringInfoLength(xmp_profile)-i,65533L);
