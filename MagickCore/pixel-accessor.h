@@ -663,7 +663,7 @@ static inline void SetPixelb(const Image *magick_restrict image,
     pixel[image->channel_map[bPixelChannel].offset]=b;
 }
 
-static inline void SetPixelBackgoundColor(const Image *magick_restrict image,
+static inline void SetPixelBackgroundColor(const Image *magick_restrict image,
   Quantum *magick_restrict pixel)
 {
   ssize_t
@@ -684,6 +684,15 @@ static inline void SetPixelBackgoundColor(const Image *magick_restrict image,
     pixel[image->channel_map[AlphaPixelChannel].offset]=
       image->background_color.alpha_trait == UndefinedPixelTrait ? OpaqueAlpha :
       ClampToQuantum(image->background_color.alpha);
+}
+
+static inline void SetPixelBackgoundColor(const Image *magick_restrict image,
+  Quantum *magick_restrict pixel) magick_attribute((deprecated));
+
+static inline void SetPixelBackgoundColor(const Image *magick_restrict image,
+  Quantum *magick_restrict pixel)
+{
+  SetPixelBackgroundColor(image,pixel);
 }
 
 static inline void SetPixelBlack(const Image *magick_restrict image,
