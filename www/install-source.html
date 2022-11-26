@@ -107,16 +107,16 @@
 
 <p>ImageMagick builds on a variety of Linux and Linux-like operating systems including Linux, Solaris, FreeBSD, Mac OS X, and others.  A compiler is required and fortunately almost all modern Linux systems have one.  Clone the source repository:</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt">$ </span><span class='crtin'>git clone https://github.com/ImageMagick/ImageMagick.git ImageMagick-7.1.0</span></code></pre></ul>
-<p>Or download <a href="https://download.imagemagick.org/ImageMagick/download/ImageMagick.tar.gz">ImageMagick.tar.gz</a> from <a href="../download">imagemagick.org</a> or a <a href="download.html">mirror</a> and verify the distribution against its <a href="https://download.imagemagick.org/ImageMagick/download/digest.rdf">message digest</a>.</p>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>git clone https://github.com/ImageMagick/ImageMagick.git ImageMagick-7.1.0</span></code></pre></ul>
+<p>Or download <a href="../archive/ImageMagick.tar.gz">ImageMagick.tar.gz</a> from <a href="../archive">imagemagick.org</a> or a <a href="download.html">mirror</a> and verify the distribution against its <a href="../archive/digest.rdf">message digest</a>.</p>
 
 <p>Next configure and compile ImageMagick.  Note the <a href="https://en.wikipedia.org/wiki/Pkg-config">pkg-config</a> script is required so that ImageMagick can find certain optional delegate libraries on your system.  To configure, type:</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.1.0</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>./configure</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>make</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.0</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>make</span></code></pre></ul>
 <p>If build fails, try <samp>gmake</samp> instead.</p>
 
 <p>For advanced users, we recommend a modules build:</p>
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt">$ </span><span class='crtin'>./configure --with-modules</span></code></pre></ul><p>If ImageMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure --with-modules</span></code></pre></ul><p>If ImageMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
 <pre class="bg-light text-dark mx-4"><samp>sudo make install
 </samp></pre>
@@ -149,7 +149,7 @@
 <pre class="bg-light text-dark mx-4"><samp>git clone https://github.com/ImageMagick/ImageMagick-Windows.git ImageMagick-Windows-7</samp></pre>
 
 
-<p>and run <samp>CloneRepositories.cmd</samp>.  Or download <a href="https://download.imagemagick.org/ImageMagick/download/windows">ImageMagick-Windows.zip</a> from <a href="https://download.imagemagick.org/ImageMagick/download/windows">imagemagick.org</a> or a <a href="mirror.html">mirror</a> and verify the distribution against its <a href="https://download.imagemagick.org/ImageMagick/download/digest.rdf">message digest</a>.</p>
+<p>and run <samp>CloneRepositories.cmd</samp>.  Or download <a href="../archive/windows">ImageMagick-Windows.zip</a> from <a href="../archive/windows">imagemagick.org</a> or a <a href="mirror.html">mirror</a> and verify the distribution against its <a href="../archive/digest.rdf">message digest</a>.</p>
 
 <pre class="bg-light text-dark mx-4"><samp>unzip ImageMagick-windows.zip</samp></pre>
 <p> Unzip in a folder that does not need Admin permissions, otherwise Visual Studio will not be able to build the solution.<p> 
@@ -164,7 +164,7 @@ to compile the program and on completion run the program.</p>
 
 <p>To verify ImageMagick is working properly, launch a MS-DOS Command Prompt window and type</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.1.0</span><span class='crtout'><br/></span><span class="crtprompt">$ </span><span class='crtin'>convert logo: image.jpg</span></code></pre></ul><p>You may want to add the full path to VisualMagick\bin for your environment PATH variable, so you can call Magick/convert from any directory.<p>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.0</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>convert logo: image.jpg</span></code></pre></ul><p>You may want to add the full path to VisualMagick\bin for your environment PATH variable, so you can call Magick/convert from any directory.<p>
 <p>For a more comprehensive test, run the ImageMagick validation suite:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>validate
@@ -203,4 +203,4 @@ to compile the program and on completion run the program.</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th May 2022 15:26 -->
+<!-- Magick Cache 25th November 2022 21:40 -->

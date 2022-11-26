@@ -134,8 +134,8 @@ Image: rose.jpg
 
 <p>If the reconstructed image is a subimage of the image, the compare program returns the best match offset.  In addition, it returns a similarity image such that an exact match location is completely white and if none of the pixels match, black, otherwise some gray level in-between:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>$ magick compare -metric RMSE -subimage-search logo.png wizard.jpg similarity.tif
-85.05 (0.00129778) @ 353,157 </samp></pre>
+<pre class="bg-light text-dark mx-4"><samp>$ magick compare -metric NCC -subimage-search logo.png hat.png similarity.png
+0.99870222 @ 353,157 </samp></pre>
 
 <p>You can find additional examples of using <samp>compare</samp> in <a href="../Usage">Examples of ImageMagick Usage</a>.</p>
 
@@ -147,7 +147,7 @@ Image: rose.jpg
 
 <p>The <samp>compare</samp> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 
-<table class="table table-sm table-hover">
+<table class="table table-sm table-hover table-striped">
   <tbody>
   <tr>
     <th align="left">Option</th>
@@ -466,4 +466,4 @@ transparent, extract, background, or shape the alpha channel</td>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th May 2022 15:32 -->
+<!-- Magick Cache 25th November 2022 23:07 -->

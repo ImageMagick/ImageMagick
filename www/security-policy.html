@@ -122,7 +122,6 @@
   &lt;policy domain="cache" name="memory-map" value="anonymous"/>
   &lt;policy domain="cache" name="synchronize" value="true"/>
   &lt;policy domain="cache" name="shared-secret" value="<em>my-secret-passphrase</em>" stealth="True"/>
-  &lt;policy domain="system" name="precision" value="6"/>
   &lt;policy domain="system" name="shred" value="1"/>
 &lt;/policymap></samp></pre>
 
@@ -145,10 +144,11 @@ convert: no images defined `wizard.jpg'</pre>
 <p>The module policy enables or disables a complete module for both read or write.  To just read or write an image format, use the coder policy instead.  For example, we disable reading just a few Postscript related formats, however, you can still write them:</p>
 <pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="coder" rights="write" pattern="{PDF,PS,PS2,PS3,XPS}" /></samp></pre>
 
-<p>As of ImageMagick 7.0.7-0, you can allocate the pixel cache and some internal buffers with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero resulting in a minor performance penalty.  You can also securely delete any temporary files for increased security.  The value is the number of times to shred (replace its content with random data) before deleting a temporary file.  For example,</p>
+<p>As of ImageMagick 7.0.7-0, you can allocate the pixel cache and some internal buffers with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero resulting in a minor performance penalty.  You can also jumble the contents of certain memory buffers (requires version 7.1.0-38) and temporary files before they are freed or deleted.  The shred value is the number of times to replace content with random data.  For example,</p>
 <pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="system" name="memory-map" value="anonymous"/>
 &lt;policy domain="cache" name="memory-map" value="anonymous"/>
 &lt;policy domain="system" name="shred" value="1"/></samp></pre>
+<p>For performance reasons, the first pass is fast by repeating the random sequence as necessary to overwrite the contents of the buffer or file.  Subsequent passes are an order of magnitude slower, but generate cryptographically strong random bytes for the length of the buffer or file.</p>
 
 <p>Some image processing algorithms (e.g. wavelet transform) might consume a substantial amount of memory to complete.  ImageMagick maintains a separate memory pool for these large resource requests and as of 7.0.6-1 permits you to set a maximum request limit.  If the limit is exceeded, the allocation is instead memory-mapped on disk.  Here we limit the maximum memory request by policy:</p>
 <pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="system" name="max-memory-request" value="256MiB"/> </samp></pre>
@@ -209,9 +209,6 @@ Path: ImageMagick-7/policy.xml
   Policy: Resource
     name: temporary-path
     value: /opt/tmp
-  Policy: System
-    name: precision
-    value: 6
   Policy: Coder
     rights: Write 
     pattern: {HTTP,HTTPS,MVG,PS,PDF}
@@ -294,4 +291,4 @@ Path: [built-in]
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th May 2022 15:44 -->
+<!-- Magick Cache 25th November 2022 21:14 -->

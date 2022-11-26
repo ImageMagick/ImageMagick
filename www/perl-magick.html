@@ -97,7 +97,7 @@
 <a class="anchor" id="introduction"></a>
 <p class="lead magick-description"><a href="download.html">PerlMagick</a> is an objected-oriented <a href="http://www.perl.com/perl/">Perl</a> interface to ImageMagick. Use the module to read, manipulate, or write an image or image sequence from within a Perl script. This makes it very suitable for Web CGI scripts. You must have ImageMagick 6.5.5 or above and Perl version 5.005_02 or greater installed on your system for PerlMagick to build properly.</p>
 
-<p>There are a number of useful scripts available to show you the value of PerlMagick. You can do Web based image manipulation and conversion with <a href="https://download.imagemagick.org/ImageMagick/download/perl">MagickStudio</a>, or use <a href="https://github.com/ImageMagick/ImageMagick/tree/main/PerlMagick/demo/tree.pl">L-systems</a> to create images of plants using mathematical constructs, and finally navigate through collections of thumbnail images and select the image to view with the <a href="http://webmagick.sourceforge.net/">WebMagick Image Navigator</a>.</p>
+<p>There are a number of useful scripts available to show you the value of PerlMagick. You can do Web based image manipulation and conversion with <a href="../archive/perl">MagickStudio</a>, or use <a href="https://github.com/ImageMagick/ImageMagick/tree/main/PerlMagick/demo/tree.pl">L-systems</a> to create images of plants using mathematical constructs, and finally navigate through collections of thumbnail images and select the image to view with the <a href="http://webmagick.sourceforge.net/">WebMagick Image Navigator</a>.</p>
 
 <p>You can try PerlMagick from your Web browser at the <a href="../MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>. Or, you can see <a href="examples.html">examples</a> of select PerlMagick functions.</p>
 
@@ -110,7 +110,7 @@
 <pre class="bg-light text-dark mx-4"><samp>yum install ImageMagick-perl
 </samp></pre>
 
-<p>If not, you must install PerlMagick from the ImageMagick source distribution.  Download the latest <a href="https://download.imagemagick.org/ImageMagick/download/ImageMagick.tar.gz">source</a> release.</p>
+<p>If not, you must install PerlMagick from the ImageMagick source distribution.  Download the latest <a href="../archive/ImageMagick.tar.gz">source</a> release.</p>
 
 <p>Unpack the distribution with this command:</p>
 
@@ -119,7 +119,7 @@
 
 <p>Next configure and compile ImageMagick:</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt">$ </span><span class='crtin'>cd ImageMagick-7.1.0<br/>$ ./configure -with-perl<br/>$ make</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.0<br/>$ ./configure -with-perl<br/>$ make</span></code></pre></ul>
 <p>If ImageMagick / PerlMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
 <pre class="bg-light text-dark mx-4"><samp>sudo make install
@@ -294,7 +294,7 @@ $p-&gt;Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);   # 3x3 Gaussian kernel
 
 <p>Use the methods listed below to either read, write, or display an image or image sequence:</p>
 
-<table class="table table-sm table-hover caption-top">
+<table class="table table-sm table-hover table-striped caption-top">
 <caption>Read or Write Methods</caption>
 <thead>
   <colgroup>
@@ -390,7 +390,8 @@ $image-&gt;[$x]-&gt;Frame("100x200");
 
 <p>And here is a list of other image manipulation methods you can call:</p>
 
-<table class="table table-sm table-hover caption-top">
+<div class="table-responsive pre-scrollable" style="font-size:smaller !important;">
+<table class="table table-sm table-hover table-striped caption-top">
 <caption>Image Manipulation Methods</caption>
 <thead>
   <tr>
@@ -445,7 +446,7 @@ $image-&gt;[$x]-&gt;Frame("100x200");
 
   <tr>
     <td>Annotate</td>
-    <td>text=&gt;<i>string</i>, font=&gt;<i>string</i>, family=&gt;<i>string</i>, style=&gt;{Normal, Italic, Oblique, Any}, stretch=&gt;{Normal, UltraCondensed, ExtraCondensed, Condensed, SemiCondensed, SemiExpanded, Expanded, ExtraExpanded, UltraExpanded}, weight=&gt;<i>integer</i>, pointsize=&gt;<i>integer</i>, density=&gt;<i>geometry</i>, stroke=&gt;<i><a href="color.html">color name</a></i>, strokewidth=&gt;<i>integer</i>, fill=&gt;<i><a href="color.html">color name</a></i>, undercolor=&gt;<i><a href="color.html">color name</a></i>, kerning=&gt;<i>float</i>, geometry=&gt;<i>geometry</i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}, antialias=&gt;{true, false}, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt;<i>float, float</i>, rotate=&gt;<i>float</i>. skewX=&gt;<i>float</i>, skewY=&gt; <i>float</i>, align=&gt;{Left, Center, Right}, encoding=&gt;{UTF-8}, interline-spacing=&gt;<i>double</i>, interword-spacing=&gt;<i>double</i>, direction=&gt;{right-to-left, left-to-right}, decorate=&gt;{none, underline, overline, line-through}</td>
+    <td>text=&gt;<i>string</i>, font=&gt;<i>string</i>, family=&gt;<i>string</i>, style=&gt;{Normal, Italic, Oblique, Any}, stretch=&gt;{Normal, UltraCondensed, ExtraCondensed, Condensed, SemiCondensed, SemiExpanded, Expanded, ExtraExpanded, UltraExpanded}, weight=&gt;<i>integer</i>, pointsize=&gt;<i>integer</i>, density=&gt;<i>geometry</i>, stroke=&gt;<i><a href="color.html">color name</a></i>, strokewidth=&gt;<i>integer</i>, fill=&gt;<i><a href="color.html">color name</a></i>, undercolor=&gt;<i><a href="color.html">color name</a></i>, kerning=&gt;<i>float</i>, geometry=&gt;<i>geometry</i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}, antialias=&gt;{true, false}, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt;<i>float, float</i>, rotate=&gt;<i>float</i>. skewX=&gt;<i>float</i>, skewY=&gt; <i>float</i>, align=&gt;{Left, Center, Right}, encoding=&gt;{UTF-8}, interline-spacing=&gt;<i>double</i>, interword-spacing=&gt;<i>double</i>, direction=&gt;{right-to-left, left-to-right}, decorate=&gt;{none, underline, overline, line-through}, word-break=&gt;{normal, break-word}</td>
     <td>annotate an image with text. See <a href="perl-magick.html#misc">QueryFontMetrics</a> to get font metrics without rendering any text.</td>
   </tr>
 
@@ -685,7 +686,7 @@ $image-&gt;[$x]-&gt;Frame("100x200");
 
   <tr>
     <td>Draw</td>
-    <td>primitive=&gt;{point, line, rectangle, arc, ellipse, circle, path, polyline, polygon, bezier, color, matte, text, @<i>filename</i>}, points=&gt;<i>string</i> , method=&gt;<i>{Point, Replace, Floodfill, FillToBorder, Reset}</i>, stroke=&gt;<i><a href="color.html">color name</a></i>, fill=&gt;<i><a href="color.html">color name</a></i>, font=&gt;<i>string</i>, pointsize=&gt;<i>integer</i>, strokewidth=&gt;<i>float</i>, antialias=&gt;{true, false}, bordercolor=&gt;<i><a href="color.html">color name</a></i>, x=&gt;<i>float</i>, y=&gt;<i>float</i>, dash-offset=&gt;<i>float</i>, dash-pattern=&gt;<i>array of float values</i>, affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt;<i>float, float</i>, rotate=&gt;<i>float</i>,  skewX=&gt;<i>float</i>, skewY=&gt;<i>float</i>, interpolate=&gt;{undefined, average, bicubic, bilinear, mesh, nearest-neighbor, spline}, kerning=&gt;<i>float</i>, text=&gt;<i>string</i>, vector-graphics=&gt;<i>string</i>, interline-spacing=&gt;<i>double</i>, interword-spacing=&gt;<i>double</i>, direction=&gt;{right-to-left, left-to-right}</td>
+    <td>primitive=&gt;{point, line, rectangle, arc, ellipse, circle, path, polyline, polygon, bezier, color, matte, text, @<i>filename</i>}, points=&gt;<i>string</i> , method=&gt;<i>{Point, Replace, Floodfill, FillToBorder, Reset}</i>, stroke=&gt;<i><a href="color.html">color name</a></i>, fill=&gt;<i><a href="color.html">color name</a></i>, font=&gt;<i>string</i>, pointsize=&gt;<i>integer</i>, strokewidth=&gt;<i>float</i>, antialias=&gt;{true, false}, bordercolor=&gt;<i><a href="color.html">color name</a></i>, x=&gt;<i>float</i>, y=&gt;<i>float</i>, dash-offset=&gt;<i>float</i>, dash-pattern=&gt;<i>array of float values</i>, affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt;<i>float, float</i>, rotate=&gt;<i>float</i>,  skewX=&gt;<i>float</i>, skewY=&gt;<i>float</i>, interpolate=&gt;{undefined, average, bicubic, bilinear, mesh, nearest-neighbor, spline}, kerning=&gt;<i>float</i>, text=&gt;<i>string</i>, vector-graphics=&gt;<i>string</i>, interline-spacing=&gt;<i>double</i>, interword-spacing=&gt;<i>double</i>, direction=&gt;{right-to-left, left-to-right}, word-break=&gt;{normal, break-word}</td>
     <td>annotate an image with one or more graphic primitives.</td>
   </tr>
 
@@ -1295,6 +1296,7 @@ fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, 
   </tr>
 </tbody>
 </table>
+</div>
 
 <p>Note, that the <samp>geometry</samp> parameter is a short cut for the <samp>width</samp> and <samp>height</samp> parameters (e.g.  <samp>geometry=&gt;'106x80'</samp> is equivalent to <samp>width=&gt;106, height=&gt;80</samp> ).</p>
 
@@ -1383,7 +1385,8 @@ can use the integers 1 and 0.</p>
 
 <p>And here is a list of all the image attributes you can set:</p>
 
-<table class="table table-sm table-hover caption-top">
+<div class="table-responsive pre-scrollable" style="font-size:smaller !important;">
+<table class="table table-sm table-hover table-striped caption-top">
 <caption>Image Attributes</caption>
 <thead>
   <tr>
@@ -1779,6 +1782,7 @@ can use the integers 1 and 0.</p>
   </tr>
   </tbody>
 </table>
+</div>
 
 <p>Note, that the <samp>geometry</samp> parameter is a short cut for the <samp>width</samp> and <samp>height</samp> parameters (e.g.  <samp>geometry=&gt;'106x80'</samp> is equivalent to <samp>width=&gt;106, height=&gt;80</samp>).</p>
 
@@ -1797,7 +1801,8 @@ $width = $image-&gt;[3]-&gt;Get('columns');
 
 <p>In addition to all the attributes listed in <a href="perl-magick.html#set-attribute">Set an Image Attribute</a> , you can get these additional attributes:</p>
 
-<table class="table table-sm table-hover caption-top">
+<div class="table-responsive pre-scrollable" style="font-size:smaller !important;">
+<table class="table table-sm table-hover table-striped caption-top">
 <caption>Image Attributes</caption>
 <thead>
   <tr>
@@ -2055,6 +2060,7 @@ $width = $image-&gt;[3]-&gt;Get('columns');
   </tr>
   </tbody>
 </table>
+</div>
 
 <p>GetAttribute() is an alias for method Get().</p>
 
@@ -2065,7 +2071,7 @@ $width = $image-&gt;[3]-&gt;Get('columns');
 
 <p>Mathematically and visually annotate the difference between an image and its reconstruction with the Compare() method.  The method supports these parameters:</p>
 
-<table class="table table-sm table-hover caption-top">
+<table class="table table-sm table-hover table-striped caption-top">
 <caption>Compare Parameters</caption>
 <thead>
   <tr>
@@ -2127,7 +2133,8 @@ $difference->Display();
 
 <p>And here is a list of Montage() parameters you can set:</p>
 
-<table class="table table-sm table-hover caption-top">
+<div class="table-responsive pre-scrollable" style="font-size:smaller !important;">
+<table class="table table-sm table-hover table-striped caption-top">
 <caption>Montage Parameters</caption>
 <thead>
   <tr>
@@ -2243,6 +2250,7 @@ South, SouthEast</td>
   </tr>
   </tbody>
 </table>
+</div>
 
 <p>Note, that the <samp>geometry</samp> parameter is a short cut for the <samp>width</samp> and <samp>height</samp> parameters (e.g.  <samp>geometry=&gt;'106x80'</samp> is equivalent to <samp>width=&gt;106, height=&gt;80</samp>).</p>
 
@@ -2254,9 +2262,9 @@ South, SouthEast</td>
 
 <p>A blob contains data that directly represent a particular image
 format in memory instead of on disk. PerlMagick supports
-blobs in any of these image <a href="formats.html">formats</a> and provides methods to convert a blob to or from a particular image format.</p>
+blobs in any of these image <a href="../www/formats.html">formats</a> and provides methods to convert a blob to or from a particular image format.</p>
 
-<table class="table table-sm table-hover caption-top">
+<table class="table table-sm table-hover table-striped caption-top">
 <caption>Blob Methods</caption>
 <thead>
   <tr>
@@ -2304,7 +2312,7 @@ $image-&gt;BlobToImage(@blob);
 
 <p>Use these methods to obtain direct access to the image pixels:</p>
 
-<table class="table table-sm table-hover caption-top">
+<table class="table table-sm table-hover table-striped caption-top">
 <caption>Direct-access to Image Pixels</caption>
 <thead>
   <tr>
@@ -2661,4 +2669,4 @@ XServerWarning
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th May 2022 16:28 -->
+<!-- Magick Cache 25th November 2022 23:12 -->

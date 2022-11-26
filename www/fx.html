@@ -279,7 +279,7 @@
   <dt class="col-md-4"> iterators:</dt>
     <dd class="col-md-8"> do(), for(), while()</dd>
   <dt class="col-md-4"> image attributes:</dt>
-  	<dd class="col-md-8"> s.depth, s.kurtosis, s.maxima, s.minima, s.resolution.x, s.resolution.y, s.skewness, s.standard_deviation</dd>
+  	<dd class="col-md-8"> s.depth, s.kurtosis, s.maxima, s.mean, s.minima, s.resolution.x, s.resolution.y, s.skewness, s.standard_deviation</dd>
   <dt class="col-md-4"> user settings:</dt>
   	<dd class="col-md-8">define Fx symbols as user settings, e.g. <pre class="bg-light text-dark mx-4"><samp>magick ... -set option:wd1 "%[fx:w/2]" -resize "%[fx:wd1-5]" ...</samp></pre><dd>
 </dl>
@@ -379,7 +379,7 @@
 <dt class="col-md-4"> <samp>tanh(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> hyperbolic tangent function</dd>
 <dt class="col-md-4"> <samp>trunc(</samp><var>x</var><samp>)</samp></dt><dd class="col-md-8"> round to integer, towards zero</dd>
 <dt class="col-md-4"> <samp>while(</samp><var>condition</var>, <var>statements</var><samp>)</samp></dt><dd class="col-md-8"> iterate while the condition is not equal to 0</dd>
-<dt class="col-md-4"> <samp>image.depth, image.kurtosis, image.maxima, image.minima, image.resolution.x, image.resolution.y, image.skewness, image.standard_deviation</samp></dt><dd class="col-md-8"> image attributes</dd>
+<dt class="col-md-4"> <samp>image.depth, image.kurtosis, image.maxima, image.mean, image.median, image.minima, image.resolution.x, image.resolution.y, image.skewness, image.standard_deviation</samp></dt><dd class="col-md-8"> image attributes</dd>
 </dl>
 <p>The expression semantics include these rules:</p>
 
@@ -505,4 +505,4 @@ Red channel of NW corner of image #1 is 0.184582
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th May 2022 16:41 -->
+<!-- Magick Cache 25th November 2022 21:17 -->

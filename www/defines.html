@@ -125,7 +125,7 @@ use:</p>
 
 <div class="table-responsive" style="font-size:smaller !important;">
 
-<table class="table table-sm table-hover">
+<table class="table table-sm table-hover table-striped">
   <tr>
     <th align="center" colspan=2>Command-line Defines</th>
   </tr>
@@ -576,9 +576,7 @@ use:</p>
 
   <tr>
     <td>phash:normalize=<var>true</var></td>
-    <td>Normalize the phash metric by dividing by the number of channels
-    specified by <samp>-define phash:colorspaces</samp> when using compare
-    -metric phash. (as of IM 7.0.3-8)</td>
+    <td>Normalize the phash metric</td>
   </tr>
 
   <tr>
@@ -643,8 +641,18 @@ use:</p>
   </tr>
 
   <tr>
+    <td>registry:date:precision=<var>length</var></td>
+    <td>Set the maximum number of characters printed for any timestamp.</td>
+  </tr>
+
+  <tr>
     <td>registry:option:pedantic=<var>true | false</var></td>
     <td>By default, if a command-line option is also a filename (e.g., -quality), it is intrepetted as a filename.  Set this option to <samp>true</samp> to interpret it as an option. </td>
+  </tr>
+
+  <tr>
+    <td>registry:precision=<var>value</var></td>
+    <td>Set the maximum number of significant digits to be printed.</td>
   </tr>
 
   <tr>
@@ -867,8 +875,32 @@ use:</p>
   </tr>
 
   <tr>
+    <td>ftxt:chsep=<var>value</var></td>
+    <td>A single text character that separates channel values for reading and
+    writing. Default: "," (Comma).</td>
+  </tr>
+
+  <tr>
+    <td>ftxt:format=<var>value</var></td>
+    <td>The format string for writing and reading. Default: "\x,\y:\c".
+    For escapes \x etc, see
+    [ftxt: formatted text](http://im.snibgo.com/fmttxt.htm).</td>
+  </tr>
+
+  <tr>
+    <td>ftxt:hasalpha=<var>value</var></td>
+    <td>Whether the text has an alpha channel, for reading only.
+    Default: false.</td>
+  </tr>
+
+  <tr>
+    <td>ftxt:nummeta=<var>value</var></td>
+    <td>The number of meta channels, for reading only. Default 0 (Zero).</td>
+  </tr>
+
+  <tr>
     <td>heic:chroma=<var>value</var></td>
-    <td>set the HEIC chroma parameter.</td>
+    <td>set the HEIC chroma parameter. Possible values are: "420", "422", "444". Default is "420".</td>
     </td>
   </tr>
 
@@ -880,7 +912,7 @@ use:</p>
 
   <tr>
     <td>heic:speed=<var>value</var></td>
-    <td>set the HEIC speed parameter.</td>
+    <td>set the HEIC speed parameter. Integer value from 0-9. Default is 5.</td>
     </td>
   </tr>
 
@@ -894,7 +926,8 @@ use:</p>
 
   <tr>
     <td>icon:auto-resize</td>
-    <td>Automatically stores multiple sizes when writing an ico image (requires a 256x256 input image).</td>
+    <td>Automatically stores multiple sizes when writing an ico image
+    (requires a 256x256 input image).</td>
   </tr>
 
   <tr>
@@ -1014,13 +1047,23 @@ use:</p>
   </tr>
 
   <tr>
-    <td>pdf:fit-page=<var>geometry</var></td>
-    <td><var>Geometry</var> specifies the scaling dimensions for resizing when the PDF is being read. The geometry is either WxH{%} or page size. No offsets are allowed. (introduced in IM 6.8.8-8)</td>
+    <td>pdf:author=<var>author</var></td>
+    <td>Sets the author of the document</td>
   </tr>
 
   <tr>
-    <td>pdf:author=<var>author</var></td>
-    <td></td>
+    <td>pdf:create-epoch=<var>seconds</var></td>
+    <td>Sets the creation time of the document</td>
+  </tr>
+
+  <tr>
+    <td>pdf:creator=<var>creator</var></td>
+    <td>Sets the creator of the document</td>
+  </tr>
+
+  <tr>
+    <td>pdf:fit-page=<var>geometry</var></td>
+    <td><var>Geometry</var> specifies the scaling dimensions for resizing when the PDF is being read. The geometry is either WxH{%} or page size. No offsets are allowed. (introduced in IM 6.8.8-8)</td>
   </tr>
 
   <tr>
@@ -1039,13 +1082,28 @@ use:</p>
   </tr>
 
   <tr>
+    <td>pdf:keywords=<var>keywords</var></td>
+    <td>Sets the keywords of the document</td>
+  </tr>
+
+  <tr>
+    <td>pdf:modify-epoch=<var>seconds</var></td>
+    <td>Sets the modification time of the document</td>
+  </tr>
+
+  <tr>
     <td>pdf:page-direction=<var>right-to-left</var></td>
     <td> </td>
   </tr>
 
   <tr>
     <td>pdf:producer=<var>producer</var></td>
-    <td></td>
+    <td>Sets the producer of the document</td>
+  </tr>
+
+  <tr>
+    <td>pdf:subject=<var>subject</var></td>
+    <td>Sets the subject of the document</td>
   </tr>
 
   <tr>
@@ -1060,7 +1118,7 @@ use:</p>
 
   <tr>
     <td>pdf:title=<var>title</var></td>
-    <td></td>
+    <td>Sets the title of the document</td>
   </tr>
 
   <tr>
@@ -1383,17 +1441,17 @@ use:</p>
 
   <tr>
     <td>video:intermediate-format=<var>{pam,webp}</var></td>
-    <td>Set the video intermediate format option of <samp>ffpmeg</samp>.</td>
+    <td>Set the video intermediate format option of <samp>ffmpeg</samp>.</td>
   </tr>
 
   <tr>
     <td>video:pixel-format=<var>value</var></td>
-    <td>Set the pixel format option of <samp>ffpmeg</samp>.</td>
+    <td>Set the pixel format option of <samp>ffmpeg</samp>.</td>
   </tr>
 
   <tr>
     <td>video:vsync=<var>value</var></td>
-    <td>Set the vsync option of <samp>ffpmeg</samp>.</td>
+    <td>Set the vsync option of <samp>ffmpeg</samp>.</td>
   </tr>
 
   <tr>
@@ -1637,4 +1695,4 @@ use:</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 30th May 2022 17:36 -->
+<!-- Magick Cache 25th November 2022 22:30 -->
