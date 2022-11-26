@@ -56,7 +56,7 @@
 #include "MagickCore/utility-private.h"
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
 struct _TokenInfo
 {

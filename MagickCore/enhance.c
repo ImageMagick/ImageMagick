@@ -202,7 +202,7 @@ MagickExport MagickBooleanType AutoLevelImage(Image *image,
 %
 %  BrightnessContrastImage() changes the brightness and/or contrast of an
 %  image.  It converts the brightness and contrast parameters into slope and
-%  intercept and calls a polynomical function to apply to the image.
+%  intercept and calls a polynomial function to apply to the image.
 %
 %  The format of the BrightnessContrastImage method is:
 %
@@ -223,7 +223,7 @@ MagickExport MagickBooleanType AutoLevelImage(Image *image,
 MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   const double brightness,const double contrast,ExceptionInfo *exception)
 {
-#define BrightnessContastImageTag  "BrightnessContast/Image"
+#define BrightnessContrastImageTag  "BrightnessContrast/Image"
 
   double
     alpha,
@@ -500,7 +500,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
     *lut;
 
   /*
-    Constrast limited adapted histogram equalization.
+    Contrast limited adapted histogram equalization.
   */
   if (clip_limit == 1.0)
     return(MagickTrue);
@@ -802,7 +802,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
 %  ClutImage() replaces each color value in the given image, by using it as an
 %  index to lookup a replacement color value in a Color Look UP Table in the
 %  form of an image.  The values are extracted along a diagonal of the CLUT
-%  image so either a horizontal or vertial gradient image can be used.
+%  image so either a horizontal or vertical gradient image can be used.
 %
 %  Typically this is used to either re-color a gray-scale image according to a
 %  color gradient in the CLUT image, or to perform a freeform histogram
@@ -810,7 +810,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
 %  CLUT image.
 %
 %  When the 'channel' mask includes the matte/alpha transparency channel but
-%  one image has no such channel it is assumed that that image is a simple
+%  one image has no such channel it is assumed that image is a simple
 %  gray-scale image that will effect the alpha channel values, either for
 %  gray-scale coloring (with transparent or semi-transparent colors), or
 %  a histogram adjustment of existing alpha channel values.   If both images
@@ -3196,10 +3196,10 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 %  bases, as per LevelImage().  The given colors allows you to specify
 %  different level ranges for each of the color channels separately.
 %
-%  If the boolean 'invert' is set true the image values will modifyed in the
+%  If the boolean 'invert' is set true the image values will modified in the
 %  reverse direction. That is any existing "black" and "white" colors in the
 %  image will become the color values given, with all other values compressed
-%  appropriately.  This effectivally maps a greyscale gradient into the given
+%  appropriately.  This effectively maps a greyscale gradient into the given
 %  color gradient.
 %
 %  The format of the LevelImageColors method is:

@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore image visual effecs methods.
+  MagickCore image visual effects methods.
 */
 #ifndef MAGICKCORE_VISUAL_EFFECTS_H
 #define MAGICKCORE_VISUAL_EFFECTS_H

@@ -1456,13 +1456,13 @@ MagickExport char **GetColorList(const char *pattern,
 %
 %    o pixel: the pixel.
 %
-%    o hex: A value other than zero returns the tuple in a hexidecimal format.
+%    o hex: A value other than zero returns the tuple in a hexadecimal format.
 %
 %    o tuple: Return the color tuple as this string.
 %
 */
 
-static void ConcatentateHexColorComponent(const PixelInfo *pixel,
+static void ConcatenateHexColorComponent(const PixelInfo *pixel,
   const PixelChannel channel,char *tuple)
 {
   char
@@ -1547,13 +1547,13 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
         Convert pixel to hex color.
       */
       (void) ConcatenateMagickString(tuple,"#",MagickPathExtent);
-      ConcatentateHexColorComponent(pixel,RedPixelChannel,tuple);
-      ConcatentateHexColorComponent(pixel,GreenPixelChannel,tuple);
-      ConcatentateHexColorComponent(pixel,BluePixelChannel,tuple);
+      ConcatenateHexColorComponent(pixel,RedPixelChannel,tuple);
+      ConcatenateHexColorComponent(pixel,GreenPixelChannel,tuple);
+      ConcatenateHexColorComponent(pixel,BluePixelChannel,tuple);
       if (pixel->colorspace == CMYKColorspace)
-        ConcatentateHexColorComponent(pixel,BlackPixelChannel,tuple);
+        ConcatenateHexColorComponent(pixel,BlackPixelChannel,tuple);
       if (pixel->alpha_trait != UndefinedPixelTrait)
-        ConcatentateHexColorComponent(pixel,AlphaPixelChannel,tuple);
+        ConcatenateHexColorComponent(pixel,AlphaPixelChannel,tuple);
       return;
     }
   /*

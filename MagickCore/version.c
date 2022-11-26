@@ -486,7 +486,7 @@ MagickExport const char *GetMagickReleaseDate(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetMagickSignature() returns a signature that uniquely encodes the
-%  MagickCore libary version, quantum depth, HDRI status, OS word size, and
+%  MagickCore library version, quantum depth, HDRI status, OS word size, and
 %  endianness.
 %
 %  The format of the GetMagickSignature method is:

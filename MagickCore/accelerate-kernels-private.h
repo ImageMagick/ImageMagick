@@ -624,7 +624,7 @@ OPENCL_ENDIF()
 
   // Pre: a<M,b<M
   // Post: r=(a*b) mod M
-  // This could be done more efficently, but it is portable, and should
+  // This could be done more efficiently, but it is portable, and should
   // be easy to understand. It can be replaced with any of the better
   // modular multiplication algorithms (for example if you know you have
   // double precision available or something).
@@ -1688,7 +1688,7 @@ OPENCL_ENDIF()
 
   STRINGIFY(
   /*
-  apply FunctionImageChannel(braightness-contrast)
+  apply FunctionImageChannel(brightness-contrast)
   */
   CLQuantum ApplyFunction(float pixel,const MagickFunction function,
     const unsigned int number_parameters,__constant float *parameters)
@@ -1752,7 +1752,7 @@ OPENCL_ENDIF()
   /*
   Improve brightness / contrast of the image
   channel : define which channel is improved
-  function : the function called to enchance the brightness contrast
+  function : the function called to enhance the brightness contrast
   number_parameters : numbers of parameters 
   parameters : the parameter
   */
@@ -2283,7 +2283,7 @@ OPENCL_ENDIF()
     http://www.cs.utexas.edu/users/fussell/courses/cs384g/lectures/mitchell/
     Mitchell.pdf.
 
-    Coefficents are determined from B,C values:
+    Coefficients are determined from B,C values:
     P0 = (  6 - 2*B       )/6 = coeff[0]
     P1 =         0
     P2 = (-18 +12*B + 6*C )/6 = coeff[1]
@@ -2564,7 +2564,7 @@ OPENCL_ENDIF()
       }
       barrier(CLK_LOCAL_MEM_FENCE);
 
-      // accumulatte the filtered pixel value and the density
+      // accumulate the filtered pixel value and the density
       for (unsigned int i = 0; i < numItems; i++) {
         if (pixelIndex != -1) {
           if (itemID%numItems == i) {
@@ -2730,7 +2730,7 @@ OPENCL_ENDIF()
       }
       barrier(CLK_LOCAL_MEM_FENCE);
 
-      // accumulatte the filtered pixel value and the density
+      // accumulate the filtered pixel value and the density
       for (unsigned int i = 0; i < numItems; i++) {
         if (pixelIndex != -1) {
           if (itemID%numItems == i) {

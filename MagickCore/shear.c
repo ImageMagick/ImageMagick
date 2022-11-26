@@ -194,7 +194,7 @@ static MagickBooleanType CropToFitImage(Image **image,
 %  imperfections in the scanning or surface, or simply because the paper was
 %  not placed completely flat when scanned.
 %
-%  The result will be auto-croped if the artifact "deskew:auto-crop" is
+%  The result will be auto-cropped if the artifact "deskew:auto-crop" is
 %  defined, while the amount the image is to be deskewed, in degrees is also
 %  saved as the artifact "deskew:angle".
 %
@@ -213,8 +213,8 @@ static MagickBooleanType CropToFitImage(Image **image,
 %
 */
 
-static void RadonProjection(const Image *image,MatrixInfo *source_matrixs,
-  MatrixInfo *destination_matrixs,const ssize_t sign,size_t *projection)
+static void RadonProjection(const Image *image,MatrixInfo *source_matrices,
+  MatrixInfo *destination_matrices,const ssize_t sign,size_t *projection)
 {
   MatrixInfo
     *swap;
@@ -229,8 +229,8 @@ static void RadonProjection(const Image *image,MatrixInfo *source_matrixs,
   size_t
     step;
 
-  p=source_matrixs;
-  q=destination_matrixs;
+  p=source_matrices;
+  q=destination_matrices;
   for (step=1; step < GetMatrixColumns(p); step*=2)
   {
     for (x=0; x < (ssize_t) GetMatrixColumns(p); x+=2*(ssize_t) step)
@@ -331,8 +331,8 @@ static MagickBooleanType RadonTransform(const Image *image,
     *image_view;
 
   MatrixInfo
-    *destination_matrixs,
-    *source_matrixs;
+    *destination_matrices,
+    *source_matrices;
 
   MagickBooleanType
     status;
@@ -352,23 +352,23 @@ static MagickBooleanType RadonTransform(const Image *image,
     bits[256];
 
   for (width=1; width < ((image->columns+7)/8); width<<=1) ;
-  source_matrixs=AcquireMatrixInfo(width,image->rows,sizeof(unsigned short),
+  source_matrices=AcquireMatrixInfo(width,image->rows,sizeof(unsigned short),
     exception);
-  destination_matrixs=AcquireMatrixInfo(width,image->rows,
+  destination_matrices=AcquireMatrixInfo(width,image->rows,
     sizeof(unsigned short),exception);
-  if ((source_matrixs == (MatrixInfo *) NULL) ||
-      (destination_matrixs == (MatrixInfo *) NULL))
+  if ((source_matrices == (MatrixInfo *) NULL) ||
+      (destination_matrices == (MatrixInfo *) NULL))
     {
-      if (destination_matrixs != (MatrixInfo *) NULL)
-        destination_matrixs=DestroyMatrixInfo(destination_matrixs);
-      if (source_matrixs != (MatrixInfo *) NULL)
-        source_matrixs=DestroyMatrixInfo(source_matrixs);
+      if (destination_matrices != (MatrixInfo *) NULL)
+        destination_matrices=DestroyMatrixInfo(destination_matrices);
+      if (source_matrices != (MatrixInfo *) NULL)
+        source_matrices=DestroyMatrixInfo(source_matrices);
       return(MagickFalse);
     }
-  if (NullMatrix(source_matrixs) == MagickFalse)
+  if (NullMatrix(source_matrices) == MagickFalse)
     {
-      destination_matrixs=DestroyMatrixInfo(destination_matrixs);
-      source_matrixs=DestroyMatrixInfo(source_matrixs);
+      destination_matrices=DestroyMatrixInfo(destination_matrices);
+      source_matrices=DestroyMatrixInfo(source_matrices);
       return(MagickFalse);
     }
   for (j=0; j < 256; j++)
@@ -422,7 +422,7 @@ static MagickBooleanType RadonTransform(const Image *image,
       if (bit == 8)
         {
           value=bits[byte];
-          (void) SetMatrixElement(source_matrixs,--i,y,&value);
+          (void) SetMatrixElement(source_matrices,--i,y,&value);
           bit=0;
           byte=0;
         }
@@ -432,11 +432,11 @@ static MagickBooleanType RadonTransform(const Image *image,
       {
         byte<<=(8-bit);
         value=bits[byte];
-        (void) SetMatrixElement(source_matrixs,--i,y,&value);
+        (void) SetMatrixElement(source_matrices,--i,y,&value);
       }
   }
-  RadonProjection(image,source_matrixs,destination_matrixs,-1,projection);
-  (void) NullMatrix(source_matrixs);
+  RadonProjection(image,source_matrices,destination_matrices,-1,projection);
+  (void) NullMatrix(source_matrices);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(image,image,image->rows,1)
@@ -479,7 +479,7 @@ static MagickBooleanType RadonTransform(const Image *image,
       if (bit == 8)
         {
           value=bits[byte];
-          (void) SetMatrixElement(source_matrixs,i++,y,&value);
+          (void) SetMatrixElement(source_matrices,i++,y,&value);
           bit=0;
           byte=0;
         }
@@ -489,13 +489,13 @@ static MagickBooleanType RadonTransform(const Image *image,
       {
         byte<<=(8-bit);
         value=bits[byte];
-        (void) SetMatrixElement(source_matrixs,i++,y,&value);
+        (void) SetMatrixElement(source_matrices,i++,y,&value);
       }
   }
-  RadonProjection(image,source_matrixs,destination_matrixs,1,projection);
+  RadonProjection(image,source_matrices,destination_matrices,1,projection);
   image_view=DestroyCacheView(image_view);
-  destination_matrixs=DestroyMatrixInfo(destination_matrixs);
-  source_matrixs=DestroyMatrixInfo(source_matrixs);
+  destination_matrices=DestroyMatrixInfo(destination_matrices);
+  source_matrices=DestroyMatrixInfo(source_matrices);
   return(MagickTrue);
 }
 
@@ -1556,7 +1556,7 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
 %  necessary for the new Image structure and returns a pointer to the new image.
 %
 %  ShearImage() is based on the paper "A Fast Algorithm for General Raster
-%  Rotatation" by Alan W. Paeth.
+%  Rotation" by Alan W. Paeth.
 %
 %  The format of the ShearImage method is:
 %
@@ -1687,7 +1687,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
 %  pointer to the new image.
 %
 %  ShearRotateImage() is based on the paper "A Fast Algorithm for General
-%  Raster Rotatation" by Alan W. Paeth.  ShearRotateImage is adapted from a
+%  Raster Rotation" by Alan W. Paeth.  ShearRotateImage is adapted from a
 %  similar method based on the Paeth paper written by Michael Halle of the
 %  Spatial Imaging Group, MIT Media Lab.
 %

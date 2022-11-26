@@ -525,7 +525,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ComparePixels() Compare the two pixels and return true if the pixels
-%  differ according to the given LayerType comparision method.
+%  differ according to the given LayerType comparison method.
 %
 %  This currently only used internally by CompareImagesBounds(). It is
 %  doubtful that this sub-routine will be useful outside this module.
@@ -559,7 +559,7 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
   o1 = (p->alpha_trait != UndefinedPixelTrait) ? p->alpha : OpaqueAlpha;
   o2 = (q->alpha_trait != UndefinedPixelTrait) ? q->alpha : OpaqueAlpha;
   /*
-    Pixel goes from opaque to transprency.
+    Pixel goes from opaque to transparency.
   */
   if (method == CompareClearLayer)
     return((MagickBooleanType) ( (o1 >= ((double) QuantumRange/2.0)) &&
@@ -802,7 +802,7 @@ MagickExport Image *CompareImagesLayers(const Image *image,
   if (bounds == (RectangleInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   /*
-    Set up first comparision images.
+    Set up first comparison images.
   */
   image_a=CloneImage(next,next->page.width,next->page.height,
     MagickTrue,exception);
@@ -1147,7 +1147,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
                 cleared=MagickFalse;
                 bounds[i]=try_bounds;
                 disposals[i-1]=DupDispose;
-                /* to be finalised later, if found to be optimial */
+                /* to be finalised later, if found to be optimal */
               }
             else
               dup_bounds.width=dup_bounds.height=0;
@@ -1166,7 +1166,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
             return((Image *) NULL);
           }
         bgnd_image->background_color.alpha_trait=BlendPixelTrait;
-        bgnd_bounds=bounds[i-1]; /* interum bounds of the previous image */
+        bgnd_bounds=bounds[i-1]; /* interim bounds of the previous image */
         ClearBounds(bgnd_image,&bgnd_bounds,exception);
         try_bounds=CompareImagesBounds(bgnd_image,curr,CompareAnyLayer,exception);
         try_cleared=IsBoundsCleared(bgnd_image,curr,&try_bounds,exception);
@@ -1187,7 +1187,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
             (void) FormatLocaleFile(stderr, "expand_clear: %.20gx%.20g%+.20g%+.20g%s\n",
                 (double) try_bounds.width,(double) try_bounds.height,
                 (double) try_bounds.x,(double) try_bounds.y,
-                try_bounds.x<0?"  (no expand nessary)":"");
+                try_bounds.x<0?"  (no expand necessary)":"");
 #endif
             if ( bgnd_bounds.x < 0 )
               bgnd_bounds = try_bounds;
@@ -1234,7 +1234,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
 #if DEBUG_OPT_FRAME
 /* Something strange is happening with a specific animation
  * CompareAnyLayers (normal method) and CompareClearLayers returns the whole
- * image, which is not posibly correct!  As verified by previous tests.
+ * image, which is not possibly correct!  As verified by previous tests.
  * Something changed beyond the bgnd_bounds clearing.  But without being able
  * to see, or writet he image at this point it is hard to tell what is wrong!
  * Only CompareOverlay seemed to return something sensible.
@@ -1261,7 +1261,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
           }
         /*
           Test if this background dispose is smaller than any of the
-          other methods we tryed before this (including duplicated frame)
+          other methods we tried before this (including duplicated frame)
         */
         if ( cleared ||
               bgnd_bounds.width*bgnd_bounds.height
@@ -1331,7 +1331,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
          (double) bounds[i-1].x,(double) bounds[i-1].y );
 #endif
 #if DEBUG_OPT_FRAME
-    (void) FormatLocaleFile(stderr, "interum %.20g : %s  %.20gx%.20g%+.20g%+.20g\n",
+    (void) FormatLocaleFile(stderr, "interim %.20g : %s  %.20gx%.20g%+.20g%+.20g\n",
          (double) i,
          CommandOptionToMnemonic(MagickDisposeOptions,disposals[i]),
          (double) bounds[i].width,(double) bounds[i].height,
@@ -1479,9 +1479,9 @@ MagickExport Image *OptimizePlusImageLayers(const Image *image,
 %  WARNING: This modifies the current images directly, rather than generate
 %  a new image sequence.
 %
-%  The format of the OptimizeImageTransperency method is:
+%  The format of the OptimizeImageTransparency method is:
 %
-%      void OptimizeImageTransperency(Image *image,ExceptionInfo *exception)
+%      void OptimizeImageTransparency(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1605,7 +1605,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
 %  No check is made with regards to image disposal setting, though it is the
 %  dispose setting of later image that is kept.  Also any time delays are also
 %  added together. As such coalesced image animations should still produce the
-%  same result, though with duplicte frames merged into a single frame.
+%  same result, though with duplicate frames merged into a single frame.
 %
 %  The format of the RemoveDuplicateLayers method is:
 %
@@ -1758,13 +1758,13 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
 %
 %  Composition uses given x and y offsets, as the 'origin' location of the
 %  source images virtual canvas (not the real image) allowing you to compose a
-%  list of 'layer images' into the destiantioni images.  This makes it well
-%  sutiable for directly composing 'Clears Frame Animations' or 'Coaleased
-%  Animations' onto a static or other 'Coaleased Animation' destination image
+%  list of 'layer images' into the destination images.  This makes it well
+%  suitable for directly composing 'Clears Frame Animations' or 'Coalesced
+%  Animations' onto a static or other 'Coalesced Animation' destination image
 %  list.  GIF disposal handling is not looked at.
 %
 %  Special case:- If one of the image sequences is the last image (just a
-%  single image remaining), that image is repeatally composed with all the
+%  single image remaining), that image is repeatedly composed with all the
 %  images in the other image list.  Either the source or destination lists may
 %  be the single image, for this situation.
 %
@@ -1772,7 +1772,7 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
 %  will ve cloned to match the number of images remaining in the source image
 %  list.
 %
-%  This is equivelent to the "-layer Composite" Shell API operator.
+%  This is equivalent to the "-layer Composite" Shell API operator.
 %
 %
 %  The format of the CompositeLayers method is:
@@ -1822,7 +1822,7 @@ MagickExport void CompositeLayers(Image *destination,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s - %s",
       source->filename,destination->filename);
   /*
-    Overlay single source image over destation image/list
+    Overlay single source image over destination image/list
   */
   if ( source->next == (Image *) NULL )
     while ( destination != (Image *) NULL )
@@ -1901,7 +1901,7 @@ MagickExport void CompositeLayers(Image *destination,
 %
 %  The inital canvas's size depends on the given LayerMethod, and is
 %  initialized using the first images background color.  The images
-%  are then compositied onto that image in sequence using the given
+%  are then composited onto that image in sequence using the given
 %  composition that has been assigned to each individual image.
 %
 %  The format of the MergeImageLayers is:

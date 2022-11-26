@@ -411,7 +411,7 @@ static double KapurThreshold(const Image *image,const double *histogram,
     threshold;
 
   /*
-    Compute optimal threshold from the entopy of the histogram.
+    Compute optimal threshold from the entropy of the histogram.
   */
   cumulative_histogram=(double *) AcquireQuantumMemory(MaxIntensity+1UL,
     sizeof(*cumulative_histogram));
@@ -1881,7 +1881,7 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
 %      each level. While checker,8,8,4 will produce a 332 colormaped image
 %      with only a single checkerboard hash pattern (50% grey) between each
 %      color level, to basically double the number of color levels with
-%      a bare minimim of dithering.
+%      a bare minimum of dithering.
 %
 %    o exception: return any errors or warnings in this structure.
 %

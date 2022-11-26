@@ -80,7 +80,7 @@
 %  An extended string is the string length, plus an extra MagickPathExtent space
 %  to allow for the string to be actively worked on.
 %
-%  The returned string shoud be freed using DestoryString().
+%  The returned string should be freed using DestroyString().
 %
 %  The format of the AcquireString method is:
 %
@@ -233,7 +233,7 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 %  If source is a NULL pointer the destination string will be freed and set to
 %  a NULL pointer.  A pointer to the stored in the destination is also returned.
 %
-%  When finished the non-NULL string should be freed using DestoryString()
+%  When finished the non-NULL string should be freed using DestroyString()
 %  or using CloneString() with a NULL pointed for the source.
 %
 %  The format of the CloneString method is:
@@ -665,7 +665,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
 %  copies the source string to that memory location.  A NULL string pointer
 %  will allocate an empty string containing just the NUL character.
 %
-%  When finished the string should be freed using DestoryString()
+%  When finished the string should be freed using DestroyString()
 %
 %  The format of the ConstantString method is:
 %
@@ -1287,18 +1287,18 @@ MagickExport const char *GetStringInfoPath(const StringInfo *string_info)
 %
 %  The format of the InterpretSiPrefixValue method is:
 %
-%      double InterpretSiPrefixValue(const char *value,char **sentinal)
+%      double InterpretSiPrefixValue(const char *value,char **sentinel)
 %
 %  A description of each parameter follows:
 %
 %    o value: the string value.
 %
-%    o sentinal:  if sentinal is not NULL, return a pointer to the character
+%    o sentinel:  if sentinel is not NULL, return a pointer to the character
 %      after the last character used in the conversion.
 %
 */
 MagickExport double InterpretSiPrefixValue(const char *magick_restrict string,
-  char **magick_restrict sentinal)
+  char **magick_restrict sentinel)
 {
   char
     *q;
@@ -1359,8 +1359,8 @@ MagickExport double InterpretSiPrefixValue(const char *magick_restrict string,
       if ((*q == 'B') || (*q == 'P'))
         q++;
     }
-  if (sentinal != (char **) NULL)
-    *sentinal=q;
+  if (sentinel != (char **) NULL)
+    *sentinel=q;
   return(value);
 }
 
@@ -2118,7 +2118,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 %  StringToArrayOfDoubles() converts a string of space or comma separated
 %  numbers into array of floating point numbers (doubles). Any number that
-%  failes to parse properly will produce a syntax error. As will two commas
+%  fails to parse properly will produce a syntax error. As will two commas
 %  without a  number between them.  However a final comma at the end will
 %  not be regarded as an error so as to simplify automatic list generation.
 %

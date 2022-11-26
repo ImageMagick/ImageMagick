@@ -351,9 +351,9 @@ MagickExport time_t GetMagickTime(void)
     constant_magick_time = 0;
 
   static MagickBooleanType
-    epoch_initalized = MagickFalse;
+    epoch_initialized = MagickFalse;
 
-  if (epoch_initalized == MagickFalse)
+  if (epoch_initialized == MagickFalse)
     {
       const char
         *source_date_epoch;
@@ -368,7 +368,7 @@ MagickExport time_t GetMagickTime(void)
           if ((epoch > 0) && (epoch <= time((time_t *) NULL)))
             constant_magick_time=epoch;
         }
-      epoch_initalized=MagickTrue;
+      epoch_initialized=MagickTrue;
     }
   if (constant_magick_time != 0)
     return(constant_magick_time);

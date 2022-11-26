@@ -387,7 +387,7 @@ static const char
     "Out      The resulting image is image with the shape of\n"
     "         image window cut out.\n"
     "\n"
-    "Atop     The result is the same shape as image image window,\n"
+    "Atop     The result is the same shape as the image window,\n"
     "         with image obscuring image window where the image\n"
     "         shapes overlap.  Note this differs from over\n"
     "         because the portion of image outside image window's\n"
@@ -1023,7 +1023,7 @@ static const char
     "value any neighbor pixel that is not the border color.  Finally\n"
     "reset changes the entire image to the designated matte value.\n"
     "\n"
-    "Choose Matte Value and pick Opaque or Transarent.  For other values\n"
+    "Choose Matte Value and pick Opaque or Transparent.  For other values\n"
     "select the Dialog entry.  Here a dialog appears requesting a matte\n"
     "value.  The value you select is assigned as the opacity value of the\n"
     "selected pixel or pixels.\n"
@@ -1100,7 +1100,7 @@ static const char
     "Out      The resulting image is image with the shape of\n"
     "         image window cut out.\n"
     "\n"
-    "Atop     The result is the same shape as image image window,\n"
+    "Atop     The result is the same shape as the image window,\n"
     "         with image obscuring image window where the image\n"
     "         shapes overlap.  Note this differs from over\n"
     "         because the portion of image outside image window's\n"
@@ -1391,7 +1391,7 @@ typedef enum
   AddFrameCommand,
   CommentCommand,
   LaunchCommand,
-  RegionofInterestCommand,
+  RegionOfInterestCommand,
   ROIHelpCommand,
   ROIDismissCommand,
   InfoCommand,
@@ -6517,7 +6517,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
     case CompositeCommand:
     case CommentCommand:
     case LaunchCommand:
-    case RegionofInterestCommand:
+    case RegionOfInterestCommand:
     case SaveToUndoBufferCommand:
     case RedoCommand:
     {
@@ -6933,7 +6933,7 @@ static CommandType XImageWindowCommand(Display *display,
         return(AnnotateCommand);
       if ((state & ControlMask) == 0)
         return(NullCommand);
-      return(RegionofInterestCommand);
+      return(RegionOfInterestCommand);
     }
     case XK_question:
       return(InfoCommand);
@@ -9009,7 +9009,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickFalse);
       break;
     }
-    case RegionofInterestCommand:
+    case RegionOfInterestCommand:
     {
       /*
         Apply an image processing technique to a region of interest.
@@ -14379,7 +14379,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       AddFrameCommand,
       CommentCommand,
       LaunchCommand,
-      RegionofInterestCommand
+      RegionOfInterestCommand
     },
     MiscellanyCommands[] =
     {

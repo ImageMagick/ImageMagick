@@ -714,12 +714,12 @@ MagickPrivate void ExpandFilename(char *path)
 %
 %  Meta-characters handled...
 %     @    read a list of filenames (no further expansion performed)
-%     ~    At start of filename expands to HOME environemtn variable
+%     ~    At start of filename expands to HOME environment variable
 %     *    matches any string including an empty string
 %     ?    matches by any single character
 %
 %  WARNING: filenames starting with '.' (hidden files in a UNIX file system)
-%  will never be expanded.  Attempting to epand '.*' will produce no change.
+%  will never be expanded.  Attempting to expand '.*' will produce no change.
 %
 %  Expansion is ignored for coders "label:" "caption:" "pango:" and "vid:".
 %  Which provide their own '@' meta-character handling.
@@ -1217,7 +1217,7 @@ MagickExport MagickBooleanType GetPathAttributes(const char *path,
 %    o path: Specifies a pointer to a character array that contains the
 %      file path.
 %
-%    o type: Specififies which file path component to return.
+%    o type: Specifies which file path component to return.
 %
 %    o component: the selected file path component is returned here.
 %
@@ -1422,7 +1422,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
 %  The format of the GetPathComponents method is:
 %
 %      char **GetPathComponents(const char *path,
-%        size_t *number_componenets)
+%        size_t *number_components)
 %
 %  A description of each parameter follows:
 %
@@ -1798,7 +1798,7 @@ MagickExport void MagickDelay(const MagickSizeType milliseconds)
 %  MultilineCensus() returns the number of lines within a label.  A line is
 %  represented by a \n character.
 %
-%  The format of the MultilineCenus method is:
+%  The format of the MultilineCensus method is:
 %
 %      size_t MultilineCensus(const char *label)
 %

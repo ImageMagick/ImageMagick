@@ -171,7 +171,7 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
 %
 %  A description of each parameter follows:
 %
-%    o hue, chroma, luma: A double value representing a componenet of the
+%    o hue, chroma, luma: A double value representing a component of the
 %      HCLp color space.
 %
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
@@ -1483,7 +1483,7 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GenerateDifferentialNoise() generates differentual noise.
+%  GenerateDifferentialNoise() generates differential noise.
 %
 %  The format of the GenerateDifferentialNoise method is:
 %

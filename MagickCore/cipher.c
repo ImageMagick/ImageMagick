@@ -1057,7 +1057,7 @@ static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
     aes_info->encipher_key[i]=aes_info->encipher_key[i-n] ^ alpha;
   }
   /*
-    Generate deciper key (in reverse order).
+    Generate decipher key (in reverse order).
   */
   for (i=0; i < 4; i++)
   {

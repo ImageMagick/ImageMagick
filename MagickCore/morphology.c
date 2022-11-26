@@ -37,7 +37,7 @@
 % image in various ways (typically binary, but not always).
 %
 % Convolution (weighted sum or average) is just one specific type of
-% morphology. Just one that is very common for image bluring and sharpening
+% morphology. Just one that is very common for image blurring and sharpening
 % effects.  Not only 2D Gaussian blurring, but also 2-pass 1D Blurring.
 %
 % This module provides not only a general morphology function, and the ability
@@ -158,7 +158,7 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %  The returned kernel should be freed using the DestroyKernelInfo() when you
 %  are finished with it.  Do not free this memory yourself.
 %
-%  Input kernel defintion strings can consist of any of three types.
+%  Input kernel definition strings can consist of any of three types.
 %
 %    "name:args[[@><]"
 %         Select from one of the built in kernels, using the name and
@@ -182,13 +182,13 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %
 %     " kernel ; kernel ; kernel ; "
 %
-%  Any extra ';' characters, at start, end or between kernel defintions are
+%  Any extra ';' characters, at start, end or between kernel definitions are
 %  simply ignored.
 %
 %  The special flags will expand a single kernel, into a list of rotated
 %  kernels. A '@' flag will expand a 3x3 kernel into a list of 45-degree
 %  cyclic rotations, while a '>' will generate a list of 90-degree rotations.
-%  The '<' also exands using 90-degree rotates, but giving a 180-degree
+%  The '<' also expands using 90-degree rotates, but giving a 180-degree
 %  reflected kernel before the +/- 90-degree rotations, which can be important
 %  for Thinning operations.
 %
@@ -197,7 +197,7 @@ static inline KernelInfo *LastKernelInfo(KernelInfo *kernel)
 %  If neither is the case, it is assumed an old style of a simple list of
 %  numbers generating a odd-sized square kernel has been given.
 %
-%  The format of the AcquireKernal method is:
+%  The format of the AcquireKernel method is:
 %
 %      KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %
@@ -251,7 +251,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   if ( end == (char *) NULL )
     end = strchr(kernel_string, '\0');
 
-  /* clear flags - for Expanding kernel lists thorugh rotations */
+  /* clear flags - for Expanding kernel lists through rotations */
    flags = NoValue;
 
   /* Has a ':' in argument - New user kernel specification
@@ -355,7 +355,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
     return(DestroyKernelInfo(kernel));
 #endif
 
-  /* check that we recieved at least one real (non-nan) value! */
+  /* check that we received at least one real (non-nan) value! */
   if (kernel->minimum == MagickMaximumValue)
     return(DestroyKernelInfo(kernel));
 
@@ -401,7 +401,7 @@ static KernelInfo *ParseKernelName(const char *kernel_string,
           (*p == ',') || (*p == ':' )) && (*p != '\0') && (*p != ';'))
     p++;
 
-  end = strchr(p, ';'); /* end of this kernel defintion */
+  end = strchr(p, ';'); /* end of this kernel definition */
   if ( end == (char *) NULL )
     end = strchr(p, '\0');
 
@@ -564,7 +564,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %  typically decoded from a user supplied string, or from a more complex
 %  Morphology Method that was requested.
 %
-%  The format of the AcquireKernalBuiltIn method is:
+%  The format of the AcquireKernelBuiltIn method is:
 %
 %      KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %           const GeometryInfo args)
@@ -592,13 +592,13 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       The radius should be at least 2 times that of the sigma value, or
 %       sever clipping and aliasing may result.  If not given or set to 0 the
 %       radius will be determined so as to produce the best minimal error
-%       result, which is usally much larger than is normally needed.
+%       result, which is usually much larger than is normally needed.
 %
 %    LoG:{radius},{sigma}
-%        "Laplacian of a Gaussian" or "Mexician Hat" Kernel.
+%        "Laplacian of a Gaussian" or "Mexican Hat" Kernel.
 %        The supposed ideal edge detection, zero-summing kernel.
 %
-%        An alturnative to this kernel is to use a "DoG" with a sigma ratio of
+%        An alternative to this kernel is to use a "DoG" with a sigma ratio of
 %        approx 1.6 (according to wikipedia).
 %
 %    DoG:{radius},{sigma1},{sigma2}
@@ -630,7 +630,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       radius of the kernel.
 %
 %    Binomial:[{radius}]
-%       Generate a discrete kernel using a 2 dimentional Pascel's Triangle
+%       Generate a discrete kernel using a 2 dimensional Pascal's Triangle
 %       of values. Used for special forma of image filters.
 %
 %    # Still to be implemented...
@@ -649,11 +649,11 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %  being 'clipped'.
 %
 %  The 3x3 kernels (most of these) can be circularly rotated in multiples of
-%  45 degrees to generate the 8 angled varients of each of the kernels.
+%  45 degrees to generate the 8 angled variants of each of the kernels.
 %
 %    Laplacian:{type}
-%      Discrete Lapacian Kernels, (without normalization)
-%        Type 0 :  3x3 with center:8 surounded by -1  (8 neighbourhood)
+%      Discrete Laplacian Kernels, (without normalization)
+%        Type 0 :  3x3 with center:8 surrounded by -1  (8 neighbourhood)
 %        Type 1 :  3x3 with center:4 edge:-1 corner:0 (4 neighbourhood)
 %        Type 2 :  3x3 with center:4 edge:1 corner:-2
 %        Type 3 :  3x3 with center:4 edge:-2 corner:1
@@ -705,7 +705,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %
 %      Frei-Chen Pre-weighted kernels...
 %
-%        Type 0:  default un-nomalized version shown above.
+%        Type 0:  default un-normalized version shown above.
 %
 %        Type 1: Orthogonal Kernel (same as type 11 below)
 %          |   1,     0,   -1     |
@@ -782,7 +782,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %      I have yet to find any secondary confirmation of the above. The only
 %      other source found was actual source code at
 %          http://ltswww.epfl.ch/~courstiv/exos_labos/sol3.pdf
-%      Neigher paper defineds the kernels in a way that looks locical or
+%      Neither paper defines the kernels in a way that looks logical or
 %      correct when taken as a whole.
 %
 %  Boolean Kernels
@@ -847,7 +847,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %
 %    Ring:{radius1},{radius2}[,{scale}]
 %       A ring of the values given that falls between the two radii.
-%       Defaults to a ring of approximataly 3 radius in a 7x7 kernel.
+%       Defaults to a ring of approximately 3 radius in a 7x7 kernel.
 %       This is the 'edge' pixels of the default "Disk" kernel,
 %       More specifically, "Ring" -> "Ring:2.5,3.5,1.0"
 %
@@ -863,13 +863,13 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %    Diagonals:type
 %       A special kernel to thin the 'outside' of diagonals
 %    LineEnds:type
-%       Find end points of lines (for pruning a skeletion)
+%       Find end points of lines (for pruning a skeleton)
 %       Two types of lines ends (default to both) can be searched for
 %         Type 0: All line ends
-%         Type 1: single kernel for 4-conneected line ends
+%         Type 1: single kernel for 4-connected line ends
 %         Type 2: single kernel for simple line ends
 %    LineJunctions
-%       Find three line junctions (within a skeletion)
+%       Find three line junctions (within a skeleton)
 %         Type 0: all line junctions
 %         Type 1: Y Junction kernel
 %         Type 2: Diagonal T Junction kernel
@@ -884,12 +884,12 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       Octagonal Thickening Kernel, to generate convex hulls of 45 degrees
 %    Skeleton:type
 %       Traditional skeleton generating kernels.
-%         Type 1: Tradional Skeleton kernel (4 connected skeleton)
+%         Type 1: Traditional Skeleton kernel (4 connected skeleton)
 %         Type 2: HIPR2 Skeleton kernel (8 connected skeleton)
-%         Type 3: Thinning skeleton based on a ressearch paper by
+%         Type 3: Thinning skeleton based on a research paper by
 %                 Dan S. Bloomberg (Default Type)
 %    ThinSE:type
-%       A huge variety of Thinning Kernels designed to preserve conectivity.
+%       A huge variety of Thinning Kernels designed to preserve connectivity.
 %       many other kernel sets use these kernels as source definitions.
 %       Type numbers are 41-49, 81-89, 481, and 482 which are based on
 %       the super and sub notations used in the source research paper.
@@ -920,7 +920,7 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string,
 %       diamond like distances, where diagonals are further than expected.
 %
 %    Octagonal:[{radius}][x{scale}[%!]]
-%       An interleving of Manhatten and Chebyshev metrics producing an
+%       An interleaving of Manhattan and Chebyshev metrics producing an
 %       increasing octagonally shaped distance.  Distances matches those of
 %       the "Octagon" shaped kernel of the same radius.  The minimum radius
 %       and default is 2, producing a 5x5 kernel.
@@ -971,7 +971,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       ThrowMagickException(exception,GetMagickModule(),OptionWarning,
         "InvalidOption","`%s'","Should not call this function");
       return((KernelInfo *) NULL);
-    case LaplacianKernel:   /* Named Descrete Convolution Kernels */
+    case LaplacianKernel:   /* Named Discrete Convolution Kernels */
     case SobelKernel:       /* these are defined using other kernels */
     case RobertsKernel:
     case PrewittKernel:
@@ -1008,7 +1008,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case PeaksKernel:
     case ChebyshevKernel:
     case ManhattanKernel:
-    case OctangonalKernel:
+    case OctagonalKernel:
     case EuclideanKernel:
 #else
     default:
@@ -1068,7 +1068,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
          * What we really want is a 'discrete gaussian' kernel.
          *
          * How to do this is I don't know, but appears to be basied on the
-         * Error Function 'erf()' (intergral of a gaussian)
+         * Error Function 'erf()' (integral of a gaussian)
          */
 
         if ( type == GaussianKernel || type == DoGKernel )
@@ -1102,7 +1102,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           }
 
         if ( type == LoGKernel )
-          { /* Calculate a Laplacian of a Gaussian - Or Mexician Hat */
+          { /* Calculate a Laplacian of a Gaussian - Or Mexican Hat */
             if ( sigma > MagickEpsilon )
               { A = 1.0/(2.0*sigma*sigma);  /* simplify loop expressions */
                 B = (double) (1.0/(MagickPI*sigma*sigma*sigma*sigma));
@@ -1189,7 +1189,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
 #else
         /* Direct calculation without curve averaging
-           This is equivelent to a KernelRank of 1 */
+           This is equivalent to a KernelRank of 1 */
 
         /* Calculate a Positive Gaussian */
         if ( sigma > MagickEpsilon )
@@ -1210,7 +1210,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** result of not generating a actual 'discrete' kernel, and thus
         ** producing a very bright 'impulse'.
         **
-        ** Becuase of these two factors Normalization is required!
+        ** Because of these two factors Normalization is required!
         */
 
         /* Normalize the 1D Gaussian Kernel
@@ -1251,7 +1251,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         ** As we are normalizing and not subtracting gaussians,
         ** there is no need for a divisor in the gaussian formula
         **
-        ** It is less comples
+        ** It is less complex
         */
         if ( sigma > MagickEpsilon )
           {
@@ -1880,8 +1880,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               ExpandRotateKernelInfo(kernel, 90.0); /* 4 rotated kernels */
 
               /* Kernels to find a stepped 'thick' line, 4 rotates + mirrors */
-              /* Unfortunatally we can not yet rotate a non-square kernel */
-              /* But then we can't flip a non-symetrical kernel either */
+              /* Unfortunately we can not yet rotate a non-square kernel */
+              /* But then we can't flip a non-symmetrical kernel either */
               new_kernel=ParseKernelArray("4x3+1+1:0,1,1,- -,1,1,- -,1,1,0");
               if (new_kernel == (KernelInfo *) NULL)
                 return(DestroyKernelInfo(kernel));
@@ -1975,7 +1975,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
               break;
             case 3:
               /* Dan Bloomberg Skeleton, from his paper on 3x3 thinning SE's
-              ** "Connectivity-Preserving Morphological Image Thransformations"
+              ** "Connectivity-Preserving Morphological Image Transformations"
               ** by Dan S. Bloomberg, available on Leptonica, Selected Papers,
               **   http://www.leptonica.com/papers/conn.pdf
               */
@@ -1997,7 +1997,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         }
       case ThinSEKernel:
         { /* Special kernels for general thinning, while preserving connections
-          ** "Connectivity-Preserving Morphological Image Thransformations"
+          ** "Connectivity-Preserving Morphological Image Transformations"
           ** by Dan S. Bloomberg, available on Leptonica, Selected Papers,
           **   http://www.leptonica.com/papers/conn.pdf
           ** And
@@ -2203,7 +2203,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %
 %  CloneKernelInfo() creates a new clone of the given Kernel List so that its
 %  can be modified without effecting the original.  The cloned kernel should
-%  be destroyed using DestoryKernelInfo() when no longer needed.
+%  be destroyed using DestroyKernelInfo() when no longer needed.
 %
 %  The format of the CloneKernelInfo method is:
 %
@@ -2292,9 +2292,9 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 %
 %  ExpandMirrorKernelInfo() takes a single kernel, and expands it into a
 %  sequence of 90-degree rotated kernels but providing a reflected 180
-%  rotatation, before the -/+ 90-degree rotations.
+%  rotation, before the -/+ 90-degree rotations.
 %
-%  This special rotation order produces a better, more symetrical thinning of
+%  This special rotation order produces a better, more symmetrical thinning of
 %  objects.
 %
 %  The format of the ExpandMirrorKernelInfo method is:
@@ -2305,7 +2305,7 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
 %
 %    o kernel: the Morphology/Convolution kernel
 %
-% This function is only internel to this module, as it is not finalized,
+% This function is only internal to this module, as it is not finalized,
 % especially with regard to non-orthogonal angles, and rotation of larger
 % 2D kernels.
 */
@@ -2375,7 +2375,7 @@ static void ExpandMirrorKernelInfo(KernelInfo *kernel)
 %  incrementally by the angle given, until the kernel repeats.
 %
 %  WARNING: 45 degree rotations only works for 3x3 kernels.
-%  While 90 degree roatations only works for linear and square kernels
+%  While 90 degree rotations only works for linear and square kernels
 %
 %  The format of the ExpandRotateKernelInfo method is:
 %
@@ -2387,7 +2387,7 @@ static void ExpandMirrorKernelInfo(KernelInfo *kernel)
 %
 %    o angle: angle to rotate in degrees
 %
-% This function is only internel to this module, as it is not finalized,
+% This function is only internal to this module, as it is not finalized,
 % especially with regard to non-orthogonal angles, and rotation of larger
 % 2D kernels.
 */
@@ -2520,7 +2520,7 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  their processing.
 %
 %  It is basically equivalent to as MorphologyImage() (see below) but without
-%  any user controls.  This allows internel programs to use this method to
+%  any user controls.  This allows internal programs to use this method to
 %  perform a specific task without possible interference by any API user
 %  supplied settings.
 %
@@ -2528,7 +2528,7 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  pass them to this function for processing.
 %
 %  More specifically all given kernels should already be scaled, normalised,
-%  and blended appropriatally before being parred to this routine. The
+%  and blended appropriately before being parred to this routine. The
 %  appropriate bias, and compose (typically 'UndefinedComposeOp') given.
 %
 %  The format of the MorphologyApply method is:
@@ -2921,7 +2921,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
                Weighted Average of pixels using reflected kernel
 
-               For correct working of this operation for asymetrical kernels,
+               For correct working of this operation for asymmetrical kernels,
                the kernel needs to be applied in its reflected form.  That is
                its values needs to be reversed.
 
@@ -3014,7 +3014,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             /*
                Maximum value within kernel neighbourhood.
 
-               For correct working of this operation for asymetrical kernels,
+               For correct working of this operation for asymmetrical kernels,
                the kernel needs to be applied in its reflected form.  That is
                its values needs to be reversed.
 
@@ -3044,7 +3044,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           case ThickenMorphology:
           {
             /*
-               Minimum of foreground pixel minus maxumum of background pixels.
+               Minimum of foreground pixel minus maximum of background pixels.
 
                The kernel is not reflected for this operation, and consists
                of both foreground and background pixel neighbourhoods, 0.0 for
@@ -3236,17 +3236,17 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 }
 
 /*
-  This is almost identical to the MorphologyPrimative() function above, but
+  This is almost identical to the MorphologyPrimitive() function above, but
   applies the primitive directly to the actual image using two passes, once in
   each direction, with the results of the previous (and current) row being
   re-used.
 
   That is after each row is 'Sync'ed' into the image, the next row makes use of
   those values as part of the calculation of the next row.  It repeats, but
-  going in the oppisite (bottom-up) direction.
+  going in the opposite (bottom-up) direction.
 
   Because of this 're-use of results' this function can not make use of multi-
-  threaded, parellel processing.
+  threaded, parallel processing.
 */
 static ssize_t MorphologyPrimitiveDirect(Image *image,
   const MorphologyMethod method,const KernelInfo *kernel,
@@ -3700,7 +3700,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
     return((Image *) NULL);   /* null operation - nothing to do! */
 
   kernel_limit = (size_t) iterations;
-  if ( iterations < 0 )  /* negative interations = infinite (well alomst) */
+  if ( iterations < 0 )  /* negative interactions = infinite (well almost) */
      kernel_limit = image->columns>image->rows ? image->columns : image->rows;
 
   verbose = IsStringTrue(GetImageArtifact(image,"debug"));
@@ -3713,7 +3713,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
   reflected_kernel = (KernelInfo *) NULL;
 
   /* Initialize specific methods
-   * + which loop should use the given iteratations
+   * + which loop should use the given iterations
    * + how many primitives make up the compound morphology
    * + multi-kernel compose method to use (by default)
    */
@@ -3744,13 +3744,13 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       break;
     case DistanceMorphology:
     case VoronoiMorphology:
-      special = MagickTrue;         /* use special direct primative */
+      special = MagickTrue;         /* use special direct primitive */
       break;
     default:
       break;
   }
 
-  /* Apply special methods with special requirments
+  /* Apply special methods with special requirements
   ** For example, single run only, or post-processing requirements
   */
   if ( special != MagickFalse )
@@ -3807,7 +3807,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       break;
   }
 
-  /* Loops around more primitive morpholgy methods
+  /* Loops around more primitive morphology methods
   **  erose, dilate, open, close, smooth, edge, etc...
   */
   /* Loop 1:  iterate the compound method */
@@ -3825,7 +3825,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
     kernel_number = 0;
     while ( norm_kernel != NULL ) {
 
-      /* Loop 3: Compound Morphology Staging - Select Primative to apply */
+      /* Loop 3: Compound Morphology Staging - Select Primitive to apply */
       stage_loop = 0;          /* the compound morphology stage number */
       while ( stage_loop < stage_limit ) {
         stage_loop++;   /* The stage of the compound morphology */
@@ -3842,7 +3842,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           case EdgeOutMorphology:    /* dilate and image difference */
             primitive = DilateMorphology;
             break;
-          case OpenMorphology:       /* erode then dialate */
+          case OpenMorphology:       /* erode then dilate */
           case TopHatMorphology:     /* open and image difference */
             primitive = ErodeMorphology;
             if ( stage_loop == 2 )
@@ -3895,8 +3895,8 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           case CorrelateMorphology:
             /* A Correlation is a Convolution with a reflected kernel.
             ** However a Convolution is a weighted sum using a reflected
-            ** kernel.  It may seem stange to convert a Correlation into a
-            ** Convolution as the Correlation is the simplier method, but
+            ** kernel.  It may seem strange to convert a Correlation into a
+            ** Convolution as the Correlation is the simpler method, but
             ** Convolution is much more commonly used, and it makes sense to
             ** implement it directly so as to avoid the need to duplicate the
             ** kernel when it is not required (which is typically the
@@ -3983,12 +3983,12 @@ MagickPrivate Image *MorphologyApply(const Image *image,
     (void) FormatLocaleFile(stderr, "      union=0x%lx\n", (unsigned long)rslt_image);
 #endif
 
-      } /* End Loop 3: Primative (staging) Loop for Coumpound Methods */
+      } /* End Loop 3: Primitive (staging) Loop for Compound Methods */
 
       /*  Final Post-processing for some Compound Methods
       **
-      ** The removal of any 'Sync' channel flag in the Image Compositon
-      ** below ensures the methematical compose method is applied in a
+      ** The removal of any 'Sync' channel flag in the Image Composition
+      ** below ensures the mathematical compose method is applied in a
       ** purely mathematical way, and only to the selected channels.
       ** Turn off SVG composition 'alpha blending'.
       */
@@ -4038,8 +4038,8 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       else
         { /* Add the new 'current' result to the composition
           **
-          ** The removal of any 'Sync' channel flag in the Image Compositon
-          ** below ensures the methematical compose method is applied in a
+          ** The removal of any 'Sync' channel flag in the Image Composition
+          ** below ensures the mathematical compose method is applied in a
           ** purely mathematical way, and only to the selected channels.
           ** IE: Turn off SVG composition 'alpha blending'.
           */
@@ -4061,7 +4061,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       kernel_number++;
     } /* End Loop 2: Loop over each kernel */
 
-  } /* End Loop 1: compound method interation */
+  } /* End Loop 1: compound method interaction */
 
   goto exit_cleanup;
 
@@ -4098,7 +4098,7 @@ exit_cleanup:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MorphologyImage() applies a user supplied kernel to the image according to
-%  the given mophology method.
+%  the given morphology method.
 %
 %  This function applies any and all user defined settings before calling
 %  the above internal function MorphologyApply().
@@ -4249,7 +4249,7 @@ MagickExport Image *MorphologyImage(const Image *image,
 %
 %  Currently it is restricted to 90 degree angles, of either 1D kernels
 %  or square kernels. And 'circular' rotations of 45 degrees for 3x3 kernels.
-%  It will ignore usless rotations for specific 'named' built-in kernels.
+%  It will ignore useless rotations for specific 'named' built-in kernels.
 %
 %  The format of the RotateKernelInfo method is:
 %
@@ -4270,7 +4270,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
   if ( kernel->next != (KernelInfo *) NULL)
     RotateKernelInfo(kernel->next, angle);
 
-  /* WARNING: Currently assumes the kernel (rightly) is horizontally symetrical
+  /* WARNING: Currently assumes the kernel (rightly) is horizontally symmetrical
   **
   ** TODO: expand beyond simple 90 degree rotates, flips and flops
   */
@@ -4407,7 +4407,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
       /* For a 180 degree rotation - also know as a reflection
        * This is actually a very very common operation!
        * Basically all that is needed is a reversal of the kernel data!
-       * And a reflection of the origon
+       * And a reflection of the origin
        */
       MagickRealType
         t;
@@ -4431,7 +4431,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
     }
   /* At this point angle should at least between -45 (315) and +45 degrees
    * In the future some form of non-orthogonal angled rotates could be
-   * performed here, posibily with a linear kernel restriction.
+   * performed here, possibly with a linear kernel restriction.
    */
 
   return;
@@ -4454,7 +4454,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 %
 %  The first argument (and any normalization flags) are passed to
 %  ScaleKernelInfo() to scale/normalize the kernel.  The second argument
-%  is then passed to UnityAddKernelInfo() to add a scled unity kernel
+%  is then passed to UnityAddKernelInfo() to add a scaled unity kernel
 %  into the scaled/normalized kernel.
 %
 %  The format of the ScaleGeometryKernelInfo method is:
@@ -4540,12 +4540,12 @@ MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
 %  the kernel will be scaled by the absolute of the sum of kernel values, so
 %  that it will generally fall within the +/- 1.0 range.
 %
-%  For kernels whose values sum to zero, (such as 'Laplician' kernels) kernel
-%  will be scaled by just the sum of the postive values, so that its output
+%  For kernels whose values sum to zero, (such as 'Laplacian' kernels) kernel
+%  will be scaled by just the sum of the positive values, so that its output
 %  range will again fall into the  +/- 1.0 range.
 %
 %  For special kernels designed for locating shapes using 'Correlate', (often
-%  only containing +1 and -1 values, representing foreground/brackground
+%  only containing +1 and -1 values, representing foreground/background
 %  matching) a special normalization method is provided to scale the positive
 %  values separately to those of the negative values, so the kernel will be
 %  forced to become a zero-sum kernel better suited to such searches.
@@ -4611,7 +4611,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   else
     neg_scale = pos_scale;
 
-  /* finialize scaling_factor for positive and negative components */
+  /* finalize scaling_factor for positive and negative components */
   pos_scale = scaling_factor/pos_scale;
   neg_scale = scaling_factor/neg_scale;
 
@@ -4651,7 +4651,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ShowKernelInfo() outputs the details of the given kernel defination to
+%  ShowKernelInfo() outputs the details of the given kernel definition to
 %  standard error, generally due to a users 'morphology:showKernel' option
 %  request.
 %

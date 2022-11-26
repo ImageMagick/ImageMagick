@@ -639,7 +639,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
     {
       const char
-        *registery_key;
+        *registry_key;
 
       unsigned char
         *key_value;
@@ -652,20 +652,20 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
         case MagickImageCoderModule:
         default:
         {
-          registery_key="CoderModulesPath";
+          registry_key="CoderModulesPath";
           break;
         }
         case MagickImageFilterModule:
         {
-          registery_key="FilterModulesPath";
+          registry_key="FilterModulesPath";
           break;
         }
       }
-      key_value=NTRegistryKeyLookup(registery_key);
+      key_value=NTRegistryKeyLookup(registry_key);
       if (key_value == (unsigned char *) NULL)
         {
           ThrowMagickException(exception,GetMagickModule(),ConfigureError,
-            "RegistryKeyLookupFailed","`%s'",registery_key);
+            "RegistryKeyLookupFailed","`%s'",registry_key);
           return(MagickFalse);
         }
       (void) FormatLocaleString(path,MagickPathExtent,"%s%s%s",(char *)

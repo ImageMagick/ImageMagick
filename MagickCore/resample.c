@@ -126,7 +126,7 @@ struct _ResampleFilter
   PixelInfo
     average_pixel;
 
-  /* current ellipitical area being resampled around center point */
+  /* current elliptical area being resampled around center point */
   double
     A, B, C,
     Vlimit, Ulimit, Uwidth, slope;
@@ -291,7 +291,7 @@ MagickExport ResampleFilter *DestroyResampleFilter(
 %
 %  ResamplePixelColor() samples the pixel values surrounding the location
 %  given using an elliptical weighted average, at the scale previously
-%  calculated, and in the most efficent manner possible for the
+%  calculated, and in the most efficient manner possible for the
 %  VirtualPixelMethod setting.
 %
 %  The format of the ResamplePixelColor method is:
@@ -305,7 +305,7 @@ MagickExport ResampleFilter *DestroyResampleFilter(
 %    o resample_filter: the resample filter.
 %
 %    o u0,v0: A double representing the center of the area to resample,
-%        The distortion transformed transformed x,y coordinate.
+%        The distortion transformed x,y coordinate.
 %
 %    o pixel: the resampled pixel is returned here.
 %
@@ -548,13 +548,13 @@ MagickExport MagickBooleanType ResamplePixelColor(
     pixel->alpha = 0.0;
 
   /*
-    Determine the parellelogram bounding box fitted to the ellipse
+    Determine the parallelogram bounding box fitted to the ellipse
     centered at u0,v0.  This area is bounding by the lines...
   */
   v1 = (ssize_t)ceil(v0 - resample_filter->Vlimit);  /* range of scan lines */
   v2 = (ssize_t)floor(v0 + resample_filter->Vlimit);
 
-  /* scan line start and width accross the parallelogram */
+  /* scan line start and width across the parallelogram */
   u1 = u0 + (v1-v0)*resample_filter->slope - resample_filter->Uwidth;
   uw = (ssize_t)(2.0*resample_filter->Uwidth)+1;
 
@@ -567,7 +567,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
 
   /*
     Do weighted resampling of all pixels,  within the scaled ellipse,
-    bound by a Parellelogram fitted to the ellipse.
+    bound by a Parallelogram fitted to the ellipse.
   */
   DDQ = 2*resample_filter->A;
   for( v=v1; v<=v2;  v++ ) {
@@ -583,7 +583,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
     U = (double)u-u0;
     V = (double)v-v0;
 
-    /* Q = ellipse quotent ( if Q<F then pixel is inside ellipse) */
+    /* Q = ellipse quotient ( if Q<F then pixel is inside ellipse) */
     Q = (resample_filter->A*U + resample_filter->B*V)*U + resample_filter->C*V*V;
     DQ = resample_filter->A*(2.0*U+1) + resample_filter->B*V;
 
@@ -662,7 +662,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   }
 
   /*
-    Finialize results of resampling
+    Finalize results of resampling
   */
   divisor_m = 1.0/divisor_m;
   if (pixel->alpha_trait != UndefinedPixelTrait)
@@ -869,7 +869,7 @@ static inline void ClampUpAxes(const double dux,
    *
    * The idea of clamping up the EWA ellipse's major and minor axes so
    * that the result contains the reconstruction kernel filter support
-   * is taken from Andreas Gustaffson's Masters thesis "Interactive
+   * is taken from Andreas Gustafsson's Masters thesis "Interactive
    * Image Warping", Helsinki University of Technology, Faculty of
    * Information Technology, 59 pages, 1993 (see Section 3.6).
    *
@@ -989,27 +989,27 @@ static inline void ClampUpAxes(const double dux,
 %  a orthogonal scaling, but two distorted scaling vectors, to allow the
 %  generation of a angled ellipse.
 %
-%  As only two deritive scaling vectors are used the center of the ellipse
+%  As only two derivative scaling vectors are used the center of the ellipse
 %  must be the center of the lookup.  That is any curvature that the
 %  distortion may produce is discounted.
 %
-%  The input vectors are produced by either finding the derivitives of the
-%  distortion function, or the partial derivitives from a distortion mapping.
+%  The input vectors are produced by either finding the derivatives of the
+%  distortion function, or the partial derivatives from a distortion mapping.
 %  They do not need to be the orthogonal dx,dy scaling vectors, but can be
 %  calculated from other derivatives.  For example you could use  dr,da/r
 %  polar coordinate vector scaling vectors
 %
 %  If   u,v =  DistortEquation(x,y)   OR   u = Fu(x,y); v = Fv(x,y)
-%  Then the scaling vectors are determined from the deritives...
+%  Then the scaling vectors are determined from the derivatives...
 %      du/dx, dv/dx     and    du/dy, dv/dy
-%  If the resulting scaling vectors is othogonally aligned then...
+%  If the resulting scaling vectors is orthogonally aligned then...
 %      dv/dx = 0   and   du/dy  =  0
-%  Producing an othogonally alligned ellipse in source space for the area to
+%  Producing an orthogonally aligned ellipse in source space for the area to
 %  be resampled.
 %
 %  Note that scaling vectors are different to argument order.  Argument order
-%  is the general order the deritives are extracted from the distortion
-%  equations, and not the scaling vectors. As such the middle two vaules
+%  is the general order the derivatives are extracted from the distortion
+%  equations, and not the scaling vectors. As such the middle two values
 %  may be swapped from what you expect.  Caution is advised.
 %
 %  WARNING: It is assumed that any SetResampleFilter() method call will
@@ -1024,13 +1024,13 @@ static inline void ClampUpAxes(const double dux,
 %
 %  A description of each parameter follows:
 %
-%    o resample_filter: the resampling resample_filterrmation defining the
+%    o resample_filter: the resampling information defining the
 %      image being resampled
 %
 %    o dux,duy,dvx,dvy:
-%         The deritives or scaling vectors defining the EWA ellipse.
-%         NOTE: watch the order, which is based on the order deritives
-%         are usally determined from distortion equations (see above).
+%         The derivatives or scaling vectors defining the EWA ellipse.
+%         NOTE: watch the order, which is based on the order derivatives
+%         are usually determined from distortion equations (see above).
 %         The middle two values may need to be swapped if you are thinking
 %         in terms of scaling vectors.
 %
@@ -1055,7 +1055,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
        dux, dvx, duy, dvy);
 #endif
 
-  /* Find Ellipse Coefficents such that
+  /* Find Ellipse Coefficients such that
         A*u^2 + B*u*v + C*v^2 = F
      With u,v relative to point around which we are resampling.
      And the given scaling dx,dy vectors in u,v space
@@ -1065,7 +1065,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   /* Direct conversion of derivatives into elliptical coefficients
      However when magnifying images, the scaling vectors will be small
      resulting in a ellipse that is too small to sample properly.
-     As such we need to clamp the major/minor axis to a minumum of 1.0
+     As such we need to clamp the major/minor axis to a minimum of 1.0
      to prevent it getting too small.
   */
 #if EWA_CLAMP
@@ -1108,8 +1108,8 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     a circle of radius 2.0, and F smaller than this means magnification is
     being used.
 
-    NOTE: This method produces a very blury result at near unity scale while
-    producing perfect results for strong minitification and magnifications.
+    NOTE: This method produces a very blurry result at near unity scale while
+    producing perfect results for strong minification and magnifications.
 
     However filter support is fixed to 2.0 (no good for Windowed Sinc filters)
   */
@@ -1167,7 +1167,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 
   /* Scale ellipse to match the filters support
      (that is, multiply F by the square of the support)
-     Simplier to just multiply it by the support twice!
+     Simpler to just multiply it by the support twice!
   */
   F *= resample_filter->support;
   F *= resample_filter->support;
@@ -1224,7 +1224,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 %
 %  SetResampleFilter() set the resampling filter lookup table based on a
 %  specific filter.  Note that the filter is used as a radial filter not as a
-%  two pass othogonally aligned resampling filter.
+%  two pass orthogonally aligned resampling filter.
 %
 %  The format of the SetResampleFilter method is:
 %
@@ -1233,7 +1233,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 %
 %  A description of each parameter follows:
 %
-%    o resample_filter: resampling resample_filterrmation structure
+%    o resample_filter: resampling information structure
 %
 %    o filter: the resize filter for elliptical weighting LUT
 %
@@ -1271,7 +1271,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   }
 
   /* Get the practical working support for the filter,
-   * after any API call blur factors have been accoded for.
+   * after any API call blur factors have been accounted for.
    */
 #if EWA
   resample_filter->support = GetResizeFilterSupport(resize_filter);
@@ -1344,7 +1344,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
         /* Debug output of the filter weighting LUT
           Gnuplot the LUT data, the x scale index has been adjusted
             plot [0:2][-.2:1] "lut.dat" with lines
-          The filter values should be normalized for comparision
+          The filter values should be normalized for comparison
         */
         printf("#\n");
         printf("# Resampling Filter LUT (%d values) for '%s' filter\n",

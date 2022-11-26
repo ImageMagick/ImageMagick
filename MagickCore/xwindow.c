@@ -196,7 +196,7 @@ typedef struct _DiversityPacket
 } DiversityPacket;
 
 /*
-  Constant declaractions.
+  Constant declarations.
 */
 static MagickBooleanType
   xerror_alert = MagickFalse;
@@ -1482,7 +1482,7 @@ MagickPrivate int XCheckDefineCursor(Display *display,Window window,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  XCheckRefreshWindows() checks the X server for exposure events for a
-%  particular window and updates the areassociated with the exposure event.
+%  particular window and updates the are associated with the exposure event.
 %
 %  The format of the XCheckRefreshWindows method is:
 %
@@ -7266,7 +7266,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
           for (i=0; i < (ssize_t) height; i+=magnify)
           {
             /*
-              Propogate pixel magnify rows.
+              Propagate pixel magnify rows.
             */
             for (j=0; j < magnify; j++)
             {
@@ -7278,12 +7278,12 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
               for (k=0; k < width; k+=magnify)
               {
                 /*
-                  Propogate pixel magnify columns.
+                  Propagate pixel magnify columns.
                 */
                 for (l=0; l < magnify; l++)
                 {
                   /*
-                    Propogate each bit plane.
+                    Propagate each bit plane.
                   */
                   for (plane=0; (int) plane < ximage->bits_per_pixel; plane++)
                   {
@@ -7338,7 +7338,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
           for (i=0; i < (ssize_t) height; i+=magnify)
           {
             /*
-              Propogate pixel magnify rows.
+              Propagate pixel magnify rows.
             */
             for (j=0; j < magnify; j++)
             {
@@ -7350,12 +7350,12 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
               for (k=0; k < width; k+=magnify)
               {
                 /*
-                  Propogate pixel magnify columns.
+                  Propagate pixel magnify columns.
                 */
                 for (l=0; l < magnify; l++)
                 {
                   /*
-                    Propogate each bit plane.
+                    Propagate each bit plane.
                   */
                   for (plane=0; (int) plane < ximage->bits_per_pixel; plane++)
                   {
@@ -7402,7 +7402,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
         for (i=0; i < (ssize_t) height; i+=magnify)
         {
           /*
-            Propogate pixel magnify rows.
+            Propagate pixel magnify rows.
           */
           for (j=0; j < magnify; j++)
           {
@@ -7411,7 +7411,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
             for (k=0; k < width; k+=magnify)
             {
               /*
-                Propogate pixel magnify columns.
+                Propagate pixel magnify columns.
               */
               for (l=0; l < magnify; l++)
                 *q++=(*p);
@@ -7436,7 +7436,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
         for (i=0; i < (ssize_t) height; i+=magnify)
         {
           /*
-            Propogate pixel magnify rows.
+            Propagate pixel magnify rows.
           */
           for (j=0; j < magnify; j++)
           {
@@ -7445,7 +7445,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
             for (k=0; k < width; k+=magnify)
             {
               /*
-                Propogate pixel magnify columns.
+                Propagate pixel magnify columns.
               */
               for (l=0; l < magnify; l++)
                 for (m=0; m < bytes_per_pixel; m++)
@@ -8559,7 +8559,7 @@ MagickPrivate void XMakeWindow(Display *display,Window parent,char **argv,
       window_info->shape=MagickFalse;
 #endif
     }
-  window_info->shape=MagickFalse;  /* Fedora 30 has a broken shape extention */
+  window_info->shape=MagickFalse;  /* Fedora 30 has a broken shape extension */
   if (window_info->shared_memory != MagickFalse)
     {
 #if defined(MAGICKCORE_HAVE_SHARED_MEMORY)

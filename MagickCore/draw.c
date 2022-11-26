@@ -402,7 +402,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %  The format of the ConvertPathToPolygon method is:
 %
 %      PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info,
-%        ExceptionInfo *excetion)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2331,7 +2331,7 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
 }
 
 static inline double GetDrawValue(const char *magick_restrict string,
-  char **magick_restrict sentinal)
+  char **magick_restrict sentinel)
 {
   char
     **magick_restrict q;
@@ -2339,9 +2339,9 @@ static inline double GetDrawValue(const char *magick_restrict string,
   double
     value;
 
-  q=sentinal;
+  q=sentinel;
   value=InterpretLocaleValue(string,q);
-  sentinal=q;
+  sentinel=q;
   return(value);
 }
 
@@ -6106,7 +6106,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Permutate() returns the permuation of the (n,k).
+%  Permutate() returns the permutation of the (n,k).
 %
 %  The format of the Permutate method is:
 %

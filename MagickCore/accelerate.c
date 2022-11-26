@@ -1112,7 +1112,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   if (status == MagickFalse)
     goto cleanup;
 
-  /* read from the kenel output */
+  /* read from the kernel output */
   if (ALIGNED(histogram,cl_uint4))
   {
     length = (MaxMap+1);
@@ -1575,7 +1575,7 @@ static Image *ComputeConvolveImage(const Image* image,MagickCLEnv clEnv,
     *filteredPixels,
     *hostPtr;
 
-  /* intialize all CL objects to NULL */
+  /* initialize all CL objects to NULL */
   imageBuffer = NULL;
   filteredImageBuffer = NULL;
   convolutionKernel = NULL;
@@ -2420,7 +2420,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
   if (status == MagickFalse)
     goto cleanup;
 
-  /* read from the kenel output */
+  /* read from the kernel output */
   if (ALIGNED(histogram,cl_uint4))
   {
     length = (MaxMap+1);
@@ -2590,7 +2590,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
     mem_flags = CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR;
     hostPtr = equalize_map;
   }
-  /* create a CL buffer for eqaulize_map  */
+  /* create a CL buffer for equalize_map  */
   length = (MaxMap+1);
   equalizeMapBuffer = clEnv->library->clCreateBuffer(device->context, mem_flags, length * sizeof(PixelPacket), hostPtr, &clStatus);
   if (clStatus != CL_SUCCESS)

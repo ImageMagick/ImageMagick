@@ -1830,7 +1830,7 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image)
 %  IsImageOpaque() returns MagickTrue if none of the pixels in the image have
 %  an alpha value other than OpaqueAlpha (QuantumRange).
 %
-%  Will return true immediatally is alpha channel is not available.
+%  Will return true immediately is alpha channel is not available.
 %
 %  The format of the IsImageOpaque method is:
 %

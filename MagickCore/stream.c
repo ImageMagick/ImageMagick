@@ -64,7 +64,7 @@
 #include "MagickCore/string_.h"
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
 struct _StreamInfo
 {
@@ -1158,7 +1158,7 @@ MagickExport void SetStreamInfoMap(StreamInfo *stream_info,const char *map)
 %  The format of the SetStreamInfoStorageType method is:
 %
 %      void SetStreamInfoStorageType(StreamInfo *stream_info,
-%        const StoreageType *storage_type)
+%        const StorageType *storage_type)
 %
 %  A description of each parameter follows:
 %

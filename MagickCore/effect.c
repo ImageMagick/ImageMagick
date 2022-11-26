@@ -838,9 +838,9 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 %
 %    o spatial_sigma: sigma in the coordinate space. A larger value means that
 %      farther pixels influence each other as long as their colors are close
-%      enough (see intensity_sigma ). When the neigborhood diameter is greater
+%      enough (see intensity_sigma ). When the neighborhood diameter is greater
 %      than zero, it specifies the neighborhood size regardless of
-%      spatial_sigma. Otherwise, the neigborhood diameter is proportional to
+%      spatial_sigma. Otherwise, the neighborhood diameter is proportional to
 %      spatial_sigma.
 %
 %    o exception: return any errors or warnings in this structure.
@@ -1199,7 +1199,7 @@ MagickExport Image *ConvolveImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DespeckleImage() reduces the speckle noise in an image while perserving the
+%  DespeckleImage() reduces the speckle noise in an image while preserving the
 %  edges of the original image.  A speckle removing filter uses a complementary
 %  hulling technique (raising pixels that are darker than their surrounding
 %  neighbors, then complementarily lowering pixels that are brighter than their
@@ -1700,7 +1700,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %
 %  The format of the GaussianBlurImage method is:
 %
-%      Image *GaussianBlurImage(const Image *image,onst double radius,
+%      Image *GaussianBlurImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -4092,7 +4092,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
 %
 %    o image: the image.
 %
-%    o method:  intepolation method.
+%    o method:  interpolation method.
 %
 %    o radius:  choose a random pixel in a neighborhood of this extent.
 %
@@ -4255,7 +4255,7 @@ MagickExport Image *SpreadImage(const Image *image,
 %    o gain: the percentage of the difference between the original and the
 %      blur image that is added back into the original.
 %
-%    o threshold: the threshold in pixels needed to apply the diffence gain.
+%    o threshold: the threshold in pixels needed to apply the difference gain.
 %
 %    o exception: return any errors or warnings in this structure.
 %

@@ -69,7 +69,7 @@ typedef enum
 /*
   Backward compatibility for the more correctly named Jinc Filter.  Original
   source of this filter is from "zoom" but it refers to a reference by Pratt,
-  who does not actualy name the filter.
+  who does not actually name the filter.
 
   also miss-spellings of common filters
 */

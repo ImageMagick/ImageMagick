@@ -1133,7 +1133,7 @@ static size_t GetToken (FxInfo * pfx)
      or 0 if it isn't a token that starts with an alpha.
    j0 and j1 have trailing digit.
    Also colours like "gray47" have more trailing digits.
-   After intial alpha(s) also allow single "_", eg "standard_deviation".
+   After initial alpha(s) also allow single "_", eg "standard_deviation".
    Does not advance pfx->pex.
    This splits "mean.r" etc.
 */
@@ -1560,7 +1560,7 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
 static ssize_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *v1, fxFltType *v2)
 /* Finds named colour such as "blue" and colorspace function such as "lab(10,20,30)".
    Returns number of characters to swallow.
-   Return -1 means apparantly a constant colour, but with an error.
+   Return -1 means apparently a constant colour, but with an error.
    Return 0 means not a constant colour, but not an error.
 */
 {
@@ -2172,9 +2172,9 @@ static MagickBooleanType GetOperand (
              and https://en.wikipedia.org/wiki/Binary_prefix
           */
           double Pow = 0.0;
-          const char Prefices[] = "yzafpnum.kMGTPEZY";
-          const char * pSi = strchr (Prefices, *tailptr);
-          if (pSi && *pSi != '.') Pow = (pSi - Prefices) * 3 - 24;
+          const char Prefixes[] = "yzafpnum.kMGTPEZY";
+          const char * pSi = strchr (Prefixes, *tailptr);
+          if (pSi && *pSi != '.') Pow = (pSi - Prefixes) * 3 - 24;
           else if (*tailptr == 'c') Pow = -2;
           else if (*tailptr == 'h') Pow =  2;
           else if (*tailptr == 'k') Pow =  3;
@@ -3143,7 +3143,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
   int i;
 
   /* For -fx, this sets p to ImgNum 0.
-     for %[fx:...], this sets p to the currrent image.
+     for %[fx:...], this sets p to the current image.
      Similarly img.
   */
   if (!p) p = GetCacheViewVirtualPixels (
@@ -3164,7 +3164,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
     NeedRelinq = MagickTrue;
   }
 
-  /*  Folllowing is only for expressions like "saturation", with no image specifier.
+  /*  Following is only for expressions like "saturation", with no image specifier.
   */
   if (pfx->NeedHsl) {
     ConvertRGBToHSL (
@@ -3577,7 +3577,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                 }
               }
             } else {
-              /* we have an image atttribute */
+              /* we have an image attribute */
               regA = ImageStat (pfx, 0, WHICH_ATTR_CHAN, pel->ImgAttrQual);
             }
           } else {
@@ -4005,7 +4005,7 @@ MagickPrivate MagickBooleanType FxEvaluateChannelExpression (
   if (!ExecuteRPN (pfx, &pfx->fxrts[id], &ret, channel, x, y)) {
     (void) ThrowMagickException (
       exception, GetMagickModule(), OptionError,
-      "ExcuteRPN failed", " ");
+      "ExecuteRPN failed", " ");
     return MagickFalse;
   }
 

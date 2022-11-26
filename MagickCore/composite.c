@@ -137,7 +137,7 @@
    Composition based on the SVG specification:
 
    A Composition is defined by...
-      Color Function :  f(Sc,Dc)  where Sc and Dc are the normizalized colors
+      Color Function :  f(Sc,Dc)  where Sc and Dc are the normalized colors
       Blending areas :  X = 1     for area of overlap, ie: f(Sc,Dc)
                         Y = 1     for source preserved
                         Z = 1     for canvas preserved
@@ -151,7 +151,7 @@
       Dca = Dc*Da     normalized Dest color divided by Dest alpha
       Dc' = Dca'/Da'  the desired color value for this channel.
 
-   Da' in in the follow formula as 'gamma'  The resulting alpla value.
+   Da' in in the follow formula as 'gamma'  The resulting alpha value.
 
    Most functions use a blending mode of over (X=1,Y=1,Z=1) this results in
    the following optimizations...
@@ -173,10 +173,10 @@
        with regard to blending.  This now includes 'ModulusAdd' and
        'ModulusSubtract'.
 
-    3) When the special channel flag 'sync' (syncronize channel updates)
+    3) When the special channel flag 'sync' (synchronize channel updates)
        is turned off (enabled by default) then mathematical compositions are
        only performed on the channels specified, and are applied
-       independantally of each other.  In other words the mathematics is
+       independently of each other.  In other words the mathematics is
        performed as 'pure' mathematical operations, rather than as image
        operations.
 */
@@ -1861,7 +1861,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           angle_range=DegreesToRadians(geometry_info.psi)-angle_start;
         }
       /*
-        Set up a gaussian cylindrical filter for EWA Bluring.
+        Set up a gaussian cylindrical filter for EWA Blurring.
 
         As the minimum ellipse radius of support*1.0 the EWA algorithm
         can only produce a minimum blur of 0.5 for Gaussian (support=2.0)

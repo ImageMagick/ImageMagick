@@ -245,7 +245,7 @@ struct _Image
     ticks_per_second;  /* units for delay time, default 100 for GIF */
 
   size_t
-    iterations,        /* number of interations for GIF animations */
+    iterations,        /* number of interactions for GIF animations */
     total_colors;
 
   ssize_t
@@ -342,7 +342,7 @@ struct _Image
   struct _ImageInfo
     *image_info;       /* (Optional) Image belongs to this ImageInfo 'list'
                         * For access to 'global options' when no per-image
-                        * attribute, properity, or artifact has been set.
+                        * attribute, prosperity, or artifact has been set.
                         */
 
   struct _Image
@@ -381,7 +381,7 @@ struct _ImageInfo
     orientation;        /* orientation setting */
 
   MagickBooleanType
-    temporary,          /* image file to be deleted after read "empemeral:" */
+    temporary,          /* image file to be deleted after read "ephemeral:" */
     adjoin,             /* save images to separate scene files */
     affirm,
     antialias;
@@ -404,7 +404,7 @@ struct _ImageInfo
     endian;             /* integer endian order for raw image data */
 
   ResolutionType
-    units;              /* denisty pixels/inch or pixel/cm */
+    units;              /* density pixels/inch or pixel/cm */
 
   size_t
     quality;            /* compression quality */
@@ -430,7 +430,7 @@ struct _ImageInfo
 
   MagickBooleanType
     dither,             /* dither enable-disable */
-    monochrome;         /* read/write pcl,pdf,ps,xps as monocrome image */
+    monochrome;         /* read/write pcl,pdf,ps,xps as monochrome image */
 
   ColorspaceType
     colorspace;
@@ -478,7 +478,7 @@ struct _ImageInfo
 
   char
     magick[MagickPathExtent],    /* image file format (file magick) */
-    unique[MagickPathExtent],    /* unique tempory filename - delegates */
+    unique[MagickPathExtent],    /* unique temporary filename - delegates */
     filename[MagickPathExtent];  /* filename when reading/writing image */
 
   MagickBooleanType

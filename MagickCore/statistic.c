@@ -1028,7 +1028,7 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
         width;
 
       /*
-        Arcsin (peged at range limits for invalid results): width, center,
+        Arcsin (pegged at range limits for invalid results): width, center,
         range, and bias.
       */
       width=(number_parameters >= 1) ? parameters[0] : 1.0;

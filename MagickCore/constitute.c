@@ -10,7 +10,7 @@
 %     CCCC   OOO   N   N  SSSSS    T    IIIII    T     UUU     T    EEEEE     %
 %                                                                             %
 %                                                                             %
-%                  MagickCore Methods to Consitute an Image                   %
+%                  MagickCore Methods to Constitute an Image                  %
 %                                                                             %
 %                             Software Design                                 %
 %                                  Cristy                                     %
@@ -83,7 +83,7 @@
 #include "MagickCore/utility-private.h"
 
 /*
-  Typedef declaractions.
+  Typedef declarations.
 */
 typedef struct _ConstituteInfo
 {
@@ -839,7 +839,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       *source_date_epoch = (const char *) NULL;
 
     static MagickBooleanType
-      epoch_initalized = MagickFalse;
+      epoch_initialized = MagickFalse;
 
     next->taint=MagickFalse;
     GetPathComponent(magick_filename,MagickPath,magick_path);
@@ -930,10 +930,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     profile=GetImageProfile(next,"iptc");
     if (profile == (const StringInfo *) NULL)
       profile=GetImageProfile(next,"8bim");
-    if (epoch_initalized == MagickFalse)
+    if (epoch_initialized == MagickFalse)
       {
         source_date_epoch=getenv("SOURCE_DATE_EPOCH");
-        epoch_initalized=MagickTrue;
+        epoch_initialized=MagickTrue;
       }
     if (source_date_epoch == (const char *) NULL)
       {

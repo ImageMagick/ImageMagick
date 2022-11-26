@@ -213,7 +213,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DefineImageProperty() associates an assignment string of the form
-%  "key=value" with an artifact or options. It is equivelent to
+%  "key=value" with an artifact or options. It is equivalent to
 %  SetImageProperty().
 %
 %  The format of the DefineImageProperty method is:
@@ -394,10 +394,10 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
 %  GetImageProperty() gets a value associated with an image property.
 %
 %  This includes,  profile prefixes, such as "exif:", "iptc:" and "8bim:"
-%  It does not handle non-prifile prefixes, such as "fx:", "option:", or
+%  It does not handle non-profile prefixes, such as "fx:", "option:", or
 %  "artifact:".
 %
-%  The returned string is stored as a properity of the same name for faster
+%  The returned string is stored as a prosperity of the same name for faster
 %  lookup later. It should NOT be freed by the caller.
 %
 %  The format of the GetImageProperty method is:
@@ -2412,7 +2412,7 @@ MagickExport const char *GetImageProperty(const Image *image,
 %  directly freed.  If the string was generated (common) the string will be
 %  stored as as either as artifact or option 'magick-property'.  These may be
 %  deleted (cleaned up) when no longer required, but neither artifact or
-%  option is guranteed to exist.
+%  option is guaranteed to exist.
 %
 %  The format of the GetMagickProperty method is:
 %
@@ -2450,7 +2450,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     value[MagickPathExtent];  /* formatted string to store as an artifact */
 
   const char
-    *string;     /* return a string already stored somewher */
+    *string;     /* return a string already stored somewhere */
 
   if ((image != (Image *) NULL) && (IsEventLogging() != MagickFalse))
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
@@ -2461,7 +2461,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
   *value='\0';           /* formatted string */
   string=(char *) NULL;  /* constant string reference */
   /*
-    Get properities that are directly defined by images.
+    Get properties that are directly defined by images.
   */
   switch (letter)
   {
@@ -2597,7 +2597,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     }
     case 's': /* Image scene number */
     {
-#if 0  /* this seems non-sensical -- simplifing */
+#if 0  /* this seems non-sensical -- simplifying */
       if (image_info->number_scenes != 0)
         (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
           image_info->scene);
@@ -2613,7 +2613,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
 #endif
       break;
     }
-    case 't': /* Base filename without directory or extention */
+    case 't': /* Base filename without directory or extension */
     {
       WarnNoImageReturn("\"%%%c\"",letter);
       GetPathComponent(image->magick_filename,BasePath,value);
@@ -2743,7 +2743,7 @@ static const char *GetMagickPropertyLetter(ImageInfo *image_info,
     case 'S': /* Number of scenes in image list.  */
     {
       WarnNoImageInfoReturn("\"%%%c\"",letter);
-#if 0 /* What is this number? -- it makes no sense - simplifing */
+#if 0 /* What is this number? -- it makes no sense - simplifying */
       if (image_info->number_scenes == 0)
          string="2147483647";
       else if ( image != (Image *) NULL )
@@ -3429,7 +3429,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         }
       if (LocaleCompare("scenes",property) == 0)
         {
-          /* FUTURE: equivelent to %n? */
+          /* FUTURE: equivalent to %n? */
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
             GetImageListLength(image));
@@ -3592,7 +3592,7 @@ MagickExport const char *GetNextImageProperty(const Image *image)
 %     &lt; &gt; &amp;   replaced by '<', '>', '&' resp.
 %     %%                replaced by percent
 %
-%     %x %[x]       where 'x' is a single letter properity, case sensitive).
+%     %x %[x]       where 'x' is a single letter prosperity, case sensitive).
 %     %[type:name]  where 'type' a is special and known prefix.
 %     %[name]       where 'name' is a specifically known attribute, calculated
 %                   value, or a per-image property string name, or a per-image
@@ -3604,11 +3604,11 @@ MagickExport const char *GetNextImageProperty(const Image *image)
 %  This prevents the typical usage of percent in a interpreted geometry
 %  argument from being substituted when the percent is a geometry flag.
 %
-%  If 'glob-expresions' ('*' or '?' characters) is used for 'name' it may be
+%  If 'glob-expressions' ('*' or '?' characters) is used for 'name' it may be
 %  used as a search pattern to print multiple lines of "name=value\n" pairs of
-%  the associacted set of properties.
+%  the associated set of properties.
 %
-%  The returned string must be freed using DestoryString() by the caller.
+%  The returned string must be freed using DestroyString() by the caller.
 %
 %  The format of the InterpretImageProperties method is:
 %
@@ -3864,7 +3864,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         if (number != MagickFalse)
           {
             /*
-              But only if not preceeded by a number!
+              But only if not preceded by a number!
             */
             *q++='%'; /* do NOT substitute the percent */
             p--;      /* back up one */
@@ -4110,7 +4110,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             }
           string=GetImageOption(property_info,pattern+7);
           if (string == (char *) NULL)
-            goto PropertyLookupFailure; /* no artifact of this specifc name */
+            goto PropertyLookupFailure; /* no artifact of this specific name */
           AppendString2Text(string);
           continue;
         }
@@ -4134,7 +4134,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             }
           string=GetImageArtifact(property_image,pattern+9);
           if (string == (char *) NULL)
-            goto PropertyLookupFailure; /* no artifact of this specifc name */
+            goto PropertyLookupFailure; /* no artifact of this specific name */
           AppendString2Text(string);
           continue;
         }
@@ -4158,7 +4158,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
             }
           string=GetImageProperty(property_image,pattern+9,exception);
           if (string == (char *) NULL)
-            goto PropertyLookupFailure; /* no artifact of this specifc name */
+            goto PropertyLookupFailure; /* no artifact of this specific name */
           AppendString2Text(string);
           continue;
         }
@@ -4194,7 +4194,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         }
       /*
         Look for a known property or image attribute such as
-        %[basename] %[denisty] %[delay].  Also handles a braced single
+        %[basename] %[density] %[delay].  Also handles a braced single
         letter: %[b] %[G] %[g].
       */
       string=GetMagickProperty(property_info,property_image,pattern,exception);

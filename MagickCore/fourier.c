@@ -389,7 +389,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
 %  (DFT) of the image either as a magnitude / phase or real / imaginary image
 %  pair.
 %
-%  The format of the ForwadFourierTransformImage method is:
+%  The format of the ForwardFourierTransformImage method is:
 %
 %      Image *ForwardFourierTransformImage(const Image *image,
 %        const MagickBooleanType modulus,ExceptionInfo *exception)

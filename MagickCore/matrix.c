@@ -298,7 +298,7 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
 %
 %  This used to generate the two dimensional matrix, and vectors required
 %  for the GaussJordanElimination() method below, solving some system of
-%  simultanious equations.
+%  simultaneous equations.
 %
 %  The format of the AcquireMagickMatrix method is:
 %
@@ -419,7 +419,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GaussJordanElimination() returns a matrix in reduced row echelon form,
-%  while simultaneously reducing and thus solving the augumented results
+%  while simultaneously reducing and thus solving the augmented results
 %  matrix.
 %
 %  See also  http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
@@ -440,7 +440,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %             Also represents the number terms that need to be solved.
 %
 %    o number_vectors: Number of vectors columns, argumenting the above matrix.
-%             Usally 1, but can be more for more complex equation solving.
+%             Usually 1, but can be more for more complex equation solving.
 %
 %  Note that the 'matrix' is given as a 'array of row pointers' of rank size.
 %  That is values can be assigned as   matrix[row][column]   where 'row' is
@@ -454,23 +454,23 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
 %  column 'vector' is all that is required to produce the desired solution.
 %
 %  For example, the 'vectors' can consist of a pointer to a simple array of
-%  doubles.  when only one set of simultanious equations is to be solved from
+%  doubles.  when only one set of simultaneous equations is to be solved from
 %  the given set of coefficient weighted terms.
 %
 %     double **matrix = AcquireMagickMatrix(8UL,8UL);
-%     double coefficents[8];
+%     double coefficients[8];
 %     ...
-%     GaussJordanElimination(matrix, &coefficents, 8UL, 1UL);
+%     GaussJordanElimination(matrix, &coefficients, 8UL, 1UL);
 %
-%  However by specifing more 'columns' (as an 'array of vector columns',
+%  However by specifying more 'columns' (as an 'array of vector columns',
 %  you can use this function to solve a set of 'separable' equations.
 %
 %  For example a distortion function where    u = U(x,y)   v = V(x,y)
-%  And the functions U() and V() have separate coefficents, but are being
+%  And the functions U() and V() have separate coefficients, but are being
 %  generated from a common x,y->u,v  data set.
 %
 %  Another example is generation of a color gradient from a set of colors at
-%  specific coordients, such as a list x,y -> r,g,b,a.
+%  specific coordinates, such as a list x,y -> r,g,b,a.
 %
 %  You can also use the 'vectors' to generate an inverse of the given 'matrix'
 %  though as a 'column first array' rather than a 'row first array'. For
@@ -556,7 +556,7 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
     rows[i]=row;
     columns[i]=column;
     if (matrix[column][column] == 0.0)
-      return(MagickFalse);  /* sigularity */
+      return(MagickFalse);  /* singularity */
     scale=PerceptibleReciprocal(matrix[column][column]);
     matrix[column][column]=1.0;
     for (j=0; j < (ssize_t) rank; j++)
@@ -624,7 +624,7 @@ MagickExport size_t GetMatrixColumns(const MatrixInfo *matrix_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMatrixElement() returns the specifed element in the matrix.
+%  GetMatrixElement() returns the specified element in the matrix.
 %
 %  The format of the GetMatrixElement method is:
 %
@@ -781,11 +781,11 @@ MagickExport size_t GetMatrixRows(const MatrixInfo *matrix_info)
 %
 %    o vectors: the result vectors to add terms/results to.
 %
-%    o terms: the pre-calculated terms (without the unknown coefficent
+%    o terms: the pre-calculated terms (without the unknown coefficient
 %             weights) that forms the equation being added.
 %
 %    o results: the result(s) that should be generated from the given terms
-%               weighted by the yet-to-be-solved coefficents.
+%               weighted by the yet-to-be-solved coefficients.
 %
 %    o rank: the rank or size of the dimensions of the square matrix.
 %            Also the length of vectors, and number of terms being added.
@@ -1088,7 +1088,7 @@ MagickExport double **RelinquishMagickMatrix(double **matrix,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMatrixElement() sets the specifed element in the matrix.
+%  SetMatrixElement() sets the specified element in the matrix.
 %
 %  The format of the SetMatrixElement method is:
 %

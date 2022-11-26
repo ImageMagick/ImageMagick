@@ -1621,7 +1621,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
     *c,
     **entities,
     *n,
-    **predefined_entitites,
+    **predefined_entities,
     q,
     *t,
     *v;
@@ -1633,10 +1633,10 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
     j;
 
   n=(char *) NULL;
-  predefined_entitites=(char **) AcquireMagickMemory(sizeof(sentinel));
-  if (predefined_entitites == (char **) NULL)
+  predefined_entities=(char **) AcquireMagickMemory(sizeof(sentinel));
+  if (predefined_entities == (char **) NULL)
     ThrowFatalException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) memcpy(predefined_entitites,sentinel,sizeof(sentinel));
+  (void) memcpy(predefined_entities,sentinel,sizeof(sentinel));
   for (xml[length]='\0'; xml != (char *) NULL; )
   {
     while ((*xml != '\0') && (*xml != '<') && (*xml != '%'))
@@ -1670,14 +1670,14 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
             xml=strchr(xml,'>');
             continue;
           }
-        entities=(*c == '%') ? predefined_entitites : root->entities;
+        entities=(*c == '%') ? predefined_entities : root->entities;
         for (i=0; entities[i] != (char *) NULL; i++) ;
         entities=(char **) ResizeQuantumMemory(entities,(size_t) (i+3),
           sizeof(*entities));
         if (entities == (char **) NULL)
           ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
         if (*c == '%')
-          predefined_entitites=entities;
+          predefined_entities=entities;
         else
           root->entities=entities;
         xml++;
@@ -1688,7 +1688,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
             *xml='\0';
             xml++;
           }
-        entities[i+1]=ParseEntities(v,predefined_entitites,'%');
+        entities[i+1]=ParseEntities(v,predefined_entities,'%');
         entities[i+2]=(char *) NULL;
         if (ValidateEntities(n,entities[i+1],0,entities) != MagickFalse)
           entities[i]=n;
@@ -1698,8 +1698,8 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
               entities[i+1]=DestroyString(entities[i+1]);
             (void) ThrowMagickException(exception,GetMagickModule(),
               OptionWarning,"ParseError","circular entity declaration &%s",n);
-            predefined_entitites=(char **) RelinquishMagickMemory(
-              predefined_entitites);
+            predefined_entities=(char **) RelinquishMagickMemory(
+              predefined_entities);
             return(MagickFalse);
           }
         }
@@ -1714,8 +1714,8 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   OptionWarning,"ParseError","unclosed <!ATTLIST");
-                predefined_entitites=(char **) RelinquishMagickMemory(
-                  predefined_entitites);
+                predefined_entities=(char **) RelinquishMagickMemory(
+                  predefined_entities);
                 return(MagickFalse);
               }
             xml=t+strcspn(t,XMLWhitespace ">");
@@ -1737,8 +1737,8 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                 {
                   (void) ThrowMagickException(exception,GetMagickModule(),
                     OptionWarning,"ParseError","malformed <!ATTLIST");
-                  predefined_entitites=(char **) RelinquishMagickMemory(
-                    predefined_entitites);
+                  predefined_entities=(char **) RelinquishMagickMemory(
+                    predefined_entities);
                   return(MagickFalse);
                 }
               xml+=strspn(xml+1,XMLWhitespace)+1;
@@ -1751,8 +1751,8 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                 {
                   (void) ThrowMagickException(exception,GetMagickModule(),
                     OptionWarning,"ParseError","malformed <!ATTLIST");
-                  predefined_entitites=(char **) RelinquishMagickMemory(
-                    predefined_entitites);
+                  predefined_entities=(char **) RelinquishMagickMemory(
+                    predefined_entities);
                   return(MagickFalse);
                 }
               xml+=strspn(xml,XMLWhitespace ")");
@@ -1773,8 +1773,8 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                   {
                     (void) ThrowMagickException(exception,GetMagickModule(),
                       OptionWarning,"ParseError","malformed <!ATTLIST");
-                    predefined_entitites=(char **) RelinquishMagickMemory(
-                      predefined_entitites);
+                    predefined_entities=(char **) RelinquishMagickMemory(
+                      predefined_entities);
                     return(MagickFalse);
                   }
               if (root->attributes[i] == (char **) NULL)
@@ -1836,7 +1836,7 @@ static MagickBooleanType ParseInternalDoctype(XMLTreeRoot *root,char *xml,
                if ((*(xml++) == '%') && (root->standalone == MagickFalse))
                  break;
     }
-  predefined_entitites=(char **) RelinquishMagickMemory(predefined_entitites);
+  predefined_entities=(char **) RelinquishMagickMemory(predefined_entities);
   return(MagickTrue);
 }
 

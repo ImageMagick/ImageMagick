@@ -383,7 +383,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %  vector from one color to another.
 %
 %  Note, the interface of this method will change in the future to support
-%  more than one transistion.
+%  more than one transition.
 %
 %  The format of the GradientImage method is:
 %
@@ -397,7 +397,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
 %
 %    o type: the gradient type: linear or radial.
 %
-%    o spread: the gradient spread meathod: pad, reflect, or repeat.
+%    o spread: the gradient spread method: pad, reflect, or repeat.
 %
 %    o start_color: the start color.
 %

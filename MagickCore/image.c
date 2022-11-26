@@ -2228,7 +2228,7 @@ MagickExport MagickBooleanType ResetImagePage(Image *image,const char *page)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ResetImagePixels() reset the image pixels, that is, all the pixel components
-%  are zereod.
+%  are zeroed.
 %
 %  The format of the SetImage method is:
 %
@@ -2523,7 +2523,7 @@ MagickExport ChannelType SetImageChannelMask(Image *image,
 %  The format of the SetImageColor method is:
 %
 %      MagickBooleanType SetImageColor(Image *image,const PixelInfo *color,
-%        ExeptionInfo *exception)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2696,7 +2696,7 @@ MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
 %  It is set to a type of image format based on the prefix or suffix of the
 %  filename.  For example, 'ps:image' returns PS indicating a Postscript image.
 %  JPEG is returned for this filename: 'image.jpg'.  The filename prefix has
-%  precendence over the suffix.  Use an optional index enclosed in brackets
+%  precedence over the suffix.  Use an optional index enclosed in brackets
 %  after a file name to specify a desired scene of a multi-resolution image
 %  format like Photo CD (e.g. img0001.pcd[4]).  A True (non-zero) return value
 %  indicates success.
