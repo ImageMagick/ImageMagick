@@ -877,7 +877,6 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       (void) JxlEncoderCloseBoxes(jxl_info);
     }
   jxl_status=JXLWriteMetadata(image,jxl_info);
-  jxl_status=JXL_ENC_SUCCESS;
   if (jxl_status != JXL_ENC_SUCCESS)
     {
       JxlThreadParallelRunnerDestroy(runner);
