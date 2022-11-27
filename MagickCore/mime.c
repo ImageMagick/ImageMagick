@@ -476,7 +476,7 @@ MagickExport const MimeInfo **GetMimeInfoList(const char *pattern,
   }
   UnlockSemaphoreInfo(mime_semaphore);
   if (i == 0)
-    aliases=(const MimeInfo **) RelinquishMagickMemory(aliases);
+    aliases=(const MimeInfo **) RelinquishMagickMemory((void *) aliases);
   else
     {
       qsort((void *) aliases,(size_t) i,sizeof(*aliases),MimeInfoCompare);

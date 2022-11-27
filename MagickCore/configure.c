@@ -479,7 +479,7 @@ MagickExport const ConfigureInfo **GetConfigureInfoList(const char *pattern,
   }
   UnlockSemaphoreInfo(configure_semaphore);
   if (i == 0)
-    options=(const ConfigureInfo **) RelinquishMagickMemory(options);
+    options=(const ConfigureInfo **) RelinquishMagickMemory((void*) options);
   else
     {
       qsort((void *) options,(size_t) i,sizeof(*options),ConfigureInfoCompare);

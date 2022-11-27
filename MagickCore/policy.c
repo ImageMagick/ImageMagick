@@ -412,7 +412,7 @@ MagickExport const PolicyInfo **GetPolicyInfoList(const char *pattern,
   }
   UnlockSemaphoreInfo(policy_semaphore);
   if (i == 0)
-    policies=(const PolicyInfo **) RelinquishMagickMemory(policies);
+    policies=(const PolicyInfo **) RelinquishMagickMemory((void*) policies);
   else
     policies[i]=(PolicyInfo *) NULL;
   *number_policies=(size_t) i;

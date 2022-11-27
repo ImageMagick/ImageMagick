@@ -1383,7 +1383,7 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   }
   UnlockSemaphoreInfo(delegate_semaphore);
   if (i == 0)
-    delegates=(const DelegateInfo **) RelinquishMagickMemory(delegates);
+    delegates=(const DelegateInfo **) RelinquishMagickMemory((void*) delegates);
   else
     {
       qsort((void *) delegates,(size_t) i,sizeof(*delegates),DelegateInfoCompare);

@@ -509,7 +509,7 @@ MagickExport const MagicInfo **GetMagicInfoList(const char *pattern,
   }
   UnlockSemaphoreInfo(magic_list_semaphore);
   if (i == 0)
-    aliases=(const MagicInfo **) RelinquishMagickMemory(aliases);
+    aliases=(const MagicInfo **) RelinquishMagickMemory((void*) aliases);
   else
     {
       qsort((void *) aliases,(size_t) i,sizeof(*aliases),MagicInfoCompare);

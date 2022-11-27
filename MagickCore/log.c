@@ -563,7 +563,7 @@ MagickExport const LogInfo **GetLogInfoList(const char *pattern,
   }
   UnlockSemaphoreInfo(log_semaphore);
   if (i == 0)
-    preferences=(const LogInfo **) RelinquishMagickMemory(preferences);
+    preferences=(const LogInfo **) RelinquishMagickMemory((void*) preferences);
   else
     {
       qsort((void *) preferences,(size_t) i,sizeof(*preferences),LogInfoCompare);

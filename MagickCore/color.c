@@ -1328,7 +1328,7 @@ MagickExport const ColorInfo **GetColorInfoList(const char *pattern,
   }
   UnlockSemaphoreInfo(color_semaphore);
   if (i == 0)
-    colors=(const ColorInfo **) RelinquishMagickMemory(colors);
+    colors=(const ColorInfo **) RelinquishMagickMemory((void*) colors);
   else
     {
       qsort((void *) colors,(size_t) i,sizeof(*colors),ColorInfoCompare);
