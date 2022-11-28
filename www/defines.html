@@ -1227,8 +1227,8 @@ use:</p>
 
     <p>As a special case, if the <samp>sRGB</samp> chunk is excluded and
     the <samp>gAMA</samp> chunk is included, the <samp>gAMA</samp> chunk will
-    only be written if gamma is not 1/2.2, since most decoders assume
-    sRGB and gamma=1/2.2 when no colorspace information is included in
+    only be written if gamma is not 1/2.2, since most decoders do not assume
+    sRGB for gAMA=0.45455 when no colorspace information is included in
     the PNG file.  Because the list is processed from left to right, you
     can achieve this with a single define:</p>
 
