@@ -2373,7 +2373,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   ping_found_gAMA = MagickFalse;
   ping_found_iCCP = MagickFalse;
   ping_found_sRGB = MagickFalse;
-  ping_found_sRGB_cHRM = MagickFalse;
   ping_preserve_iCCP = MagickFalse;
 
 
@@ -2899,24 +2898,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         &image->chromaticity.blue_primary.y);
 
        ping_found_cHRM=MagickTrue;
-
-       if (image->chromaticity.red_primary.x>0.6399f &&
-           image->chromaticity.red_primary.x<0.6401f &&
-           image->chromaticity.red_primary.y>0.3299f &&
-           image->chromaticity.red_primary.y<0.3301f &&
-           image->chromaticity.green_primary.x>0.2999f &&
-           image->chromaticity.green_primary.x<0.3001f &&
-           image->chromaticity.green_primary.y>0.5999f &&
-           image->chromaticity.green_primary.y<0.6001f &&
-           image->chromaticity.blue_primary.x>0.1499f &&
-           image->chromaticity.blue_primary.x<0.1501f &&
-           image->chromaticity.blue_primary.y>0.0599f &&
-           image->chromaticity.blue_primary.y<0.0601f &&
-           image->chromaticity.white_point.x>0.3126f &&
-           image->chromaticity.white_point.x<0.3128f &&
-           image->chromaticity.white_point.y>0.3289f &&
-           image->chromaticity.white_point.y<0.3291f)
-          ping_found_sRGB_cHRM=MagickTrue;
     }
 
 #if defined(PNG_oFFs_SUPPORTED)
