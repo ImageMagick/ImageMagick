@@ -2920,26 +2920,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           ping_found_sRGB_cHRM=MagickTrue;
     }
 
-  if (image->rendering_intent != UndefinedIntent)
-    {
-      if (ping_found_sRGB != MagickTrue &&
-          (ping_found_gAMA != MagickTrue ||
-          (image->gamma > .45 && image->gamma < .46)) &&
-          (ping_found_cHRM != MagickTrue ||
-          ping_found_sRGB_cHRM != MagickFalse) &&
-          ping_found_iCCP != MagickTrue)
-      {
-         png_set_sRGB(ping,ping_info,
-            Magick_RenderingIntent_to_PNG_RenderingIntent
-            (image->rendering_intent));
-         file_gamma=0.45455f;
-         ping_found_sRGB=MagickTrue;
-         if (logging != MagickFalse)
-           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "    Setting sRGB as if in input");
-      }
-    }
-
 #if defined(PNG_oFFs_SUPPORTED)
   if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
     {
