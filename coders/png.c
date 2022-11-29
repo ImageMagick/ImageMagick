@@ -2197,7 +2197,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     ping_found_gAMA,
     ping_found_iCCP,
     ping_found_sRGB,
-    ping_found_sRGB_cHRM,
     ping_preserve_iCCP,
     status;
 
