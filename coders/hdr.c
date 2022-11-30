@@ -330,7 +330,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       image->chromaticity.green_primary.y=chromaticity[3];
                       image->chromaticity.blue_primary.x=chromaticity[4];
                       image->chromaticity.blue_primary.y=chromaticity[5];
-                      image->chromaticity.white_point.x=white_point[0],
+                      image->chromaticity.white_point.x=white_point[0];
                       image->chromaticity.white_point.y=white_point[1];
                     }
                   break;
