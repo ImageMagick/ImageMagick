@@ -374,14 +374,14 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       while (isspace((int) ((unsigned char) c)) != 0)
         c=ReadBlobByte(image);
   }
-  if ((LocaleCompare(format,"32-bit_rle_rgbe") != 0) &&
-      (LocaleCompare(format,"32-bit_rle_xyze") != 0))
-    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
-  (void) SetImageColorspace(image,RGBColorspace,exception);
-  if (LocaleCompare(format,"32-bit_rle_xyze") == 0)
+  if (LocaleCompare(format,"32-bit_rle_rgbe") != 0)
+    (void) SetImageColorspace(image,RGBColorspace,exception);
+  else if (LocaleCompare(format,"32-bit_rle_xyze") == 0)
     (void) SetImageColorspace(image,XYZColorspace,exception);
+  else
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   image->compression=(image->columns < 8) || (image->columns > 0x7ffff) ?
     NoCompression : RLECompression;
   if (image_info->ping != MagickFalse)
