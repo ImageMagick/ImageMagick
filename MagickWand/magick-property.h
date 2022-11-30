@@ -61,6 +61,9 @@ extern WandExport double
   *MagickQueryMultilineFontMetrics(MagickWand *,const DrawingWand *,
     const char *);
 
+extern WandExport FilterType
+  MagickGetFilter(MagickWand *);
+
 extern WandExport GravityType
   MagickGetGravity(MagickWand *);
 
@@ -94,6 +97,7 @@ extern WandExport MagickBooleanType
   MagickSetDepth(MagickWand *,const size_t),
   MagickSetExtract(MagickWand *,const char *),
   MagickSetFilename(MagickWand *,const char *),
+  MagickSetFilter(MagickWand *,const FilterType),
   MagickSetFormat(MagickWand *,const char *),
   MagickSetFont(MagickWand *,const char *),
   MagickSetGravity(MagickWand *,const GravityType),

@@ -455,6 +455,47 @@ WandExport char *MagickGetFormat(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t F i l t e r                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetFilter() gets the wand filter.
+%
+%  The format of the MagickGetFilter method is:
+%
+%      FilterType MagickGetFilter(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport FilterType MagickGetFilter(MagickWand *wand)
+{
+  const char
+    *option;
+
+  FilterType
+    type;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  option=GetImageOption(wand->image_info,"filter");
+  if (option == (const char *) NULL)
+    return(UndefinedFilter);
+  type=(FilterType) ParseCommandOption(MagickFilterOptions,MagickFalse,option);
+  return(type);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t G r a v i t y                                           %
 %                                                                             %
 %                                                                             %
@@ -2163,6 +2204,46 @@ WandExport MagickBooleanType MagickSetFormat(MagickWand *wand,
   ClearMagickException(wand->exception);
   (void) CopyMagickString(wand->image_info->magick,format,MagickPathExtent);
   return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t F i l t e r                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetFilter() sets the filter type.
+%
+%  The format of the MagickSetFilter type is:
+%
+%      MagickBooleanType MagickSetFilter(MagickWand *wand,
+%        const FilterType type)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o type: the filter type.
+%
+*/
+WandExport MagickBooleanType MagickSetFilter(MagickWand *wand,
+  const FilterType type)
+{
+  MagickBooleanType
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  status=SetImageOption(wand->image_info,"filter",CommandOptionToMnemonic(
+    MagickFilterOptions,(ssize_t) type));
+  return(status);
 }
 
 /*

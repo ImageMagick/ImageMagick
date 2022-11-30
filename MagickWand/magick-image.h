@@ -60,6 +60,9 @@ extern WandExport double
 extern WandExport EndianType
   MagickGetImageEndian(MagickWand *);
 
+extern WandExport FilterType
+  MagickGetImageFilter(MagickWand *);
+
 extern WandExport GravityType
   MagickGetImageGravity(MagickWand *);
 
@@ -280,6 +283,7 @@ extern WandExport MagickBooleanType
   MagickSetImageEndian(MagickWand *,const EndianType),
   MagickSetImageExtent(MagickWand *,const size_t,const size_t),
   MagickSetImageFilename(MagickWand *,const char *),
+  MagickSetImageFilter(MagickWand *,const FilterType),
   MagickSetImageFormat(MagickWand *,const char *),
   MagickSetImageFuzz(MagickWand *,const double),
   MagickSetImageGamma(MagickWand *,const double),

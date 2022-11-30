@@ -5074,6 +5074,43 @@ WandExport char *MagickGetImageFilename(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t I m a g e F i l t e r                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageFilter() gets the image filter.
+%
+%  The format of the MagickGetImageFilter method is:
+%
+%      FilterType MagickGetImageFilter(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport FilterType MagickGetImageFilter(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "ContainsNoImages","`%s'",wand->name);
+      return(UndefinedFilter);
+    }
+  return(wand->images->filter);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t I m a g e F o r m a t                                   %
 %                                                                             %
 %                                                                             %
@@ -10457,6 +10494,48 @@ WandExport MagickBooleanType MagickSetImageFilename(MagickWand *wand,
   if (filename == (const char *) NULL)
     return(MagickFalse);
   (void) CopyMagickString(wand->images->filename,filename,MagickPathExtent);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k S e t I m a g e G r a v i t y                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageFilter() sets the image filter type.
+%
+%  The format of the MagickSetImageFilter method is:
+%
+%      MagickBooleanType MagickSetImageFilter(MagickWand *wand,
+%        const FilterType filter)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o filter: Bartlett, Blackman, Bohman, Box, Catrom, Cosine, Cubic, 
+%      CubicSpline, Gaussian, Hamming, Hann, Hermite, Jinc, Kaiser, Lagrange,
+%      Lanczos, Lanczos2, Lanczos2Sharp, LanczosRadius, LanczosSharp, Mitchell,
+%      Parzen, Point, Quadratic, Robidoux, RobidouxSharp, Sinc, SincFast,
+%      Spline, Triangle, Undefined, Welch.
+%
+*/
+WandExport MagickBooleanType MagickSetImageFilter(MagickWand *wand,
+  const FilterType filter)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickWandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  wand->images->filter=filter;
   return(MagickTrue);
 }
 
