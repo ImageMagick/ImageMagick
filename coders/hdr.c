@@ -376,7 +376,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
-  if (LocaleCompare(format,"32-bit_rle_rgbe") != 0)
+  if (LocaleCompare(format,"32-bit_rle_rgbe") == 0)
     (void) SetImageColorspace(image,RGBColorspace,exception);
   else if (LocaleCompare(format,"32-bit_rle_xyze") == 0)
     (void) SetImageColorspace(image,XYZColorspace,exception);
