@@ -143,11 +143,16 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   double
     gamma;
 
+  float
+    chromaticity[6],
+    white_point[2];
+
   Image
     *image;
 
   int
-    c;
+    c,
+    chromaticity_count = 0;
 
   MagickBooleanType
     status,
@@ -311,28 +316,10 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"primaries") == 0)
                 {
-                  float
-                    chromaticity[6],
-                    white_point[2];
-
-                  int
-                    count;
-
-                  count=sscanf(value,"%g %g %g %g %g %g %g %g",&chromaticity[0],
-                    &chromaticity[1],&chromaticity[2],&chromaticity[3],
-                    &chromaticity[4],&chromaticity[5],&white_point[0],
-                    &white_point[1]);
-                  if (count == 8)
-                    {
-                      image->chromaticity.red_primary.x=chromaticity[0];
-                      image->chromaticity.red_primary.y=chromaticity[1];
-                      image->chromaticity.green_primary.x=chromaticity[2];
-                      image->chromaticity.green_primary.y=chromaticity[3];
-                      image->chromaticity.blue_primary.x=chromaticity[4];
-                      image->chromaticity.blue_primary.y=chromaticity[5];
-                      image->chromaticity.white_point.x=white_point[0];
-                      image->chromaticity.white_point.y=white_point[1];
-                    }
+                  chromaticity_count=sscanf(value,"%g %g %g %g %g %g %g %g",
+                    &chromaticity[0],&chromaticity[1],&chromaticity[2],
+                    &chromaticity[3],&chromaticity[4],&chromaticity[5],
+                    &white_point[0],&white_point[1]);
                   break;
                 }
               (void) FormatLocaleString(tag,MagickPathExtent,"hdr:%s",keyword);
@@ -382,6 +369,17 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) SetImageColorspace(image,XYZColorspace,exception);
   else
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+  if (chromaticity_count == 8)
+    {
+      image->chromaticity.red_primary.x=chromaticity[0];
+      image->chromaticity.red_primary.y=chromaticity[1];
+      image->chromaticity.green_primary.x=chromaticity[2];
+      image->chromaticity.green_primary.y=chromaticity[3];
+      image->chromaticity.blue_primary.x=chromaticity[4];
+      image->chromaticity.blue_primary.y=chromaticity[5];
+      image->chromaticity.white_point.x=white_point[0];
+      image->chromaticity.white_point.y=white_point[1];
+    }
   image->compression=(image->columns < 8) || (image->columns > 0x7ffff) ?
     NoCompression : RLECompression;
   if (image_info->ping != MagickFalse)
