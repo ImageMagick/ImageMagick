@@ -633,6 +633,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         "  BMP header size: %u",bmp_info.size);
     if (bmp_info.size > 124)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    bmp_info.offset_bits=MagickMax(14+bmp_info.size,bmp_info.offset_bits);
     profile_data=0;
     profile_size=0;
     if (bmp_info.size == 12)
