@@ -30,14 +30,14 @@
   <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="image.html" rel="canonical" />
-  <link href="../../images/wand.png" rel="icon" />
-  <link href="../../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick.css" rel="stylesheet" />
+  <link href="../../../images/wand.png" rel="icon" />
+  <link href="../../../images/wand.ico" rel="shortcut icon" />
+  <link href="../../assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -45,19 +45,19 @@
     <div class="collapse navbar-collapse" id="magick-navbars">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link " href="../www/index.html">Home</a>
+          <a class="nav-link " href="../../www/index.html">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/download.html">Download</a>
+          <a class="nav-link " href="../../www/download.html">Download</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
+          <a class="nav-link " href="../../www/command-line-tools.html">Tools</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-processing.html">CLI</a>
+          <a class="nav-link " href="../../www/command-line-processing.html">CLI</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/develop.html">Develop</a>
+          <a class="nav-link " href="../../www/develop.html">Develop</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
@@ -90,18 +90,63 @@
 
   <main class="container">
   <div class="magick-template">
+<br/>
+<div class="btn-group">
+<button class="btn btn-secondary dropdown-toggle" type="button" id="defaultDropdown" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+  Select API Method
+</button>
+<ul class="dropdown-menu pre-scrollable" aria-labelledby="defaultDropdown">
+  <li><a href="image.html#AcquireImage">AcquireImage</a></li>
+  <li><a href="image.html#AcquireImageInfo">AcquireImageInfo</a></li>
+  <li><a href="image.html#AcquireNextImage">AcquireNextImage</a></li>
+  <li><a href="image.html#AppendImages">AppendImages</a></li>
+  <li><a href="image.html#CatchImageException">CatchImageException</a></li>
+  <li><a href="image.html#ClipImagePath">ClipImagePath</a></li>
+  <li><a href="image.html#CloneImage">CloneImage</a></li>
+  <li><a href="image.html#CloneImageInfo">CloneImageInfo</a></li>
+  <li><a href="image.html#CopyImagePixels">CopyImagePixels</a></li>
+  <li><a href="image.html#DestroyImage">DestroyImage</a></li>
+  <li><a href="image.html#DestroyImageInfo">DestroyImageInfo</a></li>
+  <li><a href="image.html#GetImageInfo">GetImageInfo</a></li>
+  <li><a href="image.html#GetImageInfoFile">GetImageInfoFile</a></li>
+  <li><a href="image.html#GetImageMask">GetImageMask</a></li>
+  <li><a href="image.html#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a></li>
+  <li><a href="image.html#InterpretImageFilename">InterpretImageFilename</a></li>
+  <li><a href="image.html#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a></li>
+  <li><a href="image.html#IsImageObject">IsImageObject</a></li>
+  <li><a href="image.html#IsTaintImage">IsTaintImage</a></li>
+  <li><a href="image.html#ModifyImage">ModifyImage</a></li>
+  <li><a href="image.html#NewMagickImage">NewMagickImage</a></li>
+  <li><a href="image.html#ReferenceImage">ReferenceImage</a></li>
+  <li><a href="image.html#ResetImagePage">ResetImagePage</a></li>
+  <li><a href="image.html#ResetImagePixels">ResetImagePixels</a></li>
+  <li><a href="image.html#SetImageAlpha">SetImageAlpha</a></li>
+  <li><a href="image.html#SetImageBackgroundColor">SetImageBackgroundColor</a></li>
+  <li><a href="image.html#SetImageChannelMask">SetImageChannelMask</a></li>
+  <li><a href="image.html#SetImageColor">SetImageColor</a></li>
+  <li><a href="image.html#SetImageStorageClass">SetImageStorageClass</a></li>
+  <li><a href="image.html#SetImageExtent">SetImageExtent</a></li>
+  <li><a href="image.html#SetImageInfoBlob">SetImageInfoBlob</a></li>
+  <li><a href="image.html#SetImageInfoCustomStream">SetImageInfoCustomStream</a></li>
+  <li><a href="image.html#SetImageInfoFile">SetImageInfoFile</a></li>
+  <li><a href="image.html#SetImageMask">SetImageMask</a></li>
+  <li><a href="image.html#SetImageRegionMask">SetImageRegionMask</a></li>
+  <li><a href="image.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a></li>
+  <li><a href="image.html#SmushImages">SmushImages</a></li>
+  <li><a href="image.html#StripImage">StripImage</a></li>
+</ul>
+</div>
+<br/>
+<br/>
 <div class="magick-header">
-<p class="text-center"><a href="image.html#AcquireImage">AcquireImage</a> &#8226; <a href="image.html#AcquireImageInfo">AcquireImageInfo</a> &#8226; <a href="image.html#AcquireNextImage">AcquireNextImage</a> &#8226; <a href="image.html#AppendImages">AppendImages</a> &#8226; <a href="image.html#CatchImageException">CatchImageException</a> &#8226; <a href="image.html#ClipImagePath">ClipImagePath</a> &#8226; <a href="image.html#CloneImage">CloneImage</a> &#8226; <a href="image.html#CloneImageInfo">CloneImageInfo</a> &#8226; <a href="image.html#CopyImagePixels">CopyImagePixels</a> &#8226; <a href="image.html#DestroyImage">DestroyImage</a> &#8226; <a href="image.html#DestroyImageInfo">DestroyImageInfo</a> &#8226; <a href="image.html#GetImageInfo">GetImageInfo</a> &#8226; <a href="image.html#GetImageInfoFile">GetImageInfoFile</a> &#8226; <a href="image.html#GetImageMask">GetImageMask</a> &#8226; <a href="image.html#GetImageVirtualPixelMethod">GetImageVirtualPixelMethod</a> &#8226; <a href="image.html#InterpretImageFilename">InterpretImageFilename</a> &#8226; <a href="image.html#IsHighDynamicRangeImage">IsHighDynamicRangeImage</a> &#8226; <a href="image.html#IsImageObject">IsImageObject</a> &#8226; <a href="image.html#IsTaintImage">IsTaintImage</a> &#8226; <a href="image.html#ModifyImage">ModifyImage</a> &#8226; <a href="image.html#NewMagickImage">NewMagickImage</a> &#8226; <a href="image.html#ReferenceImage">ReferenceImage</a> &#8226; <a href="image.html#ResetImagePage">ResetImagePage</a> &#8226; <a href="image.html#ResetImagePixels">ResetImagePixels</a> &#8226; <a href="image.html#SetImageAlpha">SetImageAlpha</a> &#8226; <a href="image.html#SetImageBackgroundColor">SetImageBackgroundColor</a> &#8226; <a href="image.html#SetImageChannelMask">SetImageChannelMask</a> &#8226; <a href="image.html#SetImageColor">SetImageColor</a> &#8226; <a href="image.html#SetImageStorageClass">SetImageStorageClass</a> &#8226; <a href="image.html#SetImageExtent">SetImageExtent</a> &#8226; <a href="image.html#SetImageInfoBlob">SetImageInfoBlob</a> &#8226; <a href="image.html#SetImageInfoCustomStream">SetImageInfoCustomStream</a> &#8226; <a href="image.html#SetImageInfoFile">SetImageInfoFile</a> &#8226; <a href="image.html#SetImageMask">SetImageMask</a> &#8226; <a href="image.html#SetImageRegionMask">SetImageRegionMask</a> &#8226; <a href="image.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod</a> &#8226; <a href="image.html#SmushImages">SmushImages</a> &#8226; <a href="image.html#StripImage">StripImage</a> &#8226; <a href="image.html#SyncImageSettings">SyncImageSettings</a></p>
-
 <h2><a href="../../api/MagickCore/image_8c.html" id="AcquireImage">AcquireImage</a></h2>
 
 <p>AcquireImage() returns a pointer to an image structure initialized to default values.</p>
 
 <p>The format of the AcquireImage method is:</p>
 
-<pre class="text">
-Image *AcquireImage(const ImageInfo *image_info,ExceptionInfo *exception)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Image *AcquireImage(const ImageInfo *image_info,ExceptionInfo *exception)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -125,9 +170,8 @@ Image *AcquireImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 <p>The format of the AcquireImageInfo method is:</p>
 
-<pre class="text">
-ImageInfo *AcquireImageInfo(void)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>ImageInfo *AcquireImageInfo(void)
+</samp></pre>
 
 <h2><a href="../../api/MagickCore/image_8c.html" id="AcquireNextImage">AcquireNextImage</a></h2>
 
@@ -135,10 +179,9 @@ ImageInfo *AcquireImageInfo(void)
 
 <p>The format of the AcquireNextImage method is:</p>
 
-<pre class="text">
-void AcquireNextImage(const ImageInfo *image_info,Image *image,
+<pre class="bg-light text-dark mx-4"><samp>void AcquireNextImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -168,10 +211,9 @@ void AcquireNextImage(const ImageInfo *image_info,Image *image,
 
 <p>The format of the AppendImages method is:</p>
 
-<pre class="text">
-Image *AppendImages(const Image *images,const MagickBooleanType stack,
+<pre class="bg-light text-dark mx-4"><samp>Image *AppendImages(const Image *images,const MagickBooleanType stack,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -199,9 +241,8 @@ Image *AppendImages(const Image *images,const MagickBooleanType stack,
 
 <p>The format of the CatchImageException method is:</p>
 
-<pre class="text">
-ExceptionType CatchImageException(Image *image)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>ExceptionType CatchImageException(Image *image)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -221,10 +262,9 @@ ExceptionType CatchImageException(Image *image)
 
 <p>The format of the ClipImagePath method is:</p>
 
-<pre class="text">
-MagickBooleanType ClipImagePath(Image *image,const char *pathname,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType ClipImagePath(Image *image,const char *pathname,
   const MagickBooleanType inside,ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -258,11 +298,10 @@ MagickBooleanType ClipImagePath(Image *image,const char *pathname,
 
 <p>The format of the CloneImage method is:</p>
 
-<pre class="text">
-Image *CloneImage(const Image *image,const size_t columns,
+<pre class="bg-light text-dark mx-4"><samp>Image *CloneImage(const Image *image,const size_t columns,
   const size_t rows,const MagickBooleanType orphan,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -298,9 +337,8 @@ Image *CloneImage(const Image *image,const size_t columns,
 
 <p>The format of the CloneImageInfo method is:</p>
 
-<pre class="text">
-ImageInfo *CloneImageInfo(const ImageInfo *image_info)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>ImageInfo *CloneImageInfo(const ImageInfo *image_info)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -320,11 +358,10 @@ ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 
 <p>The format of the CopyImagePixels method is:</p>
 
-<pre class="text">
-MagickBooleanType CopyImagePixels(Image *image,const Image *source_image,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType CopyImagePixels(Image *image,const Image *source_image,
   const RectangleInfo *geometry,const OffsetInfo *offset,
   ExceptionInfo *exception);
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -360,9 +397,8 @@ MagickBooleanType CopyImagePixels(Image *image,const Image *source_image,
 
 <p>The format of the DestroyImage method is:</p>
 
-<pre class="text">
-Image *DestroyImage(Image *image)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Image *DestroyImage(Image *image)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -382,9 +418,8 @@ Image *DestroyImage(Image *image)
 
 <p>The format of the DestroyImageInfo method is:</p>
 
-<pre class="text">
-ImageInfo *DestroyImageInfo(ImageInfo *image_info)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>ImageInfo *DestroyImageInfo(ImageInfo *image_info)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -404,9 +439,8 @@ ImageInfo *DestroyImageInfo(ImageInfo *image_info)
 
 <p>The format of the GetImageInfo method is:</p>
 
-<pre class="text">
-void GetImageInfo(ImageInfo *image_info)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void GetImageInfo(ImageInfo *image_info)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -426,9 +460,8 @@ void GetImageInfo(ImageInfo *image_info)
 
 <p>The format of the GetImageInfoFile method is:</p>
 
-<pre class="text">
-FILE *GetImageInfoFile(const ImageInfo *image_info)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>FILE *GetImageInfoFile(const ImageInfo *image_info)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -448,10 +481,9 @@ FILE *GetImageInfoFile(const ImageInfo *image_info)
 
 <p>The format of the GetImageMask method is:</p>
 
-<pre class="text">
-Image *GetImageMask(const Image *image,const PixelMask type,
+<pre class="bg-light text-dark mx-4"><samp>Image *GetImageMask(const Image *image,const PixelMask type,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -475,9 +507,8 @@ Image *GetImageMask(const Image *image,const PixelMask type,
 
 <p>The format of the GetImageVirtualPixelMethod() method is:</p>
 
-<pre class="text">
-VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -497,10 +528,9 @@ VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 
 <p>The format of the InterpretImageFilename method is:</p>
 
-<pre class="text">
-size_t InterpretImageFilename(const ImageInfo *image_info,Image *image,
+<pre class="bg-light text-dark mx-4"><samp>size_t InterpretImageFilename(const ImageInfo *image_info,Image *image,
   const char *format,int value,char *filename,ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows.</p>
 
@@ -528,10 +558,9 @@ size_t InterpretImageFilename(const ImageInfo *image_info,Image *image,
 
 <p>The format of the IsHighDynamicRangeImage method is:</p>
 
-<pre class="text">
-MagickBooleanType IsHighDynamicRangeImage(const Image *image,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType IsHighDynamicRangeImage(const Image *image,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -555,9 +584,8 @@ MagickBooleanType IsHighDynamicRangeImage(const Image *image,
 
 <p>The format of the IsImageObject method is:</p>
 
-<pre class="text">
-MagickBooleanType IsImageObject(const Image *image)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType IsImageObject(const Image *image)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -577,9 +605,8 @@ MagickBooleanType IsImageObject(const Image *image)
 
 <p>The format of the IsTaintImage method is:</p>
 
-<pre class="text">
-MagickBooleanType IsTaintImage(const Image *image)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType IsTaintImage(const Image *image)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -599,9 +626,8 @@ MagickBooleanType IsTaintImage(const Image *image)
 
 <p>The format of the ModifyImage method is:</p>
 
-<pre class="text">
-MagickBooleanType ModifyImage(Image *image,ExceptionInfo *exception)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType ModifyImage(Image *image,ExceptionInfo *exception)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -625,11 +651,10 @@ MagickBooleanType ModifyImage(Image *image,ExceptionInfo *exception)
 
 <p>The format of the NewMagickImage method is:</p>
 
-<pre class="text">
-Image *NewMagickImage(const ImageInfo *image_info,const size_t width,
+<pre class="bg-light text-dark mx-4"><samp>Image *NewMagickImage(const ImageInfo *image_info,const size_t width,
   const size_t height,const PixelInfo *background,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -665,9 +690,8 @@ Image *NewMagickImage(const ImageInfo *image_info,const size_t width,
 
 <p>The format of the ReferenceImage method is:</p>
 
-<pre class="text">
-Image *ReferenceImage(Image *image)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Image *ReferenceImage(Image *image)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -687,9 +711,8 @@ Image *ReferenceImage(Image *image)
 
 <p>The format of the ResetImagePage method is:</p>
 
-<pre class="text">
-MagickBooleanType ResetImagePage(Image *image,const char *page)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType ResetImagePage(Image *image,const char *page)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -709,14 +732,13 @@ MagickBooleanType ResetImagePage(Image *image,const char *page)
 </dl>
 <h2><a href="../../api/MagickCore/image_8c.html" id="ResetImagePixels">ResetImagePixels</a></h2>
 
-<p>ResetImagePixels() reset the image pixels, that is, all the pixel components are zereod.</p>
+<p>ResetImagePixels() reset the image pixels, that is, all the pixel components are zeroed.</p>
 
 <p>The format of the SetImage method is:</p>
 
-<pre class="text">
-MagickBooleanType ResetImagePixels(Image *image,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType ResetImagePixels(Image *image,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -740,10 +762,9 @@ MagickBooleanType ResetImagePixels(Image *image,
 
 <p>The format of the SetImageAlpha method is:</p>
 
-<pre class="text">
-MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -771,10 +792,9 @@ MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
 
 <p>The format of the SetImage method is:</p>
 
-<pre class="text">
-MagickBooleanType SetImageBackgroundColor(Image *image,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType SetImageBackgroundColor(Image *image,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -798,10 +818,9 @@ MagickBooleanType SetImageBackgroundColor(Image *image,
 
 <p>The format of the SetImageChannelMask method is:</p>
 
-<pre class="text">
-ChannelType SetImageChannelMask(Image *image,
+<pre class="bg-light text-dark mx-4"><samp>ChannelType SetImageChannelMask(Image *image,
   const ChannelType channel_mask)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -825,10 +844,9 @@ ChannelType SetImageChannelMask(Image *image,
 
 <p>The format of the SetImageColor method is:</p>
 
-<pre class="text">
-MagickBooleanType SetImageColor(Image *image,const PixelInfo *color,
-  ExeptionInfo *exception)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType SetImageColor(Image *image,const PixelInfo *color,
+  ExceptionInfo *exception)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -856,10 +874,9 @@ MagickBooleanType SetImageColor(Image *image,const PixelInfo *color,
 
 <p>The format of the SetImageStorageClass method is:</p>
 
-<pre class="text">
-MagickBooleanType SetImageStorageClass(Image *image,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType SetImageStorageClass(Image *image,
   const ClassType storage_class,ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -887,10 +904,9 @@ MagickBooleanType SetImageStorageClass(Image *image,
 
 <p>The format of the SetImageExtent method is:</p>
 
-<pre class="text">
-MagickBooleanType SetImageExtent(Image *image,const size_t columns,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType SetImageExtent(Image *image,const size_t columns,
   const size_t rows,ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -922,10 +938,9 @@ MagickBooleanType SetImageExtent(Image *image,const size_t columns,
 
 <p>The format of the SetImageInfoBlob method is:</p>
 
-<pre class="text">
-void SetImageInfoBlob(ImageInfo *image_info,const void *blob,
+<pre class="bg-light text-dark mx-4"><samp>void SetImageInfoBlob(ImageInfo *image_info,const void *blob,
   const size_t length)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -953,10 +968,9 @@ void SetImageInfoBlob(ImageInfo *image_info,const void *blob,
 
 <p>The format of the SetImageInfoCustomStream method is:</p>
 
-<pre class="text">
-void SetImageInfoCustomStream(ImageInfo *image_info,
+<pre class="bg-light text-dark mx-4"><samp>void SetImageInfoCustomStream(ImageInfo *image_info,
   CustomStreamInfo *custom_stream)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -980,9 +994,8 @@ void SetImageInfoCustomStream(ImageInfo *image_info,
 
 <p>The format of the SetImageInfoFile method is:</p>
 
-<pre class="text">
-void SetImageInfoFile(ImageInfo *image_info,FILE *file)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void SetImageInfoFile(ImageInfo *image_info,FILE *file)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1006,10 +1019,9 @@ void SetImageInfoFile(ImageInfo *image_info,FILE *file)
 
 <p>The format of the SetImageMask method is:</p>
 
-<pre class="text">
-MagickBooleanType SetImageMask(Image *image,const PixelMask type,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType SetImageMask(Image *image,const PixelMask type,
   const Image *mask,ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1041,10 +1053,9 @@ MagickBooleanType SetImageMask(Image *image,const PixelMask type,
 
 <p>The format of the SetImageRegionMask method is:</p>
 
-<pre class="text">
-MagickBooleanType SetImageRegionMask(Image *image,const PixelMask type,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType SetImageRegionMask(Image *image,const PixelMask type,
   const RectangleInfo *region,ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1076,10 +1087,9 @@ MagickBooleanType SetImageRegionMask(Image *image,const PixelMask type,
 
 <p>The format of the SetImageVirtualPixelMethod() method is:</p>
 
-<pre class="text">
-VirtualPixelMethod SetImageVirtualPixelMethod(Image *image,
+<pre class="bg-light text-dark mx-4"><samp>VirtualPixelMethod SetImageVirtualPixelMethod(Image *image,
   const VirtualPixelMethod virtual_pixel_method,ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1109,10 +1119,9 @@ VirtualPixelMethod SetImageVirtualPixelMethod(Image *image,
 
 <p>The format of the SmushImages method is:</p>
 
-<pre class="text">
-Image *SmushImages(const Image *images,const MagickBooleanType stack,
+<pre class="bg-light text-dark mx-4"><samp>Image *SmushImages(const Image *images,const MagickBooleanType stack,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1144,9 +1153,8 @@ Image *SmushImages(const Image *images,const MagickBooleanType stack,
 
 <p>The format of the StripImage method is:</p>
 
-<pre class="text">
-MagickBooleanType StripImage(Image *image,ExceptionInfo *exception)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType StripImage(Image *image,ExceptionInfo *exception)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1172,12 +1180,11 @@ MagickBooleanType StripImage(Image *image,ExceptionInfo *exception)
 
 <p>The format of the SyncImageSettings method is:</p>
 
-<pre class="text">
-MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 MagickBooleanType SyncImagesSettings(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1204,18 +1211,18 @@ MagickBooleanType SyncImagesSettings(const ImageInfo *image_info,
   </main><!-- /.container -->
   <footer class="magick-footer">
     <div class="container-fluid">
-      <a href="../www/security-policy.html">Security</a> •
-      <a href="../www/news.html">News</a>
+      <a href="../../www/security-policy.html">Security</a> •
+      <a href="../../www/news.html">News</a>
      
-      <a href="image.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../images/wand.ico"/></a>
+      <a href="image.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../../images/wand.ico"/></a>
      
-      <a href="../www/links.html">Related</a> •
-      <a href="../www/sitemap.html">Sitemap</a>
+      <a href="../../www/links.html">Related</a> •
+      <a href="../../www/sitemap.html">Sitemap</a>
    <br/>
-     <a href="../www/support.html">Sponsor</a> •
-     <a href="../www/cite.html">Cite</a> •
+     <a href="../../www/support.html">Sponsor</a> •
+     <a href="../../www/cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="../www/contact.html">Contact Us</a>
+     <a href="../../www/contact.html">Contact Us</a>
    <br/>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
@@ -1225,6 +1232,6 @@ MagickBooleanType SyncImagesSettings(const ImageInfo *image_info,
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick.js" ></script>
+  <script src="../../assets/magick.js" ></script>
   </body>
 </html>

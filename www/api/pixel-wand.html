@@ -30,14 +30,14 @@
   <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="pixel-wand.html" rel="canonical" />
-  <link href="../../images/wand.png" rel="icon" />
-  <link href="../../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick.css" rel="stylesheet" />
+  <link href="../../../images/wand.png" rel="icon" />
+  <link href="../../../images/wand.ico" rel="shortcut icon" />
+  <link href="../../assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -45,19 +45,19 @@
     <div class="collapse navbar-collapse" id="magick-navbars">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link " href="../www/index.html">Home</a>
+          <a class="nav-link " href="../../www/index.html">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/download.html">Download</a>
+          <a class="nav-link " href="../../www/download.html">Download</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
+          <a class="nav-link " href="../../www/command-line-tools.html">Tools</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-processing.html">CLI</a>
+          <a class="nav-link " href="../../www/command-line-processing.html">CLI</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/develop.html">Develop</a>
+          <a class="nav-link " href="../../www/develop.html">Develop</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
@@ -90,18 +90,86 @@
 
   <main class="container">
   <div class="magick-template">
+<br/>
+<div class="btn-group">
+<button class="btn btn-secondary dropdown-toggle" type="button" id="defaultDropdown" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+  Select API Method
+</button>
+<ul class="dropdown-menu pre-scrollable" aria-labelledby="defaultDropdown">
+  <li><a href="pixel-wand.html#ClearPixelWand">ClearPixelWand</a></li>
+  <li><a href="pixel-wand.html#ClonePixelWand">ClonePixelWand</a></li>
+  <li><a href="pixel-wand.html#ClonePixelWands">ClonePixelWands</a></li>
+  <li><a href="pixel-wand.html#DestroyPixelWand">DestroyPixelWand</a></li>
+  <li><a href="pixel-wand.html#DestroyPixelWands">DestroyPixelWands</a></li>
+  <li><a href="pixel-wand.html#IsPixelWandSimilar">IsPixelWandSimilar</a></li>
+  <li><a href="pixel-wand.html#IsPixelWand">IsPixelWand</a></li>
+  <li><a href="pixel-wand.html#NewPixelWand">NewPixelWand</a></li>
+  <li><a href="pixel-wand.html#NewPixelWands">NewPixelWands</a></li>
+  <li><a href="pixel-wand.html#PixelClearException">PixelClearException</a></li>
+  <li><a href="pixel-wand.html#PixelGetAlpha">PixelGetAlpha</a></li>
+  <li><a href="pixel-wand.html#PixelGetAlphaQuantum">PixelGetAlphaQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelGetBlack">PixelGetBlack</a></li>
+  <li><a href="pixel-wand.html#PixelGetBlackQuantum">PixelGetBlackQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelGetBlue">PixelGetBlue</a></li>
+  <li><a href="pixel-wand.html#PixelGetBlueQuantum">PixelGetBlueQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelGetColorAsString">PixelGetColorAsString</a></li>
+  <li><a href="pixel-wand.html#PixelGetColorAsNormalizedString">PixelGetColorAsNormalizedString</a></li>
+  <li><a href="pixel-wand.html#PixelGetColorCount">PixelGetColorCount</a></li>
+  <li><a href="pixel-wand.html#PixelGetCyan">PixelGetCyan</a></li>
+  <li><a href="pixel-wand.html#PixelGetCyanQuantum">PixelGetCyanQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelGetException">PixelGetException</a></li>
+  <li><a href="pixel-wand.html#PixelGetExceptionType">PixelGetExceptionType</a></li>
+  <li><a href="pixel-wand.html#PixelGetFuzz">PixelGetFuzz</a></li>
+  <li><a href="pixel-wand.html#PixelGetGreen">PixelGetGreen</a></li>
+  <li><a href="pixel-wand.html#PixelGetGreenQuantum">PixelGetGreenQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelGetHSL">PixelGetHSL</a></li>
+  <li><a href="pixel-wand.html#PixelGetIndex">PixelGetIndex</a></li>
+  <li><a href="pixel-wand.html#PixelGetMagenta">PixelGetMagenta</a></li>
+  <li><a href="pixel-wand.html#PixelGetMagentaQuantum">PixelGetMagentaQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelGetMagickColor">PixelGetMagickColor</a></li>
+  <li><a href="pixel-wand.html#PixelGetPixel">PixelGetPixel</a></li>
+  <li><a href="pixel-wand.html#PixelGetQuantumPacket">PixelGetQuantumPacket</a></li>
+  <li><a href="pixel-wand.html#PixelGetQuantumPixel">PixelGetQuantumPixel</a></li>
+  <li><a href="pixel-wand.html#PixelGetRed">PixelGetRed</a></li>
+  <li><a href="pixel-wand.html#PixelGetRedQuantum">PixelGetRedQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelGetYellow">PixelGetYellow</a></li>
+  <li><a href="pixel-wand.html#PixelGetYellowQuantum">PixelGetYellowQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelSetAlpha">PixelSetAlpha</a></li>
+  <li><a href="pixel-wand.html#PixelSetAlphaQuantum">PixelSetAlphaQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelSetBlack">PixelSetBlack</a></li>
+  <li><a href="pixel-wand.html#PixelSetBlackQuantum">PixelSetBlackQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelSetBlue">PixelSetBlue</a></li>
+  <li><a href="pixel-wand.html#PixelSetBlueQuantum">PixelSetBlueQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelSetColor">PixelSetColor</a></li>
+  <li><a href="pixel-wand.html#PixelSetColorCount">PixelSetColorCount</a></li>
+  <li><a href="pixel-wand.html#PixelSetColorFromWand">PixelSetColorFromWand</a></li>
+  <li><a href="pixel-wand.html#PixelSetCyan">PixelSetCyan</a></li>
+  <li><a href="pixel-wand.html#PixelSetCyanQuantum">PixelSetCyanQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelSetFuzz">PixelSetFuzz</a></li>
+  <li><a href="pixel-wand.html#PixelSetGreen">PixelSetGreen</a></li>
+  <li><a href="pixel-wand.html#PixelSetGreenQuantum">PixelSetGreenQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelSetHSL">PixelSetHSL</a></li>
+  <li><a href="pixel-wand.html#PixelSetIndex">PixelSetIndex</a></li>
+  <li><a href="pixel-wand.html#PixelSetMagenta">PixelSetMagenta</a></li>
+  <li><a href="pixel-wand.html#PixelSetMagentaQuantum">PixelSetMagentaQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelSetPixelColor">PixelSetPixelColor</a></li>
+  <li><a href="pixel-wand.html#PixelSetQuantumPixel">PixelSetQuantumPixel</a></li>
+  <li><a href="pixel-wand.html#PixelSetRed">PixelSetRed</a></li>
+  <li><a href="pixel-wand.html#PixelSetRedQuantum">PixelSetRedQuantum</a></li>
+  <li><a href="pixel-wand.html#PixelSetYellow">PixelSetYellow</a></li>
+</ul>
+</div>
+<br/>
+<br/>
 <div class="magick-header">
-<p class="text-center"><a href="pixel-wand.html#ClearPixelWand">ClearPixelWand</a> &#8226; <a href="pixel-wand.html#ClonePixelWand">ClonePixelWand</a> &#8226; <a href="pixel-wand.html#ClonePixelWands">ClonePixelWands</a> &#8226; <a href="pixel-wand.html#DestroyPixelWand">DestroyPixelWand</a> &#8226; <a href="pixel-wand.html#DestroyPixelWands">DestroyPixelWands</a> &#8226; <a href="pixel-wand.html#IsPixelWandSimilar">IsPixelWandSimilar</a> &#8226; <a href="pixel-wand.html#IsPixelWand">IsPixelWand</a> &#8226; <a href="pixel-wand.html#NewPixelWand">NewPixelWand</a> &#8226; <a href="pixel-wand.html#NewPixelWands">NewPixelWands</a> &#8226; <a href="pixel-wand.html#PixelClearException">PixelClearException</a> &#8226; <a href="pixel-wand.html#PixelGetAlpha">PixelGetAlpha</a> &#8226; <a href="pixel-wand.html#PixelGetAlphaQuantum">PixelGetAlphaQuantum</a> &#8226; <a href="pixel-wand.html#PixelGetBlack">PixelGetBlack</a> &#8226; <a href="pixel-wand.html#PixelGetBlackQuantum">PixelGetBlackQuantum</a> &#8226; <a href="pixel-wand.html#PixelGetBlue">PixelGetBlue</a> &#8226; <a href="pixel-wand.html#PixelGetBlueQuantum">PixelGetBlueQuantum</a> &#8226; <a href="pixel-wand.html#PixelGetColorAsString">PixelGetColorAsString</a> &#8226; <a href="pixel-wand.html#PixelGetColorAsNormalizedString">PixelGetColorAsNormalizedString</a> &#8226; <a href="pixel-wand.html#PixelGetColorCount">PixelGetColorCount</a> &#8226; <a href="pixel-wand.html#PixelGetCyan">PixelGetCyan</a> &#8226; <a href="pixel-wand.html#PixelGetCyanQuantum">PixelGetCyanQuantum</a> &#8226; <a href="pixel-wand.html#PixelGetException">PixelGetException</a> &#8226; <a href="pixel-wand.html#PixelGetExceptionType">PixelGetExceptionType</a> &#8226; <a href="pixel-wand.html#PixelGetFuzz">PixelGetFuzz</a> &#8226; <a href="pixel-wand.html#PixelGetGreen">PixelGetGreen</a> &#8226; <a href="pixel-wand.html#PixelGetGreenQuantum">PixelGetGreenQuantum</a> &#8226; <a href="pixel-wand.html#PixelGetHSL">PixelGetHSL</a> &#8226; <a href="pixel-wand.html#PixelGetIndex">PixelGetIndex</a> &#8226; <a href="pixel-wand.html#PixelGetMagenta">PixelGetMagenta</a> &#8226; <a href="pixel-wand.html#PixelGetMagentaQuantum">PixelGetMagentaQuantum</a> &#8226; <a href="pixel-wand.html#PixelGetMagickColor">PixelGetMagickColor</a> &#8226; <a href="pixel-wand.html#PixelGetPixel">PixelGetPixel</a> &#8226; <a href="pixel-wand.html#PixelGetQuantumPacket">PixelGetQuantumPacket</a> &#8226; <a href="pixel-wand.html#PixelGetQuantumPixel">PixelGetQuantumPixel</a> &#8226; <a href="pixel-wand.html#PixelGetRed">PixelGetRed</a> &#8226; <a href="pixel-wand.html#PixelGetRedQuantum">PixelGetRedQuantum</a> &#8226; <a href="pixel-wand.html#PixelGetYellow">PixelGetYellow</a> &#8226; <a href="pixel-wand.html#PixelGetYellowQuantum">PixelGetYellowQuantum</a> &#8226; <a href="pixel-wand.html#PixelSetAlpha">PixelSetAlpha</a> &#8226; <a href="pixel-wand.html#PixelSetAlphaQuantum">PixelSetAlphaQuantum</a> &#8226; <a href="pixel-wand.html#PixelSetBlack">PixelSetBlack</a> &#8226; <a href="pixel-wand.html#PixelSetBlackQuantum">PixelSetBlackQuantum</a> &#8226; <a href="pixel-wand.html#PixelSetBlue">PixelSetBlue</a> &#8226; <a href="pixel-wand.html#PixelSetBlueQuantum">PixelSetBlueQuantum</a> &#8226; <a href="pixel-wand.html#PixelSetColor">PixelSetColor</a> &#8226; <a href="pixel-wand.html#PixelSetColorCount">PixelSetColorCount</a> &#8226; <a href="pixel-wand.html#PixelSetColorFromWand">PixelSetColorFromWand</a> &#8226; <a href="pixel-wand.html#PixelSetCyan">PixelSetCyan</a> &#8226; <a href="pixel-wand.html#PixelSetCyanQuantum">PixelSetCyanQuantum</a> &#8226; <a href="pixel-wand.html#PixelSetFuzz">PixelSetFuzz</a> &#8226; <a href="pixel-wand.html#PixelSetGreen">PixelSetGreen</a> &#8226; <a href="pixel-wand.html#PixelSetGreenQuantum">PixelSetGreenQuantum</a> &#8226; <a href="pixel-wand.html#PixelSetHSL">PixelSetHSL</a> &#8226; <a href="pixel-wand.html#PixelSetIndex">PixelSetIndex</a> &#8226; <a href="pixel-wand.html#PixelSetMagenta">PixelSetMagenta</a> &#8226; <a href="pixel-wand.html#PixelSetMagentaQuantum">PixelSetMagentaQuantum</a> &#8226; <a href="pixel-wand.html#PixelSetPixelColor">PixelSetPixelColor</a> &#8226; <a href="pixel-wand.html#PixelSetQuantumPixel">PixelSetQuantumPixel</a> &#8226; <a href="pixel-wand.html#PixelSetRed">PixelSetRed</a> &#8226; <a href="pixel-wand.html#PixelSetRedQuantum">PixelSetRedQuantum</a> &#8226; <a href="pixel-wand.html#PixelSetYellow">PixelSetYellow</a> &#8226; <a href="pixel-wand.html#PixelSetYellowQuantum">PixelSetYellowQuantum</a></p>
-
 <h2><a href="../../api/MagickWand/pixel-wand_8c.html" id="ClearPixelWand">ClearPixelWand</a></h2>
 
 <p>ClearPixelWand() clears resources associated with the wand.</p>
 
 <p>The format of the ClearPixelWand method is:</p>
 
-<pre class="text">
-void ClearPixelWand(PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void ClearPixelWand(PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -121,9 +189,8 @@ void ClearPixelWand(PixelWand *wand)
 
 <p>The format of the ClonePixelWand method is:</p>
 
-<pre class="text">
-PixelWand *ClonePixelWand(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>PixelWand *ClonePixelWand(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -143,10 +210,9 @@ PixelWand *ClonePixelWand(const PixelWand *wand)
 
 <p>The format of the ClonePixelWands method is:</p>
 
-<pre class="text">
-PixelWand **ClonePixelWands(const PixelWand **wands,
+<pre class="bg-light text-dark mx-4"><samp>PixelWand **ClonePixelWands(const PixelWand **wands,
   const size_t number_wands)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -170,9 +236,8 @@ PixelWand **ClonePixelWands(const PixelWand **wands,
 
 <p>The format of the DestroyPixelWand method is:</p>
 
-<pre class="text">
-PixelWand *DestroyPixelWand(PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>PixelWand *DestroyPixelWand(PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -192,10 +257,9 @@ PixelWand *DestroyPixelWand(PixelWand *wand)
 
 <p>The format of the DestroyPixelWands method is:</p>
 
-<pre class="text">
-PixelWand **DestroyPixelWands(PixelWand **wand,
+<pre class="bg-light text-dark mx-4"><samp>PixelWand **DestroyPixelWands(PixelWand **wand,
   const size_t number_wands)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -219,10 +283,9 @@ PixelWand **DestroyPixelWands(PixelWand **wand,
 
 <p>The format of the IsPixelWandSimilar method is:</p>
 
-<pre class="text">
-MagickBooleanType IsPixelWandSimilar(PixelWand *p,PixelWand *q,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType IsPixelWandSimilar(PixelWand *p,PixelWand *q,
   const double fuzz)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -250,9 +313,8 @@ MagickBooleanType IsPixelWandSimilar(PixelWand *p,PixelWand *q,
 
 <p>The format of the IsPixelWand method is:</p>
 
-<pre class="text">
-MagickBooleanType IsPixelWand(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType IsPixelWand(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -272,9 +334,8 @@ MagickBooleanType IsPixelWand(const PixelWand *wand)
 
 <p>The format of the NewPixelWand method is:</p>
 
-<pre class="text">
-PixelWand *NewPixelWand(void)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>PixelWand *NewPixelWand(void)
+</samp></pre>
 
 <h2><a href="../../api/MagickWand/pixel-wand_8c.html" id="NewPixelWands">NewPixelWands</a></h2>
 
@@ -282,9 +343,8 @@ PixelWand *NewPixelWand(void)
 
 <p>The format of the NewPixelWands method is:</p>
 
-<pre class="text">
-PixelWand **NewPixelWands(const size_t number_wands)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>PixelWand **NewPixelWands(const size_t number_wands)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -304,9 +364,8 @@ PixelWand **NewPixelWands(const size_t number_wands)
 
 <p>The format of the PixelClearException method is:</p>
 
-<pre class="text">
-MagickBooleanType PixelClearException(PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType PixelClearException(PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -326,9 +385,8 @@ MagickBooleanType PixelClearException(PixelWand *wand)
 
 <p>The format of the PixelGetAlpha method is:</p>
 
-<pre class="text">
-double PixelGetAlpha(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>double PixelGetAlpha(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -348,9 +406,8 @@ double PixelGetAlpha(const PixelWand *wand)
 
 <p>The format of the PixelGetAlphaQuantum method is:</p>
 
-<pre class="text">
-Quantum PixelGetAlphaQuantum(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Quantum PixelGetAlphaQuantum(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -370,9 +427,8 @@ Quantum PixelGetAlphaQuantum(const PixelWand *wand)
 
 <p>The format of the PixelGetBlack method is:</p>
 
-<pre class="text">
-double PixelGetBlack(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>double PixelGetBlack(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -392,9 +448,8 @@ double PixelGetBlack(const PixelWand *wand)
 
 <p>The format of the PixelGetBlackQuantum method is:</p>
 
-<pre class="text">
-Quantum PixelGetBlackQuantum(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Quantum PixelGetBlackQuantum(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -414,9 +469,8 @@ Quantum PixelGetBlackQuantum(const PixelWand *wand)
 
 <p>The format of the PixelGetBlue method is:</p>
 
-<pre class="text">
-double PixelGetBlue(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>double PixelGetBlue(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -436,9 +490,8 @@ double PixelGetBlue(const PixelWand *wand)
 
 <p>The format of the PixelGetBlueQuantum method is:</p>
 
-<pre class="text">
-Quantum PixelGetBlueQuantum(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Quantum PixelGetBlueQuantum(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -458,9 +511,8 @@ Quantum PixelGetBlueQuantum(const PixelWand *wand)
 
 <p>The format of the PixelGetColorAsString method is:</p>
 
-<pre class="text">
-char *PixelGetColorAsString(PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>char *PixelGetColorAsString(PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -480,9 +532,8 @@ char *PixelGetColorAsString(PixelWand *wand)
 
 <p>The format of the PixelGetColorAsNormalizedString method is:</p>
 
-<pre class="text">
-char *PixelGetColorAsNormalizedString(PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>char *PixelGetColorAsNormalizedString(PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -502,9 +553,8 @@ char *PixelGetColorAsNormalizedString(PixelWand *wand)
 
 <p>The format of the PixelGetColorCount method is:</p>
 
-<pre class="text">
-size_t PixelGetColorCount(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>size_t PixelGetColorCount(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -524,9 +574,8 @@ size_t PixelGetColorCount(const PixelWand *wand)
 
 <p>The format of the PixelGetCyan method is:</p>
 
-<pre class="text">
-double PixelGetCyan(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>double PixelGetCyan(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -546,9 +595,8 @@ double PixelGetCyan(const PixelWand *wand)
 
 <p>The format of the PixelGetCyanQuantum method is:</p>
 
-<pre class="text">
-Quantum PixelGetCyanQuantum(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Quantum PixelGetCyanQuantum(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -568,9 +616,8 @@ Quantum PixelGetCyanQuantum(const PixelWand *wand)
 
 <p>The format of the PixelGetException method is:</p>
 
-<pre class="text">
-char *PixelGetException(const PixelWand *wand,ExceptionType *severity)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>char *PixelGetException(const PixelWand *wand,ExceptionType *severity)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -594,9 +641,8 @@ char *PixelGetException(const PixelWand *wand,ExceptionType *severity)
 
 <p>The format of the PixelGetExceptionType method is:</p>
 
-<pre class="text">
-ExceptionType PixelGetExceptionType(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>ExceptionType PixelGetExceptionType(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -616,9 +662,8 @@ ExceptionType PixelGetExceptionType(const PixelWand *wand)
 
 <p>The format of the PixelGetFuzz method is:</p>
 
-<pre class="text">
-double PixelGetFuzz(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>double PixelGetFuzz(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -638,9 +683,8 @@ double PixelGetFuzz(const PixelWand *wand)
 
 <p>The format of the PixelGetGreen method is:</p>
 
-<pre class="text">
-double PixelGetGreen(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>double PixelGetGreen(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -660,9 +704,8 @@ double PixelGetGreen(const PixelWand *wand)
 
 <p>The format of the PixelGetGreenQuantum method is:</p>
 
-<pre class="text">
-Quantum PixelGetGreenQuantum(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Quantum PixelGetGreenQuantum(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -682,10 +725,9 @@ Quantum PixelGetGreenQuantum(const PixelWand *wand)
 
 <p>The format of the PixelGetHSL method is:</p>
 
-<pre class="text">
-void PixelGetHSL(const PixelWand *wand,double *hue,double *saturation,
+<pre class="bg-light text-dark mx-4"><samp>void PixelGetHSL(const PixelWand *wand,double *hue,double *saturation,
   double *lightness)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -709,9 +751,8 @@ void PixelGetHSL(const PixelWand *wand,double *hue,double *saturation,
 
 <p>The format of the PixelGetIndex method is:</p>
 
-<pre class="text">
-Quantum PixelGetIndex(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Quantum PixelGetIndex(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -731,9 +772,8 @@ Quantum PixelGetIndex(const PixelWand *wand)
 
 <p>The format of the PixelGetMagenta method is:</p>
 
-<pre class="text">
-double PixelGetMagenta(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>double PixelGetMagenta(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -753,9 +793,8 @@ double PixelGetMagenta(const PixelWand *wand)
 
 <p>The format of the PixelGetMagentaQuantum method is:</p>
 
-<pre class="text">
-Quantum PixelGetMagentaQuantum(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Quantum PixelGetMagentaQuantum(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -775,9 +814,8 @@ Quantum PixelGetMagentaQuantum(const PixelWand *wand)
 
 <p>The format of the PixelGetMagickColor method is:</p>
 
-<pre class="text">
-void PixelGetMagickColor(PixelWand *wand,PixelInfo *color)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelGetMagickColor(PixelWand *wand,PixelInfo *color)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -801,9 +839,8 @@ void PixelGetMagickColor(PixelWand *wand,PixelInfo *color)
 
 <p>The format of the PixelGetPixel method is:</p>
 
-<pre class="text">
-PixelInfo PixelGetPixel(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>PixelInfo PixelGetPixel(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -823,9 +860,8 @@ PixelInfo PixelGetPixel(const PixelWand *wand)
 
 <p>The format of the PixelGetQuantumPacket method is:</p>
 
-<pre class="text">
-void PixelGetQuantumPacket(PixelWand *wand,PixelInfo *packet)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelGetQuantumPacket(PixelWand *wand,PixelInfo *packet)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -849,10 +885,9 @@ void PixelGetQuantumPacket(PixelWand *wand,PixelInfo *packet)
 
 <p>The format of the PixelGetQuantumPixel method is:</p>
 
-<pre class="text">
-void PixelGetQuantumPixel(const Image *image,const PixelWand *wand,
+<pre class="bg-light text-dark mx-4"><samp>void PixelGetQuantumPixel(const Image *image,const PixelWand *wand,
   Quantum *pixel)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -876,9 +911,8 @@ void PixelGetQuantumPixel(const Image *image,const PixelWand *wand,
 
 <p>The format of the PixelGetRed method is:</p>
 
-<pre class="text">
-double PixelGetRed(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>double PixelGetRed(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -898,9 +932,8 @@ double PixelGetRed(const PixelWand *wand)
 
 <p>The format of the PixelGetRedQuantum method is:</p>
 
-<pre class="text">
-Quantum PixelGetRedQuantum(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Quantum PixelGetRedQuantum(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -920,9 +953,8 @@ Quantum PixelGetRedQuantum(const PixelWand *wand)
 
 <p>The format of the PixelGetYellow method is:</p>
 
-<pre class="text">
-double PixelGetYellow(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>double PixelGetYellow(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -942,9 +974,8 @@ double PixelGetYellow(const PixelWand *wand)
 
 <p>The format of the PixelGetYellowQuantum method is:</p>
 
-<pre class="text">
-Quantum PixelGetYellowQuantum(const PixelWand *wand)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Quantum PixelGetYellowQuantum(const PixelWand *wand)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -964,9 +995,8 @@ Quantum PixelGetYellowQuantum(const PixelWand *wand)
 
 <p>The format of the PixelSetAlpha method is:</p>
 
-<pre class="text">
-void PixelSetAlpha(PixelWand *wand,const double alpha)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetAlpha(PixelWand *wand,const double alpha)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -990,9 +1020,8 @@ void PixelSetAlpha(PixelWand *wand,const double alpha)
 
 <p>The format of the PixelSetAlphaQuantum method is:</p>
 
-<pre class="text">
-void PixelSetAlphaQuantum(PixelWand *wand,const Quantum alpha)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetAlphaQuantum(PixelWand *wand,const Quantum alpha)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1016,9 +1045,8 @@ void PixelSetAlphaQuantum(PixelWand *wand,const Quantum alpha)
 
 <p>The format of the PixelSetBlack method is:</p>
 
-<pre class="text">
-void PixelSetBlack(PixelWand *wand,const double black)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetBlack(PixelWand *wand,const double black)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1042,9 +1070,8 @@ void PixelSetBlack(PixelWand *wand,const double black)
 
 <p>The format of the PixelSetBlackQuantum method is:</p>
 
-<pre class="text">
-void PixelSetBlackQuantum(PixelWand *wand,const Quantum black)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetBlackQuantum(PixelWand *wand,const Quantum black)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1068,9 +1095,8 @@ void PixelSetBlackQuantum(PixelWand *wand,const Quantum black)
 
 <p>The format of the PixelSetBlue method is:</p>
 
-<pre class="text">
-void PixelSetBlue(PixelWand *wand,const double blue)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetBlue(PixelWand *wand,const double blue)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1094,9 +1120,8 @@ void PixelSetBlue(PixelWand *wand,const double blue)
 
 <p>The format of the PixelSetBlueQuantum method is:</p>
 
-<pre class="text">
-void PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1120,9 +1145,8 @@ void PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
 
 <p>The format of the PixelSetColor method is:</p>
 
-<pre class="text">
-MagickBooleanType PixelSetColor(PixelWand *wand,const char *color)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType PixelSetColor(PixelWand *wand,const char *color)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1146,9 +1170,8 @@ MagickBooleanType PixelSetColor(PixelWand *wand,const char *color)
 
 <p>The format of the PixelSetColorCount method is:</p>
 
-<pre class="text">
-void PixelSetColorCount(PixelWand *wand,const size_t count)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetColorCount(PixelWand *wand,const size_t count)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1172,9 +1195,8 @@ void PixelSetColorCount(PixelWand *wand,const size_t count)
 
 <p>The format of the PixelSetColorFromWand method is:</p>
 
-<pre class="text">
-void PixelSetColorFromWand(PixelWand *wand,const PixelWand *color)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetColorFromWand(PixelWand *wand,const PixelWand *color)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1198,9 +1220,8 @@ void PixelSetColorFromWand(PixelWand *wand,const PixelWand *color)
 
 <p>The format of the PixelSetCyan method is:</p>
 
-<pre class="text">
-void PixelSetCyan(PixelWand *wand,const double cyan)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetCyan(PixelWand *wand,const double cyan)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1224,9 +1245,8 @@ void PixelSetCyan(PixelWand *wand,const double cyan)
 
 <p>The format of the PixelSetCyanQuantum method is:</p>
 
-<pre class="text">
-void PixelSetCyanQuantum(PixelWand *wand,const Quantum cyan)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetCyanQuantum(PixelWand *wand,const Quantum cyan)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1250,9 +1270,8 @@ void PixelSetCyanQuantum(PixelWand *wand,const Quantum cyan)
 
 <p>The format of the PixelSetFuzz method is:</p>
 
-<pre class="text">
-void PixelSetFuzz(PixelWand *wand,const double fuzz)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetFuzz(PixelWand *wand,const double fuzz)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1276,9 +1295,8 @@ void PixelSetFuzz(PixelWand *wand,const double fuzz)
 
 <p>The format of the PixelSetGreen method is:</p>
 
-<pre class="text">
-void PixelSetGreen(PixelWand *wand,const double green)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetGreen(PixelWand *wand,const double green)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1302,9 +1320,8 @@ void PixelSetGreen(PixelWand *wand,const double green)
 
 <p>The format of the PixelSetGreenQuantum method is:</p>
 
-<pre class="text">
-void PixelSetGreenQuantum(PixelWand *wand,const Quantum green)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetGreenQuantum(PixelWand *wand,const Quantum green)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1328,10 +1345,9 @@ void PixelSetGreenQuantum(PixelWand *wand,const Quantum green)
 
 <p>The format of the PixelSetHSL method is:</p>
 
-<pre class="text">
-void PixelSetHSL(PixelWand *wand,const double hue,
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetHSL(PixelWand *wand,const double hue,
   const double saturation,const double lightness)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1355,9 +1371,8 @@ void PixelSetHSL(PixelWand *wand,const double hue,
 
 <p>The format of the PixelSetIndex method is:</p>
 
-<pre class="text">
-void PixelSetIndex(PixelWand *wand,const Quantum index)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetIndex(PixelWand *wand,const Quantum index)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1381,9 +1396,8 @@ void PixelSetIndex(PixelWand *wand,const Quantum index)
 
 <p>The format of the PixelSetMagenta method is:</p>
 
-<pre class="text">
-void PixelSetMagenta(PixelWand *wand,const double magenta)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetMagenta(PixelWand *wand,const double magenta)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1407,10 +1421,9 @@ void PixelSetMagenta(PixelWand *wand,const double magenta)
 
 <p>The format of the PixelSetMagentaQuantum method is:</p>
 
-<pre class="text">
-void PixelSetMagentaQuantum(PixelWand *wand,
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetMagentaQuantum(PixelWand *wand,
   const Quantum magenta)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1434,9 +1447,8 @@ void PixelSetMagentaQuantum(PixelWand *wand,
 
 <p>The format of the PixelSetPixelColor method is:</p>
 
-<pre class="text">
-void PixelSetPixelColor(PixelWand *wand,const PixelInfo *color)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetPixelColor(PixelWand *wand,const PixelInfo *color)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1460,10 +1472,9 @@ void PixelSetPixelColor(PixelWand *wand,const PixelInfo *color)
 
 <p>The format of the PixelSetQuantumPixel method is:</p>
 
-<pre class="text">
-void PixelSetQuantumPixel(const Image *image,const Quantum *pixel,
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetQuantumPixel(const Image *image,const Quantum *pixel,
   PixelWand *wand)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1487,9 +1498,8 @@ void PixelSetQuantumPixel(const Image *image,const Quantum *pixel,
 
 <p>The format of the PixelSetRed method is:</p>
 
-<pre class="text">
-void PixelSetRed(PixelWand *wand,const double red)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetRed(PixelWand *wand,const double red)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1513,9 +1523,8 @@ void PixelSetRed(PixelWand *wand,const double red)
 
 <p>The format of the PixelSetRedQuantum method is:</p>
 
-<pre class="text">
-void PixelSetRedQuantum(PixelWand *wand,const Quantum red)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetRedQuantum(PixelWand *wand,const Quantum red)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1539,9 +1548,8 @@ void PixelSetRedQuantum(PixelWand *wand,const Quantum red)
 
 <p>The format of the PixelSetYellow method is:</p>
 
-<pre class="text">
-void PixelSetYellow(PixelWand *wand,const double yellow)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetYellow(PixelWand *wand,const double yellow)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1565,9 +1573,8 @@ void PixelSetYellow(PixelWand *wand,const double yellow)
 
 <p>The format of the PixelSetYellowQuantum method is:</p>
 
-<pre class="text">
-void PixelSetYellowQuantum(PixelWand *wand,const Quantum yellow)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void PixelSetYellowQuantum(PixelWand *wand,const Quantum yellow)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -1590,18 +1597,18 @@ void PixelSetYellowQuantum(PixelWand *wand,const Quantum yellow)
   </main><!-- /.container -->
   <footer class="magick-footer">
     <div class="container-fluid">
-      <a href="../www/security-policy.html">Security</a> •
-      <a href="../www/news.html">News</a>
+      <a href="../../www/security-policy.html">Security</a> •
+      <a href="../../www/news.html">News</a>
      
-      <a href="pixel-wand.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../images/wand.ico"/></a>
+      <a href="pixel-wand.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../../images/wand.ico"/></a>
      
-      <a href="../www/links.html">Related</a> •
-      <a href="../www/sitemap.html">Sitemap</a>
+      <a href="../../www/links.html">Related</a> •
+      <a href="../../www/sitemap.html">Sitemap</a>
    <br/>
-     <a href="../www/support.html">Sponsor</a> •
-     <a href="../www/cite.html">Cite</a> •
+     <a href="../../www/support.html">Sponsor</a> •
+     <a href="../../www/cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="../www/contact.html">Contact Us</a>
+     <a href="../../www/contact.html">Contact Us</a>
    <br/>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
@@ -1611,6 +1618,6 @@ void PixelSetYellowQuantum(PixelWand *wand,const Quantum yellow)
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick.js" ></script>
+  <script src="../../assets/magick.js" ></script>
   </body>
 </html>

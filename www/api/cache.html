@@ -30,14 +30,14 @@
   <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link href="cache.html" rel="canonical" />
-  <link href="../../images/wand.png" rel="icon" />
-  <link href="../../images/wand.ico" rel="shortcut icon" />
-  <link href="../assets/magick.css" rel="stylesheet" />
+  <link href="../../../images/wand.png" rel="icon" />
+  <link href="../../../images/wand.ico" rel="shortcut icon" />
+  <link href="../../assets/magick.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../../../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -45,19 +45,19 @@
     <div class="collapse navbar-collapse" id="magick-navbars">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link " href="../www/index.html">Home</a>
+          <a class="nav-link " href="../../www/index.html">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/download.html">Download</a>
+          <a class="nav-link " href="../../www/download.html">Download</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
+          <a class="nav-link " href="../../www/command-line-tools.html">Tools</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-processing.html">CLI</a>
+          <a class="nav-link " href="../../www/command-line-processing.html">CLI</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/develop.html">Develop</a>
+          <a class="nav-link " href="../../www/develop.html">Develop</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
@@ -90,18 +90,38 @@
 
   <main class="container">
   <div class="magick-template">
+<br/>
+<div class="btn-group">
+<button class="btn btn-secondary dropdown-toggle" type="button" id="defaultDropdown" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+  Select API Method
+</button>
+<ul class="dropdown-menu pre-scrollable" aria-labelledby="defaultDropdown">
+  <li><a href="cache.html#AcquirePixelCacheNexus">AcquirePixelCacheNexus</a></li>
+  <li><a href="cache.html#AcquirePixelCachePixels">AcquirePixelCachePixels</a></li>
+  <li><a href="cache.html#GetAuthenticMetacontent">GetAuthenticMetacontent</a></li>
+  <li><a href="cache.html#GetAuthenticPixelQueue">GetAuthenticPixelQueue</a></li>
+  <li><a href="cache.html#GetAuthenticPixels">GetAuthenticPixels</a></li>
+  <li><a href="cache.html#GetOneAuthenticPixel">GetOneAuthenticPixel</a></li>
+  <li><a href="cache.html#GetOneVirtualPixel">GetOneVirtualPixel</a></li>
+  <li><a href="cache.html#GetOneVirtualPixelInfo">GetOneVirtualPixelInfo</a></li>
+  <li><a href="cache.html#GetVirtualMetacontent">GetVirtualMetacontent</a></li>
+  <li><a href="cache.html#GetVirtualPixelQueue">GetVirtualPixelQueue</a></li>
+  <li><a href="cache.html#GetVirtualPixels">GetVirtualPixels</a></li>
+  <li><a href="cache.html#QueueAuthenticPixels">QueueAuthenticPixels</a></li>
+  <li><a href="cache.html#SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a></li>
+</ul>
+</div>
+<br/>
+<br/>
 <div class="magick-header">
-<p class="text-center"><a href="cache.html#AcquirePixelCacheNexus">AcquirePixelCacheNexus</a> &#8226; <a href="cache.html#AcquirePixelCachePixels">AcquirePixelCachePixels</a> &#8226; <a href="cache.html#GetAuthenticMetacontent">GetAuthenticMetacontent</a> &#8226; <a href="cache.html#GetAuthenticPixelQueue">GetAuthenticPixelQueue</a> &#8226; <a href="cache.html#GetAuthenticPixels">GetAuthenticPixels</a> &#8226; <a href="cache.html#GetOneAuthenticPixel">GetOneAuthenticPixel</a> &#8226; <a href="cache.html#GetOneVirtualPixel">GetOneVirtualPixel</a> &#8226; <a href="cache.html#GetOneVirtualPixelInfo">GetOneVirtualPixelInfo</a> &#8226; <a href="cache.html#GetVirtualMetacontent">GetVirtualMetacontent</a> &#8226; <a href="cache.html#GetVirtualPixelQueue">GetVirtualPixelQueue</a> &#8226; <a href="cache.html#GetVirtualPixels">GetVirtualPixels</a> &#8226; <a href="cache.html#QueueAuthenticPixels">QueueAuthenticPixels</a> &#8226; <a href="cache.html#SetPixelCacheVirtualMethod">SetPixelCacheVirtualMethod</a> &#8226; <a href="cache.html#SyncAuthenticPixels">SyncAuthenticPixels</a></p>
-
 <h2><a href="../../api/MagickCore/cache_8c.html" id="AcquirePixelCacheNexus">AcquirePixelCacheNexus</a></h2>
 
 <p>AcquirePixelCacheNexus() allocates the NexusInfo structure.</p>
 
 <p>The format of the AcquirePixelCacheNexus method is:</p>
 
-<pre class="text">
-NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -121,10 +141,9 @@ NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
 
 <p>The format of the AcquirePixelCachePixels() method is:</p>
 
-<pre class="text">
-void *AcquirePixelCachePixels(const Image *image,size_t *length,
+<pre class="bg-light text-dark mx-4"><samp>void *AcquirePixelCachePixels(const Image *image,size_t *length,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -152,9 +171,8 @@ void *AcquirePixelCachePixels(const Image *image,size_t *length,
 
 <p>The format of the GetAuthenticMetacontent() method is:</p>
 
-<pre class="text">
-void *GetAuthenticMetacontent(const Image *image)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>void *GetAuthenticMetacontent(const Image *image)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -174,9 +192,8 @@ void *GetAuthenticMetacontent(const Image *image)
 
 <p>The format of the GetAuthenticPixelQueue() method is:</p>
 
-<pre class="text">
-Quantum *GetAuthenticPixelQueue(const Image image)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>Quantum *GetAuthenticPixelQueue(const Image image)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -200,11 +217,10 @@ Quantum *GetAuthenticPixelQueue(const Image image)
 
 <p>The format of the GetAuthenticPixels() method is:</p>
 
-<pre class="text">
-Quantum *GetAuthenticPixels(Image *image,const ssize_t x,
+<pre class="bg-light text-dark mx-4"><samp>Quantum *GetAuthenticPixels(Image *image,const ssize_t x,
   const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -232,10 +248,9 @@ Quantum *GetAuthenticPixels(Image *image,const ssize_t x,
 
 <p>The format of the GetOneAuthenticPixel() method is:</p>
 
-<pre class="text">
-MagickBooleanType GetOneAuthenticPixel(const Image image,const ssize_t x,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType GetOneAuthenticPixel(const Image image,const ssize_t x,
   const ssize_t y,Quantum *pixel,ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -267,10 +282,9 @@ MagickBooleanType GetOneAuthenticPixel(const Image image,const ssize_t x,
 
 <p>The format of the GetOneVirtualPixel() method is:</p>
 
-<pre class="text">
-MagickBooleanType GetOneVirtualPixel(const Image image,const ssize_t x,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType GetOneVirtualPixel(const Image image,const ssize_t x,
   const ssize_t y,Quantum *pixel,ExceptionInfo exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -302,11 +316,10 @@ MagickBooleanType GetOneVirtualPixel(const Image image,const ssize_t x,
 
 <p>The format of the GetOneVirtualPixelInfo() method is:</p>
 
-<pre class="text">
-MagickBooleanType GetOneVirtualPixelInfo(const Image image,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType GetOneVirtualPixelInfo(const Image image,
   const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
   const ssize_t y,PixelInfo *pixel,ExceptionInfo exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -342,9 +355,8 @@ MagickBooleanType GetOneVirtualPixelInfo(const Image image,
 
 <p>The format of the GetVirtualMetacontent() method is:</p>
 
-<pre class="text">
-const void *GetVirtualMetacontent(const Image *image)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>const void *GetVirtualMetacontent(const Image *image)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -364,9 +376,8 @@ const void *GetVirtualMetacontent(const Image *image)
 
 <p>The format of the GetVirtualPixelQueue() method is:</p>
 
-<pre class="text">
-const Quantum *GetVirtualPixelQueue(const Image image)
-</pre>
+<pre class="bg-light text-dark mx-4"><samp>const Quantum *GetVirtualPixelQueue(const Image image)
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -392,11 +403,10 @@ const Quantum *GetVirtualPixelQueue(const Image image)
 
 <p>The format of the GetVirtualPixels() method is:</p>
 
-<pre class="text">
-const Quantum *GetVirtualPixels(const Image *image,const ssize_t x,
+<pre class="bg-light text-dark mx-4"><samp>const Quantum *GetVirtualPixels(const Image *image,const ssize_t x,
   const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -422,7 +432,7 @@ const Quantum *GetVirtualPixels(const Image *image,const ssize_t x,
 
 <p>QueueAuthenticPixels() queues a mutable pixel region.  If the region is successfully initialized a pointer to a Quantum array representing the region is returned, otherwise NULL is returned.  The returned pointer may point to a temporary working buffer for the pixels or it may point to the final location of the pixels in memory.</p>
 
-<p>Write-only access means that any existing pixel values corresponding to the region are ignored.  This is useful if the initial image is being created from scratch, or if the existing pixel values are to be completely replaced without need to refer to their pre-existing values. The application is free to read and write the pixel buffer returned by QueueAuthenticPixels() any way it pleases. QueueAuthenticPixels() does not initialize the pixel array values. Initializing pixel array values is the application's responsibility.</p>
+<p>Write-only access means that any existing pixel values corresponding to the region are ignored.  This is useful if the initial image is being created from scratch, or if the existing pixel values are to be completely replaced without need to refer to their preexisting values. The application is free to read and write the pixel buffer returned by QueueAuthenticPixels() any way it pleases. QueueAuthenticPixels() does not initialize the pixel array values. Initializing pixel array values is the application's responsibility.</p>
 
 <p>Performance is maximized if the selected region is part of one row, or one or more full rows, since then there is opportunity to access the pixels in-place (without a copy) if the image is in memory, or in a memory-mapped file. The returned pointer must *never* be deallocated by the user.</p>
 
@@ -430,11 +440,10 @@ const Quantum *GetVirtualPixels(const Image *image,const ssize_t x,
 
 <p>The format of the QueueAuthenticPixels() method is:</p>
 
-<pre class="text">
-Quantum *QueueAuthenticPixels(Image *image,const ssize_t x,
+<pre class="bg-light text-dark mx-4"><samp>Quantum *QueueAuthenticPixels(Image *image,const ssize_t x,
   const ssize_t y,const size_t columns,const size_t rows,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -462,10 +471,9 @@ Quantum *QueueAuthenticPixels(Image *image,const ssize_t x,
 
 <p>The format of the SetPixelCacheVirtualMethod() method is:</p>
 
-<pre class="text">
-VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
+<pre class="bg-light text-dark mx-4"><samp>VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
   const VirtualPixelMethod virtual_pixel_method,ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -493,10 +501,9 @@ VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
 
 <p>The format of the SyncAuthenticPixels() method is:</p>
 
-<pre class="text">
-MagickBooleanType SyncAuthenticPixels(Image *image,
+<pre class="bg-light text-dark mx-4"><samp>MagickBooleanType SyncAuthenticPixels(Image *image,
   ExceptionInfo *exception)
-</pre>
+</samp></pre>
 
 <p>A description of each parameter follows:</p>
 
@@ -519,18 +526,18 @@ MagickBooleanType SyncAuthenticPixels(Image *image,
   </main><!-- /.container -->
   <footer class="magick-footer">
     <div class="container-fluid">
-      <a href="../www/security-policy.html">Security</a> •
-      <a href="../www/news.html">News</a>
+      <a href="../../www/security-policy.html">Security</a> •
+      <a href="../../www/news.html">News</a>
      
-      <a href="cache.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../images/wand.ico"/></a>
+      <a href="cache.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../../../images/wand.ico"/></a>
      
-      <a href="../www/links.html">Related</a> •
-      <a href="../www/sitemap.html">Sitemap</a>
+      <a href="../../www/links.html">Related</a> •
+      <a href="../../www/sitemap.html">Sitemap</a>
    <br/>
-     <a href="../www/support.html">Sponsor</a> •
-     <a href="../www/cite.html">Cite</a> •
+     <a href="../../www/support.html">Sponsor</a> •
+     <a href="../../www/cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="../www/contact.html">Contact Us</a>
+     <a href="../../www/contact.html">Contact Us</a>
    <br/>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
@@ -540,6 +547,6 @@ MagickBooleanType SyncAuthenticPixels(Image *image,
   </footer>
 
   <!-- Javascript assets -->
-  <script src="../assets/magick.js" ></script>
+  <script src="../../assets/magick.js" ></script>
   </body>
 </html>

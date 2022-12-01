@@ -29,7 +29,7 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="news.html" rel="canonical" />
+  <link href="../www/news.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -66,7 +66,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="search.html">
+      <form class="d-flex form-inline" action="../www/search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -75,7 +75,7 @@
   </nav>
 
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>
     <ins class="adsbygoogle"
       style="display:block"
       data-ad-client="ca-pub-3129977114552745"
@@ -99,9 +99,9 @@
 
 <p>We recently updated Anthony's <a href="../Usage">ImageMagick Example Usage</a> pages to support version 7 tools and options.</p>
 
-<p>Recent releases of ImageMagick 7 continue to evolve our support of <a href="architecture.html#multispectral">Multispectral imagery</a>.  PSD, TIFF, MIFF, MPC, and FTXT can now read and write multispectral images with more multispectral formats to follow.</p>
+<p>Recent releases of ImageMagick 7 continue to evolve our support of <a href="../www/architecture.html#multispectral">Multispectral imagery</a>.  PSD, TIFF, MIFF, MPC, and FTXT can now read and write multispectral images with more multispectral formats to follow.</p>
 
-<p>We now provide <a href="download.html#windows">portable ARM Win64</a> static releases. Just copy to your host and run (no installer, no Windows registry entries).  Thanks to <a href="https://github.com/dlemstra">@dlemstra</a> for the ARM release.</p>
+<p>We now provide <a href="../www/download.html#windows">portable ARM Win64</a> static releases. Just copy to your host and run (no installer, no Windows registry entries).  Thanks to <a href="https://github.com/dlemstra">@dlemstra</a> for the ARM release.</p>
 
 <p><a href="https://github.com/snibgo">@Snibgo</a> contributed a <a href="fx.html">Fx</a> special-effects image operator interpretter.  It has vastly improved error checking and performance.</p>
 
@@ -117,10 +117,10 @@
 <p>Want more performance from ImageMagick?  Try these options:</p>
 
 <ul>
-<li>add more memory to your system, see <a href="architecture.html#cache">the pixel cache</a>;</li>
-<li>add more cores to your system, see <a href="architecture.html#threads">threads of execution support</a>;</li>
+<li>add more memory to your system, see <a href="../www/architecture.html#cache">the pixel cache</a>;</li>
+<li>add more cores to your system, see <a href="../www/architecture.html#threads">threads of execution support</a>;</li>
 <li>reduce lock contention with the <a href="http://goog-perftools.sourceforge.net/doc/tcmalloc.html">tcmalloc</a> memory allocation library;</li>
-<li>push large images to a solid-state drive, see <a href="architecture.html#tera-pixel">large image support</a>.</li>
+<li>push large images to a solid-state drive, see <a href="../www/architecture.html#tera-pixel">large image support</a>.</li>
 </ul>
 <p>If these options are prohibitive, you can reduce the quality of the image results.  The default build is Q16 HDRI.  If you disable <a href="high-dynamic-range.html">HDRI</a>, you use half the memory and instead of predominantly floating point operations, you use the typically more efficient integer operations.  The trade-off is reduced precision and you cannot process out of range pixel values (e.g. negative).  If you build the Q8 non-HDRI  version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a trade-off, even less precision and no out of range pixel values.  For a Q8 non-HDRI build of ImageMagick, use these <samp>configure</samp> script options: <samp>--with-quantum-depth=8 --disable-hdri</samp>.</p>
 <h4>Older News</h4>
@@ -128,7 +128,7 @@
 
 <p>As an analog to linear (RGB) and non-linear (sRGB) color colorspaces, as of ImageMagick 7.0.7-17, we introduce the LinearGray colorspace.  Gray is non-linear grayscale and LinearGray is linear (e.g. -colorspace linear-gray).</p>
 
-<p>Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.  Learn how ImageMagick version 7 differs from previous versions with our <a href="porting.html">porting guide</a>.</p>
+<p>Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at <a href="https://legacy.imagemagick.org/">https://legacy.imagemagick.org</a>.  Learn how ImageMagick version 7 differs from previous versions with our <a href="../www/porting.html">porting guide</a>.</p>
 </div>
   </div>
   </main><!-- /.container -->
@@ -158,3 +158,4 @@
   <script src="assets/magick.js" ></script>
   </body>
 </html>
+<!-- Magick Cache 1st December 2022 03:59 -->

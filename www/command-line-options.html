@@ -29,7 +29,7 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="command-line-options.html" rel="canonical" />
+  <link href="../www/command-line-options.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -66,7 +66,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="search.html">
+      <form class="d-flex form-inline" action="../www/search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -75,7 +75,7 @@
   </nav>
 
   <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>
+    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>
     <ins class="adsbygoogle"
       style="display:block"
       data-ad-client="ca-pub-3129977114552745"
@@ -426,7 +426,7 @@
   </ul>
 </div>
 <p> </p>
-<p class="lead magick-description">Below is list of command-line options recognized by the ImageMagick <a href="command-line-tools.html">command-line tools</a>. If you want a description of a particular option, click on the option name in the navigation bar above and you will go right to it. Unless otherwise noted, each option is recognized by the commands: <a href="convert.html">convert</a> and <a href="mogrify.html">mogrify</a>.</p>
+<p class="lead magick-description">Below is list of command-line options recognized by the ImageMagick <a href="command-line-tools.html">command-line tools</a>. If you want a description of a particular option, click on the option name in the navigation bar above and you will go right to it. Unless otherwise noted, each option is recognized by the commands: <a href="../www/convert.html">convert</a> and <a href="mogrify.html">mogrify</a>.</p>
 
 <div style="margin: auto;">
   <h2><a class="anchor" id="adaptive-blur"></a>-adaptive-blur <var>radius</var>[x<var>sigma</var>]</h2>
@@ -484,8 +484,7 @@ strings, such as '<samp>%d</samp>' or '<samp>%03d</samp>', are familiar to those
 who have used the standard <samp>printf()</samp>' C-library function. As an
 example, the command</p>
 
-<pre class="bg-light text-dark mx-4"><samp>magick logo: rose: -morph 15 my%02dmorph.jpg
-</samp></pre>
+<pre class="bg-light text-dark mx-4"><samp>magick logo: rose: -morph 15 my%02dmorph.jpg</samp></pre>
 
 <p>will create a sequence of 17 images (the two given plus 15 more created by
 <a href="command-line-options.html#morph">-morph</a>), named: my00morph.jpg, my01morph.jpg,
@@ -1161,7 +1160,7 @@ option has been given.  To modify a caption of images already in memory use
 "<samp><a href="command-line-options.html#set">-set</a> caption</samp>". </p>
 
 <p>The caption can contain special format characters listed in the <a
-href="escape.html">Format and
+href="../www/escape.html">Format and
 Print Image Properties</a>. These attributes are expanded when the caption
 is finally assigned to the individual images. </p>
 
@@ -1464,7 +1463,7 @@ operation. </p>
 
 <p class="magick-description">Clip along a named path from the 8BIM profile.</p>
 
-<p>This is identical to <a href="command-line-options.html#clip">-clip</a> except choose a specific clip path in the event the image has more than one path available. </p>
+<p>This is identical to <a href="command-line-options.html#clip">-clip</a> except choose a specific clip path in the event the image has more than one path available. ImageMagick supports UTF-8 encoding.  If your named path is in a different encoding, use `iconv` to convert the clip path name to that encoding otherwise the path name will not match.</p>
 
 <p>Use <a href="command-line-options.html#clip-path">+clip-path</a> to disable clipping for subsequent operations.</p>
 
@@ -1597,7 +1596,7 @@ duplicate or unused colors removed.  The ordering of an existing color
 palette may be altered. When converting an image from color to grayscale,
 it is more efficient to convert the image to the gray colorspace before
 reducing the number of colors. Refer to
-the <a href="quantize.html">
+the <a href="../www/quantize.html">
 color reduction algorithm</a> for more details.</p>
 
 <div style="margin: auto;">
@@ -1790,7 +1789,7 @@ option has been given.  To modify a comment of images already in memory use
 "<samp><a href="command-line-options.html#set">-set</a> comment</samp>". </p>
 
 <p>The comment can contain special format characters listed in the <a
-href="escape.html">Format and
+href="../www/escape.html">Format and
 Print Image Properties</a>. These attributes are expanded when the comment
 is finally assigned to the individual images. </p>
 
@@ -1853,7 +1852,7 @@ subtract
 
 <p class="magick-description">Set the type of image composition.</p>
 
-<p>See <a href="compose.html">Alpha Compositing</a> for
+<p>See <a href="../www/compose.html">Alpha Compositing</a> for
 a detailed discussion of alpha compositing.</p>
 
 <p>This setting affects image processing operators that merge two (or more)
@@ -1942,7 +1941,7 @@ the chroma channels.</p>
   <h2><a class="anchor" id="connected-components"></a>-connected-components <var>connectivity</var></h2>
 </div>
 
-<p class="magick-description"><a href="connected-components.html">connected-components</a> labeling detects connected regions in an image, choose from 4 or 8 way connectivity.</p>
+<p class="magick-description"><a href="../www/connected-components.html">connected-components</a> labeling detects connected regions in an image, choose from 4 or 8 way connectivity.</p>
 
 <p>Use <samp><a href="command-line-options.html#define" >-define</a> connected-components:verbose=true</samp> to output statistics associated with each unique label.</p>
 
@@ -2126,7 +2125,7 @@ output.</p>
 
 <p>Use <a href="command-line-options.html#debug">+debug</a> to turn off all logging.</p>
 
-<p>Debugging may also be set using the <samp>MAGICK_DEBUG</samp> <a href="resources.html#environment"
+<p>Debugging may also be set using the <samp>MAGICK_DEBUG</samp> <a href="../www/resources.html#environment"
 >environment variable</a>.  The allowed values for the <samp>MAGICK_DEBUG</samp>
 environment variable are the same as for the <a href="command-line-options.html#debug">-debug</a>
 option.</p>
@@ -2140,7 +2139,7 @@ option.</p>
 
 <p>Get the passphrase from the file specified by <var>filename</var>.</p>
 
-<p>For more information, see the webpage, <a href="cipher.html">ImageMagick: Encipher or
+<p>For more information, see the webpage, <a href="../www/cipher.html">ImageMagick: Encipher or
 Decipher an Image</a>.</p>
 
 
@@ -2183,7 +2182,7 @@ previously created.  Use <a href="command-line-options.html#define">+define "*"<
 existing definitions.</p>
 
 <p>The same 'artifact' settings can also be defined using the <a
-href="command-line-options.html#set" >-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="escape.html" >Format and Print Image
+href="command-line-options.html#set" >-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="../www/escape.html" >Format and Print Image
 Properties</a> in the defined value. </p>
 
 <p>The <var>option</var> and <var>key</var> are case-independent (they are
@@ -2972,7 +2971,9 @@ a <samp>rectangle</samp> followed by the width and height of the rounded corners
 to be removed.</p>
 
 <p>The <samp>circle</samp> primitive makes a disk (filled) or circle (unfilled).
-Give the center and any point on the perimeter (boundary).</p>
+Give the center and any point on the perimeter (boundary). Note, by using a translation, you can remove the need to calculate the circles edge coordinate, but can just give the radius directly:</p>
+
+<pre class="bg-light text-dark mx-4"><samp>magick -size 100x60 xc: -stroke SeaGreen  -fill PaleGreen -strokewidth 2 -draw 'translate 50,30 circle 0,0 25,0' circle.gif</samp></pre>
 
 <p>The <samp>arc</samp> primitive is used to inscribe an elliptical segment in
 to a given rectangle. An <samp>arc</samp> requires the two corners used for
@@ -3038,7 +3039,7 @@ filename:</p>
 
 <p>You can use 0,0 for the image size, which means to use the actual
 dimensions found in the image header. Otherwise, it is scaled to the given
-dimensions. See <a href="compose.html">Alpha Compositing</a> for
+dimensions. See <a href="../www/compose.html">Alpha Compositing</a> for
 a detailed discussion of alpha composition methods that are available. </p>
 
 <p>The "special augmented compose operators" such as "dissolve" that require
@@ -3154,7 +3155,7 @@ image sequence.</p>
 
 <p>Get the passphrase from the file specified by <var>filename</var>.</p>
 
-<p>For more information, see the webpage, <a href="cipher.html">ImageMagick: Encipher or
+<p>For more information, see the webpage, <a href="../www/cipher.html">ImageMagick: Encipher or
 Decipher an Image</a>.</p>
 
 
@@ -3583,7 +3584,7 @@ href="http://www.fmwconcepts.com/imagemagick/fourier_transforms/fourier.html"
 <p class="magick-description">Color to use when filling a graphic primitive.</p>
 
 <p>This option accepts a color name, a hex color, or a numerical RGB, RGBA,
-HSL, HSLA, CMYK, or CMYKA specification.  See <a href="color.html" >Color Names</a> for
+HSL, HSLA, CMYK, or CMYKA specification.  See <a href="../www/color.html" >Color Names</a> for
 a description of how to properly specify the color argument.</p>
 
 <p>Enclose the color specification in quotation marks to prevent the "#" or
@@ -3890,7 +3891,7 @@ href="command-line-options.html#fill">-fill</a> option.</p>
 <p class="magick-description">The image format type.</p>
 
 <p>When used with the <samp>mogrify</samp> utility, this option converts any
-image to the image <a href="../www/formats.html">format</a> you specify.
+image to the image <a href="formats.html">format</a> you specify.
 For a list of image format types supported by ImageMagick, use <a
 href="command-line-options.html#list">-list format</a>.</p>
 
@@ -3907,7 +3908,7 @@ filename becomes <var>image.tiff</var>.</p>
 
 <p class="magick-description">Output formatted image characteristics.</p>
 
-<p>See <a href="escape.html">Format and Print Image
+<p>See <a href="../www/escape.html">Format and Print Image
 Properties</a> for an explanation on how to specify the argument to this
 option.</p>
 
@@ -4144,7 +4145,7 @@ appending <samp>%</samp> as a percentage of the maximum possible intensity (255,
 the expression is read from a file titled by the remaining characters in the
 string.</p>
 
-<p>See <a href="fx.html">FX,
+<p>See <a href="../www/fx.html">FX,
 The Special Effects Image Operator</a> for a detailed discussion of this
 option.</p>
 
@@ -4268,7 +4269,7 @@ coordinate (60,70). (See <a href="command-line-processing.html#geometry">Image G
   -negate output.png
 </samp></pre>
 
-<p>When used as an option to <a href="composite.html">composite</a>, <a
+<p>When used as an option to <a href="../www/composite.html">composite</a>, <a
 href="command-line-options.html#gravity">-gravity</a> gives the direction that the image gravitates
 within the composite.</p>
 
@@ -4421,7 +4422,7 @@ a description of the image class.</p>
 
 <p>If <a href="command-line-options.html#colors">-colors</a> is also specified, the total unique colors
 in the image and color reduction error values are printed. Refer to <a
-href="quantize.html">color
+href="../www/quantize.html">color
 reduction algorithm</a> for a description of these values.</p>
 
 <p>If <a href="command-line-options.html#verbose">-verbose</a> precedes this option, copious
@@ -4743,7 +4744,7 @@ assigned to an image is used as a header string to print above the postscript
 image. </p>
 
 <p>You can include the image filename, type, width, height, or other image
-attribute by embedding special format character.  See <a href="escape.html">Format and Print Image
+attribute by embedding special format character.  See <a href="../www/escape.html">Format and Print Image
 Properties</a> for details of the percent escape codes.</p>
 
 <p>For example,</p>
@@ -5212,7 +5213,7 @@ limit as well:</p>
 <p>Here ImageMagick stops processing if an image requires more than 500MB of disk storage.</p>
 
 <p>In addition to command-line resource limit option, resources can be set
-with <a href="resources.html#environment" >environment variables</a>. Set the
+with <a href="../www/resources.html#environment" >environment variables</a>. Set the
 environment variables <samp>MAGICK_AREA_LIMIT</samp>,
 <samp>MAGICK_DISK_LIMIT</samp>, <samp>MAGICK_FILE_LIMIT</samp>,
 <samp>MAGICK_MEMORY_LIMIT</samp>, <samp>MAGICK_MAP_LIMIT</samp>,
@@ -5230,7 +5231,7 @@ through <samp>grep memory|open|destroy|disk</samp> for more readable sifting.
 </p>
 
 <p>For more about ImageMagick's use of resources, see the section <b>Cache
-Storage and Resource Requirements</b> on the <a href="architecture.html#cache
+Storage and Resource Requirements</b> on the <a href="../www/architecture.html#cache
 ">Architecture</a> page.  </p>
 
 <div style="margin: auto;">
@@ -5841,7 +5842,7 @@ white, and  mid-tone colors into a checkerboard pattern of black and white.
 
 <p>You can define your own <var >threshold map</var> for ordered
 dithering and halftoning your images, in either personal or system
-<samp>thresholds.xml</samp> XML file. See <a href="resources.html" >Resources</a>
+<samp>thresholds.xml</samp> XML file. See <a href="../www/resources.html" >Resources</a>
 for more details of configuration files. </p>
 
 <p>To print a complete list of the thresholds that have been defined, use the
@@ -6660,7 +6661,7 @@ the same name. </p>
 <p>This includes string 'properties' that are set by and assigned to images
 using the options <a href="command-line-options.html#comment" >-comment</a>, <a href="command-line-options.html#label"
 >-label</a>, <a href="command-line-options.html#caption" >-caption</a>. These options actually assign
-a global 'artifact' which are automatically assigned (and any <a href="escape.html" >Format Percent
+a global 'artifact' which are automatically assigned (and any <a href="../www/escape.html" >Format Percent
 Escapes</a> expanded) to images as they are read in.  For example:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>$ magick rose: -set comment 'Rose is a rose is a rose is a rose' rose.jpg
@@ -6668,7 +6669,7 @@ identify -format %c rose.jpg
 Rose is a rose is a rose is a rose
 </samp></pre>
 
-<p>The set value can also make use of <a href="escape.html" >Format and Print Image
+<p>The set value can also make use of <a href="../www/escape.html" >Format and Print Image
 Properties</a> in the defined value.  For example:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>$ magick rose: -set origsize '%wx%h' -resize 50% \
@@ -6711,7 +6712,7 @@ the original image has long since been modified or destroyed. For example: </p>
   label:'%[rosesize]'   label_size_of_rose.gif"
 </samp></pre>
 
-<p>Note that <a href="escape.html" >Format Percent Escapes</a> will only match
+<p>Note that <a href="../www/escape.html" >Format Percent Escapes</a> will only match
 a 'artifact' if the given <var>key</var> does not match an existing
 'attribute' or 'property'.  </p>
 
@@ -7464,7 +7465,7 @@ the use of an optimal tree depth for the color reduction algorithm.</p>
 image with the fastest computational speed and the least amount of memory.
 However, the default depth is inappropriate for some images. To assure the
 best representation, try values between 2 and 8 for this parameter.  Refer to
-the <a href="quantize.html"
+the <a href="../www/quantize.html"
 >color reduction algorithm</a> for more details.</p>
 
 <p>The <a href="command-line-options.html#colors">-colors</a> or <a href="command-line-options.html#monochrome">-monochrome</a>
@@ -7857,4 +7858,4 @@ but with strict boolean masking. </p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 25th November 2022 23:06 -->
+<!-- Magick Cache 1st December 2022 03:29 -->
