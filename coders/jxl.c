@@ -469,6 +469,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           output_buffer,extent);
         if (jxl_status == JXL_DEC_SUCCESS)
           jxl_status=JXL_DEC_NEED_IMAGE_OUT_BUFFER;
+        break;
       }
       case JXL_DEC_FULL_IMAGE:
       {
@@ -488,14 +489,20 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
               CorruptImageError,"Unsupported data type","`%s'",image->filename);
             break;
           }
-        if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+        switch (image->colorspace){
+        case sRGBColorspace:
+        case RGBColorspace:
           status=ImportImagePixels(image,0,0,image->columns,image->rows,
             image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",type,
             output_buffer,exception);
-        else
+          break;
+        case GRAYColorspace:
+        case LinearGRAYColorspace:
           status=ImportImagePixels(image,0,0,image->columns,image->rows,
             image->alpha_trait == BlendPixelTrait ? "IA" : "I",type,
             output_buffer,exception);
+          break;
+        }
         if (status == MagickFalse)
           jxl_status=JXL_DEC_ERROR;
         break;
