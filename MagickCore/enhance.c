@@ -852,9 +852,8 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
     *clut_map;
 
   ssize_t
-    i;
-
-  ssize_t adjust,
+    adjust,
+    i,
     y;
 
   assert(image != (Image *) NULL);
@@ -877,14 +876,14 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   */
   status=MagickTrue;
   progress=0;
-  adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
+  adjust=(ssize_t) (method == IntegerInterpolatePixel ? 0 : 1);
   clut_view=AcquireVirtualCacheView(clut_image,exception);
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     GetPixelInfo(clut_image,clut_map+i);
-    status=InterpolatePixelInfo(clut_image,clut_view,method,
-      (double) i*(clut_image->columns-adjust)/MaxMap,(double) i*
-      (clut_image->rows-adjust)/MaxMap,clut_map+i,exception);
+    status=InterpolatePixelInfo(clut_image,clut_view,method,(double) i*
+      (clut_image->columns-adjust)/MaxMap,(double) i*(clut_image->rows-adjust)/
+      MaxMap,clut_map+i,exception);
     if (status == MagickFalse)
       break;
   }
