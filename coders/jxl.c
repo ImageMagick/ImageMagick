@@ -469,6 +469,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           output_buffer,extent);
         if (jxl_status == JXL_DEC_SUCCESS)
           jxl_status=JXL_DEC_NEED_IMAGE_OUT_BUFFER;
+        break;
       }
       case JXL_DEC_FULL_IMAGE:
       {
