@@ -125,12 +125,14 @@ static MagickBooleanType ChannelImage(Image *destination_image,
     status = MagickTrue;
 
   size_t
-    height = MagickMin(source_image->rows,destination_image->rows),
-    width = MagickMin(source_image->columns,destination_image->columns);
+    height,
+    width;
 
   ssize_t
     y;
 
+  height=MagickMin(source_image->rows,destination_image->rows);
+  width=MagickMin(source_image->columns,destination_image->columns);
   source_view=AcquireVirtualCacheView(source_image,exception);
   destination_view=AcquireAuthenticCacheView(destination_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -205,13 +207,13 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     *p = expression;
 
   const Image
-    *source_image = (const Image *) NULL;
+    *source_image;
 
   double
     pixel = 0.0;
 
   Image
-    *destination_image = (Image *) NULL;
+    *destination_image;
 
   MagickBooleanType
     status = MagickTrue;
