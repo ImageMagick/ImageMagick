@@ -198,7 +198,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     channel_op = ExtractChannelOp;
 
   ChannelType
-    channel_mask = UndefinedChannel;
+    channel_mask;
 
   char
     token[MagickPathExtent] = "";
