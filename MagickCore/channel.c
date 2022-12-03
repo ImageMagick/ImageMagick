@@ -196,7 +196,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     channel_op = ExtractChannelOp;
 
   ChannelType
-    channel_mask = image->channel_mask;
+    channel_mask = UndefinedChannel;
 
   char
     token[MagickPathExtent] = "";
@@ -205,7 +205,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     *p = expression;
 
   const Image
-    *source_image = image;
+    *source_image = (const Image *) NULL;
 
   double
     pixel = 0.0;
@@ -229,7 +229,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
-  destination_image=CloneImage(source_image,0,0,MagickTrue,exception);
+  source_image=image;
+  destination_image=CloneImage(image,0,0,MagickTrue,exception);
   if (destination_image == (Image *) NULL)
     return((Image *) NULL);
   if (expression == (const char *) NULL)
@@ -240,6 +241,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       destination_image=GetLastImageInList(destination_image);
       return((Image *) NULL);
     }
+  channel_mask=destination_image->channel_mask;
   (void) GetNextToken(p,&p,MagickPathExtent,token);
   while (*token != '\0')
   {
