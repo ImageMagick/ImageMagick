@@ -11125,7 +11125,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         {
           /*
             Note image gamma.
-            To do: check for cHRM+gAMA == sRGB, and write sRGB instead.
           */
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -11142,7 +11141,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             {
               /*
                 Note image chromaticity.
-                Note: if cHRM+gAMA == sRGB write sRGB instead.
               */
                PrimaryInfo
                  bp,
