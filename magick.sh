@@ -30,8 +30,9 @@ DIRSEP=':'
 
 PATH="${top_builddir}/utilities:${PATH}"
 
-if test -n "$VERBOSE"; then
-  printf "$@"
+if test -n "$VERBOSE"
+then
+  echo "$@"
 fi
 env \
   LD_LIBRARY_PATH="${top_builddir}/MagickCore/.libs:${top_builddir}/MagickWand/.libs${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
