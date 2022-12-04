@@ -330,9 +330,10 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       JxlDecoderDestroy(jxl_info);
       ThrowReaderException(CoderError,"MemoryAllocationFailed");
     }
-  events_wanted=JXL_DEC_BASIC_INFO | JXL_DEC_BOX;
+  events_wanted=(JxlDecoderStatus) (JXL_DEC_BASIC_INFO | JXL_DEC_BOX);
   if (image_info->ping == MagickFalse)
-    events_wanted|=JXL_DEC_FULL_IMAGE | JXL_DEC_COLOR_ENCODING;
+    events_wanted=(JxlDecoderStatus) (events_wanted | JXL_DEC_FULL_IMAGE |
+      JXL_DEC_COLOR_ENCODING);
   if (JxlDecoderSubscribeEvents(jxl_info,events_wanted) != JXL_DEC_SUCCESS)
     {
       JxlThreadParallelRunnerDestroy(runner);
@@ -340,7 +341,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CoderError,"UnableToReadImageData");
     }
   input_size=MagickMaxBufferExtent;
-  pixels=AcquireQuantumMemory(input_size,sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(input_size,sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     {
       JxlThreadParallelRunnerDestroy(runner);
@@ -459,7 +460,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         jxl_status=JxlDecoderImageOutBufferSize(jxl_info,&pixel_format,&extent);
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
-        output_buffer=AcquireQuantumMemory(extent,sizeof(*output_buffer));
+        output_buffer=(unsigned char *) AcquireQuantumMemory(extent,
+          sizeof(*output_buffer));
         if (output_buffer == (unsigned char *) NULL)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
@@ -939,8 +941,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         *output_buffer;
 
       JxlEncoderCloseInput(jxl_info);
-      output_buffer=AcquireQuantumMemory(MagickMaxBufferExtent,
-        sizeof(*output_buffer));
+      output_buffer=(unsigned char *) AcquireQuantumMemory(
+        MagickMaxBufferExtent,sizeof(*output_buffer));
       if (output_buffer == (unsigned char *) NULL)
         {
           pixel_info=RelinquishVirtualMemory(pixel_info);
