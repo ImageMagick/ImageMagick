@@ -17,15 +17,13 @@
 # Written by Bob Friesenhahn, June 2002
 #
 arg="$1"
-escapes=0
-if test -n "$2"
-then
+escapes=4
+if test -n "$2"; then
   escapes="$2"
-fi
-if test $escapes -gt 3
-then
-  echo "$0: escape level must in range 0 - 3"
-  exit 1
+  if test $escapes -gt 3; then
+    printf "$0: escape level must in range 0 - 3\n"
+    exit 1
+  fi
 fi
 result=''
 length=0
@@ -34,9 +32,9 @@ mount | sed -e 's:\\:/:g'  | (
   IFS="\n"
   while read mount_entry
   do
-    win_mount_path=`echo "$mount_entry" | sed -e 's: .*::g'`
-    unix_mount_path=`echo "$mount_entry" | sed -e 's:.* on ::;s: type .*::'`
-    temp=`echo "$arg" | sed -e "s!^$unix_mount_path!$win_mount_path/!"`
+    win_mount_path=`printf "$mount_entry\n" | sed -e 's: .*::g'`
+    unix_mount_path=`printf "$mount_entry\n" | sed -e 's:.* on ::;s: type .*::'`
+    temp=`printf "$arg" | sed -e "s!^$unix_mount_path!$win_mount_path!"`
     if test "$temp" != "$arg"
     then
       candidate="$temp"
@@ -50,21 +48,24 @@ mount | sed -e 's:\\:/:g'  | (
   done
   if test -z "$result"
   then
-    echo "$0: path \"$arg\" is not mounted"
+    printf "$0: path \"$arg\" is not mounted\n"
     exit 1
   fi
-  case $escapes in
+  case "$escapes" in
     0)
-     echo "$result" | sed -e 's:/:\\:g'
+     printf "${result}" | sed -e 's:/:\\:g'
      ;;
     1)
-     echo "$result" | sed -e 's:/:\\\\:g'
+     printf "${result}" | sed -e 's:/:\\\\:g'
      ;;
     2)
-     echo "$result" | sed -e 's:/:\\\\\\\\:g'
+     printf "${result}" | sed -e 's:/:\\\\\\\\:g'
      ;;
     3)
-     echo "$result" | sed -e 's:/:\\\\\\\\\\\\\\\\:g'
+     printf "${result}" | sed -e 's:/:\\\\\\\\\\\\\\\\:g'
+     ;;
+    *)
+     printf "${result}"
      ;;
   esac
   exit 0;
