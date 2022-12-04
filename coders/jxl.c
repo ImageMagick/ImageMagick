@@ -550,7 +550,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
           {
             xmp_profile=AcquireStringInfo((size_t) size);
-            status=JxlDecoderSetBoxBuffer(jxl_info,
+            jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
               GetStringInfoDatum(xmp_profile),size);
           }
         if (jxl_status == JXL_DEC_SUCCESS)
