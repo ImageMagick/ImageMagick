@@ -535,7 +535,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             exif_profile=AcquireStringInfo((size_t) size);
             p=GetStringInfoDatum(exif_profile);
-            status=JxlDecoderSetBoxBuffer(jxl_info,p,size);
+            jxl_status=JxlDecoderSetBoxBuffer(jxl_info,p,size);
             offset=(unsigned int) (*p) << 24;
             offset|=(unsigned int) (*(p+1)) << 16;
             offset|=(unsigned int) (*(p+2)) << 8;
