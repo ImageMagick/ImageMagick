@@ -11117,7 +11117,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     {
       if (ping_exclude_gAMA == MagickFalse &&
           ping_have_iCCP == MagickFalse &&
-          ping_have_sRGB == MagickFalse &&
+          ping_have_sRGB != MagickFalse &&
           (ping_exclude_sRGB == MagickFalse ||
           (image->gamma < .45 || image->gamma > .46)))
       {
