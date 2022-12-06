@@ -574,8 +574,13 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) JxlDecoderReleaseBoxBuffer(jxl_info);
   if (exif_profile != (StringInfo *) NULL)
     {
-      (void) SetImageProfile(image,"exif",exif_profile,exception);
+      StringInfo *profile = StringToStringInfo("  ");
+      ConcatenateStringInfo(profile,exif_profile);
       exif_profile=DestroyStringInfo(exif_profile);
+      CopyMagickString((char *) GetStringInfoDatum(profile),"Exif",
+        GetStringInfoLength(profile));
+      (void) SetImageProfile(image,"exif",profile,exception);
+      profile=DestroyStringInfo(profile);
     }
   if (xmp_profile != (StringInfo *) NULL)
     {
@@ -879,8 +884,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
             Prepend a 4-byte TIFF header offset.
           */
           StringInfo *profile = AcquireStringInfo(sizeof(unsigned int));
-          (void) memset(GetStringInfoDatum(profile),0,sizeof(unsigned int));
           ConcatenateStringInfo(profile,exif_profile);
+          (void) DestroyStringInfo(SplitStringInfo(profile,6));
+          (void) memset(GetStringInfoDatum(profile),0,sizeof(unsigned int));
           (void) JxlEncoderAddBox(jxl_info,"Exif",GetStringInfoDatum(profile),
             GetStringInfoLength(profile),0);
           profile=DestroyStringInfo(profile);
