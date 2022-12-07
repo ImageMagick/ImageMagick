@@ -67,6 +67,11 @@
 #endif
 
 /*
+  Define declarations.
+*/
+#define ExifNamespace  "Exif\0\0"
+
+/*
   Typedef declarations.
 */
 typedef struct MemoryManagerInfo
@@ -310,6 +315,9 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  /*
+    Initialize JXL delegate library.
+  */
   JXLSetMemoryManager(&memory_manager,&memory_manager_info,image,exception);
   jxl_info=JxlDecoderCreate(&memory_manager);
   if (jxl_info == (JxlDecoder *) NULL)
@@ -348,6 +356,9 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       JxlDecoderDestroy(jxl_info);
       ThrowReaderException(CoderError,"MemoryAllocationFailed");
     }
+  /*
+    Decode JXL byte stream.
+  */
   jxl_status=JXL_DEC_NEED_MORE_INPUT;
   while ((jxl_status != JXL_DEC_SUCCESS) && (jxl_status != JXL_DEC_ERROR))
   {
@@ -533,7 +544,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
               offset;
 
             /*
-              Prepend a 4-byte TIFF header offset.
+              Read Exif profile.
             */
             exif_profile=AcquireStringInfo((size_t) size);
             p=GetStringInfoDatum(exif_profile);
@@ -551,6 +562,9 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
           {
+            /*
+              Read XMP profile.
+            */
             xmp_profile=AcquireStringInfo((size_t) size);
             jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
               GetStringInfoDatum(xmp_profile),size);
@@ -574,16 +588,21 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) JxlDecoderReleaseBoxBuffer(jxl_info);
   if (exif_profile != (StringInfo *) NULL)
     {
-      StringInfo *profile = StringToStringInfo("  ");
+      /*
+        Cache Exif profile.
+      */
+      StringInfo *profile = StringToStringInfo(ExifNamespace);
+      DestroyStringInfo(SplitStringInfo(exif_profile,2));
       ConcatenateStringInfo(profile,exif_profile);
       exif_profile=DestroyStringInfo(exif_profile);
-      CopyMagickString((char *) GetStringInfoDatum(profile),"Exif",
-        GetStringInfoLength(profile));
       (void) SetImageProfile(image,"exif",profile,exception);
       profile=DestroyStringInfo(profile);
     }
   if (xmp_profile != (StringInfo *) NULL)
     {
+      /*
+        Cache XMP profile.
+      */
       (void) SetImageProfile(image,"xmp",xmp_profile,exception);
       xmp_profile=DestroyStringInfo(xmp_profile);
     }
@@ -791,6 +810,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  /*
+    Initialize JXL delegate library.
+  */
   JXLSetMemoryManager(&memory_manager,&memory_manager_info,image,exception);
   jxl_info=JxlEncoderCreate(&memory_manager);
   if (jxl_info == (JxlEncoder *) NULL)
@@ -885,7 +907,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
           */
           StringInfo *profile = AcquireStringInfo(sizeof(unsigned int));
           ConcatenateStringInfo(profile,exif_profile);
-          (void) DestroyStringInfo(SplitStringInfo(profile,6));
+          (void) DestroyStringInfo(SplitStringInfo(profile,
+            strlen(ExifNamespace)));
           (void) memset(GetStringInfoDatum(profile),0,sizeof(unsigned int));
           (void) JxlEncoderAddBox(jxl_info,"Exif",GetStringInfoDatum(profile),
             GetStringInfoLength(profile),0);
@@ -903,6 +926,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(jxl_info);
       ThrowWriterException(CoderError,"UnableToWriteImageData");
     }
+  /*
+    Write image as a JXL stream.
+  */
   bytes_per_row=image->columns*
     ((image->alpha_trait == BlendPixelTrait) ? 4 : 3)*
     ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
@@ -968,6 +994,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         unsigned char
           *p;
 
+        /*
+          Encode the pixel stream.
+        */
         extent=MagickMaxBufferExtent;
         p=output_buffer;
         jxl_status=JxlEncoderProcessOutput(jxl_info,&p,&extent);
