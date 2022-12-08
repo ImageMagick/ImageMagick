@@ -1106,7 +1106,7 @@ static MagickBooleanType WriteHEICImageRRGGBBAA(Image *image,
     *p;
 
   enum heif_channel
-    channel;
+    channel = heif_channel_interleaved;
 
   int
     depth,
@@ -1114,7 +1114,7 @@ static MagickBooleanType WriteHEICImageRRGGBBAA(Image *image,
     stride;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     y;
@@ -1129,9 +1129,7 @@ static MagickBooleanType WriteHEICImageRRGGBBAA(Image *image,
   /*
     Transform HEIF RGBA image with depth > 8.
   */
-  status=MagickTrue;
   depth=image->depth > 10 ? 12 : 10;
-  channel=heif_channel_interleaved;
   if (GetPixelChannels(image) == 1)
     channel=heif_channel_Y;
   error=heif_image_add_plane(heif_image,channel,(int) image->columns,
