@@ -1790,8 +1790,10 @@ static void GetProfilesFromResourceBlock(Image *image,
       case 0x0404:
       {
         /*
-          IPTC Profile
+          IPTC profile.
         */
+        if (count == 0)
+          break;
         profile=AcquireStringInfo(count);
         SetStringInfoDatum(profile,p);
         (void) SetImageProfileInternal(image,"iptc",profile,MagickTrue,

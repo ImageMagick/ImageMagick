@@ -445,8 +445,7 @@ static boolean ReadProfileData(j_decompress_ptr jpeg_info,const int index,
     }
   if (client_info->profiles[index] == (StringInfo *) NULL)
     {
-      client_info->profiles[index]=BlobToStringInfo((const void *) NULL,
-        length);
+      client_info->profiles[index]=BlobToStringInfo((const void *) NULL,length);
       if (client_info->profiles[index] == (StringInfo *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
@@ -461,8 +460,7 @@ static boolean ReadProfileData(j_decompress_ptr jpeg_info,const int index,
         current_length;
 
       current_length=GetStringInfoLength(client_info->profiles[index]);
-      SetStringInfoLength(client_info->profiles[index],current_length+
-        length);
+      SetStringInfoLength(client_info->profiles[index],current_length+length);
       p=GetStringInfoDatum(client_info->profiles[index])+current_length;
     }
   for (i=0; i < (ssize_t) length; i++)
