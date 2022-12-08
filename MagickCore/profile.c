@@ -1752,7 +1752,8 @@ static void GetProfilesFromResourceBlock(Image *image,
       break;
     p=ReadResourceLong(p,&value);
     count=(ssize_t) value;
-    if ((p > (datum+length-count)) || (count > (ssize_t) length) || (count < 0))
+    if ((p > (datum+length-count)) || (count > (ssize_t) length) ||
+        (count <= 0))
       break;
     switch (id)
     {
@@ -1792,8 +1793,6 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           IPTC profile.
         */
-        if (count == 0)
-          break;
         profile=AcquireStringInfo(count);
         SetStringInfoDatum(profile,p);
         (void) SetImageProfileInternal(image,"iptc",profile,MagickTrue,
