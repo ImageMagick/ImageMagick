@@ -1312,7 +1312,7 @@ namespace Magick
     void sepiaTone(const double threshold_);
 
     // Sets meanErrorPerPixel, normalizedMaxError, and normalizedMeanError
-    // in the current image. False is returned if the images are not identical.
+    // in the current image. True is returned if the images are identical.
     bool setColorMetric(const Image &reference_);
 
     // Allocates a pixel cache region to store image pixels as defined
