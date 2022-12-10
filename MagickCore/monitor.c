@@ -46,6 +46,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
 
 /*
   Static declarations.
@@ -148,14 +149,15 @@ MagickExport MagickBooleanType SetImageProgress(const Image *image,
 
   if (image->progress_monitor == (MagickProgressMonitor) NULL)
     return(MagickTrue);
-  (void) FormatLocaleString(message,MagickPathExtent,"%s/%s",tag,
-    image->filename);
+  (void) FormatLocaleString(message,MagickPathExtent,"%s/%s",
+    tag == (const char *) NULL ? "null" : tag,image->filename);
   if (monitor_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&monitor_semaphore);
   LockSemaphoreInfo(monitor_semaphore);
   status=image->progress_monitor(message,offset,extent,image->client_data);
   (void) FormatLocaleString(message,MagickPathExtent,"%g%%:%s:%s",
-    100.0*offset/extent,tag,image->filename);
+    (100.0*offset*PerceptibleReciprocal(extent-1.0)),
+    tag == (const char *) NULL ? "null" : tag,image->filename);
   (void) SetImageArtifact((Image *) image,"monitor:progress",message);
   UnlockSemaphoreInfo(monitor_semaphore);
   return(status);

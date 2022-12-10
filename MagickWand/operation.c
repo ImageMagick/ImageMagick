@@ -108,11 +108,8 @@ static MagickBooleanType MonitorProgress(const char *text,
 
   magick_unreferenced(client_data);
 
-  if ((extent <= 1) || (offset < 0) || (offset >= (MagickOffsetType) extent))
-    return(MagickTrue);
-  if ((offset != (MagickOffsetType) (extent-1)) && ((offset % 50) != 0))
-    return(MagickTrue);
-  (void) CopyMagickString(tag,text,MagickPathExtent);
+  (void) CopyMagickString(tag,text == (const char *) NULL ? "null" : text,
+    MagickPathExtent);
   p=strrchr(tag,'/');
   if (p != (char *) NULL)
     *p='\0';
@@ -123,11 +120,11 @@ static MagickBooleanType MonitorProgress(const char *text,
   if (p == (char *) NULL)
     (void) FormatLocaleFile(stderr,"%s: %ld of %lu, %02ld%% complete\r",
       locale_message,(long) offset,(unsigned long) extent,(long)
-      (100L*offset/(extent-1)));
+      (100.0*offset*PerceptibleReciprocal(extent-1.0)));
   else
     (void) FormatLocaleFile(stderr,"%s[%s]: %ld of %lu, %02ld%% complete\r",
       locale_message,p+1,(long) offset,(unsigned long) extent,(long)
-      (100L*offset/(extent-1)));
+      (100.0*offset*PerceptibleReciprocal(extent-1.0)));
   if (offset == (MagickOffsetType) (extent-1))
     (void) FormatLocaleFile(stderr,"\n");
   (void) fflush(stderr);
@@ -1141,8 +1138,8 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("monitor",option+1) == 0)
         {
-          (void) SetImageInfoProgressMonitor(_image_info, IfSetOption?
-                MonitorProgress: (MagickProgressMonitor) NULL, (void *) NULL);
+          (void) SetImageInfoProgressMonitor(_image_info,IfSetOption ?
+            MonitorProgress: (MagickProgressMonitor) NULL,(void *) NULL);
           break;
         }
       if (LocaleCompare("monochrome",option+1) == 0)
