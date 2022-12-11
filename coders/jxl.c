@@ -540,24 +540,16 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             unsigned char
               *p;
 
-            unsigned int
-              offset;
-
             /*
               Read Exif profile.
             */
             exif_profile=AcquireStringInfo((size_t) size);
             p=GetStringInfoDatum(exif_profile);
             jxl_status=JxlDecoderSetBoxBuffer(jxl_info,p,size);
-            offset=(unsigned int) (*p) << 24;
-            offset|=(unsigned int) (*(p+1)) << 16;
-            offset|=(unsigned int) (*(p+2)) << 8;
-            offset|=(unsigned int) *(p+3);
-            offset+=4;
-            if (offset < (size-4))
+            if (size > 8)
               {
-                (void) DestroyStringInfo(SplitStringInfo(exif_profile,offset));
-                SetStringInfoLength(exif_profile,size-offset-4);
+                (void) DestroyStringInfo(SplitStringInfo(exif_profile,4));
+                SetStringInfoLength(exif_profile,size-8);
               }
           }
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
@@ -903,13 +895,13 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       if (exif_profile != (StringInfo *) NULL)
         {
           /*
-            Prepend a 4-byte TIFF header offset.
+            Prepend a 2-byte header.
           */
-          StringInfo *profile = AcquireStringInfo(sizeof(unsigned int));
+          StringInfo *profile = AcquireStringInfo(2);
           ConcatenateStringInfo(profile,exif_profile);
           (void) DestroyStringInfo(SplitStringInfo(profile,
             strlen(ExifNamespace)));
-          (void) memset(GetStringInfoDatum(profile),0,sizeof(unsigned int));
+          (void) memset(GetStringInfoDatum(profile),0,2);
           (void) JxlEncoderAddBox(jxl_info,"Exif",GetStringInfoDatum(profile),
             GetStringInfoLength(profile),0);
           profile=DestroyStringInfo(profile);

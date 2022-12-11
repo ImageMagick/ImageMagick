@@ -83,17 +83,6 @@
 
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 /*
-  Define declarations.
-*/
-#define XMPNamespaceExtent  28
-
-/*
-  Const declarations.
-*/
-static const char
-  xmp_namespace[] = "http://ns.adobe.com/xap/1.0/ ";
-
-/*
   Forward declarations.
 */
 static MagickBooleanType
@@ -204,11 +193,11 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
   size_t
     length;
 
+  StringInfo
+    *exif_profile;
+
   struct heif_error
     error;
-
-  unsigned char
-    *exif_profile;
 
   /*
     Read Exif profile.
@@ -223,35 +212,16 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
   if ((MagickSizeType) length > GetBlobSize(image))
     ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
       image->filename);
-  exif_profile=(unsigned char *) AcquireQuantumMemory(1,length);
-  if (exif_profile == (unsigned char *) NULL)
-    return(MagickFalse);
-  error=heif_image_handle_get_metadata(image_handle,id,exif_profile);
-  if (IsHEIFSuccess(image,&error,exception) != MagickFalse)
+  exif_profile=AcquireStringInfo(length);
+  error=heif_image_handle_get_metadata(image_handle,id,
+    GetStringInfoDatum(exif_profile));
+  if ((IsHEIFSuccess(image,&error,exception) != MagickFalse) &&
+      (length > 4))
     {
-      StringInfo
-        *profile;
-
-      unsigned int
-        offset;
-
-      offset=(unsigned int) (*exif_profile) << 24;
-      offset|=(unsigned int) (*(exif_profile+1)) << 16;
-      offset|=(unsigned int) (*(exif_profile+2)) << 8;
-      offset|=(unsigned int) *(exif_profile+3);
-      offset+=4;
-      if (offset < (length-4))
-        {
-          length-=offset;
-          profile=BlobToStringInfo(exif_profile+offset,(size_t) length);
-          if (profile != (StringInfo*) NULL)
-            {
-              (void) SetImageProfile(image,"exif",profile,exception);
-              profile=DestroyStringInfo(profile);
-            }
-        }
+      (void) DestroyStringInfo(SplitStringInfo(exif_profile,4));
+      (void) SetImageProfile(image,"exif",exif_profile,exception);
     }
-  exif_profile=(unsigned char *) RelinquishMagickMemory(exif_profile);
+  exif_profile=DestroyStringInfo(exif_profile);
   return(MagickTrue);
 }
 
@@ -290,14 +260,12 @@ static MagickBooleanType ReadHEICXMPProfile(Image *image,
   if (xmp_profile == (unsigned char *) NULL)
     return(MagickFalse);
   error=heif_image_handle_get_metadata(image_handle,id,xmp_profile);
-  if ((IsHEIFSuccess(image,&error,exception) != MagickFalse) &&
-      (length > (XMPNamespaceExtent+2)))
+  if (IsHEIFSuccess(image,&error,exception) != MagickFalse)
     {
       StringInfo
         *profile;
 
-      length-=(XMPNamespaceExtent+1);
-      profile=BlobToStringInfo(xmp_profile+XMPNamespaceExtent+1,length);
+      profile=BlobToStringInfo(xmp_profile,length);
       if (profile != (StringInfo*) NULL)
         {
           (void) SetImageProfile(image,"xmp",profile,exception);
@@ -889,26 +857,13 @@ static void WriteProfile(struct heif_context *context,Image *image,
           (void*) GetStringInfoDatum(profile),(int) length);
       }
     if (LocaleCompare(name,"XMP") == 0)
+      for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65533L)
       {
-        StringInfo
-          *xmp_profile;
-
-        xmp_profile=StringToStringInfo(xmp_namespace);
-        if (xmp_profile != (StringInfo *) NULL)
-          {
-            if (profile != (StringInfo *) NULL)
-              ConcatenateStringInfo(xmp_profile,profile);
-            GetStringInfoDatum(xmp_profile)[XMPNamespaceExtent]='\0';
-            for (i=0; i < (ssize_t) GetStringInfoLength(xmp_profile); i+=65533L)
-            {
-              length=MagickMin(GetStringInfoLength(xmp_profile)-i,65533L);
-              error=heif_context_add_XMP_metadata(context,image_handle,
-                (void*) (GetStringInfoDatum(xmp_profile)+i),(int) length);
-              if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
-                break;
-            }
-            xmp_profile=DestroyStringInfo(xmp_profile);
-          }
+        length=MagickMin(GetStringInfoLength(profile)-i,65533L);
+        error=heif_context_add_XMP_metadata(context,image_handle,
+          (void*) (GetStringInfoDatum(profile)+i),(int) length);
+        if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
+          break;
       }
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
