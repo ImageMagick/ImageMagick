@@ -493,7 +493,7 @@ static inline MagickBooleanType PackAshlarTiles(AshlarInfo *ashlar_info,
   return(status);  /* return true if room is found for all tiles */
 }
 
-static Image *ASHLARImage(const ImageInfo *image_info,Image *image,
+static Image *ASHLARImage(ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   AshlarInfo
@@ -543,6 +543,11 @@ static Image *ASHLARImage(const ImageInfo *image_info,Image *image,
       geometry.height=(size_t) geometry.height/7;
       geometry.x=(ssize_t) pow((double) geometry.width,0.25);
       geometry.y=(ssize_t) pow((double) geometry.height,0.25);
+      image_info->extract=AcquireString("");
+      if (image_info->extract != (char *) NULL)
+        (void) FormatLocaleString(image_info->extract,MagickPathExtent,
+          "%gx%g%+g%+g",(double) geometry.width,(double) geometry.height,
+          (double) geometry.x,(double) geometry.y);
     }
   /*
     Initialize image tiles.
@@ -697,6 +702,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   if (value != (const char *) NULL)
     tiles_per_page=(size_t) MagickMax(StringToInteger(value),1);
   ashlar_images=NewImageList();
+  write_info=CloneImageInfo(image_info);
   for (i=0; i < (ssize_t) GetImageListLength(image); i+=tiles_per_page)
   {
     char
@@ -715,7 +721,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
           ashlar_images=DestroyImageList(ashlar_images);
         break;
       }
-    ashlar_image=ASHLARImage(image_info,clone_images,exception);
+    ashlar_image=ASHLARImage(write_info,clone_images,exception);
     clone_images=DestroyImageList(clone_images);
     if (ashlar_image == (Image *) NULL)
       {
@@ -730,7 +736,6 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   ashlar_images=GetFirstImageInList(ashlar_images);
   (void) CopyMagickString(ashlar_images->filename,image_info->filename,
     MagickPathExtent);
-  write_info=CloneImageInfo(image_info);
   *write_info->magick='\0';
   (void) SetImageInfo(write_info,(unsigned int)
     GetImageListLength(ashlar_images),exception);
