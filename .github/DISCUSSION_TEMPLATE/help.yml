@@ -1,0 +1,10 @@
+body:
+- type: input
+  attributes:
+    label: ImageMagick version
+    placeholder: 7.X.X-X
+  validations:
+    required: true
+- type: textarea
+  validations:
+    required: true
