@@ -1,0 +1,17 @@
+body:
+- type: input
+  attributes:
+    label: ImageMagick version
+    placeholder: 7.X.X-X
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Operating system, version and so on
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Description
+  validations:
+    required: true
