@@ -6,5 +6,7 @@ body:
   validations:
     required: true
 - type: textarea
+  attributes:
+    label: Description
   validations:
     required: true
