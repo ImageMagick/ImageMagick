@@ -851,11 +851,17 @@ static xmlEntityPtr SVGGetParameterEntity(void *context,const xmlChar *name)
   return(xmlGetParameterEntity(svg_info->document,name));
 }
 
+static void SVGError(void *,const char *,...)
+  magick_attribute((__format__ (__printf__,2,3)));
+
 static void SVGEntityDeclaration(void *context,const xmlChar *name,int type,
   const xmlChar *public_id,const xmlChar *system_id,xmlChar *content)
 {
   SVGInfo
     *svg_info;
+
+  xmlEntityPtr
+    entity;
 
   /*
     An entity definition has been parsed.
@@ -866,12 +872,16 @@ static void SVGEntityDeclaration(void *context,const xmlChar *name,int type,
     system_id != (xmlChar *) NULL ? (const char *) system_id : "none",content);
   svg_info=(SVGInfo *) context;
   if (svg_info->parser->inSubset == 1)
-    (void) xmlAddDocEntity(svg_info->document,name,type,public_id,system_id,
+    entity=xmlAddDocEntity(svg_info->document,name,type,public_id,system_id,
       content);
   else
     if (svg_info->parser->inSubset == 2)
-      (void) xmlAddDtdEntity(svg_info->document,name,type,public_id,system_id,
+      entity=xmlAddDtdEntity(svg_info->document,name,type,public_id,system_id,
         content);
+    else
+      return;
+  if (entity == (xmlEntityPtr) NULL)  
+    SVGError(svg_info,"NULL entity");
 }
 
 static void SVGAttributeDeclaration(void *context,const xmlChar *element,
@@ -3340,9 +3350,6 @@ static void SVGWarning(void *context,const char *format,...)
   va_end(operands);
 }
 
-static void SVGError(void *,const char *,...)
-  magick_attribute((__format__ (__printf__,2,3)));
-
 static void SVGError(void *context,const char *format,...)
 {
   char
@@ -3605,7 +3612,10 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
   (void) xmlParseChunk(svg_info->parser,(char *) message,0,1);
   SVGEndDocument(svg_info);
   if (svg_info->parser->myDoc != (xmlDocPtr) NULL)
-    xmlFreeDoc(svg_info->parser->myDoc);
+    {
+      xmlFreeDoc(svg_info->parser->myDoc);
+      svg_info->parser->myDoc=(xmlDocPtr) NULL;
+    }
   xmlFreeParserCtxt(svg_info->parser);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
