@@ -2624,6 +2624,7 @@ MagickPrivate void NTWindowsGenesis(void)
     *mode;
 
   SetUnhandledExceptionFilter(NTUncaughtException);
+  SetConsoleOutputCP(CP_UTF8);
   mode=GetEnvironmentValue("MAGICK_ERRORMODE");
   if (mode != (char *) NULL)
     {

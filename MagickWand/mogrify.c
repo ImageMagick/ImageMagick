@@ -237,11 +237,11 @@ static Image *SparseColorOption(const Image *image,
   Image
     *sparse_image;
 
-  PixelInfo
-    color;
-
   MagickBooleanType
     error;
+
+  PixelInfo
+    color;
 
   size_t
     x;

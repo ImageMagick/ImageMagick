@@ -6079,12 +6079,10 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
   const PixelInfo *q)
 {
   double
+    distance,
     fuzz,
-    pixel;
-
-  double
-    scale,
-    distance;
+    pixel,
+    scale;
 
   fuzz=(double) MagickMax(MagickMax(p->fuzz,q->fuzz),(MagickRealType)
     MagickSQ1_2);
