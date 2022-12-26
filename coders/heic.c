@@ -216,9 +216,9 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
   error=heif_image_handle_get_metadata(image_handle,id,
     GetStringInfoDatum(exif_profile));
   if ((IsHEIFSuccess(image,&error,exception) != MagickFalse) &&
-      (length > 4))
+      (length > 8))
     {
-      (void) DestroyStringInfo(SplitStringInfo(exif_profile,4));
+      (void) DestroyStringInfo(SplitStringInfo(exif_profile,8));
       (void) SetImageProfile(image,"exif",exif_profile,exception);
     }
   exif_profile=DestroyStringInfo(exif_profile);
@@ -845,7 +845,9 @@ static void WriteProfile(struct heif_context *context,Image *image,
     length=GetStringInfoLength(profile);
     if (LocaleCompare(name,"EXIF") == 0)
       {
-        length=GetStringInfoLength(profile);
+        StringInfo *exif_profile = AcquireStringInfo(4);
+        ConcatenateStringInfo(exif_profile,profile);
+        length=GetStringInfoLength(exif_profile);
         if (length > 65533L)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),
@@ -854,7 +856,8 @@ static void WriteProfile(struct heif_context *context,Image *image,
             length=65533L;
           }
         (void) heif_context_add_exif_metadata(context,image_handle,
-          (void*) GetStringInfoDatum(profile),(int) length);
+          (void*) GetStringInfoDatum(exif_profile),(int) length);
+        exif_profile=DestroyStringInfo(exif_profile);
       }
     if (LocaleCompare(name,"XMP") == 0)
       for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65533L)
