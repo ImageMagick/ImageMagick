@@ -347,7 +347,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CoderError,"MemoryAllocationFailed");
   (void) JxlDecoderSetKeepOrientation(jxl_info,JXL_TRUE);
   (void) JxlDecoderSetUnpremultiplyAlpha(jxl_info,JXL_TRUE);
-  events_wanted=(JxlDecoderStatus) (JXL_DEC_BASIC_INFO | JXL_DEC_BOX);
+  events_wanted=(JxlDecoderStatus) (JXL_DEC_BASIC_INFO | JXL_DEC_BOX |
+    JXL_DEC_FRAME);
   if (image_info->ping == MagickFalse)
     {
       events_wanted=(JxlDecoderStatus) (events_wanted | JXL_DEC_FULL_IMAGE |
@@ -479,7 +480,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           jxl_status=JXL_DEC_COLOR_ENCODING;
         break;
       }
-      case JXL_DEC_NEED_IMAGE_OUT_BUFFER:
+      case JXL_DEC_FRAME:
       {
         if (image_count++ != 0)
           {
@@ -492,6 +493,10 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image=SyncNextImageInList(image);
             JXLInitImage(image,&basic_info);
           }
+        break;
+      }
+      case JXL_DEC_NEED_IMAGE_OUT_BUFFER:
+      {
         status=SetImageExtent(image,image->columns,image->rows,exception);
         if (status == MagickFalse)
           break;
