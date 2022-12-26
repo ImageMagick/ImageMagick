@@ -685,6 +685,7 @@ ModuleExport size_t RegisterJXLImage(void)
   entry->encoder=(EncodeImageHandler *) WriteJXLImage;
   entry->magick=(IsImageFormatHandler *) IsJXL;
 #endif
+  entry->mime_type=ConstantString("image/jxl");
   if (*version != '\0')
     entry->version=ConstantString(version);
   (void) RegisterMagickInfo(entry);
