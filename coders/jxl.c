@@ -791,7 +791,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     *xmp_profile = (StringInfo *) NULL;
 
   JxlBasicInfo
-    basic_info;
+    basic_info = { 0 };
 
   JxlEncoder
     *jxl_info;
@@ -806,7 +806,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     memory_manager;
 
   JxlPixelFormat
-    pixel_format;
+    pixel_format = { 0 };
 
   MagickBooleanType
     status;
@@ -865,9 +865,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(jxl_info);
       return(MagickFalse);
     }
-  (void) memset(&pixel_format,0,sizeof(pixel_format));
   JXLSetFormat(image,&pixel_format,exception);
-  (void) memset(&basic_info,0,sizeof(basic_info));
   JxlEncoderInitBasicInfo(&basic_info);
   basic_info.xsize=(uint32_t) image->columns;
   basic_info.ysize=(uint32_t) image->rows;
