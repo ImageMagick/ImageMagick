@@ -910,7 +910,10 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
   if (image_info->quality == 100)
-    (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
+    {
+      (void) JxlEncoderSetFrameDistance(frame_settings,0.f);
+      (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
+    }
   else
     (void) JxlEncoderSetFrameDistance(frame_settings,
       JXLGetDistance(image_info));
