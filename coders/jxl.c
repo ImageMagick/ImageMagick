@@ -892,7 +892,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       basic_info.alpha_exponent_bits=basic_info.exponent_bits_per_sample;
       basic_info.num_extra_channels=1;
     }
-  if (image->quality == 100)
+  if (image_info->quality == 100)
     basic_info.uses_original_profile=JXL_TRUE;
   jxl_status=JxlEncoderSetBasicInfo(jxl_info,&basic_info);
   if (jxl_status != JXL_ENC_SUCCESS)
@@ -909,7 +909,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       JxlEncoderDestroy(jxl_info);
       ThrowWriterException(CoderError,"MemoryAllocationFailed");
     }
-  if (image->quality == 100)
+  if (image_info->quality == 100)
     (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
   else
     (void) JxlEncoderSetFrameDistance(frame_settings,
