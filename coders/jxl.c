@@ -440,7 +440,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case JXL_DEC_COLOR_ENCODING:
       {
         JxlColorEncoding
-          color_encoding;
+          color_encoding = { 0 };
 
         size_t
           profile_size;
@@ -449,7 +449,6 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *profile;
 
         JXLSetFormat(image,&pixel_format,exception);
-        (void) memset(&color_encoding,0,sizeof(color_encoding));
         jxl_status=JxlDecoderGetColorAsEncodedProfile(jxl_info,&pixel_format,
           JXL_COLOR_PROFILE_TARGET_DATA,&color_encoding);
         if (jxl_status == JXL_DEC_SUCCESS)
