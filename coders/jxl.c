@@ -67,11 +67,6 @@
 #endif
 
 /*
-  Define declarations.
-*/
-#define ExifNamespace  "Exif\0\0"
-
-/*
   Typedef declarations.
 */
 typedef struct MemoryManagerInfo
@@ -582,10 +577,21 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             exif_profile=AcquireStringInfo((size_t) size);
             p=GetStringInfoDatum(exif_profile);
             jxl_status=JxlDecoderSetBoxBuffer(jxl_info,p,size);
-            if (size > 8)
+            if (size > 4)
               {
-                (void) DestroyStringInfo(SplitStringInfo(exif_profile,4));
-                SetStringInfoLength(exif_profile,size-8);
+                /*
+                  Extract Exif profile.
+                */
+                StringInfo *snippet = SplitStringInfo(exif_profile,4);
+                unsigned int offset = 0;
+                offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+0)) << 24;
+                offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+1)) << 16;
+                offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+2)) << 8;
+                offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+3)) << 0;
+                snippet=DestroyStringInfo(snippet);
+                if (offset < GetStringInfoLength(exif_profile))
+                  (void) DestroyStringInfo(SplitStringInfo(exif_profile,
+                    offset));
               }
           }
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
@@ -614,17 +620,19 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   }
   (void) JxlDecoderReleaseBoxBuffer(jxl_info);
-  if (exif_profile != (StringInfo *) NULL)
+  if ((exif_profile != (StringInfo *) NULL) &&
+      (GetStringInfoLength(exif_profile) > 6))
     {
       /*
         Cache Exif profile.
       */
-      StringInfo *profile = StringToStringInfo(ExifNamespace);
+      StringInfo *profile = StringToStringInfo("Exif\0\0");
       DestroyStringInfo(SplitStringInfo(exif_profile,2));
       ConcatenateStringInfo(profile,exif_profile);
-      exif_profile=DestroyStringInfo(exif_profile);
+      SetStringInfoLength(profile,GetStringInfoLength(profile)-4);
       (void) SetImageProfile(image,"exif",profile,exception);
       profile=DestroyStringInfo(profile);
+      exif_profile=DestroyStringInfo(exif_profile);
     }
   if (xmp_profile != (StringInfo *) NULL)
     {
@@ -942,27 +950,28 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   if ((exif_profile != (StringInfo *) NULL) ||
       (xmp_profile != (StringInfo *) NULL))
     {
-      /*
-        Add metadata boxes.
-      */
       (void) JxlEncoderUseBoxes(jxl_info);
-      if (exif_profile != (StringInfo *) NULL)
+      if ((exif_profile != (StringInfo *) NULL) &&
+          (GetStringInfoLength(exif_profile) > 6))
         {
           /*
-            Prepend a 2-byte header.
+            Add Exif profile.
           */
-          StringInfo *profile = AcquireStringInfo(2);
-          ConcatenateStringInfo(profile,exif_profile);
-          (void) DestroyStringInfo(SplitStringInfo(profile,
-            strlen(ExifNamespace)));
-          (void) memset(GetStringInfoDatum(profile),0,2);
+          StringInfo *profile = CloneStringInfo(exif_profile);
+          DestroyStringInfo(SplitStringInfo(profile,2));
+          SetStringInfoLength(profile,GetStringInfoLength(profile));
           (void) JxlEncoderAddBox(jxl_info,"Exif",GetStringInfoDatum(profile),
             GetStringInfoLength(profile),0);
           profile=DestroyStringInfo(profile);
         }
       if (xmp_profile != (StringInfo *) NULL)
-        (void) JxlEncoderAddBox(jxl_info,"xml ",GetStringInfoDatum(xmp_profile),
-          GetStringInfoLength(xmp_profile),0);
+        {
+          /*
+            Add Exif profile.
+          */
+          (void) JxlEncoderAddBox(jxl_info,"xml ",GetStringInfoDatum(
+            xmp_profile),GetStringInfoLength(xmp_profile),0);
+        }
       (void) JxlEncoderCloseBoxes(jxl_info);
     }
   jxl_status=JXLWriteMetadata(image,jxl_info);

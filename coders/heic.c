@@ -215,11 +215,23 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
   exif_profile=AcquireStringInfo(length);
   error=heif_image_handle_get_metadata(image_handle,id,
     GetStringInfoDatum(exif_profile));
-  if ((IsHEIFSuccess(image,&error,exception) != MagickFalse) &&
-      (length > 8))
+  if ((IsHEIFSuccess(image,&error,exception) != MagickFalse) && (length > 4))
     {
-      (void) DestroyStringInfo(SplitStringInfo(exif_profile,8));
-      (void) SetImageProfile(image,"exif",exif_profile,exception);
+      /*
+        Extract Exif profile.
+      */
+      StringInfo *snippet = SplitStringInfo(exif_profile,4);
+      unsigned int offset = 0;
+      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+0)) << 24;
+      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+1)) << 16;
+      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+2)) << 8;
+      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+3)) << 0;
+      snippet=DestroyStringInfo(snippet);
+      if (offset < GetStringInfoLength(exif_profile))
+        {
+          (void) DestroyStringInfo(SplitStringInfo(exif_profile,offset));
+          (void) SetImageProfile(image,"exif",exif_profile,exception);
+        }
     }
   exif_profile=DestroyStringInfo(exif_profile);
   return(MagickTrue);
@@ -845,7 +857,7 @@ static void WriteProfile(struct heif_context *context,Image *image,
     length=GetStringInfoLength(profile);
     if (LocaleCompare(name,"EXIF") == 0)
       {
-        StringInfo *exif_profile = AcquireStringInfo(4);
+        StringInfo *exif_profile = StringToStringInfo("\0\0\0\6Exif\0\0");
         ConcatenateStringInfo(exif_profile,profile);
         length=GetStringInfoLength(exif_profile);
         if (length > 65533L)
