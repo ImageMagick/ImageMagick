@@ -202,6 +202,7 @@ static MagickBooleanType IsPCX(const unsigned char *magick,const size_t length)
 */
 static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define MaxNumberScenes  1024
 #define ThrowPCXException(severity,tag) \
 { \
   if (scanline != (unsigned char *) NULL) \
@@ -295,11 +296,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       magic=ReadBlobLSBLong(image);
       if (magic != 987654321)
         ThrowPCXException(CorruptImageError,"ImproperImageHeader");
-      page_table=(MagickOffsetType *) AcquireQuantumMemory(1024UL,
+      page_table=(MagickOffsetType *) AcquireQuantumMemory(MaxNumberScenes,
         sizeof(*page_table));
       if (page_table == (MagickOffsetType *) NULL)
         ThrowPCXException(ResourceLimitError,"MemoryAllocationFailed");
-      for (id=0; id < 1024; id++)
+      for (id=0; id < MaxNumberScenes; id++)
       {
         page_table[id]=(MagickOffsetType) ReadBlobLSBLong(image);
         if (page_table[id] == 0)
@@ -313,7 +314,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowPCXException(CorruptImageError,"ImproperImageHeader");
     }
   count=ReadBlob(image,1,&pcx_info.identifier);
-  for (id=1; id < 1024; id++)
+  for (id=1; id < MaxNumberScenes; id++)
   {
     int
       bits_per_pixel;
@@ -915,11 +916,11 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         Write the DCX page table.
       */
       (void) WriteBlobLSBLong(image,0x3ADE68B1L);
-      page_table=(MagickOffsetType *) AcquireQuantumMemory(1024UL,
+      page_table=(MagickOffsetType *) AcquireQuantumMemory(MaxNumberScenes,
         sizeof(*page_table));
       if (page_table == (MagickOffsetType *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-      for (scene=0; scene < 1024; scene++)
+      for (scene=0; scene < MaxNumberScenes; scene++)
         (void) WriteBlobLSBLong(image,0x00000000L);
     }
   scene=0;

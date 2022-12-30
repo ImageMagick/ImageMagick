@@ -174,14 +174,10 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->interlace=NoInterlace;
   image->ticks_per_second=UndefinedTicksPerSecond;
   image->compose=OverCompositeOp;
-  (void) QueryColorCompliance(MatteColor,AllCompliance,&image->matte_color,
-    exception);
-  (void) QueryColorCompliance(BackgroundColor,AllCompliance,
-    &image->background_color,exception);
-  (void) QueryColorCompliance(BorderColor,AllCompliance,&image->border_color,
-    exception);
-  (void) QueryColorCompliance(TransparentColor,AllCompliance,
-    &image->transparent_color,exception);
+  GetPixelInfoRGBA(BackgroundColorRGBA,&image->background_color);
+  GetPixelInfoRGBA(BorderColorRGBA,&image->border_color);
+  GetPixelInfoRGBA(MatteColorRGBA,&image->matte_color);
+  GetPixelInfoRGBA(TransparentColorRGBA,&image->transparent_color);
   GetTimerInfo(&image->timer);
   image->cache=AcquirePixelCache(0);
   image->channel_mask=DefaultChannels;
@@ -1347,9 +1343,6 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   char
     *synchronize;
 
-  ExceptionInfo
-    *exception;
-
   /*
     File and image dimension members.
   */
@@ -1369,16 +1362,10 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
       image_info->synchronize=IsStringTrue(synchronize);
       synchronize=DestroyString(synchronize);
     }
-  exception=AcquireExceptionInfo();
-  (void) QueryColorCompliance(BackgroundColor,AllCompliance,
-    &image_info->background_color,exception);
-  (void) QueryColorCompliance(BorderColor,AllCompliance,
-    &image_info->border_color,exception);
-  (void) QueryColorCompliance(MatteColor,AllCompliance,&image_info->matte_color,
-    exception);
-  (void) QueryColorCompliance(TransparentColor,AllCompliance,
-    &image_info->transparent_color,exception);
-  exception=DestroyExceptionInfo(exception);
+  GetPixelInfoRGBA(BackgroundColorRGBA,&image_info->background_color);
+  GetPixelInfoRGBA(BorderColorRGBA,&image_info->border_color);
+  GetPixelInfoRGBA(MatteColorRGBA,&image_info->matte_color);
+  GetPixelInfoRGBA(TransparentColorRGBA,&image_info->transparent_color);
   image_info->debug=(GetLogEventMask() & ImageEvent) != 0 ? MagickTrue :
     MagickFalse;
   image_info->signature=MagickCoreSignature;

@@ -798,8 +798,8 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
         rotated_image->colors = image->colors;
         DestroyBlob(rotated_image);
         rotated_image->blob=ReferenceBlob(image->blob);
-        AppendImageToList(&image,rotated_image);
-        DeleteImageFromList(&image);
+        ReplaceImageInList(&image,rotated_image);
+        image=rotated_image;
       }
     /*
       Proceed to next image.

@@ -2281,22 +2281,20 @@ static MagickStatusType ParseCSSColor(const char *magick_restrict color,
 MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   const ComplianceType compliance,PixelInfo *color,ExceptionInfo *exception)
 {
-  GeometryInfo
-    geometry_info;
+  const ColorInfo
+    *p;
 
   double
     scale;
 
+  GeometryInfo
+    geometry_info;
+
   MagickStatusType
     flags;
 
-  const ColorInfo
-    *p;
-
   ssize_t
-    i;
-
-  ssize_t
+    i,
     type;
 
   /*
@@ -2322,7 +2320,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
         c;
 
       PixelPacket
-        pixel;
+        pixel = { 0 };
 
       QuantumAny
         range;
@@ -2334,7 +2332,6 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       /*
         Parse hex color.
       */
-      (void) memset(&pixel,0,sizeof(pixel));
       name++;
       for (n=0; isxdigit((int) ((unsigned char) name[n])) != 0; n++) ;
       if ((n == 3) || (n == 6) || (n == 9) || (n == 12) || (n == 24) ||

@@ -22,21 +22,27 @@
 extern "C" {
 #endif
 
+#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
+#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
+
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum-private.h"
 
 #define BackgroundColor  "#ffffff"  /* white */
+#define BackgroundColorRGBA  QuantumRange,QuantumRange,QuantumRange,OpaqueAlpha
 #define BorderColor  "#dfdfdf"  /* gray */
+#define BorderColorRGBA  ScaleShortToQuantum(0xdfdf),\
+  ScaleShortToQuantum(0xdfdf),ScaleShortToQuantum(0xdfdf),OpaqueAlpha
 #define DefaultResolution  72.0
 #define DefaultTileFrame  "15x15+3+3"
 #define DefaultTileGeometry  "120x120+4+3>"
 #define DefaultTileLabel  "%f\n%G\n%b"
 #define ForegroundColor  "#000"  /* black */
+#define ForegroundColorRGBA  0,0,0,OpaqueAlpha
 #define LoadImagesTag  "Load/Images"
 #define LoadImageTag  "Load/Image"
 #define Magick2PI    6.28318530717958647692528676655900576839433879875020
 #define MagickAbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
-#define MagickMax(x,y)  (((x) > (y)) ? (x) : (y))
-#define MagickMin(x,y)  (((x) < (y)) ? (x) : (y))
 #define MagickPHI    1.61803398874989484820458683436563811772030917980576
 #define MagickPI2    1.57079632679489661923132169163975144209858469968755
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
@@ -44,11 +50,14 @@ extern "C" {
 #define MagickSQ2    1.41421356237309504880168872420969807856967187537695
 #define MagickSQ2PI  2.50662827463100024161235523934010416269302368164062
 #define MatteColor  "#bdbdbd"  /* gray */
+#define MatteColorRGBA  ScaleShortToQuantum(0xbdbd),\
+  ScaleShortToQuantum(0xbdbd),ScaleShortToQuantum(0xbdbd),OpaqueAlpha
 #define PSDensityGeometry  "72.0x72.0"
 #define PSPageGeometry  "612x792"
 #define SaveImagesTag  "Save/Images"
 #define SaveImageTag  "Save/Image"
 #define TransparentColor  "#00000000"  /* transparent black */
+#define TransparentColorRGBA  0,0,0,TransparentAlpha
 #define UndefinedCompressionQuality  0UL
 #define UndefinedTicksPerSecond  100L
 
