@@ -857,7 +857,7 @@ static void WriteProfile(struct heif_context *context,Image *image,
     length=GetStringInfoLength(profile);
     if (LocaleCompare(name,"EXIF") == 0)
       {
-        StringInfo *exif_profile = StringToStringInfo("\0\0\0\6Exif\0\0");
+        StringInfo *exif_profile = StringToStringInfo("\0\0\0\0");
         ConcatenateStringInfo(exif_profile,profile);
         length=GetStringInfoLength(exif_profile);
         if (length > 65533L)
