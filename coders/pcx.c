@@ -235,18 +235,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   PCXInfo
     pcx_info;
 
-  ssize_t
-    x;
-
   Quantum
     *q;
-
-  ssize_t
-    i;
-
-  unsigned char
-    *p,
-    *r;
 
   size_t
     one,
@@ -254,12 +244,16 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
+    i,
+    x,
     y;
 
   unsigned char
+    *p,
     packet,
     pcx_colormap[768],
     *pixels,
+    *r,
     *scanline;
 
   /*
@@ -809,11 +803,9 @@ static MagickBooleanType PCXWritePixels(PCXInfo *pcx_info,
     *q;
 
   ssize_t
+    count,
     i,
     x;
-
-  ssize_t
-    count;
 
   unsigned char
     packet,
