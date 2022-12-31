@@ -504,9 +504,9 @@ loop_exit:
   switch( token_info->status ) {
     case TokenStatusOK:
     case TokenStatusEOF:
-      if (cli_wand->image_list_stack != (Stack *) NULL)
+      if (cli_wand->image_list_stack != (CLIStack *) NULL)
         CLIWandException(OptionError,"UnbalancedParenthesis", "(eof)");
-      else if (cli_wand->image_info_stack != (Stack *) NULL)
+      else if (cli_wand->image_info_stack != (CLIStack *) NULL)
         CLIWandException(OptionError,"UnbalancedBraces", "(eof)");
       break;
     case TokenStatusBadQuotes:
@@ -732,9 +732,9 @@ RestoreMSCWarning
   cli_wand->line=i;
 
   /* check that stacks are empty - or cause exception */
-  if (cli_wand->image_list_stack != (Stack *) NULL)
+  if (cli_wand->image_list_stack != (CLIStack *) NULL)
     CLIWandException(OptionError,"UnbalancedParenthesis", "(end of cli)");
-  else if (cli_wand->image_info_stack != (Stack *) NULL)
+  else if (cli_wand->image_info_stack != (CLIStack *) NULL)
     CLIWandException(OptionError,"UnbalancedBraces", "(end of cli)");
   if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
     return(argc);
@@ -1037,11 +1037,11 @@ Magick_Command_Cleanup:
 
   /* recover original image_info and clean up stacks
      FUTURE: "-reset stacks" option  */
-  while ((cli_wand->image_list_stack != (Stack *) NULL) &&
-         (cli_wand->image_list_stack->next != (Stack *) NULL))
+  while ((cli_wand->image_list_stack != (CLIStack *) NULL) &&
+         (cli_wand->image_list_stack->next != (CLIStack *) NULL))
     CLIOption(cli_wand,")");
-  while ((cli_wand->image_info_stack != (Stack *) NULL) &&
-         (cli_wand->image_info_stack->next != (Stack *) NULL))
+  while ((cli_wand->image_info_stack != (CLIStack *) NULL) &&
+         (cli_wand->image_info_stack->next != (CLIStack *) NULL))
     CLIOption(cli_wand,"}");
 
   /* assert we have recovered the original structures */

@@ -4967,7 +4967,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
     */
     if (LocaleCompare("(",option) == 0) {
       /* stack 'push' images */
-      Stack
+      CLIStack
         *node;
 
       size_t
@@ -4975,12 +4975,12 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
       size=0;
       node=cli_wand->image_list_stack;
-      for ( ; node != (Stack *) NULL; node=node->next)
+      for ( ; node != (CLIStack *) NULL; node=node->next)
         size++;
       if ( size >= MAX_STACK_DEPTH )
         CLIWandExceptionBreak(OptionError,"ParenthesisNestedTooDeeply",option);
-      node=(Stack *) AcquireMagickMemory(sizeof(*node));
-      if (node == (Stack *) NULL)
+      node=(CLIStack *) AcquireMagickMemory(sizeof(*node));
+      if (node == (CLIStack *) NULL)
         CLIWandExceptionBreak(ResourceLimitFatalError,
             "MemoryAllocationFailed",option);
       node->data = (void *)cli_wand->wand.images;
@@ -4998,7 +4998,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
     }
     if (LocaleCompare("{",option) == 0) {
       /* stack 'push' of image_info settings */
-      Stack
+      CLIStack
         *node;
 
       size_t
@@ -5006,12 +5006,12 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
 
       size=0;
       node=cli_wand->image_info_stack;
-      for ( ; node != (Stack *) NULL; node=node->next)
+      for ( ; node != (CLIStack *) NULL; node=node->next)
         size++;
       if ( size >= MAX_STACK_DEPTH )
         CLIWandExceptionBreak(OptionError,"CurlyBracesNestedTooDeeply",option);
-      node=(Stack *) AcquireMagickMemory(sizeof(*node));
-      if (node == (Stack *) NULL)
+      node=(CLIStack *) AcquireMagickMemory(sizeof(*node));
+      if (node == (CLIStack *) NULL)
         CLIWandExceptionBreak(ResourceLimitFatalError,
             "MemoryAllocationFailed",option);
 
@@ -5024,7 +5024,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         CLIWandException(ResourceLimitFatalError,"MemoryAllocationFailed",
             option);
         cli_wand->wand.image_info = (ImageInfo *)node->data;
-        node = (Stack *)RelinquishMagickMemory(node);
+        node = (CLIStack *)RelinquishMagickMemory(node);
         break;
       }
 
@@ -5032,21 +5032,21 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
     }
     if (LocaleCompare(")",option) == 0) {
       /* pop images from stack */
-      Stack
+      CLIStack
         *node;
 
-      node = (Stack *)cli_wand->image_list_stack;
-      if ( node == (Stack *) NULL)
+      node = (CLIStack *)cli_wand->image_list_stack;
+      if ( node == (CLIStack *) NULL)
         CLIWandExceptionBreak(OptionError,"UnbalancedParenthesis",option);
       cli_wand->image_list_stack = node->next;
 
       AppendImageToList((Image **)&node->data,cli_wand->wand.images);
       cli_wand->wand.images= (Image *)node->data;
-      node = (Stack *)RelinquishMagickMemory(node);
+      node = (CLIStack *)RelinquishMagickMemory(node);
 
       /* handle respect-parenthesis - of the previous 'pushed' settings */
       node = cli_wand->image_info_stack;
-      if ( node != (Stack *) NULL)
+      if ( node != (CLIStack *) NULL)
         {
           if (IsStringTrue(GetImageOption(
                 cli_wand->wand.image_info,"respect-parenthesis")) != MagickFalse)
@@ -5060,17 +5060,17 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
     }
     if (LocaleCompare("}",option) == 0) {
       /* pop image_info settings from stack */
-      Stack
+      CLIStack
         *node;
 
-      node = (Stack *)cli_wand->image_info_stack;
-      if ( node == (Stack *) NULL)
+      node = (CLIStack *)cli_wand->image_info_stack;
+      if ( node == (CLIStack *) NULL)
         CLIWandExceptionBreak(OptionError,"UnbalancedCurlyBraces",option);
       cli_wand->image_info_stack = node->next;
 
       (void) DestroyImageInfo(cli_wand->wand.image_info);
       cli_wand->wand.image_info = (ImageInfo *)node->data;
-      node = (Stack *)RelinquishMagickMemory(node);
+      node = (CLIStack *)RelinquishMagickMemory(node);
 
       GetDrawInfo(cli_wand->wand.image_info, cli_wand->draw_info);
       cli_wand->quantize_info=DestroyQuantizeInfo(cli_wand->quantize_info);
@@ -5176,7 +5176,7 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
           arg1=AcquireString("-1");
         if (IsSceneGeometry(arg1,MagickFalse) == MagickFalse)
           CLIWandExceptionBreak(OptionError,"InvalidArgument",option);
-        if ( cli_wand->image_list_stack == (Stack *) NULL)
+        if ( cli_wand->image_list_stack == (CLIStack *) NULL)
           CLIWandExceptionBreak(OptionError,"UnableToCloneImage",option);
         new_images = (Image *)cli_wand->image_list_stack->data;
         if (new_images == (Image *) NULL)

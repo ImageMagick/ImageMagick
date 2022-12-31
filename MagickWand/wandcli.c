@@ -98,8 +98,8 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
   cli_wand->process_flags=MagickCommandOptionFlags;  /* assume "magick" CLI */
   cli_wand->command=(const OptionInfo *) NULL;     /* no option at this time */
-  cli_wand->image_list_stack=(Stack *) NULL;
-  cli_wand->image_info_stack=(Stack *) NULL;
+  cli_wand->image_list_stack=(CLIStack *) NULL;
+  cli_wand->image_info_stack=(CLIStack *) NULL;
 
   /* default exception location...
      EG: sprintf(location, filename, line, column);
@@ -138,7 +138,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
 */
 WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
 {
-  Stack
+  CLIStack
     *node;
 
   assert(cli_wand != (MagickCLI *) NULL);
@@ -152,14 +152,14 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
     cli_wand->draw_info=DestroyDrawInfo(cli_wand->draw_info);
   if (cli_wand->quantize_info != (QuantizeInfo *) NULL )
     cli_wand->quantize_info=DestroyQuantizeInfo(cli_wand->quantize_info);
-  while(cli_wand->image_list_stack != (Stack *) NULL)
+  while(cli_wand->image_list_stack != (CLIStack *) NULL)
     {
       node=cli_wand->image_list_stack;
       cli_wand->image_list_stack=node->next;
       (void) DestroyImageList((Image *)node->data);
       (void) RelinquishMagickMemory(node);
     }
-  while(cli_wand->image_info_stack != (Stack *) NULL)
+  while(cli_wand->image_info_stack != (CLIStack *) NULL)
     {
       node=cli_wand->image_info_stack;
       cli_wand->image_info_stack=node->next;

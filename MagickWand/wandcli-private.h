@@ -1,5 +1,5 @@
 /*
-  Copyright @ 2011 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.  You may
@@ -87,11 +87,11 @@ typedef enum
    user defined ImageInfo settings, and Image lists.
    See '(' ')' and '-clone' CLI options.
 */
-typedef struct _Stack
+typedef struct _CLIStack
 {
-  struct _Stack  *next;
+  struct _CLIStack  *next;
   void           *data;
-} Stack;
+} CLIStack;
 
 /* Note this defines an extension to the normal MagickWand
    Which adds extra elements specific to the Shell API interface
@@ -115,7 +115,7 @@ struct _MagickCLI       /* CLI interface version of MagickWand */
   const OptionInfo
     *command;           /* The option entry that is being processed */
 
-  Stack
+  CLIStack
     *image_list_stack,  /* Stacks of Image Lists and Image Info settings */
     *image_info_stack;
 
