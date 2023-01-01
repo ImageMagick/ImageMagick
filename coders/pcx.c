@@ -899,6 +899,9 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  number_scenes=GetImageListLength(image);
+  if (number_scenes > MaxNumberScenes)
+    ThrowWriterException(ResourceLimitError,"ListLengthExceedsLimit");
   page_table=(MagickOffsetType *) NULL;
   if ((LocaleCompare(image_info->magick,"DCX") == 0) ||
       ((GetNextImageInList(image) != (Image *) NULL) &&
@@ -908,7 +911,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         Write the DCX page table.
       */
       (void) WriteBlobLSBLong(image,0x3ADE68B1L);
-      page_table=(MagickOffsetType *) AcquireQuantumMemory(MaxNumberScenes,
+      page_table=(MagickOffsetType *) AcquireQuantumMemory(MaxNumberScenes+1,
         sizeof(*page_table));
       if (page_table == (MagickOffsetType *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
@@ -916,7 +919,6 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobLSBLong(image,0x00000000L);
     }
   scene=0;
-  number_scenes=GetImageListLength(image);
   do
   {
     if (page_table != (MagickOffsetType *) NULL)
@@ -1166,8 +1168,6 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     pixel_info=RelinquishVirtualMemory(pixel_info);
     pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
     if (page_table == (MagickOffsetType *) NULL)
-      break;
-    if (scene >= (MaxNumberScenes-1))
       break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
