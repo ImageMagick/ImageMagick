@@ -435,7 +435,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case JXL_DEC_COLOR_ENCODING:
       {
         JxlColorEncoding
-          color_encoding = { 0 };
+          color_encoding = { JXL_COLOR_SPACE_RGB };
 
         size_t
           profile_size;
