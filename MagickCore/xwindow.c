@@ -2141,13 +2141,6 @@ static void XDitherImage(Image *image,XImage *ximage,ExceptionInfo *exception)
   CacheView
     *image_view;
 
-  int
-    value,
-    y;
-
-  PixelInfo
-    color;
-
   char
     *q;
 
@@ -2157,7 +2150,12 @@ static void XDitherImage(Image *image,XImage *ximage,ExceptionInfo *exception)
   int
     i,
     j,
-    x;
+    value,
+    x,
+    y;
+
+  PixelInfo
+    color;
 
   unsigned int
     scanline_pad;
@@ -5168,6 +5166,8 @@ MagickPrivate XWindows *XInitializeWindows(Display *display,
         "...");
       return((XWindows *) NULL);
     }
+  (void) memset((void *) windows->pixel_info,0,sizeof(XPixelInfo));
+  (void) memset((void *) windows->icon_pixel,0,sizeof(XPixelInfo));
   /*
     Initialize windows structure.
   */
