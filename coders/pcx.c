@@ -1167,7 +1167,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     pcx_colormap=(unsigned char *) RelinquishMagickMemory(pcx_colormap);
     if (page_table == (MagickOffsetType *) NULL)
       break;
-    if (scene >= 1023)
+    if (scene >= (MaxNumberScenes-1))
       break;
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
