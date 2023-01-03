@@ -564,44 +564,25 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
         jxl_status=JxlDecoderGetBoxSizeRaw(jxl_info,&size);
-        if ((jxl_status != JXL_DEC_SUCCESS) || (size < 4))
+        if ((jxl_status != JXL_DEC_SUCCESS) || (size <= 8))
           break;
         if (LocaleNCompare(type,"Exif",sizeof(type)) == 0)
           {
-            unsigned char
-              *p;
-
             /*
               Read Exif profile.
             */
-            exif_profile=AcquireStringInfo((size_t) size);
-            p=GetStringInfoDatum(exif_profile);
-            jxl_status=JxlDecoderSetBoxBuffer(jxl_info,p,size);
-            if (size > 4)
-              {
-                /*
-                  Extract Exif profile.
-                */
-                StringInfo *snippet = SplitStringInfo(exif_profile,4);
-                unsigned int offset = 0;
-                offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+0)) << 24;
-                offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+1)) << 16;
-                offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+2)) << 8;
-                offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+3)) << 0;
-                snippet=DestroyStringInfo(snippet);
-                if (offset < GetStringInfoLength(exif_profile))
-                  (void) DestroyStringInfo(SplitStringInfo(exif_profile,
-                    offset));
-              }
+            exif_profile=AcquireStringInfo((size_t) size-8);
+            jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
+              GetStringInfoDatum(exif_profile),size-8);
           }
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
           {
             /*
               Read XMP profile.
             */
-            xmp_profile=AcquireStringInfo((size_t) size);
+            xmp_profile=AcquireStringInfo((size_t) size-8);
             jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
-              GetStringInfoDatum(xmp_profile),size);
+              GetStringInfoDatum(xmp_profile),size-8);
           }
         if (jxl_status == JXL_DEC_SUCCESS)
           jxl_status=JXL_DEC_BOX;
@@ -621,17 +602,22 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   (void) JxlDecoderReleaseBoxBuffer(jxl_info);
   if ((exif_profile != (StringInfo *) NULL) &&
-      (GetStringInfoLength(exif_profile) > 6))
+      (GetStringInfoLength(exif_profile) > 4))
     {
       /*
-        Cache Exif profile.
+        Extract and cache Exif profile.
       */
-      StringInfo *profile = StringToStringInfo("Exif\0\0");
-      DestroyStringInfo(SplitStringInfo(exif_profile,2));
-      ConcatenateStringInfo(profile,exif_profile);
-      SetStringInfoLength(profile,GetStringInfoLength(profile)-4);
-      (void) SetImageProfile(image,"exif",profile,exception);
-      profile=DestroyStringInfo(profile);
+      StringInfo *snippet = SplitStringInfo(exif_profile,4);
+      unsigned int offset = 0;
+      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+0)) << 24;
+      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+1)) << 16;
+      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+2)) << 8;
+      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+3)) << 0;
+      snippet=DestroyStringInfo(snippet);
+      if (offset < GetStringInfoLength(exif_profile))
+        (void) DestroyStringInfo(SplitStringInfo(exif_profile,
+          offset));
+      (void) SetImageProfile(image,"exif",exif_profile,exception);
       exif_profile=DestroyStringInfo(exif_profile);
     }
   if (xmp_profile != (StringInfo *) NULL)
