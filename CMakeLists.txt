@@ -120,6 +120,7 @@ set(NAMESPACE_PREFIX "" CACHE STRING "Prefix MagickCore API methods")
 set(NAMESPACE_PREFIX_TAG ${NAMESPACE_PREFIX})
 set(PixelCacheThreshold "" CACHE STRING "Set pixel cache threshhold in MB (default available memory)")
 option(WITH_DMALLOC "Use dmalloc for memory profiling" FALSE)
+option(ZERO_CONFIGURATION_SUPPORT "Build self-contained, embeddable, zero-configuration ImageMagick" FALSE)
 
 # Fetch some needed values from version.sh and fill the correspondent variables
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/configure CONTENT_CONFIGURE)
@@ -220,9 +221,6 @@ set(X11_CONFIGURE_PATH "")
 
 # TODO should this be an option ??
 set(X_DISPLAY_MISSING 1)
-
-# TODO Should we try this ???? also option??
-set(ZERO_CONFIGURATION_SUPPORT 0)
 
 # TODO does this suffice?
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR MINGW)
@@ -483,6 +481,19 @@ ${CONTENT_CONFIG_H}
 
 # Create the magick-baseconfig.h file
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/MagickCore/magick-baseconfig.h "${CONTENT_CONFIG_H}")
+
+if(ZERO_CONFIGURATION_SUPPORT)
+  file(READ ${CMAKE_CURRENT_SOURCE_DIR}/config/thresholds.xml THRESHOLD_XML)
+  # Convert xml file to header
+  string(REPLACE "\"" "\\\"" THRESHOLD_XML "${THRESHOLD_XML}")
+  string(REGEX REPLACE "\n" "\"\n    \"" THRESHOLD_XML "${THRESHOLD_XML}")
+  set(THRESHOLD_H "static const char *const\n  BuiltinMap=\n    \"${THRESHOLD_XML}")
+  string(LENGTH ${THRESHOLD_H} THRESHOLD_H_LEN)
+  math(EXPR THRESHOLD_H_LEN "${THRESHOLD_H_LEN} - 6")
+  string(SUBSTRING ${THRESHOLD_H} 0 ${THRESHOLD_H_LEN} THRESHOLD_H)
+  set(THRESHOLD_H "${THRESHOLD_H};\n")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/MagickCore/threshold-map.h "${THRESHOLD_H}")
+endif()
 
 # Set the binaries name
 set(MAGICK_BINARY_SUFFIX "${MAGICK_VERSION_MAJOR}.${MagickQuantumDepth}${HDRI_SUFFIX}")
