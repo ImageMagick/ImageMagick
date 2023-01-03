@@ -856,21 +856,8 @@ static void WriteProfile(struct heif_context *context,Image *image,
     profile=GetImageProfile(image,name);
     length=GetStringInfoLength(profile);
     if (LocaleCompare(name,"EXIF") == 0)
-      {
-        StringInfo *exif_profile = StringToStringInfo("\0\0\0\0");
-        ConcatenateStringInfo(exif_profile,profile);
-        length=GetStringInfoLength(exif_profile);
-        if (length > 65533L)
-          {
-            (void) ThrowMagickException(exception,GetMagickModule(),
-              CoderWarning,"ExifProfileSizeExceedsLimit","`%s'",
-              image->filename);
-            length=65533L;
-          }
-        (void) heif_context_add_exif_metadata(context,image_handle,
-          (void*) GetStringInfoDatum(exif_profile),(int) length);
-        exif_profile=DestroyStringInfo(exif_profile);
-      }
+      (void) heif_context_add_exif_metadata(context,image_handle,
+        (void*) GetStringInfoDatum(profile),(int) length);
     if (LocaleCompare(name,"XMP") == 0)
       for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65533L)
       {
