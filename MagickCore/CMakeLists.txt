@@ -115,6 +115,7 @@ set(MAGICKCORE_SRC
   layer.h
   linked-list.c
   linked-list.h
+  linked-list-private.h
   list.c
   list.h
   locale.c
@@ -211,6 +212,7 @@ set(MAGICKCORE_SRC
   static.h
   statistic.c
   statistic.h
+  statistic-private.h
   stream.c
   stream.h
   stream-private.h
@@ -379,6 +381,8 @@ set(MAGICKCORE_CODERS_SRCS
   ${CODERS_PATH}/ashlar.h
   ${CODERS_PATH}/avs.c
   ${CODERS_PATH}/avs.h
+  ${CODERS_PATH}/bayer.c
+  ${CODERS_PATH}/bayer.h
   ${CODERS_PATH}/bgr.c
   ${CODERS_PATH}/bgr.h
   ${CODERS_PATH}/bmp.c
@@ -545,7 +549,6 @@ set(MAGICKCORE_CODERS_SRCS
   ${CODERS_PATH}/ps.c
   ${CODERS_PATH}/psd.c
   ${CODERS_PATH}/psd.h
-  ${CODERS_PATH}/psd-private.h
   ${CODERS_PATH}/psd-private.h
   ${CODERS_PATH}/ps.h
   ${CODERS_PATH}/pwp.c
