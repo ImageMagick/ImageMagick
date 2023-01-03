@@ -995,9 +995,9 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
     &geometry.width,&geometry.height);
   if ((geometry.width % 2) != 0)
-    geometry.width--;
+    geometry.width=MagickMax(geometry.width-1,1);
   if ((geometry.height % 2) != 0)
-    geometry.height--;
+    geometry.height=MagickMax(geometry.height-1,1);
   tile_image=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,
     exception);
   if (tile_image == (Image *) NULL)
