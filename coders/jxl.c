@@ -955,9 +955,12 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
           (GetStringInfoLength(exif_profile) > 6))
         {
           /*
-            Add Exif profile. Assumes "Exif\0\0" JPEG APP1 prefix was added by SetImageProfile().
+            Add Exif profile.
+            Assume "Exif\0\0" JPEG APP1 prefix was added by SetImageProfile().
           */
-          StringInfo *profile = StringToStringInfo("\0\0\0\6");
+          const unsigned char
+            offset[] = "\0\0\0\6";
+          StringInfo *profile = BlobToStringInfo(offset,4);
           ConcatenateStringInfo(profile,exif_profile);
           (void) JxlEncoderAddBox(jxl_info,"Exif",GetStringInfoDatum(profile),
             GetStringInfoLength(profile),0);
