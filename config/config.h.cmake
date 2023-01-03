@@ -1023,7 +1023,7 @@
 #cmakedefine X_DISPLAY_MISSING @X_DISPLAY_MISSING@
 
 /* Build self-contained, embeddable, zero-configuration ImageMagick */
-#cmakedefine ZERO_CONFIGURATION_SUPPORT
+#cmakedefine01 ZERO_CONFIGURATION_SUPPORT
 
 /* Define if you have ZLIB library */
 #cmakedefine ZLIB_DELEGATE
