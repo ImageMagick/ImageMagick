@@ -508,8 +508,15 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
         n=0;
+        channels[0]=(double) x;
+        channels[1]=(double) y;
         for (p=text; (*p != ')') && (*p != '\0') && (n < MaxPixelChannels); )
         {
+          if (LocaleNCompare(p,"sRGB(",5) == 0)
+            {
+              p+=5;
+              n=2;
+            }
           (void) GetNextToken(p,&p,MagickPathExtent,token);
           if (isdigit((int) ((unsigned char) *token)) != 0)
             {
