@@ -121,7 +121,7 @@ static const PICTCode
   codes[] =
   {
     /* 0x00 */ { "NOP", 0, "nop" },
-    /* 0x01 */ { "Clip", 0, "clip" },
+    /* 0x01 */ { "ClipRgn", 0, "clip" },
     /* 0x02 */ { "BkPat", 8, "background pattern" },
     /* 0x03 */ { "TxFont", 2, "text font (word)" },
     /* 0x04 */ { "TxFace", 1, "text face (byte)" },
@@ -1659,12 +1659,15 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
 #define PictPICTOp  0x98
 #define PictVersion  0x11
 
+  const Quantum
+    *p;
+
   const StringInfo
     *profile;
 
   double
-    x_resolution,
-    y_resolution;
+    x_resolution = DefaultResolution,
+    y_resolution = DefaultResolution;
 
   MagickBooleanType
     status;
@@ -1683,13 +1686,6 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     size_rectangle,
     source_rectangle;
 
-  const Quantum
-    *p;
-
-  ssize_t
-    i,
-    x;
-
   size_t
     bytes_per_line,
     count,
@@ -1697,6 +1693,8 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     storage_class;
 
   ssize_t
+    i,
+    x,
     y;
 
   unsigned char
@@ -1754,8 +1752,6 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   pixmap.table=0;
   pixmap.reserved=0;
   transfer_mode=0;
-  x_resolution=0.0;
-  y_resolution=0.0;
   if ((image->resolution.x > MagickEpsilon) &&
       (image->resolution.y > MagickEpsilon))
     {
