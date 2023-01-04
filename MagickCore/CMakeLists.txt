@@ -652,6 +652,8 @@ if(DJVU_DELEGATE)
 endif()
 if(OPENEXR_DELEGATE)
   list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/exr.c)
+  # OpenEXR should export this dep but it isn't currently so we have to make sure this object uses c++
+  set_source_files_properties(${CODERS_PATH}/exr.c PROPERTIES LANGUAGE CXX)
 endif()
 if(FLIF_DELEGATE)
   list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/flif.c)
