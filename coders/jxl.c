@@ -949,7 +949,10 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
           /*
             Add Exif profile.  Assumes "Exif\0\0" JPEG APP1 prefix.
           */
-          StringInfo *profile = BlobToStringInfo("\0\0\0\6",4);
+          StringInfo
+            *profile;
+
+          profile=BlobToStringInfo("\0\0\0\6",4);
           ConcatenateStringInfo(profile,exif_profile);
           (void) JxlEncoderAddBox(jxl_info,"Exif",GetStringInfoDatum(profile),
             GetStringInfoLength(profile),0);
