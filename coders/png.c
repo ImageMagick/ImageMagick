@@ -119,7 +119,6 @@
 /*
   Features under construction.  Define these to work on them.
 */
-#undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
 #define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
@@ -603,47 +602,8 @@ typedef struct _MngPair
     b;
 } MngPair;
 
-#ifdef MNG_OBJECT_BUFFERS
-typedef struct _MngBuffer
-{
-
-  size_t
-    height,
-    width;
-
-  Image
-    *image;
-
-  png_color
-    plte[256];
-
-  int
-    reference_count;
-
-  unsigned char
-    alpha_sample_depth,
-    compression_method,
-    color_type,
-    concrete,
-    filter_method,
-    frozen,
-    image_type,
-    interlace_method,
-    pixel_sample_depth,
-    plte_length,
-    sample_depth,
-    viewable;
-} MngBuffer;
-#endif
-
 typedef struct _MngInfo
 {
-
-#ifdef MNG_OBJECT_BUFFERS
-  MngBuffer
-    *ob[MNG_MAX_OBJECTS];
-#endif
-
   Image *
     image;
 
@@ -1568,22 +1528,6 @@ static void MngInfoDiscardObject(MngInfo *mng_info,int i)
   if (i && (i < MNG_MAX_OBJECTS) && (mng_info != (MngInfo *) NULL) &&
       mng_info->exists[i] && !mng_info->frozen[i])
     {
-#ifdef MNG_OBJECT_BUFFERS
-      if (mng_info->ob[i] != (MngBuffer *) NULL)
-        {
-          if (mng_info->ob[i]->reference_count > 0)
-            mng_info->ob[i]->reference_count--;
-
-          if (mng_info->ob[i]->reference_count == 0)
-            {
-              if (mng_info->ob[i]->image != (Image *) NULL)
-                mng_info->ob[i]->image=DestroyImage(mng_info->ob[i]->image);
-
-              mng_info->ob[i]=DestroyString(mng_info->ob[i]);
-            }
-        }
-      mng_info->ob[i]=(MngBuffer *) NULL;
-#endif
       mng_info->exists[i]=MagickFalse;
       mng_info->invisible[i]=MagickFalse;
       mng_info->viewable[i]=MagickFalse;
@@ -3960,88 +3904,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     num_text_total += num_text;
   }
 
-#ifdef MNG_OBJECT_BUFFERS
-  /*
-    Store the object if necessary.
-  */
-  if (object_id && !mng_info->frozen[object_id])
-    {
-      if (mng_info->ob[object_id] == (MngBuffer *) NULL)
-        {
-          /*
-            create a new object buffer.
-          */
-          mng_info->ob[object_id]=(MngBuffer *)
-            AcquireMagickMemory(sizeof(MngBuffer));
-
-          if (mng_info->ob[object_id] != (MngBuffer *) NULL)
-            {
-              mng_info->ob[object_id]->image=(Image *) NULL;
-              mng_info->ob[object_id]->reference_count=1;
-            }
-        }
-
-      if ((mng_info->ob[object_id] == (MngBuffer *) NULL) ||
-          mng_info->ob[object_id]->frozen)
-        {
-          if (mng_info->ob[object_id] == (MngBuffer *) NULL)
-             png_error(ping,"Memory allocation failed");
-
-          if (mng_info->ob[object_id]->frozen)
-            png_error(ping,"Cannot overwrite frozen MNG object buffer");
-        }
-
-      else
-        {
-
-          if (mng_info->ob[object_id]->image != (Image *) NULL)
-            mng_info->ob[object_id]->image=DestroyImage
-                (mng_info->ob[object_id]->image);
-
-          mng_info->ob[object_id]->image=CloneImage(image,0,0,MagickTrue,
-            exception);
-
-          if (mng_info->ob[object_id]->image != (Image *) NULL)
-            mng_info->ob[object_id]->image->file=(FILE *) NULL;
-
-          else
-            png_error(ping, "Cloning image for object buffer failed");
-
-          if (ping_width > 250000L || ping_height > 250000L)
-             png_error(ping,"PNG Image dimensions are too large.");
-
-          mng_info->ob[object_id]->width=ping_width;
-          mng_info->ob[object_id]->height=ping_height;
-          mng_info->ob[object_id]->color_type=ping_color_type;
-          mng_info->ob[object_id]->sample_depth=ping_bit_depth;
-          mng_info->ob[object_id]->interlace_method=ping_interlace_method;
-          mng_info->ob[object_id]->compression_method=
-             ping_compression_method;
-          mng_info->ob[object_id]->filter_method=ping_filter_method;
-
-          if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
-            {
-              png_colorp
-                plte = (png_colorp) NULL;
-
-              /*
-                Copy the PLTE to the object buffer.
-              */
-              png_get_PLTE(ping,ping_info,&plte,&number_colors);
-              mng_info->ob[object_id]->plte_length=number_colors;
-
-              for (i=0; i < number_colors; i++)
-              {
-                mng_info->ob[object_id]->plte[i]=plte[i];
-              }
-            }
-
-          else
-              mng_info->ob[object_id]->plte_length=0;
-        }
-    }
-#endif
-
   /* Set image->alpha_trait to MagickTrue if the input colortype supports
   * alpha or if a valid tRNS chunk is present, no matter whether there
   * is actual transparency present.
@@ -5364,9 +5226,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 #endif
 
   volatile unsigned int
-#ifdef MNG_OBJECT_BUFFERS
-    mng_background_object=0,
-#endif
     mng_type=0;   /* 0: PNG or JNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
 
   size_t
@@ -5762,11 +5621,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
                   (((unsigned int) p[4] << 8) | p[5]));
                 mng_background_color.alpha=OpaqueAlpha;
               }
-
-#ifdef MNG_OBJECT_BUFFERS
-            if (length > 8)
-              mng_background_object=(p[7] << 8) | p[8];
-#endif
 #endif
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
@@ -6127,13 +5981,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
           {
             for (i=1; i < MNG_MAX_OBJECTS; i++)
               if (mng_info->exists[i])
-                {
                  mng_info->frozen[i]=MagickTrue;
-#ifdef MNG_OBJECT_BUFFERS
-                 if (mng_info->ob[i] != (MngBuffer *) NULL)
-                    mng_info->ob[i]->frozen=MagickTrue;
-#endif
-                }
 
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
@@ -6350,7 +6198,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 
             else
               magn_last=magn_first;
-#ifndef MNG_OBJECT_BUFFERS
             if (magn_first || magn_last)
               if (mng_info->magn_warning == 0)
                 {
@@ -6361,7 +6208,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 
                    mng_info->magn_warning++;
                 }
-#endif
             if (length > 4)
               magn_methx=p[4];
 
@@ -6439,9 +6285,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 
                    mng_info->magn_warning++;
                 }
-#ifdef MNG_OBJECT_BUFFERS
-          /* Magnify existing objects in the range magn_first to magn_last */
-#endif
             if (magn_first == 0 || magn_last == 0)
               {
                 /* Save the magnification factors for object 0 */
