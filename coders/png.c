@@ -725,23 +725,7 @@ typedef struct _MngWriteInfo
     ticks_per_second;
 
   MagickBooleanType
-    need_blob;
-
-  unsigned int
-    IsPalette,
-    write_mng,
-    write_png_colortype,
-    write_png_depth,
-    write_png_compression_level,
-    write_png_compression_strategy,
-    write_png_compression_filter,
-    write_png8,
-    write_png24,
-    write_png32,
-    write_png48,
-    write_png64;
-
-  MagickBooleanType
+    need_blob,
     ping_exclude_bKGD,
     ping_exclude_cHRM,
     ping_exclude_date,
@@ -760,6 +744,20 @@ typedef struct _MngWriteInfo
     ping_preserve_colormap,
     ping_preserve_iCCP,
     ping_exclude_tIME;
+
+  unsigned int
+    IsPalette,
+    write_mng,
+    write_png_colortype,
+    write_png_depth,
+    write_png_compression_level,
+    write_png_compression_strategy,
+    write_png_compression_filter,
+    write_png8,
+    write_png24,
+    write_png32,
+    write_png48,
+    write_png64;
 } MngWriteInfo;
 #endif /* PNG_LIBPNG_VER > 10011 */
 
