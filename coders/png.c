@@ -115,12 +115,10 @@
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
 #endif
-#if !defined(RGBColorMatchExact)
 #define IsPNGColorEqual(color,target) \
        (((color).red == (target).red) && \
         ((color).green == (target).green) && \
         ((color).blue == (target).blue))
-#endif
 
 /* Table of recognized sRGB ICC profiles */
 struct sRGB_info_struct
