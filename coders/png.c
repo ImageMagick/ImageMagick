@@ -701,12 +701,6 @@ typedef struct _MngWriteInfo
     page;
 
   int
-    adjoin,
-    equal_backgrounds,
-    equal_chrms,
-    equal_gammas,
-    equal_physs,
-    equal_srgbs,
     framing_mode,
     need_fram,
     old_framing_mode;
@@ -716,12 +710,18 @@ typedef struct _MngWriteInfo
     ticks_per_second;
 
   MagickBooleanType
+    adjoin,
     need_blob,
+    equal_backgrounds,
+    equal_chrms,
+    equal_gammas,
  /* we should add a version check for this and no longer support this */
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
     equal_palettes,
 #endif
+    equal_physs,
+    equal_srgbs,
     exclude_bKGD,
     exclude_cHRM,
     exclude_date,
@@ -9629,7 +9629,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   if (mng_info->exclude_pHYs == MagickFalse)
   {
   if ((image->resolution.x != 0) && (image->resolution.y != 0) &&
-      (!mng_info->write_mng || !mng_info->equal_physs))
+      (!mng_info->write_mng || mng_info->equal_physs == MagickFalse))
     {
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -9670,7 +9670,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   if (mng_info->exclude_bKGD == MagickFalse)
   {
-  if ((!mng_info->adjoin || !mng_info->equal_backgrounds))
+  if ((mng_info->adjoin == MagickFalse || mng_info->equal_backgrounds == MagickFalse))
     {
        unsigned int
          mask;
@@ -12711,7 +12711,8 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
         }
     }
 
-  if (image->resolution.x && image->resolution.y && !mng_info->equal_physs)
+  if (image->resolution.x && image->resolution.y &&
+      mng_info->equal_physs == MagickFalse)
     {
       /*
          Write JNG pHYs chunk
@@ -13178,7 +13179,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
       */
       initial_delay=image->delay;
       need_iterations=MagickFalse;
-      mng_info->equal_chrms=image->chromaticity.red_primary.x != 0.0;
+      mng_info->equal_chrms=image->chromaticity.red_primary.x != 0.0 ?
+        MagickTrue : MagickFalse;
       mng_info->equal_physs=MagickTrue,
       mng_info->equal_gammas=MagickTrue;
       mng_info->equal_srgbs=MagickTrue;
@@ -13263,7 +13265,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
                 (next_image->resolution.y != next_image->next->resolution.y))
               mng_info->equal_physs=MagickFalse;
 
-            if (mng_info->equal_chrms)
+            if (mng_info->equal_chrms != MagickFalse)
               {
                 if (next_image->chromaticity.red_primary.x !=
                     next_image->next->chromaticity.red_primary.x ||
@@ -13314,7 +13316,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
                  /*
                    It's probably a GIF with loop; don't run it *too* fast.
                  */
-                 if (mng_info->adjoin)
+                 if (mng_info->adjoin != MagickFalse)
                    {
                      final_delay=10;
                      (void) ThrowMagickException(exception,GetMagickModule(),
@@ -13466,7 +13468,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        To do: check for cHRM+gAMA == sRGB, and write sRGB instead.
      */
      if ((image->colorspace == sRGBColorspace || image->rendering_intent) &&
-          mng_info->equal_srgbs)
+          mng_info->equal_srgbs != MagickFalse)
        {
          /*
            Write MNG sRGB chunk
@@ -13492,7 +13494,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
      else
        {
-         if (image->gamma && mng_info->equal_gammas)
+         if (image->gamma && mng_info->equal_gammas != MagickFalse)
            {
              /*
                 Write MNG gAMA chunk
@@ -13505,7 +13507,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
              (void) WriteBlobMSBULong(image,crc32(0,chunk,8));
              mng_info->have_global_gama=MagickTrue;
            }
-         if (mng_info->equal_chrms)
+         if (mng_info->equal_chrms != MagickFalse)
            {
              PrimaryInfo
                primary;
@@ -13533,7 +13535,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
              mng_info->have_global_chrm=MagickTrue;
            }
        }
-     if (image->resolution.x && image->resolution.y && mng_info->equal_physs)
+     if (image->resolution.x && image->resolution.y &&
+         mng_info->equal_physs == MagickFalse)
        {
          /*
             Write MNG pHYs chunk
@@ -13597,7 +13600,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
          PNGShort(chunk+8,blue);
          (void) WriteBlob(image,10,chunk);
          (void) WriteBlobMSBULong(image,crc32(0,chunk,10));
-         if (mng_info->equal_backgrounds)
+         if (mng_info->equal_backgrounds != MagickFalse)
            {
              (void) WriteBlobMSBULong(image,6L);
              PNGType(chunk,mng_bKGD);
@@ -13651,7 +13654,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
   number_scenes=GetImageListLength(image);
   do
   {
-    if (mng_info->adjoin)
+    if (mng_info->adjoin != MagickFalse)
     {
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
@@ -13742,7 +13745,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
    if ((int) image->dispose >= 3)
      mng_info->framing_mode=3;
 
-   if (mng_info->need_fram && mng_info->adjoin &&
+   if (mng_info->need_fram && mng_info->adjoin != MagickFalse &&
        ((image->delay != mng_info->delay) ||
         (mng_info->framing_mode != mng_info->old_framing_mode)))
      {
@@ -13840,7 +13843,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
     if (status == MagickFalse)
       break;
 
-  } while (mng_info->adjoin);
+  } while (mng_info->adjoin != MagickFalse);
 
   if (write_mng)
     {
