@@ -720,12 +720,6 @@ typedef struct _MngWriteInfo
     need_fram,
     old_framing_mode;
 
-  int
-    new_number_colors;
-
-  ChromaticityInfo
-    global_chrm;
-
   unsigned long
     delay,
     ticks_per_second;
@@ -746,10 +740,6 @@ typedef struct _MngWriteInfo
     write_png32,
     write_png48,
     write_png64;
-
-  png_uint_16
-    magn_first,
-    magn_last;
 
   MagickBooleanType
     ping_exclude_bKGD,
