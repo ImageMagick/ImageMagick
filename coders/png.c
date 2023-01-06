@@ -8375,13 +8375,6 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
 static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   const ImageInfo *IMimage_info,Image *IMimage,ExceptionInfo *exception)
 {
-  char
-    im_vers[32],
-    libpng_runv[32],
-    libpng_vers[32],
-    zlib_runv[32],
-    zlib_vers[32];
-
   Image
     *image;
 
@@ -8524,49 +8517,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image == (Image *) NULL)
     return(MagickFalse);
   image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
-
-  /* Define these outside of the following "if logging()" block so they will
-   * show in debuggers.
-   */
-  *im_vers='\0';
-  (void) ConcatenateMagickString(im_vers,
-         MagickLibVersionText,MagickPathExtent);
-  (void) ConcatenateMagickString(im_vers,
-         MagickLibAddendum,MagickPathExtent);
-
-  *libpng_vers='\0';
-  (void) ConcatenateMagickString(libpng_vers,
-         PNG_LIBPNG_VER_STRING,32);
-  *libpng_runv='\0';
-  (void) ConcatenateMagickString(libpng_runv,
-         png_get_libpng_ver(NULL),32);
-
-  *zlib_vers='\0';
-  (void) ConcatenateMagickString(zlib_vers,
-         ZLIB_VERSION,32);
-  *zlib_runv='\0';
-  (void) ConcatenateMagickString(zlib_runv,
-         zlib_version,32);
-
-  if (logging != MagickFalse)
-    {
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    IM version     = %s", im_vers);
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Libpng version = %s", libpng_vers);
-       if (LocaleCompare(libpng_vers,libpng_runv) != 0)
-       {
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "      running with   %s", libpng_runv);
-       }
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Zlib version   = %s", zlib_vers);
-       if (LocaleCompare(zlib_vers,zlib_runv) != 0)
-       {
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "      running with   %s", zlib_runv);
-       }
-    }
 
   /* Initialize some stuff */
   ping_bit_depth=0,
