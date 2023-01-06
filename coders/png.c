@@ -112,7 +112,6 @@
 
 #if PNG_LIBPNG_VER > 10011
 
-#define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
 #endif
@@ -5173,10 +5172,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
     fb,
     previous_fb;
 
-#if defined(MNG_INSERT_LAYERS)
   PixelInfo
     mng_background_color;
-#endif
 
   ssize_t
     i;
@@ -5193,10 +5190,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
   volatile short
     skipping_loop;
 
-#if defined(MNG_INSERT_LAYERS)
   unsigned int
     mandatory_back=0;
-#endif
 
   volatile unsigned int
     mng_type=0;   /* 0: PNG or JNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
@@ -5204,10 +5199,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
   size_t
     default_frame_timeout,
     frame_timeout,
-#if defined(MNG_INSERT_LAYERS)
     image_height,
     image_width,
-#endif
     length;
 
   /* These delays are all measured in image ticks_per_second,
@@ -5218,9 +5211,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
     final_delay,
     final_image_delay,
     frame_delay,
-#if defined(MNG_INSERT_LAYERS)
     insert_layers,
-#endif
     mng_iterations=1,
     simplicity=0,
     subframe_height=0,
@@ -5262,9 +5253,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
   skipping_loop=(-1);
   first_mng_object=MagickTrue;
   mng_type=0;
-#if defined(MNG_INSERT_LAYERS)
   insert_layers=MagickFalse; /* should be False during convert or mogrify */
-#endif
   default_frame_delay=0;
   default_frame_timeout=0;
   frame_delay=0;
@@ -5274,12 +5263,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
   skip_to_iend=MagickFalse;
   term_chunk_found=MagickFalse;
   mng_info->framing_mode=1;
-#if defined(MNG_INSERT_LAYERS)
   mandatory_back=MagickFalse;
-#endif
-#if defined(MNG_INSERT_LAYERS)
   mng_background_color=image->background_color;
-#endif
   default_fb=mng_info->frame;
   previous_fb=mng_info->frame;
   do
@@ -5410,10 +5395,8 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
             if ((simplicity != 0) && ((simplicity | 9) == 9))
               mng_type=3; /* VLC */
 
-#if defined(MNG_INSERT_LAYERS)
             if (mng_type != 3)
               insert_layers=MagickTrue;
-#endif
             if (GetAuthenticPixelQueue(image) != (Quantum *) NULL)
               {
                 /* Allocate next image structure.  */
@@ -5577,7 +5560,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
           }
         if (memcmp(type,mng_BACK,4) == 0)
           {
-#if defined(MNG_INSERT_LAYERS)
             if (length > 6)
               mandatory_back=p[6];
 
@@ -5594,7 +5576,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
                   (((unsigned int) p[4] << 8) | p[5]));
                 mng_background_color.alpha=OpaqueAlpha;
               }
-#endif
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
           }
@@ -5854,7 +5835,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
             /*
               Insert a background layer behind the frame if framing_mode is 4.
             */
-#if defined(MNG_INSERT_LAYERS)
             if (logging != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "   subframe_width=%.20g, subframe_height=%.20g",(double)
@@ -5908,7 +5888,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
                     (double) mng_info->clip.top,
                     (double) mng_info->clip.bottom);
               }
-#endif
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
           }
@@ -6373,7 +6352,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
           }
-#if defined(MNG_INSERT_LAYERS)
         if (length < 8)
           {
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
@@ -6382,14 +6360,12 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 
         image_width=(size_t) mng_get_long(p);
         image_height=(size_t) mng_get_long(&p[4]);
-#endif
         chunk=(unsigned char *) RelinquishMagickMemory(chunk);
 
         /*
           Insert a transparent background layer behind the entire animation
           if it is not full screen.
         */
-#if defined(MNG_INSERT_LAYERS)
         if (insert_layers && mng_type && first_mng_object)
           {
             if ((mng_info->clip.left > 0) || (mng_info->clip.top > 0) ||
@@ -6489,7 +6465,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
                 (double) mng_info->clip.left,(double) mng_info->clip.right,
                 (double) mng_info->clip.top,(double) mng_info->clip.bottom);
           }
-#endif /* MNG_INSERT_LAYERS */
         first_mng_object=MagickFalse;
 
         if (GetAuthenticPixelQueue(image) != (Quantum *) NULL)
@@ -7256,7 +7231,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Finished reading all image datastreams.");
 
-#if defined(MNG_INSERT_LAYERS)
   if (insert_layers && !mng_info->image_found && (mng_info->mng_width) &&
        (mng_info->mng_height))
     {
@@ -7297,7 +7271,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
 
       mng_info->image_found++;
     }
-#endif
   image->iterations=mng_iterations;
 
   if (mng_iterations == 1)
