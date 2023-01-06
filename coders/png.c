@@ -3864,8 +3864,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
         }
 #endif
-
-      image->storage_class=DirectClass;
     }
 
   for (j = 0; j < 2; j++)
