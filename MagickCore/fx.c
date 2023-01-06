@@ -18,7 +18,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2022 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1805,15 +1805,12 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
           return MagickFalse;
         }
         ndx1 = pfx->usedElements;
-        if (fe==fWhile) {
+        if (fe==fWhile || fe==fIf) {
           (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2+1 */
         } else if (fe==fDo) {
           (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2+1 */
         } else if (fe==fFor) {
           pfx->Elements[pfx->usedElements-1].DoPush = MagickFalse;
-        } else if (fe==fIf) {
-          (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2 + 1 */
-          pfx->Elements[pfx->usedElements-1].DoPush = MagickTrue; /* we may need return from if() */
         }
         break;
       case 2:
