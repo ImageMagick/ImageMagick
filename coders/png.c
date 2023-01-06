@@ -107,9 +107,6 @@
 #include <png.h>
 #include <zlib.h>
 
-/* ImageMagick differences */
-#define first_scene scene
-
 #if PNG_LIBPNG_VER > 10011
 
 #if defined(MAGICKCORE_JPEG_DELEGATE)
@@ -758,7 +755,7 @@ typedef struct _MngInfo
     ping_exclude_tIME;
 
 } MngInfo;
-#endif /* VER */
+#endif /* PNG_LIBPNG_VER > 10011 */
 
 /*
   Forward declarations.
@@ -3281,7 +3278,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   if ((mng_info->mng_type == 0 && (image->ping != MagickFalse)) || (
       (image_info->number_scenes != 0) && (mng_info->scenes_found > (ssize_t)
-      (image_info->first_scene+image_info->number_scenes))))
+      (image_info->scene+image_info->number_scenes))))
     {
       /* This happens later in non-ping decodes */
       if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
@@ -3679,7 +3676,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   }
 
   if (image_info->number_scenes != 0 && mng_info->scenes_found-1 <
-      (ssize_t) image_info->first_scene && image->delay != 0)
+      (ssize_t) image_info->scene && image->delay != 0)
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
       pixel_info=RelinquishVirtualMemory(pixel_info);
@@ -7213,7 +7210,7 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
       if (image_info->number_scenes != 0)
         {
           if (mng_info->scenes_found >
-             (ssize_t) (image_info->first_scene+image_info->number_scenes))
+             (ssize_t) (image_info->scene+image_info->number_scenes))
             break;
         }
 
