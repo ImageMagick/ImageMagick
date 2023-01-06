@@ -596,15 +596,15 @@ typedef struct _MngReadInfo
 
   int
     framing_mode,
+    object_id;
+
+  MagickBooleanType
+    have_global_bkgd,
     have_global_chrm,
     have_global_gama,
     have_global_phys,
     have_global_sbit,
-    have_global_srgb,
-    object_id;
-
-  MagickBooleanType
-    have_global_bkgd;
+    have_global_srgb;
 
   MagickOffsetType
     loop_jump[256];
@@ -2761,7 +2761,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
       }
     }
 
-    else if (mng_info->have_global_srgb)
+    else if (mng_info->have_global_srgb != MagickFalse)
       {
         if (image->rendering_intent == UndefinedIntent)
           image->rendering_intent=
@@ -2774,7 +2774,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
 
   {
      if (!png_get_gAMA(ping,ping_info,&file_gamma))
-       if (mng_info->have_global_gama)
+       if (mng_info->have_global_gama != MagickFalse)
          png_set_gAMA(ping,ping_info,mng_info->global_gamma);
 
      if (png_get_gAMA(ping,ping_info,&file_gamma))
@@ -2834,7 +2834,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
 #if defined(PNG_pHYs_SUPPORTED)
   if (!png_get_valid(ping,ping_info,PNG_INFO_pHYs))
     {
-      if (mng_info->have_global_phys)
+      if (mng_info->have_global_phys != MagickFalse)
         {
           png_set_pHYs(ping,ping_info,
                        mng_info->global_x_pixels_per_unit,
@@ -3058,7 +3058,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
         }
     }
 #if defined(PNG_READ_sBIT_SUPPORTED)
-  if (mng_info->have_global_sbit)
+  if (mng_info->have_global_sbit != MagickFalse)
     {
       if (!png_get_valid(ping,ping_info,PNG_INFO_sBIT))
         png_set_sBIT(ping,ping_info,&mng_info->global_sbit);
