@@ -8413,9 +8413,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image->storage_class == PseudoClass &&
      (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32 ||
      mng_info->write_png48 || mng_info->write_png64 ||
-     (mng_info->write_png_colortype != 1 &&
-      mng_info->write_png_colortype != 4 &&
-      mng_info->write_png_colortype != 5)))
+     !(mng_info->write_png_colortype == 1 ||
+       mng_info->write_png_colortype == 5 ||
+       (mng_info->write_png_colortype == 4 && image->alpha_trait != BlendPixelTrait))))
     {
       (void) SyncImage(image,exception);
       image->storage_class = DirectClass;
