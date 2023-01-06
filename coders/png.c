@@ -101,9 +101,6 @@
 /* #define PNG_ALLOCATED    The result of the function is new memory */
 /* #define PNG_DEPSTRUCT    Access to this struct member is deprecated */
 
-/* PNG_PTR_NORETURN does not work on some platforms, in libpng-1.5.x */
-#define PNG_PTR_NORETURN
-
 #include <png.h>
 #include <zlib.h>
 
