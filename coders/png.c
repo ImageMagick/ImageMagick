@@ -702,7 +702,6 @@ typedef struct _MngWriteInfo
 
   int
     framing_mode,
-    need_fram,
     old_framing_mode;
 
   unsigned long
@@ -742,6 +741,7 @@ typedef struct _MngWriteInfo
     have_global_gama,
     have_global_plte,
     have_global_srgb,
+    need_fram,
     preserve_colormap,
     preserve_iCCP;
 
@@ -11461,7 +11461,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   png_write_end(ping,ping_info);
 
-  if (mng_info->need_fram && (int) image->dispose == BackgroundDispose)
+  if (mng_info->need_fram != MagickFalse &&
+      (int) image->dispose == BackgroundDispose)
     {
       if (mng_info->page.x || mng_info->page.y ||
           (ping_width != mng_info->page.width) ||
@@ -11499,7 +11500,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       else
         mng_info->framing_mode=3;
     }
-  if (mng_info->write_mng && !mng_info->need_fram &&
+  if (mng_info->write_mng && mng_info->need_fram == MagickFalse &&
       ((int) image->dispose == 3))
      png_error(ping, "Cannot convert GIF with disposal method 3 to MNG-LC");
 
@@ -13223,7 +13224,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
         if (final_delay != initial_delay || final_delay > 1UL*
            next_image->ticks_per_second)
-          mng_info->need_fram=1;
+          mng_info->need_fram=MagickTrue;
 
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
@@ -13371,7 +13372,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        {
          if (need_matte)
            {
-             if (need_defi || mng_info->need_fram || use_global_plte)
+             if (need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
                PNGLong(chunk+28,27L);    /* simplicity=LC+JNG */
 
              else
@@ -13380,7 +13381,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
          else
            {
-             if (need_defi || mng_info->need_fram || use_global_plte)
+             if (need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
                PNGLong(chunk+28,19L);  /* simplicity=LC+JNG, no transparency */
 
              else
@@ -13392,7 +13393,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        {
          if (need_matte)
            {
-             if (need_defi || mng_info->need_fram || use_global_plte)
+             if (need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
                PNGLong(chunk+28,11L);    /* simplicity=LC */
 
              else
@@ -13401,7 +13402,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
          else
            {
-             if (need_defi || mng_info->need_fram || use_global_plte)
+             if (need_defi || mng_info->need_fram != MagickFalse || use_global_plte)
                PNGLong(chunk+28,3L);    /* simplicity=LC, no transparency */
 
              else
@@ -13745,7 +13746,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
    if ((int) image->dispose >= 3)
      mng_info->framing_mode=3;
 
-   if (mng_info->need_fram && mng_info->adjoin != MagickFalse &&
+   if (mng_info->need_fram != MagickFalse && mng_info->adjoin != MagickFalse &&
        ((image->delay != mng_info->delay) ||
         (mng_info->framing_mode != mng_info->old_framing_mode)))
      {
