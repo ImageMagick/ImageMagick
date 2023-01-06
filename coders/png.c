@@ -705,6 +705,7 @@ typedef struct _MngWriteInfo
     equal_backgrounds,
     equal_chrms,
     equal_gammas,
+ /* we should add a version check for this and no longer support this */
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
     equal_palettes,
@@ -750,7 +751,6 @@ typedef struct _MngWriteInfo
     magn_first,
     magn_last;
 
-  /* Added at version 6.6.6-7 */
   MagickBooleanType
     ping_exclude_bKGD,
     ping_exclude_cHRM,
@@ -759,21 +759,17 @@ typedef struct _MngWriteInfo
     ping_exclude_EXIF,
     ping_exclude_gAMA,
     ping_exclude_iCCP,
-    /* ping_exclude_iTXt, */
     ping_exclude_oFFs,
     ping_exclude_pHYs,
     ping_exclude_sRGB,
     ping_exclude_tEXt,
     ping_exclude_tRNS,
     ping_exclude_caNv,
-    ping_exclude_zCCP, /* hex-encoded iCCP */
+    ping_exclude_zCCP,
     ping_exclude_zTXt,
     ping_preserve_colormap,
-  /* Added at version 6.8.5-7 */
     ping_preserve_iCCP,
-  /* Added at version 6.8.9-9 */
     ping_exclude_tIME;
-
 } MngWriteInfo;
 #endif /* PNG_LIBPNG_VER > 10011 */
 
