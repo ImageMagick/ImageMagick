@@ -112,7 +112,6 @@
 
 #if PNG_LIBPNG_VER > 10011
 
-#define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
@@ -7409,7 +7408,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
     }
 
   image=GetFirstImageInList(image);
-#ifdef MNG_COALESCE_LAYERS
   if (insert_layers && image->next)
     {
       Image
@@ -7454,7 +7452,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
            }
       }
     }
-#endif
 
   while (GetNextImageInList(image) != (Image *) NULL)
       image=GetNextImageInList(image);
