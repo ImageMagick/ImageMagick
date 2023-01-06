@@ -690,8 +690,6 @@ typedef struct _MngReadInfo
   png_byte
     read_buffer[8];
 #endif
-
-
 } MngReadInfo;
 
 typedef struct _MngWriteInfo
@@ -707,18 +705,9 @@ typedef struct _MngWriteInfo
     equal_backgrounds,
     equal_chrms,
     equal_gammas,
- /* we should add a version check for this and no longer support this */
-#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
-    defined(PNG_MNG_FEATURES_SUPPORTED)
-    equal_palettes,
-#endif
     equal_physs,
     equal_srgbs,
     framing_mode,
-    have_write_global_chrm,
-    have_write_global_gama,
-    have_write_global_plte,
-    have_write_global_srgb,
     need_fram,
     old_framing_mode;
 
@@ -728,6 +717,11 @@ typedef struct _MngWriteInfo
 
   MagickBooleanType
     need_blob,
+ /* we should add a version check for this and no longer support this */
+#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
+    defined(PNG_MNG_FEATURES_SUPPORTED)
+    equal_palettes,
+#endif
     exclude_bKGD,
     exclude_cHRM,
     exclude_date,
@@ -744,6 +738,10 @@ typedef struct _MngWriteInfo
     exclude_caNv,
     exclude_zCCP,
     exclude_zTXt,
+    have_global_chrm,
+    have_global_gama,
+    have_global_plte,
+    have_global_srgb,
     preserve_colormap,
     preserve_iCCP;
 
@@ -1470,29 +1468,29 @@ static void png_flush_data(png_structp png_ptr)
 }
 
 #ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
-static int PalettesAreEqual(Image *a,Image *b)
+static MagickBooleanType PalettesAreEqual(Image *a,Image *b)
 {
   ssize_t
     i;
 
   if ((a == (Image *) NULL) || (b == (Image *) NULL))
-    return((int) MagickFalse);
+    return(MagickFalse);
 
   if (a->storage_class != PseudoClass || b->storage_class != PseudoClass)
-    return((int) MagickFalse);
+    return(MagickFalse);
 
   if (a->colors != b->colors)
-    return((int) MagickFalse);
+    return(MagickFalse);
 
   for (i=0; i < (ssize_t) a->colors; i++)
   {
     if ((a->colormap[i].red != b->colormap[i].red) ||
         (a->colormap[i].green != b->colormap[i].green) ||
         (a->colormap[i].blue != b->colormap[i].blue))
-      return((int) MagickFalse);
+      return(MagickFalse);
   }
 
-  return((int) MagickTrue);
+  return(MagickTrue);
 }
 #endif
 
@@ -10178,7 +10176,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
             */
             ping_color_type=(png_byte) PNG_COLOR_TYPE_PALETTE;
 
-            if (!(mng_info->have_write_global_plte && matte == MagickFalse))
+            if (!(mng_info->have_global_plte != MagickFalse && matte == MagickFalse))
               {
                 for (i=0; i < (ssize_t) number_colors; i++)
                 {
@@ -10715,7 +10713,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   }
 
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
-  if ((mng_info->have_write_global_srgb == 0) &&
+  if ((mng_info->have_global_srgb == MagickFalse) &&
       ping_have_iCCP != MagickTrue &&
       (ping_have_sRGB != MagickFalse ||
       png_get_valid(ping,ping_info,PNG_INFO_sRGB)))
@@ -10746,7 +10744,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
           (mng_info->exclude_sRGB == MagickFalse ||
           (image->gamma < .45 || image->gamma > .46)))
       {
-      if ((mng_info->have_write_global_gama == 0) && (image->gamma != 0.0))
+      if ((mng_info->have_global_gama == MagickFalse) && (image->gamma != 0.0))
         {
           /*
             Note image gamma.
@@ -10761,7 +10759,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
       if (mng_info->exclude_cHRM == MagickFalse && ping_have_sRGB == MagickFalse)
         {
-          if ((mng_info->have_write_global_chrm == 0) &&
+          if ((mng_info->have_global_chrm == MagickFalse) &&
               (image->chromaticity.red_primary.x != 0.0))
             {
               /*
@@ -13489,7 +13487,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
          (void) WriteBlob(image,5,chunk);
          (void) WriteBlobMSBULong(image,crc32(0,chunk,5));
-         mng_info->have_write_global_srgb=MagickTrue;
+         mng_info->have_global_srgb=MagickTrue;
        }
 
      else
@@ -13505,7 +13503,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
              PNGLong(chunk+4,(png_uint_32) (100000*image->gamma+0.5));
              (void) WriteBlob(image,8,chunk);
              (void) WriteBlobMSBULong(image,crc32(0,chunk,8));
-             mng_info->have_write_global_gama=MagickTrue;
+             mng_info->have_global_gama=MagickTrue;
            }
          if (mng_info->equal_chrms)
            {
@@ -13532,7 +13530,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
              PNGLong(chunk+32,(png_uint_32) (100000*primary.y+0.5));
              (void) WriteBlob(image,36,chunk);
              (void) WriteBlobMSBULong(image,crc32(0,chunk,36));
-             mng_info->have_write_global_chrm=MagickTrue;
+             mng_info->have_global_chrm=MagickTrue;
            }
        }
      if (image->resolution.x && image->resolution.y && mng_info->equal_physs)
@@ -13640,7 +13638,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
          (void) WriteBlob(image,data_length+4,chunk);
          (void) WriteBlobMSBULong(image,crc32(0,chunk,(uInt) (data_length+4)));
-         mng_info->have_write_global_plte=MagickTrue;
+         mng_info->have_global_plte=MagickTrue;
        }
 #endif
     }
@@ -13669,9 +13667,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
               When equal_palettes is true, this image has the same palette
               as the previous PseudoClass image
             */
-            mng_info->have_write_global_plte=mng_info->equal_palettes;
+            mng_info->have_global_plte=mng_info->equal_palettes;
             mng_info->equal_palettes=PalettesAreEqual(image,image->next);
-            if (mng_info->equal_palettes && !mng_info->have_write_global_plte)
+            if (mng_info->equal_palettes && !mng_info->have_global_plte)
               {
                 /*
                   Write MNG PLTE chunk
@@ -13697,11 +13695,11 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
                 (void) WriteBlob(image,data_length+4,chunk);
                 (void) WriteBlobMSBULong(image,crc32(0,chunk,
                    (uInt) (data_length+4)));
-                mng_info->have_write_global_plte=MagickTrue;
+                mng_info->have_global_plte=MagickTrue;
               }
           }
         else
-          mng_info->have_write_global_plte=MagickFalse;
+          mng_info->have_global_plte=MagickFalse;
       }
 #endif
     if (need_defi)
