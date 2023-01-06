@@ -111,14 +111,7 @@
 #define first_scene scene
 
 #if PNG_LIBPNG_VER > 10011
-/*
-  Optional declarations. Define or undefine them as you like.
-*/
-/* #define PNG_DEBUG -- turning this on breaks VisualC compiling */
 
-/*
-  Features under construction.  Define these to work on them.
-*/
 #define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
 #if defined(MAGICKCORE_JPEG_DELEGATE)
@@ -9610,10 +9603,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       /*
         PNG write failed.
       */
-#ifdef PNG_DEBUG
-     if (image_info->verbose)
-        (void) printf("PNG write has failed.\n");
-#endif
       png_destroy_write_struct(&ping,&ping_info);
 #ifdef IMPNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
