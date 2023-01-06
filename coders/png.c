@@ -119,7 +119,6 @@
 /*
   Features under construction.  Define these to work on them.
 */
-#undef MNG_BASI_SUPPORTED
 #define MNG_COALESCE_LAYERS /* In 5.4.4, this interfered with MMAP'ed files. */
 #define MNG_INSERT_LAYERS   /* Troublesome, but seem to work as of 5.4.4 */
 #if defined(MAGICKCORE_JPEG_DELEGATE)
@@ -729,24 +728,6 @@ typedef struct _MngInfo
     write_png32,
     write_png48,
     write_png64;
-
-#ifdef MNG_BASI_SUPPORTED
-  unsigned long
-    basi_width,
-    basi_height;
-
-  unsigned int
-    basi_depth,
-    basi_color_type,
-    basi_compression_method,
-    basi_filter_type,
-    basi_interlace_method,
-    basi_red,
-    basi_green,
-    basi_blue,
-    basi_alpha,
-    basi_viewable;
-#endif
 
   png_uint_16
     magn_first,
@@ -6367,49 +6348,6 @@ static Image *ReadOneMNGImage(MngInfo* mng_info,const ImageInfo *image_info,
                 image->filename);
 
             mng_info->basi_warning++;
-#ifdef MNG_BASI_SUPPORTED
-            basi_width=(unsigned long) mng_get_long(p);
-            basi_width=(unsigned long) mng_get_long(&p[4]);
-            basi_color_type=p[8];
-            basi_compression_method=p[9];
-            basi_filter_type=p[10];
-            basi_interlace_method=p[11];
-            if (length > 11)
-              basi_red=((png_uint_32) p[12] << 8) & (png_uint_32) p[13];
-
-            else
-              basi_red=0;
-
-            if (length > 13)
-              basi_green=((png_uint_32) p[14] << 8) & (png_uint_32) p[15];
-
-            else
-              basi_green=0;
-
-            if (length > 15)
-              basi_blue=((png_uint_32) p[16] << 8) & (png_uint_32) p[17];
-
-            else
-              basi_blue=0;
-
-            if (length > 17)
-              basi_alpha=((png_uint_32) p[18] << 8) & (png_uint_32) p[19];
-
-            else
-              {
-                if (basi_sample_depth == 16)
-                  basi_alpha=65535L;
-                else
-                  basi_alpha=255;
-              }
-
-            if (length > 19)
-              basi_viewable=p[20];
-
-            else
-              basi_viewable=0;
-
-#endif
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
           }
