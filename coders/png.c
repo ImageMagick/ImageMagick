@@ -4062,11 +4062,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   else
     {
       if (ping_color_type == PNG_COLOR_TYPE_GRAY)
-          image->type=GrayscaleType;
+        image->type=GrayscaleType;
       else if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
-          image->type=PaletteType;
+        image->type=PaletteType;
       else
-          image->type=TrueColorType;
+        image->type=TrueColorType;
     }
 
    /* Set more properties for identify to retrieve */
