@@ -596,13 +596,15 @@ typedef struct _MngReadInfo
 
   int
     framing_mode,
-    have_global_bkgd,
     have_global_chrm,
     have_global_gama,
     have_global_phys,
     have_global_sbit,
     have_global_srgb,
     object_id;
+
+  MagickBooleanType
+    have_global_bkgd;
 
   MagickOffsetType
     loop_jump[256];
@@ -2935,7 +2937,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
         }
 
 #ifdef PNG_READ_bKGD_SUPPORTED
-  if (mng_info->have_global_bkgd &&
+  if (mng_info->have_global_bkgd != MagickFalse &&
           (!png_get_valid(ping,ping_info,PNG_INFO_bKGD)))
       image->background_color=mng_info->mng_global_bkgd;
 
