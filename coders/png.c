@@ -741,12 +741,12 @@ typedef struct _MngWriteInfo
     have_global_gama,
     have_global_plte,
     have_global_srgb,
+    is_palette,
     need_fram,
     preserve_colormap,
     preserve_iCCP;
 
   unsigned int
-    IsPalette,
     write_mng,
     write_png_colortype,
     write_png_depth,
@@ -9468,10 +9468,10 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
         UndefinedPixelTrait ? MagickTrue : MagickFalse;
 
   if (mng_info->write_png_colortype < 5)
-    mng_info->IsPalette=image->storage_class == PseudoClass &&
+    mng_info->is_palette=image->storage_class == PseudoClass &&
       image_colors <= 256 && image->colormap != NULL;
   else
-    mng_info->IsPalette = MagickFalse;
+    mng_info->is_palette=MagickFalse;
 
   if ((mng_info->write_png_colortype == 4 || mng_info->write_png8) &&
      (image->colors == 0 || image->colormap == NULL))
@@ -9721,7 +9721,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   matte=image_matte;
   old_bit_depth=0;
 
-  if (mng_info->IsPalette && mng_info->write_png8)
+  if (mng_info->is_palette != MagickFalse && mng_info->write_png8)
     {
       /* To do: make this a function cause it's used twice, except
          for reducing the sample depth from 8. */
@@ -9970,7 +9970,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   if (matte != MagickFalse)
     {
-      if (mng_info->IsPalette)
+      if (mng_info->is_palette != MagickFalse)
         {
           if (mng_info->write_png_colortype == 0)
             {
@@ -10073,7 +10073,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     if (ping_have_tRNS != MagickFalse)
       image_matte=MagickFalse;
 
-    if ((mng_info->IsPalette) &&
+    if ((mng_info->is_palette != MagickFalse) &&
         mng_info->write_png_colortype-1 != PNG_COLOR_TYPE_PALETTE &&
         ping_have_color == MagickFalse &&
         (image_matte == MagickFalse || image_depth >= 8))
@@ -10125,7 +10125,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
             else if (ping_color_type ==
                 PNG_COLOR_TYPE_GRAY && image_colors < 17 &&
-                mng_info->IsPalette)
+                mng_info->is_palette != MagickFalse)
               {
               /* Check if grayscale is reducible */
 
@@ -10165,7 +10165,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
     else
 
-      if (mng_info->IsPalette)
+      if (mng_info->is_palette != MagickFalse)
       {
         number_colors=image_colors;
 
@@ -10323,7 +10323,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   if (mng_info->exclude_bKGD == MagickFalse)
   {
-    if (mng_info->IsPalette && (int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
+    if (mng_info->is_palette != MagickFalse &&
+        (int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
       {
         /*
            Identify which colormap entry is the background color.
@@ -11023,7 +11024,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       ((!mng_info->write_png8 && !mng_info->write_png24 &&
         !mng_info->write_png48 && !mng_info->write_png64 &&
         !mng_info->write_png32) &&
-        (mng_info->IsPalette ||
+        (mng_info->is_palette != MagickFalse ||
         (image_info->type == BilevelType)) &&
         image_matte == MagickFalse &&
         ping_have_non_bw == MagickFalse))
@@ -11036,7 +11037,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
         *p;
 
       quantum_type=RedQuantum;
-      if (mng_info->IsPalette)
+      if (mng_info->is_palette != MagickFalse)
         {
           quantum_type=GrayQuantum;
           if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_PALETTE)
@@ -11088,7 +11089,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
           !mng_info->write_png48 && !mng_info->write_png64 &&
           !mng_info->write_png32) && (image_matte != MagickFalse ||
           (ping_bit_depth >= MAGICKCORE_QUANTUM_DEPTH)) &&
-          (mng_info->IsPalette) && ping_have_color == MagickFalse)
+          (mng_info->is_palette != MagickFalse) && ping_have_color == MagickFalse)
         {
           const Quantum
             *p;
@@ -11105,7 +11106,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
             if (ping_color_type == PNG_COLOR_TYPE_GRAY)
               {
-                if (mng_info->IsPalette)
+                if (mng_info->is_palette != MagickFalse)
                   (void) ExportQuantumPixels(image,(CacheView *) NULL,
                     quantum_info,GrayQuantum,ping_pixels,exception);
 
@@ -11156,7 +11157,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                 mng_info->write_png32 ||
                 mng_info->write_png48 ||
                 mng_info->write_png64 ||
-                (!mng_info->write_png8 && !mng_info->IsPalette))
+                (!mng_info->write_png8 && !mng_info->is_palette != MagickFalse))
             {
               for (y=0; y < (ssize_t) image->rows; y++)
               {
@@ -13665,7 +13666,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
     */
     if (need_local_plte && use_global_plte && !all_images_are_gray)
       {
-        if (mng_info->IsPalette)
+        if (mng_info->is_palette != MagickFalse)
           {
             /*
               When equal_palettes is true, this image has the same palette
