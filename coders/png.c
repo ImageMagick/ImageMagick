@@ -4042,40 +4042,32 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     }
 #endif
 
-   /* Set image->alpha_trait to MagickTrue if the input colortype supports
-    * alpha or if a valid tRNS chunk is present, no matter whether there
-    * is actual transparency present.
-    */
-    image->alpha_trait=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
-        ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
-        (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
-        BlendPixelTrait : UndefinedPixelTrait;
-
-#if 0  /* I'm not sure what's wrong here but it does not work. */
-    if (image->alpha_trait != UndefinedPixelTrait)
+  /* Set image->alpha_trait to MagickTrue if the input colortype supports
+  * alpha or if a valid tRNS chunk is present, no matter whether there
+  * is actual transparency present.
+  */
+  image->alpha_trait=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
+      ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
+      (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
+      BlendPixelTrait : UndefinedPixelTrait;
+  if (image->alpha_trait == BlendPixelTrait)
     {
       if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-        (void) SetImageType(image,GrayscaleAlphaType,exception);
-
+        image->type=GrayscaleAlphaType;
       else if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
-        (void) SetImageType(image,PaletteAlphaType,exception);
-
+        image->type=PaletteAlphaType;
       else
-        (void) SetImageType(image,TrueColorAlphaType,exception);
+        image->type=TrueColorAlphaType;
     }
-
-    else
+  else
     {
       if (ping_color_type == PNG_COLOR_TYPE_GRAY)
-        (void) SetImageType(image,GrayscaleType,exception);
-
+          image->type=GrayscaleType;
       else if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
-        (void) SetImageType(image,PaletteType,exception);
-
+          image->type=PaletteType;
       else
-        (void) SetImageType(image,TrueColorType,exception);
+          image->type=TrueColorType;
     }
-#endif
 
    /* Set more properties for identify to retrieve */
    {
