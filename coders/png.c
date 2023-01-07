@@ -475,24 +475,6 @@ static SemaphoreInfo
 #undef MNG_LOOSE
 
 /*
-  Don't try to define PNG_MNG_FEATURES_SUPPORTED here.  Make sure
-  it's defined in libpng/pngconf.h, version 1.0.9 or later.  It won't work
-  with earlier versions of libpng.  From libpng-1.0.3a to libpng-1.0.8,
-  PNG_READ|WRITE_EMPTY_PLTE were used but those have been deprecated in
-  libpng in favor of PNG_MNG_FEATURES_SUPPORTED, so we set them here.
-  PNG_MNG_FEATURES_SUPPORTED is disabled by default in libpng-1.0.9 and
-  will be enabled by default in libpng-1.2.0.
-*/
-#ifdef PNG_MNG_FEATURES_SUPPORTED
-#  ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
-#    define PNG_READ_EMPTY_PLTE_SUPPORTED
-#  endif
-#  ifndef PNG_WRITE_EMPTY_PLTE_SUPPORTED
-#    define PNG_WRITE_EMPTY_PLTE_SUPPORTED
-#  endif
-#endif
-
-/*
   Maximum valid size_t in PNG/MNG chunks is (2^31)-1
   This macro is only defined in libpng-1.0.3 and later.
   Previously it was PNG_MAX_UINT but that was deprecated in libpng-1.2.6
@@ -676,18 +658,6 @@ typedef struct _MngReadInfo
     phys_warning,
     sbit_warning,
     show_warning;
-
- /* we should add a version check for this and no longer support this */
-#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
-  int
-    bytes_in_read_buffer,
-    found_empty_plte,
-    have_saved_bkgd_index,
-    saved_bkgd_index;
-
-  png_byte
-    read_buffer[8];
-#endif
 } MngReadInfo;
 
 typedef struct _MngWriteInfo
@@ -712,11 +682,7 @@ typedef struct _MngWriteInfo
     equal_backgrounds,
     equal_chrms,
     equal_gammas,
- /* we should add a version check for this and no longer support this */
-#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
-    defined(PNG_MNG_FEATURES_SUPPORTED)
     equal_palettes,
-#endif
     equal_physs,
     equal_srgbs,
     exclude_bKGD,
@@ -1349,92 +1315,6 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
     }
 }
 
-#if !defined(PNG_READ_EMPTY_PLTE_SUPPORTED) && \
-    !defined(PNG_MNG_FEATURES_SUPPORTED)
-/* We use mng_get_data() instead of png_get_data() if we have a libpng
- * older than libpng-1.0.3a, which was the first to allow the empty
- * PLTE, or a newer libpng in which PNG_MNG_FEATURES_SUPPORTED was
- * ifdef'ed out.  Earlier versions would crash if the bKGD chunk was
- * encountered after an empty PLTE, so we have to look ahead for bKGD
- * chunks and remove them from the datastream that is passed to libpng,
- * and store their contents for later use.
- */
-static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
-{
-  MngReadInfo
-    *mng_info;
-
-  Image
-    *image;
-
-  png_size_t
-    check;
-
-  ssize_t
-    i;
-
-  i=0;
-  mng_info=(MngReadInfo *) png_get_io_ptr(png_ptr);
-  image=(Image *) mng_info->image;
-  while (mng_info->bytes_in_read_buffer && length)
-  {
-    data[i]=mng_info->read_buffer[i];
-    mng_info->bytes_in_read_buffer--;
-    length--;
-    i++;
-  }
-  if (length != 0)
-    {
-      check=(png_size_t) ReadBlob(image,(size_t) length,(char *) data);
-
-      if (check != length)
-        png_error(png_ptr,"Read Exception");
-
-      if (length == 4)
-        {
-          if ((data[0] == 0) && (data[1] == 0) && (data[2] == 0) &&
-              (data[3] == 0))
-            {
-              check=(png_size_t) ReadBlob(image,(size_t) length,
-                (char *) mng_info->read_buffer);
-              mng_info->read_buffer[4]=0;
-              mng_info->bytes_in_read_buffer=4;
-              if (memcmp(mng_info->read_buffer,mng_PLTE,4) == 0)
-                mng_info->found_empty_plte=MagickTrue;
-              if (memcmp(mng_info->read_buffer,mng_IEND,4) == 0)
-                {
-                  mng_info->found_empty_plte=MagickFalse;
-                  mng_info->have_saved_bkgd_index=MagickFalse;
-                }
-            }
-
-          if ((data[0] == 0) && (data[1] == 0) && (data[2] == 0) &&
-              (data[3] == 1))
-            {
-              check=(png_size_t) ReadBlob(image,(size_t) length,
-                (char *) mng_info->read_buffer);
-              mng_info->read_buffer[4]=0;
-              mng_info->bytes_in_read_buffer=4;
-              if (memcmp(mng_info->read_buffer,mng_bKGD,4) == 0)
-                if (mng_info->found_empty_plte)
-                  {
-                    /*
-                      Skip the bKGD data byte and CRC.
-                    */
-                    check=(png_size_t)
-                      ReadBlob(image,5,(char *) mng_info->read_buffer);
-                    check=(png_size_t) ReadBlob(image,(size_t) length,
-                      (char *) mng_info->read_buffer);
-                    mng_info->saved_bkgd_index=mng_info->read_buffer[0];
-                    mng_info->have_saved_bkgd_index=MagickTrue;
-                    mng_info->bytes_in_read_buffer=0;
-                  }
-            }
-        }
-    }
-}
-#endif
-
 static void png_put_data(png_structp png_ptr,png_bytep data,png_size_t length)
 {
   Image
@@ -1458,7 +1338,6 @@ static void png_flush_data(png_structp png_ptr)
   (void) png_ptr;
 }
 
-#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
 static MagickBooleanType PalettesAreEqual(Image *a,Image *b)
 {
   ssize_t
@@ -1483,7 +1362,6 @@ static MagickBooleanType PalettesAreEqual(Image *a,Image *b)
 
   return(MagickTrue);
 }
-#endif
 
 static void MngReadInfoDiscardObject(MngReadInfo *mng_info,int i)
 {
@@ -2380,26 +2258,8 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
   png_set_sig_bytes(ping,8);
 
   if (LocaleCompare(image_info->magick,"MNG") == 0)
-    {
-#if defined(PNG_MNG_FEATURES_SUPPORTED)
-      (void) png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
-      png_set_read_fn(ping,image,png_get_data);
-#else
-#if defined(PNG_READ_EMPTY_PLTE_SUPPORTED)
-      png_permit_empty_plte(ping,MagickTrue);
-      png_set_read_fn(ping,image,png_get_data);
-#else
-      mng_info->image=image;
-      mng_info->bytes_in_read_buffer=0;
-      mng_info->found_empty_plte=MagickFalse;
-      mng_info->have_saved_bkgd_index=MagickFalse;
-      png_set_read_fn(ping,mng_info,mng_get_data);
-#endif
-#endif
-    }
-
-  else
-    png_set_read_fn(ping,image,png_get_data);
+    (void) png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
+  png_set_read_fn(ping,image,png_get_data);
 
   {
     const char
@@ -2871,18 +2731,11 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
                }
 #ifdef PNG_READ_bKGD_SUPPORTED
               if (
-#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
-                   mng_info->have_saved_bkgd_index ||
-#endif
                    png_get_valid(ping,ping_info,PNG_INFO_bKGD))
                     {
                       png_color_16
                          background = { 0 };
 
-#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
-                      if (mng_info->have_saved_bkgd_index)
-                        background.index=mng_info->saved_bkgd_index;
-#endif
                       if (png_get_valid(ping, ping_info, PNG_INFO_bKGD))
                         background.index=ping_background->index;
 
@@ -7146,9 +6999,6 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                 image->page.y=0;
               }
           }
-#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
-        image=mng_info->image;
-#endif
       }
 
 #if (MAGICKCORE_QUANTUM_DEPTH > 16)
@@ -9519,7 +9369,6 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     Prepare PNG for writing.
   */
 
-#if defined(PNG_MNG_FEATURES_SUPPORTED)
   if (mng_info->write_mng != MagickFalse)
   {
      (void) png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
@@ -9530,14 +9379,6 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
      png_set_check_for_invalid_index (ping, 0);
 # endif
   }
-
-#else
-# ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
-  if (mng_info->write_mng)
-     png_permit_empty_plte(ping,MagickTrue);
-
-# endif
-#endif
 
   x=0;
 
@@ -10471,7 +10312,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   else if (mng_info->compression_filter == 8)
     {
-#if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
+#if defined(PNG_INTRAPIXEL_DIFFERENCING)
       if (mng_info->write_mng != MagickFalse)
       {
          if (((int) ping_color_type == PNG_COLOR_TYPE_RGB) ||
@@ -12983,10 +12824,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
     need_matte;
 
   volatile int
-#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
-    defined(PNG_MNG_FEATURES_SUPPORTED)
     need_local_plte,
-#endif
     all_images_are_gray,
     need_defi,
     use_global_plte;
@@ -13096,9 +12934,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
   use_global_plte=MagickFalse;
   all_images_are_gray=MagickFalse;
-#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
   need_local_plte=MagickTrue;
-#endif
   need_defi=MagickFalse;
   need_matte=MagickFalse;
   mng_info->framing_mode=1;
@@ -13142,12 +12978,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
       mng_info->equal_srgbs=MagickTrue;
       mng_info->equal_backgrounds=MagickTrue;
       image_count=0;
-#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
-    defined(PNG_MNG_FEATURES_SUPPORTED)
       all_images_are_gray=MagickTrue;
       mng_info->equal_palettes=MagickFalse;
       need_local_plte=MagickFalse;
-#endif
       for (next_image=image; next_image != (Image *) NULL; )
       {
         if (need_geom)
@@ -13181,8 +13014,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
            next_image->ticks_per_second)
           mng_info->need_fram=MagickTrue;
 
-#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
-    defined(PNG_MNG_FEATURES_SUPPORTED)
         /*
           check for global palette possibility.
         */
@@ -13198,7 +13029,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
               use_global_plte=mng_info->equal_palettes;
             need_local_plte=!mng_info->equal_palettes;
           }
-#endif
         if (GetNextImageInList(next_image) != (Image *) NULL)
           {
             if (next_image->background_color.red !=
@@ -13253,9 +13083,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
           mng_info->equal_srgbs=MagickFalse;
           mng_info->equal_physs=MagickFalse;
           use_global_plte=MagickFalse;
-#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
           need_local_plte=MagickTrue;
-#endif
           need_iterations=MagickFalse;
         }
 
@@ -13566,7 +13394,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
            }
        }
 
-#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
      if ((need_local_plte == MagickFalse) &&
          (image->storage_class == PseudoClass) &&
          (all_images_are_gray == MagickFalse))
@@ -13599,21 +13426,15 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
          (void) WriteBlobMSBULong(image,crc32(0,chunk,(uInt) (data_length+4)));
          mng_info->have_global_plte=MagickTrue;
        }
-#endif
     }
   scene=0;
   mng_info->delay=0;
-#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
-    defined(PNG_MNG_FEATURES_SUPPORTED)
   mng_info->equal_palettes=MagickFalse;
-#endif
   number_scenes=GetImageListLength(image);
   do
   {
     if (mng_info->adjoin != MagickFalse)
     {
-#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
-    defined(PNG_MNG_FEATURES_SUPPORTED)
     /*
       If we aren't using a global palette for the entire MNG, check to
       see if we can use one for two or more consecutive images.
@@ -13660,7 +13481,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
         else
           mng_info->have_global_plte=MagickFalse;
       }
-#endif
     if (need_defi)
       {
         ssize_t
