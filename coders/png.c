@@ -10983,15 +10983,15 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   num_passes=png_set_interlace_handling(ping);
 
   if ((mng_info->colortype-1 == PNG_COLOR_TYPE_PALETTE) ||
-      (((mng_info->write_png8 == MagickFalse) &&
-        (mng_info->write_png24 == MagickFalse) &&
-        (mng_info->write_png48 == MagickFalse) &&
-        (mng_info->write_png64 == MagickFalse) &&
-        (mng_info->write_png32 == MagickFalse)) &&
-        (image_matte == MagickFalse) &&
-        (ping_have_non_bw == MagickFalse)) &&
-        ((mng_info->is_palette != MagickFalse ||
-         (image_info->type == BilevelType))))
+      ((mng_info->write_png8 == MagickFalse) &&
+       (mng_info->write_png24 == MagickFalse) &&
+       (mng_info->write_png48 == MagickFalse) &&
+       (mng_info->write_png64 == MagickFalse) &&
+       (mng_info->write_png32 == MagickFalse) &&
+       (image_matte == MagickFalse) &&
+       (ping_have_non_bw == MagickFalse) &&
+       ((mng_info->is_palette != MagickFalse) ||
+        (image_info->type == BilevelType))))
      {
       /* Palette, Bilevel, or Opaque Monochrome */
       QuantumType
