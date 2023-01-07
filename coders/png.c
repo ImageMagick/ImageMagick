@@ -2239,24 +2239,6 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
           "      running with   %s", zlib_runv);
     }
 
-#if (PNG_LIBPNG_VER < 10200)
-  if (image_info->verbose)
-    printf("Your PNG library (libpng-%s) is rather old.\n",
-       PNG_LIBPNG_VER_STRING);
-#endif
-
-#if (PNG_LIBPNG_VER >= 10400)
-#  ifndef  PNG_TRANSFORM_GRAY_TO_RGB    /* Added at libpng-1.4.0beta67 */
-  if (image_info->verbose)
-    {
-      printf("Your PNG library (libpng-%s) is an old beta version.\n",
-           PNG_LIBPNG_VER_STRING);
-      printf("Please update it.\n");
-    }
-#  endif
-#endif
-
-
   quantum_info = (QuantumInfo *) NULL;
   image=mng_info->image;
 
@@ -13048,12 +13030,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
     final_delay=0,
     number_scenes,
     initial_delay;
-
-#if (PNG_LIBPNG_VER < 10200)
-    if (image_info->verbose)
-      printf("Your PNG library (libpng-%s) is rather old.\n",
-         PNG_LIBPNG_VER_STRING);
-#endif
 
   /*
     Open image file.
