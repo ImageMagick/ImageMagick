@@ -103,8 +103,6 @@
 #include <png.h>
 #include <zlib.h>
 
-#if PNG_LIBPNG_VER > 10011
-
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 #  define JNG_SUPPORTED /* Not finished as of 5.5.2.  See "To do" comments. */
 #endif
@@ -760,7 +758,6 @@ typedef struct _MngWriteInfo
     depth;
 
 } MngWriteInfo;
-#endif /* PNG_LIBPNG_VER > 10011 */
 
 /*
   Forward declarations.
@@ -775,9 +772,6 @@ static MagickBooleanType
 static MagickBooleanType
   WriteJNGImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
-
-#if PNG_LIBPNG_VER > 10011
-
 
 #if (MAGICKCORE_QUANTUM_DEPTH >= 16)
 static MagickBooleanType
@@ -1061,7 +1055,6 @@ Magick_ColorType_from_PNG_ColorType(const int ping_colortype)
     }
 }
 
-#endif /* PNG_LIBPNG_VER > 10011 */
 #endif /* MAGICKCORE_PNG_DELEGATE */
 
 /*
@@ -1179,7 +1172,6 @@ static MagickBooleanType IsPNG(const unsigned char *magick,const size_t length)
 extern "C" {
 #endif
 
-#if (PNG_LIBPNG_VER > 10011)
 static size_t WriteBlobMSBULong(Image *image,const size_t value)
 {
   unsigned char
@@ -1229,13 +1221,11 @@ static void LogPNGChunk(MagickBooleanType logging, const png_byte *type,
       "  Writing %c%c%c%c chunk, length: %.20g",
       type[0],type[1],type[2],type[3],(double) length);
 }
-#endif /* PNG_LIBPNG_VER > 10011 */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
 
-#if PNG_LIBPNG_VER > 10011
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -7483,24 +7473,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   return(GetFirstImageInList(image));
 }
-#else /* PNG_LIBPNG_VER > 10011 */
-static Image *ReadPNGImage(const ImageInfo *image_info,
-   ExceptionInfo *exception)
-{
-  printf("Your PNG library is too old: You have libpng-%s\n",
-     PNG_LIBPNG_VER_STRING);
-
-  (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-    "PNG library is too old","`%s'",image_info->filename);
-
-  return(Image *) NULL;
-}
-
-static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  return(ReadPNGImage(image_info,exception));
-}
-#endif /* PNG_LIBPNG_VER > 10011 */
 #endif
 
 /*
@@ -7760,7 +7732,6 @@ ModuleExport void UnregisterPNGImage(void)
 }
 
 #if defined(MAGICKCORE_PNG_DELEGATE)
-#if PNG_LIBPNG_VER > 10011
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -13853,23 +13824,4 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
   return(MagickTrue);
 }
-#else /* PNG_LIBPNG_VER > 10011 */
-
-static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
-  Image *image)
-{
-  (void) image;
-  printf("Your PNG library is too old: You have libpng-%s\n",
-     PNG_LIBPNG_VER_STRING);
-
-  ThrowBinaryException(CoderError,"PNG library is too old",
-     image_info->filename);
-}
-
-static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,
-  Image *image)
-{
-  return(WritePNGImage(image_info,image));
-}
-#endif /* PNG_LIBPNG_VER > 10011 */
 #endif
