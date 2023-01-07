@@ -467,14 +467,6 @@ static SemaphoreInfo
 #define MNG_MAX_OBJECTS 256
 
 /*
-  If this not defined, spec is interpreted strictly.  If it is
-  defined, an attempt will be made to recover from some errors,
-  including
-      o global PLTE too short
-*/
-#undef MNG_LOOSE
-
-/*
   Maximum valid size_t in PNG/MNG chunks is (2^31)-1
   This macro is only defined in libpng-1.0.3 and later.
   Previously it was PNG_MAX_UINT but that was deprecated in libpng-1.2.6
@@ -5418,17 +5410,6 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
 
                 mng_info->global_plte_length=(unsigned int) (length/3);
               }
-#ifdef MNG_LOOSE
-            for ( ; i < 256; i++)
-            {
-              mng_info->global_plte[i].red=i;
-              mng_info->global_plte[i].green=i;
-              mng_info->global_plte[i].blue=i;
-            }
-
-            if (length != 0)
-              mng_info->global_plte_length=256;
-#endif
             else
               mng_info->global_plte_length=0;
 
@@ -5443,11 +5424,6 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
             if (length > 0 && length < 257)
               for (i=0; i < (ssize_t) length; i++)
                 mng_info->global_trns[i]=p[i];
-
-#ifdef MNG_LOOSE
-            for ( ; i < 256; i++)
-              mng_info->global_trns[i]=255;
-#endif
             mng_info->global_trns_length=(unsigned int) length;
             chunk=(unsigned char *) RelinquishMagickMemory(chunk);
             continue;
