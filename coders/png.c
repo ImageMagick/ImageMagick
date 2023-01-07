@@ -747,17 +747,18 @@ typedef struct _MngWriteInfo
     preserve_iCCP;
 
   unsigned int
+    colortype,
+    compression_filter,
+    compression_level,
+    compression_strategy,
+    depth,
     write_mng,
-    write_png_colortype,
-    write_png_depth,
-    write_png_compression_level,
-    write_png_compression_strategy,
-    write_png_compression_filter,
     write_png8,
     write_png24,
     write_png32,
     write_png48,
     write_png64;
+
 } MngWriteInfo;
 #endif /* PNG_LIBPNG_VER > 10011 */
 
@@ -8367,8 +8368,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   if (image->storage_class == PseudoClass &&
      (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32 ||
      mng_info->write_png48 || mng_info->write_png64 ||
-     !(mng_info->write_png_colortype == 1 || mng_info->write_png_colortype == 5 ||
-       (mng_info->write_png_colortype == 4 && image->alpha_trait != BlendPixelTrait))))
+     !(mng_info->colortype == 1 || mng_info->colortype == 5 ||
+       (mng_info->colortype == 4 && image->alpha_trait != BlendPixelTrait))))
     {
       (void) SyncImage(image,exception);
       image->storage_class = DirectClass;
@@ -8527,7 +8528,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       image->depth=16;
     }
 
-  if (image->depth == 16 && mng_info->write_png_depth != 16)
+  if (image->depth == 16 && mng_info->depth != 16)
     if (mng_info->write_png8 ||
         LosslessReduceDepthOK(image,exception) != MagickFalse)
       image->depth = 8;
@@ -8538,16 +8539,16 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   number_transparent = 0;
   number_semitransparent = 0;
 
-  if (mng_info->write_png_colortype &&
-     (mng_info->write_png_colortype > 4 || (mng_info->write_png_depth >= 8 &&
-     mng_info->write_png_colortype < 4 &&
+  if (mng_info->colortype &&
+     (mng_info->colortype > 4 || (mng_info->depth >= 8 &&
+     mng_info->colortype < 4 &&
      image->alpha_trait == UndefinedPixelTrait)))
   {
      /* Avoid the expensive BUILD_PALETTE operation if we're sure that we
       * are not going to need the result.
       */
-     if (mng_info->write_png_colortype == 1 ||
-        mng_info->write_png_colortype == 5)
+     if (mng_info->colortype == 1 ||
+        mng_info->colortype == 5)
        ping_have_color=MagickFalse;
 
      if (image->alpha_trait != UndefinedPixelTrait)
@@ -8557,7 +8558,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
        }
   }
 
-  if (mng_info->write_png_colortype < 7)
+  if (mng_info->colortype < 7)
   {
   /* BUILD_PALETTE
    *
@@ -8832,7 +8833,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
      if (mng_info->preserve_colormap != MagickFalse)
        break;
 
-     if (mng_info->write_png_colortype != 7) /* We won't need this info */
+     if (mng_info->colortype != 7) /* We won't need this info */
        {
          ping_have_color=MagickFalse;
          ping_have_non_bw=MagickFalse;
@@ -8946,9 +8947,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
         if ((mng_info->exclude_tRNS == MagickFalse ||
             (number_transparent == 0 && number_semitransparent == 0)) &&
-            (((mng_info->write_png_colortype-1) ==
-            PNG_COLOR_TYPE_PALETTE) ||
-            (mng_info->write_png_colortype == 0)))
+            (((mng_info->colortype-1) == PNG_COLOR_TYPE_PALETTE) ||
+            (mng_info->colortype == 0)))
           {
             if (logging != MagickFalse)
               {
@@ -9366,16 +9366,16 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   if (mng_info->exclude_tRNS != MagickFalse &&
      (number_transparent != 0 || number_semitransparent != 0))
     {
-      unsigned int colortype=mng_info->write_png_colortype;
+      unsigned int colortype=mng_info->colortype;
 
       if (ping_have_color == MagickFalse)
-        mng_info->write_png_colortype = 5;
+        mng_info->colortype=5;
 
       else
-        mng_info->write_png_colortype = 7;
+        mng_info->colortype=7;
 
       if (colortype != 0 &&
-         mng_info->write_png_colortype != colortype)
+         mng_info->colortype != colortype)
         ping_need_colortype_warning=MagickTrue;
 
     }
@@ -9388,7 +9388,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
    * excluded the tRNS chunk.
    */
   if (number_transparent == 1 &&
-      mng_info->write_png_colortype < 4)
+      mng_info->colortype < 4)
     {
        ping_have_cheap_transparency = MagickTrue;
 
@@ -9467,13 +9467,13 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   image_matte=image->alpha_trait !=
         UndefinedPixelTrait ? MagickTrue : MagickFalse;
 
-  if (mng_info->write_png_colortype < 5)
+  if (mng_info->colortype < 5)
     mng_info->is_palette=image->storage_class == PseudoClass &&
       image_colors <= 256 && image->colormap != NULL;
   else
     mng_info->is_palette=MagickFalse;
 
-  if ((mng_info->write_png_colortype == 4 || mng_info->write_png8) &&
+  if ((mng_info->colortype == 4 || mng_info->write_png8) &&
      (image->colors == 0 || image->colormap == NULL))
     {
       image_info=DestroyImageInfo(image_info);
@@ -9594,8 +9594,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   if (mng_info->write_png48 || mng_info->write_png64)
      image_depth=16;
 
-  if (mng_info->write_png_depth != 0)
-     image_depth=mng_info->write_png_depth;
+  if (mng_info->depth != 0)
+     image_depth=mng_info->depth;
 
   /* Adjust requested depth to next higher valid depth if necessary */
   if (image_depth > 8)
@@ -9803,21 +9803,21 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       }
     } /* end of write_png8 */
 
-  else if (mng_info->write_png_colortype == 1)
+  else if (mng_info->colortype == 1)
     {
       image_matte=MagickFalse;
       ping_color_type=(png_byte) PNG_COLOR_TYPE_GRAY;
     }
 
   else if (mng_info->write_png24 || mng_info->write_png48 ||
-      mng_info->write_png_colortype == 3)
+      mng_info->colortype == 3)
     {
       image_matte=MagickFalse;
       ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB;
     }
 
   else if (mng_info->write_png32 || mng_info->write_png64 ||
-      mng_info->write_png_colortype == 7)
+      mng_info->colortype == 7)
     {
       image_matte=MagickTrue;
       ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB_ALPHA;
@@ -9827,9 +9827,9 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     {
       image_depth=ping_bit_depth;
 
-      if (mng_info->write_png_colortype != 0)
+      if (mng_info->colortype != 0)
         {
-          ping_color_type=(png_byte) mng_info->write_png_colortype-1;
+          ping_color_type=(png_byte) mng_info->colortype-1;
 
           if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA ||
               ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
@@ -9941,8 +9941,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
             "    Tentative PNG bit depth: %d",ping_bit_depth);
          }
 
-      if (ping_bit_depth < (int) mng_info->write_png_depth)
-         ping_bit_depth = mng_info->write_png_depth;
+      if (ping_bit_depth < (int) mng_info->depth)
+         ping_bit_depth = mng_info->depth;
     }
   (void) old_bit_depth;
   image_depth=ping_bit_depth;
@@ -9972,7 +9972,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     {
       if (mng_info->is_palette != MagickFalse)
         {
-          if (mng_info->write_png_colortype == 0)
+          if (mng_info->colortype == 0)
             {
               ping_color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
 
@@ -9991,7 +9991,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
               image_matte=MagickFalse;
 
-              if (mng_info->write_png_colortype == 0)
+              if (mng_info->colortype == 0)
                 ping_color_type&=0x03;
             }
 
@@ -10044,7 +10044,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
           if (ping_have_tRNS != MagickFalse)
             {
-              if (mng_info->write_png_colortype == 0)
+              if (mng_info->colortype == 0)
                 ping_color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
 
               if (image_depth == 8)
@@ -10074,7 +10074,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       image_matte=MagickFalse;
 
     if ((mng_info->is_palette != MagickFalse) &&
-        mng_info->write_png_colortype-1 != PNG_COLOR_TYPE_PALETTE &&
+        mng_info->colortype-1 != PNG_COLOR_TYPE_PALETTE &&
         ping_have_color == MagickFalse &&
         (image_matte == MagickFalse || image_depth >= 8))
       {
@@ -10083,7 +10083,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
         if (image_matte != MagickFalse)
           ping_color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
 
-        else if (mng_info->write_png_colortype-1 != PNG_COLOR_TYPE_GRAY_ALPHA)
+        else if (mng_info->colortype-1 != PNG_COLOR_TYPE_GRAY_ALPHA)
           {
             ping_color_type=PNG_COLOR_TYPE_GRAY;
 
@@ -10113,7 +10113,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
             ping_bit_depth=8;
             if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
               {
-                if(!mng_info->write_png_depth)
+                if(!mng_info->depth)
                   {
                     ping_bit_depth=1;
 
@@ -10149,13 +10149,13 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                      depth_1_ok=MagickFalse;
                 }
 
-                if (depth_1_ok && mng_info->write_png_depth <= 1)
+                if (depth_1_ok && mng_info->depth <= 1)
                   ping_bit_depth=1;
 
-                else if (depth_2_ok && mng_info->write_png_depth <= 2)
+                else if (depth_2_ok && mng_info->depth <= 2)
                   ping_bit_depth=2;
 
-                else if (depth_4_ok && mng_info->write_png_depth <= 4)
+                else if (depth_4_ok && mng_info->depth <= 4)
                   ping_bit_depth=4;
               }
           }
@@ -10195,7 +10195,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
               }
 
             /* color_type is PNG_COLOR_TYPE_PALETTE */
-            if (mng_info->write_png_depth == 0)
+            if (mng_info->depth == 0)
               {
                 size_t
                   one;
@@ -10274,8 +10274,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
           }
       }
 
-    if (ping_bit_depth <  (ssize_t) mng_info->write_png_depth)
-         ping_bit_depth =  (ssize_t) mng_info->write_png_depth;
+    if (ping_bit_depth <  (ssize_t) mng_info->depth)
+         ping_bit_depth =  (ssize_t) mng_info->depth;
 
     /*
       Adjust background and transparency samples in sub-8-bit grayscale files.
@@ -10436,65 +10436,65 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   if (quality <= 9)
     {
-      if (mng_info->write_png_compression_strategy == 0)
-        mng_info->write_png_compression_strategy = Z_HUFFMAN_ONLY+1;
+      if (mng_info->compression_strategy == 0)
+        mng_info->compression_strategy = Z_HUFFMAN_ONLY+1;
     }
 
-  else if (mng_info->write_png_compression_level == 0)
+  else if (mng_info->compression_level == 0)
     {
       int
         level;
 
       level=(int) MagickMin((ssize_t) quality/10,9);
 
-      mng_info->write_png_compression_level = level+1;
+      mng_info->compression_level = level+1;
     }
 
-  if (mng_info->write_png_compression_strategy == 0)
+  if (mng_info->compression_strategy == 0)
     {
         if ((quality %10) == 8 || (quality %10) == 9)
 #ifdef Z_RLE  /* Z_RLE was added to zlib-1.2.0 */
-          mng_info->write_png_compression_strategy=Z_RLE+1;
+          mng_info->compression_strategy=Z_RLE+1;
 #else
           mng_info->write_png_compression_strategy = Z_DEFAULT_STRATEGY+1;
 #endif
     }
 
-  if (mng_info->write_png_compression_filter == 0)
-        mng_info->write_png_compression_filter=((int) quality % 10) + 1;
+  if (mng_info->compression_filter == 0)
+        mng_info->compression_filter=((int) quality % 10) + 1;
 
   if (logging != MagickFalse)
     {
-        if (mng_info->write_png_compression_level)
+        if (mng_info->compression_level)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Compression level:    %d",
-            (int) mng_info->write_png_compression_level-1);
+            (int) mng_info->compression_level-1);
 
-        if (mng_info->write_png_compression_strategy)
+        if (mng_info->compression_strategy)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Compression strategy: %d",
-            (int) mng_info->write_png_compression_strategy-1);
+            (int) mng_info->compression_strategy-1);
 
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Setting up filtering");
 
-        if (mng_info->write_png_compression_filter == 6)
+        if (mng_info->compression_filter == 6)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: ADAPTIVE");
-        else if (mng_info->write_png_compression_filter == 0 ||
-                 mng_info->write_png_compression_filter == 1)
+        else if (mng_info->compression_filter == 0 ||
+                 mng_info->compression_filter == 1)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: NONE");
         else
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Base filter method: %d",
-            (int) mng_info->write_png_compression_filter-1);
+            (int) mng_info->compression_filter-1);
     }
 
-  if (mng_info->write_png_compression_level != 0)
-    png_set_compression_level(ping,mng_info->write_png_compression_level-1);
+  if (mng_info->compression_level != 0)
+    png_set_compression_level(ping,mng_info->compression_level-1);
 
-  if (mng_info->write_png_compression_filter == 6)
+  if (mng_info->compression_filter == 6)
     {
       if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
          ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
@@ -10503,11 +10503,11 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       else
         png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
      }
-  else if (mng_info->write_png_compression_filter == 7 ||
-      mng_info->write_png_compression_filter == 10)
+  else if (mng_info->compression_filter == 7 ||
+      mng_info->compression_filter == 10)
     png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
 
-  else if (mng_info->write_png_compression_filter == 8)
+  else if (mng_info->compression_filter == 8)
     {
 #if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
       if (mng_info->write_mng)
@@ -10520,16 +10520,16 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
     }
 
-  else if (mng_info->write_png_compression_filter == 9)
+  else if (mng_info->compression_filter == 9)
     png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
 
-  else if (mng_info->write_png_compression_filter != 0)
+  else if (mng_info->compression_filter != 0)
     png_set_filter(ping,PNG_FILTER_TYPE_BASE,
-       mng_info->write_png_compression_filter-1);
+       mng_info->compression_filter-1);
 
-  if (mng_info->write_png_compression_strategy != 0)
+  if (mng_info->compression_strategy != 0)
     png_set_compression_strategy(ping,
-       mng_info->write_png_compression_strategy-1);
+       mng_info->compression_strategy-1);
 
   ping_interlace_method=image_info->interlace != NoInterlace;
 
@@ -10538,9 +10538,9 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   /* Bail out if cannot meet defined png:bit-depth or png:color-type */
 
-  if (mng_info->write_png_colortype != 0)
+  if (mng_info->colortype != 0)
     {
-     if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_GRAY)
+     if (mng_info->colortype-1 == PNG_COLOR_TYPE_GRAY)
        if (ping_have_color != MagickFalse)
          {
            ping_color_type = PNG_COLOR_TYPE_RGB;
@@ -10549,18 +10549,18 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
              ping_bit_depth=8;
          }
 
-     if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_GRAY_ALPHA)
+     if (mng_info->colortype-1 == PNG_COLOR_TYPE_GRAY_ALPHA)
        if (ping_have_color != MagickFalse)
          ping_color_type = PNG_COLOR_TYPE_RGB_ALPHA;
     }
 
   if (ping_need_colortype_warning != MagickFalse ||
-     ((mng_info->write_png_depth &&
-     (int) mng_info->write_png_depth != ping_bit_depth) ||
-     (mng_info->write_png_colortype &&
-     ((int) mng_info->write_png_colortype-1 != ping_color_type &&
-      mng_info->write_png_colortype != 7 &&
-      !(mng_info->write_png_colortype == 5 && ping_color_type == 0)))))
+     ((mng_info->depth &&
+     (int) mng_info->depth != ping_bit_depth) ||
+     (mng_info->colortype &&
+     ((int) mng_info->colortype-1 != ping_color_type &&
+      mng_info->colortype != 7 &&
+      !(mng_info->colortype == 5 && ping_color_type == 0)))))
     {
       if (logging != MagickFalse)
         {
@@ -10570,19 +10570,19 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                  "  Image has transparency but tRNS chunk was excluded");
             }
 
-          if (mng_info->write_png_depth)
+          if (mng_info->depth)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "  Defined png:bit-depth=%u, Computed depth=%u",
-                  mng_info->write_png_depth,
+                  mng_info->depth,
                   ping_bit_depth);
             }
 
-          if (mng_info->write_png_colortype)
+          if (mng_info->colortype)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "  Defined png:color-type=%u, Computed color type=%u",
-                  mng_info->write_png_colortype-1,
+                  mng_info->colortype-1,
                   ping_color_type);
             }
         }
@@ -11020,7 +11020,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   (void) SetQuantumEndian(image,quantum_info,MSBEndian);
   num_passes=png_set_interlace_handling(ping);
 
-  if ((mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_PALETTE) ||
+  if ((mng_info->colortype-1 == PNG_COLOR_TYPE_PALETTE) ||
       ((!mng_info->write_png8 && !mng_info->write_png24 &&
         !mng_info->write_png48 && !mng_info->write_png64 &&
         !mng_info->write_png32) &&
@@ -11040,7 +11040,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       if (mng_info->is_palette != MagickFalse)
         {
           quantum_type=GrayQuantum;
-          if (mng_info->write_png_colortype-1 == PNG_COLOR_TYPE_PALETTE)
+          if (mng_info->colortype-1 == PNG_COLOR_TYPE_PALETTE)
             quantum_type=IndexQuantum;
         }
       (void) SetQuantumDepth(image,quantum_info,8);
@@ -11062,7 +11062,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
           (void) ExportQuantumPixels(image,(CacheView *) NULL,
             quantum_info,quantum_type,ping_pixels,exception);
-          if (mng_info->write_png_colortype-1 != PNG_COLOR_TYPE_PALETTE)
+          if (mng_info->colortype-1 != PNG_COLOR_TYPE_PALETTE)
             for (i=0; i < (ssize_t) image->columns; i++)
                *(ping_pixels+i)=(unsigned char) ((*(ping_pixels+i) > 127) ?
                       255 : 0);
@@ -11302,19 +11302,19 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Height: %.20g",(double) ping_height);
 
-      if (mng_info->write_png_depth)
+      if (mng_info->depth)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Defined png:bit-depth: %d",mng_info->write_png_depth);
+            "    Defined png:bit-depth: %d",mng_info->depth);
         }
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    PNG bit-depth written: %d",ping_bit_depth);
 
-      if (mng_info->write_png_colortype)
+      if (mng_info->colortype)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Defined png:color-type: %d",mng_info->write_png_colortype-1);
+            "    Defined png:color-type: %d",mng_info->colortype-1);
         }
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -11772,19 +11772,19 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
                  "  png00 inherited bit depth=%s",value);
 
               if (LocaleCompare(value,"1") == 0)
-                mng_info->write_png_depth = 1;
+                mng_info->depth = 1;
 
               else if (LocaleCompare(value,"2") == 0)
-                mng_info->write_png_depth = 2;
+                mng_info->depth = 2;
 
               else if (LocaleCompare(value,"4") == 0)
-                mng_info->write_png_depth = 4;
+                mng_info->depth = 4;
 
               else if (LocaleCompare(value,"8") == 0)
-                mng_info->write_png_depth = 8;
+                mng_info->depth = 8;
 
               else if (LocaleCompare(value,"16") == 0)
-                mng_info->write_png_depth = 16;
+                mng_info->depth = 16;
             }
 
           value=GetImageProperty(image,"png:IHDR.color-type-orig",exception);
@@ -11795,34 +11795,30 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
                  "  png00 inherited color type=%s",value);
 
               if (LocaleCompare(value,"0") == 0)
-                mng_info->write_png_colortype = 1;
-
+                mng_info->colortype=1;
               else if (LocaleCompare(value,"2") == 0)
-                mng_info->write_png_colortype = 3;
-
+                mng_info->colortype=3;
               else if (LocaleCompare(value,"3") == 0)
-                mng_info->write_png_colortype = 4;
-
+                mng_info->colortype=4;
               else if (LocaleCompare(value,"4") == 0)
-                mng_info->write_png_colortype = 5;
-
+                mng_info->colortype=5;
               else if (LocaleCompare(value,"6") == 0)
-                mng_info->write_png_colortype = 7;
+                mng_info->colortype=7;
             }
         }
     }
 
   if (mng_info->write_png8)
     {
-      mng_info->write_png_colortype = /* 3 */ 4;
-      mng_info->write_png_depth = 8;
+      mng_info->colortype=4; /* 3 */
+      mng_info->depth = 8;
       image->depth = 8;
     }
 
   if (mng_info->write_png24)
     {
-      mng_info->write_png_colortype = /* 2 */ 3;
-      mng_info->write_png_depth = 8;
+      mng_info->colortype=3; /* 2 */
+      mng_info->depth = 8;
       image->depth = 8;
 
       if (image->alpha_trait != UndefinedPixelTrait)
@@ -11836,8 +11832,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   if (mng_info->write_png32)
     {
-      mng_info->write_png_colortype = /* 6 */  7;
-      mng_info->write_png_depth = 8;
+      mng_info->colortype = /* 6 */  7;
+      mng_info->depth = 8;
       image->depth = 8;
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) SetImageType(image,TrueColorAlphaType,exception);
@@ -11848,8 +11844,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   if (mng_info->write_png48)
     {
-      mng_info->write_png_colortype = /* 2 */ 3;
-      mng_info->write_png_depth = 16;
+      mng_info->colortype = /* 2 */ 3;
+      mng_info->depth = 16;
       image->depth = 16;
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) SetImageType(image,TrueColorAlphaType,exception);
@@ -11860,8 +11856,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   if (mng_info->write_png64)
     {
-      mng_info->write_png_colortype = /* 6 */  7;
-      mng_info->write_png_depth = 16;
+      mng_info->colortype = /* 6 */  7;
+      mng_info->depth = 16;
       image->depth = 16;
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) SetImageType(image,TrueColorAlphaType,exception);
@@ -11875,19 +11871,19 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   if (value != (char *) NULL)
     {
       if (LocaleCompare(value,"1") == 0)
-        mng_info->write_png_depth = 1;
+        mng_info->depth = 1;
 
       else if (LocaleCompare(value,"2") == 0)
-        mng_info->write_png_depth = 2;
+        mng_info->depth = 2;
 
       else if (LocaleCompare(value,"4") == 0)
-        mng_info->write_png_depth = 4;
+        mng_info->depth = 4;
 
       else if (LocaleCompare(value,"8") == 0)
-        mng_info->write_png_depth = 8;
+        mng_info->depth = 8;
 
       else if (LocaleCompare(value,"16") == 0)
-        mng_info->write_png_depth = 16;
+        mng_info->depth = 16;
 
       else
         (void) ThrowMagickException(exception,
@@ -11897,7 +11893,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "  png:bit-depth=%d was defined.\n",mng_info->write_png_depth);
+          "  png:bit-depth=%d was defined.\n",mng_info->depth);
     }
 
   value=GetImageOption(image_info,"png:color-type");
@@ -11906,22 +11902,22 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
     {
       /* We must store colortype+1 because 0 is a valid colortype */
       if (LocaleCompare(value,"0") == 0)
-        mng_info->write_png_colortype = 1;
+        mng_info->colortype = 1;
 
       else if (LocaleCompare(value,"1") == 0)
-        mng_info->write_png_colortype = 2;
+        mng_info->colortype = 2;
 
       else if (LocaleCompare(value,"2") == 0)
-        mng_info->write_png_colortype = 3;
+        mng_info->colortype = 3;
 
       else if (LocaleCompare(value,"3") == 0)
-        mng_info->write_png_colortype = 4;
+        mng_info->colortype = 4;
 
       else if (LocaleCompare(value,"4") == 0)
-        mng_info->write_png_colortype = 5;
+        mng_info->colortype = 5;
 
       else if (LocaleCompare(value,"6") == 0)
-        mng_info->write_png_colortype = 7;
+        mng_info->colortype = 7;
 
       else
         (void) ThrowMagickException(exception,
@@ -11932,7 +11928,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  png:color-type=%d was defined.\n",
-          mng_info->write_png_colortype-1);
+          mng_info->colortype-1);
     }
 
   /* Check for chunks to be excluded:
@@ -12024,34 +12020,34 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
        * and we want to use 0 (the default) to mean undefined.
        */
       if (LocaleCompare(value,"0") == 0)
-        mng_info->write_png_compression_level = 1;
+        mng_info->compression_level = 1;
 
       else if (LocaleCompare(value,"1") == 0)
-        mng_info->write_png_compression_level = 2;
+        mng_info->compression_level = 2;
 
       else if (LocaleCompare(value,"2") == 0)
-        mng_info->write_png_compression_level = 3;
+        mng_info->compression_level = 3;
 
       else if (LocaleCompare(value,"3") == 0)
-        mng_info->write_png_compression_level = 4;
+        mng_info->compression_level = 4;
 
       else if (LocaleCompare(value,"4") == 0)
-        mng_info->write_png_compression_level = 5;
+        mng_info->compression_level = 5;
 
       else if (LocaleCompare(value,"5") == 0)
-        mng_info->write_png_compression_level = 6;
+        mng_info->compression_level = 6;
 
       else if (LocaleCompare(value,"6") == 0)
-        mng_info->write_png_compression_level = 7;
+        mng_info->compression_level = 7;
 
       else if (LocaleCompare(value,"7") == 0)
-        mng_info->write_png_compression_level = 8;
+        mng_info->compression_level = 8;
 
       else if (LocaleCompare(value,"8") == 0)
-        mng_info->write_png_compression_level = 9;
+        mng_info->compression_level = 9;
 
       else if (LocaleCompare(value,"9") == 0)
-        mng_info->write_png_compression_level = 10;
+        mng_info->compression_level = 10;
 
       else
         (void) ThrowMagickException(exception,
@@ -12066,24 +12062,24 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   if (value != NULL)
   {
       if (LocaleCompare(value,"0") == 0)
-        mng_info->write_png_compression_strategy = Z_DEFAULT_STRATEGY+1;
+        mng_info->compression_strategy = Z_DEFAULT_STRATEGY+1;
 
       else if (LocaleCompare(value,"1") == 0)
-        mng_info->write_png_compression_strategy = Z_FILTERED+1;
+        mng_info->compression_strategy = Z_FILTERED+1;
 
       else if (LocaleCompare(value,"2") == 0)
-        mng_info->write_png_compression_strategy = Z_HUFFMAN_ONLY+1;
+        mng_info->compression_strategy = Z_HUFFMAN_ONLY+1;
 
       else if (LocaleCompare(value,"3") == 0)
 #ifdef Z_RLE  /* Z_RLE was added to zlib-1.2.0 */
-        mng_info->write_png_compression_strategy = Z_RLE+1;
+        mng_info->compression_strategy = Z_RLE+1;
 #else
         mng_info->write_png_compression_strategy = Z_DEFAULT_STRATEGY+1;
 #endif
 
       else if (LocaleCompare(value,"4") == 0)
 #ifdef Z_FIXED  /* Z_FIXED was added to zlib-1.2.2.2 */
-        mng_info->write_png_compression_strategy = Z_FIXED+1;
+        mng_info->compression_strategy = Z_FIXED+1;
 #else
         mng_info->write_png_compression_strategy = Z_DEFAULT_STRATEGY+1;
 #endif
@@ -12108,22 +12104,22 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
        */
 
       if (LocaleCompare(value,"0") == 0)
-        mng_info->write_png_compression_filter = 1;
+        mng_info->compression_filter = 1;
 
       else if (LocaleCompare(value,"1") == 0)
-        mng_info->write_png_compression_filter = 2;
+        mng_info->compression_filter = 2;
 
       else if (LocaleCompare(value,"2") == 0)
-        mng_info->write_png_compression_filter = 3;
+        mng_info->compression_filter = 3;
 
       else if (LocaleCompare(value,"3") == 0)
-        mng_info->write_png_compression_filter = 4;
+        mng_info->compression_filter = 4;
 
       else if (LocaleCompare(value,"4") == 0)
-        mng_info->write_png_compression_filter = 5;
+        mng_info->compression_filter = 5;
 
       else if (LocaleCompare(value,"5") == 0)
-        mng_info->write_png_compression_filter = 6;
+        mng_info->compression_filter = 6;
 
       else
         (void) ThrowMagickException(exception,
