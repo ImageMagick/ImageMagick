@@ -744,20 +744,20 @@ typedef struct _MngWriteInfo
     is_palette,
     need_fram,
     preserve_colormap,
-    preserve_iCCP;
-
-  unsigned int
-    colortype,
-    compression_filter,
-    compression_level,
-    compression_strategy,
-    depth,
+    preserve_iCCP,
     write_mng,
     write_png8,
     write_png24,
     write_png32,
     write_png48,
     write_png64;
+
+  unsigned int
+    colortype,
+    compression_filter,
+    compression_level,
+    compression_strategy,
+    depth;
 
 } MngWriteInfo;
 #endif /* PNG_LIBPNG_VER > 10011 */
@@ -8366,10 +8366,13 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     }
 
   if (image->storage_class == PseudoClass &&
-     (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32 ||
-     mng_info->write_png48 || mng_info->write_png64 ||
-     !(mng_info->colortype == 1 || mng_info->colortype == 5 ||
-       (mng_info->colortype == 4 && image->alpha_trait != BlendPixelTrait))))
+     ((mng_info->write_png8 != MagickFalse) ||
+      (mng_info->write_png24 != MagickFalse) ||
+      (mng_info->write_png32 != MagickFalse) ||
+      (mng_info->write_png48 != MagickFalse) ||
+      (mng_info->write_png64 != MagickFalse) ||
+     !((mng_info->colortype == 1) || (mng_info->colortype == 5) ||
+       ((mng_info->colortype == 4) && (image->alpha_trait != BlendPixelTrait)))))
     {
       (void) SyncImage(image,exception);
       image->storage_class = DirectClass;
@@ -8529,7 +8532,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     }
 
   if (image->depth == 16 && mng_info->depth != 16)
-    if (mng_info->write_png8 ||
+    if (mng_info->write_png8 != MagickFalse ||
         LosslessReduceDepthOK(image,exception) != MagickFalse)
       image->depth = 8;
 #endif
@@ -9473,8 +9476,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   else
     mng_info->is_palette=MagickFalse;
 
-  if ((mng_info->colortype == 4 || mng_info->write_png8) &&
-     (image->colors == 0 || image->colormap == NULL))
+  if (((mng_info->colortype == 4) || (mng_info->write_png8 != MagickFalse)) &&
+     ((image->colors == 0) || (image->colormap == NULL)))
     {
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
@@ -9564,7 +9567,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   */
 
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
-  if (mng_info->write_mng)
+  if (mng_info->write_mng != MagickFalse)
   {
      (void) png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
 # ifdef PNG_WRITE_CHECK_FOR_INVALID_INDEX_SUPPORTED
@@ -9588,10 +9591,13 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   ping_width=(png_uint_32) image->columns;
   ping_height=(png_uint_32) image->rows;
 
-  if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
+  if ((mng_info->write_png8 != MagickFalse) ||
+      (mng_info->write_png24 != MagickFalse) ||
+      (mng_info->write_png32 != MagickFalse))
      image_depth=8;
 
-  if (mng_info->write_png48 || mng_info->write_png64)
+  if ((mng_info->write_png48 != MagickFalse) ||
+      (mng_info->write_png64 != MagickFalse))
      image_depth=16;
 
   if (mng_info->depth != 0)
@@ -9629,7 +9635,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   if (mng_info->exclude_pHYs == MagickFalse)
   {
   if ((image->resolution.x != 0) && (image->resolution.y != 0) &&
-      (!mng_info->write_mng || mng_info->equal_physs == MagickFalse))
+      (mng_info->write_mng == MagickFalse || mng_info->equal_physs == MagickFalse))
     {
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -9721,7 +9727,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   matte=image_matte;
   old_bit_depth=0;
 
-  if (mng_info->is_palette != MagickFalse && mng_info->write_png8)
+  if ((mng_info->is_palette != MagickFalse) &&
+      (mng_info->write_png8 != MagickFalse))
     {
       /* To do: make this a function cause it's used twice, except
          for reducing the sample depth from 8. */
@@ -9809,15 +9816,17 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       ping_color_type=(png_byte) PNG_COLOR_TYPE_GRAY;
     }
 
-  else if (mng_info->write_png24 || mng_info->write_png48 ||
-      mng_info->colortype == 3)
+  else if ((mng_info->write_png24 != MagickFalse) ||
+           (mng_info->write_png48 != MagickFalse) ||
+           (mng_info->colortype == 3))
     {
       image_matte=MagickFalse;
       ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB;
     }
 
-  else if (mng_info->write_png32 || mng_info->write_png64 ||
-      mng_info->colortype == 7)
+  else if ((mng_info->write_png32 != MagickFalse) ||
+           (mng_info->write_png64 != MagickFalse) ||
+           (mng_info->colortype == 7))
     {
       image_matte=MagickTrue;
       ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB_ALPHA;
@@ -10510,7 +10519,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   else if (mng_info->compression_filter == 8)
     {
 #if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
-      if (mng_info->write_mng)
+      if (mng_info->write_mng != MagickFalse)
       {
          if (((int) ping_color_type == PNG_COLOR_TYPE_RGB) ||
              ((int) ping_color_type == PNG_COLOR_TYPE_RGBA))
@@ -10533,7 +10542,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   ping_interlace_method=image_info->interlace != NoInterlace;
 
-  if (mng_info->write_mng)
+  if (mng_info->write_mng != MagickFalse)
     png_set_sig_bytes(ping,8);
 
   /* Bail out if cannot meet defined png:bit-depth or png:color-type */
@@ -10736,7 +10745,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
         }
     }
 
-  if ((!mng_info->write_mng) || (!png_get_valid(ping,ping_info,PNG_INFO_sRGB)))
+  if ((mng_info->write_mng == MagickFalse) || (!png_get_valid(ping,ping_info,PNG_INFO_sRGB)))
 #endif
     {
       if (mng_info->exclude_gAMA == MagickFalse &&
@@ -11021,13 +11030,15 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   num_passes=png_set_interlace_handling(ping);
 
   if ((mng_info->colortype-1 == PNG_COLOR_TYPE_PALETTE) ||
-      ((!mng_info->write_png8 && !mng_info->write_png24 &&
-        !mng_info->write_png48 && !mng_info->write_png64 &&
-        !mng_info->write_png32) &&
-        (mng_info->is_palette != MagickFalse ||
-        (image_info->type == BilevelType)) &&
-        image_matte == MagickFalse &&
-        ping_have_non_bw == MagickFalse))
+      (((mng_info->write_png8 == MagickFalse) &&
+        (mng_info->write_png24 == MagickFalse) &&
+        (mng_info->write_png48 == MagickFalse) &&
+        (mng_info->write_png64 == MagickFalse) &&
+        (mng_info->write_png32 == MagickFalse)) &&
+        (image_matte == MagickFalse) &&
+        (ping_have_non_bw == MagickFalse)) &&
+        ((mng_info->is_palette != MagickFalse ||
+         (image_info->type == BilevelType))))
      {
       /* Palette, Bilevel, or Opaque Monochrome */
       QuantumType
@@ -11085,11 +11096,13 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   else   /* Not Palette, Bilevel, or Opaque Monochrome */
     {
-      if ((!mng_info->write_png8 && !mng_info->write_png24 &&
-          !mng_info->write_png48 && !mng_info->write_png64 &&
-          !mng_info->write_png32) && (image_matte != MagickFalse ||
-          (ping_bit_depth >= MAGICKCORE_QUANTUM_DEPTH)) &&
-          (mng_info->is_palette != MagickFalse) && ping_have_color == MagickFalse)
+      if (((mng_info->write_png8 == MagickFalse) &&
+           (mng_info->write_png24 == MagickFalse) &&
+           (mng_info->write_png48 == MagickFalse) &&
+           (mng_info->write_png64 == MagickFalse) &&
+           (mng_info->write_png32 == MagickFalse)) &&
+          ((image_matte != MagickFalse) || ((ping_bit_depth >= MAGICKCORE_QUANTUM_DEPTH))) &&
+          ((mng_info->is_palette != MagickFalse)) && (ping_have_color == MagickFalse))
         {
           const Quantum
             *p;
@@ -11153,11 +11166,12 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
           for (pass=0; pass < num_passes; pass++)
           {
             if ((image_depth > 8) ||
-                mng_info->write_png24 ||
-                mng_info->write_png32 ||
-                mng_info->write_png48 ||
-                mng_info->write_png64 ||
-                (!mng_info->write_png8 && !mng_info->is_palette != MagickFalse))
+                (mng_info->write_png24 != MagickFalse) ||
+                (mng_info->write_png32 != MagickFalse) ||
+                (mng_info->write_png48 != MagickFalse) ||
+                (mng_info->write_png64 != MagickFalse) ||
+                ((mng_info->write_png8 == MagickFalse) &&
+                 (mng_info->is_palette == MagickFalse)))
             {
               for (y=0; y < (ssize_t) image->rows; y++)
               {
@@ -11501,8 +11515,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       else
         mng_info->framing_mode=3;
     }
-  if (mng_info->write_mng && mng_info->need_fram == MagickFalse &&
-      ((int) image->dispose == 3))
+  if ((mng_info->write_mng != MagickFalse) &&
+      (mng_info->need_fram == MagickFalse) && ((int) image->dispose == 3))
      png_error(ping, "Cannot convert GIF with disposal method 3 to MNG-LC");
 
   /*
@@ -11808,14 +11822,14 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         }
     }
 
-  if (mng_info->write_png8)
+  if (mng_info->write_png8 != MagickFalse)
     {
       mng_info->colortype=4; /* 3 */
       mng_info->depth = 8;
       image->depth = 8;
     }
 
-  if (mng_info->write_png24)
+  if (mng_info->write_png24 != MagickFalse)
     {
       mng_info->colortype=3; /* 2 */
       mng_info->depth = 8;
@@ -11830,7 +11844,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       (void) SyncImage(image,exception);
     }
 
-  if (mng_info->write_png32)
+  if (mng_info->write_png32 != MagickFalse)
     {
       mng_info->colortype = /* 6 */  7;
       mng_info->depth = 8;
@@ -11842,7 +11856,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       (void) SyncImage(image,exception);
     }
 
-  if (mng_info->write_png48)
+  if (mng_info->write_png48 != MagickFalse)
     {
       mng_info->colortype = /* 2 */ 3;
       mng_info->depth = 16;
@@ -11854,7 +11868,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       (void) SyncImage(image,exception);
     }
 
-  if (mng_info->write_png64)
+  if (mng_info->write_png64 != MagickFalse)
     {
       mng_info->colortype = /* 6 */  7;
       mng_info->depth = 16;
@@ -12753,7 +12767,7 @@ static MagickBooleanType WriteOneJNGImage(MngWriteInfo *mng_info,
       (void) WriteBlobMSBULong(image,crc32(0,chunk,13));
     }
 
-  if (mng_info->write_mng == 0 && (image->page.x || image->page.y))
+  if ((mng_info->write_mng == MagickFalse) && (image->page.x || image->page.y))
     {
       /*
          Write JNG oFFs chunk
@@ -13000,7 +13014,9 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
     *next_image;
 
   MagickBooleanType
-    status;
+    status,
+    write_jng,
+    write_mng;
 
   volatile MagickBooleanType
     logging = MagickFalse;
@@ -13024,10 +13040,6 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
   unsigned char
     chunk[800];
-
-  volatile unsigned int
-    write_jng,
-    write_mng;
 
   volatile size_t
     scene;
@@ -13084,8 +13096,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
   if (image_info->compression == JPEGCompression)
     write_jng=MagickTrue;
 
-  mng_info->adjoin=image_info->adjoin &&
-    (GetNextImageInList(image) != (Image *) NULL) && write_mng;
+  mng_info->adjoin=image_info->adjoin && (write_mng != MagickFalse) &&
+    (GetNextImageInList(image) != (Image *) NULL);
 
   if (logging != MagickFalse)
     {
@@ -13145,17 +13157,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
   mng_info->framing_mode=1;
   mng_info->old_framing_mode=1;
 
-  if (write_mng)
-      if (image_info->page != (char *) NULL)
-        {
-          /*
-            Determine image bounding box.
-          */
-          SetGeometry(image,&mng_info->page);
-          (void) ParseMetaGeometry(image_info->page,&mng_info->page.x,
-            &mng_info->page.y,&mng_info->page.width,&mng_info->page.height);
-        }
-  if (write_mng)
+  if (write_mng != MagickFalse)
     {
       unsigned int
         need_geom;
@@ -13168,6 +13170,15 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
       const char *
         option;
 
+      if (image_info->page != (char *) NULL)
+        {
+          /*
+            Determine image bounding box.
+          */
+          SetGeometry(image,&mng_info->page);
+          (void) ParseMetaGeometry(image_info->page,&mng_info->page.x,
+            &mng_info->page.y,&mng_info->page.width,&mng_info->page.height);
+        }
       mng_info->page=image->page;
       need_geom=MagickTrue;
       if (mng_info->page.width || mng_info->page.height)
@@ -13365,7 +13376,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
      PNGLong(chunk+16,0L);  /* layer count=unknown */
      PNGLong(chunk+20,0L);  /* frame count=unknown */
      PNGLong(chunk+24,0L);  /* play time=unknown   */
-     if (write_jng)
+     if (write_jng != MagickFalse)
        {
          if (need_matte)
            {
@@ -13581,7 +13592,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        Write MNG BACK chunk and global bKGD chunk, if the image is transparent
        or does not cover the entire frame.
      */
-     if (write_mng && ((image->alpha_trait != UndefinedPixelTrait) ||
+     if ((write_mng != MagickFalse) && ((image->alpha_trait != UndefinedPixelTrait) ||
          image->page.x > 0 || image->page.y > 0 || (image->page.width &&
          (image->page.width+image->page.x < mng_info->page.width))
          || (image->page.height && (image->page.height+image->page.y
@@ -13843,7 +13854,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
   } while (mng_info->adjoin != MagickFalse);
 
-  if (write_mng)
+  if (write_mng != MagickFalse)
     {
       while (GetPreviousImageInList(image) != (Image *) NULL)
         image=GetPreviousImageInList(image);
