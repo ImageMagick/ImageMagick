@@ -898,14 +898,13 @@ static void *WebPDestroyMemoryInfo(void *memory_info)
 }
 
 static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
-  const Image *image,const WebPConfig *configure,WebPData *webp_data,
+  Image *image,const WebPConfig *configure,WebPData *webp_data,
   ExceptionInfo *exception)
 {
   int
     webp_status;
 
   Image
-    *coalesce_image,
     *frame;
 
   LinkedListInfo
@@ -927,10 +926,6 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   WebPPicture
     picture;
 
-  coalesce_image=CoalesceImages(image,exception);
-  if (coalesce_image == (Image *) NULL)
-    return(MagickFalse);
-
   (void) WebPAnimEncoderOptionsInit(&enc_options);
   if (image_info->verbose != MagickFalse)
     enc_options.verbose=1;
@@ -939,14 +934,14 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
   */
   enc_options.kmin = configure->lossless ? 9 : 3;
   enc_options.kmax = configure->lossless ? 17 : 5;
-  enc=WebPAnimEncoderNew((int) coalesce_image->columns,
-    (int) coalesce_image->rows,&enc_options);
+  enc=WebPAnimEncoderNew((int) image->columns,
+    (int) image->rows,&enc_options);
 
   webp_status=1;
   effective_delta=0;
   frame_timestamp=0;
-  memory_info_list=NewLinkedList(GetImageListLength(coalesce_image));
-  frame=coalesce_image;
+  memory_info_list=NewLinkedList(GetImageListLength(image));
+  frame=image;
   while (frame != NULL)
   {
     webp_status=WebPPictureInit(&picture);
@@ -996,7 +991,6 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
 
   memory_info_list=DestroyLinkedList(memory_info_list,WebPDestroyMemoryInfo);
   WebPAnimEncoderDelete(enc);
-  (void) DestroyImageList(coalesce_image);
   return(webp_status != 0 ? MagickTrue : MagickFalse);
 }
 
