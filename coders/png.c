@@ -8574,15 +8574,15 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
               }
               if ((i == number_opaque) && (image_colors < 256))
                 {
-                   ping_background.index=(png_byte) image->colors;
-                   image->colormap[image->colors++]=image->background_color;
-                   opaque[i]=image->background_color;
-                   number_opaque++;
-                   if (logging != MagickFalse)
-                     {
-                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                           "      background_color index is %d",(int) i);
-                     }
+                  ping_background.index=(png_byte) image->colors;
+                  image->colormap[image->colors++]=image->background_color;
+                  opaque[i]=image->background_color;
+                  number_opaque++;
+                  if (logging != MagickFalse)
+                    {
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "      background_color index is %d",(int) i);
+                    }
                 }
             }
           else if (logging != MagickFalse)
