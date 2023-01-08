@@ -553,7 +553,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     delay;
 
   Image
-    *coalesce_image;
+    *clone_images;
 
   ImageInfo
     *write_info;
@@ -592,13 +592,13 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   /*
     Write intermediate files.
   */
-  coalesce_image=CoalesceImages(image,exception);
-  if (coalesce_image == (Image *) NULL)
+  clone_images=CloneImageList(image,exception);
+  if (clone_images == (Image *) NULL)
     return(MagickFalse);
   file=AcquireUniqueFileResource(basename);
   if (file != -1)
     file=close(file)-1;
-  (void) FormatLocaleString(coalesce_image->filename,MagickPathExtent,"%s",
+  (void) FormatLocaleString(clone_images->filename,MagickPathExtent,"%s",
     basename);
   count=0;
   write_info=CloneImageInfo(image_info);
@@ -606,7 +606,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   *write_info->magick='\0';
   status=MagickTrue;
   intermediate_format=GetIntermediateFormat(image_info);
-  for (p=coalesce_image; p != (Image *) NULL; p=GetNextImageInList(p))
+  for (p=clone_images; p != (Image *) NULL; p=GetNextImageInList(p))
   {
     char
       previous_image[MagickPathExtent];
@@ -695,7 +695,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
 
       options=AcquireString("");
       (void) FormatLocaleString(options,MagickPathExtent,"-plays %i",
-        (int) coalesce_image->iterations);
+        (int) clone_images->iterations);
       option=GetImageOption(image_info,"video:pixel-format");
       if (option != (const char *) NULL)
         {
@@ -732,7 +732,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     Relinquish resources.
   */
   count=0;
-  for (p=coalesce_image; p != (Image *) NULL; p=GetNextImageInList(p))
+  for (p=clone_images; p != (Image *) NULL; p=GetNextImageInList(p))
   {
     delay=100.0*p->delay/MagickMax(1.0*p->ticks_per_second,1.0);
     for (i=0; i < (ssize_t) MagickMax((1.0*delay+1.0)/3.0,1.0); i++)
@@ -744,6 +744,6 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     (void) CopyMagickString(p->filename,image_info->filename,MagickPathExtent);
   }
   (void) RelinquishUniqueFileResource(basename);
-  coalesce_image=DestroyImageList(coalesce_image);
+  clone_images=DestroyImageList(clone_images);
   return(status);
 }
