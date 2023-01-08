@@ -990,8 +990,8 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
 
   /* not enough arguments -- including -help */
   if (argc < 3) {
-    (void) FormatLocaleFile(stderr,
-       "Error: Invalid argument or not enough arguments\n\n");
+    (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+      "InvalidArgument","%s",argc > 1 ? argv[argc-1] : "");
     MagickUsage(MagickFalse);
     goto Magick_Command_Exit;
   }
