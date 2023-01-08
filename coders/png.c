@@ -12131,6 +12131,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   status=WriteOnePNGImage(mng_info,image_info,image,exception);
 
+  mng_info=(MngWriteInfo *) RelinquishMagickMemory(mng_info);
+
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WritePNGImage()");
 
@@ -12769,6 +12771,9 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlob(image,8,(const unsigned char *) "\213JNG\r\n\032\n");
 
   status=WriteOneJNGImage(mng_info,image_info,image,exception);
+
+  mng_info=(MngWriteInfo *) RelinquishMagickMemory(mng_info);
+
   (void) CloseBlob(image);
 
   (void) CatchImageException(image);
@@ -13613,6 +13618,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
   /*
     Relinquish resources.
   */
+  mng_info=(MngWriteInfo *) RelinquishMagickMemory(mng_info);
   (void) CloseBlob(image);
 
   if (logging != MagickFalse)
