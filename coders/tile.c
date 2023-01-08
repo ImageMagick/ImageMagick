@@ -107,6 +107,14 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
+  image=AcquireImage(image_info,exception);
+  if ((image->columns == 0) || (image->rows == 0))
+    ThrowReaderException(OptionError,"MustSpecifyImageSize");
+  if (*image_info->filename == '\0')
+    ThrowReaderException(OptionError,"MustSpecifyAnImageName");
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
   *read_info->magick='\0';
@@ -115,14 +123,6 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   tile_image=ReadImage(read_info,exception);
   read_info=DestroyImageInfo(read_info);
   if (tile_image == (Image *) NULL)
-    return((Image *) NULL);
-  image=AcquireImage(image_info,exception);
-  if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize");
-  if (*image_info->filename == '\0')
-    ThrowReaderException(OptionError,"MustSpecifyAnImageName");
-  status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse)
     return(DestroyImageList(image));
   image->colorspace=tile_image->colorspace;
   image->alpha_trait=tile_image->alpha_trait;
