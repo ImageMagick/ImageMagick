@@ -8547,6 +8547,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
         }
      }
 
+     image_colors=number_opaque+number_transparent+number_semitransparent;
+
      if (mng_info->write_png8 == MagickFalse &&
          mng_info->exclude_bKGD == MagickFalse)
        {
@@ -8570,17 +8572,17 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                      opaque[i].blue == image->background_color.blue)
                    break;
               }
-              if (i == number_opaque)
+              if ((i == number_opaque) && (image_colors < 256))
                 {
-                   opaque[i] = image->background_color;
-                   ping_background.index = i;
+                   ping_background.index=(png_byte) image->colors;
+                   image->colormap[image->colors++]=image->background_color;
+                   opaque[i]=image->background_color;
                    number_opaque++;
                    if (logging != MagickFalse)
                      {
                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                            "      background_color index is %d",(int) i);
                      }
-
                 }
             }
           else if (logging != MagickFalse)
@@ -8617,7 +8619,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
            ping_have_non_bw=MagickTrue;
          }
 
-         if(image_colors > 256)
+         if (image_colors > 256)
            {
              for (y=0; y < (ssize_t) image->rows; y++)
              {
