@@ -7418,17 +7418,6 @@ ModuleExport size_t RegisterPNGImage(void)
     "opaque or binary transparent 24-bit RGB");
   *version='\0';
 
-#if defined(ZLIB_VERSION)
-  (void) ConcatenateMagickString(version,"zlib ",MagickPathExtent);
-  (void) ConcatenateMagickString(version,ZLIB_VERSION,MagickPathExtent);
-
-  if (LocaleCompare(ZLIB_VERSION,zlib_version) != 0)
-    {
-      (void) ConcatenateMagickString(version,",",MagickPathExtent);
-      (void) ConcatenateMagickString(version,zlib_version,MagickPathExtent);
-    }
-#endif
-
   if (*version != '\0')
     entry->version=ConstantString(version);
 
