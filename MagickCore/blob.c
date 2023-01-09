@@ -3175,9 +3175,9 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 %
 %  OpenBlob() opens a file associated with the image.  A file name of '-' sets
 %  the file to stdin for type 'r' and stdout for type 'w'.  If the filename
-%  suffix is '.gz' or '.Z', the image is decompressed for type 'r' and
-%  compressed for type 'w'.  If the filename prefix is '|', it is piped to or
-%  from a system command.
+%  suffix is '.gz', the image is decompressed for type 'r' and compressed for
+%  type 'w'.  If the filename prefix is '|', it is piped to or from a system
+%  command.
 %
 %  The format of the OpenBlob method is:
 %
@@ -3533,8 +3533,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       }
     else
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-      if ((LocaleCompare(extension,"Z") == 0) ||
-          (LocaleCompare(extension,"gz") == 0) ||
+      if ((LocaleCompare(extension,"gz") == 0) ||
           (LocaleCompare(extension,"wmz") == 0) ||
           (LocaleCompare(extension,"svgz") == 0))
         {
