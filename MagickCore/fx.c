@@ -349,7 +349,7 @@ static const FunctionT Functions[] = {
 #endif
   {fExp,     "exp"   , 1},
   {fFloor,   "floor" , 1},
-  {fGauss,   "gauss" , 2},
+  {fGauss,   "gauss" , 1},
   {fGcd,     "gcd"   , 2},
   {fHypot,   "hypot" , 2},
   {fInt,     "int"   , 1},
