@@ -48,6 +48,7 @@ jobs:
       run: |
         set -e
         make
+        make check
         make install
 
   build_macos:
