@@ -851,6 +851,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     if (*id != '\0')
                       {
                         options=DestroyString(options);
+                        if (profiles != (LinkedListInfo *) NULL)
+                          profiles=DestroyLinkedList(profiles,
+                            RelinquishMagickMemory);
                         ThrowMIFFException(CorruptImageError,
                           "ImproperImageHeader");
                       }
