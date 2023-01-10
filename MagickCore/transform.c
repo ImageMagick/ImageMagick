@@ -48,6 +48,7 @@
 #include "MagickCore/color-private.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/composite.h"
+#include "MagickCore/composite-private.h"
 #include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/effect.h"
@@ -1148,6 +1149,7 @@ MagickExport Image *ExtentImage(const Image *image,
       extent_image=DestroyImage(extent_image);
       return((Image *) NULL);
     }
+  DisableCompositeClampUnlessSpecified(extent_image);
   status=CompositeImage(extent_image,image,image->compose,MagickTrue,
     -geometry->x,-geometry->y,exception);
   if (status != MagickFalse)
