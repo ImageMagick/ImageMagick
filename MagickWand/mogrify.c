@@ -3907,6 +3907,9 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             if (*backup_filename != '\0')
               (void) remove_utf8(backup_filename);
           }
+        else
+          if (*backup_filename != '\0')
+            (void) rename_utf8(backup_filename,image->filename);
         RemoveAllImageStack();
         continue;
       }
