@@ -1294,7 +1294,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   crop_image=CropImage(image,&crop_info,exception);
   if (crop_image == (Image *) NULL)
     return(MagickFalse);
-  (void) SetImageArtifact(crop_image,"compose:clamp","off");
+  DisableCompositeClampUnlessSpecified(crop_image);
   divergent_image=BlendDivergentImage(crop_image,source_image,exception);
   if (divergent_image == (Image *) NULL)
     {
@@ -1426,7 +1426,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   crop_image=CropImage(image,&crop_info,exception);
   if (crop_image == (Image *) NULL)
     return(MagickFalse);
-  (void) SetImageArtifact(crop_image,"compose:clamp","off");
+  DisableCompositeClampUnlessSpecified(crop_image);
   (void) ResetImagePage(crop_image,"0x0+0+0");
   sum_image=BlendSumImage(crop_image,source_image,1.0,-1.0,exception);
   crop_image=DestroyImage(crop_image);

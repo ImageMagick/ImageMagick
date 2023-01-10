@@ -21,6 +21,7 @@
 
 #include "MagickCore/color.h"
 #include "MagickCore/image.h"
+#include "MagickCore/artifact.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/pixel-accessor.h"
 
@@ -183,6 +184,12 @@ static inline void CompositePixelInfoBlend(const PixelInfo *p,
   */
   CompositePixelInfoPlus(p,(double) (alpha*p->alpha),q,(double) (beta*q->alpha),
     composite);
+}
+
+static inline void DisableCompositeClampUnlessSpecified(Image *image)
+{
+  if (GetImageArtifact(image,"compose:clamp") == (const char *) NULL)
+    (void) SetImageArtifact(image,"compose:clamp","off");
 }
 
 static inline MagickBooleanType GetCompositeClipToSelf(

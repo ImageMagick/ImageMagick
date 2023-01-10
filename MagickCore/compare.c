@@ -2150,7 +2150,7 @@ static Image *CrossCorrelationImage(const Image *alpha_image,
   /*
     Do complex multiplication.
   */
-  (void) SetImageArtifact(complex_conjugate,"compose:clamp","false");
+  DisableCompositeClampUnlessSpecified(complex_conjugate);
   complex_multiplication=ComplexImages(complex_conjugate,
     MultiplyComplexOperator,exception);
   complex_conjugate=DestroyImageList(complex_conjugate);
