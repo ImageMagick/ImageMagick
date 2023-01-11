@@ -841,6 +841,7 @@ WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
     {
       if (LocaleCompare("family",option+1) == 0)
         {
+          (void) SetImageOption(_image_info,option+1, ArgOption(NULL));
           (void) CloneString(&_draw_info->family,ArgOption(NULL));
           break;
         }
