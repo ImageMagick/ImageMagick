@@ -327,7 +327,7 @@ if (PNG_FOUND)
 endif()
 magick_find_delegate(DELEGATE RSVG_DELEGATE NAME Rsvg DEFAULT TRUE)
 magick_find_delegate(DELEGATE WEBP_DELEGATE NAME WebP DEFAULT TRUE)
-magick_find_delegate(DELEGATE JXL_DELEGATE NAME JXL DEFAULT TRUE)
+magick_find_delegate(DELEGATE JXL_DELEGATE NAME libjxl DEFAULT TRUE)
 
 # TODO are these correct and should they be off by default?
 magick_find_delegate(DELEGATE AUTOTRACE_DELEGATE NAME AUTOTRACE DEFAULT FALSE)
