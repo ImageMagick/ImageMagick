@@ -746,6 +746,9 @@
 /* Define if you have JPEG library */
 #cmakedefine JPEG_DELEGATE
 
+/* Define if you have JXL library */
+#cmakedefine JXL_DELEGATE
+
 /* Define if you have LCMS library */
 #cmakedefine LCMS_DELEGATE
 
