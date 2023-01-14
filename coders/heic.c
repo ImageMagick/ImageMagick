@@ -1201,6 +1201,9 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     MagickBooleanType
       lossless = image_info->quality >= 100 ? MagickTrue : MagickFalse;
 
+    struct heif_encoding_options
+      *options;
+
     /*
       Get encoder for the specified format.
     */
@@ -1303,9 +1306,14 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
           }
       }
 #endif
+    options=heif_encoding_options_alloc();
+#if LIBHEIF_NUMERIC_VERSION >= 0x010e0000
+    if (image->orientation != UndefinedOrientation)
+      options->image_orientation=(enum heif_orientation) image->orientation;
+#endif
     error=heif_context_encode_image(heif_context,heif_image,heif_encoder,
-      (const struct heif_encoding_options *) NULL,
-      (struct heif_image_handle **) NULL);
+      options,(struct heif_image_handle **) NULL);
+    heif_encoding_options_free(options);
     if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
       break;
     status=IsHEIFSuccess(image,&error,exception);
