@@ -185,6 +185,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count,
     i,
     offset,
+    offset_stepsize,
     x,
     y;
 
@@ -433,6 +434,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   index=0;
   runlength=0;
   offset=0;
+  offset_stepsize=1;
+  if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 2)
+    offset_stepsize=2;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
@@ -571,10 +575,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
       q+=GetPixelChannels(image);
     }
-    if (((unsigned char) (tga_info.attributes & 0xc0) >> 6) == 2)
-      offset+=2;
-    else
-      offset++;
+    offset+=offset_stepsize;
     if (offset >= (ssize_t) image->rows)
       {
         base++;
