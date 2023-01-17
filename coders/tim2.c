@@ -726,7 +726,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
     image->depth=(clut_depth != 0) ? clut_depth : bits_per_pixel;
     if ((image->depth == 16) || (image->depth == 32))
       image->alpha_trait=BlendPixelTrait;
-    if (image->ping != MagickFalse)
+    if (image->ping == MagickFalse)
       {
         status=ReadTIM2ImageData(image_info,image,&image_header,clut_depth,
           bits_per_pixel,exception);
