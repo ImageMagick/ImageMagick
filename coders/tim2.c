@@ -673,6 +673,28 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
     TIM2ImageHeader
       image_header;
 
+    if (i > 0)
+      {
+        /*
+          Proceed to next image.
+        */
+        if (image_info->number_scenes != 0)
+          if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+            break;
+        /*
+          Allocate next image structure.
+        */
+        AcquireNextImage(image_info,image,exception);
+        if (GetNextImageInList(image) == (Image *) NULL)
+          {
+            status=MagickFalse;
+            break;
+          }
+        image=SyncNextImageInList(image);
+        status=SetImageProgress(image,LoadImagesTag,image->scene-1,image->scene);
+        if (status == MagickFalse)
+          break;
+      }
     ReadTIM2ImageHeader(image,&image_header);
     if (image_header.mipmap_count != 1)
       ThrowReaderException(CoderError,"NumberOfImagesIsNotSupported");
@@ -743,25 +765,6 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
           image->filename);
         break;
       }
-    /*
-      Proceed to next image.
-    */
-    if (image_info->number_scenes != 0)
-      if (image->scene >= (image_info->scene+image_info->number_scenes-1))
-        break;
-    /*
-      Allocate next image structure.
-    */
-    AcquireNextImage(image_info,image,exception);
-    if (GetNextImageInList(image) == (Image *) NULL)
-      {
-        status=MagickFalse;
-        break;
-      }
-    image=SyncNextImageInList(image);
-    status=SetImageProgress(image,LoadImagesTag,image->scene-1,image->scene);
-    if (status == MagickFalse)
-      break;
   }
   (void) CloseBlob(image);
   if (status == MagickFalse)
