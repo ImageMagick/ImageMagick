@@ -369,6 +369,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
             image_info->filename);
         }
       }
+      SyncImage(image,exception);
     }
   else  /* has_clut==false */
     {
