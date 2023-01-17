@@ -75,9 +75,6 @@ typedef struct _TIM2FileHeader
 
   unsigned short
     image_count;
-
-  char
-    reserved[8];
 } TIM2FileHeader;
 
 typedef struct _TIM2ImageHeader
@@ -626,8 +623,7 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
     status;
 
   ssize_t
-    i,
-    str_read;
+    i;
 
   TIM2FileHeader
     file_header;
@@ -657,7 +653,8 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
   file_header.format_type=ReadBlobByte(image);
   file_header.image_count=ReadBlobLSBShort(image);
-  ReadBlobStream(image,8,&(file_header.reserved),&str_read);
+  if (DiscardBlobBytes(image,8) == MagickFalse) /* reserved */
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   if ((file_header.format_type > 0) &&
       (DiscardBlobBytes(image,112) == MagickFalse))
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
