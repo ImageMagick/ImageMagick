@@ -649,37 +649,18 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  /*
-   * Verify TIM2 magic number.
-   */
   file_header.magic_num=ReadBlobMSBLong(image);
   if (file_header.magic_num != 0x54494D32) /* "TIM2" */
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  /*
-   * #### Read File Header ####
-   */
   file_header.format_vers=ReadBlobByte(image);
   if (file_header.format_vers != 0x04)
     ThrowReaderException(CoderError,"ImageTypeNotSupported");
   file_header.format_type=ReadBlobByte(image);
   file_header.image_count=ReadBlobLSBShort(image);
   ReadBlobStream(image,8,&(file_header.reserved),&str_read);
-  /*
-   * Jump to first image header
-   */
-  switch(file_header.format_type)
-  {
-    case 0x00:
-      if (DiscardBlobBytes(image,16) == MagickFalse)
-        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-      break;
-    case 0x01:
-      if (DiscardBlobBytes(image,128) == MagickFalse)
-        ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-      break;
-    default:
-      ThrowReaderException(CoderError,"ImageTypeNotSupported");
-  }
+  if ((file_header.format_type > 0) &&
+      (DiscardBlobBytes(image,112) == MagickFalse))
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   /*
    * Process each image. Only one image supported for now
    */
