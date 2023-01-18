@@ -176,8 +176,8 @@ static MagickBooleanType
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DecodeImage unpacks the packed image pixels into runlength-encoded
-%  pixel packets.
+%  DecodeImage unpacks the packed image pixels into runlength-encoded pixel
+%  packets.
 %
 %  The format of the DecodeImage method is:
 %
@@ -232,7 +232,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
     MagickBooleanType
       status;
 
-    if ((p < pixels) || (p > q))
+    if ((p < pixels) || (p >= q))
       break;
     count=ReadBlobByte(image);
     if (count == EOF)
@@ -268,7 +268,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
         if (count == EOF)
           break;
         if (count == 0x01)
-          return(MagickTrue);
+          break;
         switch (count)
         {
           case 0x00:
@@ -303,6 +303,8 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
               Absolute mode.
             */
             count=(int) MagickMin((ssize_t) count,(ssize_t) (q-p));
+            if (count < 0)
+              break;
             if (compression == BI_RLE8)
               for (i=0; i < (ssize_t) count; i++)
               {
@@ -348,7 +350,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
   }
   (void) ReadBlobByte(image);  /* end of line */
   (void) ReadBlobByte(image);
-  return(y < (ssize_t) image->rows ? MagickFalse : MagickTrue);
+  return((q-pixels) < (ssize_t) number_pixels ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -537,17 +539,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *pixel_info;
 
   Quantum
-    index;
-
-  Quantum
+    index,
     *q;
-
-  ssize_t
-    i,
-    x;
-
-  unsigned char
-    *p;
 
   size_t
     bit,
@@ -556,10 +549,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
+    i,
+    x,
     y;
 
   unsigned char
     magick[12],
+    *p,
     *pixels;
 
   unsigned int
@@ -632,6 +628,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  BMP header size: %u",bmp_info.size);
     if (bmp_info.size > 124)
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    if (bmp_info.offset_bits < bmp_info.size)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     bmp_info.offset_bits=MagickMax(14+bmp_info.size,bmp_info.offset_bits);
     profile_data=0;
