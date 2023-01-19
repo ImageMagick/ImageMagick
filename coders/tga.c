@@ -171,7 +171,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickBooleanType
     flip_x = MagickFalse,
-    flip_y = MagickTrue,
+    flip_y = MagickFalse,
     status;
 
   PixelInfo
