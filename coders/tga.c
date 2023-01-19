@@ -163,12 +163,15 @@ static MagickBooleanType
 */
 static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  const char
+    *option;
+
   Image
     *image;
 
   MagickBooleanType
-    flip_x,
-    flip_y,
+    flip_x = MagickFalse,
+    flip_y = MagickTrue,
     status;
 
   PixelInfo
@@ -326,8 +329,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       comment=DestroyString(comment);
     }
   image->orientation=BottomLeftOrientation;
-  flip_x=MagickFalse;
-  flip_y=MagickTrue;
   if ((tga_info.attributes & (1UL << 4)) == 0)
     {
       if ((tga_info.attributes & (1UL << 5)) == 0)
@@ -352,7 +353,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           flip_x=MagickTrue;
         }
     }
-  if (IsStringTrue(GetImageOption(image_info,"tga:preserve-orientation")) != MagickFalse)
+  option=GetImageOption(image_info,"tga:preserve-orientation");
+  if (IsStringTrue(option) != MagickFalse)
     {
       flip_x=MagickFalse;
       flip_y=MagickFalse;
