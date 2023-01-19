@@ -328,7 +328,6 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       comment=DestroyString(comment);
     }
-  image->orientation=BottomLeftOrientation;
   if ((tga_info.attributes & (1UL << 4)) == 0)
     {
       if ((tga_info.attributes & (1UL << 5)) == 0)
