@@ -903,10 +903,9 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
     Validate pixel cache geometry.
   */
   assert(image != (Image *) NULL);
-  if ((x < 0) || (y < 0) ||
-      ((x+(ssize_t) columns) > (ssize_t) image->columns) ||
-      ((y+(ssize_t) rows) > (ssize_t) image->rows) ||
-      (columns == 0) || (rows == 0))
+  if ((image->columns == 0) || (image->rows == 0) || (x < 0) ||
+      (y < 0) || (x >= (ssize_t) image->columns) ||
+      (y >= (ssize_t) image->rows))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
         "ImageDoesNotContainTheStreamGeometry","`%s'",image->filename);
