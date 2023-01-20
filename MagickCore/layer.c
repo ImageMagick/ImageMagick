@@ -2019,8 +2019,6 @@ MagickExport Image *MergeImageLayers(Image *image,const LayerMethod method,
         height=page.height;
       for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
       {
-        page.x=next->page.x;
-        page.y=next->page.y;
         if ((ssize_t) width < (next->page.x+(ssize_t) next->columns))
           width=(size_t) next->page.x+next->columns;
         if ((ssize_t) height < (next->page.y+(ssize_t) next->rows))
