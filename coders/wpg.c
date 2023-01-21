@@ -39,11 +39,13 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colormap-private.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/constitute.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -65,143 +67,150 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 
+/*
+  Forward declarations.
+*/
+static MagickBooleanType
+  WriteWPGImage(const ImageInfo *,Image *,ExceptionInfo *);
+
 typedef struct
-   {
-   unsigned char Red;
-   unsigned char Blue;
-   unsigned char Green;
-   } RGB_Record;
+{
+  unsigned char Red;
+  unsigned char Blue;
+  unsigned char Green;
+} RGB_Record;
 
 /* Default palette for WPG level 1 */
-static const RGB_Record WPG1_Palette[256]={
-{  0,  0,  0},    {  0,  0,168},
-{  0,168,  0},    {  0,168,168},
-{168,  0,  0},    {168,  0,168},
-{168, 84,  0},    {168,168,168},
-{ 84, 84, 84},    { 84, 84,252},
-{ 84,252, 84},    { 84,252,252},
-{252, 84, 84},    {252, 84,252},
-{252,252, 84},    {252,252,252},  /*16*/
-{  0,  0,  0},    { 20, 20, 20},
-{ 32, 32, 32},    { 44, 44, 44},
-{ 56, 56, 56},    { 68, 68, 68},
-{ 80, 80, 80},    { 96, 96, 96},
-{112,112,112},    {128,128,128},
-{144,144,144},    {160,160,160},
-{180,180,180},    {200,200,200},
-{224,224,224},    {252,252,252},  /*32*/
-{  0,  0,252},    { 64,  0,252},
-{124,  0,252},    {188,  0,252},
-{252,  0,252},    {252,  0,188},
-{252,  0,124},    {252,  0, 64},
-{252,  0,  0},    {252, 64,  0},
-{252,124,  0},    {252,188,  0},
-{252,252,  0},    {188,252,  0},
-{124,252,  0},    { 64,252,  0},  /*48*/
-{  0,252,  0},    {  0,252, 64},
-{  0,252,124},    {  0,252,188},
-{  0,252,252},    {  0,188,252},
-{  0,124,252},    {  0, 64,252},
-{124,124,252},    {156,124,252},
-{188,124,252},    {220,124,252},
-{252,124,252},    {252,124,220},
-{252,124,188},    {252,124,156},  /*64*/
-{252,124,124},    {252,156,124},
-{252,188,124},    {252,220,124},
-{252,252,124},    {220,252,124},
-{188,252,124},    {156,252,124},
-{124,252,124},    {124,252,156},
-{124,252,188},    {124,252,220},
-{124,252,252},    {124,220,252},
-{124,188,252},    {124,156,252},  /*80*/
-{180,180,252},    {196,180,252},
-{216,180,252},    {232,180,252},
-{252,180,252},    {252,180,232},
-{252,180,216},    {252,180,196},
-{252,180,180},    {252,196,180},
-{252,216,180},    {252,232,180},
-{252,252,180},    {232,252,180},
-{216,252,180},    {196,252,180},  /*96*/
-{180,220,180},    {180,252,196},
-{180,252,216},    {180,252,232},
-{180,252,252},    {180,232,252},
-{180,216,252},    {180,196,252},
-{0,0,112},    {28,0,112},
-{56,0,112},    {84,0,112},
-{112,0,112},    {112,0,84},
-{112,0,56},    {112,0,28},  /*112*/
-{112,0,0},    {112,28,0},
-{112,56,0},    {112,84,0},
-{112,112,0},    {84,112,0},
-{56,112,0},    {28,112,0},
-{0,112,0},    {0,112,28},
-{0,112,56},    {0,112,84},
-{0,112,112},    {0,84,112},
-{0,56,112},    {0,28,112},   /*128*/
-{56,56,112},    {68,56,112},
-{84,56,112},    {96,56,112},
-{112,56,112},    {112,56,96},
-{112,56,84},    {112,56,68},
-{112,56,56},    {112,68,56},
-{112,84,56},    {112,96,56},
-{112,112,56},    {96,112,56},
-{84,112,56},    {68,112,56},  /*144*/
-{56,112,56},    {56,112,69},
-{56,112,84},    {56,112,96},
-{56,112,112},    {56,96,112},
-{56,84,112},    {56,68,112},
-{80,80,112},    {88,80,112},
-{96,80,112},    {104,80,112},
-{112,80,112},    {112,80,104},
-{112,80,96},    {112,80,88},  /*160*/
-{112,80,80},    {112,88,80},
-{112,96,80},    {112,104,80},
-{112,112,80},    {104,112,80},
-{96,112,80},    {88,112,80},
-{80,112,80},    {80,112,88},
-{80,112,96},    {80,112,104},
-{80,112,112},    {80,114,112},
-{80,96,112},    {80,88,112},  /*176*/
-{0,0,64},    {16,0,64},
-{32,0,64},    {48,0,64},
-{64,0,64},    {64,0,48},
-{64,0,32},    {64,0,16},
-{64,0,0},    {64,16,0},
-{64,32,0},    {64,48,0},
-{64,64,0},    {48,64,0},
-{32,64,0},    {16,64,0},  /*192*/
-{0,64,0},    {0,64,16},
-{0,64,32},    {0,64,48},
-{0,64,64},    {0,48,64},
-{0,32,64},    {0,16,64},
-{32,32,64},    {40,32,64},
-{48,32,64},    {56,32,64},
-{64,32,64},    {64,32,56},
-{64,32,48},    {64,32,40},  /*208*/
-{64,32,32},    {64,40,32},
-{64,48,32},    {64,56,32},
-{64,64,32},    {56,64,32},
-{48,64,32},    {40,64,32},
-{32,64,32},    {32,64,40},
-{32,64,48},    {32,64,56},
-{32,64,64},    {32,56,64},
-{32,48,64},    {32,40,64},  /*224*/
-{44,44,64},    {48,44,64},
-{52,44,64},    {60,44,64},
-{64,44,64},    {64,44,60},
-{64,44,52},    {64,44,48},
-{64,44,44},    {64,48,44},
-{64,52,44},    {64,60,44},
-{64,64,44},    {60,64,44},
-{52,64,44},    {48,64,44},  /*240*/
-{44,64,44},    {44,64,48},
-{44,64,52},    {44,64,60},
-{44,64,64},    {44,60,64},
-{44,55,64},    {44,48,64},
-{0,0,0},    {0,0,0},
-{0,0,0},    {0,0,0},
-{0,0,0},    {0,0,0},
-{0,0,0},    {0,0,0}    /*256*/
+static const RGB_Record WPG1_Palette[256]=
+{
+  {  0,  0,  0},    {  0,  0,168},
+  {  0,168,  0},    {  0,168,168},
+  {168,  0,  0},    {168,  0,168},
+  {168, 84,  0},    {168,168,168},
+  { 84, 84, 84},    { 84, 84,252},
+  { 84,252, 84},    { 84,252,252},
+  {252, 84, 84},    {252, 84,252},
+  {252,252, 84},    {252,252,252},  /*16*/
+  {  0,  0,  0},    { 20, 20, 20},
+  { 32, 32, 32},    { 44, 44, 44},
+  { 56, 56, 56},    { 68, 68, 68},
+  { 80, 80, 80},    { 96, 96, 96},
+  {112,112,112},    {128,128,128},
+  {144,144,144},    {160,160,160},
+  {180,180,180},    {200,200,200},
+  {224,224,224},    {252,252,252},  /*32*/
+  {  0,  0,252},    { 64,  0,252},
+  {124,  0,252},    {188,  0,252},
+  {252,  0,252},    {252,  0,188},
+  {252,  0,124},    {252,  0, 64},
+  {252,  0,  0},    {252, 64,  0},
+  {252,124,  0},    {252,188,  0},
+  {252,252,  0},    {188,252,  0},
+  {124,252,  0},    { 64,252,  0},  /*48*/
+  {  0,252,  0},    {  0,252, 64},
+  {  0,252,124},    {  0,252,188},
+  {  0,252,252},    {  0,188,252},
+  {  0,124,252},    {  0, 64,252},
+  {124,124,252},    {156,124,252},
+  {188,124,252},    {220,124,252},
+  {252,124,252},    {252,124,220},
+  {252,124,188},    {252,124,156},  /*64*/
+  {252,124,124},    {252,156,124},
+  {252,188,124},    {252,220,124},
+  {252,252,124},    {220,252,124},
+  {188,252,124},    {156,252,124},
+  {124,252,124},    {124,252,156},
+  {124,252,188},    {124,252,220},
+  {124,252,252},    {124,220,252},
+  {124,188,252},    {124,156,252},  /*80*/
+  {180,180,252},    {196,180,252},
+  {216,180,252},    {232,180,252},
+  {252,180,252},    {252,180,232},
+  {252,180,216},    {252,180,196},
+  {252,180,180},    {252,196,180},
+  {252,216,180},    {252,232,180},
+  {252,252,180},    {232,252,180},
+  {216,252,180},    {196,252,180},  /*96*/
+  {180,220,180},    {180,252,196},
+  {180,252,216},    {180,252,232},
+  {180,252,252},    {180,232,252},
+  {180,216,252},    {180,196,252},
+  {0,0,112},    {28,0,112},
+  {56,0,112},    {84,0,112},
+  {112,0,112},    {112,0,84},
+  {112,0,56},    {112,0,28},  /*112*/
+  {112,0,0},    {112,28,0},
+  {112,56,0},    {112,84,0},
+  {112,112,0},    {84,112,0},
+  {56,112,0},    {28,112,0},
+  {0,112,0},    {0,112,28},
+  {0,112,56},    {0,112,84},
+  {0,112,112},    {0,84,112},
+  {0,56,112},    {0,28,112},   /*128*/
+  {56,56,112},    {68,56,112},
+  {84,56,112},    {96,56,112},
+  {112,56,112},    {112,56,96},
+  {112,56,84},    {112,56,68},
+  {112,56,56},    {112,68,56},
+  {112,84,56},    {112,96,56},
+  {112,112,56},    {96,112,56},
+  {84,112,56},    {68,112,56},  /*144*/
+  {56,112,56},    {56,112,69},
+  {56,112,84},    {56,112,96},
+  {56,112,112},    {56,96,112},
+  {56,84,112},    {56,68,112},
+  {80,80,112},    {88,80,112},
+  {96,80,112},    {104,80,112},
+  {112,80,112},    {112,80,104},
+  {112,80,96},    {112,80,88},  /*160*/
+  {112,80,80},    {112,88,80},
+  {112,96,80},    {112,104,80},
+  {112,112,80},    {104,112,80},
+  {96,112,80},    {88,112,80},
+  {80,112,80},    {80,112,88},
+  {80,112,96},    {80,112,104},
+  {80,112,112},    {80,114,112},
+  {80,96,112},    {80,88,112},  /*176*/
+  {0,0,64},    {16,0,64},
+  {32,0,64},    {48,0,64},
+  {64,0,64},    {64,0,48},
+  {64,0,32},    {64,0,16},
+  {64,0,0},    {64,16,0},
+  {64,32,0},    {64,48,0},
+  {64,64,0},    {48,64,0},
+  {32,64,0},    {16,64,0},  /*192*/
+  {0,64,0},    {0,64,16},
+  {0,64,32},    {0,64,48},
+  {0,64,64},    {0,48,64},
+  {0,32,64},    {0,16,64},
+  {32,32,64},    {40,32,64},
+  {48,32,64},    {56,32,64},
+  {64,32,64},    {64,32,56},
+  {64,32,48},    {64,32,40},  /*208*/
+  {64,32,32},    {64,40,32},
+  {64,48,32},    {64,56,32},
+  {64,64,32},    {56,64,32},
+  {48,64,32},    {40,64,32},
+  {32,64,32},    {32,64,40},
+  {32,64,48},    {32,64,56},
+  {32,64,64},    {32,56,64},
+  {32,48,64},    {32,40,64},  /*224*/
+  {44,44,64},    {48,44,64},
+  {52,44,64},    {60,44,64},
+  {64,44,64},    {64,44,60},
+  {64,44,52},    {64,44,48},
+  {64,44,44},    {64,48,44},
+  {64,52,44},    {64,60,44},
+  {64,64,44},    {60,64,44},
+  {52,64,44},    {48,64,44},  /*240*/
+  {44,64,44},    {44,64,48},
+  {44,64,52},    {44,64,60},
+  {44,64,64},    {44,60,64},
+  {44,55,64},    {44,48,64},
+  {0,0,0},    {0,0,0},
+  {0,0,0},    {0,0,0},
+  {0,0,0},    {0,0,0},
+  {0,0,0},    {0,0,0}    /*256*/
 };
 
 /*
@@ -953,8 +962,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadWPGImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   typedef struct
   {
@@ -1660,6 +1668,7 @@ ModuleExport size_t RegisterWPGImage(void)
 
   entry=AcquireMagickInfo("WPG","WPG","Word Perfect Graphics");
   entry->decoder=(DecodeImageHandler *) ReadWPGImage;
+  entry->encoder=(EncodeImageHandler *) WriteWPGImage;
   entry->magick=(IsImageFormatHandler *) IsWPG;
   entry->flags^=CoderAdjoinFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
@@ -1689,4 +1698,294 @@ ModuleExport size_t RegisterWPGImage(void)
 ModuleExport void UnregisterWPGImage(void)
 {
   (void) UnregisterMagickInfo("WPG");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e W P G I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteWPGImage() writes an image in the WPG format to a file.
+%
+%  The format of the WriteWPGImage method is:
+%
+%      MagickBooleanType WriteWPGImage(const ImageInfo *image_info,
+%        Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows.
+%
+%    o image_info: the image info.
+%
+%    o image:  The image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+typedef struct
+{
+	size_t
+    count;
+
+	ssize_t
+    offset;
+
+	unsigned char
+    pixels[256];
+} WPGRLEInfo;
+
+static void WPGFlushRLE(WPGRLEInfo *rle_info,Image *image,unsigned char n)
+{
+  if (n > rle_info->offset)
+    n=rle_info->offset;
+  if (n > 0x7F)
+    n=0x7F;
+  if (n > 0)
+    {
+      (void) WriteBlobByte(image,n);
+      (void) WriteBlob(image,n,rle_info->pixels);
+      rle_info->offset-=n;
+      if (rle_info->offset > 0)
+        (void) memcpy(rle_info->pixels,rle_info->pixels+n,n);
+      else
+        rle_info->count=0;
+    }
+}
+
+static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
+  const unsigned char byte)
+{
+  rle_info->pixels[rle_info->offset++]=byte;
+  if (rle_info->offset > 1)
+    {
+      if ((rle_info->count == 0x7E) ||
+          (rle_info->pixels[rle_info->offset-2] != byte))
+        {
+          if (rle_info->count >= 1)
+            {
+              rle_info->count++;
+              WPGFlushRLE(rle_info,image,rle_info->offset-rle_info->count-1);
+              (void) WriteBlobByte(image,rle_info->count|0x80);
+              (void) WriteBlobByte(image,rle_info->pixels[0]);
+              rle_info->offset=1;
+              rle_info->pixels[0]=byte;
+            }
+          rle_info->count = 0;
+        }
+      else
+        rle_info->count++;
+  }
+  if ((rle_info->offset-rle_info->count) > 0x7E)
+    {
+      WPGFlushRLE(rle_info,image,0x7F);
+      return;
+    }
+  if ((rle_info->offset > 0x7E) && (rle_info->count >= 1))
+     {
+       WPGFlushRLE(rle_info,image,rle_info->offset-rle_info->count-1);
+       return;
+     }
+}
+
+static void WPGFlush(WPGRLEInfo *rle_info,Image *image)
+{
+  if (rle_info->count > 1)
+    {
+      WPGAddRLEByte(rle_info,image,rle_info->pixels[rle_info->offset-1] ^ 0xFF);
+      rle_info->offset=0;
+    }
+  else
+    {
+      WPGFlushRLE(rle_info,image,0x7F);
+      WPGFlushRLE(rle_info,image,0x7F);
+      rle_info->count=0;
+    }
+}
+
+static void WPGAddRLEBlock(WPGRLEInfo *rle_info,Image *image,
+  const unsigned char *pixels,unsigned short extent)
+{
+  while (extent-- > 0)
+  {
+    WPGAddRLEByte(rle_info,image,*pixels);
+    pixels++;
+  }
+}
+
+static void WPGInitializeRLE(WPGRLEInfo *rle_info)
+{
+  rle_info->count=0;
+  rle_info->offset=0;
+}
+
+static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    current_offset,
+    offset;
+
+  QuantumInfo
+    *quantum_info;
+
+  size_t
+    extent;
+
+  ssize_t
+    y;
+
+  unsigned char
+    *pixels;
+
+  WPGRLEInfo
+    rle_info;
+
+  /*
+    Open output image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    return(status);
+  if ((image->columns > 65535UL) || (image->rows > 65535UL))
+    ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  (void) SetImageType(image,PaletteType,exception);
+  /*
+    Write WPG header.
+  */
+  (void) WriteBlobLSBLong(image,0x435057FF);  /* FileId */
+  (void) WriteBlobLSBLong(image,16);  /* data offset */
+  (void) WriteBlobByte(image,0x16);  /* product type */
+  (void) WriteBlobByte(image,1);  /* file type */
+  (void) WriteBlobByte(image,1);  /* major version */
+  (void) WriteBlobByte(image,0);  /* minor version */
+  (void) WriteBlobLSBShort(image,0);  /* encypt key */
+  (void) WriteBlobLSBShort(image,0);  /* reserved */
+  /*
+    Write WPG level 1 header.
+  */
+  (void) WriteBlobByte(image,0x0f);
+  (void) WriteBlobByte(image,0x06);
+  (void) WriteBlobByte(image,1);  /* version number */
+  (void) WriteBlobByte(image,0);  /* flags */
+  (void) WriteBlobLSBShort(image,(unsigned short) image->columns);
+  (void) WriteBlobLSBShort(image,(unsigned short) image->rows);
+  image->depth=8;
+  if (image->colors <= 16)
+    image->depth=4;
+  if (image->colors <= 2)
+    image->depth=1;
+  if (image->depth > 1)
+    {
+      /*
+        Write colormap.
+      */
+      ssize_t i = 0;
+      unsigned short number_entries = 0;
+      (void) WriteBlobByte(image,0x0e);
+      number_entries=3*(1U << image->depth)+4;
+      if (number_entries < 0xff)
+        (void) WriteBlobByte(image,(unsigned char) number_entries);
+      else
+        {
+          (void) WriteBlobByte(image,0xff);
+          (void) WriteBlobLSBShort(image,number_entries);
+        }
+      (void) WriteBlobLSBShort(image,0); /* start index */
+      (void) WriteBlobLSBShort(image,1U << image->depth);
+      for ( ; i < (1U << image->depth); i++)
+        if (i >= image->colors)
+          {
+            (void) WriteBlobByte(image,i);
+            (void) WriteBlobByte(image,i);
+            (void) WriteBlobByte(image,i);
+          }
+        else
+          {
+            (void) WriteBlobByte(image,ScaleQuantumToChar(
+              image->colormap[i].red));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(
+              image->colormap[i].green));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(
+              image->colormap[i].blue));
+          }
+    }
+  /*
+    Bitmap 1 header.
+  */
+  (void) WriteBlobByte(image,0x0b);
+  (void) WriteBlobByte(image,0xff);
+  offset=TellBlob(image);
+  (void) WriteBlobLSBShort(image,0x8000);
+  (void) WriteBlobLSBShort(image,0);
+  (void) WriteBlobLSBShort(image,image->columns);
+  (void) WriteBlobLSBShort(image,image->rows);
+  (void) WriteBlobLSBShort(image,image->depth);
+  (void) WriteBlobLSBShort(image,75);  /* resolution */
+  (void) WriteBlobLSBShort(image,75);
+  /*
+    Write WPG image pixels.
+  */
+  quantum_info=AcquireQuantumInfo(image_info,image);
+  if (quantum_info == (QuantumInfo *) NULL)
+    ThrowWriterException(ImageError,"MemoryAllocationFailed");
+  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
+  extent=image->columns;
+  if (image->colors <= 16)
+    extent=(image->columns+1)/2;
+  if (image->colors <= 2)
+    extent=(image->columns+7)/8;
+  WPGInitializeRLE(&rle_info);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *p;
+
+    size_t
+      length;
+
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+      image->depth == 1 ? GrayQuantum : IndexQuantum,pixels,exception);
+    if (length == 0)
+      break;
+    WPGAddRLEBlock(&rle_info,image,pixels,extent);
+    WPGFlush(&rle_info,image);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+      image->rows);
+    if (status == MagickFalse)
+      break;
+  }
+  quantum_info=DestroyQuantumInfo(quantum_info);
+  current_offset=TellBlob(image);
+  (void) WriteBlobByte(image,0x10);
+  (void) WriteBlobByte(image,0);
+  (void) SeekBlob(image,offset,SEEK_SET);
+  offset=current_offset-offset-4;
+  (void) WriteBlobLSBShort(image,0x8000 | (offset >> 16));
+  (void) WriteBlobLSBShort(image,offset & 0xffff);
+  if (y < (ssize_t) image->rows)
+    ThrowWriterException(CorruptImageError,"UnableToWriteImageData");
+  (void) CloseBlob(image);
+  return(status);
 }
