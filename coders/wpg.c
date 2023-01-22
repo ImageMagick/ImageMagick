@@ -1914,7 +1914,7 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
         }
       (void) WriteBlobLSBShort(image,0); /* start index */
       (void) WriteBlobLSBShort(image,1U << image->depth);
-      for ( ; i < (ssize_t) (1U << image->depth); i++)
+      for ( ; i < (ssize_t) ((size_t) 1U << image->depth); i++)
         if (i >= image->colors)
           {
             (void) WriteBlobByte(image,i);
