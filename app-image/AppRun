@@ -19,7 +19,7 @@ elif [ "$1" == "info" ] ; then
   export INFOPATH="$HERE/usr/share/info:$INFOPATH" ; exec "$@" ; exit $?
 fi
 
-if [ ! -z $APPIMAGE ] ; then
+if [ -n "$APPIMAGE" ] ; then
   BINARY_NAME=$(basename "$ARGV0")
   if [ -e "$HERE/usr/bin/$BINARY_NAME" ] ; then
     exec "$HERE/usr/bin/$BINARY_NAME" "$@"
