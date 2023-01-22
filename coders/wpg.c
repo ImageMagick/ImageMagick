@@ -1770,8 +1770,10 @@ static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
           if (rle_info->count >= 1)
             {
               rle_info->count++;
-              WPGFlushRLE(rle_info,image,rle_info->offset-rle_info->count-1);
-              (void) WriteBlobByte(image,rle_info->count|0x80);
+              WPGFlushRLE(rle_info,image,(unsigned char) (rle_info->offset-
+                rle_info->count-1));
+              (void) WriteBlobByte(image,(const unsigned char)
+                 rle_info->count|0x80);
               (void) WriteBlobByte(image,rle_info->pixels[0]);
               rle_info->offset=1;
               rle_info->pixels[0]=byte;
@@ -1788,7 +1790,8 @@ static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
     }
   if ((rle_info->offset > 0x7E) && (rle_info->count >= 1))
      {
-       WPGFlushRLE(rle_info,image,rle_info->offset-rle_info->count-1);
+       WPGFlushRLE(rle_info,image,(unsigned char) (rle_info->offset-
+         rle_info->count-1));
        return;
      }
 }
@@ -1911,7 +1914,7 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
         }
       (void) WriteBlobLSBShort(image,0); /* start index */
       (void) WriteBlobLSBShort(image,1U << image->depth);
-      for ( ; i < (1U << image->depth); i++)
+      for ( ; i < (ssize_t) (1U << image->depth); i++)
         if (i >= image->colors)
           {
             (void) WriteBlobByte(image,i);
@@ -1936,9 +1939,9 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
   offset=TellBlob(image);
   (void) WriteBlobLSBShort(image,0x8000);
   (void) WriteBlobLSBShort(image,0);
-  (void) WriteBlobLSBShort(image,image->columns);
-  (void) WriteBlobLSBShort(image,image->rows);
-  (void) WriteBlobLSBShort(image,image->depth);
+  (void) WriteBlobLSBShort(image,(const unsigned short) image->columns);
+  (void) WriteBlobLSBShort(image,(const unsigned short) image->rows);
+  (void) WriteBlobLSBShort(image,(const unsigned char) image->depth);
   (void) WriteBlobLSBShort(image,75);  /* resolution */
   (void) WriteBlobLSBShort(image,75);
   /*
@@ -1969,7 +1972,7 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
       image->depth == 1 ? GrayQuantum : IndexQuantum,pixels,exception);
     if (length == 0)
       break;
-    WPGAddRLEBlock(&rle_info,image,pixels,extent);
+    WPGAddRLEBlock(&rle_info,image,pixels,(unsigned short) extent);
     WPGFlush(&rle_info,image);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
