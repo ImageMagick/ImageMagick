@@ -280,9 +280,7 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
     bit;
 
   Quantum
-    index;
-
-  Quantum
+    index,
     *q;
 
   ssize_t
@@ -470,9 +468,8 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
     8*sizeof(*BImgBuff));
   if(BImgBuff==NULL) return(-2);
   (void) memset(BImgBuff,0,(size_t) ldblk*8*sizeof(*BImgBuff));
-
-  while(y<(ssize_t) image->rows)
-    {
+  while (y < (ssize_t) image->rows)
+  {
       int
         c;
 
@@ -586,7 +583,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
   unsigned char
     bbuf,
     *BImgBuff,
-    SampleBuffer[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    SampleBuffer[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
   x=0;
   y=0;
@@ -598,7 +595,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
   (void) memset(BImgBuff,0,ldblk*sizeof(*BImgBuff));
 
   while( y< image->rows)
-    {
+  {
       bbuf=ReadBlobByte(image);
 
       switch(bbuf)
@@ -854,7 +851,6 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     /* Detect file format - Check magic.mgk configuration file. */
   magic_info=GetMagicInfo(magick,count,exception);
   if(magic_info == (const MagicInfo *) NULL) goto FINISH_UNL;
-  /*     printf("Detected:%s  \n",magic_info->name); */
   if(exception->severity != UndefinedException) goto FINISH_UNL;
   (void) CopyMagickString(clone_info->magick,GetMagicName(magic_info),
     MagickPathExtent);
@@ -1115,22 +1111,21 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Header.EncryptKey=ReadBlobLSBShort(image);
   Header.Reserved=ReadBlobLSBShort(image);
 
-  if ((Header.FileId != 0x435057FF) || (Header.ProductType != 0x16))
+  if ((Header.FileId != 0x435057FF) || (Header.FileType != 0x16))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (Header.EncryptKey!=0)
     ThrowReaderException(CoderError,"EncryptedWPGImageFileNotSupported");
 
-  image->columns = 1;
-  image->rows = 1;
-  image->colors = 0;
+  image->columns=1;
+  image->rows=1;
+  image->colors=0;
   image->storage_class=DirectClass;
   (void) ResetImagePixels(image,exception);
   bpp=0;
   BitmapHeader2.RotAngle=0;
   Rec2.RecordLength=0;
-
   switch(Header.MajorVersion)
-    {
+  {
     case 1:     /* WPG level 1 */
       while(!EOFBlob(image)) /* object parser loop */
         {
@@ -1257,7 +1252,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       ThrowReaderException(ResourceLimitError,
                         "MemoryAllocationFailed");
                     }
-                  /* printf("Load default colormap \n"); */
                   for (i=0; (i < (int) image->colors) && (i < 256); i++)
                     {
                       image->colormap[i].red=ScaleCharToQuantum(WPG1_Palette[i].Red);
@@ -1752,7 +1746,7 @@ static void WPGFlushRLE(WPGRLEInfo *rle_info,Image *image,unsigned char n)
       (void) WriteBlob(image,n,rle_info->pixels);
       rle_info->offset-=n;
       if (rle_info->offset > 0)
-        (void) memcpy(rle_info->pixels,rle_info->pixels+n,n);
+        (void) memmove(rle_info->pixels,rle_info->pixels+n,n);
       else
         rle_info->count=0;
     }
@@ -1773,7 +1767,7 @@ static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
               WPGFlushRLE(rle_info,image,(unsigned char) (rle_info->offset-
                 rle_info->count-1));
               (void) WriteBlobByte(image,(const unsigned char)
-                 rle_info->count|0x80);
+                rle_info->count | 0x80);
               (void) WriteBlobByte(image,rle_info->pixels[0]);
               rle_info->offset=1;
               rle_info->pixels[0]=byte;
@@ -1841,9 +1835,6 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
   QuantumInfo
     *quantum_info;
 
-  size_t
-    extent;
-
   ssize_t
     y;
 
@@ -1877,8 +1868,8 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
   */
   (void) WriteBlobLSBLong(image,0x435057FF);  /* FileId */
   (void) WriteBlobLSBLong(image,16);  /* data offset */
-  (void) WriteBlobByte(image,0x16);  /* product type */
-  (void) WriteBlobByte(image,1);  /* file type */
+  (void) WriteBlobByte(image,1);  /* product type */
+  (void) WriteBlobByte(image,0x16);  /* file type */
   (void) WriteBlobByte(image,1);  /* major version */
   (void) WriteBlobByte(image,0);  /* minor version */
   (void) WriteBlobLSBShort(image,0);  /* encypt key */
@@ -1952,11 +1943,6 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ImageError,"MemoryAllocationFailed");
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
-  extent=image->columns;
-  if (image->colors <= 16)
-    extent=(image->columns+1)/2;
-  if (image->colors <= 2)
-    extent=(image->columns+7)/8;
   WPGInitializeRLE(&rle_info);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1973,7 +1959,7 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
       image->depth == 1 ? GrayQuantum : IndexQuantum,pixels,exception);
     if (length == 0)
       break;
-    WPGAddRLEBlock(&rle_info,image,pixels,(unsigned short) extent);
+    WPGAddRLEBlock(&rle_info,image,pixels,(unsigned short) length);
     WPGFlush(&rle_info,image);
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);
