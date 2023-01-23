@@ -1825,6 +1825,7 @@ static void WPGInitializeRLE(WPGRLEInfo *rle_info)
 {
   rle_info->count=0;
   rle_info->offset=0;
+  (void) memset(rle_info->pixels,0,sizeof(rle_info->pixels));
 }
 
 static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
