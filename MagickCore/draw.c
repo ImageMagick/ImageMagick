@@ -4407,7 +4407,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
       }
     }
     mvg_info.offset=i;
-    if (status == 0)
+    if (status == MagickFalse)
       break;
     primitive_info[i].primitive=UndefinedPrimitive;
     if ((draw_info->debug != MagickFalse) && (q > p))
@@ -4418,12 +4418,12 @@ static MagickBooleanType RenderMVGContent(Image *image,
     status&=CheckPrimitiveExtent(&mvg_info,ExpandAffine(
       &graphic_context[n]->affine));
     primitive_info=(*mvg_info.primitive_info);
-    if (status == 0)
+    if (status == MagickFalse)
       break;
     status&=CheckPrimitiveExtent(&mvg_info,(double)
       graphic_context[n]->stroke_width);
     primitive_info=(*mvg_info.primitive_info);
-    if (status == 0)
+    if (status == MagickFalse)
       break;
     if (i == 0)
       continue;
