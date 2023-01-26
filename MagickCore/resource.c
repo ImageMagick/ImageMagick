@@ -1200,8 +1200,8 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
   memory=(MagickSizeType) pages*pagesize;
   if ((pagesize <= 0) || (pages <= 0))
     memory=2048UL*1024UL*1024UL;
-#if defined(PixelCacheThreshold)
-  memory=PixelCacheThreshold;
+#if defined(MAGICKCORE_PixelCacheThreshold)
+  memory=MAGICKCORE_PixelCacheThreshold;
 #endif
   (void) SetMagickResourceLimit(AreaResource,2*memory);
   limit=GetEnvironmentValue("MAGICK_AREA_LIMIT");

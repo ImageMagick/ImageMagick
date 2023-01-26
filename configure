@@ -5151,7 +5151,7 @@ MAGICK_PATCHLEVEL_VERSION=59
 
 MAGICK_VERSION=7.1.0-59
 
-MAGICK_GIT_REVISION=6d8dabdd2:20230122
+MAGICK_GIT_REVISION=20230122
 
 
 # Substitute library versioning
@@ -23489,7 +23489,7 @@ fi
 
 if test "$with_cache" != ''; then
 
-printf "%s\n" "#define PixelCacheThreshold \"$with_cache\"" >>confdefs.h
+printf "%s\n" "#define PixelCacheThreshold $with_cache" >>confdefs.h
 
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-cache=$with_cache "
 fi

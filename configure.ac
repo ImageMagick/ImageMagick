@@ -805,7 +805,7 @@ AC_ARG_WITH([cache],
     [with_cache=''])
 
 if test "$with_cache" != ''; then
-    AC_DEFINE_UNQUOTED([PixelCacheThreshold],["$with_cache"],[Pixel cache threshold in MB (defaults to available memory)])
+    AC_DEFINE_UNQUOTED([PixelCacheThreshold],[$with_cache],[Pixel cache threshold in MB (defaults to available memory)])
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-cache=$with_cache "
 fi
 
