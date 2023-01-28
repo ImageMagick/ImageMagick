@@ -221,33 +221,31 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       /*
         Extract Exif profile.
       */
-      size_t
-        exif_length;
-
       StringInfo
         *snippet = SplitStringInfo(exif_profile,4);
 
       unsigned char
-        *exif_datum;
+        *datum;
 
       unsigned int
         offset = 0;
 
-      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+0)) << 24;
-      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+1)) << 16;
-      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+2)) << 8;
-      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+3)) << 0;
+      datum=GetStringInfoDatum(snippet);
+      offset|=(unsigned int) (*(datum++)) << 24;
+      offset|=(unsigned int) (*(datum++)) << 16;
+      offset|=(unsigned int) (*(datum++)) << 8;
+      offset|=(unsigned int) (*(datum++)) << 0;
       snippet=DestroyStringInfo(snippet);
       /*
         Strip any EOI marker if payload starts with a JPEG marker.
       */
-      exif_length=GetStringInfoLength(exif_profile);
-      exif_datum=GetStringInfoDatum(exif_profile);
-      if ((exif_length > 2) && 
-          ((memcmp(exif_datum,"\0xFF\0xD8",2) == 0) ||
-           (memcmp(exif_datum,"\0xFF\0xE1",2) == 0)) &&
-           memcmp(exif_datum+exif_length-2,"\0xFF\0xD9",2) == 0)
-        SetStringInfoLength(exif_profile,exif_length-2);
+      length=GetStringInfoLength(exif_profile);
+      datum=GetStringInfoDatum(exif_profile);
+      if ((length > 2) && 
+          ((memcmp(datum,"\0xFF\0xD8",2) == 0) ||
+           (memcmp(datum,"\0xFF\0xE1",2) == 0)) &&
+           memcmp(datum+length-2,"\0xFF\0xD9",2) == 0)
+        SetStringInfoLength(exif_profile,length-2);
       /*
         Skip to actual Exif payload.
       */
