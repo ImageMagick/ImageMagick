@@ -1801,7 +1801,8 @@ static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(-1);
     }
-  (void) SetImageProperty(image,key,GetStringInfoDatum(property),exception);
+  (void) SetImageProperty(image,key,(const char *) GetStringInfoDatum(property),
+    exception);
   property=DestroyStringInfo(property);
   return(1);
 }
