@@ -1733,15 +1733,27 @@ static void read_eXIf_chunk(Image *image,png_struct *ping,png_info *info,
 static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
   ExceptionInfo *exception)
 {
+  char
+    compressed,
+    key[MagickPathExtent],
+    language[MagickPathExtent],
+    method;
+
+  ssize_t
+    offset;
+
+  StringInfo
+    *property;
+
   if ((size > 19) && (LocaleNCompare((const char *) data,
       "XML:com.adobe.xmp",17) == 0) && (data[18] == 0) && (data[19] == 0))
     {
-      size_t
-        offset;
-
       StringInfo
         *profile;
 
+      /*
+        XMP profile.
+      */
       offset=20;
       while(offset < size)
       {
@@ -1767,7 +1779,31 @@ static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
       profile=DestroyStringInfo(profile);
       return(1);
     }
-  return(0);
+  /*
+    iTXt chunk.
+  */
+  (void) FormatLocaleString(key,MagickPathExtent,"%s",(const char *) data);
+  offset=strlen(key)+1;
+  (void) FormatLocaleString(key,MagickPathExtent,"png:%s",(const char *) data);
+  compressed=data[offset++];
+  if (compressed != 0)
+    return(0);
+  method=data[offset++];
+  if (method != 0)
+    return(0);
+  (void) FormatLocaleString(language,MagickPathExtent,"%s",(const char *)
+    data+offset++);
+  offset+=strlen(language)+1;
+  property=BlobToStringInfo((const void *) (data+offset),size-offset);
+  if (property == (StringInfo *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(-1);
+    }
+  (void) SetImageProperty(image,key,GetStringInfoDatum(property),exception);
+  property=DestroyStringInfo(property);
+  return(1);
 }
 
 static int read_user_chunk_callback(png_struct *ping, png_unknown_chunkp chunk)
