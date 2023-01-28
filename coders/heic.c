@@ -80,7 +80,7 @@
 #include <libheif/heif.h>
 #endif
 #endif
-
+
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 /*
   Forward declarations.
@@ -649,7 +649,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   return(GetFirstImageInList(image));
 }
 #endif
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -689,7 +689,7 @@ static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
 #endif
   return(MagickFalse);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -769,7 +769,7 @@ ModuleExport size_t RegisterHEICImage(void)
 #endif
   return(MagickImageCoderSignature);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -802,7 +802,7 @@ ModuleExport void UnregisterHEICImage(void)
 #endif
 #endif
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
