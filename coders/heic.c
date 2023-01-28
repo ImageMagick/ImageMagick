@@ -80,7 +80,8 @@
 #include <libheif/heif.h>
 #endif
 #endif
-
+
+
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 /*
   Forward declarations.
@@ -220,10 +221,18 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       /*
         Extract Exif profile.
       */
-      size_t exif_length = GetStringInfoLength(exif_profile);
-      unsigned char *exif_datum = GetStringInfoDatum(exif_profile);
-      StringInfo *snippet = SplitStringInfo(exif_profile,4);
-      unsigned int offset = 0;
+      size_t
+        exif_length;
+
+      StringInfo
+        *snippet = SplitStringInfo(exif_profile,4);
+
+      unsigned char
+        *exif_datum;
+
+      unsigned int
+        offset = 0;
+
       offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+0)) << 24;
       offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+1)) << 16;
       offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+2)) << 8;
@@ -232,6 +241,8 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       /*
         Strip any EOI marker if payload starts with a JPEG marker.
       */
+      exif_length=GetStringInfoLength(exif_profile);
+      exif_datum=GetStringInfoDatum(exif_profile);
       if ((exif_length > 2) && 
           ((memcmp(exif_datum,"\0xFF\0xD8",2) == 0) ||
            (memcmp(exif_datum,"\0xFF\0xE1",2) == 0)) &&
@@ -649,7 +660,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   return(GetFirstImageInList(image));
 }
 #endif
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -689,7 +701,8 @@ static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
 #endif
   return(MagickFalse);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -769,7 +782,8 @@ ModuleExport size_t RegisterHEICImage(void)
 #endif
   return(MagickImageCoderSignature);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -802,7 +816,8 @@ ModuleExport void UnregisterHEICImage(void)
 #endif
 #endif
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
