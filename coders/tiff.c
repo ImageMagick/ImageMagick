@@ -1092,6 +1092,9 @@ static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
   const StringInfo
     *profile;
 
+  ExceptionInfo
+    *sans_exception;
+
   CustomStreamInfo
     *custom_stream;
 
@@ -1156,7 +1159,9 @@ static void TIFFReadPhotoshopLayers(const ImageInfo *image_info,Image *image,
   InitPSDInfo(layers,&info);
   clone_info=CloneImageInfo(image_info);
   clone_info->number_scenes=0;
-  (void) ReadPSDLayers(layers,clone_info,&info,exception);
+  sans_exception=AcquireExceptionInfo();
+  (void) ReadPSDLayers(layers,clone_info,&info,sans_exception);
+  sans_exception=DestroyExceptionInfo(sans_exception);
   clone_info=DestroyImageInfo(clone_info);
   DeleteImageFromList(&layers);
   if (layers != (Image *) NULL)
