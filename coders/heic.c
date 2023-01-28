@@ -218,9 +218,6 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
     GetStringInfoDatum(exif_profile));
   if ((IsHEIFSuccess(image,&error,exception) != MagickFalse) && (length > 4))
     {
-      /*
-        Extract Exif profile.
-      */
       StringInfo
         *snippet = SplitStringInfo(exif_profile,4);
 
@@ -230,6 +227,9 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       unsigned int
         offset = 0;
 
+      /*
+        Extract Exif profile.
+      */
       datum=GetStringInfoDatum(snippet);
       offset|=(unsigned int) (*(datum++)) << 24;
       offset|=(unsigned int) (*(datum++)) << 16;
