@@ -80,7 +80,7 @@
 #include <libheif/heif.h>
 #endif
 #endif
-
+
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 /*
   Forward declarations.
@@ -227,6 +227,19 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+2)) << 8;
       offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+3)) << 0;
       snippet=DestroyStringInfo(snippet);
+      /*
+        Strip any EOI marker if payload starts with a JPEG marker.
+      */
+      size_t exif_length = GetStringInfoLength(exif_profile);
+      unsigned char *exif_datum = GetStringInfoDatum(exif_profile);
+      if (exif_length > 2 && 
+          (memcmp(exif_datum, "\0xFF\0xD8", 2) == 0 ||
+           memcmp(exif_datum, "\0xFF\0xE1", 2) == 0) &&
+          memcmp(exif_datum+exif_length-2, "\0xFF\0xD9", 2) == 0)
+        SetStringInfoLength(exif_profile, exif_length-2);
+      /*
+        Skip to actual Exif payload.
+      */
       if (offset < GetStringInfoLength(exif_profile))
         {
           (void) DestroyStringInfo(SplitStringInfo(exif_profile,offset));
@@ -636,7 +649,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   return(GetFirstImageInList(image));
 }
 #endif
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -676,7 +689,7 @@ static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
 #endif
   return(MagickFalse);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -756,7 +769,7 @@ ModuleExport size_t RegisterHEICImage(void)
 #endif
   return(MagickImageCoderSignature);
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -789,7 +802,7 @@ ModuleExport void UnregisterHEICImage(void)
 #endif
 #endif
 }
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
