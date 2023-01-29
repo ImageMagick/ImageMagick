@@ -281,7 +281,7 @@ MagickExport const char *GetMagickFeatures(void)
 #if defined(MAGICKCORE_HAVE_TCMALLOC)
   "TCMalloc "
 #endif
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
+#if MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   "Zero-configuration "
 #endif
 #if (MAGICKCORE_QUANTUM_DEPTH == 64)
