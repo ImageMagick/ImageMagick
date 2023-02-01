@@ -1292,10 +1292,13 @@ static unsigned long FreetypeReadStream(FT_Stream stream,unsigned long offset,
   FILE *file = (FILE *) stream->descriptor.pointer;
   if (file == (FILE *) NULL)
     return(0);
-  if (count == 0)
-    return(0);
-  if (fseek(file,(off_t) offset,SEEK_SET) != 0)
-    return(0);
+  if (count == 0) /* seek operation */
+    {
+      if (offset > stream->size)
+        return(1);
+
+      return((unsigned long) fseek(file,(off_t) offset,SEEK_SET));
+    }
   return((unsigned long) fread(buffer,1,count,file));
 }
 
