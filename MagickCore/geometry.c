@@ -42,12 +42,120 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
+#include "MagickCore/geometry-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
+
+/*
+  Define declarations.
+*/
+#define MagickPagesize(name,geometry) { (name), sizeof(name)-1, (geometry) }
+
+/*
+  Structure declarations.
+*/
+typedef struct _PageInfo
+{
+  const char
+    name[12];
+
+  size_t
+    extent;
+
+  const char
+    geometry[10];
+} PageInfo;
+
+static const PageInfo
+  Pagesizes[] =
+  {
+    MagickPagesize("4x6", "288x432"),
+    MagickPagesize("5x7", "360x504"),
+    MagickPagesize("7x9", "504x648"),
+    MagickPagesize("8x10", "576x720"),
+    MagickPagesize("9x11", "648x792"),
+    MagickPagesize("9x12", "648x864"),
+    MagickPagesize("10x13", "720x936"),
+    MagickPagesize("10x14", "720x1008"),
+    MagickPagesize("11x17", "792x1224"),
+    MagickPagesize("4A0", "4768x6741"),
+    MagickPagesize("2A0", "3370x4768"),
+    MagickPagesize("a0", "2384x3370"),
+    MagickPagesize("a1", "1684x2384"),
+    MagickPagesize("a2", "1191x1684"),
+    MagickPagesize("a3", "842x1191"),
+    MagickPagesize("a4", "595x842"),
+    MagickPagesize("a4small", "595x842"),
+    MagickPagesize("a5", "420x595"),
+    MagickPagesize("a6", "298x420"),
+    MagickPagesize("a7", "210x298"),
+    MagickPagesize("a8", "147x210"),
+    MagickPagesize("a9", "105x147"),
+    MagickPagesize("a10", "74x105"),
+    MagickPagesize("archa", "648x864"),
+    MagickPagesize("archb", "864x1296"),
+    MagickPagesize("archC", "1296x1728"),
+    MagickPagesize("archd", "1728x2592"),
+    MagickPagesize("arche", "2592x3456"),
+    MagickPagesize("b0", "2920x4127"),
+    MagickPagesize("b1", "2064x2920"),
+    MagickPagesize("b10", "91x127"),
+    MagickPagesize("b2", "1460x2064"),
+    MagickPagesize("b3", "1032x1460"),
+    MagickPagesize("b4", "729x1032"),
+    MagickPagesize("b5", "516x729"),
+    MagickPagesize("b6", "363x516"),
+    MagickPagesize("b7", "258x363"),
+    MagickPagesize("b8", "181x258"),
+    MagickPagesize("b9", "127x181"),
+    MagickPagesize("c0", "2599x3676"),
+    MagickPagesize("c1", "1837x2599"),
+    MagickPagesize("c2", "1298x1837"),
+    MagickPagesize("c3", "918x1296"),
+    MagickPagesize("c4", "649x918"),
+    MagickPagesize("c5", "459x649"),
+    MagickPagesize("c6", "323x459"),
+    MagickPagesize("c7", "230x323"),
+    MagickPagesize("csheet", "1224x1584"),
+    MagickPagesize("dsheet", "1584x2448"),
+    MagickPagesize("esheet", "2448x3168"),
+    MagickPagesize("executive", "540x720"),
+    MagickPagesize("flsa", "612x936"),
+    MagickPagesize("flse", "612x936"),
+    MagickPagesize("folio", "612x936"),
+    MagickPagesize("halfletter", "396x612"),
+    MagickPagesize("isob0", "2835x4008"),
+    MagickPagesize("isob1", "2004x2835"),
+    MagickPagesize("isob10", "88x125"),
+    MagickPagesize("isob2", "1417x2004"),
+    MagickPagesize("isob3", "1001x1417"),
+    MagickPagesize("isob4", "709x1001"),
+    MagickPagesize("isob5", "499x709"),
+    MagickPagesize("isob6", "354x499"),
+    MagickPagesize("isob7", "249x354"),
+    MagickPagesize("isob8", "176x249"),
+    MagickPagesize("isob9", "125x176"),
+    MagickPagesize("jisb0", "1030x1456"),
+    MagickPagesize("jisb1", "728x1030"),
+    MagickPagesize("jisb2", "515x728"),
+    MagickPagesize("jisb3", "364x515"),
+    MagickPagesize("jisb4", "257x364"),
+    MagickPagesize("jisb5", "182x257"),
+    MagickPagesize("jisb6", "128x182"),
+    MagickPagesize("ledger", "1224x792"),
+    MagickPagesize("legal", "612x1008"),
+    MagickPagesize("letter", "612x792"),
+    MagickPagesize("lettersmall", "612x792"),
+    MagickPagesize("monarch", "279x540"),
+    MagickPagesize("quarto", "610x780"),
+    MagickPagesize("statement", "396x612"),
+    MagickPagesize("tabloid", "792x1224"),
+    MagickPagesize("", "")
+  };
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -364,106 +472,6 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
 */
 MagickExport char *GetPageGeometry(const char *page_geometry)
 {
-#define MagickPageSize(name,geometry) { (name), sizeof(name)-1, (geometry) }
-
-  typedef struct _PageInfo
-  {
-    const char
-      name[12];
-
-    size_t
-      extent;
-
-    const char
-      geometry[10];
-  } PageInfo;
-
-  static const PageInfo
-    PageSizes[] =
-    {
-      MagickPageSize("4x6", "288x432"),
-      MagickPageSize("5x7", "360x504"),
-      MagickPageSize("7x9", "504x648"),
-      MagickPageSize("8x10", "576x720"),
-      MagickPageSize("9x11", "648x792"),
-      MagickPageSize("9x12", "648x864"),
-      MagickPageSize("10x13", "720x936"),
-      MagickPageSize("10x14", "720x1008"),
-      MagickPageSize("11x17", "792x1224"),
-      MagickPageSize("4A0", "4768x6741"),
-      MagickPageSize("2A0", "3370x4768"),
-      MagickPageSize("a0", "2384x3370"),
-      MagickPageSize("a1", "1684x2384"),
-      MagickPageSize("a2", "1191x1684"),
-      MagickPageSize("a3", "842x1191"),
-      MagickPageSize("a4", "595x842"),
-      MagickPageSize("a4small", "595x842"),
-      MagickPageSize("a5", "420x595"),
-      MagickPageSize("a6", "298x420"),
-      MagickPageSize("a7", "210x298"),
-      MagickPageSize("a8", "147x210"),
-      MagickPageSize("a9", "105x147"),
-      MagickPageSize("a10", "74x105"),
-      MagickPageSize("archa", "648x864"),
-      MagickPageSize("archb", "864x1296"),
-      MagickPageSize("archC", "1296x1728"),
-      MagickPageSize("archd", "1728x2592"),
-      MagickPageSize("arche", "2592x3456"),
-      MagickPageSize("b0", "2920x4127"),
-      MagickPageSize("b1", "2064x2920"),
-      MagickPageSize("b10", "91x127"),
-      MagickPageSize("b2", "1460x2064"),
-      MagickPageSize("b3", "1032x1460"),
-      MagickPageSize("b4", "729x1032"),
-      MagickPageSize("b5", "516x729"),
-      MagickPageSize("b6", "363x516"),
-      MagickPageSize("b7", "258x363"),
-      MagickPageSize("b8", "181x258"),
-      MagickPageSize("b9", "127x181"),
-      MagickPageSize("c0", "2599x3676"),
-      MagickPageSize("c1", "1837x2599"),
-      MagickPageSize("c2", "1298x1837"),
-      MagickPageSize("c3", "918x1296"),
-      MagickPageSize("c4", "649x918"),
-      MagickPageSize("c5", "459x649"),
-      MagickPageSize("c6", "323x459"),
-      MagickPageSize("c7", "230x323"),
-      MagickPageSize("csheet", "1224x1584"),
-      MagickPageSize("dsheet", "1584x2448"),
-      MagickPageSize("esheet", "2448x3168"),
-      MagickPageSize("executive", "540x720"),
-      MagickPageSize("flsa", "612x936"),
-      MagickPageSize("flse", "612x936"),
-      MagickPageSize("folio", "612x936"),
-      MagickPageSize("halfletter", "396x612"),
-      MagickPageSize("isob0", "2835x4008"),
-      MagickPageSize("isob1", "2004x2835"),
-      MagickPageSize("isob10", "88x125"),
-      MagickPageSize("isob2", "1417x2004"),
-      MagickPageSize("isob3", "1001x1417"),
-      MagickPageSize("isob4", "709x1001"),
-      MagickPageSize("isob5", "499x709"),
-      MagickPageSize("isob6", "354x499"),
-      MagickPageSize("isob7", "249x354"),
-      MagickPageSize("isob8", "176x249"),
-      MagickPageSize("isob9", "125x176"),
-      MagickPageSize("jisb0", "1030x1456"),
-      MagickPageSize("jisb1", "728x1030"),
-      MagickPageSize("jisb2", "515x728"),
-      MagickPageSize("jisb3", "364x515"),
-      MagickPageSize("jisb4", "257x364"),
-      MagickPageSize("jisb5", "182x257"),
-      MagickPageSize("jisb6", "128x182"),
-      MagickPageSize("ledger", "1224x792"),
-      MagickPageSize("legal", "612x1008"),
-      MagickPageSize("letter", "612x792"),
-      MagickPageSize("lettersmall", "612x792"),
-      MagickPageSize("monarch", "279x540"),
-      MagickPageSize("quarto", "610x780"),
-      MagickPageSize("statement", "396x612"),
-      MagickPageSize("tabloid", "792x1224")
-    };
-
   char
     page[MagickPathExtent];
 
@@ -474,12 +482,12 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",page_geometry);
   (void) CopyMagickString(page,page_geometry,MagickPathExtent);
-  for (i=0; i < (ssize_t) (sizeof(PageSizes)/sizeof(PageSizes[0])); i++)
+  for (i=0; i < (ssize_t) (sizeof(Pagesizes)/sizeof(Pagesizes[0])); i++)
   {
     int
       status;
 
-    status=LocaleNCompare(PageSizes[i].name,page_geometry,PageSizes[i].extent);
+    status=LocaleNCompare(Pagesizes[i].name,page_geometry,Pagesizes[i].extent);
     if (status == 0)
       {
         MagickStatusType
@@ -492,7 +500,7 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
           Replace mnemonic with the equivalent size in dots-per-inch.
         */
         (void) FormatLocaleString(page,MagickPathExtent,"%s%.80s",
-          PageSizes[i].geometry,page_geometry+PageSizes[i].extent);
+          Pagesizes[i].geometry,page_geometry+Pagesizes[i].extent);
         flags=GetGeometry(page,&geometry.x,&geometry.y,&geometry.width,
           &geometry.height);
         if ((flags & GreaterValue) == 0)
@@ -679,6 +687,51 @@ MagickExport MagickBooleanType IsSceneGeometry(const char *geometry,
     return(MagickFalse);
   if ((pedantic != MagickFalse) && (strchr(geometry,',') != (char *) NULL))
     return(MagickFalse);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  L i s t P a g e s i z e s                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ListPagesizes() lists the pagesizes and their associated geometry.
+%
+%  The format of the ListPagesizes method is:
+%
+%      MagickBooleanType ListPagesizes(FILE *file,ExceptionInfo *exception)
+%
+%  A description of each parameter follows.
+%
+%    o file:  An pointer to the output FILE.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType ListPagesizes(FILE *file,
+  ExceptionInfo *exception)
+{
+#define MaxMagickSpaces  ((int) sizeof(Pagesizes[0].name))
+
+  const char
+    *spacer = "                    ";
+
+  ssize_t
+    i;
+
+  if (file == (FILE *) NULL)
+    file=stdout;
+  (void) FormatLocaleFile(file,"\nPagesize    Geometry \n");
+  (void) FormatLocaleFile(file,"---------------------\n");
+  for (i=0; *Pagesizes[i].name != '\0'; i++)
+    (void) FormatLocaleFile(file,"%s%.*s%s\n",Pagesizes[i].name,
+      MaxMagickSpaces-(int) Pagesizes[i].extent,spacer,Pagesizes[i].geometry);
   return(MagickTrue);
 }
 

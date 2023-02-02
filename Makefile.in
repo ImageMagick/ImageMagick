@@ -456,18 +456,18 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	MagickCore/fourier.h MagickCore/fx.c MagickCore/fx.h \
 	MagickCore/fx-private.h MagickCore/gem.c MagickCore/gem.h \
 	MagickCore/gem-private.h MagickCore/geometry.c \
-	MagickCore/geometry.h MagickCore/histogram.c \
-	MagickCore/histogram.h MagickCore/identify.c \
-	MagickCore/identify.h MagickCore/image.c MagickCore/image.h \
-	MagickCore/image-private.h MagickCore/image-view.c \
-	MagickCore/image-view.h MagickCore/layer.c MagickCore/layer.h \
-	MagickCore/linked-list.c MagickCore/linked-list.h \
-	MagickCore/list.c MagickCore/list.h MagickCore/locale.c \
-	MagickCore/locale_.h MagickCore/log.c MagickCore/log.h \
-	MagickCore/magic.c MagickCore/magic.h MagickCore/magick.c \
-	MagickCore/magick-baseconfig.h MagickCore/magick-config.h \
-	MagickCore/magick-type.h MagickCore/magick.h \
-	MagickCore/matrix.c MagickCore/matrix.h \
+	MagickCore/geometry.h MagickCore/geometry-private.h \
+	MagickCore/histogram.c MagickCore/histogram.h \
+	MagickCore/identify.c MagickCore/identify.h MagickCore/image.c \
+	MagickCore/image.h MagickCore/image-private.h \
+	MagickCore/image-view.c MagickCore/image-view.h \
+	MagickCore/layer.c MagickCore/layer.h MagickCore/linked-list.c \
+	MagickCore/linked-list.h MagickCore/list.c MagickCore/list.h \
+	MagickCore/locale.c MagickCore/locale_.h MagickCore/log.c \
+	MagickCore/log.h MagickCore/magic.c MagickCore/magic.h \
+	MagickCore/magick.c MagickCore/magick-baseconfig.h \
+	MagickCore/magick-config.h MagickCore/magick-type.h \
+	MagickCore/magick.h MagickCore/matrix.c MagickCore/matrix.h \
 	MagickCore/matrix-private.h MagickCore/memory.c \
 	MagickCore/memory_.h MagickCore/memory-private.h \
 	MagickCore/method-attribute.h MagickCore/methods.h \
@@ -5281,6 +5281,7 @@ MAGICKCORE_BASE_SRCS = \
   MagickCore/gem-private.h \
   MagickCore/geometry.c \
   MagickCore/geometry.h \
+  MagickCore/geometry-private.h \
   MagickCore/histogram.c \
   MagickCore/histogram.h \
   MagickCore/identify.c \
@@ -5566,6 +5567,7 @@ MAGICKCORE_NOINST_HDRS = \
   MagickCore/exception-private.h \
   MagickCore/fx-private.h \
   MagickCore/gem-private.h \
+  MagickCore/geometry-private.h \
   MagickCore/image-private.h \
   MagickCore/linked-list-private.h \
   MagickCore/locale-private.h \

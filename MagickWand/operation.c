@@ -60,6 +60,7 @@
 #include "MagickWand/wandcli-private.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/composite-private.h"
+#include "MagickCore/geometry-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/string-private.h"
@@ -5199,18 +5200,20 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
         ListMagickVersion(stdout);
         break;
       }
-    if (LocaleCompare("list",option+1) == 0) {
+    if (LocaleCompare("list",option+1) == 0)
+      {
+        ssize_t
+          list;
+
       /*
          FUTURE: This 'switch' should really be part of MagickCore
       */
-      ssize_t
-        list;
-
       list=ParseCommandOption(MagickListOptions,MagickFalse,arg1);
-      if ( list < 0 ) {
-        CLIWandExceptionArg(OptionError,"UnrecognizedListType",option,arg1);
-        break;
-      }
+      if (list < 0)
+        {
+          CLIWandExceptionArg(OptionError,"UnrecognizedListType",option,arg1);
+          break;
+        }
       switch (list)
       {
         case MagickCoderOptions:
@@ -5255,6 +5258,9 @@ WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
           break;
         case MagickModuleOptions:
           (void) ListModuleInfo((FILE *) NULL,_exception);
+          break;
+        case MagickPagesizeOptions:
+          (void) ListPagesizes((FILE *) NULL,_exception);
           break;
         case MagickPolicyOptions:
           (void) ListPolicyInfo((FILE *) NULL,_exception);
