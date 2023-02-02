@@ -97,4 +97,6 @@ pushd "$SRC/libjxl"
 cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_TESTING=off -DBUILD_SHARED_LIBS=false -DJPEGXL_FORCE_SYSTEM_LCMS2=true -DJPEGXL_ENABLE_EXAMPLES=false -DJPEGXL_ENABLE_FUZZERS=false -DJPEGXL_ENABLE_TOOLS=false -DJPEGXL_ENABLE_JPEGLI=false -DCMAKE_C_FLAGS="$CFLAGS" -DCMAKE_CXX_FLAGS="$CXXFLAGS"
 make -j$(nproc)
 make install
+cp third_party/brotli/*.a $WORK/lib
+cp third_party/brotli/*.pc $WORK/lib/pkgconfig
 popd
