@@ -1216,7 +1216,7 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
           "Scale factor: %.20g",(double) scale_factor);
     }
 #if (JPEG_LIB_VERSION >= 61) && defined(D_PROGRESSIVE_SUPPORTED)
-#if defined(D_LOSSLESS_SUPPORTED)
+#if !defined(LIBJPEG_TURBO_VERSION_NUMBER) && defined(D_LOSSLESS_SUPPORTED)
   image->interlace=jpeg_info->process == JPROC_PROGRESSIVE ?
     JPEGInterlace : NoInterlace;
   image->compression=jpeg_info->process == JPROC_LOSSLESS ?
@@ -2468,11 +2468,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     }
   else
     {
-#if !defined(C_LOSSLESS_SUPPORTED)
-      quality=100;
-      if (image->debug != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: 100");
-#else
+#if !defined(LIBJPEG_TURBO_VERSION_NUMBER) && defined(C_LOSSLESS_SUPPORTED)
       if (image->quality < 100)
         (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
           "LosslessToLossyJPEGConversion","`%s'",image->filename);
@@ -2495,6 +2491,10 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
                 "Point Transform: %d",point_transform);
             }
         }
+#else
+      quality=100;
+      if (image->debug != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: 100");
 #endif
     }
   option=GetImageOption(image_info,"jpeg:extent");
