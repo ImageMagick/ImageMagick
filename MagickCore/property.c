@@ -4708,30 +4708,6 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           return(MagickFalse);
         }
 #endif
-#if 0  /* security risk -- disable for now */
-      if (LocaleCompare("profile",property) == 0)
-        {
-          ImageInfo
-            *image_info;
-
-          StringInfo
-            *profile = (StringInfo *) NULL;
-
-          image_info=AcquireImageInfo();
-          (void) CopyMagickString(image_info->filename,value,MagickPathExtent);
-          (void) SetImageInfo(image_info,1,exception);
-          if (LocaleCompare(image_info->filename,"-") != 0)
-            profile=FileToStringInfo(image_info->filename,~0UL,exception);
-          if (profile != (StringInfo *) NULL)
-            {
-              status=SetImageProfile(image,image_info->magick,profile,
-                exception);
-              profile=DestroyStringInfo(profile);
-            }
-          image_info=DestroyImageInfo(image_info);
-          return(MagickTrue);
-        }
-#endif
       break; /* not an attribute, add as a property */
     }
     case 'R':
