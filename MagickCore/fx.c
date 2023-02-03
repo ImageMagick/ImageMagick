@@ -4032,23 +4032,7 @@ static FxInfo *AcquireFxInfoPrivate (const Image * images, const char * expressi
   }
 
   if ((*expression == '@') && (strlen(expression) > 1))
-    {
-      MagickBooleanType
-        status;
-
-      /*
-        Read expression from a file.
-      */
-      status=IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,expression);
-      if (status != MagickFalse)
-        pfx->expression=FileToString(expression+1,~0UL,exception);
-      else
-        {
-          errno=EPERM;
-          (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-            "NotAuthorized","`%s'",expression);
-        }
-    }
+    pfx->expression=FileToString(expression,~0UL,exception);
   if (pfx->expression == (char *) NULL)
     pfx->expression=ConstantString(expression);
   pfx->pex = (char *) pfx->expression;

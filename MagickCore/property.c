@@ -3735,14 +3735,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
       /*
         Handle a '@' replace string from file.
       */
-      if (IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,p) == MagickFalse)
-        {
-          errno=EPERM;
-          (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-            "NotAuthorized","`%s'",p);
-          return(ConstantString(""));
-        }
-      interpret_text=FileToString(p+1,~0UL,exception);
+      interpret_text=FileToString(p,~0UL,exception);
       if (interpret_text != (char *) NULL)
         return(interpret_text);
     }

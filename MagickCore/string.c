@@ -52,6 +52,7 @@
 #include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/property.h"
+#include "MagickCore/policy.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/string_.h"
@@ -966,6 +967,9 @@ MagickExport char *EscapeString(const char *source,const char escape)
 MagickExport char *FileToString(const char *filename,const size_t extent,
   ExceptionInfo *exception)
 {
+  const char
+    *p;
+
   size_t
     length;
 
@@ -973,7 +977,23 @@ MagickExport char *FileToString(const char *filename,const size_t extent,
   assert(exception != (ExceptionInfo *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
-  return((char *) FileToBlob(filename,extent,&length,exception));
+  p=filename;
+  if ((*filename == '@') && (strlen(filename) > 1))
+    {
+      MagickBooleanType
+        status;
+
+      status=IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,filename);
+      if (status == MagickFalse)
+        {
+          errno=EPERM;
+          (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
+            "NotAuthorized","`%s'",filename);
+          return((char *) NULL);
+        }
+      p=filename+1;
+    }
+  return((char *) FileToBlob(p,extent,&length,exception));
 }
 
 /*

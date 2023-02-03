@@ -2572,7 +2572,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
     }
   if ((*draw_info->primitive == '@') && (strlen(draw_info->primitive) > 1) &&
       (*(draw_info->primitive+1) != '-') && (depth == 0))
-    primitive=FileToString(draw_info->primitive+1,~0UL,exception);
+    primitive=FileToString(draw_info->primitive,~0UL,exception);
   else
     primitive=AcquireString(draw_info->primitive);
   if (primitive == (char *) NULL)
