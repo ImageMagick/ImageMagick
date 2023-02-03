@@ -3708,7 +3708,6 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
                 (void) FormatLocaleString(key,MagickPathExtent,"%s",
                   text[i].key);
                 if ((LocaleCompare(key,"version") == 0) ||
-                    (LocaleCompare(key,"profile") == 0) ||
                     (LocaleCompare(key,"width") == 0))
                   (void) FormatLocaleString(key,MagickPathExtent,"png:%s",
                     text[i].key);
