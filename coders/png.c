@@ -1743,29 +1743,27 @@ static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
     offset;
 
   StringInfo
+    *profile,
     *property;
 
   if ((size > 19) && (LocaleNCompare((const char *) data,
       "XML:com.adobe.xmp",17) == 0) && (data[18] == 0) && (data[19] == 0))
     {
-      StringInfo
-        *profile;
-
       /*
         XMP profile.
       */
       offset=20;
-      while(offset < size)
+      while (offset < size)
       {
         if (data[offset++] == 0)
           break;
       }
-      while(offset < size)
+      while (offset < size)
       {
         if (data[offset++] == 0)
           break;
       }
-      if (size-offset < 1)
+      if (((MagickOffsetType) size-offset) < 1)
         return(0);
       profile=BlobToStringInfo((const void *) (data+offset),size-offset);
       if (profile == (StringInfo *) NULL)
@@ -1782,21 +1780,48 @@ static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
   /*
     iTXt chunk.
   */
-  (void) FormatLocaleString(key,MagickPathExtent,"%s",(const char *) data);
+  profile=BlobToStringInfo((const void *) data,size);
+  if (profile == (StringInfo *) NULL)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return(-1);
+    }
+  (void) FormatLocaleString(key,MagickPathExtent,"%s",(const char *)
+    GetStringInfoDatum(profile));
   offset=strlen(key)+1;
-  (void) FormatLocaleString(key,MagickPathExtent,"png:%s",(const char *) data);
+  (void) FormatLocaleString(key,MagickPathExtent,"png:%s",(const char *)
+    GetStringInfoDatum(profile));
+  if (((MagickOffsetType) size-offset) < 1)
+    {
+      profile=DestroyStringInfo(profile);
+      return(0);
+    }
   compressed=data[offset++];
-  if (compressed != 0)
-    return(0);
+  if ((((MagickOffsetType) size-offset) < 1) || (compressed != 0))
+    {
+      profile=DestroyStringInfo(profile);
+      return(0);
+    }
   method=data[offset++];
-  if (method != 0)
-    return(0);
+  if ((((MagickOffsetType) size-offset) < 1) || (method != 0))
+    {
+      profile=DestroyStringInfo(profile);
+      return(0);
+    }
   (void) FormatLocaleString(language,MagickPathExtent,"%s",(const char *)
-    data+offset++);
+    GetStringInfoDatum(profile)+offset++);
   offset+=strlen(language)+1;
-  property=BlobToStringInfo((const void *) (data+offset),size-offset);
+  if (((MagickOffsetType) size-offset) < 1)
+    {
+      profile=DestroyStringInfo(profile);
+      return(0);
+    }
+  property=BlobToStringInfo((const void *) (GetStringInfoDatum(profile)+offset),
+    size-offset);
   if (property == (StringInfo *) NULL)
     {
+      profile=DestroyStringInfo(profile);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(-1);
@@ -1804,6 +1829,7 @@ static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
   (void) SetImageProperty(image,key,(const char *) GetStringInfoDatum(property),
     exception);
   property=DestroyStringInfo(property);
+  profile=DestroyStringInfo(profile);
   return(1);
 }
 
