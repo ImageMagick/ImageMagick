@@ -979,20 +979,7 @@ MagickExport char *FileToString(const char *filename,const size_t extent,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   p=filename;
   if ((*filename == '@') && (strlen(filename) > 1))
-    {
-      MagickBooleanType
-        status;
-
-      status=IsRightsAuthorized(PathPolicyDomain,ReadPolicyRights,filename);
-      if (status == MagickFalse)
-        {
-          errno=EPERM;
-          (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-            "NotAuthorized","`%s'",filename);
-          return((char *) NULL);
-        }
-      p=filename+1;
-    }
+    p=filename+1;
   return((char *) FileToBlob(p,extent,&length,exception));
 }
 
@@ -1026,6 +1013,9 @@ MagickExport char *FileToString(const char *filename,const size_t extent,
 MagickExport StringInfo *FileToStringInfo(const char *filename,
   const size_t extent,ExceptionInfo *exception)
 {
+  const char
+    *p;
+
   StringInfo
     *string_info;
 
@@ -1035,8 +1025,11 @@ MagickExport StringInfo *FileToStringInfo(const char *filename,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   string_info=AcquireStringInfoContainer();
   string_info->path=ConstantString(filename);
-  string_info->datum=(unsigned char *) FileToBlob(filename,extent,
-    &string_info->length,exception);
+  p=filename;
+  if ((*filename == '@') && (strlen(filename) > 1))
+    p=filename+1;
+  string_info->datum=(unsigned char *) FileToBlob(p,extent,&string_info->length,
+    exception);
   if (string_info->datum == (unsigned char *) NULL)
     {
       string_info=DestroyStringInfo(string_info);
