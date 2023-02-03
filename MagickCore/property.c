@@ -4708,6 +4708,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           return(MagickFalse);
         }
 #endif
+#if defined(0)  /* security risk -- disable for now */
       if (LocaleCompare("profile",property) == 0)
         {
           ImageInfo
@@ -4730,6 +4731,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           image_info=DestroyImageInfo(image_info);
           return(MagickTrue);
         }
+#endif
       break; /* not an attribute, add as a property */
     }
     case 'R':
