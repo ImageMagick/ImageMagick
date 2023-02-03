@@ -4708,7 +4708,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           return(MagickFalse);
         }
 #endif
-#if defined(0)  /* security risk -- disable for now */
+#if 0  /* security risk -- disable for now */
       if (LocaleCompare("profile",property) == 0)
         {
           ImageInfo
