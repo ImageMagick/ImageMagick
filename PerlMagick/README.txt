@@ -23,8 +23,8 @@ Installation
 
     Get the PerlMagick distribution and type the following: 
 
-        gunzip ImageMagick-7.0.10-58.tar.gz
-        tar xvf ImageMagick-7.0.10
+        gunzip ImageMagick-7.1.0-61.tar.gz
+        tar xvf ImageMagick-7.1.61
 
     Follow the ImageMagick installation instructions in INSTALL-unix.txt
 		then type
