@@ -44,7 +44,7 @@ require AutoLoader;
       ConfigureError FatalErrorException
     );
 
-$VERSION = '7.0.12';
+$VERSION = '7.1.10';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
