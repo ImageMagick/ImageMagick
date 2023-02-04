@@ -11,7 +11,7 @@ permissions:
 
 name: app image
 jobs:
-  build:
+  create_app_image:
     name: 'Create AppImage'
     runs-on: ubuntu-latest
     container:
@@ -28,7 +28,6 @@ jobs:
             cxx_compiler: clang++
 
     steps:
-
     - name: Install dependencies
       run: |
         set -e
@@ -84,18 +83,29 @@ jobs:
         cp ImageMagick-$VERSION-x86_64.AppImage artifacts
         find /appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
 
-    - name: Create release
-      if: contains(github.ref, 'tags')
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        set -e
-        wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-        bash ./upload.sh ImageMagick*AppImage*
-
     - name: Upload ImageMagick AppImage
-      if: "!contains(github.ref, 'tags')"
       uses: actions/upload-artifact@v3
       with:
         name: AppImage-${{ matrix.compiler }}
         path: artifacts
+
+  create_release:
+    name: 'Create release'
+    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+      - create_app_image
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: artifacts
+
+    - name: Publish release
+      uses: softprops/action-gh-release@v1
+      with:
+        generate_release_notes: true
+        files: |
+          artifacts/AppImage-clang/ImageMagick--clang-x86_64.AppImage
+          artifacts/AppImage-gcc/ImageMagick--gcc-x86_64.AppImage
