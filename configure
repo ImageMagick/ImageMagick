@@ -2047,7 +2047,7 @@ Optional Packages:
   --with-utilities	enable building command-line utilities (default yes)
   --with-quantum-depth=DEPTH
                           number of bits in a pixel quantum (default 16)
-  --with-cache=THRESHOLD  set pixel cache threshold in MB (default available
+  --with-cache=THRESHOLD  set pixel cache memory threshold (default available
                           memory)
   --with-frozenpaths      freeze delegate paths
   --without-magick-plus-plus
@@ -5151,7 +5151,7 @@ MAGICK_PATCHLEVEL_VERSION=61
 
 MAGICK_VERSION=7.1.0-61
 
-MAGICK_GIT_REVISION=977e449b4:20230201
+MAGICK_GIT_REVISION=4e9ab480a:20230204
 
 
 # Substitute library versioning
@@ -5185,7 +5185,7 @@ PACKAGE_LIB_VERSION=0x710
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,0,61
 
-PACKAGE_RELEASE_DATE=2023-02-01
+PACKAGE_RELEASE_DATE=2023-02-04
 
 
 # Ensure that make can run correctly
@@ -23489,7 +23489,7 @@ fi
 
 if test "$with_cache" != ''; then
 
-printf "%s\n" "#define PixelCacheThreshold $with_cache" >>confdefs.h
+printf "%s\n" "#define PixelCacheThreshold \"$with_cache\"" >>confdefs.h
 
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-cache=$with_cache "
 fi

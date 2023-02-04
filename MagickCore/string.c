@@ -1082,10 +1082,6 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
   const MagickBooleanType bi,const char *suffix,const size_t length,
   char *format)
 {
-  char
-    p[MagickPathExtent],
-    q[MagickPathExtent];
-
   const char
     **units;
 
@@ -1117,10 +1113,9 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
       units=bi_units;
     }
   extent=(double) size;
-  (void) FormatLocaleString(p,MagickPathExtent,"%.*g",GetMagickPrecision(),
+  (void) FormatLocaleString(format,MagickPathExtent,"%.*g",GetMagickPrecision(),
     extent);
-  (void) FormatLocaleString(q,MagickPathExtent,"%.20g",extent);
-  if (strtod(p,(char **) NULL) == strtod(q,(char **) NULL))
+  if (strstr(format,"e+") == (char *) NULL)
     {
       if (suffix == (const char *) NULL)
         count=FormatLocaleString(format,length,"%.20g%s",extent,units[0]);

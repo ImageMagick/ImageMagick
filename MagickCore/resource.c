@@ -1203,7 +1203,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
 #if defined(MAGICKCORE_PixelCacheThreshold)
   memory=MAGICKCORE_PixelCacheThreshold;
 #endif
-  (void) SetMagickResourceLimit(AreaResource,2*memory);
+  (void) SetMagickResourceLimit(AreaResource,4*memory);
   limit=GetEnvironmentValue("MAGICK_AREA_LIMIT");
   if (limit != (char *) NULL)
     {

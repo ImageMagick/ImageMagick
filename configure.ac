@@ -800,12 +800,12 @@ AC_SUBST([MAGICK_ABI_SUFFIX])
 # Set pixel cache threshold
 AC_ARG_WITH([cache],
     [AS_HELP_STRING([--with-cache=THRESHOLD],
-                    [set pixel cache threshold in MB (default available memory)])],
+                    [set pixel cache memory threshold (default available memory)])],
     [with_cache=$withval],
     [with_cache=''])
 
 if test "$with_cache" != ''; then
-    AC_DEFINE_UNQUOTED([PixelCacheThreshold],[$with_cache],[Pixel cache threshold in MB (defaults to available memory)])
+    AC_DEFINE_UNQUOTED([PixelCacheThreshold],["$with_cache"],[Pixel cache memory threshold (defaults to available memory)])
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-cache=$with_cache "
 fi
 
