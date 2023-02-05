@@ -11,8 +11,6 @@ name: release
 jobs:
   change_log:
     name: 'Create ChangeLog.md'
-    container:
-      image: node:18
     runs-on: ubuntu-latest
 
     steps:
