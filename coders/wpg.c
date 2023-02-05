@@ -693,7 +693,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
         break;
     }
   BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
-  return(0);
+  return(y < (ssize_t) image->rows ? -5 : 0);
 }
 
 
