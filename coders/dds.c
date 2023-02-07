@@ -2306,7 +2306,7 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
       }
       if (mode == 4) {
         colors.r[6] = 0;
-        colors.r[7] = 0;
+        colors.r[7] = 255;
       }
 
       /* Green palette */
@@ -2321,7 +2321,7 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
       }
       if (mode == 4) {
         colors.g[6] = 0;
-        colors.g[7] = 0;
+        colors.g[7] = 255;
       }
 
       /* Write the pixels */
