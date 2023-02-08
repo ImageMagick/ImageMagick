@@ -827,7 +827,9 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
       continue;
     if ((IsGlob(filename) == MagickFalse) && (*option != '@'))
       continue;
-    if ((*option != '@') && (IsPathAccessible(option) == MagickFalse))
+    if (IsPathAccessible(option) != MagickFalse)
+      continue;
+    if (*option != '@')
       {
         /*
           Generate file list from wildcard filename (e.g. *.jpg).
