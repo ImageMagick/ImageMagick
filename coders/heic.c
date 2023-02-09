@@ -451,15 +451,16 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
       p=pixels+(y*stride);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        unsigned short pixel = ((*(p+1) << 8) | (*(p+0))) << shift; p+=2;
+        unsigned short pixel = (((unsigned short) *(p+1) << 8) |
+          (*(p+0))) << shift; p+=2;
         SetPixelRed(image,ScaleShortToQuantum(pixel),q);
-        pixel=((*(p+1) << 8) | (*(p+0))) << shift; p+=2;
+        pixel=(((unsigned short) *(p+1) << 8) | (*(p+0))) << shift; p+=2;
         SetPixelGreen(image,ScaleShortToQuantum(pixel),q);
-        pixel=((*(p+1) << 8) | (*(p+0))) << shift; p+=2;
+        pixel=(((unsigned short) *(p+1) << 8) | (*(p+0))) << shift; p+=2;
         SetPixelBlue(image,ScaleShortToQuantum(pixel),q);
         if (image->alpha_trait != UndefinedPixelTrait)
           {
-            pixel=((*(p+1) << 8) | (*(p+0))) << shift; p+=2;
+            pixel=(((unsigned short) *(p+1) << 8) | (*(p+0))) << shift; p+=2;
             SetPixelAlpha(image,ScaleShortToQuantum(pixel),q);
           }
         q+=GetPixelChannels(image);
