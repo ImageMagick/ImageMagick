@@ -2767,43 +2767,43 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             case DXGI_FORMAT_R8_UNORM:
             {
-              compression = NoCompression;
               alpha_trait = UndefinedPixelTrait;
+              compression = NoCompression;
               decoder = ReadUncompressedRGB;
               break;
             }
             case DXGI_FORMAT_B5G6R5_UNORM:
             {
-              compression = NoCompression;
               alpha_trait = UndefinedPixelTrait;
+              compression = NoCompression;
               decoder = ReadUncompressedRGB;
               break;
             }
             case DXGI_FORMAT_B5G5R5A1_UNORM:
             {
-              compression = NoCompression;
               alpha_trait = BlendPixelTrait;
+              compression = NoCompression;
               decoder = ReadUncompressedRGBA;
               break;
             }
             case DXGI_FORMAT_B8G8R8A8_UNORM:
             {
-              compression = NoCompression;
               alpha_trait = BlendPixelTrait;
+              compression = NoCompression;
               decoder = ReadUncompressedRGBA;
               break;
             }
             case DXGI_FORMAT_R8G8B8A8_UNORM:
             {
-              compression = NoCompression;
               alpha_trait = BlendPixelTrait;
+              compression = NoCompression;
               decoder = ReadUncompressedRGBA;
               break;
             }
             case DXGI_FORMAT_B8G8R8X8_UNORM:
             {
-              compression = NoCompression;
               alpha_trait = UndefinedPixelTrait;
+              compression = NoCompression;
               decoder = ReadUncompressedRGB;
               break;
             }
@@ -2830,7 +2830,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case DXGI_FORMAT_BC5_UNORM:
             {
-              alpha_trait = BlendPixelTrait;
+              alpha_trait = UndefinedPixelTrait;
               compression = BC5Compression;
               decoder = ReadBC5;
               break;
