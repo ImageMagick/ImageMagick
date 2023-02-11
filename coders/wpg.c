@@ -250,7 +250,7 @@ static unsigned int IsWPG(const unsigned char *magick,const size_t length)
 }
 
 
-static void Rd_WP_DWORD(Image *image,size_t *d)
+static int Rd_WP_DWORD(Image *image,size_t *d)
 {
   unsigned char
     b;
@@ -258,19 +258,19 @@ static void Rd_WP_DWORD(Image *image,size_t *d)
   b=ReadBlobByte(image);
   *d=b;
   if (b < 0xFFU)
-    return;
+    return(1);
   b=ReadBlobByte(image);
   *d=(size_t) b;
   b=ReadBlobByte(image);
   *d+=(size_t) b*256l;
   if (*d < 0x8000)
-    return;
+    return(3);
   *d=(*d & 0x7FFF) << 16;
   b=ReadBlobByte(image);
   *d+=(size_t) b;
   b=ReadBlobByte(image);
   *d+=(size_t) b*256l;
-  return;
+  return(5);
 }
 
 static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
@@ -1133,8 +1133,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Rec.RecType=(i=ReadBlobByte(image));
           if(i==EOF)
             break;
-          Rd_WP_DWORD(image,&Rec.RecordLength);
-          if (Rec.RecordLength > GetBlobSize(image))
+          i=Rd_WP_DWORD(image,&Rec.RecordLength);
+          if ((Rec.RecordLength+4) >= GetBlobSize(image))
             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
           if(EOFBlob(image))
             break;
