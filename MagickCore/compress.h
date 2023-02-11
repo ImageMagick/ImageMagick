@@ -50,7 +50,8 @@ typedef enum
   WebPCompression,
   DWAACompression,
   DWABCompression,
-  BC7Compression
+  BC7Compression,
+  BC5Compression
 } CompressionType;
 
 typedef struct _Ascii85Info
