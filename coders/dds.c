@@ -2118,7 +2118,6 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
         SetPixelGreen(image,ScaleCharToQuantum(colors.g[GetBits(block,
           &start_bit_g,3)]),q);
         SetPixelBlue(image,(Quantum) 0,q);
-        SetPixelAlpha(image,OpaqueAlpha,q);
 
         q+=GetPixelChannels(image);
       }
