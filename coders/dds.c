@@ -2127,14 +2127,13 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
 
         q+=GetPixelChannels(image);
       }
-
       if (SyncAuthenticPixels(image, exception) == MagickFalse)
         return(MagickFalse);
     }
     if (EOFBlob(image) != MagickFalse)
-      (MagickFalse);
+      return(MagickFalse);
   }
-  return (MagickTrue);
+  return(MagickTrue);
 }
 
 static MagickBooleanType ReadBC5(const ImageInfo *image_info,Image *image,
@@ -2142,12 +2141,12 @@ static MagickBooleanType ReadBC5(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   if (ReadBC5Pixels(image,dds_info,exception) == MagickFalse)
-    return (MagickFalse);
+    return(MagickFalse);
 
   if (read_mipmaps != MagickFalse)
-    return (ReadMipmaps(image_info,image,dds_info,ReadBC5Pixels,exception));
+    return(ReadMipmaps(image_info,image,dds_info,ReadBC5Pixels,exception));
   else
-    return (SkipDXTMipmaps(image,dds_info,16,exception));
+    return(SkipDXTMipmaps(image,dds_info,16,exception));
 }
 
 static MagickBooleanType ReadBC7Pixels(Image *image,
