@@ -2113,15 +2113,10 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
       start_bit_g=80;
       for (i = 0; i < (ssize_t) area; i++)
       {
-        unsigned long
-          r,
-          g;
-
-        r=colors.r[GetBits(block,&start_bit_r,3)];
-        g=colors.g[GetBits(block,&start_bit_g,3)];
-
-        SetPixelRed(image,ScaleCharToQuantum((unsigned char)r),q);
-        SetPixelGreen(image,ScaleCharToQuantum((unsigned char)g),q);
+        SetPixelRed(image,ScaleCharToQuantum(colors.r[GetBits(block,
+          &start_bit_r,3)]),q);
+        SetPixelGreen(image,ScaleCharToQuantum(colors.g[GetBits(block,
+          &start_bit_g,3)]),q);
         SetPixelBlue(image,(Quantum) 0,q);
         SetPixelAlpha(image,OpaqueAlpha,q);
 
