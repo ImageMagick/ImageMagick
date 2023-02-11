@@ -2245,9 +2245,10 @@ static MagickBooleanType ReadBC7(const ImageInfo *image_info,Image *image,
 }
 
 static MagickBooleanType ReadBC5Pixels(Image *image,
-                                       const DDSInfo *magick_unused(dds_info),
-                                       ExceptionInfo *exception) {
-  BC5Colors colors = {{0}};
+  const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
+{
+  BC5Colors
+    colors = { 0 };
 
   Quantum
     *q;
@@ -2257,110 +2258,112 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
     start_bit_r;
 
   ssize_t
-    count, i, x, y;
-
-  unsigned long
-    r, g;
+    i,
+    x,
+    y;
 
   unsigned char
     block[16],
     mode;
 
   magick_unreferenced(dds_info);
-
-  for (y = 0; y < (ssize_t)image->rows; y += 4) {
-    for (x = 0; x < (ssize_t)image->columns; x += 4) {
-      size_t area;
+  for (y = 0; y < (ssize_t)image->rows; y += 4)
+  {
+    for (x = 0; x < (ssize_t)image->columns; x += 4)
+    {
+      size_t
+        area,
+        count;
 
       /* Get 4x4 patch of pixels to write on */
-      q = QueueAuthenticPixels(image, x, y, MagickMin(4, image->columns - x),
-                               MagickMin(4, image->rows - y), exception);
+      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
+        MagickMin(4,image->rows-y),exception);
 
       if (q == (Quantum *)NULL)
-        return (MagickFalse);
+        return(MagickFalse);
 
       /* Read 16 bytes of data from the image */
-      count = ReadBlob(image, 16, block);
-
-      if (count != 16)
-        return (MagickFalse);
-
-      if (EOFBlob(image) != MagickFalse)
-        return (MagickFalse);
+      count=ReadBlob(image,16,block);
+      if ((count != 16) || (EOFBlob(image) != MagickFalse))
+        return(MagickFalse);
 
       /* Get the mode of the block, 6 colors or 4 colors */
-      colors.r[0] = block[0];
-      colors.r[1] = block[1];
-      colors.g[0] = block[8];
-      colors.g[1] = block[9];
+      colors.r[0]=block[0];
+      colors.r[1]=block[1];
+      colors.g[0]=block[8];
+      colors.g[1]=block[9];
 
       /* Red palette */
-      mode = 4;
-      if (colors.r[0] > colors.r[1]) {
-        mode = 6;
+      mode=4;
+      if (colors.r[0] > colors.r[1])
+        mode=6;
+      for (i = 0; i < mode; i++)
+      {
+        colors.r[i+2]=(unsigned char) (((mode-i)*(float)colors.r[0]+(i+1)*
+          (float)colors.r[1])/((float)(mode+1)));
       }
-      for (i = 0; i < mode; i++) {
-        colors.r[i + 2] = (unsigned char)
-            (((mode - i) * (float)colors.r[0] + (i + 1) * (float)colors.r[1]) /
-            ((float)(mode + 1)));
-      }
-      if (mode == 4) {
-        colors.r[6] = 0;
-        colors.r[7] = 255;
-      }
+      if (mode == 4)
+        {
+          colors.r[6]=0;
+          colors.r[7]=255;
+        }
 
       /* Green palette */
-      mode = 4;
-      if (colors.g[0] > colors.g[1]) {
-        mode = 6;
-      }
-      for (i = 0; i < mode; i++) {
-        colors.g[i + 2] = (unsigned char)
-            (((mode - i) * (float)colors.g[0] + (i + 1) * (float)colors.g[1]) /
-            ((float)(mode + 1)));
+      mode=4;
+      if (colors.g[0] > colors.g[1])
+        mode=6;
+      for (i = 0; i < mode; i++)
+      {
+        colors.g[i+2]=(unsigned char) (((mode-i)*(float)colors.g[0]+(i+1)*
+          (float)colors.g[1])/((float)(mode+1)));
       }
       if (mode == 4) {
-        colors.g[6] = 0;
-        colors.g[7] = 255;
+        colors.g[6]=0;
+        colors.g[7]=255;
       }
 
       /* Write the pixels */
       area=MagickMin(MagickMin(4,image->columns-x)*MagickMin(4,image->rows-y),
         16);
-      start_bit_r = 16;
-      start_bit_g = 80;
-      for (i = 0; i < (ssize_t)area; i++) {
-        r = colors.r[GetBits(block, &start_bit_r, 3)];
-        g = colors.g[GetBits(block, &start_bit_g, 3)];
+      start_bit_r=16;
+      start_bit_g=80;
+      for (i = 0; i < (ssize_t) area; i++)
+      {
+        unsigned long
+          r,
+          g;
 
-        SetPixelRed(image, ScaleCharToQuantum((unsigned char)r), q);
-        SetPixelGreen(image, ScaleCharToQuantum((unsigned char)g), q);
-        SetPixelBlue(image, ScaleCharToQuantum((unsigned char)0), q);
-        SetPixelAlpha(image, ScaleCharToQuantum((unsigned char)255), q);
+        r=colors.r[GetBits(block,&start_bit_r,3)];
+        g=colors.g[GetBits(block,&start_bit_g,3)];
 
-        q += GetPixelChannels(image);
+        SetPixelRed(image,ScaleCharToQuantum((unsigned char)r),q);
+        SetPixelGreen(image,ScaleCharToQuantum((unsigned char)g),q);
+        SetPixelBlue(image,ScaleCharToQuantum((unsigned char)0),q);
+        SetPixelAlpha(image,OpaqueAlpha,q);
+
+        q+=GetPixelChannels(image);
       }
 
       if (SyncAuthenticPixels(image, exception) == MagickFalse)
-        return (MagickFalse);
+        return(MagickFalse);
     }
     if (EOFBlob(image) != MagickFalse)
-      return (MagickFalse);
+      (MagickFalse);
   }
   return (MagickTrue);
 }
 
-static MagickBooleanType ReadBC5(const ImageInfo *image_info, Image *image,
-                                 const DDSInfo *dds_info,
-                                 const MagickBooleanType read_mipmaps,
-                                 ExceptionInfo *exception) {
-  if (ReadBC5Pixels(image, dds_info, exception) == MagickFalse)
+static MagickBooleanType ReadBC5(const ImageInfo *image_info,Image *image,
+  const DDSInfo *dds_info,const MagickBooleanType read_mipmaps,
+  ExceptionInfo *exception)
+{
+  if (ReadBC5Pixels(image,dds_info,exception) == MagickFalse)
     return (MagickFalse);
 
   if (read_mipmaps != MagickFalse)
-    return (ReadMipmaps(image_info, image, dds_info, ReadBC5Pixels, exception));
+    return (ReadMipmaps(image_info,image,dds_info,ReadBC5Pixels,exception));
   else
-    return (SkipDXTMipmaps(image, dds_info, 16, exception));
+    return (SkipDXTMipmaps(image,dds_info,16,exception));
 }
 
 static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
@@ -2832,19 +2835,19 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
               decoder = ReadDXT5;
               break;
             }
+            case DXGI_FORMAT_BC5_UNORM:
+            {
+              alpha_trait = BlendPixelTrait;
+              compression = BC5Compression;
+              decoder = ReadBC5;
+              break;
+            }
             case DXGI_FORMAT_BC7_UNORM:
             case DXGI_FORMAT_BC7_UNORM_SRGB:
             {
               alpha_trait = BlendPixelTrait;
               compression = BC7Compression;
               decoder = ReadBC7;
-              break;
-            }
-            case DXGI_FORMAT_BC5_UNORM:
-            {
-              alpha_trait = BlendPixelTrait;
-              compression = BC5Compression;
-              decoder = ReadBC5;
               break;
             }
             default:
