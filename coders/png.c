@@ -1753,12 +1753,12 @@ static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
         XMP profile.
       */
       offset=20;
-      while (offset < size)
+      while (offset < (ssize_t) size)
       {
         if (data[offset++] == 0)
           break;
       }
-      while (offset < size)
+      while (offset < (ssize_t) size)
       {
         if (data[offset++] == 0)
           break;
@@ -9304,8 +9304,9 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
         UndefinedPixelTrait ? MagickTrue : MagickFalse;
 
   if (mng_info->colortype < 5)
-    mng_info->is_palette=image->storage_class == PseudoClass &&
-      image_colors <= 256 && image->colormap != NULL;
+    mng_info->is_palette=(image->storage_class == PseudoClass) &&
+      (image_colors <= 256) && (image->colormap != NULL) ? MagickTrue :
+      MagickFalse;
   else
     mng_info->is_palette=MagickFalse;
 
@@ -11564,11 +11565,16 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   /* See if user has requested a specific PNG subformat */
 
-  mng_info->write_png8=LocaleCompare(image_info->magick,"PNG8") == 0;
-  mng_info->write_png24=LocaleCompare(image_info->magick,"PNG24") == 0;
-  mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0;
-  mng_info->write_png48=LocaleCompare(image_info->magick,"PNG48") == 0;
-  mng_info->write_png64=LocaleCompare(image_info->magick,"PNG64") == 0;
+  mng_info->write_png8=LocaleCompare(image_info->magick,"PNG8") == 0 ?
+    MagickTrue : MagickFalse;
+  mng_info->write_png24=LocaleCompare(image_info->magick,"PNG24") == 0 ?
+    MagickTrue : MagickFalse;
+  mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0 ?
+    MagickTrue : MagickFalse;
+  mng_info->write_png48=LocaleCompare(image_info->magick,"PNG48") == 0 ?
+    MagickTrue : MagickFalse;
+  mng_info->write_png64=LocaleCompare(image_info->magick,"PNG64") == 0 ?
+    MagickTrue : MagickFalse;
 
   value=GetImageOption(image_info,"png:format");
 
@@ -12895,7 +12901,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   (void) memset(mng_info,0,sizeof(*mng_info));
   mng_info->image=image;
-  write_mng=LocaleCompare(image_info->magick,"MNG") == 0;
+  write_mng=LocaleCompare(image_info->magick,"MNG") == 0 ?
+    MagickTrue : MagickFalse;
 
   /*
    * See if user has requested a specific PNG subformat to be used
@@ -12908,16 +12915,21 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
    * global settings.
    */
 
-  mng_info->write_png8=LocaleCompare(image_info->magick,"PNG8") == 0;
-  mng_info->write_png24=LocaleCompare(image_info->magick,"PNG24") == 0;
-  mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0;
+  mng_info->write_png8=LocaleCompare(image_info->magick,"PNG8") == 0 ?
+    MagickTrue : MagickFalse;
+  mng_info->write_png24=LocaleCompare(image_info->magick,"PNG24") == 0 ?
+    MagickTrue : MagickFalse;
+  mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0 ?
+    MagickTrue : MagickFalse;
 
   write_jng=MagickFalse;
   if (image_info->compression == JPEGCompression)
     write_jng=MagickTrue;
 
-  mng_info->adjoin=image_info->adjoin && (write_mng != MagickFalse) &&
-    (GetNextImageInList(image) != (Image *) NULL);
+  mng_info->adjoin=(image_info->adjoin != MagickFalse) &&
+    (write_mng != MagickFalse) &&
+    (GetNextImageInList(image) != (Image *) NULL) ?
+    MagickTrue : MagickFalse;
 
   if (logging != MagickFalse)
     {
