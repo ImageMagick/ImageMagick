@@ -2691,44 +2691,44 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image structure.
   */
-  if (ReadDDSInfo(image, &dds_info) != MagickTrue)
+  if (ReadDDSInfo(image,&dds_info) != MagickTrue)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
   if (dds_info.ddscaps2 & DDSCAPS2_CUBEMAP)
-    cubemap = MagickTrue;
+    cubemap=MagickTrue;
 
   if (dds_info.ddscaps2 & DDSCAPS2_VOLUME && dds_info.depth > 0)
-    volume = MagickTrue;
+    volume=MagickTrue;
 
   /*
     Determine pixel format
   */
   if (dds_info.pixelformat.flags & DDPF_RGB)
     {
-      compression = NoCompression;
+      compression=NoCompression;
       if (dds_info.pixelformat.flags & DDPF_ALPHAPIXELS)
         {
-          alpha_trait = BlendPixelTrait;
-          decoder = ReadUncompressedRGBA;
+          alpha_trait=BlendPixelTrait;
+          decoder=ReadUncompressedRGBA;
         }
       else
         {
-          alpha_trait = UndefinedPixelTrait;
-          decoder = ReadUncompressedRGB;
+          alpha_trait=UndefinedPixelTrait;
+          decoder=ReadUncompressedRGB;
         }
     }
   else if (dds_info.pixelformat.flags & DDPF_LUMINANCE)
    {
-      compression = NoCompression;
+      compression=NoCompression;
       if (dds_info.pixelformat.flags & DDPF_ALPHAPIXELS)
         {
-          alpha_trait = BlendPixelTrait;
-          decoder = ReadUncompressedRGBA;
+          alpha_trait=BlendPixelTrait;
+          decoder=ReadUncompressedRGBA;
         }
       else
         {
-          alpha_trait = UndefinedPixelTrait;
-          decoder = ReadUncompressedRGB;
+          alpha_trait=UndefinedPixelTrait;
+          decoder=ReadUncompressedRGB;
         }
     }
   else if (dds_info.pixelformat.flags & DDPF_FOURCC)
@@ -2737,74 +2737,74 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         case FOURCC_DXT1:
         {
-          alpha_trait = UndefinedPixelTrait;
-          compression = DXT1Compression;
-          decoder = ReadDXT1;
+          alpha_trait=UndefinedPixelTrait;
+          compression=DXT1Compression;
+          decoder=ReadDXT1;
           break;
         }
         case FOURCC_DXT3:
         {
-          alpha_trait = BlendPixelTrait;
-          compression = DXT3Compression;
-          decoder = ReadDXT3;
+          alpha_trait=BlendPixelTrait;
+          compression=DXT3Compression;
+          decoder=ReadDXT3;
           break;
         }
         case FOURCC_DXT5:
         {
-          alpha_trait = BlendPixelTrait;
-          compression = DXT5Compression;
-          decoder = ReadDXT5;
+          alpha_trait=BlendPixelTrait;
+          compression=DXT5Compression;
+          decoder=ReadDXT5;
           break;
         }
         case FOURCC_DX10:
         {
           if (dds_info.extDimension != DDSEXT_DIMENSION_TEX2D)
             {
-              ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+              ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
             }
 
           switch (dds_info.extFormat)
           {
             case DXGI_FORMAT_R8_UNORM:
             {
-              alpha_trait = UndefinedPixelTrait;
-              compression = NoCompression;
-              decoder = ReadUncompressedRGB;
+              alpha_trait=UndefinedPixelTrait;
+              compression=NoCompression;
+              decoder=ReadUncompressedRGB;
               break;
             }
             case DXGI_FORMAT_B5G6R5_UNORM:
             {
-              alpha_trait = UndefinedPixelTrait;
-              compression = NoCompression;
-              decoder = ReadUncompressedRGB;
+              alpha_trait=UndefinedPixelTrait;
+              compression=NoCompression;
+              decoder=ReadUncompressedRGB;
               break;
             }
             case DXGI_FORMAT_B5G5R5A1_UNORM:
             {
-              alpha_trait = BlendPixelTrait;
-              compression = NoCompression;
-              decoder = ReadUncompressedRGBA;
+              alpha_trait=BlendPixelTrait;
+              compression=NoCompression;
+              decoder=ReadUncompressedRGBA;
               break;
             }
             case DXGI_FORMAT_B8G8R8A8_UNORM:
             {
-              alpha_trait = BlendPixelTrait;
-              compression = NoCompression;
-              decoder = ReadUncompressedRGBA;
+              alpha_trait=BlendPixelTrait;
+              compression=NoCompression;
+              decoder=ReadUncompressedRGBA;
               break;
             }
             case DXGI_FORMAT_R8G8B8A8_UNORM:
             {
-              alpha_trait = BlendPixelTrait;
-              compression = NoCompression;
-              decoder = ReadUncompressedRGBA;
+              alpha_trait=BlendPixelTrait;
+              compression=NoCompression;
+              decoder=ReadUncompressedRGBA;
               break;
             }
             case DXGI_FORMAT_B8G8R8X8_UNORM:
             {
-              alpha_trait = UndefinedPixelTrait;
-              compression = NoCompression;
-              decoder = ReadUncompressedRGB;
+              alpha_trait=UndefinedPixelTrait;
+              compression=NoCompression;
+              decoder=ReadUncompressedRGB;
               break;
             }
             case DXGI_FORMAT_BC1_UNORM:
@@ -2816,9 +2816,9 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case DXGI_FORMAT_BC2_UNORM:
             {
-              alpha_trait = BlendPixelTrait;
-              compression = DXT3Compression;
-              decoder = ReadDXT3;
+              alpha_trait=BlendPixelTrait;
+              compression=DXT3Compression;
+              decoder=ReadDXT3;
               break;
             }
             case DXGI_FORMAT_BC3_UNORM:
@@ -2830,43 +2830,43 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case DXGI_FORMAT_BC5_UNORM:
             {
-              alpha_trait = UndefinedPixelTrait;
-              compression = BC5Compression;
-              decoder = ReadBC5;
+              alpha_trait=UndefinedPixelTrait;
+              compression=BC5Compression;
+              decoder=ReadBC5;
               break;
             }
             case DXGI_FORMAT_BC7_UNORM:
             case DXGI_FORMAT_BC7_UNORM_SRGB:
             {
-              alpha_trait = BlendPixelTrait;
-              compression = BC7Compression;
-              decoder = ReadBC7;
+              alpha_trait=BlendPixelTrait;
+              compression=BC7Compression;
+              decoder=ReadBC7;
               break;
             }
             default:
             {
               /* Unknown format */
-              ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+              ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
             }
           }
 
           if (dds_info.extFlags & DDSEXTFLAGS_CUBEMAP)
-            cubemap = MagickTrue;
+            cubemap=MagickTrue;
 
-          num_images = dds_info.extArraySize;
+          num_images=dds_info.extArraySize;
           break;
         }
         default:
         {
           /* Unknown FOURCC */
-          ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+          ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
         }
       }
     }
   else
     {
       /* Neither compressed nor uncompressed... thus unsupported */
-      ThrowReaderException(CorruptImageError, "ImageTypeNotSupported");
+      ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
     }
   
   num_images = 1;
