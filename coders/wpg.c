@@ -517,22 +517,20 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
             BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
             return(-3);
           }
-          for(i=0;i < (int) RunCount;i++)
-            {
-              x=0;
-              y++;    /* Here I need to duplicate previous row RUNCOUNT* */
-              if(y<2) continue;
-              if(y>(ssize_t) image->rows)
-                {
-                  BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
-                  return(-4);
-                }
-              if (InsertRow(image,BImgBuff,y-1,bpp,exception) == MagickFalse)
-                {
-                  BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
-                  return(-5);
-                }
-            }
+          for (i=0; i < (int) RunCount; i++)
+          {
+            if (y >= (ssize_t) image->rows)
+              {
+                BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+                return(-4);
+              }
+            if (InsertRow(image,BImgBuff,y-1,bpp,exception) == MagickFalse)
+              {
+                BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
+                return(-6);
+              }
+            y++;
+          }
         }
       }
       if (EOFBlob(image) != MagickFalse)
