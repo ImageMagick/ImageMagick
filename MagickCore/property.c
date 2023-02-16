@@ -2903,13 +2903,12 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
       if (LocaleCompare("channels",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
-          /* FUTURE: return actual image channels */
-          (void) FormatLocaleString(value,MagickPathExtent,"%s",
+          (void) FormatLocaleString(value,MagickPathExtent,"%s%s %g.%g",
             CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-            image->colorspace));
+            image->colorspace),image->alpha_trait != UndefinedPixelTrait ?
+            "a" : " ",(double) image->number_channels,(double)
+            image->number_meta_channels);
           LocaleLower(value);
-          if( image->alpha_trait != UndefinedPixelTrait )
-            (void) ConcatenateMagickString(value,"a",MagickPathExtent);
           break;
         }
       if (LocaleCompare("colors",property) == 0)
