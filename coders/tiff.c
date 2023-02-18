@@ -1706,9 +1706,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (void) SetPixelMetaChannels(image,extra_samples,exception);
             for (i=0; i < extra_samples; i++)
             {
-              image->alpha_trait=BlendPixelTrait;
               if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
                 {
+                  image->alpha_trait=BlendPixelTrait;
                   SetQuantumAlphaType(quantum_info,AssociatedQuantumAlpha);
                   (void) SetImageProperty(image,"tiff:alpha","associated",
                     exception);
@@ -1716,6 +1716,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               else
                 if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
                   {
+                    image->alpha_trait=BlendPixelTrait;
                     SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
                     (void) SetImageProperty(image,"tiff:alpha","unassociated",
                       exception);
