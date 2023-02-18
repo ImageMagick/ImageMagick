@@ -8767,7 +8767,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
 
             (void) SyncImagesSettings(mogrify_info,*images,exception);
             arguments=StringToArgv(argv[i+1],&number_arguments);
-            if (arguments == (char **) NULL)
+            if ((arguments == (char **) NULL) || (number_arguments == 1))
               break;
             if ((argc > 1) && (strchr(arguments[1],'=') != (char *) NULL))
               {

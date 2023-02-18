@@ -4570,7 +4570,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             number_arguments;
 
           arguments=StringToArgv(arg1,&number_arguments);
-          if (arguments == (char **) NULL)
+          if ((arguments == (char **) NULL) || (number_arguments == 1))
             break;
           if (strchr(arguments[1],'=') != (char *) NULL)
             {
