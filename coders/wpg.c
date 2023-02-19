@@ -524,7 +524,7 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
                 BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
                 return(-4);
               }
-            if (InsertRow(image,BImgBuff,y-1,bpp,exception) == MagickFalse)
+            if (InsertRow(image,BImgBuff,y,bpp,exception) == MagickFalse)
               {
                 BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
                 return(-6);
