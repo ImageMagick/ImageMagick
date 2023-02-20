@@ -440,6 +440,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     if (status == MagickFalse)
       break;
   }
+  if (destination_image == (Image *) NULL)
+    return(destination_image);
   (void) SetPixelChannelMask(destination_image,channel_mask);
   if ((channel_op == ExtractChannelOp) && (channels == 1))
     {
