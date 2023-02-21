@@ -36,7 +36,8 @@ jobs:
         add-apt-repository ppa:git-core/ppa -y
         apt-get install -y git
         add-apt-repository ppa:strukturag/libheif -y
-        apt-get update
+        apt-get update -y
+        apt-get autoremove
         apt-get install libheif-dev -y
 
     - name: Checkout
