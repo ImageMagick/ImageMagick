@@ -37,6 +37,7 @@ jobs:
         apt-get install -y git
         add-apt-repository ppa:strukturag/libheif -y
         apt-get update -y
+        apt-get upgrade -y
         apt-get autoremove
         apt-get install libheif1 libde265-dev libheif-dev -y
 
