@@ -36,9 +36,7 @@ jobs:
         add-apt-repository ppa:git-core/ppa -y
         apt-get install -y git
         add-apt-repository ppa:strukturag/libheif -y
-        apt-get update -y
-        apt-get upgrade -y
-        apt-get autoremove
+        add-apt-repository ppa:strukturag/libde265 -y
         apt-get install libheif1 libde265-dev libheif-dev -y
 
     - name: Checkout
