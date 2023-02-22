@@ -32,12 +32,12 @@ jobs:
       run: |
         set -e
         apt-get update -y
-        apt-get install -y autoconf curl fuse git kmod libaom-dev libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev liblcms-dev libopenexr-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev software-properties-common wget
+        apt-get install -y autoconf curl fuse git kmod libbz2-dev libdjvulibre-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev liblcms-dev libopenexr-dev libturbojpeg0-dev liblqr-dev libraqm-dev libtiff-dev libwebp-dev libx11-dev libxml2-dev liblzma-dev software-properties-common wget
         add-apt-repository ppa:git-core/ppa -y
         apt-get install -y git
         add-apt-repository ppa:strukturag/libheif -y
         add-apt-repository ppa:strukturag/libde265 -y
-        apt-get install libheif1 libde265-dev libheif-dev -y
+        apt-get install libheif-dev -y
 
     - name: Checkout
       uses: actions/checkout@v3
