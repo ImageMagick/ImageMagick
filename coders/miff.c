@@ -1354,6 +1354,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       packet_size+=image->depth/8;
     if (image->compression == RLECompression)
       packet_size++;
+    if (image->number_meta_channels != 0)
+      packet_size+=image->number_meta_channels*image->depth/8;
     compress_extent=MagickMax(MagickMax(BZipMaxExtent(packet_size*
       image->columns),LZMAMaxExtent(packet_size*image->columns)),
       ZipMaxExtent(packet_size*image->columns));
@@ -2164,6 +2166,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       packet_size+=image->depth/8;
     if (compression == RLECompression)
       packet_size++;
+    if (image->number_meta_channels != 0)
+      packet_size+=image->number_meta_channels*image->depth/8;
     length=MagickMax(BZipMaxExtent(packet_size*image->columns),ZipMaxExtent(
       packet_size*image->columns));
     if ((compression == BZipCompression) || (compression == ZipCompression))
