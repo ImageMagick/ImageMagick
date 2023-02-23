@@ -709,6 +709,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'c':
               case 'C':
               {
+                if (LocaleCompare(keyword,"channel-mask") == 0)
+                  {
+                    image->channel_mask=(ChannelType)
+                      StringToUnsignedLong(options);
+                    break;
+                  }
                 if (LocaleCompare(keyword,"class") == 0)
                   {
                     ssize_t
@@ -2182,8 +2188,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       image->alpha_trait));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
-      "number-channels=%.20g number-meta-channels=%.20g\n",
-      (double) image->number_channels,(double) image->number_meta_channels);
+      "number-channels=%.20g number-meta-channels=%.20g channel-mask=%.20g\n",
+      (double) image->number_channels,(double) image->number_meta_channels,
+      (double) image->channel_mask);
     (void) WriteBlobString(image,buffer);
     if (image->alpha_trait != UndefinedPixelTrait)
       (void) WriteBlobString(image,"matte=True\n");
