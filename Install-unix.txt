@@ -129,7 +129,7 @@ Configure
         argument in order to find shared libraries at run time. For example,
         the Solaris linker requires an argument of the form -R/path. Some
         Linux systems will work with -rpath /usr/local/lib, while some other
-        Linux systems who's gcc does not pass -rpath to the linker require
+        Linux systems whose gcc does not pass -rpath to the linker require
         an argument of the form -Wl,-rpath,/usr/local/lib.
 
     LIBS
@@ -217,7 +217,7 @@ Configure
       into a directory tree. This the most secure and reliable way to install
       ImageMagick. Use this option to configure ImageMagick so that it doesn't
       use hard-coded paths and locates support files by computing an offset path
-      from the executable (or from the location specified by the MAGICK_HOME
+      from the executable, or from the location specified by the MAGICK_HOME
       environment variable. The uninstalled configuration is ideal for binary
       distributions which are expected to extract and run in any location.
   
@@ -320,7 +320,7 @@ Configure
       raw pixel data.
   
     --without-threads
-      disable threads support.
+      disable support for threads.
   
       By default, the ImageMagick library is compiled with multi-thread
       support. If this undesirable, specify --without-threads.
@@ -331,7 +331,7 @@ Configure
       Normally, external program names are substituted into the delegates.xml
       configuration file without full paths. Specify this option to enable
       saving full paths to programs using locations determined by configure.
-      This useful for environments where programs are stored under multiple
+      This is useful for environments where programs are stored under multiple
       paths, and users may use different PATH settings than the person who
       builds ImageMagick.
   
@@ -351,7 +351,7 @@ Configure
       option).
   
     --without-perl
-      disable build/install of PerlMagick, or
+      disable build/install of PerlMagick
   
       By default, PerlMagick is conveniently compiled and installed as part
       of ImageMagick's normal configure, make, sudo make install process. When
@@ -374,7 +374,7 @@ Configure
       installation prefix is not the same as PERL's PREFIX, then you
       may find that PerlMagick's sudo make install step tries to install
       into a directory tree that you don't have write permissions to. This
-      common when PERL is delivered with the operating system or on Internet
+      is common when PERL is delivered with the operating system or on Internet
       Service Provider (ISP) web servers. If you want PerlMagick to install
       elsewhere, then provide a PREFIX option to PERL's configuration step
       via "--with-perl-options=PREFIX=/some/place". Other options accepted by
@@ -441,7 +441,7 @@ Configure
     --with-windows-font-dir
       directory containing MS-Windows fonts.
   
-      Specify the directory containing MS-Windows-compatible fonts. This not
+      Specify the directory containing MS-Windows-compatible fonts. This is not
       necessary when ImageMagick is running under MS-Windows.
   
     --without-xml
@@ -471,7 +471,7 @@ Configure
   executing the compiler (CC) with the specified compilation flags (CFLAGS),
   pre-processor flags (CPPFLAGS), and linker flags (LDFLAGS). Any errors are
   logged to the file config.log. If configure fails to discover a header or
-  library please review this log file to determine why, however, please be
+  library please review this log file to determine why. However, please be
   aware that *errors in the config.log are normal* because configure works by
   trying something and seeing if it fails. An error in config.log is only a
   problem if the test should have passed on your system.
@@ -499,10 +499,10 @@ Build
   from the generated make files:
   
     make
-      build ImageMagick.
+      Build ImageMagick.
   
     sudo make install
-      install ImageMagick.
+      Install ImageMagick.
   
     make check
       Run tests using the installed ImageMagick (sudo make install must be
@@ -513,8 +513,8 @@ Build
       Remove everything in the build directory created by make.
   
     make distclean
-      remove everything in the build directory created by configure and
-      make. This useful if you want to start over from scratch.
+      Remove everything in the build directory created by configure and
+      make. This is useful if you want to start over from scratch.
   
     make uninstall
       Remove all files from the system which are (or would be) installed by sudo
@@ -537,11 +537,11 @@ Install
   
   to install it.
   
-  By default, ImageMagick is installs binaries in /../usr/local/bin, libraries
+  By default, ImageMagick installs binaries in /../usr/local/bin, libraries
   in /../usr/local/lib, header files in /../usr/local/include and documentation
   in /../usr/local/share. You can specify an alternative installation prefix
   other than /../usr/local by giving configure the option --prefix=PATH. This
-  valuable in case you don't have privileges to install under the default
+  is valuable in case you don't have privileges to install under the default
   paths or if you want to install in the system directories instead.
   
   To confirm your installation of the ImageMagick distribution was successful,
@@ -550,24 +550,24 @@ Install
   
     $magick> display
   
-  The ImageMagick logo is displayed on your X11 display.
+  The ImageMagick logo should be displayed on your X11 display.
   
   To verify the ImageMagick build configuration, type:
   
     $magick> identify -list configure
   
-  To list which image formats are supported , type:
+  To list which image formats are supported, type:
   
     $magick> identify -list format
   
-  For a more comprehensive test, you run the ImageMagick test suite by typing:
+  For a more comprehensive test, run the ImageMagick test suite by typing:
   
     $magick> make check
   
   Ghostscript is a prerequisite, otherwise the EPS, PS, and PDF tests will
   fail. Note that due to differences between the developer's environment and
   your own it is possible that a few tests may fail even though the results are
-  ok. Differences between the developer's environment and your own
+  OK. Differences between the developer's environment and your own
   may include the compiler, the CPU type, and the library versions used. The
   ImageMagick developers use the current release of all dependent libraries.
 
@@ -590,8 +590,8 @@ MinGW-specific Build instructions
   Although you can download and install delegate libraries yourself, many
   are already available in the GnuWin32 distribution. Download and install
   whichever delegate libraries you require such as JPEG, PNG, TIFF, etc. Make
-  sure you specify the development headers when you install a package. Next
-  type,
+  sure you specify the development headers when you install a package. Next,
+  type
   
     $magick> tar jxvf ImageMagick-7.0.0-?.tar.bz2
     $magick> cd ImageMagick-7.0.0
@@ -603,8 +603,8 @@ MinGW-specific Build instructions
 Dealing with Unexpected Problems
   
   Chances are the download, configure, build, and install of ImageMagick went
-  flawlessly as it is intended, however, certain systems and environments may
-  cause one or more steps to fail. We discuss a few problems we've run across
+  flawlessly as it is intended, but certain systems and environments may
+  cause one or more steps to fail. We'll discuss a few problems we've run across
   and how to take corrective action to ensure you have a working release
   of ImageMagick
   
@@ -621,7 +621,7 @@ Dealing with Unexpected Problems
   Dynamic Linker Run-time Bindings
   
   On some systems, ImageMagick may not find its shared library, libMagick.so. Try
-  running the ldconfig with the library path:
+  running ldconfig with the library path:
   
     $magick> /sbin/ldconfig /usr/local/lib
   
@@ -641,7 +641,7 @@ Dealing with Unexpected Problems
   were not available when ImageMagick was built. To add support for the image
   format, download and install the requisite delegate library and its header
   files and reconfigure, rebuild, and reinstall ImageMagick. As an example,
-  lets add support for the JPEG image format. First we install the JPEG RPMS:
+  let's add support for the JPEG image format. First we install the JPEG RPMS:
   
     $magick> yum install libjpeg libjpeg-devel
   
@@ -656,6 +656,6 @@ Dealing with Unexpected Problems
   
 PerlMagick
   
-  If PerlMagick fails to link with a message similar to libperl.a is not found,
+  If PerlMagick fails to link with a message similar to "libperl.a is not found",
   rerun configure with the --enable-shared or --enable-shared --with-modules
   options.
