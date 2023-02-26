@@ -11947,25 +11947,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
        * where 5 is a special case meaning PNG_ALL_FILTERS.
        */
 
-      if (LocaleCompare(value,"0") == 0)
-        mng_info->compression_filter = 1;
-
-      else if (LocaleCompare(value,"1") == 0)
-        mng_info->compression_filter = 2;
-
-      else if (LocaleCompare(value,"2") == 0)
-        mng_info->compression_filter = 3;
-
-      else if (LocaleCompare(value,"3") == 0)
-        mng_info->compression_filter = 4;
-
-      else if (LocaleCompare(value,"4") == 0)
-        mng_info->compression_filter = 5;
-
-      else if (LocaleCompare(value,"5") == 0)
-        mng_info->compression_filter = 6;
-
-      else
+      mng_info->compression_filter = StringToUnsignedLong(value)+1;
+      if (mng_info->compression_filter > 10)
         (void) ThrowMagickException(exception,
              GetMagickModule(),CoderWarning,
              "ignoring invalid defined png:compression-filter",
