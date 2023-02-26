@@ -987,9 +987,6 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
   DrawInfo
     *annotate_info;
 
-  ExceptionInfo
-    *sans_exception;
-
   MagickBooleanType
     status;
 
@@ -1072,13 +1069,18 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
         }
       font=DestroyString(font);
     }
-  sans_exception=AcquireExceptionInfo();
   if (type_info == (const TypeInfo *) NULL)
-    type_info=GetTypeInfoByFamily((const char *) NULL,draw_info->style,
-      draw_info->stretch,draw_info->weight,sans_exception);
-  if (type_info == (const TypeInfo *) NULL)
-    type_info=GetTypeInfo("*",sans_exception);
-  sans_exception=DestroyExceptionInfo(sans_exception);
+    {
+      ExceptionInfo
+        *sans_exception;
+
+      sans_exception=AcquireExceptionInfo();
+      type_info=GetTypeInfoByFamily((const char *) NULL,draw_info->style,
+        draw_info->stretch,draw_info->weight,sans_exception);
+      if (type_info == (const TypeInfo *) NULL)
+        type_info=GetTypeInfo("*",sans_exception);
+      sans_exception=DestroyExceptionInfo(sans_exception);
+    }
   if (type_info == (const TypeInfo *) NULL)
     {
       status=RenderFreetype(image,draw_info,draw_info->encoding,offset,metrics,
