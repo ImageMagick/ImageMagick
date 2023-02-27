@@ -29,7 +29,7 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../www/download.html" rel="canonical" />
+  <link href="download.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -63,7 +63,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="../www/search.html">
+      <form class="d-flex form-inline" action="search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -72,7 +72,7 @@
   </nav>
 
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>
+    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>
     <ins class="adsbygoogle"
       style="display:block"
       data-ad-client="ca-pub-3129977114552745"
@@ -91,16 +91,18 @@
 <h1 class="text-center">Download</h1>
 <p class="text-center"><a href="download.html#linux">Linux Binary Release</a> • <a href="download.html#macosx">Mac OS X Binary Release</a> • <a href="download.html#iOS">iOS Binary Release</a> • <a href="download.html#windows">Windows Binary Release</a></p>
 
-<p class="lead magick-description">You can install ImageMagick from <a href="../www/install-source.html">source</a>.  However, if you don't have a proper development environment or if you're anxious to get started, download a ready-to-run <a href="download.html#linux">Linux</a> or <a href="download.html#windows">Windows</a> executable.  Before you download, you may want to review recent <a href="https://github.com/ImageMagick/Website/blob/main/ChangeLog.md">changes</a> to the ImageMagick distribution.</p>
+<p class="lead magick-description">You can install ImageMagick from <a href="install-source.html">source</a>.  However, if you don't have a proper development environment or if you're anxious to get started, download a ready-to-run <a href="download.html#linux">Linux</a> or <a href="download.html#windows">Windows</a> executable.  Before you download, you may want to review recent <a href="https://github.com/ImageMagick/Website/blob/main/ChangeLog.md">changes</a> to the ImageMagick distribution.</p>
 
-<p>ImageMagick source and binary distributions are available from a variety of FTP and Web <a href="../www/mirror.html">mirrors</a> around the world.</p>
+<p>ImageMagick source and binary distributions are available from a variety of FTP and Web <a href="mirror.html">mirrors</a> around the world.</p>
+
+<p>It is strongly recommended to establish a <a href="security-policy.html">security policy</a> suitable for your local environment before utilizing ImageMagick.</p>
 
 <h2><a class="anchor" id="linux"></a>Linux Binary Release</h2>
 
-<p>These are the Linux variations that we support.  If your system is not on the list, try installing from <a href="../www/install-source.html">source</a>. Although ImageMagick runs fine on a single core computer, it automagically runs in parallel on multi-core systems reducing run times considerably.</p>
+<p>These are the Linux variations that we support.  If your system is not on the list, try installing from <a href="install-source.html">source</a>. Although ImageMagick runs fine on a single core computer, it automagically runs in parallel on multi-core systems reducing run times considerably.</p>
 
-<div class="table-responsive" style="font-size:smaller !important;">
-<table class="table table-sm table-hover table-striped">
+<div>
+<table class="table table-sm table-hover table-striped table-responsive">
   <col width="40%"/> <col width="60%"/>
   <thead>
   <tr>
@@ -116,12 +118,12 @@
   </tr>
 
   <tr>
-      <td><a href= "../archive/linux/CentOS/x86_64/ImageMagick-7.1.0-54.x86_64.rpm">ImageMagick-7.1.0-54.x86_64.rpm</a></td>
+      <td><a href= "../archive/linux/CentOS/x86_64/ImageMagick-7.1.0-62.x86_64.rpm">ImageMagick-7.1.0-62.x86_64.rpm</a></td>
     <td>Redhat / CentOS 8.3 x86_64 RPM</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/linux/CentOS/x86_64/ImageMagick-libs-7.1.0-54.x86_64.rpm">ImageMagick-libs-7.1.0-54.x86_64.rpm</a></td>
+      <td><a href= "../archive/linux/CentOS/x86_64/ImageMagick-libs-7.1.0-62.x86_64.rpm">ImageMagick-libs-7.1.0-62.x86_64.rpm</a></td>
     <td>Redhat / CentOS 8.3 x86_64 RPM</td>
   </tr>
 
@@ -151,8 +153,8 @@
 
 <p>ImageMagick RPM's are self-installing.  Simply type the following command and you're ready to start using ImageMagick:</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>rpm -Uvh ImageMagick-7.1.0-54.x86_64.rpm</span></code></pre></ul><p>You'll need the libraries as well:</p>
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>rpm -Uvh ImageMagick-libs-7.1.0-54.x86_64.rpm</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>rpm -Uvh ImageMagick-7.1.0-62.x86_64.rpm</span></code></pre></ul><p>You'll need the libraries as well:</p>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>rpm -Uvh ImageMagick-libs-7.1.0-62.x86_64.rpm</span></code></pre></ul>
 <p>Note, if there are missing dependencies, install them from the <a href="https://fedoraproject.org/wiki/EPEL">EPEL</a> repo.</p>
 
 <p>For other systems, create (or choose) a directory to install the package into and change to that directory, for example:</p>
@@ -178,7 +180,7 @@ export LD_LIBRARY_PATH</samp></pre>
 
 <p>Finally, to verify ImageMagick is working properly, type the following on the command line:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>magick logo: logo.gif
+<pre class="bg-light text-dark mx-4 cli"><samp>magick logo: logo.gif
 identify logo.gif
 display logo.gif</samp></pre>
 
@@ -196,8 +198,8 @@ display logo.gif</samp></pre>
 
 <p>The <samp>brew</samp> command downloads and installs ImageMagick with many of its delegate libraries (e.g. JPEG, PNG, Freetype, etc).  Homebrew <a href="https://github.com/Homebrew/homebrew-core/issues/31510">no longer allows</a> configurable builds; if you need different compile options (e.g. librsvg support), you can download the ImageMagick Mac OS X distribution we provide:</p>
 
-<div class="table-responsive" style="font-size:smaller !important;">
-<table class="table table-sm table-hover table-striped">
+<div>
+<table class="table table-sm table-hover table-striped table-responsive">
   <col width="40%"/> <col width="60%"/>
   <thead>
   <tr>
@@ -237,7 +239,7 @@ display logo.gif</samp></pre>
 
 <p>Finally, to verify ImageMagick is working properly, type the following on the command line:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>magick logo: logo.gif
+<pre class="bg-light text-dark mx-4 cli"><samp>magick logo: logo.gif
 identify logo.gif
 display logo.gif</samp></pre>
 
@@ -268,7 +270,7 @@ display logo.gif</samp></pre>
 
 <p>To run the script:</p>
 <pre class="bg-light text-dark mx-4"><samp>./imagemagick_compile.sh <var>VERSION</var></samp></pre>
-<p>where <var>VERSION</var> is the version of ImageMagick you want to compile (i.e.: 7.1.0-54, svn, ...)</p>
+<p>where <var>VERSION</var> is the version of ImageMagick you want to compile (i.e.: 7.1.0-62, svn, ...)</p>
 
 <p>This script compiles ImageMagick as a static library to be included in iOS projects and adds support for</p>
 <ul>
@@ -300,14 +302,14 @@ display logo.gif</samp></pre>
 
 <h2><a class="anchor" id="windows"></a>Windows Binary Release</h2>
 
-<p>ImageMagick runs on Windows 11/10 (x86 , x64 &amp; arm64), Windows 8/7 (x86 &amp; x64), Windows Vista with Service Pack 2 (x86 &amp; x64), Windows Server 2019/2016/2012 (x86 &amp; x64), Windows Server 2008 with Service Pack 2 (x86 &amp; x64), and Windows Server 2008 R2 (x64).</p>
+<p>ImageMagick runs on Windows 7 (x86 , x64 &amp; arm64) or newer, Windows Server 2012 or newer, Windows Vista (x86 &amp; x64) with Service Pack 2, Windows Server 2008 (x86 &amp; x64) with Service Pack 2, and Windows Server 2008 R2 (x64).</p>
 
 <p>The amount of memory can be an important factor, especially if you intend to work on large images.  A minimum of 512 MB of RAM is recommended, but the more RAM the better.  Although ImageMagick runs well on a single core computer, it automagically runs in parallel on multi-core systems reducing run times considerably.</p>
 
 <p>The Windows version of ImageMagick is self-installing.  Simply click on the appropriate version below and it will launch itself and ask you a few installation questions.  Versions with <var>Q8</var> in the name are 8 bits-per-pixel component (e.g. 8-bit red, 8-bit green, etc.), whereas,  <var>Q16</var> in the filename are 16 bits-per-pixel component. A Q16 version permits you to read or write 16-bit images without losing precision but requires twice as much resources as the Q8 version.  Versions with <var>dll</var> in the filename include ImageMagick libraries as <a href="http://www.answers.com/topic/dll">dynamic link libraries</a>. Unless you have a Windows 32-bit OS, we recommend this version of ImageMagick for 64-bit Windows:</p>
 
-<div class="table-responsive" style="font-size:smaller !important;">
-<table class="table table-sm table-hover table-striped">
+<div>
+<table class="table table-sm table-hover table-striped table-responsive">
   <col width="40%"/> <col width="60%"/>
   <thead>
   <tr>
@@ -317,7 +319,7 @@ display logo.gif</samp></pre>
   </thead>
   <tbody>
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-HDRI-x64-dll.exe">ImageMagick-7.1.0-54-Q16-HDRI-x64-dll.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-HDRI-x64-dll.exe">ImageMagick-7.1.0-62-Q16-HDRI-x64-dll.exe</a></td>
     <td>Win64 dynamic at 16 bits-per-pixel component with High-dynamic-range imaging enabled</td>
   </tr>
   </tbody>
@@ -325,8 +327,8 @@ display logo.gif</samp></pre>
 
 <p>Or choose from these alternate Windows binary distributions:</p>
 
-<div class="table-responsive" style="font-size:smaller !important;">
-<table class="table table-sm table-hover table-striped">
+<div>
+<table class="table table-sm table-hover table-striped table-responsive">
   <col width="40%"/> <col width="60%"/>
   <thead>
   <tr>
@@ -336,132 +338,132 @@ display logo.gif</samp></pre>
   </thead>
   <tbody>
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-x64-dll.exe">ImageMagick-7.1.0-54-Q16-x64-dll.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-x64-dll.exe">ImageMagick-7.1.0-62-Q16-x64-dll.exe</a></td>
     <td>Win64 dynamic at 16 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-x64-static.exe">ImageMagick-7.1.0-54-Q16-x64-static.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-x64-static.exe">ImageMagick-7.1.0-62-Q16-x64-static.exe</a></td>
     <td>Win64 static at 16 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q8-x64-dll.exe">ImageMagick-7.1.0-54-Q8-x64-dll.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q8-x64-dll.exe">ImageMagick-7.1.0-62-Q8-x64-dll.exe</a></td>
     <td>Win64 dynamic at 8 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q8-x64-static.exe">ImageMagick-7.1.0-54-Q8-x64-static.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q8-x64-static.exe">ImageMagick-7.1.0-62-Q8-x64-static.exe</a></td>
     <td>Win64 static at 8 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-HDRI-x64-static.exe">ImageMagick-7.1.0-54-Q16-HDRI-x64-static.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-HDRI-x64-static.exe">ImageMagick-7.1.0-62-Q16-HDRI-x64-static.exe</a></td>
     <td>Win64 static at 16 bits-per-pixel component with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q8-arm64-dll.exe">ImageMagick-7.1.0-54-Q8-arm64-dll.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q8-arm64-dll.exe">ImageMagick-7.1.0-62-Q8-arm64-dll.exe</a></td>
     <td>ARM64 dynamic at 8 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q8-arm64-static.exe">ImageMagick-7.1.0-54-Q8-arm64-static.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q8-arm64-static.exe">ImageMagick-7.1.0-62-Q8-arm64-static.exe</a></td>
     <td>ARM64 static at 8 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-arm64-dll.exe">ImageMagick-7.1.0-54-Q16-arm64-dll.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-arm64-dll.exe">ImageMagick-7.1.0-62-Q16-arm64-dll.exe</a></td>
     <td>ARM64 dynamic at 16 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-arm64-static.exe">ImageMagick-7.1.0-54-Q16-arm64-static.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-arm64-static.exe">ImageMagick-7.1.0-62-Q16-arm64-static.exe</a></td>
     <td>ARM64 dynamic at 16 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-HDRI-arm64-dll.exe">ImageMagick-7.1.0-54-Q16-HDRI-arm64-dll.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-HDRI-arm64-dll.exe">ImageMagick-7.1.0-62-Q16-HDRI-arm64-dll.exe</a></td>
     <td>ARM64 dynamic at 16 bits-per-pixel component with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-HDRI-arm64-static.exe">ImageMagick-7.1.0-54-Q16-HDRI-arm64-static.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-HDRI-arm64-static.exe">ImageMagick-7.1.0-62-Q16-HDRI-arm64-static.exe</a></td>
     <td>ARM64 static at 16 bits-per-pixel component with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-x86-dll.exe">ImageMagick-7.1.0-54-Q16-x86-dll.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-x86-dll.exe">ImageMagick-7.1.0-62-Q16-x86-dll.exe</a></td>
     <td>Win32 dynamic at 16 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-x86-static.exe">ImageMagick-7.1.0-54-Q16-x86-static.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-x86-static.exe">ImageMagick-7.1.0-62-Q16-x86-static.exe</a></td>
     <td>Win32 static at 16 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q8-x86-dll.exe">ImageMagick-7.1.0-54-Q8-x86-dll.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q8-x86-dll.exe">ImageMagick-7.1.0-62-Q8-x86-dll.exe</a></td>
     <td>Win32 dynamic at 8 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q8-x86-static.exe">ImageMagick-7.1.0-54-Q8-x86-static.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q8-x86-static.exe">ImageMagick-7.1.0-62-Q8-x86-static.exe</a></td>
     <td>Win32 static at 8 bits-per-pixel component</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-HDRI-x86-dll.exe">ImageMagick-7.1.0-54-Q16-HDRI-x86-dll.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-HDRI-x86-dll.exe">ImageMagick-7.1.0-62-Q16-HDRI-x86-dll.exe</a></td>
     <td>Win32 dynamic at 16 bits-per-pixel component with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-Q16-HDRI-x86-static.exe">ImageMagick-7.1.0-54-Q16-HDRI-x86-static.exe</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-Q16-HDRI-x86-static.exe">ImageMagick-7.1.0-62-Q16-HDRI-x86-static.exe</a></td>
     <td>Win32 static at 16 bits-per-pixel component with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-portable-Q16-x64.zip">ImageMagick-7.1.0-54-portable-Q16-x64.zip</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-portable-Q16-x64.zip">ImageMagick-7.1.0-62-portable-Q16-x64.zip</a></td>
     <td>Portable Win64 static at 16 bits-per-pixel component.  Just copy to your host and run (no installer, no Windows registry entries).</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-portable-Q16-arm64.zip">ImageMagick-7.1.0-54-portable-Q16-arm64.zip</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-portable-Q16-arm64.zip">ImageMagick-7.1.0-62-portable-Q16-arm64.zip</a></td>
     <td>Portable ARM64 static at 16 bits-per-pixel component.  Just copy to your host and run (no installer, no Windows registry entries).</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-portable-Q16-x86.zip">ImageMagick-7.1.0-54-portable-Q16-x86.zip</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-portable-Q16-x86.zip">ImageMagick-7.1.0-62-portable-Q16-x86.zip</a></td>
     <td>Portable Win32 static at 16 bits-per-pixel component.  Just copy to your host and run (no installer, no Windows registry entries).</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-portable-Q8-x64.zip">ImageMagick-7.1.0-54-portable-Q8-x64.zip</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-portable-Q8-x64.zip">ImageMagick-7.1.0-62-portable-Q8-x64.zip</a></td>
     <td>Portable Win64 static at 8 bits-per-pixel component.  Just copy to your host and run (no installer, no Windows registry entries).</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-portable-Q8-arm64.zip">ImageMagick-7.1.0-54-portable-Q8-arm64.zip</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-portable-Q8-arm64.zip">ImageMagick-7.1.0-62-portable-Q8-arm64.zip</a></td>
     <td>Portable ARM64 static at 8 bits-per-pixel component.  Just copy to your host and run (no installer, no Windows registry entries).</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-portable-Q8-x86.zip">ImageMagick-7.1.0-54-portable-Q8-x86.zip</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-portable-Q8-x86.zip">ImageMagick-7.1.0-62-portable-Q8-x86.zip</a></td>
     <td>Portable Win32 static at 8 bits-per-pixel component.  Just copy to your host and run (no installer, no Windows registry entries).</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-portable-Q16-HDRI-x64.zip">ImageMagick-7.1.0-54-portable-Q16-HDRI-x64.zip</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-portable-Q16-HDRI-x64.zip">ImageMagick-7.1.0-62-portable-Q16-HDRI-x64.zip</a></td>
     <td>Portable Win64 static at 16 bits-per-pixel component with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled.  Just copy to your host and run (no installer, no Windows registry entries).</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-portable-Q16-HDRI-arm64.zip">ImageMagick-7.1.0-54-portable-Q16-HDRI-arm64.zip</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-portable-Q16-HDRI-arm64.zip">ImageMagick-7.1.0-62-portable-Q16-HDRI-arm64.zip</a></td>
     <td>Portable ARM64 static at 16 bits-per-pixel component with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled.  Just copy to your host and run (no installer, no Windows registry entries).</td>
   </tr>
 
   <tr>
-      <td><a href= "../archive/binaries/ImageMagick-7.1.0-54-portable-Q16-HDRI-x86.zip">ImageMagick-7.1.0-54-portable-Q16-HDRI-x86.zip</a></td>
+      <td><a href= "../archive/binaries/ImageMagick-7.1.0-62-portable-Q16-HDRI-x86.zip">ImageMagick-7.1.0-62-portable-Q16-HDRI-x86.zip</a></td>
     <td>Portable Win32 static at 16 bits-per-pixel component with <a href="high-dynamic-range.html">high dynamic-range imaging</a> enabled.  Just copy to your host and run (no installer, no Windows registry entries).</td>
   </tr>
 
@@ -472,7 +474,7 @@ display logo.gif</samp></pre>
 
 <p>To verify ImageMagick is working properly, type the following in a Command Prompt window:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>magick logo: logo.gif
+<pre class="bg-light text-dark mx-4 cli"><samp>magick logo: logo.gif
 magick identify logo.gif
 magick logo.gif win:</samp></pre>
 
@@ -480,10 +482,12 @@ magick logo.gif win:</samp></pre>
 
 <p>Note, use a double quote (<samp>"</samp>) rather than a single quote (<samp>'</samp>) for the ImageMagick command line under Windows:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>magick "e:/myimages/image.png" "e:/myimages/image.jpg"</samp></pre>
+<pre class="bg-light text-dark mx-4 cli"><samp>magick "e:/myimages/image.png" "e:/myimages/image.jpg"</samp></pre>
 <p>Use two double quotes for VBScript scripts:</p>
 <pre class="bg-light text-dark mx-4"><samp>Set objShell = wscript.createobject("wscript.shell")
 objShell.Exec("magick ""e:/myimages/image.png"" ""e:/myimages/image.jpg""")</samp></pre>
+
+<p>It is strongly recommended to establish a <a href="security-policy.html">security policy</a> suitable for your local environment before utilizing ImageMagick.</p>
 
 <p>Congratulations, you have a working ImageMagick distribution under Windows and you are ready to use ImageMagick to <a href="../Usage">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="develop.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
@@ -516,4 +520,4 @@ objShell.Exec("magick ""e:/myimages/image.png"" ""e:/myimages/image.jpg""")</sam
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 17th December 2022 14:02 -->
+<!-- Magick Cache 27th February 2023 03:25 -->

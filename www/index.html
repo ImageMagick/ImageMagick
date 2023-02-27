@@ -37,7 +37,7 @@
 <body>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -45,16 +45,16 @@
     <div class="collapse navbar-collapse" id="magick-navbars">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link " href="../www/download.html">Download</a>
+          <a class="nav-link " href="download.html">Download</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
+          <a class="nav-link " href="command-line-tools.html">Tools</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-processing.html">CLI</a>
+          <a class="nav-link " href="command-line-processing.html">CLI</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/develop.html">Develop</a>
+          <a class="nav-link " href="develop.html">Develop</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
@@ -89,11 +89,15 @@
   <div class="magick-template">
 <div class="magick-header">
 <h1 class="text-center">ImageMagick</h1>
-<p class="lead magick-description"><a href="../images/wizard.png" title="And Now a Touch of Magick"><img class="img-fluid magick-icon" id="logo" alt="And Now a Touch of Magick" width="265" height="352" src="../images/wizard.jpg" /></a> ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;entry=78333969" target="_blank">&#174;</a></sup> is a free and  <a href="license.html">open-source</a> software suite for displaying, converting, and editing raster image and vector image files. It can read and write over 200 image file <a href="../www/formats.html">formats</a>, and can support a wide range of image manipulation operations, such as resizing, cropping, and color correction.</p>
+<p class="lead magick-description"><a href="../images/wizard.png" title="And Now a Touch of Magick"><img class="img-fluid magick-icon" id="logo" alt="And Now a Touch of Magick" width="265" height="352" src="../images/wizard.jpg" /></a> ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;entry=78333969" target="_blank">&#174;</a></sup> is a free, <a href="license.html">open-source</a> software suite, used for editing and manipulating digital images. It can be used to create, edit, compose, or convert bitmap images, and supports a wide range of file <a href="../www/formats.html">formats</a>, including JPEG, PNG, GIF, TIFF, and PDF.</p>
 
-<p>ImageMagick is written in C and is available for a wide range of operating systems, including Linux, macOS, and Windows. It can be used as a standalone application, or as a library that can be integrated into other software programs.</p>
+<p>ImageMagick is widely used in industries such as web development, graphic design, and video editing, as well as in scientific research, medical imaging, and astronomy. Its versatile and customizable nature, along with its robust image processing capabilities, make it a popular choice for a wide range of image-related tasks.</p>
 
-<p>The main website for ImageMagick can be found at <a href="https://imagemagick.org">https://imagemagick.org</a>. The most recent version available is ImageMagick <a href="../www/download.html">7.1.0-54</a>. The source code for this software can be accessed through the repository located at <a href="https://github.com/ImageMagick/ImageMagick" target="_blank">https://github.com/ImageMagick/ImageMagick</a>. In addition, a legacy version of ImageMagick, version 6, is also still maintained and can be found at <a href="https://legacy.imagemagick.org">https://legacy.imagemagick.org</a>.</p>
+<p>ImageMagick includes a command-line interface for executing complex image processing tasks, as well as APIs for integrating its features into software applications. It is written in C and can be used on a variety of operating systems, including Linux, Windows, and macOS.</p>
+
+<p>The main website for ImageMagick can be found at <a href="../index.html">https://imagemagick.org</a>. The most recent version available is <a href="download.html">ImageMagick 7.1.0-62</a>. The source code for this software can be accessed through a <a href="https://github.com/ImageMagick/ImageMagick" target="_blank">repository</a>. In addition, we maintain a legacy version of ImageMagick, <a href="https://legacy.imagemagick.org" target="_blank">version 6</a>.</p>
+
+<p>It is strongly recommended to establish a <a href="security-policy.html">security policy</a> suitable for your local environment before utilizing ImageMagick.</p>
 
 <h2><a class="anchor" id="features"></a>Features and Capabilities</h2>
 
@@ -104,14 +108,14 @@
 <p>Overall, ImageMagick is a powerful and versatile software suite for displaying, converting, and editing image files. Its support for scripting and automation, along with its other features, make it a valuable tool for a wide range of image-related tasks.</p>
 
 <p>Here are just a few <a href="examples.html">examples</a> of what ImageMagick can do for you:</p>
-<div class="table-responsive pre-scrollable" style="font-size:smaller !important;">
-<table class="table table-sm table-hover table-striped">
+<div class="pre-scrollable">
+<table class="table table-sm table-hover table-striped table-responsive">
   <tr>
     <td><a href="../Usage/anim_basics/">Animation</a></td>
     <td>create a GIF animation sequence from a group of images.</td>
   </tr>
   <tr>
-    <td><a href="../www/command-line-options.html#bilateral-blur">Bilateral blur</a></td>
+    <td><a href="command-line-options.html#bilateral-blur">Bilateral blur</a></td>
     <td>non-linear, edge-preserving, and noise-reducing smoothing filter.</td>
   </tr>
   <tr>
@@ -123,7 +127,7 @@
     <td>force all pixels in the color range to white otherwise black.</td>
   </tr>
   <tr>
-    <td><a href="../www/command-line-processing.html">Command-line processing</a></td>
+    <td><a href="command-line-processing.html">Command-line processing</a></td>
     <td>utilize ImageMagick from the command-line.</td>
   </tr>
   <tr>
@@ -148,7 +152,7 @@
   </tr>
   <tr>
     <td><a href="../Usage/transform/#vision">Delineate image features</a></td>
-    <td><a href="../Usage/transform/#canny">Canny edge detection</a>, <a href="../www/command-line-options.html#hough-line">Hough lines</a>.</td>
+    <td><a href="../Usage/transform/#canny">Canny edge detection</a>, <a href="command-line-options.html#hough-line">Hough lines</a>.</td>
   </tr>
   <tr>
     <td><a href="../Usage/fourier/">Discrete Fourier transform</a></td>
@@ -179,7 +183,7 @@
     <td>certain algorithms are <a href="opencl.html">OpenCL</a>-enabled to take advantage of speed-ups offered by executing in concert across heterogeneous platforms consisting of CPUs, GPUs, and other processors.</td>
   </tr>
   <tr>
-    <td><a href="../www/high-dynamic-range.html">High dynamic-range images</a></td>
+    <td><a href="high-dynamic-range.html">High dynamic-range images</a></td>
     <td>accurately represent the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.</td>
   </tr>
   <tr>
@@ -195,7 +199,7 @@
     <td>apply a mathematical expression to an image, image sequence, or image channels.</td>
   </tr>
   <tr>
-    <td><a href="../www/gradient.html">Image gradients</a></td>
+    <td><a href="gradient.html">Image gradients</a></td>
     <td>create a gradual blend of two colors whose shape is horizontal, vertical, circular, or elliptical.</td>
   </tr>
   <tr>
@@ -203,7 +207,7 @@
     <td>describe the format and attributes of an image.</td>
   </tr>
   <tr>
-    <td><a href="../www/download.html#iOS">ImageMagick on the iPhone</a></td>
+    <td><a href="download.html#iOS">ImageMagick on the iPhone</a></td>
     <td>convert, edit, or compose images on your <a href="https://www.apple.com/ios/">iOS</a> device such as the iPhone or iPad.</td>
   </tr>
   <tr>
@@ -211,7 +215,7 @@
     <td>read, process, or write mega-, giga-, or tera-pixel image sizes.</td>
   </tr>
   <tr>
-    <td><a href="../www/montage.html">Montage</a></td>
+    <td><a href="montage.html">Montage</a></td>
     <td>juxtapose image thumbnails on an image canvas.</td>
   </tr>
   <tr>
@@ -219,7 +223,7 @@
     <td>extract features, describe shapes, and recognize patterns in images.</td>
   </tr>
   <tr>
-    <td><a href="../www/motion-picture.html">Motion picture support</a></td>
+    <td><a href="motion-picture.html">Motion picture support</a></td>
     <td>read and write the common image formats used in digital film work.</td>
   </tr>
   <tr>
@@ -261,28 +265,28 @@
 </table>
 </div>
 <br/>
-<p><a href="../Usage" target="_blank">Examples of ImageMagick Usage</a> demonstrates how to use the software from the <a href="../www/command-line-processing.html">command line</a> to achieve various effects. There are also several scripts available on the website called <a href="http://www.fmwconcepts.com/imagemagick/" target="_blank">Fred's ImageMagick Scripts</a>, which can be used to apply geometric transforms, blur and sharpen images, remove noise, and perform other operations. Additionally, there is a tool called <a href="https://github.com/dlemstra/Magick.NET" target="_blank">Magick.NET</a> that allows users to access the functionality of ImageMagick without having to install the software on their own systems. Finally, the website also includes a <a href="http://im.snibgo.com/" target="_blank">Cookbook</a> with tips and examples for using ImageMagick on Windows systems.</p>
+<p><a href="../Usage" target="_blank">Examples of ImageMagick Usage</a> demonstrates how to use the software from the <a href="command-line-processing.html">command line</a> to achieve various effects. There are also several scripts available on the website called <a href="http://www.fmwconcepts.com/imagemagick/" target="_blank">Fred's ImageMagick Scripts</a>, which can be used to apply geometric transforms, blur and sharpen images, remove noise, and perform other operations. Additionally, there is a tool called <a href="https://github.com/dlemstra/Magick.NET" target="_blank">Magick.NET</a> that allows users to access the functionality of ImageMagick without having to install the software on their own systems. Finally, the website also includes a <a href="http://im.snibgo.com/" target="_blank">Cookbook</a> with tips and examples for using ImageMagick on Windows systems.</p>
 
 <h4><a class="anchor" id="community"></a>Community</h4>
-<p>To join the ImageMagick community, try the <a target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">discussion</a> service.  You can review questions or comments (with informed responses) posed by ImageMagick users or ask your own questions. If you have a technical question, enhancement idea, or a bug fix, open an <a href="https://github.com/ImageMagick/ImageMagick/issues">issue</a>. </p>
+<p>Join the ImageMagick community by participating in the <a href="https://github.com/ImageMagick/ImageMagick/discussions" target="_blank">discussion</a> service. Here, you can find answers to questions asked by other ImageMagick users or ask your own questions. If you have a technical question, a suggestion for an improvement, or a fix for a bug, you can also open an <a href="https://github.com/ImageMagick/ImageMagick/issues" target="_blank">issue</a> to get help from the community.</p>
 
 </div>
   </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
     <div class="container-fluid">
-      <a href="../www/security-policy.html">Security</a> •
-      <a href="../www/news.html">News</a>
+      <a href="security-policy.html">Security</a> •
+      <a href="news.html">News</a>
      
       <a href="index.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-      <a href="../www/links.html">Related</a> •
-      <a href="../www/sitemap.html">Sitemap</a>
+      <a href="links.html">Related</a> •
+      <a href="sitemap.html">Sitemap</a>
    <br/>
-     <a href="../www/support.html">Sponsor</a> •
-     <a href="../www/cite.html">Cite</a> •
+     <a href="support.html">Sponsor</a> •
+     <a href="cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
+     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
    <br/>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
@@ -295,4 +299,4 @@
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 17th December 2022 13:56 -->
+<!-- Magick Cache 27th February 2023 03:24 -->
