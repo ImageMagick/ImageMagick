@@ -352,11 +352,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
               }
           }
         destination_channel=(PixelChannel) i;
-        if (i >= destination_image->number_channels)
-          {
-            destination_image->number_channels=i+1;
-            destination_image->number_meta_channels++;
-          }
         if (image->colorspace != UndefinedColorspace)
           switch (destination_channel)
           {
