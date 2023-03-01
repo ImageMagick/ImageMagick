@@ -131,6 +131,9 @@ static MagickBooleanType ChannelImage(Image *destination_image,
   ssize_t
     y;
 
+  /*
+    Copy source channel to destination.
+  */
   height=MagickMin(source_image->rows,destination_image->rows);
   width=MagickMin(source_image->columns,destination_image->columns);
   source_view=AcquireVirtualCacheView(source_image,exception);
@@ -343,6 +346,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         else
           {
             i=ParsePixelChannelOption(token);
+            if (LocaleCompare(token,"alpha") == 0)
+              destination_image->alpha_trait=BlendPixelTrait;
             if (i < 0)
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
@@ -359,13 +364,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             case GreenPixelChannel:
             case BluePixelChannel:
             case BlackPixelChannel:
+            case AlphaPixelChannel:
             case IndexPixelChannel:
               break;
-            case AlphaPixelChannel:
-            {
-              destination_image->alpha_trait=BlendPixelTrait;
-              break;
-            }
             case CompositeMaskPixelChannel:
             {
               destination_image->channels=(ChannelType)
@@ -388,8 +389,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             default:
             {
               (void) SetPixelMetaChannels(destination_image,(size_t) (
-                destination_channel-GetPixelChannels(destination_image)+1),
-                exception);
+                destination_channel-MetaPixelChannel+1),exception);
               break;
             }
           }
