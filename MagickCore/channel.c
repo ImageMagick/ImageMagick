@@ -388,16 +388,16 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             case MetaPixelChannel:
             default:
             {
-              (void) SetPixelMetaChannels(destination_image,(size_t) (
-                destination_channel-MetaPixelChannel+1),exception);
+              PixelTrait traits = GetPixelChannelTraits(destination_image,
+                destination_channel);
+              if (traits == UndefinedPixelTrait)
+                (void) SetPixelMetaChannels(destination_image,
+                  GetPixelMetaChannels(destination_image)+1,exception);
               break;
             }
           }
         channel_mask=(ChannelType) (channel_mask |
           (1UL << ParseChannelOption(token)));
-        if (((channels >= 1)  || (destination_channel >= 1)) &&
-            (IsGrayColorspace(destination_image->colorspace) != MagickFalse))
-          (void) SetImageColorspace(destination_image,sRGBColorspace,exception);
         (void) GetNextToken(p,&p,MagickPathExtent,token);
         break;
       }

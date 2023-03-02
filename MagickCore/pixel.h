@@ -89,8 +89,8 @@ typedef enum
   IndexPixelChannel = 5,
   ReadMaskPixelChannel = 6,
   WriteMaskPixelChannel = 7,
-  MetaPixelChannel = 8,
-  CompositeMaskPixelChannel = 9,
+  CompositeMaskPixelChannel = 8,
+  MetaPixelChannel = 9,
   MetaPixelChannels = 10,
   IntensityPixelChannel = MaxPixelChannels,  /* ???? */
   CompositePixelChannel = MaxPixelChannels,  /* ???? */
