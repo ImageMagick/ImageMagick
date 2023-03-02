@@ -171,6 +171,7 @@ static const OptionInfo
     { "Magenta", MagentaChannel, UndefinedOptionFlag, MagickFalse },
     { "Matte", AlphaChannel, DeprecateOptionFlag, MagickTrue },/*depreciate*/
     { "Meta", MetaChannel, UndefinedOptionFlag, MagickFalse },
+    { "Meta0", MetaPixelChannels+0, UndefinedOptionFlag, MagickFalse },
     { "Meta1", MetaPixelChannels+1, UndefinedOptionFlag, MagickFalse },
     { "Meta2", MetaPixelChannels+2, UndefinedOptionFlag, MagickFalse },
     { "Meta3", MetaPixelChannels+3, UndefinedOptionFlag, MagickFalse },
@@ -1891,6 +1892,7 @@ static const OptionInfo
     { "M", MagentaPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Magenta", MagentaPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Meta", MetaPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Meta0", MetaPixelChannels+0, UndefinedOptionFlag, MagickFalse },
     { "Meta1", MetaPixelChannels+1, UndefinedOptionFlag, MagickFalse },
     { "Meta2", MetaPixelChannels+2, UndefinedOptionFlag, MagickFalse },
     { "Meta3", MetaPixelChannels+3, UndefinedOptionFlag, MagickFalse },
