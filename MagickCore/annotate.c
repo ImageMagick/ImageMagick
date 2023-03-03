@@ -1581,7 +1581,11 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   face_index=(FT_Long) draw_info->face;
   (void) memset(&args,0,sizeof(args));
   if (draw_info->font == (char *) NULL)
-    args.pathname=ConstantString("helvetica");
+    {
+      const TypeInfo *type_info = GetTypeInfo("*",exception);
+      if (type_info != (const TypeInfo *) NULL)
+        args.pathname=ConstantString(type_info->glyphs);
+    }
   else
     if (*draw_info->font != '@')
       args.pathname=ConstantString(draw_info->font);
