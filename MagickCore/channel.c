@@ -251,6 +251,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   (void) GetNextToken(p,&p,MagickPathExtent,token);
   while (*token != '\0')
   {
+    PixelTrait
+      traits;
+
     ssize_t
       i;
 
@@ -308,14 +311,15 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         break;
     }
     i=ParsePixelChannelOption(token);
-    if (i < 0)
+    source_channel=(PixelChannel) i;
+    traits=GetPixelChannelTraits(source_image,source_channel);
+    if (traits == UndefinedPixelTrait)
       {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "UnrecognizedChannelType","`%s'",token);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"MissingImageChannel","`%s'",token);
         destination_image=DestroyImageList(destination_image);
         return(destination_image);
       }
-    source_channel=(PixelChannel) i;
     channel_op=ExtractChannelOp;
     (void) GetNextToken(p,&p,MagickPathExtent,token);
     if (*token == '<')
@@ -388,11 +392,21 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             case MetaPixelChannel:
             default:
             {
-              PixelTrait traits = GetPixelChannelTraits(destination_image,
+              traits=GetPixelChannelTraits(destination_image,
                 destination_channel);
+              if (traits != UndefinedPixelTrait)
+                break;
+              (void) SetPixelMetaChannels(destination_image,
+                GetPixelMetaChannels(destination_image)+1,exception);
+              traits=GetPixelChannelTraits(destination_image,
+               destination_channel);
               if (traits == UndefinedPixelTrait)
-                (void) SetPixelMetaChannels(destination_image,
-                  GetPixelMetaChannels(destination_image)+1,exception);
+                {
+                  (void) ThrowMagickException(exception,GetMagickModule(),
+                    CorruptImageError,"MissingImageChannel","`%s'",token);
+                  destination_image=DestroyImageList(destination_image);
+                  return(destination_image);
+                }
               break;
             }
           }
@@ -440,6 +454,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     if (status == MagickFalse)
       break;
   }
+  if (destination_image == (Image *) NULL)
+    return(destination_image);
   (void) SetPixelChannelMask(destination_image,channel_mask);
   if ((channel_op == ExtractChannelOp) && (channels == 1))
     {
