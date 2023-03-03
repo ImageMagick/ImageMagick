@@ -139,7 +139,7 @@ jobs:
       shell: cmd
       run: |
         cd ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2022 /${{matrix.platform}} /${{matrix.buildType}}
+        configure.exe /noWizard /VS2022 /includeOptional /deprecated /${{matrix.platform}} /${{matrix.buildType}}
 
     - name: Build ImageMagick
       shell: cmd
