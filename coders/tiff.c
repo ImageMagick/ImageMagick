@@ -3681,14 +3681,12 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);
         if (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse)
           {
-            const char
-              *value;
-
             (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);
             if (IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse)
               {
                 const char
-                  *sampling_factor;
+                  *sampling_factor,
+                  *value;
 
                 GeometryInfo
                   geometry_info;
