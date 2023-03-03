@@ -3719,6 +3719,16 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           &bits_per_sample,sans);
         if (bits_per_sample == 12)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGTABLESMODE,JPEGTABLESMODE_QUANT);
+        option=GetImageOption(image_info,"tiff:jpeg-tables-mode");
+        if (option != (char *) NULL)
+          {
+            int
+              jpeg_tables_mode;
+
+            jpeg_tables_mode=(int) StringToUnsignedLong(option);
+            if (jpeg_tables_mode >= 0 && jpeg_tables_mode <= 3)
+              (void) TIFFSetField(tiff,TIFFTAG_JPEGTABLESMODE,jpeg_tables_mode);
+          }
 #endif
         break;
       }
