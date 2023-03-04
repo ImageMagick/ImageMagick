@@ -3705,6 +3705,9 @@ fi
 if test "$have_bzlib"  = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES bzlib"
 fi
+if test "$have_cairo"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES cairo"
+fi
 if test "$have_dps"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES dps"
 fi
@@ -3738,6 +3741,9 @@ fi
 if test "$have_png$have_jpeg" = 'yesyes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jng"
 fi
+if test "$have_openjp2"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES jp2"
+fi
 if test "$have_jpeg"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jpeg"
 fi
@@ -3755,9 +3761,6 @@ if test "$have_lzma"    = 'yes' ; then
 fi
 if test "$have_openexr"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES openexr"
-fi
-if test "$have_openjp2"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES openjp2"
 fi
 if test "$have_pango"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES pango"
