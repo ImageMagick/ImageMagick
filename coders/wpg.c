@@ -566,14 +566,10 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
     XorMe = 0;
 
   ssize_t
-    i;
-
-  size_t
+    i,
+    ldblk,
     x,
     y;
-
-  ssize_t
-    ldblk;
 
   unsigned int
     SampleSize=1;
@@ -592,7 +588,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
     return(-2);
   (void) memset(BImgBuff,0,ldblk*sizeof(*BImgBuff));
 
-  while( y< image->rows)
+  while( y< (ssize_t) image->rows)
   {
       bbuf=ReadBlobByte(image);
 
@@ -650,7 +646,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
               {
-                if (InsertRow(image,BImgBuff,(ssize_t) (image->rows > y ? y : image->rows-1),bpp,exception) == MagickFalse)
+                if (InsertRow(image,BImgBuff,(ssize_t) ((ssize_t) image->rows > y ? y : image->rows-1),bpp,exception) == MagickFalse)
                   {
                     BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
                     return(-3);
@@ -1904,7 +1900,7 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
       (void) WriteBlobLSBShort(image,0); /* start index */
       (void) WriteBlobLSBShort(image,1U << image->depth);
       for ( ; i < (ssize_t) ((size_t) 1U << image->depth); i++)
-        if (i >= image->colors)
+        if (i >= (ssize_t) image->colors)
           {
             (void) WriteBlobByte(image,i);
             (void) WriteBlobByte(image,i);
