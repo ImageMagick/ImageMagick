@@ -2570,6 +2570,7 @@ if test "$with_pango" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-pango=$with_pango "
 fi
 
+have_pango='no'
 have_pangocairo='no'
 PANGO_CFLAGS=""
 PANGO_LIBS=""
@@ -2578,11 +2579,13 @@ if test "x$with_pango" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
   PKG_CHECK_MODULES([PANGO],[pangocairo >= 1.28.1],[have_pangocairo=yes],[have_pangocairo=no])
   AC_MSG_RESULT([])
+  PKG_CHECK_MODULES([PANGO],[pango >= 1.28.1],[have_pango=yes],[have_pango=no])
+  AC_MSG_RESULT([])
 fi
 
-if test "$have_pangocairo" = 'yes'; then
+if test "${have_pango}x${have_pangocairo}" = 'yesxyes'; then
   AC_DEFINE([PANGOCAIRO_DELEGATE],[1],[Define if you have PANGOCAIRO library])
-  CFLAGS="$PANGOCAIRO_CFLAGS $CFLAGS"
+  CFLAGS="$PANGO_CFLAGS $PANGOCAIRO_CFLAGS $CFLAGS"
 fi
 
 AM_CONDITIONAL([PANGOCAIRO_DELEGATE],[test "$have_pangocairo" = 'yes'])
