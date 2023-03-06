@@ -5582,7 +5582,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
 
       if (primitive_info->text == (char *) NULL)
         break;
-      clone_info=AcquireImageInfo();
+      clone_info=CloneImageInfo(draw_info->image_info);
       composite_images=(Image *) NULL;
       if (LocaleNCompare(primitive_info->text,"data:",5) == 0)
         composite_images=ReadInlineImage(clone_info,primitive_info->text,
@@ -5590,9 +5590,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       else
         if (*primitive_info->text != '\0')
           {
-            const MagickInfo
-              *magick_info;
-
             MagickBooleanType
               path_status;
 
@@ -5605,16 +5602,6 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
             (void) SetImageInfo(clone_info,1,exception);
-            magick_info=GetMagickInfo(clone_info->magick,exception);
-            if ((magick_info != (const MagickInfo*) NULL) &&
-                (LocaleCompare(magick_info->module,"SVG") == 0))
-              {
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  CorruptImageError,"ImageTypeNotSupported","`%s'",
-                  clone_info->filename);
-                clone_info=DestroyImageInfo(clone_info);
-                break;
-              }
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
             if (clone_info->size != (char *) NULL)
@@ -6010,7 +5997,8 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   (void) memset(draw_info,0,sizeof(*draw_info));
-  clone_info=CloneImageInfo(image_info);
+  draw_info->image_info=image_info;
+  clone_info=CloneImageInfo(draw_info->image_info);
   GetAffineMatrix(&draw_info->affine);
   exception=AcquireExceptionInfo();
   (void) QueryColorCompliance("#000F",AllCompliance,&draw_info->fill,

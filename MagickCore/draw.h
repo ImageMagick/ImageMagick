@@ -350,6 +350,9 @@ typedef struct _DrawInfo
 
   WordBreakType
     word_break;
+
+  const ImageInfo
+    *image_info;
 } DrawInfo;
 
 typedef struct _PrimitiveInfo

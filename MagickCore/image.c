@@ -1004,6 +1004,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     MagickPathExtent);
   clone_info->channel=image_info->channel;
   (void) CloneImageOptions(clone_info,image_info);
+  clone_info->recursion_depth=image_info->recursion_depth;
   clone_info->debug=image_info->debug;
   clone_info->signature=image_info->signature;
   return(clone_info);
@@ -1356,6 +1357,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->quality=UndefinedCompressionQuality;
   image_info->antialias=MagickTrue;
   image_info->dither=MagickTrue;
+  image_info->depth=0;
   synchronize=GetEnvironmentValue("MAGICK_SYNCHRONIZE");
   if (synchronize != (const char *) NULL)
     {
