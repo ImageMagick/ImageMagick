@@ -1004,7 +1004,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     MagickPathExtent);
   clone_info->channel=image_info->channel;
   (void) CloneImageOptions(clone_info,image_info);
-  clone_info->recursion_depth=image_info->recursion_depth;
   clone_info->debug=image_info->debug;
   clone_info->signature=image_info->signature;
   return(clone_info);

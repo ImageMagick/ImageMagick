@@ -492,9 +492,6 @@ struct _ImageInfo
 
   PixelInfo
     matte_color;        /* matte (frame) color */
-
-  size_t
-    recursion_depth;  /* recursion detection */
 };
 
 extern MagickExport ChannelType
