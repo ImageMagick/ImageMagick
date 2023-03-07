@@ -5593,6 +5593,9 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       else
         if (*primitive_info->text != '\0')
           {
+            const MagickInfo
+              *magick_info;
+
             MagickBooleanType
               path_status;
 
@@ -5605,6 +5608,16 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
             (void) SetImageInfo(clone_info,1,exception);
+            magick_info=GetMagickInfo(clone_info->magick,exception);
+            if ((magick_info != (const MagickInfo*) NULL) &&
+                (LocaleCompare(magick_info->module,"SVG") == 0))
+              {
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  CorruptImageError,"ImageTypeNotSupported","`%s'",
+                  clone_info->filename);
+                clone_info=DestroyImageInfo(clone_info);
+                break;
+              }
             (void) CopyMagickString(clone_info->filename,primitive_info->text,
               MagickPathExtent);
             if (clone_info->size != (char *) NULL)
