@@ -818,8 +818,6 @@ PNG_LIBS
 PNG_CFLAGS
 PANGOCAIRO_DELEGATE_FALSE
 PANGOCAIRO_DELEGATE_TRUE
-PANGO_DELEGATE_FALSE
-PANGO_DELEGATE_TRUE
 PANGO_LIBS
 PANGO_CFLAGS
 OPENEXR_DELEGATE_FALSE
@@ -5151,7 +5149,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.1.1-0
 
-MAGICK_GIT_REVISION=2ede7250f:20230302
+MAGICK_GIT_REVISION=2e984f995:20230308
 
 
 # Substitute library versioning
@@ -5175,7 +5173,7 @@ PACKAGE_BASE_VERSION=7.1.1
 
 PACKAGE_PATCHLEVEL_VERSION=0
 
-if test "y" = 'y'; then
+if test "n" = 'y'; then
   PACKAGE_VERSION_ADDENDUM='-0 (Beta)'
 else
   PACKAGE_VERSION_ADDENDUM=-0
@@ -5185,7 +5183,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,0
 
-PACKAGE_RELEASE_DATE=2023-03-02
+PACKAGE_RELEASE_DATE=2023-03-08
 
 
 # Ensure that make can run correctly
@@ -33087,26 +33085,11 @@ fi
 printf "%s\n" "" >&6; }
 fi
 
-if test "$have_pango" = 'yes'; then
-
-printf "%s\n" "#define PANGO_DELEGATE 1" >>confdefs.h
-
-  CFLAGS="$PANGO_CFLAGS $CFLAGS"
-fi
-
-if test "$have_pangocairo" = 'yes'; then
+if test "${have_pango}x${have_pangocairo}" = 'yesxyes'; then
 
 printf "%s\n" "#define PANGOCAIRO_DELEGATE 1" >>confdefs.h
 
-  CFLAGS="$PANGOCAIRO_CFLAGS $CFLAGS"
-fi
-
- if test "$have_pango" = 'yes'; then
-  PANGO_DELEGATE_TRUE=
-  PANGO_DELEGATE_FALSE='#'
-else
-  PANGO_DELEGATE_TRUE='#'
-  PANGO_DELEGATE_FALSE=
+  CFLAGS="$PANGO_CFLAGS $PANGOCAIRO_CFLAGS $CFLAGS"
 fi
 
  if test "$have_pangocairo" = 'yes'; then
@@ -37889,6 +37872,9 @@ fi
 if test "$have_bzlib"  = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES bzlib"
 fi
+if test "$have_cairo"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES cairo"
+fi
 if test "$have_dps"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES dps"
 fi
@@ -37922,6 +37908,9 @@ fi
 if test "$have_png$have_jpeg" = 'yesyes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jng"
 fi
+if test "$have_openjp2"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES jp2"
+fi
 if test "$have_jpeg"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES jpeg"
 fi
@@ -37940,11 +37929,8 @@ fi
 if test "$have_openexr"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES openexr"
 fi
-if test "$have_openjp2"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES openjp2"
-fi
-if test "$have_pango"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES pango"
+if test "$have_pangocairo" = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES pangocairo"
 fi
 if test "$have_png"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES png"
@@ -38519,10 +38505,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${OPENEXR_DELEGATE_TRUE}" && test -z "${OPENEXR_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"OPENEXR_DELEGATE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${PANGO_DELEGATE_TRUE}" && test -z "${PANGO_DELEGATE_FALSE}"; then
-  as_fn_error $? "conditional \"PANGO_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${PANGOCAIRO_DELEGATE_TRUE}" && test -z "${PANGOCAIRO_DELEGATE_FALSE}"; then
@@ -41219,7 +41201,7 @@ Delegate library configuration:
   Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
   OpenEXR           --with-openexr=$with_openexr		$have_openexr
   OpenJP2           --with-openjp2=$with_openjp2		$have_openjp2
-  PANGO             --with-pango=$with_pango		$have_pango
+  PANGO             --with-pango=$with_pango		$have_pangocairo
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
   RAQM              --with-raqm=$with_raqm		$have_raqm
@@ -41318,7 +41300,7 @@ Delegate library configuration:
   Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
   OpenEXR           --with-openexr=$with_openexr		$have_openexr
   OpenJP2           --with-openjp2=$with_openjp2		$have_openjp2
-  PANGO             --with-pango=$with_pango		$have_pango
+  PANGO             --with-pango=$with_pango		$have_pangocairo
   PERL              --with-perl=$with_perl		$have_perl
   PNG               --with-png=$with_png		$have_png
   RAQM              --with-raqm=$with_raqm		$have_raqm
