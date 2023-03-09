@@ -17,7 +17,7 @@
 %                               December 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -131,6 +131,9 @@ static MagickBooleanType ChannelImage(Image *destination_image,
   ssize_t
     y;
 
+  /*
+    Copy source channel to destination.
+  */
   height=MagickMin(source_image->rows,destination_image->rows);
   width=MagickMin(source_image->columns,destination_image->columns);
   source_view=AcquireVirtualCacheView(source_image,exception);
@@ -248,6 +251,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   (void) GetNextToken(p,&p,MagickPathExtent,token);
   while (*token != '\0')
   {
+    PixelTrait
+      traits;
+
     ssize_t
       i;
 
@@ -305,14 +311,15 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         break;
     }
     i=ParsePixelChannelOption(token);
-    if (i < 0)
+    source_channel=(PixelChannel) i;
+    traits=GetPixelChannelTraits(source_image,source_channel);
+    if (traits == UndefinedPixelTrait)
       {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "UnrecognizedChannelType","`%s'",token);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"MissingImageChannel","`%s'",token);
         destination_image=DestroyImageList(destination_image);
         return(destination_image);
       }
-    source_channel=(PixelChannel) i;
     channel_op=ExtractChannelOp;
     (void) GetNextToken(p,&p,MagickPathExtent,token);
     if (*token == '<')
@@ -343,6 +350,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         else
           {
             i=ParsePixelChannelOption(token);
+            if (LocaleCompare(token,"alpha") == 0)
+              destination_image->alpha_trait=BlendPixelTrait;
             if (i < 0)
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
@@ -359,13 +368,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             case GreenPixelChannel:
             case BluePixelChannel:
             case BlackPixelChannel:
+            case AlphaPixelChannel:
             case IndexPixelChannel:
               break;
-            case AlphaPixelChannel:
-            {
-              destination_image->alpha_trait=BlendPixelTrait;
-              break;
-            }
             case CompositeMaskPixelChannel:
             {
               destination_image->channels=(ChannelType)
@@ -387,17 +392,26 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             case MetaPixelChannel:
             default:
             {
-              (void) SetPixelMetaChannels(destination_image,(size_t) (
-                destination_channel-GetPixelChannels(destination_image)+1),
-                exception);
+              traits=GetPixelChannelTraits(destination_image,
+                destination_channel);
+              if (traits != UndefinedPixelTrait)
+                break;
+              (void) SetPixelMetaChannels(destination_image,
+                GetPixelMetaChannels(destination_image)+1,exception);
+              traits=GetPixelChannelTraits(destination_image,
+               destination_channel);
+              if (traits == UndefinedPixelTrait)
+                {
+                  (void) ThrowMagickException(exception,GetMagickModule(),
+                    CorruptImageError,"MissingImageChannel","`%s'",token);
+                  destination_image=DestroyImageList(destination_image);
+                  return(destination_image);
+                }
               break;
             }
           }
         channel_mask=(ChannelType) (channel_mask |
           (1UL << ParseChannelOption(token)));
-        if (((channels >= 1)  || (destination_channel >= 1)) &&
-            (IsGrayColorspace(destination_image->colorspace) != MagickFalse))
-          (void) SetImageColorspace(destination_image,sRGBColorspace,exception);
         (void) GetNextToken(p,&p,MagickPathExtent,token);
         break;
       }

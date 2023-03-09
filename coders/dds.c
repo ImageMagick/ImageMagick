@@ -2033,7 +2033,7 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
   const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   BC5Colors
-    colors = { 0 };
+    colors = { { 0 } };
 
   Quantum
     *q;

@@ -83,6 +83,11 @@
 #include "MagickCore/utility-private.h"
 
 /*
+  Define declarations.
+*/
+#define MaxReadRecursionDepth  100
+
+/*
   Typedef declarations.
 */
 typedef struct _ConstituteInfo

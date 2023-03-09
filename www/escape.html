@@ -37,7 +37,7 @@
 <body>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -45,16 +45,16 @@
     <div class="collapse navbar-collapse" id="magick-navbars">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link " href="../www/download.html">Download</a>
+          <a class="nav-link " href="download.html">Download</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
+          <a class="nav-link " href="command-line-tools.html">Tools</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-processing.html">CLI</a>
+          <a class="nav-link " href="command-line-processing.html">CLI</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/develop.html">Develop</a>
+          <a class="nav-link " href="develop.html">Develop</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
@@ -88,9 +88,9 @@
   <main class="container">
   <div class="magick-template">
 <div class="magick-header">
-<p class="lead magick-description">There are copious amounts of extra data associated with images (metadata), beyond the actual image pixels. This metadata can be useful, either for display, or for various calculations, or in modifying the behavior of later image processing operations.  You can utilize percent escapes in a number of options, for example in <a href="../www/command-line-options.html#format_identify_">-format</a> or in montage <a href="../www/command-line-options.html#label" >-label</a>, to print various properties and other settings associated with an image.</p>
+<p class="lead magick-description">There are copious amounts of extra data associated with images (metadata), beyond the actual image pixels. This metadata can be useful, either for display, or for various calculations, or in modifying the behavior of later image processing operations.  You can utilize percent escapes in a number of options, for example in <a href="command-line-options.html#format_identify_">-format</a> or in montage <a href="command-line-options.html#label" >-label</a>, to print various properties and other settings associated with an image.</p>
 
-<div class="table-responsive" style="font-size:smaller !important;">
+<div>
 <table class="table table-hover table-striped">
 <tr>
     <td><b>Profile Data</b></td>
@@ -168,8 +168,8 @@ and avoid accessing an attribute or property of the same name.</p>
 common attributes and properties of an image, such as: the image filename
 filename, type, width, height. </p>
 
-<div class="table-responsive" style="font-size:smaller !important;">
-<table class="table table-sm table-hover table-striped">
+<div>
+<table class="table table-sm table-hover table-striped table-responsive">
   <tr>
     <td>\</td>
     <td>backslash, the next character is literal and not subject to interpretation</td>
@@ -396,8 +396,8 @@ especially for large images.</p>
 <p>In addition to the above specific and calculated attributes are recognized
 when enclosed in braces (long form):</p>
 
-<div class="table-responsive" style="font-size:smaller !important;">
-<table class="table table-sm table-hover table-striped">
+<div>
+<table class="table table-sm table-hover table-striped table-responsive">
   <tr>
     <td>%[basename]</td>
     <td>base filename, no suffixes (as %t)</td>
@@ -424,7 +424,7 @@ when enclosed in braces (long form):</p>
   </tr>
   <tr>
     <td>%[channels]</td>
-    <td>??? channels in use - colorspace ???</td>
+    <td>colorspace neumonic followed by total number of channels and meta channets, e.g., <code>cmyka 8.3</code> indicates a CMYK image with alpha channel for a total of 8 channels and 3 meta channels.</td>
   </tr>
   <tr>
     <td>%[colors]</td>
@@ -444,7 +444,7 @@ when enclosed in braces (long form):</p>
   </tr>
   <tr>
     <td><a href="convex-hull.html">%[convex-hull]</a></td>
-    <td>points that form a convex hull around the foreground object.  Use <samp><a href="../www/command-line-options.html#define">-define</a> convex-hull:background-color=<em>color</em></samp> to identify the image background color.  Use <samp><a href="../www/command-line-options.html#fuzz">-fuzz</a> to allow for a non-uniform background color. </td>
+    <td>points that form a convex hull around the foreground object.  Use <samp><a href="command-line-options.html#define">-define</a> convex-hull:background-color=<em>color</em></samp> to identify the image background color.  Use <samp><a href="command-line-options.html#fuzz">-fuzz</a> to allow for a non-uniform background color. </td>
   </tr>
   <tr>
     <td><a href="convex-hull.html">%[convex-hull:extreme-points]</a></td>
@@ -468,11 +468,11 @@ when enclosed in braces (long form):</p>
   </tr>
   <tr>
     <td>%[distortion]</td>
-    <td>how well an image resembles a reference image (<a href="../www/command-line-options.html#compare" >-compare</a>)</td>
+    <td>how well an image resembles a reference image (<a href="command-line-options.html#compare" >-compare</a>)</td>
   </tr>
   <tr>
     <td>%[dominant-color]</td>
-    <td>return the dominate image color in hex.  Preceed usage with <a href="../www/command-line-options.html#kmeans" >-kmeans</a>.</td>
+    <td>return the dominate image color in hex.  Preceed usage with <a href="command-line-options.html#kmeans" >-kmeans</a>.</td>
   </tr>
   <tr>
     <td>%[entropy]</td>
@@ -544,7 +544,7 @@ when enclosed in braces (long form):</p>
   </tr>
   <tr>
     <td><a href="convex-hull.html">%[minimum-bounding-box]</a></td>
-    <td>Use <samp><a href="../www/command-line-options.html#define">-define</a> convex-hull:background-color=<em>color</em></samp> to identify the image background color.  Use <samp><a href="../www/command-line-options.html#fuzz">-fuzz</a> to allow for a non-uniform background color.  In addition to the bounding box points, these properties are set: <samp>minimum-bounding-box:area</samp>, <samp>minimum-bounding-box:width</samp>, <samp>minimum-bounding-box:height</samp>, <samp>minimum-bounding-box:angle</samp>, and <samp>minimum-bounding-box:unrotate</samp>.</td>
+    <td>Use <samp><a href="command-line-options.html#define">-define</a> convex-hull:background-color=<em>color</em></samp> to identify the image background color.  Use <samp><a href="command-line-options.html#fuzz">-fuzz</a> to allow for a non-uniform background color.  In addition to the bounding box points, these properties are set: <samp>minimum-bounding-box:area</samp>, <samp>minimum-bounding-box:width</samp>, <samp>minimum-bounding-box:height</samp>, <samp>minimum-bounding-box:angle</samp>, and <samp>minimum-bounding-box:unrotate</samp>.</td>
   </tr>
   <tr>
     <td>%[opaque]</td>
@@ -648,11 +648,11 @@ up that name specific data sources. </p>
 
 <p>The primary search space (if not a specific attribute listed above) is
 a free-form property string.  Such strings are associated and saved with
-images, and are typically set using either the <a href="../www/command-line-options.html#set" >-set</a>
+images, and are typically set using either the <a href="command-line-options.html#set" >-set</a>
 CLI option (or API equivalent), or from special convenience options
-(such as <a href="../www/command-line-options.html#label"
->-label</a>, <a href="../www/command-line-options.html#comment"
->-comment</a>, <a href="../www/command-line-options.html#caption"
+(such as <a href="command-line-options.html#label"
+>-label</a>, <a href="command-line-options.html#comment"
+>-comment</a>, <a href="command-line-options.html#caption"
 >-caption</a>). </p>
 
 <p>These convenience options are globally saved (as 'global options' so thay can
@@ -661,7 +661,7 @@ individual images, only when they are read in. At that time any internal
 percent escape present is then handled. </p>
 
 <p>To change a property of an image already in memory, you need to use <a
-href="../www/command-line-options.html#set" >-set</a>.
+href="command-line-options.html#set" >-set</a>.
 </p>
 
 <p>Note that properties, like attributes (and profiles), are saved with
@@ -684,7 +684,7 @@ artifacts, being an internal operational setting, is not saved with images (if
 such is possible). </p>
 
 <p>For example when you use <samp>-define 'distort:viewport=100x100'</samp> you
-are in fact generating a global option, which the <a href="../www/command-line-options.html#distort"
+are in fact generating a global option, which the <a href="command-line-options.html#distort"
 >-distort</a> operator will use to modify its behavior (distorted output
 image 'view'). </p>
 
@@ -728,7 +728,7 @@ Artifact. </p>
 now list all free-form string properties, artifacts, and options, (but not
 specific image attributes) using...</p>
 
-<pre class="bg-light text-dark mx-4"><samp>magick ... \
+<pre class="bg-light text-dark mx-4 cli"><samp>magick ... \
    -print "__Properties__\n%[*]" \
    -print "__Artifacts__\n%[artifact:*]" \
    -print "__Options__\n%[option:*]" \
@@ -754,7 +754,7 @@ expression:</p>
 
 <pre class="bg-light text-dark mx-4"><samp>%[pixel:<var>expression</var>] </samp></pre>
 
-<p>Use <a href="../www/command-line-options.html#define">-define</a> to specify the color compliance (e.g. <samp>-define pixel:compliance=css</samp>)</p>.
+<p>Use <a href="command-line-options.html#define">-define</a> to specify the color compliance (e.g. <samp>-define pixel:compliance=css</samp>)</p>.
 
 <h2>Specific Profile Percent Escape Prefixes</h2>
 
@@ -953,18 +953,18 @@ Post ObjectData Descriptor Record
   </main><!-- /.container -->
   <footer class="magick-footer">
     <div class="container-fluid">
-      <a href="../www/security-policy.html">Security</a> •
-      <a href="../www/news.html">News</a>
+      <a href="security-policy.html">Security</a> •
+      <a href="news.html">News</a>
      
       <a href="escape.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-      <a href="../www/links.html">Related</a> •
-      <a href="../www/sitemap.html">Sitemap</a>
+      <a href="links.html">Related</a> •
+      <a href="sitemap.html">Sitemap</a>
    <br/>
-     <a href="../www/support.html">Sponsor</a> •
-     <a href="../www/cite.html">Cite</a> •
+     <a href="support.html">Sponsor</a> •
+     <a href="cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
+     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
    <br/>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
@@ -977,4 +977,4 @@ Post ObjectData Descriptor Record
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 17th December 2022 13:40 -->
+<!-- Magick Cache 27th February 2023 01:13 -->

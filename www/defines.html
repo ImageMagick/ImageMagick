@@ -29,7 +29,7 @@
   <meta property='og:site_name' content='ImageMagick' />
   <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="../www/defines.html" rel="canonical" />
+  <link href="defines.html" rel="canonical" />
   <link href="../images/wand.png" rel="icon" />
   <link href="../images/wand.ico" rel="shortcut icon" />
   <link href="assets/magick.css" rel="stylesheet" />
@@ -63,7 +63,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="../www/search.html">
+      <form class="d-flex form-inline" action="search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -72,7 +72,7 @@
   </nav>
 
   <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>
+    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>
     <ins class="adsbygoogle"
       style="display:block"
       data-ad-client="ca-pub-3129977114552745"
@@ -101,7 +101,7 @@ definition of a flag is created with that name. This used to control on/off
 options.  Use <a href="command-line-options.html#define">-define keys</a> to remove definitions
 previously created.  Use <a href="command-line-options.html#define">+define "*"</a> to remove all existing definitions.</p>
 
-<p>The same 'artifact' settings can also be defined using the <a href="command-line-options.html#set">-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="../www/escape.html" >Format and Print Image Properties</a> in the defined value. </p>
+<p>The same 'artifact' settings can also be defined using the <a href="command-line-options.html#set">-set "option:<var>key</var>" "<var>value</var>"</a> option, which also allows the use of <a href="escape.html" >Format and Print Image Properties</a> in the defined value. </p>
 
 <p>The <var>option</var> and <var>key</var> are case-independent (they are
 converted to lowercase for use within the decoders) while the <var>value</var>
@@ -109,7 +109,7 @@ is case-dependent.</p>
 
 <p>Such settings are global in scope, and affect all images and operations. </p>
 
-<pre class="bg-light text-dark mx-4"><samp>magick bilevel.tif -define ps:imagemask eps3:stencil.ps </samp></pre>
+<pre class="bg-light text-dark mx-4 cli"><samp>magick bilevel.tif -define ps:imagemask eps3:stencil.ps </samp></pre>
 
 <p>Set attributes of the image registry by prefixing the value with
 <samp>registry:</samp>.  For example, to set a temporary path to put work files,
@@ -120,9 +120,9 @@ use:</p>
 <p>Here is a list of recognized defines:</p>
 
 
-<div class="table-responsive" style="font-size:smaller !important;">
+<div>
 
-<table class="table table-sm table-hover table-striped">
+<table class="table table-sm table-hover table-striped table-responsive">
   <tr>
     <th align="center" colspan=2>Command-line Defines</th>
   </tr>
@@ -1374,6 +1374,11 @@ use:</p>
   </tr>
 
   <tr>
+    <td>tga:preserve-orientation=<var>true</var></td>
+    <td>Preserve the image orientation.</td>
+  </tr>
+
+  <tr>
     <td>tiff:alpha=<var>associated|unassociated|unspecified</var></td>
     <td>Specify the alpha extra samples as associated, unassociated or
     unspecified.</td>
@@ -1692,4 +1697,4 @@ use:</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 17th December 2022 14:55 -->
+<!-- Magick Cache 27th February 2023 02:28 -->

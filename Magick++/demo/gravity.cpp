@@ -35,6 +35,9 @@ int main( int /*argc*/, char ** argv)
     string srcdir("");
     if(getenv("SRCDIR") != 0)
       srcdir = getenv("SRCDIR");
+    const char *const p = getenv("MAGICK_FONT");
+    const string MAGICK_FONT(p ? p : "");
+
 
     int x = 100;
     int y = 100;
@@ -52,6 +55,7 @@ int main( int /*argc*/, char ** argv)
     base.strokeColor(Color());
     base.fillColor("#600");
     base.fontPointsize( 30 );
+    base.font( MAGICK_FONT );
     base.boxColor( "red" );
     base.animationDelay( 20 );
     base.compressType( RLECompression );

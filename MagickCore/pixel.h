@@ -49,8 +49,8 @@ typedef enum
   IndexChannel = 0x0020,             /* Color Index Table? */
   ReadMaskChannel = 0x0040,          /* Pixel is Not Readable? */
   WriteMaskChannel = 0x0080,         /* Pixel is Write Protected? */
-  MetaChannel = 0x0100,              /* not used */
-  CompositeMaskChannel = 0x0200,     /* SVG mask */
+  CompositeMaskChannel = 0x0100,     /* SVG mask */
+  MetaChannel = 0x0200,              /* not used */
   CompositeChannels = 0x001F,
   AllChannels = 0x7ffffff,
   /*
@@ -89,8 +89,8 @@ typedef enum
   IndexPixelChannel = 5,
   ReadMaskPixelChannel = 6,
   WriteMaskPixelChannel = 7,
-  MetaPixelChannel = 8,
-  CompositeMaskPixelChannel = 9,
+  CompositeMaskPixelChannel = 8,
+  MetaPixelChannel = 9,
   MetaPixelChannels = 10,
   IntensityPixelChannel = MaxPixelChannels,  /* ???? */
   CompositePixelChannel = MaxPixelChannels,  /* ???? */

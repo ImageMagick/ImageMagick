@@ -673,6 +673,9 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   const char
     *value;
 
+  const MagickInfo
+    *magick_info;
+
   Image
     *ashlar_images;
 
@@ -739,8 +742,9 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
   *write_info->magick='\0';
   (void) SetImageInfo(write_info,(unsigned int)
     GetImageListLength(ashlar_images),exception);
-  if ((*write_info->magick == '\0') ||
-      (LocaleCompare(write_info->magick,"ASHLAR") == 0))
+  magick_info=GetMagickInfo(write_info->magick,exception);
+  if ((magick_info == (const MagickInfo*) NULL) ||
+      (LocaleCompare(magick_info->module,"ASHLAR") == 0))
     (void) FormatLocaleString(ashlar_images->filename,MagickPathExtent,
       "miff:%s",write_info->filename);
   status=WriteImages(write_info,ashlar_images,ashlar_images->filename,

@@ -833,9 +833,6 @@
 /* Define if you have PANGOCAIRO library */
 #undef PANGOCAIRO_DELEGATE
 
-/* Define if you have PANGO library */
-#undef PANGO_DELEGATE
-
 /* enable pipes (|) in filenames */
 #undef PIPES_SUPPORT
 
