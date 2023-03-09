@@ -389,7 +389,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
                 (destination_image->channels | WriteMaskChannel);
               break;
             }
-            case MetaPixelChannel:
+            case MetaPixelChannels:
             default:
             {
               traits=GetPixelChannelTraits(destination_image,

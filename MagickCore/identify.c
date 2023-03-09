@@ -857,7 +857,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         for (i=0; i < (ssize_t) image->number_meta_channels; i++)
         {
           PixelChannel
-            channel = (PixelChannel) (MetaPixelChannel+i);
+            channel = (PixelChannel) (MetaPixelChannels+i);
 
           (void) FormatLocaleFile(file,"    Meta channel[%.20g]: %.20g-bit\n",
             (double) i,(double) channel_statistics[channel].depth);
@@ -941,7 +941,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             label[MagickPathExtent];
 
           PixelChannel
-            channel = (PixelChannel) (MetaPixelChannel+i);
+            channel = (PixelChannel) (MetaPixelChannels+i);
 
           (void) FormatLocaleString(label,MagickPathExtent,
             "Meta channel[%.20g]",(double) i);

@@ -351,14 +351,14 @@ static inline PixelTrait GetPixelMagentaTraits(
 static inline Quantum GetPixelMeta(const Image *magick_restrict image,
   const Quantum *magick_restrict pixel)
 {
-  if (image->channel_map[MetaPixelChannel].traits == UndefinedPixelTrait)
+  if (image->channel_map[MetaPixelChannels].traits == UndefinedPixelTrait)
     return(OpaqueAlpha);
-  return(pixel[image->channel_map[MetaPixelChannel].offset]);
+  return(pixel[image->channel_map[MetaPixelChannels].offset]);
 }
 
 static inline PixelTrait GetPixelMetaTraits(const Image *magick_restrict image)
 {
-  return(image->channel_map[MetaPixelChannel].traits);
+  return(image->channel_map[MetaPixelChannels].traits);
 }
 
 static inline Quantum GetPixelReadMask(const Image *magick_restrict image,
@@ -891,12 +891,12 @@ static inline void SetPixelMagentaTraits(Image *image,const PixelTrait traits)
 static inline void SetPixelMeta(const Image *magick_restrict image,
   const Quantum red,Quantum *magick_restrict pixel)
 {
-  pixel[image->channel_map[MetaPixelChannel].offset]=red;
+  pixel[image->channel_map[MetaPixelChannels].offset]=red;
 }
 
 static inline void SetPixelMetaTraits(Image *image,const PixelTrait traits)
 {
-  image->channel_map[MetaPixelChannel].traits=traits;
+  image->channel_map[MetaPixelChannels].traits=traits;
 }
 
 static inline void SetPixelReadMask(const Image *magick_restrict image,
