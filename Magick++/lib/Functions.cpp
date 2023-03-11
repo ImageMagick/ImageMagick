@@ -71,6 +71,7 @@ MagickPPExport void Magick::TerminateMagick(void)
   if (magick_initialized)
     {
       magick_initialized=false;
+      MagickCore::MagickWandTerminus();
       MagickCore::MagickCoreTerminus();
     }
 }
