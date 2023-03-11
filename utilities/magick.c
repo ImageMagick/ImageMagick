@@ -172,7 +172,6 @@ static int MagickMain(int argc,char **argv)
   image_info=DestroyImageInfo(image_info);
   exception=DestroyExceptionInfo(exception);
   MagickWandTerminus();
-  MagickCoreTerminus();
   return(exit_code);
 }
 
