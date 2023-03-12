@@ -141,11 +141,6 @@ const registry_roots[2] =
 /*
   External declarations.
 */
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT)
-extern "C" BOOL WINAPI
-  DllMain(HINSTANCE handle,DWORD reason,LPVOID lpvReserved);
-#endif
-
 static void MagickDLLCall NTGhostscriptDeleteInstance(
   gs_main_instance *instance)
 {
