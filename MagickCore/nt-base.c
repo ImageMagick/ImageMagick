@@ -542,37 +542,6 @@ MagickPrivate int NTCloseLibrary(void *handle)
   return(!(FreeLibrary((HINSTANCE) handle)));
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   N T C o n t r o l H a n d l e r                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTControlHandler() registers a control handler that is activated when, for
-%  example, a ctrl-c is received.
-%
-%  The format of the NTControlHandler method is:
-%
-%      int NTControlHandler(void)
-%
-*/
-
-static BOOL ControlHandler(DWORD type)
-{
-  (void) type;
-  AsynchronousResourceComponentTerminus();
-  return(FALSE);
-}
-
-MagickPrivate int NTControlHandler(void)
-{
-  return(SetConsoleCtrlHandler((PHANDLER_ROUTINE) ControlHandler,TRUE));
-}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

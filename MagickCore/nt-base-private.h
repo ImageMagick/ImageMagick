@@ -108,7 +108,6 @@ extern MagickPrivate int
 #endif
   NTCloseDirectory(DIR *),
   NTCloseLibrary(void *),
-  NTControlHandler(void),
   NTExitLibrary(void),
   NTTruncateFile(int,off_t),
   NTInitializeLibrary(void),
