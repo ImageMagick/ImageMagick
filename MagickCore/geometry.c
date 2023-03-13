@@ -482,13 +482,11 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",page_geometry);
   (void) CopyMagickString(page,page_geometry,MagickPathExtent);
-  for (i=0; i < (ssize_t) (sizeof(Pagesizes)/sizeof(Pagesizes[0])); i++)
+  for (i=0; *Pagesizes[i].name != '\0'; i++)
   {
     int
       status;
 
-    if (Pagesizes[i].extent == 0)
-      break;  /* sentinel */
     status=LocaleNCompare(Pagesizes[i].name,page_geometry,Pagesizes[i].extent);
     if (status == 0)
       {
