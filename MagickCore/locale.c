@@ -1128,15 +1128,19 @@ static void ChopLocaleComponents(char *path,const size_t components)
     *path='\0';
 }
 
+
+static void LocaleFatalErrorHandler(const ExceptionType severity,
+  const char *reason,const char *description) magick_attribute((__noreturn__));
+
 static void LocaleFatalErrorHandler(
   const ExceptionType magick_unused(severity),
   const char *reason,const char *description)
 {
   magick_unreferenced(severity);
 
-  if (reason == (char *) NULL)
-    return;
-  (void) FormatLocaleFile(stderr,"%s: %s",GetClientName(),reason);
+  (void) FormatLocaleFile(stderr,"%s: ",GetClientName());
+  if (reason != (char *) NULL)
+    (void) FormatLocaleFile(stderr," %s",reason);
   if (description != (char *) NULL)
     (void) FormatLocaleFile(stderr," (%s)",description);
   (void) FormatLocaleFile(stderr,".\n");
