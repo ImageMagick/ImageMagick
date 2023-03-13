@@ -487,6 +487,8 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
     int
       status;
 
+    if (Pagesizes[i].extent == 0)
+      break;  /* sentinel */
     status=LocaleNCompare(Pagesizes[i].name,page_geometry,Pagesizes[i].extent);
     if (status == 0)
       {
