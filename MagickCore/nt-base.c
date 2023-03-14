@@ -2575,19 +2575,11 @@ MagickPrivate void NTWarningHandler(const ExceptionType severity,
 %
 */
 
-static LONG WINAPI NTUncaughtException(EXCEPTION_POINTERS *info)
-{
-  magick_unreferenced(info);
-  AsynchronousResourceComponentTerminus();
-  return(EXCEPTION_CONTINUE_SEARCH);
-}
-
 MagickPrivate void NTWindowsGenesis(void)
 {
   char
     *mode;
 
-  SetUnhandledExceptionFilter(NTUncaughtException);
   SetConsoleOutputCP(CP_UTF8);
   mode=GetEnvironmentValue("MAGICK_ERRORMODE");
   if (mode != (char *) NULL)

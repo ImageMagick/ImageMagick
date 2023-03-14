@@ -30,8 +30,10 @@ extern MagickPrivate MagickBooleanType
   ResourceComponentGenesis(void);
 
 extern MagickPrivate void
-  AsynchronousResourceComponentTerminus(void),
   ResourceComponentTerminus(void);
+
+extern MagickExport void
+  AsynchronousResourceComponentTerminus(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
