@@ -195,10 +195,8 @@ int wmain(int argc,wchar_t *argv[])
     **utf8;
 
   int
+    i,
     status;
-
-  int
-    i;
 
   SetUnhandledExceptionFilter(NTUncaughtException);
   SetConsoleOutputCP(CP_UTF8);
