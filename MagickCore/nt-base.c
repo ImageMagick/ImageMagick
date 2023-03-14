@@ -2580,7 +2580,6 @@ MagickPrivate void NTWindowsGenesis(void)
   char
     *mode;
 
-  SetConsoleOutputCP(CP_UTF8);
   mode=GetEnvironmentValue("MAGICK_ERRORMODE");
   if (mode != (char *) NULL)
     {

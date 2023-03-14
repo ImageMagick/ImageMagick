@@ -201,6 +201,7 @@ int wmain(int argc,wchar_t *argv[])
     i;
 
   SetUnhandledExceptionFilter(NTUncaughtException);
+  SetConsoleOutputCP(CP_UTF8);
   utf8=NTArgvToUTF8(argc,argv);
   status=MagickMain(argc,utf8);
   for (i=0; i < argc; i++)
