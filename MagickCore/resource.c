@@ -414,7 +414,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
 %      ResourceComponentTerminus(void)
 %
 */
-MagickPrivate void AsynchronousResourceComponentTerminus(void)
+MagickExport void AsynchronousResourceComponentTerminus(void)
 {
   const char
     *path;
