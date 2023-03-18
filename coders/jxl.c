@@ -173,17 +173,17 @@ static inline StorageType JXLDataTypeToStorageType(Image *image,
   switch (data_type)
   {
     case JXL_TYPE_FLOAT:
-      return FloatPixel;
+      return(FloatPixel);
     case JXL_TYPE_FLOAT16:
       (void) SetImageProperty(image,"quantum:format","floating-point",
         exception);
-      return FloatPixel;
+      return(FloatPixel);
     case JXL_TYPE_UINT16:
-      return ShortPixel;
+      return(ShortPixel);
     case JXL_TYPE_UINT8:
-      return CharPixel;
+      return(CharPixel);
     default:
-      return UndefinedPixel;
+      return(UndefinedPixel);
   }
 }
 
@@ -194,21 +194,21 @@ static inline OrientationType JXLOrientationToOrientation(
   {
     default:
     case JXL_ORIENT_IDENTITY:
-      return TopLeftOrientation;
+      return(TopLeftOrientation);
     case JXL_ORIENT_FLIP_HORIZONTAL:
-      return TopRightOrientation;
+      return(TopRightOrientation);
     case JXL_ORIENT_ROTATE_180:
-      return BottomRightOrientation;
+      return(BottomRightOrientation);
     case JXL_ORIENT_FLIP_VERTICAL:
-      return BottomLeftOrientation;
+      return(BottomLeftOrientation);
     case JXL_ORIENT_TRANSPOSE:
-      return LeftTopOrientation;
+      return(LeftTopOrientation);
     case JXL_ORIENT_ROTATE_90_CW:
-      return RightTopOrientation;
+      return(RightTopOrientation);
     case JXL_ORIENT_ANTI_TRANSPOSE:
-      return RightBottomOrientation;
+      return(RightBottomOrientation);
     case JXL_ORIENT_ROTATE_90_CCW:
-      return LeftBottomOrientation;
+      return(LeftBottomOrientation);
   }
 }
 
@@ -449,13 +449,71 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (jxl_status == JXL_DEC_SUCCESS)
           {
             if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_LINEAR)
-              image->colorspace=RGBColorspace;
+              {
+                image->colorspace=RGBColorspace;
+                image->gamma=1.0;
+              }
             if (color_encoding.color_space == JXL_COLOR_SPACE_GRAY)
               {
                 image->colorspace=GRAYColorspace;
                 if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_LINEAR)
-                  image->colorspace=LinearGRAYColorspace;
+                  {
+                    image->colorspace=LinearGRAYColorspace;
+                    image->gamma=1.0;
+                  }
               }
+            if (color_encoding.white_point == JXL_WHITE_POINT_CUSTOM)
+              {
+                image->chromaticity.white_point.x=
+                  color_encoding.white_point_xy[0];
+                image->chromaticity.white_point.y=
+                  color_encoding.white_point_xy[1];
+              }
+            if (color_encoding.primaries == JXL_PRIMARIES_CUSTOM)
+              {
+                image->chromaticity.red_primary.x=
+                  color_encoding.primaries_red_xy[0];
+                image->chromaticity.red_primary.y=
+                  color_encoding.primaries_red_xy[1];
+                image->chromaticity.green_primary.x=
+                  color_encoding.primaries_green_xy[0];
+                image->chromaticity.green_primary.y=
+                  color_encoding.primaries_green_xy[1];
+                image->chromaticity.blue_primary.x=
+                  color_encoding.primaries_blue_xy[0];
+                image->chromaticity.blue_primary.y=
+                  color_encoding.primaries_blue_xy[1];
+              }
+            if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_GAMMA)
+              image->gamma=color_encoding.gamma;
+            switch (color_encoding.rendering_intent)
+            {
+              case JXL_RENDERING_INTENT_PERCEPTUAL:
+              {
+                image->rendering_intent=PerceptualIntent;
+                break;
+              }
+              case JXL_RENDERING_INTENT_RELATIVE:
+              {
+                image->rendering_intent=RelativeIntent;
+                break;
+              }
+              case JXL_RENDERING_INTENT_SATURATION: 
+              {
+                image->rendering_intent=SaturationIntent;
+                break;
+              }
+              case JXL_RENDERING_INTENT_ABSOLUTE: 
+              {
+                image->rendering_intent=AbsoluteIntent;
+                break;
+              }
+              default:
+              {
+                image->rendering_intent=UndefinedIntent;
+                break;
+              }
+            }
           }
         else
           if (jxl_status != JXL_DEC_ERROR)
@@ -468,7 +526,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         jxl_status=JxlDecoderGetColorAsICCProfile(jxl_info,&pixel_format,
           JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
           profile_size);
-        (void) SetImageProfile(image,"icc",profile,exception);
+        if (jxl_status == JXL_DEC_SUCCESS)
+          (void) SetImageProfile(image,"icm",profile,exception);
         profile=DestroyStringInfo(profile);
         if (jxl_status == JXL_DEC_SUCCESS)
           jxl_status=JXL_DEC_COLOR_ENCODING;
