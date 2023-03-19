@@ -338,8 +338,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
     (draw_info->direction == RightToLeftDirection ? (double) image->columns-
     (draw_info->gravity == UndefinedGravity ? metrics.bounds.x2 : 0.0) : 
-    (draw_info->gravity == UndefinedGravity ? metrics.bounds.x1 : 0.0)),
-    (draw_info->gravity == UndefinedGravity ? 
+    metrics.bounds.x1),(draw_info->gravity == UndefinedGravity ? 
     MagickMax(metrics.ascent,metrics.bounds.y2) : 0.0));
   (void) CloneString(&draw_info->geometry,geometry);
   status=AnnotateImage(image,draw_info,exception);
