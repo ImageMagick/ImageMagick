@@ -182,7 +182,11 @@ static const OptionInfo
     { "Meta8", MetaPixelChannels+8, UndefinedOptionFlag, MagickFalse },
     { "Meta9", MetaPixelChannels+9, UndefinedOptionFlag, MagickFalse },
     { "Meta10", MetaPixelChannels+10, UndefinedOptionFlag, MagickFalse },
-    { "Opacity", AlphaChannel, DeprecateOptionFlag, MagickTrue },/*depreciate*/
+    { "Meta11", MetaPixelChannels+11, UndefinedOptionFlag, MagickFalse },
+    { "Meta12", MetaPixelChannels+12, UndefinedOptionFlag, MagickFalse },
+    { "Meta13", MetaPixelChannels+13, UndefinedOptionFlag, MagickFalse },
+    { "Meta14", MetaPixelChannels+14, UndefinedOptionFlag, MagickFalse },
+    { "Meta15", MetaPixelChannels+15, UndefinedOptionFlag, MagickFalse },
     { "R", RedChannel, UndefinedOptionFlag, MagickFalse },
     { "ReadMask", ReadMaskChannel, UndefinedOptionFlag, MagickFalse },
     { "Red", RedChannel, UndefinedOptionFlag, MagickFalse },
