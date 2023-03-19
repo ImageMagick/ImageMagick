@@ -2734,6 +2734,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
     return(MagickFalse);
   if (image->alpha_trait == UndefinedPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+  if (image->colorspace != hald_image->colorspace)
+    (void) SetImageColorspace(image,hald_image->colorspace,exception);
   /*
     Hald clut image.
   */
@@ -2771,18 +2773,18 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       double
-        area,
-        offset;
+        area = 0.0,
+        offset = 0.0;
 
       HaldInfo
-        point;
+        point = { 0 };
 
       PixelInfo
-        pixel,
-        pixel1,
-        pixel2,
-        pixel3,
-        pixel4;
+        pixel = zero,
+        pixel1 = zero,
+        pixel2 = zero,
+        pixel3 = zero,
+        pixel4 = zero;
 
       point.x=QuantumScale*(level-1.0)*GetPixelRed(image,q);
       point.y=QuantumScale*(level-1.0)*GetPixelGreen(image,q);
@@ -2791,17 +2793,14 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
       point.x-=floor(point.x);
       point.y-=floor(point.y);
       point.z-=floor(point.z);
-      pixel1=zero;
       status=InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset,width),floor(offset/width),&pixel1,exception);
       if (status == MagickFalse)
         break;
-      pixel2=zero;
       status=InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
       if (status == MagickFalse)
         break;
-      pixel3=zero;
       area=point.y;
       if (hald_image->interpolate == NearestInterpolatePixel)
         area=(point.y < 0.5) ? 0.0 : 1.0;
@@ -2816,10 +2815,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
         fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
       if (status == MagickFalse)
         break;
-      pixel4=zero;
       CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
         area,&pixel4);
-      pixel=zero;
       area=point.z;
       if (hald_image->interpolate == NearestInterpolatePixel)
         area=(point.z < 0.5)? 0.0 : 1.0;
