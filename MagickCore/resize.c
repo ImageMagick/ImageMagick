@@ -641,7 +641,7 @@ static double Welch(const double x,
 %  corresponding EWA filter:
 %
 %    'No-Op' Vertical and Horizontal Line Preservation Condition: Images with
-%    only vertical or horizontal features are preserved when performing 'no-op"
+%    only vertical or horizontal features are preserved when performing 'no-op'
 %    with EWA distortion.
 %
 %  The Lanczos2 and Lanczos2Sharp filters are 2-lobe versions of the Lanczos
@@ -763,14 +763,14 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   const char
     *artifact;
 
-  FilterType
-    filter_type,
-    window_type;
-
   double
     B,
     C,
     value;
+
+  FilterType
+    filter_type,
+    window_type;
 
   ResizeFilter
     *resize_filter;
@@ -2077,17 +2077,14 @@ static inline void MixPixels(const Quantum *source,const ssize_t *source_offset,
   const ssize_t destination_offset,const size_t channels)
 {
   ssize_t
-    sum;
-
-  ssize_t
     i;
 
   for (i=0; i < (ssize_t) channels; i++)
   {
     ssize_t
-      j;
+      j,
+      sum = 0;
 
-    sum=0;
     for (j=0; j < (ssize_t) source_size; j++)
       sum+=source[source_offset[j]*channels+i];
     destination[channels*destination_offset+i]=(Quantum) (sum/source_size);
@@ -2428,16 +2425,16 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
   const ssize_t
     pixels_offsets[4] = { 0, 1, 3, 4 };
 
-  MagickFloatType
-    intensities[9];
-
   int
-    ae,
-    bd,
     ab,
     ad,
+    ae,
+    bd,
     be,
     de;
+
+  MagickFloatType
+    intensities[9];
 
   ssize_t
     i;
@@ -3041,9 +3038,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
         channels;
 
       ssize_t
-        i;
-
-      ssize_t
+        i,
         j;
 
       p=GetCacheViewVirtualPixels(image_view,x-width/2,y-width/2,width,width,
@@ -3299,12 +3294,12 @@ static MagickBooleanType HorizontalFilter(
   ContributionInfo
     **magick_restrict contributions;
 
-  MagickBooleanType
-    status;
-
   double
     scale,
     support;
+
+  MagickBooleanType
+    status;
 
   ssize_t
     x;
@@ -3345,26 +3340,24 @@ static MagickBooleanType HorizontalFilter(
     const int
       id = GetOpenMPThreadId();
 
-    double
-      bisect,
-      density;
-
     const Quantum
       *magick_restrict p;
 
     ContributionInfo
       *magick_restrict contribution;
 
+    double
+      bisect,
+      density;
+
     Quantum
       *magick_restrict q;
 
     ssize_t
-      y;
-
-    ssize_t
       n,
       start,
-      stop;
+      stop,
+      y;
 
     if (status == MagickFalse)
       continue;
@@ -3423,9 +3416,7 @@ static MagickBooleanType HorizontalFilter(
           traits;
 
         ssize_t
-          j;
-
-        ssize_t
+          j,
           k;
 
         channel=GetPixelChannelChannel(image,i);
@@ -3563,26 +3554,24 @@ static MagickBooleanType VerticalFilter(
     const int
       id = GetOpenMPThreadId();
 
-    double
-      bisect,
-      density;
-
     const Quantum
       *magick_restrict p;
 
     ContributionInfo
       *magick_restrict contribution;
 
+    double
+      bisect,
+      density;
+
     Quantum
       *magick_restrict q;
 
     ssize_t
-      x;
-
-    ssize_t
       n,
       start,
-      stop;
+      stop,
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -3642,9 +3631,7 @@ static MagickBooleanType VerticalFilter(
           traits;
 
         ssize_t
-          j;
-
-        ssize_t
+          j,
           k;
 
         channel=GetPixelChannelChannel(image,i);
@@ -4096,9 +4083,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     span;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     n,
     number_rows,
     y;
