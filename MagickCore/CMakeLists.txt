@@ -102,6 +102,7 @@ set(MAGICKCORE_SRC
   gem-private.h
   geometry.c
   geometry.h
+  geometry-private.h
   histogram.c
   histogram.h
   identify.c
