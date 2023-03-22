@@ -1396,6 +1396,9 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               (void) CopyMagickString(image->filename,filename,
                 MagickPathExtent);
               encoder=GetImageEncoder(magick_info);
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                MissingDelegateWarning,"NoEncodeDelegateForThisImageFormat",
+                "`%s'",write_info->magick);
             }
           if (encoder == (EncodeImageHandler *) NULL)
             {
