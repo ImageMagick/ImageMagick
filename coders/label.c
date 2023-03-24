@@ -116,6 +116,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     *image;
 
   MagickBooleanType
+    left_bearing,
     status;
 
   TypeMetric
@@ -302,10 +303,15 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   /*
     Draw label.
   */
+  left_bearing=((draw_info->gravity == UndefinedGravity) ||
+     (draw_info->gravity == NorthWestGravity) ||
+     (draw_info->gravity == WestGravity) ||
+     (draw_info->gravity == SouthWestGravity)) ? MagickTrue : MagickFalse;
   (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
     (draw_info->direction == RightToLeftDirection ? (double) image->columns-
     (draw_info->gravity == UndefinedGravity ? metrics.bounds.x2 : 0.0) : 
-    metrics.bounds.x1),(draw_info->gravity == UndefinedGravity ? 
+    (left_bearing != MagickFalse ? metrics.bounds.x1 : 0.0)),
+    (draw_info->gravity == UndefinedGravity ? 
     MagickMax(metrics.ascent,metrics.bounds.y2) : 0.0));
   (void) CloneString(&draw_info->geometry,geometry);
   status=AnnotateImage(image,draw_info,exception);
