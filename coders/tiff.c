@@ -3835,6 +3835,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         unsigned short
           units;
 
+        ssize_t
+          x_position = image->page.x,
+          y_position = image->page.y;
+
         /*
           Set image resolution.
         */
@@ -3846,25 +3850,20 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) TIFFSetField(tiff,TIFFTAG_RESOLUTIONUNIT,(uint16) units);
         (void) TIFFSetField(tiff,TIFFTAG_XRESOLUTION,image->resolution.x);
         (void) TIFFSetField(tiff,TIFFTAG_YRESOLUTION,image->resolution.y);
-        if ((image->page.x < 0) || (image->page.y < 0))
-          (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
-            "TIFF: negative image positions unsupported","%s",image->filename);
-        if ((image->page.x > 0) && (image->resolution.x > 0.0))
+        if ((x_position < 0) || (y_position < 0))
           {
-            /*
-              Set horizontal image position.
-            */
-            (void) TIFFSetField(tiff,TIFFTAG_XPOSITION,(float) image->page.x/
-              image->resolution.x);
+            x_position=MagickMax(x_position,0);
+            y_position=MagickMax(y_position,0);
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              CoderWarning,"TIFF: negative image positions unsupported","%s",
+              image->filename);
           }
-        if ((image->page.y > 0) && (image->resolution.y > 0.0))
-          {
-            /*
-              Set vertical image position.
-            */
-            (void) TIFFSetField(tiff,TIFFTAG_YPOSITION,(float) image->page.y/
-              image->resolution.y);
-          }
+        if (image->resolution.x > 0.0)
+          (void) TIFFSetField(tiff,TIFFTAG_XPOSITION,(float) x_position/
+            image->resolution.x);
+        if (image->resolution.y > 0.0)
+          (void) TIFFSetField(tiff,TIFFTAG_YPOSITION,(float) y_position/
+            image->resolution.y);
       }
     if (image->chromaticity.white_point.x != 0.0)
       {
