@@ -2226,7 +2226,8 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     *value;
 
   Image
-    *volatile volatile_image;
+    *jps_image = (Image *) NULL,
+    *volatile volatile_image = (Image *) NULL;
 
   int
     colorspace,
@@ -2275,10 +2276,18 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((LocaleCompare(image_info->magick,"JPS") == 0) &&
       (image->next != (Image *) NULL))
-    image=AppendImages(image,MagickFalse,exception);
+    {
+      jps_image=AppendImages(image,MagickFalse,exception);
+      if (jps_image != (Image *) NULL)
+        image=jps_image;
+    }
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
-    return(status);
+    {
+      if (jps_image != (Image *) NULL)
+        jps_image=DestroyImage(jps_image);
+      return(status);
+    }
   /*
     Initialize JPEG parameters.
   */
@@ -2300,7 +2309,9 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     {
       jpeg_destroy_compress(jpeg_info);
       client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
-      (void) CloseBlob(volatile_image);
+      (void) CloseBlob(image);
+      if (jps_image != (Image *) NULL)
+        jps_image=DestroyImage(jps_image);
       return(MagickFalse);
     }
   jpeg_info->client_data=(void *) client_info;
@@ -2794,6 +2805,8 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
       if (memory_info != (MemoryInfo *) NULL)
         memory_info=RelinquishVirtualMemory(memory_info);
       (void) CloseBlob(image);
+      if (jps_image != (Image *) NULL)
+        jps_image=DestroyImage(jps_image);
       return(MagickFalse);
     }
   scanline[0]=(JSAMPROW) jpeg_pixels;
@@ -2990,6 +3003,8 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
   memory_info=RelinquishVirtualMemory(memory_info);
   (void) CloseBlob(image);
+  if (jps_image != (Image *) NULL)
+    jps_image=DestroyImage(jps_image);
   return(MagickTrue);
 }
 
