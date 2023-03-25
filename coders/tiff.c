@@ -3830,7 +3830,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (predictor != 0)
           (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,predictor);
       }
-    if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
+    if ((image->resolution.x > 0.0) && (image->resolution.y > 0.0))
       {
         unsigned short
           units;
@@ -3858,12 +3858,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               CoderWarning,"TIFF: negative image positions unsupported","%s",
               image->filename);
           }
-        if (image->resolution.x > 0.0)
-          (void) TIFFSetField(tiff,TIFFTAG_XPOSITION,(float) x_position/
-            image->resolution.x);
-        if (image->resolution.y > 0.0)
-          (void) TIFFSetField(tiff,TIFFTAG_YPOSITION,(float) y_position/
-            image->resolution.y);
+        (void) TIFFSetField(tiff,TIFFTAG_XPOSITION,(float) x_position/
+          image->resolution.x);
+        (void) TIFFSetField(tiff,TIFFTAG_YPOSITION,(float) y_position/
+          image->resolution.y);
       }
     if (image->chromaticity.white_point.x != 0.0)
       {
