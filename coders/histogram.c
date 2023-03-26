@@ -383,7 +383,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   (void) SetImageInfo(write_info,1,exception);
   magick_info=GetMagickInfo(write_info->magick,exception);
   if ((magick_info == (const MagickInfo*) NULL) ||
-      (LocaleCompare(magick_info->module,"HISTOGRAM") == 0))
+      (LocaleCompare(magick_info->magick_module,"HISTOGRAM") == 0))
     (void) FormatLocaleString(histogram_image->filename,MagickPathExtent,
       "miff:%s",write_info->filename);
   status=WriteImage(write_info,histogram_image,exception);

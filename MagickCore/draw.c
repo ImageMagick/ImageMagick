@@ -68,6 +68,7 @@
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
+#include "MagickCore/magick.h"
 #include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
@@ -5609,7 +5610,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             (void) SetImageInfo(clone_info,1,exception);
             magick_info=GetMagickInfo(clone_info->magick,exception);
             if ((magick_info != (const MagickInfo*) NULL) &&
-                (LocaleCompare(magick_info->module,"SVG") == 0))
+                (LocaleCompare(magick_info->magick_module,"SVG") == 0))
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   CorruptImageError,"ImageTypeNotSupported","`%s'",

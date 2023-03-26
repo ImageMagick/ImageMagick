@@ -356,7 +356,7 @@ static MagickBooleanType WriteVIDImage(const ImageInfo *image_info,Image *image,
   (void) SetImageInfo(write_info,1,exception);
   magick_info=GetMagickInfo(write_info->magick,exception);
   if ((magick_info == (const MagickInfo*) NULL) ||
-      (LocaleCompare(magick_info->module,"VID") == 0))
+      (LocaleCompare(magick_info->magick_module,"VID") == 0))
     (void) FormatLocaleString(montage_image->filename,MagickPathExtent,
       "miff:%s",write_info->filename);
   status=WriteImage(write_info,montage_image,exception);
