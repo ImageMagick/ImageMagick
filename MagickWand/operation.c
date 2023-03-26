@@ -2371,7 +2371,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("features",option+1) == 0)
         {
-          CLIWandWarnReplaced("-version -define identify:features=");
+          CLIWandWarnReplaced("-verbose -define identify:features=");
           if (*option == '+')
             {
               (void) DeleteImageArtifact(_image,"identify:features");
@@ -2848,7 +2848,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           /* FUTURE: note this is also a special "montage" option */
           CLIWandWarnReplaced("-statistic Mode");
-          (void) CLISimpleOperatorImage(cli_wand,"-statistic","Mode",arg1,exception);
+          (void) CLISimpleOperatorImage(cli_wand,"-statistic","Mode",arg1,
+            exception);
           break;
         }
       if (LocaleCompare("modulate",option+1) == 0)
@@ -2861,7 +2862,19 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("monitor",option+1) == 0)
         {
           (void) SetImageProgressMonitor(_image, IfNormalOp ? MonitorProgress :
-                (MagickProgressMonitor) NULL,(void *) NULL);
+            (MagickProgressMonitor) NULL,(void *) NULL);
+          break;
+        }
+      if (LocaleCompare("moments",option+1) == 0)
+        {
+          CLIWandWarnReplaced("-verbose -define identify:moments=");
+          if (*option == '+')
+            {
+              (void) DeleteImageArtifact(_image,"identify:moments");
+              break;
+            }
+          (void) SetImageArtifact(_image,"identify:moments",arg1);
+          (void) SetImageArtifact(_image,"verbose","true");
           break;
         }
       if (LocaleCompare("monochrome",option+1) == 0)

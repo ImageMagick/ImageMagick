@@ -130,14 +130,12 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
     regard_warnings,
     status;
 
-  ssize_t
-    i;
-
   size_t
     iterations,
     number_threads;
 
   ssize_t
+    i,
     n;
 
   (void) setlocale(LC_ALL,"");
