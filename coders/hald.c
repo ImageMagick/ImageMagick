@@ -43,6 +43,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/colormap.h"
 #include "MagickCore/colorspace.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -104,6 +105,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
 
   ssize_t
     i,
+    index,
     y;
 
   /*
@@ -128,18 +130,22 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
   cube_size=level*level;
   image->columns=(size_t) (level*cube_size);
   image->rows=(size_t) (level*cube_size);
+  if (((MagickSizeType) image->columns*image->rows) <= MaxColormapSize)
+    (void) AcquireImageColormap(image,(size_t) (image->columns*image->rows),
+      exception);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  index=0;
   for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) level)
   {
+    Quantum
+      *magick_restrict q;
+
     ssize_t
       blue,
       green,
       red;
-
-    Quantum
-      *magick_restrict q;
 
     if (status == MagickFalse)
       continue;
@@ -159,6 +165,17 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
           q);
         SetPixelBlue(image,ClampToQuantum(QuantumRange*blue/(cube_size-1.0)),q);
         SetPixelAlpha(image,OpaqueAlpha,q);
+        if (image->storage_class == PseudoClass)
+          {
+            image->colormap[index].red=
+              ClampToQuantum(QuantumRange*red/(cube_size-1.0));
+            image->colormap[index].green=
+              ClampToQuantum(QuantumRange*green/(cube_size-1.0));
+            image->colormap[index].blue=
+              ClampToQuantum(QuantumRange*blue/(cube_size-1.0));
+            image->colormap[index].alpha=OpaqueAlpha;
+            SetPixelIndex(image,(Quantum) index++,q);
+          }
         q+=GetPixelChannels(image);
       }
     }
