@@ -1141,7 +1141,12 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   if (WebPConfigInit(&configure) == 0)
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
   if (image->quality != UndefinedCompressionQuality)
-    configure.quality=(float) image->quality;
+    {
+      configure.quality=(float) image->quality;
+#if WEBP_ENCODER_ABI_VERSION >= 0x020e
+      configure.near_lossless=(float) image->quality;
+#endif
+    }
   if (image->quality >= 100)
     configure.lossless=1;
   SetBooleanOption(image_info,"webp:lossless",&configure.lossless);
@@ -1195,7 +1200,6 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   SetBooleanOption(image_info,"webp:exact",&configure.exact);
 #endif
 #if WEBP_ENCODER_ABI_VERSION >= 0x020e
-  SetIntegerOption(image_info,"webp:near-lossless",&configure.near_lossless);
   SetBooleanOption(image_info,"webp:use-sharp-yuv",&configure.use_sharp_yuv);
 #endif
   if (((configure.target_size > 0) || (configure.target_PSNR > 0)) &&
