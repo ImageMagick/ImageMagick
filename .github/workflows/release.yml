@@ -266,7 +266,7 @@ jobs:
       shell: cmd
       run: |
         cd ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2022 /noOpenMP /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /smt
+        configure.exe /noWizard /VS2022 /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /smt
 
     - name: Build ImageMagick
       shell: cmd
