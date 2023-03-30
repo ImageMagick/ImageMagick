@@ -3,7 +3,7 @@
 display \- displays an image or image sequence on any X server.
 .SH SYNOPSIS
 .TP
-\fBdisplay\fP [\fIoptions\fP] \fIinput-file\fP
+\fBmagick display\fP [\fIoptions\fP] \fIinput-file\fP
 .SH OVERVIEW
 The \fBdisplay\fP program is a member of the ImageMagick(1) suite of tools.  Use it to display an image or image sequence on any X server.
 
@@ -137,4 +137,4 @@ ImageMagick(1)
 
 .SH COPYRIGHT
 
-\fBCopyright (C) 1999-2021 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or http://imagemagick.org/script/license.php\fP
+\fBCopyright (C) 1999 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or http://imagemagick.org/script/license.php\fP
