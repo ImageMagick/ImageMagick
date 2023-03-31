@@ -2918,23 +2918,23 @@ static inline fxFltType ImageStat (
       ret = (fxFltType) GetBlobSize (pfx->image);
       break;
     case aKurtosis:
-      if ((cs != (ChannelStatistics *) NULL) && (channel > 0))
+      if ((cs != (ChannelStatistics *) NULL) && (channel >= 0))
         ret = cs[channel].kurtosis;
       break;
     case aMaxima:
-      if ((cs != (ChannelStatistics *) NULL) && (channel > 0))
+      if ((cs != (ChannelStatistics *) NULL) && (channel >= 0))
         ret = cs[channel].maxima;
       break;
     case aMean:
-      if ((cs != (ChannelStatistics *) NULL) && (channel > 0))
+      if ((cs != (ChannelStatistics *) NULL) && (channel >= 0))
         ret = cs[channel].mean;
       break;
     case aMedian:
-      if ((cs != (ChannelStatistics *) NULL) && (channel > 0))
+      if ((cs != (ChannelStatistics *) NULL) && (channel >= 0))
         ret = cs[channel].median;
       break;
     case aMinima:
-      if ((cs != (ChannelStatistics *) NULL) && (channel > 0))
+      if ((cs != (ChannelStatistics *) NULL) && (channel >= 0))
         ret = cs[channel].minima;
       break;
     case aPage:
@@ -2976,11 +2976,11 @@ static inline fxFltType ImageStat (
       ret = pfx->Images[ImgNum]->resolution.y;
       break;
     case aSkewness:
-      if ((cs != (ChannelStatistics *) NULL) && (channel > 0))
+      if ((cs != (ChannelStatistics *) NULL) && (channel >= 0))
         ret = cs[channel].skewness;
       break;
     case aStdDev:
-      if ((cs != (ChannelStatistics *) NULL) && (channel > 0))
+      if ((cs != (ChannelStatistics *) NULL) && (channel >= 0))
         ret = cs[channel].standard_deviation;
       break;
     case aH:
