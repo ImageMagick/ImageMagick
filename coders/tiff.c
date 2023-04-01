@@ -1887,11 +1887,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       case ReadStripMethod:
       {
         size_t
-          extent;
+          extent,
+          length;
 
         ssize_t
           stride,
           strip_id;
+
+        tmsize_t
+          strip_size;
 
         unsigned char
           *p,
@@ -1900,14 +1904,17 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert stripped TIFF image.
         */
-        extent=MagickMax(sizeof(uint32),(samples_per_pixel+extra_samples)*
-          (image->depth+7)/8)*image->columns*rows_per_strip;
+        strip_size=TIFFStripSize(tiff);
+        stride=(ssize_t) TIFFVStripSize(tiff,1);
+        extent=(size_t) strip_size;
+        length=GetQuantumExtent(image,quantum_info,quantum_type);
+        if (length > stride)
+          extent+=length;
         strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
         (void) memset(strip_pixels,0,extent*sizeof(*strip_pixels));
-        stride=TIFFVStripSize(tiff,1);
         strip_id=0;
         p=strip_pixels;
         for (i=0; i < (ssize_t) samples_per_pixel; i++)
@@ -1946,7 +1953,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   size;
 
                 size=TIFFReadEncodedStrip(tiff,strip_id,strip_pixels,
-                  TIFFStripSize(tiff));
+                  strip_size);
                 if (size == -1)
                   break;
                 rows_remaining=rows_per_strip;
