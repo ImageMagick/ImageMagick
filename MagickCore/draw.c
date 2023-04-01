@@ -4502,7 +4502,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
   for ( ; n >= 0; n--)
     graphic_context[n]=DestroyDrawInfo(graphic_context[n]);
   graphic_context=(DrawInfo **) RelinquishMagickMemory(graphic_context);
-  if (status == MagickFalse)
+  if ((status == MagickFalse) && (exception->severity < ErrorException))
     ThrowBinaryException(DrawError,"NonconformingDrawingPrimitiveDefinition",
       keyword);
   return(status != 0 ? MagickTrue : MagickFalse);
