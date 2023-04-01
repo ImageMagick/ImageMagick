@@ -309,31 +309,31 @@ MagickExport size_t GetQuantumExtent(const Image *image,
   const QuantumInfo *quantum_info,const QuantumType quantum_type)
 {
   size_t
-    packet_size;
+    channels;
 
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickCoreSignature);
-  packet_size=1;
+  channels=1;
   switch (quantum_type)
   {
-    case GrayAlphaQuantum: packet_size=2; break;
-    case IndexAlphaQuantum: packet_size=2; break;
-    case RGBQuantum: packet_size=3; break;
-    case BGRQuantum: packet_size=3; break;
-    case RGBAQuantum: packet_size=4; break;
-    case RGBOQuantum: packet_size=4; break;
-    case BGRAQuantum: packet_size=4; break;
-    case CMYKQuantum: packet_size=4; break;
-    case CMYKAQuantum: packet_size=5; break;
-    case MultispectralQuantum: packet_size=5+image->number_meta_channels; break;
-    case CbYCrAQuantum: packet_size=4; break;
-    case CbYCrQuantum: packet_size=3; break;
-    case CbYCrYQuantum: packet_size=4; break;
+    case GrayAlphaQuantum: channels=2; break;
+    case IndexAlphaQuantum: channels=2; break;
+    case RGBQuantum: channels=3; break;
+    case BGRQuantum: channels=3; break;
+    case RGBAQuantum: channels=4; break;
+    case RGBOQuantum: channels=4; break;
+    case BGRAQuantum: channels=4; break;
+    case CMYKQuantum: channels=4; break;
+    case CMYKAQuantum: channels=5; break;
+    case MultispectralQuantum: channels=GetImageChannels(image); break;
+    case CbYCrAQuantum: channels=4; break;
+    case CbYCrQuantum: channels=3; break;
+    case CbYCrYQuantum: channels=4; break;
     default: break;
   }
   if (quantum_info->pack == MagickFalse)
-    return((size_t) (packet_size*image->columns*((quantum_info->depth+7)/8)));
-  return((size_t) ((packet_size*image->columns*quantum_info->depth+7)/8));
+    return((size_t) (channels*image->columns*((quantum_info->depth+7)/8)));
+  return((size_t) ((channels*image->columns*quantum_info->depth+7)/8));
 }
 
 /*
