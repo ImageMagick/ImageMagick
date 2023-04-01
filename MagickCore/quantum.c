@@ -325,7 +325,7 @@ MagickExport size_t GetQuantumExtent(const Image *image,
     case BGRAQuantum: packet_size=4; break;
     case CMYKQuantum: packet_size=4; break;
     case CMYKAQuantum: packet_size=5; break;
-    case MultispectralQuantum: packet_size=6; break;
+    case MultispectralQuantum: packet_size=5+image->number_meta_channels; break;
     case CbYCrAQuantum: packet_size=4; break;
     case CbYCrQuantum: packet_size=3; break;
     case CbYCrYQuantum: packet_size=4; break;
