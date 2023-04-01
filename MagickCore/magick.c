@@ -94,11 +94,6 @@
 #include "MagickCore/utility-private.h"
 #include "MagickCore/xwindow-private.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
-#    if !defined(__MINGW32__)
-#      include <win32config.h>
-#    endif
-#  endif
 #  include <libxml/parser.h>
 #endif
 

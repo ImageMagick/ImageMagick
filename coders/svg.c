@@ -79,11 +79,6 @@
 #include "coders/coders-private.h"
 
 #if defined(MAGICKCORE_XML_DELEGATE)
-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
-#    if !defined(__MINGW32__)
-#      include <win32config.h>
-#    endif
-#  endif
 #  include <libxml/xmlmemory.h>
 #  include <libxml/parserInternals.h>
 #  include <libxml/xmlerror.h>
