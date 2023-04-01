@@ -1903,8 +1903,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert stripped TIFF image.
         */
-        extent=4*MagickMax(image->columns*(samples_per_pixel+extra_samples)*
-          (image->depth+7)/8,(size_t) TIFFStripSize(tiff));
+        extent=MagickMax(sizeof(uint32),(samples_per_pixel+extra_samples)*
+          (image->depth+7)/8)*image->columns*rows_per_strip;
         strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)
