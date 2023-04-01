@@ -1893,9 +1893,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           stride,
           strip_id;
 
-        tsize_t
-          strip_size;
-
         unsigned char
           *p,
           *strip_pixels;
@@ -1945,14 +1942,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               break;
             if (rows_remaining == 0)
               {
-                strip_size=TIFFReadEncodedStrip(tiff,strip_id,strip_pixels,
+                tmsize_t
+                  size;
+
+                size=TIFFReadEncodedStrip(tiff,strip_id,strip_pixels,
                   TIFFStripSize(tiff));
-                if (strip_size == -1)
+                if (size == -1)
                   break;
                 rows_remaining=rows_per_strip;
-                if ((y+rows_per_strip) > (ssize_t) image->rows)
-                  rows_remaining=(rows_per_strip-(y+rows_per_strip-
-                    image->rows));
                 p=strip_pixels;
                 strip_id++;
               }
