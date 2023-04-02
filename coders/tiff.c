@@ -1906,7 +1906,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         */
         strip_size=TIFFStripSize(tiff);
         stride=(ssize_t) TIFFVStripSize(tiff,1);
-        extent=(size_t) strip_size;
+        extent=(size_t) (samples_per_pixel*strip_size);
         length=GetQuantumExtent(image,quantum_info,quantum_type);
         if (length > stride)
           extent+=length;
