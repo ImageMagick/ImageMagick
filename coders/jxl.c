@@ -664,8 +664,14 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((exif_profile != (StringInfo *) NULL) &&
       (GetStringInfoLength(exif_profile) > 4))
     {
+      size_t
+        exif_length;
+
       StringInfo
         *snippet;
+
+      unsigned char
+        *exif_datum;
 
       unsigned int
         offset=0;
@@ -682,19 +688,18 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Strip any EOI marker if payload starts with a JPEG marker.
       */
-      size_t exif_length = GetStringInfoLength(exif_profile);
-      unsigned char *exif_datum = GetStringInfoDatum(exif_profile);
-      if (exif_length > 2 && 
-          (memcmp(exif_datum, "\xff\xd8", 2) == 0 ||
-           memcmp(exif_datum, "\xff\xe1", 2) == 0) &&
-          memcmp(exif_datum+exif_length-2, "\xff\xd9", 2) == 0)
-        SetStringInfoLength(exif_profile, exif_length-2);
+      exif_length=GetStringInfoLength(exif_profile);
+      exif_datum=GetStringInfoDatum(exif_profile);
+      if ((exif_length > 2) && 
+          ((memcmp(exif_datum,"\xff\xd8",2) == 0) ||
+           (memcmp(exif_datum,"\xff\xe1",2) == 0)) &&
+          (memcmp(exif_datum+exif_length-2,"\xff\xd9",2) == 0))
+        SetStringInfoLength(exif_profile,exif_length-2);
       /*
         Skip to actual Exif payload.
       */
       if (offset < GetStringInfoLength(exif_profile))
-        (void) DestroyStringInfo(SplitStringInfo(exif_profile,
-          offset));
+        (void) DestroyStringInfo(SplitStringInfo(exif_profile,offset));
       (void) SetImageProfile(image,"exif",exif_profile,exception);
       exif_profile=DestroyStringInfo(exif_profile);
     }

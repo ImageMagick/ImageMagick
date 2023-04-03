@@ -244,7 +244,7 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       if ((length > 2) && 
           ((memcmp(datum,"\xff\xd8",2) == 0) ||
            (memcmp(datum,"\xff\xe1",2) == 0)) &&
-           memcmp(datum+length-2,"\xff\xd9",2) == 0)
+           (memcmp(datum+length-2,"\xff\xd9",2) == 0))
         SetStringInfoLength(exif_profile,length-2);
       /*
         Skip to actual Exif payload.
