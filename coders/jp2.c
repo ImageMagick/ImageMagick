@@ -801,7 +801,7 @@ static void CinemaProfileCompliance(const opj_image_t *jp2_image,
   parameters->tcp_rates[0]=((float) (jp2_image->numcomps*jp2_image->comps[0].w*
     jp2_image->comps[0].h*jp2_image->comps[0].prec))/(parameters->max_comp_size*
     8*jp2_image->comps[0].dx*jp2_image->comps[0].dy);
-  parameters->cp_disto_alloc=1;
+  parameters->cp_disto_alloc=OPJ_TRUE;
 }
 
 static inline int CalculateNumResolutions(size_t width,size_t height)
@@ -885,12 +885,12 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       image->rows);
   parameters->tcp_numlayers=1;
   parameters->tcp_rates[0]=0;  /* lossless */
-  parameters->cp_disto_alloc=1;
+  parameters->cp_disto_alloc=OPJ_TRUE;
   if ((image_info->quality != 0) && (image_info->quality != 100))
     {
       parameters->tcp_distoratio[0]=(double) image_info->quality;
       parameters->cp_fixed_quality=OPJ_TRUE;
-      parameters->cp_disto_alloc=0;
+      parameters->cp_disto_alloc=OPJ_FALSE;
     }
   if (image_info->extract != (char *) NULL)
     {
@@ -939,7 +939,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       }
       parameters->tcp_numlayers=i+1;
       parameters->cp_fixed_quality=OPJ_TRUE;
-      parameters->cp_disto_alloc=0;
+      parameters->cp_disto_alloc=OPJ_FALSE;
     }
   option=GetImageOption(image_info,"jp2:progression-order");
   if (option != (const char *) NULL)
