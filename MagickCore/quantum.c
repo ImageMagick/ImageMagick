@@ -332,8 +332,10 @@ MagickExport size_t GetQuantumExtent(const Image *image,
     default: break;
   }
   if (quantum_info->pack == MagickFalse)
-    return((size_t) (channels*image->columns*((quantum_info->depth+7)/8)));
-  return((size_t) ((channels*image->columns*quantum_info->depth+7)/8));
+    return((size_t) (channels*image->columns*((quantum_info->depth+7)/8))+
+      quantum_info->pad);
+  return((size_t) ((channels*image->columns*quantum_info->depth+7)/8)+
+    quantum_info->pad);
 }
 
 /*
