@@ -226,7 +226,6 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 #define BrightnessContrastImageTag  "BrightnessContrast/Image"
 
   double
-    alpha,
     coefficients[2],
     intercept,
     slope;
@@ -241,11 +240,10 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  alpha=contrast;
-  slope=tan((double) (MagickPI*(alpha/100.0+1.0)/4.0));
-  if (slope < 0.0)
-    slope=0.0;
-  intercept=brightness/100.0+((100-brightness)/200.0)*(1.0-slope);
+  slope=100.0*PerceptibleReciprocal(100.0-contrast);
+  if (contrast < 0.0)
+    slope=contrast/100.0+1.0;
+  intercept=brightness/100.0+((100.0-brightness)/200.0)*(1.0-slope);
   coefficients[0]=slope;
   coefficients[1]=intercept;
   status=FunctionImage(image,PolynomialFunction,2,coefficients,exception);
