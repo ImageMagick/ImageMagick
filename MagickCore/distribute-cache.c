@@ -74,8 +74,15 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/version.h"
 #include "MagickCore/version-private.h"
-#undef MAGICKCORE_HAVE_DISTRIBUTE_CACHE
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_DPC_SUPPORT)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
+#define CHAR_TYPE_CAST (char *)
+#define CLOSE_SOCKET(socket) (void) closesocket(socket)
+#define HANDLER_RETURN_TYPE DWORD WINAPI
+#define HANDLER_RETURN_VALUE 0
+#define SOCKET_TYPE SOCKET
+#define LENGTH_TYPE int
+#else
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -86,15 +93,7 @@
 #define HANDLER_RETURN_VALUE (void *) NULL
 #define SOCKET_TYPE int
 #define LENGTH_TYPE size_t
-#define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
-#define CHAR_TYPE_CAST (char *)
-#define CLOSE_SOCKET(socket) (void) closesocket(socket)
-#define HANDLER_RETURN_TYPE DWORD WINAPI
-#define HANDLER_RETURN_VALUE 0
-#define SOCKET_TYPE SOCKET
-#define LENGTH_TYPE int
-#define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
+#endif
 #else
 #ifdef __VMS
 #define CLOSE_SOCKET(socket) (void) close(socket)
@@ -153,7 +152,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   ssize_t
     count;
 
-#if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+#if !defined(MAGICKCORE_DPC_SUPPORT)
   magick_unreferenced(file);
   magick_unreferenced(message);
 #endif
@@ -175,7 +174,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
 static int ConnectPixelCacheServer(const char *hostname,const int port,
   size_t *session_key,ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+#if defined(MAGICKCORE_DPC_SUPPORT)
   char
     service[MagickPathExtent],
     *shared_secret;
@@ -431,7 +430,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
     count,
     i;
 
-#if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+#if !defined(MAGICKCORE_DPC_SUPPORT)
   magick_unreferenced(file);
   magick_unreferenced(message);
 #endif
@@ -454,7 +453,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   return(i);
 }
 
-#if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+#if !defined(MAGICKCORE_DPC_SUPPORT)
 MagickExport void DistributePixelCacheServer(const int port,
   ExceptionInfo *exception)
 {
