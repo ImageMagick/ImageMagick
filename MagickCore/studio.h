@@ -131,11 +131,11 @@ extern "C" {
 #if !defined(__CYGWIN__)
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#endif
-#include <windows.h>
 #ifdef _MSC_VER
 #pragma comment (lib, "ws2_32.lib")
 #endif
+#endif
+#include <windows.h>
 #endif
 #if defined(MAGICKCORE_HAVE_SYS_SYSLIMITS_H)
 # include <sys/syslimits.h>
