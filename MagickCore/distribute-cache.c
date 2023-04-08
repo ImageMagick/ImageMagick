@@ -261,9 +261,9 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   nonce=DestroyStringInfo(nonce);
   return(client_socket);
 #else
-  magick_unused(hostname);
-  magick_unused(port);
-  magick_unused(session_key);
+  magick_unreferenced(hostname);
+  magick_unreferenced(port);
+  magick_unreferenced(session_key);
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","distributed pixel cache");
   return(MagickFalse);
