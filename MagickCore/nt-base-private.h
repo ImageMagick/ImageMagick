@@ -135,7 +135,6 @@ extern MagickPrivate unsigned char
 extern MagickPrivate void
   *NTGetLibrarySymbol(void *,const char *),
   NTGhostscriptEXE(char *,int),
-  NTInitializeWinsock(MagickBooleanType),
   *NTMapMemory(char *,size_t,int,int,int,MagickOffsetType),
   *NTOpenLibrary(const char *),
   NTWindowsGenesis(void),

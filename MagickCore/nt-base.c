@@ -110,11 +110,7 @@ static void
   *ghost_handle = (void *) NULL;
 
 static SemaphoreInfo
-  *ghost_semaphore = (SemaphoreInfo *) NULL,
-  *winsock_semaphore = (SemaphoreInfo *) NULL;
-
-static WSADATA
-  *wsaData = (WSADATA*) NULL;
+  *ghost_semaphore = (SemaphoreInfo *) NULL;
 
 struct
 {
@@ -1454,42 +1450,6 @@ MagickPrivate void NTGhostscriptUnLoadDLL(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N T I n i t i a l i z e W i n s o c k                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTInitializeWinsock() initializes Winsock.
-%
-%  The format of the NTInitializeWinsock method is:
-%
-%      void NTInitializeWinsock(void)
-%
-*/
-MagickPrivate void NTInitializeWinsock(MagickBooleanType use_lock)
-{
-  if (use_lock)
-    {
-      if (winsock_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&winsock_semaphore);
-      LockSemaphoreInfo(winsock_semaphore);
-    }
-  if (wsaData == (WSADATA *) NULL)
-    {
-      wsaData=(WSADATA *) AcquireMagickMemory(sizeof(WSADATA));
-      if (WSAStartup(MAKEWORD(2,2),wsaData) != 0)
-        ThrowFatalException(CacheFatalError,"WSAStartup failed");
-    }
-  if (use_lock)
-    UnlockSemaphoreInfo(winsock_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   N T L o n g P a t h s E n a b l e d                                       %
 %                                                                             %
 %                                                                             %
@@ -2530,7 +2490,8 @@ MagickPrivate void NTWindowsGenesis(void)
   }
 #endif
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2552,15 +2513,5 @@ MagickPrivate void NTWindowsGenesis(void)
 MagickPrivate void NTWindowsTerminus(void)
 {
   NTGhostscriptUnLoadDLL();
-  if (winsock_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&winsock_semaphore);
-  LockSemaphoreInfo(winsock_semaphore);
-  if (wsaData != (WSADATA *) NULL)
-    {
-      WSACleanup();
-      wsaData=(WSADATA *) RelinquishMagickMemory((void *) wsaData);
-    }
-  UnlockSemaphoreInfo(winsock_semaphore);
-  RelinquishSemaphoreInfo(&winsock_semaphore);
 }
 #endif

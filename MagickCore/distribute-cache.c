@@ -200,9 +200,6 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     Connect to distributed pixel cache and get session key.
   */
   *session_key=0;
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  NTInitializeWinsock(MagickTrue);
-#endif
   (void) memset(&hint,0,sizeof(hint));
   hint.ai_family=AF_INET;
   hint.ai_socktype=SOCK_STREAM;
@@ -929,9 +926,6 @@ MagickExport void DistributePixelCacheServer(const int port,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   magick_unreferenced(exception);
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  NTInitializeWinsock(MagickFalse);
-#endif
   (void) memset(&hint,0,sizeof(hint));
   hint.ai_family=AF_INET;
   hint.ai_socktype=SOCK_STREAM;
