@@ -162,9 +162,6 @@ extern "C" {
 #if !defined(lt_dlopen)
 #  define lt_dlopen(filename)  NTOpenLibrary(filename)
 #endif
-#if !defined(lt_dlsetsearchpath)
-#  define lt_dlsetsearchpath(path)  NTSetSearchPath(path)
-#endif
 #if !defined(lt_dlsym)
 #  define lt_dlsym(handle,name)  NTGetLibrarySymbol(handle,name)
 #endif

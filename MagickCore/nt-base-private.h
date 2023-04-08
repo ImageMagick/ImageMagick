@@ -110,7 +110,6 @@ extern MagickPrivate int
   NTCloseLibrary(void *),
   NTTruncateFile(int,off_t),
   NTInitializeLibrary(void),
-  NTSetSearchPath(const char *),
   NTUnmapMemory(void *,size_t),
   NTSystemCommand(const char *,char *);
 

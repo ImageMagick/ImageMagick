@@ -100,11 +100,6 @@ typedef struct _NTGhostInfo
 /*
   Static declarations.
 */
-#if !defined(MAGICKCORE_LTDL_DELEGATE)
-static char
-  *lt_slsearchpath = (char *) NULL;
-#endif
-
 static NTGhostInfo
   nt_ghost_info;
 
@@ -1742,15 +1737,6 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
 %
 */
 
-static inline const char *GetSearchPath(void)
-{
-#if defined(MAGICKCORE_LTDL_DELEGATE)
-  return(lt_dlgetsearchpath());
-#else
-  return(lt_slsearchpath);
-#endif
-}
-
 static UINT ChangeErrorMode(void)
 {
   typedef UINT
@@ -1798,13 +1784,6 @@ static inline void *NTLoadLibrary(const char *filename)
 
 MagickPrivate void *NTOpenLibrary(const char *filename)
 {
-  char
-    path[MagickPathExtent];
-
-  const char
-    *p,
-    *q;
-
   UINT
     mode;
 
@@ -1813,9 +1792,17 @@ MagickPrivate void *NTOpenLibrary(const char *filename)
 
   mode=ChangeErrorMode();
   handle=NTLoadLibrary(filename);
+#if defined(MAGICKCORE_LTDL_DELEGATE)
   if (handle == (void *) NULL)
     {
-      p=GetSearchPath();
+      char
+        path[MagickPathExtent];
+
+      const char
+        *p,
+        *q;
+
+      p=lt_dlgetsearchpath();
       while (p != (const char*) NULL)
       {
         q=strchr(p,DirectoryListSeparator);
@@ -1831,6 +1818,7 @@ MagickPrivate void *NTOpenLibrary(const char *filename)
         p=q+1;
       }
     }
+#endif
   SetErrorMode(mode);
   return(handle);
 }
@@ -2067,43 +2055,6 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
   UnlockResource(global);
   FreeResource(global);
   return(blob);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   N T S e t S e a r c h P a t h                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTSetSearchPath() sets the current locations that the subsystem should
-%  look at to find dynamically loadable modules.
-%
-%  The format of the NTSetSearchPath method is:
-%
-%      int NTSetSearchPath(const char *path)
-%
-%  A description of each parameter follows:
-%
-%    o path: Specifies a pointer to string representing the search path
-%      for DLL's that can be dynamically loaded.
-%
-*/
-MagickPrivate int NTSetSearchPath(const char *path)
-{
-#if defined(MAGICKCORE_LTDL_DELEGATE)
-  lt_dlsetsearchpath(path);
-#else
-  if (lt_slsearchpath != (char *) NULL)
-    lt_slsearchpath=DestroyString(lt_slsearchpath);
-  if (path != (char *) NULL)
-    lt_slsearchpath=AcquireString(path);
-#endif
-  return(0);
 }
 
 /*
