@@ -76,7 +76,6 @@
 #include "MagickCore/version-private.h"
 #if defined(MAGICKCORE_DPC_SUPPORT)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
-#define CHAR_TYPE_CAST (char *)
 #define CLOSE_SOCKET(socket) (void) closesocket(socket)
 #define HANDLER_RETURN_TYPE DWORD WINAPI
 #define HANDLER_RETURN_VALUE 0
@@ -87,7 +86,6 @@
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#define CHAR_TYPE_CAST (char *)
 #define CLOSE_SOCKET(socket) (void) close(socket)
 #define HANDLER_RETURN_TYPE void *
 #define HANDLER_RETURN_VALUE (void *) NULL
@@ -159,7 +157,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-    count=recv(file,CHAR_TYPE_CAST message+i,(LENGTH_TYPE) MagickMin(length-i,
+    count=recv(file,(char *) message+i,(LENGTH_TYPE) MagickMin(length-i,
       (MagickSizeType) MAGICK_SSIZE_MAX),0);
     if (count <= 0)
       {
@@ -229,7 +227,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
         "DistributedPixelCache","'%s': %s",hostname,GetExceptionMessage(errno));
       return(-1);
     }
-  count=recv(client_socket,CHAR_TYPE_CAST session_key,sizeof(session_key),0);
+  count=recv(client_socket,(char *) session_key,sizeof(session_key),0);
   if (count == -1)
     {
       CLOSE_SOCKET(client_socket);
@@ -441,7 +439,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-    count=(MagickOffsetType) send(file,CHAR_TYPE_CAST message+i,(LENGTH_TYPE)
+    count=(MagickOffsetType) send(file,(char *) message+i,(LENGTH_TYPE)
       MagickMin(length-i,(MagickSizeType) MAGICK_SSIZE_MAX),MSG_NOSIGNAL);
     if (count <= 0)
       {
@@ -948,7 +946,7 @@ MagickExport void DistributePixelCacheServer(const int port,
       continue;
     one=1;
     status=setsockopt(server_socket,SOL_SOCKET,SO_REUSEADDR,
-      CHAR_TYPE_CAST &one,(socklen_t) sizeof(one));
+      (char *) &one,(socklen_t) sizeof(one));
     if (status == -1)
       {
         CLOSE_SOCKET(server_socket);
