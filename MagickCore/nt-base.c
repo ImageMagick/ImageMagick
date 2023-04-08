@@ -120,9 +120,6 @@ static SemaphoreInfo
 
 static WSADATA
   *wsaData = (WSADATA*) NULL;
-
-static size_t
-  long_paths_enabled = 2;
 
 struct
 {
@@ -1560,6 +1557,9 @@ $  enabled.
 */
 MagickExport MagickBooleanType NTLongPathsEnabled()
 {
+  static size_t
+    long_paths_enabled = 2;
+
   if (long_paths_enabled == 2)
     {
       DWORD
