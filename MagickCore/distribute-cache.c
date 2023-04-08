@@ -81,6 +81,7 @@
 #define HANDLER_RETURN_VALUE 0
 #define SOCKET_TYPE SOCKET
 #define LENGTH_TYPE int
+#define HAVE_WINSOCK2
 #else
 #include <netinet/in.h>
 #include <netdb.h>
@@ -116,6 +117,17 @@
 #define DPCSessionKeyLength  8
 #ifndef MSG_NOSIGNAL
 #  define MSG_NOSIGNAL 0
+#endif
+
+/*
+  Static declarations.
+*/
+#ifdef HAVE_WINSOCK2
+static SemaphoreInfo
+  *winsock2_semaphore = (SemaphoreInfo *) NULL;
+
+static WSADATA
+  *wsaData = (WSADATA*) NULL;
 #endif
 
 /*
@@ -169,6 +181,26 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   return(i);
 }
 
+#if defined(HAVE_WINSOCK2)
+static void InitializeWinsock2(MagickBooleanType use_lock)
+{
+  if (use_lock)
+    {
+      if (winsock2_semaphore == (SemaphoreInfo *) NULL)
+        ActivateSemaphoreInfo(&winsock2_semaphore);
+      LockSemaphoreInfo(winsock2_semaphore);
+    }
+  if (wsaData == (WSADATA *) NULL)
+    {
+      wsaData=(WSADATA *) AcquireMagickMemory(sizeof(WSADATA));
+      if (WSAStartup(MAKEWORD(2,2),wsaData) != 0)
+        ThrowFatalException(CacheFatalError,"WSAStartup failed");
+    }
+  if (use_lock)
+    UnlockSemaphoreInfo(winsock2_semaphore);
+}
+#endif
+
 static int ConnectPixelCacheServer(const char *hostname,const int port,
   size_t *session_key,ExceptionInfo *exception)
 {
@@ -197,6 +229,9 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     Connect to distributed pixel cache and get session key.
   */
   *session_key=0;
+#if defined(HAVE_WINSOCK2)
+  InitializeWinsock2(MagickTrue);
+#endif
   (void) memset(&hint,0,sizeof(hint));
   hint.ai_family=AF_INET;
   hint.ai_socktype=SOCK_STREAM;
@@ -927,6 +962,9 @@ MagickExport void DistributePixelCacheServer(const int port,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   magick_unreferenced(exception);
+#if defined(HAVE_WINSOCK2)
+  InitializeWinsock2(MagickFalse);
+#endif
   (void) memset(&hint,0,sizeof(hint));
   hint.ai_family=AF_INET;
   hint.ai_socktype=SOCK_STREAM;
@@ -996,6 +1034,36 @@ MagickExport void DistributePixelCacheServer(const int port,
 }
 #endif
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  D i s t r i b u t e C a c h e T e r m i n u s                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DistributeCacheTerminus() destroys the Distributed Cache.
+%
+*/
+MagickPrivate void DistributeCacheTerminus(void)
+{
+#ifdef HAVE_WINSOCK2
+  if (winsock2_semaphore == (SemaphoreInfo *) NULL)
+    ActivateSemaphoreInfo(&winsock2_semaphore);
+  LockSemaphoreInfo(winsock2_semaphore);
+  if (wsaData != (WSADATA *) NULL)
+    {
+      WSACleanup();
+      wsaData=(WSADATA *) RelinquishMagickMemory((void *) wsaData);
+    }
+  UnlockSemaphoreInfo(winsock2_semaphore);
+  RelinquishSemaphoreInfo(&winsock2_semaphore);
+#endif
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

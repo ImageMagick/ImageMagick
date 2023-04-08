@@ -41,6 +41,7 @@
 #include "MagickCore/studio.h"
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include "MagickCore/client.h"
+#include "MagickCore/distribute-cache-private.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/locale_.h"
@@ -2513,5 +2514,6 @@ MagickPrivate void NTWindowsGenesis(void)
 MagickPrivate void NTWindowsTerminus(void)
 {
   NTGhostscriptUnLoadDLL();
+  DistributeCacheTerminus();
 }
 #endif
