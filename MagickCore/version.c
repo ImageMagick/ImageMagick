@@ -244,7 +244,7 @@ MagickExport const char *GetMagickFeatures(void)
 #if defined(MAGICKCORE_CIPHER_SUPPORT)
   "Cipher "
 #endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_DPC_SUPPORT)
   "DPC "
 #endif
 #if defined(MAGICKCORE_HDRI_SUPPORT)

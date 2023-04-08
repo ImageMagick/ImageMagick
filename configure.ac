@@ -654,7 +654,9 @@ if test "$enable_zero_configuration" = 'yes'; then
 fi
 AM_CONDITIONAL([MAGICKCORE_ZERO_CONFIGURATION_SUPPORT],[test "$enable_zero_configuration" = yes])
 
+#
 # Build a high dynamic range version of ImageMagick.
+#
 AC_ARG_ENABLE([hdri],
     [AS_HELP_STRING([--enable-hdri],
                     [accurately represent the wide range of intensity levels found in real scenes])],
@@ -674,6 +676,20 @@ AC_SUBST([MAGICK_HDRI])dnl
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
+
+#
+# Support the distributed pixel cache.
+#
+AC_ARG_ENABLE([dpc],
+    [AS_HELP_STRING([--disable-dpc],
+                    [disable distributed pixel cache support])],
+    [enable_dpc=$enableval],
+    [enable_dpc='yes'])
+
+if test "$enable_dpc" = 'yes'; then
+    AC_DEFINE([DPC_SUPPORT],[1],[Define to 1 to enable distributed pixel cache support.])
+    MAGICK_FEATURES="DPC $MAGICK_FEATURES"
+fi
 
 # Enable pipes (|) in filenames.
 AC_ARG_ENABLE([pipes],
@@ -1050,7 +1066,6 @@ AC_SEARCH_LIBS(gethostbyname, resolv nsl)
 AC_SEARCH_LIBS(socket, socket,
 [
   AC_DEFINE([HAVE_SOCKET],[1],[Define to 1 if you have socket support.])
-  MAGICK_FEATURES="DPC $MAGICK_FEATURES"
 ])
 
 #

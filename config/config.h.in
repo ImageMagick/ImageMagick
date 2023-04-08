@@ -37,6 +37,9 @@
 /* Directory where ImageMagick documents live. */
 #undef DOCUMENTATION_PATH
 
+/* Define to 1 to enable distributed pixel cache support. */
+#undef DPC_SUPPORT
+
 /* Define if you have Display Postscript */
 #undef DPS_DELEGATE
 

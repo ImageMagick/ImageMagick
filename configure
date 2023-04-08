@@ -1207,6 +1207,7 @@ enable_installed
 enable_cipher
 enable_zero_configuration
 enable_hdri
+enable_dpc
 enable_pipes
 enable_maintainer_mode
 enable_hugepages
@@ -2005,6 +2006,7 @@ Optional Features:
                           zero-configuration ImageMagick
   --enable-hdri           accurately represent the wide range of intensity
                           levels found in real scenes
+  --disable-dpc           disable distributed pixel cache support
   --enable-pipes          enable pipes (|) in filenames
   --enable-maintainer-mode
                           enable make rules and dependencies not useful (and
@@ -5149,7 +5151,7 @@ MAGICK_PATCHLEVEL_VERSION=7
 
 MAGICK_VERSION=7.1.1-7
 
-MAGICK_GIT_REVISION=b2dd67b16:20230402
+MAGICK_GIT_REVISION=13841a118:20230408
 
 
 # Substitute library versioning
@@ -5183,7 +5185,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,7
 
-PACKAGE_RELEASE_DATE=2023-04-02
+PACKAGE_RELEASE_DATE=2023-04-08
 
 
 # Ensure that make can run correctly
@@ -23243,7 +23245,9 @@ else
 fi
 
 
+#
 # Build a high dynamic range version of ImageMagick.
+#
 # Check whether --enable-hdri was given.
 if test ${enable_hdri+y}
 then :
@@ -23267,6 +23271,25 @@ printf "%s\n" "#define HDRI_ENABLE_OBSOLETE_IN_H $magick_hdri_enable" >>confdefs
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
+
+#
+# Support the distributed pixel cache.
+#
+# Check whether --enable-dpc was given.
+if test ${enable_dpc+y}
+then :
+  enableval=$enable_dpc; enable_dpc=$enableval
+else $as_nop
+  enable_dpc='yes'
+fi
+
+
+if test "$enable_dpc" = 'yes'; then
+
+printf "%s\n" "#define DPC_SUPPORT 1" >>confdefs.h
+
+    MAGICK_FEATURES="DPC $MAGICK_FEATURES"
+fi
 
 # Enable pipes (|) in filenames.
 # Check whether --enable-pipes was given.
@@ -26856,7 +26879,6 @@ then :
 
 printf "%s\n" "#define HAVE_SOCKET 1" >>confdefs.h
 
-  MAGICK_FEATURES="DPC $MAGICK_FEATURES"
 
 fi
 
