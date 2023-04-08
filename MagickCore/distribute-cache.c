@@ -75,7 +75,7 @@
 #include "MagickCore/version.h"
 #include "MagickCore/version-private.h"
 #if defined(MAGICKCORE_DPC_SUPPORT)
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 #define CLOSE_SOCKET(socket) (void) closesocket(socket)
 #define HANDLER_RETURN_TYPE DWORD WINAPI
 #define HANDLER_RETURN_VALUE 0
