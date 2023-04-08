@@ -893,9 +893,11 @@ static MagickBooleanType IsModuleTreeInstantiated()
           if (status == MagickFalse)
             ThrowFatalException(ResourceLimitFatalError,
               "MemoryAllocationFailed");
+#if defined(MAGICKCORE_LTDL_DELEGATE)
           if (lt_dlinit() != 0)
             ThrowFatalException(ModuleFatalError,
               "UnableToInitializeModuleLoader");
+#endif
           module_list=splay_tree;
         }
       UnlockSemaphoreInfo(module_semaphore);

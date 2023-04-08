@@ -1454,29 +1454,6 @@ MagickPrivate void NTGhostscriptUnLoadDLL(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N T I n i t i a l i z e L i b r a r y                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTInitializeLibrary() initializes the dynamic module loading subsystem.
-%
-%  The format of the NTInitializeLibrary method is:
-%
-%      int NTInitializeLibrary(void)
-%
-*/
-MagickPrivate int NTInitializeLibrary(void)
-{
-  return(0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   N T I n i t i a l i z e W i n s o c k                                     %
 %                                                                             %
 %                                                                             %

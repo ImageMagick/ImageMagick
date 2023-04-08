@@ -109,7 +109,6 @@ extern MagickPrivate int
   NTCloseDirectory(DIR *),
   NTCloseLibrary(void *),
   NTTruncateFile(int,off_t),
-  NTInitializeLibrary(void),
   NTUnmapMemory(void *,size_t),
   NTSystemCommand(const char *,char *);
 
