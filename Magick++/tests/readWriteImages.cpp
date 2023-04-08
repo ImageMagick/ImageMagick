@@ -123,12 +123,12 @@ int main(int,char ** argv)
     third.write("testmagick_anim_out.ico");
     fourth.read("testmagick_anim_out.ico");
 
-    if (fourth.magick() != "BMP")
+    if (fourth.magick() != "ICO")
       {
         ++failures;
         cout << "Line: " << __LINE__
           << "  Image magick: " << fourth.magick()
-          << " is not equal to BMP"
+          << " is not equal to ICO"
           << endl;
       }
 
