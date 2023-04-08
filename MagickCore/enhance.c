@@ -243,7 +243,7 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   slope=100.0*PerceptibleReciprocal(100.0-contrast);
   if (contrast < 0.0)
     slope=0.01*contrast+1.0;
-  intercept=(0.01*brightness-0.5)+slope+0.5;
+  intercept=(0.01*brightness-0.5)*slope+0.5;
   coefficients[0]=slope;
   coefficients[1]=intercept;
   status=FunctionImage(image,PolynomialFunction,2,coefficients,exception);
