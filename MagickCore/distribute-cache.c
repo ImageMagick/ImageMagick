@@ -261,6 +261,9 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   nonce=DestroyStringInfo(nonce);
   return(client_socket);
 #else
+  magick_unused(hostname);
+  magick_unused(port);
+  magick_unused(session_key);
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","distributed pixel cache");
   return(MagickFalse);
@@ -453,9 +456,10 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
 
 #if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
 MagickExport void DistributePixelCacheServer(const int port,
-  ExceptionInfo *Exception)
+  ExceptionInfo *exception)
 {
   magick_unreferenced(port);
+  magick_unreferenced(exception);
   ThrowFatalException(MissingDelegateError,"DelegateLibrarySupportNotBuiltIn");
 }
 #else
