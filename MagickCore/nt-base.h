@@ -156,9 +156,6 @@ extern "C" {
 #if !defined(lt_dlerror)
 #  define lt_dlerror()  NTGetLibraryError()
 #endif
-#if !defined(lt_dlexit)
-#  define lt_dlexit()  NTExitLibrary()
-#endif
 #if !defined(lt_dlinit)
 #  define lt_dlinit()  NTInitializeLibrary()
 #endif

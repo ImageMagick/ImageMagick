@@ -715,29 +715,6 @@ MagickPrivate void NTErrorHandler(const ExceptionType severity,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N T E x i t L i b r a r y                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTExitLibrary() exits the dynamic module loading subsystem.
-%
-%  The format of the NTExitLibrary method is:
-%
-%      int NTExitLibrary(void)
-%
-*/
-MagickPrivate int NTExitLibrary(void)
-{
-  return(0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   N T G a t h e r R a n d o m D a t a                                       %
 %                                                                             %
 %                                                                             %
