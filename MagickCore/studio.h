@@ -128,14 +128,13 @@ extern "C" {
 # include <pthread.h>
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-#if !defined(__CYGWIN__)
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#ifdef _MSC_VER
-#pragma comment (lib, "ws2_32.lib")
-#endif
-#endif
-#include <windows.h>
+#  if !defined(__CYGWIN__)
+#    include <winsock2.h>
+#    include <ws2tcpip.h>
+#    ifdef _MSC_VER
+#      pragma comment (lib, "ws2_32.lib")
+#    endif
+#  endif
 #endif
 #if defined(MAGICKCORE_HAVE_SYS_SYSLIMITS_H)
 # include <sys/syslimits.h>
