@@ -190,9 +190,6 @@ static void *DestroyTypeNode(void *type_info)
 static SplayTreeInfo *AcquireTypeCache(const char *filename,
   ExceptionInfo *exception)
 {
-  MagickStatusType
-    status;
-
   SplayTreeInfo
     *cache;
 
@@ -200,7 +197,6 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
     DestroyTypeNode);
   if (cache == (SplayTreeInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  status=MagickTrue;
 #if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
   {
     char
@@ -219,8 +215,8 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
     while (option != (const StringInfo *) NULL)
     {
       (void) CopyMagickString(path,GetStringInfoPath(option),MagickPathExtent);
-      status&=LoadTypeCache(cache,(const char *)
-        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
+      (void) LoadTypeCache(cache,(const char *) GetStringInfoDatum(option),
+        GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
@@ -238,7 +234,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
         xml=FileToString(path,~0UL,exception);
         if (xml != (void *) NULL)
           {
-            status&=LoadTypeCache(cache,xml,path,0,exception);
+            (void) LoadTypeCache(cache,xml,path,0,exception);
             xml=DestroyString(xml);
           }
         font_path=DestroyString(font_path);
@@ -248,9 +244,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
   magick_unreferenced(filename);
 #endif
   if (GetNumberOfNodesInSplayTree(cache) == 0)
-    status&=LoadTypeCache(cache,TypeMap,"built-in",0,exception);
-  if (status == MagickFalse)
-    { };
+    (void) LoadTypeCache(cache,TypeMap,"built-in",0,exception);
   return(cache);
 }
 
