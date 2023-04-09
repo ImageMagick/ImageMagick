@@ -226,7 +226,6 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 #define BrightnessContrastImageTag  "BrightnessContrast/Image"
 
   double
-    alpha,
     coefficients[2],
     intercept,
     slope;
@@ -241,11 +240,10 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  alpha=contrast;
-  slope=tan((double) (MagickPI*(alpha/100.0+1.0)/4.0));
-  if (slope < 0.0)
-    slope=0.0;
-  intercept=brightness/100.0+((100-brightness)/200.0)*(1.0-slope);
+  slope=100.0*PerceptibleReciprocal(100.0-contrast);
+  if (contrast < 0.0)
+    slope=0.01*contrast+1.0;
+  intercept=(0.01*brightness-0.5)*slope+0.5;
   coefficients[0]=slope;
   coefficients[1]=intercept;
   status=FunctionImage(image,PolynomialFunction,2,coefficients,exception);
@@ -1371,7 +1369,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 %
 */
 
-static void inline Contrast(const int sign,double *red,double *green,
+static inline void Contrast(const int sign,double *red,double *green,
   double *blue)
 {
   double
@@ -2777,7 +2775,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
         offset = 0.0;
 
       HaldInfo
-        point = { 0 };
+        point = { 0, 0, 0 };
 
       PixelInfo
         pixel = zero,

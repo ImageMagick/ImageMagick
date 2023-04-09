@@ -215,7 +215,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
                 break;
               AdjustTypeMetricBounds(&metrics);
               width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-              height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
+              height=(size_t) floor(metrics.height-metrics.underline_position+
+                draw_info->stroke_width+0.5);
               if ((image->columns != 0) && (image->rows != 0))
                 {
                   if ((width >= image->columns) || (height >= image->rows))
@@ -249,7 +250,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
             break;
           AdjustTypeMetricBounds(&metrics);
           width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-          height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
+          height=(size_t) floor(metrics.height-metrics.underline_position+
+            draw_info->stroke_width+0.5);
           if ((image->columns != 0) && (image->rows != 0))
             {
               if ((width < image->columns) && (height < image->rows))

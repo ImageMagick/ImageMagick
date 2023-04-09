@@ -41,6 +41,7 @@
 #include "MagickCore/studio.h"
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #include "MagickCore/client.h"
+#include "MagickCore/distribute-cache-private.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/locale_.h"
@@ -100,11 +101,6 @@ typedef struct _NTGhostInfo
 /*
   Static declarations.
 */
-#if !defined(MAGICKCORE_LTDL_DELEGATE)
-static char
-  *lt_slsearchpath = (char *) NULL;
-#endif
-
 static NTGhostInfo
   nt_ghost_info;
 
@@ -115,14 +111,7 @@ static void
   *ghost_handle = (void *) NULL;
 
 static SemaphoreInfo
-  *ghost_semaphore = (SemaphoreInfo *) NULL,
-  *winsock_semaphore = (SemaphoreInfo *) NULL;
-
-static WSADATA
-  *wsaData = (WSADATA*) NULL;
-
-static size_t
-  long_paths_enabled = 2;
+  *ghost_semaphore = (SemaphoreInfo *) NULL;
 
 struct
 {
@@ -711,29 +700,6 @@ MagickPrivate void NTErrorHandler(const ExceptionType severity,
     MB_SETFOREGROUND | MB_ICONEXCLAMATION);
   MagickCoreTerminus();
   exit(0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   N T E x i t L i b r a r y                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTExitLibrary() exits the dynamic module loading subsystem.
-%
-%  The format of the NTExitLibrary method is:
-%
-%      int NTExitLibrary(void)
-%
-*/
-MagickPrivate int NTExitLibrary(void)
-{
-  return(0);
 }
 
 /*
@@ -1485,65 +1451,6 @@ MagickPrivate void NTGhostscriptUnLoadDLL(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N T I n i t i a l i z e L i b r a r y                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTInitializeLibrary() initializes the dynamic module loading subsystem.
-%
-%  The format of the NTInitializeLibrary method is:
-%
-%      int NTInitializeLibrary(void)
-%
-*/
-MagickPrivate int NTInitializeLibrary(void)
-{
-  return(0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   N T I n i t i a l i z e W i n s o c k                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTInitializeWinsock() initializes Winsock.
-%
-%  The format of the NTInitializeWinsock method is:
-%
-%      void NTInitializeWinsock(void)
-%
-*/
-MagickPrivate void NTInitializeWinsock(MagickBooleanType use_lock)
-{
-  if (use_lock)
-    {
-      if (winsock_semaphore == (SemaphoreInfo *) NULL)
-        ActivateSemaphoreInfo(&winsock_semaphore);
-      LockSemaphoreInfo(winsock_semaphore);
-    }
-  if (wsaData == (WSADATA *) NULL)
-    {
-      wsaData=(WSADATA *) AcquireMagickMemory(sizeof(WSADATA));
-      if (WSAStartup(MAKEWORD(2,2),wsaData) != 0)
-        ThrowFatalException(CacheFatalError,"WSAStartup failed");
-    }
-  if (use_lock)
-    UnlockSemaphoreInfo(winsock_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   N T L o n g P a t h s E n a b l e d                                       %
 %                                                                             %
 %                                                                             %
@@ -1560,6 +1467,9 @@ $  enabled.
 */
 MagickExport MagickBooleanType NTLongPathsEnabled()
 {
+  static size_t
+    long_paths_enabled = 2;
+
   if (long_paths_enabled == 2)
     {
       DWORD
@@ -1765,15 +1675,6 @@ MagickPrivate DIR *NTOpenDirectory(const char *path)
 %
 */
 
-static inline const char *GetSearchPath(void)
-{
-#if defined(MAGICKCORE_LTDL_DELEGATE)
-  return(lt_dlgetsearchpath());
-#else
-  return(lt_slsearchpath);
-#endif
-}
-
 static UINT ChangeErrorMode(void)
 {
   typedef UINT
@@ -1821,13 +1722,6 @@ static inline void *NTLoadLibrary(const char *filename)
 
 MagickPrivate void *NTOpenLibrary(const char *filename)
 {
-  char
-    path[MagickPathExtent];
-
-  const char
-    *p,
-    *q;
-
   UINT
     mode;
 
@@ -1836,9 +1730,17 @@ MagickPrivate void *NTOpenLibrary(const char *filename)
 
   mode=ChangeErrorMode();
   handle=NTLoadLibrary(filename);
+#if defined(MAGICKCORE_LTDL_DELEGATE)
   if (handle == (void *) NULL)
     {
-      p=GetSearchPath();
+      char
+        path[MagickPathExtent];
+
+      const char
+        *p,
+        *q;
+
+      p=lt_dlgetsearchpath();
       while (p != (const char*) NULL)
       {
         q=strchr(p,DirectoryListSeparator);
@@ -1854,6 +1756,7 @@ MagickPrivate void *NTOpenLibrary(const char *filename)
         p=q+1;
       }
     }
+#endif
   SetErrorMode(mode);
   return(handle);
 }
@@ -2090,43 +1993,6 @@ MagickPrivate unsigned char *NTResourceToBlob(const char *id)
   UnlockResource(global);
   FreeResource(global);
   return(blob);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   N T S e t S e a r c h P a t h                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTSetSearchPath() sets the current locations that the subsystem should
-%  look at to find dynamically loadable modules.
-%
-%  The format of the NTSetSearchPath method is:
-%
-%      int NTSetSearchPath(const char *path)
-%
-%  A description of each parameter follows:
-%
-%    o path: Specifies a pointer to string representing the search path
-%      for DLL's that can be dynamically loaded.
-%
-*/
-MagickPrivate int NTSetSearchPath(const char *path)
-{
-#if defined(MAGICKCORE_LTDL_DELEGATE)
-  lt_dlsetsearchpath(path);
-#else
-  if (lt_slsearchpath != (char *) NULL)
-    lt_slsearchpath=DestroyString(lt_slsearchpath);
-  if (path != (char *) NULL)
-    lt_slsearchpath=AcquireString(path);
-#endif
-  return(0);
 }
 
 /*
@@ -2625,7 +2491,8 @@ MagickPrivate void NTWindowsGenesis(void)
   }
 #endif
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2647,15 +2514,6 @@ MagickPrivate void NTWindowsGenesis(void)
 MagickPrivate void NTWindowsTerminus(void)
 {
   NTGhostscriptUnLoadDLL();
-  if (winsock_semaphore == (SemaphoreInfo *) NULL)
-    ActivateSemaphoreInfo(&winsock_semaphore);
-  LockSemaphoreInfo(winsock_semaphore);
-  if (wsaData != (WSADATA *) NULL)
-    {
-      WSACleanup();
-      wsaData=(WSADATA *) RelinquishMagickMemory((void *) wsaData);
-    }
-  UnlockSemaphoreInfo(winsock_semaphore);
-  RelinquishSemaphoreInfo(&winsock_semaphore);
+  DistributeCacheTerminus();
 }
 #endif

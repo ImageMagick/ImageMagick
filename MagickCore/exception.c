@@ -807,7 +807,7 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
 MagickExport void MagickFatalError(const ExceptionType error,const char *reason,
   const char *description)
 {
-  if (fatal_error_handler != (ErrorHandler) NULL)
+  if (fatal_error_handler != (FatalErrorHandler) NULL)
     (*fatal_error_handler)(error,reason,description);
   MagickCoreTerminus();
   exit(1);

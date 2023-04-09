@@ -298,7 +298,7 @@ static void ConvertRGBToxyY(const double red,const double green,
   *cap_Y=Y;
 }
 
-static void inline ConvertXYZToJzazbz(const double X,const double Y,
+static inline void ConvertXYZToJzazbz(const double X,const double Y,
   const double Z,const double white_luminance,double *Jz,double *az,double *bz)
 {
 #define Jzazbz_b  1.15  /* https://observablehq.com/@jrus/jzazbz */
@@ -342,7 +342,7 @@ static void inline ConvertXYZToJzazbz(const double X,const double Y,
   *Jz=((Jzazbz_d+1.0)*Iz)/(Jzazbz_d*Iz+1.0)-Jzazbz_d0;
 }
 
-static void inline ConvertJzazbzToXYZ(const double Jz,const double az,
+static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
   const double bz,const double white_luminance,double *X,double *Y,double *Z)
 {
   double

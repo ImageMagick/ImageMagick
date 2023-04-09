@@ -704,7 +704,7 @@ static MagickBooleanType TranslateExpression
 
 static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe);
 
-static MagickBooleanType inline ChanIsVirtual (PixelChannel pc)
+static inline MagickBooleanType ChanIsVirtual (PixelChannel pc)
 {
   if (pc==HUE_CHANNEL || pc==SAT_CHANNEL || pc==LIGHT_CHANNEL || pc==INTENSITY_CHANNEL)
     return MagickTrue;
@@ -885,10 +885,10 @@ static void DumpTables (FILE * fh)
   for (i=0; i <= rNull; i++) {
     const char * str = "";
     if (                     i < oNull) str = Operators[i].str;
-    if (i >= FirstFunc    && i < fNull) str = Functions[i-FirstFunc].str;
-    if (i >= FirstImgAttr && i < aNull) str = ImgAttrs[i-FirstImgAttr].str;
-    if (i >= FirstSym     && i < sNull) str = Symbols[i-FirstSym].str;
-    if (i >= FirstCont    && i < rNull) str = Controls[i-FirstCont].str;
+    if (i >= (int) FirstFunc    && i < fNull) str = Functions[i-FirstFunc].str;
+    if (i >= (int) FirstImgAttr && i < aNull) str = ImgAttrs[i-FirstImgAttr].str;
+    if (i >= (int) FirstSym     && i < sNull) str = Symbols[i-FirstSym].str;
+    if (i >= (int) FirstCont    && i < rNull) str = Controls[i-FirstCont].str;
     if      (i==0    ) fprintf (stderr, "Operators:\n ");
     else if (i==oNull) fprintf (stderr, "\nFunctions:\n ");
     else if (i==fNull) fprintf (stderr, "\nImage attributes:\n ");
@@ -1012,7 +1012,7 @@ static MagickBooleanType ExtendRPN (FxInfo * pfx)
   return MagickTrue;
 }
 
-static MagickBooleanType inline OprInPlace (int op)
+static inline MagickBooleanType OprInPlace (int op)
 {
   return (op >= oAddEq && op <= oSubSub ? MagickTrue : MagickFalse);
 }
@@ -1254,18 +1254,18 @@ static MagickBooleanType AddColourElement (FxInfo * pfx, fxFltType val0, fxFltTy
   return MagickTrue;
 }
 
-static void inline SkipSpaces (FxInfo * pfx)
+static inline void SkipSpaces (FxInfo * pfx)
 {
   while (isspace ((int)*pfx->pex)) pfx->pex++;
 }
 
-static char inline PeekChar (FxInfo * pfx)
+static inline char PeekChar (FxInfo * pfx)
 {
   SkipSpaces (pfx);
   return *pfx->pex;
 }
 
-static MagickBooleanType inline PeekStr (FxInfo * pfx, const char * str)
+static inline MagickBooleanType PeekStr (FxInfo * pfx, const char * str)
 {
   SkipSpaces (pfx);
   
@@ -1365,7 +1365,7 @@ static OperatorE GetLeadingOp (FxInfo * pfx)
   return op;
 }
 
-static MagickBooleanType inline OprIsUnaryPrefix (OperatorE op)
+static inline MagickBooleanType OprIsUnaryPrefix (OperatorE op)
 {
   return (op == oUnaryMinus || op == oUnaryPlus || op == oBitNot || op == oLogNot ? MagickTrue : MagickFalse);
 }
@@ -1410,7 +1410,7 @@ static PixelChannel GetChannelQualifier (FxInfo * pfx, int op)
 {
   if (op == fU || op == fV || op == fP || 
       op == fUP || op == fVP ||
-      op == fS || (op >= FirstImgAttr && op <= aNull)
+      op == fS || (op >= (int) FirstImgAttr && op <= aNull)
      )
   {
     const ChannelT * pch = &Channels[0];
@@ -1419,7 +1419,7 @@ static PixelChannel GetChannelQualifier (FxInfo * pfx, int op)
     while (*pch->str) {
       if (LocaleCompare (pch->str, pfx->token)==0) {
 
-        if (op >= FirstImgAttr && op <= (OperatorE)aNull &&
+        if (op >= (int) FirstImgAttr && op <= (int) ((OperatorE)aNull) &&
               ChanIsVirtual (pch->pixChan)
            )
         {
@@ -1557,7 +1557,7 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
   return 0;
 }
 
-static ssize_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *v1, fxFltType *v2)
+static inline ssize_t GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType *v1, fxFltType *v2)
 /* Finds named colour such as "blue" and colorspace function such as "lab(10,20,30)".
    Returns number of characters to swallow.
    Return -1 means apparently a constant colour, but with an error.
@@ -1650,7 +1650,7 @@ static ssize_t inline GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType 
   return (ssize_t)strlen (pfx->token);
 }
 
-static ssize_t inline GetHexColour (FxInfo * pfx, fxFltType *v0, fxFltType *v1, fxFltType *v2)
+static inline ssize_t GetHexColour (FxInfo * pfx, fxFltType *v0, fxFltType *v1, fxFltType *v2)
 /* Returns number of characters to swallow.
    Negative return means it starts with '#', but invalid hex number.
 */
@@ -2358,12 +2358,12 @@ static MagickBooleanType GetOperand (
   return MagickFalse;
 }
 
-static MagickBooleanType inline IsRealOperator (OperatorE op)
+static inline MagickBooleanType IsRealOperator (OperatorE op)
 {
   return (op < oOpenParen || op > oCloseBrace) ? MagickTrue : MagickFalse;
 }
 
-static MagickBooleanType inline ProcessTernaryOpr (FxInfo * pfx, TernaryT * ptern)
+static inline MagickBooleanType ProcessTernaryOpr (FxInfo * pfx, TernaryT * ptern)
 /* Ternary operator "... ? ... : ..."
    returns false iff we have exception
 */
@@ -2849,7 +2849,7 @@ static MagickBooleanType CollectStatistics (FxInfo * pfx)
   return MagickTrue;
 }
 
-static MagickBooleanType inline PushVal (FxInfo * pfx, fxRtT * pfxrt, fxFltType val, int addr)
+static inline MagickBooleanType PushVal (FxInfo * pfx, fxRtT * pfxrt, fxFltType val, int addr)
 {
   if (pfxrt->usedValStack >=pfxrt->numValStack) {
     (void) ThrowMagickException (
@@ -3007,7 +3007,7 @@ static inline fxFltType ImageStat (
   return ret;
 }
 
-static fxFltType inline FxGcd (fxFltType x, fxFltType y, const size_t depth)
+static inline fxFltType FxGcd (fxFltType x, fxFltType y, const size_t depth)
 {
 #define FxMaxFunctionDepth  200
 
@@ -3018,7 +3018,7 @@ static fxFltType inline FxGcd (fxFltType x, fxFltType y, const size_t depth)
   return (FxGcd (y, x-y*floor((double) (x/y)), depth+1));
 }
 
-static ssize_t inline ChkImgNum (FxInfo * pfx, fxFltType f)
+static inline ssize_t ChkImgNum (FxInfo * pfx, fxFltType f)
 /* Returns -1 if f is too large. */
 {
   ssize_t i = (ssize_t) floor ((double) f + 0.5);
@@ -3103,7 +3103,7 @@ static fxFltType GetHslInt (FxInfo * pfx, ssize_t ImgNum, const ssize_t imgx, co
   return 0.0;
 }
 
-static fxFltType inline GetIntensity (FxInfo * pfx, ssize_t ImgNum, const fxFltType fx, const fxFltType fy)
+static inline fxFltType GetIntensity (FxInfo * pfx, ssize_t ImgNum, const fxFltType fx, const fxFltType fy)
 {
   Quantum
     quantum_pixel[MaxPixelChannels];

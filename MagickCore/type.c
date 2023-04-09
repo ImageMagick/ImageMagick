@@ -250,7 +250,7 @@ static SplayTreeInfo *AcquireTypeCache(const char *filename,
   if (GetNumberOfNodesInSplayTree(cache) == 0)
     status&=LoadTypeCache(cache,TypeMap,"built-in",0,exception);
   if (status == MagickFalse)
-    ;
+    { };
   return(cache);
 }
 

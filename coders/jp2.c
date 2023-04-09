@@ -72,6 +72,9 @@
 #include "MagickCore/module.h"
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
 #include <openjpeg.h>
+
+#define OPJ_COMPUTE_NUMERIC_VERSION(major,minor,patch) ((major<<24) | (minor<<16) | (patch<<8) | 0)
+#define OPJ_NUMERIC_VERSION OPJ_COMPUTE_NUMERIC_VERSION(OPJ_VERSION_MAJOR,OPJ_VERSION_MINOR,OPJ_VERSION_BUILD)
 #endif
 
 /*
@@ -762,9 +765,15 @@ static void CinemaProfileCompliance(const opj_image_t *jp2_image,
       /*
         Digital Cinema 2K.
       */
+#if OPJ_NUMERIC_VERSION >= OPJ_COMPUTE_NUMERIC_VERSION(2,1,0)
+      parameters->rsiz=OPJ_PROFILE_CINEMA_2K;
+      parameters->max_cs_size=OPJ_CINEMA_24_CS;
+      parameters->max_comp_size=OPJ_CINEMA_24_COMP;
+#else
       parameters->cp_cinema=OPJ_CINEMA2K_24;
       parameters->cp_rsiz=OPJ_CINEMA2K;
       parameters->max_comp_size=1041666;
+#endif
       if (parameters->numresolution > 6)
         parameters->numresolution=6;
 
@@ -774,9 +783,15 @@ static void CinemaProfileCompliance(const opj_image_t *jp2_image,
       /*
         Digital Cinema 4K.
       */
+#if OPJ_NUMERIC_VERSION >= OPJ_COMPUTE_NUMERIC_VERSION(2,1,0)
+      parameters->rsiz=OPJ_PROFILE_CINEMA_4K;
+      parameters->max_cs_size=OPJ_CINEMA_24_CS;
+      parameters->max_comp_size=OPJ_CINEMA_24_COMP;
+#else
       parameters->cp_cinema=OPJ_CINEMA4K_24;
       parameters->cp_rsiz=OPJ_CINEMA4K;
       parameters->max_comp_size=1041666;
+#endif
       if (parameters->numresolution < 1)
         parameters->numresolution=1;
       if (parameters->numresolution > 7)
@@ -801,7 +816,7 @@ static void CinemaProfileCompliance(const opj_image_t *jp2_image,
   parameters->tcp_rates[0]=((float) (jp2_image->numcomps*jp2_image->comps[0].w*
     jp2_image->comps[0].h*jp2_image->comps[0].prec))/(parameters->max_comp_size*
     8*jp2_image->comps[0].dx*jp2_image->comps[0].dy);
-  parameters->cp_disto_alloc=1;
+  parameters->cp_disto_alloc=OPJ_TRUE;
 }
 
 static inline int CalculateNumResolutions(size_t width,size_t height)
@@ -885,12 +900,12 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       image->rows);
   parameters->tcp_numlayers=1;
   parameters->tcp_rates[0]=0;  /* lossless */
-  parameters->cp_disto_alloc=1;
+  parameters->cp_disto_alloc=OPJ_TRUE;
   if ((image_info->quality != 0) && (image_info->quality != 100))
     {
       parameters->tcp_distoratio[0]=(double) image_info->quality;
       parameters->cp_fixed_quality=OPJ_TRUE;
-      parameters->cp_disto_alloc=0;
+      parameters->cp_disto_alloc=OPJ_FALSE;
     }
   if (image_info->extract != (char *) NULL)
     {
@@ -939,7 +954,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       }
       parameters->tcp_numlayers=i+1;
       parameters->cp_fixed_quality=OPJ_TRUE;
-      parameters->cp_disto_alloc=0;
+      parameters->cp_disto_alloc=OPJ_FALSE;
     }
   option=GetImageOption(image_info,"jp2:progression-order");
   if (option != (const char *) NULL)

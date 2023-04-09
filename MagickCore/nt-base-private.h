@@ -108,10 +108,7 @@ extern MagickPrivate int
 #endif
   NTCloseDirectory(DIR *),
   NTCloseLibrary(void *),
-  NTExitLibrary(void),
   NTTruncateFile(int,off_t),
-  NTInitializeLibrary(void),
-  NTSetSearchPath(const char *),
   NTUnmapMemory(void *,size_t),
   NTSystemCommand(const char *,char *);
 
@@ -138,7 +135,6 @@ extern MagickPrivate unsigned char
 extern MagickPrivate void
   *NTGetLibrarySymbol(void *,const char *),
   NTGhostscriptEXE(char *,int),
-  NTInitializeWinsock(MagickBooleanType),
   *NTMapMemory(char *,size_t,int,int,int,MagickOffsetType),
   *NTOpenLibrary(const char *),
   NTWindowsGenesis(void),

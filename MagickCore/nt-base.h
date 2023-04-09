@@ -156,17 +156,8 @@ extern "C" {
 #if !defined(lt_dlerror)
 #  define lt_dlerror()  NTGetLibraryError()
 #endif
-#if !defined(lt_dlexit)
-#  define lt_dlexit()  NTExitLibrary()
-#endif
-#if !defined(lt_dlinit)
-#  define lt_dlinit()  NTInitializeLibrary()
-#endif
 #if !defined(lt_dlopen)
 #  define lt_dlopen(filename)  NTOpenLibrary(filename)
-#endif
-#if !defined(lt_dlsetsearchpath)
-#  define lt_dlsetsearchpath(path)  NTSetSearchPath(path)
 #endif
 #if !defined(lt_dlsym)
 #  define lt_dlsym(handle,name)  NTGetLibrarySymbol(handle,name)

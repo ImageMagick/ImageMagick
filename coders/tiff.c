@@ -1906,15 +1906,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         */
         strip_size=TIFFStripSize(tiff);
         stride=(ssize_t) TIFFVStripSize(tiff,1);
-        extent=(size_t) ((samples_per_pixel+extra_samples)*strip_size);
         length=GetQuantumExtent(image,quantum_info,quantum_type);
-        if (length > stride)
-          extent+=length;
+        extent=(size_t) MagickMax((size_t) strip_size,rows_per_strip*
+          MagickMax((size_t) stride,length));
         strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
-          sizeof(uint32));
+          sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        (void) memset(strip_pixels,0,extent*sizeof(uint32));
+        (void) memset(strip_pixels,0,extent*sizeof(*strip_pixels));
         strip_id=0;
         p=strip_pixels;
         for (i=0; i < (ssize_t) samples_per_pixel; i++)

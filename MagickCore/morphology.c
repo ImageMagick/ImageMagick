@@ -3221,7 +3221,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   for (j=0; j < (ssize_t) GetOpenMPMaximumThreads(); j++)
     changed+=changes[j];
   changes=(size_t *) RelinquishMagickMemory(changes);
-  return(status ? (ssize_t) changed/GetImageChannels(image) : -1);
+  return(status ? (ssize_t) (changed/GetImageChannels(image)) : -1);
 }
 
 /*
@@ -3617,7 +3617,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   }
   morphology_view=DestroyCacheView(morphology_view);
   image_view=DestroyCacheView(image_view);
-  return(status ? (ssize_t) changed/GetImageChannels(image) : -1);
+  return(status ? (ssize_t) (changed/GetImageChannels(image)) : -1);
 }
 
 /*

@@ -667,7 +667,7 @@ static MagickBooleanType ClonePixelCacheRepository(
   num_threads((multithreaded) == 0 ? 1 : \
     (((source)->type != MemoryCache) && ((source)->type != MapCache)) || \
     (((destination)->type != MemoryCache) && ((destination)->type != MapCache)) ? \
-    MagickMax(MagickMin(GetMagickResourceLimit(ThreadResource),2),1) : \
+    MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),2),1) : \
     MagickMax(MagickMin((ssize_t) GetMagickResourceLimit(ThreadResource),(ssize_t) (chunk)/256),1))
 
   MagickBooleanType
