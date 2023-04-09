@@ -1251,8 +1251,7 @@ static const char *GetPDFTitle(const ImageInfo *image_info,
   return(default_title);
 }
 
-static const time_t GetPdfCreationDate(const ImageInfo *image_info,
-  const Image* image)
+static time_t GetPdfCreationDate(const ImageInfo *image_info,const Image* image)
 {
   const char
     *option;
@@ -1270,8 +1269,7 @@ static const time_t GetPdfCreationDate(const ImageInfo *image_info,
   return(GetBlobProperties(image)->st_ctime);
 }
 
-static const time_t GetPdfModDate(const ImageInfo *image_info,
-  const Image* image)
+static time_t GetPdfModDate(const ImageInfo *image_info,const Image* image)
 {
   const char
     *option;

@@ -50,7 +50,8 @@ typedef enum
   EIlluminant = 7,
   F2Illuminant = 8,
   F7Illuminant = 9,
-  F11Illuminant = 10
+  F11Illuminant = 10,
+  InvalidIlluminantType = -1
 } IlluminantType;
 
 typedef struct _ColorInfo

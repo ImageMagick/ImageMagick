@@ -1907,8 +1907,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         strip_size=TIFFStripSize(tiff);
         stride=(ssize_t) TIFFVStripSize(tiff,1);
         length=GetQuantumExtent(image,quantum_info,quantum_type);
-        extent=MagickMax((size_t) strip_size,rows_per_strip*
-          (size_t) MagickMax(stride,length));
+        extent=(size_t) MagickMax((size_t) strip_size,rows_per_strip*
+          MagickMax((size_t) stride,length));
         strip_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*strip_pixels));
         if (strip_pixels == (unsigned char *) NULL)

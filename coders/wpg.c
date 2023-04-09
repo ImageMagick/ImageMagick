@@ -1756,7 +1756,7 @@ static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
               rle_info->count++;
               WPGFlushRLE(rle_info,image,(unsigned char) (rle_info->offset-
                 rle_info->count-1));
-              (void) WriteBlobByte(image,(const unsigned char)
+              (void) WriteBlobByte(image,(unsigned char)
                 rle_info->count | 0x80);
               (void) WriteBlobByte(image,rle_info->pixels[0]);
               rle_info->offset=1;
@@ -1924,9 +1924,9 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
   offset=TellBlob(image);
   (void) WriteBlobLSBShort(image,0x8000);
   (void) WriteBlobLSBShort(image,0);
-  (void) WriteBlobLSBShort(image,(const unsigned short) image->columns);
-  (void) WriteBlobLSBShort(image,(const unsigned short) image->rows);
-  (void) WriteBlobLSBShort(image,(const unsigned char) image->depth);
+  (void) WriteBlobLSBShort(image,(unsigned short) image->columns);
+  (void) WriteBlobLSBShort(image,(unsigned short) image->rows);
+  (void) WriteBlobLSBShort(image,(unsigned char) image->depth);
   (void) WriteBlobLSBShort(image,75);  /* resolution */
   (void) WriteBlobLSBShort(image,75);
   /*

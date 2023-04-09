@@ -2789,7 +2789,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
                    png_get_valid(ping,ping_info,PNG_INFO_bKGD))
                     {
                       png_color_16
-                         background = { 0 };
+                         background = { 0, 0, 0, 0, 0 };
 
                       if (png_get_valid(ping, ping_info, PNG_INFO_bKGD))
                         background.index=ping_background->index;

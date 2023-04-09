@@ -1369,7 +1369,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 %
 */
 
-static void inline Contrast(const int sign,double *red,double *green,
+static inline void Contrast(const int sign,double *red,double *green,
   double *blue)
 {
   double
@@ -2775,7 +2775,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
         offset = 0.0;
 
       HaldInfo
-        point = { 0 };
+        point = { 0, 0, 0 };
 
       PixelInfo
         pixel = zero,

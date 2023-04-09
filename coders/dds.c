@@ -2033,7 +2033,7 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
   const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   BC5Colors
-    colors = { { 0 } };
+    colors = { { 0 }, { 0 } };
 
   Quantum
     *q;
@@ -2148,7 +2148,7 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
   const DDSInfo *magick_unused(dds_info),ExceptionInfo *exception)
 {
   BC7Colors
-    colors = {{ 0 }};
+    colors = { { 0 }, { 0 }, { 0 }, { 0 } };
 
   Quantum
     *q;
@@ -3896,7 +3896,7 @@ static void WriteFourCC(Image *image, const size_t compression,
 
       DDSVector4
         point,
-        points[16] = {{ 0 }};
+        points[16] = { 0, 0, 0, 0 };
 
       size_t
         count = 0,
