@@ -2879,6 +2879,9 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
     {
       (void) CopyMagickString(magic,image_info->magick,MagickPathExtent);
       magick_info=GetMagickInfo(magic,sans_exception);
+      if ((magick_info != (const MagickInfo *) NULL) &&
+          (magick_info->format_type == ExplicitFormatType))
+        image_info->affirm=MagickTrue;
       if (frames == 0)
         GetPathComponent(image_info->filename,CanonicalPath,component);
       else
