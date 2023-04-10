@@ -48,8 +48,10 @@ int main( int /*argc*/, char ** argv)
     // Button text color
     string textColor = "red";
 
+#if MAGICKCORE_FREETYPE_DELEGATE
     // Font point size
     int fontPointSize = 16;
+#endif
 
     //
     // Magick++ operations
