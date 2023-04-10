@@ -1235,9 +1235,6 @@ static void GetEXIFProperty(const Image *image,
   EndianType
     endian;
 
-  MagickBooleanType
-    status;
-
   ssize_t
     i;
 
@@ -1395,7 +1392,6 @@ static void GetEXIFProperty(const Image *image,
   /*
     Set the pointer to the first IFD and follow it were it leads.
   */
-  status=MagickFalse;
   directory=exif+offset;
   level=0;
   entry=0;
@@ -1631,7 +1627,6 @@ static void GetEXIFProperty(const Image *image,
                 (void) SetImageProperty((Image *) image,key,value,exception);
               value=DestroyString(value);
               key=DestroyString(key);
-              status=MagickTrue;
             }
         }
         if ((tag_value == TAG_EXIF_OFFSET) ||
