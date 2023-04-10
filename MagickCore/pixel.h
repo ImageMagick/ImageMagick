@@ -94,8 +94,7 @@ typedef enum
   MetaPixelChannels = 10,
   IntensityPixelChannel = MaxPixelChannels,  /* ???? */
   CompositePixelChannel = MaxPixelChannels,  /* ???? */
-  SyncPixelChannel = MaxPixelChannels+1,     /* not a real channel */
-  InvalidChannel = -1
+  SyncPixelChannel = MaxPixelChannels+1      /* not a real channel */
 } PixelChannel;  /* must correspond to ChannelType */
 
 typedef enum

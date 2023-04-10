@@ -108,7 +108,7 @@ static inline PixelTrait GetPixelCbTraits(const Image *magick_restrict image)
 static inline Quantum GetPixelChannel(const Image *magick_restrict image,
   const PixelChannel channel,const Quantum *magick_restrict pixel)
 {
-  if (((ssize_t) channel < 0) || ((ssize_t) channel >= MaxPixelChannels))
+  if ((size_t) channel >= MaxPixelChannels)
     return((Quantum) 0);
   if (image->channel_map[channel].traits == UndefinedPixelTrait)
     return((Quantum) 0);
@@ -132,7 +132,7 @@ static inline ssize_t GetPixelChannelOffset(const Image *magick_restrict image,
 static inline PixelTrait GetPixelChannelTraits(
   const Image *magick_restrict image,const PixelChannel channel)
 {
-  if (((ssize_t) channel < 0) || ((ssize_t) channel >= MaxPixelChannels))
+  if ((size_t) channel >= MaxPixelChannels)
     return(UndefinedPixelTrait);
   return(image->channel_map[channel].traits);
 }
@@ -463,7 +463,7 @@ static inline void GetPixelInfoPixel(const Image *magick_restrict image,
 static inline PixelTrait GetPixelTraits(const Image *magick_restrict image,
   const PixelChannel channel)
 {
-  if (((ssize_t) channel < 0) || ((ssize_t) channel >= MaxPixelChannels))
+  if ((size_t) channel >= MaxPixelChannels)
     return(UndefinedPixelTrait);
   return(image->channel_map[channel].traits);
 }
@@ -751,7 +751,7 @@ static inline void SetPixelChannel(const Image *magick_restrict image,
   const PixelChannel channel,const Quantum quantum,
   Quantum *magick_restrict pixel)
 {
-  if (((ssize_t) channel < 0) || ((ssize_t) channel >= MaxPixelChannels))
+  if ((size_t) channel >= MaxPixelChannels)
     return;
   if (image->channel_map[channel].traits != UndefinedPixelTrait)
     pixel[image->channel_map[channel].offset]=quantum;
@@ -761,9 +761,9 @@ static inline void SetPixelChannelAttributes(
   const Image *magick_restrict image,const PixelChannel channel,
   const PixelTrait traits,const ssize_t offset)
 {
-  if (((ssize_t) offset < 0) || ((ssize_t) offset >= MaxPixelChannels))
+  if ((offset < 0) || (offset >= MaxPixelChannels))
     return;
-  if (((ssize_t) channel < 0) || ((ssize_t) channel >= MaxPixelChannels))
+  if ((size_t) channel >= MaxPixelChannels)
     return;
   image->channel_map[offset].channel=channel;
   image->channel_map[channel].offset=offset;
@@ -773,9 +773,9 @@ static inline void SetPixelChannelAttributes(
 static inline void SetPixelChannelChannel(const Image *magick_restrict image,
   const PixelChannel channel,const ssize_t offset)
 {
-  if (((ssize_t) offset < 0) || ((ssize_t) offset >= MaxPixelChannels))
+  if ((offset < 0) || (offset >= MaxPixelChannels))
     return;
-  if (((ssize_t) channel < 0) || ((ssize_t) channel >= MaxPixelChannels))
+  if ((size_t) channel >= MaxPixelChannels)
     return;
   image->channel_map[offset].channel=channel;
   image->channel_map[channel].offset=offset;
@@ -789,7 +789,7 @@ static inline void SetPixelChannels(Image *image,const size_t number_channels)
 static inline void SetPixelChannelTraits(Image *image,
   const PixelChannel channel,const PixelTrait traits)
 {
-  if (((ssize_t) channel < 0) || ((ssize_t) channel >= MaxPixelChannels))
+  if ((size_t) channel >= MaxPixelChannels)
     return;
   image->channel_map[channel].traits=traits;
 }
