@@ -1698,8 +1698,6 @@ static MagickBooleanType GetICCProperty(const Image *image,
   /*
     Return ICC profile property.
   */
-  magick_unreferenced(property);
-  magick_unreferenced(exception);
   profile=GetImageProfile(image,"icc");
   if (profile == (StringInfo *) NULL)
     profile=GetImageProfile(image,"icm");
@@ -1780,6 +1778,9 @@ static MagickBooleanType GetICCProperty(const Image *image,
         (void) cmsCloseProfile(icc_profile);
       }
   }
+#else
+  magick_unreferenced(property);
+  magick_unreferenced(exception);
 #endif
   return(MagickTrue);
 }
