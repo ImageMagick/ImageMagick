@@ -1,4 +1,5 @@
 {
+  "name": "Sefault",
   "build": {
     "dockerfile": "Dockerfile"
   },
