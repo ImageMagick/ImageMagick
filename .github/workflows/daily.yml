@@ -33,7 +33,7 @@ jobs:
         path: artifacts
 
   build_linux:
-    name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})'
+    name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}}) (${{ matrix.compiler }})'
     container:
       image: ubuntu:18.04
     runs-on: ubuntu-latest
