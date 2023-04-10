@@ -390,7 +390,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
       (void) UnmapBlob(matrix_info->elements,(size_t) matrix_info->length);
       matrix_info->elements=NULL;
       RelinquishMagickResource(MapResource,matrix_info->length);
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     case DiskCache:
     {

@@ -3225,7 +3225,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
         case WritePixelMask:
         {
           image->channels=(ChannelType) (image->channels & ~WriteMaskChannel);
-          magick_attribute((fallthrough));
+          magick_fallthrough;
         }
         default:
         {

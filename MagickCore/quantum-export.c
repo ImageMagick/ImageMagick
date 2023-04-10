@@ -325,7 +325,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -619,7 +619,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -860,7 +860,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -1103,7 +1103,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -1221,7 +1221,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -1325,7 +1325,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -1577,7 +1577,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -1745,7 +1745,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -1913,7 +1913,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -2181,7 +2181,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -2384,7 +2384,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -2490,7 +2490,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -2660,7 +2660,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -2851,7 +2851,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -2978,7 +2978,7 @@ static void ExportMultispectralQuantum(const Image *image,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -3085,7 +3085,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -3189,7 +3189,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -3486,7 +3486,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -3727,7 +3727,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {
@@ -3976,7 +3976,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     }
     default:
     {

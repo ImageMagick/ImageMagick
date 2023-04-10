@@ -467,7 +467,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
           case 'j':
             if (*(pf+1)=='\0')
               ThrowReaderException(DelegateFatalError,"EscapeJproblem");
-            magick_attribute((fallthrough));
+            magick_fallthrough;
           default:
             if ((i+=2) >= MaxTextExtent)
               ThrowReaderException(DelegateFatalError,"ppf bust");

@@ -3725,7 +3725,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       break;
     case HitAndMissMorphology:
       rslt_compose = LightenCompositeOp;  /* Union of multi-kernel results */
-      magick_attribute((fallthrough));
+      magick_fallthrough;
     case ThinningMorphology:
     case ThickenMorphology:
       method_limit = kernel_limit;  /* iterate the whole method */
