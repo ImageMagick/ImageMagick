@@ -1,5 +1,5 @@
 {
-  "name": "Sefault",
+  "name": "Security",
   "build": {
     "dockerfile": "Dockerfile"
   },
