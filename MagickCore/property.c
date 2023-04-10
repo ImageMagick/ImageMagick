@@ -420,7 +420,7 @@ static char
   *TraceSVGClippath(const unsigned char *,size_t,const size_t,
     const size_t);
 
-static MagickBooleanType GetIPTCProperty(const Image *image,const char *key,
+static void GetIPTCProperty(const Image *image,const char *key,
   ExceptionInfo *exception)
 {
   char
@@ -445,10 +445,10 @@ static MagickBooleanType GetIPTCProperty(const Image *image,const char *key,
   if (profile == (StringInfo *) NULL)
     profile=GetImageProfile(image,"8bim");
   if (profile == (StringInfo *) NULL)
-    return(MagickFalse);
+    return;
   count=sscanf(key,"IPTC:%ld:%ld",&dataset,&record);
   if (count != 2)
-    return(MagickFalse);
+    return;
   attribute=(char *) NULL;
   for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=(ssize_t) length)
   {
@@ -478,13 +478,12 @@ static MagickBooleanType GetIPTCProperty(const Image *image,const char *key,
     {
       if (attribute != (char *) NULL)
         attribute=DestroyString(attribute);
-      return(MagickFalse);
+      return;
     }
   attribute[strlen(attribute)-1]='\0';
   (void) SetImageProperty((Image *) image,key,(const char *) attribute,
     exception);
   attribute=DestroyString(attribute);
-  return(MagickTrue);
 }
 
 static inline int ReadPropertyByte(const unsigned char **p,size_t *length)
@@ -577,7 +576,7 @@ static inline signed short ReadPropertyMSBShort(const unsigned char **p,
   return(quantum.signed_value);
 }
 
-static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
+static void Get8BIMProperty(const Image *image,const char *key,
   ExceptionInfo *exception)
 {
   char
@@ -615,11 +614,11 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
   */
   profile=GetImageProfile(image,"8bim");
   if (profile == (StringInfo *) NULL)
-    return(MagickFalse);
+    return;
   count=(ssize_t) sscanf(key,"8BIM:%ld,%ld:%1024[^\n]\n%1024[^\n]",&start,&stop,
     name,format);
   if ((count != 2) && (count != 3) && (count != 4))
-    return(MagickFalse);
+    return;
   if (count < 4)
     (void) CopyMagickString(format,"SVG",MagickPathExtent);
   if (count < 3)
@@ -727,7 +726,6 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key,
   }
   if (resource != (char *) NULL)
     resource=DestroyString(resource);
-  return(status);
 }
 
 static inline signed int ReadPropertySignedLong(const EndianType endian,
@@ -828,7 +826,7 @@ static inline unsigned short ReadPropertyUnsignedShort(const EndianType endian,
   return(value & 0xffff);
 }
 
-static MagickBooleanType GetEXIFProperty(const Image *image,
+static void GetEXIFProperty(const Image *image,
   const char *property,ExceptionInfo *exception)
 {
 #define MaxDirectoryStack  16
@@ -1268,13 +1266,13 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   */
   profile=GetImageProfile(image,"exif");
   if (profile == (const StringInfo *) NULL)
-    return(MagickFalse);
+    return;
   if ((property == (const char *) NULL) || (*property == '\0'))
-    return(MagickFalse);
+    return;
   while (isspace((int) ((unsigned char) *property)) != 0)
     property++;
   if (strlen(property) <= 5)
-    return(MagickFalse);
+    return;
   all=0;
   tag=(~0UL);
   switch (*(property+5))
@@ -1310,7 +1308,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       property+=6;
       n=strlen(property);
       if (n != 4)
-        return(MagickFalse);
+        return;
       /*
         Parse tag specification as a hex number.
       */
@@ -1330,7 +1328,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
               if ((c >= 'a') && (c <= 'f'))
                 tag|=(c-('a'-10));
               else
-                return(MagickFalse);
+                return;
         }
       } while (*property != '\0');
       break;
@@ -1354,10 +1352,10 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     }
   }
   if (tag == (~0UL))
-    return(MagickFalse);
+    return;
   length=GetStringInfoLength(profile);
   if (length < 6)
-    return(MagickFalse);
+    return;
   exif=GetStringInfoDatum(profile);
   while (length != 0)
   {
@@ -1376,7 +1374,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     break;
   }
   if (length < 16)
-    return(MagickFalse);
+    return;
   id=(ssize_t) ReadPropertySignedShort(LSBEndian,exif);
   endian=LSBEndian;
   if (id == 0x4949)
@@ -1385,15 +1383,15 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     if (id == 0x4D4D)
       endian=MSBEndian;
     else
-      return(MagickFalse);
+      return;
   if (ReadPropertyUnsignedShort(endian,exif+2) != 0x002a)
-    return(MagickFalse);
+    return;
   /*
     This the offset to the first IFD.
   */
   offset=(ssize_t) ReadPropertySignedLong(endian,exif+4);
   if ((offset < 0) || (size_t) offset >= length)
-    return(MagickFalse);
+    return;
   /*
     Set the pointer to the first IFD and follow it were it leads.
   */
@@ -1686,10 +1684,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     }
   } while (level > 0);
   exif_resources=DestroySplayTree(exif_resources);
-  return(status);
 }
 
-static MagickBooleanType GetICCProperty(const Image *image,
+static void GetICCProperty(const Image *image,
   ExceptionInfo *magick_unused(exception))
 {
   const StringInfo
@@ -1702,9 +1699,9 @@ static MagickBooleanType GetICCProperty(const Image *image,
   if (profile == (StringInfo *) NULL)
     profile=GetImageProfile(image,"icm");
   if (profile == (StringInfo *) NULL)
-    return(MagickFalse);
+    return;
   if (GetStringInfoLength(profile) < 128)
-    return(MagickFalse);  /* minimum ICC profile length */
+    return;  /* minimum ICC profile length */
 #if defined(MAGICKCORE_LCMS_DELEGATE)
   {
     cmsHPROFILE
@@ -1781,7 +1778,6 @@ static MagickBooleanType GetICCProperty(const Image *image,
 #else
   magick_unreferenced(exception);
 #endif
-  return(MagickTrue);
 }
 
 static MagickBooleanType SkipXMPValue(const char *value)
@@ -1797,7 +1793,7 @@ static MagickBooleanType SkipXMPValue(const char *value)
   return(MagickTrue);
 }
 
-static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
+static void GetXMPProperty(const Image *image,const char *property)
 {
   char
     *xmp_profile;
@@ -1811,9 +1807,6 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
   ExceptionInfo
     *exception;
 
-  MagickBooleanType
-    status;
-
   const char
     *p;
 
@@ -1826,14 +1819,14 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
 
   profile=GetImageProfile(image,"xmp");
   if (profile == (StringInfo *) NULL)
-    return(MagickFalse);
+    return;
   if (GetStringInfoLength(profile) < 17)
-    return(MagickFalse);
+    return;
   if ((property == (const char *) NULL) || (*property == '\0'))
-    return(MagickFalse);
+    return;
   xmp_profile=StringInfoToString(profile);
   if (xmp_profile == (char *) NULL)
-    return(MagickFalse);
+    return;
   for (p=xmp_profile; *p != '\0'; p++)
     if ((*p == '<') && (*(p+1) == 'x'))
       break;
@@ -1842,8 +1835,7 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
   xmp_profile=DestroyString(xmp_profile);
   exception=DestroyExceptionInfo(exception);
   if (xmp == (XMLTreeInfo *) NULL)
-    return(MagickFalse);
-  status=MagickFalse;
+    return;
   rdf=GetXMLTreeChild(xmp,"rdf:RDF");
   if (rdf != (XMLTreeInfo *) NULL)
     {
@@ -1887,7 +1879,6 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
       }
     }
   xmp=DestroyXMLTree(xmp);
-  return(status);
 }
 
 static char *TracePSClippath(const unsigned char *blob,size_t length)
@@ -2286,7 +2277,7 @@ MagickExport const char *GetImageProperty(const Image *image,
     {
       if (LocaleNCompare("8bim:",property,5) == 0)
         {
-          (void) Get8BIMProperty(image,property,exception);
+          Get8BIMProperty(image,property,exception);
           break;
         }
       break;
@@ -2296,7 +2287,7 @@ MagickExport const char *GetImageProperty(const Image *image,
     {
       if (LocaleNCompare("exif:",property,5) == 0)
         {
-          (void) GetEXIFProperty(image,property,exception);
+          GetEXIFProperty(image,property,exception);
           break;
         }
       break;
@@ -2307,12 +2298,12 @@ MagickExport const char *GetImageProperty(const Image *image,
       if ((LocaleNCompare("icc:",property,4) == 0) ||
           (LocaleNCompare("icm:",property,4) == 0))
         {
-          (void) GetICCProperty(image,exception);
+          GetICCProperty(image,exception);
           break;
         }
       if (LocaleNCompare("iptc:",property,5) == 0)
         {
-          (void) GetIPTCProperty(image,property,exception);
+          GetIPTCProperty(image,property,exception);
           break;
         }
       break;
@@ -2322,7 +2313,7 @@ MagickExport const char *GetImageProperty(const Image *image,
     {
       if (LocaleNCompare("xmp:",property,4) == 0)
         {
-          (void) GetXMPProperty(image,property);
+          GetXMPProperty(image,property);
           break;
         }
       break;
