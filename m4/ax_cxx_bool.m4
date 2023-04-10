@@ -33,9 +33,9 @@ AC_DEFUN([AX_CXX_BOOL],
    [dnl
      AC_LANG_PUSH([C++])
      AC_COMPILE_IFELSE([dnl
-       AC_LANG_PROGRAM([int f(int  x){return 1;}
-                        int f(char x){return 1;}
-                        int f(bool x){return 1;}],
+       AC_LANG_PROGRAM([int f(int  x){return x;}
+                        int f(char x){return x == '\1' ? 1 : 0;}
+                        int f(bool x){return x ? 1 : 0;}],
                        [bool b = true; return f(b);])],
        ax_cv_cxx_bool=yes, ax_cv_cxx_bool=no)
      AC_LANG_POP([C++])
