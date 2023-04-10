@@ -6,5 +6,5 @@ RUN apt-get update && \
 
 ENV CXX=clang++
 ENV CC=clang
-ENV CFLAGS='-Wall -Wextra -Werror -Wno-unused-function -Wno-builtin-declaration-mismatch'
-ENV CXXFLAGS='-Wall -Wextra -Werror -Wno-unused-function -Wno-builtin-declaration-mismatch'
+ENV CFLAGS='-Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration'
+ENV CXXFLAGS='-Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration'

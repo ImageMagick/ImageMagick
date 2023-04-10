@@ -23,8 +23,10 @@ jobs:
         include:
           - compiler: gcc
             cxx_compiler: g++
+            compiler_flags: -Wall -Wextra -Werror -Wno-builtin-declaration-mismatch
           - compiler: clang
             cxx_compiler: clang++
+            compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration
 
     steps:
     - uses: actions/checkout@v3
@@ -39,8 +41,8 @@ jobs:
       env:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.cxx_compiler }}
-        CFLAGS: -Wall -Wextra -Werror -Wno-unused-function -Wno-builtin-declaration-mismatch
-        CXXFLAGS: -Wall -Wextra -Werror -Wno-unused-function -Wno-builtin-declaration-mismatch
+        CFLAGS: ${{ matrix.compiler_flags }}
+        CXXFLAGS: ${{ matrix.compiler_flags }}
       run: |
         autoreconf -fiv
         ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
