@@ -644,6 +644,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
         {
           blob=(unsigned char *) FileToBlob(previous_image,~0UL,&length,
             exception);
+          magick_attribute((fallthrough));
         }
         default:
         {

@@ -462,7 +462,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     size_t
-      y_offset = (flip_y == MagickFalse) ? offset : image->rows-1-offset;
+      y_offset = (size_t) (flip_y == MagickFalse) ? (size_t) offset :
+        image->rows-1-offset;
 
     q=QueueAuthenticPixels(image,0,y_offset,image->columns,1,exception);
     if (q == (Quantum *) NULL)
