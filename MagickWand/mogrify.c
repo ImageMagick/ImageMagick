@@ -7331,6 +7331,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
+        break;
       }
       case 'p':
       {
