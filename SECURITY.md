@@ -1,6 +1,6 @@
 # Security Policy
 
-It is strongly recommended to establish a [security policy](https://imagemagick.org/script/security-policy.php) suitable for your local environment before utilizing ImageMagick.
+It is strongly recommended to establish a [security policy](https://imagemagick.org/script/security-policy.php) suitable for your local environment before utilizing ImageMagick. There is also a [development container](https://containers.dev/) available in the `.devcontainer/security` folder that can be used to verify that the security issue can be reproduced with the latest source code and the suggested security policy.
 
 ## Supported Versions
 
