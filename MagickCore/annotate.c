@@ -1137,11 +1137,11 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 
-static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
-  const char *text,const size_t length,const FT_Face face,const FT_Int32 flags,
-  GraphemeInfo **grapheme,ExceptionInfo *exception)
-{
 #if defined(MAGICKCORE_RAQM_DELEGATE)
+static size_t ComplexRaqmTextLayout(const Image *image,
+  const DrawInfo *draw_info,const char *text,const size_t length,
+  const FT_Face face,GraphemeInfo **grapheme,ExceptionInfo *exception)
+{
   const char
     *features;
 
@@ -1157,7 +1157,6 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
   size_t
     extent;
 
-  magick_unreferenced(flags);
   extent=0;
   rq=raqm_create();
   if (rq == (raqm_t *) NULL)
@@ -1224,6 +1223,10 @@ cleanup:
   raqm_destroy(rq);
   return(extent);
 #else
+static size_t ComplexTextLayout(const DrawInfo *draw_info,const char *text,
+  const size_t length,const FT_Face face,const FT_Int32 flags,
+  GraphemeInfo **grapheme)
+{
   const char
     *p;
 
@@ -1236,8 +1239,6 @@ cleanup:
   /*
     Simple layout for bi-directional text (right-to-left or left-to-right).
   */
-  magick_unreferenced(image);
-  magick_unreferenced(exception);
   *grapheme=(GraphemeInfo *) AcquireQuantumMemory(length+1,sizeof(**grapheme));
   if (*grapheme == (GraphemeInfo *) NULL)
     return(0);
@@ -1378,11 +1379,14 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
   return(0);
 }
 
+#if FREETYPE_MAJOR == 2 && FREETYPE_MINOR >= 10
 static inline const char *FreetypeErrorMessage(FT_Error ft_status)
 {
-#if FREETYPE_MAJOR == 2 && FREETYPE_MINOR >= 10
   return(FT_Error_String(ft_status));
 #else
+static inline const char *FreetypeErrorMessage(
+  FT_Error magick_unused(ft_status))
+{
   magick_unreferenced(ft_status);
   return((const char *) NULL);
 #endif
@@ -1824,8 +1828,12 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         p=(char *) utf8;
     }
   grapheme=(GraphemeInfo *) NULL;
-  length=ComplexTextLayout(image,draw_info,p,strlen(p),face,flags,&grapheme,
+#if defined(MAGICKCORE_RAQM_DELEGATE)
+  length=ComplexRaqmTextLayout(image,draw_info,p,strlen(p),face,&grapheme,
     exception);
+#else
+  length=ComplexTextLayout(draw_info,p,strlen(p),face,flags,&grapheme);
+#endif
   missing_glyph_id=FT_Get_Char_Index(face,' ');
   code=0;
   last_character=(ssize_t) length-1;
