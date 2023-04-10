@@ -13,7 +13,7 @@ jobs:
   build_linux:
     name: Build Linux
     container:
-      image: ubuntu:bionic
+      image: ubuntu:18.04
     runs-on: ubuntu-latest
 
     strategy:
