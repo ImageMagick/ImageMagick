@@ -1686,11 +1686,15 @@ static void GetEXIFProperty(const Image *image,
   exif_resources=DestroySplayTree(exif_resources);
 }
 
-static void GetICCProperty(const Image *image,
-  ExceptionInfo *magick_unused(exception))
+#if defined(MAGICKCORE_LCMS_DELEGATE)
+static void GetICCProperty(const Image *image,ExceptionInfo *exception)
 {
+
   const StringInfo
     *profile;
+
+  cmsHPROFILE
+    icc_profile;
 
   /*
     Return ICC profile property.
@@ -1702,83 +1706,75 @@ static void GetICCProperty(const Image *image,
     return;
   if (GetStringInfoLength(profile) < 128)
     return;  /* minimum ICC profile length */
-#if defined(MAGICKCORE_LCMS_DELEGATE)
-  {
-    cmsHPROFILE
-      icc_profile;
-
-    icc_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
-      (cmsUInt32Number) GetStringInfoLength(profile));
-    if (icc_profile != (cmsHPROFILE *) NULL)
-      {
+  icc_profile=cmsOpenProfileFromMem(GetStringInfoDatum(profile),
+    (cmsUInt32Number) GetStringInfoLength(profile));
+  if (icc_profile != (cmsHPROFILE *) NULL)
+    {
 #if defined(LCMS_VERSION) && (LCMS_VERSION < 2000)
-        const char
-          *name;
+      const char
+        *name;
 
-        name=cmsTakeProductName(icc_profile);
-        if (name != (const char *) NULL)
-          (void) SetImageProperty((Image *) image,"icc:name",name,exception);
+      name=cmsTakeProductName(icc_profile);
+      if (name != (const char *) NULL)
+        (void) SetImageProperty((Image *) image,"icc:name",name,exception);
 #else
-        StringInfo
-          *info;
+      StringInfo
+        *info;
 
-        unsigned int
-          extent;
+      unsigned int
+        extent;
 
-        info=AcquireStringInfo(0);
-        extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,"en","US",
-          NULL,0);
-        if (extent != 0)
-          {
-            SetStringInfoLength(info,extent+1);
-            extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,"en",
-              "US",(char *) GetStringInfoDatum(info),extent);
-            if (extent != 0)
-              (void) SetImageProperty((Image *) image,"icc:description",
-                (char *) GetStringInfoDatum(info),exception);
-         }
-        extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,"en","US",
-          NULL,0);
-        if (extent != 0)
-          {
-            SetStringInfoLength(info,extent+1);
-            extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,"en",
-              "US",(char *) GetStringInfoDatum(info),extent);
-            if (extent != 0)
-              (void) SetImageProperty((Image *) image,"icc:manufacturer",
-                (char *) GetStringInfoDatum(info),exception);
-          }
-        extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en","US",
-          NULL,0);
-        if (extent != 0)
-          {
-            SetStringInfoLength(info,extent+1);
-            extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en","US",
-              (char *) GetStringInfoDatum(info),extent);
-            if (extent != 0)
-              (void) SetImageProperty((Image *) image,"icc:model",
-                (char *) GetStringInfoDatum(info),exception);
-          }
-        extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,"en","US",
-          NULL,0);
-        if (extent != 0)
-          {
-            SetStringInfoLength(info,extent+1);
-            extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,"en",
-              "US",(char *) GetStringInfoDatum(info),extent);
-            if (extent != 0)
-              (void) SetImageProperty((Image *) image,"icc:copyright",
-                (char *) GetStringInfoDatum(info),exception);
-          }
-        info=DestroyStringInfo(info);
+      info=AcquireStringInfo(0);
+      extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,"en","US",
+        NULL,0);
+      if (extent != 0)
+        {
+          SetStringInfoLength(info,extent+1);
+          extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoDescription,"en",
+            "US",(char *) GetStringInfoDatum(info),extent);
+          if (extent != 0)
+            (void) SetImageProperty((Image *) image,"icc:description",
+              (char *) GetStringInfoDatum(info),exception);
+        }
+      extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,"en","US",
+        NULL,0);
+      if (extent != 0)
+        {
+          SetStringInfoLength(info,extent+1);
+          extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoManufacturer,"en",
+            "US",(char *) GetStringInfoDatum(info),extent);
+          if (extent != 0)
+            (void) SetImageProperty((Image *) image,"icc:manufacturer",
+              (char *) GetStringInfoDatum(info),exception);
+        }
+      extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en","US",
+        NULL,0);
+      if (extent != 0)
+        {
+          SetStringInfoLength(info,extent+1);
+          extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoModel,"en","US",
+            (char *) GetStringInfoDatum(info),extent);
+          if (extent != 0)
+            (void) SetImageProperty((Image *) image,"icc:model",
+              (char *) GetStringInfoDatum(info),exception);
+        }
+      extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,"en","US",
+        NULL,0);
+      if (extent != 0)
+        {
+          SetStringInfoLength(info,extent+1);
+          extent=cmsGetProfileInfoASCII(icc_profile,cmsInfoCopyright,"en",
+            "US",(char *) GetStringInfoDatum(info),extent);
+          if (extent != 0)
+            (void) SetImageProperty((Image *) image,"icc:copyright",
+              (char *) GetStringInfoDatum(info),exception);
+        }
+      info=DestroyStringInfo(info);
 #endif
-        (void) cmsCloseProfile(icc_profile);
-      }
-  }
-#else
-  magick_unreferenced(exception);
-#endif
+      (void) cmsCloseProfile(icc_profile);
+    }
 }
+#endif
 
 static MagickBooleanType SkipXMPValue(const char *value)
 {
@@ -2298,7 +2294,9 @@ MagickExport const char *GetImageProperty(const Image *image,
       if ((LocaleNCompare("icc:",property,4) == 0) ||
           (LocaleNCompare("icm:",property,4) == 0))
         {
+#if defined(MAGICKCORE_LCMS_DELEGATE)
           GetICCProperty(image,exception);
+#endif
           break;
         }
       if (LocaleNCompare("iptc:",property,5) == 0)
