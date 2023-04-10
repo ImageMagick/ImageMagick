@@ -1935,8 +1935,9 @@ static MagickBooleanType ValidateXMPProfile(Image *image,
 }
 #else
 static MagickBooleanType ValidateXMPProfile(Image *image,
-  const StringInfo *profile,ExceptionInfo *exception)
+  const StringInfo *magick_unused(profile),ExceptionInfo *exception)
 {
+  magick_unreferenced(profile);
   (void) ThrowMagickException(exception,GetMagickModule(),
     MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","'%s' (XML)",
     image->filename);

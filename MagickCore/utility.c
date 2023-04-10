@@ -1339,6 +1339,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
             *p='\0';
           break;
         }
+      magick_attribute((fallthrough));
     }
     case HeadPath:
     {

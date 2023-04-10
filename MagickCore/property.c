@@ -1689,8 +1689,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   return(status);
 }
 
-static MagickBooleanType GetICCProperty(const Image *image,const char *property,
-  ExceptionInfo *exception)
+static MagickBooleanType GetICCProperty(const Image *image,
+  const char *magick_unused(property),ExceptionInfo *magick_unused(exception))
 {
   const StringInfo
     *profile;
@@ -1699,6 +1699,7 @@ static MagickBooleanType GetICCProperty(const Image *image,const char *property,
     Return ICC profile property.
   */
   magick_unreferenced(property);
+  magick_unreferenced(exception);
   profile=GetImageProfile(image,"icc");
   if (profile == (StringInfo *) NULL)
     profile=GetImageProfile(image,"icm");

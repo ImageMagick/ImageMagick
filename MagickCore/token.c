@@ -523,6 +523,7 @@ MagickExport MagickBooleanType GlobExpression(
         pattern+=GetUTFOctets(pattern);
         if (GetUTFCode(pattern) == 0)
           break;
+        magick_attribute((fallthrough));
       }
       default:
       {

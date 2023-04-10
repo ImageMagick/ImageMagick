@@ -851,14 +851,14 @@ MagickExport void *CopyMagickMemory(void *magick_restrict destination,
     switch (size)
     {
       default: return(memcpy(destination,source,size));
-      case 8: *q++=(*p++);
-      case 7: *q++=(*p++);
-      case 6: *q++=(*p++);
-      case 5: *q++=(*p++);
-      case 4: *q++=(*p++);
-      case 3: *q++=(*p++);
-      case 2: *q++=(*p++);
-      case 1: *q++=(*p++);
+      case 8: *q++=(*p++); magick_attribute((fallthrough));
+      case 7: *q++=(*p++); magick_attribute((fallthrough));
+      case 6: *q++=(*p++); magick_attribute((fallthrough));
+      case 5: *q++=(*p++); magick_attribute((fallthrough));
+      case 4: *q++=(*p++); magick_attribute((fallthrough));
+      case 3: *q++=(*p++); magick_attribute((fallthrough));
+      case 2: *q++=(*p++); magick_attribute((fallthrough));
+      case 1: *q++=(*p++); magick_attribute((fallthrough));
       case 0: return(destination);
     }
   return(memmove(destination,source,size));

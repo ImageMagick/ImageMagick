@@ -3225,6 +3225,7 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
         case WritePixelMask:
         {
           image->channels=(ChannelType) (image->channels & ~WriteMaskChannel);
+          magick_attribute((fallthrough));
         }
         default:
         {
@@ -3838,7 +3839,8 @@ MagickExport Image *SmushImages(const Image *images,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType StripImage(Image *image,ExceptionInfo *exception)
+MagickExport MagickBooleanType StripImage(Image *image,
+  ExceptionInfo *magick_unused(exception))
 {
   MagickBooleanType
     status;

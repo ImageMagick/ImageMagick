@@ -122,7 +122,7 @@ struct _MatrixInfo
 */
 
 #if defined(SIGBUS)
-static void MatrixSignalHandler(int status)
+static void MatrixSignalHandler(int magick_unused(status))
 {
   magick_unreferenced(status);
   ThrowFatalException(CacheFatalError,"UnableToExtendMatrixCache");
@@ -390,6 +390,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
       (void) UnmapBlob(matrix_info->elements,(size_t) matrix_info->length);
       matrix_info->elements=NULL;
       RelinquishMagickResource(MapResource,matrix_info->length);
+      magick_attribute((fallthrough));
     }
     case DiskCache:
     {
