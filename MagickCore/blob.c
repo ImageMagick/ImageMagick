@@ -3801,6 +3801,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
             break;
           *q++=(unsigned char) c;
           count++;
+          magick_attribute((fallthrough));
         }
         case 3:
         {
@@ -3809,6 +3810,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
             break;
           *q++=(unsigned char) c;
           count++;
+          magick_attribute((fallthrough));
         }
         case 2:
         {
@@ -3817,6 +3819,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
             break;
           *q++=(unsigned char) c;
           count++;
+          magick_attribute((fallthrough));
         }
         case 1:
         {
@@ -3825,6 +3828,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,void *data)
             break;
           *q++=(unsigned char) c;
           count++;
+          magick_attribute((fallthrough));
         }
         case 0:
           break;
