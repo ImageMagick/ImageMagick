@@ -205,7 +205,8 @@ static MagickBooleanType AnimateUsage(void)
 }
 
 WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
-  int argc,char **argv,char **wand_unused(metadata),ExceptionInfo *exception)
+  int wand_unused(argc),char **wand_unused(argv),char **wand_unused(metadata),
+  ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_X11_DELEGATE)
 #define DestroyAnimate() \
