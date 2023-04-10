@@ -3696,13 +3696,18 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   artifact=GetImageArtifact(image,"color:illuminant");
   if (artifact != (const char *) NULL)
     {
-      illuminant=(IlluminantType) ParseCommandOption(MagickIlluminantOptions,
-        MagickFalse,artifact);
-      if ((ssize_t) illuminant < 0)
+      ssize_t
+        illuminant_type;
+
+      illuminant_type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
+        artifact);
+      if (illuminant_type < 0)
         {
           illuminant=UndefinedIlluminant;
           colorspace=UndefinedColorspace;
         }
+      else
+        illuminant=(IlluminantType) illuminant_type;
     }
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)

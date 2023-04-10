@@ -1256,10 +1256,15 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
   artifact=GetImageArtifact(image,"color:illuminant");
   if (artifact != (const char *) NULL)
     {
-      illuminant=(IlluminantType) ParseCommandOption(MagickIlluminantOptions,
-        MagickFalse,artifact);
-      if ((ssize_t) illuminant < 0)
+      ssize_t
+        illuminant_type;
+
+      illuminant_type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
+        artifact);
+      if (illuminant_type < 0)
         illuminant=UndefinedIlluminant;
+      else
+        illuminant=(IlluminantType) illuminant_type;
     }
   start=(*start_color);
   stop=(*stop_color);
