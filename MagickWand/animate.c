@@ -204,11 +204,10 @@ static MagickBooleanType AnimateUsage(void)
   return(MagickTrue);
 }
 
-WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
-  int wand_unused(argc),char **wand_unused(argv),char **wand_unused(metadata),
-  ExceptionInfo *exception)
-{
 #if defined(MAGICKCORE_X11_DELEGATE)
+WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **wand_unused(metadata),ExceptionInfo *exception)
+{
 #define DestroyAnimate() \
 { \
   XDestroyResourceInfo(&resource_info); \
@@ -284,6 +283,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
+  wand_unreferenced(metadata);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (argc == 2)
@@ -1444,6 +1444,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   DestroyAnimate();
   return(status != 0 ? MagickTrue : MagickFalse);
 #else
+WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
+  int wand_unused(argc),char **wand_unused(argv),char **wand_unused(metadata),
+  ExceptionInfo *exception)
+{
   wand_unreferenced(argc);
   wand_unreferenced(argv);
   wand_unreferenced(metadata);
