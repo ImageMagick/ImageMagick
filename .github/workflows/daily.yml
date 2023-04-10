@@ -74,8 +74,8 @@ jobs:
 
     - name: Configure ImageMagick
       env:
-        CFLAGS: -Wall -Wextra -Werror
-        CXXFLAGS: -Wall -Wextra -Werror
+        CFLAGS: -Wall -Wextra -Werror -Wno-unused-function -Wno-builtin-declaration-mismatch
+        CXXFLAGS: -Wall -Wextra -Werror -Wno-unused-function -Wno-builtin-declaration-mismatch
       run: |
         ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
 

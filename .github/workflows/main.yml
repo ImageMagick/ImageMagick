@@ -39,8 +39,8 @@ jobs:
       env:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.cxx_compiler }}
-        CFLAGS: -Wall -Wextra -Wno-unused-function -Werror
-        CXXFLAGS: -Wall -Wextra -Wno-unused-function -Werror
+        CFLAGS: -Wall -Wextra -Werror -Wno-unused-function -Wno-builtin-declaration-mismatch
+        CXXFLAGS: -Wall -Wextra -Werror -Wno-unused-function -Wno-builtin-declaration-mismatch
       run: |
         autoreconf -fiv
         ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
