@@ -3348,6 +3348,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     break;
                   }
                 ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                magick_fallthrough;
               }
               case 'W':
               case 'w':
@@ -3361,6 +3362,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     break;
                   }
                 ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                magick_fallthrough;
               }
               default:
               {

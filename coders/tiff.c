@@ -67,6 +67,7 @@
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
+#include "MagickCore/method-attribute.h"
 #include "MagickCore/module.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
@@ -4143,6 +4144,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         red=(uint16 *) RelinquishMagickMemory(red);
         green=(uint16 *) RelinquishMagickMemory(green);
         blue=(uint16 *) RelinquishMagickMemory(blue);
+        magick_fallthrough;
       }
       default:
       {
