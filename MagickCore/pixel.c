@@ -98,13 +98,14 @@ MagickExport PixelChannelMap *AcquirePixelChannelMap(void)
   ssize_t
     i;
 
-  channel_map=(PixelChannelMap *) AcquireQuantumMemory(MaxPixelChannels,
+  channel_map=(PixelChannelMap *) AcquireQuantumMemory(MaxPixelChannels+1,
     sizeof(*channel_map));
   if (channel_map == (PixelChannelMap *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) memset(channel_map,0,MaxPixelChannels*sizeof(*channel_map));
+  (void) memset(channel_map,0,(MaxPixelChannels+1)*sizeof(*channel_map));
   for (i=0; i < MaxPixelChannels; i++)
     channel_map[i].channel=(PixelChannel) i;
+  channel_map[i].channel=(PixelChannel) 0;
   return(channel_map);
 }
 
