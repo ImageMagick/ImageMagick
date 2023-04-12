@@ -2210,7 +2210,8 @@ static char **SamplingFactorToList(const char *text)
 }
 
 static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
-  Image *image,struct jpeg_compress_struct *jpeg_info,ExceptionInfo *exception)
+  Image *myImage,struct jpeg_compress_struct *jpeg_info,
+  ExceptionInfo *exception)
 {
 #define ThrowJPEGWriterException(exception,message) \
 { \
@@ -2226,7 +2227,8 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     *value;
 
   Image
-    *jps_image = (Image *) NULL,
+    *volatile image = (Image *) NULL,
+    *volatile jps_image = (Image *) NULL,
     *volatile volatile_image = (Image *) NULL;
 
   int
@@ -2268,10 +2270,11 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
+  assert(myImage != (Image *) NULL);
+  assert(myImage->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  image=myImage;
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((LocaleCompare(image_info->magick,"JPS") == 0) &&

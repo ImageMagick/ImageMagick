@@ -1395,6 +1395,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'C':
     case 'c':
@@ -2332,6 +2333,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'D':
     case 'd':
@@ -2756,6 +2758,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'E':
     case 'e':
@@ -2971,6 +2974,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'F':
     case 'f':
@@ -3211,6 +3215,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'G':
     case 'g':
@@ -3382,6 +3387,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       break;
     }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'I':
     case 'i':
@@ -3514,6 +3520,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'L':
     case 'l':
@@ -3586,6 +3593,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           msl_info->exception);
         break;
       }
+      ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'M':
     case 'm':
@@ -4075,6 +4084,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'N':
     case 'n':
@@ -4201,6 +4211,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'O':
     case 'o':
@@ -4351,6 +4362,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'P':
     case 'p':
@@ -4491,6 +4503,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             break;
           }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'Q':
     case 'q':
@@ -4969,6 +4982,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'R':
     case 'r':
@@ -5786,6 +5800,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         break;
       }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'S':
     case 's':
@@ -7139,6 +7154,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'T':
     case 't':
@@ -7323,6 +7339,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
       }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'W':
     case 'w':
@@ -7356,6 +7373,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     break;
                   }
                 (void) SetMSLAttributes(msl_info,keyword,value);
+                magick_fallthrough;
               }
               default:
               {
@@ -7374,6 +7392,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           }
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     default:
     {
@@ -8110,6 +8129,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
       break;
+      break;
     }
     case 'B':
     case 'b':
@@ -8139,6 +8159,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
       break;
     }
     case 'D':
