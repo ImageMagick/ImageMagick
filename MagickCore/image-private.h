@@ -49,6 +49,9 @@ extern "C" {
 #define MagickSQ1_2  0.70710678118654752440084436210484903928483593768847
 #define MagickSQ2    1.41421356237309504880168872420969807856967187537695
 #define MagickSQ2PI  2.50662827463100024161235523934010416269302368164062
+#define MAGICK_SIZE_MAX  (SIZE_MAX)
+#define MAGICK_SSIZE_MAX  (SSIZE_MAX)
+#define MAGICK_SSIZE_MIN  (-(SSIZE_MAX)-1)
 #define MatteColor  "#bdbdbd"  /* gray */
 #define MatteColorRGBA  ScaleShortToQuantum(0xbdbd),\
   ScaleShortToQuantum(0xbdbd),ScaleShortToQuantum(0xbdbd),OpaqueAlpha
@@ -61,19 +64,6 @@ extern "C" {
 #define UndefinedCompressionQuality  0UL
 #define UndefinedTicksPerSecond  100L
 
-static inline ssize_t CastDoubleToLong(const double x)
-{
-  if (IsNaN(x) != 0)
-    return(0);
-  if (x > ((double) MAGICK_SSIZE_MAX+0.5))
-    return((ssize_t) MAGICK_SSIZE_MAX);
-  if (x < ((double) MAGICK_SSIZE_MIN-0.5))
-    return((ssize_t) MAGICK_SSIZE_MIN);
-  if (x >= 0.0)
-    return((ssize_t) (x+0.5));
-  return((ssize_t) (x-0.5));
-}
-
 static inline QuantumAny CastDoubleToQuantumAny(const double x)
 {
   if (IsNaN(x) != 0)
@@ -84,6 +74,29 @@ static inline QuantumAny CastDoubleToQuantumAny(const double x)
     return((QuantumAny) 0);
   return((QuantumAny) (x+0.5));
 }
+
+static inline size_t CastDoubleToSizeT(const double x)
+{
+  if (IsNaN(x) != 0)
+    return(0);
+  if (x > ((double) MAGICK_SIZE_MAX+0.5))
+    return((size_t) MAGICK_SIZE_MAX);
+  return((size_t) floor(x+0.5));
+}
+
+static inline ssize_t CastDoubleToSSizeT(const double x)
+{
+  if (IsNaN(x) != 0)
+    return(0);
+  if (x > ((double) MAGICK_SSIZE_MAX+0.5))
+    return((ssize_t) MAGICK_SSIZE_MAX);
+  if (x < ((double) MAGICK_SSIZE_MIN-0.5))
+    return((ssize_t) MAGICK_SSIZE_MIN);
+  if (x >= 0.0)
+    return((ssize_t) floor(x+0.5));
+  return((ssize_t) ceil(x-0.5));
+}
+
 
 static inline double DegreesToRadians(const double degrees)
 {

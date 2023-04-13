@@ -9469,24 +9469,28 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
       if (image->units == PixelsPerInchResolution)
         {
           ping_pHYs_unit_type=PNG_RESOLUTION_METER;
-          ping_pHYs_x_resolution=
-             (png_uint_32) ((100.0*image->resolution.x+0.5)/2.54);
-          ping_pHYs_y_resolution=
-             (png_uint_32) ((100.0*image->resolution.y+0.5)/2.54);
+          ping_pHYs_x_resolution=(png_uint_32) CastDoubleToSizeT((100.0*
+            image->resolution.x)/2.54);
+          ping_pHYs_y_resolution=(png_uint_32) CastDoubleToSizeT((100.0*
+            image->resolution.y+0.5)/2.54);
         }
 
       else if (image->units == PixelsPerCentimeterResolution)
         {
           ping_pHYs_unit_type=PNG_RESOLUTION_METER;
-          ping_pHYs_x_resolution=(png_uint_32) (100.0*image->resolution.x+0.5);
-          ping_pHYs_y_resolution=(png_uint_32) (100.0*image->resolution.y+0.5);
+          ping_pHYs_x_resolution=(png_uint_32) CastDoubleToSizeT(100.0*
+            image->resolution.x);
+          ping_pHYs_y_resolution=(png_uint_32) CastDoubleToSizeT(100.0*
+            image->resolution.y);
         }
 
       else
         {
           ping_pHYs_unit_type=PNG_RESOLUTION_UNKNOWN;
-          ping_pHYs_x_resolution=(png_uint_32) image->resolution.x;
-          ping_pHYs_y_resolution=(png_uint_32) image->resolution.y;
+          ping_pHYs_x_resolution=(png_uint_32) CastDoubleToSizeT(
+            image->resolution.x);
+          ping_pHYs_y_resolution=(png_uint_32) CastDoubleToSizeT(
+            image->resolution.y);
         }
 
       if (logging != MagickFalse)

@@ -2376,7 +2376,8 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Image resolution: %.20g,%.20g",image->resolution.x,image->resolution.y);
-  if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
+  if ((image->resolution.x >= 0) && (image->resolution.x < (double) SHRT_MAX) &&
+      (image->resolution.y >= 0) && (image->resolution.y < (double) SHRT_MAX))
     {
       /*
         Set image resolution.
