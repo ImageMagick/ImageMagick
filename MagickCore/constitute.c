@@ -583,12 +583,12 @@ static void SyncResolutionFromProperties(Image *image,
       if (strchr(resolution_y,',') != (char *) NULL)
         image->resolution.y=geometry_info.rho+geometry_info.sigma/1000.0;
       if (resolution_units != (char *) NULL)
-          {
-            option_type=ParseCommandOption(MagickResolutionOptions,MagickFalse,
-              resolution_units);
-            if (option_type >= 0)
-              image->units=(ResolutionType) option_type;
-          }
+        {
+          option_type=ParseCommandOption(MagickResolutionOptions,MagickFalse,
+            resolution_units);
+          if (option_type >= 0)
+            image->units=(ResolutionType) option_type;
+        }
       if (used_tiff == MagickFalse)
         {
           (void) DeleteImageProperty(image,"exif:XResolution");
