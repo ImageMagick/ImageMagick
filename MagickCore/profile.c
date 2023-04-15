@@ -2006,11 +2006,10 @@ MagickExport MagickBooleanType SetImageProfile(Image *image,const char *name,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SyncImageProfiles() synchronizes image properties with the image profiles.
-%  Currently we only support updating the EXIF resolution and orientation.
 %
 %  The format of the SyncImageProfiles method is:
 %
-%      MagickBooleanType SyncImageProfiles(Image *image)
+%      void SyncImageProfiles(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2157,7 +2156,7 @@ static void WriteProfileShort(const EndianType endian,
   (void) memcpy(p,buffer,2);
 }
 
-static MagickBooleanType SyncExifProfile(const Image *image,unsigned char *exif,
+static void SyncExifProfile(const Image *image,unsigned char *exif,
   size_t length)
 {
 #define MaxDirectoryStack  16
@@ -2200,7 +2199,7 @@ static MagickBooleanType SyncExifProfile(const Image *image,unsigned char *exif,
     *directory;
 
   if (length < 16)
-    return(MagickFalse);
+    return;
   id=(ssize_t) ReadProfileShort(LSBEndian,exif);
   if ((id != 0x4949) && (id != 0x4D4D))
     {
@@ -2221,7 +2220,7 @@ static MagickBooleanType SyncExifProfile(const Image *image,unsigned char *exif,
         break;
       }
       if (length < 16)
-        return(MagickFalse);
+        return;
       id=(ssize_t) ReadProfileShort(LSBEndian,exif);
     }
   endian=LSBEndian;
@@ -2231,15 +2230,15 @@ static MagickBooleanType SyncExifProfile(const Image *image,unsigned char *exif,
     if (id == 0x4D4D)
       endian=MSBEndian;
     else
-      return(MagickFalse);
+      return;
   if (ReadProfileShort(endian,exif+2) != 0x002a)
-    return(MagickFalse);
+    return;
   /*
     This the offset to the first IFD.
   */
   offset=(ssize_t) ReadProfileLong(endian,exif+4);
   if ((offset < 0) || ((size_t) offset >= length))
-    return(MagickFalse);
+    return;
   directory=exif+offset;
   level=0;
   entry=0;
@@ -2374,10 +2373,10 @@ static MagickBooleanType SyncExifProfile(const Image *image,unsigned char *exif,
     }
   } while (level > 0);
   exif_resources=DestroySplayTree(exif_resources);
-  return(MagickTrue);
+  return;
 }
 
-static MagickBooleanType Sync8BimProfile(const Image *image,
+static void Sync8BimProfile(const Image *image,
   const StringInfo *profile)
 {
   size_t
@@ -2405,18 +2404,18 @@ static MagickBooleanType Sync8BimProfile(const Image *image,
     if (ReadProfileByte(&p,&length) != 0x4D)
       continue;
     if (length < 7)
-      return(MagickFalse);
+      return;
     id=ReadProfileMSBShort(&p,&length);
     count=(ssize_t) ReadProfileByte(&p,&length);
     if ((count >= (ssize_t) length) || (count < 0))
-      return(MagickFalse);
+      return;
     p+=count;
     length-=count;
     if ((*p & 0x01) == 0)
       (void) ReadProfileByte(&p,&length);
     count=(ssize_t) ReadProfileMSBLong(&p,&length);
     if ((count > (ssize_t) length) || (count < 0))
-      return(MagickFalse);
+      return;
     if ((id == 0x3ED) && (count == 16))
       {
         if (image->units == PixelsPerCentimeterResolution)
@@ -2439,28 +2438,21 @@ static MagickBooleanType Sync8BimProfile(const Image *image,
     p+=count;
     length-=count;
   }
-  return(MagickTrue);
+  return;
 }
 
-MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
+MagickPrivate void SyncImageProfiles(Image *image)
 {
-  MagickBooleanType
-    status;
-
   StringInfo
     *profile;
 
-  status=MagickTrue;
   profile=(StringInfo *) GetImageProfile(image,"8BIM");
   if (profile != (StringInfo *) NULL)
-    if (Sync8BimProfile(image,profile) == MagickFalse)
-      status=MagickFalse;
+    Sync8BimProfile(image,profile);
   profile=(StringInfo *) GetImageProfile(image,"EXIF");
   if (profile != (StringInfo *) NULL)
-    if (SyncExifProfile(image,GetStringInfoDatum(profile),
-      GetStringInfoLength(profile)) == MagickFalse)
-      status=MagickFalse;
-  return(status);
+    SyncExifProfile(image,GetStringInfoDatum(profile),GetStringInfoLength(
+      profile));
 }
 
 static void UpdateClipPath(unsigned char *blob,size_t length,
