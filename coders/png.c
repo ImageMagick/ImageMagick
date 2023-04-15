@@ -11185,7 +11185,13 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
         continue;
       /* Suppress density and units if we wrote a pHYs chunk */
       if ((mng_info->exclude_pHYs == MagickFalse) && (
-          ((LocaleCompare(property,"density") == 0) ||
+          ((LocaleCompare(property,"exif:ResolutionUnit") == 0) ||
+           (LocaleCompare(property,"exif:XResolution") == 0) ||
+           (LocaleCompare(property,"exif:YResolution") == 0) ||
+           (LocaleCompare(property,"tiff:ResolutionUnit") == 0) ||
+           (LocaleCompare(property,"tiff:XResolution") == 0) ||
+           (LocaleCompare(property,"tiff:YResolution") == 0) ||
+           (LocaleCompare(property,"density") == 0) ||
            (LocaleCompare(property,"units") == 0))))
         continue;
       /* Suppress the IM-generated date:create and date:modify */
