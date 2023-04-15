@@ -1504,9 +1504,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if ((TIFFGetFieldDefaulted(tiff,TIFFTAG_XPOSITION,&x_position,sans) == 1) &&
         (TIFFGetFieldDefaulted(tiff,TIFFTAG_YPOSITION,&y_position,sans) == 1))
       {
-        image->page.x=CastDoubleToSSizeT(ceil(x_position*
+        image->page.x=CastDoubleToLong(ceil(x_position*
           image->resolution.x-0.5));
-        image->page.y=CastDoubleToSSizeT(ceil(y_position*
+        image->page.y=CastDoubleToLong(ceil(y_position*
           image->resolution.y-0.5));
       }
     if (TIFFGetFieldDefaulted(tiff,TIFFTAG_ORIENTATION,&orientation,sans) == 1)

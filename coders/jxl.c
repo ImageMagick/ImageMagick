@@ -279,7 +279,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   JxlBasicInfo
-    basic_info = { 0 };
+    basic_info = { 0, 0, 0, 0, 0, 0, 0 };
 
   JxlDecoder
     *jxl_info;

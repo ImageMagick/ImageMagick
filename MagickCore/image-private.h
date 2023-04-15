@@ -64,39 +64,65 @@ extern "C" {
 #define UndefinedCompressionQuality  0UL
 #define UndefinedTicksPerSecond  100L
 
+static inline ssize_t CastDoubleToLong(const double x)
+{
+  if (IsNaN(x) != 0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  if (floor(x) > ((double) MAGICK_SSIZE_MAX-1))
+    {
+      errno=ERANGE;
+      return((ssize_t) MAGICK_SSIZE_MAX);
+    }
+  if (ceil(x) < ((double) MAGICK_SSIZE_MIN+1))
+    {
+      errno=ERANGE;
+      return((ssize_t) MAGICK_SSIZE_MIN);
+    }
+  return((ssize_t) x);
+}
+
 static inline QuantumAny CastDoubleToQuantumAny(const double x)
 {
   if (IsNaN(x) != 0)
-    return(0);
+    {
+      errno=ERANGE;
+      return(0);
+    }
   if (x > ((double) ((QuantumAny) ~0)))
-    return((QuantumAny) ~0);
+    {
+      errno=ERANGE;
+      return((QuantumAny) ~0);
+    }
   if (x < 0.0)
-    return((QuantumAny) 0);
+    {
+      errno=ERANGE;
+      return((QuantumAny) 0);
+    }
   return((QuantumAny) (x+0.5));
 }
 
-static inline size_t CastDoubleToSizeT(const double x)
+static inline size_t CastDoubleToUnsigned(const double x)
 {
   if (IsNaN(x) != 0)
-    return(0);
-  if (x > ((double) MAGICK_SIZE_MAX+0.5))
-    return((size_t) MAGICK_SIZE_MAX);
-  return((size_t) floor(x+0.5));
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  if (floor(x) > ((double) MAGICK_SSIZE_MAX-1))
+    {
+      errno=ERANGE;
+      return((size_t) MAGICK_SIZE_MAX);
+    }
+  if (ceil(x) < 0.0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  return((size_t) x);
 }
-
-static inline ssize_t CastDoubleToSSizeT(const double x)
-{
-  if (IsNaN(x) != 0)
-    return(0);
-  if (x > ((double) MAGICK_SSIZE_MAX+0.5))
-    return((ssize_t) MAGICK_SSIZE_MAX);
-  if (x < ((double) MAGICK_SSIZE_MIN-0.5))
-    return((ssize_t) MAGICK_SSIZE_MIN);
-  if (x >= 0.0)
-    return((ssize_t) floor(x+0.5));
-  return((ssize_t) ceil(x-0.5));
-}
-
 
 static inline double DegreesToRadians(const double degrees)
 {

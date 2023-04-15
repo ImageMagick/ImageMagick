@@ -5151,7 +5151,7 @@ MAGICK_PATCHLEVEL_VERSION=7
 
 MAGICK_VERSION=7.1.1-7
 
-MAGICK_GIT_REVISION=e59034371:20230409
+MAGICK_GIT_REVISION=fecfed4d0:20230414
 
 
 # Substitute library versioning
@@ -5185,7 +5185,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,7
 
-PACKAGE_RELEASE_DATE=2023-04-09
+PACKAGE_RELEASE_DATE=2023-04-14
 
 
 # Ensure that make can run correctly
@@ -27587,9 +27587,9 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-       int f(int  x){return 1;}
-                        int f(char x){return 1;}
-                        int f(bool x){return 1;}
+       int f(int  x){return x;}
+                        int f(char x){return x == '\1' ? 1 : 0;}
+                        int f(bool x){return x ? 1 : 0;}
 int
 main (void)
 {

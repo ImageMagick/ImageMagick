@@ -172,7 +172,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   IconFile
-    icon_file = { 0 };
+    icon_file;
 
   IconInfo
     icon_info;
@@ -223,6 +223,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  (void) memset(&icon_file,0,sizeof(icon_file));
   icon_file.reserved=(short) ReadBlobLSBShort(image);
   icon_file.resource_type=(short) ReadBlobLSBShort(image);
   icon_file.count=(short) ReadBlobLSBShort(image);

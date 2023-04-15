@@ -2420,17 +2420,17 @@ static MagickBooleanType Sync8BimProfile(const Image *image,
     if ((id == 0x3ED) && (count == 16))
       {
         if (image->units == PixelsPerCentimeterResolution)
-          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToSSizeT(
+          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToLong(
             image->resolution.x*2.54*65536.0),p);
         else
-          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToSSizeT(
+          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToLong(
             image->resolution.x*65536.0),p);
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+4);
         if (image->units == PixelsPerCentimeterResolution)
-          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToSSizeT(
+          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToLong(
             image->resolution.y*2.54*65536.0),p+8);
         else
-          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToSSizeT(
+          WriteProfileLong(MSBEndian,(unsigned int) CastDoubleToLong(
             image->resolution.y*65536.0),p+8);
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+12);
       }
