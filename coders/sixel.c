@@ -1320,7 +1320,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   opacity=(-1);
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     {
       if ((image->storage_class == DirectClass) || (image->colors > SIXEL_PALETTE_MAX))
         (void) SetImageType(image,PaletteType,exception);

@@ -186,7 +186,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(image,sRGBColorspace,exception);
-  if ((image->alpha_trait == UndefinedPixelTrait) &&
+  if (((image->alpha_trait & BlendPixelTrait) == 0) &&
       (draw_info->fill.alpha_trait != UndefinedPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
@@ -1086,7 +1086,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   /*
     Make image color transparent.
@@ -1215,7 +1215,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   /*
     Make image color transparent.

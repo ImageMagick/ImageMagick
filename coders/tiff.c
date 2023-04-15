@@ -239,7 +239,7 @@ static void InitPSDInfo(const Image *image,PSDInfo *info)
     {
       info->channels=(unsigned short) image->number_channels;
       info->min_channels=info->channels;
-      if (image->alpha_trait == BlendPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) != 0)
         info->min_channels--;
       if (image->colorspace == CMYColorspace)
         info->min_channels=MagickMin(4,info->min_channels);
@@ -3575,7 +3575,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               }
             else
               if ((image->storage_class == PseudoClass) &&
-                  (image->alpha_trait == UndefinedPixelTrait))
+                  ((image->alpha_trait & BlendPixelTrait) == 0))
                 {
                   size_t
                     depth;

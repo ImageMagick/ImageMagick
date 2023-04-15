@@ -3066,7 +3066,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
-    if (image->alpha_trait == UndefinedPixelTrait)
+    if ((image->alpha_trait & BlendPixelTrait) == 0)
       (void) WriteBlobString(image,">>\n");
     else
       {

@@ -900,7 +900,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   if ((image_info->type != TrueColorType) &&
       (image_info->type != TrueColorAlphaType) &&
       (image_info->type != PaletteType) &&
-      (image->alpha_trait == UndefinedPixelTrait) &&
+      ((image->alpha_trait & BlendPixelTrait) == 0) &&
       (IdentifyImageCoderGray(image,exception) != MagickFalse))
     tga_info.image_type=compression == RLECompression ? TGARLEMonochrome :
       TGAMonochrome;

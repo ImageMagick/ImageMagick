@@ -998,7 +998,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   {
     case ActivateAlphaChannel:
     {
-      if (image->alpha_trait == BlendPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) != 0)
         return(status);
       image->alpha_trait=BlendPixelTrait;
       break;
@@ -1066,7 +1066,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Set transparent pixels to background color.
       */
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         break;
       status=SetImageStorageClass(image,DirectClass,exception);
       if (status == MagickFalse)
@@ -1117,7 +1117,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case DeactivateAlphaChannel:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
       image->alpha_trait=CopyPixelTrait;
       break;
@@ -1185,7 +1185,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case DiscreteAlphaChannel:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
       image->alpha_trait=UpdatePixelTrait;
       break;
@@ -1199,14 +1199,14 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case OffAlphaChannel:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         return(status);
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
     case OnAlphaChannel:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
       image->alpha_trait=BlendPixelTrait;
       break;
@@ -1221,7 +1221,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Remove transparency.
       */
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         break;
       status=SetImageStorageClass(image,DirectClass,exception);
       if (status == MagickFalse)
@@ -1263,7 +1263,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case SetAlphaChannel:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
       break;
     }

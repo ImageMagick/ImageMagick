@@ -1669,7 +1669,7 @@ MagickPrivate MagickBooleanType IsEquivalentAlpha(const Image *image,
   double
     distance;
 
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     return(MagickTrue);
   if (p->alpha == q->alpha)
     return(MagickTrue);

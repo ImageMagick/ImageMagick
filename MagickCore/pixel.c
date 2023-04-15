@@ -231,7 +231,7 @@ MagickExport void ConformPixelInfo(Image *image,const PixelInfo *source,
       (IsGrayColorspace(image->colorspace) != MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if ((destination->alpha_trait != UndefinedPixelTrait) &&
-      (image->alpha_trait == UndefinedPixelTrait))
+      ((image->alpha_trait & BlendPixelTrait) == 0))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
 }
 
@@ -5473,7 +5473,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
 static inline void AlphaBlendPixelInfo(const Image *image,
   const Quantum *pixel,PixelInfo *pixel_info,double *alpha)
 {
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     {
       *alpha=1.0;
       pixel_info->red=(double) GetPixelRed(image,pixel);

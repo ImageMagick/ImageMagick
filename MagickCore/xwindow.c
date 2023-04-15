@@ -7784,7 +7784,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
       number_colors=(unsigned int) (map_info->base_pixel+
         (map_info->red_max+1)*(map_info->green_max+1)*(map_info->blue_max+1));
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
-        if ((image->alpha_trait == UndefinedPixelTrait) &&
+        if (((image->alpha_trait & BlendPixelTrait) == 0) &&
             (resource_info->color_recovery == MagickFalse) &&
             (resource_info->quantize_info->dither_method != NoDitherMethod) &&
             (number_colors < MaxColormapSize))

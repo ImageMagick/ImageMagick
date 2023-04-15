@@ -1586,7 +1586,7 @@ MagickExport Image *DistortResizeImage(const Image *image,const size_t columns,
   (void) SetImageVirtualPixelMethod(tmp_image,TransparentVirtualPixelMethod,
     exception);
 
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     {
       /*
         Image has no alpha channel, so we are free to use it.

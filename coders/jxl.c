@@ -234,9 +234,10 @@ static inline void JXLSetFormat(Image *image,JxlPixelFormat *pixel_format,
   const char
     *property;
 
-  pixel_format->num_channels=(image->alpha_trait == BlendPixelTrait) ? 4U : 3U;
+  pixel_format->num_channels=((image->alpha_trait & BlendPixelTrait) != 0) ?
+    4U : 3U;
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    pixel_format->num_channels=(image->alpha_trait == BlendPixelTrait) ?
+    pixel_format->num_channels=((image->alpha_trait & BlendPixelTrait) != 0) ?
       2U : 1U;
   pixel_format->data_type=(image->depth > 16) ? JXL_TYPE_FLOAT :
     (image->depth > 8) ? JXL_TYPE_UINT16 : JXL_TYPE_UINT8;
@@ -279,7 +280,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   JxlBasicInfo
-    basic_info = { 0, 0, 0, 0, 0, 0, 0 };
+    basic_info = { 0 };
 
   JxlDecoder
     *jxl_info;
@@ -596,12 +597,12 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
               CorruptImageError,"Unsupported data type","`%s'",image->filename);
             break;
           }
-        if (image->alpha_trait == BlendPixelTrait)
+        if ((image->alpha_trait & BlendPixelTrait) != 0)
           map="RGBA";
         if (IsGrayColorspace(image->colorspace) != MagickFalse)
           {
             map="I";
-            if (image->alpha_trait == BlendPixelTrait)
+            if ((image->alpha_trait & BlendPixelTrait) != 0)
               map="IA";
           }
         status=ImportImagePixels(image,0,0,image->columns,image->rows,map,
@@ -965,7 +966,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         }
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     basic_info.num_color_channels=1;
-  if (image->alpha_trait == BlendPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) != 0)
     {
       basic_info.alpha_bits=basic_info.bits_per_sample;
       basic_info.alpha_exponent_bits=basic_info.exponent_bits_per_sample;
@@ -1056,13 +1057,13 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     Write image as a JXL stream.
   */
   bytes_per_row=image->columns*
-    ((image->alpha_trait == BlendPixelTrait) ? 4 : 3)*
+    (((image->alpha_trait & BlendPixelTrait) != 0) ? 4 : 3)*
     ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
      (pixel_format.data_type == JXL_TYPE_UINT16) ? sizeof(short) :
      sizeof(char));
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     bytes_per_row=image->columns*
-      ((image->alpha_trait == BlendPixelTrait) ? 2 : 1)*
+      (((image->alpha_trait &= BlendPixelTrait) != 0) ? 2 : 1)*
       ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
        (pixel_format.data_type == JXL_TYPE_UINT16) ? sizeof(short) :
        sizeof(char));
@@ -1087,12 +1088,12 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     if (IsGrayColorspace(image->colorspace) != MagickFalse)
       status=ExportImagePixels(image,0,0,image->columns,image->rows,
-        image->alpha_trait == BlendPixelTrait ? "IA" : "I",
+        ((image->alpha_trait & BlendPixelTrait) != 0) ? "IA" : "I",
         JXLDataTypeToStorageType(image,pixel_format.data_type,exception),
         pixels,exception);
     else
       status=ExportImagePixels(image,0,0,image->columns,image->rows,
-        image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
+        ((image->alpha_trait & BlendPixelTrait) != 0) ? "RGBA" : "RGB",
         JXLDataTypeToStorageType(image,pixel_format.data_type,exception),
         pixels,exception);
     if (status == MagickFalse)

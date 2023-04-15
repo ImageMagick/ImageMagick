@@ -1401,7 +1401,7 @@ static MagickBooleanType SetDXT1Pixels(Image *image,ssize_t x,ssize_t y,
           SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
           SetPixelOpacity(image,ScaleCharToQuantum(colors.a[code]),q);
           if ((colors.a[code] != 0) &&
-              (image->alpha_trait == UndefinedPixelTrait))
+              ((image->alpha_trait & BlendPixelTrait) == 0))
             return(MagickFalse);
           q+=GetPixelChannels(image);
         }
@@ -4251,7 +4251,7 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   pixelFormat=DDPF_FOURCC;
   compression=FOURCC_DXT5;
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     compression=FOURCC_DXT1;
   if (LocaleCompare(image_info->magick,"dxt1") == 0)
     compression=FOURCC_DXT1;

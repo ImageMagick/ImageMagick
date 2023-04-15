@@ -2567,7 +2567,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"begin draw-image");
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     {
       status=SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       if (status == MagickFalse)
@@ -5345,7 +5345,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
   {
     case AlphaPrimitive:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         status&=SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       switch (primitive_info->method)
       {

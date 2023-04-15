@@ -922,7 +922,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
   for (i=0; i < (ssize_t) number_threads; i++)
     current_depth[i]=1;
   if ((image->storage_class == PseudoClass) &&
-      (image->alpha_trait == UndefinedPixelTrait))
+      ((image->alpha_trait & BlendPixelTrait) == 0))
     {
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -1512,7 +1512,7 @@ MagickExport ImageType GetImageType(const Image *image)
   assert(image->signature == MagickCoreSignature);
   if (image->colorspace == CMYKColorspace)
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         return(ColorSeparationType);
       return(ColorSeparationAlphaType);
     }
@@ -1735,7 +1735,7 @@ MagickExport ImageType IdentifyImageType(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == CMYKColorspace)
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         return(ColorSeparationType);
       return(ColorSeparationAlphaType);
     }
@@ -1866,7 +1866,7 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     return(MagickTrue);
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -2184,7 +2184,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
     {
       if (IsGrayImageType(image->type) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace,exception);
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
@@ -2209,7 +2209,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
 
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,sRGBColorspace,exception);
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       channel_mask=SetImageChannelMask(image,AlphaChannel);
       (void) BilevelImage(image,(double) QuantumRange/2.0,exception);
@@ -2223,7 +2223,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
     {
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,sRGBColorspace,exception);
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       quantize_info=AcquireQuantizeInfo(image_info);
       quantize_info->colorspace=TransparentColorspace;
@@ -2246,7 +2246,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
         status=TransformImageColorspace(image,sRGBColorspace,exception);
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass,exception);
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
@@ -2265,7 +2265,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
         status=TransformImageColorspace(image,CMYKColorspace,exception);
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass,exception);
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         status=SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }

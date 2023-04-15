@@ -1770,7 +1770,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Modify canvas outside the overlaid region and require an alpha
         channel to exist, to add transparency.
       */
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }

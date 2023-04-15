@@ -370,7 +370,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=pixels;
         for (i=0; i < (ssize_t) number_pixels; i++)
         {
-          if (image->alpha_trait == UndefinedPixelTrait)
+          if ((image->alpha_trait & BlendPixelTrait) == 0)
             for (j=0; j < (ssize_t) number_planes; j++)
               *p++=background_color[j];
           else
@@ -607,7 +607,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               p++;
             }
         p=pixels;
-        if (image->alpha_trait == UndefinedPixelTrait)
+        if ((image->alpha_trait & BlendPixelTrait) == 0)
           {
             /*
               Convert raster image to PseudoClass pixel packets.

@@ -432,16 +432,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     SetImageColorspace(image,GRAYColorspace,exception);
   else
     if (jp2_image->color_space == 2)
-      {
-        SetImageColorspace(image,GRAYColorspace,exception);
-        if (jp2_image->numcomps > 1)
-          image->alpha_trait=BlendPixelTrait;
-      }
+      SetImageColorspace(image,GRAYColorspace,exception);
     else
       if (jp2_image->color_space == 3)
         SetImageColorspace(image,Rec601YCbCrColorspace,exception);
-  if (jp2_image->numcomps > 3)
-    image->alpha_trait=BlendPixelTrait;
+  for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
+    if (jp2_image->comps[i].alpha != 0)
+      image->alpha_trait=BlendPixelTrait;
   if (jp2_image->icc_profile_buf != (unsigned char *) NULL)
     {
       StringInfo
@@ -513,18 +510,19 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
              if (jp2_image->numcomps == 1)
                {
                  SetPixelGray(image,ClampToQuantum(pixel),q);
-                 SetPixelAlpha(image,OpaqueAlpha,q);
-                 break;
+                 if ((image->alpha_trait & BlendPixelTrait) != 0)
+                   break;
                }
              SetPixelRed(image,ClampToQuantum(pixel),q);
              SetPixelGreen(image,ClampToQuantum(pixel),q);
              SetPixelBlue(image,ClampToQuantum(pixel),q);
-             SetPixelAlpha(image,OpaqueAlpha,q);
+             if ((image->alpha_trait & BlendPixelTrait) != 0)
+               SetPixelAlpha(image,OpaqueAlpha,q);
              break;
            }
            case 1:
            {
-             if (jp2_image->numcomps == 2)
+             if ((image->alpha_trait & BlendPixelTrait) != 0)
                {
                  SetPixelAlpha(image,ClampToQuantum(pixel),q);
                  break;
@@ -539,7 +537,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
            }
            case 3:
            {
-             SetPixelAlpha(image,ClampToQuantum(pixel),q);
+             if ((image->alpha_trait & BlendPixelTrait) != 0)
+               SetPixelAlpha(image,ClampToQuantum(pixel),q);
              break;
            }
         }

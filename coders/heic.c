@@ -1248,7 +1248,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
     chroma=lossless != MagickFalse ? heif_chroma_444 : heif_chroma_420;
-    if (image->alpha_trait == BlendPixelTrait)
+    if ((image->alpha_trait & BlendPixelTrait) != 0)
       {
         if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
           status=TransformImageColorspace(image,sRGBColorspace,exception);

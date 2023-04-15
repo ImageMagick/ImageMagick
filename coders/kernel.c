@@ -204,7 +204,7 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
     {
       if ((x != 0) || (y != 0))
         (void) WriteBlobString(image,",");
-      if ((image->alpha_trait == BlendPixelTrait) &&
+      if (((image->alpha_trait != BlendPixelTrait) != 0) &&
           (GetPixelAlpha(image,p) < OpaqueAlpha/2))
         (void) WriteBlobString(image,"-");
       else

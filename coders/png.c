@@ -3763,7 +3763,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
       ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
       (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
       BlendPixelTrait : UndefinedPixelTrait;
-  if (image->alpha_trait == BlendPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) != 0)
     {
       if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
         image->type=GrayscaleAlphaType;
@@ -8521,8 +8521,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
        for (x=0; x < (ssize_t) image->columns; x++)
        {
-           if (image->alpha_trait == UndefinedPixelTrait ||
-              GetPixelAlpha(image,r) == OpaqueAlpha)
+           if (((image->alpha_trait & BlendPixelTrait) == 0) ||
+               (GetPixelAlpha(image,r) == OpaqueAlpha))
              {
                if (number_opaque < 259)
                  {
@@ -8833,7 +8833,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
               {
                 for (i=0; i< (ssize_t) image_colors; i++)
                 {
-                  if ((image->alpha_trait == UndefinedPixelTrait ||
+                  if ((((image->alpha_trait & BlendPixelTrait) == 0) ||
                       image->colormap[i].alpha == GetPixelAlpha(image,q)) &&
                       image->colormap[i].red == GetPixelRed(image,q) &&
                       image->colormap[i].green == GetPixelGreen(image,q) &&
@@ -9750,8 +9750,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
       if (ping_color_type == PNG_COLOR_TYPE_GRAY)
         {
-          if (image->alpha_trait == UndefinedPixelTrait &&
-               ping_have_non_bw == MagickFalse)
+          if (((image->alpha_trait & BlendPixelTrait) == 0) &&
+               (ping_have_non_bw == MagickFalse))
              ping_bit_depth=1;
         }
 
@@ -10429,7 +10429,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
         "Cannot write image with defined png:bit-depth or png:color-type.");
     }
 
-  if (image_matte != MagickFalse && image->alpha_trait == UndefinedPixelTrait)
+  if ((image_matte != MagickFalse) &&
+      ((image->alpha_trait & BlendPixelTrait) == 0))
     {
       /* Add an opaque matte channel */
       image->alpha_trait = BlendPixelTrait;

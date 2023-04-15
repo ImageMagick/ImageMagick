@@ -2730,7 +2730,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
   assert(hald_image->signature == MagickCoreSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   if (image->colorspace != hald_image->colorspace)
     (void) SetImageColorspace(image,hald_image->colorspace,exception);

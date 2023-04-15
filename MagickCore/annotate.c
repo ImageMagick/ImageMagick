@@ -1812,7 +1812,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       if (image->storage_class != DirectClass)
         (void) SetImageStorageClass(image,DirectClass,exception);
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     }
   for (p=draw_info->text; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
@@ -2359,7 +2359,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       /*
         Render fill color.
       */
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       if (annotate_image->alpha_trait == UndefinedPixelTrait)
         (void) SetImageAlphaChannel(annotate_image,OpaqueAlphaChannel,

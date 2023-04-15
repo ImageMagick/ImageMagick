@@ -1029,7 +1029,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           If we find a non zero value we assume the program that wrote the file
           wants to use the alpha channel.
         */
-        if ((image->alpha_trait == UndefinedPixelTrait) &&
+        if (((image->alpha_trait & BlendPixelTrait) == 0) &&
             (bmp_info.size == 40) && (bmp_info.bits_per_pixel == 32))
           {
             bytes_per_line=4*(image->columns);
@@ -1861,7 +1861,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     if (type == 2)
       bmp_info.size=12;
     else
-      if ((type == 3) || ((image->alpha_trait == UndefinedPixelTrait) &&
+      if ((type == 3) || (((image->alpha_trait & BlendPixelTrait) == 0) &&
           (have_color_info == MagickFalse)))
         {
           type=3;

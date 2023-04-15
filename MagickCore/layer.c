@@ -107,7 +107,7 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
 
   if (bounds->x < 0)
     return;
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   for (y=0; y < (ssize_t) bounds->height; y++)
   {

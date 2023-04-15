@@ -455,7 +455,7 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
   ssize_t
     y;
 
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     return(MagickTrue);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1573,7 +1573,7 @@ static void SetPsdMetaChannels(Image *image,const PSDInfo *psd_info,
     number_meta_channels;
 
   number_meta_channels=(ssize_t) channels-psd_info->min_channels;
-  if (image->alpha_trait == BlendPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) != 0)
     number_meta_channels--;
   if (number_meta_channels > 0)
     (void) SetPixelMetaChannels(image,(size_t) number_meta_channels,exception);

@@ -1673,7 +1673,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
           if (image->alpha_trait != UndefinedPixelTrait)
             dpx.image.image_element[i].descriptor=RGBAComponentType;
           if ((image_info->type != TrueColorType) &&
-              (image->alpha_trait == UndefinedPixelTrait) &&
+              ((image->alpha_trait & BlendPixelTrait) == 0) &&
               (IdentifyImageCoderGray(image,exception) != MagickFalse))
             dpx.image.image_element[i].descriptor=LumaComponentType;
           break;
