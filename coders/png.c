@@ -11172,71 +11172,59 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   if (mng_info->exclude_tEXt == MagickFalse || mng_info->exclude_zTXt == MagickFalse)
   {
     ResetImagePropertyIterator(image);
-    property=GetNextImageProperty(image);
-    while (property != (const char *) NULL)
+    while ((property=GetNextImageProperty(image)) != (const char *) NULL)
     {
       png_textp
         text;
 
-      value=GetImageProperty(image,property,exception);
-
       /* Don't write any "png:" or "jpeg:" properties; those are just for
        * "identify" or for passing through to another JPEG
        */
-      if ((LocaleNCompare(property,"png:",4) != 0 &&
-           LocaleNCompare(property,"jpeg:",5) != 0) &&
-
-
-          /* Suppress density and units if we wrote a pHYs chunk */
-          (mng_info->exclude_pHYs != MagickFalse      ||
-          LocaleCompare(property,"density") != 0 ||
-          LocaleCompare(property,"units") != 0) &&
-
-          /* Suppress the IM-generated Date:create and Date:modify */
-          (mng_info->exclude_date == MagickFalse      ||
-          LocaleNCompare(property, "Date:",5) != 0))
-        {
-        if (value != (const char *) NULL)
-          {
-
+      if ((LocaleNCompare(property,"png:",4) == 0 ||
+           LocaleNCompare(property,"jpeg:",5) == 0))
+        continue;
+      /* Suppress density and units if we wrote a pHYs chunk */
+      if ((mng_info->exclude_pHYs != MagickFalse) && (
+          ((LocaleCompare(property,"density") == 0) ||
+           (LocaleCompare(property,"units") == 0))))
+        continue;
+      /* Suppress the IM-generated date:create and date:modify */
+      if ((mng_info->exclude_date != MagickFalse) &&
+          (LocaleNCompare(property, "date:",5) == 0))
+        continue;
+      value=GetImageProperty(image,property,exception);
+      if (value == (const char *) NULL)
+        continue;
 #if PNG_LIBPNG_VER >= 10400
-            text=(png_textp) png_malloc(ping,
-                 (png_alloc_size_t) sizeof(png_text));
+      text=(png_textp) png_malloc(ping,
+            (png_alloc_size_t) sizeof(png_text));
 #else
-            text=(png_textp) png_malloc(ping,(png_size_t) sizeof(png_text));
+      text=(png_textp) png_malloc(ping,(png_size_t) sizeof(png_text));
 #endif
-            text[0].key=(char *) property;
-            text[0].text=(char *) value;
-            text[0].text_length=strlen(value);
+      text[0].key=(char *) property;
+      text[0].text=(char *) value;
+      text[0].text_length=strlen(value);
+      if (mng_info->exclude_tEXt != MagickFalse)
+        text[0].compression=PNG_TEXT_COMPRESSION_zTXt;
+      else if (mng_info->exclude_zTXt != MagickFalse)
+        text[0].compression=PNG_TEXT_COMPRESSION_NONE;
+      else
+      {
+        text[0].compression=image_info->compression == NoCompression ||
+          (image_info->compression == UndefinedCompression &&
+          text[0].text_length < 128) ? PNG_TEXT_COMPRESSION_NONE :
+          PNG_TEXT_COMPRESSION_zTXt ;
+      }
+      if (logging != MagickFalse)
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "  Setting up text chunk");
 
-            if (mng_info->exclude_tEXt != MagickFalse)
-               text[0].compression=PNG_TEXT_COMPRESSION_zTXt;
-
-            else if (mng_info->exclude_zTXt != MagickFalse)
-               text[0].compression=PNG_TEXT_COMPRESSION_NONE;
-
-            else
-            {
-               text[0].compression=image_info->compression == NoCompression ||
-                 (image_info->compression == UndefinedCompression &&
-                 text[0].text_length < 128) ? PNG_TEXT_COMPRESSION_NONE :
-                 PNG_TEXT_COMPRESSION_zTXt ;
-            }
-
-            if (logging != MagickFalse)
-              {
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "  Setting up text chunk");
-
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    keyword: '%s'",text[0].key);
-              }
-
-            png_set_text(ping,ping_info,text,1);
-            png_free(ping,text);
-          }
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    keyword: '%s'",text[0].key);
         }
-      property=GetNextImageProperty(image);
+      png_set_text(ping,ping_info,text,1);
+      png_free(ping,text);
     }
   }
 
