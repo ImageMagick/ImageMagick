@@ -2434,11 +2434,134 @@ static void Sync8BimProfile(const Image *image,
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+12);
       }
     if (id == 0x0422)
-      (void) SyncExifProfile(image,p,count);
+      SyncExifProfile(image,p,count);
     p+=count;
     length-=count;
   }
   return;
+}
+
+static void ReplaceXmpValue(StringInfo *profile,size_t start,size_t end,
+  const char *value)
+{
+  char
+    *datum;
+
+  size_t
+    length,
+    new_length,
+    value_length;
+
+  length=GetStringInfoLength(profile);
+  value_length=strlen(value);
+  new_length=length-(end-start)+value_length;
+  if (new_length > length)
+    SetStringInfoLength(profile,new_length);
+  datum=(char *) GetStringInfoDatum(profile);
+  memmove(datum+start+value_length,datum+end,length-end);
+  memcpy(datum+start,value,value_length);
+  if (new_length < length)
+    {
+      SetStringInfoLength(profile,new_length);
+      *(datum+new_length)='\0';
+    }
+}
+
+static MagickBooleanType GetXmpOffsets(const StringInfo *profile,
+  const char *tag,size_t *start,size_t *end)
+{
+  char
+    *datum,
+    *pos;
+
+  size_t
+    length,
+    tag_length;
+
+  datum=(char *) GetStringInfoDatum(profile);
+  length=GetStringInfoLength(profile);
+  pos=strstr(datum,tag);
+  tag_length=strlen(tag);
+  if ((pos == (char *) NULL) || ((pos-datum) < 1) || (*(pos-1) != '<') ||
+      (((pos-datum)+tag_length) > length) || (*(pos+tag_length) != '>'))
+    return(MagickFalse);
+  *start=(pos-datum)+tag_length+1;
+  pos=strstr(datum+*start,"<");
+  if (pos == (char *) NULL)
+    return(MagickFalse);
+  *end=(pos-datum);
+  return(MagickTrue);
+}
+
+static void GetXmpNumeratorAndDenominator(double value,size_t *numerator,
+  size_t *denominator)
+{
+  double
+    df;
+
+  *numerator=0;
+  *denominator=1;
+  if (value <= MagickEpsilon)
+    return;
+  *numerator=1;
+  df=1.0;
+  while(fabs(df - value) > MagickEpsilon)
+  {
+    if (df < value)
+      (*numerator)++;
+    else
+      {
+        (*denominator)++;
+        *numerator=(size_t) (value*(*denominator));
+      }
+    df=*numerator/(double)*denominator;
+  }
+}
+
+static void SyncXmpProfile(const Image *image,StringInfo *profile)
+{
+  char
+    value[MagickPathExtent];
+
+  size_t
+    denominator,
+    end,
+    numerator,
+    start;
+
+  *value='\0';
+  if (GetXmpOffsets(profile,"tiff:XResolution",&start,&end) != MagickFalse)
+    {
+      GetXmpNumeratorAndDenominator(image->resolution.x,&numerator,
+        &denominator);
+      (void) FormatLocaleString(value,MagickPathExtent,"%zu/%zu",numerator,
+        denominator);
+      ReplaceXmpValue(profile,start,end,value);
+    }
+  if (GetXmpOffsets(profile,"tiff:YResolution",&start,&end) != MagickFalse)
+    {
+      if ((fabs(image->resolution.x-image->resolution.y) > MagickEpsilon) ||
+          (*value == '\0'))
+        {
+        printf("REACHED\n");
+          GetXmpNumeratorAndDenominator(image->resolution.y,&numerator,
+            &denominator);
+          (void) FormatLocaleString(value,MagickPathExtent,"%zu/%zu",numerator,
+            denominator);
+        }
+      ReplaceXmpValue(profile,start,end,value);
+    }
+  if (GetXmpOffsets(profile,"tiff:ResolutionUnit",&start,&end) != MagickFalse)
+    {
+      (void) FormatLocaleString(value,MagickPathExtent,"%d",image->units);
+      ReplaceXmpValue(profile,start,end,value);
+    }
+  if (GetXmpOffsets(profile,"tiff:Orientation",&start,&end) != MagickFalse)
+    {
+      (void) FormatLocaleString(value,MagickPathExtent,"%d",
+        (int) image->orientation);
+      ReplaceXmpValue(profile,start,end,value);
+    }
 }
 
 MagickPrivate void SyncImageProfiles(Image *image)
@@ -2453,6 +2576,9 @@ MagickPrivate void SyncImageProfiles(Image *image)
   if (profile != (StringInfo *) NULL)
     SyncExifProfile(image,GetStringInfoDatum(profile),GetStringInfoLength(
       profile));
+  profile=(StringInfo *) GetImageProfile(image,"XMP");
+  if (profile != (StringInfo *) NULL)
+    SyncXmpProfile(image,profile);
 }
 
 static void UpdateClipPath(unsigned char *blob,size_t length,
