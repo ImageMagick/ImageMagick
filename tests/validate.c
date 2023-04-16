@@ -86,7 +86,7 @@
 %
 %  A description of each parameter follows:
 %
-%    o fail: return the number of validation tests that pass.
+%    o fails: return the number of validation tests that pass.
 %
 %    o exception: return any errors or warnings in this structure.
 %
