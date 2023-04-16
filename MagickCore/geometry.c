@@ -352,7 +352,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
               if (LocaleNCompare(p,"0x",2) == 0)
                 *width=(size_t) strtol(p,&p,10);
               else
-                *width=CastDoubleToUnsigned(StringToDouble(p,&p));
+                *width=CastDoubleToUnsigned(StringToDouble(p,&p)+0.5);
             }
           if (p != q)
             flags|=WidthValue;
@@ -371,7 +371,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
               */
               q=p;
               if (height != (size_t *) NULL)
-                *height=CastDoubleToUnsigned(StringToDouble(p,&p));
+                *height=CastDoubleToUnsigned(StringToDouble(p,&p)+0.5);
               if (p != q)
                 flags|=HeightValue;
             }
@@ -1355,8 +1355,8 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
       scale.y=geometry_info.sigma;
       if ((status & SigmaValue) == 0)
         scale.y=scale.x;
-      region_info->width=CastDoubleToUnsigned(scale.x*image->columns/100.0);
-      region_info->height=CastDoubleToUnsigned(scale.y*image->rows/100.0);
+      region_info->width=CastDoubleToUnsigned(scale.x*image->columns/100.0+0.5);
+      region_info->height=CastDoubleToUnsigned(scale.y*image->rows/100.0+0.5);
     }
   if ((flags & AspectRatioValue) != 0)
     {
@@ -1381,18 +1381,18 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
         {
           if (geometry_ratio < image_ratio)
             region_info->height=CastDoubleToUnsigned((double) image->rows*
-              image_ratio/geometry_ratio);
+              image_ratio/geometry_ratio+0.5);
           else
             region_info->width=CastDoubleToUnsigned((double) image->columns*
-              geometry_ratio/image_ratio);
+              geometry_ratio/image_ratio+0.5);
         }
       else
         if (geometry_ratio >= image_ratio)
           region_info->height=CastDoubleToUnsigned((double) image->rows*
-            image_ratio/geometry_ratio);
+            image_ratio/geometry_ratio+0.5);
         else
           region_info->width=CastDoubleToUnsigned((double) image->columns*
-            geometry_ratio/image_ratio);
+            geometry_ratio/image_ratio+0.5);
     }
   /*
     Adjust offset according to gravity setting.
@@ -1542,7 +1542,7 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       else
         {
           *width=CastDoubleToUnsigned(PerceptibleReciprocal(image_ratio)*
-            stasis_width*geometry_ratio);
+            stasis_width*geometry_ratio+0.5);
           *height=stasis_height;
         }
       stasis_width=(*width);
@@ -1594,8 +1594,10 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
                   (scale_factor < ((double) *height/(double) stasis_width)))
                 scale_factor=(double) *height/(double) stasis_width;
             }
-      *width=MagickMax((size_t) floor(scale_factor*stasis_width+0.5),1UL);
-      *height=MagickMax((size_t) floor(scale_factor*stasis_height+0.5),1UL);
+      *width=CastDoubleToUnsigned(MagickMax(floor(scale_factor*stasis_width+
+        0.5),1.0));
+      *height=CastDoubleToUnsigned(MagickMax(floor(scale_factor*stasis_height+
+        0.5),.10));
     }
   if ((flags & GreaterValue) != 0)
     {
@@ -1632,10 +1634,10 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
         PerceptibleReciprocal(sqrt(area)));
       if ((scale.x < (double) *width) || (scale.y < (double) *height))
         {
-          *width=(unsigned long) (stasis_width*PerceptibleReciprocal(
-            distance*PerceptibleReciprocal(sqrt(area))));
-          *height=(unsigned long) (stasis_height*PerceptibleReciprocal(
-            distance*PerceptibleReciprocal(sqrt(area))));
+          *width=CastDoubleToUnsigned(stasis_width*PerceptibleReciprocal(
+            distance*PerceptibleReciprocal(sqrt(area)))+0.5);
+          *height=CastDoubleToUnsigned(stasis_height*PerceptibleReciprocal(
+            distance*PerceptibleReciprocal(sqrt(area)))+0.5);
         }
     }
   return(flags);
