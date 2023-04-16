@@ -2554,7 +2554,7 @@ static void SyncXmpProfile(const Image *image,StringInfo *profile)
   if (GetXmpOffsets(profile,"tiff:ResolutionUnit",&start,&end) != MagickFalse)
     {
       (void) FormatLocaleString(value,MagickPathExtent,"%d",
-        ((int)image->units)+1);
+        ((int) image->units)+1);
       ReplaceXmpValue(profile,start,end,value);
     }
   if (GetXmpOffsets(profile,"tiff:Orientation",&start,&end) != MagickFalse)
