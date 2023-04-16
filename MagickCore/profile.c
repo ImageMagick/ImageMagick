@@ -2543,7 +2543,6 @@ static void SyncXmpProfile(const Image *image,StringInfo *profile)
       if ((fabs(image->resolution.x-image->resolution.y) > MagickEpsilon) ||
           (*value == '\0'))
         {
-        printf("REACHED\n");
           GetXmpNumeratorAndDenominator(image->resolution.y,&numerator,
             &denominator);
           (void) FormatLocaleString(value,MagickPathExtent,"%zu/%zu",numerator,
