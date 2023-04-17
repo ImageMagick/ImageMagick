@@ -11193,7 +11193,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
            (LocaleCompare(property,"units") == 0))))
         continue;
       /* Suppress the IM-generated date:create and date:modify */
-      if ((mng_info->exclude_date == MagickFalse) &&
+      if ((mng_info->exclude_date != MagickFalse) &&
           (LocaleNCompare(property, "date:",5) == 0))
         continue;
       value=GetImageProperty(image,property,exception);
