@@ -424,7 +424,7 @@ static Image *SparseColorOption(const Image *image,
 %        arg2 is currently only used by "-limit"
 %
 */
-WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
+static void CLISettingOptionInfo(MagickCLI *cli_wand,
      const char *option,const char *arg1n, const char *arg2n)
 {
   ssize_t
@@ -3750,7 +3750,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
 #undef IsPlusOp
 }
 
-WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
+static MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
   const char *option,const char *arg1,const char *arg2,ExceptionInfo *exception)
 {
 #if !USE_WAND_METHODS
@@ -3822,7 +3822,7 @@ WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
 %        arg2 is currently not used
 %
 */
-WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
+static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
   const char *option,const char *arg1n,const char *arg2n)
 {
   const char    /* percent escaped versions of the args */
@@ -4829,7 +4829,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 %                   Currently arg2 is not used.
 %
 */
-WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
+static void CLINoImageOperator(MagickCLI *cli_wand,
   const char *option,const char *arg1n,const char *arg2n)
 {
   const char    /* percent escaped versions of the args */

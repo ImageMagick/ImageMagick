@@ -22,15 +22,6 @@
 extern "C" {
 #endif
 
-/* These actually private */
-extern WandPrivate MagickBooleanType
-  CLIListOperatorImages(MagickCLI *, const char *,const char *,const char *);
-
-extern WandPrivate void
-  CLISettingOptionInfo(MagickCLI *,const char *,const char *, const char *),
-  CLISimpleOperatorImages(MagickCLI *,const char *,const char *,const char *),
-  CLINoImageOperator(MagickCLI *, const char *,const char *,const char *);
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
