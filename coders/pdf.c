@@ -2565,11 +2565,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       Write Thumb object.
     */
     SetGeometry(image,&geometry);
-    (void) ParseMetaGeometry("106x106+0+0>",&geometry.x,&geometry.y,
-      &geometry.width,&geometry.height);
     thumbnail=IsStringTrue(GetImageOption(image_info,"pdf:thumbnail"));
     if (thumbnail == MagickFalse)
       (void) ParseMetaGeometry("1x1+0+0>",&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
+    else
+      (void) ParseMetaGeometry("106x106+0+0>",&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
     tile_image=ThumbnailImage(image,geometry.width,geometry.height,exception);
     if (tile_image == (Image *) NULL)
