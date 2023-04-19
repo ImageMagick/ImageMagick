@@ -1601,8 +1601,7 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
           type=UndefinedType;
           break;
         }
-      if ((type == BilevelType) &&
-          (IsPixelMonochrome(image,p) == MagickFalse))
+      if ((type == BilevelType) && (IsPixelMonochrome(image,p) == MagickFalse))
         type=GrayscaleType;
       p+=GetPixelChannels(image);
     }
@@ -1780,7 +1779,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if (IsGrayImageType(image->type))
+  if (IsGrayImageType(image->type) != MagickFalse)
     return(MagickTrue);
   return(MagickFalse);
 }

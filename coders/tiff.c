@@ -3563,7 +3563,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             photometric=PHOTOMETRIC_RGB;
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
         if ((image_info->type != TrueColorType) &&
-            (image_info->type != TrueColorAlphaType))
+            (image_info->type != TrueColorAlphaType) &&
+            (image->number_meta_channels == 0))
           {
             if ((image_info->type != PaletteType) &&
                 (IdentifyImageCoderGray(image,exception) != MagickFalse))
