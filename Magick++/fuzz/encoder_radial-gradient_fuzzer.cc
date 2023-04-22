@@ -22,7 +22,7 @@
 #include "utils.cc"
 #include "encoder_utils.cc"
 
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 {
-  return fuzzEncoderWithStringFilename("radial-gradient", Data, Size);
+  return(fuzzEncoderWithStringFileName("radial-gradient",Data,Size));
 }

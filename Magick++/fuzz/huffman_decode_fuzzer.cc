@@ -25,16 +25,19 @@ namespace MagickCore
   extern "C" void AttachBlob(BlobInfo *,const void *,const size_t);
 }
 
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 {
-  if (IsInvalidSize(Size, 1, 0))
-    return 0;
-  Magick::Image image;
-  MagickCore::AttachBlob(image.image()->blob,(const void *) Data,Size);
+  Magick::ExceptionInfo
+    *exceptionInfo;
 
-  Magick::ExceptionInfo *exceptionInfo;
+  Magick::Image
+    image;
+
+  if (IsInvalidSize(Size,1,0))
+    return(0);
+  MagickCore::AttachBlob(image.image()->blob,(const void *) Data,Size);
   exceptionInfo=MagickCore::AcquireExceptionInfo();
-  (void) HuffmanDecodeImage(image.image(), exceptionInfo);
+  (void) HuffmanDecodeImage(image.image(),exceptionInfo);
   (void) MagickCore::DestroyExceptionInfo(exceptionInfo);
-  return 0;
+  return(0);
 }

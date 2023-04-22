@@ -20,22 +20,30 @@
 
 #include "utils.cc"
 
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 {
-  uint16_t Width;
-  uint16_t Height;
-  if (IsInvalidSize(Size, sizeof(Width) + sizeof(Height)))
-    return 0;
-  Width = *reinterpret_cast<const uint16_t *>(Data);
-  Height = *reinterpret_cast<const uint16_t *>(Data + sizeof(Width));
-  const Magick::Blob blob(Data + sizeof(Width) + sizeof(Height),
-                          Size - (sizeof(Width) + sizeof(Height)));
-  Magick::Image image;
-  try {
+  Magick::Image
+    image;
+
+  uint16_t
+    height,
+    width;
+
+  if (IsInvalidSize(Size,sizeof(width)+sizeof(height)))
+    return(0);
+  width=*reinterpret_cast<const uint16_t *>(Data);
+  height=*reinterpret_cast<const uint16_t *>(Data+sizeof(width));
+  try
+  {
+    const Magick::Blob
+      blob(Data+sizeof(width)+sizeof(height),Size-(sizeof(width)+
+        sizeof(height)));
+
     image.read(blob);
-    image.crop(Magick::Geometry(Width, Height));
-  } catch (Magick::Exception &e) {
-    return 0;
+    image.crop(Magick::Geometry(width,height));
   }
-  return 0;
+  catch (Magick::Exception &e)
+  {
+  }
+  return(0);
 }

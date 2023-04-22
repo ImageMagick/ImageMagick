@@ -24,7 +24,7 @@
 #include "utils.cc"
 #include "encoder_utils.cc"
 
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 {
-  return fuzzEncoderWithStringFilename("plasma", Data, Size);
+  return(fuzzEncoderWithStringFileName("plasma",Data,Size));
 }

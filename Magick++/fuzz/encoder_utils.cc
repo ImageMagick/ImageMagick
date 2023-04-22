@@ -14,22 +14,27 @@
   limitations under the License.
 */
 
-static int fuzzEncoderWithStringFilename(const std::string encoder, const uint8_t *Data, size_t Size, bool (*validate)(const std::string &) = NULL)
+static int fuzzEncoderWithStringFileName(const std::string encoder,
+  const uint8_t *data,size_t size,bool (*validate)(const std::string &) = NULL)
 {
-  if (IsInvalidSize(Size))
-    return 0;
+  std::string
+    fileName;
 
-  std::string fileName(reinterpret_cast<const char*>(Data), Size);
-
+  if (IsInvalidSize(size))
+    return(0);
+  fileName=std::string(reinterpret_cast<const char*>(data), size);
   // Can be used to deny specific file names
   if ((validate != NULL) && (validate(fileName) == false))
-    return 0;
+    return(0);
+  try
+  {
+    Magick::Image
+      image;
 
-  Magick::Image image;
-  try {
     image.read(encoder + ":" + fileName);
   }
-  catch (Magick::Exception &e) {
+  catch (Magick::Exception &e)
+  {
   }
-  return 0;
+  return(0);
 }

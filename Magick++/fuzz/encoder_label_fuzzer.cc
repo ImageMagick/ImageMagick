@@ -26,12 +26,12 @@ static bool validateFileName(const std::string &fileName)
 {
   // Signature: this will most likely cause a timeout.
   if (fileName.find("%#") != -1)
-    return false;
+    return(false);
 
-  return true;
+  return(true);
 }
 
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 {
-  return fuzzEncoderWithStringFilename("label", Data, Size, validateFileName);
+  return(fuzzEncoderWithStringFileName("label",Data,Size,validateFileName));
 }

@@ -21,21 +21,29 @@
 
 #include "utils.cc"
 
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 {
-  if (IsInvalidSize(Size, sizeof(double), 0))
-    return 0;
-  double Degrees = *reinterpret_cast<const double *>(Data);
-  if (!isfinite(Degrees)) {
-    return 0;
-  }
-  const Magick::Blob blob(Data + sizeof(Degrees), Size - sizeof(Degrees));
-  Magick::Image image;
-  try {
+  double
+    degrees;
+
+  if (IsInvalidSize(Size,sizeof(double),0))
+    return(0);
+  degrees=*reinterpret_cast<const double *>(Data);
+  if (!isfinite(degrees))
+    return(0);
+  try
+  {
+    const Magick::Blob
+      blob(Data+sizeof(degrees),Size-sizeof(degrees));
+
+    Magick::Image
+      image;
+
     image.read(blob);
-    image.rotate(Degrees);
-  } catch (Magick::Exception &e) {
-    return 0;
+    image.rotate(degrees);
   }
-  return 0;
+  catch (Magick::Exception &e)
+  {
+  }
+  return(0);
 }
