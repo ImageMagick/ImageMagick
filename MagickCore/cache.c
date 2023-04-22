@@ -5028,9 +5028,9 @@ static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
 static inline MagickBooleanType ValidatePixelOffset(const ssize_t x,
   const size_t a)
 {
-  if ((x >= 0) && (x >= ((ssize_t) (MAGICK_SSIZE_MAX/MaxPixelChannels-a))))
+  if ((x >= 0) && (x >= ((ssize_t) (MAGICK_SSIZE_MAX-MaxPixelChannels*a))))
     return(MagickFalse);
-  if (x <= ((ssize_t) (MAGICK_SSIZE_MIN/MaxPixelChannels+a)))
+  if (x <= ((ssize_t) (MAGICK_SSIZE_MIN+MaxPixelChannels*a)))
     return(MagickFalse);
   return(MagickTrue);
 }
