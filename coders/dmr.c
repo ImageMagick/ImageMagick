@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                            M   M   CCCC  RRRR                               %
-%                            MM MM  C      R   R                              %
-%                            M M M  C      RRRR                               %
-%                            M   M  C      R R                                %
-%                            M   M   CCCC  R  R                               %
+%                            DDDD   M   M  RRRR                               %
+%                            D   D  MM MM  R   R                              %
+%                            D   D  M M M  RRRR                               %
+%                            D   D  M   M  R R                                %
+%                            DDDD   M   M  R  R                               %
 %                                                                             %
 %                                                                             %
-%                Read from or write to a Magick Cache Repo.                   %
+%                  Get or put to a Digital Media Repository.                  %
 %                                                                             %
 %                              Software Design                                %
 %                                   Cristy                                    %
@@ -60,35 +60,35 @@
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/xwindow-private.h"
-#if defined(MAGICKCORE_MCR_DELEGATE)
+#if defined(MAGICKCORE_DMR_DELEGATE)
 #include <MagickCache/MagickCache.h>
 #endif
 
-#if defined(MAGICKCORE_MCR_DELEGATE)
+#if defined(MAGICKCORE_DMR_DELEGATE)
 /*
   Forward declarations.
 */
 static MagickBooleanType
-  WriteMCRImage(const ImageInfo *,Image *,ExceptionInfo *);
+  WriteDMRImage(const ImageInfo *,Image *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M C R I m a g e                                                   %
+%   R e a d D M R I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadMCRImage() reads a Adobe Postscript image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
+%  ReadDMRImage() reads an image from a digital media repository and returns it.
+%  It allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadMCRImage method is:
+%  The format of the ReadDMRImage method is:
 %
-%      Image *ReadMCRImage(const ImageInfo *image_info,
+%      Image *ReadDMRImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -98,7 +98,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadMCRImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadDMRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -116,33 +116,32 @@ static Image *ReadMCRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r M C R I m a g e                                           %
+%   R e g i s t e r D M R I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterMCRImage() adds attributes for the Display Postscript image
-%  format to the list of supported formats.  The attributes include the image
-%  format tag, a method to read and/or write the format, whether the format
-%  supports the saving of more than one frame to the same file or blob,
-%  whether the format supports native in-memory I/O, and a brief
-%  description of the format.
+%  RegisterDMRImage() adds attributes for the Magick Cache repository format
+%  to the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format supports
+%  the saving of more than one frame to the same file or blob, whether the
+%  format supports native in-memory I/O, and a brief description of the format.
 %
-%  The format of the RegisterMCRImage method is:
+%  The format of the RegisterDMRImage method is:
 %
-%      size_t RegisterMCRImage(void)
+%      size_t RegisterDMRImage(void)
 %
 */
-ModuleExport size_t RegisterMCRImage(void)
+ModuleExport size_t RegisterDMRImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("MCR","MCR","Magick Cache Repo");
-#if defined(MAGICKCORE_MCR_DELEGATE)
-  entry->decoder=(DecodeImageHandler *) ReadMCRImage;
-  entry->encoder=(EncodeImageHandler *) WriteMCRImage;
+  entry=AcquireMagickInfo("DMR","DMR","Digital Media Repository");
+#if defined(MAGICKCORE_DMR_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadDMRImage;
+  entry->encoder=(EncodeImageHandler *) WriteDMRImage;
 #endif
   entry->flags^=CoderBlobSupportFlag;
   (void) RegisterMagickInfo(entry);
@@ -154,42 +153,42 @@ ModuleExport size_t RegisterMCRImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M C R I m a g e                                       %
+%   U n r e g i s t e r D M R I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UnregisterMCRImage() removes format registrations made by the
-%  MCR module from the list of supported formats.
+%  UnregisterDMRImage() removes format registrations made by the MCR module
+%  from the list of supported formats.
 %
-%  The format of the UnregisterMCRImage method is:
+%  The format of the UnregisterDMRImage method is:
 %
-%      UnregisterMCRImage(void)
+%      UnregisterDMRImage(void)
 %
 */
-ModuleExport void UnregisterMCRImage(void)
+ModuleExport void UnregisterDMRImage(void)
 {
-  (void) UnregisterMagickInfo("MCR");
+  (void) UnregisterMagickInfo("DMR");
 }
 
-#if defined(MAGICKCORE_MCR_DELEGATE)
+#if defined(MAGICKCORE_DMR_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e M C R I m a g e                                                 %
+%   W r i t e D M R I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteMCRImage() writes an image to a file in MCR X image format.
+%  WriteDMRImage() puts an image to the digital media repository.
 %
-%  The format of the WriteMCRImage method is:
+%  The format of the WriteDMRImage method is:
 %
-%      MagickBooleanType WriteMCRImage(const ImageInfo *image_info,
+%      MagickBooleanType WriteDMRImage(const ImageInfo *image_info,
 %        Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
@@ -201,7 +200,7 @@ ModuleExport void UnregisterMCRImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType WriteMCRImage(const ImageInfo *image_info,Image *image,
+static MagickBooleanType WriteDMRImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
   return(MagickTrue);

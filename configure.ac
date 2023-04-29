@@ -2249,6 +2249,41 @@ AC_SUBST([GVC_LIBS])
 dnl ===========================================================================
 
 #
+# Check for DMR, digital media repository, delegate library.
+#
+AC_ARG_WITH([dmr],
+    [AS_HELP_STRING([--without-dmr], [disable digital media repository support])],
+    [with_dmr=$withval],
+    [with_dmr='yes'])
+
+if test "$with_dmr" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-dmr=$with_dmr "
+fi
+
+have_dmr='no'
+DMR_CFLAGS=""
+DMR_LIBS=""
+DMR_PKG=""
+if test "x$with_dmr" = "xyes"; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  PKG_CHECK_MODULES([MagickCache],[MagickCache >= 0.9.2],[have_dmr=yes],[have_dmr=no])
+  AC_MSG_RESULT([])
+fi
+
+if test "$have_dmr" = 'yes'; then
+  AC_DEFINE([DMR_DELEGATE],[1],[Define if you have DMR library])
+  DMR_CFLAGS="$MagickCache_CFLAGS"
+  DMR_LIBS="$MagickCache_LIBS"
+  CFLAGS="$DMR_CFLAGS $CFLAGS"
+fi
+
+AM_CONDITIONAL([DMR_DELEGATE],[test "$have_dmr" = 'yes'])
+AC_SUBST([DMR_CFLAGS])
+AC_SUBST([DMR_LIBS])
+
+dnl ===========================================================================
+
+#
 # Check for the HEIC delegate library.
 #
 AC_ARG_WITH([heic],
@@ -2438,40 +2473,6 @@ fi
 AM_CONDITIONAL([LCMS_DELEGATE],[test "$have_lcms" = 'yes'])
 AC_SUBST([LCMS_CFLAGS])
 AC_SUBST([LCMS_LIBS])
-
-dnl ===========================================================================
-
-#
-# Check for MCR delegate library.
-#
-AC_ARG_WITH([mcr],
-    [AS_HELP_STRING([--without-mcr], [disable MCR support])],
-    [with_mcr=$withval],
-    [with_mcr='yes'])
-
-if test "$with_mcr" != 'yes'; then
-    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-mcr=$with_mcr "
-fi
-
-have_mcr='no'
-MCR_CFLAGS=""
-MCR_LIBS=""
-MCR_PKG=""
-if test "x$with_mcr" = "xyes"; then
-  AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([MagickCache],[MagickCache >= 0.9.2],[have_mcr=yes],[have_mcr=no])
-  AC_MSG_RESULT([])
-fi
-
-if test "$have_mcr" = 'yes'; then
-  AC_DEFINE([MCR_DELEGATE],[1],[Define if you have MCR library])
-  CFLAGS="$MCR_CFLAGS $CFLAGS"
-fi
-
-AM_CONDITIONAL([MCR_DELEGATE],[test "$have_mcr" = 'yes'])
-AC_SUBST([MCR_CFLAGS])
-AC_SUBST([MCR_LIBS])
-
 
 dnl ===========================================================================
 
@@ -3752,11 +3753,14 @@ fi
 if test "$have_cairo"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES cairo"
 fi
-if test "$have_dps"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES dps"
+if test "$have_dmr"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES dmr"
 fi
 if test "$have_djvu"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES djvu"
+fi
+if test "$have_dps"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES dps"
 fi
 if test "$have_fftw"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES fftw"
@@ -3802,9 +3806,6 @@ if test "$have_lqr"    = 'yes' ; then
 fi
 if test "$have_lzma"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES lzma"
-fi
-if test "$have_magickcache"    = 'yes' ; then
-   MAGICK_DELEGATES="$MAGICK_DELEGATES magickcache"
 fi
 if test "$have_openexr"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES openexr"
@@ -3915,9 +3916,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $MAGICKCACHE_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $DMR_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $MAGICKCACHE_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $DMR_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 AC_SUBST([MAGICK_DEP_LIBS])
@@ -4077,11 +4078,11 @@ Delegate library configuration:
   JBIG              --with-jbig=$with_jbig		$have_jbig
   JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
   JPEG XL           --with-jxl=$with_jxl		$have_jxl
+  DMR               --with-dmr=$with_dmr		$have_dmr
   LCMS              --with-lcms=$with_lcms		$have_lcms
   LQR               --with-lqr=$with_lqr		$have_lqr
   LTDL              --with-ltdl=$with_ltdl		$have_ltdl
   LZMA              --with-lzma=$with_lzma		$have_lzma
-  MagickCache       --with-magickcache=$with_magickcache		$have_magickcache
   Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
   OpenEXR           --with-openexr=$with_openexr		$have_openexr
   OpenJP2           --with-openjp2=$with_openjp2		$have_openjp2

@@ -34,6 +34,9 @@
 /* Define if you have DJVU library */
 #undef DJVU_DELEGATE
 
+/* Define if you have DMR library */
+#undef DMR_DELEGATE
+
 /* Directory where ImageMagick documents live. */
 #undef DOCUMENTATION_PATH
 
@@ -796,9 +799,6 @@
 
 /* Target Host Vendor */
 #undef MAGICK_TARGET_VENDOR
-
-/* Define if you have MCR library */
-#undef MCR_DELEGATE
 
 /* Module directory name without ABI part. */
 #undef MODULES_BASEDIRNAME

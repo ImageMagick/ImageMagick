@@ -16,15 +16,15 @@
 
 #include "coders/coders-private.h"
 
-#define MagickMCRHeaders
+#define MagickDMRHeaders
 
-#define MagickMCRAliases
+#define MagickDMRAliases
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-MagickCoderExports(MCR)
+MagickCoderExports(DMR)
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
