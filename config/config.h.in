@@ -797,6 +797,9 @@
 /* Target Host Vendor */
 #undef MAGICK_TARGET_VENDOR
 
+/* Define if you have MCR library */
+#undef MCR_DELEGATE
+
 /* Module directory name without ABI part. */
 #undef MODULES_BASEDIRNAME
 

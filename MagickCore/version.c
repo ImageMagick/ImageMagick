@@ -169,6 +169,9 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_LZMA_DELEGATE)
   "lzma "
 #endif
+#if defined(MAGICKCORE_MAGICKCACHE_DELEGATE)
+  "magickcache "
+#endif
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
   "openexr "
 #endif

@@ -62,6 +62,11 @@ MAGICKCORE_JXL_MODULES = coders/jxl.la
 MAGICKCORE_JXL_SRCS = coders/jxl.c
 endif
 
+if MCR_DELEGATE
+MAGICKCORE_MCR_MODULES = coders/mcr.la
+MAGICKCORE_MCR_SRCS = coders/mcr.c
+endif
+
 if LIBOPENJP2_DELEGATE
 MAGICKCORE_JP2_MODULES = coders/jp2.la
 MAGICKCORE_JP2_SRCS = coders/jp2.c
@@ -381,6 +386,7 @@ MAGICKCORE_CODER_SRCS = \
 	$(MAGICKCORE_JPEG_SRCS) \
 	$(MAGICKCORE_JP2_SRCS) \
 	$(MAGICKCORE_JXL_SRCS) \
+	$(MAGICKCORE_MCR_SRCS) \
 	$(MAGICKCORE_PNG_SRCS) \
 	$(MAGICKCORE_TIFF_SRCS) \
 	$(MAGICKCORE_WEBP_SRCS) \
@@ -668,6 +674,7 @@ coders_LTLIBRARIES = \
 	$(MAGICKCORE_JPEG_MODULES) \
 	$(MAGICKCORE_JP2_MODULES) \
 	$(MAGICKCORE_JXL_MODULES) \
+	$(MAGICKCORE_MCR_MODULES) \
 	$(MAGICKCORE_PNG_MODULES) \
 	$(MAGICKCORE_TIFF_MODULES) \
 	$(MAGICKCORE_WEBP_MODULES) \
@@ -1054,6 +1061,12 @@ coders_matte_la_SOURCES    = coders/matte.c
 coders_matte_la_CPPFLAGS   = $(MAGICK_CODER_CPPFLAGS)
 coders_matte_la_LDFLAGS    = $(MODULECOMMONFLAGS)
 coders_matte_la_LIBADD     = $(MAGICKCORE_LIBS)
+
+# MCR coder module
+coders_mcr_la_SOURCES      = coders/mcr.c
+coders_mcr_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_mcr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_mcr_la_LIBADD       = $(MAGICKCORE_LIBS) $(MCR_LIBS)
 
 # META coder module
 coders_meta_la_SOURCES     = coders/meta.c
