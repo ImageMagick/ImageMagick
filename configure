@@ -5165,7 +5165,7 @@ MAGICK_PATCHLEVEL_VERSION=9
 
 MAGICK_VERSION=7.1.1-9
 
-MAGICK_GIT_REVISION=46fe429c0:20230428
+MAGICK_GIT_REVISION=c5762cc9c:20230430
 
 
 # Substitute library versioning
@@ -5199,7 +5199,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,9
 
-PACKAGE_RELEASE_DATE=2023-04-28
+PACKAGE_RELEASE_DATE=2023-04-30
 
 
 # Ensure that make can run correctly
@@ -9078,6 +9078,7 @@ else $as_nop
 		fujitsu:	__FUJITSU
 		sdcc:		SDCC,__SDCC
 		sx:		_SX
+		nvhpc:		__NVCOMPILER
 		portland:	__PGI
 		gnu:		__GNUC__
 		sun:		__SUNPRO_C,__SUNPRO_CC,__SUNPRO_F90,__SUNPRO_F95
@@ -10068,6 +10069,7 @@ else $as_nop
 		fujitsu:	__FUJITSU
 		sdcc:		SDCC,__SDCC
 		sx:		_SX
+		nvhpc:		__NVCOMPILER
 		portland:	__PGI
 		gnu:		__GNUC__
 		sun:		__SUNPRO_C,__SUNPRO_CC,__SUNPRO_F90,__SUNPRO_F95

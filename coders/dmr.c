@@ -10,7 +10,7 @@
 %                            DDDD   M   M  R  R                               %
 %                                                                             %
 %                                                                             %
-%                  Get or put to a Digital Media Repository.                  %
+%              Get or put content to a Digital Media Repository.              %
 %                                                                             %
 %                              Software Design                                %
 %                                   Cristy                                    %
@@ -100,6 +100,55 @@ static MagickBooleanType
 */
 static Image *ReadDMRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define DestroyDMRResources() \
+{ \
+  if (cache != (MagickCache *) NULL) \
+    cache=DestroyMagickCache(cache); \
+  if (message != (char *) NULL) \
+    message=DestroyString(message); \
+  if (passkey != (StringInfo *) NULL) \
+    passkey=DestroyStringInfo(passkey); \
+  if (passphrase != (StringInfo *) NULL) \
+    passphrase=DestroyStringInfo(passphrase); \
+  if (path != (char *) NULL) \
+    path=DestroyString(path); \
+  if (resource != (MagickCacheResource *) NULL) \
+    resource=DestroyMagickCacheResource(resource); \
+}   
+#define ThrowDMRReadException() \
+{ \
+  DestroyDMRResources(); \
+  if (image != (Image *) NULL) \
+    image=DestroyImageList(image); \
+  return(image); \
+}   
+
+  char
+    *message = (char *) NULL,
+    *path = (char *) NULL;
+
+  const char
+    *option;
+
+  Image
+    *image = (Image *) NULL;
+
+  MagickBooleanType
+    status;
+
+  MagickCache
+    *cache = (MagickCache *) NULL;
+
+  MagickCacheResource
+    *resource = (MagickCacheResource *) NULL;
+
+  MagickCacheResourceType
+    type;
+
+  StringInfo
+    *passkey = (StringInfo *) NULL,
+    *passphrase = (StringInfo *) NULL;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -107,7 +156,74 @@ static Image *ReadDMRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  return((Image *) NULL);
+  option=GetImageOption(image_info,"dmr:path");
+  if (option != (const char *) NULL)
+    path=ConstantString(option);
+  option=GetImageOption(image_info,"dmr:passkey");
+  if (option != (const char *) NULL)
+    {
+      passkey=FileToStringInfo(option,~0UL,exception);
+      if (passkey == (StringInfo *) NULL)
+        {
+          message=GetExceptionMessage(errno);
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "unable to read passkey","`%s': %s",option,message);
+          ThrowDMRReadException();
+        }
+    }
+  option=GetImageOption(image_info,"dmr:passphrase");
+  if (option != (const char *) NULL)
+    {
+      passphrase=FileToStringInfo(option,~0UL,exception);
+      if (passphrase == (StringInfo *) NULL)
+        {
+          message=GetExceptionMessage(errno);
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "unable to read passphrase","`%s': %s",option,message);
+          ThrowDMRReadException();
+        }
+    }
+  cache=AcquireMagickCache(path,passkey);
+  if (cache == (MagickCache *) NULL)
+    {
+      message=GetExceptionMessage(errno);
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "unable to open digital media repository","`%s': %s",path,message);
+      ThrowDMRReadException();
+    }
+  resource=AcquireMagickCacheResource(cache,image_info->filename);
+  type=GetMagickCacheResourceType(resource);
+  if ((type != ImageResourceType) && (type != BlobResourceType))
+    { 
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "resource type not supported","`%s'",image_info->filename);
+      ThrowDMRReadException();
+    }
+  image=(Image *) NULL;
+  if (type == ImageResourceType)
+    image=GetMagickCacheResourceImage(cache,resource,(const char *) NULL);
+  if (type == BlobResourceType)
+    {
+      void *blob = GetMagickCacheResourceBlob(cache,resource);
+      if (blob != (void *) NULL)
+        image=BlobToImage(image_info,blob,GetMagickCacheResourceExtent(
+          resource),exception);
+    }
+  if (image == (Image *) NULL)
+    { 
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "no such resource","`%s'",image_info->filename);
+      ThrowDMRReadException();
+    }
+  if (passphrase != (StringInfo *) NULL)
+    {
+      status=PasskeyDecipherImage(image,passphrase,exception);
+      if (status == MagickFalse)
+        ThrowDMRReadException();
+    }
+  image=CloneImageList(image,exception);
+  DestroyDMRResources();
+  return(image);
 }
 #endif
 
@@ -203,6 +319,152 @@ ModuleExport void UnregisterDMRImage(void)
 static MagickBooleanType WriteDMRImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
-  return(MagickTrue);
+#define ThrowDMRWriteException() \
+{ \
+  DestroyDMRResources(); \
+  return(MagickFalse); \
+}   
+
+  char
+    *message = (char *) NULL,
+    *path = (char *) NULL;
+
+  const char
+    *option;
+
+  MagickBooleanType
+    status;
+
+  MagickCache
+    *cache = (MagickCache *) NULL;
+
+  MagickCacheResource
+    *resource = (MagickCacheResource *) NULL;
+
+  MagickCacheResourceType
+    type;
+
+  size_t
+    ttl = 0;
+
+  StringInfo
+    *passkey = (StringInfo *) NULL,
+    *passphrase = (StringInfo *) NULL;
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  option=GetImageOption(image_info,"dmr:path");
+  if (option != (const char *) NULL)
+    path=ConstantString(option);
+  option=GetImageOption(image_info,"dmr:passkey");
+  if (option != (const char *) NULL)
+    {
+      passkey=FileToStringInfo(option,~0UL,exception);
+      if (passkey == (StringInfo *) NULL)
+        {
+          message=GetExceptionMessage(errno);
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "unable to read passkey","`%s': %s",option,message);
+          ThrowDMRWriteException();
+        }
+    }
+  option=GetImageOption(image_info,"dmr:passphrase");
+  if (option != (const char *) NULL)
+    {
+      passphrase=FileToStringInfo(option,~0UL,exception);
+      if (passphrase == (StringInfo *) NULL)
+        {
+          message=GetExceptionMessage(errno);
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+            "unable to read passphrase","`%s': %s",option,message);
+          ThrowDMRWriteException();
+        }
+    }
+  option=GetImageOption(image_info,"dmr:ttl");
+  if (option != (const char *) NULL)
+    {
+      char
+        *q;
+
+      /*
+        Time to live, absolute or relative, e.g. 1440, 2 hours, 3 days, ...
+      */
+      ttl=(size_t) InterpretLocaleValue(option,&q);
+      if (q != option)
+        {
+          while (isspace((int) ((unsigned char) *q)) != 0)
+            q++;
+          if (LocaleNCompare(q,"second",6) == 0)
+            ttl*=1;
+          if (LocaleNCompare(q,"minute",6) == 0)
+            ttl*=60;
+          if (LocaleNCompare(q,"hour",4) == 0)
+            ttl*=3600;
+          if (LocaleNCompare(q,"day",3) == 0)
+            ttl*=86400;
+          if (LocaleNCompare(q,"week",4) == 0)
+            ttl*=604800;
+          if (LocaleNCompare(q,"month",5) == 0)
+            ttl*=2628000;
+          if (LocaleNCompare(q,"year",4) == 0)
+            ttl*=31536000;
+        }
+    }
+  cache=AcquireMagickCache(path,passkey);
+  if (cache == (MagickCache *) NULL)
+    {
+      message=GetExceptionMessage(errno);
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "unable to open digital media repository","`%s': %s",path,message);
+      ThrowDMRWriteException();
+    }
+  resource=AcquireMagickCacheResource(cache,image_info->filename);
+  SetMagickCacheResourceTTL(resource,ttl);
+  type=GetMagickCacheResourceType(resource);
+  if ((type != ImageResourceType) && (type != BlobResourceType))
+    { 
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "resource type not supported","`%s'",image_info->filename);
+      ThrowDMRWriteException();
+    }
+  if (type == ImageResourceType)
+    {
+      Image
+        *resource_image;
+
+      resource_image=CloneImageList(image,exception);
+      if (resource_image == (Image *) NULL)
+        ThrowDMRWriteException();
+      if (passphrase != (StringInfo *) NULL)
+        {
+          status=PasskeyEncipherImage(resource_image,passphrase,exception);
+          if (status == MagickFalse)
+            ThrowDMRWriteException();
+        }
+      status=PutMagickCacheResourceImage(cache,resource,resource_image);
+    }
+  else
+    if (type == BlobResourceType)
+      {
+        size_t
+          extent;
+
+        void *blob = ImageToBlob(image_info,image,&extent,exception);
+        if (blob == (void *) NULL)
+          ThrowDMRWriteException();
+        status=PutMagickCacheResourceBlob(cache,resource,extent,blob);
+        blob=RelinquishMagickMemory(blob);
+      }
+  if (status == MagickFalse)
+    ThrowDMRWriteException();
+  DestroyDMRResources();
+  return(status);
 }
 #endif
