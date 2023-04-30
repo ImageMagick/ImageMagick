@@ -2266,7 +2266,7 @@ DMR_LIBS=""
 DMR_PKG=""
 if test "x$with_dmr" = "xyes"; then
   AC_MSG_RESULT([-------------------------------------------------------------])
-  PKG_CHECK_MODULES([MagickCache],[MagickCache >= 0.9.2],[have_dmr=yes],[have_dmr=no])
+  PKG_CHECK_MODULES([MagickCache],[MagickCache >= 0.9.3],[have_dmr=yes],[have_dmr=no])
   AC_MSG_RESULT([])
 fi
 

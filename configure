@@ -5165,7 +5165,7 @@ MAGICK_PATCHLEVEL_VERSION=9
 
 MAGICK_VERSION=7.1.1-9
 
-MAGICK_GIT_REVISION=c5762cc9c:20230430
+MAGICK_GIT_REVISION=514070c6d:20230430
 
 
 # Substitute library versioning
@@ -31921,19 +31921,19 @@ if test "x$with_dmr" = "xyes"; then
 printf "%s\n" "-------------------------------------------------------------" >&6; }
 
 pkg_failed=no
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for MagickCache >= 0.9.2" >&5
-printf %s "checking for MagickCache >= 0.9.2... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for MagickCache >= 0.9.3" >&5
+printf %s "checking for MagickCache >= 0.9.3... " >&6; }
 
 if test -n "$MagickCache_CFLAGS"; then
     pkg_cv_MagickCache_CFLAGS="$MagickCache_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"MagickCache >= 0.9.2\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "MagickCache >= 0.9.2") 2>&5
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"MagickCache >= 0.9.3\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "MagickCache >= 0.9.3") 2>&5
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_MagickCache_CFLAGS=`$PKG_CONFIG --cflags "MagickCache >= 0.9.2" 2>/dev/null`
+  pkg_cv_MagickCache_CFLAGS=`$PKG_CONFIG --cflags "MagickCache >= 0.9.3" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -31945,12 +31945,12 @@ if test -n "$MagickCache_LIBS"; then
     pkg_cv_MagickCache_LIBS="$MagickCache_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"MagickCache >= 0.9.2\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "MagickCache >= 0.9.2") 2>&5
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"MagickCache >= 0.9.3\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "MagickCache >= 0.9.3") 2>&5
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_MagickCache_LIBS=`$PKG_CONFIG --libs "MagickCache >= 0.9.2" 2>/dev/null`
+  pkg_cv_MagickCache_LIBS=`$PKG_CONFIG --libs "MagickCache >= 0.9.3" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -31971,9 +31971,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        MagickCache_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "MagickCache >= 0.9.2" 2>&1`
+	        MagickCache_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "MagickCache >= 0.9.3" 2>&1`
         else
-	        MagickCache_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "MagickCache >= 0.9.2" 2>&1`
+	        MagickCache_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "MagickCache >= 0.9.3" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$MagickCache_PKG_ERRORS" >&5
