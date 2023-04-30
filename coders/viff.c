@@ -433,8 +433,10 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         */
         if (ReadBlob(image,count,viff_colormap) != count)
           {
-            viff_colormap=(unsigned char *) RelinquishMagickMemory(viff_colormap);
-            ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
+            viff_colormap=(unsigned char *) RelinquishMagickMemory(
+              viff_colormap);
+            ThrowReaderException(CorruptImageError,
+              "InsufficientImageDataInFile");
           }
         lsb_first=1;
         if (*(char *) &lsb_first &&
@@ -621,15 +623,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         default: value=1.0*pixels[i]; break;
       }
       if (viff_info.map_scheme == VFF_MS_NONE)
-        {
-          value=(value-min_value)*scale_factor;
-          if (value > QuantumRange)
-            value=QuantumRange;
-          else
-            if (value < 0)
-              value=0;
-        }
-      *p=(unsigned char) ((Quantum) value);
+        value=(value-min_value)*scale_factor;
+      *p=(unsigned char) ClampToQuantum(value);
       p++;
     }
     /*
