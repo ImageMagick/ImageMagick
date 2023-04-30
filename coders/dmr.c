@@ -449,6 +449,7 @@ static MagickBooleanType WriteDMRImage(const ImageInfo *image_info,Image *image,
             ThrowDMRWriteException();
         }
       status=PutMagickCacheResourceImage(cache,resource,resource_image);
+      resource_image=DestroyImageList(resource_image);
     }
   else
     if (type == BlobResourceType)
