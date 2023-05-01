@@ -71,7 +71,7 @@ popd
 
 # Build libheif
 pushd "$SRC/libheif"
-./autogen.sh
+autoreconf -fiv
 ./configure --disable-shared --disable-go --disable-examples --disable-tests --prefix="$WORK" PKG_CONFIG_PATH="$WORK/lib/pkgconfig"
 make -j$(nproc)
 make install
