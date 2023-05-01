@@ -373,7 +373,7 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(MagickFalse);
   decode_options=heif_decoding_options_alloc();
-  if (preserve_orientation == MagickTrue)
+  if (preserve_orientation != MagickFalse)
     decode_options->ignore_transformations=1;
   chroma=heif_chroma_interleaved_RGB;
   if (image->depth > 8)
@@ -392,6 +392,10 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
   channel=heif_channel_interleaved;
   image->columns=(size_t) heif_image_get_width(heif_image,channel);
   image->rows=(size_t) heif_image_get_height(heif_image,channel);
+#if LIBHEIF_NUMERIC_VERSION >= 0x01090000
+  image->columns=(size_t) heif_image_get_primary_width(heif_image);
+  image->rows=(size_t) heif_image_get_primary_height(heif_image);
+#endif
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
