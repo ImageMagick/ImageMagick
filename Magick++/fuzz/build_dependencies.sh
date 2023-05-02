@@ -71,8 +71,7 @@ popd
 
 # Build libheif
 pushd "$SRC/libheif"
-autoreconf -fiv
-./configure --disable-shared --disable-go --disable-examples --disable-tests --prefix="$WORK" PKG_CONFIG_PATH="$WORK/lib/pkgconfig"
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off -DWITH_EXAMPLES=off -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 make install
 popd
