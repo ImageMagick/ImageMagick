@@ -193,22 +193,40 @@ static Image *ReadDMRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   resource=AcquireMagickCacheResource(cache,image_info->filename);
   type=GetMagickCacheResourceType(resource);
-  if ((type != ImageResourceType) && (type != BlobResourceType))
-    { 
+  image=(Image *) NULL;
+  switch (type)
+  {
+    case ImageResourceType:
+    {
+      image=GetMagickCacheResourceImage(cache,resource,(const char *) NULL);
+      break;
+    }
+    case BlobResourceType:
+    {
+      void *blob = GetMagickCacheResourceBlob(cache,resource);
+      if (blob == (void *) NULL)
+        break;
+      image=BlobToImage(image_info,blob,GetMagickCacheResourceExtent(
+        resource),exception);
+      break;
+		}
+    case MetaResourceType:
+    {
+      const char *meta = GetMagickCacheResourceMeta(cache,resource);
+      if (meta == (char *) NULL)
+        break;
+      image=AcquireImage(image_info,exception);
+      (void) SetImageExtent(image,1,1,exception);
+      (void) SetImageProperty(image,"dmr:meta",meta,exception);
+      break;
+    }
+    default:
+    {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
         "resource type not supported","`%s'",image_info->filename);
       ThrowDMRReadException();
     }
-  image=(Image *) NULL;
-  if (type == ImageResourceType)
-    image=GetMagickCacheResourceImage(cache,resource,(const char *) NULL);
-  if (type == BlobResourceType)
-    {
-      void *blob = GetMagickCacheResourceBlob(cache,resource);
-      if (blob != (void *) NULL)
-        image=BlobToImage(image_info,blob,GetMagickCacheResourceExtent(
-          resource),exception);
-    }
+  }
   if (image == (Image *) NULL)
     { 
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
@@ -428,13 +446,9 @@ static MagickBooleanType WriteDMRImage(const ImageInfo *image_info,Image *image,
   resource=AcquireMagickCacheResource(cache,image_info->filename);
   SetMagickCacheResourceTTL(resource,ttl);
   type=GetMagickCacheResourceType(resource);
-  if ((type != ImageResourceType) && (type != BlobResourceType))
-    { 
-      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "resource type not supported","`%s'",image_info->filename);
-      ThrowDMRWriteException();
-    }
-  if (type == ImageResourceType)
+  switch (type)
+  {
+    case ImageResourceType:
     {
       Image
         *resource_image;
@@ -450,19 +464,39 @@ static MagickBooleanType WriteDMRImage(const ImageInfo *image_info,Image *image,
         }
       status=PutMagickCacheResourceImage(cache,resource,resource_image);
       resource_image=DestroyImageList(resource_image);
+      break;
     }
-  else
-    if (type == BlobResourceType)
-      {
-        size_t
-          extent;
+    case BlobResourceType:
+    {
+      size_t
+        extent;
 
-        void *blob = ImageToBlob(image_info,image,&extent,exception);
-        if (blob == (void *) NULL)
-          ThrowDMRWriteException();
-        status=PutMagickCacheResourceBlob(cache,resource,extent,blob);
-        blob=RelinquishMagickMemory(blob);
-      }
+      void *blob = ImageToBlob(image_info,image,&extent,exception);
+      if (blob == (void *) NULL)
+        ThrowDMRWriteException();
+      status=PutMagickCacheResourceBlob(cache,resource,extent,blob);
+      blob=RelinquishMagickMemory(blob);
+      break;
+    }
+    case MetaResourceType:
+    {
+      const char *meta = GetImageProperty(image,"dmr:meta",exception);
+      if (meta == (const char *) NULL)
+        ThrowDMRWriteException();
+      status=PutMagickCacheResourceMeta(cache,resource,meta);
+      if (status == MagickFalse)
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "no such metadata","`%s'",image->filename);
+      break;
+    }
+    default:
+    { 
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "resource type not supported","`%s'",image->filename);
+      ThrowDMRWriteException();
+      break;
+    }
+  }
   if (status == MagickFalse)
     ThrowDMRWriteException();
   DestroyDMRResources();
