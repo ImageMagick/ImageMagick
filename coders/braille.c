@@ -180,9 +180,11 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
 #define do_cell(dx,dy,bit) \
 { \
   if (image->storage_class == PseudoClass) \
-    cell|=(GetPixelIndex(image,p+x+dx+dy*image->columns) == polarity) << bit; \
+    cell|=(GetPixelIndex(image,p+(x+dx)*GetImageChannels(image)+ \
+      dy*(image->columns*GetImageChannels(image))) == polarity) << bit; \
   else \
-    cell|=(GetPixelGreen(image,p+x+dx+dy*image->columns) == 0) << bit; \
+    cell|=(GetPixelGreen(image,p+(x+dx)*GetImageChannels(image)+ \
+      dy*(image->columns*GetImageChannels(image))) == 0) << bit; \
 }
 
   char
@@ -190,6 +192,9 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
 
   const char
     *value;
+
+  const Quantum
+    *p;
 
   int
     unicode = 0,
@@ -201,16 +206,11 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
   Quantum
     polarity;
 
-  const Quantum
-    *p;
-
-  ssize_t
-    x;
-
   size_t
     cell_height = 4;
 
   ssize_t
+    x,
     y;
 
   /*
@@ -226,26 +226,27 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (LocaleCompare(image_info->magick,"UBRL") == 0)
     unicode=1;
-  else if (LocaleCompare(image_info->magick,"UBRL6") == 0)
-    {
-      unicode=1;
-      cell_height=3;
-    }
   else
-    if (LocaleCompare(image_info->magick,"ISOBRL") == 0)
-      iso_11548_1=1;
-    else
-      if (LocaleCompare(image_info->magick,"ISOBRL6") == 0)
-        {
-          iso_11548_1=1;
-          cell_height=3;
-        }
-      else
+    if (LocaleCompare(image_info->magick,"UBRL6") == 0)
+      {
+        unicode=1;
         cell_height=3;
+      }
+    else
+      if (LocaleCompare(image_info->magick,"ISOBRL") == 0)
+        iso_11548_1=1;
+      else
+        if (LocaleCompare(image_info->magick,"ISOBRL6") == 0)
+          {
+            iso_11548_1=1;
+            cell_height=3;
+          }
+        else
+          cell_height=3;
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  if (!iso_11548_1)
+  if (iso_11548_1 == 0)
     {
       value=GetImageProperty(image,"label",exception);
       if (value != (const char *) NULL)
@@ -299,7 +300,7 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
       unsigned char
         cell = 0;
 
-      two_columns=(x+1 < (ssize_t) image->columns) ? MagickTrue : MagickFalse;
+      two_columns=(x+1) < (ssize_t) image->columns ? MagickTrue : MagickFalse;
       do_cell(0,0,0)
       if (two_columns != MagickFalse)
         do_cell(1,0,3)
@@ -329,38 +330,39 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
           /*
             Unicode text.
           */
-          utf8[0]=(unsigned char) (0xe0|((0x28 >> 4) & 0x0f));
-          utf8[1]=0x80|((0x28<<2) & 0x3f)|(cell >> 6);
-          utf8[2]=0x80|(cell & 0x3f);
+          utf8[0]=(unsigned char) (0xe0 | ((0x28 >> 4) & 0x0f));
+          utf8[1]=0x80| ((0x28 << 2) & 0x3f) | (cell >> 6);
+          utf8[2]=0x80| (cell & 0x3f);
           (void) WriteBlob(image,3,utf8);
         }
-      else if (iso_11548_1)
-        {
-          /*
-            ISO/TR 11548-1 binary.
-          */
-          (void) WriteBlobByte(image,cell);
-        }
       else
-        {
-          static const unsigned char
-            iso_to_brf[64] =
-            {
-              ' ', 'A', '1', 'B', '\'', 'K', '2', 'L',
-              '@', 'C', 'I', 'F', '/', 'M', 'S', 'P',
-              '"', 'E', '3', 'H', '9', 'O', '6', 'R',
-              '^', 'D', 'J', 'G', '>', 'N', 'T', 'Q',
-              ',', '*', '5', '<', '-', 'U', '8', 'V',
-              '.', '%', '[', '$', '+', 'X', '!', '&',
-              ';', ':', '4', '\\', '0', 'Z', '7', '(',
-              '_', '?', 'W', ']', '#', 'Y', ')', '='
-            };
+        if (iso_11548_1 != 0)
+          {
+            /*
+              ISO/TR 11548-1 binary.
+            */
+            (void) WriteBlobByte(image,cell);
+          }
+        else
+          {
+            static const unsigned char
+              iso_to_brf[64] =
+              {
+                ' ', 'A', '1', 'B', '\'', 'K', '2', 'L',
+                '@', 'C', 'I', 'F', '/', 'M', 'S', 'P',
+                '"', 'E', '3', 'H', '9', 'O', '6', 'R',
+                '^', 'D', 'J', 'G', '>', 'N', 'T', 'Q',
+                ',', '*', '5', '<', '-', 'U', '8', 'V',
+                '.', '%', '[', '$', '+', 'X', '!', '&',
+                ';', ':', '4', '\\', '0', 'Z', '7', '(',
+                '_', '?', 'W', ']', '#', 'Y', ')', '='
+              };
 
-          /*
-            BRF.
-          */
-          (void) WriteBlobByte(image,iso_to_brf[cell]);
-        }
+            /*
+              BRF.
+            */
+            (void) WriteBlobByte(image,iso_to_brf[cell]);
+          }
     }
     if (iso_11548_1 == 0)
       (void) WriteBlobByte(image,'\n');
