@@ -203,11 +203,16 @@ static Image *ReadDMRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     case BlobResourceType:
     {
+      ImageInfo
+        *read_info;
+
       void *blob = GetMagickCacheResourceBlob(cache,resource);
       if (blob == (void *) NULL)
         break;
-      image=BlobToImage(image_info,blob,GetMagickCacheResourceExtent(
+      read_info=AcquireImageInfo();
+      image=BlobToImage(read_info,blob,GetMagickCacheResourceExtent(
         resource),exception);
+      read_info=DestroyImageInfo(read_info);
       break;
 		}
     case MetaResourceType:
@@ -471,7 +476,9 @@ static MagickBooleanType WriteDMRImage(const ImageInfo *image_info,Image *image,
       size_t
         extent;
 
-      void *blob = ImageToBlob(image_info,image,&extent,exception);
+      ImageInfo *write_info = AcquireImageInfo();
+      void *blob = ImageToBlob(write_info,image,&extent,exception);
+      write_info=DestroyImageInfo(write_info);
       if (blob == (void *) NULL)
         ThrowDMRWriteException();
       status=PutMagickCacheResourceBlob(cache,resource,extent,blob);
