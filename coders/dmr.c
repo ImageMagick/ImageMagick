@@ -199,6 +199,8 @@ static Image *ReadDMRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case ImageResourceType:
     {
       image=GetMagickCacheResourceImage(cache,resource,(const char *) NULL);
+      if (image != (Image *) NULL)
+        image=CloneImageList(image,exception);
       break;
     }
     case BlobResourceType:
@@ -222,6 +224,7 @@ static Image *ReadDMRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       image=AcquireImage(image_info,exception);
       (void) SetImageExtent(image,1,1,exception);
+      (void) SetImageBackgroundColor(image,exception);
       (void) SetImageProperty(image,"dmr:meta",meta,exception);
       break;
     }
@@ -244,7 +247,6 @@ static Image *ReadDMRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (status == MagickFalse)
         ThrowDMRReadException();
     }
-  image=CloneImageList(image,exception);
   DestroyDMRResources();
   return(image);
 }
