@@ -63,10 +63,10 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
     encoder=FUZZ_ENCODER;
 
   if (IsInvalidSize(Size))
-    return 0;
+    return(0);
   offset=EncoderInitializer(Data,Size,image);
   if (offset < 0)
-    return 0;
+    return(0);
   image.magick(encoder);
   image.fileName(std::string(encoder)+":");
   try
