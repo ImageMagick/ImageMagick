@@ -10591,7 +10591,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
           */
           if (logging != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  Setting up gAMA chunk");
+              "  Setting up gAMA chunk (%.20g)",image->gamma);
 
           png_set_gAMA(ping,ping_info,image->gamma);
         }
