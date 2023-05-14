@@ -410,7 +410,7 @@ static void ConvertJzazbzToRGB(const double Jz,const double az,
   ConvertXYZToRGB(X,Y,Z,red,blue,green);
 }
 
-static inline void ConvertOklabToRGB(const double L,const double a,
+static inline void ConvertOkLabToRGB(const double L,const double a,
   const double b,double *red,double *green,double *blue)
 {
   double
@@ -434,7 +434,7 @@ static inline void ConvertOklabToRGB(const double L,const double a,
   *blue = -0.0041960863*l-0.7034186147*m+1.7076147010*s;
 }
 
-static void ConvertRGBToOklab(const double red,const double green,
+static void ConvertRGBToOkLab(const double red,const double green,
   const double blue,double *L,double *a,double *b)
 {
   double
@@ -458,7 +458,7 @@ static void ConvertRGBToOklab(const double red,const double green,
   *b = 0.0259040371*l_+0.7827717662*m_-0.8086757660*s_;
 }
 
-static inline void ConvertOklchToRGB(const double L,const double C,
+static inline void ConvertOkLCHToRGB(const double L,const double C,
   const double h,double *red,double *green,double *blue)
 {
   double
@@ -468,17 +468,17 @@ static inline void ConvertOklchToRGB(const double L,const double C,
   a = C*cos(2*MagickPI*h);
   b = C*sin(2*MagickPI*h);
 
-  ConvertOklabToRGB(L,a,b,red,green,blue);
+  ConvertOkLabToRGB(L,a,b,red,green,blue);
 }
 
-static void ConvertRGBToOklch(const double red,const double green,
+static void ConvertRGBToOkLCH(const double red,const double green,
   const double blue,double *L,double *C,double *h)
 {
   double
     a,
     b;
 
-  ConvertRGBToOklab(red,green,blue,L,&a,&b);
+  ConvertRGBToOkLab(red,green,blue,L,&a,&b);
 
   *C = sqrt(a*a+b*b);
   *h = 0.5+0.5*atan2(-b,-a)/MagickPI;
@@ -777,8 +777,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
     case LCHuvColorspace:
     case LMSColorspace:
     case LuvColorspace:
-    case OklabColorspace:
-    case OklchColorspace:
+    case OkLabColorspace:
+    case OkLCHColorspace:
     case ProPhotoColorspace:
     case xyYColorspace:
     case XYZColorspace:
@@ -929,14 +929,14 @@ static MagickBooleanType sRGBTransformImage(Image *image,
               ConvertRGBToLuv(red,green,blue,illuminant,&X,&Y,&Z);
               break;
             }
-            case OklabColorspace:
+            case OkLabColorspace:
             {
-              ConvertRGBToOklab(red,green,blue,&X,&Y,&Z);
+              ConvertRGBToOkLab(red,green,blue,&X,&Y,&Z);
               break;
             }
-            case OklchColorspace:
+            case OkLCHColorspace:
             {
-              ConvertRGBToOklch(red,green,blue,&X,&Y,&Z);
+              ConvertRGBToOkLCH(red,green,blue,&X,&Y,&Z);
               break;
             }
             case ProPhotoColorspace:
@@ -2375,8 +2375,8 @@ static MagickBooleanType TransformsRGBImage(Image *image,
     case LCHuvColorspace:
     case LMSColorspace:
     case LuvColorspace:
-    case OklabColorspace:
-    case OklchColorspace:
+    case OkLabColorspace:
+    case OkLCHColorspace:
     case ProPhotoColorspace:
     case xyYColorspace:
     case XYZColorspace:
@@ -2527,14 +2527,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
               ConvertLuvToRGB(X,Y,Z,illuminant,&red,&green,&blue);
               break;
             }
-            case OklabColorspace:
+            case OkLabColorspace:
             {
-              ConvertOklabToRGB(X,Y,Z,&red,&green,&blue);
+              ConvertOkLabToRGB(X,Y,Z,&red,&green,&blue);
               break;
             }
-            case OklchColorspace:
+            case OkLCHColorspace:
             {
-              ConvertOklchToRGB(X,Y,Z,&red,&green,&blue);
+              ConvertOkLCHToRGB(X,Y,Z,&red,&green,&blue);
               break;
             }
             case ProPhotoColorspace:
