@@ -62,8 +62,8 @@ typedef enum
   DisplayP3Colorspace,
   Adobe98Colorspace,
   ProPhotoColorspace,
-  OkLabColorspace,
-  OkLCHColorspace
+  OklabColorspace,
+  OklchColorspace
 } ColorspaceType;
 
 extern MagickExport ColorspaceType
