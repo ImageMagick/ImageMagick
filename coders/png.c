@@ -8371,6 +8371,8 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   number_opaque = (int) image->colors;
   number_transparent = 0;
   number_semitransparent = 0;
+  if (IdentifyImageCoderGray(image,exception) != MagickFalse)
+    ping_have_color=MagickFalse;
 
   if (mng_info->colortype &&
      (mng_info->colortype > 4 || (mng_info->depth >= 8 &&
