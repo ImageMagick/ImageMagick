@@ -410,6 +410,80 @@ static void ConvertJzazbzToRGB(const double Jz,const double az,
   ConvertXYZToRGB(X,Y,Z,red,blue,green);
 }
 
+static inline void ConvertOklabToRGB(const double L,const double a,
+  const double b,double *red,double *green,double *blue)
+{
+  double
+    l,
+    l_,
+    m,
+    m_,
+    s,
+    s_;
+
+  l_ = L+0.3963377774*a+0.2158037573*b;
+  m_ = L-0.1055613458*a-0.0638541728*b;
+  s_ = L-0.0894841775*a-1.2914855480*b;
+
+  l = l_*l_*l_;
+  m = m_*m_*m_;
+  s = s_*s_*s_;
+
+  *red = 4.0767416621*l-3.3077115913*m+0.2309699292*s;
+  *green = -1.2684380046*l+2.6097574011*m-0.3413193965*s;
+  *blue = -0.0041960863*l-0.7034186147*m+1.7076147010*s;
+}
+
+static void ConvertRGBToOklab(const double red,const double green,
+  const double blue,double *L,double *a,double *b)
+{
+  double
+    l,
+    l_,
+    m,
+    m_,
+    s,
+    s_;
+
+  l = 0.4122214708*red+0.5363325363*green+0.0514459929*blue;
+  m = 0.2119034982*red+0.6806995451*green+0.1073969566*blue;
+  s = 0.0883024619*red+0.2817188376*green+0.6299787005*blue;
+
+  l_ = cbrt(l);
+  m_ = cbrt(m);
+  s_ = cbrt(s);
+
+  *L = 0.2104542553*l_+0.7936177850*m_-0.0040720468*s_;
+  *a = 1.9779984951*l_-2.4285922050*m_+0.4505937099*s_;
+  *b = 0.0259040371*l_+0.7827717662*m_-0.8086757660*s_;
+}
+
+static inline void ConvertOklchToRGB(const double L,const double C,
+  const double h,double *red,double *green,double *blue)
+{
+  double
+    a,
+    b;
+
+  a = C*cos(2*MagickPI*h);
+  b = C*sin(2*MagickPI*h);
+
+  ConvertOklabToRGB(L,a,b,red,green,blue);
+}
+
+static void ConvertRGBToOklch(const double red,const double green,
+  const double blue,double *L,double *C,double *h)
+{
+  double
+    a,
+    b;
+
+  ConvertRGBToOklab(red,green,blue,L,&a,&b);
+
+  *C = sqrt(a*a+b*b);
+  *h = 0.5+0.5*atan2(-b,-a)/MagickPI;
+}
+
 static void ConvertRGBToYDbDr(const double red,const double green,
   const double blue,double *Y,double *Db,double *Dr)
 {
@@ -703,6 +777,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
     case LCHuvColorspace:
     case LMSColorspace:
     case LuvColorspace:
+    case OklabColorspace:
+    case OklchColorspace:
     case ProPhotoColorspace:
     case xyYColorspace:
     case XYZColorspace:
@@ -851,6 +927,16 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             case LuvColorspace:
             {
               ConvertRGBToLuv(red,green,blue,illuminant,&X,&Y,&Z);
+              break;
+            }
+            case OklabColorspace:
+            {
+              ConvertRGBToOklab(red,green,blue,&X,&Y,&Z);
+              break;
+            }
+            case OklchColorspace:
+            {
+              ConvertRGBToOklch(red,green,blue,&X,&Y,&Z);
               break;
             }
             case ProPhotoColorspace:
@@ -2289,6 +2375,8 @@ static MagickBooleanType TransformsRGBImage(Image *image,
     case LCHuvColorspace:
     case LMSColorspace:
     case LuvColorspace:
+    case OklabColorspace:
+    case OklchColorspace:
     case ProPhotoColorspace:
     case xyYColorspace:
     case XYZColorspace:
@@ -2437,6 +2525,16 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             case LuvColorspace:
             {
               ConvertLuvToRGB(X,Y,Z,illuminant,&red,&green,&blue);
+              break;
+            }
+            case OklabColorspace:
+            {
+              ConvertOklabToRGB(X,Y,Z,&red,&green,&blue);
+              break;
+            }
+            case OklchColorspace:
+            {
+              ConvertOklchToRGB(X,Y,Z,&red,&green,&blue);
               break;
             }
             case ProPhotoColorspace:
