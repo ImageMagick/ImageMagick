@@ -546,9 +546,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
     primary_info;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     y;
 
   TransformPacket
@@ -2145,9 +2143,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
     progress;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     y;
 
   TransformPacket
