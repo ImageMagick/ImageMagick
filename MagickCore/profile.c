@@ -2458,11 +2458,12 @@ static void ReplaceXmpValue(StringInfo *profile,size_t start,size_t end,
   if (new_length > length)
     SetStringInfoLength(profile,new_length);
   datum=(char *) GetStringInfoDatum(profile);
-  memmove(datum+start+value_length,datum+end,length-end);
-  memcpy(datum+start,value,value_length);
+  (void) memmove(datum+start+value_length,datum+end,length-end);
+  (void) memcpy(datum+start,value,value_length);
   if (new_length < length)
     {
       SetStringInfoLength(profile,new_length);
+      datum=(char *) GetStringInfoDatum(profile);
       *(datum+new_length)='\0';
     }
 }

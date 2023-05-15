@@ -517,10 +517,12 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
     /*
       * ### Read CLUT Data ###
       */
-    clut_data=(unsigned char *) AcquireQuantumMemory(1,header->clut_size);
+    clut_data=(unsigned char *) AcquireQuantumMemory(2,
+      MagickMax(header->clut_size,image->colors));
     if (clut_data == (unsigned char *) NULL)
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image_info->filename);
+    (void) memset(clut_data,0,2*MagickMax(header->clut_size,image->colors));
     count=ReadBlob(image,header->clut_size,clut_data);
     if (count != (ssize_t) (header->clut_size))
       {
