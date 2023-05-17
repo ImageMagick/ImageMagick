@@ -1,14 +1,9 @@
-FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04
+FROM ubuntu:22.04
 
-ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y autoconf autopoint binutils clang cmake gettext git gperf libc++-dev libc++abi-dev libtool make nasm pkg-config po4a
 
-RUN mkdir /ImageMagick
-RUN chown vscode.vscode /ImageMagick
-
-USER vscode
-RUN mkdir /ImageMagick/dependencies 
+RUN mkdir -p mkdir /ImageMagick/dependencies
 WORKDIR /ImageMagick/dependencies
 
 RUN git clone --depth 1 https://gitlab.com/libtiff/libtiff
