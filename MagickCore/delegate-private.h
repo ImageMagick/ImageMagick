@@ -112,7 +112,7 @@ static inline char *SanitizeDelegateString(const char *source)
 }
 
 static inline void FormatSanitizedDelegateOption(char *string,
-  const size_t length,const char *windows_format,
+  const size_t length,const char *magick_unused(windows_format),
   const char *non_windows_format,const char *option)
 {
   char
