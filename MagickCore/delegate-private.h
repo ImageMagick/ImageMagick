@@ -18,6 +18,7 @@
 #ifndef MAGICKCORE_DELEGATE_PRIVATE_H
 #define MAGICKCORE_DELEGATE_PRIVATE_H
 
+#include "MagickCore/locale_.h"
 #include "MagickCore/string_.h"
 
 #if defined(MAGICKCORE_GS_DELEGATE)
@@ -108,6 +109,24 @@ static inline char *SanitizeDelegateString(const char *source)
   for (p+=strspn(p,allowlist); p != q; p+=strspn(p,allowlist))
     *p='_';
   return(sanitize_source);
+}
+
+static inline void FormatSanitizedDelegateOption(char *string,
+  const size_t length,const char *windows_format,
+  const char *non_windows_format,const char *option)
+{
+  char
+    *sanitized_option;
+
+  sanitized_option=SanitizeDelegateString(option);
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+  magick_unreferenced(non_windows_format);
+  (void) FormatLocaleString(string,length,windows_format,sanitized_option);
+#else
+  magick_unreferenced(windows_format);
+  (void) FormatLocaleString(string,length,non_windows_format,sanitized_option);
+#endif
+  sanitized_option=DestroyString(sanitized_option);
 }
 
 extern MagickPrivate MagickBooleanType

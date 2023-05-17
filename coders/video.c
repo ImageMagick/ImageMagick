@@ -217,8 +217,7 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
         message[MagickPathExtent];
 
       char
-        *options,
-        *sanitized_option;
+        *options;
 
       const char
         *intermediate_format,
@@ -234,19 +233,15 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
       option=GetImageOption(image_info,"video:vsync");
       if (option != (const char *) NULL)
         {
-          sanitized_option=SanitizeDelegateString(option);
-          (void) FormatLocaleString(command,MagickPathExtent," -vsync %s",
-            sanitized_option);
-          DestroyString(sanitized_option);
+          FormatSanitizedDelegateOption(command,MagickPathExtent,
+            " -vsync \"%s\""," -vsync '%s'",option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
       option=GetImageOption(image_info,"video:pixel-format");
       if (option != (const char *) NULL)
         {
-          sanitized_option=SanitizeDelegateString(option);
-          (void) FormatLocaleString(command,MagickPathExtent," -pix_fmt %s",
-            sanitized_option);
-          DestroyString(sanitized_option);
+          FormatSanitizedDelegateOption(command,MagickPathExtent,
+            " -pix_fmt \"%s\""," -pix_fmt '%s'",option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
       else
@@ -685,8 +680,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
         message[MagickPathExtent];
 
       char
-        *options,
-        *sanitized_option;
+        *options;
 
       const char
         *option;
@@ -700,10 +694,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
       option=GetImageOption(image_info,"video:pixel-format");
       if (option != (const char *) NULL)
         {
-          sanitized_option=SanitizeDelegateString(option);
-          (void) FormatLocaleString(command,MagickPathExtent," -pix_fmt %s",
-            sanitized_option);
-          DestroyString(sanitized_option);
+          FormatSanitizedDelegateOption(command,MagickPathExtent,
+            " -pix_fmt \"%s\""," -pix_fmt '%s'",option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
       AcquireUniqueFilename(write_info->unique);
