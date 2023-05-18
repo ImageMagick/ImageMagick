@@ -533,9 +533,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     scale.x=PerceptibleReciprocal(resolution.x)*geometry.width*delta.x;
-    geometry.width=(size_t) floor(scale.x+0.5);
+    geometry.width=CastDoubleToUnsigned(scale.x+0.5);
     scale.y=PerceptibleReciprocal(resolution.y)*geometry.height*delta.y;
-    geometry.height=(size_t) floor(scale.y+0.5);
+    geometry.height=CastDoubleToUnsigned(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
     (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
     if (image->gravity != UndefinedGravity)

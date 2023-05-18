@@ -3515,7 +3515,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 (void) GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
-                region.height=(size_t) floor(GetDrawValue(token,&next_token)+
+                region.height=CastDoubleToUnsigned(GetDrawValue(token,&next_token)+
                   0.5);
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);

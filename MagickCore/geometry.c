@@ -1515,8 +1515,8 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       scale.y=geometry_info.sigma;
       if ((percent_flags & SigmaValue) == 0)
         scale.y=scale.x;
-      *width=(size_t) floor(scale.x*stasis_width/100.0+0.5);
-      *height=(size_t) floor(scale.y*stasis_height/100.0+0.5);
+      *width=CastDoubleToUnsigned(scale.x*stasis_width/100.0+0.5);
+      *height=CastDoubleToUnsigned(scale.y*stasis_height/100.0+0.5);
       stasis_width=(*width);
       stasis_height=(*height);
     }
@@ -1536,7 +1536,7 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       if (geometry_ratio >= image_ratio)
         {
           *width=stasis_width;
-          *height=(size_t) floor((double) (PerceptibleReciprocal(
+          *height=CastDoubleToUnsigned((double) (PerceptibleReciprocal(
             geometry_ratio)*stasis_height*image_ratio)+0.5);
         }
       else
