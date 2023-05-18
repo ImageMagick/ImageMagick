@@ -436,7 +436,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case JXL_DEC_COLOR_ENCODING:
       {
         JxlColorEncoding
-          color_encoding = { 0 };
+          color_encoding = { JXL_COLOR_SPACE_UNKNOWN };
 
         size_t
           profile_size;
@@ -1063,7 +1063,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
      sizeof(char));
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     bytes_per_row=image->columns*
-      (((image->alpha_trait &= BlendPixelTrait) != 0) ? 2 : 1)*
+      (((image->alpha_trait & BlendPixelTrait) != 0) ? 2 : 1)*
       ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
        (pixel_format.data_type == JXL_TYPE_UINT16) ? sizeof(short) :
        sizeof(char));
