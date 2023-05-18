@@ -113,8 +113,8 @@ static inline char *SanitizeDelegateString(const char *source)
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 static inline void FormatSanitizedDelegateOption(char *string,
-  const size_t length,const char *magick_unused(windows_format),
-  const char *non_windows_format,const char *option)
+  const size_t length,const char *windows_format,
+  const char *magick_unused(non_windows_format),const char *option)
 {
   char
     *sanitized_option;
