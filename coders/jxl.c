@@ -280,7 +280,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   JxlBasicInfo
-    basic_info = { 0 };
+    basic_info;
 
   JxlDecoder
     *jxl_info;
@@ -293,7 +293,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     memory_manager;
 
   JxlPixelFormat
-    pixel_format = { 0 };
+    pixel_format;
 
   MagickBooleanType
     status;
@@ -436,7 +436,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case JXL_DEC_COLOR_ENCODING:
       {
         JxlColorEncoding
-          color_encoding = { JXL_COLOR_SPACE_UNKNOWN };
+          color_encoding;
 
         size_t
           profile_size;
@@ -868,7 +868,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     *xmp_profile = (StringInfo *) NULL;
 
   JxlBasicInfo
-    basic_info = { 0 };
+    basic_info;
 
   JxlEncoder
     *jxl_info;
@@ -880,13 +880,13 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     jxl_status;
 
   JxlFrameHeader
-    frame_header = { 0 };
+    frame_header;
 
   JxlMemoryManager
     memory_manager;
 
   JxlPixelFormat
-    pixel_format = { 0 };
+    pixel_format;
 
   MagickBooleanType
     status;
