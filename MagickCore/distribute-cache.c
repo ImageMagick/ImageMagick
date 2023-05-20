@@ -184,7 +184,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   return(i);
 }
 
-#if defined(HAVE_WINSOCK2)
+#if defined(MAGICKCORE_HAVE_WINSOCK2)
 static void InitializeWinsock2(MagickBooleanType use_lock)
 {
   if (use_lock)
