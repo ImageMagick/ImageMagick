@@ -65,6 +65,8 @@ static inline void InitializeMagickMutex(void)
 static inline void LockMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
+  if (translation_unit_initialized == MagickFalse)
+    omp_init_lock(&translation_unit_mutex);
   omp_set_lock(&translation_unit_mutex);
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
@@ -87,6 +89,8 @@ static inline void LockMagickMutex(void)
 static inline void UnlockMagickMutex(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
+  if (translation_unit_initialized == MagickFalse)
+    omp_init_lock(&translation_unit_mutex);
   omp_unset_lock(&translation_unit_mutex);
 #elif defined(MAGICKCORE_THREAD_SUPPORT)
   {
