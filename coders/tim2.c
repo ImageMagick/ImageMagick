@@ -508,6 +508,9 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
     CSM
       csm;
 
+    size_t
+      clut_size;
+
     ssize_t
       i;
 
@@ -517,14 +520,15 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
     /*
       * ### Read CLUT Data ###
       */
-    clut_data=(unsigned char *) AcquireQuantumMemory(2,
-      MagickMax(header->clut_size,image->colors));
+    clut_size=MagickMax(header->clut_size,(clut_depth/8)*image->colors);
+    clut_data=(unsigned char *) AcquireQuantumMemory(clut_size,
+      sizeof(*clut_data));
     if (clut_data == (unsigned char *) NULL)
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image_info->filename);
-    (void) memset(clut_data,0,2*MagickMax(header->clut_size,image->colors));
-    count=ReadBlob(image,header->clut_size,clut_data);
-    if (count != (ssize_t) (header->clut_size))
+    (void) memset(clut_data,0,clut_size);
+    count=ReadBlob(image,clut_size,clut_data);
+    if (count != (ssize_t) clut_size)
       {
         clut_data=(unsigned char *) RelinquishMagickMemory(clut_data);
         ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
