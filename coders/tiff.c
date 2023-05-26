@@ -687,63 +687,68 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
     status;
 
   uint32
-    count,
+    count = 0,
     type;
 
+  void
+    *sans[8] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+
   status=MagickTrue;
-  if ((TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1) &&
+  if ((TIFFGetField(tiff,TIFFTAG_ARTIST,&text,sans) == 1) &&
       (text != (char *) NULL))
     status=SetImageProperty(image,"tiff:artist",text,exception);
-  if ((TIFFGetField(tiff,TIFFTAG_COPYRIGHT,&text) == 1) &&
+  if ((TIFFGetField(tiff,TIFFTAG_COPYRIGHT,&text,sans) == 1) &&
       (text != (char *) NULL))
     status=SetImageProperty(image,"tiff:copyright",text,exception);
-  if ((TIFFGetField(tiff,TIFFTAG_DATETIME,&text) == 1) &&
+  if ((TIFFGetField(tiff,TIFFTAG_DATETIME,&text,sans) == 1) &&
       (text != (char *) NULL))
     status=SetImageProperty(image,"tiff:timestamp",text,exception);
-  if ((TIFFGetField(tiff,TIFFTAG_DOCUMENTNAME,&text) == 1) &&
+  if ((TIFFGetField(tiff,TIFFTAG_DOCUMENTNAME,&text,sans) == 1) &&
       (text != (char *) NULL))
     status=SetImageProperty(image,"tiff:document",text,exception);
-  if ((TIFFGetField(tiff,TIFFTAG_HOSTCOMPUTER,&text) == 1) &&
+  if ((TIFFGetField(tiff,TIFFTAG_HOSTCOMPUTER,&text,sans) == 1) &&
       (text != (char *) NULL))
     status=SetImageProperty(image,"tiff:hostcomputer",text,exception);
-  if ((TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1) &&
+  if ((TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text,sans) == 1) &&
       (text != (char *) NULL))
     status=SetImageProperty(image,"comment",text,exception);
-  if ((TIFFGetField(tiff,TIFFTAG_MAKE,&text) == 1) &&
+  if ((TIFFGetField(tiff,TIFFTAG_MAKE,&text,sans) == 1) &&
       (text != (char *) NULL))
     status=SetImageProperty(image,"tiff:make",text,exception);
-  if ((TIFFGetField(tiff,TIFFTAG_MODEL,&text) == 1) &&
+  if ((TIFFGetField(tiff,TIFFTAG_MODEL,&text,sans) == 1) &&
       (text != (char *) NULL))
     status=SetImageProperty(image,"tiff:model",text,exception);
-  if ((TIFFGetField(tiff,TIFFTAG_OPIIMAGEID,&count,&text) == 1) &&
-      (text != (char *) NULL))
+  if ((TIFFGetField(tiff,TIFFTAG_OPIIMAGEID,&count,&text,sans) == 1) &&
+      (count != 0) && (text != (char *) NULL))
     {
       if (count >= MagickPathExtent)
         count=MagickPathExtent-1;
       (void) CopyMagickString(message,text,count+1);
       status=SetImageProperty(image,"tiff:image-id",message,exception);
     }
-  if ((TIFFGetField(tiff,TIFFTAG_PAGENAME,&text) == 1) &&
-      (text != (char *) NULL))
+  if ((TIFFGetField(tiff,TIFFTAG_PAGENAME,&text,sans) == 1) &&
+      (count != 0) && (text != (char *) NULL))
     status=SetImageProperty(image,"label",text,exception);
   if ((TIFFGetField(tiff,TIFFTAG_SOFTWARE,&text) == 1) &&
       (text != (char *) NULL))
     status=SetImageProperty(image,"tiff:software",text,exception);
-  if ((TIFFGetField(tiff,33423,&count,&text) == 1) && (text != (char *) NULL))
+  if ((TIFFGetField(tiff,33423,&count,&text,sans) == 1) &&
+      (count != 0) && (text != (char *) NULL))
     {
       if (count >= MagickPathExtent)
         count=MagickPathExtent-1;
       (void) CopyMagickString(message,text,count+1);
       status=SetImageProperty(image,"tiff:kodak-33423",message,exception);
     }
-  if ((TIFFGetField(tiff,36867,&count,&text) == 1) && (text != (char *) NULL))
+  if ((TIFFGetField(tiff,36867,&count,&text,sans) == 1) &&
+      (count != 0) && (text != (char *) NULL))
     {
       if (count >= MagickPathExtent)
         count=MagickPathExtent-1;
       (void) CopyMagickString(message,text,count+1);
       status=SetImageProperty(image,"tiff:kodak-36867",message,exception);
     }
-  if (TIFFGetField(tiff,TIFFTAG_SUBFILETYPE,&type) == 1)
+  if (TIFFGetField(tiff,TIFFTAG_SUBFILETYPE,&type,sans) == 1)
     switch (type)
     {
       case 0x01:
@@ -902,8 +907,8 @@ static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
   tsize_t
     count;
 
-  count=(tsize_t) ReadBlob((Image *) image,(size_t) size,
-    (unsigned char *) data);
+  count=(tsize_t) ReadBlob((Image *) image,(size_t) size,(unsigned char *)
+    data);
   return(count);
 }
 
@@ -958,8 +963,8 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
   tsize_t
     count;
 
-  count=(tsize_t) WriteBlob((Image *) image,(size_t) size,
-    (unsigned char *) data);
+  count=(tsize_t) WriteBlob((Image *) image,(size_t) size,(unsigned char *)
+    data);
   return(count);
 }
 
