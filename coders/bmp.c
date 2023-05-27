@@ -791,7 +791,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.gamma_scale.y=(double) ReadBlobLSBLong(image)/0x10000;
             bmp_info.gamma_scale.z=(double) ReadBlobLSBLong(image)/0x10000;
 
-            if (bmp_info.colorspace == LCS_CALIBRATED_RBG)
+            if (bmp_info.colorspace == 0)
               {
                 image->chromaticity.red_primary.x=bmp_info.red_primary.x;
                 image->chromaticity.red_primary.y=bmp_info.red_primary.y;
