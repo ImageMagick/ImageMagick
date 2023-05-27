@@ -18,7 +18,7 @@
 %                               December 2001                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -771,24 +771,18 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             gamma=PerceptibleReciprocal(gamma);
             bmp_info.red_primary.x*=gamma;
             bmp_info.red_primary.y*=gamma;
-            image->chromaticity.red_primary.x=bmp_info.red_primary.x;
-            image->chromaticity.red_primary.y=bmp_info.red_primary.y;
 
             gamma=bmp_info.green_primary.x+bmp_info.green_primary.y+
               bmp_info.green_primary.z;
             gamma=PerceptibleReciprocal(gamma);
             bmp_info.green_primary.x*=gamma;
             bmp_info.green_primary.y*=gamma;
-            image->chromaticity.green_primary.x=bmp_info.green_primary.x;
-            image->chromaticity.green_primary.y=bmp_info.green_primary.y;
 
             gamma=bmp_info.blue_primary.x+bmp_info.blue_primary.y+
               bmp_info.blue_primary.z;
             gamma=PerceptibleReciprocal(gamma);
             bmp_info.blue_primary.x*=gamma;
             bmp_info.blue_primary.y*=gamma;
-            image->chromaticity.blue_primary.x=bmp_info.blue_primary.x;
-            image->chromaticity.blue_primary.y=bmp_info.blue_primary.y;
 
             /*
               Decode 16^16 fixed point formatted gamma_scales.
@@ -796,11 +790,21 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.gamma_scale.x=(double) ReadBlobLSBLong(image)/0x10000;
             bmp_info.gamma_scale.y=(double) ReadBlobLSBLong(image)/0x10000;
             bmp_info.gamma_scale.z=(double) ReadBlobLSBLong(image)/0x10000;
-            /*
-              Compute a single gamma from the BMP 3-channel gamma.
-            */
-            image->gamma=(bmp_info.gamma_scale.x+bmp_info.gamma_scale.y+
-              bmp_info.gamma_scale.z)/3.0;
+
+            if (bmp_info.colorspace == LCS_CALIBRATED_RBG)
+              {
+                image->chromaticity.red_primary.x=bmp_info.red_primary.x;
+                image->chromaticity.red_primary.y=bmp_info.red_primary.y;
+                image->chromaticity.green_primary.x=bmp_info.green_primary.x;
+                image->chromaticity.green_primary.y=bmp_info.green_primary.y;
+                image->chromaticity.blue_primary.x=bmp_info.blue_primary.x;
+                image->chromaticity.blue_primary.y=bmp_info.blue_primary.y;
+                /*
+                  Compute a single gamma from the BMP 3-channel gamma.
+                */
+                image->gamma=(bmp_info.gamma_scale.x+bmp_info.gamma_scale.y+
+                  bmp_info.gamma_scale.z)/3.0;
+              }
           }
         else
           (void) CopyMagickString(image->magick,"BMP3",MagickPathExtent);
