@@ -74,8 +74,17 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/version.h"
 #include "MagickCore/version-private.h"
-#undef MAGICKCORE_HAVE_DISTRIBUTE_CACHE
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
+#undef HAVE_DISTRIBUTE_CACHE
+#if defined(MAGICKCORE_DPC_SUPPORT)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
+#define CLOSE_SOCKET(socket) (void) closesocket(socket)
+#define HANDLER_RETURN_TYPE DWORD WINAPI
+#define HANDLER_RETURN_VALUE 0
+#define SOCKET_TYPE SOCKET
+#define LENGTH_TYPE int
+#define HAVE_DISTRIBUTE_CACHE 1
+#define HAVE_WINSOCK2 1
+#elif defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -85,15 +94,8 @@
 #define HANDLER_RETURN_VALUE (void *) NULL
 #define SOCKET_TYPE int
 #define LENGTH_TYPE size_t
-#define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
-#define CLOSE_SOCKET(socket) (void) closesocket(socket)
-#define HANDLER_RETURN_TYPE DWORD WINAPI
-#define HANDLER_RETURN_VALUE 0
-#define SOCKET_TYPE SOCKET
-#define LENGTH_TYPE int
-#define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
-#define MAGICKCORE_HAVE_WINSOCK2 1
+#define HAVE_DISTRIBUTE_CACHE 1
+#endif
 #else
 #ifdef __VMS
 #define CLOSE_SOCKET(socket) (void) close(socket)
@@ -103,7 +105,6 @@
 #define HANDLER_RETURN_TYPE  void *
 #define HANDLER_RETURN_VALUE  (void *) NULL
 #define SOCKET_TYPE  int
-#define LENGTH_TYPE size_t
 #undef send
 #undef recv
 #define send(file,buffer,length,flags)  0
@@ -124,7 +125,7 @@
 /*
   Static declarations.
 */
-#ifdef MAGICKCORE_HAVE_WINSOCK2
+#ifdef HAVE_WINSOCK2
 static SemaphoreInfo
   *winsock2_semaphore = (SemaphoreInfo *) NULL;
 
@@ -164,7 +165,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   ssize_t
     count;
 
-#if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+#if !defined(HAVE_DISTRIBUTE_CACHE)
   magick_unreferenced(file);
   magick_unreferenced(message);
 #endif
@@ -183,7 +184,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   return(i);
 }
 
-#if defined(MAGICKCORE_HAVE_WINSOCK2)
+#if defined(HAVE_WINSOCK2)
 static void InitializeWinsock2(MagickBooleanType use_lock)
 {
   if (use_lock)
@@ -206,7 +207,7 @@ static void InitializeWinsock2(MagickBooleanType use_lock)
 static int ConnectPixelCacheServer(const char *hostname,const int port,
   size_t *session_key,ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+#if defined(HAVE_DISTRIBUTE_CACHE)
   char
     service[MagickPathExtent],
     *shared_secret;
@@ -231,7 +232,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     Connect to distributed pixel cache and get session key.
   */
   *session_key=0;
-#if defined(MAGICKCORE_HAVE_WINSOCK2)
+#if defined(HAVE_WINSOCK2)
   InitializeWinsock2(MagickTrue);
 #endif
   (void) memset(&hint,0,sizeof(hint));
@@ -465,7 +466,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
     count,
     i;
 
-#if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+#if !defined(HAVE_DISTRIBUTE_CACHE)
   magick_unreferenced(file);
   magick_unreferenced(message);
 #endif
@@ -488,7 +489,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   return(i);
 }
 
-#if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
+#if !defined(HAVE_DISTRIBUTE_CACHE)
 MagickExport void DistributePixelCacheServer(const int port,
   ExceptionInfo *exception)
 {
@@ -964,7 +965,7 @@ MagickExport void DistributePixelCacheServer(const int port,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
   magick_unreferenced(exception);
-#if defined(MAGICKCORE_HAVE_WINSOCK2)
+#if defined(HAVE_WINSOCK2)
   InitializeWinsock2(MagickFalse);
 #endif
   (void) memset(&hint,0,sizeof(hint));
@@ -1052,7 +1053,7 @@ MagickExport void DistributePixelCacheServer(const int port,
 */
 MagickPrivate void DistributeCacheTerminus(void)
 {
-#ifdef MAGICKCORE_HAVE_WINSOCK2
+#ifdef HAVE_WINSOCK2
   if (winsock2_semaphore == (SemaphoreInfo *) NULL)
     ActivateSemaphoreInfo(&winsock2_semaphore);
   LockSemaphoreInfo(winsock2_semaphore);
