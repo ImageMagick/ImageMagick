@@ -75,8 +75,7 @@
 #include "MagickCore/version.h"
 #include "MagickCore/version-private.h"
 #undef MAGICKCORE_HAVE_DISTRIBUTE_CACHE
-#if defined(MAGICKCORE_DPC_SUPPORT)
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_DPC_SUPPORT) && defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -87,7 +86,7 @@
 #define SOCKET_TYPE int
 #define LENGTH_TYPE size_t
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
+#elif defined(MAGICKCORE_DPC_SUPPORT) && defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 #define CLOSE_SOCKET(socket) (void) closesocket(socket)
 #define HANDLER_RETURN_TYPE DWORD WINAPI
 #define HANDLER_RETURN_VALUE 0
@@ -95,7 +94,6 @@
 #define LENGTH_TYPE int
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
 #define MAGICKCORE_HAVE_WINSOCK2 1
-#endif
 #else
 #ifdef __VMS
 #define CLOSE_SOCKET(socket) (void) close(socket)
@@ -105,6 +103,7 @@
 #define HANDLER_RETURN_TYPE  void *
 #define HANDLER_RETURN_VALUE  (void *) NULL
 #define SOCKET_TYPE  int
+#define LENGTH_TYPE  size_t
 #undef send
 #undef recv
 #define send(file,buffer,length,flags)  0
@@ -427,7 +426,9 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
   assert(server_info != (DistributeCacheInfo *) NULL);
   assert(server_info->signature == MagickCoreSignature);
   if (server_info->file > 0)
-    CLOSE_SOCKET(server_info->file);
+    {
+      CLOSE_SOCKET(server_info->file);
+    }
   server_info->signature=(~MagickCoreSignature);
   server_info=(DistributeCacheInfo *) RelinquishMagickMemory(server_info);
   return(server_info);
