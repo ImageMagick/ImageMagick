@@ -213,7 +213,7 @@ static MagickBooleanType CropToFitImage(Image **image,
 %
 */
 
-static void RadonProjection(const Image *image,MatrixInfo *source_matrices,
+static void RadonProjection(MatrixInfo *source_matrices,
   MatrixInfo *destination_matrices,const ssize_t sign,size_t *projection)
 {
   MatrixInfo
@@ -291,9 +291,7 @@ static void RadonProjection(const Image *image,MatrixInfo *source_matrices,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
-    magick_number_threads(image,image,GetMatrixColumns(p),1)
-#else
-  magick_unreferenced(image);
+    num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (x=0; x < (ssize_t) GetMatrixColumns(p); x++)
   {
@@ -435,7 +433,7 @@ static MagickBooleanType RadonTransform(const Image *image,
         (void) SetMatrixElement(source_matrices,--i,y,&value);
       }
   }
-  RadonProjection(image,source_matrices,destination_matrices,-1,projection);
+  RadonProjection(source_matrices,destination_matrices,-1,projection);
   (void) NullMatrix(source_matrices);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
@@ -492,7 +490,7 @@ static MagickBooleanType RadonTransform(const Image *image,
         (void) SetMatrixElement(source_matrices,i++,y,&value);
       }
   }
-  RadonProjection(image,source_matrices,destination_matrices,1,projection);
+  RadonProjection(source_matrices,destination_matrices,1,projection);
   image_view=DestroyCacheView(image_view);
   destination_matrices=DestroyMatrixInfo(destination_matrices);
   source_matrices=DestroyMatrixInfo(source_matrices);
