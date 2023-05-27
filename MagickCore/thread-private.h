@@ -142,20 +142,24 @@ static inline int GetOpenMPThreadId(void)
 #endif
 }
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
 static inline void SetOpenMPMaximumThreads(const int threads)
 {
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
   omp_set_num_threads(threads);
 #else
+static inline void SetOpenMPMaximumThreads(const int magick_unused(threads))
+{
   magick_unreferenced(threads);
 #endif
 }
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
 static inline void SetOpenMPNested(const int value)
 {
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
   omp_set_nested(value);
 #else
+static inline void SetOpenMPNested(const int magick_unused(value))
+{  
   magick_unreferenced(value);
 #endif
 }
