@@ -53,12 +53,12 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/option.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
@@ -66,8 +66,8 @@
 /*
   Global declarations.
 */
-static const char*
-  intermediate_formats[] =
+static const char
+  *intermediate_formats[] =
   {
     "pam",
     "webp"
@@ -136,9 +136,9 @@ static MagickBooleanType IsVIDEO(const unsigned char *magick,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadVIDEOImage() reads an binary file in the VIDEO video stream format
-%  and returns it.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
+%  ReadVIDEOImage() reads an binary file in the VIDEO video stream format and
+%  returns it.  It allocates the memory necessary for the new Image structure
+%  and returns a pointer to the new image.
 %
 %  The format of the ReadVIDEOImage method is:
 %
@@ -214,9 +214,7 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
     {
       char
         command[MagickPathExtent],
-        message[MagickPathExtent];
-
-      char
+        message[MagickPathExtent],
         *options;
 
       const char
@@ -469,9 +467,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     source_file;
 
   size_t
-    i;
-
-  size_t
+    i,
     length,
     quantum;
 
@@ -548,7 +544,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     delay;
 
   Image
-    *clone_images;
+    *clone_images,
+    *p;
 
   ImageInfo
     *write_info;
@@ -559,16 +556,13 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  Image
-    *p;
-
-  ssize_t
-    i;
-
   size_t
     count,
     length,
     scene;
+
+  ssize_t
+    i;
 
   unsigned char
     *blob;
@@ -677,9 +671,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     {
       char
         command[MagickPathExtent],
-        message[MagickPathExtent];
-
-      char
+        message[MagickPathExtent],
         *options;
 
       const char
@@ -713,11 +705,10 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
           status=CopyDelegateFile(filename,image->filename);
           (void) RelinquishUniqueFileResource(filename);
         }
-      else if (*message != '\0')
-        {
+      else
+        if (*message != '\0')
           (void) ThrowMagickException(exception,GetMagickModule(),
             DelegateError,"VideoDelegateFailed","`%s'",message);
-        }
       (void) RelinquishUniqueFileResource(write_info->unique);
   }
   write_info=DestroyImageInfo(write_info);
