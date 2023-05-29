@@ -1752,7 +1752,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
   if (artifact != NULL)
     colorspaces=AcquireString(artifact);
   else
-    colorspaces=AcquireString("sRGB,HCLp");
+    colorspaces=AcquireString("xyY,HSB");
   perceptual_hash[0].number_colorspaces=0;
   perceptual_hash[0].number_channels=0;
   q=colorspaces;
