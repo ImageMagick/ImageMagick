@@ -87,7 +87,7 @@
 #define SOCKET_TYPE int
 #define LENGTH_TYPE size_t
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
+#elif defined(_MSC_VER)
 #define CLOSE_SOCKET(socket) (void) closesocket(socket)
 #define HANDLER_RETURN_TYPE DWORD WINAPI
 #define HANDLER_RETURN_VALUE 0
@@ -947,7 +947,7 @@ MagickExport void DistributePixelCacheServer(const int port,
 
   pthread_t
     threads;
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+#elif defined(_MSC_VER)
   DWORD
     threadID;
 #else
@@ -1035,7 +1035,7 @@ MagickExport void DistributePixelCacheServer(const int port,
       (void *) &client_socket);
     if (status == -1)
       ThrowFatalException(CacheFatalError,"UnableToCreateClientThread");
-#elif defined(MAGICKCORE_WINDOWS_SUPPORT)
+#elif defined(_MSC_VER)
     if (CreateThread(0,0,DistributePixelCacheClient,(void*) &client_socket,0,&threadID) == (HANDLE) NULL)
       ThrowFatalException(CacheFatalError,"UnableToCreateClientThread");
 #else
