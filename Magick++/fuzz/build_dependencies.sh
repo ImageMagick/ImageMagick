@@ -71,7 +71,7 @@ popd
 
 # Build libheif
 pushd "$SRC/libheif"
-cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off -DWITH_EXAMPLES=off -DCMAKE_BUILD_TYPE=Release
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off -DWITH_EXAMPLES=off -DENABLE_PLUGIN_LOADING=off -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 make install
 popd
