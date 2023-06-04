@@ -428,11 +428,11 @@ static boolean ReadProfileData(j_decompress_ptr jpeg_info,const int index,
   JPEGClientInfo
     *client_info;
 
-  unsigned char
-    *p;
-
   ssize_t
     i;
+
+  unsigned char
+    *p;
 
   client_info=(JPEGClientInfo *) jpeg_info->client_data;
   exception=client_info->exception;
@@ -549,6 +549,25 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   magick[i]='\0';
   if (LocaleCompare(magick,ICC_PROFILE) != 0)
     {
+      if (LocaleCompare(magick,"MPF") == 0)
+        {
+          boolean
+            status;
+
+          JPEGClientInfo
+            *client_info;
+
+          /*
+            Multi-picture support (Future).
+          */
+          status=ReadProfileData(jpeg_info,ICC_INDEX,length-12);
+          if (status == FALSE)
+            return(status);
+          client_info=(JPEGClientInfo *) jpeg_info->client_data;
+          client_info->profiles[ICC_INDEX]=DestroyStringInfo(
+            client_info->profiles[ICC_INDEX]);
+          return(TRUE);
+        }
       /*
         Not a ICC profile, return.
       */
@@ -652,14 +671,14 @@ static boolean ReadXMPProfile(j_decompress_ptr jpeg_info)
   MagickBooleanType
     status;
 
-  unsigned char
-    *p;
-
   size_t
     length;
 
   StringInfo
     *profile;
+
+  unsigned char
+    *p;
 
   GetProfileLength(jpeg_info,length);
   if (length <= 2)
@@ -961,7 +980,7 @@ static void JPEGDestroyDecompress(j_decompress_ptr jpeg_info)
     i;
 
   client_info=(JPEGClientInfo *) jpeg_info->client_data;
-  for (i=0; i < 16; i++)
+  for (i=0; i < MaxJPEGProfiles; i++)
   {
     if (client_info->profiles[i] != (StringInfo *) NULL)
       client_info->profiles[i]=DestroyStringInfo(client_info->profiles[i]);
@@ -980,19 +999,19 @@ static MagickBooleanType JPEGSetImageProfiles(JPEGClientInfo *client_info)
   MagickBooleanType
     status;
 
-  unsigned char
-    *p;
-
   ssize_t
     i;
 
   StringInfo
     *profile;
 
+  unsigned char
+    *p;
+
   exception=client_info->exception;
   image=client_info->image;
   status=MagickTrue;
-  for (i=0; i < 16; i++)
+  for (i=0; i < MaxJPEGProfiles; i++)
   {
     profile=client_info->profiles[i];
     if (profile == (StringInfo *) NULL)
@@ -1154,11 +1173,11 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
     jpeg_set_marker_processor(jpeg_info,ICC_MARKER,ReadICCProfile);
   if (IsOptionMember("IPTC",option) == MagickFalse)
     jpeg_set_marker_processor(jpeg_info,IPTC_MARKER,ReadIPTCProfile);
-  if (IsOptionMember("APP",option) == MagickFalse)
+  if (IsOptionMember("XMP",option) == MagickFalse)
     jpeg_set_marker_processor(jpeg_info,XML_MARKER,ReadXMPProfile);
-  for (i=3; i < 16; i++)
+  for (i=3; i < MaxJPEGProfiles; i++)
     /* APP14 is ignored because this will change the colors of the image */
-    if (i != IPTC_INDEX && i != 14)
+    if ((i != IPTC_INDEX) && (i != 14))
       if (IsOptionMember("APP",option) == MagickFalse)
         jpeg_set_marker_processor(jpeg_info,(int) (JPEG_APP0+i),ReadProfile);
   i=(ssize_t) jpeg_read_header(jpeg_info,TRUE);
@@ -2089,11 +2108,11 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
     if (((LocaleCompare(name,"IPTC") == 0) ||
         (LocaleCompare(name,"8BIM") == 0)) && (iptc == MagickFalse))
       {
-        unsigned char
-          *p;
-
         size_t
           roundup;
+
+        unsigned char
+          *p;
 
         iptc=MagickTrue;
         p=GetStringInfoDatum(custom_profile);
