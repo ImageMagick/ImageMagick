@@ -512,8 +512,12 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
               return(-7);
             }
           RunCount=(unsigned char) c;
-          if(x) {    /* attempt to duplicate row from x position: */
-            /* I do not know what to do here */
+          if(x!=0) {    /* attempt to duplicate row from x position: */
+            if (InsertRow(image,BImgBuff,y,bpp,exception) == MagickFalse)
+              {
+                x=0;    
+                y++;
+              }
             BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
             return(-3);
           }
@@ -583,10 +587,10 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
   y=0;
   ldblk=(ssize_t) ((bpp*image->columns+7)/8);
   BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t) ldblk,
-    sizeof(*BImgBuff));
+    8*sizeof(*BImgBuff));
   if(BImgBuff==NULL)
     return(-2);
-  (void) memset(BImgBuff,0,ldblk*sizeof(*BImgBuff));
+  (void) memset(BImgBuff,0,ldblk*8*sizeof(*BImgBuff));
 
   while( y< (ssize_t) image->rows)
   {
