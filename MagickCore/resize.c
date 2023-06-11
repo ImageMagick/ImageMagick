@@ -1183,8 +1183,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   if (IsStringTrue(GetImageArtifact(image,"filter:verbose")) != MagickFalse)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp single
-    {
 #endif
+    {
       double
         support,
         x;
@@ -1245,9 +1245,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
         GetMagickPrecision(),0.0);
       /* Output the above once only for each image - remove setting */
       (void) DeleteImageArtifact((Image *) image,"filter:verbose");
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
     }
-#endif
   return(resize_filter);
 }
 
