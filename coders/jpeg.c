@@ -1588,7 +1588,7 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
 #define BUFFER_SIZE  8192
 
   FILE
-    *file;
+    *file = (FILE *) NULL;
 
   Image
     *image;
@@ -1608,7 +1608,7 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
     n = 0,
     patternSize;
 
-  uint8_t
+  unsigned char
     buffer[BUFFER_SIZE],
     pattern[] = {0xff, 0xd8, 0xff, 0xe0}; 
 
