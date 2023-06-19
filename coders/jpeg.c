@@ -564,6 +564,8 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
           if (status == FALSE)
             return(status);
           client_info=(JPEGClientInfo *) jpeg_info->client_data;
+          status=SetImageProfile(client_info->image,"MPF",
+            client_info->profiles[ICC_INDEX],client_info->exception);
           client_info->profiles[ICC_INDEX]=DestroyStringInfo(
             client_info->profiles[ICC_INDEX]);
           return(TRUE);
@@ -1054,7 +1056,7 @@ static MagickBooleanType JPEGSetImageProfiles(JPEGClientInfo *client_info)
   return(status);
 }
 
-static Image *ReadJPEGImage_(const ImageInfo *image_info,
+static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   struct jpeg_decompress_struct *jpeg_info,ExceptionInfo *exception)
 {
 #define ThrowJPEGReaderException(exception,message) \
@@ -1116,13 +1118,6 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   /*
     Open image file.
   */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickCoreSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickCoreSignature);
-  if (IsEventLogging() != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image_info->filename);
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -1586,13 +1581,136 @@ static Image *ReadJPEGImage_(const ImageInfo *image_info,
   return(GetFirstImageInList(image));
 }
 
+static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
+  struct jpeg_decompress_struct *jpeg_info,Image *images,
+  ExceptionInfo *exception)
+{
+#define BUFFER_SIZE  8192
+
+  FILE
+    *file;
+
+  Image
+    *image;
+
+  ImageInfo
+    *clone_info;
+
+  int
+    unique_file;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    count,
+    j = 0,
+    n = 0,
+    patternSize;
+
+  uint8_t
+    buffer[BUFFER_SIZE],
+    pattern[] = {0xff, 0xd8, 0xff, 0xe0}; 
+
+  /*
+    Read multi-picture object.
+  */
+  image=AcquireImage(image_info,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return(MagickFalse);
+    }
+  clone_info=CloneImageInfo(image_info);
+  unique_file=AcquireUniqueFileResource(clone_info->filename);
+  if (unique_file != -1)
+    file=fdopen(unique_file,"wb");
+  if ((unique_file == -1) || (file == (FILE *) NULL))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
+        "UnableToCreateTemporaryFile","`%s'",image->filename);
+      clone_info=DestroyImageInfo(clone_info);
+      return(MagickFalse);
+    }
+  patternSize=sizeof(pattern)/sizeof(pattern[0]);
+  while ((count=ReadBlob(image,BUFFER_SIZE,buffer)) != 0)
+  {
+    size_t
+      length;
+
+    ssize_t
+      i;
+
+    length=fwrite(buffer,1,count,file);
+    if ((ssize_t) length != count)
+      break;
+    for (i=0; i < count; i++)
+      if (buffer[i] != pattern[j])
+        j=0;
+      else
+        if (++j == patternSize)
+          {
+            Image
+              *jpeg_image;
+
+            if (n++ != 0)
+              {
+                (void) fflush(file);
+                jpeg_image=ReadOneJPEGImage(clone_info,jpeg_info,exception);
+                if (jpeg_image != (Image *) NULL)
+                  {
+                    (void) strcpy(jpeg_image->filename,image->filename);
+                    AppendImageToList(&images,jpeg_image);              
+                  }
+              }
+            (void) fseek(file,0,SEEK_SET);
+            length=fwrite(buffer+i-3,1,count-i-4,file);
+            if ((ssize_t) length != (count-i-4))
+              break;
+            j=0;
+          }
+  }
+  if (ferror(file) != 0)
+    (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
+      "UnableToCreateTemporaryFile","`%s'",image->filename);
+  (void) fclose(file);
+  (void) RelinquishUniqueFileResource(clone_info->filename);
+  clone_info=DestroyImageInfo(clone_info);
+  (void) CloseBlob(images);
+  return(MagickTrue);
+}
+
 static Image *ReadJPEGImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  Image
+    *images;
+
   struct jpeg_decompress_struct
     jpeg_info;
 
-  return(ReadJPEGImage_(image_info,&jpeg_info,exception));
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  images=ReadOneJPEGImage(image_info,&jpeg_info,exception);
+  if (images != (Image *) NULL)
+    {
+      const StringInfo
+        *profile;
+
+      /*
+        Check for multi-picture object.
+      */
+      profile=GetImageProfile(images,"MPF");
+      if (profile != (const StringInfo *) NULL)
+        (void) ReadMPOImages(image_info,&jpeg_info,images,exception);
+    }
+  return(images);
 }
 #endif
 
@@ -1700,6 +1818,20 @@ ModuleExport size_t RegisterJPEGImage(void)
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jpeg");
   (void) RegisterMagickInfo(entry);
+  entry=AcquireMagickInfo("JPEG","MPO",JPEGDescription);
+#if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
+  entry->flags^=CoderDecoderThreadSupportFlag;
+#endif
+#if defined(MAGICKCORE_JPEG_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadJPEGImage;
+#endif
+  entry->magick=(IsImageFormatHandler *) IsJPEG;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderUseExtensionFlag;
+  if (*version != '\0')
+    entry->version=ConstantString(version);
+  entry->mime_type=ConstantString("image/jpeg");
+  (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("JPEG","PJPEG",JPEGDescription);
 #if (JPEG_LIB_VERSION < 80) && !defined(LIBJPEG_TURBO_VERSION)
   entry->flags^=CoderDecoderThreadSupportFlag;
@@ -1740,6 +1872,7 @@ ModuleExport size_t RegisterJPEGImage(void)
 ModuleExport void UnregisterJPEGImage(void)
 {
   (void) UnregisterMagickInfo("PJPG");
+  (void) UnregisterMagickInfo("MPO");
   (void) UnregisterMagickInfo("JPS");
   (void) UnregisterMagickInfo("JPG");
   (void) UnregisterMagickInfo("JPEG");
