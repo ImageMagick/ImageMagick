@@ -1606,14 +1606,15 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
     count,
     j = 0,
     n = 0,
-    patternSize;
+    signatureSize;
 
   unsigned char
+    alt_signature[] = {0xff, 0xd8, 0xff, 0xe1}, 
     buffer[BUFFER_SIZE],
-    pattern[] = {0xff, 0xd8, 0xff, 0xe0}; 
+    signature[] = {0xff, 0xd8, 0xff, 0xe0};
 
   /*
-    Read multi-picture object.
+    Read multi-picture object images.
   */
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -1631,31 +1632,38 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
       (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
         "UnableToCreateTemporaryFile","`%s'",image->filename);
       clone_info=DestroyImageInfo(clone_info);
+      image=DestroyImageList(image);
       return(MagickFalse);
     }
-  patternSize=sizeof(pattern)/sizeof(pattern[0]);
+  signatureSize=sizeof(signature)/sizeof(*signature);
   while ((count=ReadBlob(image,BUFFER_SIZE,buffer)) != 0)
   {
     size_t
       length;
 
     ssize_t
-      i;
+      i,
+      offset;
 
-    length=fwrite(buffer,1,count,file);
-    if ((ssize_t) length != count)
-      break;
+    offset=0;
     for (i=0; i < count; i++)
-      if (buffer[i] != pattern[j])
+      if ((buffer[i] != signature[j]) && (buffer[i] != alt_signature[j]))
         j=0;
       else
-        if (++j == patternSize)
+        if (++j == signatureSize)
           {
             Image
               *jpeg_image;
 
             if (n++ != 0)
               {
+                /*
+                  Read one MPO image from the image sequence.
+                */
+                offset=i-signatureSize+1;
+                length=fwrite(buffer,1,offset,file);
+                if ((ssize_t) length != offset)
+                  break;
                 (void) fflush(file);
                 jpeg_image=ReadOneJPEGImage(clone_info,jpeg_info,exception);
                 if (jpeg_image != (Image *) NULL)
@@ -1665,19 +1673,19 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
                   }
               }
             (void) fseek(file,0,SEEK_SET);
-            length=fwrite(buffer+i-3,1,count-i-4,file);
-            if ((ssize_t) length != (count-i-4))
-              break;
             j=0;
           }
+    length=fwrite(buffer+offset,1,count-offset,file);
+    if ((ssize_t) length != (count-offset))
+      break;
   }
   if (ferror(file) != 0)
-    (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
-      "UnableToCreateTemporaryFile","`%s'",image->filename);
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+      "AnErrorHasOccurredWritingToFile","`%s'",image->filename);
   (void) fclose(file);
   (void) RelinquishUniqueFileResource(clone_info->filename);
   clone_info=DestroyImageInfo(clone_info);
-  (void) CloseBlob(images);
+  image=DestroyImageList(image);
   return(MagickTrue);
 }
 

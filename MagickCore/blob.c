@@ -3737,8 +3737,8 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
 %
 %  ReadBlob() reads data from the blob or image file and returns it.  It
 %  returns the number of bytes read. If length is zero, ReadBlob() returns
-%  zero and has no other results. If length is greater than MAGICK_SSIZE_MAX, the
-%  result is unspecified.
+%  zero and has no other results. If length is greater than MAGICK_SSIZE_MAX,
+%  the result is unspecified.
 %
 %  The format of the ReadBlob method is:
 %
