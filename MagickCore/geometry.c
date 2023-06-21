@@ -53,7 +53,7 @@
 /*
   Define declarations.
 */
-#define MagickPagesize(name,geometry) { (name), sizeof(name)-1, (geometry) }
+#define MagickPagesize(name,geometry) { name, sizeof(name)-1, geometry }
 
 /*
   Structure declarations.
