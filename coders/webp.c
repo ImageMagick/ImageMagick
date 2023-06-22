@@ -790,8 +790,8 @@ static const char * WebPErrorCodeMessage(WebPEncodingError error_code)
 }
 
 static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
-  Image *image,const WebPConfig *configure,WebPPicture *picture,
-  MemoryInfo **memory_info,ExceptionInfo *exception)
+  Image *image,WebPPicture *picture,MemoryInfo **memory_info,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -852,14 +852,6 @@ static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
-
-  if (status != MagickFalse)
-    status=(MagickBooleanType) WebPEncode(configure,picture);
-
-  if (status == MagickFalse)
-    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-      WebPErrorCodeMessage(picture->error_code),"`%s'",image->filename);
-
   return(status);
 }
 
@@ -882,8 +874,14 @@ static MagickBooleanType WriteSingleWEBPImage(const ImageInfo *image_info,
   picture.writer=WebPMemoryWrite;
   picture.custom_ptr=writer;
 
-  status=WriteSingleWEBPPicture(image_info,image,configure,&picture,
-    &memory_info,exception);
+  status=WriteSingleWEBPPicture(image_info,image,&picture,&memory_info,
+    exception);
+  if (status != MagickFalse)
+    status=(MagickBooleanType) WebPEncode(configure,&picture);
+  if (status == MagickFalse)
+    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+      WebPErrorCodeMessage(picture.error_code),"`%s'",image->filename);
+
   if (memory_info != (MemoryInfo *) NULL)
     memory_info=RelinquishVirtualMemory(memory_info);
   WebPPictureFree(&picture);
@@ -952,11 +950,14 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
         break;
       }
 
-    webp_status=(int) WriteSingleWEBPPicture(image_info,frame,configure,
-      &picture,&memory_info,exception);
+    webp_status=(int) WriteSingleWEBPPicture(image_info,frame,&picture,
+      &memory_info,exception);
     if (webp_status != 0)
       webp_status=WebPAnimEncoderAdd(enc,&picture,(int) frame_timestamp,
         configure);
+    else
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        WebPErrorCodeMessage(picture.error_code),"`%s'",image->filename);
     if (memory_info != (MemoryInfo *) NULL)
       (void) AppendValueToLinkedList(memory_info_list,memory_info);
     WebPPictureFree(&picture);
