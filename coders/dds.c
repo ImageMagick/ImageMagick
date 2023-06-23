@@ -2565,6 +2565,15 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
                  ((((unsigned short)(color << 12) >> 12)/15.0)*255)),q);
             }
         }
+      else if (dds_info->extFormat == DXGI_FORMAT_R10G10B10A2_UNORM)
+        {
+          const unsigned int pixel = ReadBlobLSBLong(image);
+          const unsigned int mask10 = 0x3ff;
+          SetPixelRed(image, ScaleShortToQuantum(((pixel & mask10) / 1023.0) * 65535), q);
+          SetPixelBlue(image, ScaleShortToQuantum((((pixel >> 10) & mask10) / 1023.0) * 65535), q);
+          SetPixelGreen(image, ScaleShortToQuantum((((pixel >> 20) & mask10) / 1023.0) * 65535), q);
+          SetPixelAlpha(image, ScaleShortToQuantum((((pixel >> 30) & 3) / 3.0) * 65535), q);
+        }
       else if (dds_info->extFormat == DXGI_FORMAT_R8G8B8A8_UNORM ||
           IsBitMask(dds_info->pixelformat,0x000000ff,0x0000ff00,0x00ff0000,0xff000000))
         {
@@ -2806,6 +2815,13 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
               alpha_trait=BlendPixelTrait;
               compression=NoCompression;
               decoder=ReadUncompressedRGBA;
+              break;
+            }
+            case DXGI_FORMAT_R10G10B10A2_UNORM:
+            {
+              compression = NoCompression;
+              alpha_trait = BlendPixelTrait;
+              decoder = ReadUncompressedRGBA;
               break;
             }
             case DXGI_FORMAT_B8G8R8X8_UNORM:
