@@ -23,7 +23,7 @@ Configure
   default options, and build from within the source directory, you can simply
   type:
   
-    $magick> cd ImageMagick-7.0.9
+    $magick> cd ImageMagick-7.1.1
     $magick> ./configure
   
   Watch the configure script output to verify that it finds everything that
@@ -168,10 +168,7 @@ Configure
     --enable-shared
       build the shared libraries and support for loading coder and process
       modules. Shared libraries are preferred because they allow programs
-      to share common code, making the individual programs much smaller. In
-      addition shared libraries are required in order for PerlMagick to be
-      dynamically loaded by an installed PERL (otherwise an additional PERL
-      (PerlMagick) must be installed.
+      to share common code, making the individual programs much smaller.
   
       ImageMagick built with delegates (see MAGICK PLUG-INS below) can pose
       additional challenges. If ImageMagick is built using static libraries (the
@@ -350,18 +347,18 @@ Configure
       encode this name into the shared library name (see libtools -release
       option).
   
-    --without-perl
-      disable build/install of PerlMagick
+    --with-perl
+      enable build/install of PerlMagick
   
-      By default, PerlMagick is conveniently compiled and installed as part
-      of ImageMagick's normal configure, make, sudo make install process. When
-      --without-perl is specified, you must first install ImageMagick, change to
-      the PerlMagick subdirectory, build, and finally install PerlMagick. Note,
-      PerlMagick is configured even if --without-perl is specified. If the
-      argument --with-perl=/path/to/perl is supplied, /../path/to/perl is be
-      taken as the PERL interpreter to use. This important in case the perl
-      executable in your PATH is not PERL5, or is not the PERL you want to use.
-  
+      By default, PerlMagick is not compiled or installed as part of
+      ImageMagick's normal configure, make, sudo make install process. When
+      --with-perl is specified, PerlMagick will build and install along with
+      ImageMagick.  Note, PerlMagick is configured even if --without-perl
+      is specified. If the argument --with-perl=/path/to/perl is supplied,
+      /../path/to/perl is be taken as the PERL interpreter to use. This
+      important in case the perl executable in your PATH is not PERL5,
+      or is not the PERL you want to use.
+
     --with-perl=PERL
       use specified Perl binary to configure PerlMagick.
   
