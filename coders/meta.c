@@ -2337,6 +2337,8 @@ static MagickBooleanType WriteMETAImage(const ImageInfo *image_info,
       assert(exception != (ExceptionInfo *) NULL);
       assert(exception->signature == MagickCoreSignature);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+      if (status == MagickFalse)
+        return(status);
       info=GetStringInfoDatum(profile);
       length=GetStringInfoLength(profile);
       length=GetIPTCStream(&info,length);
