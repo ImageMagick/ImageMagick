@@ -9,7 +9,7 @@ popd
 
 # Build xz
 pushd "$SRC/xz"
-./autogen.sh --no-po4a
+./autogen.sh --no-po4a --no-doxygen
 ./configure --disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-lzma-links --disable-scripts --disable-doc --disable-shared --with-pic=yes --prefix="$WORK"
 make -j$(nproc)
 make install
