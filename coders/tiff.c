@@ -2010,7 +2010,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         number_pixels=(MagickSizeType) columns*rows;
         if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        extent=4*(samples_per_pixel+1)*MagickMax(rows*TIFFTileRowSize(tiff),
+        extent=4*(samples_per_pixel+1)*MagickMax((rows+1)*TIFFTileRowSize(tiff),
           TIFFTileSize(tiff));
         tile_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*tile_pixels));
