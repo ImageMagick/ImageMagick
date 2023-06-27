@@ -1992,7 +1992,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           *p;
 
         size_t
-          extent;
+          extent,
+          length;
+
+        ssize_t
+          stride;
+
+        tmsize_t
+          tile_size;
 
         uint32
           columns,
@@ -2010,8 +2017,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         number_pixels=(MagickSizeType) columns*rows;
         if (HeapOverflowSanityCheck(rows,sizeof(*tile_pixels)) != MagickFalse)
           ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-        extent=4*(samples_per_pixel+1)*MagickMax((rows+1)*TIFFTileRowSize(tiff),
-          TIFFTileSize(tiff));
+        tile_size=TIFFTileSize(tiff);
+        stride=(ssize_t) TIFFTileRowSize(tiff);
+        length=GetQuantumExtent(image,quantum_info,quantum_type);
+        extent=(size_t) MagickMax((size_t) tile_size,rows*
+          MagickMax((size_t) stride,length));
         tile_pixels=(unsigned char *) AcquireQuantumMemory(extent,
           sizeof(*tile_pixels));
         if (tile_pixels == (unsigned char *) NULL)
@@ -2070,7 +2080,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   break;
                 (void) ImportQuantumPixels(image,(CacheView *) NULL,
                   quantum_info,quantum_type,p,exception);
-                p+=TIFFTileRowSize(tiff);
+                p+=stride;
                 if (SyncAuthenticPixels(image,exception) == MagickFalse)
                   break;
               }
