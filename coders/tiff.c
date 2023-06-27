@@ -2029,6 +2029,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         (void) memset(tile_pixels,0,extent*sizeof(*tile_pixels));
         for (i=0; i < (ssize_t) samples_per_pixel; i++)
         {
+          tmsize_t
+            size = 0;
+
           switch (i)
           {
             case 0: break;
@@ -2064,9 +2067,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               columns_remaining=image->columns-x;
               if ((ssize_t) (x+columns) < (ssize_t) image->columns)
                 columns_remaining=columns;
-              tiff_status=TIFFReadTile(tiff,tile_pixels,(uint32) x,(uint32) y,
+              size=TIFFReadTile(tiff,tile_pixels,(uint32) x,(uint32) y,
                 0,i);
-              if (tiff_status == -1)
+              if (size == -1)
                 break;
               p=tile_pixels;
               for (row=0; row < rows_remaining; row++)
@@ -2085,8 +2088,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   break;
               }
             }
+            if (size == -1)
+              break;
           }
-          if ((samples_per_pixel > 1) && (interlace != PLANARCONFIG_SEPARATE))
+          if ((size == -1) || ((samples_per_pixel > 1) &&
+              (interlace != PLANARCONFIG_SEPARATE)))
             break;
           if (image->previous == (Image *) NULL)
             {
