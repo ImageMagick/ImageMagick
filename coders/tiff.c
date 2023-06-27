@@ -1928,6 +1928,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           size_t
             rows_remaining;
 
+          tmsize_t
+            size = 0;
+
           switch (i)
           {
             case 0: break;
@@ -1955,9 +1958,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               break;
             if (rows_remaining == 0)
               {
-                tmsize_t
-                  size;
-
                 size=TIFFReadEncodedStrip(tiff,strip_id,strip_pixels,
                   strip_size);
                 if (size == -1)
@@ -1980,7 +1980,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   break;
               }
           }
-          if ((samples_per_pixel > 1) && (interlace != PLANARCONFIG_SEPARATE))
+          if ((size == -1) || ((samples_per_pixel > 1) &&
+              (interlace != PLANARCONFIG_SEPARATE)))
             break;
         }
         strip_pixels=(unsigned char *) RelinquishMagickMemory(strip_pixels);
