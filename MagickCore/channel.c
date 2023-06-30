@@ -871,7 +871,7 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
   {
     PixelChannel channel = GetPixelChannelChannel(image,i);
     PixelTrait traits = GetPixelChannelTraits(image,channel);
-    if (traits == UndefinedPixelTrait)
+    if ((traits == UndefinedPixelTrait) || ((traits & UpdatePixelTrait) == 0))
       continue;
     separate_image=SeparateImage(image,(ChannelType) (1UL << channel),
       exception);
