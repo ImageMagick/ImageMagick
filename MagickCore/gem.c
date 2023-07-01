@@ -1286,9 +1286,9 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
 %
 %  ConvertRGBToLab() transforms a (red, green, blue) to a (L, a, b) triple.
 %
-%  The format of the ConvertRGBToLCHab method is:
+%  The format of the ConvertRGBToLab method is:
 %
-%      void ConvertRGBToLCHab(const double red,const double green,
+%      void ConvertRGBToLab(const double red,const double green,
 %        const double blue,double *L,double *a,double *b)
 %
 %  A description of each parameter follows:
