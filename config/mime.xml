@@ -764,6 +764,8 @@
   <mime type="image/x-canon-crw" description="Canon RaW" data-type="string" offset="0" magic="II\x1a\x00\x00\x00HEAPCCDR" priority="50" />
   <mime type="image/x-canon-crw" acronym="CRW" description="Canon RaW" priority="100" pattern="*.crw" />
   <mime type="image/x-canon-cr2" acronym="CR2" description="Canon Raw 2" priority="100" pattern="*.cr2" />
+  <mime type="image/x-canon-cr3" description="Canon Raw 3" data-type="string" offset="4" magic="ftypcrx " priority="50" />
+  <mime type="image/x-canon-cr3" acronym="CR3" description="Canon Raw 3" priority="100" pattern="*.cr3" />
   <mime type="image/x-fuji-raf" description="RAw Format" data-type="string" offset="0" magic="FUJIFILMCCD-RAW " priority="50" />
   <mime type="image/x-fuji-raf" acronym="RAF" description="RAw Format" priority="100" pattern="*.raf" />
   <mime type="image/x-kodak-dcr" acronym="DCR" description="Digital Camera Raw" priority="100" pattern="*.dcr" />
