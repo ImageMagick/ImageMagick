@@ -396,7 +396,7 @@ case "$host" in
     if test "${build_osxuniversal}" != no ; then
       if test "$enable_dependency_tracking" != no ; then
         AC_MSG_ERROR([--enable-osx-universal-binary requires --disable-dependency-tracking.
-Please re-run configure with these options:
+Re-run configure with these options:
   --disable-dependency-tracking --enable-osx-universal-binary
         ])
       fi
@@ -870,6 +870,16 @@ if test "$with_jemalloc" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jemalloc=$with_jemalloc "
 fi
 
+# Enable use of MTMalloc library.
+AC_ARG_WITH([mtmalloc],
+   AS_HELP_STRING([--with-mtmalloc],
+                  [enable mtmalloc memory allocation library support]),
+   [with_mtmalloc=$withval],
+   [with_mtmalloc='no'])
+if test "$with_mtmalloc" != 'no' ; then
+   DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-mtmalloc=$with_mtmalloc "
+fi
+
 # Enable use of TCMalloc library.
 AC_ARG_WITH([tcmalloc],
    AS_HELP_STRING([--with-tcmalloc],
@@ -1315,6 +1325,38 @@ if test "$with_jemalloc" != 'no'; then
 fi
 AM_CONDITIONAL([HAVE_JEMALLOC],[test "$have_jemalloc" = 'yes'])
 AC_SUBST([JEMALLOC_LIBS])
+
+#
+# Check for MTMalloc library
+#
+have_mtmalloc='no'
+MTMALLOC_LIBS=''
+OLIBS="$LIBS"
+if test "$have_threads" = 'yes' -a "$with_mtmalloc" != 'no'; then
+    AC_MSG_CHECKING([mtmalloc library support])
+    AC_MSG_RESULT([])
+    failed=0
+    passed=0
+
+    AC_CHECK_HEADER([mtmalloc.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+    AC_CHECK_LIB([mtalloc],[mallocctl],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            have_mtmalloc='no (some components failed test)'
+        else
+            MTMALLOC_LIBS=-lmtalloc
+            LIBS="$MTMALLOC_LIBS $LIBS"
+            CFLAGS="$CFLAGS -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free"
+            AC_DEFINE([HAVE_MTMALLOC],[1],[Define if you have the mtmalloc memory allocation library])
+            have_mtmalloc='yes'
+        fi
+    fi
+    AC_MSG_CHECKING([if mtmalloc memory allocation library is complete])
+    AC_MSG_RESULT([$have_mtmalloc])
+fi
+AM_CONDITIONAL([HAVE_MTMALLOC],[test "$have_mtmalloc" = 'yes'])
+AC_SUBST([MTMALLOC_LIBS])
 
 #
 # Check for TCMalloc library
@@ -3916,9 +3958,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $DMR_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $DMR_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS $MTMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $DMR_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $DMR_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS $MTMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 AC_SUBST([MAGICK_DEP_LIBS])
@@ -4038,8 +4080,8 @@ AC_OUTPUT
 # ==============================================================================
 AC_MSG_NOTICE([
 ==============================================================================
-${PACKAGE_NAME} ${PACKAGE_VERSION} is configured as follows. Please verify that this
-configuration matches your expectations.
+${PACKAGE_NAME} ${PACKAGE_VERSION} is configured as follows. Verify that this configuration
+matches your expectations.
 
 Host system type: $host
 Build system type: $build
@@ -4059,6 +4101,7 @@ Install documentation:				$wantdocs
 
 Memory allocation library:
   JEMalloc          --with-jemalloc=$with_jemalloc		$have_jemalloc
+  MTMalloc          --with-mtmalloc=$with_mtmalloc		$have_mtmalloc
   TCMalloc          --with-tcmalloc=$with_tcmalloc		$have_tcmalloc
   UMem              --with-umem=$with_umem		$have_umem
 

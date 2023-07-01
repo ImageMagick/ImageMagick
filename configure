@@ -944,6 +944,9 @@ HAVE_UMEM_TRUE
 TCMALLOC_LIBS
 HAVE_TCMALLOC_FALSE
 HAVE_TCMALLOC_TRUE
+MTMALLOC_LIBS
+HAVE_MTMALLOC_FALSE
+HAVE_MTMALLOC_TRUE
 JEMALLOC_LIBS
 HAVE_JEMALLOC_FALSE
 HAVE_JEMALLOC_TRUE
@@ -1233,6 +1236,7 @@ with_package_release_name
 with_perl
 with_perl_options
 with_jemalloc
+with_mtmalloc
 with_tcmalloc
 with_umem
 with_libstdc
@@ -2070,6 +2074,7 @@ Optional Packages:
                           options to pass on command-line when generating
                           PerlMagick build file
   --with-jemalloc         enable jemalloc memory allocation library support
+  --with-mtmalloc         enable mtmalloc memory allocation library support
   --with-tcmalloc         enable tcmalloc memory allocation library support
   --with-umem             enable umem memory allocation library support
   --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
@@ -5167,7 +5172,7 @@ MAGICK_PATCHLEVEL_VERSION=13
 
 MAGICK_VERSION=7.1.1-13
 
-MAGICK_GIT_REVISION=56f478940:20230625
+MAGICK_GIT_REVISION=a765e3c50:20230630
 
 
 # Substitute library versioning
@@ -5201,7 +5206,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,13
 
-PACKAGE_RELEASE_DATE=2023-06-25
+PACKAGE_RELEASE_DATE=2023-06-30
 
 
 # Ensure that make can run correctly
@@ -10337,7 +10342,7 @@ fi
     if test "${build_osxuniversal}" != no ; then
       if test "$enable_dependency_tracking" != no ; then
         as_fn_error $? "--enable-osx-universal-binary requires --disable-dependency-tracking.
-Please re-run configure with these options:
+Re-run configure with these options:
   --disable-dependency-tracking --enable-osx-universal-binary
         " "$LINENO" 5
       fi
@@ -23600,6 +23605,20 @@ if test "$with_jemalloc" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-jemalloc=$with_jemalloc "
 fi
 
+# Enable use of MTMalloc library.
+
+# Check whether --with-mtmalloc was given.
+if test ${with_mtmalloc+y}
+then :
+  withval=$with_mtmalloc; with_mtmalloc=$withval
+else $as_nop
+  with_mtmalloc='no'
+fi
+
+if test "$with_mtmalloc" != 'no' ; then
+   DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-mtmalloc=$with_mtmalloc "
+fi
+
 # Enable use of TCMalloc library.
 
 # Check whether --with-tcmalloc was given.
@@ -28331,6 +28350,99 @@ fi
 else
   HAVE_JEMALLOC_TRUE='#'
   HAVE_JEMALLOC_FALSE=
+fi
+
+
+
+#
+# Check for MTMalloc library
+#
+have_mtmalloc='no'
+MTMALLOC_LIBS=''
+OLIBS="$LIBS"
+if test "$have_threads" = 'yes' -a "$with_mtmalloc" != 'no'; then
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking mtmalloc library support" >&5
+printf %s "checking mtmalloc library support... " >&6; }
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: " >&5
+printf "%s\n" "" >&6; }
+    failed=0
+    passed=0
+
+    ac_fn_c_check_header_compile "$LINENO" "mtmalloc.h" "ac_cv_header_mtmalloc_h" "$ac_includes_default"
+if test "x$ac_cv_header_mtmalloc_h" = xyes
+then :
+  passed=`expr $passed + 1`
+else $as_nop
+  failed=`expr $failed + 1`
+fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mallocctl in -lmtalloc" >&5
+printf %s "checking for mallocctl in -lmtalloc... " >&6; }
+if test ${ac_cv_lib_mtalloc_mallocctl+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmtalloc  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char mallocctl ();
+int
+main (void)
+{
+return mallocctl ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_mtalloc_mallocctl=yes
+else $as_nop
+  ac_cv_lib_mtalloc_mallocctl=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mtalloc_mallocctl" >&5
+printf "%s\n" "$ac_cv_lib_mtalloc_mallocctl" >&6; }
+if test "x$ac_cv_lib_mtalloc_mallocctl" = xyes
+then :
+  passed=`expr $passed + 1`
+else $as_nop
+  failed=`expr $failed + 1`
+fi
+
+
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            have_mtmalloc='no (some components failed test)'
+        else
+            MTMALLOC_LIBS=-lmtalloc
+            LIBS="$MTMALLOC_LIBS $LIBS"
+            CFLAGS="$CFLAGS -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free"
+
+printf "%s\n" "#define HAVE_MTMALLOC 1" >>confdefs.h
+
+            have_mtmalloc='yes'
+        fi
+    fi
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if mtmalloc memory allocation library is complete" >&5
+printf %s "checking if mtmalloc memory allocation library is complete... " >&6; }
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $have_mtmalloc" >&5
+printf "%s\n" "$have_mtmalloc" >&6; }
+fi
+ if test "$have_mtmalloc" = 'yes'; then
+  HAVE_MTMALLOC_TRUE=
+  HAVE_MTMALLOC_FALSE='#'
+else
+  HAVE_MTMALLOC_TRUE='#'
+  HAVE_MTMALLOC_FALSE=
 fi
 
 
@@ -38306,9 +38418,9 @@ fi
 #
 
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $DMR_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $DMR_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS $MTMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $DMR_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $DMR_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS $MTMALLOC_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 
@@ -38580,6 +38692,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_JEMALLOC_TRUE}" && test -z "${HAVE_JEMALLOC_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_JEMALLOC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_MTMALLOC_TRUE}" && test -z "${HAVE_MTMALLOC_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_MTMALLOC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_TCMALLOC_TRUE}" && test -z "${HAVE_TCMALLOC_FALSE}"; then
@@ -41345,8 +41461,8 @@ fi
 # ==============================================================================
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}:
 ==============================================================================
-${PACKAGE_NAME} ${PACKAGE_VERSION} is configured as follows. Please verify that this
-configuration matches your expectations.
+${PACKAGE_NAME} ${PACKAGE_VERSION} is configured as follows. Verify that this configuration
+matches your expectations.
 
 Host system type: $host
 Build system type: $build
@@ -41366,6 +41482,7 @@ Install documentation:				$wantdocs
 
 Memory allocation library:
   JEMalloc          --with-jemalloc=$with_jemalloc		$have_jemalloc
+  MTMalloc          --with-mtmalloc=$with_mtmalloc		$have_mtmalloc
   TCMalloc          --with-tcmalloc=$with_tcmalloc		$have_tcmalloc
   UMem              --with-umem=$with_umem		$have_umem
 
@@ -41445,8 +41562,8 @@ Options used to compile and link:
 " >&5
 printf "%s\n" "$as_me:
 ==============================================================================
-${PACKAGE_NAME} ${PACKAGE_VERSION} is configured as follows. Please verify that this
-configuration matches your expectations.
+${PACKAGE_NAME} ${PACKAGE_VERSION} is configured as follows. Verify that this configuration
+matches your expectations.
 
 Host system type: $host
 Build system type: $build
@@ -41466,6 +41583,7 @@ Install documentation:				$wantdocs
 
 Memory allocation library:
   JEMalloc          --with-jemalloc=$with_jemalloc		$have_jemalloc
+  MTMalloc          --with-mtmalloc=$with_mtmalloc		$have_mtmalloc
   TCMalloc          --with-tcmalloc=$with_tcmalloc		$have_tcmalloc
   UMem              --with-umem=$with_umem		$have_umem
 
