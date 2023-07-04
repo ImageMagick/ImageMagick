@@ -20,7 +20,7 @@
 
 #include "MagickCore/magick-config.h"
 
-#if MAGICKCORE_HAVE_UINTPTR_T
+#if defined(MAGICKCORE_HAVE_UINTPTR_T)
 #  include <stdint.h>
 #endif
 
@@ -142,7 +142,7 @@ typedef unsigned __int64 MagickSizeType;
 #define MagickSizeFormat  "I64u"
 #endif
 
-#if MAGICKCORE_HAVE_UINTPTR_T || defined(uintptr_t)
+#if defined(MAGICKCORE_HAVE_UINTPTR_T) || defined(uintptr_t)
 typedef uintptr_t MagickAddressType;
 #else
 /* Hope for the best, I guess. */
