@@ -95,7 +95,7 @@ extern "C" {
 #  define wand_unreferenced(x)  /* nothing */
 #endif
 
-#if !defined(__clang__) && (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
+#if !defined(__clang__) && (defined(__GNUC__) && (__GNUC__) > 4)
 #  define wand_alloc_size(x)  __attribute__((__alloc_size__(x)))
 #  define wand_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
 #else
@@ -103,7 +103,7 @@ extern "C" {
 #  define wand_alloc_sizes(x,y)  /* nothing */
 #endif
 
-#if defined(__clang__) || (((__GNUC__) > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3)))
+#if defined(__clang__) || (defined(__GNUC__) && (__GNUC__) > 4)
 #  define wand_cold_spot  __attribute__((__cold__))
 #  define wand_hot_spot  __attribute__((__hot__))
 #else
