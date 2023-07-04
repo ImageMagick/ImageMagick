@@ -123,7 +123,7 @@ extern MagickPrivate MagickBooleanType
   NTReportEvent(const char *,const MagickBooleanType);
 
 extern MagickExport MagickBooleanType
-  NTLongPathsEnabled();
+  NTLongPathsEnabled(void);
 
 extern MagickPrivate struct dirent
   *NTReadDirectory(DIR *);
