@@ -3534,7 +3534,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           if (ImgNum == 0) {
             Image * pimg = pfx->Images[0];
             if (pel->ImgAttrQual == aNull) {
-              if (pel->ChannelQual < 0) {
+              if ((int) pel->ChannelQual < 0) {
                 if (pel->ChannelQual == NO_CHAN_QUAL || pel->ChannelQual == THIS_CHANNEL) {
                   if (pfx->ImgNum==0) {
                     regA = QuantumScale * p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
@@ -3580,7 +3580,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
             /* We have non-zero ImgNum. */
             if (pel->ImgAttrQual == aNull) {
               const Quantum * pv;
-              if ((int)pel->ChannelQual < 0) {
+              if ((int) pel->ChannelQual < 0) {
                 if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
                     pel->ChannelQual == LIGHT_CHANNEL)
                 {
@@ -3614,7 +3614,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
              If called from %[fx:...], ChannelQual will be CompositePixelChannel.
           */
           Image * pimg = pfx->Images[0];
-          if (pel->ChannelQual < 0) {
+          if ((int) pel->ChannelQual < 0) {
             if (pel->ChannelQual == NO_CHAN_QUAL || pel->ChannelQual == THIS_CHANNEL) {
 
               if (pfx->ImgNum==0) {
@@ -3670,7 +3670,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
             fy = regC;
           }
 
-          if ((int)pel->ChannelQual < 0) {
+          if ((int) pel->ChannelQual < 0) {
             if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL
              || pel->ChannelQual == LIGHT_CHANNEL) {
               regA = GetHslFlt (pfx, ImgNum, fx, fy, pel->ChannelQual);
@@ -3713,7 +3713,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               break;
             }
 
-            if ((int)pel->ChannelQual < 0) {
+            if ((int) pel->ChannelQual < 0) {
               if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
                   pel->ChannelQual == LIGHT_CHANNEL) {
                 regA = GetHslInt (pfx, ImgNum, imgx, imgy, pel->ChannelQual);
@@ -3746,7 +3746,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
             fx = regA;
             fy = regB;
           }
-          if ((int)pel->ChannelQual < 0) {
+          if ((int) pel->ChannelQual < 0) {
             if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
                 pel->ChannelQual == LIGHT_CHANNEL) {
               regA = GetHslFlt (pfx, ImgNum, fx, fy, pel->ChannelQual);
