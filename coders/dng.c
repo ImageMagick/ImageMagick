@@ -416,6 +416,22 @@ static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
       StringInfo
         *profile;
 
+      if (thumbnail->type == LIBRAW_IMAGE_JPEG)
+        SetImageProperty(image,"dng:thumbnail.type","jpeg",exception);
+      else if (thumbnail->type == LIBRAW_IMAGE_BITMAP)
+        {
+          char
+            value[15];
+
+          SetImageProperty(image,"dng:thumbnail.type","bitmap",exception);
+          (void) FormatLocaleString(value,sizeof(value),"%hu",thumbnail->bits);
+          SetImageProperty(image,"dng:thumbnail.bits",value,exception);
+          (void) FormatLocaleString(value,sizeof(value),"%hu",thumbnail->colors);
+          SetImageProperty(image,"dng:thumbnail.colors",value,exception);
+          (void) FormatLocaleString(value,sizeof(value),"%hux%hu",thumbnail->width,
+            thumbnail->height);
+          SetImageProperty(image,"dng:thumbnail.geometry",value,exception);
+        }
       profile=BlobToStringInfo(thumbnail->data,thumbnail->data_size);
       (void) SetImageProfile(image,"dng:thumbnail",profile,exception);
     }
