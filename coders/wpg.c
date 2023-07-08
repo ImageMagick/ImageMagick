@@ -1125,23 +1125,20 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           if (SeekBlob(image,Header.DataOffset,SEEK_SET) != Header.DataOffset)
             break;
-          if(EOFBlob(image))
+          if (EOFBlob(image))
             break;
-
           Rec.RecType=(i=ReadBlobByte(image));
-          if(i==EOF)
+          if (i==EOF)
             break;
           i=Rd_WP_DWORD(image,&Rec.RecordLength);
           if ((Rec.RecordLength+4) >= GetBlobSize(image))
             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-          if(EOFBlob(image))
+          if (EOFBlob(image))
             break;
-
           Header.DataOffset=TellBlob(image)+Rec.RecordLength;
-          if (Header.DataOffset > GetBlobSize(image))
+          if (Header.DataOffset > (MagickOffsetType) GetBlobSize(image))
             ThrowReaderException(CorruptImageError, 
               "InsufficientImageDataInFile");
-
           switch(Rec.RecType)
             {
             case 0x0B: /* bitmap type 1 */
