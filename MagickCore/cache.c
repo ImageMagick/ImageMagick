@@ -4852,6 +4852,61 @@ MagickPrivate void ResetPixelCacheEpoch(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e s h a p e P i x e l C a c h e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReshapePixelCache() reshapes an existing pixel cache.
+%
+%  The format of the ReshapePixelCache() method is:
+%
+%      MagickBooleanType ReshapePixelCache(Image *image,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o columns: the number of columns in the reshaped pixel cache.
+%
+%    o rows: number of rows in the reshaped pixel cache.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType ReshapePixelCache(Image *image,
+  const size_t columns,const size_t rows,ExceptionInfo *exception)
+{
+  CacheInfo
+    *cache_info;
+
+  MagickSizeType
+    extent;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(image->cache != (void *) NULL);
+  extent=(MagickSizeType) columns*rows;
+  if (extent > ((MagickSizeType) image->columns*image->rows))
+    ThrowBinaryException(ImageError,"WidthOrHeightExceedsLimit",
+      image->filename);
+  image->columns=columns;
+  image->rows=rows;
+  cache_info=(CacheInfo *) image->cache;
+  cache_info->columns=columns;
+  cache_info->rows=rows;
+  return(SyncImagePixelCache(image,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   S e t P i x e l C a c h e M e t h o d s                                   %
 %                                                                             %
 %                                                                             %

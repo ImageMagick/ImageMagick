@@ -3257,6 +3257,15 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,_image->filter,_exception);
           break;
         }
+      if (LocaleCompare("reshape",option+1) == 0)
+        {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
+          (void) ReshapePixelCache(_image,geometry.width,geometry.height,
+            _exception);
+          break;
+        }
       if (LocaleCompare("resize",option+1) == 0)
         {
           if (IsGeometry(arg1) == MagickFalse)

@@ -2543,6 +2543,17 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               geometry_info.sigma,(*image)->filter,exception);
             break;
           }
+        if (LocaleCompare("reshape",option+1) == 0)
+          {
+            /*
+              Reshape image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            (void) ParseRegionGeometry(*image,argv[i+1],&geometry,exception);
+            (void) ReshapePixelCache(*image,geometry.width,geometry.height,
+              exception);
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             /*
@@ -3495,6 +3506,7 @@ static MagickBooleanType MogrifyUsage(void)
       "  -render              render vector graphics\n"
       "  -repage geometry     size and location of an image canvas\n"
       "  -resample geometry   change the resolution of an image\n"
+      "  -reshape geometry    reshape the image\n"
       "  -resize geometry     resize the image\n"
       "  -roll geometry       roll an image vertically or horizontally\n"
       "  -rotate degrees      apply Paeth rotation to the image\n"
@@ -5866,6 +5878,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("resample",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("reshape",option+1) == 0)
           {
             if (*option == '+')
               break;
