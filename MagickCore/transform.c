@@ -587,10 +587,10 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     page.width=bounding_box.width;
   if (page.height == 0)
     page.height=bounding_box.height;
-  if (((bounding_box.x-page.x) >= (ssize_t) page.width) ||
-      ((bounding_box.y-page.y) >= (ssize_t) page.height) ||
-      ((page.x-bounding_box.x) > (ssize_t) image->columns) ||
-      ((page.y-bounding_box.y) > (ssize_t) image->rows))
+  if ((((double) bounding_box.x-page.x) >= (double) page.width) ||
+      (((double) bounding_box.y-page.y) >= (double) page.height) ||
+      (((double) page.x-bounding_box.x) > (double) image->columns) ||
+      (((double) page.y-bounding_box.y) > (double) image->rows))
     {
       /*
         Crop is not within virtual canvas, return 1 pixel transparent image.
