@@ -344,7 +344,8 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     height=CastDoubleToUnsigned(metrics.ascent-metrics.descent+0.5);
     if (height == 0)
       height=draw_info->pointsize;
-    height+=(size_t) floor(draw_info->interline_spacing+0.5);
+    height=CastDoubleToUnsigned(floor((double) height+
+      draw_info->interline_spacing+0.5));
     switch (annotate->gravity)
     {
       case UndefinedGravity:
