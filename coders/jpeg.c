@@ -1588,6 +1588,7 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
 #define BUFFER_SIZE  8192
+#define SIGNATURE_SIZE 4
 
   FILE
     *file = (FILE *) NULL;
@@ -1607,13 +1608,12 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
   ssize_t
     count,
     j = 0,
-    n = 0,
-    signatureSize;
+    n = 0;
 
   unsigned char
-    alt_signature[] = {0xff, 0xd8, 0xff, 0xe1}, 
+    alt_signature[SIGNATURE_SIZE] = {0xff, 0xd8, 0xff, 0xe1}, 
     buffer[BUFFER_SIZE],
-    signature[] = {0xff, 0xd8, 0xff, 0xe0};
+    signature[SIGNATURE_SIZE] = {0xff, 0xd8, 0xff, 0xe0};
 
   /*
     Read multi-picture object images.
@@ -1637,7 +1637,6 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return(MagickFalse);
     }
-  signatureSize=sizeof(signature)/sizeof(*signature);
   while ((count=ReadBlob(image,BUFFER_SIZE,buffer)) != 0)
   {
     size_t
@@ -1652,7 +1651,7 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
       if ((buffer[i] != signature[j]) && (buffer[i] != alt_signature[j]))
         j=0;
       else
-        if (++j == signatureSize)
+        if (++j == SIGNATURE_SIZE)
           {
             Image
               *jpeg_image;
@@ -1662,7 +1661,7 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
                 /*
                   Read one MPO image from the image sequence.
                 */
-                offset=i-signatureSize+1;
+                offset=i-SIGNATURE_SIZE+1;
                 length=fwrite(buffer,1,offset,file);
                 if ((ssize_t) length != offset)
                   break;
@@ -1671,7 +1670,7 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
                 if (jpeg_image != (Image *) NULL)
                   {
                     (void) strcpy(jpeg_image->filename,image->filename);
-                    AppendImageToList(&images,jpeg_image);              
+                    AppendImageToList(&images,jpeg_image);
                   }
               }
             (void) fseek(file,0,SEEK_SET);
