@@ -1685,7 +1685,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       image_info->filename);
   offset=0;
   images=ReadOneJPEGImage(image_info,&jpeg_info,&offset,exception);
-  if (images != (Image *) NULL)
+  if ((images != (Image *) NULL) &&
+      (LocaleCompare(image_info->magick,"MPO") == 0))
     {
       const StringInfo
         *profile;
@@ -1814,7 +1815,6 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry->magick=(IsImageFormatHandler *) IsJPEG;
   entry->flags|=CoderDecoderSeekableStreamFlag;
-  entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jpeg");
