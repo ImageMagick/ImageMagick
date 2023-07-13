@@ -1600,10 +1600,12 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    offset = start_offset;
+
   ssize_t
     count,
-    j = 0,
-    offset = start_offset;
+    j = 0;
 
   unsigned char
     alt_signature[SIGNATURE_SIZE] = {0xff, 0xd8, 0xff, 0xe1},
@@ -1631,7 +1633,7 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
       Image
         *jpeg_image;
 
-      MagickSizeType
+      MagickOffsetType
         old_offset;
 
       if ((buffer[i] != signature[j]) && (buffer[i] != alt_signature[j]))
