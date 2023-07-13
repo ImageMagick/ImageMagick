@@ -1057,7 +1057,8 @@ static MagickBooleanType JPEGSetImageProfiles(JPEGClientInfo *client_info)
 }
 
 static Image *ReadOneJPEGImage(const ImageInfo *image_info,
-  struct jpeg_decompress_struct *jpeg_info,ExceptionInfo *exception)
+  struct jpeg_decompress_struct *jpeg_info,MagickOffsetType *offset,
+  ExceptionInfo *exception)
 {
 #define ThrowJPEGReaderException(exception,message) \
 { \
@@ -1126,6 +1127,8 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  if (*offset != 0)
+    (void) SeekBlob(image,*offset,SEEK_SET);
   /*
     Verify that file size large enough to contain a JPEG datastream.
   */
@@ -1379,6 +1382,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       return(DestroyImageList(image));
     }
+  *offset=TellBlob(image);
   if (image_info->ping != MagickFalse)
     {
       JPEGDestroyDecompress(jpeg_info);
@@ -1585,22 +1589,13 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
 
 static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
   struct jpeg_decompress_struct *jpeg_info,Image *images,
-  ExceptionInfo *exception)
+  const MagickOffsetType start_offset,ExceptionInfo *exception)
 {
 #define BUFFER_SIZE  8192
 #define SIGNATURE_SIZE 4
 
-  FILE
-    *file = (FILE *) NULL;
-
   Image
     *image;
-
-  ImageInfo
-    *clone_info;
-
-  int
-    unique_file;
 
   MagickBooleanType
     status;
@@ -1608,10 +1603,10 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
   ssize_t
     count,
     j = 0,
-    n = 0;
+    offset = start_offset;
 
   unsigned char
-    alt_signature[SIGNATURE_SIZE] = {0xff, 0xd8, 0xff, 0xe1}, 
+    alt_signature[SIGNATURE_SIZE] = {0xff, 0xd8, 0xff, 0xe1},
     buffer[BUFFER_SIZE],
     signature[SIGNATURE_SIZE] = {0xff, 0xd8, 0xff, 0xe0};
 
@@ -1625,69 +1620,48 @@ static MagickBooleanType ReadMPOImages(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return(MagickFalse);
     }
-  clone_info=CloneImageInfo(image_info);
-  unique_file=AcquireUniqueFileResource(clone_info->filename);
-  if (unique_file != -1)
-    file=fdopen(unique_file,"wb");
-  if ((unique_file == -1) || (file == (FILE *) NULL))
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
-        "UnableToCreateTemporaryFile","`%s'",image->filename);
-      clone_info=DestroyImageInfo(clone_info);
-      image=DestroyImageList(image);
-      return(MagickFalse);
-    }
+  (void) SeekBlob(image,offset,SEEK_SET);
   while ((count=ReadBlob(image,BUFFER_SIZE,buffer)) != 0)
   {
-    size_t
-      length;
-
     ssize_t
-      i,
-      offset;
+      i;
 
-    offset=0;
     for (i=0; i < count; i++)
-      if ((buffer[i] != signature[j]) && (buffer[i] != alt_signature[j]))
-        j=0;
-      else
-        if (++j == SIGNATURE_SIZE)
-          {
-            Image
-              *jpeg_image;
+    {
+      Image
+        *jpeg_image;
 
-            if (n++ != 0)
-              {
-                /*
-                  Read one MPO image from the image sequence.
-                */
-                offset=i-SIGNATURE_SIZE+1;
-                length=fwrite(buffer,1,offset,file);
-                if ((ssize_t) length != offset)
-                  break;
-                (void) fflush(file);
-                jpeg_image=ReadOneJPEGImage(clone_info,jpeg_info,exception);
-                if (jpeg_image != (Image *) NULL)
-                  {
-                    (void) strcpy(jpeg_image->filename,image->filename);
-                    AppendImageToList(&images,jpeg_image);
-                  }
-              }
-            (void) fseek(file,0,SEEK_SET);
-            j=0;
-          }
-    length=fwrite(buffer+offset,1,count-offset,file);
-    if ((ssize_t) length != (count-offset))
+      MagickSizeType
+        old_offset;
+
+      if ((buffer[i] != signature[j]) && (buffer[i] != alt_signature[j]))
+        {
+          j=0;
+          continue;
+        }
+      if (++j != SIGNATURE_SIZE)
+        continue;
+      offset+=i-SIGNATURE_SIZE+1;
+      old_offset=offset;
+      (void) CloseBlob(image);
+      jpeg_image=ReadOneJPEGImage(image_info,jpeg_info,&offset,exception);
+      if (jpeg_image != (Image *) NULL)
+        AppendImageToList(&images,jpeg_image);
+      if (offset <= old_offset)
+        break;
+      status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+      if (status == MagickFalse)
+        break;
+      (void) SeekBlob(image,offset,SEEK_SET);
+      count=0;
+      j=0;
       break;
+    }
+    offset+=count;
   }
-  if (ferror(file) != 0)
-    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-      "AnErrorHasOccurredWritingToFile","`%s'",image->filename);
-  (void) fclose(file);
-  (void) RelinquishUniqueFileResource(clone_info->filename);
-  clone_info=DestroyImageInfo(clone_info);
+  (void) CloseBlob(image);
   image=DestroyImageList(image);
-  return(MagickTrue);
+  return(status);
 }
 
 static Image *ReadJPEGImage(const ImageInfo *image_info,
@@ -1699,6 +1673,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   struct jpeg_decompress_struct
     jpeg_info;
 
+  MagickOffsetType
+    offset;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -1706,7 +1683,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  images=ReadOneJPEGImage(image_info,&jpeg_info,exception);
+  offset=0;
+  images=ReadOneJPEGImage(image_info,&jpeg_info,&offset,exception);
   if (images != (Image *) NULL)
     {
       const StringInfo
@@ -1717,7 +1695,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       */
       profile=GetImageProfile(images,"MPF");
       if (profile != (const StringInfo *) NULL)
-        (void) ReadMPOImages(image_info,&jpeg_info,images,exception);
+        (void) ReadMPOImages(image_info,&jpeg_info,images,offset,exception);
     }
   return(images);
 }
