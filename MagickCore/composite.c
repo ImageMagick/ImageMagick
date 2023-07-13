@@ -1035,7 +1035,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
           }
         pixels=p;
         if (x_offset < 0)
-          p-=x_offset*(ssize_t) GetPixelChannels(source_image);
+          p-=CastDoubleToLong((double) x_offset*GetPixelChannels(source_image));
       }
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
@@ -2322,7 +2322,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
         pixels=p;
         if (x_offset < 0)
-          p-=x_offset*(ssize_t) GetPixelChannels(source_image);
+          p-=CastDoubleToLong((double) x_offset*GetPixelChannels(source_image));
       }
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
