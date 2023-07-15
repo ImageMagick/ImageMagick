@@ -370,13 +370,11 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   MemoryInfo
     *pixel_info;
 
-  unsigned char
-    *p;
-
   RsvgDimensionData
     dimension_info;
 
   unsigned char
+    *p,
     *pixels;
 
 #else
@@ -1014,11 +1012,11 @@ static char **SVGKeyValuePairs(void *context,const int key_sentinel,
     *p,
     *q;
 
-  ssize_t
-    i;
-
   size_t
     extent;
+
+  ssize_t
+    i;
 
   SVGInfo
     *svg_info;
@@ -1115,17 +1113,15 @@ static void SVGProcessStyleElement(void *context,const xmlChar *name,
     background[MagickPathExtent],
     *color,
     *keyword,
+    **tokens,
     *units,
     *value;
 
-  char
-    **tokens;
+  size_t
+    number_tokens;
 
   ssize_t
     i;
-
-  size_t
-    number_tokens;
 
   SVGInfo
     *svg_info;
@@ -1560,12 +1556,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
     *p,
     *value;
 
+  size_t
+    number_tokens;
+
   ssize_t
     i,
     j;
-
-  size_t
-    number_tokens;
 
   SVGInfo
     *svg_info;
@@ -3206,10 +3202,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
 static void SVGCharacters(void *context,const xmlChar *c,int length)
 {
   char
+    *p,
     *text;
-
-  char
-    *p;
 
   ssize_t
     i;
@@ -3990,14 +3984,12 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     const Quantum
       *p;
 
-    ssize_t
-      i,
-      x;
-
     size_t
       number_planes;
 
     ssize_t
+      i,
+      x,
       y;
 
     /*
@@ -4044,7 +4036,8 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     char
       *base64,
       filename[MagickPathExtent],
-      message[MagickPathExtent];
+      message[MagickPathExtent],
+      *p;
 
     const DelegateInfo
       *delegate_info;
@@ -4057,9 +4050,6 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
 
     MagickBooleanType
       status;
-
-    char
-      *p;
 
     size_t
       blob_length,
@@ -4165,9 +4155,6 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
   int
     n;
 
-  ssize_t
-    j;
-
   MagickBooleanType
     active,
     status;
@@ -4181,16 +4168,15 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
   PrimitiveType
     primitive_type;
 
-  ssize_t
-    x;
-
-  ssize_t
-    i;
-
   size_t
     extent,
     length,
     number_points;
+
+  ssize_t
+    i,
+    j,
+    x;
 
   SVGInfo
     svg_info;
