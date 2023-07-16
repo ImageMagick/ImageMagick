@@ -806,7 +806,10 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
   */
   textlist=StringToStrings(draw_info->text,&count);
   if (textlist == (char **) NULL)
-    return(MagickFalse);
+    {
+      annotate_info=DestroyDrawInfo(annotate_info);
+      return(MagickFalse);
+    }
   annotate_info->render=MagickFalse;
   annotate_info->direction=UndefinedDirection;
   (void) memset(metrics,0,sizeof(*metrics));
