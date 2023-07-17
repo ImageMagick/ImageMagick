@@ -1406,7 +1406,11 @@ static const OptionInfo
   {
     { "Undefined", UndefinedDirection, UndefinedOptionFlag, MagickTrue },
     { "right-to-left", RightToLeftDirection, UndefinedOptionFlag, MagickFalse },
+    { "RTL", RightToLeftDirection, UndefinedOptionFlag, MagickFalse },
     { "left-to-right", LeftToRightDirection, UndefinedOptionFlag, MagickFalse },
+    { "LTR", LeftToRightDirection, UndefinedOptionFlag, MagickFalse },
+    { "top-to-bottom", TopToBottomDirection, UndefinedOptionFlag, MagickFalse },
+    { "TTB", TopToBottomDirection, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedDirection, UndefinedOptionFlag, MagickFalse }
   },
   DisposeOptions[] =

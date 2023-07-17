@@ -57,7 +57,8 @@ typedef enum
 {
   UndefinedDirection,
   RightToLeftDirection,
-  LeftToRightDirection
+  LeftToRightDirection,
+  TopToBottomDirection
 } DirectionType;
 
 typedef enum
