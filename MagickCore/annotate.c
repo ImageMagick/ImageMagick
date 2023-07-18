@@ -1274,6 +1274,7 @@ static size_t ComplexTextLayout(const DrawInfo *draw_info,const char *text,
       }
     (void) FT_Load_Glyph(face,(FT_UInt) (*grapheme)[i].index,flags);
     (*grapheme)[i].x_advance=face->glyph->advance.x;
+    (*grapheme)[i].y_advance=face->glyph->advance.y;
     (*grapheme)[i].cluster=p-text;
     last_glyph=(*grapheme)[i].index;
   }
@@ -2052,6 +2053,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         origin.x+=MagickMax((FT_Pos) grapheme[i].x_advance,bounds.xMax);
       else
         origin.x+=(FT_Pos) grapheme[i].x_advance;
+    origin.y+=(FT_Pos) grapheme[i].y_advance;
     metrics->origin.x=(double) origin.x;
     metrics->origin.y=(double) origin.y;
     if (metrics->origin.x > metrics->width)
