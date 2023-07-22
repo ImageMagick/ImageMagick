@@ -631,6 +631,8 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   /*
     Remove the version number.
   */
+  if (length <= 15)
+    return(TRUE);
   for (i=0; i < 4; i++)
     if (GetCharacter(jpeg_info) == EOF)
       break;
