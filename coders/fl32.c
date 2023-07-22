@@ -18,7 +18,7 @@
 %                               November 2020                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2020 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -136,14 +136,14 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
   Image
     *image;
 
+  MagickBooleanType
+    status;
+
   QuantumInfo
     *quantum_info;
 
   QuantumType
     quantum_type;
-
-  MagickBooleanType
-    status;
 
   size_t
     extent;
@@ -362,6 +362,9 @@ ModuleExport void UnregisterFL32Image(void)
 static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
+  const Quantum
+    *p;
+
   MagickBooleanType
     status;
 
@@ -370,9 +373,6 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
 
   QuantumType
     quantum_type;
-
-  const Quantum
-    *p;
 
   size_t
     extent;
@@ -404,7 +404,7 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
   (void) WriteBlobLSBLong(image,(unsigned int) image->number_channels);
   image->endian=LSBEndian;
   image->depth=32;
-  switch (image->number_channels)
+  switch (GetImageChannels(image))
   {
     case 1:
     {
@@ -419,11 +419,8 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
     case 3:
     {
       quantum_type=RGBQuantum;
-      break;
-    }
-    case 4:
-    {
-      quantum_type=RGBAQuantum;
+      if (image->alpha_trait != UndefinedPixelTrait)
+        quantum_type=RGBAQuantum;
       break;
     }
     default:
