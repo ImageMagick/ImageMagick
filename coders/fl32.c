@@ -187,25 +187,15 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
       (image->number_channels == 0) ||
       (image->number_channels >= MaxPixelChannels))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (image_info->ping != MagickFalse)
-    {
-      (void) CloseBlob(image);
-      return(GetFirstImageInList(image));
-    }
-  status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse)
-    return(DestroyImageList(image));
   switch (image->number_channels)
   {
     case 1:
     {
-      (void) SetImageColorspace(image,GRAYColorspace,exception);
       quantum_type=GrayQuantum;
       break;
     }
     case 2:
     {
-      (void) SetImageColorspace(image,GRAYColorspace,exception);
       image->alpha_trait=BlendPixelTrait;
       quantum_type=GrayAlphaQuantum;
       break;
@@ -223,12 +213,21 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
     }
     default:
     {
-      quantum_type=RGBQuantum;
       image->number_meta_channels=image->number_channels-3;
+      quantum_type=RGBQuantum;
       break;
     }
   }
-  (void) ResetImagePixels(image,exception);
+  if (image_info->ping != MagickFalse)
+    {
+      (void) CloseBlob(image);
+      return(GetFirstImageInList(image));
+    }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
+  if (image->number_channels < 3)
+    (void) SetImageColorspace(image,GRAYColorspace,exception);
   /*
     Convert FL32 image to pixel packets.
   */
