@@ -18,7 +18,7 @@
 %                                March 2000                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -385,9 +385,6 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
     *p;
 #endif
 
-  const char
-    *option;
-
   GError
     *error;
 
@@ -418,13 +415,17 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
     sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  {
 #if LIBRSVG_CHECK_VERSION(2,40,3)
-  option=GetImageOption(image_info,"svg:xml-parse-huge");
-  if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
-    svg_handle=rsvg_handle_new_with_flags(RSVG_HANDLE_FLAG_UNLIMITED);
-  else
+    const char *option = GetImageOption(image_info,"svg:parse-huge");
+    if (option == (char *) NULL)
+      option=GetImageOption(image_info,"svg:xml-parse-huge");  /* deprecated */
+    if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
+      svg_handle=rsvg_handle_new_with_flags(RSVG_HANDLE_FLAG_UNLIMITED);
+    else
 #endif
-    svg_handle=rsvg_handle_new();
+      svg_handle=rsvg_handle_new();
+  }
   if (svg_handle == (RsvgHandle *) NULL)
     {
       buffer=(unsigned char *) RelinquishMagickMemory(buffer);
@@ -3477,9 +3478,6 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
   char
     filename[MagickPathExtent];
 
-  const char
-    *option;
-
   FILE
     *file;
 
@@ -3541,7 +3539,6 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"begin SAX");
   xmlInitParser();
-  (void) xmlSubstituteEntitiesDefault(1);
   (void) memset(&sax_modules,0,sizeof(sax_modules));
   sax_modules.internalSubset=SVGInternalSubset;
   sax_modules.isStandalone=SVGIsStandalone;
@@ -3579,9 +3576,16 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
         message,n,image->filename);
       if (svg_info->parser != (xmlParserCtxtPtr) NULL)
         {
-          option=GetImageOption(image_info,"svg:xml-parse-huge");
-          if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
+          const char *option = GetImageOption(image_info,"svg:parse-huge");
+          if (option == (char *) NULL)
+            option=GetImageOption(image_info,"svg:xml-parse-huge");  /* deprecated */
+          if ((option != (char *) NULL) &&
+              (IsStringTrue(option) != MagickFalse))
             (void) xmlCtxtUseOptions(svg_info->parser,XML_PARSE_HUGE);
+          option=GetImageOption(image_info,"svg:substitute-entities");
+          if ((option != (char *) NULL) &&
+              (IsStringTrue(option) != MagickFalse))
+            (void) xmlCtxtUseOptions(svg_info->parser,XML_PARSE_NOENT);
           while ((n=ReadBlob(image,MagickPathExtent-1,message)) != 0)
           {
             message[n]='\0';

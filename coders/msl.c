@@ -7795,11 +7795,11 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   int
     status;
 
-  ssize_t
-    n;
-
   MSLInfo
     msl_info;
+
+  ssize_t
+    n;
 
   xmlSAXHandler
     sax_modules;
@@ -7858,7 +7858,6 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   if (*image != (Image *) NULL)
     MSLPushImage(&msl_info,*image);
   xmlInitParser();
-  (void) xmlSubstituteEntitiesDefault(1);
   (void) memset(&sax_modules,0,sizeof(sax_modules));
   sax_modules.internalSubset=MSLInternalSubset;
   sax_modules.isStandalone=MSLIsStandalone;
@@ -7890,6 +7889,15 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   sax_handler=(&sax_modules);
   msl_info.parser=xmlCreatePushParserCtxt(sax_handler,&msl_info,(char *) NULL,0,
     msl_image->filename);
+  if (msl_info.parser != (xmlParserCtxtPtr) NULL)
+    {
+      const char *option = GetImageOption(image_info,"msl:parse-huge");
+      if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
+        (void) xmlCtxtUseOptions(msl_info.parser,XML_PARSE_HUGE);
+      option=GetImageOption(image_info,"msl:substitute-entities");
+      if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
+        (void) xmlCtxtUseOptions(msl_info.parser,XML_PARSE_NOENT);
+    }
   while (ReadBlobString(msl_image,message) != (char *) NULL)
   {
     n=(ssize_t) strlen(message);
