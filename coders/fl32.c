@@ -192,21 +192,25 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
     case 1:
     {
       quantum_type=GrayQuantum;
+      image->colorspace=GRAYColorspace;
       break;
     }
     case 2:
     {
       image->alpha_trait=BlendPixelTrait;
+      image->colorspace=GRAYColorspace;
       quantum_type=GrayAlphaQuantum;
       break;
     }
     case 3:
     {
+      image->colorspace=sRGBColorspace;
       quantum_type=RGBQuantum;
       break;
     }
     case 4:
     {
+      image->colorspace=sRGBColorspace;
       image->alpha_trait=BlendPixelTrait;
       quantum_type=RGBAQuantum;
       break;
@@ -226,8 +230,6 @@ static Image *ReadFL32Image(const ImageInfo *image_info,
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
-  if (image->number_channels < 3)
-    (void) SetImageColorspace(image,GRAYColorspace,exception);
   /*
     Convert FL32 image to pixel packets.
   */
@@ -374,6 +376,7 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
     quantum_type;
 
   size_t
+    channels,
     extent;
 
   ssize_t
@@ -400,10 +403,13 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
   (void) WriteBlobLSBLong(image,842222662U);
   (void) WriteBlobLSBLong(image,(unsigned int) image->rows);
   (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
-  (void) WriteBlobLSBLong(image,(unsigned int) image->number_channels);
+  channels=GetImageChannels(image);
+  if (image->alpha_trait != UndefinedPixelTrait)
+    channels++;
+  (void) WriteBlobLSBLong(image,(unsigned int) channels);
   image->endian=LSBEndian;
   image->depth=32;
-  switch (GetImageChannels(image))
+  switch (channels)
   {
     case 1:
     {
