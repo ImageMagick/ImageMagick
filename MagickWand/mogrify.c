@@ -1577,13 +1577,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             parameters=(double *) RelinquishMagickMemory(parameters);
             break;
           }
-        if (LocaleCompare("fx",option+1) == 0)
-          {
-            (void) SyncImageSettings(mogrify_info,*image,exception);
-            (void) ParseGeometry(argv[i+1],&geometry_info);
-            mogrify_image=FxImage(*image,argv[i+1],exception);
-            break;
-          }
         break;
       }
       case 'g':
@@ -3692,27 +3685,27 @@ static MagickBooleanType MogrifyUsage(void)
   ListMagickVersion(stdout);
   (void) printf("Usage: %s [options ...] file [ [options ...] file ...]\n",
     GetClientName());
-  (void) printf("\nImage Settings:\n");
-  (void) puts(settings);
-  (void) printf("\nImage Operators:\n");
-  (void) puts(operators);
-  (void) printf("\nImage Channel Operators:\n");
-  (void) puts(channel_operators);
-  (void) printf("\nImage Sequence Operators:\n");
-  (void) puts(sequence_operators);
-  (void) printf("\nImage Stack Operators:\n");
-  (void) puts(stack_operators);
-  (void) printf("\nMiscellaneous Options:\n");
-  (void) puts(miscellaneous);
-  (void) printf(
+  (void) fprintf(stdout,"\nImage Settings:\n");
+  (void) fputs(settings,stdout);
+  (void) fprintf(stdout,"\nImage Operators:\n");
+  (void) fputs(operators,stdout);
+  (void) fprintf(stdout,"\nImage Channel Operators:\n");
+  (void) fputs(channel_operators,stdout);
+  (void) fprintf(stdout,"\nImage Sequence Operators:\n");
+  (void) fputs(sequence_operators,stdout);
+  (void) fprintf(stdout,"\nImage Stack Operators:\n");
+  (void) fputs(stack_operators,stdout);
+  (void) fprintf(stdout,"\nMiscellaneous Options:\n");
+  (void) fputs(miscellaneous,stdout);
+  (void) fprintf(stdout,
     "\nBy default, the image format of 'file' is determined by its magic\n");
-  (void) printf(
+  (void) fprintf(stdout,
     "number.  To specify a particular image format, precede the filename\n");
-  (void) printf(
+  (void) fprintf(stdout,
     "with an image format name and a colon (i.e. ps:image) or specify the\n");
-  (void) printf(
+  (void) fprintf(stdout,
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
-  (void) printf("'-' for standard input or output.\n");
+  (void) fprintf(stdout,"'-' for standard input or output.\n");
   return(MagickTrue);
 }
 
@@ -8323,6 +8316,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             Image
               *fx_image;
 
+puts("list");
             (void) SyncImagesSettings(mogrify_info,*images,exception);
             fx_image=FxImage(*images,argv[i+1],exception);
             if (fx_image == (Image *) NULL)
