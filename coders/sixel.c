@@ -182,7 +182,7 @@ static int hls_to_rgb(int hue, int lum, int sat)
     r;
 
   if (sat == 0)
-    r=g=b=(lum*RGBMAX)/HLSMAX;
+    r=g=b=(lum*(ssize_t) RGBMAX)/HLSMAX;
   else
     {
       if (lum <= (HLSMAX / 2))
@@ -190,11 +190,11 @@ static int hls_to_rgb(int hue, int lum, int sat)
       else
         magic2=(int) (lum+sat-(((ssize_t) lum*sat)+(HLSMAX/2))/HLSMAX);
       magic1=(int) (2*(ssize_t) lum-magic2);
-      b=(hue_to_rgb(magic1,magic2,(ssize_t) hue+(HLSMAX/3))*RGBMAX+(HLSMAX/2))/
-        HLSMAX;
+      b=(hue_to_rgb(magic1,magic2,(ssize_t) hue+(HLSMAX/3))*(ssize_t) RGBMAX+
+        (HLSMAX/2))/HLSMAX;
       r=(hue_to_rgb(magic1,magic2,hue)*RGBMAX+(ssize_t) (HLSMAX/2))/HLSMAX;
-      g=(hue_to_rgb(magic1,magic2,(ssize_t) hue-(HLSMAX/3))*RGBMAX+(HLSMAX/2))/
-        HLSMAX;
+      g=(hue_to_rgb(magic1,magic2,(ssize_t) hue-(HLSMAX/3))*(ssize_t) RGBMAX+
+        (HLSMAX/2))/HLSMAX;
     }
   return(SIXEL_RGB(r,g,b));
 }
