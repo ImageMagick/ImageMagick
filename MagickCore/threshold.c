@@ -869,7 +869,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (image->channel_mask != DefaultChannels)
+        if (image->channel_mask != AllChannels)
           pixel=(double) q[i];
         q[i]=(Quantum) (pixel <= threshold ? 0 : QuantumRange);
       }
@@ -1030,7 +1030,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (image->channel_mask != DefaultChannels)
+        if (image->channel_mask != AllChannels)
           pixel=(double) q[i];
         if (pixel < GetPixelInfoChannel(&threshold,channel))
           q[i]=(Quantum) 0;
@@ -2441,7 +2441,7 @@ MagickExport MagickBooleanType RangeThresholdImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (image->channel_mask != DefaultChannels)
+        if (image->channel_mask != AllChannels)
           pixel=(double) q[i];
         if (pixel < low_black)
           q[i]=(Quantum) 0;
@@ -2619,7 +2619,7 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (image->channel_mask != DefaultChannels)
+        if (image->channel_mask != AllChannels)
           pixel=(double) q[i];
         if (pixel > GetPixelInfoChannel(&threshold,channel))
           q[i]=QuantumRange;

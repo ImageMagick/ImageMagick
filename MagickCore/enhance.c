@@ -125,7 +125,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image,
     i;
 
   log_mean=log(0.5);
-  if (image->channel_mask == DefaultChannels)
+  if (image->channel_mask == AllChannels)
     {
       /*
         Apply gamma correction equally across all given channels.
@@ -1639,7 +1639,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       pixel=GetPixelIntensity(image,p);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        if (image->channel_mask != DefaultChannels)
+        if (image->channel_mask != AllChannels)
           pixel=(double) p[i];
         histogram[GetPixelChannels(image)*ScaleQuantumToMap(
           ClampToQuantum(pixel))+i]++;

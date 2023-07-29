@@ -180,7 +180,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   GetPixelInfoRGBA(TransparentColorRGBA,&image->transparent_color);
   GetTimerInfo(&image->timer);
   image->cache=AcquirePixelCache(0);
-  image->channel_mask=DefaultChannels;
+  image->channel_mask=AllChannels;
   image->channel_map=AcquirePixelChannelMap();
   image->blob=CloneBlobInfo((BlobInfo *) NULL);
   image->timestamp=GetMagickTime();
@@ -1352,7 +1352,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   (void) memset(image_info,0,sizeof(*image_info));
   image_info->adjoin=MagickTrue;
   image_info->interlace=NoInterlace;
-  image_info->channel=DefaultChannels;
+  image_info->channel=AllChannels;
   image_info->quality=UndefinedCompressionQuality;
   image_info->antialias=MagickTrue;
   image_info->dither=MagickTrue;

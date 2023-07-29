@@ -147,7 +147,7 @@ static const OptionInfo
     /* special */
     { "All", CompositeChannels, UndefinedOptionFlag, MagickFalse },
     { "Sync", SyncChannels, UndefinedOptionFlag, MagickFalse },
-    { "Default", DefaultChannels, UndefinedOptionFlag, MagickFalse },
+    { "Default", AllChannels, UndefinedOptionFlag, MagickFalse },
     /* individual channel */
     { "A", AlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Alpha", AlphaChannel, UndefinedOptionFlag, MagickFalse },
