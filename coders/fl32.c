@@ -400,15 +400,14 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   (void) WriteBlobLSBLong(image,842222662U);
   (void) WriteBlobLSBLong(image,(unsigned int) image->rows);
   (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
-  channels=GetImageChannels(image);
-  if (image->alpha_trait != UndefinedPixelTrait)
-    channels++;
-  (void) WriteBlobLSBLong(image,(unsigned int) channels);
   image->endian=LSBEndian;
   image->depth=32;
+  channels=GetImageChannels(image);
   switch (channels)
   {
     case 1:
@@ -418,25 +417,34 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
     }
     case 2:
     {
-      quantum_type=GrayAlphaQuantum;
+      if (image->alpha_trait != UndefinedPixelTrait)
+        {
+          quantum_type=GrayAlphaQuantum;
+          break;
+        }
+      quantum_type=GrayQuantum;
+      channels=1;
       break;
     }
     case 3:
     {
+      if (image->alpha_trait != UndefinedPixelTrait)
+        {
+          quantum_type=RGBAQuantum;
+          break;
+        }
       quantum_type=RGBQuantum;
-      break;
-    }
-    case 4:
-    {
-      quantum_type=RGBAQuantum;
+      channels=3;
       break;
     }
     default:
     {
       quantum_type=RGBQuantum;
+      channels=3;
       break;
     }
   }
+  (void) WriteBlobLSBLong(image,(unsigned int) channels);
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ImageError,"MemoryAllocationFailed");
