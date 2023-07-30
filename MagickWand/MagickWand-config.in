@@ -37,8 +37,14 @@ while test $# -gt 0; do
     --version)
       echo '@PACKAGE_VERSION@ Q@QUANTUM_DEPTH@ @MAGICK_HDRI@'
       ;;
+    --cc)
+      echo '@CC@'
+      ;;
     --cflags)
       @PKG_CONFIG@ --cflags MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
+      ;;
+    --cxx)
+      echo '@CXX@'
       ;;
     --cxxflags)
       @PKG_CONFIG@ --cflags MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
