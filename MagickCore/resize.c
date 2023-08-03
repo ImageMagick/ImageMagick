@@ -1235,7 +1235,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
       /*
         Output values of resulting filter graph -- for graphing filter result.
       */
-      for (x=0.0; x <= support; x+=0.01f)
+      for (x=0.0; x <= support; x+=0.01)
         (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",x,GetMagickPrecision(),
           (double) GetResizeFilterWeight(resize_filter,x));
       /*
@@ -1943,7 +1943,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        *q++=QuantumScale*p[i];
+        *q++=QuantumScale*(double) p[i];
       p+=GetPixelChannels(image);
     }
   }
@@ -3441,7 +3441,7 @@ static MagickBooleanType HorizontalFilter(
               k=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
                 (contribution[j].pixel-contribution[0].pixel);
               alpha=contribution[j].weight;
-              pixel+=alpha*p[k*GetPixelChannels(image)+i];
+              pixel+=alpha*(double) p[k*GetPixelChannels(image)+i];
             }
             SetPixelChannel(resize_image,channel,ClampToQuantum(pixel),q);
             continue;
@@ -3455,8 +3455,8 @@ static MagickBooleanType HorizontalFilter(
           k=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
             (contribution[j].pixel-contribution[0].pixel);
           alpha=contribution[j].weight*QuantumScale*
-            GetPixelAlpha(image,p+k*GetPixelChannels(image));
-          pixel+=alpha*p[k*GetPixelChannels(image)+i];
+            (double) GetPixelAlpha(image,p+k*GetPixelChannels(image));
+          pixel+=alpha*(double) p[k*GetPixelChannels(image)+i];
           gamma+=alpha;
         }
         gamma=PerceptibleReciprocal(gamma);
@@ -3656,7 +3656,7 @@ static MagickBooleanType VerticalFilter(
               k=(ssize_t) ((contribution[j].pixel-contribution[0].pixel)*
                 image->columns+x);
               alpha=contribution[j].weight;
-              pixel+=alpha*p[k*GetPixelChannels(image)+i];
+              pixel+=alpha*(double) p[k*GetPixelChannels(image)+i];
             }
             SetPixelChannel(resize_image,channel,ClampToQuantum(pixel),q);
             continue;
@@ -3666,9 +3666,9 @@ static MagickBooleanType VerticalFilter(
         {
           k=(ssize_t) ((contribution[j].pixel-contribution[0].pixel)*
             image->columns+x);
-          alpha=contribution[j].weight*QuantumScale*GetPixelAlpha(image,p+k*
-            GetPixelChannels(image));
-          pixel+=alpha*p[k*GetPixelChannels(image)+i];
+          alpha=contribution[j].weight*QuantumScale*(double)
+           GetPixelAlpha(image,p+k*GetPixelChannels(image));
+          pixel+=alpha*(double) p[k*GetPixelChannels(image)+i];
           gamma+=alpha;
         }
         gamma=PerceptibleReciprocal(gamma);
@@ -4184,7 +4184,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               continue;
             }
           if (image->alpha_trait != UndefinedPixelTrait)
-            alpha=QuantumScale*GetPixelAlpha(image,p);
+            alpha=QuantumScale*(double) GetPixelAlpha(image,p);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -4194,7 +4194,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                 x_vector[x*GetPixelChannels(image)+i]=(double) p[i];
                 continue;
               }
-            x_vector[x*GetPixelChannels(image)+i]=alpha*p[i];
+            x_vector[x*GetPixelChannels(image)+i]=alpha*(double) p[i];
           }
           p+=GetPixelChannels(image);
         }
@@ -4227,7 +4227,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                     continue;
                   }
                 if (image->alpha_trait != UndefinedPixelTrait)
-                  alpha=QuantumScale*GetPixelAlpha(image,p);
+                  alpha=QuantumScale*(double) GetPixelAlpha(image,p);
                 for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
                 {
                   PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -4237,7 +4237,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                       x_vector[x*GetPixelChannels(image)+i]=(double) p[i];
                       continue;
                     }
-                  x_vector[x*GetPixelChannels(image)+i]=alpha*p[i];
+                  x_vector[x*GetPixelChannels(image)+i]=alpha*(double) p[i];
                 }
                 p+=GetPixelChannels(image);
               }
@@ -4271,7 +4271,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                   continue;
                 }
               if (image->alpha_trait != UndefinedPixelTrait)
-                alpha=QuantumScale*GetPixelAlpha(image,p);
+                alpha=QuantumScale*(double) GetPixelAlpha(image,p);
               for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
               {
                 PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -4281,7 +4281,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                     x_vector[x*GetPixelChannels(image)+i]=(double) p[i];
                     continue;
                   }
-                x_vector[x*GetPixelChannels(image)+i]=alpha*p[i];
+                x_vector[x*GetPixelChannels(image)+i]=alpha*(double) p[i];
               }
               p+=GetPixelChannels(image);
             }

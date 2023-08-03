@@ -331,11 +331,11 @@ static inline QuantumAny ScaleQuantumToAny(const Quantum quantum,
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((QuantumAny) ((double) range*quantum/QuantumRange));
 #else
-  if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
+  if ((IsNaN(quantum) != 0) || (quantum <= 0.0f))
     return((QuantumAny) 0UL);
-  if (((double) range*quantum/QuantumRange) >= 18446744073709551615.0)
+  if ((range*(double) quantum/(double) QuantumRange) >= 18446744073709551615.0)
     return((QuantumAny) MagickULLConstant(18446744073709551615));
-  return((QuantumAny) ((double) range*quantum/QuantumRange+0.5));
+  return((QuantumAny) (range*(double) quantum/(double) QuantumRange+0.5));
 #endif
 }
 
@@ -482,11 +482,11 @@ static inline unsigned int ScaleQuantumToLong(const Quantum quantum)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned int) (65537UL*quantum));
 #else
-  if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
+  if ((IsNaN(quantum) != 0) || (quantum <= 0.0f))
     return(0U);
-  if ((65537.0*quantum) >= 4294967295.0)
+  if ((65537.0*(double) quantum) >= 4294967295.0)
     return(4294967295U);
-  return((unsigned int) (65537.0*quantum+0.5));
+  return((unsigned int) (65537.0*(double) quantum+0.5));
 #endif
 }
 
@@ -495,11 +495,11 @@ static inline MagickSizeType ScaleQuantumToLongLong(const Quantum quantum)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((MagickSizeType) (MagickULLConstant(281479271743489)*quantum));
 #else
-  if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
+  if ((IsNaN(quantum) != 0) || (quantum <= 0.0f))
     return(0UL);
-  if ((281479271743489.0*quantum) >= 18446744073709551615.0)
+  if ((281479271743489.0*(double) quantum) >= 18446744073709551615.0)
     return(MagickULLConstant(18446744073709551615));
-  return((MagickSizeType) (281479271743489.0*quantum+0.5));
+  return((MagickSizeType) (281479271743489.0*(double) quantum+0.5));
 #endif
 }
 
@@ -510,9 +510,9 @@ static inline unsigned int ScaleQuantumToMap(const Quantum quantum)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned int) quantum);
 #else
-  if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
+  if ((IsNaN(quantum) != 0) || (quantum <= 0.0f))
     return(0U);
-  return((unsigned int) (quantum+0.5));
+  return((unsigned int) (quantum+0.5f));
 #endif
 }
 
@@ -521,11 +521,11 @@ static inline unsigned short ScaleQuantumToShort(const Quantum quantum)
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((unsigned short) quantum);
 #else
-  if ((IsNaN(quantum) != 0) || (quantum <= 0.0))
+  if ((IsNaN(quantum) != 0) || (quantum <= 0.0f))
     return(0);
-  if (quantum >= 65535.0)
+  if (quantum >= 65535.0f)
     return(65535);
-  return((unsigned short) (quantum+0.5));
+  return((unsigned short) (quantum+0.5f));
 #endif
 }
 

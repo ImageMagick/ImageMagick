@@ -533,25 +533,25 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
     {
       if ((x >= offset) && (x < ((ssize_t) image->columns-offset)))
         continue;
-      background.red+=QuantumScale*GetPixelRed(image,p);
-      background.green+=QuantumScale*GetPixelGreen(image,p);
-      background.blue+=QuantumScale*GetPixelBlue(image,p);
+      background.red+=QuantumScale*(double) GetPixelRed(image,p);
+      background.green+=QuantumScale*(double) GetPixelGreen(image,p);
+      background.blue+=QuantumScale*(double) GetPixelBlue(image,p);
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        background.alpha+=QuantumScale*GetPixelAlpha(image,p);
+        background.alpha+=QuantumScale*(double) GetPixelAlpha(image,p);
       count++;
       p+=GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
-  image->background_color.red=(double) ClampToQuantum(QuantumRange*
-    background.red/count);
-  image->background_color.green=(double) ClampToQuantum(QuantumRange*
-    background.green/count);
-  image->background_color.blue=(double) ClampToQuantum(QuantumRange*
-    background.blue/count);
+  image->background_color.red=(double) ClampToQuantum((double) QuantumRange*
+    (double) background.red/count);
+  image->background_color.green=(double) ClampToQuantum((double) QuantumRange*
+    (double) background.green/count);
+  image->background_color.blue=(double) ClampToQuantum((double) QuantumRange*
+    (double) background.blue/count);
   if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-    image->background_color.alpha=(double) ClampToQuantum(QuantumRange*
-      background.alpha/count);
+    image->background_color.alpha=(double) ClampToQuantum((double) QuantumRange*
+      (double) background.alpha/count);
 }
 
 MagickExport Image *DeskewImage(const Image *image,const double threshold,

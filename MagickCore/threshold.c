@@ -293,8 +293,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         for (u=0; u < (ssize_t) width; u++)
         {
           if (u == (ssize_t) (width-1))
-            channel_bias[channel]+=pixels[i];
-          channel_sum[channel]+=pixels[i];
+            channel_bias[channel]+=(double) pixels[i];
+          channel_sum[channel]+=(double) pixels[i];
           pixels+=GetPixelChannels(image);
         }
         pixels+=GetPixelChannels(image)*image->columns;
@@ -324,9 +324,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         pixels=p;
         for (v=0; v < (ssize_t) height; v++)
         {
-          channel_bias[channel]+=pixels[i];
+          channel_bias[channel]+=(double) pixels[i];
           pixels+=(width-1)*GetPixelChannels(image);
-          channel_sum[channel]+=pixels[i];
+          channel_sum[channel]+=(double) pixels[i];
           pixels+=GetPixelChannels(image)*(image->columns+1);
         }
         mean=(double) (channel_sum[channel]/number_pixels+bias);
@@ -759,7 +759,7 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
   (void) SetImageProperty(image,"auto-threshold:threshold",property,exception);
   if (IsStringTrue(GetImageArtifact(image,"auto-threshold:verbose")) != MagickFalse)
     (void) FormatLocaleFile(stdout,"%.*g%%\n",GetMagickPrecision(),threshold);
-  return(BilevelImage(image,QuantumRange*threshold/100.0,exception));
+  return(BilevelImage(image,(double) QuantumRange*threshold/100.0,exception));
 }
 
 /*
@@ -983,11 +983,11 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
     }
   if ((flags & PercentValue) != 0)
     {
-      threshold.red*=(MagickRealType) (QuantumRange/100.0);
-      threshold.green*=(MagickRealType) (QuantumRange/100.0);
-      threshold.blue*=(MagickRealType) (QuantumRange/100.0);
-      threshold.black*=(MagickRealType) (QuantumRange/100.0);
-      threshold.alpha*=(MagickRealType) (QuantumRange/100.0);
+      threshold.red*=((MagickRealType) QuantumRange/100.0);
+      threshold.green*=((MagickRealType) QuantumRange/100.0);
+      threshold.blue*=((MagickRealType) QuantumRange/100.0);
+      threshold.black*=((MagickRealType) QuantumRange/100.0);
+      threshold.alpha*=((MagickRealType) QuantumRange/100.0);
     }
   /*
     White threshold image.
@@ -1329,12 +1329,12 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
       break;
     }
   }
-  start.red*=QuantumRange;
-  start.green*=QuantumRange;
-  start.blue*=QuantumRange;
-  stop.red*=QuantumRange;
-  stop.green*=QuantumRange;
-  stop.blue*=QuantumRange;
+  start.red*=(double) QuantumRange;
+  start.green*=(double) QuantumRange;
+  start.blue*=(double) QuantumRange;
+  stop.red*=(double) QuantumRange;
+  stop.green*=(double) QuantumRange;
+  stop.blue*=(double) QuantumRange;
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1371,8 +1371,8 @@ MagickExport MagickBooleanType ColorThresholdImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if ((q[i] < GetPixelInfoChannel(&start,channel)) ||
-            (q[i] > GetPixelInfoChannel(&stop,channel)))
+        if (((double) q[i] < GetPixelInfoChannel(&start,channel)) ||
+            ((double) q[i] > GetPixelInfoChannel(&stop,channel)))
           foreground=MagickFalse;
       }
       SetPixelIndex(image,(Quantum) (foreground != MagickFalse ? 1 : 0),q);
@@ -2016,11 +2016,12 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
             n++;
             continue;
           }
-        threshold=(ssize_t) (QuantumScale*q[j]*(levels[n]*(map->divisor-1)+1));
+        threshold=(ssize_t) (QuantumScale*(double) q[j]*(levels[n]*
+          (map->divisor-1)+1));
         level=threshold/(map->divisor-1);
         threshold-=level*(map->divisor-1);
         q[j]=ClampToQuantum((double) (level+(threshold >=
-          map->levels[(x % map->width)+map->width*(y % map->height)]))*
+          map->levels[(x % map->width)+map->width*(y % map->height)]))*(double)
           QuantumRange/levels[n]);
         n++;
       }
@@ -2084,7 +2085,7 @@ static inline Quantum PerceptibleThreshold(const Quantum quantum,
     sign;
 
   sign=(double) quantum < 0.0 ? -1.0 : 1.0;
-  if ((sign*quantum) >= epsilon)
+  if ((sign*(double) quantum) >= epsilon)
     return(quantum);
   return((Quantum) (sign*epsilon));
 }
@@ -2312,7 +2313,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
           if ((double) q[i] > max_threshold)
             threshold=max_threshold;
           else
-            threshold=(double) (QuantumRange*
+            threshold=((double) QuantumRange*
               GetPseudoRandomValue(random_info[id]));
         q[i]=(double) q[i] <= threshold ? 0 : QuantumRange;
       }
@@ -2447,15 +2448,16 @@ MagickExport MagickBooleanType RangeThresholdImage(Image *image,
           q[i]=(Quantum) 0;
         else
           if ((pixel >= low_black) && (pixel < low_white))
-            q[i]=ClampToQuantum(QuantumRange*
+            q[i]=ClampToQuantum((double) QuantumRange*
               PerceptibleReciprocal(low_white-low_black)*(pixel-low_black));
           else
             if ((pixel >= low_white) && (pixel <= high_white))
               q[i]=QuantumRange;
             else
               if ((pixel > high_white) && (pixel <= high_black))
-                q[i]=ClampToQuantum(QuantumRange*PerceptibleReciprocal(
-                  high_black-high_white)*(high_black-pixel));
+                q[i]=ClampToQuantum((double) QuantumRange*(double)
+                  PerceptibleReciprocal(high_black-high_white)*
+                  (high_black-pixel));
               else
                 if (pixel > high_black)
                   q[i]=(Quantum) 0;
@@ -2572,11 +2574,11 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
     }
   if ((flags & PercentValue) != 0)
     {
-      threshold.red*=(MagickRealType) (QuantumRange/100.0);
-      threshold.green*=(MagickRealType) (QuantumRange/100.0);
-      threshold.blue*=(MagickRealType) (QuantumRange/100.0);
-      threshold.black*=(MagickRealType) (QuantumRange/100.0);
-      threshold.alpha*=(MagickRealType) (QuantumRange/100.0);
+      threshold.red*=((MagickRealType) QuantumRange/100.0);
+      threshold.green*=((MagickRealType) QuantumRange/100.0);
+      threshold.blue*=((MagickRealType) QuantumRange/100.0);
+      threshold.black*=((MagickRealType) QuantumRange/100.0);
+      threshold.alpha*=((MagickRealType) QuantumRange/100.0);
     }
   /*
     White threshold image.

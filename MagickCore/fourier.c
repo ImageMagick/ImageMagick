@@ -282,10 +282,10 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
       for (i=0; i < (ssize_t) number_channels; i++)
       {
         double
-          ai = QuantumScale*Ai[i],
-          ar = QuantumScale*Ar[i],
-          bi = QuantumScale*Bi[i],
-          br = QuantumScale*Br[i],
+          ai = QuantumScale*(double) Ai[i],
+          ar = QuantumScale*(double) Ar[i],
+          bi = QuantumScale*(double) Bi[i],
+          br = QuantumScale*(double) Br[i],
           ci,
           cr;
 
@@ -335,8 +335,8 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
             break;
           }
         }
-        Cr[i]=QuantumRange*cr;
-        Ci[i]=QuantumRange*ci;
+        Cr[i]=(double) QuantumRange*cr;
+        Ci[i]=(double) QuantumRange*ci;
       }
       Ar+=GetPixelChannels(Ar_image);
       Ai+=GetPixelChannels(Ai_image);
@@ -598,31 +598,31 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedPixelChannel:
         default:
         {
-          SetPixelRed(magnitude_image,ClampToQuantum(QuantumRange*
+          SetPixelRed(magnitude_image,ClampToQuantum((double) QuantumRange*
             magnitude_pixels[i]),q);
           break;
         }
         case GreenPixelChannel:
         {
-          SetPixelGreen(magnitude_image,ClampToQuantum(QuantumRange*
+          SetPixelGreen(magnitude_image,ClampToQuantum((double) QuantumRange*
             magnitude_pixels[i]),q);
           break;
         }
         case BluePixelChannel:
         {
-          SetPixelBlue(magnitude_image,ClampToQuantum(QuantumRange*
+          SetPixelBlue(magnitude_image,ClampToQuantum((double) QuantumRange*
             magnitude_pixels[i]),q);
           break;
         }
         case BlackPixelChannel:
         {
-          SetPixelBlack(magnitude_image,ClampToQuantum(QuantumRange*
+          SetPixelBlack(magnitude_image,ClampToQuantum((double) QuantumRange*
             magnitude_pixels[i]),q);
           break;
         }
         case AlphaPixelChannel:
         {
-          SetPixelAlpha(magnitude_image,ClampToQuantum(QuantumRange*
+          SetPixelAlpha(magnitude_image,ClampToQuantum((double) QuantumRange*
             magnitude_pixels[i]),q);
           break;
         }
@@ -650,31 +650,31 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedPixelChannel:
         default:
         {
-          SetPixelRed(phase_image,ClampToQuantum(QuantumRange*
+          SetPixelRed(phase_image,ClampToQuantum((double) QuantumRange*
             phase_pixels[i]),q);
           break;
         }
         case GreenPixelChannel:
         {
-          SetPixelGreen(phase_image,ClampToQuantum(QuantumRange*
+          SetPixelGreen(phase_image,ClampToQuantum((double) QuantumRange*
             phase_pixels[i]),q);
           break;
         }
         case BluePixelChannel:
         {
-          SetPixelBlue(phase_image,ClampToQuantum(QuantumRange*
+          SetPixelBlue(phase_image,ClampToQuantum((double) QuantumRange*
             phase_pixels[i]),q);
           break;
         }
         case BlackPixelChannel:
         {
-          SetPixelBlack(phase_image,ClampToQuantum(QuantumRange*
+          SetPixelBlack(phase_image,ClampToQuantum((double) QuantumRange*
             phase_pixels[i]),q);
           break;
         }
         case AlphaPixelChannel:
         {
-          SetPixelAlpha(phase_image,ClampToQuantum(QuantumRange*
+          SetPixelAlpha(phase_image,ClampToQuantum((double) QuantumRange*
             phase_pixels[i]),q);
           break;
         }
@@ -760,27 +760,27 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         case RedPixelChannel:
         default:
         {
-          source_pixels[i]=QuantumScale*GetPixelRed(image,p);
+          source_pixels[i]=QuantumScale*(double) GetPixelRed(image,p);
           break;
         }
         case GreenPixelChannel:
         {
-          source_pixels[i]=QuantumScale*GetPixelGreen(image,p);
+          source_pixels[i]=QuantumScale*(double) GetPixelGreen(image,p);
           break;
         }
         case BluePixelChannel:
         {
-          source_pixels[i]=QuantumScale*GetPixelBlue(image,p);
+          source_pixels[i]=QuantumScale*(double) GetPixelBlue(image,p);
           break;
         }
         case BlackPixelChannel:
         {
-          source_pixels[i]=QuantumScale*GetPixelBlack(image,p);
+          source_pixels[i]=QuantumScale*(double) GetPixelBlack(image,p);
           break;
         }
         case AlphaPixelChannel:
         {
-          source_pixels[i]=QuantumScale*GetPixelAlpha(image,p);
+          source_pixels[i]=QuantumScale*(double) GetPixelAlpha(image,p);
           break;
         }
       }
@@ -1186,27 +1186,32 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         case RedPixelChannel:
         default:
         {
-          magnitude_pixels[i]=QuantumScale*GetPixelRed(magnitude_image,p);
+          magnitude_pixels[i]=QuantumScale*(double)
+            GetPixelRed(magnitude_image,p);
           break;
         }
         case GreenPixelChannel:
         {
-          magnitude_pixels[i]=QuantumScale*GetPixelGreen(magnitude_image,p);
+          magnitude_pixels[i]=QuantumScale*(double)
+            GetPixelGreen(magnitude_image,p);
           break;
         }
         case BluePixelChannel:
         {
-          magnitude_pixels[i]=QuantumScale*GetPixelBlue(magnitude_image,p);
+          magnitude_pixels[i]=QuantumScale*(double)
+            GetPixelBlue(magnitude_image,p);
           break;
         }
         case BlackPixelChannel:
         {
-          magnitude_pixels[i]=QuantumScale*GetPixelBlack(magnitude_image,p);
+          magnitude_pixels[i]=QuantumScale*(double)
+            GetPixelBlack(magnitude_image,p);
           break;
         }
         case AlphaPixelChannel:
         {
-          magnitude_pixels[i]=QuantumScale*GetPixelAlpha(magnitude_image,p);
+          magnitude_pixels[i]=QuantumScale*(double)
+            GetPixelAlpha(magnitude_image,p);
           break;
         }
       }
@@ -1234,27 +1239,27 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
         case RedPixelChannel:
         default:
         {
-          phase_pixels[i]=QuantumScale*GetPixelRed(phase_image,p);
+          phase_pixels[i]=QuantumScale*(double) GetPixelRed(phase_image,p);
           break;
         }
         case GreenPixelChannel:
         {
-          phase_pixels[i]=QuantumScale*GetPixelGreen(phase_image,p);
+          phase_pixels[i]=QuantumScale*(double) GetPixelGreen(phase_image,p);
           break;
         }
         case BluePixelChannel:
         {
-          phase_pixels[i]=QuantumScale*GetPixelBlue(phase_image,p);
+          phase_pixels[i]=QuantumScale*(double) GetPixelBlue(phase_image,p);
           break;
         }
         case BlackPixelChannel:
         {
-          phase_pixels[i]=QuantumScale*GetPixelBlack(phase_image,p);
+          phase_pixels[i]=QuantumScale*(double) GetPixelBlack(phase_image,p);
           break;
         }
         case AlphaPixelChannel:
         {
-          phase_pixels[i]=QuantumScale*GetPixelAlpha(phase_image,p);
+          phase_pixels[i]=QuantumScale*(double) GetPixelAlpha(phase_image,p);
           break;
         }
       }
@@ -1290,7 +1295,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
        for (x=0L; x < (ssize_t) fourier_info->center; x++)
        {
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
-         fourier_pixels[i]=magnitude_pixels[i]*cos(phase_pixels[i])+I*
+         fourier_pixels[i]=magnitude_pixels[i]*cos(phase_pixels[i])+(double) I*
            magnitude_pixels[i]*sin(phase_pixels[i]);
 #else
          fourier_pixels[i][0]=magnitude_pixels[i]*cos(phase_pixels[i]);
@@ -1303,7 +1308,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
       for (x=0L; x < (ssize_t) fourier_info->center; x++)
       {
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
-        fourier_pixels[i]=magnitude_pixels[i]+I*phase_pixels[i];
+        fourier_pixels[i]=magnitude_pixels[i]+(double) I*phase_pixels[i];
 #else
         fourier_pixels[i][0]=magnitude_pixels[i];
         fourier_pixels[i][1]=phase_pixels[i];
@@ -1410,31 +1415,32 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
           case RedPixelChannel:
           default:
           {
-            SetPixelRed(image,ClampToQuantum(QuantumRange*source_pixels[i]),q);
+            SetPixelRed(image,ClampToQuantum((double) QuantumRange*
+              source_pixels[i]),q);
             break;
           }
           case GreenPixelChannel:
           {
-            SetPixelGreen(image,ClampToQuantum(QuantumRange*source_pixels[i]),
-              q);
+            SetPixelGreen(image,ClampToQuantum((double) QuantumRange*
+              source_pixels[i]),q);
             break;
           }
           case BluePixelChannel:
           {
-            SetPixelBlue(image,ClampToQuantum(QuantumRange*source_pixels[i]),
-              q);
+            SetPixelBlue(image,ClampToQuantum((double) QuantumRange*
+              source_pixels[i]),q);
             break;
           }
           case BlackPixelChannel:
           {
-            SetPixelBlack(image,ClampToQuantum(QuantumRange*source_pixels[i]),
-              q);
+            SetPixelBlack(image,ClampToQuantum((double) QuantumRange*
+              source_pixels[i]),q);
             break;
           }
           case AlphaPixelChannel:
           {
-            SetPixelAlpha(image,ClampToQuantum(QuantumRange*source_pixels[i]),
-              q);
+            SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*
+              source_pixels[i]),q);
             break;
           }
         }

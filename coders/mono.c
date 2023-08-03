@@ -333,11 +333,11 @@ static MagickBooleanType WriteMONOImage(const ImageInfo *image_info,
       byte>>=1;
       if (image->endian == LSBEndian)
         {
-          if (GetPixelLuma(image,p) < (QuantumRange/2.0))
+          if (GetPixelLuma(image,p) < ((double) QuantumRange/2.0))
             byte|=0x80;
         }
       else
-        if (GetPixelLuma(image,p) >= (QuantumRange/2.0))
+        if (GetPixelLuma(image,p) >= ((double) QuantumRange/2.0))
           byte|=0x80;
       bit++;
       if (bit == 8)

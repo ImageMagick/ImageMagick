@@ -247,36 +247,44 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   */
   matte=image->matte_color;
   accentuate=matte;
-  accentuate.red=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
-    matte.red+(QuantumRange*(double) AccentuateModulate)));
-  accentuate.green=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
-    matte.green+(QuantumRange*(double) AccentuateModulate)));
-  accentuate.blue=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
-    matte.blue+(QuantumRange*(double) AccentuateModulate)));
-  accentuate.black=(QuantumScale*((QuantumRange-(double) AccentuateModulate)*
-    matte.black+(QuantumRange*(double) AccentuateModulate)));
+  accentuate.red=(QuantumScale*(((double) QuantumRange-(double)
+    AccentuateModulate)*matte.red+((double) QuantumRange*(double)
+    AccentuateModulate)));
+  accentuate.green=(QuantumScale*(((double) QuantumRange-(double)
+    AccentuateModulate)*matte.green+((double) QuantumRange*(double)
+    AccentuateModulate)));
+  accentuate.blue=(QuantumScale*(((double) QuantumRange-(double)
+    AccentuateModulate)*matte.blue+((double) QuantumRange*(double)
+    AccentuateModulate)));
+  accentuate.black=(QuantumScale*(((double) QuantumRange-(double)
+    AccentuateModulate)*matte.black+((double) QuantumRange*(double)
+    AccentuateModulate)));
   accentuate.alpha=matte.alpha;
   highlight=matte;
-  highlight.red=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
-    matte.red+(QuantumRange*(double) HighlightModulate)));
-  highlight.green=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
-    matte.green+(QuantumRange*(double) HighlightModulate)));
-  highlight.blue=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
-    matte.blue+(QuantumRange*(double) HighlightModulate)));
-  highlight.black=(QuantumScale*((QuantumRange-(double) HighlightModulate)*
-    matte.black+(QuantumRange*(double) HighlightModulate)));
+  highlight.red=(QuantumScale*(((double) QuantumRange-(double)
+    HighlightModulate)*matte.red+((double) QuantumRange*(double)
+    HighlightModulate)));
+  highlight.green=(QuantumScale*(((double) QuantumRange-(double)
+    HighlightModulate)*matte.green+((double) QuantumRange*(double)
+    HighlightModulate)));
+  highlight.blue=(QuantumScale*(((double) QuantumRange-(double)
+    HighlightModulate)*matte.blue+((double) QuantumRange*(double)
+    HighlightModulate)));
+  highlight.black=(QuantumScale*(((double) QuantumRange-(double)
+    HighlightModulate)*matte.black+((double) QuantumRange*(double)
+    HighlightModulate)));
   highlight.alpha=matte.alpha;
   shadow=matte;
-  shadow.red=QuantumScale*matte.red*ShadowModulate;
-  shadow.green=QuantumScale*matte.green*ShadowModulate;
-  shadow.blue=QuantumScale*matte.blue*ShadowModulate;
-  shadow.black=QuantumScale*matte.black*ShadowModulate;
+  shadow.red=QuantumScale*matte.red*(double) ShadowModulate;
+  shadow.green=QuantumScale*matte.green*(double) ShadowModulate;
+  shadow.blue=QuantumScale*matte.blue*(double) ShadowModulate;
+  shadow.black=QuantumScale*matte.black*(double) ShadowModulate;
   shadow.alpha=matte.alpha;
   trough=matte;
-  trough.red=QuantumScale*matte.red*TroughModulate;
-  trough.green=QuantumScale*matte.green*TroughModulate;
-  trough.blue=QuantumScale*matte.blue*TroughModulate;
-  trough.black=QuantumScale*matte.black*TroughModulate;
+  trough.red=QuantumScale*matte.red*(double) TroughModulate;
+  trough.green=QuantumScale*matte.green*(double) TroughModulate;
+  trough.blue=QuantumScale*matte.blue*(double) TroughModulate;
+  trough.black=QuantumScale*matte.black*(double) TroughModulate;
   trough.alpha=matte.alpha;
   status=MagickTrue;
   progress=0;
@@ -693,8 +701,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+(double)
-          foreground*(QuantumRange-HighlightFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double)
+          HighlightFactor+(double) foreground*((double) QuantumRange-(double)
+          HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -706,8 +715,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*AccentuateFactor+
-          (double) foreground*(QuantumRange-AccentuateFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double)
+          AccentuateFactor+(double) foreground*((double) QuantumRange-(double)
+          AccentuateFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -719,8 +729,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+(double)
-          background*(QuantumRange-ShadowFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double) ShadowFactor+
+          (double) background*((double) QuantumRange-(double) ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -769,8 +779,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+(double)
-          foreground*(QuantumRange-HighlightFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double)
+          HighlightFactor+(double) foreground*((double) QuantumRange-(double)
+          HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -784,8 +795,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+(double)
-          background*(QuantumRange-ShadowFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double) ShadowFactor+
+          (double) background*((double) QuantumRange-(double) ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -834,8 +845,9 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+(double)
-          foreground*(QuantumRange-HighlightFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double)
+          HighlightFactor+(double) foreground*((double) QuantumRange-
+          (double) HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -847,8 +859,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*TroughFactor+
-          (double) background*(QuantumRange-TroughFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double) TroughFactor+
+          (double) background*((double) QuantumRange-(double) TroughFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -860,8 +872,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+(double)
-          background*(QuantumRange-ShadowFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*(double) ShadowFactor+
+          (double) background*((double) QuantumRange-(double) ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }

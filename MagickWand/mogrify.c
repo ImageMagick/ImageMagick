@@ -1175,7 +1175,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             if (*option == '+')
-              threshold=40.0*QuantumRange/100.0;
+              threshold=40.0*(double) QuantumRange/100.0;
             else
               threshold=StringToDoubleInterval(argv[i+1],(double) QuantumRange+
                 1.0);
@@ -1834,8 +1834,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               gamma=geometry_info.xi;
             if ((flags & PercentValue) != 0)
               {
-                black_point*=(double) (QuantumRange/100.0);
-                white_point*=(double) (QuantumRange/100.0);
+                black_point*=(double) QuantumRange/100.0;
+                white_point*=(double) QuantumRange/100.0;
               }
             if ((flags & SigmaValue) == 0)
               white_point=(double) QuantumRange-black_point;
@@ -2012,7 +2012,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=geometry_info.rho;
             if ((flags & XiValue) == 0)
-              geometry_info.xi=0.10*QuantumRange;
+              geometry_info.xi=0.10*(double) QuantumRange;
             if ((flags & PercentValue) != 0)
               geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
             mogrify_image=MeanShiftImage(*image,(size_t) geometry_info.rho,
@@ -2416,8 +2416,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               max_threshold=min_threshold;
             if (strchr(argv[i+1],'%') != (char *) NULL)
               {
-                max_threshold*=(double) (0.01*QuantumRange);
-                min_threshold*=(double) (0.01*QuantumRange);
+                max_threshold*=0.01*(double) QuantumRange;
+                min_threshold*=0.01*(double) QuantumRange;
               }
             (void) RandomThresholdImage(*image,min_threshold,max_threshold,
               exception);
@@ -2438,10 +2438,10 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               geometry_info.psi=geometry_info.xi;
             if (strchr(argv[i+1],'%') != (char *) NULL)
               {
-                geometry_info.rho*=(double) (0.01*QuantumRange);
-                geometry_info.sigma*=(double) (0.01*QuantumRange);
-                geometry_info.xi*=(double) (0.01*QuantumRange);
-                geometry_info.psi*=(double) (0.01*QuantumRange);
+                geometry_info.rho*=0.01*(double) QuantumRange;
+                geometry_info.sigma*=0.01*(double) QuantumRange;
+                geometry_info.xi*=0.01*(double) QuantumRange;
+                geometry_info.psi*=0.01*(double) QuantumRange;
               }
             (void) RangeThresholdImage(*image,geometry_info.rho,
               geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
@@ -3226,8 +3226,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & PercentValue) != 0)
               {
-                geometry_info.rho=QuantumRange*geometry_info.rho/100.0;
-                geometry_info.sigma=QuantumRange*geometry_info.sigma/100.0;
+                geometry_info.rho=(double) QuantumRange*geometry_info.rho/100.0;
+                geometry_info.sigma=(double) QuantumRange*geometry_info.sigma/
+                  100.0;
               }
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=0.0;

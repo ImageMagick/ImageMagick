@@ -997,11 +997,11 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
   */
   InitializeHistogram(image,histogram,exception);
   (void) OptimalTau(histogram[Red],Tau,0.2f,DeltaTau,
-    (smooth_threshold == 0.0f ? 1.0f : smooth_threshold),extrema[Red]);
+    (smooth_threshold == 0.0 ? 1.0 : smooth_threshold),extrema[Red]);
   (void) OptimalTau(histogram[Green],Tau,0.2f,DeltaTau,
-    (smooth_threshold == 0.0f ? 1.0f : smooth_threshold),extrema[Green]);
+    (smooth_threshold == 0.0 ? 1.0 : smooth_threshold),extrema[Green]);
   (void) OptimalTau(histogram[Blue],Tau,0.2f,DeltaTau,
-    (smooth_threshold == 0.0f ? 1.0f : smooth_threshold),extrema[Blue]);
+    (smooth_threshold == 0.0 ? 1.0 : smooth_threshold),extrema[Blue]);
   /*
     Form clusters.
   */

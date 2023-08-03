@@ -1226,11 +1226,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   {
                     for (i=0; i < (ssize_t) tile_image->colors; i++)
                     {
-                      tile_image->colormap[i].red=(Quantum) (QuantumRange-
+                      tile_image->colormap[i].red=((double) QuantumRange-
                         tile_image->colormap[i].red);
-                      tile_image->colormap[i].green=(Quantum) (QuantumRange-
+                      tile_image->colormap[i].green=((double) QuantumRange-
                         tile_image->colormap[i].green);
-                      tile_image->colormap[i].blue=(Quantum) (QuantumRange-
+                      tile_image->colormap[i].blue=((double) QuantumRange-
                         tile_image->colormap[i].blue);
                     }
                   }

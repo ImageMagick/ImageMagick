@@ -880,12 +880,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       offset+=4;
       if (IsFloatDefined(dpx.orientation.x_center) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:orientation.x_center","%g",
-          dpx.orientation.x_center);
+          (double) dpx.orientation.x_center);
       dpx.orientation.y_center=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.orientation.y_center) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:orientation.y_center","%g",
-          dpx.orientation.y_center);
+          (double) dpx.orientation.y_center);
       dpx.orientation.x_size=ReadBlobLong(image);
       offset+=4;
       if (dpx.orientation.x_size != ~0U)
@@ -990,12 +990,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       offset+=4;
       if (IsFloatDefined(dpx.film.frame_rate) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:film.frame_rate","%g",
-          dpx.film.frame_rate);
+          (double) dpx.film.frame_rate);
       dpx.film.shutter_angle=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.film.shutter_angle) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:film.shutter_angle","%g",
-          dpx.film.shutter_angle);
+          (double) dpx.film.shutter_angle);
       offset+=ReadBlob(image,sizeof(dpx.film.frame_id),(unsigned char *)
         dpx.film.frame_id);
       if (*dpx.film.frame_id != '\0')
@@ -1047,52 +1047,52 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (IsFloatDefined(dpx.television.horizontal_sample_rate) != MagickFalse)
         (void) FormatImageProperty(image,
           "dpx:television.horizontal_sample_rate","%g",
-          dpx.television.horizontal_sample_rate);
+          (double) dpx.television.horizontal_sample_rate);
       dpx.television.vertical_sample_rate=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.television.vertical_sample_rate) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:television.vertical_sample_rate",
-          "%g",dpx.television.vertical_sample_rate);
+          "%g",(double) dpx.television.vertical_sample_rate);
       dpx.television.frame_rate=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.television.frame_rate) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:television.frame_rate","%g",
-          dpx.television.frame_rate);
+          (double) dpx.television.frame_rate);
       dpx.television.time_offset=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.television.time_offset) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:television.time_offset","%g",
-          dpx.television.time_offset);
+          (double) dpx.television.time_offset);
       dpx.television.gamma=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.television.gamma) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:television.gamma","%g",
-          dpx.television.gamma);
+          (double) dpx.television.gamma);
       dpx.television.black_level=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.television.black_level) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:television.black_level","%g",
-          dpx.television.black_level);
+          (double) dpx.television.black_level);
       dpx.television.black_gain=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.television.black_gain) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:television.black_gain","%g",
-          dpx.television.black_gain);
+          (double) dpx.television.black_gain);
       dpx.television.break_point=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.television.break_point) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:television.break_point","%g",
-          dpx.television.break_point);
+          (double) dpx.television.break_point);
       dpx.television.white_level=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.television.white_level) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:television.white_level","%g",
-          dpx.television.white_level);
+          (double) dpx.television.white_level);
       dpx.television.integration_times=ReadBlobFloat(image);
       offset+=4;
       if (IsFloatDefined(dpx.television.integration_times) != MagickFalse)
         (void) FormatImageProperty(image,"dpx:television.integration_times",
-          "%g",dpx.television.integration_times);
+          "%g",(double) dpx.television.integration_times);
       offset+=ReadBlob(image,sizeof(dpx.television.reserve),(unsigned char *)
         dpx.television.reserve);
     }

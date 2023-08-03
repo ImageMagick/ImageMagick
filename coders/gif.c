@@ -1627,15 +1627,16 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         if ((image->storage_class == DirectClass) || (image->colors > 256))
           (void) SetImageType(image,PaletteBilevelAlphaType,exception);
         for (i=0; i < (ssize_t) image->colors; i++)
-          if (image->colormap[i].alpha != OpaqueAlpha)
+          if (image->colormap[i].alpha != (double) OpaqueAlpha)
             {
               if (opacity < 0)
                 {
                   opacity=i;
                   continue;
                 }
-              alpha=fabs(image->colormap[i].alpha-TransparentAlpha);
-              beta=fabs(image->colormap[opacity].alpha-TransparentAlpha);
+              alpha=fabs(image->colormap[i].alpha-(double) TransparentAlpha);
+              beta=fabs(image->colormap[opacity].alpha-(double)
+                TransparentAlpha);
               if (alpha < beta)
                 opacity=i;
             }
@@ -1643,15 +1644,17 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
           {
             (void) SetImageType(image,PaletteBilevelAlphaType,exception);
             for (i=0; i < (ssize_t) image->colors; i++)
-              if (image->colormap[i].alpha != OpaqueAlpha)
+              if (image->colormap[i].alpha != (double) OpaqueAlpha)
                 {
                   if (opacity < 0)
                     {
                       opacity=i;
                       continue;
                     }
-                  alpha=fabs(image->colormap[i].alpha-TransparentAlpha);
-                  beta=fabs(image->colormap[opacity].alpha-TransparentAlpha);
+                  alpha=fabs(image->colormap[i].alpha-(double)
+                    TransparentAlpha);
+                  beta=fabs(image->colormap[opacity].alpha-(double)
+                    TransparentAlpha);
                   if (alpha < beta)
                     opacity=i;
                 }
@@ -1742,7 +1745,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobByte(image,(unsigned char) (opacity >= 0 ? opacity :
           0));
         (void) WriteBlobByte(image,(unsigned char) 0x00);
-        if (fabs(image->gamma - 1.0f/2.2f) > MagickEpsilon)
+        if (fabs(image->gamma-1.0/2.2) > MagickEpsilon)
           {
             char
               attributes[MagickPathExtent];

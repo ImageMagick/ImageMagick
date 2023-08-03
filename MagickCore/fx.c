@@ -1621,9 +1621,9 @@ static inline ssize_t GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType 
         }
         (void) CopyMagickString (sFunc, pfx->pex, lenfun+1);
         if (QueryColorCompliance (sFunc, AllCompliance, &colour, dummy_exception)) {
-          *v0 = colour.red   / QuantumRange;
-          *v1 = colour.green / QuantumRange;
-          *v2 = colour.blue  / QuantumRange;
+          *v0 = QuantumScale*colour.red;
+          *v1 = QuantumScale*colour.green;
+          *v2 = QuantumScale*colour.blue;
           dummy_exception = DestroyExceptionInfo (dummy_exception);
           return (ssize_t)lenfun;
         }
@@ -1642,9 +1642,9 @@ static inline ssize_t GetConstantColour (FxInfo * pfx, fxFltType *v0, fxFltType 
     }
   }
 
-  *v0 = colour.red   / QuantumRange;
-  *v1 = colour.green / QuantumRange;
-  *v2 = colour.blue  / QuantumRange;
+  *v0 = QuantumScale*colour.red;
+  *v1 = QuantumScale*colour.green;
+  *v2 = QuantumScale*colour.blue;
 
   dummy_exception = DestroyExceptionInfo (dummy_exception);
   return (ssize_t)strlen (pfx->token);
@@ -1693,9 +1693,9 @@ static inline ssize_t GetHexColour (FxInfo * pfx, fxFltType *v0, fxFltType *v1, 
     return -1;
   }
 
-  *v0 = colour.red   / QuantumRange;
-  *v1 = colour.green / QuantumRange;
-  *v2 = colour.blue  / QuantumRange;
+  *v0 = QuantumScale*colour.red;
+  *v1 = QuantumScale*colour.green;
+  *v2 = QuantumScale*colour.blue;
 
   return (ssize_t) len;
 }
@@ -3537,7 +3537,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               if ((int) pel->ChannelQual < 0) {
                 if (pel->ChannelQual == NO_CHAN_QUAL || pel->ChannelQual == THIS_CHANNEL) {
                   if (pfx->ImgNum==0) {
-                    regA = QuantumScale * p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+                    regA = QuantumScale * (double) p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
                   } else {
                     const Quantum * pv = GetCacheViewVirtualPixels (
                                    pfx->Imgs[0].View, imgx, imgy, 1,1, pfx->exception);
@@ -3547,7 +3547,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                         "fU can't get cache", "%lu", (unsigned long) ImgNum);
                       break;
                     }
-                    regA = QuantumScale * pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+                    regA = QuantumScale * (double) pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
                   }
                 } else if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
                     pel->ChannelQual == LIGHT_CHANNEL) {
@@ -3559,7 +3559,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                 }
               } else {
                 if (pfx->ImgNum==0) {
-                  regA = QuantumScale * p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+                  regA = QuantumScale * (double) p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
                 } else {
                   const Quantum * pv = GetCacheViewVirtualPixels (
                                  pfx->Imgs[0].View, imgx, imgy, 1,1, pfx->exception);
@@ -3569,7 +3569,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                       "fU can't get cache", "%lu", (unsigned long) ImgNum);
                     break;
                   }
-                  regA = QuantumScale * pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+                  regA = QuantumScale * (double) pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
                 }
               }
             } else {
@@ -3601,8 +3601,8 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                   "fU can't get cache", "%lu", (unsigned long) ImgNum);
                 break;
               }
-              regA = QuantumScale *
-         pv[pfx->Images[ImgNum]->channel_map[WHICH_NON_ATTR_CHAN].offset];
+              regA = QuantumScale * (double)
+                pv[pfx->Images[ImgNum]->channel_map[WHICH_NON_ATTR_CHAN].offset];
             } else {
               regA = ImageStat (pfx, ImgNum, WHICH_ATTR_CHAN, pel->ImgAttrQual);
             }
@@ -3618,7 +3618,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
             if (pel->ChannelQual == NO_CHAN_QUAL || pel->ChannelQual == THIS_CHANNEL) {
 
               if (pfx->ImgNum==0) {
-                regA = QuantumScale * p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+                regA = QuantumScale * (double) p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
               } else {
                 const Quantum * pv = GetCacheViewVirtualPixels (
                                pfx->Imgs[0].View, imgx, imgy, 1,1, pfx->exception);
@@ -3628,7 +3628,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                     "fU0 can't get cache", "%i", 0);
                   break;
                 }
-                regA = QuantumScale * pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+                regA = QuantumScale * (double) pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
               }
 
             } else if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
@@ -3640,7 +3640,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
             }
           } else {
             if (pfx->ImgNum==0) {
-              regA = QuantumScale * p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+              regA = QuantumScale * (double) p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
             } else {
               const Quantum * pv = GetCacheViewVirtualPixels (
                                    pfx->Imgs[0].View, imgx, imgy, 1,1, pfx->exception);
@@ -3650,7 +3650,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                   "fU0 can't get cache", "%i", 0);
                 break;
               }
-              regA = QuantumScale * pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
+              regA = QuantumScale * (double) pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
             }
           }
           break;
@@ -3724,8 +3724,8 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               }
             }
 
-            regA = QuantumScale *
-         pv[pfx->Images[ImgNum]->channel_map[WHICH_NON_ATTR_CHAN].offset];
+            regA = QuantumScale * (double)
+              pv[pfx->Images[ImgNum]->channel_map[WHICH_NON_ATTR_CHAN].offset];
           } else {
             regA = ImageStat (pfx, ImgNum, WHICH_ATTR_CHAN, pel->ImgAttrQual);
           }
@@ -3872,24 +3872,24 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           break;
         case sLuma: /* calculation */
         case sLuminance: /* as Luma */
-          regA = QuantumScale * (0.212656 * GetPixelRed (img,p) +
-                                 0.715158 * GetPixelGreen (img,p) +
-                                 0.072186 * GetPixelBlue (img,p));
+          regA = QuantumScale * (0.212656 * (double) GetPixelRed (img,p) +
+                                 0.715158 * (double) GetPixelGreen (img,p) +
+                                 0.072186 * (double) GetPixelBlue (img,p));
           break;
         case sSaturation: /* from conversion to HSL */
           regA = saturation;
           break;
         case sA: /* alpha */
-          regA = QuantumScale * GetPixelAlpha (img, p);
+          regA = QuantumScale * (double) GetPixelAlpha (img, p);
           break;
         case sB: /* blue */
-          regA = QuantumScale * GetPixelBlue (img, p);
+          regA = QuantumScale * (double) GetPixelBlue (img, p);
           break;
         case sC: /* red (ie cyan) */
-          regA = QuantumScale * GetPixelCyan (img, p);
+          regA = QuantumScale * (double) GetPixelCyan (img, p);
           break;
         case sG: /* green */
-          regA = QuantumScale * GetPixelGreen (img, p);
+          regA = QuantumScale * (double) GetPixelGreen (img, p);
           break;
         case sI: /* current x-coordinate */
           regA = (fxFltType) imgx;
@@ -3898,19 +3898,19 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (fxFltType) imgy;
           break;
         case sK: /* black of CMYK */
-          regA = QuantumScale * GetPixelBlack (img, p);
+          regA = QuantumScale * (double) GetPixelBlack (img, p);
           break;
         case sM: /* green (ie magenta) */
-          regA = QuantumScale * GetPixelGreen (img, p);
+          regA = QuantumScale * (double) GetPixelGreen (img, p);
           break;
         case sO: /* alpha */
-          regA = QuantumScale * GetPixelAlpha (img, p);
+          regA = QuantumScale * (double) GetPixelAlpha (img, p);
           break;
         case sR:
-          regA = QuantumScale * GetPixelRed (img, p);
+          regA = QuantumScale * (double) GetPixelRed (img, p);
           break;
         case sY:
-          regA = QuantumScale * GetPixelYellow (img, p);
+          regA = QuantumScale * (double) GetPixelYellow (img, p);
           break;
         case sNull:
           break;

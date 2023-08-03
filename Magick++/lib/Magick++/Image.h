@@ -1345,7 +1345,7 @@ namespace Magick
 
     // adjust the image contrast with a non-linear sigmoidal contrast algorithm
     void sigmoidalContrast(const bool sharpen_,const double contrast,
-      const double midpoint=QuantumRange/2.0);
+      const double midpoint=(double) QuantumRange/2.0);
 
     // Image signature. Set force_ to true in order to re-calculate
     // the signature regardless of whether the image data has been

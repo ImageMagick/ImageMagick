@@ -959,17 +959,15 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   PixelInfo
     pixel;
 
-  ssize_t
-    i,
-    x;
-
   size_t
     characters_per_pixel;
 
   ssize_t
+    i,
     j,
     k,
     opacity,
+    x,
     y;
 
   static const char
@@ -1011,7 +1009,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
       if ((image->storage_class == DirectClass) || (image->colors > 256))
         (void) SetImageType(image,PaletteBilevelAlphaType,exception);
       for (i=0; i < (ssize_t) image->colors; i++)
-        if (image->colormap[i].alpha != OpaqueAlpha)
+        if (image->colormap[i].alpha != (double) OpaqueAlpha)
           {
             if (opacity < 0)
               {
@@ -1029,16 +1027,16 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
         {
           (void) SetImageType(image,PaletteBilevelAlphaType,exception);
           for (i=0; i < (ssize_t) image->colors; i++)
-            if (image->colormap[i].alpha != OpaqueAlpha)
+            if (image->colormap[i].alpha != (double) OpaqueAlpha)
               {
                 if (opacity < 0)
                   {
                     opacity=i;
                     continue;
                   }
-                alpha=(Quantum) TransparentAlpha-(double)
+                alpha=(double) TransparentAlpha-(double)
                   image->colormap[i].alpha;
-                beta=(Quantum) TransparentAlpha-(double)
+                beta=(double) TransparentAlpha-(double)
                   image->colormap[opacity].alpha;
                 if (alpha < beta)
                   opacity=i;

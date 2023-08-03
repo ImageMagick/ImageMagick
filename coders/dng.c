@@ -170,8 +170,8 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   (void) FormatMagickTime(raw_info->other.timestamp,sizeof(timestamp),
     timestamp);
   (void) SetImageProperty(image,"dng:create.date",timestamp,exception);
-  (void) FormatImageProperty(image,"dng:iso.setting","%.0f",
-    raw_info->other.iso_speed);
+  (void) FormatImageProperty(image,"dng:iso.setting","%.0g",
+    (double) raw_info->other.iso_speed);
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
   (void) SetImageProperty(image,"dng:software",raw_info->idata.software,
     exception);
@@ -180,47 +180,48 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
       raw_info->shootinginfo.BodySerial,exception);
   (void) FormatImageProperty(image,"dng:exposure.time","1/%.0f",
     PerceptibleReciprocal(raw_info->other.shutter));
-  (void) FormatImageProperty(image,"dng:f.number","%0.1f",
-    raw_info->other.aperture);
-  (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1f",
-    raw_info->lens.EXIF_MaxAp);
-  (void) FormatImageProperty(image,"dng:focal.length","%0.1f mm",
-    raw_info->other.focal_len);
-  (void) FormatImageProperty(image,"dng:wb.rb.levels","%f %f %f %f",
-    raw_info->color.cam_mul[0],raw_info->color.cam_mul[2],
-    raw_info->color.cam_mul[1],raw_info->color.cam_mul[3]);
+  (void) FormatImageProperty(image,"dng:f.number","%0.1g",
+    (double) raw_info->other.aperture);
+  (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1g",
+    (double) raw_info->lens.EXIF_MaxAp);
+  (void) FormatImageProperty(image,"dng:focal.length","%0.1g mm",
+    (double) raw_info->other.focal_len);
+  (void) FormatImageProperty(image,"dng:wb.rb.levels","%g %g %g %g",
+    (double) raw_info->color.cam_mul[0],(double) raw_info->color.cam_mul[2],
+    (double) raw_info->color.cam_mul[1],(double) raw_info->color.cam_mul[3]);
   (void) SetImageProperty(image,"dng:lens.type",
     raw_info->lens.makernotes.LensFeatures_suf,exception);
-  (void) FormatImageProperty(image,"dng:lens","%0.1f-%0.1fmm f/%0.1f-%0.1f",
-    raw_info->lens.makernotes.MinFocal,raw_info->lens.makernotes.MaxFocal,
-    raw_info->lens.makernotes.MaxAp4MinFocal,
-    raw_info->lens.makernotes.MaxAp4MaxFocal);
+  (void) FormatImageProperty(image,"dng:lens","%0.1g-%0.1gmm f/%0.1g-%0.1g",
+    (double) raw_info->lens.makernotes.MinFocal,
+    (double) raw_info->lens.makernotes.MaxFocal,
+    (double) raw_info->lens.makernotes.MaxAp4MinFocal,
+    (double) raw_info->lens.makernotes.MaxAp4MaxFocal);
   (void) FormatImageProperty(image,"dng:lens.f.stops","%0.2f",
-    raw_info->lens.makernotes.LensFStops);
+    (double) raw_info->lens.makernotes.LensFStops);
   (void) FormatImageProperty(image,"dng:min.focal.length","%0.1f mm",
-    raw_info->lens.makernotes.MinFocal);
-  (void) FormatImageProperty(image,"dng:max.focal.length","%0.1f mm",
-    raw_info->lens.makernotes.MaxFocal);
-  (void) FormatImageProperty(image,"dng:max.aperture.at.min.focal","%0.1f",
-    raw_info->lens.makernotes.MaxAp4MinFocal);
-  (void) FormatImageProperty(image,"dng:max.aperture.at.max.focal","%0.1f",
-    raw_info->lens.makernotes.MaxAp4MaxFocal);
+    (double) raw_info->lens.makernotes.MinFocal);
+  (void) FormatImageProperty(image,"dng:max.focal.length","%0.1g mm",
+    (double) raw_info->lens.makernotes.MaxFocal);
+  (void) FormatImageProperty(image,"dng:max.aperture.at.min.focal","%0.1g",
+    (double) raw_info->lens.makernotes.MaxAp4MinFocal);
+  (void) FormatImageProperty(image,"dng:max.aperture.at.max.focal","%0.1g",
+    (double) raw_info->lens.makernotes.MaxAp4MaxFocal);
   (void) FormatImageProperty(image,"dng:focal.length.in.35mm.format","%d mm",
     raw_info->lens.FocalLengthIn35mmFormat);
 #endif
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,20)
   (void) FormatImageProperty(image,"dng:gps.latitude",
-    "%.0f deg %.0f' %.2f\" N",
-    raw_info->other.parsed_gps.latitude[0],
-    raw_info->other.parsed_gps.latitude[1],
-    raw_info->other.parsed_gps.latitude[2]);
+    "%.0g deg %.0g' %.2g\" N",
+    (double) raw_info->other.parsed_gps.latitude[0],
+    (double) raw_info->other.parsed_gps.latitude[1],
+    (double) raw_info->other.parsed_gps.latitude[2]);
   (void) FormatImageProperty(image,"dng:gps.longitude",
-    "%.0f deg %.0f' %.2f\" W",
-    raw_info->other.parsed_gps.longitude[0],
-    raw_info->other.parsed_gps.longitude[1],
-    raw_info->other.parsed_gps.longitude[2]);
-  (void) FormatImageProperty(image,"dng:gps.altitude","%.1f m",
-    raw_info->other.parsed_gps.altitude);
+    "%.0g deg %.0g' %.2g\" W",
+    (double) raw_info->other.parsed_gps.longitude[0],
+    (double) raw_info->other.parsed_gps.longitude[1],
+    (double) raw_info->other.parsed_gps.longitude[2]);
+  (void) FormatImageProperty(image,"dng:gps.altitude","%.1g m",
+    (double) raw_info->other.parsed_gps.altitude);
 #endif
 }
 #endif

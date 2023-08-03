@@ -487,7 +487,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
       default:
         break;
     }
-    if (draw_info->undercolor.alpha != TransparentAlpha)
+    if (draw_info->undercolor.alpha != (MagickRealType) TransparentAlpha)
       {
         DrawInfo
           *undercolor_info;
@@ -509,7 +509,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     annotate_info->affine.tx=offset.x;
     annotate_info->affine.ty=offset.y;
     pixel=annotate_info->fill;
-    if (annotate_info->stroke.alpha != TransparentAlpha)
+    if (annotate_info->stroke.alpha != (MagickRealType) TransparentAlpha)
       pixel=annotate_info->stroke;
     (void) QueryColorname(image,&pixel,AllCompliance,color,exception);
     (void) FormatLocaleString(primitive,MagickPathExtent,"stroke %s "
@@ -1886,7 +1886,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       metrics->bounds.x2=(double) bounds.xMax;
     if ((bounds.yMax > metrics->bounds.y2) && (bounds.yMax != 0))
       metrics->bounds.y2=(double) bounds.yMax;
-    if (((draw_info->stroke.alpha != TransparentAlpha) ||
+    if (((draw_info->stroke.alpha != (MagickRealType) TransparentAlpha) ||
          (draw_info->stroke_pattern != (Image *) NULL)) &&
         ((status != MagickFalse) && (draw_info->render != MagickFalse)))
       {
@@ -1924,9 +1924,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         /*
           Rasterize the glyph.
         */
-        transparent_fill=((draw_info->fill.alpha == TransparentAlpha) &&
+        transparent_fill=((draw_info->fill.alpha == (MagickRealType) TransparentAlpha) &&
           (draw_info->fill_pattern == (Image *) NULL) &&
-          (draw_info->stroke.alpha == TransparentAlpha) &&
+          (draw_info->stroke.alpha == (MagickRealType) TransparentAlpha) &&
           (draw_info->stroke_pattern == (Image *) NULL)) ? MagickTrue :
           MagickFalse;
         image_view=AcquireAuthenticCacheView(image,exception);
@@ -2010,9 +2010,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                   Sa,
                   Da;
 
-                Da=1.0-(QuantumScale*GetPixelAlpha(image,q));
+                Da=1.0-(QuantumScale*(double) GetPixelAlpha(image,q));
                 Sa=fill_opacity;
-                fill_opacity=(1.0-RoundToUnity(Sa+Da-Sa*Da))*QuantumRange;
+                fill_opacity=(1.0-RoundToUnity(Sa+Da-Sa*Da))*(double)
+                  QuantumRange;
                 SetPixelAlpha(image,fill_opacity,q);
               }
             if (active == MagickFalse)
@@ -2028,7 +2029,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
         }
         image_view=DestroyCacheView(image_view);
-        if (((draw_info->stroke.alpha != TransparentAlpha) ||
+        if (((draw_info->stroke.alpha != (MagickRealType) TransparentAlpha) ||
              (draw_info->stroke_pattern != (Image *) NULL)) &&
             (status != MagickFalse))
           {
@@ -2353,7 +2354,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       annotate_image=DestroyImage(annotate_image);
       return(MagickTrue);
     }
-  if (draw_info->fill.alpha != TransparentAlpha)
+  if (draw_info->fill.alpha != (MagickRealType) TransparentAlpha)
     {
       CacheView
         *annotate_view;

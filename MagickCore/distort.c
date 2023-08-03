@@ -18,7 +18,7 @@
 %                                 June 2007                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2007 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -3396,17 +3396,22 @@ MagickExport Image *SparseColorImage(const Image *image,
         }
         /* set the color directly back into the source image */
         if ((GetPixelRedTraits(sparse_image) & UpdatePixelTrait) != 0)
-          pixel.red=(MagickRealType) ClampPixel(QuantumRange*pixel.red);
+          pixel.red=(MagickRealType) ClampPixel((double) QuantumRange*
+            pixel.red);
         if ((GetPixelGreenTraits(sparse_image) & UpdatePixelTrait) != 0)
-          pixel.green=(MagickRealType) ClampPixel(QuantumRange*pixel.green);
+          pixel.green=(MagickRealType) ClampPixel((double) QuantumRange*
+            pixel.green);
         if ((GetPixelBlueTraits(sparse_image) & UpdatePixelTrait) != 0)
-          pixel.blue=(MagickRealType) ClampPixel(QuantumRange*pixel.blue);
+          pixel.blue=(MagickRealType) ClampPixel((double) QuantumRange*
+            pixel.blue);
         if (((GetPixelBlackTraits(sparse_image) & UpdatePixelTrait) != 0) &&
             (image->colorspace == CMYKColorspace))
-          pixel.black=(MagickRealType) ClampPixel(QuantumRange*pixel.black);
+          pixel.black=(MagickRealType) ClampPixel((double) QuantumRange*
+            pixel.black);
         if (((GetPixelAlphaTraits(sparse_image) & UpdatePixelTrait) != 0) &&
             (image->alpha_trait != UndefinedPixelTrait))
-          pixel.alpha=(MagickRealType) ClampPixel(QuantumRange*pixel.alpha);
+          pixel.alpha=(MagickRealType) ClampPixel((double) QuantumRange*
+            pixel.alpha);
         SetPixelViaPixelInfo(sparse_image,&pixel,q);
         q+=GetPixelChannels(sparse_image);
       }

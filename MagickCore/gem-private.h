@@ -255,9 +255,9 @@ static inline void ConvertXYZToAdobe98(const double X,const double Y,
   r=2.041587903810746500*X-0.56500697427885960*Y-0.34473135077832956*Z;
   g=(-0.969243636280879500)*X+1.87596750150772020*Y+0.04155505740717557*Z;
   b=0.013444280632031142*X-0.11836239223101838*Y+1.01517499439120540*Z;
-  *red=EncodePixelGamma(QuantumRange*r);
-  *green=EncodePixelGamma(QuantumRange*g);
-  *blue=EncodePixelGamma(QuantumRange*b);
+  *red=EncodePixelGamma((double) QuantumRange*r);
+  *green=EncodePixelGamma((double) QuantumRange*g);
+  *blue=EncodePixelGamma((double) QuantumRange*b);
 }
 
 static inline void ConvertXYZToDisplayP3(const double X,const double Y,
@@ -274,9 +274,9 @@ static inline void ConvertXYZToDisplayP3(const double X,const double Y,
   r=2.49349691194142500*X-0.93138361791912390*Y-0.402710784450716840*Z;
   g=(-0.82948896956157470)*X+1.76266406031834630*Y+0.023624685841943577*Z;
   b=0.03584583024378447*X-0.07617238926804182*Y+0.956884524007687200*Z;
-  *red=EncodePixelGamma(QuantumRange*r);
-  *green=EncodePixelGamma(QuantumRange*g);
-  *blue=EncodePixelGamma(QuantumRange*b);
+  *red=EncodePixelGamma((double) QuantumRange*r);
+  *green=EncodePixelGamma((double) QuantumRange*g);
+  *blue=EncodePixelGamma((double) QuantumRange*b);
 }
 
 static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
@@ -349,9 +349,9 @@ static inline void ConvertXYZToProPhoto(const double X,const double Y,
   r=1.3457989731028281*X-0.25558010007997534*Y-0.05110628506753401*Z;
   g=(-0.5446224939028347)*X+1.50823274131327810*Y+0.02053603239147973*Z;
   b=0.0000000000000000*X+0.0000000000000000*Y+1.21196754563894540*Z;
-  *red=EncodePixelGamma(QuantumRange*r);
-  *green=EncodePixelGamma(QuantumRange*g);
-  *blue=EncodePixelGamma(QuantumRange*b);
+  *red=EncodePixelGamma((double) QuantumRange*r);
+  *green=EncodePixelGamma((double) QuantumRange*g);
+  *blue=EncodePixelGamma((double) QuantumRange*b);
 }
 
 static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
@@ -368,9 +368,9 @@ static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
   r=3.2404542*X-1.5371385*Y-0.4985314*Z;
   g=(-0.9692660)*X+1.8760108*Y+0.0415560*Z;
   b=0.0556434*X-0.2040259*Y+1.0572252*Z;
-  *red=EncodePixelGamma(QuantumRange*r);
-  *green=EncodePixelGamma(QuantumRange*g);
-  *blue=EncodePixelGamma(QuantumRange*b);
+  *red=EncodePixelGamma((double) QuantumRange*r);
+  *green=EncodePixelGamma((double) QuantumRange*g);
+  *blue=EncodePixelGamma((double) QuantumRange*b);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

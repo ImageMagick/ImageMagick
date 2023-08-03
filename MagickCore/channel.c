@@ -968,7 +968,7 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
       }
       case AlphaPixelChannel:
       {
-        composite[i]=ClampToQuantum(QuantumRange*(Sa*(-Da)+Sa+Da));
+        composite[i]=ClampToQuantum((double) QuantumRange*(Sa*(-Da)+Sa+Da));
         break;
       }
       default:
@@ -1041,7 +1041,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           ssize_t
             i;
 
-          gamma=QuantumScale*GetPixelAlpha(image,q);
+          gamma=QuantumScale*(double) GetPixelAlpha(image,q);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1050,7 +1050,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
               continue;
             if ((traits & UpdatePixelTrait) == 0)
               continue;
-            q[i]=ClampToQuantum(gamma*q[i]);
+            q[i]=ClampToQuantum(gamma*(double) q[i]);
           }
           q+=GetPixelChannels(image);
         }
@@ -1162,7 +1162,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           ssize_t
             i;
 
-          Sa=QuantumScale*GetPixelAlpha(image,q);
+          Sa=QuantumScale*(double) GetPixelAlpha(image,q);
           gamma=PerceptibleReciprocal(Sa);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
@@ -1172,7 +1172,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
               continue;
             if ((traits & UpdatePixelTrait) == 0)
               continue;
-            q[i]=ClampToQuantum(gamma*q[i]);
+            q[i]=ClampToQuantum(gamma*(double) q[i]);
           }
           q+=GetPixelChannels(image);
         }

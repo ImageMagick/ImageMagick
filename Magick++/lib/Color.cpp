@@ -24,9 +24,9 @@ MagickPPExport int Magick::operator == (const Magick::Color &left_,
 {
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   return((left_.isValid() == right_.isValid()) &&
-    (fabs(left_.quantumRed()-right_.quantumRed()) < MagickEpsilon) &&
-    (fabs(left_.quantumGreen()-right_.quantumGreen()) < MagickEpsilon) &&
-    (fabs(left_.quantumBlue()-right_.quantumBlue()) < MagickEpsilon));
+    (fabs((double) left_.quantumRed()-(double) right_.quantumRed()) < MagickEpsilon) &&
+    (fabs((double) left_.quantumGreen()-(double) right_.quantumGreen()) < MagickEpsilon) &&
+    (fabs((double) left_.quantumBlue()-(double) right_.quantumBlue()) < MagickEpsilon));
 #else
   return((left_.isValid() == right_.isValid()) &&
     (left_.quantumRed() == right_.quantumRed()) &&
@@ -399,13 +399,13 @@ void Magick::Color::pixel(PixelInfo *rep_,PixelType pixelType_)
 
 Magick::Quantum Magick::Color::scaleDoubleToQuantum(const double double_)
 {
-  return(static_cast<Magick::Quantum>(double_*QuantumRange));
+  return(static_cast<Magick::Quantum>(double_*(double) QuantumRange));
 }
 
 double Magick::Color::scaleQuantumToDouble(const Magick::Quantum quantum_)
 {
 #if (MAGICKCORE_QUANTUM_DEPTH < 32) && (MAGICKCORE_SIZEOF_FLOAT_T != MAGICKCORE_SIZEOF_DOUBLE || !defined(MAGICKCORE_HDRI_SUPPORT))
-  return(static_cast<double>(QuantumScale*quantum_));
+  return(static_cast<double>(QuantumScale*(double) quantum_));
 #else
   return(QuantumScale*quantum_);
 #endif
@@ -891,8 +891,8 @@ void Magick::ColorYUV::u(const double u_)
 
 double Magick::ColorYUV::u(void) const
 {
-  return(scaleQuantumToDouble((-0.14740 * quantumRed()) - (0.28950 *
-    quantumGreen()) + (0.43690 * quantumBlue())));
+  return(scaleQuantumToDouble((-0.14740 * (double) quantumRed()) - (0.28950 *
+    (double) quantumGreen()) + (0.43690 * (double) quantumBlue())));
 }
 
 void Magick::ColorYUV::v(const double v_)
@@ -902,8 +902,8 @@ void Magick::ColorYUV::v(const double v_)
 
 double Magick::ColorYUV::v(void) const
 {
-  return(scaleQuantumToDouble((0.61500 * quantumRed()) - (0.51500 *
-    quantumGreen()) - (0.10000 * quantumBlue())));
+  return(scaleQuantumToDouble((0.61500 * (double) quantumRed()) - (0.51500 *
+    (double) quantumGreen()) - (0.10000 * (double) quantumBlue())));
 }
 
 void Magick::ColorYUV::y(const double y_)
@@ -913,8 +913,8 @@ void Magick::ColorYUV::y(const double y_)
 
 double Magick::ColorYUV::y ( void ) const
 {
-  return(scaleQuantumToDouble((0.29900 * quantumRed()) + (0.58700 *
-    quantumGreen()) + (0.11400 * quantumBlue())));
+  return(scaleQuantumToDouble((0.29900 * (double) quantumRed()) + (0.58700 *
+    (double) quantumGreen()) + (0.11400 * (double) quantumBlue())));
 }
 
 void Magick::ColorYUV::convert(const double y_,const double u_,const double v_)

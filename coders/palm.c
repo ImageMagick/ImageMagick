@@ -998,11 +998,11 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
         offset=SeekBlob(image,currentOffset+20,SEEK_SET);
         (void) WriteBlobByte(image,0);  /* reserved by Palm */
         (void) WriteBlobByte(image,(unsigned char) ((31*transpix.red)/
-          QuantumRange));
+          (double) QuantumRange));
         (void) WriteBlobByte(image,(unsigned char) ((63*transpix.green)/
-          QuantumRange));
+          (double) QuantumRange));
         (void) WriteBlobByte(image,(unsigned char) ((31*transpix.blue)/
-          QuantumRange));
+          (double) QuantumRange));
       }
     if (flags & PALM_IS_COMPRESSED_FLAG)  /* fill in size now */
       {

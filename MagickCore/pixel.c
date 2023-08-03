@@ -317,10 +317,10 @@ static inline double DecodeGamma(const double x)
 
 MagickExport MagickRealType DecodePixelGamma(const MagickRealType pixel)
 {
-  if (pixel <= (0.0404482362771076*QuantumRange))
-    return(pixel/12.92f);
-  return((MagickRealType) (QuantumRange*DecodeGamma((double) (QuantumScale*
-    pixel+0.055)/1.055)));
+  if (pixel <= (0.0404482362771076*(double) QuantumRange))
+    return(pixel/12.92);
+  return((MagickRealType) ((double) QuantumRange*DecodeGamma((double)
+    (QuantumScale*pixel+0.055)/1.055)));
 }
 
 /*
@@ -444,8 +444,8 @@ static inline double EncodeGamma(const double x)
 
 MagickExport MagickRealType EncodePixelGamma(const MagickRealType pixel)
 {
-  if (pixel <= (0.0031306684425005883*QuantumRange))
-    return(12.92f*pixel);
+  if (pixel <= (0.0031306684425005883*(double) QuantumRange))
+    return(12.92*pixel);
   return((MagickRealType) QuantumRange*(1.055*EncodeGamma((double) QuantumScale*
     pixel)-0.055));
 }
@@ -741,9 +741,9 @@ static MagickBooleanType ExportDoublePixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(double) (QuantumScale*GetPixelBlue(image,p));
-          *q++=(double) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(double) (QuantumScale*GetPixelRed(image,p));
+          *q++=QuantumScale*(double) GetPixelBlue(image,p);
+          *q++=QuantumScale*(double) GetPixelGreen(image,p);
+          *q++=QuantumScale*(double) GetPixelRed(image,p);
           p+=GetPixelChannels(image);
         }
       }
@@ -758,10 +758,10 @@ static MagickBooleanType ExportDoublePixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(double) (QuantumScale*GetPixelBlue(image,p));
-          *q++=(double) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(double) (QuantumScale*GetPixelRed(image,p));
-          *q++=(double) (QuantumScale*GetPixelAlpha(image,p));
+          *q++=QuantumScale*(double) GetPixelBlue(image,p);
+          *q++=QuantumScale*(double) GetPixelGreen(image,p);
+          *q++=QuantumScale*(double) GetPixelRed(image,p);
+          *q++=QuantumScale*(double) GetPixelAlpha(image,p);
           p+=GetPixelChannels(image);
         }
       }
@@ -776,9 +776,9 @@ static MagickBooleanType ExportDoublePixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(double) (QuantumScale*GetPixelBlue(image,p));
-          *q++=(double) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(double) (QuantumScale*GetPixelRed(image,p));
+          *q++=QuantumScale*(double) GetPixelBlue(image,p);
+          *q++=QuantumScale*(double) GetPixelGreen(image,p);
+          *q++=QuantumScale*(double) GetPixelRed(image,p);
           *q++=0.0;
           p+=GetPixelChannels(image);
         }
@@ -794,7 +794,7 @@ static MagickBooleanType ExportDoublePixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(double) (QuantumScale*GetPixelIntensity(image,p));
+          *q++=(double) (QuantumScale*(double) GetPixelIntensity(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -809,9 +809,9 @@ static MagickBooleanType ExportDoublePixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(double) (QuantumScale*GetPixelRed(image,p));
-          *q++=(double) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(double) (QuantumScale*GetPixelBlue(image,p));
+          *q++=QuantumScale*(double) GetPixelRed(image,p);
+          *q++=QuantumScale*(double) GetPixelGreen(image,p);
+          *q++=QuantumScale*(double) GetPixelBlue(image,p);
           p+=GetPixelChannels(image);
         }
       }
@@ -826,10 +826,10 @@ static MagickBooleanType ExportDoublePixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(double) (QuantumScale*GetPixelRed(image,p));
-          *q++=(double) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(double) (QuantumScale*GetPixelBlue(image,p));
-          *q++=(double) (QuantumScale*GetPixelAlpha(image,p));
+          *q++=QuantumScale*(double) GetPixelRed(image,p);
+          *q++=QuantumScale*(double) GetPixelGreen(image,p);
+          *q++=QuantumScale*(double) GetPixelBlue(image,p);
+          *q++=QuantumScale*(double) GetPixelAlpha(image,p);
           p+=GetPixelChannels(image);
         }
       }
@@ -844,9 +844,9 @@ static MagickBooleanType ExportDoublePixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(double) (QuantumScale*GetPixelRed(image,p));
-          *q++=(double) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(double) (QuantumScale*GetPixelBlue(image,p));
+          *q++=QuantumScale*(double) GetPixelRed(image,p);
+          *q++=QuantumScale*(double) GetPixelGreen(image,p);
+          *q++=QuantumScale*(double) GetPixelBlue(image,p);
           *q++=0.0;
           p+=GetPixelChannels(image);
         }
@@ -872,41 +872,40 @@ static MagickBooleanType ExportDoublePixel(const Image *image,
           case RedQuantum:
           case CyanQuantum:
           {
-            *q=(double) (QuantumScale*GetPixelRed(image,p));
+            *q=QuantumScale*(double) GetPixelRed(image,p);
             break;
           }
           case GreenQuantum:
           case MagentaQuantum:
           {
-            *q=(double) (QuantumScale*GetPixelGreen(image,p));
+            *q=QuantumScale*(double) GetPixelGreen(image,p);
             break;
           }
           case BlueQuantum:
           case YellowQuantum:
           {
-            *q=(double) (QuantumScale*GetPixelBlue(image,p));
+            *q=QuantumScale*(double) GetPixelBlue(image,p);
             break;
           }
           case AlphaQuantum:
           {
-            *q=(double) (QuantumScale*GetPixelAlpha(image,p));
+            *q=QuantumScale*(double) GetPixelAlpha(image,p);
             break;
           }
           case OpacityQuantum:
           {
-            *q=(double) (QuantumScale*GetPixelAlpha(image,p));
+            *q=QuantumScale*(double) GetPixelAlpha(image,p);
             break;
           }
           case BlackQuantum:
           {
             if (image->colorspace == CMYKColorspace)
-              *q=(double) (QuantumScale*
-                GetPixelBlack(image,p));
+              *q=QuantumScale*(double) GetPixelBlack(image,p);
             break;
           }
           case IndexQuantum:
           {
-            *q=(double) (QuantumScale*GetPixelIntensity(image,p));
+            *q=QuantumScale*(double) GetPixelIntensity(image,p);
             break;
           }
           default:
@@ -949,9 +948,9 @@ static MagickBooleanType ExportFloatPixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(float) (QuantumScale*GetPixelBlue(image,p));
-          *q++=(float) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(float) (QuantumScale*GetPixelRed(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelBlue(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelGreen(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelRed(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -966,10 +965,10 @@ static MagickBooleanType ExportFloatPixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(float) (QuantumScale*GetPixelBlue(image,p));
-          *q++=(float) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(float) (QuantumScale*GetPixelRed(image,p));
-          *q++=(float) (QuantumScale*GetPixelAlpha(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelBlue(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelGreen(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelRed(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelAlpha(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -984,9 +983,9 @@ static MagickBooleanType ExportFloatPixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(float) (QuantumScale*GetPixelBlue(image,p));
-          *q++=(float) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(float) (QuantumScale*GetPixelRed(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelBlue(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelGreen(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelRed(image,p));
           *q++=0.0;
           p+=GetPixelChannels(image);
         }
@@ -1002,7 +1001,7 @@ static MagickBooleanType ExportFloatPixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(float) (QuantumScale*GetPixelIntensity(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelIntensity(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1017,9 +1016,9 @@ static MagickBooleanType ExportFloatPixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(float) (QuantumScale*GetPixelRed(image,p));
-          *q++=(float) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(float) (QuantumScale*GetPixelBlue(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelRed(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelGreen(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelBlue(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1034,10 +1033,10 @@ static MagickBooleanType ExportFloatPixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(float) (QuantumScale*GetPixelRed(image,p));
-          *q++=(float) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(float) (QuantumScale*GetPixelBlue(image,p));
-          *q++=(float) (QuantumScale*GetPixelAlpha(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelRed(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelGreen(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelBlue(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelAlpha(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1052,9 +1051,9 @@ static MagickBooleanType ExportFloatPixel(const Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          *q++=(float) (QuantumScale*GetPixelRed(image,p));
-          *q++=(float) (QuantumScale*GetPixelGreen(image,p));
-          *q++=(float) (QuantumScale*GetPixelBlue(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelRed(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelGreen(image,p));
+          *q++=(float) (QuantumScale*(double) GetPixelBlue(image,p));
           *q++=0.0;
           p+=GetPixelChannels(image);
         }
@@ -1080,40 +1079,40 @@ static MagickBooleanType ExportFloatPixel(const Image *image,
           case RedQuantum:
           case CyanQuantum:
           {
-            *q=(float) (QuantumScale*GetPixelRed(image,p));
+            *q=(float) (QuantumScale*(double) GetPixelRed(image,p));
             break;
           }
           case GreenQuantum:
           case MagentaQuantum:
           {
-            *q=(float) (QuantumScale*GetPixelGreen(image,p));
+            *q=(float) (QuantumScale*(double) GetPixelGreen(image,p));
             break;
           }
           case BlueQuantum:
           case YellowQuantum:
           {
-            *q=(float) (QuantumScale*GetPixelBlue(image,p));
+            *q=(float) (QuantumScale*(double) GetPixelBlue(image,p));
             break;
           }
           case AlphaQuantum:
           {
-            *q=(float) (QuantumScale*((Quantum) (GetPixelAlpha(image,p))));
+            *q=(float) (QuantumScale*((double) (GetPixelAlpha(image,p))));
             break;
           }
           case OpacityQuantum:
           {
-            *q=(float) (QuantumScale*GetPixelAlpha(image,p));
+            *q=(float) (QuantumScale*(double) GetPixelAlpha(image,p));
             break;
           }
           case BlackQuantum:
           {
             if (image->colorspace == CMYKColorspace)
-              *q=(float) (QuantumScale* GetPixelBlack(image,p));
+              *q=(float) (QuantumScale*(double) GetPixelBlack(image,p));
             break;
           }
           case IndexQuantum:
           {
-            *q=(float) (QuantumScale*GetPixelIntensity(image,p));
+            *q=(float) (QuantumScale*(double) GetPixelIntensity(image,p));
             break;
           }
           default:
@@ -2259,7 +2258,7 @@ MagickExport MagickRealType GetPixelInfoIntensity(
     case MSPixelIntensityMethod:
     {
       intensity=(MagickRealType) (((double) red*red+green*green+blue*blue)/
-        (3.0*QuantumRange));
+        (3.0*(double) QuantumRange));
       break;
     }
     case Rec601LumaPixelIntensityMethod:
@@ -2389,7 +2388,7 @@ MagickExport MagickRealType GetPixelIntensity(
     case MSPixelIntensityMethod:
     {
       intensity=(MagickRealType) (((double) red*red+green*green+blue*blue)/
-        (3.0*QuantumRange));
+        (3.0*(double) QuantumRange));
       break;
     }
     case Rec601LumaPixelIntensityMethod:
@@ -2797,11 +2796,11 @@ static MagickBooleanType ImportDoublePixel(Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2819,13 +2818,13 @@ static MagickBooleanType ImportDoublePixel(Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2843,11 +2842,11 @@ static MagickBooleanType ImportDoublePixel(Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
           p++;
           q+=GetPixelChannels(image);
@@ -2866,7 +2865,7 @@ static MagickBooleanType ImportDoublePixel(Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelGray(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGray(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2884,11 +2883,11 @@ static MagickBooleanType ImportDoublePixel(Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2906,13 +2905,13 @@ static MagickBooleanType ImportDoublePixel(Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2930,11 +2929,11 @@ static MagickBooleanType ImportDoublePixel(Image *image,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2961,39 +2960,39 @@ static MagickBooleanType ImportDoublePixel(Image *image,
           case RedQuantum:
           case CyanQuantum:
           {
-            SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelRed(image,ClampToQuantum((double) QuantumRange*(*p)),q);
             break;
           }
           case GreenQuantum:
           case MagentaQuantum:
           {
-            SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(*p)),q);
             break;
           }
           case BlueQuantum:
           case YellowQuantum:
           {
-            SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(*p)),q);
             break;
           }
           case AlphaQuantum:
           {
-            SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*(*p)),q);
             break;
           }
           case OpacityQuantum:
           {
-            SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*(*p)),q);
             break;
           }
           case BlackQuantum:
           {
-            SetPixelBlack(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelBlack(image,ClampToQuantum((double) QuantumRange*(*p)),q);
             break;
           }
           case IndexQuantum:
           {
-            SetPixelGray(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelGray(image,ClampToQuantum((double) QuantumRange*(*p)),q);
             break;
           }
           default:
@@ -3038,11 +3037,14 @@ static MagickBooleanType ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -3060,13 +3062,17 @@ static MagickBooleanType ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -3084,11 +3090,14 @@ static MagickBooleanType ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
           p++;
           q+=GetPixelChannels(image);
@@ -3107,7 +3116,8 @@ static MagickBooleanType ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelGray(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGray(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -3125,11 +3135,14 @@ static MagickBooleanType ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -3147,13 +3160,17 @@ static MagickBooleanType ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -3171,11 +3188,14 @@ static MagickBooleanType ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -3202,39 +3222,46 @@ static MagickBooleanType ImportFloatPixel(Image *image,const RectangleInfo *roi,
           case RedQuantum:
           case CyanQuantum:
           {
-            SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelRed(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
             break;
           }
           case GreenQuantum:
           case MagentaQuantum:
           {
-            SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelGreen(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
             break;
           }
           case BlueQuantum:
           case YellowQuantum:
           {
-            SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelBlue(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
             break;
           }
           case AlphaQuantum:
           {
-            SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
             break;
           }
           case OpacityQuantum:
           {
-            SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
             break;
           }
           case BlackQuantum:
           {
-            SetPixelBlack(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelBlack(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
             break;
           }
           case IndexQuantum:
           {
-            SetPixelGray(image,ClampToQuantum(QuantumRange*(*p)),q);
+            SetPixelGray(image,ClampToQuantum((double) QuantumRange*(double)
+            (*p)),q);
             break;
           }
           default:
@@ -4572,9 +4599,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
       else
         for (i=0; i < (ssize_t) count; i++)
         {
-          alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
+          alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       for (i=0; i < (ssize_t) count; i++)
@@ -4607,9 +4634,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
       else
         for (i=0; i < 4; i++)
         {
-          alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
+          alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       delta.x=x-x_offset;
@@ -4641,9 +4668,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
       else
         for (i=0; i < 4; i++)
         {
-          alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
+          alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       gamma=1.0;  /* number of pixels blended together (its variable) */
@@ -4703,9 +4730,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
       else
         for (i=0; i < 16; i++)
         {
-          alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
+          alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       CatromWeights((double) (x-x_offset),&cx);
@@ -4769,9 +4796,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
       else
         for (i=0; i < 4; i++)
         {
-          alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
+          alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       delta.x=x-x_offset;
@@ -4861,9 +4888,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
       else
         for (i=0; i < 16; i++)
         {
-          alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
+          alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
-          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+
+          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       SplineWeights((double) (x-x_offset),&cx);
@@ -5022,7 +5049,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
           }
         for (j=0; j < (ssize_t) count; j++)
         {
-          alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
+          alpha[j]=QuantumScale*(double) GetPixelAlpha(source,p+j*
             GetPixelChannels(source));
           pixels[j]*=alpha[j];
           gamma=PerceptibleReciprocal(alpha[j]);
@@ -5072,11 +5099,12 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
               pixels[2]+delta.x*pixels[3]))),pixel);
             continue;
           }
-        alpha[0]=QuantumScale*GetPixelAlpha(source,p);
-        alpha[1]=QuantumScale*GetPixelAlpha(source,p+GetPixelChannels(source));
-        alpha[2]=QuantumScale*GetPixelAlpha(source,p+2*
+        alpha[0]=QuantumScale*(double) GetPixelAlpha(source,p);
+        alpha[1]=QuantumScale*(double) GetPixelAlpha(source,p+
           GetPixelChannels(source));
-        alpha[3]=QuantumScale*GetPixelAlpha(source,p+3*
+        alpha[2]=QuantumScale*(double) GetPixelAlpha(source,p+2*
+          GetPixelChannels(source));
+        alpha[3]=QuantumScale*(double) GetPixelAlpha(source,p+3*
           GetPixelChannels(source));
         pixels[0]*=alpha[0];
         pixels[1]*=alpha[1];
@@ -5120,7 +5148,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
         else
           for (j=0; j < 4; j++)
           {
-            alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
+            alpha[j]=QuantumScale*(double) GetPixelAlpha(source,p+j*
               GetPixelChannels(source));
             pixels[j]=(double) p[j*GetPixelChannels(source)+i];
             if (channel != AlphaPixelChannel)
@@ -5197,9 +5225,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
         else
           for (j=0; j < 16; j++)
           {
-            alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
+            alpha[j]=QuantumScale*(double) GetPixelAlpha(source,p+j*
               GetPixelChannels(source));
-            pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+i];
+            pixels[j]=alpha[j]*(double) p[j*GetPixelChannels(source)+i];
           }
         CatromWeights((double) (x-x_offset),&cx);
         CatromWeights((double) (y-y_offset),&cy);
@@ -5296,12 +5324,12 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
           }
         else
           {
-            alpha[0]=QuantumScale*GetPixelAlpha(source,p);
-            alpha[1]=QuantumScale*GetPixelAlpha(source,p+
+            alpha[0]=QuantumScale*(double) GetPixelAlpha(source,p);
+            alpha[1]=QuantumScale*(double) GetPixelAlpha(source,p+
               GetPixelChannels(source));
-            alpha[2]=QuantumScale*GetPixelAlpha(source,p+2*
+            alpha[2]=QuantumScale*(double) GetPixelAlpha(source,p+2*
               GetPixelChannels(source));
-            alpha[3]=QuantumScale*GetPixelAlpha(source,p+3*
+            alpha[3]=QuantumScale*(double) GetPixelAlpha(source,p+3*
               GetPixelChannels(source));
           }
         delta.x=x-x_offset;
@@ -5404,9 +5432,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
         else
           for (j=0; j < 16; j++)
           {
-            alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
+            alpha[j]=QuantumScale*(double) GetPixelAlpha(source,p+j*
               GetPixelChannels(source));
-            pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+i];
+            pixels[j]=alpha[j]*(double) p[j*GetPixelChannels(source)+i];
           }
         SplineWeights((double) (x-x_offset),&cx);
         SplineWeights((double) (y-y_offset),&cy);
@@ -5484,13 +5512,13 @@ static inline void AlphaBlendPixelInfo(const Image *image,
       pixel_info->alpha=(double) GetPixelAlpha(image,pixel);
       return;
     }
-  *alpha=QuantumScale*GetPixelAlpha(image,pixel);
-  pixel_info->red=(*alpha*GetPixelRed(image,pixel));
-  pixel_info->green=(*alpha*GetPixelGreen(image,pixel));
-  pixel_info->blue=(*alpha*GetPixelBlue(image,pixel));
+  *alpha=QuantumScale*(double) GetPixelAlpha(image,pixel);
+  pixel_info->red=(*alpha*(double) GetPixelRed(image,pixel));
+  pixel_info->green=(*alpha*(double) GetPixelGreen(image,pixel));
+  pixel_info->blue=(*alpha*(double) GetPixelBlue(image,pixel));
   pixel_info->black=0.0;
   if (image->colorspace == CMYKColorspace)
-    pixel_info->black=(*alpha*GetPixelBlack(image,pixel));
+    pixel_info->black=(*alpha*(double) GetPixelBlack(image,pixel));
   pixel_info->alpha=(double) GetPixelAlpha(image,pixel);
 }
 
@@ -5985,7 +6013,8 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
       /*
         Transparencies are involved - set alpha distance.
       */
-      pixel=GetPixelAlpha(source,p)-(double) GetPixelAlpha(destination,q);
+      pixel=(double) GetPixelAlpha(source,p)-(double)
+        GetPixelAlpha(destination,q);
       distance=pixel*pixel;
       if (distance > fuzz)
         return(MagickFalse);
@@ -5994,9 +6023,9 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
         Note that if one color is transparent, distance has no color component.
       */
       if (source->alpha_trait != UndefinedPixelTrait)
-        scale*=QuantumScale*GetPixelAlpha(source,p);
+        scale*=QuantumScale*(double) GetPixelAlpha(source,p);
       if (destination->alpha_trait != UndefinedPixelTrait)
-        scale*=QuantumScale*GetPixelAlpha(destination,q);
+        scale*=QuantumScale*(double) GetPixelAlpha(destination,q);
       if (scale <= MagickEpsilon)
         return(MagickTrue);
     }
@@ -6005,25 +6034,25 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
   */
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
-  pixel=GetPixelRed(source,p)-(double) GetPixelRed(destination,q);
+  pixel=(double) GetPixelRed(source,p)-(double) GetPixelRed(destination,q);
   if (IsHueCompatibleColorspace(source->colorspace) != MagickFalse)
     {
       /*
         Compute an arc distance for hue.  It should be a vector angle of
         'S'/'W' length with 'L'/'B' forming appropriate cones.
       */
-      if (fabs((double) pixel) > (QuantumRange/2))
-        pixel-=QuantumRange;
+      if (fabs((double) pixel) > ((double) QuantumRange/2.0))
+        pixel-=(double) QuantumRange;
       pixel*=2.0;
     }
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=GetPixelGreen(source,p)-(double) GetPixelGreen(destination,q);
+  pixel=(double) GetPixelGreen(source,p)-(double) GetPixelGreen(destination,q);
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=GetPixelBlue(source,p)-(double) GetPixelBlue(destination,q);
+  pixel=(double) GetPixelBlue(source,p)-(double) GetPixelBlue(destination,q);
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
@@ -6094,8 +6123,9 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
       /*
         Transparencies are involved - set alpha distance.
       */
-      pixel=(p->alpha_trait != UndefinedPixelTrait ? p->alpha : OpaqueAlpha)-
-        (q->alpha_trait != UndefinedPixelTrait ? q->alpha : OpaqueAlpha);
+      pixel=(p->alpha_trait != UndefinedPixelTrait ? p->alpha :
+        (double) OpaqueAlpha)-(q->alpha_trait != UndefinedPixelTrait ?
+        q->alpha : (double) OpaqueAlpha);
       distance=pixel*pixel;
       if (distance > fuzz)
         return(MagickFalse);
@@ -6119,8 +6149,8 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
       distance+=pixel*pixel*scale;
       if (distance > fuzz)
         return(MagickFalse);
-      scale*=(double) (QuantumScale*(QuantumRange-p->black));
-      scale*=(double) (QuantumScale*(QuantumRange-q->black));
+      scale*=QuantumScale*((double) QuantumRange-(double) p->black);
+      scale*=QuantumScale*((double) QuantumRange-(double) q->black);
     }
   /*
     RGB or CMY color cube.
@@ -6135,8 +6165,8 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
         angle of 'S'/'W' length with 'L'/'B' forming appropriate cones.
         In other words this is a hack - Anthony.
       */
-      if (fabs((double) pixel) > (QuantumRange/2))
-        pixel-=QuantumRange;
+      if (fabs((double) pixel) > ((double) QuantumRange/2.0))
+        pixel-=(double) QuantumRange;
       pixel*=2.0;
     }
   distance+=pixel*pixel*scale;

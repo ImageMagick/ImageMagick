@@ -260,8 +260,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
           continue;
         }
       difference=MagickFalse;
-      Sa=QuantumScale*GetPixelAlpha(image,p);
-      Da=QuantumScale*GetPixelAlpha(reconstruct_image,q);
+      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
+      Da=QuantumScale*(double) GetPixelAlpha(reconstruct_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -277,9 +277,11 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          pixel=(double) p[i]-GetPixelChannel(reconstruct_image,channel,q);
+          pixel=(double) p[i]-(double) GetPixelChannel(reconstruct_image,
+            channel,q);
         else
-          pixel=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
+          pixel=Sa*(double) p[i]-Da*(double)
+            GetPixelChannel(reconstruct_image,channel,q);
         distance=pixel*pixel;
         if (distance >= fuzz)
           {
@@ -420,8 +422,8 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
           continue;
         }
       difference=MagickFalse;
-      Sa=QuantumScale*GetPixelAlpha(image,p);
-      Da=QuantumScale*GetPixelAlpha(reconstruct_image,q);
+      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
+      Da=QuantumScale*(double) GetPixelAlpha(reconstruct_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -437,9 +439,11 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          pixel=(double) p[i]-GetPixelChannel(reconstruct_image,channel,q);
+          pixel=(double) p[i]-(double) GetPixelChannel(reconstruct_image,
+            channel,q);
         else
-          pixel=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
+          pixel=Sa*(double) p[i]-Da*(double) GetPixelChannel(reconstruct_image,
+            channel,q);
         distance=pixel*pixel;
         if (distance >= fuzz)
           {
@@ -537,8 +541,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
           q+=GetPixelChannels(reconstruct_image);
           continue;
         }
-      Sa=QuantumScale*GetPixelAlpha(image,p);
-      Da=QuantumScale*GetPixelAlpha(reconstruct_image,q);
+      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
+      Da=QuantumScale*(double) GetPixelAlpha(reconstruct_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -553,11 +557,11 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=QuantumScale*(p[i]-GetPixelChannel(reconstruct_image,
-            channel,q));
+          distance=QuantumScale*((double) p[i]-(double) GetPixelChannel(
+            reconstruct_image,channel,q));
         else
-          distance=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(reconstruct_image,
-            channel,q));
+          distance=QuantumScale*(Sa*(double) p[i]-Da*(double) GetPixelChannel(
+            reconstruct_image,channel,q));
         channel_distortion[i]+=distance*distance;
         channel_distortion[CompositePixelChannel]+=distance*distance;
       }
@@ -658,8 +662,8 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
           q+=GetPixelChannels(reconstruct_image);
           continue;
         }
-      Sa=QuantumScale*GetPixelAlpha(image,p);
-      Da=QuantumScale*GetPixelAlpha(reconstruct_image,q);
+      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
+      Da=QuantumScale*(double) GetPixelAlpha(reconstruct_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -674,11 +678,11 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=QuantumScale*fabs((double) (p[i]-(double)
-            GetPixelChannel(reconstruct_image,channel,q)));
+          distance=QuantumScale*fabs((double) p[i]-(double)
+            GetPixelChannel(reconstruct_image,channel,q));
         else
-          distance=QuantumScale*fabs((double) (Sa*p[i]-Da*
-            GetPixelChannel(reconstruct_image,channel,q)));
+          distance=QuantumScale*fabs(Sa*(double) p[i]-Da*(double)
+            GetPixelChannel(reconstruct_image,channel,q));
         channel_distortion[i]+=distance;
         channel_distortion[CompositePixelChannel]+=distance;
       }
@@ -766,8 +770,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
           q+=GetPixelChannels(reconstruct_image);
           continue;
         }
-      Sa=QuantumScale*GetPixelAlpha(image,p);
-      Da=QuantumScale*GetPixelAlpha(reconstruct_image,q);
+      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
+      Da=QuantumScale*(double) GetPixelAlpha(reconstruct_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -782,11 +786,11 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=fabs((double) (p[i]-(double)
-            GetPixelChannel(reconstruct_image,channel,q)));
+          distance=fabs((double) p[i]-(double)
+            GetPixelChannel(reconstruct_image,channel,q));
         else
-          distance=fabs((double) (Sa*p[i]-Da*
-            GetPixelChannel(reconstruct_image,channel,q)));
+          distance=fabs(Sa*(double) p[i]-Da*(double)
+            GetPixelChannel(reconstruct_image,channel,q));
         distortion[i]+=distance;
         distortion[CompositePixelChannel]+=distance;
         mean_error+=distance*distance;
@@ -879,8 +883,8 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
           q+=GetPixelChannels(reconstruct_image);
           continue;
         }
-      Sa=QuantumScale*GetPixelAlpha(image,p);
-      Da=QuantumScale*GetPixelAlpha(reconstruct_image,q);
+      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
+      Da=QuantumScale*(double) GetPixelAlpha(reconstruct_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -895,11 +899,11 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=QuantumScale*(p[i]-GetPixelChannel(reconstruct_image,
-            channel,q));
+          distance=QuantumScale*((double) p[i]-(double) GetPixelChannel(
+            reconstruct_image,channel,q));
         else
-          distance=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(reconstruct_image,
-            channel,q));
+          distance=QuantumScale*(Sa*(double) p[i]-Da*(double) GetPixelChannel(
+            reconstruct_image,channel,q));
         channel_distortion[i]+=distance*distance;
         channel_distortion[CompositePixelChannel]+=distance*distance;
       }
@@ -1011,8 +1015,8 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
           q+=GetPixelChannels(reconstruct_image);
           continue;
         }
-      Sa=QuantumScale*GetPixelAlpha(image,p);
-      Da=QuantumScale*GetPixelAlpha(reconstruct_image,q);
+      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
+      Da=QuantumScale*(double) GetPixelAlpha(reconstruct_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -1029,15 +1033,16 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
           continue;
         if (channel == AlphaPixelChannel)
           {
-            alpha=QuantumScale*(p[i]-image_statistics[channel].mean);
-            beta=QuantumScale*(GetPixelChannel(reconstruct_image,channel,q)-
-              reconstruct_statistics[channel].mean);
+            alpha=QuantumScale*((double) p[i]-image_statistics[channel].mean);
+            beta=QuantumScale*((double) GetPixelChannel(reconstruct_image,
+              channel,q)-reconstruct_statistics[channel].mean);
           }
         else
           {
-            alpha=QuantumScale*(Sa*p[i]-image_statistics[channel].mean);
-            beta=QuantumScale*(Da*GetPixelChannel(reconstruct_image,channel,q)-
-              reconstruct_statistics[channel].mean);
+            alpha=QuantumScale*(Sa*(double) p[i]-
+              image_statistics[channel].mean);
+            beta=QuantumScale*(Da*(double) GetPixelChannel(reconstruct_image,
+              channel,q)-reconstruct_statistics[channel].mean);
           }
         distortion[i]+=alpha*beta;
         alpha_variance[i]+=alpha*alpha;
@@ -1151,8 +1156,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
           q+=GetPixelChannels(reconstruct_image);
           continue;
         }
-      Sa=QuantumScale*GetPixelAlpha(image,p);
-      Da=QuantumScale*GetPixelAlpha(reconstruct_image,q);
+      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
+      Da=QuantumScale*(double) GetPixelAlpha(reconstruct_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -1167,11 +1172,11 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=QuantumScale*fabs((double) (p[i]-(double)
-            GetPixelChannel(reconstruct_image,channel,q)));
+          distance=QuantumScale*fabs((double) p[i]-(double)
+            GetPixelChannel(reconstruct_image,channel,q));
         else
-          distance=QuantumScale*fabs((double) (Sa*p[i]-Da*
-            GetPixelChannel(reconstruct_image,channel,q)));
+          distance=QuantumScale*fabs(Sa*(double) p[i]-Da*(double)
+            GetPixelChannel(reconstruct_image,channel,q));
         if (distance > channel_distortion[i])
           channel_distortion[i]=distance;
         if (distance > channel_distortion[CompositePixelChannel])
@@ -1467,10 +1472,10 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
                 (reconstruct_traits == UndefinedPixelTrait) ||
                 ((reconstruct_traits & UpdatePixelTrait) == 0))
               continue;
-            x_pixel=QuantumScale*reference[i];
+            x_pixel=QuantumScale*(double) reference[i];
             x_pixel_mu[i]+=(*k)*x_pixel;
             x_pixel_sigma_squared[i]+=(*k)*x_pixel*x_pixel;
-            y_pixel=QuantumScale*
+            y_pixel=QuantumScale*(double)
               GetPixelChannel(reconstruct_image,channel,target);
             y_pixel_mu[i]+=(*k)*y_pixel;
             y_pixel_sigma_squared[i]+=(*k)*y_pixel*y_pixel;
@@ -1900,8 +1905,8 @@ MagickExport MagickBooleanType IsImagesEqual(const Image *image,
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        distance=fabs((double) (p[i]-(double) GetPixelChannel(reconstruct_image,
-          channel,q)));
+        distance=fabs((double) p[i]-(double) GetPixelChannel(reconstruct_image,
+          channel,q));
         if (distance >= MagickEpsilon)
           break;
       }
@@ -2033,8 +2038,8 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        distance=fabs((double) (p[i]-(double) GetPixelChannel(reconstruct_image,
-          channel,q)));
+        distance=fabs((double) p[i]-(double) GetPixelChannel(reconstruct_image,
+          channel,q));
         if (distance >= MagickEpsilon)
           {
             mean_error_per_pixel+=distance;
@@ -2228,7 +2233,8 @@ static Image *NCCDivideImage(const Image *alpha_image,const Image *beta_image,
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if (fabs(p[i]) >= MagickEpsilon)
-          q[i]*=PerceptibleReciprocal(QuantumScale*p[i]);
+          q[i]=(Quantum) ((double) q[i]*PerceptibleReciprocal(QuantumScale*
+            (double) p[i]));
       }
       p+=GetPixelChannels(beta_image);
       q+=GetPixelChannels(divide_image);
@@ -2294,7 +2300,7 @@ static MagickBooleanType NCCMaximaImage(const Image *image,double *maxima,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        sum+=p[i];
+        sum+=(double) p[i];
         channels++;
       }
       if ((channels != 0) && ((sum/channels) > *maxima))
@@ -2361,8 +2367,9 @@ static MagickBooleanType NCCMultiplyImage(Image *image,const double factor,
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if (channel_statistics != (const ChannelStatistics *) NULL)
-          q[i]*=QuantumScale*channel_statistics[channel].standard_deviation;
-        q[i]*=factor;
+          q[i]=(Quantum) ((double) q[i]*QuantumScale*
+            channel_statistics[channel].standard_deviation);
+        q[i]=(Quantum) ((double) q[i]*factor);
       }
       q+=GetPixelChannels(image);
     }
@@ -2427,7 +2434,7 @@ static Image *NCCSquareImage(const Image *image,ExceptionInfo *exception)
         PixelTrait traits = GetPixelChannelTraits(square_image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]*=QuantumScale*q[i];
+        q[i]=(Quantum) ((double) q[i]*QuantumScale*(double) q[i]);
       }
       q+=GetPixelChannels(square_image);
     }
@@ -2508,7 +2515,7 @@ static Image *NCCSubtractImageMean(const Image *alpha_image,
             (y >= (ssize_t) beta_image->rows))
           q[i]=(Quantum) 0;
         else
-          q[i]=p[i]-channel_statistics[channel].mean;
+          q[i]=(Quantum) ((double) p[i]-channel_statistics[channel].mean);
       }
       p+=GetPixelChannels(beta_image);
       q+=GetPixelChannels(gamma_image);
@@ -2659,8 +2666,9 @@ static Image *NCCVarianceImage(Image *alpha_image,const Image *beta_image,
         PixelTrait traits = GetPixelChannelTraits(variance_image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum((QuantumRange*sqrt(fabs((double) QuantumScale*
-          (q[i]-p[i])))))/sqrt((double) QuantumRange);
+        q[i]=(Quantum) ((double) ClampToQuantum((double) QuantumRange*sqrt(fabs(
+          QuantumScale*((double) q[i]-(double) p[i]))))/
+          sqrt((double) QuantumRange));
       }
       p+=GetPixelChannels(beta_image);
       q+=GetPixelChannels(variance_image);
@@ -2982,8 +2990,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
             (similarity_traits == UndefinedPixelTrait) ||
             ((similarity_traits & UpdatePixelTrait) == 0))
           continue;
-        SetPixelChannel(similarity_image,channel,ClampToQuantum(QuantumRange-
-          QuantumRange*similarity),q);
+        SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
+          QuantumRange-(double) QuantumRange*similarity),q);
       }
       q+=GetPixelChannels(similarity_image);
     }

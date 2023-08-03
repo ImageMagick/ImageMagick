@@ -208,9 +208,9 @@ static inline void ConvertProPhotoToRGB(const double r,const double g,
 static inline void ConvertRGBToCMY(const double red,const double green,
   const double blue,double *cyan,double *magenta,double *yellow)
 {
-  *cyan=QuantumScale*(QuantumRange-red);
-  *magenta=QuantumScale*(QuantumRange-green);
-  *yellow=QuantumScale*(QuantumRange-blue);
+  *cyan=QuantumScale*((double) QuantumRange-red);
+  *magenta=QuantumScale*((double) QuantumRange-green);
+  *yellow=QuantumScale*((double) QuantumRange-blue);
 }
 
 static void ConvertRGBToAdobe98(const double red,const double green,
@@ -430,9 +430,9 @@ static inline void ConvertOklabToRGB(const double L,const double a,
   R=4.0767416621*l-3.3077115913*m+0.2309699292*s;
   G=(-1.2684380046)*l+2.6097574011*m-0.3413193965*s;
   B=(-0.0041960863)*l-0.7034186147*m+1.7076147010*s;
-  *red=EncodePixelGamma(QuantumRange*R);
-  *green=EncodePixelGamma(QuantumRange*G);
-  *blue=EncodePixelGamma(QuantumRange*B);
+  *red=EncodePixelGamma((double) QuantumRange*R);
+  *green=EncodePixelGamma((double) QuantumRange*G);
+  *blue=EncodePixelGamma((double) QuantumRange*B);
 }
 
 static void ConvertRGBToOklab(const double red,const double green,
@@ -982,9 +982,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
               break;
             }
           }
-          SetPixelRed(image,ClampToQuantum(QuantumRange*X),q);
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*Y),q);
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*Z),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*X),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*Y),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*Z),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);

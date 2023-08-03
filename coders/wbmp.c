@@ -400,7 +400,7 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
     byte=0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelLuma(image,p) >= (QuantumRange/2.0))
+      if (GetPixelLuma(image,p) >= ((double) QuantumRange/2.0))
         byte|=0x1 << (7-bit);
       bit++;
       if (bit == 8)

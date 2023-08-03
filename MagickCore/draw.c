@@ -2959,7 +2959,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
               }
             status&=QueryColorCompliance(token,AllCompliance,
               &graphic_context[n]->fill,exception);
-            if (graphic_context[n]->fill_alpha != OpaqueAlpha)
+            if (graphic_context[n]->fill_alpha != (double) OpaqueAlpha)
               graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
             break;
           }
@@ -2979,12 +2979,12 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->compliance == SVGCompliance)
               graphic_context[n]->fill_alpha*=opacity;
             else
-              graphic_context[n]->fill_alpha=QuantumRange*opacity;
-            if (graphic_context[n]->fill.alpha != TransparentAlpha)
+              graphic_context[n]->fill_alpha=(double) QuantumRange*opacity;
+            if (graphic_context[n]->fill.alpha != (double) TransparentAlpha)
               graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
             else
               graphic_context[n]->fill.alpha=(MagickRealType)
-                ClampToQuantum(QuantumRange*opacity);
+                ClampToQuantum((double) QuantumRange*opacity);
             graphic_context[n]->fill.alpha_trait=BlendPixelTrait;
             break;
           }
@@ -3235,8 +3235,8 @@ static MagickBooleanType RenderMVGContent(Image *image,
               }
             else
               {
-                graphic_context[n]->fill_alpha=QuantumRange*opacity;
-                graphic_context[n]->stroke_alpha=QuantumRange*opacity;
+                graphic_context[n]->fill_alpha=(double) QuantumRange*opacity;
+                graphic_context[n]->stroke_alpha=(double) QuantumRange*opacity;
               }
             break;
           }
@@ -3678,7 +3678,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
               }
             status&=QueryColorCompliance(token,AllCompliance,
               &graphic_context[n]->stroke,exception);
-            if (graphic_context[n]->stroke_alpha != OpaqueAlpha)
+            if (graphic_context[n]->stroke_alpha != (double) OpaqueAlpha)
               graphic_context[n]->stroke.alpha=
                 graphic_context[n]->stroke_alpha;
             break;
@@ -3806,12 +3806,12 @@ static MagickBooleanType RenderMVGContent(Image *image,
             if (graphic_context[n]->compliance == SVGCompliance)
               graphic_context[n]->stroke_alpha*=opacity;
             else
-              graphic_context[n]->stroke_alpha=QuantumRange*opacity;
-            if (graphic_context[n]->stroke.alpha != TransparentAlpha)
+              graphic_context[n]->stroke_alpha=(double) QuantumRange*opacity;
+            if (graphic_context[n]->stroke.alpha != (double) TransparentAlpha)
               graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
             else
               graphic_context[n]->stroke.alpha=(MagickRealType)
-                ClampToQuantum(QuantumRange*opacity);
+                ClampToQuantum((double) QuantumRange*opacity);
             graphic_context[n]->stroke.alpha_trait=BlendPixelTrait;
             break;
           }
@@ -5748,7 +5748,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       if ((draw_info->dash_pattern != (double *) NULL) &&
           (fabs(draw_info->dash_pattern[0]) >= MagickEpsilon) &&
           (fabs(scale*draw_info->stroke_width) >= MagickEpsilon) &&
-          (draw_info->stroke.alpha != (Quantum) TransparentAlpha))
+          (draw_info->stroke.alpha != (double) TransparentAlpha))
         {
           /*
             Draw dash polygon.
@@ -5765,7 +5765,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         }
       mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
       if ((mid > 1.0) &&
-          ((draw_info->stroke.alpha != (Quantum) TransparentAlpha) ||
+          ((draw_info->stroke.alpha != (double) TransparentAlpha) ||
            (draw_info->stroke_pattern != (Image *) NULL)))
         {
           double

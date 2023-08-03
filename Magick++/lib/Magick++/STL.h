@@ -1735,7 +1735,7 @@ namespace Magick
   public:
     sigmoidalContrastImage( const size_t sharpen_,
       const double contrast,
-      const double midpoint = QuantumRange / 2.0 );
+      const double midpoint = (double) QuantumRange / 2.0 );
 
     void operator()( Image &image_ ) const;
 

@@ -457,9 +457,9 @@ static KernelInfo *ParseKernelName(const char *kernel_string,
       if ( (flags & HeightValue) == 0 )           /* no distance scale */
         args.sigma = 100.0;                       /* default distance scaling */
       else if ( (flags & AspectValue ) != 0 )     /* '!' flag */
-        args.sigma = QuantumRange/(args.sigma+1); /* maximum pixel distance */
+        args.sigma = (double) QuantumRange/(args.sigma+1); /* maximum pixel distance */
       else if ( (flags & PercentValue ) != 0 )    /* '%' flag */
-        args.sigma *= QuantumRange/100.0;         /* percentage of color range */
+        args.sigma *= (double) QuantumRange/100.0;         /* percentage of color range */
       break;
     default:
       break;
@@ -2746,7 +2746,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               {
                 if (!IsNaN(*k))
                   {
-                    pixel+=(*k)*pixels[i];
+                    pixel+=(*k)*(double) pixels[i];
                     count++;
                   }
                 k--;
@@ -2759,8 +2759,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 {
                   if (!IsNaN(*k))
                     {
-                      alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-                      pixel+=alpha*(*k)*pixels[i];
+                      alpha=(double) (QuantumScale*(double)
+                        GetPixelAlpha(image,pixels));
+                      pixel+=alpha*(*k)*(double) pixels[i];
                       gamma+=alpha*(*k);
                       count++;
                     }
@@ -2768,7 +2769,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   pixels+=GetPixelChannels(image);
                 }
               }
-            if (fabs(pixel-p[center+i]) >= MagickEpsilon)
+            if (fabs(pixel-(double) p[center+i]) >= MagickEpsilon)
               changes[id]++;
             gamma=PerceptibleReciprocal(gamma);
             if (count != 0)
@@ -2946,7 +2947,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   for (u=0; u < (ssize_t) kernel->width; u++)
                   {
                     if (!IsNaN(*k))
-                      pixel+=(*k)*pixels[i];
+                      pixel+=(*k)*(double) pixels[i];
                     k--;
                     pixels+=GetPixelChannels(image);
                   }
@@ -2964,8 +2965,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               {
                 if (!IsNaN(*k))
                   {
-                    alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-                    pixel+=alpha*(*k)*pixels[i];
+                    alpha=(double) (QuantumScale*(double)
+                      GetPixelAlpha(image,pixels));
+                    pixel+=alpha*(*k)*(double) pixels[i];
                     gamma+=alpha*(*k);
                   }
                 k--;
@@ -3173,7 +3175,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               {
                 if (!IsNaN(*k))
                   {
-                    if ((pixels[i]+(*k)) < pixel)
+                    if (((double) pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
                   }
                 k--;
@@ -3194,7 +3196,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           }
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*pixel),q);
-        if (fabs(pixel-p[center+i]) >= MagickEpsilon)
+        if (fabs(pixel-(double) p[center+i]) >= MagickEpsilon)
           changes[id]++;
       }
       p+=GetPixelChannels(image);
@@ -3372,7 +3374,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               {
                 if (!IsNaN(*k))
                   {
-                    if ((pixels[i]+(*k)) < pixel)
+                    if (((double) pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
                   }
                 k--;
@@ -3386,7 +3388,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             {
               if (!IsNaN(*k) && ((x+u-offset.x) >= 0))
                 {
-                  if ((pixels[i]+(*k)) < pixel)
+                  if (((double) pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
                 }
               k--;
@@ -3403,7 +3405,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               {
                 if (!IsNaN(*k))
                   {
-                    if ((pixels[i]+(*k)) < pixel)
+                    if (((double) pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
                   }
                 k--;
@@ -3417,7 +3419,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             {
               if (!IsNaN(*k) && ((x+u-offset.x) >= 0))
                 {
-                  if ((pixels[i]+(*k)) < pixel)
+                  if (((double) pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
                 }
               k--;
@@ -3428,7 +3430,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           default:
             break;
         }
-        if (fabs(pixel-q[i]) > MagickEpsilon)
+        if (fabs(pixel-(double) q[i]) > MagickEpsilon)
           changed++;
         q[i]=ClampToQuantum(pixel);
       }
@@ -3536,7 +3538,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               {
                 if (!IsNaN(*k))
                   {
-                    if ((pixels[i]+(*k)) < pixel)
+                    if (((double) pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
                   }
                 k--;
@@ -3551,7 +3553,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               pixels+=GetPixelChannels(image);
               if (!IsNaN(*k) && ((x+u-offset.x) < (ssize_t) image->columns))
                 {
-                  if ((pixels[i]+(*k)) < pixel)
+                  if (((double) pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
                 }
               k--;
@@ -3567,7 +3569,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               {
                 if (!IsNaN(*k))
                   {
-                    if ((pixels[i]+(*k)) < pixel)
+                    if (((double) pixels[i]+(*k)) < pixel)
                       pixel=(double) pixels[i]+(*k);
                   }
                 k--;
@@ -3582,7 +3584,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               pixels+=GetPixelChannels(image);
               if (!IsNaN(*k) && ((x+u-offset.x) < (ssize_t) image->columns))
                 {
-                  if ((pixels[i]+(*k)) < pixel)
+                  if (((double) pixels[i]+(*k)) < pixel)
                     pixel=(double) pixels[i]+(*k);
                 }
               k--;
@@ -3592,7 +3594,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           default:
             break;
         }
-        if (fabs(pixel-q[i]) > MagickEpsilon)
+        if (fabs(pixel-(double) q[i]) > MagickEpsilon)
           changed++;
         q[i]=ClampToQuantum(pixel);
       }

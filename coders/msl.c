@@ -6710,7 +6710,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 (const char *) tag);
               break;
             }
-          geometry_info.rho=QuantumRange/2.0;
+          geometry_info.rho=(double) QuantumRange/2.0;
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
             {

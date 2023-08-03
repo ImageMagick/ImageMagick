@@ -497,21 +497,23 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].red=(Quantum) ReadBlobLSBShort(palette);
           if (QuantumRange != (Quantum) PalHeader.MaxRed)
             {
-              image->colormap[i].red=ClampToQuantum(((double)
-                image->colormap[i].red*QuantumRange+(PalHeader.MaxRed>>1))/
+              image->colormap[i].red=ClampToQuantum((image->colormap[i].red*
+                (double) QuantumRange+(PalHeader.MaxRed >> 1))/
                 PalHeader.MaxRed);
             }
           image->colormap[i].green=(Quantum) ReadBlobLSBShort(palette);
           if (QuantumRange != (Quantum) PalHeader.MaxGreen)
             {
-              image->colormap[i].green=ClampToQuantum
-                (((double) image->colormap[i].green*QuantumRange+(PalHeader.MaxGreen>>1))/PalHeader.MaxGreen);
+              image->colormap[i].green=ClampToQuantum((image->colormap[i].green*
+                (double) QuantumRange+(PalHeader.MaxGreen >> 1))/
+                PalHeader.MaxGreen);
             }
           image->colormap[i].blue=(Quantum) ReadBlobLSBShort(palette);
           if (QuantumRange != (Quantum) PalHeader.MaxBlue)
             {
-              image->colormap[i].blue=ClampToQuantum
-                (((double)image->colormap[i].blue*QuantumRange+(PalHeader.MaxBlue>>1))/PalHeader.MaxBlue);
+              image->colormap[i].blue=ClampToQuantum((image->colormap[i].blue*
+                (double) QuantumRange+(PalHeader.MaxBlue >> 1))/
+                PalHeader.MaxBlue);
             }
 
         }
@@ -615,9 +617,9 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     sample;
 
                   sample=ScaleCharToQuantum((unsigned char) i);
-                  if (image->colormap[i].red!=sample) goto Finish;
-                  if (image->colormap[i].green!=sample) goto Finish;
-                  if (image->colormap[i].blue!=sample) goto Finish;
+                  if (image->colormap[i].red != (double) sample) goto Finish;
+                  if (image->colormap[i].green != (double) sample) goto Finish;
+                  if (image->colormap[i].blue != (double) sample) goto Finish;
                 }
 
               image->colormap[1].red=image->colormap[1].green=

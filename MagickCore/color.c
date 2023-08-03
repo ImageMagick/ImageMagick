@@ -895,7 +895,7 @@ static LinkedListInfo *AcquireColorCache(const char *filename,
     color_info->color.red=(double) ScaleCharToQuantum(p->red);
     color_info->color.green=(double) ScaleCharToQuantum(p->green);
     color_info->color.blue=(double) ScaleCharToQuantum(p->blue);
-    color_info->color.alpha=((double) QuantumRange*p->alpha);
+    color_info->color.alpha=(double) QuantumRange*(double) p->alpha;
     color_info->compliance=(ComplianceType) p->compliance;
     color_info->exempt=MagickTrue;
     color_info->signature=MagickCoreSignature;
@@ -1230,10 +1230,10 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   }
   if ((scale != 100.0f) || (pixel->colorspace == LabColorspace))
     (void) FormatLocaleString(component,MagickPathExtent,"%.*g",
-      GetMagickPrecision(),(double) (scale*QuantumScale*color));
+      GetMagickPrecision(),(double) scale*QuantumScale*(double) color);
   else
     (void) FormatLocaleString(component,MagickPathExtent,"%.*g%%",
-      GetMagickPrecision(),(double) (scale*QuantumScale*color));
+      GetMagickPrecision(),(double) scale*QuantumScale*(double) color);
   (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
 }
 
@@ -2530,22 +2530,23 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
                     geometry_info.psi));
                 else
                   color->alpha=(double) ClampToQuantum((MagickRealType) (
-                    QuantumRange*geometry_info.psi));
+                    (double) QuantumRange*geometry_info.psi));
               }
         }
       if (((flags & ChiValue) != 0) &&
           (color->alpha_trait != UndefinedPixelTrait))
-        color->alpha=(double) ClampToQuantum(QuantumRange*geometry_info.chi);
+        color->alpha=(double) ClampToQuantum((double) QuantumRange*
+          geometry_info.chi);
       if (color->colorspace == LabColorspace)
         {
           color->red=(MagickRealType) ClampToQuantum((MagickRealType)
-            (QuantumRange*geometry_info.rho/100.0));
+            ((double) QuantumRange*geometry_info.rho/100.0));
           if ((flags & SigmaValue) != 0)
             color->green=(MagickRealType) ClampToQuantum((MagickRealType)
-              (scale*geometry_info.sigma+(QuantumRange+1)/2.0));
+              (scale*geometry_info.sigma+((double) QuantumRange+1)/2.0));
           if ((flags & XiValue) != 0)
             color->blue=(MagickRealType) ClampToQuantum((MagickRealType)
-              (scale*geometry_info.xi+(QuantumRange+1)/2.0));
+              (scale*geometry_info.xi+((double) QuantumRange+1)/2.0));
         }
       if ((LocaleCompare(colorspace,"gray") == 0) ||
           (LocaleCompare(colorspace,"lineargray") == 0))
@@ -2554,7 +2555,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           color->blue=color->red;
           if (((flags & SigmaValue) != 0) &&
               (color->alpha_trait != UndefinedPixelTrait))
-            color->alpha=(double) ClampToQuantum(QuantumRange*
+            color->alpha=(double) ClampToQuantum((double) QuantumRange*
               geometry_info.sigma);
         }
       if ((LocaleCompare(colorspace,"HCL") == 0) ||
@@ -2627,7 +2628,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       (LocaleNCompare(name,"grey",4) == 0))
     color->colorspace=GRAYColorspace;
   color->depth=8;
-  color->alpha_trait=p->color.alpha != OpaqueAlpha ? BlendPixelTrait :
+  color->alpha_trait=p->color.alpha != (double) OpaqueAlpha ? BlendPixelTrait :
     UndefinedPixelTrait;
   color->red=(double) p->color.red;
   color->green=(double) p->color.green;
@@ -2704,7 +2705,8 @@ MagickExport MagickBooleanType QueryColorname(
     name);
   if (IssRGBColorspace(pixel.colorspace) == MagickFalse)
     return(MagickFalse);
-  alpha=color->alpha_trait != UndefinedPixelTrait ? color->alpha : OpaqueAlpha;
+  alpha=color->alpha_trait != UndefinedPixelTrait ? (double) color->alpha :
+    (double) OpaqueAlpha;
   (void) GetColorInfo("*",exception);
   LockSemaphoreInfo(color_semaphore);
   p=GetHeadElementInLinkedList(color_cache);

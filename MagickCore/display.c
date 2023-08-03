@@ -7692,7 +7692,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Query user for the fuzz factor.
       */
       (void) FormatLocaleString(fuzz,MagickPathExtent,"%g%%",100.0*
-        (*image)->fuzz/(QuantumRange+1.0));
+        (*image)->fuzz/((double) QuantumRange+1.0));
       (void) XDialogWidget(display,windows,"Trim","Enter fuzz factor:",fuzz);
       if (*fuzz == '\0')
         break;
@@ -7911,9 +7911,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(levels,&geometry_info);
       if ((flags & SigmaValue) == 0)
-        geometry_info.sigma=1.0*QuantumRange/2.0;
+        geometry_info.sigma=1.0*(double) QuantumRange/2.0;
       if ((flags & PercentValue) != 0)
-        geometry_info.sigma=1.0*QuantumRange*geometry_info.sigma/100.0;
+        geometry_info.sigma=1.0*(double) QuantumRange*geometry_info.sigma/100.0;
       (void) SigmoidalContrastImage(*image,MagickTrue,geometry_info.rho,
         geometry_info.sigma,exception);
       XSetCursorState(display,windows,MagickFalse);
@@ -9870,16 +9870,15 @@ static MagickBooleanType XMatteEditImage(Display *display,
               break;
             if (entry != 2)
               {
-                (void) FormatLocaleString(matte,MagickPathExtent,QuantumFormat,
-                  OpaqueAlpha);
+                (void) FormatLocaleString(matte,MagickPathExtent,"%g",
+                  (double) OpaqueAlpha);
                 if (LocaleCompare(MatteMenu[entry],"Transparent") == 0)
-                  (void) FormatLocaleString(matte,MagickPathExtent,
-                    QuantumFormat,(Quantum) TransparentAlpha);
+                  (void) FormatLocaleString(matte,MagickPathExtent,"%g",
+                    (double) TransparentAlpha);
                 break;
               }
             (void) FormatLocaleString(message,MagickPathExtent,
-              "Enter matte value (0 - " QuantumFormat "):",(Quantum)
-              QuantumRange);
+              "Enter matte value (0 - " "%g" "):",(double) QuantumRange);
             (void) XDialogWidget(display,windows,"Matte",message,matte);
             if (*matte == '\0')
               break;

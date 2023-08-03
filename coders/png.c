@@ -747,7 +747,7 @@ LosslessReduceDepthOK(Image *image,ExceptionInfo *exception)
      */
 
 #define QuantumToCharToQuantumEqQuantum(quantum) \
- ((ScaleCharToQuantum((unsigned char) ScaleQuantumToChar(quantum))) == quantum)
+ (((double) ScaleCharToQuantum((unsigned char) ScaleQuantumToChar(quantum))) == (double) quantum)
 
     MagickBooleanType
       ok_to_reduce=MagickFalse;
@@ -2981,7 +2981,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
 
       if (logging != MagickFalse)
         (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-           "    image->gamma=%f",(float) image_gamma);
+           "    image->gamma=%g",image_gamma);
 
       if (image_gamma > 0.75)
         {
@@ -3011,7 +3011,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
 
       if (logging != MagickFalse)
         (void)LogMagickEvent(CoderEvent,GetMagickModule(),
-           "    image->gamma=%f",(float) image_gamma);
+           "    image->gamma=%g",image_gamma);
 
       if (image_gamma > 0.75)
         {
@@ -4000,22 +4000,22 @@ static Image *ReadPNGImage(const ImageInfo *image_info,
 
   if ((IssRGBColorspace(image->colorspace) != MagickFalse) &&
       (image->gamma > .75) &&
-           !(image->chromaticity.red_primary.x>0.6399f &&
-           image->chromaticity.red_primary.x<0.6401f &&
-           image->chromaticity.red_primary.y>0.3299f &&
-           image->chromaticity.red_primary.y<0.3301f &&
-           image->chromaticity.green_primary.x>0.2999f &&
-           image->chromaticity.green_primary.x<0.3001f &&
-           image->chromaticity.green_primary.y>0.5999f &&
-           image->chromaticity.green_primary.y<0.6001f &&
-           image->chromaticity.blue_primary.x>0.1499f &&
-           image->chromaticity.blue_primary.x<0.1501f &&
-           image->chromaticity.blue_primary.y>0.0599f &&
-           image->chromaticity.blue_primary.y<0.0601f &&
-           image->chromaticity.white_point.x>0.3126f &&
-           image->chromaticity.white_point.x<0.3128f &&
-           image->chromaticity.white_point.y>0.3289f &&
-           image->chromaticity.white_point.y<0.3291f))
+           !(image->chromaticity.red_primary.x>0.6399 &&
+           image->chromaticity.red_primary.x<0.6401 &&
+           image->chromaticity.red_primary.y>0.3299 &&
+           image->chromaticity.red_primary.y<0.3301 &&
+           image->chromaticity.green_primary.x>0.2999 &&
+           image->chromaticity.green_primary.x<0.3001 &&
+           image->chromaticity.green_primary.y>0.5999 &&
+           image->chromaticity.green_primary.y<0.6001 &&
+           image->chromaticity.blue_primary.x>0.1499 &&
+           image->chromaticity.blue_primary.x<0.1501 &&
+           image->chromaticity.blue_primary.y>0.0599 &&
+           image->chromaticity.blue_primary.y<0.0601 &&
+           image->chromaticity.white_point.x>0.3126 &&
+           image->chromaticity.white_point.x<0.3128 &&
+           image->chromaticity.white_point.y>0.3289 &&
+           image->chromaticity.white_point.y<0.3291))
     {
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -4555,7 +4555,7 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
     if (memcmp(type,mng_gAMA,4) == 0)
       {
         if (length == 4)
-          image->gamma=((float) mng_get_long(p))*0.00001;
+          image->gamma=((double) mng_get_long(p))*0.00001;
 
         chunk=(unsigned char *) RelinquishMagickMemory(chunk);
         continue;
@@ -4628,8 +4628,8 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
             if ((int) p[8] == PNG_RESOLUTION_METER)
               {
                 image->units=PixelsPerCentimeterResolution;
-                image->resolution.x=image->resolution.x/100.0f;
-                image->resolution.y=image->resolution.y/100.0f;
+                image->resolution.x=image->resolution.x/100.0;
+                image->resolution.y=image->resolution.y/100.0;
               }
           }
 
@@ -5498,7 +5498,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                   igamma;
 
                 igamma=mng_get_long(p);
-                mng_info->global_gamma=((float) igamma)*0.00001;
+                mng_info->global_gamma=((double) igamma)*0.00001;
                 mng_info->have_global_gama=MagickTrue;
               }
 
@@ -8594,7 +8594,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                    for (i=0; i< (ssize_t) number_semitransparent; i++)
                      {
                        if (IsColorEqual(image,r,semitransparent+i)
-                           && GetPixelAlpha(image,r) ==
+                           && (double) GetPixelAlpha(image,r) ==
                            semitransparent[i].alpha)
                          break;
                      }
@@ -8778,7 +8778,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
            if (ping_have_non_bw == MagickFalse)
              {
-               if (colormap[i].red != 0 && colormap[i].red != QuantumRange)
+               if (colormap[i].red != 0 && colormap[i].red != (double) QuantumRange)
                    ping_have_non_bw=MagickTrue;
              }
           }
@@ -8836,10 +8836,10 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                 for (i=0; i< (ssize_t) image_colors; i++)
                 {
                   if ((((image->alpha_trait & BlendPixelTrait) == 0) ||
-                      image->colormap[i].alpha == GetPixelAlpha(image,q)) &&
-                      image->colormap[i].red == GetPixelRed(image,q) &&
-                      image->colormap[i].green == GetPixelGreen(image,q) &&
-                      image->colormap[i].blue == GetPixelBlue(image,q))
+                      image->colormap[i].alpha == (double) GetPixelAlpha(image,q)) &&
+                      image->colormap[i].red == (double) GetPixelRed(image,q) &&
+                      image->colormap[i].green == (double) GetPixelGreen(image,q) &&
+                      image->colormap[i].blue == (double) GetPixelBlue(image,q))
                   {
                     SetPixelIndex(image,i,q);
                     break;
@@ -8968,7 +8968,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
              image->colormap != NULL)
             for (i=0; i<image_colors; i++)
                 image->colormap[i].alpha =
-                    (image->colormap[i].alpha > TransparentAlpha/2 ?
+                    (image->colormap[i].alpha > (double) TransparentAlpha/2 ?
                     TransparentAlpha : OpaqueAlpha);
         }
       continue;

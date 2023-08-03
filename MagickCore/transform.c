@@ -482,7 +482,8 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
           Quantum
             pixel;
 
-          pixel=ClampToQuantum(QuantumRange-GetPixelIntensity(images,p));
+          pixel=ClampToQuantum((double) QuantumRange-
+            GetPixelIntensity(images,p));
           switch (i)
           {
             case 0: SetPixelCyan(cmyk_image,pixel,q);  break;

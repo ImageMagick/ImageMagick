@@ -830,7 +830,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
     *comment;
 
   const double
-    midpoint = QuantumRange/2.0;
+    midpoint = (double) QuantumRange/2.0;
 
   const Quantum
     *p;

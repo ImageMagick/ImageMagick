@@ -160,19 +160,21 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
     {
       for (red=0; red < (ssize_t) cube_size; red++)
       {
-        SetPixelRed(image,ClampToQuantum(QuantumRange*red/(cube_size-1.0)),q);
-        SetPixelGreen(image,ClampToQuantum(QuantumRange*green/(cube_size-1.0)),
-          q);
-        SetPixelBlue(image,ClampToQuantum(QuantumRange*blue/(cube_size-1.0)),q);
+        SetPixelRed(image,ClampToQuantum((double) QuantumRange*red/
+          (cube_size-1.0)),q);
+        SetPixelGreen(image,ClampToQuantum((double) QuantumRange*green/
+          (cube_size-1.0)),q);
+        SetPixelBlue(image,ClampToQuantum((double) QuantumRange*blue/
+          (cube_size-1.0)),q);
         SetPixelAlpha(image,OpaqueAlpha,q);
         if (image->storage_class == PseudoClass)
           {
             image->colormap[index].red=
-              ClampToQuantum(QuantumRange*red/(cube_size-1.0));
+              ClampToQuantum((double) QuantumRange*red/(cube_size-1.0));
             image->colormap[index].green=
-              ClampToQuantum(QuantumRange*green/(cube_size-1.0));
+              ClampToQuantum((double) QuantumRange*green/(cube_size-1.0));
             image->colormap[index].blue=
-              ClampToQuantum(QuantumRange*blue/(cube_size-1.0));
+              ClampToQuantum((double) QuantumRange*blue/(cube_size-1.0));
             image->colormap[index].alpha=OpaqueAlpha;
             SetPixelIndex(image,(Quantum) index++,q);
           }

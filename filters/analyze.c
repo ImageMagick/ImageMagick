@@ -198,10 +198,10 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
 
         ConvertRGBToHSL(GetPixelRed(image,p),GetPixelGreen(image,p),
           GetPixelBlue(image,p),&h,&s,&b);
-        b*=QuantumRange;
+        b*=(double) QuantumRange;
         for (i=1; i <= 4; i++)
           local_brightness.sum[i]+=pow(b,(double) i);
-        s*=QuantumRange;
+        s*=(double) QuantumRange;
         for (i=1; i <= 4; i++)
           local_saturation.sum[i]+=pow(s,(double) i);
         p+=GetPixelChannels(image);

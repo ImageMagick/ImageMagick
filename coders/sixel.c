@@ -1338,7 +1338,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
           (image->colors > SIXEL_PALETTE_MAX))
         (void) SetImageType(image,PaletteBilevelAlphaType,exception);
       for (i=0; i < (ssize_t) image->colors; i++)
-        if (image->colormap[i].alpha != OpaqueAlpha)
+        if (image->colormap[i].alpha != (double) OpaqueAlpha)
           {
             if (opacity < 0)
               {
@@ -1354,7 +1354,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
         {
           (void) SetImageType(image,PaletteBilevelAlphaType,exception);
           for (i=0; i < (ssize_t) image->colors; i++)
-            if (image->colormap[i].alpha != OpaqueAlpha)
+            if (image->colormap[i].alpha != (double) OpaqueAlpha)
               {
                 if (opacity < 0)
                   {

@@ -556,8 +556,10 @@ static MagickBooleanType ComparePixels(const LayerMethod method,
   */
   if (method == CompareAnyLayer)
     return(IsFuzzyEquivalencePixelInfo(p,q) == MagickFalse ? MagickTrue : MagickFalse);
-  o1 = (p->alpha_trait != UndefinedPixelTrait) ? p->alpha : OpaqueAlpha;
-  o2 = (q->alpha_trait != UndefinedPixelTrait) ? q->alpha : OpaqueAlpha;
+  o1 = (p->alpha_trait != UndefinedPixelTrait) ? p->alpha : (double)
+    OpaqueAlpha;
+  o2 = (q->alpha_trait != UndefinedPixelTrait) ? q->alpha : (double)
+    OpaqueAlpha;
   /*
     Pixel goes from opaque to transparency.
   */

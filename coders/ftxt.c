@@ -277,7 +277,7 @@ static long double BufToFlt(char * buffer,char ** tail,ValueTypeT expectType,
       if (**tail=='%')
         {
           (*tail)++;
-          val*=QuantumRange/100.0;
+          val*=(double) QuantumRange/100.0;
           if ((expectType != vtAny) && (expectType != vtPercent))
             *err=MagickTrue;
         }

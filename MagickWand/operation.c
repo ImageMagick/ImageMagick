@@ -2234,7 +2234,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             threshold=StringToDoubleInterval(arg1,(double) QuantumRange+1.0);
           }
           else
-            threshold=40.0*QuantumRange/100.0;
+            threshold=40.0*(double) QuantumRange/100.0;
           new_image=DeskewImage(_image,threshold,_exception);
           break;
         }
@@ -2678,8 +2678,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             gamma=geometry_info.xi;
           if ((flags & PercentValue) != 0)
             {
-              black_point*=(double) (QuantumRange/100.0);
-              white_point*=(double) (QuantumRange/100.0);
+              black_point*=(double) QuantumRange/100.0;
+              white_point*=(double) QuantumRange/100.0;
             }
           if ((flags & SigmaValue) == 0)
             white_point=(double) QuantumRange-black_point;
@@ -2831,7 +2831,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
-            geometry_info.xi=0.10*QuantumRange;
+            geometry_info.xi=0.10*(double) QuantumRange;
           if ((flags & PercentValue) != 0)
             geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
           new_image=MeanShiftImage(_image,(size_t) geometry_info.rho,
@@ -3147,8 +3147,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             break;
           if (strchr(arg1,'%') != (char *) NULL)
             {
-              max_threshold*=(double) (0.01*QuantumRange);
-              min_threshold*=(double) (0.01*QuantumRange);
+              max_threshold*=(0.01*(double) QuantumRange);
+              min_threshold*=(0.01*(double) QuantumRange);
             }
           (void) RandomThresholdImage(_image,min_threshold,max_threshold,
             _exception);
@@ -3170,10 +3170,10 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.psi=geometry_info.xi;
           if (strchr(arg1,'%') != (char *) NULL)
             {
-              geometry_info.rho*=(double) (0.01*QuantumRange);
-              geometry_info.sigma*=(double) (0.01*QuantumRange);
-              geometry_info.xi*=(double) (0.01*QuantumRange);
-              geometry_info.psi*=(double) (0.01*QuantumRange);
+              geometry_info.rho*=(0.01*(double) QuantumRange);
+              geometry_info.sigma*=(0.01*(double) QuantumRange);
+              geometry_info.xi*=(0.01*(double) QuantumRange);
+              geometry_info.psi*=(0.01*(double) QuantumRange);
             }
           (void) RangeThresholdImage(_image,geometry_info.rho,
             geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
@@ -3690,8 +3690,9 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & PercentValue) != 0)
             {
-              geometry_info.rho=QuantumRange*geometry_info.rho/100.0;
-              geometry_info.sigma=QuantumRange*geometry_info.sigma/100.0;
+              geometry_info.rho=(double) QuantumRange*geometry_info.rho/100.0;
+              geometry_info.sigma=(double) QuantumRange*geometry_info.sigma/
+                100.0;
             }
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=0.0;

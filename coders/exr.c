@@ -313,14 +313,14 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelViaPixelInfo(image,&image->background_color,q);
       else
         {
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            ImfHalfToFloat(scanline[xx].r)),q);
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            ImfHalfToFloat(scanline[xx].g)),q);
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            ImfHalfToFloat(scanline[xx].b)),q);
-          SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
-            ImfHalfToFloat(scanline[xx].a)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*
+            (double) ImfHalfToFloat(scanline[xx].r)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*
+            (double) ImfHalfToFloat(scanline[xx].g)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*
+            (double) ImfHalfToFloat(scanline[xx].b)),q);
+          SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*
+            (double) ImfHalfToFloat(scanline[xx].a)),q);
         }
       q+=GetPixelChannels(image);
     }
@@ -634,16 +634,18 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ImfFloatToHalf(QuantumScale*GetPixelRed(image,p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*(double) GetPixelRed(image,p),&half_quantum);
       scanline[x].r=half_quantum;
-      ImfFloatToHalf(QuantumScale*GetPixelGreen(image,p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*(double) GetPixelGreen(image,p),
+        &half_quantum);
       scanline[x].g=half_quantum;
-      ImfFloatToHalf(QuantumScale*GetPixelBlue(image,p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*(double) GetPixelBlue(image,p),&half_quantum);
       scanline[x].b=half_quantum;
       if ((image->alpha_trait & BlendPixelTrait) == 0)
         ImfFloatToHalf(1.0,&half_quantum);
       else
-        ImfFloatToHalf(QuantumScale*GetPixelAlpha(image,p),&half_quantum);
+        ImfFloatToHalf(QuantumScale*(double) GetPixelAlpha(image,p),
+          &half_quantum);
       scanline[x].a=half_quantum;
       p+=GetPixelChannels(image);
     }

@@ -1051,13 +1051,13 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         object[id].bounding_box.y=y;
       if (y >= (ssize_t) object[id].bounding_box.height)
         object[id].bounding_box.height=(size_t) y;
-      object[id].color.red+=QuantumScale*GetPixelRed(image,p);
-      object[id].color.green+=QuantumScale*GetPixelGreen(image,p);
-      object[id].color.blue+=QuantumScale*GetPixelBlue(image,p);
+      object[id].color.red+=QuantumScale*(double) GetPixelRed(image,p);
+      object[id].color.green+=QuantumScale*(double) GetPixelGreen(image,p);
+      object[id].color.blue+=QuantumScale*(double) GetPixelBlue(image,p);
       if (image->alpha_trait != UndefinedPixelTrait)
-        object[id].color.alpha+=QuantumScale*GetPixelAlpha(image,p);
+        object[id].color.alpha+=QuantumScale*(double) GetPixelAlpha(image,p);
       if (image->colorspace == CMYKColorspace)
-        object[id].color.black+=QuantumScale*GetPixelBlack(image,p);
+        object[id].color.black+=QuantumScale*(double) GetPixelBlack(image,p);
       object[id].centroid.x+=x;
       object[id].centroid.y+=y;
       object[id].area++;
@@ -1765,11 +1765,11 @@ MagickExport Image *IntegralImage(const Image *image,ExceptionInfo *exception)
           continue;
         sum=(double) q[i];
         if (x > 0)
-          sum+=(q-GetPixelChannels(integral_image))[i];
+          sum+=(double) (q-GetPixelChannels(integral_image))[i];
         if (y > 0)
-          sum+=p[i];
+          sum+=(double) p[i];
         if ((x > 0) && (y > 0))
-          sum-=(p-GetPixelChannels(integral_image))[i];
+          sum-=(double) (p-GetPixelChannels(integral_image))[i];
         q[i]=ClampToQuantum(sum);
       }
       p+=GetPixelChannels(integral_image);
