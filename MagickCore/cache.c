@@ -459,7 +459,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
       ssize_t
         i;
 
-      mask_alpha=QuantumScale*(double) GetPixelWriteMask(image,p);
+      mask_alpha=QuantumScale*GetPixelWriteMask(image,p);
       if (fabs(mask_alpha) >= MagickEpsilon)
         {
           for (i=0; i < (ssize_t) image->number_channels; i++)
@@ -469,7 +469,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
             if ((traits & UpdatePixelTrait) == 0)
               continue;
             q[i]=ClampToQuantum(MagickOver_((double) p[i],mask_alpha*
-              (double) GetPixelAlpha(image,p),(double) q[i],(double)
+              GetPixelAlpha(image,p),(double) q[i],(double)
               GetPixelAlpha(image,q)));
           }
           SetPixelAlpha(image,GetPixelAlpha(image,p),q);
@@ -3404,7 +3404,7 @@ static inline Quantum ApplyPixelCompositeMask(const Quantum p,
   double
     gamma;
 
-  if (fabs(alpha-(double) TransparentAlpha) < MagickEpsilon)
+  if (fabs((double) (alpha-TransparentAlpha)) < MagickEpsilon)
     return(q);
   gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
   gamma=PerceptibleReciprocal(gamma);
@@ -3697,9 +3697,11 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     ThrowBinaryException(ImageError,"WidthOrHeightExceedsLimit",
       image->filename);
   if (GetPixelChannels(image) >= MaxPixelChannels)
-    ThrowBinaryException(ImageError,"MaximumChannelsExceeded",image->filename);
-  if (GetPixelMetaChannels(image) > GetPixelChannels(image))
-    ThrowBinaryException(ImageError,"MaximumChannelsExceeded",image->filename);
+    ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
+      image->filename);
+  if (GetPixelMetaChannels(image) >= (MaxPixelChannels-MetaPixelChannels))
+    ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
+      image->filename);
   if (GetMagickResourceLimit(ListLengthResource) != MagickResourceInfinity)
     {
       length=GetImageListLength(image);
