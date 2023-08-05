@@ -127,7 +127,7 @@ static inline MagickBooleanType IsMagickThreadEqual(const MagickThreadType id)
 static inline size_t GetOpenMPMaximumThreads(void)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  return(omp_get_max_threads());
+  return((size_t) omp_get_max_threads());
 #else
   return(1);
 #endif

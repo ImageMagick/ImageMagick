@@ -113,11 +113,11 @@ static int MagickMain(int argc,char **argv)
   MagickBooleanType
     status;
 
-  ssize_t
-    i;
-
   size_t
     number_commands;
+
+  ssize_t
+    i;
 
   MagickCoreGenesis(*argv,MagickTrue);
   MagickWandGenesis();
@@ -132,7 +132,7 @@ static int MagickMain(int argc,char **argv)
     if (offset == 0)
       break;
   }
-  i%=(number_commands);
+  i%=(ssize_t) number_commands;
   if ((i == 0) && (argc > 1))
     {
       for (i=1; i < (ssize_t) number_commands; i++)
@@ -145,7 +145,7 @@ static int MagickMain(int argc,char **argv)
             break;
           }
       }
-      i%=number_commands;
+      i%=(ssize_t) number_commands;
     }
   metadata=(char *) NULL;
   status=MagickCommandGenesis(image_info,MagickCommands[i].command,argc,argv,

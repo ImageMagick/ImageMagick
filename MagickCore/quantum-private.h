@@ -110,11 +110,11 @@ static inline MagickSizeType GetQuantumRange(const size_t depth)
 static inline float HalfToSinglePrecision(const unsigned short half)
 {
 #define ExponentBias  (127-15)
-#define ExponentMask  0x7c00
+#define ExponentMask  (0x7c00U)
 #define ExponentShift  23
 #define SignBitShift  31
 #define SignificandShift  13
-#define SignificandMask  0x00000400
+#define SignificandMask  (0x00000400U)
 
   typedef union _SinglePrecision
   {
@@ -125,15 +125,13 @@ static inline float HalfToSinglePrecision(const unsigned short half)
       single_precision;
   } SinglePrecision;
 
-  unsigned int
-    exponent,
-    significand,
-    sign_bit;
-
   SinglePrecision
     map;
 
   unsigned int
+    exponent,
+    significand,
+    sign_bit,
     value;
 
   /*
@@ -713,12 +711,12 @@ static inline unsigned short SinglePrecisionToHalf(const float value)
   int
     exponent;
 
+  SinglePrecision
+    map;
+
   unsigned int
     significand,
     sign_bit;
-
-  SinglePrecision
-    map;
 
   unsigned short
     half;
@@ -743,7 +741,7 @@ static inline unsigned short SinglePrecisionToHalf(const float value)
         return((unsigned short) sign_bit);
       significand=significand | 0x00800000;
       shift=(int) (14-exponent);
-      significand=(unsigned int) ((significand+((1 << (shift-1))-1)+
+      significand=(unsigned int) ((significand+((1U << (shift-1))-1)+
         ((significand >> shift) & 0x01)) >> shift);
       return((unsigned short) (sign_bit | significand));
     }
@@ -782,7 +780,7 @@ static inline unsigned short SinglePrecisionToHalf(const float value)
         alpha*=alpha;
       return((unsigned short) (sign_bit | ExponentMask));
     }
-  half=(unsigned short) (sign_bit | (exponent << 10) |
+  half=(unsigned short) (sign_bit | ((unsigned int) exponent << 10) |
     (significand >> SignificandShift));
   return(half);
 }
