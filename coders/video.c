@@ -247,8 +247,8 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
           (void) ConcatenateMagickString(options," -pix_fmt rgba",
             MagickPathExtent);
       intermediate_format=GetIntermediateFormat(image_info);
-      (void) FormatLocaleString(command,MagickPathExtent," -vcodec %s",
-        intermediate_format);
+      (void) FormatLocaleString(command,MagickPathExtent,
+        " -vcodec %s -lossless 1",intermediate_format);
       (void) ConcatenateMagickString(options,command,MagickPathExtent);
       AcquireUniqueFilename(read_info->unique);
       (void) AcquireUniqueSymbolicLink(image_info->filename,
