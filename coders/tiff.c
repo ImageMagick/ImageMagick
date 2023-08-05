@@ -2791,7 +2791,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
         Property ptif:min-base[x][max-levels].
       */
       RectangleInfo
-        pyramid_geometry = { 0.0, 0.0, 0.0, 0.0 };
+        pyramid_geometry = { 0, 0, 0, 0 };
 
       MagickStatusType flags =
         ParseAbsoluteGeometry(option,&pyramid_geometry);
