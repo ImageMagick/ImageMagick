@@ -602,9 +602,9 @@ static MagickBooleanType ValidateHSIToRGB()
 
   (void) FormatLocaleFile(stdout,"  HSIToRGB");
   ConvertHSIToRGB(111.244375/360.0,0.295985,0.658734,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -635,9 +635,9 @@ static MagickBooleanType ValidateHSLToRGB()
 
   (void) FormatLocaleFile(stdout,"  HSLToRGB");
   ConvertHSLToRGB(110.200859/360.0,0.882623,0.715163,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -668,9 +668,9 @@ static MagickBooleanType ValidateHSVToRGB()
 
   (void) FormatLocaleFile(stdout,"  HSVToRGB");
   ConvertHSVToRGB(110.200859/360.0,0.520200,0.966567,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -718,9 +718,9 @@ static MagickBooleanType ValidateJPEGYCbCrToRGB()
 
   (void) FormatLocaleFile(stdout,"  JPEGYCbCrToRGB");
   ConvertYCbCrToRGB(0.783460,0.319581,0.330539,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -735,9 +735,9 @@ static MagickBooleanType ValidateLabToRGB()
   (void) FormatLocaleFile(stdout,"  LabToRGB");
   ConvertLabToRGB(88.456154/100.0,-54.671483/255+0.5,51.662818/255.0+0.5,
     &r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -754,7 +754,7 @@ static MagickBooleanType ValidateRGBToLab()
     QuantumRange,0.463759*(double) QuantumRange,&L,&a,&b);
   if ((fabs(L-(88.456154/100.0)) >= ReferenceEpsilon) ||
       (fabs(a-(-54.671483/255.0+0.5)) >= ReferenceEpsilon) ||
-      (fabs(b-(51.662818/255.0+0.5)) >= ReferenceEpsilon))
+      (fabs((double) b-(51.662818/255.0+0.5)) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -769,9 +769,9 @@ static MagickBooleanType ValidateLchToRGB()
   (void) FormatLocaleFile(stdout,"  LchToRGB");
   ConvertLCHabToRGB(88.456154/100.0,75.219797/255.0+0.5,136.620717/360.0,
     &r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -819,9 +819,9 @@ static MagickBooleanType ValidateLMSToRGB()
 
   (void) FormatLocaleFile(stdout,"  LMSToRGB");
   ConvertLMSToRGB(0.611749,0.910088,0.294880,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -853,9 +853,9 @@ static MagickBooleanType ValidateLuvToRGB()
   (void) FormatLocaleFile(stdout,"  LuvToRGB");
   ConvertLuvToRGB(88.456154/100.0,(-51.330414+134.0)/354.0,
     (76.405526+140.0)/262.0,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -886,9 +886,9 @@ static MagickBooleanType ValidateXYZToRGB()
 
   (void) FormatLocaleFile(stdout,"  XYZToRGB");
   ConvertXYZToRGB(0.470646,0.730178,0.288324,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -902,9 +902,9 @@ static MagickBooleanType ValidateYDbDrToRGB()
 
   (void) FormatLocaleFile(stdout,"  YDbDrToRGB");
   ConvertYDbDrToRGB(0.783460,-0.480932+0.5,0.451670+0.5,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -952,9 +952,9 @@ static MagickBooleanType ValidateYIQToRGB()
 
   (void) FormatLocaleFile(stdout,"  YIQToRGB");
   ConvertYIQToRGB(0.783460,-0.089078+0.5,-0.245399+0.5,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -985,9 +985,9 @@ static MagickBooleanType ValidateYPbPrToRGB()
 
   (void) FormatLocaleFile(stdout,"  YPbPrToRGB");
   ConvertYPbPrToRGB(0.783460,-0.180419+0.5,-0.169461+0.5,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -1018,9 +1018,9 @@ static MagickBooleanType ValidateYUVToRGB()
 
   (void) FormatLocaleFile(stdout,"  YUVToRGB");
   ConvertYUVToRGB(0.783460,-0.157383+0.5,-0.208443+0.5,&r,&g,&b);
-  if ((fabs(r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
-      (fabs(b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
+  if ((fabs((double) r-0.545877*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) g-0.966567*(double) QuantumRange) >= ReferenceEpsilon) ||
+      (fabs((double) b-0.463759*(double) QuantumRange) >= ReferenceEpsilon))
     return(MagickFalse);
   return(MagickTrue);
 }
