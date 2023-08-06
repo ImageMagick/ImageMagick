@@ -109,24 +109,6 @@ typedef struct _TGAInfo
   unsigned char
     bits_per_pixel,
     attributes;
-
-  unsigned long
-    extension,
-    developer;
-
-  char
-    signature[18];
-
-  unsigned short
-    size;
-
-  char
-    author[42],
-    comment[325],
-    software[42];
-
-  unsigned char
-    attributes_type;
 } TGAInfo;
 
 /*
@@ -630,39 +612,40 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Optional header.
       */
-      tga_info.extension=(unsigned long) ReadBlobLSBLong(image);
-      tga_info.developer=(unsigned long) ReadBlobLSBLong(image);
-      count=ReadBlob(image,18,&tga_info.signature);
-      if ((count == 18) &&
-          (LocaleCompare(tga_info.signature,"TRUEVISION-XFILE.") == 0) &&
-          (tga_info.extension > 3) &&
-          (SeekBlob(image,tga_info.extension,SEEK_SET) == (MagickOffsetType) tga_info.extension))
+      char
+        signature[18];
+
+      unsigned long
+        extension;
+
+      extension=(unsigned long) ReadBlobLSBLong(image);
+      (void) ReadBlobLSBLong(image);
+      count=ReadBlob(image,18,signature);
+      if ((count == 18) && (extension > 3) &&
+          (LocaleCompare(signature,"TRUEVISION-XFILE.") == 0) &&
+          (SeekBlob(image,extension,SEEK_SET) == (MagickOffsetType) extension) &&
+          (ReadBlobLSBShort(image) == 495))
         {
-          tga_info.size=(unsigned long) ReadBlobLSBShort(image);
-          if (tga_info.size == 495)
-            {
-              /*
-                Optional extension.
-              */
-              count=ReadBlob(image,41,&tga_info.author);
-              tga_info.author[41]='\0';
-              (void) SetImageProperty(image,"tga:author",tga_info.author,
-                exception);
-              count=ReadBlob(image,324,&tga_info.comment);
-              tga_info.comment[324]='\0';
-              (void) SetImageProperty(image,"tga:comment",tga_info.comment,
-                exception);
-              (void) DiscardBlobBytes(image,59);
-              count=ReadBlob(image,41,&tga_info.software);
-              tga_info.comment[41]='\0';
-              (void) SetImageProperty(image,"tga:software",tga_info.software,
-                exception);
-              (void) DiscardBlobBytes(image,27);
-              tga_info.attributes_type=(unsigned char) ReadBlobByte(image);
-              if (((image->alpha_trait & BlendPixelTrait) != 0) &&
-                  (tga_info.attributes_type != 3))
-                image->alpha_trait=UndefinedPixelTrait;
-            }
+          /*
+            Optional extension.
+          */
+          char
+            buffer[325];
+
+          (void) ReadBlob(image,41,buffer);
+          buffer[41]='\0';
+          (void) SetImageProperty(image,"tga:author",buffer,exception);
+          (void) ReadBlob(image,324,buffer);
+          buffer[324]='\0';
+          (void) SetImageProperty(image,"tga:comment",buffer,exception);
+          (void) DiscardBlobBytes(image,59);
+          (void) ReadBlob(image,41,buffer);
+          buffer[41]='\0';
+          (void) SetImageProperty(image,"tga:software",buffer,exception);
+          (void) DiscardBlobBytes(image,27);
+          if (((image->alpha_trait & BlendPixelTrait) != 0) &&
+              (ReadBlobByte(image) != 3))
+            image->alpha_trait=UndefinedPixelTrait;
         }
     }
   (void) CloseBlob(image);
