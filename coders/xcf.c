@@ -1432,9 +1432,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           {
             number_layers++;
-            if ((ssize_t) number_layers == SSIZE_MAX)
-              ThrowReaderException(ResourceLimitError,
-                "ListLengthExceedsLimit");
+            if (AcquireMagickResource(ListLengthResource,number_layers) == MagickFalse)
+              ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
           }
         if (EOFBlob(image) != MagickFalse)
           {
@@ -1443,8 +1442,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
     } while (foundAllLayers == MagickFalse);
-    if (AcquireMagickResource(ListLengthResource,number_layers) == MagickFalse)
-      ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
     doc_info.number_layers=number_layers;
     offset=SeekBlob(image,oldPos,SEEK_SET); /* restore the position! */
     if (offset < 0)
