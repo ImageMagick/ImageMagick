@@ -1068,8 +1068,8 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if ((offset->x < 0) || (offset->y < 0) ||
-      ((ssize_t) (offset->x+geometry->width) > (ssize_t) image->columns) ||
-      ((ssize_t) (offset->y+geometry->height) > (ssize_t) image->rows))
+      ((offset->x+(ssize_t) geometry->width) > (ssize_t) image->columns) ||
+      ((offset->y+(ssize_t) geometry->height) > (ssize_t) image->rows))
     ThrowBinaryException(OptionError,"GeometryDoesNotContainImage",
       image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
@@ -1744,7 +1744,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         *q='\0';
         (void) CopyMagickString(filename+(p-format-offset),option,(size_t)
           (MagickPathExtent-(p-format-offset)));
-        offset+=strlen(pattern)-strlen(option)+3;
+        offset+=(ssize_t) strlen(pattern)-(ssize_t) strlen(option)+3;
         *q=c;
         (void) ConcatenateMagickString(filename,r+1,MagickPathExtent);
         canonical=MagickTrue;
@@ -2192,13 +2192,13 @@ MagickExport MagickBooleanType ResetImagePage(Image *image,const char *page)
         {
           image->page.x=geometry.x;
           if ((image->page.width == 0) && (geometry.x > 0))
-            image->page.width=image->columns+geometry.x;
+            image->page.width=(size_t) ((ssize_t) image->columns+geometry.x);
         }
       if ((flags & YValue) != 0)
         {
           image->page.y=geometry.y;
           if ((image->page.height == 0) && (geometry.y > 0))
-            image->page.height=image->rows+geometry.y;
+            image->page.height=(size_t) ((ssize_t) image->rows+geometry.y);
         }
     }
   return(MagickTrue);
@@ -3219,17 +3219,20 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       {
         case ReadPixelMask:
         {
-          image->channels=(ChannelType) (image->channels & ~ReadMaskChannel);
+          image->channels=(ChannelType) (image->channels &
+            (unsigned int) ~ReadMaskChannel);
           break;
         }
         case WritePixelMask:
         {
-          image->channels=(ChannelType) (image->channels & ~WriteMaskChannel);
+          image->channels=(ChannelType) (image->channels &
+            (unsigned int) ~WriteMaskChannel);
           magick_fallthrough;
         }
         default:
         {
-          image->channels=(ChannelType) (image->channels & ~CompositeMaskChannel);
+          image->channels=(ChannelType) (image->channels &
+            (unsigned int) ~CompositeMaskChannel);
           break;
         }
       }
@@ -3376,17 +3379,20 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
       {
         case ReadPixelMask:
         {
-          image->channels=(ChannelType) (image->channels & ~ReadMaskChannel);
+          image->channels=(ChannelType) (image->channels &
+            (unsigned int) ~ReadMaskChannel);
           break;
         }
         case WritePixelMask:
         {
-          image->channels=(ChannelType) (image->channels & ~WriteMaskChannel);
+          image->channels=(ChannelType) (image->channels &
+            (unsigned int) ~WriteMaskChannel);
           break;
         }
         default:
         {
-          image->channels=(ChannelType) (image->channels & ~CompositeMaskChannel);
+          image->channels=(ChannelType) (image->channels &
+            (unsigned int) ~CompositeMaskChannel);
           break;
         }
       }
@@ -3594,7 +3600,7 @@ static ssize_t SmushXGap(const Image *smush_image,const Image *images,
       p=GetCacheViewVirtualPixels(left_view,x,left_geometry.y+y,1,1,exception);
       if ((p == (const Quantum *) NULL) ||
           (GetPixelAlpha(left_image,p) != TransparentAlpha) ||
-          ((left_image->columns-x-1) >= gap))
+          (((ssize_t) left_image->columns-x-1) >= (ssize_t) gap))
         break;
     }
     i=(ssize_t) left_image->columns-x-1;
@@ -3665,7 +3671,7 @@ static ssize_t SmushYGap(const Image *smush_image,const Image *images,
       p=GetCacheViewVirtualPixels(top_view,top_geometry.x+x,y,1,1,exception);
       if ((p == (const Quantum *) NULL) ||
           (GetPixelAlpha(top_image,p) != TransparentAlpha) ||
-          ((top_image->rows-y-1) >= gap))
+          (((ssize_t) top_image->rows-y-1) >= (ssize_t) gap))
         break;
     }
     i=(ssize_t) top_image->rows-y-1;
@@ -3750,12 +3756,12 @@ MagickExport Image *SmushImages(const Image *images,
           width=next->columns;
         height+=next->rows;
         if (next->previous != (Image *) NULL)
-          height+=offset;
+          height=(size_t) MagickMax((ssize_t) height+offset,0U);
         continue;
       }
     width+=next->columns;
     if (next->previous != (Image *) NULL)
-      width+=offset;
+      width=(size_t) MagickMax((ssize_t) width+offset,0U);
     if (next->rows > height)
       height=next->rows;
   }
