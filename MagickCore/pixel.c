@@ -4593,15 +4593,15 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < (ssize_t) count; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(double) p[i*GetPixelChannels(image)+
+          pixels[i]=(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < (ssize_t) count; i++)
         {
           alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
-            GetPixelChannels(image));
-          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
+            (ssize_t) GetPixelChannels(image));
+          pixels[i]=alpha[i]*(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       for (i=0; i < (ssize_t) count; i++)
@@ -4628,15 +4628,15 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < 4; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(double) p[i*GetPixelChannels(image)+
+          pixels[i]=(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < 4; i++)
         {
           alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
-            GetPixelChannels(image));
-          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
+            (ssize_t) GetPixelChannels(image));
+          pixels[i]=alpha[i]*(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       delta.x=x-x_offset;
@@ -4662,15 +4662,15 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < 4; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(MagickRealType) p[i*GetPixelChannels(image)+
+          pixels[i]=(MagickRealType) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < 4; i++)
         {
           alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
-            GetPixelChannels(image));
-          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
+            (ssize_t) GetPixelChannels(image));
+          pixels[i]=alpha[i]*(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       gamma=1.0;  /* number of pixels blended together (its variable) */
@@ -4724,15 +4724,15 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < 16; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(double) p[i*GetPixelChannels(image)+
+          pixels[i]=(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < 16; i++)
         {
           alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
-            GetPixelChannels(image));
-          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
+            (ssize_t) GetPixelChannels(image));
+          pixels[i]=alpha[i]*(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       CatromWeights((double) (x-x_offset),&cx);
@@ -4790,15 +4790,15 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < 4; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(double) p[i*GetPixelChannels(image)+
+          pixels[i]=(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < 4; i++)
         {
           alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
-            GetPixelChannels(image));
-          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
+            (ssize_t) GetPixelChannels(image));
+          pixels[i]=alpha[i]*(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       delta.x=x-x_offset;
@@ -4882,15 +4882,15 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
         for (i=0; i < 16; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(double) p[i*GetPixelChannels(image)+
+          pixels[i]=(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       else
         for (i=0; i < 16; i++)
         {
           alpha[i]=QuantumScale*(double) GetPixelAlpha(image,p+i*
-            GetPixelChannels(image));
-          pixels[i]=alpha[i]*(double) p[i*GetPixelChannels(image)+
+            (ssize_t) GetPixelChannels(image));
+          pixels[i]=alpha[i]*(double) p[i*(ssize_t) GetPixelChannels(image)+
             GetPixelChannelOffset(image,channel)];
         }
       SplineWeights((double) (x-x_offset),&cx);
@@ -5037,7 +5037,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
             (destination_traits == UndefinedPixelTrait))
           continue;
         for (j=0; j < (ssize_t) count; j++)
-          pixels[j]=(double) p[j*GetPixelChannels(source)+i];
+          pixels[j]=(double) p[j*(ssize_t) GetPixelChannels(source)+i];
         sum=0.0;
         if ((traits & BlendPixelTrait) == 0)
           {
@@ -5050,7 +5050,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
         for (j=0; j < (ssize_t) count; j++)
         {
           alpha[j]=QuantumScale*(double) GetPixelAlpha(source,p+j*
-            GetPixelChannels(source));
+            (ssize_t) GetPixelChannels(source));
           pixels[j]*=alpha[j];
           gamma=PerceptibleReciprocal(alpha[j]);
           sum+=gamma*pixels[j];
@@ -5087,9 +5087,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
         epsilon.x=1.0-delta.x;
         epsilon.y=1.0-delta.y;
         pixels[0]=(double) p[i];
-        pixels[1]=(double) p[GetPixelChannels(source)+i];
-        pixels[2]=(double) p[2*GetPixelChannels(source)+i];
-        pixels[3]=(double) p[3*GetPixelChannels(source)+i];
+        pixels[1]=(double) p[(ssize_t) GetPixelChannels(source)+i];
+        pixels[2]=(double) p[2*(ssize_t) GetPixelChannels(source)+i];
+        pixels[3]=(double) p[3*(ssize_t) GetPixelChannels(source)+i];
         if ((traits & BlendPixelTrait) == 0)
           {
             gamma=((epsilon.y*(epsilon.x+delta.x)+delta.y*(epsilon.x+delta.x)));
@@ -5143,14 +5143,14 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
           for (j=0; j < 4; j++)
           {
             alpha[j]=1.0;
-            pixels[j]=(double) p[j*GetPixelChannels(source)+i];
+            pixels[j]=(double) p[j*(ssize_t) GetPixelChannels(source)+i];
           }
         else
           for (j=0; j < 4; j++)
           {
             alpha[j]=QuantumScale*(double) GetPixelAlpha(source,p+j*
-              GetPixelChannels(source));
-            pixels[j]=(double) p[j*GetPixelChannels(source)+i];
+              (ssize_t) GetPixelChannels(source));
+            pixels[j]=(double) p[j*(ssize_t) GetPixelChannels(source)+i];
             if (channel != AlphaPixelChannel)
               pixels[j]*=alpha[j];
           }
@@ -5220,14 +5220,15 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
           for (j=0; j < 16; j++)
           {
             alpha[j]=1.0;
-            pixels[j]=(double) p[j*GetPixelChannels(source)+i];
+            pixels[j]=(double) p[j*(ssize_t) GetPixelChannels(source)+i];
           }
         else
           for (j=0; j < 16; j++)
           {
             alpha[j]=QuantumScale*(double) GetPixelAlpha(source,p+j*
-              GetPixelChannels(source));
-            pixels[j]=alpha[j]*(double) p[j*GetPixelChannels(source)+i];
+              (ssize_t) GetPixelChannels(source));
+            pixels[j]=alpha[j]*(double)
+              p[j*(ssize_t) GetPixelChannels(source)+i];
           }
         CatromWeights((double) (x-x_offset),&cx);
         CatromWeights((double) (y-y_offset),&cy);
@@ -5312,9 +5313,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
             (destination_traits == UndefinedPixelTrait))
           continue;
         pixels[0]=(double) p[i];
-        pixels[1]=(double) p[GetPixelChannels(source)+i];
-        pixels[2]=(double) p[2*GetPixelChannels(source)+i];
-        pixels[3]=(double) p[3*GetPixelChannels(source)+i];
+        pixels[1]=(double) p[(ssize_t) GetPixelChannels(source)+i];
+        pixels[2]=(double) p[2*(ssize_t) GetPixelChannels(source)+i];
+        pixels[3]=(double) p[3*(ssize_t) GetPixelChannels(source)+i];
         if ((traits & BlendPixelTrait) == 0)
           {
             alpha[0]=1.0;
@@ -5427,14 +5428,15 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
           for (j=0; j < 16; j++)
           {
             alpha[j]=1.0;
-            pixels[j]=(double) p[j*GetPixelChannels(source)+i];
+            pixels[j]=(double) p[j*(ssize_t) GetPixelChannels(source)+i];
           }
         else
           for (j=0; j < 16; j++)
           {
             alpha[j]=QuantumScale*(double) GetPixelAlpha(source,p+j*
-              GetPixelChannels(source));
-            pixels[j]=alpha[j]*(double) p[j*GetPixelChannels(source)+i];
+              (ssize_t) GetPixelChannels(source));
+            pixels[j]=alpha[j]*(double) p[j*(ssize_t) GetPixelChannels(source)+
+              i];
           }
         SplineWeights((double) (x-x_offset),&cx);
         SplineWeights((double) (y-y_offset),&cy);
@@ -5628,7 +5630,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       for (i=0; i < 4L; i++)
-        AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
+        AlphaBlendPixelInfo(image,p+i*(ssize_t) GetPixelChannels(image),
+          pixels+i,alpha+i);
       delta.x=x-x_offset;
       delta.y=y-y_offset;
       epsilon.x=1.0-delta.x;
@@ -5665,8 +5668,9 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         }
       for (i=0; i < 4L; i++)
       {
-        GetPixelInfoPixel(image,p+i*GetPixelChannels(image),pixels+i);
-        AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
+        GetPixelInfoPixel(image,p+i*(ssize_t) GetPixelChannels(image),pixels+i);
+        AlphaBlendPixelInfo(image,p+i*(ssize_t) GetPixelChannels(image),
+          pixels+i,alpha+i);
       }
       gamma=1.0;  /* number of pixels blended together (its variable) */
       for (i=0; i <= 1L; i++)
@@ -5727,7 +5731,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       for (i=0; i < 16L; i++)
-        AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
+        AlphaBlendPixelInfo(image,p+i*(ssize_t) GetPixelChannels(image),
+          pixels+i,alpha+i);
       CatromWeights((double) (x-x_offset),&cx);
       CatromWeights((double) (y-y_offset),&cy);
       pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*pixels[1].red+cx[2]*
@@ -5923,7 +5928,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           break;
         }
       for (i=0; i < 16L; i++)
-        AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
+        AlphaBlendPixelInfo(image,p+i*(ssize_t) GetPixelChannels(image),
+          pixels+i,alpha+i);
       SplineWeights((double) (x-x_offset),&cx);
       SplineWeights((double) (y-y_offset),&cy);
       pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*pixels[1].red+cx[2]*
@@ -6492,9 +6498,10 @@ MagickExport MagickBooleanType SortImagePixels(Image *image,
         j;
 
       previous=GetPixelIntensity(image,q);
-      for (j=0; j < (ssize_t) (image->columns-x-1); j++)
+      for (j=0; j < ((ssize_t) image->columns-x-1); j++)
       {
-        current=GetPixelIntensity(image,q+(j+1)*GetPixelChannels(image));
+        current=GetPixelIntensity(image,q+(j+1)*(ssize_t)
+          GetPixelChannels(image));
         if (previous > current)
           {
             Quantum
@@ -6503,11 +6510,12 @@ MagickExport MagickBooleanType SortImagePixels(Image *image,
             /*
               Swap adjacent pixels.
             */
-            (void) memcpy(pixel,q+j*GetPixelChannels(image),
+            (void) memcpy(pixel,q+j*(ssize_t) GetPixelChannels(image),
               GetPixelChannels(image)*sizeof(Quantum));
-            (void) memcpy(q+j*GetPixelChannels(image),q+(j+1)*
-              GetPixelChannels(image),GetPixelChannels(image)*sizeof(Quantum));
-            (void) memcpy(q+(j+1)*GetPixelChannels(image),pixel,
+            (void) memcpy(q+j*(ssize_t) GetPixelChannels(image),q+(j+1)*
+              (ssize_t) GetPixelChannels(image),GetPixelChannels(image)*
+              sizeof(Quantum));
+            (void) memcpy(q+(j+1)*(ssize_t) GetPixelChannels(image),pixel,
               GetPixelChannels(image)*sizeof(Quantum));
           }
         else
