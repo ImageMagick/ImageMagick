@@ -1014,7 +1014,29 @@ WandExport void MagickWandGenesis(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickWandTerminus() terminates the MagickWand environment.
+%  MagickWandTerminus() is a function in the ImageMagick library that is
+%  used to clean up and release resources when shutting down an application
+%  that uses ImageMagick. This function should be called in the primary thread
+%  of the application's process during the shutdown process. It's crucial that
+%  this function is invoked only after any threads that are using ImageMagick
+%  functions have terminated.
+%
+%  ImageMagick might internally use threads via OpenMP (a method for parallel
+%  programming). As a result, it's important to ensure that any function calls
+%  into ImageMagick have completed before calling MagickWandTerminus(). This
+%  prevents issues with OpenMP worker threads accessing resources that are
+%  destroyed by this termination function.
+%
+%  If OpenMP is being used (starting from version 5.0), the OpenMP
+%  implementation itself handles starting and stopping worker threads and
+%  allocating and freeing resources using its own methods. This means that
+%  after calling MagickWandTerminus(), some OpenMP resources and worker
+%  threads might still remain allocated. To address this, the function
+%  omp_pause_resource_all(omp_pause_hard) can be invoked. This function,
+%  introduced in OpenMP version 5.0, ensures that any resources allocated by
+%  OpenMP (such as threads and thread-specific memory) are freed. It's
+%  recommended to call this function after MagickWandTerminus() has completed
+%  its execution.
 %
 %  The format of the MagickWandTerminus method is:
 %
