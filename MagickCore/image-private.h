@@ -51,7 +51,7 @@ extern "C" {
 #define MagickSQ2PI  2.50662827463100024161235523934010416269302368164062
 #define MAGICK_SIZE_MAX  (SIZE_MAX)
 #define MAGICK_SSIZE_MAX  (SSIZE_MAX)
-#define MAGICK_SSIZE_MIN  (-(SSIZE_MAX)-1)
+#define MAGICK_SSIZE_MIN  (-SSIZE_MAX-1)
 #define MatteColor  "#bdbdbd"  /* gray */
 #define MatteColorRGBA  ScaleShortToQuantum(0xbdbd),\
   ScaleShortToQuantum(0xbdbd),ScaleShortToQuantum(0xbdbd),OpaqueAlpha
