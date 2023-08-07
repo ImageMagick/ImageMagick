@@ -890,8 +890,8 @@ void Magick::reduceNoiseImage::operator()( Image &image_ ) const
 // Roll image (rolls image vertically and horizontally) by specified
 // number of columns and rows)
 Magick::rollImage::rollImage( const Magick::Geometry &roll_ )
-  : _columns( roll_.width() ),
-    _rows( roll_.height() )
+  : _columns( static_cast<ssize_t>(roll_.width()) ),
+    _rows( static_cast<ssize_t>(roll_.height()) )
 {
 }
 Magick::rollImage::rollImage( const ssize_t columns_,
@@ -902,7 +902,7 @@ Magick::rollImage::rollImage( const ssize_t columns_,
 }
 void Magick::rollImage::operator()( Magick::Image &image_ ) const
 {
-  image_.roll( _columns, _rows );
+  image_.roll( (ssize_t) _columns, (ssize_t) _rows );
 }
 
 // Rotate image counter-clockwise by specified number of degrees.

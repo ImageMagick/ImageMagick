@@ -1272,6 +1272,7 @@ namespace Magick
     // number of columns and rows)
     void roll(const Geometry &roll_);
     void roll(const size_t columns_,const size_t rows_);
+    void roll(const ssize_t columns_,const ssize_t rows_);
 
     // Rotate image clockwise by specified number of degrees. Specify a
     // negative number for degrees to rotate counter-clockwise.

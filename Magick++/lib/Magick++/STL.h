@@ -940,8 +940,8 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-    size_t _columns;
-    size_t _rows;
+    ssize_t _columns;
+    ssize_t _rows;
   };
 
   // Rotate image counter-clockwise by specified number of degrees.

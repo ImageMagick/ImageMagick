@@ -4222,6 +4222,17 @@ void Magick::Image::roll(const size_t columns_,const size_t rows_)
   ThrowImageException;
 }
 
+void Magick::Image::roll(const ssize_t columns_,const ssize_t rows_)
+{
+  MagickCore::Image
+    *newImage;
+
+  GetPPException;
+  newImage=RollImage(constImage(),columns_, rows_,exceptionInfo);
+  replaceImage(newImage);
+  ThrowImageException;
+}
+
 void Magick::Image::rotate(const double degrees_)
 {
   MagickCore::Image
