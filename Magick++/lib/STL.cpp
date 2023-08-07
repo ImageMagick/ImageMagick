@@ -902,7 +902,7 @@ Magick::rollImage::rollImage( const ssize_t columns_,
 }
 void Magick::rollImage::operator()( Magick::Image &image_ ) const
 {
-  image_.roll( (ssize_t) _columns, (ssize_t) _rows );
+  image_.roll( _columns, _rows );
 }
 
 // Rotate image counter-clockwise by specified number of degrees.
