@@ -1092,11 +1092,12 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
       }
   }
   /*
-     Optional header.
+     Optional footer.
   */
   WriteBlobLong(image,0);
   WriteBlobLong(image,0);
-  WriteBlobString(image,"TRUEVISION-XFILE.\0");
+  WriteBlobString(image,"TRUEVISION-XFILE.");
+  WriteBlobByte(image,0);
   (void) CloseBlob(image);
   return(MagickTrue);
 }
