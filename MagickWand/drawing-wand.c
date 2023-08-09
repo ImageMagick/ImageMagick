@@ -382,11 +382,9 @@ WandExport DrawingWand *AcquireDrawingWand(const DrawInfo *draw_info,
       CurrentContext=DestroyDrawInfo(CurrentContext);
       CurrentContext=CloneDrawInfo((ImageInfo *) NULL,draw_info);
     }
+  wand->image=DestroyImage(wand->image);
   if (image != (Image *) NULL)
-    {
-      wand->image=DestroyImage(wand->image);
-      wand->destroy=MagickFalse;
-    }
+    wand->destroy=MagickFalse;
   wand->image=image;
   return(wand);
 }
