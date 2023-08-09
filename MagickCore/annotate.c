@@ -612,18 +612,23 @@ static inline char *ReplaceSpaceWithNewline(char **caption,char *space)
         *target;
 
       size_t
-        length,
+        length;
+
+      ssize_t
         offset;
 
       length=strlen(*caption);
       *space='\n';
       offset=space-(*caption);
-      target=AcquireString(*caption);
-      CopyMagickString(target,*caption,offset+2);
-      ConcatenateMagickString(target,space+octets,length);
-      (void) DestroyString(*caption);
-      *caption=target;
-      space=(*caption)+offset;
+      if (offset >= 0)
+        {
+          target=AcquireString(*caption);
+          CopyMagickString(target,*caption,(size_t) offset+2);
+          ConcatenateMagickString(target,space+octets,length);
+          (void) DestroyString(*caption);
+          *caption=target;
+          space=(*caption)+offset;
+        }
     }
   return(space);
 }
@@ -693,7 +698,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
                 *target;
 
               target=AcquireString(*caption);
-              CopyMagickString(target,*caption,n+1);
+              CopyMagickString(target,*caption,(size_t) n+1);
               ConcatenateMagickString(target,"\n",strlen(*caption)+1);
               ConcatenateMagickString(target,p,strlen(*caption)+2);
               (void) DestroyString(*caption);
@@ -1218,10 +1223,10 @@ static size_t ComplexRaqmTextLayout(const Image *image,
   for (i=0; i < (ssize_t) extent; i++)
   {
     (*grapheme)[i].index=glyphs[i].index;
-    (*grapheme)[i].x_offset=glyphs[i].x_offset;
-    (*grapheme)[i].x_advance=glyphs[i].x_advance;
-    (*grapheme)[i].y_offset=glyphs[i].y_offset;
-    (*grapheme)[i].y_advance=glyphs[i].y_advance;
+    (*grapheme)[i].x_offset=(size_t) glyphs[i].x_offset;
+    (*grapheme)[i].x_advance=(size_t) glyphs[i].x_advance;
+    (*grapheme)[i].y_offset=(size_t) glyphs[i].y_offset;
+    (*grapheme)[i].y_advance=(size_t) glyphs[i].y_advance;
     (*grapheme)[i].cluster=glyphs[i].cluster;
   }
 
@@ -1402,19 +1407,23 @@ static inline const char *FreetypeErrorMessage(
 static void *FreetypeAlloc(FT_Memory magick_unused(memory),long size)
 {
   magick_unreferenced(memory);
+  if (size < 0)
+    return((void *) NULL);
   if ((size_t) size > GetMaxMemoryRequest())
     return((void *) NULL);
-  return(AcquireMagickMemory(size));
+  return(AcquireMagickMemory((size_t) size));
 }
 
 static void *FreetypeRealloc(FT_Memory magick_unused(memory),
-  long magick_unused(cur_size),long new_size,void *block)
+  long magick_unused(cur_size),long size,void *block)
 {
   magick_unreferenced(memory);
   magick_unreferenced(cur_size);
-  if ((size_t) new_size > GetMaxMemoryRequest())
+  if (size < 0)
     return((void *) NULL);
-  return(ResizeMagickMemory(block,new_size));
+  if ((size_t) size > GetMaxMemoryRequest())
+    return((void *) NULL);
+  return(ResizeMagickMemory(block,(size_t) size));
 }
 
 static void FreetypeFree(FT_Memory magick_unused(memory),void *block)
@@ -1629,7 +1638,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   stream=(FT_StreamRec *) AcquireCriticalMemory(sizeof(*stream));
   (void) memset(stream,0,sizeof(*stream));
   (void) stat(args.pathname,&attributes);
-  stream->size=attributes.st_size;
+  stream->size=attributes.st_size >= 0 ? (size_t) attributes.st_size : 0;
   stream->descriptor.pointer=fopen_utf8(args.pathname,"rb");
   stream->read=(&FreetypeReadStream);
   stream->close=(&FreetypeCloseStream);
