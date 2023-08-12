@@ -555,8 +555,8 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       "GeometryDoesNotContainImage","`%s'",image->filename);
   else
     {
-      bounds.width-=(bounds.x-1);
-      bounds.height-=(bounds.y-1);
+      bounds.width-=(size_t) (bounds.x-1);
+      bounds.height-=(size_t) (bounds.y-1);
     }
   return(bounds);
 }
@@ -1217,11 +1217,11 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     *bounding_box,
     *vertices;
 
-  ssize_t
-    i;
-
   size_t
     number_hull_vertices;
+
+  ssize_t
+    i;
 
   /*
     Generate the minimum bounding box with the "Rotating Calipers" algorithm.
@@ -1269,12 +1269,12 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
     for (j=0; j < (ssize_t) number_hull_vertices; j++)
     {
       diameter=fabs(getFeretDiameter(&vertices[i],
-        &vertices[(i+1) % number_hull_vertices],&vertices[j]));
+        &vertices[(i+1) % (ssize_t) number_hull_vertices],&vertices[j]));
       if (min_diameter < diameter)
         {
           min_diameter=diameter;
           p=i;
-          q=(i+1) % number_hull_vertices;
+          q=(i+1) % (ssize_t) number_hull_vertices;
           v=j;
         }
     }

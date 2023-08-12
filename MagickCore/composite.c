@@ -1286,7 +1286,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
       y_offset
     };
 
-  ssize_t
+  size_t
     i;
 
   /*
@@ -1338,7 +1338,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   verbose=IsStringTrue(GetImageArtifact(image,"verbose"));
   if (verbose != MagickFalse)
     (void) FormatLocaleFile(stderr,"saliency blending:\n");
-  for (i=0; i < (ssize_t) iterations; i++)
+  for (i=0; i < iterations; i++)
   {
     double
       residual = 1.0;
@@ -1418,7 +1418,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
       y_offset
     };
 
-  ssize_t
+  size_t
     i;
 
   /*
@@ -1471,7 +1471,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   verbose=IsStringTrue(GetImageArtifact(image,"verbose"));
   if (verbose != MagickFalse)
     (void) FormatLocaleFile(stderr,"seamless blending:\n");
-  for (i=0; i < (ssize_t) iterations; i++)
+  for (i=0; i < iterations; i++)
   {
     double
       residual = 1.0;
@@ -3773,7 +3773,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
     if (status == MagickFalse)
       continue;
     pixels=GetCacheViewVirtualPixels(texture_view,texture_image->tile_offset.x,
-      (y+texture_image->tile_offset.y) % texture_image->rows,
+      (y+texture_image->tile_offset.y) % (ssize_t) texture_image->rows,
       texture_image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if ((pixels == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -3789,7 +3789,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
       p=pixels;
       width=texture_image->columns;
       if ((x+(ssize_t) width) > (ssize_t) image->columns)
-        width=image->columns-x;
+        width=image->columns-(size_t) x;
       for (j=0; j < (ssize_t) width; j++)
       {
         ssize_t

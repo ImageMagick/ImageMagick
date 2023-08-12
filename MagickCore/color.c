@@ -2347,13 +2347,13 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               c=(*name++);
               pixel.blue<<=4;
               if ((c >= '0') && (c <= '9'))
-                pixel.blue|=(int) (c-'0');
+                pixel.blue|=(unsigned int) (c-'0');
               else
                 if ((c >= 'A') && (c <= 'F'))
-                  pixel.blue|=(int) c-((int) 'A'-10);
+                  pixel.blue|=(unsigned int) (c-('A'-10));
                 else
                   if ((c >= 'a') && (c <= 'f'))
-                    pixel.blue|=(int) c-((int) 'a'-10);
+                    pixel.blue|=(unsigned int) (c-('a'-10));
                   else
                     return(MagickFalse);
             }
@@ -2379,13 +2379,13 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               c=(*name++);
               pixel.alpha<<=4;
               if ((c >= '0') && (c <= '9'))
-                pixel.alpha|=(int) (c-'0');
+                pixel.alpha|=(unsigned int) (c-'0');
               else
                 if ((c >= 'A') && (c <= 'F'))
-                  pixel.alpha|=(int) c-((int) 'A'-10);
+                  pixel.alpha|=(unsigned int) c-('A'-10);
                 else
                   if ((c >= 'a') && (c <= 'f'))
-                    pixel.alpha|=(int) c-((int) 'a'-10);
+                    pixel.alpha|=(unsigned int) c-('a'-10);
                   else
                     return(MagickFalse);
             }

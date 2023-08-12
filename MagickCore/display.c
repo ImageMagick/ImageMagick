@@ -1670,7 +1670,7 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
   {
     if ((images->iterations != 0) && (i >= (ssize_t) images->iterations))
       break;
-    image=GetImageFromList(images,i % GetImageListLength(images));
+    image=GetImageFromList(images,(size_t) i % GetImageListLength(images));
     (void) XDisplayImage(display,&resource_info,argv,1,&image,&state,exception);
   }
   (void) SetErrorHandler((ErrorHandler) NULL);

@@ -504,10 +504,10 @@ static void ReversePoints(PointInfo *points,const size_t number_points)
   PointInfo
     point;
 
-  ssize_t
+  size_t
     i;
 
-  for (i=0; i < (ssize_t) (number_points >> 1); i++)
+  for (i=0; i < (number_points >> 1); i++)
   {
     point=points[i];
     points[i]=points[number_points-(i+1)];
@@ -850,12 +850,12 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info,
     q;
 
   ssize_t
-    i,
-    n;
-
-  ssize_t
-    coordinates,
+    n,
     start;
+
+  size_t
+    coordinates,
+    i;
 
   /*
     Converts a PrimitiveInfo structure into a vector path structure.
@@ -896,7 +896,7 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info,
         /*
           New subpath.
         */
-        coordinates=(ssize_t) primitive_info[i].coordinates;
+        coordinates=primitive_info[i].coordinates;
         p=primitive_info[i].point;
         start=n;
         code=MoveToCode;
@@ -1247,7 +1247,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(source,image,stop-start,1)
+    magick_number_threads(source,image,(size_t) (stop-start),1)
 #endif
   for (y=start; y <= stop; y++)
   {
@@ -2053,7 +2053,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,bounding_box.height-bounding_box.y,1)
+    magick_number_threads(image,image,(size_t) (bounding_box.height-bounding_box.y),1)
 #endif
   for (y=bounding_box.y; y < (ssize_t) bounding_box.height; y++)
   {
@@ -2292,7 +2292,8 @@ static MagickBooleanType CheckPrimitiveExtent(MVGInfo *mvg_info,
     return(MagickFalse);
   if (mvg_info->offset > 0)
     {
-      text=(char **) AcquireQuantumMemory(mvg_info->offset,sizeof(*text));
+      text=(char **) AcquireQuantumMemory((size_t) mvg_info->offset,
+        sizeof(*text));
       if (text == (char **) NULL)
         return(MagickFalse);
       for (i=0; i < mvg_info->offset; i++)
