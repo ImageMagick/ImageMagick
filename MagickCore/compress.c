@@ -233,13 +233,11 @@ static inline void Ascii85Tuple(Ascii85Info *ascii85_info,
 {
 #define MaxLineExtent  36L
 
-  ssize_t
-    i,
-    x;
-
   size_t
     code,
-    quantum;
+    i,
+    quantum,
+    x;
 
   code=((((size_t) data[0] << 8) | (size_t) data[1]) << 16) |
     ((size_t) data[2] << 8) | (size_t) data[3];
@@ -252,7 +250,7 @@ static inline void Ascii85Tuple(Ascii85Info *ascii85_info,
   quantum=85UL*85UL*85UL*85UL;
   for (i=0; i < 4; i++)
   {
-    x=(ssize_t) (code/quantum);
+    x=(code/quantum);
     code-=quantum*x;
     ascii85_info->tuple[i]=(char) (x+(int) '!');
     quantum/=85L;
@@ -408,7 +406,8 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
     **mw_hash;
 
   int
-    byte;
+    byte,
+    mask;
 
   MagickBooleanType
     proceed;
@@ -416,25 +415,20 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
   Quantum
     index;
 
-  ssize_t
-    i;
-
-  unsigned char
-    *p;
-
   size_t
     bit,
     code,
-    mask,
     length,
     null_lines,
     runlength;
 
   ssize_t
     count,
+    i,
     y;
 
   unsigned char
+    *p,
     *scanline;
 
   unsigned int
