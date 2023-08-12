@@ -333,6 +333,9 @@
 /* Define to 1 if you have a working `mmap' system call. */
 #undef HAVE_MMAP
 
+/* Define if you have the mtmalloc memory allocation library */
+#undef HAVE_MTMALLOC
+
 /* Define to 1 if you have the `munmap' function. */
 #undef HAVE_MUNMAP
 
@@ -790,6 +793,9 @@
 
 /* Define to prepend to default font search path. */
 #undef MAGICK_FONT_PATH
+
+/* Security Policy */
+#undef MAGICK_SECURITY_POLICY
 
 /* Target Host CPU */
 #undef MAGICK_TARGET_CPU

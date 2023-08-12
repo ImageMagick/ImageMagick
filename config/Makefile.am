@@ -56,13 +56,16 @@ CONFIG_EXTRA_DIST = \
   config/ImageMagick.rc \
   config/ImageMagick.rdf.in \
   config/install-sh \
+  config/limited-policy.xml \
   config/lndir.sh \
   config/locale.md \
   config/locale.xml \
   config/log.xml \
   config/mime.xml \
+  config/open-policy.xml \
   config/policy.xml \
   config/quantization-table.xml \
+  config/secure-policy.xml \
   config/sRGB.icm \
   config/thresholds.xml \
   config/type-apple.xml.in \
@@ -70,4 +73,5 @@ CONFIG_EXTRA_DIST = \
   config/type-ghostscript.xml.in \
   config/type-urw-base35.xml.in \
   config/type-windows.xml.in \
-  config/type.xml.in
+  config/type.xml.in \
+  config/websafe-policy.xml

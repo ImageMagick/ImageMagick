@@ -8,17 +8,20 @@
     stealth NMTOKEN #IMPLIED value CDATA #IMPLIED>
 ]>
 <!--
-  Open ImageMagick security policy:
+  Secure ImageMagick security policy:
 
-  The default policy for ImageMagick installations is the open security
-  policy. This policy is designed for usage in secure settings like those
-  protected by firewalls or within Docker containers. Within this framework,
-  ImageMagick enjoys broad access to resources and functionalities. This policy
-  provides convenient and adaptable options for image manipulation. However,
-  it's important to note that it might present security vulnerabilities in
-  less regulated conditions. Thus, organizations should thoroughly assess
-  the appropriateness of the open policy according to their particular use
-  case and security prerequisites.
+  This stringent security policy prioritizes the implementation of rigorous
+  controls and restricted resource utilization to establish a profoundly
+  secure setting while employing ImageMagick. It deactivates conceivably
+  hazardous functionalities, including specific coders like SVG or HTTP. The
+  policy promotes the tailoring of security measures to harmonize with
+  the requirements of the local environment and the guidelines of the
+  organization. This protocol encompasses explicit particulars like limitations
+  on memory consumption, sanctioned pathways for reading and writing, confines
+  on image sequences, the utmost permissible duration of workflows, allocation
+  of disk space intended for image data, and even an undisclosed passphrase
+  for remote connections. By adopting this robust policy, entities can elevate
+  their overall security stance and alleviate potential vulnerabilities.
 
   Configure ImageMagick policies:
 

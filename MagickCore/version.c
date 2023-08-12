@@ -638,6 +638,10 @@ MagickExport void ListMagickVersion(FILE *file)
     GetMagickVersion((size_t *) NULL));;
   (void) FormatLocaleFile(file,"Copyright: %s\n",GetMagickCopyright());
   (void) FormatLocaleFile(file,"License: %s\n",GetMagickLicense());
+#if defined(MAGICKCORE_MAGICK_SECURITY_POLICY)
+  (void) FormatLocaleFile(file,"Security policy: %s\n",
+    MAGICKCORE_MAGICK_SECURITY_POLICY);
+#endif
   (void) FormatLocaleFile(file,"Features: %s\n",GetMagickFeatures());
   (void) FormatLocaleFile(file,"Delegates (built-in): %s\n",
     GetMagickDelegates());

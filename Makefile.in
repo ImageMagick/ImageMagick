@@ -299,7 +299,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config/config.h
-CONFIG_CLEAN_FILES = common.shi config/configure.xml \
+CONFIG_CLEAN_FILES = common.shi config/policy.xml config/configure.xml \
 	config/delegates.xml config/ImageMagick.rdf \
 	config/MagickCore.dox config/MagickWand.dox \
 	config/Magick++.dox config/type-apple.xml \
@@ -3335,6 +3335,7 @@ MAGICK_MICRO_VERSION = @MAGICK_MICRO_VERSION@
 MAGICK_MINOR_VERSION = @MAGICK_MINOR_VERSION@
 MAGICK_PATCHLEVEL_VERSION = @MAGICK_PATCHLEVEL_VERSION@
 MAGICK_PCFLAGS = @MAGICK_PCFLAGS@
+MAGICK_SECURITY_POLICY = @MAGICK_SECURITY_POLICY@
 MAGICK_TARGET_CPU = @MAGICK_TARGET_CPU@
 MAGICK_TARGET_OS = @MAGICK_TARGET_OS@
 MAGICK_TARGET_VENDOR = @MAGICK_TARGET_VENDOR@
@@ -3350,6 +3351,7 @@ MODULES_DIRNAME = @MODULES_DIRNAME@
 MODULES_PATH = @MODULES_PATH@
 MODULES_RELATIVE_PATH = @MODULES_RELATIVE_PATH@
 MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
+MTMALLOC_LIBS = @MTMALLOC_LIBS@
 MVDelegate = @MVDelegate@
 MagickCache_CFLAGS = @MagickCache_CFLAGS@
 MagickCache_LIBS = @MagickCache_LIBS@
@@ -3705,13 +3707,16 @@ CONFIG_EXTRA_DIST = \
   config/ImageMagick.rc \
   config/ImageMagick.rdf.in \
   config/install-sh \
+  config/limited-policy.xml \
   config/lndir.sh \
   config/locale.md \
   config/locale.xml \
   config/log.xml \
   config/mime.xml \
+  config/open-policy.xml \
   config/policy.xml \
   config/quantization-table.xml \
+  config/secure-policy.xml \
   config/sRGB.icm \
   config/thresholds.xml \
   config/type-apple.xml.in \
@@ -3719,7 +3724,8 @@ CONFIG_EXTRA_DIST = \
   config/type-ghostscript.xml.in \
   config/type-urw-base35.xml.in \
   config/type-windows.xml.in \
-  config/type.xml.in
+  config/type.xml.in \
+  config/websafe-policy.xml
 
 
 # Where coder modules get installed
@@ -6287,6 +6293,8 @@ $(top_srcdir)/config/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 distclean-hdr:
 	-rm -f config/config.h config/stamp-h1
 common.shi: $(top_builddir)/config.status $(srcdir)/common.shi.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+config/policy.xml: $(top_builddir)/config.status 
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/configure.xml: $(top_builddir)/config.status $(top_srcdir)/config/configure.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
