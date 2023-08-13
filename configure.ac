@@ -4052,7 +4052,7 @@ fi
 # ==============================================================================
 AC_CONFIG_FILES([\
     common.shi \
-    config/policy.xml:config/"$MAGICK_SECURITY_POLICY"-policy.xml \
+    config/policy.xml:config/"$magick_cv_with_security_policy"-policy.xml \
     config/configure.xml \
     config/delegates.xml \
     config/ImageMagick.rdf \
