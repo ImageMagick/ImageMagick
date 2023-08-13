@@ -162,11 +162,12 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
 
   ssize_t
     count;
+
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-    count=recv(file,(char *) message+i,(LENGTH_TYPE) MagickMin(length-i,
-      (MagickSizeType) MAGICK_SSIZE_MAX),0);
+    count=recv(file,(char *) message+i,(LENGTH_TYPE) MagickMin(length-
+      (MagickSizeType) i,(MagickSizeType) MAGICK_SSIZE_MAX),0);
     if (count <= 0)
       {
         count=0;
@@ -181,7 +182,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
 #if defined(MAGICKCORE_HAVE_WINSOCK2)
 static void InitializeWinsock2(MagickBooleanType use_lock)
 {
-  if (use_lock)
+  if (use_lock != MagickFalse)
     {
       if (winsock2_semaphore == (SemaphoreInfo *) NULL)
         ActivateSemaphoreInfo(&winsock2_semaphore);
@@ -193,7 +194,7 @@ static void InitializeWinsock2(MagickBooleanType use_lock)
       if (WSAStartup(MAKEWORD(2,2),wsaData) != 0)
         ThrowFatalException(CacheFatalError,"WSAStartup failed");
     }
-  if (use_lock)
+  if (use_lock != MagickFalse)
     UnlockSemaphoreInfo(winsock2_semaphore);
 }
 #endif
@@ -337,7 +338,7 @@ static char *GetHostname(int *port,ExceptionInfo *exception)
       *port=DPCPort;
       return(AcquireString(DPCHostname));
     }
-  hosts=AcquireString(hostlist[(id++ % (argc-1))+1]);
+  hosts=AcquireString(hostlist[(id++ % ((size_t) argc-1))+1]);
   for (i=0; i < (ssize_t) argc; i++)
     hostlist[i]=DestroyString(hostlist[i]);
   hostlist=(char **) RelinquishMagickMemory(hostlist);
@@ -475,8 +476,10 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   const void *magick_restrict message)
 {
   MagickOffsetType
-    count,
     i;
+
+  ssize_t
+    count;
 
   /*
     Ensure a complete message is sent.
@@ -485,7 +488,8 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
     count=(MagickOffsetType) send(file,(char *) message+i,(LENGTH_TYPE)
-      MagickMin(length-i,(MagickSizeType) MAGICK_SSIZE_MAX),MSG_NOSIGNAL);
+      MagickMin(length-(MagickSizeType) i,(MagickSizeType) MAGICK_SSIZE_MAX),
+      MSG_NOSIGNAL);
     if (count <= 0)
       {
         count=0;
@@ -1238,7 +1242,7 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
   p+=MaxPixelChannels*sizeof(*image->channel_map);
   (void) memcpy(p,&image->metacontent_extent,sizeof(image->metacontent_extent));
   p+=sizeof(image->metacontent_extent);
-  count=dpc_send(server_info->file,p-message,message);
+  count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(MagickFalse);
   status=MagickFalse;
@@ -1315,7 +1319,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=dpc_send(server_info->file,p-message,message);
+  count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
   return(dpc_read(server_info->file,length,metacontent));
@@ -1388,7 +1392,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=dpc_send(server_info->file,p-message,message);
+  count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
   return(dpc_read(server_info->file,length,pixels));
@@ -1440,7 +1444,7 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
   *p++='d';
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
   p+=sizeof(server_info->session_key);
-  count=dpc_send(server_info->file,p-message,message);
+  count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(MagickFalse);
   status=MagickFalse;
@@ -1517,7 +1521,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=dpc_send(server_info->file,p-message,message);
+  count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
   return(dpc_send(server_info->file,length,metacontent));
@@ -1591,7 +1595,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=dpc_send(server_info->file,p-message,message);
+  count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
   return(dpc_send(server_info->file,length,pixels));

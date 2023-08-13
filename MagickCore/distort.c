@@ -2245,7 +2245,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
         {
           if ((i != 0) && (i%4 == 0))
             (void) FormatLocaleFile(stderr,"\n         ");
-          (void) FormatLocaleFile(stderr," %+lf%s",coeff[2+i+nterms],
+          (void) FormatLocaleFile(stderr," %+lf%s",coeff[2+i+(int) nterms],
             poly_basis_str(i));
         }
         (void) FormatLocaleFile(stderr,";\n       %s' \\\n", lookup);

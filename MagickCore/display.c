@@ -3684,9 +3684,9 @@ static MagickBooleanType XColorEditImage(Display *display,
         if (windows->image.crop_geometry != (char *) NULL)
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
-        x_offset=(int) (width*(windows->image.x+x_offset)/(int)
+        x_offset=((int) width*(windows->image.x+x_offset)/(int)
           windows->image.ximage->width+x);
-        y_offset=(int) (height*(windows->image.y+y_offset)/(int)
+        y_offset=((int) height*(windows->image.y+y_offset)/(int)
           windows->image.ximage->height+y);
         if ((x_offset < 0) || (y_offset < 0))
           continue;
@@ -3828,7 +3828,7 @@ static MagickBooleanType XColorEditImage(Display *display,
           }
         }
         image_view=DestroyCacheView(image_view);
-        state&=(~UpdateConfigurationState);
+        state&=(~0x0080U);
       }
   } while ((state & ExitState) == 0);
   (void) XSelectInput(display,windows->image.id,
@@ -4199,14 +4199,14 @@ static MagickBooleanType XCompositeImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped != MagickFalse)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (windows->info.x+(int) windows->info.width)) &&
+                (y < (windows->info.y+(int) windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
         else
-          if ((x > (int) (windows->info.x+windows->info.width)) ||
-              (y > (int) (windows->info.y+windows->info.height)))
+          if ((x > (windows->info.x+(int) windows->info.width)) ||
+              (y > (windows->info.y+(int) windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
         composite_info.x=(ssize_t) windows->image.x+x;
         composite_info.y=(ssize_t) windows->image.y+y;
@@ -4413,9 +4413,9 @@ static MagickBooleanType XConfigureImage(Display *display,
     width*windows->magnify.x/windows->image.ximage->width;
   windows->magnify.y=(int)
     height*windows->magnify.y/windows->image.ximage->height;
-  windows->image.x=(int) (width*windows->image.x/windows->image.ximage->width);
-  windows->image.y=(int)
-    (height*windows->image.y/windows->image.ximage->height);
+  windows->image.x=((int) width*windows->image.x/windows->image.ximage->width);
+  windows->image.y=((int) height*windows->image.y/
+    windows->image.ximage->height);
   status=XMakeImage(display,resource_info,&windows->image,image,
     (unsigned int) width,(unsigned int) height,exception);
   if (status == MagickFalse)
@@ -4442,10 +4442,10 @@ static MagickBooleanType XConfigureImage(Display *display,
   if (resource_info->backdrop)
     {
       mask|=CWX | CWY;
-      window_changes.x=(int)
-        ((XDisplayWidth(display,windows->image.screen)/2)-(width/2));
-      window_changes.y=(int)
-        ((XDisplayHeight(display,windows->image.screen)/2)-(height/2));
+      window_changes.x=((XDisplayWidth(display,windows->image.screen)/2)-
+        ((int) width/2));
+      window_changes.y=((XDisplayHeight(display,windows->image.screen)/2)-
+        ((int) height/2));
     }
   (void) XReconfigureWMWindow(display,windows->image.id,windows->image.screen,
     (unsigned int) mask,&window_changes);
@@ -4801,14 +4801,14 @@ static MagickBooleanType XCropImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped != MagickFalse)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (windows->info.x+(int) windows->info.width)) &&
+                (y < (windows->info.y+(int) windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
         else
-          if ((x > (int) (windows->info.x+windows->info.width)) ||
-              (y > (int) (windows->info.y+windows->info.height)))
+          if ((x > (windows->info.x+(int) windows->info.width)) ||
+              (y > (windows->info.y+(int) windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
         crop_info.x=(ssize_t) windows->image.x+x;
         crop_info.y=(ssize_t) windows->image.y+y;
@@ -5041,33 +5041,33 @@ static MagickBooleanType XCropImage(Display *display,
               (y < (int) (crop_info.y+RoiDelta)) &&
               (y > (int) (crop_info.y-RoiDelta)))
             {
-              crop_info.x=(ssize_t) (crop_info.x+crop_info.width);
-              crop_info.y=(ssize_t) (crop_info.y+crop_info.height);
+              crop_info.x=crop_info.x+(ssize_t) crop_info.width;
+              crop_info.y=crop_info.y+(ssize_t) crop_info.height;
               state|=UpdateConfigurationState;
               break;
             }
           if ((x < (int) (crop_info.x+RoiDelta)) &&
               (x > (int) (crop_info.x-RoiDelta)) &&
-              (y < (int) (crop_info.y+crop_info.height+RoiDelta)) &&
-              (y > (int) (crop_info.y+crop_info.height-RoiDelta)))
+              (y < (crop_info.y+(int) crop_info.height+RoiDelta)) &&
+              (y > (crop_info.y+(int) crop_info.height-RoiDelta)))
             {
-              crop_info.x=(ssize_t) (crop_info.x+crop_info.width);
+              crop_info.x=(crop_info.x+(int) crop_info.width);
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (int) (crop_info.x+crop_info.width+RoiDelta)) &&
-              (x > (int) (crop_info.x+crop_info.width-RoiDelta)) &&
+          if ((x < (crop_info.x+(int) crop_info.width+RoiDelta)) &&
+              (x > (crop_info.x+(int) crop_info.width-RoiDelta)) &&
               (y < (int) (crop_info.y+RoiDelta)) &&
               (y > (int) (crop_info.y-RoiDelta)))
             {
-              crop_info.y=(ssize_t) (crop_info.y+crop_info.height);
+              crop_info.y=(crop_info.y+(ssize_t) crop_info.height);
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (int) (crop_info.x+crop_info.width+RoiDelta)) &&
-              (x > (int) (crop_info.x+crop_info.width-RoiDelta)) &&
-              (y < (int) (crop_info.y+crop_info.height+RoiDelta)) &&
-              (y > (int) (crop_info.y+crop_info.height-RoiDelta)))
+          if ((x < (crop_info.x+(int) crop_info.width+RoiDelta)) &&
+              (x > (crop_info.x+(int) crop_info.width-RoiDelta)) &&
+              (y < (crop_info.y+(int) crop_info.height+RoiDelta)) &&
+              (y > (crop_info.y+(int) crop_info.height-RoiDelta)))
             {
               state|=UpdateConfigurationState;
               break;
@@ -5211,14 +5211,14 @@ static MagickBooleanType XCropImage(Display *display,
           y=event.xmotion.y;
           if (windows->info.mapped != MagickFalse)
             {
-              if ((x < (int) (windows->info.x+windows->info.width)) &&
-                  (y < (int) (windows->info.y+windows->info.height)))
+              if ((x < (windows->info.x+(int) windows->info.width)) &&
+                  (y < (windows->info.y+(int) windows->info.height)))
                 (void) XWithdrawWindow(display,windows->info.id,
                   windows->info.screen);
             }
           else
-            if ((x > (int) (windows->info.x+windows->info.width)) ||
-                (y > (int) (windows->info.y+windows->info.height)))
+            if ((x > (windows->info.x+(int) windows->info.width)) ||
+                (y > (windows->info.y+(int) windows->info.height)))
               (void) XMapWindow(display,windows->info.id);
           crop_info.x=(ssize_t) windows->image.x+event.xmotion.x;
           crop_info.y=(ssize_t) windows->image.y+event.xmotion.y;
@@ -5868,14 +5868,14 @@ static MagickBooleanType XDrawEditImage(Display *display,
           y=event.xmotion.y;
           if (windows->info.mapped != MagickFalse)
             {
-              if ((x < (int) (windows->info.x+windows->info.width)) &&
-                  (y < (int) (windows->info.y+windows->info.height)))
+              if ((x < (windows->info.x+(int) windows->info.width)) &&
+                  (y < (windows->info.y+(int) windows->info.height)))
                 (void) XWithdrawWindow(display,windows->info.id,
                   windows->info.screen);
             }
           else
-            if ((x > (int) (windows->info.x+windows->info.width)) ||
-                (y > (int) (windows->info.y+windows->info.height)))
+            if ((x > (windows->info.x+(int) windows->info.width)) ||
+                (y > (windows->info.y+(int) windows->info.height)))
               (void) XMapWindow(display,windows->info.id);
           break;
         }
@@ -6234,11 +6234,11 @@ static MagickBooleanType XDrawEditImage(Display *display,
     y=0;
     if (windows->image.crop_geometry != (char *) NULL)
       (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-    draw_info.x+=windows->image.x-(line_width/2);
+    draw_info.x+=windows->image.x-((int) line_width/2);
     if (draw_info.x < 0)
       draw_info.x=0;
-    draw_info.x=(int) (width*draw_info.x/windows->image.ximage->width);
-    draw_info.y+=windows->image.y-(line_width/2);
+    draw_info.x=(int) width*draw_info.x/windows->image.ximage->width;
+    draw_info.y+=windows->image.y-((int) line_width/2);
     if (draw_info.y < 0)
       draw_info.y=0;
     draw_info.y=(int) height*draw_info.y/windows->image.ximage->height;
@@ -6249,8 +6249,8 @@ static MagickBooleanType XDrawEditImage(Display *display,
     if (draw_info.height > (unsigned int) (*image)->rows)
       draw_info.height=(unsigned int) (*image)->rows;
     (void) FormatLocaleString(draw_info.geometry,MagickPathExtent,"%ux%u%+d%+d",
-      width*draw_info.width/windows->image.ximage->width,
-      height*draw_info.height/windows->image.ximage->height,
+      width*draw_info.width/(unsigned int) windows->image.ximage->width,
+      height*draw_info.height/(unsigned int) windows->image.ximage->height,
       draw_info.x+x,draw_info.y+y);
     /*
       Initialize drawing attributes.
@@ -6264,8 +6264,10 @@ static MagickBooleanType XDrawEditImage(Display *display,
       draw_info.line_info.x1=(short) line_width/2;
     if (line_info.y1 > (int) (line_width/2))
       draw_info.line_info.y1=(short) line_width/2;
-    draw_info.line_info.x2=(short) (line_info.x2-line_info.x1+(line_width/2));
-    draw_info.line_info.y2=(short) (line_info.y2-line_info.y1+(line_width/2));
+    draw_info.line_info.x2=(short) (line_info.x2-line_info.x1+
+      ((int) line_width/2));
+    draw_info.line_info.y2=(short) (line_info.y2-line_info.y1+
+      ((int) line_width/2));
     if ((draw_info.line_info.x2 < 0) && (draw_info.line_info.y2 < 0))
       {
         draw_info.line_info.x2=(-draw_info.line_info.x2);
@@ -6528,10 +6530,10 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       Image
         *previous_image;
 
-      ssize_t
+      size_t
         bytes;
 
-      bytes=(ssize_t) ((*image)->columns*(*image)->rows*sizeof(PixelInfo));
+      bytes=(*image)->columns*(*image)->rows*sizeof(PixelInfo);
       if (undo_image != (Image *) NULL)
         {
           /*
@@ -6993,33 +6995,31 @@ static CommandType XImageWindowCommand(Display *display,
             {
               if (resource_info->quantum >= (int) crop_info.height)
                 resource_info->quantum=(int) crop_info.height-1;
-              crop_info.height-=resource_info->quantum;
+              crop_info.height-=(size_t) resource_info->quantum;
             }
           if ((key_symbol == XK_Down) || (key_symbol == XK_KP_Down))
             {
-              if (resource_info->quantum >= (int) (crop_info.height-crop_info.y))
-                resource_info->quantum=(int) (crop_info.height-crop_info.y-1);
+              if (resource_info->quantum >= ((int) crop_info.height-crop_info.y))
+                resource_info->quantum=(int) crop_info.height-crop_info.y-1;
               crop_info.y+=resource_info->quantum;
-              crop_info.height-=resource_info->quantum;
+              crop_info.height-=(size_t) resource_info->quantum;
             }
           if ((key_symbol == XK_Left) || (key_symbol == XK_KP_Left))
             {
               if (resource_info->quantum >= (int) crop_info.width)
                 resource_info->quantum=(int) crop_info.width-1;
-              crop_info.width-=resource_info->quantum;
+              crop_info.width-=(size_t) resource_info->quantum;
             }
           if ((key_symbol == XK_Right) || (key_symbol == XK_KP_Right))
             {
-              if (resource_info->quantum >= (int) (crop_info.width-crop_info.x))
-                resource_info->quantum=(int) (crop_info.width-crop_info.x-1);
+              if (resource_info->quantum >= ((int) crop_info.width-crop_info.x))
+                resource_info->quantum=(int) crop_info.width-crop_info.x-1;
               crop_info.x+=resource_info->quantum;
-              crop_info.width-=resource_info->quantum;
+              crop_info.width-=(size_t) resource_info->quantum;
             }
-          if ((int) (windows->image.x+windows->image.width) >
-              (int) crop_info.width)
+          if ((windows->image.x+(int) windows->image.width) > (int) crop_info.width)
             windows->image.x=(int) (crop_info.width-windows->image.width);
-          if ((int) (windows->image.y+windows->image.height) >
-              (int) crop_info.height)
+          if ((windows->image.y+(int) windows->image.height) > (int) crop_info.height)
             windows->image.y=(int) (crop_info.height-windows->image.height);
           XSetCropGeometry(display,windows,&crop_info,*image);
           windows->image.window_changes.width=(int) crop_info.width;
@@ -7228,7 +7228,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (*filename == '\0')
         break;
       status=ShredFile(filename);
-      status|=remove_utf8(filename);
+      if (remove_utf8(filename) < 0)
+        status=MagickTrue;
       if (status != MagickFalse)
         XNoticeWidget(display,windows,"Unable to delete image file:",filename);
       break;
@@ -9343,13 +9344,13 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event,
     */
     if (windows->info.mapped != MagickFalse)
       {
-        if ((x < (int) (windows->info.x+windows->info.width)) &&
-            (y < (int) (windows->info.y+windows->info.height)))
+        if ((x < (windows->info.x+(int) windows->info.width)) &&
+            (y < (windows->info.y+(int) windows->info.height)))
           (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       }
     else
-      if ((x > (int) (windows->info.x+windows->info.width)) ||
-          (y > (int) (windows->info.y+windows->info.height)))
+      if ((x > (windows->info.x+(int) windows->info.width)) ||
+          (y > (windows->info.y+(int) windows->info.height)))
         (void) XMapWindow(display,windows->info.id);
     if (windows->info.mapped != MagickFalse)
       {
@@ -9475,28 +9476,28 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
     case XK_KP_Left:
     {
       if (windows->magnify.x > 0)
-        windows->magnify.x-=quantum;
+        windows->magnify.x-=(int) quantum;
       break;
     }
     case XK_Up:
     case XK_KP_Up:
     {
       if (windows->magnify.y > 0)
-        windows->magnify.y-=quantum;
+        windows->magnify.y-=(int) quantum;
       break;
     }
     case XK_Right:
     case XK_KP_Right:
     {
       if (windows->magnify.x < (int) (windows->image.ximage->width-1))
-        windows->magnify.x+=quantum;
+        windows->magnify.x+=(int) quantum;
       break;
     }
     case XK_Down:
     case XK_KP_Down:
     {
       if (windows->magnify.y < (int) (windows->image.ximage->height-1))
-        windows->magnify.y+=quantum;
+        windows->magnify.y+=(int) quantum;
       break;
     }
     case XK_0:
@@ -9945,7 +9946,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
         (void) XConfigureImage(display,resource_info,windows,*image,exception);
         XInfoWidget(display,windows,text);
         (void) XCheckDefineCursor(display,windows->image.id,cursor);
-        state&=(~UpdateConfigurationState);
+        state&=(unsigned int) (~UpdateConfigurationState);
         break;
       }
       case Expose:
@@ -10008,14 +10009,14 @@ static MagickBooleanType XMatteEditImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped != MagickFalse)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (windows->info.x+(int) windows->info.width)) &&
+                (y < (windows->info.y+(int) windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
         else
-          if ((x > (int) (windows->info.x+windows->info.width)) ||
-              (y > (int) (windows->info.y+windows->info.height)))
+          if ((x > (windows->info.x+(int) windows->info.width)) ||
+              (y > (windows->info.y+(int) windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
         break;
       }
@@ -10052,9 +10053,9 @@ static MagickBooleanType XMatteEditImage(Display *display,
         if (windows->image.crop_geometry != (char *) NULL)
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,
             &height);
-        x_offset=(int) (width*(windows->image.x+x_offset)/
+        x_offset=((int) width*(windows->image.x+x_offset)/
           windows->image.ximage->width+x);
-        y_offset=(int) (height*(windows->image.y+y_offset)/
+        y_offset=((int) height*(windows->image.y+y_offset)/
           windows->image.ximage->height+y);
         if ((x_offset < 0) || (y_offset < 0))
           continue;
@@ -10177,7 +10178,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           }
         }
         image_view=DestroyCacheView(image_view);
-        state&=(~UpdateConfigurationState);
+        state&=(unsigned int) (~UpdateConfigurationState);
       }
   } while ((state & ExitState) == 0);
   (void) XSelectInput(display,windows->image.id,
@@ -10441,9 +10442,9 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event,
   x_factor=(double) windows->image.ximage->width/windows->pan.width;
   y_factor=(double) windows->image.ximage->height/windows->pan.height;
   pan_info.width=windows->pan.width*windows->image.width/
-    windows->image.ximage->width;
+    (unsigned int) windows->image.ximage->width;
   pan_info.height=windows->pan.height*windows->image.height/
-    windows->image.ximage->height;
+    (unsigned int) windows->image.ximage->height;
   pan_info.x=0;
   pan_info.y=0;
   state=UpdateConfigurationState;
@@ -10488,25 +10489,24 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event,
         if (pan_info.x < (ssize_t) (pan_info.width/2))
           pan_info.x=0;
         else
-          pan_info.x=(ssize_t) (x_factor*(pan_info.x-(pan_info.width/2)));
+          pan_info.x=(x_factor*(pan_info.x-((int) pan_info.width/2)));
         if (pan_info.x < 0)
           pan_info.x=0;
         else
           if ((int) (pan_info.x+windows->image.width) >
               windows->image.ximage->width)
-            pan_info.x=(ssize_t)
-              (windows->image.ximage->width-windows->image.width);
+            pan_info.x=windows->image.ximage->width-(int) windows->image.width;
         if (pan_info.y < (ssize_t) (pan_info.height/2))
           pan_info.y=0;
         else
-          pan_info.y=(ssize_t) (y_factor*(pan_info.y-(pan_info.height/2)));
+          pan_info.y=(y_factor*(pan_info.y-((int) pan_info.height/2)));
         if (pan_info.y < 0)
           pan_info.y=0;
         else
           if ((int) (pan_info.y+windows->image.height) >
               windows->image.ximage->height)
-            pan_info.y=(ssize_t)
-              (windows->image.ximage->height-windows->image.height);
+            pan_info.y=windows->image.ximage->height-(int)
+              windows->image.height;
         if ((windows->image.x != (int) pan_info.x) ||
             (windows->image.y != (int) pan_info.y))
           {
@@ -10525,7 +10525,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event,
             XDrawPanRectangle(display,windows);
             XRefreshWindow(display,&windows->image,(XEvent *) NULL);
           }
-        state&=(~UpdateConfigurationState);
+        state&=(unsigned int) (~UpdateConfigurationState);
       }
     /*
       Wait for next event.
@@ -10851,14 +10851,14 @@ static MagickBooleanType XPasteImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped != MagickFalse)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (windows->info.x+(int) windows->info.width)) &&
+                (y < (windows->info.y+(int) windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
         else
-          if ((x > (int) (windows->info.x+windows->info.width)) ||
-              (y > (int) (windows->info.y+windows->info.height)))
+          if ((x > (windows->info.x+(int) windows->info.width)) ||
+              (y > (windows->info.y+(int) windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
         paste_info.x=(ssize_t) windows->image.x+x;
         paste_info.y=(ssize_t) windows->image.y+y;
@@ -11442,14 +11442,14 @@ static MagickBooleanType XROIImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped != MagickFalse)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (windows->info.x+(int) windows->info.width)) &&
+                (y < (windows->info.y+(int) windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
         else
-          if ((x > (int) (windows->info.x+windows->info.width)) ||
-              (y > (int) (windows->info.y+windows->info.height)))
+          if ((x > (windows->info.x+(int) windows->info.width)) ||
+              (y > (windows->info.y+(int) windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
         roi_info.x=(ssize_t) windows->image.x+x;
         roi_info.y=(ssize_t) windows->image.y+y;
@@ -11677,7 +11677,7 @@ static MagickBooleanType XROIImage(Display *display,
           XInfoWidget(display,windows,text);
           (void) XSetFunction(display,windows->image.highlight_context,
             GXinvert);
-          state&=(~UpdateRegionState);
+          state&=(unsigned int) (~UpdateRegionState);
         }
       XHighlightRectangle(display,windows->image.id,
         windows->image.highlight_context,&highlight_info);
@@ -11755,33 +11755,33 @@ static MagickBooleanType XROIImage(Display *display,
               (y < (int) (roi_info.y+RoiDelta)) &&
               (y > (int) (roi_info.y-RoiDelta)))
             {
-              roi_info.x=(ssize_t) (roi_info.x+roi_info.width);
-              roi_info.y=(ssize_t) (roi_info.y+roi_info.height);
+              roi_info.x=roi_info.x+(int) roi_info.width;
+              roi_info.y=roi_info.y+(int) roi_info.height;
               state|=UpdateConfigurationState;
               break;
             }
           if ((x < (int) (roi_info.x+RoiDelta)) &&
               (x > (int) (roi_info.x-RoiDelta)) &&
-              (y < (int) (roi_info.y+roi_info.height+RoiDelta)) &&
-              (y > (int) (roi_info.y+roi_info.height-RoiDelta)))
+              (y < (roi_info.y+(int) roi_info.height+RoiDelta)) &&
+              (y > (roi_info.y+(int) roi_info.height-RoiDelta)))
             {
-              roi_info.x=(ssize_t) (roi_info.x+roi_info.width);
+              roi_info.x=roi_info.x+(int) roi_info.width;
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (int) (roi_info.x+roi_info.width+RoiDelta)) &&
-              (x > (int) (roi_info.x+roi_info.width-RoiDelta)) &&
+          if ((x < (roi_info.x+(int) roi_info.width+RoiDelta)) &&
+              (x > (roi_info.x+(int) roi_info.width-RoiDelta)) &&
               (y < (int) (roi_info.y+RoiDelta)) &&
               (y > (int) (roi_info.y-RoiDelta)))
             {
-              roi_info.y=(ssize_t) (roi_info.y+roi_info.height);
+              roi_info.y=roi_info.y+(int) roi_info.height;
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (int) (roi_info.x+roi_info.width+RoiDelta)) &&
-              (x > (int) (roi_info.x+roi_info.width-RoiDelta)) &&
-              (y < (int) (roi_info.y+roi_info.height+RoiDelta)) &&
-              (y > (int) (roi_info.y+roi_info.height-RoiDelta)))
+          if ((x < (roi_info.x+(int) roi_info.width+RoiDelta)) &&
+              (x > (roi_info.x+(int) roi_info.width-RoiDelta)) &&
+              (y < (roi_info.y+(int) roi_info.height+RoiDelta)) &&
+              (y > (roi_info.y+(int) roi_info.height-RoiDelta)))
             {
               state|=UpdateConfigurationState;
               break;
@@ -11914,14 +11914,14 @@ static MagickBooleanType XROIImage(Display *display,
           y=event.xmotion.y;
           if (windows->info.mapped != MagickFalse)
             {
-              if ((x < (int) (windows->info.x+windows->info.width)) &&
-                  (y < (int) (windows->info.y+windows->info.height)))
+              if ((x < (windows->info.x+(int) windows->info.width)) &&
+                  (y < (windows->info.y+(int) windows->info.height)))
                 (void) XWithdrawWindow(display,windows->info.id,
                   windows->info.screen);
             }
           else
-            if ((x > (int) (windows->info.x+windows->info.width)) ||
-                (y > (int) (windows->info.y+windows->info.height)))
+            if ((x > (windows->info.x+(int) windows->info.width)) ||
+                (y > (windows->info.y+(int) windows->info.height)))
               (void) XMapWindow(display,windows->info.id);
           roi_info.x=(ssize_t) windows->image.x+event.xmotion.x;
           roi_info.y=(ssize_t) windows->image.y+event.xmotion.y;
@@ -12373,8 +12373,8 @@ static MagickBooleanType XRotateImage(Display *display,
         */
         degrees=0.0;
         distance=(unsigned int)
-          ((rotate_info.x2-rotate_info.x1+1)*(rotate_info.x2-rotate_info.x1+1))+
-          ((rotate_info.y2-rotate_info.y1+1)*(rotate_info.y2-rotate_info.y1+1));
+          (((rotate_info.x2-rotate_info.x1+1)*(rotate_info.x2-rotate_info.x1+1))+
+          ((rotate_info.y2-rotate_info.y1+1)*(rotate_info.y2-rotate_info.y1+1)));
         if (distance > 9)
           degrees=RadiansToDegrees(-atan2((double) (rotate_info.y2-
             rotate_info.y1),(double) (rotate_info.x2-rotate_info.x1)));
@@ -12745,7 +12745,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event,
             Convert Alt-Button3 to Button2.
           */
           event->xbutton.button=Button2;
-          event->xbutton.state&=(~Mod1Mask);
+          event->xbutton.state&=(unsigned int) (~Mod1Mask);
         }
       if (event->xbutton.window == windows->backdrop.id)
         {
@@ -13147,8 +13147,8 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   x=0;
   y=0;
   (void) XParseGeometry(image->montage,&x,&y,&width,&height);
-  tile=((event->xbutton.y-y)/height)*(((int) image->columns-x)/width)+
-    (event->xbutton.x-x)/width;
+  tile=((event->xbutton.y-y)/(int) height)*(((int) image->columns-x)/(int)
+    width)+(event->xbutton.x-x)/(int) width;
   if (tile < 0)
     {
       /*
@@ -13287,8 +13287,10 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         /*
           Overwrite tile with background color.
         */
-        x_offset=(int) (width*(tile % (((int) image->columns-x)/width))+x);
-        y_offset=(int) (height*(tile/(((int) image->columns-x)/width))+y);
+        x_offset=((int) width*(tile % (((int) image->columns-x)/(int) width))+
+          x);
+        y_offset=((int) height*(tile/(((int) image->columns-x)/(int) width))+
+          y);
         image_view=AcquireAuthenticCacheView(image,exception);
         (void) GetOneCacheViewVirtualPixelInfo(image_view,0,0,&pixel,exception);
         for (i=0; i < (int) height; i++)
@@ -13387,27 +13389,27 @@ static void XTranslateImage(Display *display,XWindows *windows,
     case XK_Left:
     case XK_KP_Left:
     {
-      windows->image.x-=x_offset;
+      windows->image.x-=(int) x_offset;
       break;
     }
     case XK_Next:
     case XK_Up:
     case XK_KP_Up:
     {
-      windows->image.y-=y_offset;
+      windows->image.y-=(int) y_offset;
       break;
     }
     case XK_Right:
     case XK_KP_Right:
     {
-      windows->image.x+=x_offset;
+      windows->image.x+=(int) x_offset;
       break;
     }
     case XK_Prior:
     case XK_Down:
     case XK_KP_Down:
     {
-      windows->image.y+=y_offset;
+      windows->image.y+=(int) y_offset;
       break;
     }
     default:
@@ -13419,15 +13421,14 @@ static void XTranslateImage(Display *display,XWindows *windows,
   if (windows->image.x < 0)
     windows->image.x=0;
   else
-    if ((int) (windows->image.x+windows->image.width) >
-        windows->image.ximage->width)
-      windows->image.x=(int) windows->image.ximage->width-windows->image.width;
+    if ((windows->image.x+(int) windows->image.width) > windows->image.ximage->width)
+      windows->image.x=windows->image.ximage->width-(int) windows->image.width;
   if (windows->image.y < 0)
     windows->image.y=0;
   else
-    if ((int) (windows->image.y+windows->image.height) >
-        windows->image.ximage->height)
-      windows->image.y=(int) windows->image.ximage->height-windows->image.height;
+    if ((windows->image.y+(int) windows->image.height) > windows->image.ximage->height)
+      windows->image.y=windows->image.ximage->height-(int)
+        windows->image.height;
   /*
     Refresh Image window.
   */
@@ -13564,7 +13565,7 @@ static MagickBooleanType XTrimImage(Display *display,
     if (x < windows->image.ximage->width)
       break;
   }
-  trim_info.height=(size_t) y-trim_info.y+1;
+  trim_info.height=(size_t) (y-trim_info.y+1);
   if (((unsigned int) trim_info.width != windows->image.width) ||
       ((unsigned int) trim_info.height != windows->image.height))
     {
@@ -14043,7 +14044,7 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
     window_info.width,(unsigned int) window_info.height);
   (void) XSetWindowBackgroundPixmap(display,window_info.id,window_info.pixmap);
   (void) XClearWindow(display,window_info.id);
-  delay=1000*image->delay/MagickMax(image->ticks_per_second,1L);
+  delay=1000*image->delay/(size_t) MagickMax(image->ticks_per_second,1L);
   XDelay(display,delay == 0UL ? 10UL : delay);
   (void) XSync(display,MagickFalse);
   return(window_info.id == root_window ? MagickTrue : MagickFalse);
@@ -14814,9 +14815,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       */
       windows->image.flags|=USPosition;
       windows->image.x=(XDisplayWidth(display,visual_info->screen)/2)-
-        (windows->image.width/2);
+        ((int) windows->image.width/2);
       windows->image.y=(XDisplayHeight(display,visual_info->screen)/2)-
-        (windows->image.height/2);
+        ((int) windows->image.height/2);
     }
   manager_hints->flags=IconWindowHint | InputHint | StateHint;
   manager_hints->icon_window=windows->icon.id;
@@ -15083,8 +15084,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Respond to events.
   */
-  delay=display_image->delay/MagickMax(display_image->ticks_per_second,1L);
-  timer=GetMagickTime()+(delay == 0 ? 1 : delay)+1;
+  delay=display_image->delay/(size_t)
+    MagickMax(display_image->ticks_per_second,1L);
+  timer=GetMagickTime()+(time_t) (delay == 0 ? 1 : delay)+1;
   update_time=0;
   if (resource_info->update != MagickFalse)
     {
@@ -15098,9 +15100,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       if (status != MagickFalse)
         update_time=attributes.st_mtime;
     }
-  *state&=(~FormerImageState);
-  *state&=(~MontageImageState);
-  *state&=(~NextImageState);
+  *state&=(unsigned int) (~FormerImageState);
+  *state&=(unsigned int) (~MontageImageState);
+  *state&=(unsigned int) (~NextImageState);
   do
   {
     /*
@@ -15136,9 +15138,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         if (nexus != (Image *) NULL)
                           *state|=NextImageState | ExitState;
                       }
-                  delay=display_image->delay/MagickMax(
+                  delay=display_image->delay/(size_t) MagickMax(
                     display_image->ticks_per_second,1L);
-                  timer=GetMagickTime()+(delay == 0 ? 1 : delay)+1;
+                  timer=GetMagickTime()+(time_t) (delay == 0 ? 1 : delay)+1;
                 }
             }
           if (XEventsQueued(display,QueuedAfterFlush) == 0)
@@ -15203,7 +15205,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               Convert Alt-Button3 to Button2.
             */
             event.xbutton.button=Button2;
-            event.xbutton.state&=(~Mod1Mask);
+            event.xbutton.state&=(unsigned int) (~Mod1Mask);
           }
         if (event.xbutton.window == windows->backdrop.id)
           {
@@ -15380,9 +15382,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             }
             break;
           }
-        delay=display_image->delay/MagickMax(display_image->ticks_per_second,
-          1L);
-        timer=GetMagickTime()+(delay == 0 ? 1 : delay)+1;
+        delay=display_image->delay/(size_t)
+          MagickMax(display_image->ticks_per_second,1L);
+        timer=GetMagickTime()+(time_t) (delay == 0 ? 1 : delay)+1;
         break;
       }
       case ButtonRelease:
@@ -15579,7 +15581,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 if (windows->command.geometry == (char *) NULL)
                   if (windows->command.mapped == MagickFalse)
                     {
-                      windows->command.x=event.xconfigure.x-
+                      windows->command.x=event.xconfigure.x-(int)
                         windows->command.width-25;
                       windows->command.y=event.xconfigure.y;
                       XConstrainWindowPosition(display,&windows->command);
@@ -15619,9 +15621,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 if (windows->pan.geometry == (char *) NULL)
                   if (windows->pan.mapped == MagickFalse)
                     {
-                      windows->pan.x=event.xconfigure.x+
+                      windows->pan.x=event.xconfigure.x+(int)
                         event.xconfigure.width+25;
-                      windows->pan.y=event.xconfigure.y+
+                      windows->pan.y=event.xconfigure.y+(int)
                         windows->magnify.height+50;
                       XConstrainWindowPosition(display,&windows->pan);
                       window_changes.x=windows->pan.x;
@@ -15772,9 +15774,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             windows->image.mapped != MagickFalse)
           {
             XRefreshWindow(display,&windows->image,&event);
-            delay=display_image->delay/MagickMax(
+            delay=display_image->delay/(size_t) MagickMax(
               display_image->ticks_per_second,1L);
-            timer=GetMagickTime()+(delay == 0 ? 1 : delay)+1;
+            timer=GetMagickTime()+(time_t) (delay == 0 ? 1 : delay)+1;
             break;
           }
         if ((event.xexpose.window == windows->magnify.id) &&
@@ -15833,9 +15835,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               else
                 XTranslateImage(display,windows,*image,key_symbol);
           }
-        delay=display_image->delay/MagickMax(
+        delay=display_image->delay/(size_t) MagickMax(
           display_image->ticks_per_second,1L);
-        timer=GetMagickTime()+(delay == 0 ? 1 : delay)+1;
+        timer=GetMagickTime()+(time_t) (delay == 0 ? 1 : delay)+1;
         break;
       }
       case KeyRelease:
@@ -16098,7 +16100,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             status=XConfirmWidget(display,windows,"Your image changed.",
               "Do you want to save it");
             if (status == 0)
-              *state&=(~ExitState);
+              *state&=(unsigned int) (~ExitState);
             else
               if (status > 0)
                 (void) XMagickCommand(display,resource_info,windows,SaveCommand,
@@ -16138,7 +16140,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
   if (((*state & FormerImageState) != 0) || ((*state & NextImageState) != 0))
-    *state&=(~ExitState);
+    *state&=(unsigned int) (~ExitState);
   if (*state & ExitState)
     {
       /*
