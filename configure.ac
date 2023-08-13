@@ -849,8 +849,6 @@ m4_define([_MAGICK_SECURITY_POLICY],
 
 _MAGICK_SECURITY_POLICY([open])
 AC_SUBST([MAGICK_SECURITY_POLICY])
-AC_DEFINE_UNQUOTED([MAGICK_SECURITY_POLICY],["$MAGICK_SECURITY_POLICY"],
-  [Security Policy])
 
 # Disable/Enable support for full delegate paths
 AC_ARG_WITH([frozenpaths],

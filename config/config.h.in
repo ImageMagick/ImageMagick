@@ -794,9 +794,6 @@
 /* Define to prepend to default font search path. */
 #undef MAGICK_FONT_PATH
 
-/* Security Policy */
-#undef MAGICK_SECURITY_POLICY
-
 /* Target Host CPU */
 #undef MAGICK_TARGET_CPU
 

@@ -5176,7 +5176,7 @@ MAGICK_PATCHLEVEL_VERSION=16
 
 MAGICK_VERSION=7.1.1-16
 
-MAGICK_GIT_REVISION=24abe7b43:20230811
+MAGICK_GIT_REVISION=a64496fc6:20230812
 
 
 # Substitute library versioning
@@ -5210,7 +5210,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,16
 
-PACKAGE_RELEASE_DATE=2023-08-11
+PACKAGE_RELEASE_DATE=2023-08-12
 
 
 # Ensure that make can run correctly
@@ -23573,9 +23573,6 @@ fi
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $with_security_policy" >&5
 printf "%s\n" "$with_security_policy" >&6; }
 
-
-
-printf "%s\n" "#define MAGICK_SECURITY_POLICY \"$MAGICK_SECURITY_POLICY\"" >>confdefs.h
 
 
 # Disable/Enable support for full delegate paths
