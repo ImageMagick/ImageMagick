@@ -241,7 +241,7 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-source->extent.y;
+  height=source->extent.height-(size_t) source->extent.y;
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,destination_image,height,1)
 #endif
@@ -554,7 +554,7 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-source->extent.y;
+  height=source->extent.height-(size_t) source->extent.y;
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,source_image,height,1)
 #endif
@@ -901,7 +901,7 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=destination->extent.height-destination->extent.y;
+  height=destination->extent.height-(size_t) destination->extent.y;
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(destination_image,destination_image,height,1)
 #endif
@@ -1030,7 +1030,7 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-source->extent.y;
+  height=source->extent.height-(size_t) source->extent.y;
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,destination_image,height,1)
 #endif
@@ -1162,7 +1162,7 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-source->extent.y;
+  height=source->extent.height-(size_t) source->extent.y;
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,source_image,height,1)
 #endif

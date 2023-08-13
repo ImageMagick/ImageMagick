@@ -1519,7 +1519,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                 (double) dataset,(double) record);
               length=(size_t) (GetStringInfoDatum(profile)[i++] << 8);
               length|=GetStringInfoDatum(profile)[i++];
-              length=MagickMin(length,profile_length-i);
+              length=MagickMin(length,profile_length-(size_t) i);
               attribute=(char *) NULL;
               if (~length >= (MagickPathExtent-1))
                 attribute=(char *) AcquireQuantumMemory(length+MagickPathExtent,
