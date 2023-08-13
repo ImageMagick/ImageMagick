@@ -919,7 +919,7 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
 #define ExtendInterpretText(string_length) \
 { \
   size_t length=(string_length); \
-  if ((size_t) (q-interpret_text+length+1) >= extent) \
+  if ((size_t) (q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
@@ -948,7 +948,7 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
 #define AppendString2Text(string) \
 { \
   size_t length=strlen((string)); \
-  if ((size_t) (q-interpret_text+length+1) >= extent) \
+  if ((size_t) (q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
@@ -1635,15 +1635,13 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   MagickBooleanType
     status;
 
-  size_t
+  ssize_t
+    count,
     i;
 
   size_t
     length,
     quantum;
-
-  ssize_t
-    count;
 
   struct stat
     attributes;
@@ -1682,7 +1680,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
       return(MagickFalse);
     }
   length=0;
-  for (i=0; ; i+=count)
+  for (i=0; ; i+=(ssize_t) count)
   {
     count=(ssize_t) read(source_file,buffer,quantum);
     if (count <= 0)

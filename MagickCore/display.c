@@ -1630,11 +1630,11 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
   Image
     *image;
 
-  ssize_t
-    i;
-
   size_t
     state;
+
+  ssize_t
+    i;
 
   XrmDatabase
     resource_database;
@@ -1670,7 +1670,7 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
   {
     if ((images->iterations != 0) && (i >= (ssize_t) images->iterations))
       break;
-    image=GetImageFromList(images,(size_t) i % GetImageListLength(images));
+    image=GetImageFromList(images,i % (ssize_t) GetImageListLength(images));
     (void) XDisplayImage(display,&resource_info,argv,1,&image,&state,exception);
   }
   (void) SetErrorHandler((ErrorHandler) NULL);
@@ -1824,6 +1824,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
 
   char
     command[MagickPathExtent],
+    *p,
     text[MagickPathExtent];
 
   const char
@@ -1845,8 +1846,8 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
   KeySym
     key_symbol;
 
-  char
-    *p;
+  size_t
+    state;
 
   ssize_t
     i;
@@ -1854,9 +1855,6 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
   unsigned int
     height,
     width;
-
-  size_t
-    state;
 
   XAnnotateInfo
     *annotate_info,
@@ -2183,14 +2181,14 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped != MagickFalse)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (windows->info.x+(int) windows->info.width)) &&
+                (y < (windows->info.y+(int) windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
         else
-          if ((x > (int) (windows->info.x+windows->info.width)) ||
-              (y > (int) (windows->info.y+windows->info.height)))
+          if ((x > (windows->info.x+(int) windows->info.width)) ||
+              (y > (windows->info.y+(int) windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
         break;
       }
@@ -2236,11 +2234,11 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
       annotate_info->stencil=BackgroundStencil;
     else
       annotate_info->stencil=ForegroundStencil;
-  annotate_info->height=(unsigned int) font_info->ascent+font_info->descent;
+  annotate_info->height=(unsigned int) (font_info->ascent+font_info->descent);
   annotate_info->degrees=degrees;
   annotate_info->font_info=font_info;
-  annotate_info->text=(char *) AcquireQuantumMemory((size_t)
-    windows->image.width/MagickMax((ssize_t) font_info->min_bounds.width,1)+2UL,
+  annotate_info->text=(char *) AcquireQuantumMemory((size_t) 
+    windows->image.width/(size_t) MagickMax(font_info->min_bounds.width,1)+2UL,
     sizeof(*annotate_info->text));
   if (annotate_info->text == (char *) NULL)
     return(MagickFalse);
@@ -2420,7 +2418,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
                     */
                     annotate_info=annotate_info->previous;
                     p=annotate_info->text;
-                    x=annotate_info->x+annotate_info->width;
+                    x=annotate_info->x+(int) annotate_info->width;
                     y=annotate_info->y;
                     if (annotate_info->width != 0)
                       p+=strlen(annotate_info->text);
@@ -2514,12 +2512,12 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
             *annotate_info->next=(*annotate_info);
             annotate_info->next->previous=annotate_info;
             annotate_info=annotate_info->next;
-            annotate_info->text=(char *) AcquireQuantumMemory((size_t)
-              windows->image.width/MagickMax((ssize_t)
-              font_info->min_bounds.width,1)+2UL,sizeof(*annotate_info->text));
+            annotate_info->text=(char *) AcquireQuantumMemory((size_t) (
+             (ssize_t)  windows->image.width/MagickMax((ssize_t)
+             font_info->min_bounds.width,1)+2L),sizeof(*annotate_info->text));
             if (annotate_info->text == (char *) NULL)
               return(MagickFalse);
-            annotate_info->y+=annotate_info->height;
+            annotate_info->y+=(ssize_t) annotate_info->height;
             if (annotate_info->y > (int) windows->image.height)
               annotate_info->y=(int) annotate_info->height;
             annotate_info->next=(XAnnotateInfo *) NULL;
@@ -2538,7 +2536,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
         */
         (void) XLookupString((XKeyEvent *) &event.xkey,command,(int)
           sizeof(command),&key_symbol,(XComposeStatus *) NULL);
-        state&=(~ModifierState);
+        state&=(size_t) (~ModifierState);
         break;
       }
       case SelectionNotify:
@@ -2610,11 +2608,11 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
           annotate_info->next->previous=annotate_info;
           annotate_info=annotate_info->next;
           annotate_info->text=(char *) AcquireQuantumMemory((size_t)
-            windows->image.width/MagickMax((ssize_t)
-            font_info->min_bounds.width,1)+2UL,sizeof(*annotate_info->text));
+            (windows->image.width/MagickMax((ssize_t)
+            font_info->min_bounds.width,1)+2L),sizeof(*annotate_info->text));
           if (annotate_info->text == (char *) NULL)
             return(MagickFalse);
-          annotate_info->y+=annotate_info->height;
+          annotate_info->y+=(ssize_t) annotate_info->height;
           if (annotate_info->y > (int) windows->image.height)
             annotate_info->y=(int) annotate_info->height;
           annotate_info->next=(XAnnotateInfo *) NULL;
@@ -2687,9 +2685,10 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
     annotate_info->y=(int) height*(annotate_info->y-font_info->ascent+
       windows->image.y)/windows->image.ximage->height;
     (void) FormatLocaleString(annotate_info->geometry,MagickPathExtent,
-      "%ux%u%+d%+d",width*annotate_info->width/windows->image.ximage->width,
-      height*annotate_info->height/windows->image.ximage->height,
-      annotate_info->x+x,annotate_info->y+y);
+      "%gx%g%+g%+g",(double) width*annotate_info->width/
+      windows->image.ximage->width,(double) height*annotate_info->height/
+      windows->image.ximage->height,(double) annotate_info->x+x,(double)
+      annotate_info->y+y);
     /*
       Annotate image with text.
     */
@@ -3046,14 +3045,14 @@ static MagickBooleanType XChopImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped != MagickFalse)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (windows->info.x+(int) windows->info.width)) &&
+                (y < (windows->info.y+(int) windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
         else
-          if ((x > (int) (windows->info.x+windows->info.width)) ||
-              (y > (int) (windows->info.y+windows->info.height)))
+          if ((x > (windows->info.x+(int) windows->info.width)) ||
+              (y > (windows->info.y+(int) windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
       }
     }
@@ -3183,9 +3182,9 @@ static MagickBooleanType XChopImage(Display *display,
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
   windows->image.window_changes.width=windows->image.ximage->width-
-    (unsigned int) chop_info.width;
+    (int) chop_info.width;
   windows->image.window_changes.height=windows->image.ximage->height-
-    (unsigned int) chop_info.height;
+    (int) chop_info.height;
   width=(unsigned int) (*image)->columns;
   height=(unsigned int) (*image)->rows;
   x=0;
@@ -3307,15 +3306,15 @@ static MagickBooleanType XColorEditImage(Display *display,
   Quantum
     *q;
 
+  size_t
+    state;
+
   ssize_t
     i;
 
   unsigned int
     height,
     width;
-
-  size_t
-    state;
 
   XColor
     color;
@@ -3581,7 +3580,7 @@ static MagickBooleanType XColorEditImage(Display *display,
         (void) XConfigureImage(display,resource_info,windows,*image,exception);
         XInfoWidget(display,windows,text);
         (void) XCheckDefineCursor(display,windows->image.id,cursor);
-        state&=(~UpdateConfigurationState);
+        state&=(size_t) (~UpdateConfigurationState);
         break;
       }
       case Expose:
@@ -3641,14 +3640,14 @@ static MagickBooleanType XColorEditImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped != MagickFalse)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (windows->info.x+(int) windows->info.width)) &&
+                (y < (windows->info.y+(int) windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
         else
-          if ((x > (int) (windows->info.x+windows->info.width)) ||
-              (y > (int) (windows->info.y+windows->info.height)))
+          if ((x > (windows->info.x+(int) windows->info.width)) ||
+              (y > (windows->info.y+(int) windows->info.height)))
             (void) XMapWindow(display,windows->info.id);
         break;
       }
@@ -3685,10 +3684,10 @@ static MagickBooleanType XColorEditImage(Display *display,
         if (windows->image.crop_geometry != (char *) NULL)
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
-        x_offset=(int)
-          (width*(windows->image.x+x_offset)/windows->image.ximage->width+x);
-        y_offset=(int)
-          (height*(windows->image.y+y_offset)/windows->image.ximage->height+y);
+        x_offset=(int) (width*(windows->image.x+x_offset)/(int)
+          windows->image.ximage->width+x);
+        y_offset=(int) (height*(windows->image.y+y_offset)/(int)
+          windows->image.ximage->height+y);
         if ((x_offset < 0) || (y_offset < 0))
           continue;
         if ((x_offset >= (int) (*image)->columns) ||
