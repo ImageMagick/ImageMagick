@@ -71,7 +71,7 @@
     <policy domain="coder" rights="read|write" pattern="{GIF,JPEG,PNG,WEBP}" />
 -->
 <policymap>
-  <!-- <policy domain="resource" name="temporary-path" value="/tmp"/> -->
+  <!-- <policy domain="resource" name="temporary-path" value="/opt/magick/tmp"/> -->
   <!-- <policy domain="resource" name="memory" value="2GiB"/> -->
   <!-- <policy domain="resource" name="map" value="4GiB"/> -->
   <!-- <policy domain="resource" name="width" value="10KP"/> -->
