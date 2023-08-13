@@ -91,5 +91,19 @@
   <!-- <policy domain="cache" name="synchronize" value="true"/> -->
   <!-- <policy domain="system" name="shred" value="1"/> -->
   <!-- <policy domain="system" name="font" value="/path/to/unicode-font.ttf"/> -->
-  <policy domain="Undefined" rights="none"/>
+  <policy domain="resource" name="memory" value="1024MiB"/>
+  <policy domain="resource" name="list-length" value="128"/>
+  <policy domain="resource" name="width" value="16KP"/>
+  <policy domain="resource" name="height" value="16KP"/>
+  <policy domain="resource" name="map" value="2048MiB"/>
+  <policy domain="resource" name="area" value="64KP"/>
+  <policy domain="resource" name="disk" value="4GiB"/>
+  <policy domain="resource" name="file" value="768"/>
+  <policy domain="resource" name="thread" value="8"/>
+  <policy domain="resource" name="time" value="600"/>
+  <policy domain="path" rights="none" pattern="-"/>  <!-- don't read/write from/to stdin/stdout -->
+  <policy domain="path" rights="none" pattern="/etc/*"/>  <!-- don't read sensitive paths -->
+  <policy domain="path" rights="none" pattern="@*"/>  <!-- indirect reads not permitted -->
+  <policy domain="module" rights="none" pattern="URL" /> 
+  <policy domain="module" rights="write" pattern="{MSL,MVG,PS,SVG,XPS}" />
 </policymap>
