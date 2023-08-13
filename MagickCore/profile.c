@@ -475,7 +475,7 @@ static cmsHTRANSFORM *AcquireTransformTLS(const LCMSInfo *source_info,
   {
     transform[i]=cmsCreateTransformTHR(cms_context,source_info->profile,
       source_info->type,target_info->profile,target_info->type,
-      target_info->intent,flags);
+      (cmsUInt32Number) target_info->intent,flags);
     if (transform[i] == (cmsHTRANSFORM) NULL)
       return(DestroyTransformTLS(transform));
   }
@@ -1675,20 +1675,21 @@ static void WriteTo8BimProfile(Image *image,const char *name,
           *extract_profile;
 
         extract_extent=0;
-        extent=(datum+length)-(p+count);
+        extent=(size_t) ((datum+length)-(p+count));
         if (profile == (StringInfo *) NULL)
           {
-            offset=(q-datum);
+            offset=(size_t) (q-datum);
             extract_profile=AcquireStringInfo(offset+extent);
             (void) memcpy(extract_profile->datum,datum,offset);
           }
         else
           {
-            offset=(p-datum);
-            extract_extent=profile->length;
+            offset=(size_t) (p-datum);
+            extract_extent=(ssize_t) profile->length;
             if ((extract_extent & 0x01) != 0)
               extract_extent++;
-            extract_profile=AcquireStringInfo(offset+extract_extent+extent);
+            extract_profile=AcquireStringInfo(offset+(size_t) extract_extent+
+              extent);
             (void) memcpy(extract_profile->datum,datum,offset-4);
             WriteResourceLong(extract_profile->datum+offset-4,(unsigned int)
               profile->length);
@@ -1789,7 +1790,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           IPTC profile.
         */
-        profile=AcquireStringInfo(count);
+        profile=AcquireStringInfo((size_t) count);
         SetStringInfoDatum(profile,p);
         (void) SetImageProfileInternal(image,"iptc",profile,MagickTrue,
           exception);
@@ -1810,7 +1811,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           ICC Profile.
         */
-        profile=AcquireStringInfo(count);
+        profile=AcquireStringInfo((size_t) count);
         SetStringInfoDatum(profile,p);
         (void) SetImageProfileInternal(image,"icc",profile,MagickTrue,
           exception);
@@ -1823,7 +1824,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           EXIF Profile.
         */
-        profile=AcquireStringInfo(count);
+        profile=AcquireStringInfo((size_t) count);
         SetStringInfoDatum(profile,p);
         (void) SetImageProfileInternal(image,"exif",profile,MagickTrue,
           exception);
@@ -1836,7 +1837,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           XMP Profile.
         */
-        profile=AcquireStringInfo(count);
+        profile=AcquireStringInfo((size_t) count);
         SetStringInfoDatum(profile,p);
         (void) SetImageProfileInternal(image,"xmp",profile,MagickTrue,
           exception);
@@ -1876,7 +1877,7 @@ static void PatchCorruptProfile(const char *name,StringInfo *profile)
       if (p != (unsigned char *) NULL)
         {
           p+=19;
-          length=p-GetStringInfoDatum(profile);
+          length=(size_t) (p-GetStringInfoDatum(profile));
           if (length != GetStringInfoLength(profile))
             {
               *p='\0';
@@ -2259,7 +2260,7 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
     /*
       Determine how many entries there are in the current IFD.
     */
-    number_entries=ReadProfileShort(endian,directory);
+    number_entries=(size_t) ReadProfileShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
       int
@@ -2289,7 +2290,7 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
       components=(int) ReadProfileLong(endian,q+4);
       if (components < 0)
         break;  /* corrupt EXIF */
-      number_bytes=(size_t) components*format_bytes[format];
+      number_bytes=(size_t) (components*format_bytes[format]);
       if ((ssize_t) number_bytes < components)
         break;  /* prevent overflow */
       if (number_bytes <= 4)
@@ -2300,7 +2301,8 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
             The directory entry contains an offset.
           */
           offset=(ssize_t) ReadProfileLong(endian,q+8);
-          if ((offset < 0) || ((size_t) (offset+number_bytes) > length))
+          if ((offset < 0) ||
+              ((size_t) (offset+(ssize_t) number_bytes) > length))
             continue;
           if (~length < number_bytes)
             continue;  /* prevent overflow */
@@ -2407,12 +2409,12 @@ static void Sync8BimProfile(const Image *image,
       continue;
     if (length < 7)
       return;
-    id=ReadProfileMSBShort(&p,&length);
+    id=(unsigned short) ReadProfileMSBShort(&p,&length);
     count=(ssize_t) ReadProfileByte(&p,&length);
     if ((count >= (ssize_t) length) || (count < 0))
       return;
     p+=count;
-    length-=count;
+    length-=(size_t) count;
     if ((*p & 0x01) == 0)
       (void) ReadProfileByte(&p,&length);
     count=(ssize_t) ReadProfileMSBLong(&p,&length);
@@ -2436,9 +2438,9 @@ static void Sync8BimProfile(const Image *image,
         WriteProfileShort(MSBEndian,(unsigned short) image->units,p+12);
       }
     if (id == 0x0422)
-      SyncExifProfile(image,p,count);
+      SyncExifProfile(image,p,(size_t) count);
     p+=count;
-    length-=count;
+    length-=(size_t) count;
   }
   return;
 }
@@ -2486,13 +2488,14 @@ static MagickBooleanType GetXmpOffsets(const StringInfo *profile,
   pos=strstr(datum,tag);
   tag_length=strlen(tag);
   if ((pos == (char *) NULL) || ((pos-datum) < 1) || (*(pos-1) != '<') ||
-      (((pos-datum)+tag_length) > length) || (*(pos+tag_length) != '>'))
+      (((size_t) (pos-datum)+tag_length) > length) ||
+      (*(pos+tag_length) != '>'))
     return(MagickFalse);
-  *start=(pos-datum)+tag_length+1;
+  *start=(size_t) (pos-datum)+tag_length+1;
   pos=strstr(datum+*start,"<");
   if (pos == (char *) NULL)
     return(MagickFalse);
-  *end=(pos-datum);
+  *end=(size_t) (pos-datum);
   return(MagickTrue);
 }
 
@@ -2607,7 +2610,7 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
         if (knot_count != 0)
           {
             blob+=24;
-            length-=MagickMin(24,(ssize_t) length);
+            length-=(size_t) MagickMin(length,24U);
             break;
           }
         /*
@@ -2615,7 +2618,7 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
         */
         knot_count=(ssize_t) ReadProfileMSBShort(&blob,&length);
         blob+=22;
-        length-=MagickMin(22,(ssize_t) length);
+        length-=(size_t) MagickMin(length,22);
         break;
       }
       case 1:
@@ -2629,7 +2632,7 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
               Unexpected subpath knot.
             */
             blob+=24;
-            length-=MagickMin(24,(ssize_t) length);
+            length-=(size_t) MagickMin(length,24);
             break;
           }
         /*
@@ -2665,7 +2668,7 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
       default:
       {
         blob+=24;
-        length-=MagickMin(24,(ssize_t) length);
+        length-=(size_t) MagickMin(length,24);
         break;
       }
     }
@@ -2711,7 +2714,7 @@ MagickPrivate void Update8BIMClipPath(const Image *image,
     if ((count != 0) && ((size_t) count <= length))
       {
         info+=count;
-        length-=count;
+        length-=(size_t) count;
       }
     if ((count & 0x01) == 0)
       (void) ReadProfileByte(&info,&length);
@@ -2724,6 +2727,6 @@ MagickPrivate void Update8BIMClipPath(const Image *image,
     if ((id > 1999) && (id < 2999))
       UpdateClipPath(info,(size_t) count,old_columns,old_rows,new_geometry);
     info+=count;
-    length-=MagickMin(count,(ssize_t) length);
+    length-=(size_t) MagickMin(length,(size_t) count);
   }
 }

@@ -1219,7 +1219,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
           geometry_info->sigma=geometry_info->xi;
           geometry_info->xi=0.0;
           flags|=SigmaValue;
-          flags&=(~XiValue);
+          flags&=(unsigned int) (~XiValue);
         }
       else
         if ((flags & ChiValue) == 0)
@@ -1231,7 +1231,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
             geometry_info->xi=geometry_info->psi;
             flags|=SigmaValue;
             flags|=XiValue;
-            flags&=(~PsiValue);
+            flags&=(unsigned int) (~PsiValue);
           }
         else
           {
@@ -1244,7 +1244,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
             flags|=SigmaValue;
             flags|=XiValue;
             flags|=PsiValue;
-            flags&=(~ChiValue);
+            flags&=(unsigned int) (~ChiValue);
           }
     }
   if ((flags & PercentValue) != 0)
