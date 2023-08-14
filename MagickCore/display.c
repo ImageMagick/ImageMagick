@@ -6544,7 +6544,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
           {
             bytes+=previous_image->list->columns*previous_image->list->rows*
               sizeof(PixelInfo);
-            if (bytes <= (ssize_t) (resource_info->undo_cache << 20))
+            if (bytes <= (resource_info->undo_cache << 20))
               {
                 previous_image=GetPreviousImageInList(previous_image);
                 continue;
