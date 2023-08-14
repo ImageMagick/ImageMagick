@@ -6568,7 +6568,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
             cache_image=DestroyImage(cache_image);
           }
         }
-      if (bytes > (ssize_t) (resource_info->undo_cache << 20))
+      if (bytes > (resource_info->undo_cache << 20))
         break;
       /*
         Save image before transformations are applied.
