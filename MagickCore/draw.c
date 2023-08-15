@@ -5058,7 +5058,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        num_threads(number_threads)
+        num_threads((int) number_threads)
 #endif
       for (y=poly_extent.y1; y <= poly_extent.y2; y++)
       {
@@ -5108,7 +5108,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    num_threads(number_threads)
+    num_threads((int) number_threads)
 #endif
   for (y=poly_extent.y1; y <= poly_extent.y2; y++)
   {

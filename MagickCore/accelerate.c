@@ -2777,7 +2777,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
   parametersBuffer=CreateOpenCLBuffer(device,CL_MEM_READ_ONLY |
     CL_MEM_COPY_HOST_PTR,number_parameters*sizeof(*parametersBufferPtr),
     parametersBufferPtr);
-  parametersBufferPtr=RelinquishMagickMemory(parametersBufferPtr);
+  parametersBufferPtr=(float *) RelinquishMagickMemory(parametersBufferPtr);
   if (parametersBuffer == (cl_mem) NULL)
   {
     (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
@@ -4601,13 +4601,13 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   cossin_theta_size=(unsigned int) fabs(4.0*DegreesToRadians(angle)*sqrt(
     (double) blurRadius)+2UL);
 
-  cosThetaPtr=AcquireQuantumMemory(cossin_theta_size,sizeof(float));
+  cosThetaPtr=(float *) AcquireQuantumMemory(cossin_theta_size,sizeof(float));
   if (cosThetaPtr == (float *) NULL)
     goto cleanup;
-  sinThetaPtr=AcquireQuantumMemory(cossin_theta_size,sizeof(float));
+  sinThetaPtr=(float *) AcquireQuantumMemory(cossin_theta_size,sizeof(float));
   if (sinThetaPtr == (float *) NULL)
   {
-    cosThetaPtr=RelinquishMagickMemory(cosThetaPtr);
+    cosThetaPtr=(float *) RelinquishMagickMemory(cosThetaPtr);
     goto cleanup;
   }
 
@@ -4621,10 +4621,10 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
 
   sinThetaBuffer=CreateOpenCLBuffer(device,CL_MEM_READ_ONLY |
     CL_MEM_COPY_HOST_PTR,cossin_theta_size*sizeof(float),sinThetaPtr);
-  sinThetaPtr=RelinquishMagickMemory(sinThetaPtr);
+  sinThetaPtr=(float *) RelinquishMagickMemory(sinThetaPtr);
   cosThetaBuffer=CreateOpenCLBuffer(device,CL_MEM_READ_ONLY |
     CL_MEM_COPY_HOST_PTR,cossin_theta_size*sizeof(float),cosThetaPtr);
-  cosThetaPtr=RelinquishMagickMemory(cosThetaPtr);
+  cosThetaPtr=(float *) RelinquishMagickMemory(cosThetaPtr);
   if ((sinThetaBuffer == (cl_mem) NULL) || (cosThetaBuffer == (cl_mem) NULL))
   {
     (void) OpenCLThrowMagickException(device,exception,GetMagickModule(),
