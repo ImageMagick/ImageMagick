@@ -256,13 +256,13 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     {
       bounds.width=next->columns;
       if (bounds.x > 0)
-        bounds.width+=bounds.x;
+        bounds.width+=(size_t) bounds.x;
     }
   if (bounds.height == 0)
     {
       bounds.height=next->rows;
       if (bounds.y > 0)
-        bounds.height+=bounds.y;
+        bounds.height+=(size_t) bounds.y;
     }
   bounds.x=0;
   bounds.y=0;
@@ -303,18 +303,18 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     bounds.height=previous->rows;
     if (bounds.x < 0)
       {
-        bounds.width+=bounds.x;
+        bounds.width=(size_t) ((ssize_t) bounds.width+bounds.x);
         bounds.x=0;
       }
-    if ((ssize_t) (bounds.x+bounds.width) > (ssize_t) coalesce_image->columns)
-      bounds.width=coalesce_image->columns-bounds.x;
+    if ((bounds.x+(ssize_t) bounds.width) > (ssize_t) coalesce_image->columns)
+      bounds.width=(size_t) ((ssize_t) coalesce_image->columns-bounds.x);
     if (bounds.y < 0)
       {
-        bounds.height+=bounds.y;
+        bounds.height=(size_t) ((ssize_t) bounds.height+bounds.y);
         bounds.y=0;
       }
-    if ((ssize_t) (bounds.y+bounds.height) > (ssize_t) coalesce_image->rows)
-      bounds.height=coalesce_image->rows-bounds.y;
+    if ((bounds.y+(ssize_t) bounds.height) > (ssize_t) coalesce_image->rows)
+      bounds.height=(size_t) ((ssize_t) coalesce_image->rows-bounds.y);
     /*
       Replace the dispose image with the new coalesced image.
     */
@@ -460,18 +460,18 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
         bounds.height=next->rows;
         if (bounds.x < 0)
           {
-            bounds.width+=bounds.x;
+            bounds.width=(size_t) ((ssize_t) bounds.width+bounds.x);
             bounds.x=0;
           }
-        if ((ssize_t) (bounds.x+bounds.width) > (ssize_t) current_image->columns)
-          bounds.width=current_image->columns-bounds.x;
+        if ((bounds.x+(ssize_t) bounds.width) > (ssize_t) current_image->columns)
+          bounds.width=(size_t) ((ssize_t) current_image->columns-bounds.x);
         if (bounds.y < 0)
           {
-            bounds.height+=bounds.y;
+            bounds.height=(size_t) ((ssize_t) bounds.height+bounds.y);
             bounds.y=0;
           }
-        if ((ssize_t) (bounds.y+bounds.height) > (ssize_t) current_image->rows)
-          bounds.height=current_image->rows-bounds.y;
+        if ((bounds.y+(ssize_t) bounds.height) > (ssize_t) current_image->rows)
+          bounds.height=(size_t) ((ssize_t) current_image->rows-bounds.y);
         ClearBounds(current_image,&bounds,exception);
       }
     /*
@@ -945,6 +945,12 @@ MagickExport Image *CompareImagesLayers(const Image *image,
 static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
   ExceptionInfo *exception)
 {
+  const Image
+    *curr;
+
+  DisposeType
+    *disposals;
+
   ExceptionInfo
     *sans_exception;
 
@@ -964,12 +970,6 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
     add_frames,
     try_cleared,
     cleared;
-
-  DisposeType
-    *disposals;
-
-  const Image
-    *curr;
 
   ssize_t
     i;
@@ -1202,29 +1202,33 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
 #endif
                 if ( try_bounds.x < bgnd_bounds.x )
                   {
-                     bgnd_bounds.width+= bgnd_bounds.x-try_bounds.x;
+                     bgnd_bounds.width=(size_t) ((ssize_t) bgnd_bounds.width+
+                       bgnd_bounds.x-try_bounds.x);
                      if ( bgnd_bounds.width < try_bounds.width )
                        bgnd_bounds.width = try_bounds.width;
                      bgnd_bounds.x = try_bounds.x;
                   }
                 else
                   {
-                     try_bounds.width += try_bounds.x - bgnd_bounds.x;
+                     try_bounds.width=(size_t) ((ssize_t) try_bounds.width+
+                       try_bounds.x-bgnd_bounds.x);
                      if ( bgnd_bounds.width < try_bounds.width )
                        bgnd_bounds.width = try_bounds.width;
                   }
                 if ( try_bounds.y < bgnd_bounds.y )
                   {
-                     bgnd_bounds.height += bgnd_bounds.y - try_bounds.y;
-                     if ( bgnd_bounds.height < try_bounds.height )
-                       bgnd_bounds.height = try_bounds.height;
-                     bgnd_bounds.y = try_bounds.y;
+                    bgnd_bounds.height=(size_t) ((ssize_t) bgnd_bounds.height+
+                      bgnd_bounds.y-try_bounds.y);
+                    if (bgnd_bounds.height < try_bounds.height)
+                      bgnd_bounds.height=try_bounds.height;
+                    bgnd_bounds.y=try_bounds.y;
                   }
                 else
                   {
-                    try_bounds.height += try_bounds.y - bgnd_bounds.y;
-                     if ( bgnd_bounds.height < try_bounds.height )
-                       bgnd_bounds.height = try_bounds.height;
+                    try_bounds.height=(size_t) ((ssize_t) try_bounds.height+
+                      try_bounds.y-bgnd_bounds.y);
+                    if ( bgnd_bounds.height < try_bounds.height )
+                      bgnd_bounds.height = try_bounds.height;
                   }
 #if DEBUG_OPT_FRAME
                 (void) FormatLocaleFile(stderr, "        to : %.20gx%.20g%+.20g%+.20g\n",
@@ -1367,7 +1371,7 @@ static Image *OptimizeLayerFrames(const Image *image,const LayerMethod method,
       time += (size_t)(curr->delay*1000*
         PerceptibleReciprocal((double) curr->ticks_per_second));
       prev_image->ticks_per_second = 100L;
-      prev_image->delay = time*prev_image->ticks_per_second/1000;
+      prev_image->delay = time*(size_t) prev_image->ticks_per_second/1000;
     }
     bgnd_image=CropImage(prev_image,&bounds[i],sans_exception);
     prev_image=DestroyImage(prev_image);
@@ -1555,18 +1559,18 @@ MagickExport void OptimizeImageTransparency(const Image *image,
         bounds.height=next->rows;
         if (bounds.x < 0)
           {
-            bounds.width+=bounds.x;
+            bounds.width=(size_t) ((ssize_t) bounds.width+bounds.x);
             bounds.x=0;
           }
-        if ((ssize_t) (bounds.x+bounds.width) > (ssize_t) current_image->columns)
-          bounds.width=current_image->columns-bounds.x;
+        if ((bounds.x+(ssize_t) bounds.width) > (ssize_t) current_image->columns)
+          bounds.width=(size_t) ((ssize_t) current_image->columns-bounds.x);
         if (bounds.y < 0)
           {
-            bounds.height+=bounds.y;
+            bounds.height=(size_t) ((ssize_t) bounds.height+bounds.y);
             bounds.y=0;
           }
-        if ((ssize_t) (bounds.y+bounds.height) > (ssize_t) current_image->rows)
-          bounds.height=current_image->rows-bounds.y;
+        if ((bounds.y+(ssize_t) bounds.height) > (ssize_t) current_image->rows)
+          bounds.height=(size_t) ((ssize_t) current_image->rows-bounds.y);
         ClearBounds(current_image,&bounds,exception);
       }
     if (next->dispose != PreviousDispose)
@@ -1656,7 +1660,7 @@ MagickExport void RemoveDuplicateLayers(Image **images,ExceptionInfo *exception)
         time+=(size_t) (1000.0*next->delay*
           PerceptibleReciprocal((double) next->ticks_per_second));
         next->ticks_per_second=100L;
-        next->delay=time*image->ticks_per_second/1000;
+        next->delay=time*(size_t) image->ticks_per_second/1000;
         next->iterations=image->iterations;
         *images=image;
         (void) DeleteImageFromList(images);
@@ -1988,18 +1992,18 @@ MagickExport Image *MergeImageLayers(Image *image,const LayerMethod method,
       {
         if (page.x > next->page.x)
           {
-            width+=page.x-next->page.x;
+            width=(size_t) ((ssize_t) width+page.x-next->page.x);
             page.x=next->page.x;
           }
         if (page.y > next->page.y)
           {
-            height+=page.y-next->page.y;
+            height=(size_t) ((ssize_t) height+page.y-next->page.y);
             page.y=next->page.y;
           }
         if ((ssize_t) width < (next->page.x+(ssize_t) next->columns-page.x))
-          width=(size_t) next->page.x+(ssize_t) next->columns-page.x;
+          width=(size_t) (next->page.x+(ssize_t) next->columns-page.x);
         if ((ssize_t) height < (next->page.y+(ssize_t) next->rows-page.y))
-          height=(size_t) next->page.y+(ssize_t) next->rows-page.y;
+          height=(size_t) (next->page.y+(ssize_t) next->rows-page.y);
       }
       break;
     }
@@ -2037,9 +2041,9 @@ MagickExport Image *MergeImageLayers(Image *image,const LayerMethod method,
     Set virtual canvas size if not defined.
   */
   if (page.width == 0)
-    page.width=page.x < 0 ? width : width+page.x;
+    page.width=page.x < 0 ? width : (size_t) ((ssize_t) width+page.x);
   if (page.height == 0)
-    page.height=page.y < 0 ? height : height+page.y;
+    page.height=page.y < 0 ? height : (size_t) ((ssize_t) height+page.y);
   /*
     Handle "TrimBoundsLayer" method separately to normal 'layer merge'.
   */
