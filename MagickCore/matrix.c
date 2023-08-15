@@ -151,11 +151,11 @@ static inline MagickOffsetType WriteMatrixElements(
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
 #if !defined(MAGICKCORE_HAVE_PWRITE)
-    count=write(matrix_info->file,buffer+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) MAGICK_SSIZE_MAX));
+    count=write(matrix_info->file,buffer+i,(size_t) MagickMin(length-
+      (MagickSizeType) i,(MagickSizeType) MAGICK_SSIZE_MAX));
 #else
-    count=pwrite(matrix_info->file,buffer+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) MAGICK_SSIZE_MAX),(off_t) (offset+i));
+    count=pwrite(matrix_info->file,buffer+i,(size_t) MagickMin(length-
+      (MagickSizeType) i,(MagickSizeType) MAGICK_SSIZE_MAX),offset+i);
 #endif
     if (count <= 0)
       {
@@ -687,8 +687,8 @@ static inline MagickOffsetType ReadMatrixElements(
     count=read(matrix_info->file,buffer+i,(size_t) MagickMin(length-i,
       (MagickSizeType) MAGICK_SSIZE_MAX));
 #else
-    count=pread(matrix_info->file,buffer+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) MAGICK_SSIZE_MAX),(off_t) (offset+i));
+    count=pread(matrix_info->file,buffer+i,(size_t) MagickMin(length-
+      (MagickSizeType) i,(MagickSizeType) MAGICK_SSIZE_MAX),offset+i);
 #endif
     if (count <= 0)
       {
@@ -712,15 +712,15 @@ MagickExport MagickBooleanType GetMatrixElement(const MatrixInfo *matrix_info,
 
   assert(matrix_info != (const MatrixInfo *) NULL);
   assert(matrix_info->signature == MagickCoreSignature);
-  i=(MagickOffsetType) EdgeY(y,matrix_info->rows)*matrix_info->columns+
+  i=EdgeY(y,matrix_info->rows)*(MagickOffsetType) matrix_info->columns+
     EdgeX(x,matrix_info->columns);
   if (matrix_info->type != DiskCache)
     {
       (void) memcpy(value,(unsigned char *) matrix_info->elements+i*
-        matrix_info->stride,matrix_info->stride);
+        (MagickOffsetType) matrix_info->stride,matrix_info->stride);
       return(MagickTrue);
     }
-  count=ReadMatrixElements(matrix_info,i*matrix_info->stride,
+  count=ReadMatrixElements(matrix_info,i*(MagickOffsetType) matrix_info->stride,
     matrix_info->stride,(unsigned char *) value);
   if (count != (MagickOffsetType) matrix_info->stride)
     return(MagickFalse);
@@ -1117,18 +1117,18 @@ MagickExport MagickBooleanType SetMatrixElement(const MatrixInfo *matrix_info,
 
   assert(matrix_info != (const MatrixInfo *) NULL);
   assert(matrix_info->signature == MagickCoreSignature);
-  i=(MagickOffsetType) y*matrix_info->columns+x;
+  i=y*(MagickOffsetType) matrix_info->columns+x;
   if ((i < 0) ||
-      ((MagickSizeType) (i*matrix_info->stride) >= matrix_info->length))
+      (((MagickSizeType) i*matrix_info->stride) >= matrix_info->length))
     return(MagickFalse);
   if (matrix_info->type != DiskCache)
     {
       (void) memcpy((unsigned char *) matrix_info->elements+i*
-        matrix_info->stride,value,matrix_info->stride);
+        (MagickOffsetType) matrix_info->stride,value,matrix_info->stride);
       return(MagickTrue);
     }
-  count=WriteMatrixElements(matrix_info,i*matrix_info->stride,
-    matrix_info->stride,(unsigned char *) value);
+  count=WriteMatrixElements(matrix_info,i*(MagickOffsetType)
+    matrix_info->stride,matrix_info->stride,(unsigned char *) value);
   if (count != (MagickOffsetType) matrix_info->stride)
     return(MagickFalse);
   return(MagickTrue);
