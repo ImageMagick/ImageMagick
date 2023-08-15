@@ -771,7 +771,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
               MagickOffsetType
                 offset;
 
-              offset=(MagickOffsetType) lseek(file,size-1,SEEK_SET);
+              offset=(MagickOffsetType) lseek(file,(off_t) (size-1),SEEK_SET);
               if ((offset == (MagickOffsetType) (size-1)) &&
                   (write(file,"",1) == 1))
                 {
