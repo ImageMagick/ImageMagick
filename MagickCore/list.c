@@ -254,7 +254,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     else
       if (first > (ssize_t) length)
         first=(ssize_t) length;
-    first%=(length << 1);
+    first%=(ssize_t) (length << 1);
     last=first;
     while (isspace((int) ((unsigned char) *p)) != 0)
       p++;
@@ -267,7 +267,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
           if (last > (ssize_t) length)
             last=(ssize_t) length;
       }
-    last%=(length << 1);
+    last%=(ssize_t) (length << 1);
     match=MagickFalse;
     step=1;
     if (artifact != (const char *) NULL)
