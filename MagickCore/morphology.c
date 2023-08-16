@@ -1083,7 +1083,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             else /* limiting case - a unity (normalized Dirac) kernel */
               { (void) memset(kernel->values,0, (size_t)
                   kernel->width*kernel->height*sizeof(*kernel->values));
-                kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+                kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width] = 1.0;
               }
           }
 
@@ -1098,7 +1098,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
                     kernel->values[i] -= exp(-((double)(u*u+v*v))*A)*B;
               }
             else /* limiting case - a unity (normalized Dirac) kernel */
-              kernel->values[kernel->x+kernel->y*kernel->width] -= 1.0;
+              kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width] -= 1.0;
           }
 
         if ( type == LoGKernel )
@@ -1115,7 +1115,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             else /* special case - generate a unity kernel */
               { (void) memset(kernel->values,0, (size_t)
                   kernel->width*kernel->height*sizeof(*kernel->values));
-                kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+                kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width] = 1.0;
               }
           }
 
@@ -1186,7 +1186,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             }
           }
         else /* special case - generate a unity kernel */
-          kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+          kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width] = 1.0;
 #else
         /* Direct calculation without curve averaging
            This is equivalent to a KernelRank of 1 */
@@ -1282,7 +1282,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         else /* special case - generate a unity kernel */
           { (void) memset(kernel->values,0, (size_t)
               kernel->width*kernel->height*sizeof(*kernel->values));
-            kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+            kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width] = 1.0;
             kernel->positive_range = 1.0;
           }
 
@@ -1316,13 +1316,13 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         /* set all kernel values within diamond area to scale given */
         for ( i=0, v=0; v < (ssize_t)kernel->height; v++)
           { size_t
-              alpha = order_f / ( fact((size_t) v) * fact(kernel->height-v-1) );
+              alpha = order_f / ( fact((size_t) v) * fact(kernel->height-(size_t) v-1) );
             for ( u=0; u < (ssize_t)kernel->width; u++, i++)
               kernel->positive_range += kernel->values[i] = (double)
-                (alpha * order_f / ( fact((size_t) u) * fact(kernel->height-u-1) ));
+                (alpha * order_f / ( fact((size_t) u) * fact(kernel->height-(size_t) u-1) ));
           }
         kernel->minimum = 1.0;
-        kernel->maximum = kernel->values[kernel->x+kernel->y*kernel->width];
+        kernel->maximum = kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width];
         kernel->negative_range = 0.0;
         break;
       }
@@ -1739,7 +1739,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->minimum = kernel->maximum = (double) scale;
           if ( type == PeaksKernel ) {
             /* set the central point in the middle */
-            kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
+            kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width] = 1.0;
             kernel->positive_range = 1.0;
             kernel->maximum = 1.0;
           }
@@ -2803,7 +2803,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       for (j=0; j < (ssize_t) GetOpenMPMaximumThreads(); j++)
         changed+=changes[j];
       changes=(size_t *) RelinquishMagickMemory(changes);
-      return(status ? (ssize_t) changed/GetImageChannels(image) : 0);
+      return(status ? (ssize_t) (changed/GetImageChannels(image)) : 0);
     }
   /*
     Normal handling of horizontal or rectangular kernels (row by row).
@@ -2840,8 +2840,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         status=MagickFalse;
         continue;
       }
-    center=(ssize_t) (GetPixelChannels(image)*width*offset.y+
-      GetPixelChannels(image)*offset.x);
+    center=(ssize_t) ((ssize_t) GetPixelChannels(image)*(ssize_t) width*
+      offset.y+(ssize_t) GetPixelChannels(image)*offset.x);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -3382,8 +3382,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               }
               pixels+=(image->columns-1)*GetPixelChannels(image);
             }
-            k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
-            pixels=q-offset.x*GetPixelChannels(image);
+            k=(&kernel->values[(ssize_t) kernel->width*(kernel->y+1)-1]);
+            pixels=q-offset.x*(ssize_t) GetPixelChannels(image);
             for (u=0; u < offset.x; u++)
             {
               if (!IsNaN(*k) && ((x+u-offset.x) >= 0))
@@ -3413,8 +3413,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               }
               pixels+=(image->columns-1)*GetPixelChannels(image);
             }
-            k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
-            pixels=q-offset.x*GetPixelChannels(image);
+            k=(&kernel->values[(ssize_t) kernel->width*(kernel->y+1)-1]);
+            pixels=q-offset.x*(ssize_t) GetPixelChannels(image);
             for (u=0; u < offset.x; u++)
             {
               if (!IsNaN(*k) && ((x+u-offset.x) >= 0))
@@ -3531,7 +3531,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         {
           case DistanceMorphology:
           {
-            k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
+            k=(&kernel->values[(ssize_t) kernel->width*(kernel->y+1)-1]);
             for (v=offset.y; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
@@ -3546,7 +3546,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               }
               pixels+=(image->columns-1)*GetPixelChannels(image);
             }
-            k=(&kernel->values[kernel->width*kernel->y+kernel->x-1]);
+            k=(&kernel->values[(ssize_t) kernel->width*kernel->y+kernel->x-1]);
             pixels=q;
             for (u=offset.x+1; u < (ssize_t) kernel->width; u++)
             {
@@ -3562,7 +3562,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           }
           case VoronoiMorphology:
           {
-            k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
+            k=(&kernel->values[(ssize_t) kernel->width*(kernel->y+1)-1]);
             for (v=offset.y; v < (ssize_t) kernel->height; v++)
             {
               for (u=0; u < (ssize_t) kernel->width; u++)
@@ -3577,7 +3577,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               }
               pixels+=(image->columns-1)*GetPixelChannels(image);
             }
-            k=(&kernel->values[kernel->width*(kernel->y+1)-1]);
+            k=(&kernel->values[(ssize_t) kernel->width*(kernel->y+1)-1]);
             pixels=q;
             for (u=offset.x+1; u < (ssize_t) kernel->width; u++)
             {
@@ -3948,8 +3948,8 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           }
           if ( changed < 0 )
             goto error_cleanup;
-          kernel_changed += changed;
-          method_changed += changed;
+          kernel_changed = (size_t) ((ssize_t) kernel_changed+changed);
+          method_changed = (size_t) ((ssize_t) method_changed+changed);
 
           /* prepare next loop */
           { Image *tmp = work_image;   /* swap images for iteration */
@@ -4373,17 +4373,17 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
             k=kernel->values;
             for( i=0, x=(ssize_t) kernel->width-1;  i<=x;   i++, x--)
               for( j=0, y=(ssize_t) kernel->height-1;  j<y;   j++, y--)
-                { t                    = k[i+j*kernel->width];
-                  k[i+j*kernel->width] = k[j+x*kernel->width];
-                  k[j+x*kernel->width] = k[x+y*kernel->width];
-                  k[x+y*kernel->width] = k[y+i*kernel->width];
-                  k[y+i*kernel->width] = t;
+                { t                    = k[i+j*(ssize_t) kernel->width];
+                  k[i+j*(ssize_t) kernel->width] = k[j+x*(ssize_t) kernel->width];
+                  k[j+x*(ssize_t) kernel->width] = k[x+y*(ssize_t) kernel->width];
+                  k[x+y*(ssize_t) kernel->width] = k[y+i*(ssize_t) kernel->width];
+                  k[y+i*(ssize_t) kernel->width] = t;
                 }
           }
           /* rotate the origin - relative to center of array */
           { ssize_t x,y;
-            x = (ssize_t) (kernel->x*2-kernel->width+1);
-            y = (ssize_t) (kernel->y*2-kernel->height+1);
+            x = (ssize_t) (kernel->x*2-(ssize_t) kernel->width+1);
+            y = (ssize_t) (kernel->y*2-(ssize_t) kernel->height+1);
             kernel->x = (ssize_t) ( -y +(ssize_t) kernel->width-1)/2;
             kernel->y = (ssize_t) ( +x +(ssize_t) kernel->height-1)/2;
           }
@@ -4742,7 +4742,7 @@ MagickExport void UnityAddKernelInfo(KernelInfo *kernel,
     UnityAddKernelInfo(kernel->next, scale);
 
   /* Add the scaled unity kernel to the existing kernel */
-  kernel->values[kernel->x+kernel->y*kernel->width] += scale;
+  kernel->values[kernel->x+kernel->y*(ssize_t) kernel->width] += scale;
   CalcKernelMetaData(kernel);  /* recalculate the meta-data */
 
   return;
