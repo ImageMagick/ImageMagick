@@ -246,8 +246,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       break;
-    p+=x1*GetPixelChannels(image);
-    q+=x1*GetPixelChannels(floodplane_image);
+    p+=x1*(ssize_t) GetPixelChannels(image);
+    q+=x1*(ssize_t) GetPixelChannels(floodplane_image);
     for (x=x1; x >= 0; x--)
     {
       if (GetPixelGray(floodplane_image,q) != 0)
@@ -275,10 +275,10 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
         {
           if (x < (ssize_t) image->columns)
             {
-              p=GetCacheViewVirtualPixels(image_view,x,y,image->columns-x,1,
-                exception);
-              q=GetCacheViewAuthenticPixels(floodplane_view,x,y,image->columns-
-                x,1,exception);
+              p=GetCacheViewVirtualPixels(image_view,x,y,(size_t)
+                ((ssize_t) image->columns-x),1,exception);
+              q=GetCacheViewAuthenticPixels(floodplane_view,x,y,(size_t)
+                ((ssize_t) image->columns-x),1,exception);
               if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for ( ; x < (ssize_t) image->columns; x++)
@@ -753,8 +753,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  center=(ssize_t) GetPixelChannels(linear_image)*(linear_image->columns+width)*
-    (width/2L)+GetPixelChannels(linear_image)*(width/2L);
+  center=(ssize_t) (GetPixelChannels(linear_image)*(linear_image->columns+
+    width)*(width/2L)+GetPixelChannels(linear_image)*(width/2L));
   image_view=AcquireVirtualCacheView(linear_image,exception);
   paint_view=AcquireAuthenticCacheView(paint_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -814,7 +814,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         for (u=0; u < (ssize_t) width; u++)
         {
           n=(ssize_t) ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(
-            linear_image,p+GetPixelChannels(linear_image)*(u+k))));
+            linear_image,p+(ssize_t) GetPixelChannels(linear_image)*(u+k))));
           histogram[n]++;
           if (histogram[n] > count)
             {
@@ -837,8 +837,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
             SetPixelChannel(paint_image,channel,p[center+i],q);
             continue;
           }
-        SetPixelChannel(paint_image,channel,p[j*GetPixelChannels(linear_image)+
-          i],q);
+        SetPixelChannel(paint_image,channel,p[j*(ssize_t)
+          GetPixelChannels(linear_image)+i],q);
       }
       p+=GetPixelChannels(linear_image);
       q+=GetPixelChannels(paint_image);
