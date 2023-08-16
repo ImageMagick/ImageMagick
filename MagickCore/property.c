@@ -563,7 +563,7 @@ static inline signed short ReadPropertyMSBShort(const unsigned char **p,
     value;
 
   if (*length < 2)
-    return((unsigned short) ~0);
+    return((signed short) ~0U);
   for (i=0; i < 2; i++)
   {
     c=(int) (*(*p)++);
@@ -598,14 +598,12 @@ static void Get8BIMProperty(const Image *image,const char *key,
   MagickBooleanType
     status;
 
-  ssize_t
-    i;
-
   size_t
     length;
 
   ssize_t
     count,
+    i,
     id,
     sub_number;
 
@@ -677,7 +675,7 @@ static void Get8BIMProperty(const Image *image,const char *key,
             No name match, scroll forward and try next.
           */
           info+=count;
-          length-=MagickMin(count,(ssize_t) length);
+          length=(size_t) ((ssize_t) length-MagickMin(count,(ssize_t) length));
           continue;
         }
     if ((*name == '#') && (sub_number != 1))
@@ -687,7 +685,7 @@ static void Get8BIMProperty(const Image *image,const char *key,
         */
         sub_number--;
         info+=count;
-        length-=MagickMin(count,(ssize_t) length);
+        length=(size_t) ((ssize_t) length-MagickMin(count,(ssize_t) length));
         continue;
       }
     /*
@@ -702,7 +700,7 @@ static void Get8BIMProperty(const Image *image,const char *key,
         (void) memcpy(attribute,(char *) info,(size_t) count);
         attribute[count]='\0';
         info+=count;
-        length-=MagickMin(count,(ssize_t) length);
+        length=(size_t) ((ssize_t) length-MagickMin(count,(ssize_t) length));
         if ((id <= 1999) || (id >= 2999))
           (void) SetImageProperty((Image *) image,key,(const char *) attribute,
             exception);
@@ -850,52 +848,49 @@ static void GetEXIFProperty(const Image *image,
 
 #define EXIFMultipleValues(size,format,arg) \
 { \
+   size_t \
+     length = 0; \
+ \
    ssize_t \
      component; \
  \
-   size_t \
-     len; \
- \
    unsigned char \
-     *p1; \
+     *q = p; \
  \
-   len=0; \
-   p1=p; \
    for (component=0; component < components; component++) \
    { \
-     len+=FormatLocaleString(buffer+len,MagickPathExtent-len,format", ",arg); \
-     if (len >= (MagickPathExtent-1)) \
-       len=MagickPathExtent-1; \
-     p1+=size; \
+     length=(size_t) ((ssize_t) length-FormatLocaleString(buffer+length, \
+       MagickPathExtent-length,format", ",arg)); \
+     if (length >= (MagickPathExtent-1)) \
+       length=MagickPathExtent-1; \
+     q+=size; \
    } \
-   if (len > 1) \
-     buffer[len-2]='\0'; \
+   if (length > 1) \
+     buffer[length-2]='\0'; \
    value=AcquireString(buffer); \
 }
 
 #define EXIFMultipleFractions(size,format,arg1,arg2) \
 { \
+   size_t \
+     length = 0; \
+ \
    ssize_t \
      component; \
  \
-   size_t \
-     len; \
- \
    unsigned char \
-     *p1; \
+     *q = p; \
  \
-   len=0; \
-   p1=p; \
    for (component=0; component < components; component++) \
    { \
-     len+=FormatLocaleString(buffer+len,MagickPathExtent-len,format", ", \
-       (arg1),(arg2)); \
-     if (len >= (MagickPathExtent-1)) \
-       len=MagickPathExtent-1; \
-     p1+=size; \
+     length=(size_t) ((ssize_t) length+FormatLocaleString(buffer+length, \
+       MagickPathExtent-length,format", ",(arg1),(arg2))); \
+     if (length >= (MagickPathExtent-1)) \
+       length=MagickPathExtent-1; \
+     q+=size; \
    } \
-   if (len > 1) \
-     buffer[len-2]='\0'; \
+   if (length > 1) \
+     buffer[length-2]='\0'; \
    value=AcquireString(buffer); \
 }
 
@@ -1235,9 +1230,6 @@ static void GetEXIFProperty(const Image *image,
   EndianType
     endian;
 
-  ssize_t
-    i;
-
   size_t
     entry,
     length,
@@ -1250,6 +1242,7 @@ static void GetEXIFProperty(const Image *image,
 
   ssize_t
     all,
+    i,
     id,
     level,
     offset,
@@ -1317,13 +1310,13 @@ static void GetEXIFProperty(const Image *image,
           c=(*property++);
           tag<<=4;
           if ((c >= '0') && (c <= '9'))
-            tag|=(c-'0');
+            tag|=(size_t) (c-'0');
           else
             if ((c >= 'A') && (c <= 'F'))
-              tag|=(c-('A'-10));
+              tag|=(size_t) (c-('A'-10));
             else
               if ((c >= 'a') && (c <= 'f'))
-                tag|=(c-('a'-10));
+                tag|=(size_t) (c-('a'-10));
               else
                 return;
         }
@@ -1435,7 +1428,8 @@ static void GetEXIFProperty(const Image *image,
       if (GetValueFromSplayTree(exif_resources,q) == q)
         break;
       (void) AddValueToSplayTree(exif_resources,q,q);
-      tag_value=(size_t) ReadPropertyUnsignedShort(endian,q)+tag_offset;
+      tag_value=(size_t) (ReadPropertyUnsignedShort(endian,q)+(ssize_t)
+        tag_offset);
       format=(size_t) ReadPropertyUnsignedShort(endian,q+2);
       if (format >= (sizeof(tag_bytes)/sizeof(*tag_bytes)))
         break;
@@ -1444,7 +1438,7 @@ static void GetEXIFProperty(const Image *image,
       components=(ssize_t) ReadPropertySignedLong(endian,q+4);
       if (components < 0)
         break;  /* corrupt EXIF */
-      number_bytes=(size_t) components*tag_bytes[format];
+      number_bytes=components*(ssize_t) tag_bytes[format];
       if (number_bytes < components)
         break;  /* prevent overflow */
       if (number_bytes <= 4)
@@ -1460,9 +1454,9 @@ static void GetEXIFProperty(const Image *image,
           dir_offset=(ssize_t) ReadPropertySignedLong(endian,q+8);
           if ((dir_offset < 0) || (size_t) dir_offset >= length)
             continue;
-          if (((size_t) dir_offset+number_bytes) < (size_t) dir_offset)
+          if ((dir_offset+(ssize_t) number_bytes) < dir_offset)
             continue;  /* prevent overflow */
-          if (((size_t) dir_offset+number_bytes) > length)
+          if ((dir_offset+(ssize_t) number_bytes) > length)
             continue;
           p=(unsigned char *) (exif+dir_offset);
         }
@@ -1498,55 +1492,55 @@ static void GetEXIFProperty(const Image *image,
             }
             case EXIF_FMT_SBYTE:
             {
-              EXIFMultipleValues(1,"%.20g",(double) (*(signed char *) p1));
+              EXIFMultipleValues(1,"%.20g",(double) (*(signed char *) q));
               break;
             }
             case EXIF_FMT_SSHORT:
             {
-              EXIFMultipleValues(2,"%hd",ReadPropertySignedShort(endian,p1));
+              EXIFMultipleValues(2,"%hd",ReadPropertySignedShort(endian,q));
               break;
             }
             case EXIF_FMT_USHORT:
             {
-              EXIFMultipleValues(2,"%hu",ReadPropertyUnsignedShort(endian,p1));
+              EXIFMultipleValues(2,"%hu",ReadPropertyUnsignedShort(endian,q));
               break;
             }
             case EXIF_FMT_ULONG:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ReadPropertyUnsignedLong(endian,p1));
+                ReadPropertyUnsignedLong(endian,q));
               break;
             }
             case EXIF_FMT_SLONG:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ReadPropertySignedLong(endian,p1));
+                ReadPropertySignedLong(endian,q));
               break;
             }
             case EXIF_FMT_URATIONAL:
             {
               EXIFMultipleFractions(8,"%.20g/%.20g",(double)
-                ReadPropertyUnsignedLong(endian,p1),(double)
-                ReadPropertyUnsignedLong(endian,p1+4));
+                ReadPropertyUnsignedLong(endian,q),(double)
+                ReadPropertyUnsignedLong(endian,q+4));
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
               EXIFMultipleFractions(8,"%.20g/%.20g",(double)
-                ReadPropertySignedLong(endian,p1),(double)
-                ReadPropertySignedLong(endian,p1+4));
+                ReadPropertySignedLong(endian,q),(double)
+                ReadPropertySignedLong(endian,q+4));
               break;
             }
             case EXIF_FMT_SINGLE:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ReadPropertySignedLong(endian,p1));
+                ReadPropertySignedLong(endian,q));
               break;
             }
             case EXIF_FMT_DOUBLE:
             {
               EXIFMultipleValues(8,"%.20g",(double)
-                ReadPropertySignedLong(endian,p1));
+                ReadPropertySignedLong(endian,q));
               break;
             }
             case EXIF_FMT_STRING:
@@ -1943,7 +1937,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
         if (knot_count != 0)
           {
             blob+=24;
-            length-=MagickMin(24,(ssize_t) length);
+            length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
             break;
           }
         /*
@@ -1951,7 +1945,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
         */
         knot_count=(ssize_t) ReadPropertyMSBShort(&blob,&length);
         blob+=22;
-        length-=MagickMin(22,(ssize_t) length);
+        length=(size_t) ((ssize_t) length-MagickMin(22,(ssize_t) length));
         break;
       }
       case 1:
@@ -1965,7 +1959,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
               Unexpected subpath knot
             */
             blob+=24;
-            length-=MagickMin(24,(ssize_t) length);
+            length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
             break;
           }
         /*
@@ -2056,7 +2050,7 @@ static char *TracePSClippath(const unsigned char *blob,size_t length)
       default:
       {
         blob+=24;
-        length-=MagickMin(24,(ssize_t) length);
+        length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
         break;
       }
     }
@@ -2141,7 +2135,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
         if (knot_count != 0)
           {
             blob+=24;
-            length-=MagickMin(24,(ssize_t) length);
+            length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
             break;
           }
         /*
@@ -2149,7 +2143,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
         */
         knot_count=(ssize_t) ReadPropertyMSBShort(&blob,&length);
         blob+=22;
-        length-=MagickMin(22,(ssize_t) length);
+        length=(size_t) ((ssize_t) length-MagickMin(22,(ssize_t) length));
         break;
       }
       case 1:
@@ -2163,7 +2157,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
               Unexpected subpath knot.
             */
             blob+=24;
-            length-=MagickMin(24,(ssize_t) length);
+            length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
             break;
           }
         /*
@@ -2212,7 +2206,7 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
       default:
       {
         blob+=24;
-        length-=MagickMin(24,(ssize_t) length);
+        length=(size_t) ((ssize_t) length-MagickMin(24,(ssize_t) length));
         break;
       }
     }
@@ -3617,7 +3611,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
 #define ExtendInterpretText(string_length) \
 { \
   size_t length=(string_length); \
-  if ((size_t) (q-interpret_text+length+1) >= extent) \
+  if ((q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
@@ -3637,7 +3631,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
 #define AppendKeyValue2Text(key,value)\
 { \
   size_t length=strlen(key)+strlen(value)+2; \
-  if ((size_t) (q-interpret_text+length+1) >= extent) \
+  if ((q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
@@ -3658,7 +3652,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
 #define AppendString2Text(string) \
 { \
   size_t length=strlen((string)); \
-  if ((size_t) (q-interpret_text+length+1) >= extent) \
+  if ((q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
@@ -4468,7 +4462,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
             if ((flags & LessValue) != 0)
               {
                 if ((double) image->delay < floor(geometry_info.rho+0.5))
-                  image->delay=CastDoubleToLong(
+                  image->delay=(size_t) CastDoubleToLong(
                     floor(geometry_info.sigma+0.5));
               }
             else
