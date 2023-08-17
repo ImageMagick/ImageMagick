@@ -291,7 +291,8 @@ static inline const unsigned char *PushQuantumLongPixel(
     if (quantum_bits > quantum_info->state.bits)
       quantum_bits=quantum_info->state.bits;
     *quantum|=(((quantum_info->state.pixel >> (32U-quantum_info->state.bits)) &
-      quantum_info->state.mask[quantum_bits]) << (quantum_info->depth-i));
+      quantum_info->state.mask[quantum_bits]) << ((ssize_t)
+      quantum_info->depth-i));
     i-=(ssize_t) quantum_bits;
     quantum_info->state.bits-=quantum_bits;
   }
