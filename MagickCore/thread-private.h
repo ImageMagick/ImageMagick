@@ -28,7 +28,8 @@ extern "C" {
 #endif
 
 #define magick_number_threads(source,destination,chunk,multithreaded) \
-  num_threads(GetMagickNumberThreads(source,destination,chunk,multithreaded))
+  num_threads(GetMagickNumberThreads((source),(destination),(chunk), \
+    (multithreaded)))
 #if defined(__clang__) || (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
 #define MagickCachePrefetch(address,mode,locality) \
   __builtin_prefetch(address,mode,locality)

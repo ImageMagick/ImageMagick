@@ -195,7 +195,7 @@ static inline unsigned char *PopQuantumPixel(QuantumInfo *quantum_info,
     if (quantum_info->state.bits == 8UL)
       *pixels='\0';
     quantum_info->state.bits-=quantum_bits;
-    *pixels|=(((pixel >> i) &~ ((QuantumAny)(~0UL) << quantum_bits)) <<
+    *pixels|=(((pixel >> i) &~ ((~0UL) << quantum_bits)) <<
       quantum_info->state.bits);
     if (quantum_info->state.bits == 0UL)
       {
@@ -222,7 +222,7 @@ static inline unsigned char *PopQuantumLongPixel(QuantumInfo *quantum_info,
     quantum_bits=(size_t) i;
     if (quantum_bits > quantum_info->state.bits)
       quantum_bits=quantum_info->state.bits;
-    quantum_info->state.pixel|=(((pixel >> (quantum_info->depth-i)) &
+    quantum_info->state.pixel|=(((pixel >> ((ssize_t) quantum_info->depth-i)) &
       quantum_info->state.mask[quantum_bits]) << (32U-
         quantum_info->state.bits));
     i-=(ssize_t) quantum_bits;

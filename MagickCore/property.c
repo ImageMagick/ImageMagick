@@ -849,48 +849,48 @@ static void GetEXIFProperty(const Image *image,
 #define EXIFMultipleValues(size,format,arg) \
 { \
    size_t \
-     length = 0; \
+     extent = 0; \
  \
    ssize_t \
-     component; \
+     component = 0; \
  \
    unsigned char \
      *q = p; \
  \
-   for (component=0; component < components; component++) \
+   for ( ; component < components; component++) \
    { \
-     length=(size_t) ((ssize_t) length-FormatLocaleString(buffer+length, \
-       MagickPathExtent-length,format", ",arg)); \
-     if (length >= (MagickPathExtent-1)) \
-       length=MagickPathExtent-1; \
+     extent=(size_t) ((ssize_t) extent-FormatLocaleString(buffer+extent, \
+       MagickPathExtent-extent,format", ",arg)); \
+     if (extent >= (MagickPathExtent-1)) \
+       extent=MagickPathExtent-1; \
      q+=size; \
    } \
-   if (length > 1) \
-     buffer[length-2]='\0'; \
+   if (extent > 1) \
+     buffer[extent-2]='\0'; \
    value=AcquireString(buffer); \
 }
 
 #define EXIFMultipleFractions(size,format,arg1,arg2) \
 { \
    size_t \
-     length = 0; \
+     extent = 0; \
  \
    ssize_t \
-     component; \
+     component = 0; \
  \
    unsigned char \
      *q = p; \
  \
-   for (component=0; component < components; component++) \
+   for ( ; component < components; component++) \
    { \
-     length=(size_t) ((ssize_t) length+FormatLocaleString(buffer+length, \
-       MagickPathExtent-length,format", ",(arg1),(arg2))); \
-     if (length >= (MagickPathExtent-1)) \
-       length=MagickPathExtent-1; \
+     extent=(size_t) ((ssize_t) extent+FormatLocaleString(buffer+extent, \
+       MagickPathExtent-extent,format", ",(arg1),(arg2))); \
+     if (extent >= (MagickPathExtent-1)) \
+       extent=MagickPathExtent-1; \
      q+=size; \
    } \
-   if (length > 1) \
-     buffer[length-2]='\0'; \
+   if (extent > 1) \
+     buffer[extent-2]='\0'; \
    value=AcquireString(buffer); \
 }
 
