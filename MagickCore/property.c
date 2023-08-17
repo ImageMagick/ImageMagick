@@ -563,7 +563,7 @@ static inline signed short ReadPropertyMSBShort(const unsigned char **p,
     value;
 
   if (*length < 2)
-    return((signed short) ~0U);
+    return(-1);
   for (i=0; i < 2; i++)
   {
     c=(int) (*(*p)++);
@@ -854,16 +854,12 @@ static void GetEXIFProperty(const Image *image,
    ssize_t \
      component = 0; \
  \
-   unsigned char \
-     *q = p; \
- \
    for ( ; component < components; component++) \
    { \
      extent=(size_t) ((ssize_t) extent-FormatLocaleString(buffer+extent, \
        MagickPathExtent-extent,format", ",arg)); \
      if (extent >= (MagickPathExtent-1)) \
        extent=MagickPathExtent-1; \
-     q+=size; \
    } \
    if (extent > 1) \
      buffer[extent-2]='\0'; \
@@ -878,16 +874,12 @@ static void GetEXIFProperty(const Image *image,
    ssize_t \
      component = 0; \
  \
-   unsigned char \
-     *q = p; \
- \
    for ( ; component < components; component++) \
    { \
      extent=(size_t) ((ssize_t) extent+FormatLocaleString(buffer+extent, \
        MagickPathExtent-extent,format", ",(arg1),(arg2))); \
      if (extent >= (MagickPathExtent-1)) \
        extent=MagickPathExtent-1; \
-     q+=size; \
    } \
    if (extent > 1) \
      buffer[extent-2]='\0'; \
