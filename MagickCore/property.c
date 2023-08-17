@@ -3681,7 +3681,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
   const char
     *p;  /* position in embed_text string being expanded */
 
-  size_t
+  ssize_t
     extent;  /* allocated length of interpret_text */
 
   if ((image != (Image *) NULL) && (IsEventLogging() != MagickFalse))
