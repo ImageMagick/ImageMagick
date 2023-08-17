@@ -2318,66 +2318,6 @@ MagickPrivate int NTUnmapMemory(void *map,size_t length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N T U s e r T i m e                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  NTUserTime() returns the total time the process has been scheduled (e.g.
-%  seconds) since the last call to StartTimer().
-%
-%  The format of the UserTime method is:
-%
-%      double NTUserTime(void)
-%
-*/
-MagickPrivate double NTUserTime(void)
-{
-  DWORD
-    status;
-
-  FILETIME
-    create_time,
-    exit_time;
-
-  OSVERSIONINFO
-    OsVersionInfo;
-
-  union
-  {
-    FILETIME
-      filetime;
-
-    __int64
-      filetime64;
-  } kernel_time;
-
-  union
-  {
-    FILETIME
-      filetime;
-
-    __int64
-      filetime64;
-  } user_time;
-
-  OsVersionInfo.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
-  GetVersionEx(&OsVersionInfo);
-  if (OsVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
-    return(NTElapsedTime());
-  status=GetProcessTimes(GetCurrentProcess(),&create_time,&exit_time,
-    &kernel_time.filetime,&user_time.filetime);
-  if (status != TRUE)
-    return(0.0);
-  return((double) 1.0e-7*(kernel_time.filetime64+user_time.filetime64));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   N T W a r n i n g H a n d l e r                                           %
 %                                                                             %
 %                                                                             %

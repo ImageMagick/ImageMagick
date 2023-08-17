@@ -480,7 +480,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     /*
       Not cryptographically strong but better than nothing.
     */
-    nt_seconds=NTElapsedTime()+NTUserTime();
+    nt_seconds=NTElapsedTime()+NTElapsedTime();
     SetStringInfoLength(chaos,sizeof(nt_seconds));
     SetStringInfoDatum(chaos,(unsigned char *) &nt_seconds);
     ConcatenateStringInfo(entropy,chaos);

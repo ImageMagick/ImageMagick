@@ -99,8 +99,7 @@ extern MagickPrivate DIR
 
 extern MagickPrivate double
   NTElapsedTime(void),
-  NTErf(double),
-  NTUserTime(void);
+  NTErf(double);
 
 extern MagickPrivate int
 #if !defined(__MINGW32__)
