@@ -1448,7 +1448,7 @@ static void GetEXIFProperty(const Image *image,
             continue;
           if ((dir_offset+(ssize_t) number_bytes) < dir_offset)
             continue;  /* prevent overflow */
-          if ((dir_offset+(ssize_t) number_bytes) > length)
+          if ((dir_offset+(ssize_t) number_bytes) > (ssize_t) length)
             continue;
           p=(unsigned char *) (exif+dir_offset);
         }
