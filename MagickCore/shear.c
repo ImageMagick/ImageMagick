@@ -243,26 +243,26 @@ static void RadonProjection(MatrixInfo *source_matrices,
 
       for (i=0; i < (ssize_t) step; i++)
       {
-        for (y=0; y < (ssize_t) (GetMatrixRows(p)-i-1); y++)
+        for (y=0; y < ((ssize_t) GetMatrixRows(p)-i-1); y++)
         {
           if (GetMatrixElement(p,x+i,y,&element) == MagickFalse)
             continue;
-          if (GetMatrixElement(p,x+i+step,y+i,&neighbor) == MagickFalse)
+          if (GetMatrixElement(p,x+i+(ssize_t) step,y+i,&neighbor) == MagickFalse)
             continue;
           neighbor+=element;
           if (SetMatrixElement(q,x+2*i,y,&neighbor) == MagickFalse)
             continue;
-          if (GetMatrixElement(p,x+i+step,y+i+1,&neighbor) == MagickFalse)
+          if (GetMatrixElement(p,x+i+(ssize_t) step,y+i+1,&neighbor) == MagickFalse)
             continue;
           neighbor+=element;
           if (SetMatrixElement(q,x+2*i+1,y,&neighbor) == MagickFalse)
             continue;
         }
-        for ( ; y < (ssize_t) (GetMatrixRows(p)-i); y++)
+        for ( ; y < ((ssize_t) GetMatrixRows(p)-i); y++)
         {
           if (GetMatrixElement(p,x+i,y,&element) == MagickFalse)
             continue;
-          if (GetMatrixElement(p,x+i+step,y+i,&neighbor) == MagickFalse)
+          if (GetMatrixElement(p,x+i+(ssize_t) step,y+i,&neighbor) == MagickFalse)
             continue;
           neighbor+=element;
           if (SetMatrixElement(q,x+2*i,y,&neighbor) == MagickFalse)
@@ -312,9 +312,9 @@ static void RadonProjection(MatrixInfo *source_matrices,
       if (GetMatrixElement(p,x,y+1,&neighbor) == MagickFalse)
         continue;
       delta=(ssize_t) element-(ssize_t) neighbor;
-      sum+=delta*delta;
+      sum+=(size_t) (delta*delta);
     }
-    projection[GetMatrixColumns(p)+sign*x-1]=sum;
+    projection[(ssize_t) GetMatrixColumns(p)+sign*x-1]=sum;
   }
 }
 
@@ -804,11 +804,13 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             y;
 
           width=tile_width;
-          if ((tile_width+tile_x) > image->columns)
-            width=(size_t) (tile_width-(tile_x+tile_width-image->columns));
+          if ((tile_width+(size_t) tile_x) > image->columns)
+            width=(size_t) ((ssize_t) tile_width-(tile_x+(ssize_t) tile_width-
+              (ssize_t) image->columns));
           height=tile_height;
-          if ((tile_height+tile_y) > image->rows)
-            height=(size_t) (tile_height-(tile_y+tile_height-image->rows));
+          if ((tile_height+(size_t) tile_y) > image->rows)
+            height=(size_t) ((ssize_t) tile_height-(tile_y+(ssize_t)
+              tile_height-(ssize_t) image->rows));
           p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,width,height,
             exception);
           if (p == (const Quantum *) NULL)
@@ -827,14 +829,15 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             if (status == MagickFalse)
               continue;
             q=QueueCacheViewAuthenticPixels(rotate_view,(ssize_t)
-              (rotate_image->columns-(tile_y+height)),y+tile_x,height,1,
-              exception);
+              rotate_image->columns-(tile_y+(ssize_t) height),y+tile_x,height,
+              1,exception);
             if (q == (Quantum *) NULL)
               {
                 status=MagickFalse;
                 continue;
               }
-            tile_pixels=p+((height-1)*width+y)*GetPixelChannels(image);
+            tile_pixels=p+(((ssize_t) height-1)*(ssize_t) width+y)*(ssize_t)
+              GetPixelChannels(image);
             for (x=0; x < (ssize_t) height; x++)
             {
               ssize_t
@@ -864,8 +867,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
-            proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
-              image->rows);
+            proceed=SetImageProgress(image,RotateImageTag,
+              progress+=(MagickOffsetType) tile_height,image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
@@ -875,7 +878,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       Swap(page.width,page.height);
       Swap(page.x,page.y);
       if (page.width != 0)
-        page.x=(ssize_t) (page.width-rotate_image->columns-page.x);
+        page.x=(ssize_t) page.width-(ssize_t) rotate_image->columns-page.x;
       break;
     }
     case 2:
@@ -907,8 +910,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
         if (status == MagickFalse)
           continue;
         p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-        q=QueueCacheViewAuthenticPixels(rotate_view,0,(ssize_t) (image->rows-y-
-          1),image->columns,1,exception);
+        q=QueueCacheViewAuthenticPixels(rotate_view,0,(ssize_t) image->rows-y-1,
+          image->columns,1,exception);
         if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
           {
             status=MagickFalse;
@@ -951,9 +954,9 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       (void) SetImageProgress(image,RotateImageTag,(MagickOffsetType)
         image->rows-1,image->rows);
       if (page.width != 0)
-        page.x=(ssize_t) (page.width-rotate_image->columns-page.x);
+        page.x=(ssize_t) page.width-(ssize_t) rotate_image->columns-page.x;
       if (page.height != 0)
-        page.y=(ssize_t) (page.height-rotate_image->rows-page.y);
+        page.y=(ssize_t) page.height-(ssize_t) rotate_image->rows-page.y;
       break;
     }
     case 3:
@@ -1001,11 +1004,13 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             y;
 
           width=tile_width;
-          if ((tile_width+tile_x) > image->columns)
-            width=(size_t) (tile_width-(tile_x+tile_width-image->columns));
+          if ((tile_width+(size_t) tile_x) > image->columns)
+            width=(size_t) ((ssize_t) tile_width-(tile_x+(ssize_t) tile_width-
+              (ssize_t) image->columns));
           height=tile_height;
-          if ((tile_height+tile_y) > image->rows)
-            height=(size_t) (tile_height-(tile_y+tile_height-image->rows));
+          if ((tile_height+(size_t) tile_y) > image->rows)
+            height=(size_t) ((ssize_t) tile_height-(tile_y+(ssize_t)
+              tile_height-(ssize_t) image->rows));
           p=GetCacheViewVirtualPixels(image_view,tile_x,tile_y,width,height,
             exception);
           if (p == (const Quantum *) NULL)
@@ -1023,14 +1028,15 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
 
             if (status == MagickFalse)
               continue;
-            q=QueueCacheViewAuthenticPixels(rotate_view,tile_y,(ssize_t) (y+
-              rotate_image->rows-(tile_x+width)),height,1,exception);
+            q=QueueCacheViewAuthenticPixels(rotate_view,tile_y,y+(ssize_t)
+              rotate_image->rows-(tile_x+(ssize_t) width),height,1,exception);
             if (q == (Quantum *) NULL)
               {
                 status=MagickFalse;
                 continue;
               }
-            tile_pixels=p+((width-1)-y)*GetPixelChannels(image);
+            tile_pixels=p+(((ssize_t) width-1)-y)*(ssize_t)
+              GetPixelChannels(image);
             for (x=0; x < (ssize_t) height; x++)
             {
               ssize_t
@@ -1063,8 +1069,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
-            proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
-              image->rows);
+            proceed=SetImageProgress(image,RotateImageTag,
+              progress+=(MagickOffsetType) tile_height,image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
@@ -1074,7 +1080,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       Swap(page.width,page.height);
       Swap(page.x,page.y);
       if (page.height != 0)
-        page.y=(ssize_t) (page.height-rotate_image->rows-page.y);
+        page.y=(ssize_t) page.height-(ssize_t) rotate_image->rows-page.y;
       break;
     }
     default:
@@ -1198,7 +1204,7 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
         status=MagickFalse;
         continue;
       }
-    p+=x_offset*GetPixelChannels(image);
+    p+=x_offset*(ssize_t) GetPixelChannels(image);
     displacement=degrees*(double) (y-height/2.0);
     if (displacement == 0.0)
       continue;
@@ -1224,7 +1230,7 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
         */
         if (step > x_offset)
           break;
-        q=p-step*GetPixelChannels(image);
+        q=p-step*(ssize_t) GetPixelChannels(image);
         for (i=0; i < (ssize_t) width; i++)
         {
           if ((x_offset+i) < step)
@@ -1259,12 +1265,12 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
           Transfer pixels right-to-left.
         */
         p+=width*GetPixelChannels(image);
-        q=p+step*GetPixelChannels(image);
+        q=p+step*(ssize_t) GetPixelChannels(image);
         for (i=0; i < (ssize_t) width; i++)
         {
           p-=GetPixelChannels(image);
           q-=GetPixelChannels(image);
-          if ((size_t) (x_offset+width+step-i) > image->columns)
+          if ((size_t) (x_offset+(ssize_t) width+step-i) > image->columns)
             continue;
           GetPixelInfoPixel(image,p,&source);
           CompositePixelInfoAreaBlend(&pixel,(double) pixel.alpha,
@@ -1413,7 +1419,7 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
         status=MagickFalse;
         continue;
       }
-    p+=y_offset*GetPixelChannels(image);
+    p+=y_offset*(ssize_t) GetPixelChannels(image);
     displacement=degrees*(double) (x-width/2.0);
     if (displacement == 0.0)
       continue;
@@ -1439,7 +1445,7 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
         */
         if (step > y_offset)
           break;
-        q=p-step*GetPixelChannels(image);
+        q=p-step*(ssize_t) GetPixelChannels(image);
         for (i=0; i < (ssize_t) height; i++)
         {
           if ((y_offset+i) < step)
@@ -1475,12 +1481,12 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
           Transfer pixels bottom-to-top.
         */
         p+=height*GetPixelChannels(image);
-        q=p+step*GetPixelChannels(image);
+        q=p+step*(ssize_t) GetPixelChannels(image);
         for (i=0; i < (ssize_t) height; i++)
         {
           p-=GetPixelChannels(image);
           q-=GetPixelChannels(image);
-          if ((size_t) (y_offset+height+step-i) > image->rows)
+          if ((size_t) (y_offset+(ssize_t) height+step-i) > image->rows)
             continue;
           GetPixelInfoPixel(image,p,&source);
           CompositePixelInfoAreaBlend(&pixel,(double) pixel.alpha,
@@ -1607,8 +1613,8 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   /*
     Compute image size.
   */
-  bounds.width=image->columns+CastDoubleToLong(floor(fabs(shear.x)*
-    image->rows+0.5));
+  bounds.width=(size_t) ((ssize_t) image->columns+
+    CastDoubleToLong(floor(fabs(shear.x)*image->rows+0.5)));
   bounds.x=CastDoubleToLong(ceil((double) image->columns+((fabs(shear.x)*
     image->rows)-image->columns)/2.0-0.5));
   bounds.y=CastDoubleToLong(ceil((double) image->rows+((fabs(shear.y)*

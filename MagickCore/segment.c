@@ -1376,7 +1376,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   root->right=255;
   root->mean_stability=0.0;
   root->stability=0.0;
-  (void) memset(list,0,TreeLength*sizeof(*list));
+  (void) memset(list,0,(size_t) TreeLength*sizeof(*list));
   for (i=(-1); i < (ssize_t) number_crossings; i++)
   {
     /*
