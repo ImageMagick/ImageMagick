@@ -1177,12 +1177,6 @@ MagickExport Image *ConvolveImage(const Image *image,
   Image
     *convolve_image;
 
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
-  convolve_image=AccelerateConvolveImage(image,kernel_info,exception);
-  if (convolve_image != (Image *) NULL)
-    return(convolve_image);
-#endif
-
   convolve_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
     exception);
   return(convolve_image);

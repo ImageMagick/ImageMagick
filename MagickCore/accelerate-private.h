@@ -33,7 +33,6 @@ extern "C" {
 
 extern MagickPrivate Image
   *AccelerateBlurImage(const Image *,const double,const double,ExceptionInfo *),
-  *AccelerateConvolveImage(const Image *,const KernelInfo *,ExceptionInfo *),
   *AccelerateDespeckleImage(const Image *,ExceptionInfo *),
   *AccelerateLocalContrastImage(const Image *,const double,const double,
     ExceptionInfo *),
