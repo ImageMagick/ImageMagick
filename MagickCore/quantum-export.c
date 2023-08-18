@@ -195,7 +195,7 @@ static inline unsigned char *PopQuantumPixel(QuantumInfo *quantum_info,
     if (quantum_info->state.bits == 8UL)
       *pixels='\0';
     quantum_info->state.bits-=quantum_bits;
-    *pixels|=(((pixel >> i) &~ ((~0UL) << quantum_bits)) <<
+    *pixels|=(((pixel >> i) &~ (((QuantumAny) ~0UL) << quantum_bits)) <<
       quantum_info->state.bits);
     if (quantum_info->state.bits == 0UL)
       {
