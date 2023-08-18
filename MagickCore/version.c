@@ -570,7 +570,7 @@ MagickExport unsigned int GetMagickSignature(const StringInfo *nonce)
   signature=1;  /* endianness */
   (void) memcpy(p,&signature,sizeof(signature));
   p+=sizeof(signature);
-  SetStringInfoLength(version,p-GetStringInfoDatum(version));
+  SetStringInfoLength(version,(size_t) (p-GetStringInfoDatum(version)));
   if (nonce != (const StringInfo *) NULL)
     ConcatenateStringInfo(version,nonce);
   signature=CRC32(GetStringInfoDatum(version),GetStringInfoLength(version));

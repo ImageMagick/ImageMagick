@@ -269,8 +269,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         status=MagickFalse;
         continue;
       }
-    center=(ssize_t) GetPixelChannels(image)*(image->columns+width)*(height/2L)+
-      GetPixelChannels(image)*(width/2);
+    center=(ssize_t) GetPixelChannels(image)*((ssize_t) image->columns+
+      (ssize_t) width)*((ssize_t) height/2L)+(ssize_t) GetPixelChannels(image)*
+      ((ssize_t) width/2);
     for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
     {
       PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -2021,8 +2022,8 @@ MagickExport MagickBooleanType OrderedDitherImage(Image *image,
         level=threshold/(map->divisor-1);
         threshold-=level*(map->divisor-1);
         q[j]=ClampToQuantum((double) (level+(threshold >=
-          map->levels[(x % map->width)+map->width*(y % map->height)]))*(double)
-          QuantumRange/levels[n]);
+          map->levels[(x % (ssize_t) map->width)+(ssize_t) map->width*
+          (y % (ssize_t) map->height)]))*(double) QuantumRange/levels[n]);
         n++;
       }
       q+=GetPixelChannels(image);

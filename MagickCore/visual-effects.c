@@ -1711,7 +1711,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   quantum=(ssize_t) MagickMax(MagickMax((double) image->columns,(double)
     image->rows)/25.0,10.0);
-  height=image->rows+2*quantum;
+  height=(size_t) ((ssize_t) image->rows+2*quantum);
   caption_image=(Image *) NULL;
   if (caption != (const char *) NULL)
     {
@@ -1768,8 +1768,8 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
           text=DestroyString(text);
         }
     }
-  picture_image=CloneImage(image,image->columns+2*quantum,height,MagickTrue,
-    exception);
+  picture_image=CloneImage(image,(size_t) ((ssize_t) image->columns+2*quantum),
+    height,MagickTrue,exception);
   if (picture_image == (Image *) NULL)
     {
       if (caption_image != (Image *) NULL)
@@ -1783,7 +1783,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
   if (caption_image != (Image *) NULL)
     {
       (void) CompositeImage(picture_image,caption_image,OverCompositeOp,
-        MagickTrue,quantum,(ssize_t) (image->rows+3*quantum/2),exception);
+        MagickTrue,quantum,((ssize_t) image->rows+3*quantum/2),exception);
       caption_image=DestroyImage(caption_image);
     }
   (void) QueryColorCompliance("none",AllCompliance,
@@ -2128,8 +2128,10 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
     shadow_image->page.width=shadow_image->columns;
   if (shadow_image->page.height == 0)
     shadow_image->page.height=shadow_image->rows;
-  shadow_image->page.width+=x_offset-(ssize_t) border_info.width;
-  shadow_image->page.height+=y_offset-(ssize_t) border_info.height;
+  shadow_image->page.width=(size_t) ((ssize_t) shadow_image->page.width+
+    x_offset-(ssize_t) border_info.width);
+  shadow_image->page.height=(size_t) ((ssize_t) shadow_image->page.height+
+    y_offset-(ssize_t) border_info.height);
   shadow_image->page.x+=x_offset-(ssize_t) border_info.width;
   shadow_image->page.y+=y_offset-(ssize_t) border_info.height;
   return(shadow_image);
@@ -2595,7 +2597,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
           proceed;
 
         proceed=SetImageProgress(image,SteganoImageTag,(MagickOffsetType)
-          (depth-i),depth);
+          depth-i,depth);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -3662,8 +3664,8 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         ssize_t
           c;
 
-        p=kernel+id*image->columns;
-        q=pixels+y*image->columns;
+        p=kernel+id*(ssize_t) image->columns;
+        q=pixels+y*(ssize_t) image->columns;
         HatTransform(q+high_pass,1,image->columns,((size_t) 1UL << level),p);
         q+=low_pass;
         for (c=0; c < (ssize_t) image->columns; c++)
@@ -3685,7 +3687,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         ssize_t
           r;
 
-        p=kernel+id*image->rows;
+        p=kernel+id*(ssize_t) image->rows;
         q=pixels+x+low_pass;
         HatTransform(q,image->columns,image->rows,((size_t) 1UL << level),p);
         for (r=0; r < (ssize_t) image->rows; r++)
@@ -3701,16 +3703,17 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       magnitude=threshold*(double) noise_levels[level];
       for (i=0; i < (ssize_t) number_pixels; ++i)
       {
-        pixels[high_pass+i]-=pixels[low_pass+i];
-        if ((double) pixels[high_pass+i] < -magnitude)
-          pixels[high_pass+i]+=(float) (magnitude-softness*magnitude);
+        pixels[(ssize_t) high_pass+i]-=pixels[(ssize_t) low_pass+i];
+        if ((double) pixels[(ssize_t) high_pass+i] < -magnitude)
+          pixels[(ssize_t) high_pass+i]+=(float) (magnitude-softness*magnitude);
         else
-          if ((double) pixels[high_pass+i] > magnitude)
-            pixels[high_pass+i]-=(float) (magnitude-softness*magnitude);
+          if ((double) pixels[(ssize_t) high_pass+i] > magnitude)
+            pixels[(ssize_t) high_pass+i]-=(float) (magnitude-softness*
+              magnitude);
           else
-            pixels[high_pass+i]*=(float) softness;
+            pixels[(ssize_t) high_pass+i]*=(float) softness;
         if (high_pass != 0)
-          pixels[i]+=pixels[high_pass+i];
+          pixels[i]+=pixels[(ssize_t) high_pass+i];
       }
       high_pass=low_pass;
     }
@@ -3745,7 +3748,8 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
         MagickRealType
           pixel;
 
-        pixel=(MagickRealType) pixels[i]+(MagickRealType) pixels[low_pass+i];
+        pixel=(MagickRealType) pixels[i]+(MagickRealType)
+          pixels[(ssize_t) low_pass+i];
         q[offset]=ClampToQuantum(pixel);
         i++;
         q+=GetPixelChannels(noise_image);

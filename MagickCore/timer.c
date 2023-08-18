@@ -499,7 +499,7 @@ MagickExport void ResetTimer(TimerInfo *time_info)
 */
 MagickPrivate void SetMagickDatePrecision(const unsigned long precision)
 {
-  date_precision=precision;
+  date_precision=(ssize_t) precision;
 }
 
 /*
@@ -615,7 +615,7 @@ static double UserTime(void)
   return((double) (timer.tms_utime+timer.tms_stime)/sysconf(_SC_CLK_TCK));
 #else
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  return(NTElapsedTime());
+  return(NTUserTime());
 #else
   return((double) clock()/CLOCKS_PER_SEC);
 #endif

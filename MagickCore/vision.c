@@ -129,17 +129,17 @@ static int CCObjectInfoCompare(const void *x,const void *y)
   if (p->key == -4)
     return((int) (q->bounding_box.x-(ssize_t) p->bounding_box.x));
   if (p->key == -3)
-    return((int) (q->bounding_box.height-(ssize_t) p->bounding_box.height));
+    return((int) (q->bounding_box.height-p->bounding_box.height));
   if (p->key == -2)
-    return((int) (q->bounding_box.width-(ssize_t) p->bounding_box.width));
+    return((int) (q->bounding_box.width-p->bounding_box.width));
   if (p->key == -1)
     return((int) (q->area-(ssize_t) p->area));
   if (p->key == 1)
     return((int) (p->area-(ssize_t) q->area));
   if (p->key == 2)
-    return((int) (p->bounding_box.width-(ssize_t) q->bounding_box.width));
+    return((int) (p->bounding_box.width-q->bounding_box.width));
   if (p->key == 3)
-    return((int) (p->bounding_box.height-(ssize_t) q->bounding_box.height));
+    return((int) (p->bounding_box.height-q->bounding_box.height));
   if (p->key == 4)
     return((int) (p->bounding_box.x-(ssize_t) q->bounding_box.x));
   if (p->key == 5)
@@ -223,9 +223,9 @@ static void PerimeterThreshold(const Image *component_image,
             ssize_t
               offset;
 
-            offset=v*(bounding_box.width+2)*
-              GetPixelChannels(component_image)+u*
-              GetPixelChannels(component_image);
+            offset=v*((ssize_t) bounding_box.width+2)*
+              (ssize_t) GetPixelChannels(component_image)+u*
+              (ssize_t) GetPixelChannels(component_image);
             pixels[2*v+u]=GetPixelIndex(component_image,p+offset);
             if ((ssize_t) pixels[2*v+u] == i)
               foreground++;
@@ -332,9 +332,9 @@ static void CircularityThreshold(const Image *component_image,
             ssize_t
               offset;
 
-            offset=v*(bounding_box.width+2)*
-              GetPixelChannels(component_image)+u*
-              GetPixelChannels(component_image);
+            offset=v*((ssize_t) bounding_box.width+2)*
+              (ssize_t) GetPixelChannels(component_image)+u*
+              (ssize_t) GetPixelChannels(component_image);
             pixels[2*v+u]=GetPixelIndex(component_image,p+offset);
             if ((ssize_t) pixels[2*v+u] == i)
               foreground++;
@@ -345,10 +345,8 @@ static void CircularityThreshold(const Image *component_image,
         else
           if (foreground == 2)
             {
-              if ((((ssize_t) pixels[0] == i) &&
-                    ((ssize_t) pixels[3] == i)) ||
-                  (((ssize_t) pixels[1] == i) &&
-                    ((ssize_t) pixels[2] == i)))
+              if ((((ssize_t) pixels[0] == i) && ((ssize_t) pixels[3] == i)) ||
+                  (((ssize_t) pixels[1] == i) && ((ssize_t) pixels[2] == i)))
                 pattern[0]++;  /* diagonal */
               else
                 pattern[2]++;
@@ -944,8 +942,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
             p+=GetPixelChannels(image);
             continue;
           }
-        neighbor_offset=dy*(GetPixelChannels(image)*image->columns)+dx*
-          GetPixelChannels(image);
+        neighbor_offset=dy*((ssize_t) GetPixelChannels(image)*(ssize_t)
+          image->columns)+dx*(ssize_t) GetPixelChannels(image);
         GetPixelInfoPixel(image,p+neighbor_offset,&target);
         if (IsFuzzyEquivalencePixelInfo(&pixel,&target) == MagickFalse)
           {
@@ -955,8 +953,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         /*
           Resolve this equivalence.
         */
-        offset=y*image->columns+x;
-        neighbor_offset=dy*image->columns+dx;
+        offset=y*(ssize_t) image->columns+x;
+        neighbor_offset=dy*(ssize_t) image->columns+dx;
         ox=offset;
         status=GetMatrixElement(equivalences,ox,0,&obj);
         while (obj != ox)
@@ -995,7 +993,8 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
           status=GetMatrixElement(equivalences,oy,0,&obj);
           status=SetMatrixElement(equivalences,oy,0,&root);
         }
-        status=SetMatrixElement(equivalences,y*image->columns+x,0,&root);
+        status=SetMatrixElement(equivalences,y*(ssize_t) image->columns+x,0,
+          &root);
         p+=GetPixelChannels(image);
       }
     }
@@ -1032,7 +1031,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
         id,
         offset;
 
-      offset=y*image->columns+x;
+      offset=y*(ssize_t) image->columns+x;
       status=GetMatrixElement(equivalences,offset,0,&id);
       if (id != offset)
         status=GetMatrixElement(equivalences,id,0,&id);
@@ -1096,8 +1095,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
   component_image->colors=(size_t) n;
   for (i=0; i < (ssize_t) component_image->colors; i++)
   {
-    object[i].bounding_box.width-=(object[i].bounding_box.x-1);
-    object[i].bounding_box.height-=(object[i].bounding_box.y-1);
+    object[i].bounding_box.width=(size_t) ((ssize_t)
+      object[i].bounding_box.width-(object[i].bounding_box.x-1));
+    object[i].bounding_box.height=(size_t) ((ssize_t)
+      object[i].bounding_box.height-(object[i].bounding_box.y-1));
     object[i].color.red/=(QuantumScale*object[i].area);
     object[i].color.green/=(QuantumScale*object[i].area);
     object[i].color.blue/=(QuantumScale*object[i].area);
@@ -1572,8 +1573,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       }
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
-        object[i].bounding_box.width-=(object[i].bounding_box.x-1);
-        object[i].bounding_box.height-=(object[i].bounding_box.y-1);
+        object[i].bounding_box.width=(size_t) ((ssize_t)
+          object[i].bounding_box.width-(object[i].bounding_box.x-1));
+        object[i].bounding_box.height=(size_t) ((ssize_t)
+          object[i].bounding_box.height-(object[i].bounding_box.y-1));
         object[i].centroid.x=object[i].centroid.x/object[i].area;
         object[i].centroid.y=object[i].centroid.y/object[i].area;
       }

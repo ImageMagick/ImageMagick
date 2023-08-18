@@ -2140,7 +2140,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           channel_statistics[CompositePixelChannel].minima=(double) p[i];
         if ((double) p[i] > channel_statistics[CompositePixelChannel].maxima)
           channel_statistics[CompositePixelChannel].maxima=(double) p[i];
-        histogram[GetPixelChannels(image)*ScaleQuantumToMap(
+        histogram[(ssize_t) GetPixelChannels(image)*ScaleQuantumToMap(
           ClampToQuantum((double) p[i]))+i]++;
         channel_statistics[CompositePixelChannel].sum+=(double) p[i];
         channel_statistics[CompositePixelChannel].sum_squared+=(double)
@@ -2186,7 +2186,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     PixelChannel channel = GetPixelChannelChannel(image,i);
     number_bins=0.0;
     for (j=0; j <= (ssize_t) MaxMap; j++)
-      if (histogram[GetPixelChannels(image)*j+i] > 0.0)
+      if (histogram[(ssize_t) GetPixelChannels(image)*j+i] > 0.0)
         number_bins++;
     area=PerceptibleReciprocal(channel_statistics[channel].area);
     for (j=0; j <= (ssize_t) MaxMap; j++)
@@ -2194,7 +2194,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       double
         count;
 
-      count=area*histogram[GetPixelChannels(image)*j+i];
+      count=area*histogram[(ssize_t) GetPixelChannels(image)*j+i];
       channel_statistics[channel].entropy+=-count*MagickLog10(count)*
         PerceptibleReciprocal(MagickLog10(number_bins));
       channel_statistics[CompositePixelChannel].entropy+=-count*
@@ -2717,7 +2717,7 @@ static inline void GetMedianPixelList(PixelList *pixel_list,Quantum *pixel)
   do
   {
     color=p->nodes[color].next[0];
-    count+=p->nodes[color].count;
+    count+=(ssize_t) p->nodes[color].count;
   } while (count <= (ssize_t) (pixel_list->length >> 1));
   *pixel=ScaleShortToQuantum((unsigned short) color);
 }
@@ -2751,7 +2751,7 @@ static inline void GetModePixelList(PixelList *pixel_list,Quantum *pixel)
         mode=color;
         max_count=p->nodes[mode].count;
       }
-    count+=p->nodes[color].count;
+    count+=(ssize_t) p->nodes[color].count;
   } while (count < (ssize_t) pixel_list->length);
   *pixel=ScaleShortToQuantum((unsigned short) mode);
 }
@@ -2781,7 +2781,7 @@ static inline void GetNonpeakPixelList(PixelList *pixel_list,Quantum *pixel)
     previous=color;
     color=next;
     next=p->nodes[color].next[0];
-    count+=p->nodes[color].count;
+    count+=(ssize_t) p->nodes[color].count;
   } while (count <= (ssize_t) (pixel_list->length >> 1));
   if ((previous == 65536UL) && (next != 65536UL))
     color=next;
@@ -2884,8 +2884,9 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
   /*
     Make each pixel the min / max / median / mode / etc. of the neighborhood.
   */
-  center=(ssize_t) GetPixelChannels(image)*(image->columns+MagickMax(width,1))*
-    (MagickMax(height,1)/2L)+GetPixelChannels(image)*(MagickMax(width,1)/2L);
+  center=(ssize_t) GetPixelChannels(image)*((ssize_t) image->columns+
+    MagickMax((ssize_t) width,1L))*(MagickMax((ssize_t) height,1)/2L)+(ssize_t)
+    GetPixelChannels(image)*(MagickMax((ssize_t) width,1L)/2L);
   status=MagickTrue;
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);

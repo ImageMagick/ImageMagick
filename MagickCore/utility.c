@@ -885,8 +885,8 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
     /*
       Transfer file list to argument vector.
     */
-    vector=(char **) ResizeQuantumMemory(vector,(size_t) *number_arguments+
-      count+number_files+1,sizeof(*vector));
+    vector=(char **) ResizeQuantumMemory(vector,(size_t) ((ssize_t)
+      *number_arguments+count+(ssize_t) number_files+1),sizeof(*vector));
     if (vector == (char **) NULL)
       {
         for (j=0; j < (ssize_t) number_files; j++)
@@ -1746,7 +1746,7 @@ MagickExport void MagickDelay(const MagickSizeType milliseconds)
       timer;
 
     timer.tv_sec=(time_t) (milliseconds/1000);
-    timer.tv_nsec=(milliseconds % 1000)*1000*1000;
+    timer.tv_nsec=(time_t) ((milliseconds % 1000)*1000*1000);
     (void) nanosleep(&timer,(struct timespec *) NULL);
   }
 #elif defined(MAGICKCORE_HAVE_USLEEP)
@@ -1926,7 +1926,7 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
       if (i != 0)
         SetRandomKey(random_info,quantum,GetStringInfoDatum(key));
       count=write(file,GetStringInfoDatum(key),(size_t)
-        MagickMin((MagickSizeType) quantum,length-j));
+        MagickMin((MagickOffsetType) quantum,(MagickOffsetType) length-j));
       if (count <= 0)
         {
           count=0;
