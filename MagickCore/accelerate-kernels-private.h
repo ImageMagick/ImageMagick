@@ -2734,6 +2734,18 @@ OPENCL_ENDIF()
   }
   )
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%    W a v e l e t D e n o i s e                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*/
+
   STRINGIFY(
     __kernel __attribute__((reqd_work_group_size(64, 4, 1)))
     void WaveletDenoise(__global CLQuantum *srcImage,__global CLQuantum *dstImage,
