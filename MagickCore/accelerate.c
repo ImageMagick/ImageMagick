@@ -43,7 +43,6 @@ Include declarations.
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/accelerate-private.h"
-#include "MagickCore/accelerate-kernels-private.h"
 #include "MagickCore/artifact.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-private.h"
