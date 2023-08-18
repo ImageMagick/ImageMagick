@@ -32,8 +32,6 @@ extern "C" {
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
 
 extern MagickPrivate Image
-  *AccelerateAddNoiseImage(const Image*,const NoiseType,const double attenuate,
-    ExceptionInfo *),
   *AccelerateBlurImage(const Image *,const double,const double,ExceptionInfo *),
   *AccelerateConvolveImage(const Image *,const KernelInfo *,ExceptionInfo *),
   *AccelerateDespeckleImage(const Image *,ExceptionInfo *),

@@ -820,60 +820,6 @@ OPENCL_ENDIF()
     }
     return noise;
   }
-
-  __kernel
-  void AddNoise(const __global CLQuantum *image,
-    const unsigned int number_channels,const ChannelType channel,
-    const unsigned int length,const unsigned int pixelsPerWorkItem,
-    const NoiseType noise_type,const float attenuate,const unsigned int seed0,
-    const unsigned int seed1,const unsigned int numRandomNumbersPerPixel,
-    __global CLQuantum *filteredImage)
-  {
-    mwc64x_state_t rng;
-    rng.seed0 = seed0;
-    rng.seed1 = seed1;
-
-    uint span = pixelsPerWorkItem * numRandomNumbersPerPixel; // length of RNG substream each workitem will use
-    uint offset = span * get_local_size(0) * get_group_id(0); // offset of this workgroup's RNG substream (in master stream);
-    MWC64X_SeedStreams(&rng, offset, span); // Seed the RNG streams
-
-    uint pos = get_group_id(0) * get_local_size(0) * pixelsPerWorkItem * number_channels + (get_local_id(0) * number_channels);
-    uint count = pixelsPerWorkItem;
-
-    while (count > 0 && pos < length)
-    {
-      const __global CLQuantum *p = image + pos;
-      __global CLQuantum *q = filteredImage + pos;
-
-      float red;
-      float green;
-      float blue;
-      float alpha;
-
-      ReadChannels(p, number_channels, channel, &red, &green, &blue, &alpha);
-
-      if ((channel & RedChannel) != 0)
-        red=mwcGenerateDifferentialNoise(&rng,red,noise_type,attenuate);
-
-      if (number_channels > 2)
-      {
-        if ((channel & GreenChannel) != 0)
-          green=mwcGenerateDifferentialNoise(&rng,green,noise_type,attenuate);
-
-        if ((channel & BlueChannel) != 0)
-          blue=mwcGenerateDifferentialNoise(&rng,blue,noise_type,attenuate);
-      }
-
-      if (((number_channels == 4) || (number_channels == 2)) &&
-          ((channel & AlphaChannel) != 0))
-        alpha=mwcGenerateDifferentialNoise(&rng,alpha,noise_type,attenuate);
-
-      WriteChannels(q, number_channels, channel, red, green, blue, alpha);
-
-      pos += (get_local_size(0) * number_channels);
-      count--;
-    }
-  }
   )
 
 /*

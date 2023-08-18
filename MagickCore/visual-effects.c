@@ -172,11 +172,6 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
-  noise_image=AccelerateAddNoiseImage(image,noise_type,attenuate,exception);
-  if (noise_image != (Image *) NULL)
-    return(noise_image);
-#endif
   noise_image=CloneImage(image,0,0,MagickTrue,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
