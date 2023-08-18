@@ -1710,7 +1710,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
         else
           {
-            (void) SetPixelMetaChannels(image,extra_samples,exception);
             for (i=0; i < extra_samples; i++)
             {
               if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
@@ -1731,7 +1730,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             }
             if (image->alpha_trait != UndefinedPixelTrait)
               extra_samples--;
-            (void) SetPixelMetaChannels(image,extra_samples,exception);
+            if (extra_samples > 0)
+              (void) SetPixelMetaChannels(image,extra_samples,exception);
           }
       }
     if (image->alpha_trait != UndefinedPixelTrait)
