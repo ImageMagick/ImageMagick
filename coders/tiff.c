@@ -1718,6 +1718,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   SetQuantumAlphaType(quantum_info,AssociatedQuantumAlpha);
                   (void) SetImageProperty(image,"tiff:alpha","associated",
                     exception);
+                  break;
                 }
               else
                 if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
@@ -1726,6 +1727,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
                     (void) SetImageProperty(image,"tiff:alpha","unassociated",
                       exception);
+                    break;
                   }
             }
             if (image->alpha_trait != UndefinedPixelTrait)
