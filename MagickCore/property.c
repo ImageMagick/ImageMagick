@@ -3664,7 +3664,11 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
 }
 
   char
-    *interpret_text;
+    *interpret_text,
+    *q;  /* current position in interpret_text */
+
+  const char
+    *p;  /* position in embed_text string being expanded */
 
   Image
     *property_image;
@@ -3675,13 +3679,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
   MagickBooleanType
     number;
 
-  char
-    *q;  /* current position in interpret_text */
-
-  const char
-    *p;  /* position in embed_text string being expanded */
-
-  ssize_t
+  size_t
     extent;  /* allocated length of interpret_text */
 
   if ((image != (Image *) NULL) && (IsEventLogging() != MagickFalse))

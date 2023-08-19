@@ -6222,7 +6222,7 @@ static void LogPixelChannels(const Image *image)
     i;
 
 #if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
-  (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08lx]",
+  (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08llx]",
     image->filename,image->channel_mask);
 #else
   (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08x]",
@@ -6343,7 +6343,7 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
 #if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
-    (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08lx]",
+    (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08llx]",
       image->filename,channel_mask);
 #else
     (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08x]",
