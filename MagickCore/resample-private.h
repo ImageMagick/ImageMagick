@@ -29,7 +29,6 @@ static inline ResampleFilter **DestroyResampleFilterTLS(ResampleFilter **filter)
   ssize_t
     i;
 
-  assert(filter != (ResampleFilter **) NULL);
   for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (filter[i] != (ResampleFilter *) NULL)
       filter[i]=DestroyResampleFilter(filter[i]);
