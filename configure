@@ -5180,7 +5180,7 @@ MAGICK_PATCHLEVEL_VERSION=16
 
 MAGICK_VERSION=7.1.1-16
 
-MAGICK_GIT_REVISION=58a3b36f7:20230818
+MAGICK_GIT_REVISION=f5abb90e2:20230819
 
 
 # Substitute library versioning
@@ -5214,7 +5214,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,16
 
-PACKAGE_RELEASE_DATE=2023-08-18
+PACKAGE_RELEASE_DATE=2023-08-19
 
 
 # Ensure that make can run correctly
@@ -23296,7 +23296,6 @@ if test "$enable_hdri" = 'yes'; then
 else
     magick_hdri_enable='0'
 fi
-
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
@@ -41534,69 +41533,70 @@ matches your expectations.
 Host system type: $host
 Build system type: $build
 
-                  Option                        Value
+                    Option				Value
 ------------------------------------------------------------------------------
-Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
-Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
-Build utilities   --with-utilities=$with_utilities		$with_utilities
-Module support    --with-modules=$build_modules		$build_modules
-GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
-Security policy   --with-security-policy=$with_security_policy	$with_security_policy
-Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
+Shared libraries    --enable-shared=$enable_shared			$libtool_build_shared_libs
+Static libraries    --enable-static=$enable_static			$libtool_build_static_libs
+Build utilities     --with-utilities=$with_utilities		$with_utilities
+Module support      --with-modules=$build_modules			$build_modules
+GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
+Security policy     --with-security-policy=$with_security_policy		$with_security_policy
+Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
+Channel mask depth  --enable-64bit-channel-masks=$magick_channel_mask_depth	$magick_channel_mask_depth
 High Dynamic Range Imagery
-                  --enable-hdri=$enable_hdri		$enable_hdri
+                    --enable-hdri=$enable_hdri			$enable_hdri
 
-Install documentation:				$wantdocs
+Install documentation:					$wantdocs
 
 Memory allocation library:
-  JEMalloc          --with-jemalloc=$with_jemalloc		$have_jemalloc
-  MTMalloc          --with-mtmalloc=$with_mtmalloc		$have_mtmalloc
-  TCMalloc          --with-tcmalloc=$with_tcmalloc		$have_tcmalloc
-  UMem              --with-umem=$with_umem		$have_umem
+  JEMalloc          --with-jemalloc=$with_jemalloc			$have_jemalloc
+  MTMalloc          --with-mtmalloc=$with_mtmalloc			$have_mtmalloc
+  TCMalloc          --with-tcmalloc=$with_tcmalloc			$have_tcmalloc
+  UMem              --with-umem=$with_umem			$have_umem
 
 Delegate library configuration:
-  BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
-  Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
-  DJVU              --with-djvu=$with_djvu		$have_djvu
-  DPS               --with-dps=$with_dps		$have_dps
-  FFTW              --with-fftw=$with_fftw		$have_fftw
-  FLIF              --with-flif=$with_flif		$have_flif
-  FlashPIX          --with-fpx=$with_fpx		$have_fpx
-  FontConfig        --with-fontconfig=$with_fontconfig	$have_fontconfig
-  FreeType          --with-freetype=$with_freetype		$have_freetype
-  Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
-  Graphviz          --with-gvc=$with_gvc		$have_gvc
-  HEIC              --with-heic=$with_heic		$have_heic
-  JBIG              --with-jbig=$with_jbig		$have_jbig
-  JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG XL           --with-jxl=$with_jxl		$have_jxl
-  DMR               --with-dmr=$with_dmr		$have_dmr
-  LCMS              --with-lcms=$with_lcms		$have_lcms
-  LQR               --with-lqr=$with_lqr		$have_lqr
-  LTDL              --with-ltdl=$with_ltdl		$have_ltdl
-  LZMA              --with-lzma=$with_lzma		$have_lzma
-  Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
-  OpenEXR           --with-openexr=$with_openexr		$have_openexr
-  OpenJP2           --with-openjp2=$with_openjp2		$have_openjp2
-  PANGO             --with-pango=$with_pango		$have_pangocairo
-  PERL              --with-perl=$with_perl		$have_perl
-  PNG               --with-png=$with_png		$have_png
-  RAQM              --with-raqm=$with_raqm		$have_raqm
-  RAW               --with-raw=$with_raw		$have_raw
-  RSVG              --with-rsvg=$with_rsvg		$have_rsvg
-  TIFF              --with-tiff=$with_tiff		$have_tiff
-  WEBP              --with-webp=$with_webp		$have_webp
-  WMF               --with-wmf=$with_wmf		$have_wmf
-  X11               --with-x=$with_x			$have_x
-  XML               --with-xml=$with_xml		$have_xml
-  ZIP               --with-zip=$with_zip		$have_zip
-  ZLIB              --with-zlib=$with_zlib		$have_zlib
-  ZSTD              --with-zstd=$with_zstd		$have_zstd
+  BZLIB             --with-bzlib=$with_bzlib			$have_bzlib
+  Autotrace         --with-autotrace=$with_autotrace			$have_autotrace
+  DJVU              --with-djvu=$with_djvu			$have_djvu
+  DPS               --with-dps=$with_dps			$have_dps
+  FFTW              --with-fftw=$with_fftw			$have_fftw
+  FLIF              --with-flif=$with_flif			$have_flif
+  FlashPIX          --with-fpx=$with_fpx			$have_fpx
+  FontConfig        --with-fontconfig=$with_fontconfig		$have_fontconfig
+  FreeType          --with-freetype=$with_freetype			$have_freetype
+  Ghostscript lib   --with-gslib=$with_gslib			$have_gslib
+  Graphviz          --with-gvc=$with_gvc			$have_gvc
+  HEIC              --with-heic=$with_heic			$have_heic
+  JBIG              --with-jbig=$with_jbig			$have_jbig
+  JPEG v1           --with-jpeg=$with_jpeg			$have_jpeg
+  JPEG XL           --with-jxl=$with_jxl			$have_jxl
+  DMR               --with-dmr=$with_dmr			$have_dmr
+  LCMS              --with-lcms=$with_lcms			$have_lcms
+  LQR               --with-lqr=$with_lqr			$have_lqr
+  LTDL              --with-ltdl=$with_ltdl			$have_ltdl
+  LZMA              --with-lzma=$with_lzma			$have_lzma
+  Magick++          --with-magick-plus-plus=$with_magick_plus_plus		$have_magick_plus_plus
+  OpenEXR           --with-openexr=$with_openexr			$have_openexr
+  OpenJP2           --with-openjp2=$with_openjp2			$have_openjp2
+  PANGO             --with-pango=$with_pango			$have_pangocairo
+  PERL              --with-perl=$with_perl			$have_perl
+  PNG               --with-png=$with_png			$have_png
+  RAQM              --with-raqm=$with_raqm			$have_raqm
+  RAW               --with-raw=$with_raw			$have_raw
+  RSVG              --with-rsvg=$with_rsvg			$have_rsvg
+  TIFF              --with-tiff=$with_tiff			$have_tiff
+  WEBP              --with-webp=$with_webp			$have_webp
+  WMF               --with-wmf=$with_wmf			$have_wmf
+  X11               --with-x=$with_x				$have_x
+  XML               --with-xml=$with_xml			$have_xml
+  ZIP               --with-zip=$with_zip			$have_zip
+  ZLIB              --with-zlib=$with_zlib			$have_zlib
+  ZSTD              --with-zstd=$with_zstd			$have_zstd
 
 Delegate program configuration:
-  GhostPCL          None			$PCLDelegate ($PCLVersion)
-  GhostXPS          None			$XPSDelegate ($XPSVersion)
-  Ghostscript       None			$PSDelegate ($GSVersion)
+  GhostPCL          None				$PCLDelegate ($PCLVersion)
+  GhostXPS          None				$XPSDelegate ($XPSVersion)
+  Ghostscript       None				$PSDelegate ($GSVersion)
 
 Font configuration:
   Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
@@ -41606,26 +41606,26 @@ Font configuration:
   Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 
 X11 configuration:
-  X_CFLAGS        = $X_CFLAGS
-  X_PRE_LIBS      = $X_PRE_LIBS
-  X_LIBS          = $X_LIBS
-  X_EXTRA_LIBS    = $X_EXTRA_LIBS
+  X_CFLAGS          = $X_CFLAGS
+  X_PRE_LIBS        = $X_PRE_LIBS
+  X_LIBS            = $X_LIBS
+  X_EXTRA_LIBS      = $X_EXTRA_LIBS
 
 Options used to compile and link:
-  PREFIX          = $PREFIX_DIR
-  EXEC-PREFIX     = $EXEC_PREFIX_DIR
-  VERSION         = $PACKAGE_VERSION
-  CC              = $CC
-  CFLAGS          = $CFLAGS
-  CPPFLAGS        = $CPPFLAGS
-  PCFLAGS         = $PCFLAGS
-  DEFS            = $DEFS
-  LDFLAGS         = $LDFLAGS
-  LIBS            = $MAGICK_DEP_LIBS
-  CXX             = $CXX
-  CXXFLAGS        = $CXXFLAGS
-  FEATURES        = $MAGICK_FEATURES
-  DELEGATES       = $MAGICK_DELEGATES
+  PREFIX            = $PREFIX_DIR
+  EXEC-PREFIX       = $EXEC_PREFIX_DIR
+  VERSION           = $PACKAGE_VERSION
+  CC                = $CC
+  CFLAGS            = $CFLAGS
+  CPPFLAGS          = $CPPFLAGS
+  PCFLAGS           = $PCFLAGS
+  DEFS              = $DEFS
+  LDFLAGS           = $LDFLAGS
+  LIBS              = $MAGICK_DEP_LIBS
+  CXX               = $CXX
+  CXXFLAGS          = $CXXFLAGS
+  FEATURES          = $MAGICK_FEATURES
+  DELEGATES         = $MAGICK_DELEGATES
 ==============================================================================
 " >&5
 printf "%s\n" "$as_me:
@@ -41636,69 +41636,70 @@ matches your expectations.
 Host system type: $host
 Build system type: $build
 
-                  Option                        Value
+                    Option				Value
 ------------------------------------------------------------------------------
-Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
-Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
-Build utilities   --with-utilities=$with_utilities		$with_utilities
-Module support    --with-modules=$build_modules		$build_modules
-GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
-Security policy   --with-security-policy=$with_security_policy	$with_security_policy
-Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
+Shared libraries    --enable-shared=$enable_shared			$libtool_build_shared_libs
+Static libraries    --enable-static=$enable_static			$libtool_build_static_libs
+Build utilities     --with-utilities=$with_utilities		$with_utilities
+Module support      --with-modules=$build_modules			$build_modules
+GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
+Security policy     --with-security-policy=$with_security_policy		$with_security_policy
+Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
+Channel mask depth  --enable-64bit-channel-masks=$magick_channel_mask_depth	$magick_channel_mask_depth
 High Dynamic Range Imagery
-                  --enable-hdri=$enable_hdri		$enable_hdri
+                    --enable-hdri=$enable_hdri			$enable_hdri
 
-Install documentation:				$wantdocs
+Install documentation:					$wantdocs
 
 Memory allocation library:
-  JEMalloc          --with-jemalloc=$with_jemalloc		$have_jemalloc
-  MTMalloc          --with-mtmalloc=$with_mtmalloc		$have_mtmalloc
-  TCMalloc          --with-tcmalloc=$with_tcmalloc		$have_tcmalloc
-  UMem              --with-umem=$with_umem		$have_umem
+  JEMalloc          --with-jemalloc=$with_jemalloc			$have_jemalloc
+  MTMalloc          --with-mtmalloc=$with_mtmalloc			$have_mtmalloc
+  TCMalloc          --with-tcmalloc=$with_tcmalloc			$have_tcmalloc
+  UMem              --with-umem=$with_umem			$have_umem
 
 Delegate library configuration:
-  BZLIB             --with-bzlib=$with_bzlib		$have_bzlib
-  Autotrace         --with-autotrace=$with_autotrace		$have_autotrace
-  DJVU              --with-djvu=$with_djvu		$have_djvu
-  DPS               --with-dps=$with_dps		$have_dps
-  FFTW              --with-fftw=$with_fftw		$have_fftw
-  FLIF              --with-flif=$with_flif		$have_flif
-  FlashPIX          --with-fpx=$with_fpx		$have_fpx
-  FontConfig        --with-fontconfig=$with_fontconfig	$have_fontconfig
-  FreeType          --with-freetype=$with_freetype		$have_freetype
-  Ghostscript lib   --with-gslib=$with_gslib		$have_gslib
-  Graphviz          --with-gvc=$with_gvc		$have_gvc
-  HEIC              --with-heic=$with_heic		$have_heic
-  JBIG              --with-jbig=$with_jbig		$have_jbig
-  JPEG v1           --with-jpeg=$with_jpeg		$have_jpeg
-  JPEG XL           --with-jxl=$with_jxl		$have_jxl
-  DMR               --with-dmr=$with_dmr		$have_dmr
-  LCMS              --with-lcms=$with_lcms		$have_lcms
-  LQR               --with-lqr=$with_lqr		$have_lqr
-  LTDL              --with-ltdl=$with_ltdl		$have_ltdl
-  LZMA              --with-lzma=$with_lzma		$have_lzma
-  Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
-  OpenEXR           --with-openexr=$with_openexr		$have_openexr
-  OpenJP2           --with-openjp2=$with_openjp2		$have_openjp2
-  PANGO             --with-pango=$with_pango		$have_pangocairo
-  PERL              --with-perl=$with_perl		$have_perl
-  PNG               --with-png=$with_png		$have_png
-  RAQM              --with-raqm=$with_raqm		$have_raqm
-  RAW               --with-raw=$with_raw		$have_raw
-  RSVG              --with-rsvg=$with_rsvg		$have_rsvg
-  TIFF              --with-tiff=$with_tiff		$have_tiff
-  WEBP              --with-webp=$with_webp		$have_webp
-  WMF               --with-wmf=$with_wmf		$have_wmf
-  X11               --with-x=$with_x			$have_x
-  XML               --with-xml=$with_xml		$have_xml
-  ZIP               --with-zip=$with_zip		$have_zip
-  ZLIB              --with-zlib=$with_zlib		$have_zlib
-  ZSTD              --with-zstd=$with_zstd		$have_zstd
+  BZLIB             --with-bzlib=$with_bzlib			$have_bzlib
+  Autotrace         --with-autotrace=$with_autotrace			$have_autotrace
+  DJVU              --with-djvu=$with_djvu			$have_djvu
+  DPS               --with-dps=$with_dps			$have_dps
+  FFTW              --with-fftw=$with_fftw			$have_fftw
+  FLIF              --with-flif=$with_flif			$have_flif
+  FlashPIX          --with-fpx=$with_fpx			$have_fpx
+  FontConfig        --with-fontconfig=$with_fontconfig		$have_fontconfig
+  FreeType          --with-freetype=$with_freetype			$have_freetype
+  Ghostscript lib   --with-gslib=$with_gslib			$have_gslib
+  Graphviz          --with-gvc=$with_gvc			$have_gvc
+  HEIC              --with-heic=$with_heic			$have_heic
+  JBIG              --with-jbig=$with_jbig			$have_jbig
+  JPEG v1           --with-jpeg=$with_jpeg			$have_jpeg
+  JPEG XL           --with-jxl=$with_jxl			$have_jxl
+  DMR               --with-dmr=$with_dmr			$have_dmr
+  LCMS              --with-lcms=$with_lcms			$have_lcms
+  LQR               --with-lqr=$with_lqr			$have_lqr
+  LTDL              --with-ltdl=$with_ltdl			$have_ltdl
+  LZMA              --with-lzma=$with_lzma			$have_lzma
+  Magick++          --with-magick-plus-plus=$with_magick_plus_plus		$have_magick_plus_plus
+  OpenEXR           --with-openexr=$with_openexr			$have_openexr
+  OpenJP2           --with-openjp2=$with_openjp2			$have_openjp2
+  PANGO             --with-pango=$with_pango			$have_pangocairo
+  PERL              --with-perl=$with_perl			$have_perl
+  PNG               --with-png=$with_png			$have_png
+  RAQM              --with-raqm=$with_raqm			$have_raqm
+  RAW               --with-raw=$with_raw			$have_raw
+  RSVG              --with-rsvg=$with_rsvg			$have_rsvg
+  TIFF              --with-tiff=$with_tiff			$have_tiff
+  WEBP              --with-webp=$with_webp			$have_webp
+  WMF               --with-wmf=$with_wmf			$have_wmf
+  X11               --with-x=$with_x				$have_x
+  XML               --with-xml=$with_xml			$have_xml
+  ZIP               --with-zip=$with_zip			$have_zip
+  ZLIB              --with-zlib=$with_zlib			$have_zlib
+  ZSTD              --with-zstd=$with_zstd			$have_zstd
 
 Delegate program configuration:
-  GhostPCL          None			$PCLDelegate ($PCLVersion)
-  GhostXPS          None			$XPSDelegate ($XPSVersion)
-  Ghostscript       None			$PSDelegate ($GSVersion)
+  GhostPCL          None				$PCLDelegate ($PCLVersion)
+  GhostXPS          None				$XPSDelegate ($XPSVersion)
+  Ghostscript       None				$PSDelegate ($GSVersion)
 
 Font configuration:
   Apple fonts       --with-apple-font-dir=$with_apple_font_dir	$result_apple_font_dir
@@ -41708,26 +41709,26 @@ Font configuration:
   Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
 
 X11 configuration:
-  X_CFLAGS        = $X_CFLAGS
-  X_PRE_LIBS      = $X_PRE_LIBS
-  X_LIBS          = $X_LIBS
-  X_EXTRA_LIBS    = $X_EXTRA_LIBS
+  X_CFLAGS          = $X_CFLAGS
+  X_PRE_LIBS        = $X_PRE_LIBS
+  X_LIBS            = $X_LIBS
+  X_EXTRA_LIBS      = $X_EXTRA_LIBS
 
 Options used to compile and link:
-  PREFIX          = $PREFIX_DIR
-  EXEC-PREFIX     = $EXEC_PREFIX_DIR
-  VERSION         = $PACKAGE_VERSION
-  CC              = $CC
-  CFLAGS          = $CFLAGS
-  CPPFLAGS        = $CPPFLAGS
-  PCFLAGS         = $PCFLAGS
-  DEFS            = $DEFS
-  LDFLAGS         = $LDFLAGS
-  LIBS            = $MAGICK_DEP_LIBS
-  CXX             = $CXX
-  CXXFLAGS        = $CXXFLAGS
-  FEATURES        = $MAGICK_FEATURES
-  DELEGATES       = $MAGICK_DELEGATES
+  PREFIX            = $PREFIX_DIR
+  EXEC-PREFIX       = $EXEC_PREFIX_DIR
+  VERSION           = $PACKAGE_VERSION
+  CC                = $CC
+  CFLAGS            = $CFLAGS
+  CPPFLAGS          = $CPPFLAGS
+  PCFLAGS           = $PCFLAGS
+  DEFS              = $DEFS
+  LDFLAGS           = $LDFLAGS
+  LIBS              = $MAGICK_DEP_LIBS
+  CXX               = $CXX
+  CXXFLAGS          = $CXXFLAGS
+  FEATURES          = $MAGICK_FEATURES
+  DELEGATES         = $MAGICK_DELEGATES
 ==============================================================================
 " >&6;}
 
