@@ -30,7 +30,7 @@ extern "C" {
 /*
   Pixel enum declarations.
 */
-#if MAGICKCORE_CHANNEL_MASK_DEPTH == 64
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
 typedef enum : MagickSizeType
 #else
 typedef enum
@@ -56,7 +56,7 @@ typedef enum
   MetaChannel = 0x0100,              /* not used */
   CompositeMaskChannel = 0x0200,     /* SVG mask */
   CompositeChannels = 0x001F,
-#if MAGICKCORE_CHANNEL_MASK_DEPTH == 64
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
   AllChannels = 0x7ffffffffffff,
 #else
   AllChannels = 0x7ffffff,

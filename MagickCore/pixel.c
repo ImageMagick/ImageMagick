@@ -6221,7 +6221,7 @@ static void LogPixelChannels(const Image *image)
   ssize_t
     i;
 
-#if MAGICKCORE_CHANNEL_MASK_DEPTH == 64
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
   (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08lx]",
     image->filename,image->channel_mask);
 #else
@@ -6342,7 +6342,7 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (image->debug != MagickFalse)
-#if MAGICKCORE_CHANNEL_MASK_DEPTH == 64
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
     (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%08lx]",
       image->filename,channel_mask);
 #else
