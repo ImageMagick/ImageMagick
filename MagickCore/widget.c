@@ -64,15 +64,15 @@
   Define declarations.
 */
 #define AreaIsActive(matte_info,position)  ( \
-  ((position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \
-   (position.y < (int) (matte_info.y+matte_info.height+matte_info.bevel_width))) \
+  ((position.y >= (matte_info.y-(int) matte_info.bevel_width)) &&  \
+   (position.y < (matte_info.y+(int) matte_info.height+(int) matte_info.bevel_width))) \
    ? MagickTrue : MagickFalse)
 #define Extent(s)  ((int) strlen(s))
 #define MatteIsActive(matte_info,position)  ( \
-  ((position.x >= (int) (matte_info.x-matte_info.bevel_width)) && \
-   (position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \
-   (position.x < (int) (matte_info.x+matte_info.width+matte_info.bevel_width)) &&  \
-   (position.y < (int) (matte_info.y+matte_info.height+matte_info.bevel_width))) \
+  ((position.x >= (matte_info.x-(int) matte_info.bevel_width)) && \
+   (position.y >= (matte_info.y-(int) matte_info.bevel_width)) &&  \
+   (position.x < (matte_info.x+(int) matte_info.width+(int) matte_info.bevel_width)) &&  \
+   (position.y < (matte_info.y+(int) matte_info.height+(int) matte_info.bevel_width))) \
    ? MagickTrue : MagickFalse)
 #define MaxTextWidth  ((unsigned int) (255*XTextWidth(font_info,"_",1)))
 #define MinTextWidth  (26*XTextWidth(font_info,"_",1))
@@ -242,8 +242,8 @@ static void XDrawBevel(Display *display,const XWindowInfo *window_info,
     Draw upper and left beveled border.
   */
   x1=bevel_info->x;
-  y1=bevel_info->y+bevel_info->height;
-  x2=bevel_info->x+bevel_info->width;
+  y1=bevel_info->y+(int) bevel_info->height;
+  x2=bevel_info->x+(int) bevel_info->width;
   y2=bevel_info->y;
   bevel_width=bevel_info->bevel_width;
   points[0].x=x1;
@@ -252,12 +252,12 @@ static void XDrawBevel(Display *display,const XWindowInfo *window_info,
   points[1].y=y2;
   points[2].x=x2;
   points[2].y=y2;
-  points[3].x=x2+bevel_width;
-  points[3].y=y2-bevel_width;
-  points[4].x=x1-bevel_width;
-  points[4].y=y2-bevel_width;
-  points[5].x=x1-bevel_width;
-  points[5].y=y1+bevel_width;
+  points[3].x=x2+(int) bevel_width;
+  points[3].y=y2-(int) bevel_width;
+  points[4].x=x1-(int) bevel_width;
+  points[4].y=y2-(int) bevel_width;
+  points[5].x=x1-(int) bevel_width;
+  points[5].y=y1+(int) bevel_width;
   XSetBevelColor(display,window_info,bevel_info->raised);
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
     points,6,Complex,CoordModeOrigin);
@@ -270,12 +270,12 @@ static void XDrawBevel(Display *display,const XWindowInfo *window_info,
   points[1].y=y1;
   points[2].x=x2;
   points[2].y=y2;
-  points[3].x=x2+bevel_width;
-  points[3].y=y2-bevel_width;
-  points[4].x=x2+bevel_width;
-  points[4].y=y1+bevel_width;
-  points[5].x=x1-bevel_width;
-  points[5].y=y1+bevel_width;
+  points[3].x=x2+(int) bevel_width;
+  points[3].y=y2-(int) bevel_width;
+  points[4].x=x2+(int) bevel_width;
+  points[4].y=y1+(int) bevel_width;
+  points[5].x=x1-(int) bevel_width;
+  points[5].y=y1+(int) bevel_width;
   XSetBevelColor(display,window_info,!bevel_info->raised);
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
     points,6,Complex,CoordModeOrigin);
@@ -336,8 +336,8 @@ static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
   XSetMatteColor(display,window_info,button_info->raised);
   (void) XFillRectangle(display,window_info->id,window_info->widget_context,
     button_info->x,button_info->y,button_info->width,button_info->height);
-  x=button_info->x-button_info->bevel_width-1;
-  y=button_info->y-button_info->bevel_width-1;
+  x=button_info->x-(int) button_info->bevel_width-1;
+  y=button_info->y-(int) button_info->bevel_width-1;
   (void) XSetForeground(display,window_info->widget_context,
     window_info->pixel_info->trough_color.pixel);
   if (button_info->raised || (window_info->depth == 1))
@@ -358,10 +358,10 @@ static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
   */
   font_info=window_info->font_info;
   width=WidgetTextWidth(font_info,button_info->text);
-  x=button_info->x+(QuantumMargin >> 1);
+  x=button_info->x+(int) (QuantumMargin >> 1);
   if (button_info->center)
-    x=button_info->x+(button_info->width >> 1)-(width >> 1);
-  y=button_info->y+((button_info->height-
+    x=button_info->x+(int) (button_info->width >> 1)-(int) (width >> 1);
+  y=button_info->y+(((int) button_info->height-(int)
     (font_info->ascent+font_info->descent)) >> 1)+font_info->ascent;
   if ((int) button_info->width == (QuantumMargin >> 1))
     {
@@ -369,7 +369,7 @@ static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
         Option button-- write label to right of button.
       */
       XSetTextColor(display,window_info,MagickTrue);
-      x=button_info->x+button_info->width+button_info->bevel_width+
+      x=button_info->x+(int) button_info->width+(int) button_info->bevel_width+
         (QuantumMargin >> 1);
       (void) XDrawString(display,window_info->id,window_info->widget_context,
         x,y,button_info->text,Extent(button_info->text));
@@ -535,9 +535,9 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
     return;
   XSetTextColor(display,window_info,text_info->highlight);
   font_info=window_info->font_info;
-  x=text_info->x+(QuantumMargin >> 2);
-  y=text_info->y+font_info->ascent+(text_info->height >> 2);
-  width=text_info->width-(QuantumMargin >> 1);
+  x=text_info->x+(int) (QuantumMargin >> 2);
+  y=text_info->y+font_info->ascent+(int) (text_info->height >> 2);
+  width=text_info->width-(unsigned int) (QuantumMargin >> 1);
   height=(unsigned int) (font_info->ascent+font_info->descent);
   if (*text_info->text == '\0')
     {
@@ -545,7 +545,7 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
         No text-- just draw cursor.
       */
       (void) XDrawLine(display,window_info->id,window_info->annotate_context,
-        x,y+3,x,y-height+3);
+        x,y+3,x,y-(int) height+3);
       return;
     }
   /*
@@ -606,7 +606,7 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
   x+=XTextWidth(font_info,text_info->marker,(int)
     (text_info->cursor-text_info->marker));
   (void) XDrawLine(display,window_info->id,window_info->annotate_context,x,y+3,
-    x,y-height+3);
+    x,y-(int) height+3);
 }
 
 /*
@@ -664,10 +664,10 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
   */
   x1=triangle_info->x;
   y1=triangle_info->y;
-  x2=triangle_info->x+triangle_info->width;
-  y2=triangle_info->y+(triangle_info->height >> 1);
+  x2=triangle_info->x+(int) triangle_info->width;
+  y2=triangle_info->y+(int) (triangle_info->height >> 1);
   x3=triangle_info->x;
-  y3=triangle_info->y+triangle_info->height;
+  y3=triangle_info->y+(int) triangle_info->height;
   bevel_width=triangle_info->bevel_width;
   points[0].x=x1;
   points[0].y=y1;
@@ -685,9 +685,9 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
   points[0].y=y2;
   points[1].x=x3;
   points[1].y=y3;
-  points[2].x=x3-bevel_width;
-  points[2].y=y3+bevel_width;
-  points[3].x=x2+bevel_width;
+  points[2].x=x3-(int) bevel_width;
+  points[2].y=y3+(int) bevel_width;
+  points[3].x=x2+(int) bevel_width;
   points[3].y=y2;
   XSetBevelColor(display,window_info,!triangle_info->raised);
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
@@ -699,10 +699,10 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
   points[0].y=y3;
   points[1].x=x1;
   points[1].y=y1;
-  points[2].x=x1-bevel_width+1;
-  points[2].y=y1-bevel_width;
-  points[3].x=x3-bevel_width+1;
-  points[3].y=y3+bevel_width;
+  points[2].x=x1-(int) bevel_width+1;
+  points[2].y=y1-(int) bevel_width;
+  points[3].x=x3-(int) bevel_width+1;
+  points[3].y=y3+(int) bevel_width;
   XSetBevelColor(display,window_info,triangle_info->raised);
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
     points,4,Complex,CoordModeOrigin);
@@ -713,10 +713,10 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
   points[0].y=y1;
   points[1].x=x2;
   points[1].y=y2;
-  points[2].x=x2+bevel_width;
+  points[2].x=x2+(int) bevel_width;
   points[2].y=y2;
-  points[3].x=x1-bevel_width;
-  points[3].y=y1-bevel_width;
+  points[3].x=x1-(int) bevel_width;
+  points[3].y=y1-(int) bevel_width;
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
     points,4,Complex,CoordModeOrigin);
   (void) XSetFillStyle(display,window_info->widget_context,FillSolid);
@@ -727,10 +727,10 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
   */
   font_info=window_info->font_info;
   XSetTextColor(display,window_info,MagickTrue);
-  x1=triangle_info->x+triangle_info->width+triangle_info->bevel_width+
-    (QuantumMargin >> 1);
-  y1=triangle_info->y+((triangle_info->height-
-    (font_info->ascent+font_info->descent)) >> 1)+font_info->ascent;
+  x1=triangle_info->x+(int) triangle_info->width+(int)
+    triangle_info->bevel_width+(QuantumMargin >> 1);
+  y1=triangle_info->y+(((int) triangle_info->height-(int)
+    (font_info->ascent+font_info->descent)) >> 1)+(int) font_info->ascent;
   (void) XDrawString(display,window_info->id,window_info->widget_context,x1,y1,
     triangle_info->text,Extent(triangle_info->text));
 }
@@ -786,11 +786,11 @@ static void XDrawTriangleNorth(Display *display,const XWindowInfo *window_info,
     Draw triangle matte.
   */
   x1=triangle_info->x;
-  y1=triangle_info->y+triangle_info->height;
-  x2=triangle_info->x+(triangle_info->width >> 1);
+  y1=triangle_info->y+(int) triangle_info->height;
+  x2=triangle_info->x+(int) (triangle_info->width >> 1);
   y2=triangle_info->y;
-  x3=triangle_info->x+triangle_info->width;
-  y3=triangle_info->y+triangle_info->height;
+  x3=triangle_info->x+(int) triangle_info->width;
+  y3=triangle_info->y+(int) triangle_info->height;
   bevel_width=triangle_info->bevel_width;
   points[0].x=x1;
   points[0].y=y1;
@@ -809,9 +809,9 @@ static void XDrawTriangleNorth(Display *display,const XWindowInfo *window_info,
   points[1].x=x2;
   points[1].y=y2;
   points[2].x=x2;
-  points[2].y=y2-bevel_width-2;
-  points[3].x=x1-bevel_width-1;
-  points[3].y=y1+bevel_width;
+  points[2].y=y2-(int) bevel_width-2;
+  points[3].x=x1-(int) bevel_width-1;
+  points[3].y=y1+(int) bevel_width;
   XSetBevelColor(display,window_info,triangle_info->raised);
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
     points,4,Complex,CoordModeOrigin);
@@ -822,10 +822,10 @@ static void XDrawTriangleNorth(Display *display,const XWindowInfo *window_info,
   points[0].y=y2;
   points[1].x=x3;
   points[1].y=y3;
-  points[2].x=x3+bevel_width;
-  points[2].y=y3+bevel_width;
+  points[2].x=x3+(int) bevel_width;
+  points[2].y=y3+(int) bevel_width;
   points[3].x=x2;
-  points[3].y=y2-bevel_width;
+  points[3].y=y2-(int) bevel_width;
   XSetBevelColor(display,window_info,!triangle_info->raised);
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
     points,4,Complex,CoordModeOrigin);
@@ -836,10 +836,10 @@ static void XDrawTriangleNorth(Display *display,const XWindowInfo *window_info,
   points[0].y=y3;
   points[1].x=x1;
   points[1].y=y1;
-  points[2].x=x1-bevel_width;
-  points[2].y=y1+bevel_width;
-  points[3].x=x3+bevel_width;
-  points[3].y=y3+bevel_width;
+  points[2].x=x1-(int) bevel_width;
+  points[2].y=y1+(int) bevel_width;
+  points[3].x=x3+(int) bevel_width;
+  points[3].y=y3+(int) bevel_width;
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
     points,4,Complex,CoordModeOrigin);
   (void) XSetFillStyle(display,window_info->widget_context,FillSolid);
@@ -897,9 +897,9 @@ static void XDrawTriangleSouth(Display *display,const XWindowInfo *window_info,
   */
   x1=triangle_info->x;
   y1=triangle_info->y;
-  x2=triangle_info->x+(triangle_info->width >> 1);
-  y2=triangle_info->y+triangle_info->height;
-  x3=triangle_info->x+triangle_info->width;
+  x2=triangle_info->x+(int) (triangle_info->width >> 1);
+  y2=triangle_info->y+(int) triangle_info->height;
+  x3=triangle_info->x+(int) triangle_info->width;
   y3=triangle_info->y;
   bevel_width=triangle_info->bevel_width;
   points[0].x=x1;
@@ -918,10 +918,10 @@ static void XDrawTriangleSouth(Display *display,const XWindowInfo *window_info,
   points[0].y=y3;
   points[1].x=x1;
   points[1].y=y1;
-  points[2].x=x1-bevel_width;
-  points[2].y=y1-bevel_width;
-  points[3].x=x3+bevel_width;
-  points[3].y=y3-bevel_width;
+  points[2].x=x1-(int) bevel_width;
+  points[2].y=y1-(int) bevel_width;
+  points[3].x=x3+(int) bevel_width;
+  points[3].y=y3-(int) bevel_width;
   XSetBevelColor(display,window_info,triangle_info->raised);
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
     points,4,Complex,CoordModeOrigin);
@@ -931,11 +931,11 @@ static void XDrawTriangleSouth(Display *display,const XWindowInfo *window_info,
   points[0].x=x2;
   points[0].y=y2;
   points[1].x=x3+1;
-  points[1].y=y3-bevel_width;
-  points[2].x=x3+bevel_width;
-  points[2].y=y3-bevel_width;
+  points[1].y=y3-(int) bevel_width;
+  points[2].x=x3+(int) bevel_width;
+  points[2].y=y3-(int) bevel_width;
   points[3].x=x2;
-  points[3].y=y2+bevel_width;
+  points[3].y=y2+(int) bevel_width;
   XSetBevelColor(display,window_info,!triangle_info->raised);
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
     points,4,Complex,CoordModeOrigin);
@@ -947,9 +947,9 @@ static void XDrawTriangleSouth(Display *display,const XWindowInfo *window_info,
   points[1].x=x2;
   points[1].y=y2;
   points[2].x=x2;
-  points[2].y=y2+bevel_width;
-  points[3].x=x1-bevel_width;
-  points[3].y=y1-bevel_width;
+  points[2].y=y2+(int) bevel_width;
+  points[3].x=x1-(int) bevel_width;
+  points[3].y=y1-(int) bevel_width;
   XSetBevelColor(display,window_info,triangle_info->raised);
   (void) XFillPolygon(display,window_info->id,window_info->widget_context,
     points,4,Complex,CoordModeOrigin);
@@ -1033,21 +1033,22 @@ static void XDrawWidgetText(Display *display,const XWindowInfo *window_info,
     Draw text.
   */
   width=WidgetTextWidth(font_info,text_info->text);
-  x=text_info->x+(QuantumMargin >> 1);
+  x=text_info->x+(int) (QuantumMargin >> 1);
   if (text_info->center)
-    x=text_info->x+(text_info->width >> 1)-(width >> 1);
+    x=text_info->x+(int) (text_info->width >> 1)-(int) (width >> 1);
   if (text_info->raised)
-    if (width > (text_info->width-QuantumMargin))
-      x+=(text_info->width-QuantumMargin-width);
+    if (width > (text_info->width-(unsigned int) QuantumMargin))
+      x+=(int) (text_info->width-(unsigned int) QuantumMargin-width);
   height=(unsigned int) (font_info->ascent+font_info->descent);
-  y=text_info->y+((text_info->height-height) >> 1)+font_info->ascent;
+  y=text_info->y+(int) ((text_info->height-height) >> 1)+font_info->ascent;
   (void) XSetClipRectangles(display,widget_context,0,0,&crop_info,1,Unsorted);
   (void) XDrawString(display,window_info->id,widget_context,x,y,text_info->text,
     Extent(text_info->text));
   (void) XSetClipMask(display,widget_context,None);
   if (x < text_info->x)
     (void) XDrawLine(display,window_info->id,window_info->annotate_context,
-      text_info->x,text_info->y,text_info->x,text_info->y+text_info->height-1);
+      text_info->x,text_info->y,text_info->x,text_info->y+(int)
+      text_info->height-1);
 }
 
 /*
@@ -1270,12 +1271,15 @@ static void XHighlightWidget(Display *display,const XWindowInfo *window_info,
   */
   XSetBevelColor(display,window_info,MagickTrue);
   (void) XDrawRectangle(display,window_info->id,window_info->widget_context,x,y,
-    window_info->width-(x << 1),window_info->height-(y << 1));
+    (unsigned int) ((int) window_info->width-(x << 1)),(unsigned int)
+    ((int) window_info->height-(y << 1)));
   (void) XDrawRectangle(display,window_info->id,window_info->widget_context,
-    x-1,y-1,window_info->width-(x << 1)+1,window_info->height-(y << 1)+1);
+    x-1,y-1,(unsigned int) ((int) window_info->width-(x << 1)+1),(unsigned int)
+    ((int) window_info->height-(y << 1)+1));
   XSetBevelColor(display,window_info,MagickFalse);
   (void) XDrawRectangle(display,window_info->id,window_info->widget_context,
-    x-1,y-1,window_info->width-(x << 1),window_info->height-(y << 1));
+    x-1,y-1,(unsigned int) ((int) window_info->width-(x << 1)),(unsigned int)
+    ((int) window_info->height-(y << 1)));
   (void) XSetFillStyle(display,window_info->widget_context,FillSolid);
 }
 
@@ -1345,7 +1349,7 @@ static int XScreenEvent(Display *display,XEvent *event,char *data)
             Convert Alt-Button3 to Button2.
           */
           event->xbutton.button=Button2;
-          event->xbutton.state&=(~Mod1Mask);
+          event->xbutton.state&=(unsigned int) (~Mod1Mask);
         }
       return(MagickTrue);
     }
@@ -1725,7 +1729,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
     width=WidgetTextWidth(font_info,ResetButtonText);
   if (WidgetTextWidth(font_info,GrabButtonText) > width)
     width=WidgetTextWidth(font_info,GrabButtonText);
-  width+=QuantumMargin;
+  width+=(unsigned int) QuantumMargin;
   if (WidgetTextWidth(font_info,ColorPatternText) > width)
     width=WidgetTextWidth(font_info,ColorPatternText);
   if (WidgetTextWidth(font_info,ColornameText) > width)
@@ -1734,16 +1738,16 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
   /*
     Position Color Browser widget.
   */
-  windows->widget.width=(unsigned int)
-    (width+MagickMin((int) text_width,(int) MaxTextWidth)+6*QuantumMargin);
-  windows->widget.min_width=(unsigned int)
-    (width+MinTextWidth+4*QuantumMargin);
+  windows->widget.width=width+MagickMin(text_width,MaxTextWidth)+
+    6*(unsigned int) QuantumMargin;
+  windows->widget.min_width=width+(unsigned int) MinTextWidth+
+    4*(unsigned int) QuantumMargin;
   if (windows->widget.width < windows->widget.min_width)
     windows->widget.width=windows->widget.min_width;
   windows->widget.height=(unsigned int)
-    ((81*height) >> 2)+((13*QuantumMargin) >> 1)+4;
+    ((81*height) >> 2)+((13*(unsigned int) QuantumMargin) >> 1)+4;
   windows->widget.min_height=(unsigned int)
-    (((23*height) >> 1)+((13*QuantumMargin) >> 1)+4);
+    (((23*height) >> 1)+((13*(unsigned int) QuantumMargin) >> 1)+4);
   if (windows->widget.height < windows->widget.min_height)
     windows->widget.height=windows->widget.min_height;
   XConstrainWindowPosition(display,&windows->widget);
@@ -1792,43 +1796,44 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
         XGetWidgetInfo(CancelButtonText,&cancel_info);
         cancel_info.width=width;
         cancel_info.height=(unsigned int) ((3*height) >> 1);
-        cancel_info.x=(int)
-          (windows->widget.width-cancel_info.width-QuantumMargin-2);
-        cancel_info.y=(int)
-          (windows->widget.height-cancel_info.height-QuantumMargin);
+        cancel_info.x=(int) windows->widget.width-(int) cancel_info.width-
+          QuantumMargin-2;
+        cancel_info.y=(int) windows->widget.height-(int) cancel_info.height-
+          QuantumMargin;
         XGetWidgetInfo(action,&action_info);
         action_info.width=width;
         action_info.height=(unsigned int) ((3*height) >> 1);
-        action_info.x=cancel_info.x-(cancel_info.width+(QuantumMargin >> 1)+
-          (action_info.bevel_width << 1));
+        action_info.x=cancel_info.x-(int) cancel_info.width+
+          (QuantumMargin >> 1)+(int) (action_info.bevel_width << 1);
         action_info.y=cancel_info.y;
         XGetWidgetInfo(GrabButtonText,&grab_info);
         grab_info.width=width;
         grab_info.height=(unsigned int) ((3*height) >> 1);
         grab_info.x=QuantumMargin;
-        grab_info.y=((5*QuantumMargin) >> 1)+height;
+        grab_info.y=((5*QuantumMargin) >> 1)+(int) height;
         XGetWidgetInfo(ResetButtonText,&reset_info);
         reset_info.width=width;
         reset_info.height=(unsigned int) ((3*height) >> 1);
         reset_info.x=QuantumMargin;
-        reset_info.y=grab_info.y+grab_info.height+QuantumMargin;
+        reset_info.y=grab_info.y+(int) grab_info.height+QuantumMargin;
         /*
           Initialize reply information.
         */
         XGetWidgetInfo(reply,&reply_info);
         reply_info.raised=MagickFalse;
         reply_info.bevel_width--;
-        reply_info.width=windows->widget.width-width-((6*QuantumMargin) >> 1);
+        reply_info.width=windows->widget.width-width-(unsigned int)
+          ((6*QuantumMargin) >> 1);
         reply_info.height=height << 1;
-        reply_info.x=(int) (width+(QuantumMargin << 1));
-        reply_info.y=action_info.y-reply_info.height-QuantumMargin;
+        reply_info.x=(int) width+(QuantumMargin << 1);
+        reply_info.y=action_info.y-(int) reply_info.height-QuantumMargin;
         /*
           Initialize mode information.
         */
         XGetWidgetInfo((char *) NULL,&mode_info);
         mode_info.active=MagickTrue;
         mode_info.bevel_width=0;
-        mode_info.width=(unsigned int) (action_info.x-(QuantumMargin << 1));
+        mode_info.width=(unsigned int) (action_info.x-(int) (QuantumMargin << 1));
         mode_info.height=action_info.height;
         mode_info.x=QuantumMargin;
         mode_info.y=action_info.y;
@@ -1879,7 +1884,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
         list_info.raised=MagickFalse;
         list_info.bevel_width--;
         list_info.width=(unsigned int)
-          (scroll_info.x-reply_info.x-(QuantumMargin >> 1));
+          (scroll_info.x-reply_info.x-(int) (QuantumMargin >> 1));
         list_info.height=scroll_info.height;
         list_info.x=reply_info.x;
         list_info.y=scroll_info.y;
@@ -1893,7 +1898,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
         text_info.center=MagickFalse;
         text_info.width=reply_info.width;
         text_info.height=height;
-        text_info.x=list_info.x-(QuantumMargin >> 1);
+        text_info.x=list_info.x-(int) (QuantumMargin >> 1);
         text_info.y=QuantumMargin;
         /*
           Initialize selection information.
@@ -2279,7 +2284,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
             /*
               Move text cursor to position of button press.
             */
-            x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
+            x=event.xbutton.x-reply_info.x-(int) (QuantumMargin >> 2);
             for (i=1; i <= Extent(reply_info.marker); i++)
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
@@ -3160,7 +3165,7 @@ MagickPrivate int XCommandWidget(Display *display,XWindows *windows,
         (toggle_info.bevel_width << 1));
       toggle_info.height=toggle_info.width;
       toggle_info.x=selection_info[0].x+selection_info[0].width-
-        toggle_info.width-(QuantumMargin >> 1);
+        toggle_info.width-(int) (QuantumMargin >> 1);
       if (windows->command.mapped)
         (void) XClearWindow(display,windows->command.id);
     }
@@ -3367,7 +3372,7 @@ MagickPrivate int XConfirmWidget(Display *display,XWindows *windows,
           Redraw Confirm widget.
         */
         width=WidgetTextWidth(font_info,(char *) reason);
-        x=(int) ((windows->widget.width >> 1)-(width >> 1));
+        x=(int) ((windows->widget.width >> 1)-(int) (width >> 1));
         y=(int) ((windows->widget.height >> 1)-(height << 1));
         (void) XDrawString(display,windows->widget.id,
           windows->widget.annotate_context,x,y,(char *) reason,Extent(reason));
@@ -3379,7 +3384,7 @@ MagickPrivate int XConfirmWidget(Display *display,XWindows *windows,
             (void) CopyMagickString(question,description,MagickPathExtent);
             (void) ConcatenateMagickString(question,"?",MagickPathExtent);
             width=WidgetTextWidth(font_info,question);
-            x=(int) ((windows->widget.width >> 1)-(width >> 1));
+            x=(int) ((windows->widget.width >> 1)-(int) (width >> 1));
             y+=height;
             (void) XDrawString(display,windows->widget.id,
               windows->widget.annotate_context,x,y,question,Extent(question));
@@ -3713,7 +3718,7 @@ MagickPrivate int XDialogWidget(Display *display,XWindows *windows,
     (width+28*XTextWidth(font_info,"#",1)+4*QuantumMargin);
   if (windows->widget.width < windows->widget.min_width)
     windows->widget.width=windows->widget.min_width;
-  windows->widget.height=(unsigned int) (7*height+(QuantumMargin << 1));
+  windows->widget.height=(unsigned int) (7*height+(int) (QuantumMargin << 1));
   windows->widget.min_height=windows->widget.height;
   if (windows->widget.height < windows->widget.min_height)
     windows->widget.height=windows->widget.min_height;
@@ -3804,7 +3809,7 @@ MagickPrivate int XDialogWidget(Display *display,XWindows *windows,
         XGetWidgetInfo(query,&text_info);
         text_info.width=reply_info.width;
         text_info.height=height;
-        text_info.x=reply_info.x-(QuantumMargin >> 1);
+        text_info.x=reply_info.x-(int) (QuantumMargin >> 1);
         text_info.y=QuantumMargin;
         text_info.center=MagickFalse;
         state&=(~UpdateConfigurationState);
@@ -3870,7 +3875,7 @@ MagickPrivate int XDialogWidget(Display *display,XWindows *windows,
             /*
               Move text cursor to position of button press.
             */
-            x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
+            x=event.xbutton.x-reply_info.x-(int) (QuantumMargin >> 2);
             for (i=1; i <= Extent(reply_info.marker); i++)
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
@@ -4405,13 +4410,13 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
         XGetWidgetInfo(action,&action_info);
         action_info.width=width;
         action_info.height=(unsigned int) ((3*height) >> 1);
-        action_info.x=cancel_info.x-(cancel_info.width+(QuantumMargin >> 1)+
+        action_info.x=cancel_info.x-(cancel_info.width+(int) (QuantumMargin >> 1)+
           (action_info.bevel_width << 1));
         action_info.y=cancel_info.y;
         XGetWidgetInfo(GrabButtonText,&special_info);
         special_info.width=width;
         special_info.height=(unsigned int) ((3*height) >> 1);
-        special_info.x=action_info.x-(action_info.width+(QuantumMargin >> 1)+
+        special_info.x=action_info.x-(action_info.width+(int) (QuantumMargin >> 1)+
           (special_info.bevel_width << 1));
         special_info.y=action_info.y;
         if (anomaly == MagickFalse)
@@ -4444,7 +4449,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
         reply_info.bevel_width--;
         reply_info.width=windows->widget.width-width-((6*QuantumMargin) >> 1);
         reply_info.height=height << 1;
-        reply_info.x=(int) (width+(QuantumMargin << 1));
+        reply_info.x=(int) (width+(int) (QuantumMargin << 1));
         reply_info.y=action_info.y-reply_info.height-QuantumMargin;
         /*
           Initialize scroll information.
@@ -4453,7 +4458,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
         scroll_info.bevel_width--;
         scroll_info.width=height;
         scroll_info.height=(unsigned int)
-          (reply_info.y-up_info.y-(QuantumMargin >> 1));
+          (reply_info.y-up_info.y-(int) (QuantumMargin >> 1));
         scroll_info.x=reply_info.x+(reply_info.width-scroll_info.width);
         scroll_info.y=up_info.y-reply_info.bevel_width;
         scroll_info.raised=MagickFalse;
@@ -4493,7 +4498,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
         list_info.raised=MagickFalse;
         list_info.bevel_width--;
         list_info.width=(unsigned int)
-          (scroll_info.x-reply_info.x-(QuantumMargin >> 1));
+          (scroll_info.x-reply_info.x-(int) (QuantumMargin >> 1));
         list_info.height=scroll_info.height;
         list_info.x=reply_info.x;
         list_info.y=scroll_info.y;
@@ -4507,7 +4512,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
         text_info.center=MagickFalse;
         text_info.width=reply_info.width;
         text_info.height=height;
-        text_info.x=list_info.x-(QuantumMargin >> 1);
+        text_info.x=list_info.x-(int) (QuantumMargin >> 1);
         text_info.y=QuantumMargin;
         /*
           Initialize selection information.
@@ -4867,7 +4872,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
             /*
               Move text cursor to position of button press.
             */
-            x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
+            x=event.xbutton.x-reply_info.x-(int) (QuantumMargin >> 2);
             for (i=1; i <= (ssize_t) Extent(reply_info.marker); i++)
               if (XTextWidth(font_info,reply_info.marker,(int) i) > x)
                 break;
@@ -5678,7 +5683,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
         XGetWidgetInfo(action,&action_info);
         action_info.width=width;
         action_info.height=(unsigned int) ((3*height) >> 1);
-        action_info.x=cancel_info.x-(cancel_info.width+(QuantumMargin >> 1)+
+        action_info.x=cancel_info.x-(cancel_info.width+(int) (QuantumMargin >> 1)+
           (action_info.bevel_width << 1));
         action_info.y=cancel_info.y;
         XGetWidgetInfo(BackButtonText,&back_info);
@@ -5699,7 +5704,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
         reply_info.bevel_width--;
         reply_info.width=windows->widget.width-width-((6*QuantumMargin) >> 1);
         reply_info.height=height << 1;
-        reply_info.x=(int) (width+(QuantumMargin << 1));
+        reply_info.x=(int) (width+(int) (QuantumMargin << 1));
         reply_info.y=action_info.y-(action_info.height << 1)-QuantumMargin;
         /*
           Initialize mode information.
@@ -5718,7 +5723,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
         scroll_info.bevel_width--;
         scroll_info.width=height;
         scroll_info.height=(unsigned int)
-          (reply_info.y-back_info.y-(QuantumMargin >> 1));
+          (reply_info.y-back_info.y-(int) (QuantumMargin >> 1));
         scroll_info.x=reply_info.x+(reply_info.width-scroll_info.width);
         scroll_info.y=back_info.y-reply_info.bevel_width;
         scroll_info.raised=MagickFalse;
@@ -5757,7 +5762,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
         list_info.raised=MagickFalse;
         list_info.bevel_width--;
         list_info.width=(unsigned int)
-          (scroll_info.x-reply_info.x-(QuantumMargin >> 1));
+          (scroll_info.x-reply_info.x-(int) (QuantumMargin >> 1));
         list_info.height=scroll_info.height;
         list_info.x=reply_info.x;
         list_info.y=scroll_info.y;
@@ -5771,7 +5776,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
         text_info.center=MagickFalse;
         text_info.width=reply_info.width;
         text_info.height=height;
-        text_info.x=list_info.x-(QuantumMargin >> 1);
+        text_info.x=list_info.x-(int) (QuantumMargin >> 1);
         text_info.y=QuantumMargin;
         /*
           Initialize selection information.
@@ -6162,7 +6167,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
             /*
               Move text cursor to position of button press.
             */
-            x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
+            x=event.xbutton.x-reply_info.x-(int) (QuantumMargin >> 2);
             for (i=1; i <= Extent(reply_info.marker); i++)
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
@@ -6914,7 +6919,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
         XGetWidgetInfo(action,&action_info);
         action_info.width=width;
         action_info.height=(unsigned int) ((3*height) >> 1);
-        action_info.x=cancel_info.x-(cancel_info.width+(QuantumMargin >> 1)+
+        action_info.x=cancel_info.x-(cancel_info.width+(int) (QuantumMargin >> 1)+
           (action_info.bevel_width << 1));
         action_info.y=cancel_info.y;
         /*
@@ -6973,7 +6978,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
         list_info.raised=MagickFalse;
         list_info.bevel_width--;
         list_info.width=(unsigned int)
-          (scroll_info.x-reply_info.x-(QuantumMargin >> 1));
+          (scroll_info.x-reply_info.x-(int) (QuantumMargin >> 1));
         list_info.height=scroll_info.height;
         list_info.x=reply_info.x;
         list_info.y=scroll_info.y;
@@ -6992,7 +6997,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
         XGetWidgetInfo(query,&text_info);
         text_info.width=reply_info.width;
         text_info.height=height;
-        text_info.x=list_info.x-(QuantumMargin >> 1);
+        text_info.x=list_info.x-(int) (QuantumMargin >> 1);
         text_info.y=QuantumMargin;
         /*
           Initialize selection information.
@@ -7214,7 +7219,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
             /*
               Move text cursor to position of button press.
             */
-            x=event.xbutton.x-reply_info.x-(QuantumMargin >> 2);
+            x=event.xbutton.x-reply_info.x-(int) (QuantumMargin >> 2);
             for (i=1; i <= Extent(reply_info.marker); i++)
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
@@ -7743,7 +7748,7 @@ MagickPrivate int XMenuWidget(Display *display,XWindows *windows,
   windows->widget.min_width=windows->widget.width;
   windows->widget.min_height=windows->widget.height;
   XQueryPosition(display,windows->widget.root,&x,&y);
-  windows->widget.x=x-(QuantumMargin >> 1);
+  windows->widget.x=x-(int) (QuantumMargin >> 1);
   if (submenu_info.active != 0)
     {
       windows->widget.x=
@@ -8236,14 +8241,14 @@ MagickPrivate void XNoticeWidget(Display *display,XWindows *windows,
           Redraw Notice widget.
         */
         width=WidgetTextWidth(font_info,(char *) reason);
-        x=(int) ((windows->widget.width >> 1)-(width >> 1));
+        x=(int) ((windows->widget.width >> 1)-(int) (width >> 1));
         y=(int) ((windows->widget.height >> 1)-(height << 1));
         (void) XDrawString(display,windows->widget.id,
           windows->widget.annotate_context,x,y,(char *) reason,Extent(reason));
         if (description != (char *) NULL)
           {
             width=WidgetTextWidth(font_info,(char *) description);
-            x=(int) ((windows->widget.width >> 1)-(width >> 1));
+            x=(int) ((windows->widget.width >> 1)-(int) (width >> 1));
             y+=height;
             (void) XDrawString(display,windows->widget.id,
               windows->widget.annotate_context,x,y,(char *) description,
@@ -8526,9 +8531,9 @@ MagickPrivate MagickBooleanType XPreferencesWidget(Display *display,
   if (windows->widget.width < windows->widget.min_width)
     windows->widget.width=windows->widget.min_width;
   windows->widget.height=(unsigned int)
-    (7*height+NumberPreferences*(height+(QuantumMargin >> 1)));
+    (7*height+NumberPreferences*(height+(int) (QuantumMargin >> 1)));
   windows->widget.min_height=(unsigned int)
-    (7*height+NumberPreferences*(height+(QuantumMargin >> 1)));
+    (7*height+NumberPreferences*(height+(int) (QuantumMargin >> 1)));
   if (windows->widget.height < windows->widget.min_height)
     windows->widget.height=windows->widget.min_height;
   XConstrainWindowPosition(display,&windows->widget);
@@ -8584,7 +8589,7 @@ MagickPrivate MagickBooleanType XPreferencesWidget(Display *display,
           preferences_info[i].height=(unsigned int) QuantumMargin >> 1;
           preferences_info[i].x=QuantumMargin << 1;
           preferences_info[i].y=y;
-          y+=height+(QuantumMargin >> 1);
+          y+=height+(int) (QuantumMargin >> 1);
         }
         preferences_info[0].raised=resource_info->backdrop ==
           MagickFalse ? MagickTrue : MagickFalse;

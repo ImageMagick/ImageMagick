@@ -241,6 +241,9 @@ MagickExport const char *GetMagickDelegates(void)
 MagickExport const char *GetMagickFeatures(void)
 {
   return ""
+#if MAGICKCORE_CHANNEL_MASK_DEPTH == 64
+  "Channel-masks(64-bit) "
+#endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_DEBUG)
   "Debug "
 #endif

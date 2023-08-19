@@ -30,7 +30,11 @@ extern "C" {
 /*
   Pixel enum declarations.
 */
+#if MAGICKCORE_CHANNEL_MASK_DEPTH == 64
+typedef enum : MagickSizeType
+#else
 typedef enum
+#endif
 {
   UndefinedChannel = 0x0000,
   RedChannel = 0x0001,
@@ -52,7 +56,11 @@ typedef enum
   MetaChannel = 0x0100,              /* not used */
   CompositeMaskChannel = 0x0200,     /* SVG mask */
   CompositeChannels = 0x001F,
+#if MAGICKCORE_CHANNEL_MASK_DEPTH == 64
+  AllChannels = 0x7ffffffffffff,
+#else
   AllChannels = 0x7ffffff,
+#endif
   /*
     Special purpose channel types.
     FUTURE: are these needed any more - they are more like hacks

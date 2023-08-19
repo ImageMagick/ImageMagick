@@ -734,7 +734,7 @@
 /* define if your compiler has __attribute__ */
 #undef HAVE___ATTRIBUTE__
 
-/* Whether hdri is enabled or not */
+/* Whether 64-bit channel masks are enabled or not */
 #undef HDRI_ENABLE_OBSOLETE_IN_H
 
 /* Define if you have libheif library */

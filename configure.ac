@@ -678,6 +678,29 @@ CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 
 #
+# Extend channel masks from 32 to 64-bits.
+#
+AC_ARG_ENABLE([64bit_channel_masks],
+    [AS_HELP_STRING([--enable-64bit-channel-masks],
+                    [enable 64-bit channel masks])],
+    [enable_64bit_channel_masks=$enableval],
+    [enable_64bit_channel_masks='no'])
+
+MAGICK_64BIT_CHANNEL_MASK=""
+if test "$enable_64bit_channel_masks" = 'yes'; then
+    MAGICK_64BIT_CHANNEL_MASK="Channel-masks(64-bit)"
+    magick_channel_mask_depth='64';
+    MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
+else
+    magick_channel_mask_depth='32'
+fi
+AC_DEFINE_UNQUOTED([HDRI_ENABLE_OBSOLETE_IN_H],[$magick_channel_mask_depth],[Whether 64-bit channel masks are enabled or not])
+AC_SUBST([MAGICK_64BIT_CHANNEL_MASK])dnl
+MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+CPPFLAGS="$CPPFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+
+#
 # Support the distributed pixel cache.
 #
 AC_ARG_ENABLE([dpc],

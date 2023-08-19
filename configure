@@ -972,6 +972,7 @@ LEGACY_SUPPORT_TRUE
 MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
+MAGICK_64BIT_CHANNEL_MASK
 MAGICK_HDRI
 MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_FALSE
 MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE
@@ -1217,6 +1218,7 @@ enable_installed
 enable_cipher
 enable_zero_configuration
 enable_hdri
+enable_64bit_channel_masks
 enable_dpc
 enable_pipes
 enable_maintainer_mode
@@ -2021,6 +2023,8 @@ Optional Features:
                           zero-configuration ImageMagick
   --enable-hdri           accurately represent the wide range of intensity
                           levels found in real scenes
+  --enable-64bit-channel-masks
+                          enable 64-bit channel masks
   --disable-dpc           disable distributed pixel cache support
   --enable-pipes          enable pipes (|) in filenames. Be sure to properly
                           validate and sanitize user input to prevent
@@ -5176,7 +5180,7 @@ MAGICK_PATCHLEVEL_VERSION=16
 
 MAGICK_VERSION=7.1.1-16
 
-MAGICK_GIT_REVISION=d2f093cfd:20230813
+MAGICK_GIT_REVISION=58a3b36f7:20230818
 
 
 # Substitute library versioning
@@ -5210,7 +5214,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,16
 
-PACKAGE_RELEASE_DATE=2023-08-13
+PACKAGE_RELEASE_DATE=2023-08-18
 
 
 # Ensure that make can run correctly
@@ -23298,6 +23302,33 @@ printf "%s\n" "#define HDRI_ENABLE_OBSOLETE_IN_H $magick_hdri_enable" >>confdefs
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
+
+#
+# Extend channel masks from 32 to 64-bits.
+#
+# Check whether --enable-64bit_channel_masks was given.
+if test ${enable_64bit_channel_masks+y}
+then :
+  enableval=$enable_64bit_channel_masks; enable_64bit_channel_masks=$enableval
+else $as_nop
+  enable_64bit_channel_masks='no'
+fi
+
+
+MAGICK_64BIT_CHANNEL_MASK=""
+if test "$enable_64bit_channel_masks" = 'yes'; then
+    MAGICK_64BIT_CHANNEL_MASK="Channel-masks(64-bit)"
+    magick_channel_mask_depth='64';
+    MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
+else
+    magick_channel_mask_depth='32'
+fi
+
+printf "%s\n" "#define HDRI_ENABLE_OBSOLETE_IN_H $magick_channel_mask_depth" >>confdefs.h
+
+MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+CPPFLAGS="$CPPFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 
 #
 # Support the distributed pixel cache.
