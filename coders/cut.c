@@ -384,7 +384,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (offset < 0)
         ThrowCUTReaderException(CorruptImageError,"ImproperImageHeader");
       if(EOFBlob(image) != MagickFalse) goto CUT_KO;  /*wrong data*/
-      EncodedByte-=i+1;
+      EncodedByte=(size_t) ((ssize_t) EncodedByte-i+1);
       ldblk+=(ssize_t) RunCountMasked;
 
       RunCount=(unsigned char) ReadBlobByte(image);
@@ -402,7 +402,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=Header.Width;
   image->rows=Header.Height;
   image->depth=8;
-  image->colors=(size_t) (GetQuantumRange(1UL*i)+1);
+  image->colors=(size_t) (GetQuantumRange((size_t) i)+1);
 
   if (image_info->ping != MagickFalse) goto Finish;
   status=SetImageExtent(image,image->columns,image->rows,exception);

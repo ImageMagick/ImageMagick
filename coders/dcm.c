@@ -2944,7 +2944,7 @@ static MagickBooleanType ReadDCMPixels(Image *image,DCMInfo *info,
                         info->window_center-0.5)/(info->window_width-1))+0.5));
                 }
             }
-          index&=info->mask;
+          index&=(ssize_t) info->mask;
           index=(int) ConstrainColormapIndex(image,(ssize_t) index,exception);
           if (first_segment != MagickFalse)
             SetPixelIndex(image,(Quantum) index,q);

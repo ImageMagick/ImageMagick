@@ -1097,10 +1097,10 @@ static const unsigned char BC7_anchor_index_table[4][64] =
 #define FixRange(min, max, steps) \
 if (min > max) \
   min = max; \
-if ((ssize_t) max - min < steps) \
+if ((ssize_t) (max-min) < steps) \
   max = MagickMin(min + steps, 255); \
-if ((ssize_t) max - min < steps) \
-  min = MagickMax(0, (ssize_t) max - steps)
+if ((ssize_t) (max-min) < steps) \
+  min = MagickMax(0, max-steps)
 
 #define Dot(left, right) (left.x*right.x) + (left.y*right.y) + (left.z*right.z)
 
@@ -1245,7 +1245,7 @@ static inline void VectorTruncate3(DDSVector3 *value)
 static inline size_t ClampToLimit(const float value, const size_t limit)
 {
   size_t
-    result = (int) (value + 0.5f);
+    result = (size_t) (value + 0.5f);
 
   if (result < 0.0f)
     return(0);
@@ -1528,8 +1528,9 @@ static MagickBooleanType ReadDXT1Pixels(Image *image,
     for (x = 0; x < (ssize_t) image->columns; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
-      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
-        MagickMin(4,image->rows-y),exception);
+      q=QueueAuthenticPixels(image,x,y,(size_t)
+        (MagickMin(4,(ssize_t) image->columns-x)),(size_t)
+        (MagickMin(4,(ssize_t) image->rows-y)),exception);
 
       if (q == (Quantum *) NULL)
         return(MagickFalse);
@@ -1548,8 +1549,9 @@ static MagickBooleanType ReadDXT1Pixels(Image *image,
         {
           /* Correct alpha */
           SetImageAlpha(image,QuantumRange,exception);
-          q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
-            MagickMin(4,image->rows-y),exception);
+          q=QueueAuthenticPixels(image,x,y,(size_t) MagickMin(4,(ssize_t)
+            image->columns-x),(size_t) MagickMin(4,(ssize_t) image->rows-y),
+            exception);
           if (q != (Quantum *) NULL)
             SetDXT1Pixels(image,x,y,colors,bits,q);
         }
@@ -1584,12 +1586,12 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,const DDSInfo *dds_info,
       MagickOffsetType
         offset;
 
-      ssize_t
-        i;
-
       size_t
         h,
         w;
+
+      ssize_t
+        i;
 
       w=DIV2(dds_info->width);
       h=DIV2(dds_info->height);
@@ -1599,7 +1601,8 @@ static MagickBooleanType SkipDXTMipmaps(Image *image,const DDSInfo *dds_info,
       */
       for (i = 1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
       {
-        offset=(MagickOffsetType)((w+3)/4)*((h+3)/4)*texel_size;
+        offset=(MagickOffsetType) (((w+3U)/4U)*((h+3U)/4U)*(size_t)
+          texel_size);
         if (SeekBlob(image,offset,SEEK_CUR) < 0)
           break;
         w=DIV2(w);
@@ -1660,8 +1663,9 @@ static MagickBooleanType ReadDXT3Pixels(Image *image,
     for (x = 0; x < (ssize_t) image->columns; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
-      q = QueueAuthenticPixels(image, x, y, MagickMin(4, image->columns - x),
-                         MagickMin(4, image->rows - y),exception);
+      q = QueueAuthenticPixels(image, x, y, (size_t)
+        MagickMin(4, (ssize_t) image->columns - x),(size_t)
+        MagickMin(4, (ssize_t) image->rows - y),exception);
 
       if (q == (Quantum *) NULL)
         return(MagickFalse);
@@ -1765,8 +1769,8 @@ static MagickBooleanType ReadDXT5Pixels(Image *image,
     for (x = 0; x < (ssize_t) image->columns; x += 4)
     {
       /* Get 4x4 patch of pixels to write on */
-      q = QueueAuthenticPixels(image, x, y, MagickMin(4, image->columns - x),
-                         MagickMin(4, image->rows - y),exception);
+      q = QueueAuthenticPixels(image, x, y, (size_t) MagickMin(4, (ssize_t) image->columns - x),(size_t)
+       MagickMin(4, (ssize_t) image->rows - y),exception);
 
       if (q == (Quantum *) NULL)
         return(MagickFalse);
@@ -2057,12 +2061,15 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
     for (x = 0; x < (ssize_t)image->columns; x += 4)
     {
       size_t
-        area,
+        area;
+
+      ssize_t
         count;
 
       /* Get 4x4 patch of pixels to write on */
-      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
-        MagickMin(4,image->rows-y),exception);
+      q=QueueAuthenticPixels(image,x,y,(size_t)
+        MagickMin(4,(ssize_t) image->columns-x),(size_t)
+        MagickMin(4,(ssize_t) image->rows-y),exception);
 
       if (q == (Quantum *)NULL)
         return(MagickFalse);
@@ -2108,8 +2115,8 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
       }
 
       /* Write the pixels */
-      area=MagickMin(MagickMin(4,image->columns-x)*MagickMin(4,image->rows-y),
-        16);
+      area=(size_t) (MagickMin(MagickMin(4,(ssize_t) image->columns-x)*
+        MagickMin(4,(ssize_t) image->rows-y),16));
       start_bit_r=16;
       start_bit_g=80;
       for (i = 0; i < (ssize_t) area; i++)
@@ -2198,8 +2205,9 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         area;
 
       /* Get 4x4 patch of pixels to write on */
-      q=QueueAuthenticPixels(image,x,y,MagickMin(4,image->columns-x),
-        MagickMin(4,image->rows-y),exception);
+      q=QueueAuthenticPixels(image,x,y,(size_t)
+        MagickMin(4,(ssize_t) image->columns-x),(size_t)
+        MagickMin(4,(ssize_t) image->rows-y),exception);
 
       if (q == (Quantum *) NULL)
         return(MagickFalse);
@@ -2256,9 +2264,9 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
       /* get color and subset indices */
       for (i=0; i < 16; i++)
       {
-        subset_indices[i]=GetSubsetIndex(num_subsets,partition_id,i);
+        subset_indices[i]=GetSubsetIndex(num_subsets,partition_id,(size_t) i);
         num_bits=index_prec;
-        if (IsPixelAnchorIndex(subset_indices[i],num_subsets,i,partition_id))
+        if (IsPixelAnchorIndex(subset_indices[i],num_subsets,(size_t) i,partition_id))
           num_bits--;
         color_indices[i]=GetBits(block,&start_bit,num_bits);
       }
@@ -2272,8 +2280,8 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         }
 
       /* Write the pixels */
-      area=MagickMin(MagickMin(4,image->columns-x)*MagickMin(4,image->rows-y),
-        16);
+      area=(size_t) (MagickMin(MagickMin(4,(ssize_t) image->columns-x)*
+        MagickMin(4,(ssize_t) image->rows-y),16));
       for (i=0; i < (ssize_t) area; i++)
       {
         unsigned char
@@ -2455,7 +2463,7 @@ static MagickBooleanType SkipRGBMipmaps(Image *image,const DDSInfo *dds_info,
       */
       for (i=1; (i < (ssize_t) dds_info->mipmapcount) && w && h; i++)
       {
-        offset=(MagickOffsetType)w*h*pixel_size;
+        offset=(MagickOffsetType) (w*h*(size_t) pixel_size);
         if (SeekBlob(image,offset,SEEK_CUR) < 0)
           break;
         w=DIV2(w);
@@ -3089,9 +3097,6 @@ static size_t CompressAlpha(const size_t min, const size_t max,
   unsigned char
     codes[8];
 
-  ssize_t
-    i;
-
   size_t
     error,
     index,
@@ -3099,13 +3104,17 @@ static size_t CompressAlpha(const size_t min, const size_t max,
     least,
     value;
 
+  ssize_t
+    i;
+
   codes[0] = (unsigned char) min;
   codes[1] = (unsigned char) max;
   codes[6] = 0;
   codes[7] = 255;
 
   for (i=1; i <  (ssize_t) steps; i++)
-    codes[i+1] = (unsigned char) (((steps-i)*min + i*max) / steps);
+    codes[i+1] = (unsigned char) ((((ssize_t) steps-i)*(ssize_t) min +
+      i*(ssize_t) max) / (ssize_t) steps);
 
   error = 0;
   for (i=0; i<16; i++)
@@ -3116,7 +3125,7 @@ static size_t CompressAlpha(const size_t min, const size_t max,
         continue;
       }
 
-    value = alphas[i];
+    value = (size_t) alphas[i];
     least = SIZE_MAX;
     index = 0;
     for (j=0; j<8; j++)
@@ -3150,9 +3159,7 @@ static MagickBooleanType ConstructOrdering(const size_t count,
      f;
 
   ssize_t
-    i;
-
-  size_t
+    i,
     j;
 
   unsigned char
@@ -3251,12 +3258,12 @@ static void CompressClusterFit(const size_t count,
 
   size_t
     bestIteration = 0,
-    besti = 0,
-    bestj = 0,
-    bestk = 0,
     iterationIndex;
 
   ssize_t
+    besti = 0,
+    bestj = 0,
+    bestk = 0,
     i;
 
   unsigned char
@@ -3303,7 +3310,7 @@ static void CompressClusterFit(const size_t count,
         part1,
         part2;
 
-      size_t
+      ssize_t
         ii,
         j,
         k,
@@ -3314,7 +3321,7 @@ static void CompressClusterFit(const size_t count,
         VectorAdd(pointsWeights[ii],part0,&part0);
 
       VectorInit(part1,0.0f);
-      for (j=(size_t) i;;)
+      for (j=i; ; )
       {
         if (j == 0)
           {
@@ -3726,12 +3733,12 @@ static void ComputeWeightedCovariance(const size_t count,
 static void WriteAlphas(Image *image, const ssize_t *alphas, size_t min5,
   size_t max5, size_t min7, size_t max7)
 {
-  ssize_t
-    i;
-
   size_t
     err5,
-    err7,
+    err7;
+
+  ssize_t
+    i,
     j;
 
   unsigned char
@@ -3897,13 +3904,11 @@ static void WriteFourCC(Image *image, const size_t compression,
   ExceptionInfo *exception)
 {
   ssize_t
-    x;
-
-  ssize_t
+    bx,
+    by,
     i,
     y,
-    bx,
-    by;
+    x;
 
   const Quantum
     *p;
@@ -3935,11 +3940,11 @@ static void WriteFourCC(Image *image, const size_t compression,
       unsigned char
         alpha;
 
-      if (x + columns >= image->columns)
-        columns = image->columns - x;
+      if ((x + (ssize_t) columns) >= image->columns)
+        columns = (size_t) ((ssize_t) image->columns - x);
 
-      if (y + rows >= image->rows)
-        rows = image->rows - y;
+      if ((y + (ssize_t) rows) >= image->rows)
+        rows = (size_t) ((ssize_t) image->rows - y);
 
       p=GetVirtualPixels(image,x,y,columns,rows,exception);
       if (p == (const Quantum *) NULL)
@@ -4002,7 +4007,7 @@ static void WriteFourCC(Image *image, const size_t compression,
           points[count].y = point.y;
           points[count].z = point.z;
           points[count].w = point.w;
-          map[4*by + bx] = count;
+          map[4*by + bx] = (ssize_t) count;
           count++;
         }
       }

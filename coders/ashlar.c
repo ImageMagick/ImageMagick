@@ -231,7 +231,7 @@ static inline ssize_t FindMinimumTileLocation(NodeInfo *first,const ssize_t x,
   y=0;
   extent=0;
   node=first;
-  while (node->x < (ssize_t) (x+width))
+  while (node->x < (x+(ssize_t) width))
   {
     if (node->y > y)
       {
@@ -245,10 +245,10 @@ static inline ssize_t FindMinimumTileLocation(NodeInfo *first,const ssize_t x,
     else
       {
         size_t delta = (size_t) (node->next->x-node->x);
-        if ((delta+extent) > width)
-          delta=width-extent;
-        *excess+=delta*(y-node->y);
-        extent+=delta;
+        if ((delta+(size_t) extent) > width)
+          delta=width-(size_t) extent;
+        *excess+=(ssize_t) delta*(y-node->y);
+        extent+=(ssize_t) delta;
       }
     node=node->next;
   }
@@ -276,8 +276,8 @@ static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
     Align along left edge.
   */
   tile.previous=(NodeInfo **) NULL;
-  ashlar_width=(width+ashlar_info->align-1);
-  ashlar_width-=ashlar_width % ashlar_info->align;
+  ashlar_width=(size_t) ((ssize_t) width+ashlar_info->align-1);
+  ashlar_width-=(size_t) ((ssize_t) ashlar_width % ashlar_info->align);
   if ((ashlar_width > ashlar_info->width) || (height > ashlar_info->height))
     {
       /*
@@ -292,7 +292,7 @@ static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
   min_excess=(ssize_t) MAGICK_SSIZE_MAX;
   node=ashlar_info->current;
   previous=(&ashlar_info->current);
-  while ((ashlar_width+node->x) <= ashlar_info->width)
+  while (((ssize_t) ashlar_width+node->x) <= (ssize_t) ashlar_info->width)
   {
     ssize_t
       excess,
@@ -309,7 +309,7 @@ static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
       }
     else
       {
-        if ((height+y)  <= ashlar_info->height)
+        if (((ssize_t) height+y) <= (ssize_t) ashlar_info->height)
           if ((y < tile.y) || ((y == tile.y) && (excess < min_excess)))
             {
               tile.y=y;
@@ -338,14 +338,14 @@ static inline TileInfo AssignBestTileLocation(AshlarInfo *ashlar_info,
           x,
           y;
 
-        x=tail->x-ashlar_width;
+        x=tail->x-(ssize_t) ashlar_width;
         while (node->next->x <= x)
         {
           previous=(&node->next);
           node=node->next;
         }
         y=FindMinimumTileLocation(node,x,ashlar_width,&excess);
-        if ((height+y) <= ashlar_info->height)
+        if (((ssize_t) height+y) <= (ssize_t) ashlar_info->height)
           {
             if (y <= tile.y)
               if ((y < tile.y) || (excess < min_excess) ||
@@ -389,7 +389,7 @@ static inline TileInfo AssignTileLocation(AshlarInfo *ashlar_info,
    */
    node=ashlar_info->free;
    node->x=(ssize_t) tile.x;
-   node->y=(ssize_t) (tile.y+height);
+   node->y=tile.y+(ssize_t) height;
    ashlar_info->free=node->next;
    /*
      Insert node.
@@ -416,7 +416,7 @@ static inline TileInfo AssignTileLocation(AshlarInfo *ashlar_info,
    }
    node->next=current;
    if (current->x < (tile.x+(ssize_t) width))
-     current->x=(ssize_t) (tile.x+width);
+     current->x=tile.x+(ssize_t) width;
    return(tile);
 }
 
@@ -627,8 +627,8 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
         (tiles[i].y == (ssize_t) MAGICK_SSIZE_MAX))
       continue;
     tile_image=ResizeImage(GetImageFromList(image,tiles[i].id),(size_t)
-      (tiles[i].width-2*geometry.x),(size_t) (tiles[i].height-2*geometry.y),
-      image->filter,exception);
+      ((ssize_t) tiles[i].width-2*geometry.x),(size_t)
+      ((ssize_t) tiles[i].height-2*geometry.y),image->filter,exception);
     if (tile_image == (Image *) NULL)
       continue;
     (void) CompositeImage(ashlar_image,tile_image,image->compose,MagickTrue,
@@ -655,10 +655,11 @@ static Image *ASHLARImage(ImageInfo *image_info,Image *image,
             (void) AnnotateImage(ashlar_image,draw_info,exception);
           }
       }
-    if ((tiles[i].width+tiles[i].x) > extent.width)
-      extent.width=(size_t) (tiles[i].width+tiles[i].x);
-    if ((tiles[i].height+tiles[i].y+geometry.y+2) > extent.height)
-      extent.height=(size_t) (tiles[i].height+tiles[i].y+geometry.y+2);
+    if (((ssize_t) tiles[i].width+tiles[i].x) > (ssize_t) extent.width)
+      extent.width=(size_t) ((ssize_t) tiles[i].width+tiles[i].x);
+    if (((ssize_t) tiles[i].height+tiles[i].y+geometry.y+2) > (ssize_t) extent.height)
+      extent.height=(size_t) ((ssize_t) tiles[i].height+tiles[i].y+
+        geometry.y+2);
     tile_image=DestroyImage(tile_image);
   }
   (void) SetImageExtent(ashlar_image,extent.width,extent.height,exception);
@@ -706,7 +707,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
     tiles_per_page=(size_t) MagickMax(StringToInteger(value),1);
   ashlar_images=NewImageList();
   write_info=CloneImageInfo(image_info);
-  for (i=0; i < (ssize_t) GetImageListLength(image); i+=tiles_per_page)
+  for (i=0; i < (ssize_t) GetImageListLength(image); i+=(ssize_t) tiles_per_page)
   {
     char
       scenes[MagickPathExtent];
@@ -716,7 +717,7 @@ static MagickBooleanType WriteASHLARImage(const ImageInfo *image_info,
       *clone_images;
 
     (void) FormatLocaleString(scenes,MagickPathExtent,"%g-%g",(double) i,
-      (double) (i+tiles_per_page-1));
+      (double) (i+(ssize_t) tiles_per_page-1));
     clone_images=CloneImages(image,scenes,exception);
     if (clone_images == (Image *) NULL)
       {

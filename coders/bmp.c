@@ -278,7 +278,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
             */
             x=0;
             y++;
-            p=pixels+y*image->columns;
+            p=pixels+y*(ssize_t) image->columns;
             break;
           }
           case 0x02:
@@ -294,7 +294,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
             if (byte == EOF)
               return(MagickFalse);
             y+=byte;
-            p=pixels+y*image->columns+x;
+            p=pixels+y*(ssize_t) image->columns+x;
             break;
           }
           default:
@@ -1041,7 +1041,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bytes_per_line=4*(image->columns);
             for (y=(ssize_t) image->rows-1; y >= 0; y--)
             {
-              p=pixels+(image->rows-y-1)*bytes_per_line;
+              p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 if (*(p+3) != 0)
@@ -1149,7 +1149,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          p=pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
@@ -1177,8 +1177,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                (image->rows-y),image->rows);
+              status=SetImageProgress(image,LoadImageTag,((MagickOffsetType)
+                image->rows-y),image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1193,7 +1193,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          p=pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
@@ -1223,8 +1223,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                (image->rows-y),image->rows);
+              status=SetImageProgress(image,LoadImageTag,((MagickOffsetType)
+                image->rows-y),image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1242,7 +1242,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           bytes_per_line=image->columns;
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          p=pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
@@ -1254,11 +1254,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
-          offset=(MagickOffsetType) (image->rows-y-1);
+          offset=((MagickOffsetType) image->rows-y-1);
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                (image->rows-y),image->rows);
+              status=SetImageProgress(image,LoadImageTag,((MagickOffsetType)
+                image->rows-y),image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1286,7 +1286,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->storage_class=DirectClass;
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          p=pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
@@ -1327,11 +1327,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
-          offset=(MagickOffsetType) (image->rows-y-1);
+          offset=((MagickOffsetType) image->rows-y-1);
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                (image->rows-y),image->rows);
+              status=SetImageProgress(image,LoadImageTag,((MagickOffsetType)
+                image->rows-y),image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1346,7 +1346,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bytes_per_line=4*((image->columns*24+31)/32);
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          p=pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
@@ -1360,11 +1360,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
-          offset=(MagickOffsetType) (image->rows-y-1);
+          offset=((MagickOffsetType) image->rows-y-1);
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                (image->rows-y),image->rows);
+              status=SetImageProgress(image,LoadImageTag,((MagickOffsetType)
+                image->rows-y),image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1390,7 +1390,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             alpha,
             pixel;
 
-          p=pixels+(image->rows-y-1)*bytes_per_line;
+          p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
@@ -1425,11 +1425,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
-          offset=(MagickOffsetType) (image->rows-y-1);
+          offset=((MagickOffsetType) image->rows-y-1);
           if (image->previous == (Image *) NULL)
             {
-              status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
-                (image->rows-y),image->rows);
+              status=SetImageProgress(image,LoadImageTag,((MagickOffsetType)
+                image->rows-y),image->rows);
               if (status == MagickFalse)
                 break;
             }
@@ -1886,8 +1886,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
               bmp_info.size=124;
               extra_size+=16;
             }
-          bmp_info.file_size+=extra_size;
-          bmp_info.offset_bits+=extra_size;
+          bmp_info.file_size+=(unsigned int) extra_size;
+          bmp_info.offset_bits+=(unsigned int) extra_size;
         }
     if (((ssize_t) image->columns != (ssize_t) ((signed int) image->columns)) ||
         ((ssize_t) image->rows != (ssize_t) ((signed int) image->rows)))
@@ -1944,7 +1944,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
-          q=pixels+(image->rows-y-1)*bytes_per_line;
+          q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           bit=0;
           byte=0;
           for (x=0; x < (ssize_t) image->columns; x++)
@@ -1995,7 +1995,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
-          q=pixels+(image->rows-y-1)*bytes_per_line;
+          q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           nibble=0;
           byte=0;
           for (x=0; x < (ssize_t) image->columns; x++)
@@ -2039,7 +2039,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
-          q=pixels+(image->rows-y-1)*bytes_per_line;
+          q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
@@ -2067,7 +2067,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
-          q=pixels+(image->rows-y-1)*bytes_per_line;
+          q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             unsigned short
@@ -2132,7 +2132,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
-          q=pixels+(image->rows-y-1)*bytes_per_line;
+          q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
@@ -2162,7 +2162,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           p=GetVirtualPixels(image,0,y,image->columns,1,exception);
           if (p == (const Quantum *) NULL)
             break;
-          q=pixels+(image->rows-y-1)*bytes_per_line;
+          q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             Quantum alpha=GetPixelAlpha(image,p);

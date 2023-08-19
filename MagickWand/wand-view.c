@@ -286,7 +286,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-source->extent.y;
+  height=(size_t) ((ssize_t) source->extent.height-source->extent.y);
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,destination_image,height,1)
 #endif
@@ -540,7 +540,7 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-source->extent.y;
+  height=(size_t) ((ssize_t) source->extent.height-source->extent.y);
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,source_image,height,1)
 #endif
@@ -939,7 +939,7 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=destination->extent.height-destination->extent.y;
+  height=(size_t) ((ssize_t) destination->extent.height-destination->extent.y);
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(destination_image,destination_image,height,1)
 #endif
@@ -1077,7 +1077,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-source->extent.y;
+  height=(size_t) ((ssize_t) source->extent.height-source->extent.y);
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,destination_image,height,1)
 #endif
@@ -1232,7 +1232,7 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=source->extent.height-source->extent.y;
+  height=(size_t) ((ssize_t) source->extent.height-source->extent.y);
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(source_image,source_image,height,1)
 #endif

@@ -255,28 +255,28 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
             case 0:
             {
               byte|=(unsigned char) (((size_t) (3*ClampToQuantum(GetPixelLuma(
-                image,p+MagickMin(i,3)*GetPixelChannels(image)))/
+                image,p+MagickMin(i,3)*(ssize_t) GetPixelChannels(image)))/
                 QuantumRange) & 0x03) << 6);
               break;
             }
             case 1:
             {
               byte|=(unsigned char) (((size_t) (3*ClampToQuantum(GetPixelLuma(
-                image,p+MagickMin(i,2)*GetPixelChannels(image)))/
+                image,p+MagickMin(i,2)*(ssize_t) GetPixelChannels(image)))/
                 QuantumRange) & 0x03) << 4);
               break;
             }
             case 2:
             {
               byte|=(unsigned char) (((size_t) (3*ClampToQuantum(GetPixelLuma(
-                image,p+MagickMin(i,1)*GetPixelChannels(image)))/
+                image,p+MagickMin(i,1)*(ssize_t) GetPixelChannels(image)))/
                 QuantumRange) & 0x03) << 2);
               break;
             }
             case 3:
             {
               byte|=(unsigned char) (((size_t) (3*ClampToQuantum(GetPixelLuma(
-                image,p+MagickMin(i,0)*GetPixelChannels(image)))/
+                image,p+MagickMin(i,0)*(ssize_t) GetPixelChannels(image)))/
                 QuantumRange) & 0x03) << 0);
               break;
             }

@@ -221,7 +221,7 @@ static int MVGPrintf(DrawingWand *wand,const char *format,...)
     }
     wand->mvg[wand->mvg_length]='\0';
     count=(-1);
-    offset=(ssize_t) wand->mvg_alloc-wand->mvg_length-1;
+    offset=(ssize_t) (wand->mvg_alloc-wand->mvg_length-1);
     if (offset > 0)
       {
         va_start(argp,format);
@@ -236,8 +236,8 @@ static int MVGPrintf(DrawingWand *wand,const char *format,...)
       ThrowDrawException(DrawError,"UnableToPrint",format)
     else
       {
-        wand->mvg_length+=count;
-        wand->mvg_width+=count;
+        wand->mvg_length+=(size_t) count;
+        wand->mvg_width+=(size_t) count;
       }
     wand->mvg[wand->mvg_length]='\0';
     if ((wand->mvg_length > 1) && (wand->mvg[wand->mvg_length-1] == '\n'))
@@ -270,7 +270,7 @@ static int MVGAutoWrapPrintf(DrawingWand *wand,const char *format,...)
     ThrowDrawException(DrawError,"UnableToPrint",format)
   else
     {
-      if (((wand->mvg_width + count) > 78) && (buffer[count-1] != '\n'))
+      if (((wand->mvg_width+(size_t) count) > 78) && (buffer[count-1] != '\n'))
         (void) MVGPrintf(wand, "\n");
       (void) MVGPrintf(wand,"%s",buffer);
     }
@@ -6472,7 +6472,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
                   (void) GetNextToken(p,&p,MagickPathExtent,token);
               }
               CurrentContext->dash_pattern=(double *) AcquireQuantumMemory(
-                (size_t) (2UL*x)+1UL,sizeof(*CurrentContext->dash_pattern));
+                (size_t) (2*x)+1UL,sizeof(*CurrentContext->dash_pattern));
               if (CurrentContext->dash_pattern == (double *) NULL)
                 ThrowWandFatalException(ResourceLimitFatalError,
                   "MemoryAllocationFailed",wand->name);

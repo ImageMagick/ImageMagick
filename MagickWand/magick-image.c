@@ -3618,7 +3618,8 @@ WandExport MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
   draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
   PixelGetQuantumPacket(fill,&draw_info->fill);
   (void) GetOneVirtualPixelInfo(wand->images,TileVirtualPixelMethod,x %
-    wand->images->columns,y % wand->images->rows,&target,wand->exception);
+    (ssize_t) wand->images->columns,y % (ssize_t) wand->images->rows,&target,
+    wand->exception);
   if (bordercolor != (PixelWand *) NULL)
     PixelGetMagickColor(bordercolor,&target);
   wand->images->fuzz=fuzz;

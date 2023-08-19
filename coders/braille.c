@@ -180,11 +180,13 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
 #define do_cell(dx,dy,bit) \
 { \
   if (image->storage_class == PseudoClass) \
-    cell|=(GetPixelIndex(image,p+(x+dx)*GetImageChannels(image)+ \
-      dy*(image->columns*GetImageChannels(image))) == polarity) << bit; \
+    cell|=(GetPixelIndex(image,p+(x+(ssize_t) (dx))*(ssize_t) \
+      GetImageChannels(image)+(dy)*(ssize_t) (image->columns* \
+      GetImageChannels(image))) == polarity) << bit; \
   else \
-    cell|=(GetPixelGreen(image,p+(x+dx)*GetImageChannels(image)+ \
-      dy*(image->columns*GetImageChannels(image))) == 0) << bit; \
+    cell|=(GetPixelGreen(image,p+(x+(ssize_t) (dx))*(ssize_t) \
+      GetImageChannels(image)+(dy)*((ssize_t) image->columns*(ssize_t) \
+      GetImageChannels(image))) == 0) << bit; \
 }
 
   char
@@ -287,8 +289,8 @@ static MagickBooleanType WriteBRAILLEImage(const ImageInfo *image_info,
     }
   for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) cell_height)
   {
-    if ((y+cell_height) > image->rows)
-      cell_height=(size_t) (image->rows-y);
+    if ((y+(ssize_t) cell_height) > image->rows)
+      cell_height=(size_t) ((ssize_t) image->rows-y);
     p=GetVirtualPixels(image,0,y,image->columns,cell_height,exception);
     if (p == (const Quantum *) NULL)
       break;

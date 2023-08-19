@@ -152,7 +152,7 @@ static Image *ReadBGRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image=DestroyImageList(image);
           return((Image *) NULL);
         }
-      if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+      if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
           image->filename);
     }
