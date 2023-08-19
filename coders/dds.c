@@ -3317,7 +3317,7 @@ static void CompressClusterFit(const size_t count,
         kmin;
 
       VectorInit(part0,0.0f);
-      for(ii=0; ii < (size_t) i; ii++)
+      for (ii=0; ii < i; ii++)
         VectorAdd(pointsWeights[ii],part0,&part0);
 
       VectorInit(part1,0.0f);
