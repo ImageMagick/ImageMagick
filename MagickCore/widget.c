@@ -2289,7 +2289,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
-            if (event.xbutton.time > ((time_t) click_time+(time_t) DoubleClick))
+            if (event.xbutton.time > (unsigned long) (click_time+DoubleClick))
               reply_info.highlight=MagickFalse;
             else
               {
@@ -3883,7 +3883,7 @@ MagickPrivate int XDialogWidget(Display *display,XWindows *windows,
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
-            if (event.xbutton.time > ((time_t) click_time+(time_t) DoubleClick))
+            if (event.xbutton.time > (unsigned long) (click_time+DoubleClick))
               reply_info.highlight=MagickFalse;
             else
               {
@@ -4882,7 +4882,7 @@ MagickPrivate void XFileBrowserWidget(Display *display,XWindows *windows,
               if (XTextWidth(font_info,reply_info.marker,(int) i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
-            if (event.xbutton.time > ((time_t) click_time+(time_t) DoubleClick))
+            if (event.xbutton.time > (unsigned long) (click_time+DoubleClick))
               reply_info.highlight=MagickFalse;
             else
               {
@@ -6183,7 +6183,7 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
-            if (event.xbutton.time > ((time_t) click_time+(time_t) DoubleClick))
+            if (event.xbutton.time > (unsigned long) (click_time+DoubleClick))
               reply_info.highlight=MagickFalse;
             else
               {
@@ -7238,7 +7238,7 @@ MagickPrivate void XListBrowserWidget(Display *display,XWindows *windows,
               if (XTextWidth(font_info,reply_info.marker,i) > x)
                 break;
             reply_info.cursor=reply_info.marker+i-1;
-            if (event.xbutton.time > ((time_t) click_time+(time_t) DoubleClick))
+            if (event.xbutton.time > (unsigned long) (click_time+DoubleClick))
               reply_info.highlight=MagickFalse;
             else
               {
@@ -9403,7 +9403,7 @@ MagickPrivate void XTextViewWidget(Display *display,
                 break;
               }
             list_info.id=id;
-            if (event.xbutton.time >= ((time_t) click_time+(time_t) DoubleClick))
+            if (event.xbutton.time >= (unsigned long) (click_time+DoubleClick))
               {
                 click_time=event.xbutton.time;
                 break;
