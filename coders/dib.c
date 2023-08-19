@@ -236,7 +236,7 @@ static MagickBooleanType DecodeImage(Image *image,
             */
             x=0;
             y++;
-            p=pixels+y*image->columns;
+            p=pixels+y*(ssize_t) image->columns;
             break;
           }
           case 0x02:
@@ -252,7 +252,7 @@ static MagickBooleanType DecodeImage(Image *image,
             if (byte == EOF)
               return(MagickFalse);
             y+=byte;
-            p=pixels+y*image->columns+x;
+            p=pixels+y*(ssize_t) image->columns+x;
             break;
           }
           default:
@@ -719,7 +719,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (y=(ssize_t) image->rows-1; y >= 0; y--)
       {
-        p=pixels+(image->rows-y-1)*bytes_per_line;
+        p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
@@ -763,7 +763,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (y=(ssize_t) image->rows-1; y >= 0; y--)
       {
-        p=pixels+(image->rows-y-1)*bytes_per_line;
+        p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
@@ -810,7 +810,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bytes_per_line=image->columns;
       for (y=(ssize_t) image->rows-1; y >= 0; y--)
       {
-        p=pixels+(image->rows-y-1)*bytes_per_line;
+        p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
@@ -847,7 +847,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bytes_per_line=2*image->columns;
       for (y=(ssize_t) image->rows-1; y >= 0; y--)
       {
-        p=pixels+(image->rows-y-1)*bytes_per_line;
+        p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
@@ -895,7 +895,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       for (y=(ssize_t) image->rows-1; y >= 0; y--)
       {
-        p=pixels+(image->rows-y-1)*bytes_per_line;
+        p=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
         if (q == (Quantum *) NULL)
           break;
@@ -946,7 +946,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (c & (0x80 >> bit))
               image->alpha_trait=BlendPixelTrait;
             SetPixelAlpha(image,c & (0x80 >> bit) ? TransparentAlpha :
-              OpaqueAlpha,q+x*GetPixelChannels(image)+bit);
+              OpaqueAlpha,q+x*(ssize_t) GetPixelChannels(image)+bit);
           }
         }
         if ((image->columns % 8) != 0)
@@ -957,7 +957,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (c & (0x80 >> bit))
                 image->alpha_trait=BlendPixelTrait;
               SetPixelAlpha(image,c & (0x80 >> bit) ? TransparentAlpha :
-                OpaqueAlpha,q+x*GetPixelChannels(image)+bit);
+                OpaqueAlpha,q+x*(ssize_t) GetPixelChannels(image)+bit);
             }
           }
         if (image->columns % 32)
@@ -1214,7 +1214,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
         p=GetVirtualPixels(image,0,y,image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           break;
-        q=pixels+(image->rows-y-1)*bytes_per_line;
+        q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
         bit=0;
         byte=0;
         for (x=0; x < (ssize_t) image->columns; x++)
@@ -1254,7 +1254,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
         p=GetVirtualPixels(image,0,y,image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           break;
-        q=pixels+(image->rows-y-1)*bytes_per_line;
+        q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
@@ -1281,7 +1281,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
         p=GetVirtualPixels(image,0,y,image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           break;
-        q=pixels+(image->rows-y-1)*bytes_per_line;
+        q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           word=(unsigned short) ((ScaleColor8to5((unsigned char)
@@ -1313,7 +1313,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
         p=GetVirtualPixels(image,0,y,image->columns,1,exception);
         if (p == (const Quantum *) NULL)
           break;
-        q=pixels+(image->rows-y-1)*bytes_per_line;
+        q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           *q++=ScaleQuantumToChar(GetPixelBlue(image,p));

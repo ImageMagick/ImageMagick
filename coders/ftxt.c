@@ -435,7 +435,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
     }
   if (numMeta)
     {
-      if (SetPixelMetaChannels (image, numMeta, exception) == MagickFalse)
+      if (SetPixelMetaChannels (image, (size_t) numMeta, exception) == MagickFalse)
         ThrowReaderException(OptionError,"SetPixelMetaChannelsFailure");
     }
   /* make image zero (if RGB channels, transparent black). */
