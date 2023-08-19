@@ -287,7 +287,7 @@ static inline int GetNextLZWCode(LZWInfo *lzw_info,const size_t bits)
     count=ReadBlobBlock(lzw_info->image,&lzw_info->code_info.buffer[
       lzw_info->code_info.count]);
     if (count > 0)
-      lzw_info->code_info.count+=count;
+      lzw_info->code_info.count+=(size_t) count;
     else
       lzw_info->code_info.eof=MagickTrue;
   }
@@ -638,7 +638,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
   (void) memset(hash_suffix,0,MaxHashTable*sizeof(*hash_suffix));
   number_bits=data_size;
   max_code=MaxCode(number_bits);
-  clear_code=((short) one << (data_size-1));
+  clear_code=(size_t) ((short) one << (data_size-1));
   end_of_information_code=clear_code+1;
   free_code=clear_code+2;
   length=0;
@@ -676,7 +676,7 @@ static MagickBooleanType EncodeImage(const ImageInfo *image_info,Image *image,
       displacement=1;
       index=(Quantum) ((size_t) GetPixelIndex(image,p) & 0xff);
       p+=GetPixelChannels(image);
-      k=(ssize_t) (((size_t) index << (MaxGIFBits-8))+waiting_code);
+      k=(ssize_t) (((size_t) index << (MaxGIFBits-8))+(size_t) waiting_code);
       if (k >= MaxHashTable)
         k-=MaxHashTable;
       if (k < 0)
@@ -1092,13 +1092,13 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             comments=AcquireString((char *) NULL);
             extent=MagickPathExtent;
-            for (offset=0; ; offset+=count)
+            for (offset=0; ; offset+=(size_t) count)
             {
               count=ReadBlobBlock(image,buffer);
               if (count == 0)
                 break;
               buffer[count]='\0';
-              if ((ssize_t) (count+offset+MagickPathExtent) >= (ssize_t) extent)
+              if ((count+(ssize_t) offset+MagickPathExtent) >= (ssize_t) extent)
                 {
                   extent<<=1;
                   comments=(char *) ResizeQuantumMemory(comments,
@@ -1175,7 +1175,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (info == (unsigned char *) NULL)
                   ThrowGIFException(ResourceLimitError,
                     "MemoryAllocationFailed");
-                (void) memset(info,0,reserved_length*sizeof(*info));
+                (void) memset(info,0,(size_t) reserved_length*sizeof(*info));
                 for (info_length=0; ; )
                 {
                   block_length=(int) ReadBlobBlock(image,info+info_length);
@@ -1692,7 +1692,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         */
         c=0x80;
         c|=(8-1) << 4;  /* color resolution */
-        c|=(bits_per_pixel-1);   /* size of global colormap */
+        c|=(int) (bits_per_pixel-1);   /* size of global colormap */
         (void) WriteBlobByte(image,(unsigned char) c);
         for (j=0; j < (ssize_t) image->colors; j++)
           if (IsPixelInfoEquivalent(&image->background_color,image->colormap+j))
@@ -1735,7 +1735,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobByte(image,(unsigned char) 0x21);
         (void) WriteBlobByte(image,(unsigned char) 0xf9);
         (void) WriteBlobByte(image,(unsigned char) 0x04);
-        c=image->dispose << 2;
+        c=(int) (image->dispose << 2);
         if (opacity >= 0)
           c|=0x01;
         (void) WriteBlobByte(image,(unsigned char) c);
@@ -1875,8 +1875,8 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
                  size_t
                    block_length;
 
-                 if ((length-offset) < 255)
-                   block_length=length-offset;
+                 if (((ssize_t) length-offset) < 255)
+                   block_length=(size_t) ((ssize_t) length-offset);
                  else
                    block_length=255;
                  (void) WriteBlobByte(image,(unsigned char) block_length);
@@ -1911,7 +1911,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
     else
       {
         c|=0x80;
-        c|=(bits_per_pixel-1);   /* size of local colormap */
+        c|=(int) (bits_per_pixel-1);   /* size of local colormap */
         (void) WriteBlobByte(image,(unsigned char) c);
         length=(size_t) (3*(one << bits_per_pixel));
         (void) WriteBlob(image,length,colormap);
