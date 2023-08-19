@@ -1097,10 +1097,10 @@ static const unsigned char BC7_anchor_index_table[4][64] =
 #define FixRange(min, max, steps) \
 if (min > max) \
   min = max; \
-if ((ssize_t) (max-min) < steps) \
-  max = MagickMin(min + steps, 255); \
-if ((ssize_t) (max-min) < steps) \
-  min = MagickMax(0, max-steps)
+if ((max-(ssize_t) min) < steps) \
+  max = MagickMin(min+(ssize_t) steps, 255); \
+if ((max-(ssize_t) min) < steps) \
+  min = MagickMax(0,max-(ssize_t) steps)
 
 #define Dot(left, right) (left.x*right.x) + (left.y*right.y) + (left.z*right.z)
 
