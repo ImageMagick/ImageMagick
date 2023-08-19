@@ -3197,7 +3197,7 @@ static MagickBooleanType ConstructOrdering(const size_t count,
     p = order + (16*i);
     same = MagickTrue;
 
-    for (j=0; j < count; j++)
+    for (j=0; j < (ssize_t) count; j++)
     {
       if (o[j] != p[j])
         {
@@ -3424,14 +3424,14 @@ static void CompressClusterFit(const size_t count,
               }
             }
 
-          if (k == count)
+          if (k == (ssize_t) count)
             break;
 
           VectorAdd(pointsWeights[k],part2,&part2);
           k++;
         }
 
-        if (j == count)
+        if (j == (ssize_t) count)
           break;
 
         VectorAdd(pointsWeights[j],part1,&part1);
@@ -3940,11 +3940,11 @@ static void WriteFourCC(Image *image, const size_t compression,
       unsigned char
         alpha;
 
-      if ((x + (ssize_t) columns) >= image->columns)
-        columns = (size_t) ((ssize_t) image->columns - x);
+      if ((size_t) (x+(ssize_t) columns) >= image->columns)
+        columns = (size_t) ((ssize_t) image->columns-x);
 
-      if ((y + (ssize_t) rows) >= image->rows)
-        rows = (size_t) ((ssize_t) image->rows - y);
+      if ((size_t) (y+(ssize_t) rows) >= image->rows)
+        rows = (size_t) ((ssize_t) image->rows-y);
 
       p=GetVirtualPixels(image,x,y,columns,rows,exception);
       if (p == (const Quantum *) NULL)
