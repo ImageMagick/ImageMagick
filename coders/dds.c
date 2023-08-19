@@ -1098,9 +1098,9 @@ static const unsigned char BC7_anchor_index_table[4][64] =
 if (min > max) \
   min = max; \
 if ((max-(ssize_t) min) < steps) \
-  max = MagickMin(min+(ssize_t) steps, 255); \
+  max = MagickMin(min+(ssize_t) steps, 255L); \
 if ((max-(ssize_t) min) < steps) \
-  min = MagickMax(0,max-(ssize_t) steps)
+  min = MagickMax(0L,max-(ssize_t) steps)
 
 #define Dot(left, right) (left.x*right.x) + (left.y*right.y) + (left.z*right.z)
 
