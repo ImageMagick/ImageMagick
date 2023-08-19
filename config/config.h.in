@@ -735,7 +735,7 @@
 #undef HAVE___ATTRIBUTE__
 
 /* Whether 64-bit channel masks are enabled or not */
-#undef HDRI_ENABLE_OBSOLETE_IN_H
+#undef MAGICKCORE_CHANNEL_MASK_DEPTH
 
 /* Define if you have libheif library */
 #undef HEIC_DELEGATE

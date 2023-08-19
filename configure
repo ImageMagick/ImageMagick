@@ -23297,8 +23297,6 @@ else
     magick_hdri_enable='0'
 fi
 
-printf "%s\n" "#define HDRI_ENABLE_OBSOLETE_IN_H $magick_hdri_enable" >>confdefs.h
-
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
@@ -23324,7 +23322,7 @@ else
     magick_channel_mask_depth='32'
 fi
 
-printf "%s\n" "#define HDRI_ENABLE_OBSOLETE_IN_H $magick_channel_mask_depth" >>confdefs.h
+printf "%s\n" "#define MAGICKCORE_CHANNEL_MASK_DEPTH $magick_channel_mask_depth" >>confdefs.h
 
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
