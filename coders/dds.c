@@ -1100,7 +1100,7 @@ if (min > max) \
 if ((max-min) < steps) \
   max = MagickMin(min+(ssize_t) steps, 255); \
 if ((max- min) < steps) \
-  min = MagickMax(0,max-(ssize_t) steps)
+  min = (size_t) MagickMax(0L, (ssize_t) max-(ssize_t) steps)
 
 #define Dot(left, right) (left.x*right.x) + (left.y*right.y) + (left.z*right.z)
 
