@@ -627,6 +627,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  BMP header size: %u",bmp_info.size);
+    if (LocaleNCompare((char *) magick,"CI",2) == 0)
+      {
+        if ((bmp_info.size != 12) && (bmp_info.size != 40) &&
+            (bmp_info.size != 64))
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      }
     if (bmp_info.size > 124)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if (bmp_info.offset_bits < bmp_info.size)
