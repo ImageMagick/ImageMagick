@@ -57,7 +57,7 @@ typedef enum
   CompositeMaskChannel = 0x0200,     /* SVG mask */
   CompositeChannels = 0x001F,
 #if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
-  AllChannels = MagickLLConstant(~0),
+  AllChannels = 0x7FFFFFFFFFFFFFFF
 #else
   AllChannels = 0x7ffffff,
 #endif
