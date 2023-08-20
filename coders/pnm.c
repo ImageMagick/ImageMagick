@@ -2095,7 +2095,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 count=(ssize_t) FormatLocaleString(buffer,MagickPathExtent,
                   "%u ",ScaleQuantumToLong(index));
             extent=(size_t) count;
-            if ((q-pixels+(ssize_t) extent+1) >= sizeof(pixels))
+            if ((size_t) (q-pixels+(ssize_t) extent+1) >= sizeof(pixels))
               {
                 *q++='\n';
                 (void) WriteBlob(image,(size_t) (q-pixels),pixels);
@@ -2171,7 +2171,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                   ScaleQuantumToLong(GetPixelGreen(image,p)),
                   ScaleQuantumToLong(GetPixelBlue(image,p)));
             extent=(size_t) count;
-            if ((q-pixels+(ssize_t) extent+2) >= sizeof(pixels))
+            if ((size_t) (q-pixels+(ssize_t) extent+2) >= sizeof(pixels))
               {
                 *q++='\n';
                 (void) WriteBlob(image,(size_t) (q-pixels),pixels);
