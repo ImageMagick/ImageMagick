@@ -428,7 +428,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p=pixels;
             for (i=0; i < 4; i++)
             {
-              end=&pixels[(i+1)*image->columns];
+              end=&pixels[(i+1)*(ssize_t) image->columns];
               while (p < end)
               {
                 count=ReadBlob(image,2*sizeof(*pixel),pixel);
@@ -469,9 +469,9 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->compression == RLECompression)
         {
           pixel[0]=pixels[x];
-          pixel[1]=pixels[x+image->columns];
-          pixel[2]=pixels[x+2*image->columns];
-          pixel[3]=pixels[x+3*image->columns];
+          pixel[1]=pixels[x+(ssize_t) image->columns];
+          pixel[2]=pixels[x+2*(ssize_t) image->columns];
+          pixel[3]=pixels[x+3*(ssize_t) image->columns];
         }
       else
         {
@@ -645,7 +645,7 @@ static size_t HDRWriteRunlengthPixels(Image *image,unsigned char *pixels)
         break;
       if (WriteBlob(image,(size_t) count*sizeof(*pixel),&pixels[p]) < 1)
         break;
-      p+=count;
+      p+=(size_t) count;
     }
     if (runlength >= MinimumRunlength)
       {
@@ -802,9 +802,9 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
       if ((image->columns >= 8) && (image->columns <= 0x7ffff))
         {
           pixels[x]=pixel[0];
-          pixels[x+image->columns]=pixel[1];
-          pixels[x+2*image->columns]=pixel[2];
-          pixels[x+3*image->columns]=pixel[3];
+          pixels[x+(ssize_t) image->columns]=pixel[1];
+          pixels[x+2*(ssize_t) image->columns]=pixel[2];
+          pixels[x+3*(ssize_t) image->columns]=pixel[3];
         }
       else
         {
@@ -818,7 +818,8 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
     if ((image->columns >= 8) && (image->columns <= 0x7ffff))
       {
         for (i=0; i < 4; i++)
-          length=HDRWriteRunlengthPixels(image,&pixels[i*image->columns]);
+          length=HDRWriteRunlengthPixels(image,
+            &pixels[i*(ssize_t) image->columns]);
       }
     else
       {

@@ -102,13 +102,11 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
     status;
 
   size_t
-    i;
-
-  size_t
     quantum;
 
   ssize_t
-    count;
+    count,
+    i;
 
   unsigned char
     *inline_image;
@@ -165,8 +163,8 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
         inline_image=(unsigned char *) RelinquishMagickMemory(inline_image);
         break;
       }
-    inline_image=(unsigned char *) ResizeQuantumMemory(inline_image,i+count+
-      quantum+1,sizeof(*inline_image));
+    inline_image=(unsigned char *) ResizeQuantumMemory(inline_image,(size_t)
+      (i+count+(ssize_t) quantum+1),sizeof(*inline_image));
   }
   if (inline_image == (unsigned char *) NULL)
     {

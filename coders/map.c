@@ -108,17 +108,8 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     index;
 
-  ssize_t
-    x;
-
   Quantum
     *q;
-
-  ssize_t
-    i;
-
-  unsigned char
-    *p;
 
   size_t
     depth,
@@ -127,10 +118,13 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
+    i,
+    x,
     y;
 
   unsigned char
     *colormap,
+    *p,
     *pixels;
 
   /*
@@ -239,8 +233,8 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       p++;
       if (image->colors > 256)
         {
-          index=ConstrainColormapIndex(image,((size_t) index << 8)+(*p),
-            exception);
+          index=ConstrainColormapIndex(image,(ssize_t) (((size_t) index << 8)+
+            (ssize_t) (*p)),exception);
           p++;
         }
       SetPixelIndex(image,index,q);
