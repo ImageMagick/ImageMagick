@@ -1637,8 +1637,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   */
   stream=(FT_StreamRec *) AcquireCriticalMemory(sizeof(*stream));
   (void) memset(stream,0,sizeof(*stream));
-  (void) stat(args.pathname,&attributes);
-  stream->size=attributes.st_size >= 0 ? (unsigned long) attributes.st_size : 0;
+  if (stat(args.pathname,&attributes) == 0)
+    stream->size=attributes.st_size >= 0 ? (unsigned long)
+      attributes.st_size : 0;
   stream->descriptor.pointer=fopen_utf8(args.pathname,"rb");
   stream->read=(&FreetypeReadStream);
   stream->close=(&FreetypeCloseStream);
