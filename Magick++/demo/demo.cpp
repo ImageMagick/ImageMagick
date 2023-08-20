@@ -22,7 +22,7 @@ using namespace std;
 
 using namespace Magick;
 
-#if MAGICKCORE_FREETYPE_DELEGATE
+#if defined(MAGICKCORE_FREETYPE_DELEGATE)
   #define MakeLabel(image, text) image.label( (text) )
 #else
   #define MakeLabel(image, text)
@@ -89,7 +89,7 @@ int main( int /*argc*/, char ** argv)
       example.addNoiseChannel( BlueChannel, PoissonNoise );
       images.push_back( example );
 
-#if MAGICKCORE_FREETYPE_DELEGATE
+#if defined(MAGICKCORE_FREETYPE_DELEGATE)
       cout << "  annotate ..." << endl;
       example = model;
       MakeLabel(example, "Annotate");

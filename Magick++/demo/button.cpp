@@ -48,7 +48,7 @@ int main( int /*argc*/, char ** argv)
     // Button text color
     string textColor = "red";
 
-#if MAGICKCORE_FREETYPE_DELEGATE
+#if defined(MAGICKCORE_FREETYPE_DELEGATE)
     // Font point size
     int fontPointSize = 16;
 #endif
@@ -69,7 +69,7 @@ int main( int /*argc*/, char ** argv)
     Image backgroundTexture( buttonTexture );
     button.texture( backgroundTexture );
 
-#if MAGICKCORE_FREETYPE_DELEGATE
+#if defined(MAGICKCORE_FREETYPE_DELEGATE)
     // Add some text
     button.fillColor( textColor );
     button.fontPointsize( fontPointSize );

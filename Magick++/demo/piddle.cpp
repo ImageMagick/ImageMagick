@@ -146,7 +146,7 @@ int main( int /*argc*/, char ** argv)
     //
     // Draw text.
     //
-#if MAGICKCORE_FREETYPE_DELEGATE
+#if defined(MAGICKCORE_FREETYPE_DELEGATE)
     if (getenv("MAGICK_FONT") != 0)
       drawList.push_back(DrawableFont(string(getenv("MAGICK_FONT"))));
     drawList.push_back(DrawableFillColor("green"));
