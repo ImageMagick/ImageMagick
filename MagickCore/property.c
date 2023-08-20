@@ -17,7 +17,7 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -3603,7 +3603,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
 #define ExtendInterpretText(string_length) \
 { \
   size_t length=(string_length); \
-  if ((q-interpret_text+(ssize_t) length+1) >= extent) \
+  if ((size_t) (q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
@@ -3623,7 +3623,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
 #define AppendKeyValue2Text(key,value)\
 { \
   size_t length=strlen(key)+strlen(value)+2; \
-  if ((q-interpret_text+(ssize_t) length+1) >= extent) \
+  if ((size_t) (q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
@@ -3644,7 +3644,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
 #define AppendString2Text(string) \
 { \
   size_t length=strlen((string)); \
-  if ((q-interpret_text+(ssize_t) length+1) >= extent) \
+  if ((size_t) (q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
