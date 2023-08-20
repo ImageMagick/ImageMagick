@@ -194,7 +194,7 @@ static const OptionInfo
     { "Meta20", MetaPixelChannels+20, UndefinedOptionFlag, MagickFalse },
     { "Meta21", MetaPixelChannels+21, UndefinedOptionFlag, MagickFalse },
     { "Meta22", MetaPixelChannels+22, UndefinedOptionFlag, MagickFalse },
-#if AllChannels > 0x7ffffff
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
     { "Meta23", MetaPixelChannels+23, UndefinedOptionFlag, MagickFalse },
     { "Meta24", MetaPixelChannels+24, UndefinedOptionFlag, MagickFalse },
     { "Meta25", MetaPixelChannels+25, UndefinedOptionFlag, MagickFalse },
@@ -267,7 +267,7 @@ static const OptionInfo
     { "29", MetaPixelChannels+19, UndefinedOptionFlag, MagickFalse },
     { "30", MetaPixelChannels+20, UndefinedOptionFlag, MagickFalse },
     { "31", MetaPixelChannels+21, UndefinedOptionFlag, MagickFalse },
-#if AllChannels > 0x7ffffff
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
     { "32", MetaPixelChannels+22, UndefinedOptionFlag, MagickFalse },
     { "33", MetaPixelChannels+23, UndefinedOptionFlag, MagickFalse },
     { "34", MetaPixelChannels+24, UndefinedOptionFlag, MagickFalse },
