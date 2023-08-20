@@ -254,11 +254,7 @@ const char *accelerateKernels =
       WriteMaskChannel = 0x0080,         /* Pixel is Write Protected? */
       MetaChannel = 0x0100,              /* ???? */
       CompositeChannels = 0x001F,
-#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
-      AllChannels = 0x7FFFFFFFFFFFFFFF
-#else
-      AllChannels = 0x7ffffff,
-#endif
+      AllChannels = 0x7ffffff, /* 0x7FFFFFFFFFFFFFFF for 64-bit channel masks */
       /*
         Special purpose channel types.
         FUTURE: are these needed any more - they are more like hacks
