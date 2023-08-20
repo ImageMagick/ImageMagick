@@ -523,7 +523,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
           number_pixels=length*bytes_per_pixel;
           p=UnpackScanline(scanline+j+1,bits_per_pixel,unpack_buffer,
             &number_pixels);
-          if ((q-pixels+(ssize_t) number_pixels) <= *extent)
+          if ((size_t) (q-pixels+(ssize_t) number_pixels) <= *extent)
             (void) memcpy(q,p,(size_t) number_pixels);
           q+=number_pixels;
           j+=(ssize_t) (length*bytes_per_pixel+1);
@@ -536,7 +536,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
             &number_pixels);
           for (i=0; i < (ssize_t) length; i++)
           {
-            if ((q-pixels+(ssize_t) number_pixels) <= *extent)
+            if ((size_t) (q-pixels+(ssize_t) number_pixels) <= *extent)
               (void) memcpy(q,p,(size_t) number_pixels);
             q+=number_pixels;
           }
