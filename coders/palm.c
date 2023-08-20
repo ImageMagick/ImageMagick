@@ -503,7 +503,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         }
       else
         {
-          bit=8-bits_per_pixel;
+          bit=(int) (8-bits_per_pixel);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             if ((size_t) (ptr-one_row) >= bytes_per_row)
@@ -517,11 +517,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             SetPixelIndex(image,index,q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
             if (bit)
-              bit-=(ssize_t) bits_per_pixel;
+              bit-=(int) bits_per_pixel;
             else
               {
                 ptr++;
-                bit=8-bits_per_pixel;
+                bit=(int) (8-bits_per_pixel);
               }
             q+=GetPixelChannels(image);
           }
