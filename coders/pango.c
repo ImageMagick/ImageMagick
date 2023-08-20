@@ -384,22 +384,24 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   if (image->columns == 0)
     {
       pango_layout_get_extents(layout,NULL,&extent);
-      image->columns=(extent.x+extent.width+PANGO_SCALE/2)/PANGO_SCALE+2*page.x;
+      image->columns=(size_t) ((extent.x+extent.width+PANGO_SCALE/2)/
+        PANGO_SCALE+2*page.x);
     }
   else
     {
-      image->columns-=2*page.x;
+      image->columns=(size_t) ((ssize_t) image->columns-2*page.x);
       pango_layout_set_width(layout,ScalePangoValue((double) image->columns,
         image->resolution.x));
     }
   if (image->rows == 0)
     { 
       pango_layout_get_extents(layout,NULL,&extent);
-      image->rows=(extent.y+extent.height+PANGO_SCALE/2)/PANGO_SCALE+2*page.y;
+      image->rows=(size_t) ((extent.y+extent.height+PANGO_SCALE/2)/
+        PANGO_SCALE+2*page.y);
     }
   else
     {
-      image->rows-=2*page.y;
+      image->rows=(size_t) ((ssize_t) image->rows-2*page.y);
       pango_layout_set_height(layout,ScalePangoValue((double) image->rows,
         image->resolution.y));
     }

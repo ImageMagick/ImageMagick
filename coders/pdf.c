@@ -1875,7 +1875,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if (image->gravity != UndefinedGravity)
       {
         geometry.x=(-page_info.x);
-        geometry.y=(ssize_t) (media_info.height+page_info.y-image->rows);
+        geometry.y=(ssize_t) media_info.height+page_info.y-(ssize_t)
+          image->rows;
       }
     pointsize=12.0;
     if (image_info->pointsize != 0.0)
@@ -1957,8 +1958,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           (double) image->scene,pointsize);
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g Td\n",
-          (double) geometry.x,(double) (geometry.y+geometry.height+i*pointsize+
-          12));
+          (double) geometry.x,(double) (geometry.y+(ssize_t) geometry.height+
+          i*pointsize+12));
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,"(%s) Tj\n",
            labels[i]);

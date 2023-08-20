@@ -541,7 +541,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     if (image->gravity != UndefinedGravity)
       {
         geometry.x=(-page_info.x);
-        geometry.y=(ssize_t) (media_info.height+page_info.y-image->rows);
+        geometry.y=(ssize_t) media_info.height+page_info.y-(ssize_t)
+          image->rows;
       }
     pointsize=12.0;
     if (image_info->pointsize != 0.0)
@@ -682,10 +683,11 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
       bounds.x1=(double) geometry.x;
     if ((double) geometry.y < bounds.y1)
       bounds.y1=(double) geometry.y;
-    if ((double) (geometry.x+geometry.width-1) > bounds.x2)
+    if ((double) (geometry.x+(ssize_t) geometry.width-1) > bounds.x2)
       bounds.x2=(double) geometry.x+geometry.width-1;
-    if ((double) (geometry.y+(geometry.height+text_size)-1) > bounds.y2)
-      bounds.y2=(double) geometry.y+(geometry.height+text_size)-1;
+    if ((double) (geometry.y+((ssize_t) geometry.height+(ssize_t) text_size)-1) > bounds.y2)
+      bounds.y2=(double) geometry.y+((ssize_t) geometry.height+(ssize_t)
+        text_size)-1;
     value=GetImageProperty(image,"label",exception);
     if (value != (const char *) NULL)
       (void) WriteBlobString(image,"%%PageResources: font Helvetica\n");

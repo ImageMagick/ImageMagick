@@ -438,8 +438,8 @@ static void Upsample(const size_t width,const size_t height,
   assert(pixels != (unsigned char *) NULL);
   for (y=0; y < (ssize_t) height; y++)
   {
-    p=pixels+(height-1-y)*scaled_width+(width-1);
-    q=pixels+((height-1-y) << 1)*scaled_width+((width-1) << 1);
+    p=pixels+(height-1-(size_t) y)*scaled_width+(width-1);
+    q=pixels+((height-1-(size_t) y) << 1)*scaled_width+((width-1) << 1);
     *q=(*p);
     *(q+1)=(*(p));
     for (x=1; x < (ssize_t) width; x++)

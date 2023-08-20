@@ -218,7 +218,7 @@ static unsigned int PNMInteger(Image *image,CommentInfo *comment_info,
       {
         value*=10;
         if (value <= (unsigned int) (INT_MAX-(c-(int) '0')))
-          value+=c-(int) '0';
+          value+=(unsigned int) (c-(int) '0');
       }
     c=ReadBlobByte(image);
     if (c == EOF)
@@ -1493,7 +1493,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
           offset=row++;
-          q=QueueAuthenticPixels(image,0,(ssize_t) (image->rows-offset-1),
+          q=QueueAuthenticPixels(image,0,((ssize_t) image->rows-offset-1),
             image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
@@ -1563,7 +1563,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
             }
           offset=row++;
-          q=QueueAuthenticPixels(image,0,(ssize_t) (image->rows-offset-1),
+          q=QueueAuthenticPixels(image,0,((ssize_t) image->rows-offset-1),
             image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
@@ -2030,14 +2030,14 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             if ((q-pixels+2) >= (ssize_t) sizeof(pixels))
               {
                 *q++='\n';
-                (void) WriteBlob(image,q-pixels,pixels);
+                (void) WriteBlob(image,(size_t) (q-pixels),pixels);
                 q=pixels;
               }
             *q++=' ';
             p+=GetPixelChannels(image);
           }
           *q++='\n';
-          (void) WriteBlob(image,q-pixels,pixels);
+          (void) WriteBlob(image,(size_t) (q-pixels),pixels);
           q=pixels;
           if (image->previous == (Image *) NULL)
             {
@@ -2050,7 +2050,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         if (q != pixels)
           {
             *q++='\n';
-            (void) WriteBlob(image,q-pixels,pixels);
+            (void) WriteBlob(image,(size_t) (q-pixels),pixels);
           }
         break;
       }
@@ -2095,10 +2095,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 count=(ssize_t) FormatLocaleString(buffer,MagickPathExtent,
                   "%u ",ScaleQuantumToLong(index));
             extent=(size_t) count;
-            if ((q-pixels+extent+1) >= sizeof(pixels))
+            if ((q-pixels+(ssize_t) extent+1) >= sizeof(pixels))
               {
                 *q++='\n';
-                (void) WriteBlob(image,q-pixels,pixels);
+                (void) WriteBlob(image,(size_t) (q-pixels),pixels);
                 q=pixels;
               }
             (void) memcpy((char *) q,buffer,extent);
@@ -2106,7 +2106,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             p+=GetPixelChannels(image);
           }
           *q++='\n';
-          (void) WriteBlob(image,q-pixels,pixels);
+          (void) WriteBlob(image,(size_t) (q-pixels),pixels);
           q=pixels;
           if (image->previous == (Image *) NULL)
             {
@@ -2119,7 +2119,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         if (q != pixels)
           {
             *q++='\n';
-            (void) WriteBlob(image,q-pixels,pixels);
+            (void) WriteBlob(image,(size_t) (q-pixels),pixels);
           }
         break;
       }
@@ -2171,10 +2171,10 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                   ScaleQuantumToLong(GetPixelGreen(image,p)),
                   ScaleQuantumToLong(GetPixelBlue(image,p)));
             extent=(size_t) count;
-            if ((q-pixels+extent+2) >= sizeof(pixels))
+            if ((q-pixels+(ssize_t) extent+2) >= sizeof(pixels))
               {
                 *q++='\n';
-                (void) WriteBlob(image,q-pixels,pixels);
+                (void) WriteBlob(image,(size_t) (q-pixels),pixels);
                 q=pixels;
               }
             (void) memcpy((char *) q,buffer,extent);
@@ -2182,7 +2182,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             p+=GetPixelChannels(image);
           }
           *q++='\n';
-          (void) WriteBlob(image,q-pixels,pixels);
+          (void) WriteBlob(image,(size_t) (q-pixels),pixels);
           q=pixels;
           if (image->previous == (Image *) NULL)
             {
@@ -2195,7 +2195,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         if (q != pixels)
           {
             *q++='\n';
-            (void) WriteBlob(image,q-pixels,pixels);
+            (void) WriteBlob(image,(size_t) (q-pixels),pixels);
           }
         break;
       }

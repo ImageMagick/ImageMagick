@@ -364,7 +364,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
             bit=(unsigned char) (GetPixelLuma(image,p) == TransparentAlpha ?
               0x01 : 0x00);
           code=(code << 1)+bit;
-          if (((x+1) % pack) == 0)
+          if (((x+1) % (ssize_t) pack) == 0)
             {
               *q++=code;
               code='\0';
@@ -993,7 +993,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     if (image->gravity != UndefinedGravity)
       {
         geometry.x=(-page_info.x);
-        geometry.y=(ssize_t) (media_info.height+page_info.y-image->rows);
+        geometry.y=(ssize_t) media_info.height+page_info.y-(ssize_t)
+          image->rows;
       }
     pointsize=12.0;
     if (image_info->pointsize != 0.0)
