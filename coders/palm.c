@@ -462,7 +462,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                 if (count < 0)
                   break;
                 byte=(size_t) MagickMin((ssize_t) bytes_per_row-i,8);
-                for (bit=0; bit < byte; bit++)
+                for (bit=0; bit < (int) byte; bit++)
                 {
                   if ((y == 0) || ((size_t) count & (one << (7-bit))))
                     one_row[i+bit]=(unsigned char)
