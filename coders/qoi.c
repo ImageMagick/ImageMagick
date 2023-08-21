@@ -511,7 +511,7 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
     Do the actual encoding.
   */
   end=image->rows * image->columns;
-  for (i=0; i < end; i++) {
+  for (i=0; i < (ssize_t) end; i++) {
     pp=px;
     px.rgba.r=ScaleQuantumToChar(GetPixelRed(image,p));
     px.rgba.g=ScaleQuantumToChar(GetPixelGreen(image,p));
