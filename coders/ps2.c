@@ -463,21 +463,15 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
-  switch (compression)
-  {
 #if !defined(MAGICKCORE_JPEG_DELEGATE)
-    case JPEGCompression:
+  if (compression == JPEGCompression)
     {
       compression=RLECompression;
       (void) ThrowMagickException(exception,GetMagickModule(),
         MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (JPEG)",
         image->filename);
-      break;
     }
 #endif
-    default:
-      break;
-  }
   (void) memset(&bounds,0,sizeof(bounds));
   page=1;
   scene=0;
