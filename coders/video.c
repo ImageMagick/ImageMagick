@@ -510,7 +510,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
       return(MagickFalse);
     }
   length=0;
-  for (i=0; ; i+=count)
+  for (i=0; ; i+=(size_t) count)
   {
     count=(ssize_t) read(source_file,buffer,quantum);
     if (count <= 0)

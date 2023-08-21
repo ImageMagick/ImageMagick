@@ -440,7 +440,7 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   {
     buffer[n]='\0';
     error=(GError *) NULL;
-    (void) rsvg_handle_write(svg_handle,buffer,n,&error);
+    (void) rsvg_handle_write(svg_handle,buffer,(gsize) n,&error);
     if (error != (GError *) NULL)
       g_error_free(error);
   }
@@ -500,8 +500,8 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
     }
   else
     {
-      image->columns=dimension_info.width;
-      image->rows=dimension_info.height;
+      image->columns=(size_t) dimension_info.width;
+      image->rows=(size_t) dimension_info.height;
     }
   pixel_info=(MemoryInfo *) NULL;
 #else
@@ -1574,8 +1574,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
     name);
   svg_info=(SVGInfo *) context;
   svg_info->n++;
-  svg_info->scale=(double *) ResizeQuantumMemory(svg_info->scale,
-    svg_info->n+1UL,sizeof(*svg_info->scale));
+  svg_info->scale=(double *) ResizeQuantumMemory(svg_info->scale,(size_t)
+    svg_info->n+1,sizeof(*svg_info->scale));
   if (svg_info->scale == (double *) NULL)
     {
       (void) ThrowMagickException(svg_info->exception,GetMagickModule(),
@@ -3218,12 +3218,12 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.characters(%s,%.20g)",c,(double) length);
   svg_info=(SVGInfo *) context;
-  text=(char *) AcquireQuantumMemory(length+1,sizeof(*text));
+  text=(char *) AcquireQuantumMemory((size_t) length+1,sizeof(*text));
   if (text == (char *) NULL)
     return;
   p=text;
   for (i=0; i < (ssize_t) length; i++)
-    *p++=c[i];
+    *p++=(char) c[i];
   *p='\0';
   SVGStripString(MagickFalse,text);
   if (svg_info->text == (char *) NULL)
@@ -5183,9 +5183,9 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
         for (p=token; *p != '\0'; p++)
           if (isalpha((int) ((unsigned char) *p)) != 0)
             number_attributes++;
-        if (i > (ssize_t) (number_points-6*BezierQuantum*number_attributes-1))
+        if (i > ((ssize_t) number_points-6*BezierQuantum*number_attributes-1))
           {
-            number_points+=6*BezierQuantum*number_attributes;
+            number_points+=(size_t) (6*BezierQuantum*number_attributes);
             primitive_info=(PrimitiveInfo *) ResizeQuantumMemory(primitive_info,
               number_points,sizeof(*primitive_info));
             if (primitive_info == (PrimitiveInfo *) NULL)

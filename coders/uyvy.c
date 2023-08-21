@@ -137,7 +137,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(DestroyImage(image));
-  if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+  if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
   image->depth=8;
