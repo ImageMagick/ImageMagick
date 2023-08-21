@@ -446,11 +446,17 @@ static OrientationType LibRawFlipToOrientation(int flip)
   switch(flip)
   {
     case 5:
+    {
       return(LeftBottomOrientation);
+    }
     case 8:
+    {
       return(LeftTopOrientation);
+    }
     default:
+    {
       return((OrientationType) flip);
+    }
   }
 }
 
