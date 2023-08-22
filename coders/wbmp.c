@@ -17,7 +17,7 @@
 %                               January 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -173,7 +173,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageError,"CorruptWBMPimage");
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+  if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
   if (image_info->ping != MagickFalse)

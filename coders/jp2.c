@@ -17,7 +17,7 @@
 %                                 June 2001                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -207,7 +207,7 @@ static OPJ_SIZE_T JP2ReadHandler(void *buffer,OPJ_SIZE_T length,void *context)
     count;
 
   image=(Image *) context;
-  count=ReadBlob(image,(ssize_t) length,(unsigned char *) buffer);
+  count=ReadBlob(image,(size_t) length,(unsigned char *) buffer);
   if (count == 0)
     return((OPJ_SIZE_T) -1);
   return((OPJ_SIZE_T) count);
@@ -919,7 +919,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
         Set tile size.
       */
       (void) memset(&geometry,0,sizeof(geometry));
-      flags=ParseAbsoluteGeometry(image_info->extract,&geometry);
+      flags=(int) ParseAbsoluteGeometry(image_info->extract,&geometry);
       parameters->cp_tdx=(int) geometry.width;
       parameters->cp_tdy=(int) geometry.width;
       if ((flags & HeightValue) != 0)
@@ -929,8 +929,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       if ((flags & YValue) != 0)
         parameters->cp_ty0=geometry.y;
       parameters->tile_size_on=OPJ_TRUE;
-      parameters->numresolution=CalculateNumResolutions(parameters->cp_tdx,
-        parameters->cp_tdy);
+      parameters->numresolution=CalculateNumResolutions((size_t)
+        parameters->cp_tdx,(size_t) parameters->cp_tdy);
     }
   option=GetImageOption(image_info,"jp2:quality");
   if (option != (const char *) NULL)
@@ -1029,8 +1029,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
          (LocaleCompare(image_info->magick,"JP2") == 0)))
       jp2_info[i].prec++;  /* OpenJPEG returns exception for depth @ 1 */
     jp2_info[i].sgnd=0;
-    jp2_info[i].dx=parameters->subsampling_dx;
-    jp2_info[i].dy=parameters->subsampling_dy;
+    jp2_info[i].dx=(unsigned int) parameters->subsampling_dx;
+    jp2_info[i].dy=(unsigned int) parameters->subsampling_dy;
     jp2_info[i].w=(OPJ_UINT32) image->columns;
     jp2_info[i].h=(OPJ_UINT32) image->rows;
   }
@@ -1040,12 +1040,12 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       parameters=(opj_cparameters_t *) RelinquishMagickMemory(parameters);
       ThrowWriterException(DelegateError,"UnableToEncodeImageFile");
     }
-  jp2_image->x0=parameters->image_offset_x0;
-  jp2_image->y0=parameters->image_offset_y0;
+  jp2_image->x0=(unsigned int) parameters->image_offset_x0;
+  jp2_image->y0=(unsigned int) parameters->image_offset_y0;
   jp2_image->x1=(unsigned int) (2*parameters->image_offset_x0+
-    (image->columns-1)*parameters->subsampling_dx+1);
+    ((ssize_t) image->columns-1)*parameters->subsampling_dx+1);
   jp2_image->y1=(unsigned int) (2*parameters->image_offset_y0+
-    (image->rows-1)*parameters->subsampling_dx+1);
+    ((ssize_t) image->rows-1)*parameters->subsampling_dx+1);
   if ((image->depth == 12) &&
       ((image->columns == 2048) || (image->rows == 1080) ||
        (image->columns == 4096) || (image->rows == 2160)))

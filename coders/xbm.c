@@ -159,7 +159,7 @@ static int XBMInteger(Image *image,short int *hex_digits)
         value*=16;
         c&=0xff;
         if (value <= (unsigned int) ((INT_MAX-1)-hex_digits[c]))
-          value+=hex_digits[c];
+          value+=(unsigned int) hex_digits[c];
       }
     c=ReadBlobByte(image);
     if (c == EOF)

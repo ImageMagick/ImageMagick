@@ -205,9 +205,10 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=MagickTrue;
   do
   {
-    chroma_image=CloneImage(image,(image->columns+horizontal_factor-1)/
-      horizontal_factor,(image->rows+vertical_factor-1)/vertical_factor,
-      MagickTrue,exception);
+    chroma_image=CloneImage(image,(size_t) ((ssize_t) image->columns+
+      (ssize_t) horizontal_factor-1)/(size_t) horizontal_factor,(size_t)
+      (image->rows+(size_t) vertical_factor-1)/
+      (size_t) vertical_factor,MagickTrue,exception);
     if (chroma_image == (Image *) NULL)
       {
         scanline=(unsigned char *) RelinquishMagickMemory(scanline); 
@@ -701,8 +702,8 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
       Sample image to an even width and height, if necessary.
     */
     image->depth=(size_t) (quantum == 1 ? 8 : 16);
-    width=image->columns+(image->columns & (horizontal_factor-1));
-    height=image->rows+(image->rows & (vertical_factor-1));
+    width=image->columns+(image->columns & (unsigned int) (horizontal_factor-1));
+    height=image->rows+(image->rows & (unsigned int) (vertical_factor-1));
     yuv_image=ResizeImage(image,width,height,TriangleFilter,exception);
     if (yuv_image == (Image *) NULL)
       {
@@ -713,8 +714,8 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
     /*
       Downsample image.
     */
-    chroma_image=ResizeImage(image,width/horizontal_factor,
-      height/vertical_factor,TriangleFilter,exception);
+    chroma_image=ResizeImage(image,(size_t) ((ssize_t) width/horizontal_factor),
+      (size_t) ((ssize_t) height/vertical_factor),TriangleFilter,exception);
     if (chroma_image == (Image *) NULL)
       {
         (void) CloseBlob(image);

@@ -883,7 +883,8 @@ static void WriteProfile(struct heif_context *context,Image *image,
     if (LocaleCompare(name,"XMP") == 0)
       for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65533L)
       {
-        length=MagickMin(GetStringInfoLength(profile)-i,65533L);
+        length=(size_t) MagickMin((ssize_t) GetStringInfoLength(profile)-i,
+          65533L);
         error=heif_context_add_XMP_metadata(context,image_handle,
           (void*) (GetStringInfoDatum(profile)+i),(int) length);
         if (IsHEIFSuccess(image,&error,exception) == MagickFalse)

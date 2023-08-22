@@ -403,7 +403,7 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
     string[i]=(char) c;
   }
   string[i]='\0';
-  offset=SeekBlob(image,(MagickOffsetType) (length-i),SEEK_CUR);
+  offset=SeekBlob(image,((MagickOffsetType) length-i),SEEK_CUR);
   if (offset < 0)
     (void) ThrowMagickException(exception,GetMagickModule(),
       CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
@@ -549,7 +549,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
       exception);
     if (q == (Quantum *) NULL)
       continue;
-    size=(MagickOffsetType) tile_image->rows*tile_image->columns;
+    size=(MagickOffsetType) (tile_image->rows*tile_image->columns);
     while (size > 0)
     {
       if (xcfdata > xcfdatalimit)
@@ -566,7 +566,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               length=(size_t) ((*xcfdata << 8) + xcfdata[1]) & 0xffff;
               xcfdata+=2;
             }
-          size-=length;
+          size-=(MagickOffsetType) length;
           if (size < 0)
             goto bogus_rle;
           if ((length < 1) || (length > data_length))
@@ -623,7 +623,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               length=(size_t) ((*xcfdata << 8) + xcfdata[1]) & 0xffff;
               xcfdata+=2;
             }
-          size-=length;
+          size-=(MagickOffsetType) length;
           if (size < 0)
             goto bogus_rle;
           if (xcfdata > xcfdatalimit)
@@ -1016,7 +1016,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
       ssize_t
         scene;
 
-      scene=inDocInfo->number_layers-layer-1;
+      scene=(ssize_t) inDocInfo->number_layers-layer-1;
       if (scene > (ssize_t) (image_info->scene+image_info->number_scenes-1))
         {
           outLayer->image=CloneImage(image,0,0,MagickTrue,exception);

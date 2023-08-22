@@ -498,11 +498,11 @@ do \
     length=0; \
   else \
     { \
-      length=256*c; \
+      length=(size_t) (256*c); \
       if (((c=GetCharacter(jpeg_info)) == EOF) || (c < 0)) \
         length=0; \
       else \
-        length+=c; \
+        length+=(unsigned char) c; \
     } \
 } while(0)
 
@@ -746,7 +746,7 @@ static void SkipInputData(j_decompress_ptr compress_info,long number_bytes)
     (void) FillInputBuffer(compress_info);
   }
   source->manager.next_input_byte+=number_bytes;
-  source->manager.bytes_in_buffer-=number_bytes;
+  source->manager.bytes_in_buffer-=(size_t) number_bytes;
 }
 
 static void TerminateSource(j_decompress_ptr compress_info)
@@ -1407,15 +1407,15 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       ThrowJPEGReaderException(CorruptImageError,"ImageTypeNotSupported");
     }
   memory_info=AcquireVirtualMemory((size_t) image->columns,
-    jpeg_info->output_components*sizeof(*jpeg_pixels));
+    (size_t) jpeg_info->output_components*sizeof(*jpeg_pixels));
   if (memory_info == (MemoryInfo *) NULL)
     {
       JPEGDestroyDecompress(jpeg_info);
       ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
-  (void) memset(jpeg_pixels,0,image->columns*
-    jpeg_info->output_components*sizeof(*jpeg_pixels));
+  (void) memset(jpeg_pixels,0,(size_t) (image->columns*
+    (size_t) jpeg_info->output_components*sizeof(*jpeg_pixels)));
   /*
     Convert JPEG pixels to pixel packets.
   */
@@ -2194,7 +2194,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
         id=JPEG_APP0+StringToInteger(name+3);
         for (i=0; i < (ssize_t) length; i+=65533L)
            jpeg_write_marker(jpeg_info,id,GetStringInfoDatum(profile)+i,
-             (unsigned int) MagickMin(length-i,65533));
+             MagickMin((ssize_t) length-i,65533));
       }
     if (LocaleCompare(name,"EXIF") == 0)
       {
@@ -2220,7 +2220,8 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
         p[tag_length]='\0';
         for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65519L)
         {
-          length=MagickMin(GetStringInfoLength(profile)-i,65519L);
+          length=(size_t) MagickMin((ssize_t) GetStringInfoLength(profile)-i,
+            65519L);
           p[12]=(unsigned char) ((i/65519L)+1);
           p[13]=(unsigned char) (GetStringInfoLength(profile)/65519L+1);
           (void) memcpy(p+tag_length+3,GetStringInfoDatum(profile)+i,
@@ -2242,7 +2243,8 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
         p=GetStringInfoDatum(custom_profile);
         for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65500L)
         {
-          length=MagickMin(GetStringInfoLength(profile)-i,65500L);
+          length=(size_t) MagickMin((ssize_t) GetStringInfoLength(profile)-i,
+            65500L);
           roundup=(size_t) (length & 0x01);
           if (LocaleNCompare((char *) GetStringInfoDatum(profile),"8BIM",4) == 0)
             {
@@ -2941,7 +2943,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     Convert MIFF to JPEG raster pixels.
   */
   memory_info=AcquireVirtualMemory((size_t) image->columns,
-    jpeg_info->input_components*sizeof(*jpeg_pixels));
+    (size_t) (jpeg_info->input_components*(ssize_t) sizeof(*jpeg_pixels)));
   if (memory_info == (MemoryInfo *) NULL)
     ThrowJPEGWriterException(ResourceLimitError,"MemoryAllocationFailed");
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);

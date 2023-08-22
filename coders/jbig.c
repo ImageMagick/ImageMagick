@@ -195,7 +195,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
       size_t
         count;
 
-      status=jbg_dec_in(&jbig_info,p,length,&count);
+      status=(MagickStatusType) jbg_dec_in(&jbig_info,p,(size_t) length,&count);
       p+=count;
       length-=(ssize_t) count;
     }
@@ -548,7 +548,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
       }
     (void) jbg_enc_lrange(&jbig_info,-1,-1);
     jbg_enc_options(&jbig_info,JBG_ILEAVE | JBG_SMID,JBG_TPDON | JBG_TPBON |
-      JBG_DPON,version < 1.6 ? -1 : 0,-1,-1);
+      JBG_DPON,version < 1.6 ? -1ul : 0ul,-1,-1);
     /*
       Write JBIG image.
     */

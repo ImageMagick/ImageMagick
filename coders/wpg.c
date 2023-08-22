@@ -465,7 +465,7 @@ static int UnpackWPGRaster(Image *image,int bpp,ExceptionInfo *exception)
   x=0;
   y=0;
 
-  ldblk=(ssize_t) ((bpp*image->columns+7)/8);
+  ldblk=(ssize_t) ((bpp*(ssize_t) image->columns+7)/8);
   BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t) ldblk,
     8*sizeof(*BImgBuff));
   if(BImgBuff==NULL) return(-2);
@@ -587,12 +587,12 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
 
   x=0;
   y=0;
-  ldblk=(ssize_t) ((bpp*image->columns+7)/8);
+  ldblk=(ssize_t) ((bpp*(ssize_t) image->columns+7)/8);
   BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t) ldblk,
     8*sizeof(*BImgBuff));
   if(BImgBuff==NULL)
     return(-2);
-  (void) memset(BImgBuff,0,ldblk*8*sizeof(*BImgBuff));
+  (void) memset(BImgBuff,0,((size_t) ldblk*8*sizeof(*BImgBuff)));
 
   while( y< (ssize_t) image->rows)
   {
@@ -601,7 +601,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
       switch(bbuf)
         {
         case 0x7D:
-          SampleSize=ReadBlobByte(image);  /* DSZ */
+          SampleSize=(unsigned int) ReadBlobByte(image);  /* DSZ */
           if(SampleSize>8)
             {
               BImgBuff=(unsigned char *) RelinquishMagickMemory(BImgBuff);
@@ -682,7 +682,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
                   InsertByte6(SampleBuffer[bbuf]);
             }
           else {      /* NRP */
-            for(i=0; i < (ssize_t) (SampleSize*(RunCount+1)); i++)
+            for(i=0; i < (ssize_t) ((int) SampleSize*((int) RunCount+1)); i++)
               {
                 bbuf=ReadBlobByte(image);
                 InsertByte6(bbuf);
@@ -849,7 +849,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   (void) fclose(ps_file);
 
     /* Detect file format - Check magic.mgk configuration file. */
-  magic_info=GetMagicInfo(magick,count,exception);
+  magic_info=GetMagicInfo(magick,(size_t) count,exception);
   if(magic_info == (const MagicInfo *) NULL) goto FINISH_UNL;
   if(exception->severity != UndefinedException) goto FINISH_UNL;
   (void) CopyMagickString(clone_info->magick,GetMagicName(magic_info),
@@ -1137,7 +1137,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(CorruptImageError,"ImproperImageHeader");
           if (EOFBlob(image))
             break;
-          Header.DataOffset=TellBlob(image)+Rec.RecordLength;
+          Header.DataOffset=(MagickOffsetType) TellBlob(image)+(ssize_t)
+            Rec.RecordLength;
           if (Header.DataOffset > (MagickOffsetType) GetBlobSize(image))
             ThrowReaderException(CorruptImageError, 
               "InsufficientImageDataInFile");
@@ -1160,7 +1161,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               image->columns=BitmapHeader1.Width;
               image->rows=BitmapHeader1.Height;
-              bpp=BitmapHeader1.Depth;
+              bpp=(int) BitmapHeader1.Depth;
               if ((bpp == 1) &&
                   (AcquireImageColormap(image,2,exception) == MagickFalse))
                 goto NoMemory;
@@ -1177,8 +1178,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->colors=WPG_Palette.NumOfEntries;
               if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
                 goto NoMemory;
-              for (i=WPG_Palette.StartIndex;
-                   i < (int)WPG_Palette.NumOfEntries; i++)
+              for (i=(int) WPG_Palette.StartIndex;
+                   i < (int) WPG_Palette.NumOfEntries; i++)
                 {
                   image->colormap[i].red=ScaleCharToQuantum((unsigned char)
                     ReadBlobByte(image));
@@ -1229,7 +1230,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               image->columns=BitmapHeader2.Width;
               image->rows=BitmapHeader2.Height;
-              bpp=BitmapHeader2.Depth;
+              bpp=(int) BitmapHeader2.Depth;
 
             UnpackRaster:
               status=SetImageExtent(image,image->columns,image->rows,exception);
@@ -1391,7 +1392,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if(EOFBlob(image))
             break;
 
-          Header.DataOffset=TellBlob(image)+Rec2.RecordLength;
+          Header.DataOffset=(MagickOffsetType) (TellBlob(image)+(ssize_t)
+            Rec2.RecordLength);
 
           switch(Rec2.RecType)
             {
@@ -1412,14 +1414,14 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
                 ThrowReaderException(ResourceLimitError,
                   "MemoryAllocationFailed");
-              for (i=WPG_Palette.StartIndex;
-                   i < (int)WPG_Palette.NumOfEntries; i++)
+              for (i=(int) WPG_Palette.StartIndex;
+                   i < (int) WPG_Palette.NumOfEntries; i++)
                 {
-                  image->colormap[i].red=ScaleCharToQuantum((char)
+                  image->colormap[i].red=ScaleCharToQuantum((unsigned char)
                     ReadBlobByte(image));
-                  image->colormap[i].green=ScaleCharToQuantum((char)
+                  image->colormap[i].green=ScaleCharToQuantum((unsigned char)
                     ReadBlobByte(image));
-                  image->colormap[i].blue=ScaleCharToQuantum((char)
+                  image->colormap[i].blue=ScaleCharToQuantum((unsigned char)
                     ReadBlobByte(image));
                   image->colormap[i].alpha=OpaqueAlpha;
                   (void) ReadBlobByte(image);   /*Opacity??*/
@@ -1484,7 +1486,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                 case 0:    /*Uncompressed raster*/
                   {
-                    ldblk=(ssize_t) ((bpp*image->columns+7)/8);
+                    ldblk=(ssize_t) ((bpp*(ssize_t) image->columns+7)/8);
                     BImgBuff=(unsigned char *) AcquireQuantumMemory((size_t)
                       ldblk+1,sizeof(*BImgBuff));
                     if (BImgBuff == (unsigned char *) NULL)
@@ -1568,7 +1570,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   image=ExtractPostscript(image,image_info,
                     TellBlob(image)+i,    /*skip PS header in the wpg2*/
-                    (ssize_t) (Rec2.RecordLength-i-2),exception);
+                    (ssize_t) Rec2.RecordLength-i-2,exception);
                   if (image == NULL)
                     ThrowReaderException(CorruptImageError,
                       "ImproperImageHeader");
@@ -1576,7 +1578,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
 
       case 0x1B:          /*bitmap rectangle*/
-              WPG2Flags = LoadWPG2Flags(image,StartWPG.PosSizePrecision,NULL,&CTM);
+              WPG2Flags = (int) LoadWPG2Flags(image,(char)
+                StartWPG.PosSizePrecision,NULL,&CTM);
               (void) WPG2Flags;
               break;
             }
@@ -1761,9 +1764,9 @@ static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
             {
               rle_info->count++;
               WPGFlushRLE(rle_info,image,(unsigned char) (rle_info->offset-
-                rle_info->count-1));
-              (void) WriteBlobByte(image,(unsigned char)
-                rle_info->count | 0x80);
+                (ssize_t) rle_info->count-1));
+              (void) WriteBlobByte(image,(unsigned char) (
+                rle_info->count | 0x80));
               (void) WriteBlobByte(image,rle_info->pixels[0]);
               rle_info->offset=1;
               rle_info->pixels[0]=byte;
@@ -1773,7 +1776,7 @@ static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
       else
         rle_info->count++;
   }
-  if ((rle_info->offset-rle_info->count) > 0x7E)
+  if ((rle_info->offset-(ssize_t) rle_info->count) > 0x7E)
     {
       WPGFlushRLE(rle_info,image,0x7F);
       return;
@@ -1781,7 +1784,7 @@ static void WPGAddRLEByte(WPGRLEInfo *rle_info,Image *image,
   if ((rle_info->offset > 0x7E) && (rle_info->count >= 1))
      {
        WPGFlushRLE(rle_info,image,(unsigned char) (rle_info->offset-
-         rle_info->count-1));
+         (ssize_t) rle_info->count-1));
        return;
      }
 }
