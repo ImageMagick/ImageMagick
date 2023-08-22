@@ -620,7 +620,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     }
   else
     {
-      page.width=(size_t) ((ssize_t) page.width-bounding_box.x-page.x);
+      page.width=(size_t) ((ssize_t) page.width-(bounding_box.x-page.x));
       page.x-=bounding_box.x;
       if (page.x < 0)
         page.x=0;
@@ -632,7 +632,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     }
   else
     {
-      page.height=(size_t) ((ssize_t) page.height-bounding_box.y-page.y);
+      page.height=(size_t) ((ssize_t) page.height-(bounding_box.y-page.y));
       page.y-=bounding_box.y;
       if (page.y < 0)
         page.y=0;
