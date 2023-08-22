@@ -2194,7 +2194,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
         id=JPEG_APP0+StringToInteger(name+3);
         for (i=0; i < (ssize_t) length; i+=65533L)
            jpeg_write_marker(jpeg_info,id,GetStringInfoDatum(profile)+i,
-             MagickMin((ssize_t) length-i,65533));
+             MagickMin((unsigned int) length-i,65533));
       }
     if (LocaleCompare(name,"EXIF") == 0)
       {
