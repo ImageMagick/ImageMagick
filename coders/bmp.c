@@ -2447,15 +2447,15 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Colormap: %.20g entries",(double) image->colors);
-        bmp_colormap=(unsigned char *) AcquireQuantumMemory((size_t) (1UL <<
-          bmp_info.bits_per_pixel),4*sizeof(*bmp_colormap));
+        bmp_colormap=(unsigned char *) AcquireQuantumMemory((size_t) 1UL <<
+          bmp_info.bits_per_pixel,4*sizeof(*bmp_colormap));
         if (bmp_colormap == (unsigned char *) NULL)
           {
             pixel_info=RelinquishVirtualMemory(pixel_info);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           }
         q=bmp_colormap;
-        for (i=0; i < (ssize_t) MagickMin((ssize_t) image->colors,(ssize_t) bmp_info.number_colors); i++)
+        for (i=0; i < MagickMin((ssize_t) image->colors,(ssize_t) bmp_info.number_colors); i++)
         {
           *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].blue));
           *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].green));
@@ -2463,7 +2463,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           if (type > 2)
             *q++=(unsigned char) 0x0;
         }
-        for ( ; i < (ssize_t) (1UL << bmp_info.bits_per_pixel); i++)
+        for ( ; i < (ssize_t) 1UL << bmp_info.bits_per_pixel; i++)
         {
           *q++=(unsigned char) 0x00;
           *q++=(unsigned char) 0x00;

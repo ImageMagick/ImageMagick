@@ -1284,8 +1284,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             /*
               Dump colormap to file.
             */
-            icon_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
-              (1UL << icon_info.bits_per_pixel),4UL*sizeof(*icon_colormap));
+            icon_colormap=(unsigned char *) AcquireQuantumMemory((size_t) 1UL
+              << icon_info.bits_per_pixel,4UL*sizeof(*icon_colormap));
             if (icon_colormap == (unsigned char *) NULL)
               {
                 images=DestroyImageList(images);
@@ -1300,7 +1300,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               *q++=ScaleQuantumToChar(next->colormap[i].red);
               *q++=(unsigned char) 0x0;
             }
-            for ( ; i < (ssize_t) (1UL << icon_info.bits_per_pixel); i++)
+            for ( ; i < (ssize_t) 1UL << icon_info.bits_per_pixel; i++)
             {
               *q++=(unsigned char) 0x00;
               *q++=(unsigned char) 0x00;

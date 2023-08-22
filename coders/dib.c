@@ -1381,8 +1381,8 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
           /*
             Dump colormap to file.
           */
-          dib_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
-            (1UL << dib_info.bits_per_pixel),4*sizeof(*dib_colormap));
+          dib_colormap=(unsigned char *) AcquireQuantumMemory((size_t) 1UL <<
+            dib_info.bits_per_pixel,4*sizeof(*dib_colormap));
           if (dib_colormap == (unsigned char *) NULL)
             {
               pixels=(unsigned char *) RelinquishMagickMemory(pixels);
@@ -1396,7 +1396,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red));
             *q++=(Quantum) 0x0;
           }
-          for ( ; i < (ssize_t) (1L << dib_info.bits_per_pixel); i++)
+          for ( ; i < (ssize_t) 1L << dib_info.bits_per_pixel; i++)
           {
             *q++=(Quantum) 0x0;
             *q++=(Quantum) 0x0;
