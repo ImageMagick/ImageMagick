@@ -5124,7 +5124,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
   default_frame_timeout=0;
   frame_delay=0;
   final_delay=1;
-  mng_info->ticks_per_second=(size_t) image->ticks_per_second;
+  mng_info->ticks_per_second=(unsigned long) image->ticks_per_second;
   object_id=0;
   skip_to_iend=MagickFalse;
   term_chunk_found=MagickFalse;
@@ -13145,7 +13145,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
            }
          if (final_delay != 0)
            mng_info->ticks_per_second=(png_uint_32)
-              image->ticks_per_second/final_delay;
+              image->ticks_per_second/(png_uint_32) final_delay;
          if (final_delay > 50)
            mng_info->ticks_per_second=2;
 
@@ -13163,7 +13163,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        }
 
      if (mng_info->need_fram != MagickFalse)
-        mng_info->ticks_per_second=(size_t) image->ticks_per_second;
+        mng_info->ticks_per_second=(unsigned long) image->ticks_per_second;
      /*
         If pseudocolor, we should also check to see if all the
         palettes are identical and write a global PLTE if they are.
