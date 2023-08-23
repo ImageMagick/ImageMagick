@@ -13041,7 +13041,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
 
         final_delay=next_image->delay;
 
-        if (final_delay != initial_delay || final_delay > 
+        if (final_delay != initial_delay || (ssize_t) final_delay > 
            next_image->ticks_per_second)
           mng_info->need_fram=MagickTrue;
 
@@ -13402,7 +13402,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
          image->page.x > 0 || image->page.y > 0 || (image->page.width &&
          ((ssize_t) image->page.width+image->page.x < mng_info->page.width))
          || (image->page.height && ((ssize_t) image->page.height+image->page.y
-         < mng_info->page.height))))
+         < (ssize_t) mng_info->page.height))))
        {
          (void) WriteBlobMSBULong(image,6L);
          PNGType(chunk,mng_BACK);
