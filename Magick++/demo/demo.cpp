@@ -502,7 +502,8 @@ int main( int /*argc*/, char ** argv)
       logo.zoom( "45%" );
 
       // Composite logo into montage image
-      Geometry placement(0,0,(montage_image.columns()/2)-(logo.columns()/2),0);
+      Geometry placement(0,0,((ssize_t) montage_image.columns()/2)-
+        ((ssize_t) logo.columns()/2),0);
       montage_image.composite( logo, placement, OverCompositeOp );
     }
 

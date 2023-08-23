@@ -1922,7 +1922,7 @@ namespace Magick
 
       current->previous=previous;
       current->next=(MagickCore::Image *) NULL;
-      current->scene=scene++;
+      current->scene=(size_t) scene++;
 
       if (previous != (MagickCore::Image *) NULL)
         previous->next=current;
