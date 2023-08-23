@@ -13400,7 +13400,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
      */
      if ((write_mng != MagickFalse) && ((image->alpha_trait != UndefinedPixelTrait) ||
          image->page.x > 0 || image->page.y > 0 || (image->page.width &&
-         ((ssize_t) image->page.width+image->page.x < mng_info->page.width))
+         ((ssize_t) image->page.width+image->page.x < (ssize_t) mng_info->page.width))
          || (image->page.height && ((ssize_t) image->page.height+image->page.y
          < (ssize_t) mng_info->page.height))))
        {
