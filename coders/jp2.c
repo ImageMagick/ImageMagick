@@ -250,7 +250,7 @@ static OPJ_SIZE_T JP2WriteHandler(void *buffer,OPJ_SIZE_T length,void *context)
     count;
 
   image=(Image *) context;
-  count=WriteBlob(image,(ssize_t) length,(unsigned char *) buffer);
+  count=WriteBlob(image,(size_t) length,(unsigned char *) buffer);
   return((OPJ_SIZE_T) count);
 }
 
@@ -328,10 +328,10 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   opj_set_default_decoder_parameters(&parameters);
   option=GetImageOption(image_info,"jp2:reduce-factor");
   if (option != (const char *) NULL)
-    parameters.cp_reduce=StringToInteger(option);
+    parameters.cp_reduce=(unsigned int) StringToInteger(option);
   option=GetImageOption(image_info,"jp2:quality-layers");
   if (option != (const char *) NULL)
-    parameters.cp_layer=StringToInteger(option);
+    parameters.cp_layer=(unsigned int) StringToInteger(option);
   if (opj_setup_decoder(jp2_codec,&parameters) == 0)
     {
       opj_destroy_codec(jp2_codec);
@@ -371,7 +371,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           (OPJ_INT32) (image->extract_info.y+(ssize_t) image->rows));
       else
         jp2_status=opj_set_decode_area(jp2_codec,jp2_image,0,0,
-          jp2_image->comps[0].w,jp2_image->comps[0].h);
+          (int) jp2_image->comps[0].w,(int) jp2_image->comps[0].h);
       if (jp2_status == OPJ_FALSE)
         {
           opj_stream_destroy(jp2_stream);
@@ -489,8 +489,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           index,
           pad;
 
-        pad=image->columns % jp2_image->comps[i].dx;
-        index=y/jp2_image->comps[i].dy*(image->columns+pad)/
+        pad=(ssize_t) image->columns % jp2_image->comps[i].dx;
+        index=y/jp2_image->comps[i].dy*((ssize_t) image->columns+pad)/
           jp2_image->comps[i].dx+x/jp2_image->comps[i].dx;
         if ((index < 0) ||
             (index >= (jp2_image->comps[i].h*jp2_image->comps[i].w)))
@@ -502,8 +502,9 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         scale=QuantumRange/(double) ((MagickULLConstant(1) <<
           jp2_image->comps[i].prec)-1);
-        pixel=scale*(jp2_image->comps[i].data[index]+(jp2_image->comps[i].sgnd ?
-          MagickULLConstant(1) << (jp2_image->comps[i].prec-1) : 0));
+        pixel=scale*(jp2_image->comps[i].data[index]+(ssize_t) 
+          (jp2_image->comps[i].sgnd ? MagickULLConstant(1) <<
+          (jp2_image->comps[i].prec-1) : 0));
         switch (i)
         {
            case 0:
@@ -801,21 +802,21 @@ static void CinemaProfileCompliance(const opj_image_t *jp2_image,
       parameters->POC[0].resno0=0;
       parameters->POC[0].compno0=0;
       parameters->POC[0].layno1=1;
-      parameters->POC[0].resno1=parameters->numresolution-1;
+      parameters->POC[0].resno1=(unsigned int) parameters->numresolution-1;
       parameters->POC[0].compno1=3;
       parameters->POC[0].prg1=OPJ_CPRL;
       parameters->POC[1].tile=1;
-      parameters->POC[1].resno0=parameters->numresolution-1;
+      parameters->POC[1].resno0=(unsigned int) parameters->numresolution-1;
       parameters->POC[1].compno0=0;
       parameters->POC[1].layno1=1;
-      parameters->POC[1].resno1=parameters->numresolution;
+      parameters->POC[1].resno1=(unsigned int) parameters->numresolution;
       parameters->POC[1].compno1=3;
       parameters->POC[1].prg1=OPJ_CPRL;
     }
   parameters->tcp_numlayers=1;
-  parameters->tcp_rates[0]=((float) (jp2_image->numcomps*jp2_image->comps[0].w*
-    jp2_image->comps[0].h*jp2_image->comps[0].prec))/(parameters->max_comp_size*
-    8*jp2_image->comps[0].dx*jp2_image->comps[0].dy);
+  parameters->tcp_rates[0]=(((float) jp2_image->numcomps*jp2_image->comps[0].w*
+    jp2_image->comps[0].h*jp2_image->comps[0].prec))/((float)
+    parameters->max_comp_size*8*jp2_image->comps[0].dx*jp2_image->comps[0].dy);
   parameters->cp_disto_alloc=OPJ_TRUE;
 }
 

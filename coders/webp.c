@@ -201,7 +201,7 @@ static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
     chunk_size=ReadWebPLSBWord(stream+offset+TAG_SIZE);
     if (chunk_size > MAX_CHUNK_PAYLOAD)
       break;
-    chunk_size_pad=(CHUNK_HEADER_SIZE+chunk_size+1) & ~1;
+    chunk_size_pad=(CHUNK_HEADER_SIZE+chunk_size+1) & (unsigned int) ~1;
     if (memcmp(stream+offset,VP8_CHUNK_HEADER,VP8_CHUNK_HEADER_SIZE) == 0)
       return(*(stream+offset+VP8_CHUNK_HEADER_SIZE) == LOSSLESS_FLAG ?
         MagickTrue : MagickFalse);
@@ -310,8 +310,8 @@ static int ReadSingleWEBPImage(Image *image,const uint8_t *stream,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((x >= x_offset && x < (ssize_t) (x_offset+image_width)) &&
-          (y >= y_offset && y < (ssize_t) (y_offset+image_height)))
+      if (((x >= x_offset) && (x < (x_offset+(ssize_t) image_width))) &&
+          ((y >= y_offset) && (y < (y_offset+(ssize_t) image_height))))
         {
           SetPixelRed(image,ScaleCharToQuantum(*p++),q);
           SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
@@ -445,7 +445,7 @@ static int ReadAnimatedWEBPImage(const ImageInfo *image_info,Image *image,
     mux=WebPMuxCreate(&data,0);
     status=WebPMuxGetAnimationParams(mux,&params);
     if (status >= 0)
-      image->iterations=(ssize_t) params.loop_count;
+      image->iterations=(size_t) params.loop_count;
     WebPMuxDelete(mux);
   }
   demux=WebPDemux(&data);
@@ -556,7 +556,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   count=ReadBlob(image,12,header);
   if (count != 12)
     ThrowWEBPException(CorruptImageError,"InsufficientImageDataInFile");
-  status=IsWEBP(header,(ssize_t) count);
+  status=IsWEBP(header,(size_t) count);
   if (status == MagickFalse)
     ThrowWEBPException(CorruptImageError,"CorruptImage");
   length=(size_t) (ReadWebPLSBWord(header+4)+8);

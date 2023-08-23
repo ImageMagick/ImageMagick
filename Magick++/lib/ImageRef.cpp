@@ -60,7 +60,7 @@ size_t Magick::ImageRef::decrease()
         "Invalid call to decrease");
       return(0);
     }
-  count=--_refCount;
+  count=(size_t) (--_refCount);
   _mutexLock.unlock();
   return(count);
 }

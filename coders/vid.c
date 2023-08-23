@@ -207,7 +207,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         "thumbnail geometry: %.20gx%.20g",(double) next_image->columns,(double)
         next_image->rows);
     AppendImageToList(&images,next_image);
-    status=SetImageProgress(images,LoadImagesTag,i,number_files);
+    status=SetImageProgress(images,LoadImagesTag,i,(MagickSizeType)
+      number_files);
     if (status == MagickFalse)
       break;
   }

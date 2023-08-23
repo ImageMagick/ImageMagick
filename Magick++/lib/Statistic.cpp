@@ -139,7 +139,7 @@ Magick::ChannelPerceptualHash::ChannelPerceptualHash(
     _srgbHuPhash(7),
     _hclpHuPhash(7)
 {
-  ssize_t
+  size_t
     i;
 
   if (hash_.length() != 70)
@@ -175,7 +175,7 @@ Magick::ChannelPerceptualHash::operator std::string() const
   std::string
     hash;
 
-  ssize_t
+  size_t
     i;
 
   if (!isValid())
@@ -230,7 +230,7 @@ double Magick::ChannelPerceptualHash::sumSquaredDifferences(
   double
     ssd;
 
-  ssize_t
+  size_t
     i;
 
   ssd=0.0;
@@ -267,7 +267,7 @@ Magick::ChannelPerceptualHash::ChannelPerceptualHash(
     _srgbHuPhash(7),
     _hclpHuPhash(7)
 {
-  ssize_t
+  size_t
     i;
 
   for (i=0; i<7; i++)
@@ -552,7 +552,7 @@ double Magick::ImagePerceptualHash::sumSquaredDifferences(
   double
     ssd;
 
-  ssize_t
+  size_t
     i;
 
   if (!isValid())

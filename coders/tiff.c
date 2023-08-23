@@ -206,7 +206,7 @@ static MagickOffsetType TIFFSeekCustomStream(const MagickOffsetType offset,
     {
       if (((MagickOffsetType) profile->length+offset) < 0)
         return(-1);
-      profile->offset=profile->length+offset;
+      profile->offset=(MagickOffsetType) profile->length+offset;
       break;
     }
   }
@@ -1070,8 +1070,8 @@ static ssize_t TIFFReadCustomStream(unsigned char *data,const size_t count,
     return(-1);
   total=MagickMin(count, (size_t) remaining);
   (void) memcpy(data,profile->data->datum+profile->offset,total);
-  profile->offset+=total;
-  return(total);
+  profile->offset+=(MagickOffsetType) total;
+  return((ssize_t) total);
 }
 
 static CustomStreamInfo *TIFFAcquireCustomStreamForReading(
@@ -1832,8 +1832,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 pad=(size_t) MagickMax((ssize_t) samples_per_pixel+
                   extra_samples-3,0);
               }
-            status=SetQuantumPad(image,quantum_info,pad*((bits_per_sample+7) >>
-              3));
+            status=SetQuantumPad(image,quantum_info,pad*
+              (size_t) ((bits_per_sample+7) >> 3));
             if (status == MagickFalse)
               ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           }
@@ -2058,7 +2058,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             size_t
               rows_remaining;
 
-            rows_remaining=image->rows-y;
+            rows_remaining=image->rows-(size_t) y;
             if ((ssize_t) (y+rows) < (ssize_t) image->rows)
               rows_remaining=rows;
             for (x=0; x < (ssize_t) image->columns; x+=columns)
@@ -2067,8 +2067,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 columns_remaining,
                 row;
 
-              columns_remaining=image->columns-x;
-              if ((ssize_t) (x+columns) < (ssize_t) image->columns)
+              columns_remaining=image->columns-(size_t) x;
+              if ((x+(ssize_t) columns) < (ssize_t) image->columns)
                 columns_remaining=columns;
               size=TIFFReadTile(tiff,tile_pixels,(uint32) x,(uint32) y,
                 0,i);
@@ -2080,8 +2080,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 Quantum
                   *magick_restrict q;
 
-                q=GetAuthenticPixels(image,x,y+row,columns_remaining,1,
-                  exception);
+                q=GetAuthenticPixels(image,x,y+(ssize_t) row,columns_remaining,
+                  1,exception);
                 if (q == (Quantum *) NULL)
                   break;
                 (void) ImportQuantumPixels(image,(CacheView *) NULL,
@@ -2214,8 +2214,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             break;
           }
         image=SyncNextImageInList(image);
-        status=SetImageProgress(image,LoadImagesTag,image->scene-1,
-          image->scene);
+        status=SetImageProgress(image,LoadImagesTag,(MagickOffsetType)
+          image->scene-1,image->scene);
         if (status == MagickFalse)
           break;
       }
@@ -2714,7 +2714,8 @@ static MagickBooleanType WriteGROUP4Image(const ImageInfo *image_info,
   */
   for (i=0; i < (ssize_t) TIFFNumberOfStrips(tiff); i++)
   {
-    count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,strip_size);
+    count=(ssize_t) TIFFReadRawStrip(tiff,(uint32) i,buffer,(tmsize_t)
+      strip_size);
     if (WriteBlob(image,(size_t) count,buffer) != count)
       status=MagickFalse;
   }
@@ -2990,7 +2991,7 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
         rows,
         rows_per_strip;
 
-      extent=TIFFScanlineSize(tiff);
+      extent=(size_t) TIFFScanlineSize(tiff);
       rows_per_strip=TIFFStripSizeDefault/(extent == 0 ? 1 : (uint32) extent);
       rows_per_strip=16*(((rows_per_strip < 16 ? 16 : rows_per_strip)+1)/16);
       if ((TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&rows) == 1) &&
@@ -3022,9 +3023,9 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
       return(MagickFalse);
     }
   tiff_info->scanlines=(unsigned char *) AcquireQuantumMemory((size_t)
-    tile_rows*TIFFScanlineSize(tiff),sizeof(*tiff_info->scanlines));
+    tile_rows*(size_t) TIFFScanlineSize(tiff),sizeof(*tiff_info->scanlines));
   tiff_info->pixels=(unsigned char *) AcquireQuantumMemory((size_t)
-    tile_rows*TIFFTileSize(tiff),sizeof(*tiff_info->scanlines));
+    tile_rows*(size_t) TIFFTileSize(tiff),sizeof(*tiff_info->scanlines));
   if ((tiff_info->scanlines == (unsigned char *) NULL) ||
       (tiff_info->pixels == (unsigned char *) NULL))
     {
@@ -3062,11 +3063,11 @@ static tmsize_t TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
       /*
         Fill scanlines to tile height.
       */
-      i=(ssize_t) (row % tiff_info->tile_geometry.height)*
+      i=(ssize_t) (row % (ssize_t) tiff_info->tile_geometry.height)*
         TIFFScanlineSize(tiff);
       (void) memcpy(tiff_info->scanlines+i,(char *) tiff_info->scanline,
         (size_t) TIFFScanlineSize(tiff));
-      if (((size_t) (row % tiff_info->tile_geometry.height) != (tiff_info->tile_geometry.height-1)) &&
+      if ((((size_t) row % tiff_info->tile_geometry.height) != (tiff_info->tile_geometry.height-1)) &&
           (row != (ssize_t) (image->rows-1)))
         return(0);
     }
@@ -3080,28 +3081,29 @@ static tmsize_t TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
     tiff_info->tile_geometry.width;
   for (i=0; i < (ssize_t) number_tiles; i++)
   {
-    tile_width=(i == (ssize_t) (number_tiles-1)) ? image->columns-(i*
-      tiff_info->tile_geometry.width) : tiff_info->tile_geometry.width;
-    for (j=0; j < (ssize_t) ((row % tiff_info->tile_geometry.height)+1); j++)
+    tile_width=(size_t) ((i == (ssize_t) (number_tiles-1)) ? (ssize_t)
+      image->columns-(i*(ssize_t) tiff_info->tile_geometry.width) :
+      (ssize_t) tiff_info->tile_geometry.width);
+    for (j=0; j < ((row % (ssize_t) tiff_info->tile_geometry.height)+1); j++)
       for (k=0; k < (ssize_t) tile_width; k++)
       {
         if (bytes_per_pixel == 0)
           {
             p=tiff_info->scanlines+(j*TIFFScanlineSize(tiff)+(i*
-              tiff_info->tile_geometry.width+k)/8);
+              (ssize_t) tiff_info->tile_geometry.width+k)/8);
             q=tiff_info->pixels+(j*TIFFTileRowSize(tiff)+k/8);
             *q++=(*p++);
             continue;
           }
         p=tiff_info->scanlines+(j*TIFFScanlineSize(tiff)+(i*
-          tiff_info->tile_geometry.width+k)*bytes_per_pixel);
+          (ssize_t) tiff_info->tile_geometry.width+k)*bytes_per_pixel);
         q=tiff_info->pixels+(j*TIFFTileRowSize(tiff)+k*bytes_per_pixel);
         for (l=0; l < bytes_per_pixel; l++)
           *q++=(*p++);
       }
-    if ((i*tiff_info->tile_geometry.width) != image->columns)
-      status=TIFFWriteTile(tiff,tiff_info->pixels,(uint32) (i*
-        tiff_info->tile_geometry.width),(uint32) ((row/
+    if (((size_t) i*tiff_info->tile_geometry.width) != image->columns)
+      status=TIFFWriteTile(tiff,tiff_info->pixels,(uint32) ((size_t) i*
+        tiff_info->tile_geometry.width),(uint32) (((size_t) row/
         tiff_info->tile_geometry.height)*tiff_info->tile_geometry.height),0,
         sample);
     if (status < 0)
@@ -3127,8 +3129,8 @@ static ssize_t TIFFWriteCustomStream(unsigned char *data,const size_t count,
       SetStringInfoLength(profile->data,profile->extent);
     }
   (void) memcpy(profile->data->datum+profile->offset,data,count);
-  profile->offset+=count;
-  return(count);
+  profile->offset+=(MagickOffsetType) count;
+  return((ssize_t) count);
 }
 
 static CustomStreamInfo *TIFFAcquireCustomStreamForWriting(
@@ -3293,7 +3295,7 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
           {
             if (TIFFIsByteSwapped(tiff))
               TIFFSwabArrayOfLong((uint32 *) GetStringInfoDatum(iptc_profile),
-                (unsigned long) (length/4));
+                (tmsize_t) (length/4));
             (void) TIFFSetField(tiff,TIFFTAG_RICHTIFFIPTC,(uint32)
               GetStringInfoLength(iptc_profile)/4,GetStringInfoDatum(
                 iptc_profile));

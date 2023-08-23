@@ -229,7 +229,7 @@ void Magick::Options::fileName(const std::string &fileName_)
     max_length;
 
   max_length=sizeof(_imageInfo->filename)-1;
-  fileName_.copy(_imageInfo->filename,max_length);
+  fileName_.copy(_imageInfo->filename,(size_t) max_length);
   if ((ssize_t) fileName_.length() > max_length)
     _imageInfo->filename[max_length]=0;
   else

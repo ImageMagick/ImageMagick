@@ -759,7 +759,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
    bmp_read->width, bmp_read->height);
 #endif
   image=BlobToImage(image_info, (const void *) bmp_read->buffer,
-    bmp_read->length, exception);
+    (size_t) bmp_read->length, exception);
   image_info=DestroyImageInfo(image_info);
   if (image != (Image *) NULL)
     {
@@ -2402,7 +2402,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
       if (WMF_FONT_ITALIC(font)) 
         style=ItalicStyle;
       type_info=GetTypeInfoByFamily(wmf_font_name,style,AnyStretch,
-        target_weight,exception);
+        (size_t) target_weight,exception);
       if (type_info == (const TypeInfo *) NULL)
         type_info=GetTypeInfoByFamily(wmf_font_name,AnyStyle,AnyStretch,0,
           exception);
