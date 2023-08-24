@@ -1446,7 +1446,7 @@ static void GetEXIFProperty(const Image *image,
           dir_offset=(ssize_t) ReadPropertySignedLong(endian,q+8);
           if ((dir_offset < 0) || (size_t) dir_offset >= length)
             continue;
-          if ((dir_offset+(ssize_t) number_bytes) < dir_offset)
+          if (((ssize_t) dir_offset+number_bytes) < dir_offset)
             continue;  /* prevent overflow */
           if ((dir_offset+(ssize_t) number_bytes) > (ssize_t) length)
             continue;

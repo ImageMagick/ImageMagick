@@ -565,7 +565,7 @@ static MagickBooleanType sixel_decode(Image *image,unsigned char *p,
                       }
                       for (y = position_y + i; y < position_y + i + n; ++y)
                       {
-                        offset=(size_t) (imsx*y+(ssize_t) position_x);
+                        offset=(size_t) ((ssize_t) imsx*y+(ssize_t) position_x);
                         if ((offset+(size_t) repeat_count) >= (size_t) (imsx*imsy))
                           {
                             imbuf=(sixel_pixel_t *) RelinquishMagickMemory(imbuf);
