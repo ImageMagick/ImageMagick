@@ -29,7 +29,7 @@ m4_define([magick_minor_version], [1])
 m4_define([magick_micro_version], [1])
 m4_define([magick_patchlevel_version], [16])
 m4_define([magick_is_beta], [y])
-m4_define([magick_bugreport]
+m4_define([magick_bugreport],
           [https://github.com/ImageMagick/ImageMagick/issues])
 m4_define([magick_url], [https://imagemagick.org])
 m4_define([magick_lib_version], [0x711])
