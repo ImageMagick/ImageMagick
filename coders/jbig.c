@@ -548,7 +548,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
       }
     (void) jbg_enc_lrange(&jbig_info,-1,-1);
     jbg_enc_options(&jbig_info,JBG_ILEAVE | JBG_SMID,JBG_TPDON | JBG_TPBON |
-      JBG_DPON,version < 1.6 ? -1 : 0,-1,-1);
+      JBG_DPON,version < 1.6 ? ~0UL : 0UL,-1,-1);
     /*
       Write JBIG image.
     */
