@@ -734,9 +734,6 @@
 /* define if your compiler has __attribute__ */
 #undef HAVE___ATTRIBUTE__
 
-/* Whether 64-bit channel masks are enabled or not */
-#undef MAGICKCORE_CHANNEL_MASK_DEPTH
-
 /* Define if you have libheif library */
 #undef HEIC_DELEGATE
 
@@ -790,6 +787,9 @@
 
 /* Define if you have LZMA library */
 #undef LZMA_DELEGATE
+
+/* Whether 64-bit channel masks are enabled or not */
+#undef MAGICKCORE_CHANNEL_MASK_DEPTH
 
 /* Define to prepend to default font search path. */
 #undef MAGICK_FONT_PATH
