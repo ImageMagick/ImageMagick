@@ -234,8 +234,9 @@ static inline MagickRealType GetPixelInfoChannel(
       return(pixel_info->alpha);
     }
     case IndexPixelChannel: return(pixel_info->index);
-    default: return((MagickRealType) 0.0);
+    default: break;
   }
+  return((MagickRealType) 0.0);
 }
 
 static inline double PerceptibleReciprocal(const double x)
