@@ -2385,15 +2385,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 msl_info->attributes[n],(const char *) attributes[i],exception);
               CloneString(&value,attribute);
               attribute=DestroyString(attribute);
-              switch (*keyword)
-              {
-                default:
-                {
-                  ThrowMSLException(OptionError,"UnrecognizedAttribute",
-                    keyword);
-                  break;
-                }
-              }
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
             }
           (void) DisplayImages(msl_info->image_info[n],msl_info->image[n],
             msl_info->exception);
@@ -2958,15 +2950,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 msl_info->attributes[n],(const char *) attributes[i],exception);
               CloneString(&value,attribute);
               attribute=DestroyString(attribute);
-              switch (*keyword)
-              {
-                default:
-                {
-                  ThrowMSLException(OptionError,"UnrecognizedAttribute",
-                    keyword);
-                  break;
-                }
-              }
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
             }
           (void) EqualizeImage(msl_info->image[n],
             msl_info->exception);
@@ -6689,15 +6673,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 msl_info->attributes[n],(const char *) attributes[i],exception);
               CloneString(&value,attribute);
               attribute=DestroyString(attribute);
-              switch (*keyword)
-              {
-                default:
-                {
-                  ThrowMSLException(OptionError,"UnrecognizedAttribute",
-                    keyword);
-                  break;
-                }
-              }
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
             }
           (void) SignatureImage(msl_info->image[n],exception);
           break;
@@ -7143,15 +7119,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 msl_info->attributes[n],(const char *) attributes[i],exception);
               CloneString(&value,attribute);
               attribute=DestroyString(attribute);
-              switch (*keyword)
-              {
-                default:
-                {
-                  ThrowMSLException(OptionError,"UnrecognizedAttribute",
-                    keyword);
-                  break;
-                }
-              }
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
             }
           (void) SyncImage(msl_info->image[n],exception);
           break;
