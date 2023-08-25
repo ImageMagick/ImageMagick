@@ -67,6 +67,8 @@
   <!-- Set the maximum height of an image.  When this limit is exceeded, an
        exception is thrown. -->
   <policy domain="resource" name="height" value="8KP"/>
+  <!-- Do not permit any delegates to execute. -->
+  <policy domain="delegate" rights="none" pattern="*"/>
   <!-- Do not permit any image filters to load. -->
   <policy domain="filter" rights="none" pattern="*"/>
   <!-- Don't read/write from/to stdin/stdout. -->

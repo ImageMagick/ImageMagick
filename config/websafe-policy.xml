@@ -26,47 +26,60 @@
   for potential attacks.
 -->
 <policymap>
-  <!-- <policy domain="resource" name="temporary-path" value="/opt/magick/tmp"/> -->
-  <!-- <policy domain="resource" name="memory" value="2GiB"/> -->
-  <!-- <policy domain="resource" name="map" value="4GiB"/> -->
-  <!-- <policy domain="resource" name="width" value="10KP"/> -->
-  <!-- <policy domain="resource" name="height" value="10KP"/> -->
-  <!-- <policy domain="resource" name="list-length" value="128"/> -->
-  <!-- <policy domain="resource" name="area" value="100MP"/> -->
-  <!-- <policy domain="resource" name="disk" value="16EiB"/> -->
-  <!-- <policy domain="resource" name="file" value="768"/> -->
-  <!-- <policy domain="resource" name="thread" value="4"/> -->
-  <!-- <policy domain="resource" name="throttle" value="0"/> -->
-  <!-- <policy domain="resource" name="time" value="3600"/> -->
-  <!-- <policy domain="coder" rights="none" pattern="MVG" /> -->
-  <!-- <policy domain="module" rights="none" pattern="{PS,PDF,XPS}" /> -->
-  <!-- <policy domain="delegate" rights="none" pattern="HTTPS" /> -->
-  <!-- <policy domain="path" rights="none" pattern="@*" /> -->
-  <!-- <policy domain="cache" name="memory-map" value="anonymous"/> -->
-  <!-- <policy domain="cache" name="synchronize" value="True"/> -->
-  <!-- <policy domain="cache" name="shared-secret" value="passphrase" stealth="true"/> -->
-  <!-- <policy domain="system" name="max-memory-request" value="256MiB"/> -->
-  <!-- <policy domain="cache" name="synchronize" value="true"/> -->
-  <!-- <policy domain="system" name="shred" value="1"/> -->
-  <!-- <policy domain="system" name="font" value="/path/to/unicode-font.ttf"/> -->
-  <policy domain="resource" name="memory" value="256MiB"/>
-  <policy domain="resource" name="list-length" value="32"/>
-  <policy domain="resource" name="width" value="4KP"/>
-  <policy domain="resource" name="height" value="4KP"/>
-  <policy domain="resource" name="map" value="512MiB"/>
-  <policy domain="resource" name="area" value="16KP"/>
-  <policy domain="resource" name="disk" value="1GiB"/>
-  <policy domain="resource" name="file" value="768"/>
+  <!-- Set maximum parallel threads. -->
   <policy domain="resource" name="thread" value="2"/>
+  <!-- Set maximum time in seconds. When this limit is exceeded, an exception
+       is thrown and processing stops. -->
   <policy domain="resource" name="time" value="120"/>
-  <policy domain="filter" rights="none" pattern="*" />
-  <policy domain="path" rights="none" pattern="-"/>  <!-- don't read/write from/to stdin/stdout -->
-  <policy domain="path" rights="none" pattern="/etc/*"/>  <!-- don't read sensitive paths -->
-  <policy domain="path" rights="none" pattern="@*"/>  <!-- indirect reads not permitted -->
+  <!-- Set maximum number of open pixel cache files. When this limit is
+       exceeded, any subsequent pixels cached to disk are closed and reopened
+       on demand. -->
+  <policy domain="resource" name="file" value="768"/>
+  <!-- Set maximum amount of memory in bytes to allocate for the pixel cache
+       from the heap. When this limit is exceeded, the image pixels are cached
+       to memory-mapped disk. -->
+  <policy domain="resource" name="memory" value="256MiB"/>
+  <!-- Set maximum amount of memory map in bytes to allocate for the pixel
+       cache. When this limit is exceeded, the image pixels are cached to
+       disk. -->
+  <policy domain="resource" name="map" value="512MiB"/>
+  <!-- Set the maximum width * height of an image that can reside in the pixel
+       cache memory. Images that exceed the area limit are cached to disk. -->
+  <policy domain="resource" name="area" value="16KP"/>
+  <!-- Set maximum amount of disk space in bytes permitted for use by the pixel
+       cache. When this limit is exceeded, the pixel cache is not be created
+       and an exception is thrown. -->
+  <policy domain="resource" name="disk" value="1GiB"/>
+  <!-- Set the maximum length of an image sequence.  When this limit is
+       exceeded, an exception is thrown. -->
+  <policy domain="resource" name="list-length" value="32"/>
+  <!-- Set the maximum width of an image.  When this limit is exceeded, an
+       exception is thrown. -->
+  <policy domain="resource" name="width" value="4KP"/>
+  <!-- Set the maximum height of an image.  When this limit is exceeded, an
+       exception is thrown. -->
+  <policy domain="resource" name="height" value="4KP"/>
+  <!-- Do not permit any delegates to execute. -->
+  <policy domain="delegate" rights="none" pattern="*"/>
+  <!-- Do not permit any image filters to load. -->
+  <policy domain="filter" rights="none" pattern="*"/>
+  <!-- Don't read/write from/to stdin/stdout. -->
+  <policy domain="path" rights="none" pattern="-"/>
+  <!-- don't read sensitive paths. -->
+  <policy domain="path" rights="none" pattern="/etc/*"/>
+  <!-- Indirect reads are not permitted. -->
+  <policy domain="path" rights="none" pattern="@*"/>
+  <!-- Force memory initialization by memory mapping select memory
+       allocations. -->
   <policy domain="cache" name="memory-map" value="anonymous"/>
+  <!-- Ensure all image data is fully flushed and synchronized to disk. -->
   <policy domain="cache" name="synchronize" value="true"/>
+  <!-- If you want to keep the temporary files ImageMagick creates private,
+       overwrite them with zeros or random data before they are removed. On
+       the first pass, the file is zeroed. For subsequent passes, random data
+       is written. -->
   <policy domain="system" name="shred" value="1"/>
-  <policy domain="delegate" rights="none" pattern="*" />
+  <!-- Only allow reading or writing web-safe image formats. -->
   <policy domain="module" rights="none" pattern="*" />
   <policy domain="module" rights="read | write" pattern="{GIF,JPEG,PNG,WEBP}" />
 </policymap>

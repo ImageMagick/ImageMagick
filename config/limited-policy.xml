@@ -56,8 +56,6 @@
        exception is thrown. -->
   <policy domain="resource" name="height" value="16KP"/>
   <!-- Do not permit any image filters to load. -->
-  <policy domain="filter" rights="none" pattern="*"/>
-  <!-- Don't read/write from/to stdin/stdout. -->
   <policy domain="path" rights="none" pattern="-"/>
   <!-- don't read sensitive paths. -->
   <policy domain="path" rights="none" pattern="/etc/*"/>
