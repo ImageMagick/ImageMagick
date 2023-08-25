@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE policymap [
-  <!ELEMENT policymap (policy)*>
-  <!ATTLIST policymap xmlns CDATA #FIXED ''>
-  <!ELEMENT policy EMPTY>
-  <!ATTLIST policy xmlns CDATA #FIXED '' domain NMTOKEN #REQUIRED
-    name NMTOKEN #IMPLIED pattern CDATA #IMPLIED rights NMTOKEN #IMPLIED
-    stealth NMTOKEN #IMPLIED value CDATA #IMPLIED>
+<!ELEMENT policymap (policy)*>
+<!ATTLIST policymap xmlns CDATA #FIXED "">
+<!ELEMENT policy EMPTY>
+<!ATTLIST policy xmlns CDATA #FIXED "">
+<!ATTLIST policy domain NMTOKEN #REQUIRED>
+<!ATTLIST policy name NMTOKEN #IMPLIED>
+<!ATTLIST policy pattern CDATA #IMPLIED>
+<!ATTLIST policy rights NMTOKEN #IMPLIED>
+<!ATTLIST policy stealth NMTOKEN #IMPLIED>
+<!ATTLIST policy value CDATA #IMPLIED>
 ]>
 <!--
   It is strongly recommended to establish a security policy suitable for your
@@ -55,10 +59,23 @@
   <policy domain="resource" name="list-length" value="32"/>
   <!-- Set the maximum width of an image.  When this limit is exceeded, an
        exception is thrown. -->
-  <policy domain="resource" name="width" value="4KP"/>
+  <policy domain="resource" name="width" value="8KP"/>
   <!-- Set the maximum height of an image.  When this limit is exceeded, an
        exception is thrown. -->
-  <policy domain="resource" name="height" value="4KP"/>
+  <policy domain="resource" name="height" value="8KP"/>
+  <!-- Periodically yield the CPU for at least the time specified in
+       milliseconds. -->
+  <policy domain="resource" name="throttle" value="2"/>
+  <!-- Do not create temporary files in the default shared directories, instead
+       specify a private area to store only ImageMagick temporary files. -->
+  <!-- <policy domain="resource" name="temporary-path" value="/magick/tmp"/> -->
+  <!-- Force memory initialization by memory mapping select memory
+       allocations. -->
+  <policy domain="cache" name="memory-map" value="anonymous"/>
+  <!-- Ensure all image data is fully flushed and synchronized to disk. -->
+  <policy domain="cache" name="synchronize" value="true"/>
+  <!-- Replace passphrase for secure distributed processing -->
+  <!-- <policy domain="cache" name="shared-secret" value="my-secret-passphrase" stealth="true"/> -->
   <!-- Do not permit any delegates to execute. -->
   <policy domain="delegate" rights="none" pattern="*"/>
   <!-- Do not permit any image filters to load. -->
@@ -69,17 +86,16 @@
   <policy domain="path" rights="none" pattern="/etc/*"/>
   <!-- Indirect reads are not permitted. -->
   <policy domain="path" rights="none" pattern="@*"/>
-  <!-- Force memory initialization by memory mapping select memory
-       allocations. -->
-  <policy domain="cache" name="memory-map" value="anonymous"/>
-  <!-- Ensure all image data is fully flushed and synchronized to disk. -->
-  <policy domain="cache" name="synchronize" value="true"/>
-  <!-- If you want to keep the temporary files ImageMagick creates private,
-       overwrite them with zeros or random data before they are removed. On
-       the first pass, the file is zeroed. For subsequent passes, random data
-       is written. -->
-  <policy domain="system" name="shred" value="1"/>
   <!-- Only allow reading or writing web-safe image formats. -->
   <policy domain="module" rights="none" pattern="*" />
   <policy domain="module" rights="read | write" pattern="{GIF,JPEG,PNG,WEBP}" />
+  <!-- This policy sets the number of times to replace content of certain
+       memory buffers and temporary files before they are freed or deleted. -->
+  <policy domain="system" name="shred" value="1"/>
+  <!-- Enable the initialization of buffers with zeros, resulting in a minor
+       performance penalty but with inmproved security. -->
+  <policy domain="system" name="memory-map" value="anonymous"/>
+  <!-- Set the maximum amount of memory in bytes that is permitted for
+       allocation requests. -->
+  <policy domain="system" name="max-memory-request" value="256MiB"/>
 </policymap>
