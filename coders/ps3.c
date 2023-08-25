@@ -361,8 +361,8 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
         {
           bit=(unsigned char) 0x00;
           if (x < (ssize_t) image->columns)
-            bit=(unsigned char) (GetPixelLuma(image,p) == TransparentAlpha ?
-              0x01 : 0x00);
+            bit=(unsigned char) (GetPixelLuma(image,p) == (double)
+              TransparentAlpha ? 0x01 : 0x00);
           code=(code << 1)+bit;
           if (((x+1) % (ssize_t) pack) == 0)
             {

@@ -459,7 +459,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
       ssize_t
         i;
 
-      mask_alpha=QuantumScale*GetPixelWriteMask(image,p);
+      mask_alpha=QuantumScale*(double) GetPixelWriteMask(image,p);
       if (fabs(mask_alpha) >= MagickEpsilon)
         {
           for (i=0; i < (ssize_t) image->number_channels; i++)
@@ -468,7 +468,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
             PixelTrait traits = GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) == 0)
               continue;
-            q[i]=ClampToQuantum(MagickOver_((double) p[i],mask_alpha*
+            q[i]=ClampToQuantum(MagickOver_((double) p[i],mask_alpha*(double)
               GetPixelAlpha(image,p),(double) q[i],(double)
               GetPixelAlpha(image,q)));
           }
@@ -3405,7 +3405,7 @@ static inline Quantum ApplyPixelCompositeMask(const Quantum p,
   double
     gamma;
 
-  if (fabs((double) (alpha-TransparentAlpha)) < MagickEpsilon)
+  if (fabs((double) (alpha-(double) TransparentAlpha)) < MagickEpsilon)
     return(q);
   gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
   gamma=PerceptibleReciprocal(gamma);

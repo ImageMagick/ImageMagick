@@ -740,8 +740,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           MagickRealType
             gray;
 
-          gray=0.212656*GetPixelRed(image,q)+0.715158*GetPixelGreen(image,q)+
-            0.072186*GetPixelBlue(image,q);
+          gray=0.212656*(double) GetPixelRed(image,q)+0.715158*(double)
+            GetPixelGreen(image,q)+0.072186*(double) GetPixelBlue(image,q);
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
         }
@@ -1756,9 +1756,9 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 static inline void ConvertCMYToRGB(const double cyan,const double magenta,
   const double yellow,double *red,double *green,double *blue)
 {
-  *red=QuantumRange*(1.0-cyan);
-  *green=QuantumRange*(1.0-magenta);
-  *blue=QuantumRange*(1.0-yellow);
+	*red=(double) QuantumRange*(1.0-cyan);
+  *green=(double) QuantumRange*(1.0-magenta);
+  *blue=(double) QuantumRange*(1.0-yellow);
 }
 
 static inline void ConvertLMSToXYZ(const double L,const double M,const double S,
@@ -1835,12 +1835,12 @@ static inline void ConvertxyYToRGB(const double low_x,const double low_y,
 static void ConvertYPbPrToRGB(const double Y,const double Pb,const double Pr,
   double *red,double *green,double *blue)
 {
-  *red=QuantumRange*(0.99999999999914679361*Y-1.2188941887145875e-06*(Pb-0.5)+
-    1.4019995886561440468*(Pr-0.5));
-  *green=QuantumRange*(0.99999975910502514331*Y-0.34413567816504303521*(Pb-0.5)-
-    0.71413649331646789076*(Pr-0.5));
-  *blue=QuantumRange*(1.00000124040004623180*Y+1.77200006607230409200*(Pb-0.5)+
-    2.1453384174593273e-06*(Pr-0.5));
+  *red=(double) QuantumRange*(0.99999999999914679361*Y-1.2188941887145875e-06*
+    (Pb-0.5)+1.4019995886561440468*(Pr-0.5));
+  *green=(double) QuantumRange*(0.99999975910502514331*Y-0.34413567816504303521*
+    (Pb-0.5)-0.71413649331646789076*(Pr-0.5));
+  *blue=(double) QuantumRange*(1.00000124040004623180*Y+1.77200006607230409200*
+    (Pb-0.5)+2.1453384174593273e-06*(Pr-0.5));
 }
 
 static void ConvertYCbCrToRGB(const double Y,const double Cb,
@@ -1852,34 +1852,34 @@ static void ConvertYCbCrToRGB(const double Y,const double Cb,
 static void ConvertYIQToRGB(const double Y,const double I,const double Q,
   double *red,double *green,double *blue)
 {
-  *red=QuantumRange*(Y+0.9562957197589482261*(I-0.5)+0.6210244164652610754*
+  *red=(double) QuantumRange*(Y+0.9562957197589482261*(I-0.5)+0.6210244164652610754*
     (Q-0.5));
-  *green=QuantumRange*(Y-0.2721220993185104464*(I-0.5)-0.6473805968256950427*
+  *green=(double) QuantumRange*(Y-0.2721220993185104464*(I-0.5)-0.6473805968256950427*
     (Q-0.5));
-  *blue=QuantumRange*(Y-1.1069890167364901945*(I-0.5)+1.7046149983646481374*
+  *blue=(double) QuantumRange*(Y-1.1069890167364901945*(I-0.5)+1.7046149983646481374*
     (Q-0.5));
 }
 
 static void ConvertYDbDrToRGB(const double Y,const double Db,const double Dr,
   double *red,double *green,double *blue)
 {
-  *red=QuantumRange*(Y+9.2303716147657e-05*(Db-0.5)-
+  *red=(double) QuantumRange*(Y+9.2303716147657e-05*(Db-0.5)-
     0.52591263066186533*(Dr-0.5));
-  *green=QuantumRange*(Y-0.12913289889050927*(Db-0.5)+
+  *green=(double) QuantumRange*(Y-0.12913289889050927*(Db-0.5)+
     0.26789932820759876*(Dr-0.5));
-  *blue=QuantumRange*(Y+0.66467905997895482*(Db-0.5)-
+  *blue=(double) QuantumRange*(Y+0.66467905997895482*(Db-0.5)-
     7.9202543533108e-05*(Dr-0.5));
 }
 
 static void ConvertYUVToRGB(const double Y,const double U,const double V,
   double *red,double *green,double *blue)
 {
-  *red=QuantumRange*(Y-3.945707070708279e-05*(U-0.5)+1.1398279671717170825*
-    (V-0.5));
-  *green=QuantumRange*(Y-0.3946101641414141437*(U-0.5)-0.5805003156565656797*
-    (V-0.5));
-  *blue=QuantumRange*(Y+2.0319996843434342537*(U-0.5)-4.813762626262513e-04*
-    (V-0.5));
+  *red=(double) QuantumRange*(Y-3.945707070708279e-05*(U-0.5)+
+    1.1398279671717170825*(V-0.5));
+  *green=(double) QuantumRange*(Y-0.3946101641414141437*(U-0.5)-
+    0.5805003156565656797*(V-0.5));
+  *blue=(double) QuantumRange*(Y+2.0319996843434342537*(U-0.5)-
+    4.813762626262513e-04*(V-0.5));
 }
 
 static MagickBooleanType TransformsRGBImage(Image *image,
@@ -2335,8 +2335,8 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           MagickRealType
             gray;
 
-          gray=0.212656*GetPixelRed(image,q)+0.715158*GetPixelGreen(image,q)+
-            0.072186*GetPixelBlue(image,q);
+          gray=0.212656*(double) GetPixelRed(image,q)+0.715158*(double)
+            GetPixelGreen(image,q)+0.072186*(double) GetPixelBlue(image,q);
           SetPixelRed(image,ClampToQuantum(gray),q);
           SetPixelGreen(image,ClampToQuantum(gray),q);
           SetPixelBlue(image,ClampToQuantum(gray),q);
@@ -2434,9 +2434,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             Y,
             Z;
 
-          X=QuantumScale*GetPixelRed(image,q);
-          Y=QuantumScale*GetPixelGreen(image,q);
-          Z=QuantumScale*GetPixelBlue(image,q);
+          X=QuantumScale*(double) GetPixelRed(image,q);
+          Y=QuantumScale*(double) GetPixelGreen(image,q);
+          Z=QuantumScale*(double) GetPixelBlue(image,q);
           switch (image->colorspace)
           {
             case Adobe98Colorspace:
@@ -2572,9 +2572,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             }
             default:
             {
-              red=QuantumRange*X;
-              green=QuantumRange*Y;
-              blue=QuantumRange*Z;
+              red=(double) QuantumRange*X;
+              green=(double) QuantumRange*Y;
+              blue=(double) QuantumRange*Z;
               break;
             }
           }
@@ -2638,11 +2638,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       for (i=0; i <= (ssize_t) (reference_black*MaxMap/1024.0); i++)
         logmap[i]=(Quantum) 0;
       for ( ; i < (ssize_t) (reference_white*MaxMap/1024.0); i++)
-        logmap[i]=ClampToQuantum(QuantumRange/(1.0-black)*
+        logmap[i]=ClampToQuantum((double) QuantumRange/(1.0-black)*
           (pow(10.0,(1024.0*i/MaxMap-reference_white)*(gamma/density)*0.002*
           PerceptibleReciprocal(film_gamma))-black));
       for ( ; i <= (ssize_t) MaxMap; i++)
-        logmap[i]=QuantumRange;
+        logmap[i]=(double) QuantumRange;
       if (image->storage_class == PseudoClass)
         {
           if (SyncImage(image,exception) == MagickFalse)
@@ -2991,12 +2991,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z;
           if (image->colorspace == YCCColorspace)
             {
-              pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.red/
-                (double) MaxMap)];
-              pixel.green=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.green/
-                (double) MaxMap)];
-              pixel.blue=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.blue/
-                (double) MaxMap)];
+              pixel.red=(double) QuantumRange*(double)
+                YCCMap[RoundToYCC(1024.0*pixel.red/(double) MaxMap)];
+              pixel.green=(double) QuantumRange*(double)
+                YCCMap[RoundToYCC(1024.0*pixel.green/(double) MaxMap)];
+              pixel.blue=(double) QuantumRange*(double)
+                YCCMap[RoundToYCC(1024.0*pixel.blue/(double) MaxMap)];
             }
           else
             {
@@ -3057,12 +3057,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z;
         if (image->colorspace == YCCColorspace)
           {
-            pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.red/
-              (double) MaxMap)];
-            pixel.green=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.green/
-              (double) MaxMap)];
-            pixel.blue=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.blue/
-              (double) MaxMap)];
+            pixel.red=(double) QuantumRange*(double) YCCMap[RoundToYCC(1024.0*
+              pixel.red/(double) MaxMap)];
+            pixel.green=(double) QuantumRange*(double) YCCMap[RoundToYCC(1024.0*
+              pixel.green/(double) MaxMap)];
+            pixel.blue=(double) QuantumRange*(double) YCCMap[RoundToYCC(1024.0*
+              pixel.blue/(double) MaxMap)];
           }
         else
           {

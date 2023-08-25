@@ -500,7 +500,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(CoderError,
               "IrregularChannelGeometryNotSupported")
           }
-        scale=QuantumRange/(double) ((MagickULLConstant(1) <<
+        scale=(double) QuantumRange/(double) ((MagickULLConstant(1) <<
           jp2_image->comps[i].prec)-1);
         pixel=scale*(jp2_image->comps[i].data[index]+(ssize_t) 
           (jp2_image->comps[i].sgnd ? MagickULLConstant(1) <<
@@ -1081,7 +1081,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
           *q;
 
         scale=(double) (((size_t) MagickULLConstant(1) <<
-          jp2_image->comps[i].prec)-1)/QuantumRange;
+          jp2_image->comps[i].prec)-1)/(double) QuantumRange;
         q=jp2_image->comps[i].data+(ssize_t) (y*PerceptibleReciprocal(
           jp2_image->comps[i].dy)*image->columns*PerceptibleReciprocal(
           jp2_image->comps[i].dx)+x*PerceptibleReciprocal(
@@ -1092,30 +1092,30 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
           {
             if (jp2_colorspace == OPJ_CLRSPC_GRAY)
               {
-                *q=(int) (scale*GetPixelGray(image,p));
+                *q=(int) (scale*(double) GetPixelGray(image,p));
                 break;
               }
-            *q=(int) (scale*GetPixelRed(image,p));
+            *q=(int) (scale*(double) GetPixelRed(image,p));
             break;
           }
           case 1:
           {
             if (jp2_colorspace == OPJ_CLRSPC_GRAY)
               {
-                *q=(int) (scale*GetPixelAlpha(image,p));
+                *q=(int) (scale*(double) GetPixelAlpha(image,p));
                 break;
               }
-            *q=(int) (scale*GetPixelGreen(image,p));
+            *q=(int) (scale*(double) GetPixelGreen(image,p));
             break;
           }
           case 2:
           {
-            *q=(int) (scale*GetPixelBlue(image,p));
+            *q=(int) (scale*(double) GetPixelBlue(image,p));
             break;
           }
           case 3:
           {
-            *q=(int) (scale*GetPixelAlpha(image,p));
+            *q=(int) (scale*(double) GetPixelAlpha(image,p));
             break;
           }
         }
