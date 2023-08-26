@@ -427,10 +427,12 @@ static MagickBooleanType WriteFL32Image(const ImageInfo *image_info,
       break;
     }
     case 3:
+    case 4:
     {
       if (image->alpha_trait != UndefinedPixelTrait)
         {
           quantum_type=RGBAQuantum;
+          channels=4;
           break;
         }
       quantum_type=RGBQuantum;
