@@ -2380,8 +2380,7 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
   return;
 }
 
-static void Sync8BimProfile(const Image *image,
-  const StringInfo *profile)
+static void Sync8BimProfile(const Image *image,const StringInfo *profile)
 {
   size_t
     length;
@@ -2592,9 +2591,7 @@ static void UpdateClipPath(unsigned char *blob,size_t length,
   const RectangleInfo *new_geometry)
 {
   ssize_t
-    i;
-
-  ssize_t
+    i,
     knot_count,
     selector;
 

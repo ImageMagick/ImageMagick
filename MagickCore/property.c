@@ -824,8 +824,8 @@ static inline unsigned short ReadPropertyUnsignedShort(const EndianType endian,
   return(value & 0xffff);
 }
 
-static void GetEXIFProperty(const Image *image,
-  const char *property,ExceptionInfo *exception)
+static void GetEXIFProperty(const Image *image,const char *property,
+  ExceptionInfo *exception)
 {
 #define MaxDirectoryStack  16
 #define EXIF_DELIMITER  "\n"
@@ -854,12 +854,16 @@ static void GetEXIFProperty(const Image *image,
    ssize_t \
      component = 0; \
  \
+   unsigned char \
+     *q = p; \
+ \
    for ( ; component < components; component++) \
    { \
      extent=(size_t) ((ssize_t) extent-FormatLocaleString(buffer+extent, \
        MagickPathExtent-extent,format", ",arg)); \
      if (extent >= (MagickPathExtent-1)) \
        extent=MagickPathExtent-1; \
+     q+=size; \
    } \
    if (extent > 1) \
      buffer[extent-2]='\0'; \
@@ -874,12 +878,16 @@ static void GetEXIFProperty(const Image *image,
    ssize_t \
      component = 0; \
  \
+   unsigned char \
+     *q = p; \
+ \
    for ( ; component < components; component++) \
    { \
      extent=(size_t) ((ssize_t) extent+FormatLocaleString(buffer+extent, \
        MagickPathExtent-extent,format", ",(arg1),(arg2))); \
      if (extent >= (MagickPathExtent-1)) \
        extent=MagickPathExtent-1; \
+     q+=size; \
    } \
    if (extent > 1) \
      buffer[extent-2]='\0'; \
@@ -1403,16 +1411,16 @@ static void GetEXIFProperty(const Image *image,
     number_entries=(size_t) ReadPropertyUnsignedShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
-      unsigned char
-        *p,
-        *q;
-
       size_t
         format;
 
       ssize_t
         components,
         number_bytes;
+
+      unsigned char
+        *p,
+        *q;
 
       q=(unsigned char *) (directory+(12*entry)+2);
       if (q > (exif+length-12))
@@ -1446,9 +1454,9 @@ static void GetEXIFProperty(const Image *image,
           dir_offset=(ssize_t) ReadPropertySignedLong(endian,q+8);
           if ((dir_offset < 0) || (size_t) dir_offset >= length)
             continue;
-          if ((size_t) (dir_offset+number_bytes) < (size_t) dir_offset)
+          if ((dir_offset+(ssize_t) number_bytes) < dir_offset)
             continue;  /* prevent overflow */
-          if ((dir_offset+(ssize_t) number_bytes) > (ssize_t) length)
+          if ((size_t) (dir_offset+(ssize_t) number_bytes) > length)
             continue;
           p=(unsigned char *) (exif+dir_offset);
         }
@@ -3643,7 +3651,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
 
 #define AppendString2Text(string) \
 { \
-  size_t length=strlen((string)); \
+  size_t length = strlen((string)); \
   if ((size_t) (q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
