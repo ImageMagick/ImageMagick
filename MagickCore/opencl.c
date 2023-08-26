@@ -756,6 +756,7 @@ MagickPrivate cl_kernel AcquireOpenCLKernel(MagickCLDevice device,
 %
 */
 
+#if !MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
 static void LoadOpenCLDeviceBenchmark(MagickCLEnv clEnv,const char *xml)
 {
   char
@@ -932,6 +933,7 @@ static MagickBooleanType CanWriteProfileToFile(const char *filename)
   fclose(profileFile);
   return(MagickTrue);
 }
+#endif
 
 static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv)
 {
