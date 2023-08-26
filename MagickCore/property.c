@@ -874,16 +874,12 @@ static void GetEXIFProperty(const Image *image,const char *property,
    ssize_t \
      component = 0; \
  \
-   unsigned char \
-     *q = p; \
- \
    for ( ; component < components; component++) \
    { \
      extent=(size_t) ((ssize_t) extent+FormatLocaleString(buffer+extent, \
        MagickPathExtent-extent,format", ",(arg1),(arg2))); \
      if (extent >= (MagickPathExtent-1)) \
        extent=MagickPathExtent-1; \
-     q+=size; \
    } \
    if (extent > 1) \
      buffer[extent-2]='\0'; \
@@ -1450,7 +1446,7 @@ static void GetEXIFProperty(const Image *image,const char *property,
           dir_offset=(ssize_t) ReadPropertySignedLong(endian,q+8);
           if ((dir_offset < 0) || (size_t) dir_offset >= length)
             continue;
-          if (((size_t) dir_offset+number_bytes) < (size_t) dir_offset)
+          if (((size_t) dir_offset+(size_t) number_bytes) < (size_t) dir_offset)
             continue;  /* prevent overflow */
           if ((size_t) (dir_offset+(ssize_t) number_bytes) > length)
             continue;
@@ -1488,55 +1484,55 @@ static void GetEXIFProperty(const Image *image,const char *property,
             }
             case EXIF_FMT_SBYTE:
             {
-              EXIFMultipleValues(1,"%.20g",(double) (*(signed char *) q));
+              EXIFMultipleValues(1,"%.20g",(double) (*(signed char *) p));
               break;
             }
             case EXIF_FMT_SSHORT:
             {
-              EXIFMultipleValues(2,"%hd",ReadPropertySignedShort(endian,q));
+              EXIFMultipleValues(2,"%hd",ReadPropertySignedShort(endian,p));
               break;
             }
             case EXIF_FMT_USHORT:
             {
-              EXIFMultipleValues(2,"%hu",ReadPropertyUnsignedShort(endian,q));
+              EXIFMultipleValues(2,"%hu",ReadPropertyUnsignedShort(endian,p));
               break;
             }
             case EXIF_FMT_ULONG:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ReadPropertyUnsignedLong(endian,q));
+                ReadPropertyUnsignedLong(endian,p));
               break;
             }
             case EXIF_FMT_SLONG:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ReadPropertySignedLong(endian,q));
+                ReadPropertySignedLong(endian,p));
               break;
             }
             case EXIF_FMT_URATIONAL:
             {
               EXIFMultipleFractions(8,"%.20g/%.20g",(double)
-                ReadPropertyUnsignedLong(endian,q),(double)
-                ReadPropertyUnsignedLong(endian,q+4));
+                ReadPropertyUnsignedLong(endian,p),(double)
+                ReadPropertyUnsignedLong(endian,p+4));
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
               EXIFMultipleFractions(8,"%.20g/%.20g",(double)
-                ReadPropertySignedLong(endian,q),(double)
-                ReadPropertySignedLong(endian,q+4));
+                ReadPropertySignedLong(endian,p),(double)
+                ReadPropertySignedLong(endian,p+4));
               break;
             }
             case EXIF_FMT_SINGLE:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ReadPropertySignedLong(endian,q));
+                ReadPropertySignedLong(endian,p));
               break;
             }
             case EXIF_FMT_DOUBLE:
             {
               EXIFMultipleValues(8,"%.20g",(double)
-                ReadPropertySignedLong(endian,q));
+                ReadPropertySignedLong(endian,p));
               break;
             }
             case EXIF_FMT_STRING:
