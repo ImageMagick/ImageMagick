@@ -2290,7 +2290,7 @@ static void SyncExifProfile(const Image *image,unsigned char *exif,
       components=(int) ReadProfileLong(endian,q+4);
       if (components < 0)
         break;  /* corrupt EXIF */
-      number_bytes=(size_t) (components*format_bytes[format]);
+      number_bytes=(size_t) components*(size_t) format_bytes[format];
       if ((ssize_t) number_bytes < components)
         break;  /* prevent overflow */
       if (number_bytes <= 4)
