@@ -854,16 +854,12 @@ static void GetEXIFProperty(const Image *image,const char *property,
    ssize_t \
      component = 0; \
  \
-   unsigned char \
-     *q = p; \
- \
    for ( ; component < components; component++) \
    { \
      extent=(size_t) ((ssize_t) extent-FormatLocaleString(buffer+extent, \
        MagickPathExtent-extent,format", ",arg)); \
      if (extent >= (MagickPathExtent-1)) \
        extent=MagickPathExtent-1; \
-     q+=size; \
    } \
    if (extent > 1) \
      buffer[extent-2]='\0'; \
