@@ -36,7 +36,7 @@
   <policy domain="resource" name="thread" value="2"/>
   <!-- Set maximum time in seconds. When this limit is exceeded, an exception
        is thrown and processing stops. -->
-  <policy domain="resource" name="time" value="120"/>
+  <policy domain="resource" name="time" value="60"/>
   <!-- Set maximum number of open pixel cache files. When this limit is
        exceeded, any subsequent pixels cached to disk are closed and reopened
        on demand. -->
@@ -58,13 +58,13 @@
   <policy domain="resource" name="disk" value="1GiB"/>
   <!-- Set the maximum length of an image sequence.  When this limit is
        exceeded, an exception is thrown. -->
-  <policy domain="resource" name="list-length" value="32"/>
+  <policy domain="resource" name="list-length" value="16"/>
   <!-- Set the maximum width of an image.  When this limit is exceeded, an
        exception is thrown. -->
-  <policy domain="resource" name="width" value="8KP"/>
+  <policy domain="resource" name="width" value="4KP"/>
   <!-- Set the maximum height of an image.  When this limit is exceeded, an
        exception is thrown. -->
-  <policy domain="resource" name="height" value="8KP"/>
+  <policy domain="resource" name="height" value="4KP"/>
   <!-- Periodically yield the CPU for at least the time specified in
        milliseconds. -->
   <policy domain="resource" name="throttle" value="2"/>
