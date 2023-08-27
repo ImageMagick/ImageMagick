@@ -77,7 +77,7 @@
   <!-- Ensure all image data is fully flushed and synchronized to disk. -->
   <policy domain="cache" name="synchronize" value="true"/>
   <!-- Replace passphrase for secure distributed processing -->
-  <!-- <policy domain="cache" name="shared-secret" value="my-secret-passphrase" stealth="true"/> -->
+  <!-- <policy domain="cache" name="shared-secret" value="secret-passphrase" stealth="true"/> -->
   <!-- Do not permit any delegates to execute. -->
   <policy domain="delegate" rights="none" pattern="*"/>
   <!-- Do not permit any image filters to load. -->
@@ -88,7 +88,8 @@
   <policy domain="path" rights="none" pattern="/etc/*"/>
   <!-- Indirect reads are not permitted. -->
   <policy domain="path" rights="none" pattern="@*"/>
-  <!-- Only allow reading or writing web-safe image formats. -->
+  <!-- Deny all image modules and specifically exempt reading or writing
+       web-safe image formats. -->
   <policy domain="module" rights="none" pattern="*" />
   <policy domain="module" rights="read | write" pattern="{GIF,JPEG,PNG,WEBP}" />
   <!-- This policy sets the number of times to replace content of certain
