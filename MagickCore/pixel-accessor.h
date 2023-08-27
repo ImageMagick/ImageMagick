@@ -512,13 +512,11 @@ static inline MagickBooleanType IsPixelAtDepth(const Quantum pixel,
   if (range == 0)
     return(MagickTrue);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  quantum=(Quantum) (((MagickRealType) QuantumRange*((QuantumAny)
-    ((range*(MagickRealType) pixel)/(MagickRealType) QuantumRange+0.5)))/
-    range+0.5);
+  quantum=(Quantum) (((double) QuantumRange*((QuantumAny) (((double) range*
+    pixel)/(double) QuantumRange+0.5)))/(double) range+0.5);
 #else
-  quantum=(Quantum) (((MagickRealType) QuantumRange*((QuantumAny)
-    ((range*(MagickRealType) pixel)/(MagickRealType) QuantumRange+0.5)))/
-    range);
+  quantum=(Quantum) (((double) QuantumRange*((QuantumAny) (((double) range*
+    (double) pixel)/(double) QuantumRange+0.5)))/(double) range);
 #endif
   return(pixel == quantum ? MagickTrue : MagickFalse);
 }
