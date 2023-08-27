@@ -59,7 +59,7 @@ typedef enum
 #if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
   AllChannels = 0x7FFFFFFFFFFFFFFF,
 #else
-  AllChannels = 0x7ffffff,
+  AllChannels = 0X7FFFFFF,
 #endif
   /*
     Special purpose channel types.
