@@ -791,12 +791,10 @@ static void JPEGSetImageQuality(struct jpeg_decompress_struct *jpeg_info,
 #endif
   {
     ssize_t
+      i,
       j,
       qvalue,
       sum;
-
-    ssize_t
-      i;
 
     /*
       Determine the JPEG compression quality from the quantization tables.
