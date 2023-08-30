@@ -485,6 +485,7 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   switch ((int) floor(h))
   {
     case 0:
+    default:
     {
       *red=(double) QuantumRange*(min+c);
       *green=(double) QuantumRange*(min+x);
@@ -525,12 +526,6 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
       *green=(double) QuantumRange*min;
       *blue=(double) QuantumRange*(min+x);
       break;
-    }
-    default:
-    {
-      *red=0.0;
-      *green=0.0;
-      *blue=0.0;
     }
   }
 }
@@ -586,6 +581,7 @@ MagickPrivate void ConvertHSVToRGB(const double hue,const double saturation,
   switch ((int) floor(h))
   {
     case 0:
+    default:
     {
       *red=(double) QuantumRange*(min+c);
       *green=(double) QuantumRange*(min+x);
@@ -626,12 +622,6 @@ MagickPrivate void ConvertHSVToRGB(const double hue,const double saturation,
       *green=(double) QuantumRange*min;
       *blue=(double) QuantumRange*(min+x);
       break;
-    }
-    default:
-    {
-      *red=0.0;
-      *green=0.0;
-      *blue=0.0;
     }
   }
 }
@@ -698,9 +688,8 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
   n=whiteness+f*(v-whiteness);  /* linear interpolation */
   switch (i)
   {
-    default:
-    case 6:
-    case 0: r=v; g=n; b=whiteness; break;
+    case 0:
+    default: r=v; g=n; b=whiteness; break;
     case 1: r=n; g=v; b=whiteness; break;
     case 2: r=whiteness; g=v; b=n; break;
     case 3: r=whiteness; g=n; b=v; break;

@@ -1756,6 +1756,7 @@ OPENCL_ENDIF()
     switch ((int) floor(h) % 6)
     {
       case 0:
+      default:
         {
           r=tmin+c;
           g=tmin+x;
@@ -1796,12 +1797,6 @@ OPENCL_ENDIF()
           g=tmin;
           b=tmin+x;
           break;
-        }
-      default:
-        {
-          r=0.0;
-          g=0.0;
-          b=0.0;
         }
     }
     *red=ClampToQuantum(QuantumRange*r);
