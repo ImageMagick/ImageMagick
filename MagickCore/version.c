@@ -241,11 +241,11 @@ MagickExport const char *GetMagickDelegates(void)
 MagickExport const char *GetMagickFeatures(void)
 {
   return ""
-#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
-  "Channel-masks(64-bit) "
-#endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_DEBUG)
   "Debug "
+#endif
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
+  "Channel-masks(64-bit) "
 #endif
 #if defined(MAGICKCORE_CIPHER_SUPPORT)
   "Cipher "
