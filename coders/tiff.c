@@ -1576,6 +1576,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         break;
       }
       case COMPRESSION_OJPEG: image->compression=JPEGCompression; break;
+#if defined(COMPRESSION_LERC)
+      case COMPRESSION_LERC: image->compression=LERCCompression; break;
+#endif
 #if defined(COMPRESSION_LZMA)
       case COMPRESSION_LZMA: image->compression=LZMACompression; break;
 #endif
@@ -2382,6 +2385,9 @@ ModuleExport size_t RegisterTIFFImage(void)
 #endif
 #if defined(COMPRESSION_JPEG)
       ", JPEG"
+#endif
+#if defined(COMPRESSION_LERC)
+      ", LERC"
 #endif
 #if defined(COMPRESSION_LZW)
       ", LZW"
@@ -3587,6 +3593,13 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         compress_tag=COMPRESSION_JPEG;
         break;
       }
+#if defined(COMPRESSION_LERC)
+      case LERCCompression:
+      {
+        compress_tag=COMPRESSION_LERC;
+        break;
+      }
+#endif
 #if defined(COMPRESSION_LZMA)
       case LZMACompression:
       {
@@ -3865,6 +3878,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
       case COMPRESSION_CCITTFAX4:
         break;
+#if defined(LERC_SUPPORT) && defined(COMPRESSION_LERC)
+      case COMPRESSION_LERC:
+        break;
+#endif
 #if defined(LZMA_SUPPORT) && defined(COMPRESSION_LZMA)
       case COMPRESSION_LZMA:
       {

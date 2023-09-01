@@ -1372,6 +1372,7 @@ static const OptionInfo
     { "JBIG2", JBIG2Compression, UndefinedOptionFlag, MagickFalse },
     { "JPEG2000", JPEG2000Compression, UndefinedOptionFlag, MagickFalse },
     { "JPEG", JPEGCompression, UndefinedOptionFlag, MagickFalse },
+    { "LERC", LERCCompression, UndefinedOptionFlag, MagickFalse },
     { "LosslessJPEG", LosslessJPEGCompression, UndefinedOptionFlag, MagickFalse },
     { "Lossless", LosslessJPEGCompression, UndefinedOptionFlag, MagickFalse },
     { "LZMA", LZMACompression, UndefinedOptionFlag, MagickFalse },

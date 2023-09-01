@@ -51,7 +51,8 @@ typedef enum
   DWAACompression,
   DWABCompression,
   BC7Compression,
-  BC5Compression
+  BC5Compression,
+  LERCCompression          /* https://github.com/Esri/lerc */
 } CompressionType;
 
 typedef struct _Ascii85Info
