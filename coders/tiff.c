@@ -1363,7 +1363,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
     tiff_status=TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
       &sample_info,sans);
-    if ((samples_per_pixel+extra_samples) > MaxPixelChannels)
+    if (samples_per_pixel > MaxPixelChannels)
       {
         TIFFClose(tiff);
         ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
