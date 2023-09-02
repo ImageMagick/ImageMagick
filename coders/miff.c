@@ -2194,7 +2194,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     (void) FormatLocaleString(buffer,MagickPathExtent, "number-channels=%.20g "
       "number-meta-channels=%.20g channel-mask=0x%16lx\n",
       (double) image->number_channels,(double) image->number_meta_channels,
-      (unsigned long) image->channel_mask);
+      (ssize_t) image->channel_mask);
     (void) WriteBlobString(image,buffer);
     if (image->alpha_trait != UndefinedPixelTrait)
       (void) WriteBlobString(image,"matte=True\n");

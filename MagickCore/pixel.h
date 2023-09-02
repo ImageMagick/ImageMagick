@@ -31,7 +31,7 @@ extern "C" {
   Pixel enum declarations.
 */
 #if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
-typedef enum : MagickOffsetType
+typedef enum : ssize_t
 #else
 typedef enum
 #endif
