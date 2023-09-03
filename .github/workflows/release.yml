@@ -140,7 +140,7 @@ jobs:
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd ImageMagick-Windows\ImageMagick\PerlMagick
         set PATH=%PATH%;C:\Strawberry${{matrix.bit}}\c\bin;C:\Strawberry${{matrix.bit}}\perl\site\bin;C:\Strawberry${{matrix.bit}}\perl\bin;C:\WINDOWS\System32\WindowsPowerShell\v1.0
-        perl "Makefile.PL" "MAKE=nmake"
+        perl "Makefile.PL" "MAKE=nmake" "CC=g++"
         nmake
         nmake release
 
