@@ -3173,7 +3173,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   use_explicit=MagickFalse;
   explicit_retry=MagickFalse;
   blob_size=GetBlobSize(image);
-  while (TellBlob(image) < (blob_size-10))
+  while (TellBlob(image) < ((MagickOffsetType) blob_size-10))
   {
     for (group=0; (group != 0x7FE0) || (element != 0x0010) ; )
     {
@@ -4310,7 +4310,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
     }
-    if (TellBlob(image) < (blob_size-10))
+    if (TellBlob(image) < ((MagickOffsetType) blob_size-10))
       {
         /*
           Allocate next image structure.
