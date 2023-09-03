@@ -418,11 +418,9 @@ static MagickBooleanType RollFourier(const size_t width,const size_t height,
 
   ssize_t
     i,
-    x;
-
-  ssize_t
     u,
     v,
+    x,
     y;
 
   /*
@@ -462,10 +460,8 @@ static MagickBooleanType ForwardQuadrantSwap(const size_t width,
     status;
 
   ssize_t
-    x;
-
-  ssize_t
     center,
+    x,
     y;
 
   /*
@@ -493,9 +489,7 @@ static void CorrectPhaseLHS(const size_t width,const size_t height,
   double *fourier_pixels)
 {
   ssize_t
-    x;
-
-  ssize_t
+    x,
     y;
 
   for (y=0L; y < (ssize_t) height; y++)
@@ -529,10 +523,8 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
     *q;
 
   ssize_t
-    x;
-
-  ssize_t
     i,
+    x,
     y;
 
   magnitude_image=GetFirstImageInList(image);
@@ -703,6 +695,9 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   const char
     *value;
 
+  const Quantum
+    *p;
+
   double
     *source_pixels;
 
@@ -716,14 +711,9 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
     *forward_info,
     *source_info;
 
-  const Quantum
-    *p;
-
   ssize_t
     i,
-    x;
-
-  ssize_t
+    x,
     y;
 
   /*
@@ -921,7 +911,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
     *fourier_image;
 
   fourier_image=NewImageList();
-#if defined(MAGICKCORE_FFTW_DELEGATE) || defined(__cplusplus) || defined(c_plusplus)
+#if !defined(MAGICKCORE_FFTW_DELEGATE) || defined(__cplusplus) || defined(c_plusplus)
   (void) modulus;
   (void) ThrowMagickException(exception,GetMagickModule(),
     MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (FFTW)",
@@ -1094,10 +1084,8 @@ static MagickBooleanType InverseQuadrantSwap(const size_t width,
   const size_t height,const double *source,double *destination)
 {
   ssize_t
-    x;
-
-  ssize_t
     center,
+    x,
     y;
 
   /*
@@ -1123,6 +1111,9 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     *magnitude_view,
     *phase_view;
 
+  const Quantum
+    *p;
+
   double
     *inverse_pixels,
     *magnitude_pixels,
@@ -1136,14 +1127,9 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     *magnitude_info,
     *phase_info;
 
-  const Quantum
-    *p;
-
   ssize_t
     i,
-    x;
-
-  ssize_t
+    x,
     y;
 
   /*
@@ -1345,9 +1331,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
 
   ssize_t
     i,
-    x;
-
-  ssize_t
+    x,
     y;
 
   /*
@@ -1526,7 +1510,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
         "ImageSequenceRequired","`%s'",magnitude_image->filename);
       return((Image *) NULL);
     }
-#if defined(MAGICKCORE_FFTW_DELEGATE) || defined(__cplusplus) || defined(c_plusplus)
+#if !defined(MAGICKCORE_FFTW_DELEGATE) || defined(__cplusplus) || defined(c_plusplus)
   fourier_image=(Image *) NULL;
   (void) modulus;
   (void) ThrowMagickException(exception,GetMagickModule(),
