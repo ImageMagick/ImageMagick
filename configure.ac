@@ -693,7 +693,7 @@ if test "$enable_64bit_channel_masks" = 'yes'; then
 else
     magick_channel_mask_depth='32'
 fi
-AC_DEFINE_UNQUOTED([MAGICKCORE_CHANNEL_MASK_DEPTH],[$magick_channel_mask_depth],[Whether 64-bit channel masks are enabled or not])
+AC_DEFINE_UNQUOTED([CHANNEL_MASK_DEPTH],[$magick_channel_mask_depth],[Whether 64-bit channel masks are enabled or not])
 AC_SUBST([MAGICK_64BIT_CHANNEL_MASK])dnl
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
