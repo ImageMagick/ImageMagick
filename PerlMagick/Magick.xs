@@ -11179,7 +11179,7 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[1].integer_reference;
           method=UndefinedMorphology;
           if (attribute_flag[2] != 0)
-            method=argument_list[2].integer_reference;
+            method=(MorphologyMethod) argument_list[2].integer_reference;
           iterations=1;
           if (attribute_flag[3] != 0)
             iterations=argument_list[3].integer_reference;
