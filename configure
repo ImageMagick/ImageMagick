@@ -5180,7 +5180,7 @@ MAGICK_PATCHLEVEL_VERSION=16
 
 MAGICK_VERSION=7.1.1-16
 
-MAGICK_GIT_REVISION=d99cdd4ff:20230903
+MAGICK_GIT_REVISION=afd5c67d7:20230903
 
 
 # Substitute library versioning
@@ -30332,48 +30332,30 @@ else $as_nop
   failed=`expr $failed + 1`
 fi
 
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for lt_dlinit in -lltdl" >&5
-printf %s "checking for lt_dlinit in -lltdl... " >&6; }
-if test ${ac_cv_lib_ltdl_lt_dlinit+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lltdl  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char lt_dlinit ();
+
+      #include <ltdl.h>
+
 int
 main (void)
 {
-return lt_dlinit ();
+
+      lt_dlinit();
+
   ;
   return 0;
 }
+
 _ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_ltdl_lt_dlinit=yes
-else $as_nop
-  ac_cv_lib_ltdl_lt_dlinit=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ltdl_lt_dlinit" >&5
-printf "%s\n" "$ac_cv_lib_ltdl_lt_dlinit" >&6; }
-if test "x$ac_cv_lib_ltdl_lt_dlinit" = xyes
+if ac_fn_c_try_compile "$LINENO"
 then :
   passed=`expr $passed + 1`
 else $as_nop
   failed=`expr $failed + 1`
 fi
-
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if libltdl package is complete" >&5
 printf %s "checking if libltdl package is complete... " >&6; }
   if test $passed -gt 0 ; then

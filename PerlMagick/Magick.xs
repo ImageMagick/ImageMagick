@@ -12296,6 +12296,118 @@ Mosaic(ref)
 #                                                                             #
 #                                                                             #
 #                                                                             #
+#   P e r c e p t u a l H a s h                                               #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+PerceptualHash(ref)
+  Image::Magick::@MAGICK_ABI_SUFFIX@ ref = NO_INIT
+  ALIAS:
+    PerceptualHashImage = 1
+    perceptualhash      = 2
+    perceptualhashimage = 3
+  PPCODE:
+  {
+    AV
+      *av;
+
+    ChannelPerceptualHash
+      *channel_phash;
+
+    char
+      message[MagickPathExtent];
+
+    ExceptionInfo
+      *exception;
+
+    Image
+      *image;
+
+    ssize_t
+      count;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *perl_exception,
+      *reference;
+
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
+    exception=AcquireExceptionInfo();
+    perl_exception=newSVpv("",0);
+    av=NULL;
+    if (sv_isobject(ST(0)) == 0)
+      {
+        ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
+          PackageName);
+        goto PerlException;
+      }
+    reference=SvRV(ST(0));
+    av=newAV();
+    SvREFCNT_dec(av);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
+    if (image == (Image *) NULL)
+      {
+        ThrowPerlException(exception,OptionError,"NoImagesDefined",
+          PackageName);
+        goto PerlException;
+      }
+    count=0;
+    for ( ; image; image=image->next)
+    {
+      ssize_t
+        i;
+
+      channel_phash=GetImagePerceptualHash(image,exception);
+      if (channel_phash == (ChannelPerceptualHash *) NULL)
+        continue;
+      count++;
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        ssize_t
+          j;
+
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        EXTEND(sp,(ssize_t) (GetPixelChannels(image)*
+          MaximumNumberOfPerceptualHashes*
+          channel_phash[0].number_colorspaces*(i+1)*count));
+        for (j=0; j < MaximumNumberOfPerceptualHashes; j++)
+        {
+          ssize_t
+            k;
+
+          for (k=0; k < (ssize_t) channel_phash[0].number_colorspaces; k++)
+          {
+            (void) FormatLocaleString(message,MagickPathExtent,"%.20g",
+              channel_phash[channel].phash[k][j]);
+            PUSHs(sv_2mortal(newSVpv(message,0)));
+          }
+        }
+      }
+      channel_phash=(ChannelPerceptualHash *)
+        RelinquishMagickMemory(channel_phash);
+    }
+
+  PerlException:
+    InheritPerlException(exception,perl_exception);
+    exception=DestroyExceptionInfo(exception);
+    SvREFCNT_dec(perl_exception);
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
 #   P i n g                                                                   #
 #                                                                             #
 #                                                                             #

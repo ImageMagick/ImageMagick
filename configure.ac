@@ -1733,7 +1733,13 @@ if test "$with_ltdl" = 'yes'; then
   failed=0
   passed=0
   AC_CHECK_HEADER([ltdl.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-  AC_CHECK_LIB([ltdl],[lt_dlinit],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+  AC_COMPILE_IFELSE([
+    AC_LANG_PROGRAM([[
+      #include <ltdl.h>
+    ]], [[
+      lt_dlinit();
+    ]])
+  ], [passed=`expr $passed + 1`], [failed=`expr $failed + 1`])
   AC_MSG_CHECKING([if libltdl package is complete])
   if test $passed -gt 0 ; then
     if test $failed -gt 0 ; then
