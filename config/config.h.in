@@ -15,6 +15,9 @@
 /* Define if you have CAIRO library */
 #undef CAIRO_DELEGATE
 
+/* Whether 64-bit channel masks are enabled or not */
+#undef CHANNEL_MASK_DEPTH
+
 /* permit enciphering and deciphering image pixels */
 #undef CIPHER_SUPPORT
 
@@ -787,9 +790,6 @@
 
 /* Define if you have LZMA library */
 #undef LZMA_DELEGATE
-
-/* Whether 64-bit channel masks are enabled or not */
-#undef MAGICKCORE_CHANNEL_MASK_DEPTH
 
 /* Define to prepend to default font search path. */
 #undef MAGICK_FONT_PATH

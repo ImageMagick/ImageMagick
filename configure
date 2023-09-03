@@ -5180,7 +5180,7 @@ MAGICK_PATCHLEVEL_VERSION=16
 
 MAGICK_VERSION=7.1.1-16
 
-MAGICK_GIT_REVISION=2e529f63e:20230829
+MAGICK_GIT_REVISION=d99cdd4ff:20230903
 
 
 # Substitute library versioning
@@ -5214,7 +5214,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,16
 
-PACKAGE_RELEASE_DATE=2023-08-29
+PACKAGE_RELEASE_DATE=2023-09-03
 
 
 # Ensure that make can run correctly
@@ -23321,7 +23321,7 @@ else
     magick_channel_mask_depth='32'
 fi
 
-printf "%s\n" "#define MAGICKCORE_CHANNEL_MASK_DEPTH $magick_channel_mask_depth" >>confdefs.h
+printf "%s\n" "#define CHANNEL_MASK_DEPTH $magick_channel_mask_depth" >>confdefs.h
 
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"

@@ -1205,7 +1205,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       image->alpha_trait));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,"number-channels=%.20g "
-      "number-meta-channels=%.20g channel-mask=0x%16llx\n",
+      "number-meta-channels=%.20g channel-mask=0x%016llx\n",
       (double) image->number_channels,(double) image->number_meta_channels,
       (MagickOffsetType) image->channel_mask);
     (void) WriteBlobString(image,buffer);
