@@ -1701,7 +1701,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   status=MagickTrue;
   if (cpu_throttle == MagickResourceInfinity)
     cpu_throttle=GetMagickResourceLimit(ThrottleResource);
-  if ((cpu_throttle != 0) && ((cycles++ % 32) == 0))
+  if ((cpu_throttle != 0) && ((cycles++ % 4096) == 0))
     MagickDelay(cpu_throttle);
   if (cache_epoch == 0)
     {
