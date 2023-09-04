@@ -91,7 +91,7 @@
   <!-- Deny all image modules and specifically exempt reading or writing
        web-safe image formats. -->
   <policy domain="module" rights="none" pattern="*" />
-  <policy domain="module" rights="read | write" pattern="{GIF,JPEG,PNG,WEBP}" />
+  <policy domain="module" rights="read | write" pattern="{GIF,JPEG,MPC,PNG,WEBP}" />
   <!-- This policy sets the number of times to replace content of certain
        memory buffers and temporary files before they are freed or deleted. -->
   <policy domain="system" name="shred" value="1"/>
