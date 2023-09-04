@@ -2857,6 +2857,9 @@ static MagickBooleanType XChopImage(Display *display,
   char
     text[MagickPathExtent];
 
+  double
+    scale_factor;
+
   Image
     *chop_image;
 
@@ -2865,19 +2868,16 @@ static MagickBooleanType XChopImage(Display *display,
     x,
     y;
 
-  double
-    scale_factor;
-
   RectangleInfo
     chop_info;
+
+  size_t
+    state;
 
   unsigned int
     distance,
     height,
     width;
-
-  size_t
-    state;
 
   XEvent
     event;
@@ -3148,10 +3148,10 @@ static MagickBooleanType XChopImage(Display *display,
     if (direction == HorizontalChopCommand)
       {
         chop_info.width=(size_t) (segment_info.x2-segment_info.x1+1);
-        chop_info.x=(ssize_t) windows->image.x+segment_info.x1;
         chop_info.height=0;
+        chop_info.x=(ssize_t) windows->image.x+segment_info.x1;
         chop_info.y=0;
-        if (segment_info.x1 > (int) segment_info.x2)
+        if (segment_info.x1 > segment_info.x2)
           {
             chop_info.width=(size_t) (segment_info.x1-segment_info.x2+1);
             chop_info.x=(ssize_t) windows->image.x+segment_info.x2;
