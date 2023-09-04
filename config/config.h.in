@@ -21,9 +21,6 @@
 /* permit enciphering and deciphering image pixels */
 #undef CIPHER_SUPPORT
 
-/* Define to 1 if the `closedir' function returns void instead of int. */
-#undef CLOSEDIR_VOID
-
 /* coders subdirectory. */
 #undef CODER_DIRNAME
 
@@ -173,9 +170,6 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
-#undef HAVE_DOPRNT
-
 /* Define to 1 if you have the `erf' function. */
 #undef HAVE_ERF
 
@@ -308,10 +302,6 @@
 /* Define to 1 if you have the <mach-o/dyld.h> header file. */
 #undef HAVE_MACH_O_DYLD_H
 
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
-   to 0 otherwise. */
-#undef HAVE_MALLOC
-
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
@@ -425,10 +415,6 @@
 
 /* Define to 1 if you have the `readlink' function. */
 #undef HAVE_READLINK
-
-/* Define to 1 if your system has a GNU libc compatible `realloc' function,
-   and to 0 otherwise. */
-#undef HAVE_REALLOC
 
 /* Define to 1 if you have the `realpath' function. */
 #undef HAVE_REALPATH
@@ -588,9 +574,6 @@
 /* Define to 1 if you have the <sys/resource.h> header file. */
 #undef HAVE_SYS_RESOURCE_H
 
-/* Define to 1 if you have the <sys/select.h> header file. */
-#undef HAVE_SYS_SELECT_H
-
 /* Define to 1 if you have the <sys/sendfile.h> header file. */
 #undef HAVE_SYS_SENDFILE_H
 
@@ -671,20 +654,11 @@
 /* Define to 1 if you have the <utime.h> header file. */
 #undef HAVE_UTIME_H
 
-/* Define to 1 if you have the `vfork' function. */
-#undef HAVE_VFORK
-
-/* Define to 1 if you have the <vfork.h> header file. */
-#undef HAVE_VFORK_H
-
 /* Define to 1 if you have the `vfprintf' function. */
 #undef HAVE_VFPRINTF
 
 /* Define to 1 if you have the `vfprintf_l' function. */
 #undef HAVE_VFPRINTF_L
-
-/* Define to 1 if you have the `vprintf' function. */
-#undef HAVE_VPRINTF
 
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
@@ -700,12 +674,6 @@
 
 /* Define to 1 if you have the <wchar.h> header file. */
 #undef HAVE_WCHAR_H
-
-/* Define to 1 if `fork' works. */
-#undef HAVE_WORKING_FORK
-
-/* Define to 1 if `vfork' works. */
-#undef HAVE_WORKING_VFORK
 
 /* Define to 1 if you have the <xlocale.h> header file. */
 #undef HAVE_XLOCALE_H
@@ -866,15 +834,6 @@
 
 /* Define if you have RSVG library */
 #undef RSVG_DELEGATE
-
-/* Define to the type of arg 1 for `select'. */
-#undef SELECT_TYPE_ARG1
-
-/* Define to the type of args 2, 3 and 4 for `select'. */
-#undef SELECT_TYPE_ARG234
-
-/* Define to the type of arg 5 for `select'. */
-#undef SELECT_TYPE_ARG5
 
 /* Setjmp/longjmp are thread safe */
 #undef SETJMP_IS_THREAD_SAFE
@@ -1147,9 +1106,6 @@
    if such a type exists, and if the system does not define it. */
 #undef intptr_t
 
-/* Define to rpl_malloc if the replacement function should be used. */
-#undef malloc
-
 /* Define to a type if <wchar.h> does not define. */
 #undef mbstate_t
 
@@ -1161,9 +1117,6 @@
 
 /* Define as a signed integer type capable of holding a process identifier. */
 #undef pid_t
-
-/* Define to rpl_realloc if the replacement function should be used. */
-#undef realloc
 
 /* Define to the equivalent of the C99 'restrict' keyword, or to
    nothing if this is not supported.  Do not define if restrict is
@@ -1212,9 +1165,6 @@
 /* Define to the type of an unsigned integer type wide enough to hold a
    pointer, if such a type exists, and if the system does not define it. */
 #undef uintptr_t
-
-/* Define as `fork' if `vfork' does not work. */
-#undef vfork
 
 /* Define to empty if the keyword `volatile' does not work. Warning: valid
    code using `volatile' can become incorrect without. Disable with care. */
