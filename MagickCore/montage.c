@@ -817,7 +817,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
               */
               (void) QueryColorCompliance("#0000",AllCompliance,
                 &image->background_color,exception);
-              shadow_image=ShadowImage(image,80.0,2.0,5,5,exception);
+              shadow_image=ShadowImage(image,30.0,5.0,5,5,exception);
               if (shadow_image != (Image *) NULL)
                 {
                   (void) CompositeImage(shadow_image,image,OverCompositeOp,
