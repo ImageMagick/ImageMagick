@@ -690,6 +690,7 @@ if test "$enable_64bit_channel_masks" = 'yes'; then
     MAGICK_64BIT_CHANNEL_MASK="Channel-masks(64-bit)"
     magick_channel_mask_depth='64';
     MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
+    AC_LANG([C++])
 else
     magick_channel_mask_depth='32'
 fi
