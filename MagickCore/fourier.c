@@ -66,6 +66,7 @@
 #include <complex.h>
 #endif
 #include <fftw3.h>
+#if !defined(MAGICKCORE_CHANNEL_MASK_DEPTH)
 #if !defined(MAGICKCORE_HAVE_CABS)
 #define cabs(z)  (sqrt(z[0]*z[0]+z[1]*z[1]))
 #endif
@@ -77,6 +78,7 @@
 #endif
 #if !defined(MAGICKCORE_HAVE_CREAL)
 #define creal(z)  (z[0])
+#endif
 #endif
 #endif
 
