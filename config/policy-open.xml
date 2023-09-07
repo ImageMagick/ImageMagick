@@ -147,7 +147,7 @@
   <!-- Enable the initialization of buffers with zeros, resulting in a minor
        performance penalty but with improved security. -->
   <!-- <policy domain="system" name="memory-map" value="anonymous"/> -->
-  <!-- Set the maximum amount of memory in bytes that is permitted for
+  <!-- Set the maximum amount of memory in bytes that are permitted for
        allocation requests. -->
   <!-- <policy domain="system" name="max-memory-request" value="256MiB"/> -->
 </policymap>
