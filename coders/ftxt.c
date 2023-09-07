@@ -277,7 +277,7 @@ static long double BufToFlt(char * buffer,char ** tail,ValueTypeT expectType,
       if (**tail=='%')
         {
           (*tail)++;
-          val*=QuantumRange/100.0;
+          val*=(double) QuantumRange/100.0;
           if ((expectType != vtAny) && (expectType != vtPercent))
             *err=MagickTrue;
         }
@@ -435,7 +435,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
     }
   if (numMeta)
     {
-      if (SetPixelMetaChannels (image, numMeta, exception) == MagickFalse)
+      if (SetPixelMetaChannels (image, (size_t) numMeta, exception) == MagickFalse)
         ThrowReaderException(OptionError,"SetPixelMetaChannelsFailure");
     }
   /* make image zero (if RGB channels, transparent black). */
@@ -467,7 +467,7 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
           case 'j':
             if (*(pf+1)=='\0')
               ThrowReaderException(DelegateFatalError,"EscapeJproblem");
-            /* Drop through... */
+            magick_fallthrough;
           default:
             if ((i+=2) >= MaxTextExtent)
               ThrowReaderException(DelegateFatalError,"ppf bust");

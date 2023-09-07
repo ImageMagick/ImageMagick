@@ -123,7 +123,8 @@ typedef struct _GraphemeInfo
     index,
     x_offset,
     x_advance,
-    y_offset;
+    y_offset,
+    y_advance;
 
   size_t
     cluster;
@@ -341,10 +342,11 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     (void) CloneString(&annotate->text,textlist[i]);
     if ((metrics.width == 0) || (annotate->gravity != NorthWestGravity))
       (void) GetTypeMetrics(image,annotate,&metrics,exception);
-    height=(size_t) floor(metrics.ascent-metrics.descent+0.5);
+    height=CastDoubleToUnsigned(metrics.ascent-metrics.descent+0.5);
     if (height == 0)
       height=draw_info->pointsize;
-    height+=(size_t) floor(draw_info->interline_spacing+0.5);
+    height=CastDoubleToUnsigned(floor((double) height+
+      draw_info->interline_spacing+0.5));
     switch (annotate->gravity)
     {
       case UndefinedGravity:
@@ -485,7 +487,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
       default:
         break;
     }
-    if (draw_info->undercolor.alpha != TransparentAlpha)
+    if (draw_info->undercolor.alpha != (MagickRealType) TransparentAlpha)
       {
         DrawInfo
           *undercolor_info;
@@ -507,7 +509,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     annotate_info->affine.tx=offset.x;
     annotate_info->affine.ty=offset.y;
     pixel=annotate_info->fill;
-    if (annotate_info->stroke.alpha != TransparentAlpha)
+    if (annotate_info->stroke.alpha != (MagickRealType) TransparentAlpha)
       pixel=annotate_info->stroke;
     (void) QueryColorname(image,&pixel,AllCompliance,color,exception);
     (void) FormatLocaleString(primitive,MagickPathExtent,"stroke %s "
@@ -610,18 +612,23 @@ static inline char *ReplaceSpaceWithNewline(char **caption,char *space)
         *target;
 
       size_t
-        length,
+        length;
+
+      ssize_t
         offset;
 
       length=strlen(*caption);
       *space='\n';
       offset=space-(*caption);
-      target=AcquireString(*caption);
-      CopyMagickString(target,*caption,offset+2);
-      ConcatenateMagickString(target,space+octets,length);
-      (void) DestroyString(*caption);
-      *caption=target;
-      space=(*caption)+offset;
+      if (offset >= 0)
+        {
+          target=AcquireString(*caption);
+          CopyMagickString(target,*caption,(size_t) offset+2);
+          ConcatenateMagickString(target,space+octets,length);
+          (void) DestroyString(*caption);
+          *caption=target;
+          space=(*caption)+offset;
+        }
     }
   return(space);
 }
@@ -673,7 +680,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     status=GetTypeMetrics(image,draw_info,metrics,exception);
     if (status == MagickFalse)
       break;
-    width=(size_t) floor(metrics->width+draw_info->stroke_width+0.5);
+    width=CastDoubleToUnsigned(metrics->width+draw_info->stroke_width+0.5);
     if (width <= image->columns)
       continue;
     if (s != (char *) NULL)
@@ -691,7 +698,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
                 *target;
 
               target=AcquireString(*caption);
-              CopyMagickString(target,*caption,n+1);
+              CopyMagickString(target,*caption,(size_t) n+1);
               ConcatenateMagickString(target,"\n",strlen(*caption)+1);
               ConcatenateMagickString(target,p,strlen(*caption)+2);
               (void) DestroyString(*caption);
@@ -805,7 +812,10 @@ MagickExport MagickBooleanType GetMultilineTypeMetrics(Image *image,
   */
   textlist=StringToStrings(draw_info->text,&count);
   if (textlist == (char **) NULL)
-    return(MagickFalse);
+    {
+      annotate_info=DestroyDrawInfo(annotate_info);
+      return(MagickFalse);
+    }
   annotate_info->render=MagickFalse;
   annotate_info->direction=UndefinedDirection;
   (void) memset(metrics,0,sizeof(*metrics));
@@ -1137,11 +1147,11 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
 
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
 
-static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
-  const char *text,const size_t length,const FT_Face face,const FT_Int32 flags,
-  GraphemeInfo **grapheme,ExceptionInfo *exception)
-{
 #if defined(MAGICKCORE_RAQM_DELEGATE)
+static size_t ComplexRaqmTextLayout(const Image *image,
+  const DrawInfo *draw_info,const char *text,const size_t length,
+  const FT_Face face,GraphemeInfo **grapheme,ExceptionInfo *exception)
+{
   const char
     *features;
 
@@ -1151,13 +1161,12 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
   raqm_glyph_t
     *glyphs;
 
-  ssize_t
-    i;
-
   size_t
     extent;
 
-  magick_unreferenced(flags);
+  ssize_t
+    i;
+
   extent=0;
   rq=raqm_create();
   if (rq == (raqm_t *) NULL)
@@ -1214,9 +1223,10 @@ static size_t ComplexTextLayout(const Image *image,const DrawInfo *draw_info,
   for (i=0; i < (ssize_t) extent; i++)
   {
     (*grapheme)[i].index=glyphs[i].index;
-    (*grapheme)[i].x_offset=glyphs[i].x_offset;
-    (*grapheme)[i].x_advance=glyphs[i].x_advance;
-    (*grapheme)[i].y_offset=glyphs[i].y_offset;
+    (*grapheme)[i].x_offset=(size_t) glyphs[i].x_offset;
+    (*grapheme)[i].x_advance=(size_t) glyphs[i].x_advance;
+    (*grapheme)[i].y_offset=(size_t) glyphs[i].y_offset;
+    (*grapheme)[i].y_advance=(size_t) glyphs[i].y_advance;
     (*grapheme)[i].cluster=glyphs[i].cluster;
   }
 
@@ -1224,6 +1234,10 @@ cleanup:
   raqm_destroy(rq);
   return(extent);
 #else
+static size_t ComplexTextLayout(const DrawInfo *draw_info,const char *text,
+  const size_t length,const FT_Face face,const FT_Int32 flags,
+  GraphemeInfo **grapheme)
+{
   const char
     *p;
 
@@ -1236,8 +1250,6 @@ cleanup:
   /*
     Simple layout for bi-directional text (right-to-left or left-to-right).
   */
-  magick_unreferenced(image);
-  magick_unreferenced(exception);
   *grapheme=(GraphemeInfo *) AcquireQuantumMemory(length+1,sizeof(**grapheme));
   if (*grapheme == (GraphemeInfo *) NULL)
     return(0);
@@ -1267,6 +1279,7 @@ cleanup:
       }
     (void) FT_Load_Glyph(face,(FT_UInt) (*grapheme)[i].index,flags);
     (*grapheme)[i].x_advance=face->glyph->advance.x;
+    (*grapheme)[i].y_advance=face->glyph->advance.y;
     (*grapheme)[i].cluster=p-text;
     last_glyph=(*grapheme)[i].index;
   }
@@ -1276,25 +1289,35 @@ cleanup:
 
 static void FreetypeCloseStream(FT_Stream stream)
 {
-  FILE *file = (FILE *) stream->descriptor.pointer;
+  FILE
+    *file;
+
+  file=(FILE *) stream->descriptor.pointer;
   if (file != (FILE *) NULL)
-    (void) fclose(file);  
+    (void) fclose(file);
   stream->descriptor.pointer=NULL;
 }
 
 static unsigned long FreetypeReadStream(FT_Stream stream,unsigned long offset,
   unsigned char *buffer,unsigned long count)
 {
-  FILE *file = (FILE *) stream->descriptor.pointer;
+  FILE
+    *file;
+
+  unsigned long
+    result;
+
+  file=(FILE *) stream->descriptor.pointer;
   if (file == (FILE *) NULL)
     return(0);
+  if (offset > stream->size)
+    result=1;
+  else
+    result=(unsigned long) fseek(file,(off_t) offset,SEEK_SET);
   if (count == 0) /* seek operation */
-    {
-      if (offset > stream->size)
-        return(1);
-
-      return((unsigned long) fseek(file,(off_t) offset,SEEK_SET));
-    }
+    return(result);
+  if (result != 0)
+    return(0);
   return((unsigned long) fread(buffer,1,count,file));
 }
 
@@ -1368,11 +1391,14 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
   return(0);
 }
 
+#if FREETYPE_MAJOR == 2 && FREETYPE_MINOR >= 10
 static inline const char *FreetypeErrorMessage(FT_Error ft_status)
 {
-#if FREETYPE_MAJOR == 2 && FREETYPE_MINOR >= 10
   return(FT_Error_String(ft_status));
 #else
+static inline const char *FreetypeErrorMessage(
+  FT_Error magick_unused(ft_status))
+{
   magick_unreferenced(ft_status);
   return((const char *) NULL);
 #endif
@@ -1381,19 +1407,23 @@ static inline const char *FreetypeErrorMessage(FT_Error ft_status)
 static void *FreetypeAlloc(FT_Memory magick_unused(memory),long size)
 {
   magick_unreferenced(memory);
+  if (size < 0)
+    return((void *) NULL);
   if ((size_t) size > GetMaxMemoryRequest())
     return((void *) NULL);
-  return(AcquireMagickMemory(size));
+  return(AcquireMagickMemory((size_t) size));
 }
 
 static void *FreetypeRealloc(FT_Memory magick_unused(memory),
-  long magick_unused(cur_size),long new_size,void *block)
+  long magick_unused(cur_size),long size,void *block)
 {
   magick_unreferenced(memory);
   magick_unreferenced(cur_size);
-  if ((size_t) new_size > GetMaxMemoryRequest())
+  if (size < 0)
     return((void *) NULL);
-  return(ResizeMagickMemory(block,new_size));
+  if ((size_t) size > GetMaxMemoryRequest())
+    return((void *) NULL);
+  return(ResizeMagickMemory(block,(size_t) size));
 }
 
 static void FreetypeFree(FT_Memory magick_unused(memory),void *block)
@@ -1607,8 +1637,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   */
   stream=(FT_StreamRec *) AcquireCriticalMemory(sizeof(*stream));
   (void) memset(stream,0,sizeof(*stream));
-  (void) stat(args.pathname,&attributes);
-  stream->size=attributes.st_size;
+  if (stat(args.pathname,&attributes) == 0)
+    stream->size=attributes.st_size >= 0 ? (unsigned long)
+      attributes.st_size : 0;
   stream->descriptor.pointer=fopen_utf8(args.pathname,"rb");
   stream->read=(&FreetypeReadStream);
   stream->close=(&FreetypeCloseStream);
@@ -1798,7 +1829,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       if (image->storage_class != DirectClass)
         (void) SetImageStorageClass(image,DirectClass,exception);
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     }
   for (p=draw_info->text; GetUTFCode(p) != 0; p+=GetUTFOctets(p))
@@ -1814,8 +1845,12 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         p=(char *) utf8;
     }
   grapheme=(GraphemeInfo *) NULL;
-  length=ComplexTextLayout(image,draw_info,p,strlen(p),face,flags,&grapheme,
+#if defined(MAGICKCORE_RAQM_DELEGATE)
+  length=ComplexRaqmTextLayout(image,draw_info,p,strlen(p),face,&grapheme,
     exception);
+#else
+  length=ComplexTextLayout(draw_info,p,strlen(p),face,flags,&grapheme);
+#endif
   missing_glyph_id=FT_Get_Char_Index(face,' ');
   code=0;
   last_character=(ssize_t) length-1;
@@ -1854,14 +1889,14 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if (ft_status != 0)
       continue;
     if ((bounds.xMin < metrics->bounds.x1) && (bounds.xMin != 0))
-        metrics->bounds.x1=(double) bounds.xMin;
+      metrics->bounds.x1=(double) bounds.xMin;
     if ((bounds.yMin < metrics->bounds.y1) && (bounds.yMin != 0))
-        metrics->bounds.y1=(double) bounds.yMin;
+      metrics->bounds.y1=(double) bounds.yMin;
     if ((bounds.xMax > metrics->bounds.x2) && (bounds.xMax != 0))
-        metrics->bounds.x2=(double) bounds.xMax;
+      metrics->bounds.x2=(double) bounds.xMax;
     if ((bounds.yMax > metrics->bounds.y2) && (bounds.yMax != 0))
-        metrics->bounds.y2=(double) bounds.yMax;
-    if (((draw_info->stroke.alpha != TransparentAlpha) ||
+      metrics->bounds.y2=(double) bounds.yMax;
+    if (((draw_info->stroke.alpha != (MagickRealType) TransparentAlpha) ||
          (draw_info->stroke_pattern != (Image *) NULL)) &&
         ((status != MagickFalse) && (draw_info->render != MagickFalse)))
       {
@@ -1899,9 +1934,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         /*
           Rasterize the glyph.
         */
-        transparent_fill=((draw_info->fill.alpha == TransparentAlpha) &&
+        transparent_fill=((draw_info->fill.alpha == (MagickRealType) TransparentAlpha) &&
           (draw_info->fill_pattern == (Image *) NULL) &&
-          (draw_info->stroke.alpha == TransparentAlpha) &&
+          (draw_info->stroke.alpha == (MagickRealType) TransparentAlpha) &&
           (draw_info->stroke_pattern == (Image *) NULL)) ? MagickTrue :
           MagickFalse;
         image_view=AcquireAuthenticCacheView(image,exception);
@@ -1985,9 +2020,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                   Sa,
                   Da;
 
-                Da=1.0-(QuantumScale*GetPixelAlpha(image,q));
+                Da=1.0-(QuantumScale*(double) GetPixelAlpha(image,q));
                 Sa=fill_opacity;
-                fill_opacity=(1.0-RoundToUnity(Sa+Da-Sa*Da))*QuantumRange;
+                fill_opacity=(1.0-RoundToUnity(Sa+Da-Sa*Da))*(double)
+                  QuantumRange;
                 SetPixelAlpha(image,fill_opacity,q);
               }
             if (active == MagickFalse)
@@ -2003,7 +2039,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             status=MagickFalse;
         }
         image_view=DestroyCacheView(image_view);
-        if (((draw_info->stroke.alpha != TransparentAlpha) ||
+        if (((draw_info->stroke.alpha != (MagickRealType) TransparentAlpha) ||
              (draw_info->stroke_pattern != (Image *) NULL)) &&
             (status != MagickFalse))
           {
@@ -2028,6 +2064,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         origin.x+=MagickMax((FT_Pos) grapheme[i].x_advance,bounds.xMax);
       else
         origin.x+=(FT_Pos) grapheme[i].x_advance;
+    origin.y+=(FT_Pos) grapheme[i].y_advance;
     metrics->origin.x=(double) origin.x;
     metrics->origin.y=(double) origin.y;
     if (metrics->origin.x > metrics->width)
@@ -2327,7 +2364,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       annotate_image=DestroyImage(annotate_image);
       return(MagickTrue);
     }
-  if (draw_info->fill.alpha != TransparentAlpha)
+  if (draw_info->fill.alpha != (MagickRealType) TransparentAlpha)
     {
       CacheView
         *annotate_view;
@@ -2341,7 +2378,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       /*
         Render fill color.
       */
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       if (annotate_image->alpha_trait == UndefinedPixelTrait)
         (void) SetImageAlphaChannel(annotate_image,OpaqueAlphaChannel,

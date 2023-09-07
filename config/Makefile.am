@@ -1,4 +1,4 @@
-#  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization
+#  Copyright 1999 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
 #  You may not use this file except in compliance with the License.  You may
@@ -61,7 +61,10 @@ CONFIG_EXTRA_DIST = \
   config/locale.xml \
   config/log.xml \
   config/mime.xml \
-  config/policy.xml \
+  config/policy-limited.xml \
+  config/policy-open.xml \
+  config/policy-secure.xml \
+  config/policy-websafe.xml \
   config/quantization-table.xml \
   config/sRGB.icm \
   config/thresholds.xml \

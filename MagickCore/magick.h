@@ -51,8 +51,7 @@ typedef enum
   CoderStealthFlag = 0x0080,
   CoderUseExtensionFlag = 0x0100,
   CoderDecoderSeekableStreamFlag = 0x0200,
-  CoderEncoderSeekableStreamFlag = 0x0400,
-
+  CoderEncoderSeekableStreamFlag = 0x0400
 } MagickInfoFlag;
 
 typedef Image

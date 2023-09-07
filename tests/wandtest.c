@@ -23,7 +23,7 @@
 %                                 March 2003                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization      %
+%  Copyright 1999 ImageMagick Studio LLC, a non-profit organization           %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -5295,8 +5295,8 @@ int main(int argc,char **argv)
   border=NewPixelWand();
   (void) PixelSetColor(background,"green");
   (void) PixelSetColor(border,"black");
-  status=MagickFloodfillPaintImage(magick_wand,background,0.01*QuantumRange,
-    border,0,0,MagickFalse);
+  status=MagickFloodfillPaintImage(magick_wand,background,0.01*(double)
+    QuantumRange,border,0,0,MagickFalse);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
   background=DestroyPixelWand(background);

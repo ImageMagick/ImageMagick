@@ -493,7 +493,7 @@ static MagickBooleanType WriteFLIFImage(const ImageInfo *image_info,
         }
       else
         {
-          qc=pixels;
+          qc=(unsigned char *) pixels;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             *qc++=ScaleQuantumToChar(GetPixelRed(image,p));

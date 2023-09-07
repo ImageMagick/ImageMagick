@@ -329,7 +329,7 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     ThrowWriterException(CoderError,"UnableToWriteImageData");
   write_info=CloneImageInfo(image_info);
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     (void) CopyMagickString(write_info->magick,"BMP3",MagickPathExtent);
   else
     (void) CopyMagickString(write_info->magick,"BMP",MagickPathExtent);
@@ -361,7 +361,7 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
       ThrowWriterException(CoderError,"UnableToWriteImageData");
     }
   (void) EmptyClipboard();
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     SetClipboardData(CF_DIB,clip_handle);
   else
     SetClipboardData(CF_DIBV5,clip_handle);

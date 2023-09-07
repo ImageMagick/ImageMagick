@@ -3,11 +3,11 @@
 import \- saves any visible window on an X server and outputs it as an image file. You can capture a single window, the entire screen, or any rectangular portion of the screen. The window to capture is selected by clicking the desired window or a program option.
 .SH SYNOPSIS
 .TP
-\fBimport\fP [\fIoptions\fP] \fIoutput-file\fP
+\fBmagick import\fP [\fIoptions\fP] \fIoutput-file\fP
 .SH OVERVIEW
 The \fBimport\fP program is a member of the ImageMagick(1) suite of tools.  Use it to capture some or all of an X server screen and save the image to a file.
 
-For more information about the import command, point your browser to file://@DOCUMENTATION_PATH@/www/import.html or http://imagemagick.org/script/import.php.
+For more information about the import command, point your browser to file://@DOCUMENTATION_PATH@/www/import.html or https://imagemagick.org/script/import.php.
 .SH DESCRIPTION
 Image Settings:
   \-adjoin              join images into a single multi-image file
@@ -98,4 +98,4 @@ ImageMagick(1)
 
 .SH COPYRIGHT
 
-\fBCopyright (C) 1999-2021 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or http://imagemagick.org/script/license.php\fP
+\fBCopyright (C) 1999 ImageMagick Studio LLC. Additional copyrights and licenses apply to this software, see file://@DOCUMENTATION_PATH@/www/license.html or https://imagemagick.org/script/license.php\fP

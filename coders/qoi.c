@@ -17,7 +17,7 @@
 %                               December 2021                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2021 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -431,27 +431,29 @@ ModuleExport void UnregisterQOIImage(void)
 static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
-  QuantumType
-    quantum_type;
-
-  MagickBooleanType
-    status;
-
   const Quantum
     *p;
 
-  size_t
-    channels,
-    colorspace,
-    end,
-    run,
-    idx,
-    i;
+  MagickBooleanType
+    status;
 
   qoi_rgba_t
     px,
     pp,
     lut[64];
+
+  QuantumType
+    quantum_type;
+
+  size_t
+    channels,
+    colorspace,
+    end,
+    run;
+
+  ssize_t
+    idx,
+    i;
 
   /*
     Open output image file.
@@ -509,7 +511,7 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
     Do the actual encoding.
   */
   end=image->rows * image->columns;
-  for (i=0; i < end; i++) {
+  for (i=0; i < (ssize_t) end; i++) {
     pp=px;
     px.rgba.r=ScaleQuantumToChar(GetPixelRed(image,p));
     px.rgba.g=ScaleQuantumToChar(GetPixelGreen(image,p));

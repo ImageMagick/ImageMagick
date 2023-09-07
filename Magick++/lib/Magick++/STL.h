@@ -940,8 +940,8 @@ namespace Magick
     void operator()( Image &image_ ) const;
 
   private:
-    size_t _columns;
-    size_t _rows;
+    ssize_t _columns;
+    ssize_t _rows;
   };
 
   // Rotate image counter-clockwise by specified number of degrees.
@@ -1735,7 +1735,7 @@ namespace Magick
   public:
     sigmoidalContrastImage( const size_t sharpen_,
       const double contrast,
-      const double midpoint = QuantumRange / 2.0 );
+      const double midpoint = (double) QuantumRange / 2.0 );
 
     void operator()( Image &image_ ) const;
 
@@ -1922,7 +1922,7 @@ namespace Magick
 
       current->previous=previous;
       current->next=(MagickCore::Image *) NULL;
-      current->scene=scene++;
+      current->scene=(size_t) scene++;
 
       if (previous != (MagickCore::Image *) NULL)
         previous->next=current;

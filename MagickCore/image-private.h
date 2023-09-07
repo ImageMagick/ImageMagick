@@ -45,10 +45,13 @@ extern "C" {
 #define MagickAbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define MagickPHI    1.61803398874989484820458683436563811772030917980576
 #define MagickPI2    1.57079632679489661923132169163975144209858469968755
-#define MagickPI  3.14159265358979323846264338327950288419716939937510
+#define MagickPI     3.1415926535897932384626433832795028841971693993751058209749445923078164062
 #define MagickSQ1_2  0.70710678118654752440084436210484903928483593768847
 #define MagickSQ2    1.41421356237309504880168872420969807856967187537695
 #define MagickSQ2PI  2.50662827463100024161235523934010416269302368164062
+#define MAGICK_SIZE_MAX  (SIZE_MAX)
+#define MAGICK_SSIZE_MAX  (SSIZE_MAX)
+#define MAGICK_SSIZE_MIN  (-SSIZE_MAX-1)
 #define MatteColor  "#bdbdbd"  /* gray */
 #define MatteColorRGBA  ScaleShortToQuantum(0xbdbd),\
   ScaleShortToQuantum(0xbdbd),ScaleShortToQuantum(0xbdbd),OpaqueAlpha
@@ -64,25 +67,61 @@ extern "C" {
 static inline ssize_t CastDoubleToLong(const double x)
 {
   if (IsNaN(x) != 0)
-    return(0);
-  if (x > ((double) MAGICK_SSIZE_MAX+0.5))
-    return((ssize_t) MAGICK_SSIZE_MAX);
-  if (x < ((double) MAGICK_SSIZE_MIN-0.5))
-    return((ssize_t) MAGICK_SSIZE_MIN);
-  if (x >= 0.0)
-    return((ssize_t) (x+0.5));
-  return((ssize_t) (x-0.5));
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  if (floor(x) > ((double) MAGICK_SSIZE_MAX-1))
+    {
+      errno=ERANGE;
+      return((ssize_t) MAGICK_SSIZE_MAX);
+    }
+  if (ceil(x) < ((double) MAGICK_SSIZE_MIN+1))
+    {
+      errno=ERANGE;
+      return((ssize_t) MAGICK_SSIZE_MIN);
+    }
+  return((ssize_t) x);
 }
 
 static inline QuantumAny CastDoubleToQuantumAny(const double x)
 {
   if (IsNaN(x) != 0)
-    return(0);
+    {
+      errno=ERANGE;
+      return(0);
+    }
   if (x > ((double) ((QuantumAny) ~0)))
-    return((QuantumAny) ~0);
+    {
+      errno=ERANGE;
+      return((QuantumAny) ~0);
+    }
   if (x < 0.0)
-    return((QuantumAny) 0);
+    {
+      errno=ERANGE;
+      return((QuantumAny) 0);
+    }
   return((QuantumAny) (x+0.5));
+}
+
+static inline size_t CastDoubleToUnsigned(const double x)
+{
+  if (IsNaN(x) != 0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  if (floor(x) > ((double) MAGICK_SSIZE_MAX-1))
+    {
+      errno=ERANGE;
+      return((size_t) MAGICK_SIZE_MAX);
+    }
+  if (ceil(x) < 0.0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  return((size_t) x);
 }
 
 static inline double DegreesToRadians(const double degrees)

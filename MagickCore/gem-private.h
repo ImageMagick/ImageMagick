@@ -103,9 +103,6 @@ static inline void ConvertAdobe98ToXYZ(const double red,const double green,
   /*
     Convert Adobe '98 to XYZ colorspace.
   */
-  assert(X != (double *) NULL);
-  assert(Y != (double *) NULL);
-  assert(Z != (double *) NULL);
   r=QuantumScale*DecodePixelGamma(red);
   g=QuantumScale*DecodePixelGamma(green);
   b=QuantumScale*DecodePixelGamma(blue);
@@ -125,9 +122,6 @@ static inline void ConvertDisplayP3ToXYZ(const double red,const double green,
   /*
     Convert Display P3 to XYZ colorspace.
   */
-  assert(X != (double *) NULL);
-  assert(Y != (double *) NULL);
-  assert(Z != (double *) NULL);
   r=QuantumScale*DecodePixelGamma(red);
   g=QuantumScale*DecodePixelGamma(green);
   b=QuantumScale*DecodePixelGamma(blue);
@@ -144,9 +138,6 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
     y,
     z;
 
-  assert(X != (double *) NULL);
-  assert(Y != (double *) NULL);
-  assert(Z != (double *) NULL);
   y=(L+16.0)/116.0;
   x=y+a/500.0;
   z=y-b/200.0;
@@ -173,9 +164,6 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
   double
     gamma;
 
-  assert(X != (double *) NULL);
-  assert(Y != (double *) NULL);
-  assert(Z != (double *) NULL);
   if (L > (CIEK*CIEEpsilon))
     *Y=(double) pow((L+16.0)/116.0,3.0);
   else
@@ -208,9 +196,6 @@ static inline void ConvertProPhotoToXYZ(const double red,const double green,
   /*
     Convert ProPhoto to XYZ colorspace.
   */
-  assert(X != (double *) NULL);
-  assert(Y != (double *) NULL);
-  assert(Z != (double *) NULL);
   r=QuantumScale*DecodePixelGamma(red);
   g=QuantumScale*DecodePixelGamma(green);
   b=QuantumScale*DecodePixelGamma(blue);
@@ -230,9 +215,6 @@ static inline void ConvertRGBToXYZ(const double red,const double green,
   /*
     Convert RGB to XYZ colorspace.
   */
-  assert(X != (double *) NULL);
-  assert(Y != (double *) NULL);
-  assert(Z != (double *) NULL);
   r=QuantumScale*DecodePixelGamma(red);
   g=QuantumScale*DecodePixelGamma(green);
   b=QuantumScale*DecodePixelGamma(blue);
@@ -249,15 +231,12 @@ static inline void ConvertXYZToAdobe98(const double X,const double Y,
     g,
     r;
 
-  assert(red != (double *) NULL);
-  assert(green != (double *) NULL);
-  assert(blue != (double *) NULL);
   r=2.041587903810746500*X-0.56500697427885960*Y-0.34473135077832956*Z;
   g=(-0.969243636280879500)*X+1.87596750150772020*Y+0.04155505740717557*Z;
   b=0.013444280632031142*X-0.11836239223101838*Y+1.01517499439120540*Z;
-  *red=EncodePixelGamma(QuantumRange*r);
-  *green=EncodePixelGamma(QuantumRange*g);
-  *blue=EncodePixelGamma(QuantumRange*b);
+  *red=EncodePixelGamma((double) QuantumRange*r);
+  *green=EncodePixelGamma((double) QuantumRange*g);
+  *blue=EncodePixelGamma((double) QuantumRange*b);
 }
 
 static inline void ConvertXYZToDisplayP3(const double X,const double Y,
@@ -268,15 +247,12 @@ static inline void ConvertXYZToDisplayP3(const double X,const double Y,
     g,
     r;
 
-  assert(red != (double *) NULL);
-  assert(green != (double *) NULL);
-  assert(blue != (double *) NULL);
   r=2.49349691194142500*X-0.93138361791912390*Y-0.402710784450716840*Z;
   g=(-0.82948896956157470)*X+1.76266406031834630*Y+0.023624685841943577*Z;
   b=0.03584583024378447*X-0.07617238926804182*Y+0.956884524007687200*Z;
-  *red=EncodePixelGamma(QuantumRange*r);
-  *green=EncodePixelGamma(QuantumRange*g);
-  *blue=EncodePixelGamma(QuantumRange*b);
+  *red=EncodePixelGamma((double) QuantumRange*r);
+  *green=EncodePixelGamma((double) QuantumRange*g);
+  *blue=EncodePixelGamma((double) QuantumRange*b);
 }
 
 static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
@@ -287,9 +263,6 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
     y,
     z;
 
-  assert(L != (double *) NULL);
-  assert(a != (double *) NULL);
-  assert(b != (double *) NULL);
   if ((X/illuminant_tristimulus[illuminant].x) > CIEEpsilon)
     x=pow(X/illuminant_tristimulus[illuminant].x,1.0/3.0);
   else
@@ -313,9 +286,6 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   double
     alpha;
 
-  assert(L != (double *) NULL);
-  assert(u != (double *) NULL);
-  assert(v != (double *) NULL);
   if ((Y/illuminant_tristimulus[illuminant].y) > CIEEpsilon)
     *L=(double) (116.0*pow(Y/illuminant_tristimulus[illuminant].y,
       1.0/3.0)-16.0);
@@ -343,15 +313,12 @@ static inline void ConvertXYZToProPhoto(const double X,const double Y,
     g,
     r;
 
-  assert(red != (double *) NULL);
-  assert(green != (double *) NULL);
-  assert(blue != (double *) NULL);
   r=1.3457989731028281*X-0.25558010007997534*Y-0.05110628506753401*Z;
   g=(-0.5446224939028347)*X+1.50823274131327810*Y+0.02053603239147973*Z;
   b=0.0000000000000000*X+0.0000000000000000*Y+1.21196754563894540*Z;
-  *red=EncodePixelGamma(QuantumRange*r);
-  *green=EncodePixelGamma(QuantumRange*g);
-  *blue=EncodePixelGamma(QuantumRange*b);
+  *red=EncodePixelGamma((double) QuantumRange*r);
+  *green=EncodePixelGamma((double) QuantumRange*g);
+  *blue=EncodePixelGamma((double) QuantumRange*b);
 }
 
 static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
@@ -362,15 +329,12 @@ static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
     g,
     r;
 
-  assert(red != (double *) NULL);
-  assert(green != (double *) NULL);
-  assert(blue != (double *) NULL);
   r=3.2404542*X-1.5371385*Y-0.4985314*Z;
   g=(-0.9692660)*X+1.8760108*Y+0.0415560*Z;
   b=0.0556434*X-0.2040259*Y+1.0572252*Z;
-  *red=EncodePixelGamma(QuantumRange*r);
-  *green=EncodePixelGamma(QuantumRange*g);
-  *blue=EncodePixelGamma(QuantumRange*b);
+  *red=EncodePixelGamma((double) QuantumRange*r);
+  *green=EncodePixelGamma((double) QuantumRange*g);
+  *blue=EncodePixelGamma((double) QuantumRange*b);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

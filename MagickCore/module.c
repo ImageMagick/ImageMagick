@@ -893,9 +893,11 @@ static MagickBooleanType IsModuleTreeInstantiated()
           if (status == MagickFalse)
             ThrowFatalException(ResourceLimitFatalError,
               "MemoryAllocationFailed");
+#if defined(MAGICKCORE_LTDL_DELEGATE)
           if (lt_dlinit() != 0)
             ThrowFatalException(ModuleFatalError,
               "UnableToInitializeModuleLoader");
+#endif
           module_list=splay_tree;
         }
       UnlockSemaphoreInfo(module_semaphore);
@@ -1257,6 +1259,7 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   p=GetCoderInfo(module,exception);
   if (p != (CoderInfo *) NULL)
     (void) CopyMagickString(module_name,p->name,MagickPathExtent);
+  LocaleUpper(module_name);
   rights=(PolicyRights) (ReadPolicyRights | WritePolicyRights);
   if (IsRightsAuthorized(ModulePolicyDomain,rights,module_name) == MagickFalse)
     {

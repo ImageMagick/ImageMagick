@@ -5,7 +5,7 @@
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
   
-    http://imagemagick.org/script/license.php
+    https://imagemagick.org/script/license.php
   
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,8 +50,8 @@ extern "C" {
 #define MagickReleaseDate  "2015-07-22"
 #define MagickChangeDate   "20120427"
 #define MagickAuthoritativeLicense  \
-  "http://imagemagick.org/script/license.php"
-#define MagickAuthoritativeURL  "http://imagemagick.org"
+  "https://imagemagick.org/script/license.php"
+#define MagickAuthoritativeURL  "https://imagemagick.org"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-7/index.html"
 #define MagickFeatures "DPC HDRI OpenMP"
 #define MagickDelegates "bzlib djvu mpeg fftw fpx fontconfig freetype jbig jng jpeg lcms lzma openexr pango png ps tiff webp x xml zlib"

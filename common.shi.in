@@ -23,5 +23,6 @@ MAGICK_CODER_MODULE_PATH="@abs_top_builddir@/coders"
 MAGICK_CONFIGURE_PATH="@abs_top_builddir@/config:@abs_top_srcdir@/config"
 MAGICK_FILTER_MODULE_PATH="@abs_top_builddir@/filters"
 MAGICK_FONT="@abs_top_srcdir@/PerlMagick/demo/Generic.ttf"
+MAGICK_THREAD_LIMIT=2
 PATH="@abs_top_builddir@/utilities:@abs_top_builddir@/tests:${PATH}"
 set +a

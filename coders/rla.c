@@ -295,7 +295,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    offset=SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
+    offset=SeekBlob(image,scanlines[(ssize_t) image->rows-y-1],SEEK_SET);
     if (offset < 0)
       {
         scanlines=(MagickOffsetType *) RelinquishMagickMemory(scanlines);
@@ -318,7 +318,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             while (runlength < 0)
             {
-              q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),y,1,1,
+              q=GetAuthenticPixels(image,x % (ssize_t) image->columns,y,1,1,
                 exception);
               if (q == (Quantum *) NULL)
                 break;
@@ -360,7 +360,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         runlength++;
         do
         {
-          q=GetAuthenticPixels(image,(ssize_t) (x % image->columns),y,1,1,
+          q=GetAuthenticPixels(image,x % (ssize_t) image->columns,y,1,1,
             exception);
           if (q == (Quantum *) NULL)
             break;

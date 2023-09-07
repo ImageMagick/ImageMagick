@@ -147,7 +147,7 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image,
 %
 */
 MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
-  ExceptionInfo *exception)
+  ExceptionInfo *magick_unused(exception))
 {
   CacheView
     *magick_restrict cache_view;

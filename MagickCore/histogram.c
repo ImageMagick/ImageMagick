@@ -939,7 +939,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
     status;
 
   status=MagickTrue;
-  if (image->channel_mask == DefaultChannels)
+  if (image->channel_mask == AllChannels)
     {
       /*
         Auto-level all channels equally.

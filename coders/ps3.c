@@ -361,10 +361,10 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
         {
           bit=(unsigned char) 0x00;
           if (x < (ssize_t) image->columns)
-            bit=(unsigned char) (GetPixelLuma(image,p) == TransparentAlpha ?
-              0x01 : 0x00);
+            bit=(unsigned char) (GetPixelLuma(image,p) == (double)
+              TransparentAlpha ? 0x01 : 0x00);
           code=(code << 1)+bit;
-          if (((x+1) % pack) == 0)
+          if (((x+1) % (ssize_t) pack) == 0)
             {
               *q++=code;
               code='\0';
@@ -985,15 +985,16 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     scale.x=PerceptibleReciprocal(resolution.x)*geometry.width*delta.x;
-    geometry.width=(size_t) floor(scale.x+0.5);
+    geometry.width=CastDoubleToUnsigned(scale.x+0.5);
     scale.y=PerceptibleReciprocal(resolution.y)*geometry.height*delta.y;
-    geometry.height=(size_t) floor(scale.y+0.5);
+    geometry.height=CastDoubleToUnsigned(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
     (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
     if (image->gravity != UndefinedGravity)
       {
         geometry.x=(-page_info.x);
-        geometry.y=(ssize_t) (media_info.height+page_info.y-image->rows);
+        geometry.y=(ssize_t) media_info.height+page_info.y-(ssize_t)
+          image->rows;
       }
     pointsize=12.0;
     if (image_info->pointsize != 0.0)

@@ -1,0 +1,13 @@
+{
+  "name": "Clang",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "extensions.ignoreRecommendations": true
+      }
+    }
+  }
+}

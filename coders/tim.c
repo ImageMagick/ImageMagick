@@ -235,7 +235,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_size > GetBlobSize(image))
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     bytes_per_line=width*2;
-    width=(width*16)/bits_per_pixel;
+    width=(size_t) (((ssize_t) width*16)/bits_per_pixel);
     image->columns=width;
     image->rows=height;
     status=SetImageExtent(image,image->columns,image->rows,exception);
@@ -269,7 +269,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
-          p=tim_pixels+y*bytes_per_line;
+          p=tim_pixels+y*(ssize_t) bytes_per_line;
           for (x=0; x < ((ssize_t) image->columns-1); x+=2)
           {
             SetPixelIndex(image,(*p) & 0x0f,q);
@@ -306,7 +306,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
-          p=tim_pixels+y*bytes_per_line;
+          p=tim_pixels+y*(ssize_t) bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             SetPixelIndex(image,*p++,q);
@@ -331,7 +331,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          p=tim_pixels+y*bytes_per_line;
+          p=tim_pixels+y*(ssize_t) bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
@@ -366,7 +366,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (y=(ssize_t) image->rows-1; y >= 0; y--)
         {
-          p=tim_pixels+y*bytes_per_line;
+          p=tim_pixels+y*(ssize_t) bytes_per_line;
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;

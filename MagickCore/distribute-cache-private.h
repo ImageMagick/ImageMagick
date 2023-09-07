@@ -71,6 +71,9 @@ extern MagickPrivate MagickOffsetType
   WriteDistributePixelCachePixels(DistributeCacheInfo *,const RectangleInfo *,
     const MagickSizeType,const unsigned char *magick_restrict);
 
+extern MagickPrivate void
+  DistributeCacheTerminus(void);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

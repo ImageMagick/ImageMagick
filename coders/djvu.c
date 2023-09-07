@@ -349,7 +349,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
         stride = (type == DDJVU_PAGETYPE_BITONAL)?
                 (image->columns + 7)/8 : image->columns *3;
 
-        q = (unsigned char *) AcquireQuantumMemory(image->rows,stride);
+        q = (unsigned char *) AcquireQuantumMemory(image->rows,(size_t) stride);
         if (q == (unsigned char *) NULL)
           return;
 
@@ -377,7 +377,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                     &rect,
                                     &rect,     /* mmc: ?? */
                                     format,
-                                    stride, /* ?? */
+                                    (size_t) stride, /* ?? */
                                     (char*)q);
         (void) ret;
         ddjvu_format_release(format);
@@ -622,7 +622,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
             /*
               Set rendering resolution.
             */
-            flags=ParseGeometry(image_info->density,&geometry_info);
+            flags=(int) ParseGeometry(image_info->density,&geometry_info);
             image->resolution.x=geometry_info.rho;
             image->resolution.y=geometry_info.sigma;
             if ((flags & SigmaValue) == 0)
@@ -656,13 +656,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
                 image->storage_class = DirectClass;
                 /* fixme:  MAGICKCORE_QUANTUM_DEPTH ?*/
                 image->depth =  8UL;    /* i only support that? */
-
-                image->alpha_trait = BlendPixelTrait;
-                /* is this useful? */
         }
-        status=SetImageExtent(image,image->columns,image->rows,exception);
-        if (status == MagickFalse)
-          return(DestroyImageList(image));
 #if DEBUG
         printf("now filling %.20g x %.20g\n",(double) image->columns,(double)
           image->rows);
@@ -672,7 +666,14 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
 #if 1                           /* per_line */
 
         /* q = QueueAuthenticPixels(image,0,0,image->columns,image->rows); */
-        get_page_image(lc, lc->page, 0, 0, info.width, info.height, exception);
+        if (image->ping == MagickFalse)
+          {
+            status=SetImageExtent(image,image->columns,image->rows,exception);
+            if (status == MagickFalse)
+              return(DestroyImageList(image));
+            get_page_image(lc, lc->page, 0, 0, image->columns, image->rows,
+              exception);
+          }
 #else
         int i;
         for (i = 0;i< image->rows; i++)
@@ -856,13 +857,13 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
   images=NewImageList();
   i=0;
   if (image_info->number_scenes != 0)
-    i=image_info->scene;
+    i=(ssize_t) image_info->scene;
   for ( ; i < (ssize_t) lc->pages; i++)
   {
     image=ReadOneDJVUImage(lc,i,image_info,exception);
     if (image == (Image *) NULL)
       break;
-    image->scene=i;
+    image->scene=(size_t) i;
     AppendImageToList(&images,CloneImageList(image,exception));
     images->extent=GetBlobSize(image);
     if (image_info->number_scenes != 0)

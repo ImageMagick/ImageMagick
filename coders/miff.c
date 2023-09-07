@@ -712,7 +712,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (LocaleCompare(keyword,"channel-mask") == 0)
                   {
                     image->channel_mask=(ChannelType)
-                      StringToUnsignedLong(options);
+                      strtol(options,(char **) NULL,16);
                     break;
                   }
                 if (LocaleCompare(keyword,"class") == 0)
@@ -1884,9 +1884,13 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
         {
           *pixels++=(unsigned char) (value >> 24);
           *pixels++=(unsigned char) (value >> 16);
+          magick_fallthrough;
         }
         case 16:
+        {
           *pixels++=(unsigned char) (value >> 8);
+          magick_fallthrough;
+        }
         case 8:
         {
           *pixels++=(unsigned char) value;
@@ -2187,10 +2191,10 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       CommandOptionToMnemonic(MagickPixelTraitOptions,(ssize_t)
       image->alpha_trait));
     (void) WriteBlobString(image,buffer);
-    (void) FormatLocaleString(buffer,MagickPathExtent,
-      "number-channels=%.20g number-meta-channels=%.20g channel-mask=%.20g\n",
+    (void) FormatLocaleString(buffer,MagickPathExtent, "number-channels=%.20g "
+      "number-meta-channels=%.20g channel-mask=0x%016llx\n",
       (double) image->number_channels,(double) image->number_meta_channels,
-      (double) image->channel_mask);
+      (MagickOffsetType) image->channel_mask);
     (void) WriteBlobString(image,buffer);
     if (image->alpha_trait != UndefinedPixelTrait)
       (void) WriteBlobString(image,"matte=True\n");

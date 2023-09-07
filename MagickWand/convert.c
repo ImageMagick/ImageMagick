@@ -269,6 +269,7 @@ static MagickBooleanType ConvertUsage(void)
       "  -region geometry     apply options to a portion of the image\n"
       "  -render              render vector graphics\n"
       "  -resample geometry   change the resolution of an image\n"
+      "  -reshape geometry    reshape the image\n"
       "  -resize geometry     resize the image\n"
       "  -roll geometry       roll an image vertically or horizontally\n"
       "  -rotate degrees      apply Paeth rotation to the image\n"
@@ -2635,6 +2636,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("resample",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("reshape",option+1) == 0)
           {
             if (*option == '+')
               break;

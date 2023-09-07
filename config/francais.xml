@@ -701,6 +701,9 @@
         <message name="MustSpecifyAnImageName">
           Il faut spécifier un nom d'image
         </message>
+        <message name="MustSpecifyImageDepth">
+          Il faut spécifier la profondeur d'image
+        </message>
         <message name="MustSpecifyImageSize">
           Il faut spécifier une taille d'image
         </message>

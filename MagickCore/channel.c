@@ -389,7 +389,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
                 (destination_image->channels | WriteMaskChannel);
               break;
             }
-            case MetaPixelChannel:
+            case MetaPixelChannels:
             default:
             {
               traits=GetPixelChannelTraits(destination_image,
@@ -411,7 +411,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             }
           }
         channel_mask=(ChannelType) (channel_mask |
-          (1UL << ParseChannelOption(token)));
+          (MagickLLConstant(1) << ParseChannelOption(token)));
         (void) GetNextToken(p,&p,MagickPathExtent,token);
         break;
       }
@@ -442,7 +442,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       case ExtractChannelOp:
       {
         channel_mask=(ChannelType) (channel_mask |
-          (1UL << destination_channel));
+          (MagickLLConstant(1) << destination_channel));
         destination_channel=(PixelChannel) (destination_channel+1);
         break;
       }
@@ -822,7 +822,7 @@ MagickExport Image *SeparateImage(const Image *image,
   }
   separate_view=DestroyCacheView(separate_view);
   image_view=DestroyCacheView(image_view);
-  (void) SetImageChannelMask(separate_image,DefaultChannels);
+  (void) SetImageChannelMask(separate_image,AllChannels);
   if (status == MagickFalse)
     separate_image=DestroyImage(separate_image);
   return(separate_image);
@@ -873,8 +873,8 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if ((traits == UndefinedPixelTrait) || ((traits & UpdatePixelTrait) == 0))
       continue;
-    separate_image=SeparateImage(image,(ChannelType) (1UL << channel),
-      exception);
+    separate_image=SeparateImage(image,(ChannelType)
+      (MagickLLConstant(1) << channel),exception);
     if (separate_image != (Image *) NULL)
       AppendImageToList(&images,separate_image);
   }
@@ -968,7 +968,7 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
       }
       case AlphaPixelChannel:
       {
-        composite[i]=ClampToQuantum(QuantumRange*(Sa*(-Da)+Sa+Da));
+        composite[i]=ClampToQuantum((double) QuantumRange*(Sa*(-Da)+Sa+Da));
         break;
       }
       default:
@@ -998,7 +998,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   {
     case ActivateAlphaChannel:
     {
-      if (image->alpha_trait == BlendPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) != 0)
         return(status);
       image->alpha_trait=BlendPixelTrait;
       break;
@@ -1041,7 +1041,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           ssize_t
             i;
 
-          gamma=QuantumScale*GetPixelAlpha(image,q);
+          gamma=QuantumScale*(double) GetPixelAlpha(image,q);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1050,7 +1050,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
               continue;
             if ((traits & UpdatePixelTrait) == 0)
               continue;
-            q[i]=ClampToQuantum(gamma*q[i]);
+            q[i]=ClampToQuantum(gamma*(double) q[i]);
           }
           q+=GetPixelChannels(image);
         }
@@ -1066,7 +1066,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Set transparent pixels to background color.
       */
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         break;
       status=SetImageStorageClass(image,DirectClass,exception);
       if (status == MagickFalse)
@@ -1117,7 +1117,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case DeactivateAlphaChannel:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
       image->alpha_trait=CopyPixelTrait;
       break;
@@ -1162,7 +1162,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           ssize_t
             i;
 
-          Sa=QuantumScale*GetPixelAlpha(image,q);
+          Sa=QuantumScale*(double) GetPixelAlpha(image,q);
           gamma=PerceptibleReciprocal(Sa);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
@@ -1172,7 +1172,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
               continue;
             if ((traits & UpdatePixelTrait) == 0)
               continue;
-            q[i]=ClampToQuantum(gamma*q[i]);
+            q[i]=ClampToQuantum(gamma*(double) q[i]);
           }
           q+=GetPixelChannels(image);
         }
@@ -1185,7 +1185,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case DiscreteAlphaChannel:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
       image->alpha_trait=UpdatePixelTrait;
       break;
@@ -1199,14 +1199,14 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case OffAlphaChannel:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         return(status);
       image->alpha_trait=UndefinedPixelTrait;
       break;
     }
     case OnAlphaChannel:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
       image->alpha_trait=BlendPixelTrait;
       break;
@@ -1221,7 +1221,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Remove transparency.
       */
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         break;
       status=SetImageStorageClass(image,DirectClass,exception);
       if (status == MagickFalse)
@@ -1263,7 +1263,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case SetAlphaChannel:
     {
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
       break;
     }

@@ -1,0 +1,269 @@
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"  />
+  <meta name="viewport" content="width=device-width, initial-scale=1"  />
+  <title>ImageMagick – Multispectral Imagery</title>
+  <meta name="application-name" content="ImageMagick" />
+  <meta name="description" content="" />
+  <meta name="application-url" content="https://imagemagick.org" />
+  <meta name="generator" content="PHP" />
+  <meta name="keywords" content="multispectral, imagery, image processing software" />
+  <meta name="rating" content="GENERAL" />
+  <meta name="robots" content="INDEX, FOLLOW" />
+  <meta name="generator" content="ImageMagick Studio LLC" />
+  <meta name="author" content="ImageMagick Studio LLC" />
+  <meta name="revisit-after" content="2 DAYS" />
+  <meta name="resource-type" content="document" />
+  <meta name="copyright" content="Copyright (c) 1999 ImageMagick Studio LLC" />
+  <meta name="distribution" content="Global" />
+  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta property='og:url' content='../' />
+  <meta property='og:title' content='ImageMagick' />
+  <meta property='og:image' content='../images/logo.png' />
+  <meta property='og:type' content='website' />
+  <meta property='og:site_name' content='ImageMagick' />
+  <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
+  <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+  <link href="multispectral-imagery.html" rel="canonical" />
+  <link href="../images/wand.png" rel="icon" />
+  <link href="../images/wand.ico" rel="shortcut icon" />
+  <link href="assets/magick.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="magick-navbars">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link " href="../www/download.html">Download</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="../www/command-line-processing.html">CLI</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="../www/develop.html">Develop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
+        </li>
+        <li class="nav-item">
+          <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
+        </li>
+      </ul>
+      <form class="d-flex form-inline" action="search.html">
+        <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
+      </form>
+    </div>
+  </div>
+  </nav>
+
+  <div class="container">
+    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-3129977114552745"
+      data-ad-slot="6345125851"
+      data-full-width-responsive="true"
+      data-ad-format="horizontal"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  </div>
+
+  <main class="container">
+  <div class="magick-template">
+<div class="magick-header">
+<h1 class="text-center">Multispectral Imagery</h1>
+<p class="lead magick-description">Multispectral imagery refers to images that are captured using multiple bands of the electromagnetic spectrum, beyond just the visible light spectrum. This means that they capture data across a wider range of wavelengths, from ultraviolet to infrared.</p>
+<p>By capturing data across multiple spectral bands, multispectral imagery can provide additional information about the objects or scenes being imaged, such as their composition, temperature, and vegetation health. This information can be used for a wide range of applications, including agriculture, environmental monitoring, disaster response, and military surveillance.</p>
+<p>Multispectral imagery is often captured using specialized sensors on satellites, drones, or aircraft. The data is then processed using specialized software to create images that display the information captured in each spectral band.</p>
+<p>Overall, multispectral imagery provides a powerful tool for analyzing and understanding the world around us, allowing us to gain insights that would be impossible to obtain using visible light imagery alone.</p>
+<h4>Multispectral Support in ImageMagick</h4>
+<p>ImageMagick supports multispectral images where all channels have the same dimensions and number of pixels as the original image.  However, not all image formats support multispectral images.  PSD, TIFF, MIFF, MPC, and <a href="http://im.snibgo.com/fmttxt.htm">FTXT</a> have full support for multispectral images up to 32 bands. In the near future, we will support 64 bands.</p>
+<p>We call image channels beyond the standard RGB(A) or CMYK(A) channels, "meta" channels.  We label them as "meta", "meta1", "meta2", etc..  Meta channels are treated the same as any other channel meaning they can be read, written, and operated upon-- e.g., resized, gamma adjusted, etc..  Currently, up to 18 meta channels are supported.  Soon that will be increased to 46.</p>
+<h5>Create a Multispectral Image</h5>
+<p>Begin with a multispectral image, typically in the TIFF or PSD format.  If you don't have one, you can create your own.  In our example, we create a single CMYK pixel with two meta channels.  Stuff this in a file titled <code>multiMeta.txt</code>:</p>
+<pre class="bg-light text-dark mx-4"><samp>0,0: 10,20,30,40,50,60</samp></pre>
+<p>Let's convert that to the TIFF image format:</p>
+<pre class="bg-light text-dark mx-4"><samp>$ magick -size 1x1 -colorspace CMYK -define ftxt:format="\x,\y:\c\n" -define ftxt:hasalpha=false -define ftxt:nummeta=2 ftxt:multiMeta.txt multiMeta.tif</samp></pre>
+<p>Let confirm that worked as expected:<p>
+<pre class="pre-scrollable bg-light text-dark mx-4"><samp>$ identify -verbose multiMeta.tif
+Image:
+  Filename: multiMeta.tif
+  Permissions: rw-------
+  Format: TIFF (Tagged Image File Format)
+  Mime type: images/tiff
+  Class: DirectClass
+  Geometry: 1x1+0+0
+  Units: PixelsPerInch
+  Colorspace: CMYK
+  Type: ColorSeparation
+  Endianness: LSB
+  Depth: 16-bit
+  Channels: 6.2
+  Channel depth:
+    Cyan: 16-bit
+    Magenta: 16-bit
+    Yellow: 16-bit
+    Black: 16-bit
+    Meta channel[0]: 16-bit
+    Meta channel[1]: 16-bit
+  Channel statistics:
+    Pixels: 1
+    Cyan:
+      min: 10  (0.00015259)
+      max: 10 (0.00015259)
+      mean: 10 (0.00015259)
+      median: 10 (0.00015259)
+      standard deviation: 0 (0)
+      kurtosis: -3
+      skewness: 0
+      entropy: 0
+    Magenta:
+      min: 20  (0.00030518)
+      max: 20 (0.00030518)
+      mean: 20 (0.00030518)
+      median: 20 (0.00030518)
+      standard deviation: 0 (0)
+      kurtosis: -3
+      skewness: 0
+      entropy: 0
+    Yellow:
+      min: 30  (0.000457771)
+      max: 30 (0.000457771)
+      mean: 30 (0.000457771)
+      median: 30 (0.000457771)
+      standard deviation: 0 (0)
+      kurtosis: -3
+      skewness: 0
+      entropy: 0
+    Black:
+      min: 40  (0.000610361)
+      max: 40 (0.000610361)
+      mean: 40 (0.000610361)
+      median: 40 (0.000610361)
+      standard deviation: 0 (0)
+      kurtosis: -3
+      skewness: 0
+      entropy: 0
+    Meta channel[0]:
+      min: 50  (0.000762951)
+      max: 50 (0.000762951)
+      mean: 50 (0.000762951)
+      median: 50 (0.000762951)
+      standard deviation: 0 (0)
+      kurtosis: -3
+      skewness: 0
+      entropy: 0
+    Meta channel[1]:
+      min: 60  (0.000915541)
+      max: 60 (0.000915541)
+      mean: 60 (0.000915541)
+      median: 60 (0.000915541)
+      standard deviation: 0 (0)
+      kurtosis: -3
+      skewness: 0
+      entropy: 0
+  Image statistics:
+    Overall:
+      min: 10  (0.00015259)
+      max: 60 (0.000915541)
+      mean: 35 (0.000534066)
+      median: 35 (0.000534066)
+      standard deviation: 0 (0)
+      kurtosis: -1.79762
+      skewness: 4.44476e-15
+      entropy: 0
+  Total ink density: 0.15259%
+  Colors: 1
+  Histogram:
+             1: (10,20,30,40) #000A0014001E0028 cmyk(0.0389105,0.077821,0.116732,0.155642)
+  Rendering intent: Perceptual
+  Gamma: 0.454545
+  Chromaticity:
+    red primary: (0.64,0.33)
+    green primary: (0.3,0.6)
+    blue primary: (0.15,0.06)
+    white point: (0.3127,0.329)
+  Matte color: grey74
+  Background color: white
+  Border color: srgb(223,223,223)
+  Transparent color: black
+  Interlace: None
+  Intensity: Undefined
+  Compose: Over
+  Page geometry: 1x1+0+0
+  Dispose: Undefined
+  Iterations: 0
+  Compression: None
+  Orientation: TopLeft
+  Properties:
+    date:create: 2023-03-12T11:38:42+00:00
+    date:modify: 2023-03-12T11:38:42+00:00
+    date:timestamp: 2023-03-12T11:38:56+00:00
+    signature: c51848f16d296f7c95be14404cc582f49db6fd33f31b544a2ce10e440b3747b3
+    tiff:alpha: unspecified
+    tiff:endian: lsb
+    tiff:photometric: separated
+    tiff:rows-per-strip: 1
+  Artifacts:
+    verbose: true
+  Tainted: False
+  Filesize: 306B
+  Number pixels: 1
+</samp></pre>
+<p>Notice the channel depth and statistics associated with the two meta channels.<p>
+<h5>Working with Multispectral Images</h5>
+<p>Meta channels are treated the same as any other channel meaning they can be read, written, and operated upon-- e.g., resized, gamma adjusted, etc..  Here, we replace the first channel with the contents of the meta channel:<p>
+<pre class="bg-light text-dark mx-4"><samp>magick multiMeta.tif -channel-fx 'meta1=>cyan' multiMeta-1.tif</samp></pre>
+<p>The original cyan channel has an intensity of 10.  It's now, per the channel FX instructions, 50.<p>
+<p>And in this example, we create two meta channels:</p>
+<pre class="bg-light text-dark mx-4"><samp>magick lena.png \( mandril3.jpg -colorspace gray \) -channel-fx '| gray=>meta' \( zelda1.jpg -colorspace gray \) -channel-fx '| gray=>meta1' meta.tif</samp></pre>
+<h5>Writing Multispectral Images</h5>
+<p>You can preserve multispectral images by writing them to a format that supports meta channels such as TIFF or PSD.  If you write to other image formats that do not support multisprectal images, the channels are not preserved and instead lost-- e.g., PNG.  In this example, we read, resize, and  write a multispectral image:</p>
+<pre class="bg-light text-dark mx-4"><samp>magick multiMeta.tif -resize 50% resizedMeta.tif</samp></pre>
+</div>
+  </div>
+  </main><!-- /.container -->
+  <footer class="magick-footer">
+    <div class="container-fluid">
+      <a href="../www/security-policy.html">Security</a> •
+      <a href="../www/news.html">News</a>
+     
+      <a href="multispectral-imagery.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+     
+      <a href="../www/links.html">Related</a> •
+      <a href="../www/sitemap.html">Sitemap</a>
+   <br/>
+     <a href="../www/support.html">Sponsor</a> •
+     <a href="../www/cite.html">Cite</a> •
+     <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
+     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
+   <br/>
+     <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
+     <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
+    <br/>
+    <small>Copyright © 1999 ImageMagick Studio LLC</small>
+    </div>
+  </footer>
+
+  <!-- Javascript assets -->
+  <script src="assets/magick.js" ></script>
+  </body>
+</html>
+<!-- Magick Cache 12th August 2023 19:14 -->

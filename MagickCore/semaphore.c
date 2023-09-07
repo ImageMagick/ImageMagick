@@ -129,7 +129,7 @@ MagickExport void ActivateSemaphoreInfo(SemaphoreInfo **semaphore_info)
 static void *AcquireSemaphoreMemory(const size_t count,const size_t quantum)
 {
 #define AlignedExtent(size,alignment) \
-  (((size)+((alignment)-1)) & ~((alignment)-1))
+  (((size)+((alignment)-1)) & (size_t) ~((alignment)-1))
 
   size_t
     alignment,

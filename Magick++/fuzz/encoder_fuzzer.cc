@@ -34,49 +34,64 @@
 #endif
 #define FUZZ_ENCODER_INITIALIZER FUZZ_ENCODER_STRING_LITERAL_X(FUZZ_IMAGEMAGICK_INITIALIZER)
 
-static ssize_t EncoderInitializer(const uint8_t *Data, const size_t Size, Magick::Image &image)
+static ssize_t EncoderInitializer(const uint8_t *Data,const size_t Size,Magick::Image &image)
 {
-  if (strcmp(FUZZ_ENCODER_INITIALIZER, "interlace") == 0) {
-    Magick::InterlaceType interlace = (Magick::InterlaceType) *reinterpret_cast<const char *>(Data);
-    if (interlace > Magick::PNGInterlace)
-      return -1;
-    image.interlaceType(interlace);
-    return 1;
-  }
-  if (strcmp(FUZZ_ENCODER_INITIALIZER, "png") == 0) {
-    image.defineValue("png", "ignore-crc", "1");
-  }
+  if (strcmp(FUZZ_ENCODER_INITIALIZER,"interlace") == 0)
+    {
+      Magick::InterlaceType
+        interlace=(Magick::InterlaceType) *reinterpret_cast<const char *>(Data);
 
-  return 0;
+      if (interlace > Magick::PNGInterlace)
+        return(-1);
+      image.interlaceType(interlace);
+      return(1);
+    }
+  if (strcmp(FUZZ_ENCODER_INITIALIZER,"png") == 0)
+    image.defineValue("png","ignore-crc","1");
+  return(0);
 }
 
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 {
+  Magick::Image
+    image;
+
+  ssize_t
+    offset;
+  
+  std::string
+    encoder=FUZZ_ENCODER;
+
   if (IsInvalidSize(Size))
-    return 0;
-  Magick::Image image;
-  const ssize_t offset = EncoderInitializer(Data, Size, image);
+    return(0);
+  offset=EncoderInitializer(Data,Size,image);
   if (offset < 0)
-    return 0;
-  std::string encoder = FUZZ_ENCODER;
+    return(0);
   image.magick(encoder);
-  image.fileName(std::string(encoder) + ":");
-  const Magick::Blob blob(Data + offset, Size - offset);
-  try {
+  image.fileName(std::string(encoder)+":");
+  try
+  {
+    const Magick::Blob
+      blob(Data+offset,Size-offset);
+
     image.read(blob);
   }
-  catch (Magick::Exception &e) {
-    return 0;
+  catch (Magick::Exception &e)
+  {
+    return(0);
   }
 
 #if FUZZ_IMAGEMAGICK_ENCODER_WRITE || BUILD_MAIN
+  try
+  {
+    Magick::Blob
+      outBlob;
 
-  Magick::Blob outBlob;
-  try {
-    image.write(&outBlob, encoder);
+    image.write(&outBlob,encoder);
   }
-  catch (Magick::Exception &e) {
+  catch (Magick::Exception &e)
+  {
   }
 #endif
-  return 0;
+  return(0);
 }

@@ -277,8 +277,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
           (void) CopyMagickString(url,image_info->magick,MagickPathExtent);
           (void) ConcatenateMagickString(url,":",MagickPathExtent);
           url[strlen(url)+p-image->filename]='\0';
-          (void) ConcatenateMagickString(url,image->filename,
-            p-image->filename+2);
+          (void) ConcatenateMagickString(url,image->filename,(size_t)
+            (p-image->filename+2));
           (void) CopyMagickString(image->filename,p,MagickPathExtent);
         }
     }
@@ -312,7 +312,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         Write the HTML image file.
       */
       (void) WriteBlobString(image,"<?xml version=\"1.0\" "
-        "encoding=\"US-ASCII\"?>\n");
+        "encoding=\"UTF-8\"?>\n");
       (void) WriteBlobString(image,"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML "
         "1.0 Strict//EN\" "
         "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
@@ -373,7 +373,8 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
               (void) FormatLocaleString(buffer,MagickPathExtent,"\" shape="
                 "\"rect\" coords=\"%.20g,%.20g,%.20g,%.20g\" alt=\"\" />\n",
                 (double) geometry.x,(double) geometry.y,(double) (geometry.x+
-                geometry.width-1),(double) (geometry.y+geometry.height-1));
+                (ssize_t) geometry.width-1),(double) (geometry.y+(ssize_t)
+                geometry.height-1));
               (void) WriteBlobString(image,buffer);
               if (*(p+1) != '\0')
                 {

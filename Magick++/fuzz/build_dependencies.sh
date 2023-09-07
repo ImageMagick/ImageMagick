@@ -9,8 +9,8 @@ popd
 
 # Build xz
 pushd "$SRC/xz"
-./autogen.sh --no-po4a
-./configure --disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-lzma-links --disable-scripts --disable-doc --disable-shared --with-pic=yes --prefix="$WORK"
+./autogen.sh --no-po4a --no-doxygen
+./configure --disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-lzma-links --disable-ifunc --disable-scripts --disable-doc --disable-shared --with-pic=yes --prefix="$WORK"
 make -j$(nproc)
 make install
 popd
@@ -71,8 +71,7 @@ popd
 
 # Build libheif
 pushd "$SRC/libheif"
-./autogen.sh
-./configure --disable-shared --disable-go --disable-examples --disable-tests --prefix="$WORK" PKG_CONFIG_PATH="$WORK/lib/pkgconfig"
+cmake . -DCMAKE_INSTALL_PREFIX=$WORK -DBUILD_SHARED_LIBS=off -DBUILD_TESTING=off -DWITH_EXAMPLES=off -DENABLE_PLUGIN_LOADING=off -DWITH_JPEG_DECODER=off -DWITH_JPEG_ENCODER=off -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 make install
 popd

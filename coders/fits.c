@@ -71,7 +71,7 @@
 /*
   Forward declarations.
 */
-#define FITSBlocksize  2880UL
+#define FITSBlocksize  2880L
 
 /*
   Forward declarations.
@@ -415,7 +415,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             comment=DestroyString(comment);
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-      number_pixels=(MagickSizeType) fits_info.columns*fits_info.rows;
+      number_pixels=(MagickSizeType) (fits_info.columns*fits_info.rows);
       if ((fits_info.simple != MagickFalse) && (fits_info.number_axes >= 1) &&
           (fits_info.number_axes <= 4) && (number_pixels != 0))
         break;
@@ -431,7 +431,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (EOFBlob(image) != MagickFalse)
       ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
         image->filename);
-    number_pixels=(MagickSizeType) fits_info.columns*fits_info.rows;
+    number_pixels=(MagickSizeType) (fits_info.columns*fits_info.rows);
     if ((fits_info.simple == MagickFalse) || (fits_info.number_axes < 1) ||
         (fits_info.number_axes > 4) || (number_pixels == 0) ||
         (fits_info.number_planes <= 0))
@@ -440,8 +440,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     {
       image->columns=(size_t) fits_info.columns;
       image->rows=(size_t) fits_info.rows;
-      image->depth=(size_t) (fits_info.bits_per_pixel < 0 ? -1 : 1)*
-        fits_info.bits_per_pixel;
+      image->depth=(size_t) ((fits_info.bits_per_pixel < 0 ? -1L : 1L)*
+        (ssize_t) fits_info.bits_per_pixel);
       image->endian=fits_info.endian;
       image->scene=(size_t) scene;
       if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
@@ -469,7 +469,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       /*
         Convert FITS pixels to pixel packets.
       */
-      scale=QuantumRange*PerceptibleReciprocal(fits_info.max_data-
+      scale=(double) QuantumRange*PerceptibleReciprocal(fits_info.max_data-
         fits_info.min_data);
       for (y=(ssize_t) image->rows-1; y >= 0; y--)
       {
@@ -752,8 +752,8 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
       "SIMPLE  =                    T");
     offset+=CopyFITSRecord(fits_info,header,offset);
     (void) FormatLocaleString(header,FITSBlocksize,"BITPIX  =           %10ld",
-      (long) ((quantum_info->format == FloatingPointQuantumFormat ? -1 : 1)*
-      image->depth));
+      (long) ((quantum_info->format == FloatingPointQuantumFormat ? -1L : 1L)*
+      (ssize_t) image->depth));
     offset+=CopyFITSRecord(fits_info,header,offset);
     is_gray=IdentifyImageCoderGray(image,exception);
     (void) FormatLocaleString(header,FITSBlocksize,"NAXIS   =           %10lu",

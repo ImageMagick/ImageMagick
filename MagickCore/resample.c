@@ -607,16 +607,22 @@ MagickExport MagickBooleanType ResamplePixelColor(
              sqrt(Q));    /* a SquareRoot!  Arrggghhhhh... */
 #endif
 
-        pixel->alpha  += weight*GetPixelAlpha(resample_filter->image,pixels);
+        pixel->alpha+=weight*(double)
+          GetPixelAlpha(resample_filter->image,pixels);
         divisor_m += weight;
 
         if (pixel->alpha_trait != UndefinedPixelTrait)
-          weight *= QuantumScale*((double) GetPixelAlpha(resample_filter->image,pixels));
-        pixel->red   += weight*GetPixelRed(resample_filter->image,pixels);
-        pixel->green += weight*GetPixelGreen(resample_filter->image,pixels);
-        pixel->blue  += weight*GetPixelBlue(resample_filter->image,pixels);
+          weight*=QuantumScale*((double)
+            GetPixelAlpha(resample_filter->image,pixels));
+        pixel->red+=weight*(double)
+          GetPixelRed(resample_filter->image,pixels);
+        pixel->green+=weight*(double)
+          GetPixelGreen(resample_filter->image,pixels);
+        pixel->blue+=weight*(double)
+          GetPixelBlue(resample_filter->image,pixels);
         if (pixel->colorspace == CMYKColorspace)
-          pixel->black += weight*GetPixelBlack(resample_filter->image,pixels);
+          pixel->black+=weight*(double)
+            GetPixelBlack(resample_filter->image,pixels);
         divisor_c += weight;
 
         hit++;

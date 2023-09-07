@@ -116,6 +116,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     *image;
 
   MagickBooleanType
+    left_bearing,
     status;
 
   TypeMetric
@@ -150,7 +151,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     return(DestroyImageList(image));
   (void) SetImageProperty(image,"label",label,exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  width=(size_t) floor(0.5*draw_info->pointsize*strlen(label)+0.5);
+  width=CastDoubleToUnsigned(0.5*draw_info->pointsize*strlen(label)+0.5);
   if (AcquireMagickResource(WidthResource,width) == MagickFalse)
     {
       label=DestroyString(label);
@@ -213,8 +214,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
               if (status == MagickFalse)
                 break;
               AdjustTypeMetricBounds(&metrics);
-              width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-              height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
+              width=CastDoubleToUnsigned(metrics.width+draw_info->stroke_width+0.5);
+              height=CastDoubleToUnsigned(metrics.height-metrics.underline_position+
+                draw_info->stroke_width+0.5);
               if ((image->columns != 0) && (image->rows != 0))
                 {
                   if ((width >= image->columns) || (height >= image->rows))
@@ -247,8 +249,9 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           if (status == MagickFalse)
             break;
           AdjustTypeMetricBounds(&metrics);
-          width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-          height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
+          width=CastDoubleToUnsigned(metrics.width+draw_info->stroke_width+0.5);
+          height=CastDoubleToUnsigned(metrics.height-metrics.underline_position+
+            draw_info->stroke_width+0.5);
           if ((image->columns != 0) && (image->rows != 0))
             {
               if ((width < image->columns) && (height < image->rows))
@@ -302,10 +305,14 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   /*
     Draw label.
   */
+  left_bearing=((draw_info->gravity == UndefinedGravity) ||
+     (draw_info->gravity == NorthWestGravity) ||
+     (draw_info->gravity == WestGravity) ||
+     (draw_info->gravity == SouthWestGravity)) ? MagickTrue : MagickFalse;
   (void) FormatLocaleString(geometry,MagickPathExtent,"%+g%+g",
     (draw_info->direction == RightToLeftDirection ? (double) image->columns-
     (draw_info->gravity == UndefinedGravity ? metrics.bounds.x2 : 0.0) : 
-    (draw_info->gravity == UndefinedGravity ? metrics.bounds.x1 : 0.0)),
+    (left_bearing != MagickFalse ? metrics.bounds.x1 : 0.0)),
     (draw_info->gravity == UndefinedGravity ? 
     MagickMax(metrics.ascent,metrics.bounds.y2) : 0.0));
   (void) CloneString(&draw_info->geometry,geometry);

@@ -233,10 +233,13 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   const size_t
-    one=1;
+    one = 1;
 
   Image
     *image;
+
+  int
+    bit;
 
   MagickBooleanType
     status;
@@ -249,13 +252,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     transpix;
 
   Quantum
-    index;
-
-  ssize_t
-    i,
-    x;
-
-  Quantum
+    index,
     *q;
 
   size_t
@@ -273,11 +270,12 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     greenbits,
     bluebits,
     pad,
-    size,
-    bit;
+    size;
 
   ssize_t
     count,
+    i,
+    x,
     y;
 
   unsigned char
@@ -425,7 +423,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
          (void) memset(last_row,0,MagickMax(bytes_per_row,2*image->columns)*
            sizeof(*last_row));
       }
-    mask=(size_t) (1U << bits_per_pixel)-1;
+    mask=((size_t) 1U << bits_per_pixel)-1;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       if ((flags & PALM_IS_COMPRESSED_FLAG) == 0)
@@ -464,10 +462,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                 if (count < 0)
                   break;
                 byte=(size_t) MagickMin((ssize_t) bytes_per_row-i,8);
-                for (bit=0; bit < byte; bit++)
+                for (bit=0; bit < (int) byte; bit++)
                 {
-                  if ((y == 0) || (count & (one << (7 - bit))))
-                    one_row[i+bit]=(unsigned char) ReadBlobByte(image);
+                  if ((y == 0) || ((size_t) count & (one << (7-bit))))
+                    one_row[i+bit]=(unsigned char)
+                      ReadBlobByte(image);
                   else
                     one_row[i+bit]=last_row[i+bit];
                 }
@@ -504,7 +503,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         }
       else
         {
-          bit=8-bits_per_pixel;
+          bit=(int) (8-bits_per_pixel);
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             if ((size_t) (ptr-one_row) >= bytes_per_row)
@@ -518,11 +517,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             SetPixelIndex(image,index,q);
             SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
             if (bit)
-              bit-=bits_per_pixel;
+              bit-=(int) bits_per_pixel;
             else
               {
                 ptr++;
-                bit=8-bits_per_pixel;
+                bit=(int) (8-bits_per_pixel);
               }
             q+=GetPixelChannels(image);
           }
@@ -687,11 +686,11 @@ ModuleExport void UnregisterPALMImage(void)
 static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
-  int
-    bit;
-
   const Quantum
     *p;
+
+  int
+    bit;
 
   MagickBooleanType
     status;
@@ -844,7 +843,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
               (void) WriteBlobByte(image,ScaleQuantumToChar(ClampToQuantum(
                 image->colormap[count].blue)));
             }
-            offset+=2+count*4;
+            offset+=2+(MagickOffsetType) count*4;
           }
       else  /* Map colors to Palm standard colormap */
         {
@@ -979,7 +978,8 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
                   }
               }
               (void) WriteBlobByte(image, byte);
-              (void) WriteBlob(image,tptr-tmpbuf,(unsigned char *) tmpbuf);
+              (void) WriteBlob(image,(size_t) (tptr-tmpbuf),(unsigned char *)
+                tmpbuf);
             }
             (void) memcpy(last_row,one_row,bytes_per_row);
           }
@@ -998,17 +998,17 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
         offset=SeekBlob(image,currentOffset+20,SEEK_SET);
         (void) WriteBlobByte(image,0);  /* reserved by Palm */
         (void) WriteBlobByte(image,(unsigned char) ((31*transpix.red)/
-          QuantumRange));
+          (double) QuantumRange));
         (void) WriteBlobByte(image,(unsigned char) ((63*transpix.green)/
-          QuantumRange));
+          (double) QuantumRange));
         (void) WriteBlobByte(image,(unsigned char) ((31*transpix.blue)/
-          QuantumRange));
+          (double) QuantumRange));
       }
     if (flags & PALM_IS_COMPRESSED_FLAG)  /* fill in size now */
       {
         offset=SeekBlob(image,currentOffset+offset,SEEK_SET);
-        (void) WriteBlobMSBShort(image,(unsigned short) (GetBlobSize(image)-
-          currentOffset-offset));
+        (void) WriteBlobMSBShort(image,(unsigned short) ((MagickOffsetType)
+          GetBlobSize(image)-currentOffset-offset));
       }
     if (one_row != (unsigned char *) NULL) 
       one_row=(unsigned char *) RelinquishMagickMemory(one_row);
@@ -1021,7 +1021,8 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
       (void) WriteBlobByte(image,0);
     /* write nextDepthOffset and return to end of image */
     offset=SeekBlob(image,currentOffset+10,SEEK_SET);
-    nextDepthOffset=(size_t) ((GetBlobSize(image)-currentOffset)/4);
+    nextDepthOffset=(size_t) (((MagickOffsetType) GetBlobSize(image)-
+      currentOffset)/4);
     (void) WriteBlobMSBShort(image,(unsigned short) nextDepthOffset);
     currentOffset=(MagickOffsetType) GetBlobSize(image);
     offset=SeekBlob(image,currentOffset,SEEK_SET);

@@ -583,12 +583,12 @@ static void SyncResolutionFromProperties(Image *image,
       if (strchr(resolution_y,',') != (char *) NULL)
         image->resolution.y=geometry_info.rho+geometry_info.sigma/1000.0;
       if (resolution_units != (char *) NULL)
-          {
-            option_type=ParseCommandOption(MagickResolutionOptions,MagickFalse,
-              resolution_units);
-            if (option_type >= 0)
-              image->units=(ResolutionType) option_type;
-          }
+        {
+          option_type=ParseCommandOption(MagickResolutionOptions,MagickFalse,
+            resolution_units);
+          if (option_type >= 0)
+            image->units=(ResolutionType) option_type;
+        }
       if (used_tiff == MagickFalse)
         {
           (void) DeleteImageProperty(image,"exif:XResolution");
@@ -1282,7 +1282,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
             image->endian=(*(char *) &lsb_first) == 1 ? LSBEndian : MSBEndian;
          }
     }
-  (void) SyncImageProfiles(image);
+  SyncImageProfiles(image);
   DisassociateImageStream(image);
   option=GetImageOption(image_info,"delegate:bimodal");
   if ((IsStringTrue(option) != MagickFalse) &&
@@ -1396,6 +1396,9 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               (void) CopyMagickString(image->filename,filename,
                 MagickPathExtent);
               encoder=GetImageEncoder(magick_info);
+              (void) ThrowMagickException(exception,GetMagickModule(),
+                MissingDelegateWarning,"NoEncodeDelegateForThisImageFormat",
+                "`%s'",write_info->magick);
             }
           if (encoder == (EncodeImageHandler *) NULL)
             {

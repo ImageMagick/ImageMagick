@@ -80,16 +80,15 @@
 #include <libheif/heif.h>
 #endif
 #endif
-
-
+
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 /*
   Forward declarations.
 */
 static MagickBooleanType
   WriteHEICImage(const ImageInfo *,Image *,ExceptionInfo *);
-
-/*x
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -244,7 +243,7 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       if ((length > 2) && 
           ((memcmp(datum,"\xff\xd8",2) == 0) ||
            (memcmp(datum,"\xff\xe1",2) == 0)) &&
-           memcmp(datum+length-2,"\xff\xd9",2) == 0)
+           (memcmp(datum+length-2,"\xff\xd9",2) == 0))
         SetStringInfoLength(exif_profile,length-2);
       /*
         Skip to actual Exif payload.
@@ -373,7 +372,7 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(MagickFalse);
   decode_options=heif_decoding_options_alloc();
-  if (preserve_orientation == MagickTrue)
+  if (preserve_orientation != MagickFalse)
     decode_options->ignore_transformations=1;
   chroma=heif_chroma_interleaved_RGB;
   if (image->depth > 8)
@@ -659,8 +658,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   return(GetFirstImageInList(image));
 }
 #endif
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -700,8 +698,7 @@ static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
 #endif
   return(MagickFalse);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -781,8 +778,7 @@ ModuleExport size_t RegisterHEICImage(void)
 #endif
   return(MagickImageCoderSignature);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -815,8 +811,7 @@ ModuleExport void UnregisterHEICImage(void)
 #endif
 #endif
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -888,7 +883,8 @@ static void WriteProfile(struct heif_context *context,Image *image,
     if (LocaleCompare(name,"XMP") == 0)
       for (i=0; i < (ssize_t) GetStringInfoLength(profile); i+=65533L)
       {
-        length=MagickMin(GetStringInfoLength(profile)-i,65533L);
+        length=(size_t) MagickMin((ssize_t) GetStringInfoLength(profile)-i,
+          65533L);
         error=heif_context_add_XMP_metadata(context,image_handle,
           (void*) (GetStringInfoDatum(profile)+i),(int) length);
         if (IsHEIFSuccess(image,&error,exception) == MagickFalse)
@@ -1248,7 +1244,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
     chroma=lossless != MagickFalse ? heif_chroma_444 : heif_chroma_420;
-    if (image->alpha_trait == BlendPixelTrait)
+    if ((image->alpha_trait & BlendPixelTrait) != 0)
       {
         if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
           status=TransformImageColorspace(image,sRGBColorspace,exception);

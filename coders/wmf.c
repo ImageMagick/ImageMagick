@@ -17,7 +17,7 @@
 %                               December 2000                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -240,8 +240,8 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #elif defined(MAGICKCORE_WMF_DELEGATE)
 
 #define ERR(API)  ((API)->err != wmf_E_None)
-#define XC(x) ((double) x)
-#define YC(y) ((double) y)
+#define XC(x) ((double) (x))
+#define YC(y) ((double) (y))
 
 #if !defined(M_PI)
 #  define M_PI  MagickPI
@@ -696,7 +696,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
 
   if ( ddata->image_info->texture ||
        !(IsPixelInfoEquivalent(&ddata->image_info->background_color,&white)) ||
-       ddata->image_info->background_color.alpha != OpaqueAlpha )
+       ddata->image_info->background_color.alpha != (double) OpaqueAlpha )
   {
     /*
       Set image white background to transparent so that it may be
@@ -759,7 +759,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
    bmp_read->width, bmp_read->height);
 #endif
   image=BlobToImage(image_info, (const void *) bmp_read->buffer,
-    bmp_read->length, exception);
+    (size_t) bmp_read->length, exception);
   image_info=DestroyImageInfo(image_info);
   if (image != (Image *) NULL)
     {
@@ -990,8 +990,8 @@ static void ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
   DrawRectangle(WmfDrawingWand,
                  XC(draw_pixel->pt.x),
                  YC(draw_pixel->pt.y),
-                 XC(draw_pixel->pt.x + draw_pixel->pixel_width),
-                 YC(draw_pixel->pt.y + draw_pixel->pixel_height));
+                 XC((double) draw_pixel->pt.x + draw_pixel->pixel_width),
+                 YC((double) draw_pixel->pt.y + draw_pixel->pixel_height));
 
   /* Restore graphic wand */
   (void) PopDrawingWand(WmfDrawingWand);
@@ -1548,9 +1548,9 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
                 text_width = metrics.width * (ddata->scale_y / ddata->scale_x);
 
 #if defined(MAGICKCORE_WMF_DELEGATE)
-              point.x -= text_width / 2;
+              point.x -= (float) text_width / 2;
 #else
-              point.x += bbox_width / 2 - text_width / 2;
+              point.x += (float) bbox_width / 2 - text_width / 2;
 #endif
             }
         }
@@ -2402,7 +2402,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
       if (WMF_FONT_ITALIC(font)) 
         style=ItalicStyle;
       type_info=GetTypeInfoByFamily(wmf_font_name,style,AnyStretch,
-        target_weight,exception);
+        (size_t) target_weight,exception);
       if (type_info == (const TypeInfo *) NULL)
         type_info=GetTypeInfoByFamily(wmf_font_name,AnyStyle,AnyStretch,0,
           exception);
@@ -2773,15 +2773,16 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
          (API)->File->placeable ? "Yes" : "No");
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Size in metafile units:      %gx%g",wmf_width,wmf_height);
+        "  Size in metafile units:      %gx%g",(double) wmf_width,(double)
+        wmf_height);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Metafile units/inch:         %g",units_per_inch);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Size in inches:              %gx%g",
         image_width_inch,image_height_inch);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Bounding Box:                %g,%g %g,%g",
-        bbox.TL.x, bbox.TL.y, bbox.BR.x, bbox.BR.y);
+        "  Bounding Box:                %g,%g %g,%g",(double) bbox.TL.x,
+        (double) bbox.TL.y, (double) bbox.BR.x, (double) bbox.BR.y);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Bounding width x height:     %gx%g",bounding_width,
         bounding_height);
@@ -2865,7 +2866,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
    */
   {
     image->background_color = image_info->background_color;
-    if (image->background_color.alpha != OpaqueAlpha)
+    if (image->background_color.alpha != (double) OpaqueAlpha)
       image->alpha_trait=BlendPixelTrait;
     (void) SetImageBackgroundColor(image,exception);
   }

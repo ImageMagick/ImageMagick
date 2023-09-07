@@ -37,7 +37,7 @@
 <body>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -45,16 +45,16 @@
     <div class="collapse navbar-collapse" id="magick-navbars">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link " href="download.html">Download</a>
+          <a class="nav-link " href="../www/download.html">Download</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="command-line-tools.html">Tools</a>
+          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="command-line-processing.html">CLI</a>
+          <a class="nav-link " href="../www/command-line-processing.html">CLI</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="develop.html">Develop</a>
+          <a class="nav-link " href="../www/develop.html">Develop</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
@@ -136,7 +136,7 @@
 
 <h2><a class="anchor" id="cache"></a>The Pixel Cache</h2>
 
-<p>The ImageMagick pixel cache is a repository for image pixels with up to 32 channels.  The channels are stored contiguously at the depth specified when ImageMagick was built.  The channel depths are 8 bits-per-pixel component for the Q8 version of ImageMagick, 16 bits-per-pixel component for the Q16 version, and 32 bits-per-pixel component for the Q32 version.  By default pixel components are 32-bit floating-bit <a href="high-dynamic-range.html">high dynamic-range</a> quantities. The channels can hold any value but typically contain red, green, blue, and alpha intensities or cyan, magenta, yellow, black and alpha intensities.  A channel might contain the colormap indexes for colormapped images or the black channel for CMYK images.  The pixel cache storage may be heap memory, disk-backed memory mapped, or on disk.  The pixel cache is reference-counted.  Only the cache properties are copied when the cache is cloned.  The cache pixels are subsequently copied only when you signal your intention to update any of the pixels.</p>
+<p>The ImageMagick pixel cache is a repository for image pixels with up to 32 channels.  The channels are stored contiguously at the depth specified when ImageMagick was built.  The channel depths are 8 bits-per-pixel component for the Q8 version of ImageMagick, 16 bits-per-pixel component for the Q16 version, and 32 bits-per-pixel component for the Q32 version.  By default pixel components are 32-bit floating-bit <a href="../www/high-dynamic-range.html">high dynamic-range</a> quantities. The channels can hold any value but typically contain red, green, blue, and alpha intensities or cyan, magenta, yellow, black and alpha intensities.  A channel might contain the colormap indexes for colormapped images or the black channel for CMYK images.  The pixel cache storage may be heap memory, disk-backed memory mapped, or on disk.  The pixel cache is reference-counted.  Only the cache properties are copied when the cache is cloned.  The cache pixels are subsequently copied only when you signal your intention to update any of the pixels.</p>
 
 <h2>Create the Pixel Cache</h2>
 
@@ -166,9 +166,9 @@ if (image == (Image *) NULL)
 
 <p>In our discussion of the pixel cache, we use the <a href="magick-core.html">MagickCore API</a> to illustrate our points, however, the principles are the same for other program interfaces to ImageMagick.</p>
 
-<p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a class="text-nowrap" href="command-line-options.html#version">-version</a> option: </p>
+<p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a class="text-nowrap" href="../www/command-line-options.html#version">-version</a> option: </p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>Version: ImageMagick 7.1.0-62 2023-02-05 Q16 https://imagemagick.org</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>Version: ImageMagick 7.1.1-15 2023-05-29 Q16 https://imagemagick.org</span></code></pre></ul>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h2><a class="anchor" id="authentic-pixels"></a>Access the Pixel Cache</h2>
@@ -247,7 +247,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 <h2><a class="anchor" id="virtual-pixels"></a>Virtual Pixels</h2>
 
 <p>There are a plethora of image processing algorithms that require a neighborhood of pixels about a pixel of interest.  The algorithm typically includes a caveat concerning how to handle pixels around the image boundaries, known as edge pixels.  With virtual pixels, you do not need to concern yourself about special edge processing other than choosing  which virtual pixel method is most appropriate for your algorithm.</p>
- <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a class="text-nowrap" href="command-line-options.html#virtual-pixel">-virtual-pixel</a> option from the command line.  The methods include:</p>
+ <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a class="text-nowrap" href="../www/command-line-options.html#virtual-pixel">-virtual-pixel</a> option from the command line.  The methods include:</p>
 
 <div>
 <table class="table table-sm table-hover table-striped table-responsive">
@@ -378,7 +378,7 @@ Resource limits:
   Time: unlimited
 </samp></pre>
 
-<p>You can set these limits either as a <a href="security-policy.html">security policy</a> (see <a href="https://imagemagick.org/source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="../MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
+<p>You can set these limits either as a <a href="../www/security-policy.html">security policy</a> (see <a href="https://imagemagick.org/source/policy.xml">policy.xml</a>), with an <a href="resources.html#environment">environment variable</a>, with the <a href="../www/command-line-options.html#limit">-limit</a> command line option, or with the <a href="api/resource.html#SetMagickResourceLimit">SetMagickResourceLimit()</a> MagickCore API method. As an example, our online web interface to ImageMagick, <a href="../MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>, includes these policy limits to help prevent a denial-of-service:</p>
 <pre class="pre-scrollable bg-light text-dark mx-4"><samp>&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;!DOCTYPE policymap [
 &lt;!ELEMENT policymap (policy)+>
@@ -451,7 +451,7 @@ Resource limits:
 
 <p>Note, the cache limits are global to each invocation of ImageMagick, meaning if you create several images, the combined resource requirements are compared to the limit to determine the pixel cache storage disposition.</p>
 
-<p>To determine which type and how much resources are consumed by the pixel cache, add the <a href="command-line-options.html#debug">-debug cache</a> option to the command-line:</p>
+<p>To determine which type and how much resources are consumed by the pixel cache, add the <a href="../www/command-line-options.html#debug">-debug cache</a> option to the command-line:</p>
 <pre class="bg-light text-dark mx-4"><samp>$ magick -debug cache logo: -sharpen 3x2 null:
 2016-12-17T13:33:42-05:00 0:00.000 0.000u 7.0.0 Cache magick: cache.c/DestroyPixelCache/1275/Cache
   destroy 
@@ -532,7 +532,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 
 <p>The ImageMagick Q16 version of ImageMagick permits you to read and write 16 bit images without scaling but the pixel cache consumes twice as many resources as the Q8 version.  If your system has constrained memory or disk resources, consider the Q8 version of ImageMagick.  In addition, the Q8 version typically executes faster than the Q16 version.</p>
 
-<p>A great majority of image formats and algorithms restrict themselves to a fixed range of pixel values from 0 to some maximum value, for example, the Q16 version of ImageMagick permit intensities from 0 to 65535.  High dynamic-range imaging (HDRI), however, permits a far greater dynamic range of exposures (i.e. a large difference between light and dark areas) than standard digital imaging techniques. HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  Enable <a href="high-dynamic-range.html">HDRI</a> at ImageMagick build time to deal with high dynamic-range images, but be mindful that each pixel component is a 32-bit floating point value. In addition, pixel values are not clamped by default so some algorithms may have unexpected results due to out-of-band pixel values than the non-HDRI version.</p>
+<p>A great majority of image formats and algorithms restrict themselves to a fixed range of pixel values from 0 to some maximum value, for example, the Q16 version of ImageMagick permit intensities from 0 to 65535.  High dynamic-range imaging (HDRI), however, permits a far greater dynamic range of exposures (i.e. a large difference between light and dark areas) than standard digital imaging techniques. HDRI accurately represents the wide range of intensity levels found in real scenes ranging from the brightest direct sunlight to the deepest darkest shadows.  Enable <a href="../www/high-dynamic-range.html">HDRI</a> at ImageMagick build time to deal with high dynamic-range images, but be mindful that each pixel component is a 32-bit floating point value. In addition, pixel values are not clamped by default so some algorithms may have unexpected results due to out-of-band pixel values than the non-HDRI version.</p>
 
 <p>If you are dealing with large images, make sure the pixel cache is written to a disk area with plenty of free space.  Under Linux, this is typically <samp>/tmp</samp> and for Windows, <samp>c:/temp</samp>.  You can tell ImageMagick to write the pixel cache to an alternate location and conserve memory with these options:</p>
 <pre class="bg-light text-dark mx-4 cli"><samp>magick -limit memory 2GB -limit map 4GB -define registry:temporary-path=/data/tmp ...
@@ -581,7 +581,7 @@ if (profile != (StringInfo *) NULL)
 </samp></pre>
 
 <h2><a class="anchor" id="multispectral"></a>Multispectral Imagery</h2>
-<p>ImageMagick supports multispectral images where all channels have the same dimensions and number of pixels as the original image.  However, not all image formats support multispectral images.  PSD, TIFF, MIFF, MPC, and FTXT have full support for multispectral images up to 64 bands.  If you have a use case that is not currently supported by an image format, post it to the <a href="https://github.com/ImageMagick/ImageMagick/discussions">discussion forum</a>. There is a good chance, we can support your use case in a future release of ImageMagick.</p>
+<p>ImageMagick supports <a href="multispectral-imagery.html">multispectral imagery</a> where all channels have the same dimensions and number of pixels as the original image.  However, not all image formats support multispectral images.  PSD, TIFF, MIFF, MPC, and FTXT have full support for multispectral images up to 32 bands, 22 of them meta channels.  If you have a use case that is not currently supported by an image format, post it to the <a href="https://github.com/ImageMagick/ImageMagick/discussions">discussion forum</a>. There is a good chance, we can support your use case in a future release of ImageMagick.</p>
 
 <h2><a class="anchor" id="stream"></a>Streaming Pixels</h2>
 
@@ -807,7 +807,7 @@ Performance[11]: 10i 4.348ips 0.793e 16.500u 0:02.300
 Performance[12]: 10i 4.525ips 0.799e 18.320u 0:02.210
 </samp></pre>
 <p>The sweet spot for this example is 6 threads. This makes sense since there are 6 physical cores.  The other 6 are hyperthreads. It appears that sharpening does not benefit from hyperthreading.</p>
-<p>In certain cases, it might be optimal to set the number of threads to 1 or to disable OpenMP completely with the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable, <a href="command-line-options.html#limit">-limit</a> command line option,  or the  <a href="resources.html#configure">policy.xml</a> configuration file.</p>
+<p>In certain cases, it might be optimal to set the number of threads to 1 or to disable OpenMP completely with the <a href="resources.html#environment">MAGICK_THREAD_LIMIT</a> environment variable, <a href="../www/command-line-options.html#limit">-limit</a> command line option,  or the  <a href="resources.html#configure">policy.xml</a> configuration file.</p>
 
 <h2><a class="anchor" id="distributed"></a>Heterogeneous Distributed Processing</h2>
 <p>ImageMagick includes support for heterogeneous distributed processing with the <a href="http://en.wikipedia.org/wiki/OpenCL">OpenCL</a> framework.  OpenCL kernels within ImageMagick permit image processing algorithms to execute across heterogeneous platforms consisting of CPUs, GPUs, and other processors.  Depending on your platform, speed-ups can be an order of magnitude faster than the traditional single CPU.</p>
@@ -1325,7 +1325,7 @@ display logo.mgk
 
 <h2><a class="anchor" id="filters"></a>Custom Image Filters</h2>
 
-<p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command line with the <a href="command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
+<p>ImageMagick provides a convenient mechanism for adding your own custom image processing algorithms.  We call these image filters and they are invoked from the command line with the <a href="../www/command-line-options.html#process">-process</a> option or from the MagickCore API method <a href="api/module.html#ExecuteModuleProcess">ExecuteModuleProcess()</a>.</p>
 
 <p>Here is a listing of a sample <a href="https://imagemagick.org/source/analyze.c">custom image filter</a>.  It computes a few statistics such as the pixel brightness and saturation mean and standard-deviation.</p>
 <pre class="pre-scrollable bg-light text-dark mx-4"><samp>#include &lt;stdio.h>
@@ -1606,21 +1606,21 @@ Image: logo:
   </main><!-- /.container -->
   <footer class="magick-footer">
     <div class="container-fluid">
-      <a href="security-policy.html">Security</a> •
-      <a href="news.html">News</a>
+      <a href="../www/security-policy.html">Security</a> •
+      <a href="../www/news.html">News</a>
      
       <a href="architecture.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-      <a href="links.html">Related</a> •
-      <a href="sitemap.html">Sitemap</a>
+      <a href="../www/links.html">Related</a> •
+      <a href="../www/sitemap.html">Sitemap</a>
    <br/>
-     <a href="support.html">Sponsor</a> •
-     <a href="cite.html">Cite</a> •
+     <a href="../www/support.html">Sponsor</a> •
+     <a href="../www/cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
+     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
    <br/>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
-     <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 416.32" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"/></svg></a>
+     <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
     <br/>
     <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
@@ -1630,4 +1630,4 @@ Image: logo:
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 27th February 2023 01:02 -->
+<!-- Magick Cache 12th August 2023 16:54 -->

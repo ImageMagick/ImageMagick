@@ -704,6 +704,9 @@
         <message name="MustSpecifyAnImageName">
           must specify an image name
         </message>
+        <message name="MustSpecifyImageDepth">
+          must specify image depth
+        </message>
         <message name="MustSpecifyImageSize">
           must specify image size
         </message>

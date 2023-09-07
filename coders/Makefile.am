@@ -62,6 +62,11 @@ MAGICKCORE_JXL_MODULES = coders/jxl.la
 MAGICKCORE_JXL_SRCS = coders/jxl.c
 endif
 
+if DMR_DELEGATE
+MAGICKCORE_DMR_MODULES = coders/dmr.la
+MAGICKCORE_DMR_SRCS = coders/dmr.c
+endif
+
 if LIBOPENJP2_DELEGATE
 MAGICKCORE_JP2_MODULES = coders/jp2.la
 MAGICKCORE_JP2_SRCS = coders/jp2.c
@@ -372,6 +377,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/yuv.h \
 	$(MAGICKCORE_DPS_SRCS) \
 	$(MAGICKCORE_DJVU_SRCS) \
+	$(MAGICKCORE_DMR_SRCS) \
 	$(MAGICKCORE_EXR_SRCS) \
 	$(MAGICKCORE_FLIF_SRCS) \
 	$(MAGICKCORE_FPX_SRCS) \
@@ -659,6 +665,7 @@ coders_LTLIBRARIES = \
 	coders/yuv.la \
 	$(MAGICKCORE_DPS_MODULES) \
 	$(MAGICKCORE_DJVU_MODULES) \
+	$(MAGICKCORE_DMR_MODULES) \
 	$(MAGICKCORE_EXR_MODULES) \
 	$(MAGICKCORE_FLIF_MODULES) \
 	$(MAGICKCORE_FPX_MODULES) \
@@ -808,6 +815,12 @@ coders_djvu_la_SOURCES     = coders/djvu.c
 coders_djvu_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
 coders_djvu_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_djvu_la_LIBADD      = $(MAGICKCORE_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
+
+# DMR coder module
+coders_dmr_la_SOURCES      = coders/dmr.c
+coders_dmr_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_dmr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+coders_dmr_la_LIBADD       = $(MAGICKCORE_LIBS) $(DMR_LIBS)
 
 # DNG coder module
 coders_dng_la_SOURCES      = coders/dng.c

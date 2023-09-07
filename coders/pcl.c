@@ -334,8 +334,8 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->resolution.x,image->resolution.y);
   if (image_info->ping != MagickFalse)
     (void) FormatLocaleString(density,MagickPathExtent,"2.0x2.0");
-  page.width=(size_t) floor(page.width*image->resolution.x/delta.x+0.5);
-  page.height=(size_t) floor(page.height*image->resolution.y/delta.y+0.5);
+  page.width=CastDoubleToUnsigned(page.width*image->resolution.x/delta.x+0.5);
+  page.height=CastDoubleToUnsigned(page.height*image->resolution.y/delta.y+0.5);
   (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);
   image=DestroyImage(image);
@@ -886,7 +886,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             byte<<=1;
-            if (GetPixelLuma(image,p) < (QuantumRange/2.0))
+            if (GetPixelLuma(image,p) < ((double) QuantumRange/2.0))
               byte|=0x01;
             bit++;
             if (bit == 8)

@@ -58,11 +58,6 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/utility.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
-#    if !defined(__MINGW32__)
-#      include <win32config.h>
-#    endif
-#  endif
 #  include <libxml/parser.h>
 #  include <libxml/xmlmemory.h>
 #if defined(LIBXML_FTP_ENABLED)
@@ -122,7 +117,7 @@ static void GetFTPData(void *userdata,const char *data,int size)
     return;
   if (size <= 0)
     return;
-  length=fwrite(data,size,1,file);
+  length=fwrite(data,(size_t) size,1,file);
   (void) length;
 }
 #endif
@@ -260,7 +255,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             count;
 
           while ((bytes=xmlNanoHTTPRead(context,buffer,sizeof(buffer))) > 0)
-            count=(ssize_t) fwrite(buffer,bytes,1,file);
+            count=(ssize_t) fwrite(buffer,(size_t) bytes,1,file);
           (void) count;
           xmlNanoHTTPClose(context);
           xmlFree(type);

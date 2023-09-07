@@ -243,6 +243,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       extent.height-=(size_t) (-extent.y);
       extent.y=0;
     }
+  if ((extent.width >= image->columns) || (extent.height >= image->rows))
+    ThrowImageException(OptionWarning,"GeometryDoesNotContainImage");
   chop_image=CloneImage(image,image->columns-extent.width,image->rows-
     extent.height,MagickTrue,exception);
   if (chop_image == (Image *) NULL)
@@ -256,7 +258,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   chop_view=AcquireAuthenticCacheView(chop_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,chop_image,extent.y,1)
+    magick_number_threads(image,chop_image,(size_t) extent.y,1)
 #endif
   for (y=0; y < (ssize_t) extent.y; y++)
   {
@@ -281,7 +283,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((x < extent.x) || (x >= (ssize_t) (extent.x+extent.width)))
+      if ((x < extent.x) || (x >= (extent.x+(ssize_t) extent.width)))
         {
           ssize_t
             i;
@@ -321,9 +323,9 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,chop_image,image->rows-(extent.y+extent.height),1)
+    magick_number_threads(image,chop_image,image->rows-((size_t) extent.y+extent.height),1)
 #endif
-  for (y=0; y < (ssize_t) (image->rows-(extent.y+extent.height)); y++)
+  for (y=0; y < (ssize_t) (image->rows-((size_t) extent.y+extent.height)); y++)
   {
     const Quantum
       *magick_restrict p;
@@ -336,7 +338,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,0,extent.y+extent.height+y,
+    p=GetCacheViewVirtualPixels(image_view,0,extent.y+(ssize_t) extent.height+y,
       image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(chop_view,0,extent.y+y,chop_image->columns,
       1,exception);
@@ -347,7 +349,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((x < extent.x) || (x >= (ssize_t) (extent.x+extent.width)))
+      if ((x < extent.x) || (x >= (extent.x+(ssize_t) extent.width)))
         {
           ssize_t
             i;
@@ -480,7 +482,8 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
           Quantum
             pixel;
 
-          pixel=ClampToQuantum(QuantumRange-GetPixelIntensity(images,p));
+          pixel=ClampToQuantum((double) QuantumRange-
+            GetPixelIntensity(images,p));
           switch (i)
           {
             case 0: SetPixelCyan(cmyk_image,pixel,q);  break;
@@ -585,10 +588,10 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     page.width=bounding_box.width;
   if (page.height == 0)
     page.height=bounding_box.height;
-  if (((bounding_box.x-page.x) >= (ssize_t) page.width) ||
-      ((bounding_box.y-page.y) >= (ssize_t) page.height) ||
-      ((page.x-bounding_box.x) > (ssize_t) image->columns) ||
-      ((page.y-bounding_box.y) > (ssize_t) image->rows))
+  if ((((double) bounding_box.x-page.x) >= (double) page.width) ||
+      (((double) bounding_box.y-page.y) >= (double) page.height) ||
+      (((double) page.x-bounding_box.x) > (double) image->columns) ||
+      (((double) page.y-bounding_box.y) > (double) image->rows))
     {
       /*
         Crop is not within virtual canvas, return 1 pixel transparent image.
@@ -612,34 +615,34 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     }
   if ((page.x < 0) && (bounding_box.x >= 0))
     {
-      page.width+=page.x-bounding_box.x;
+      page.width=(size_t) ((ssize_t) page.width+page.x-bounding_box.x);
       page.x=0;
     }
   else
     {
-      page.width-=bounding_box.x-page.x;
+      page.width=(size_t) ((ssize_t) page.width-(bounding_box.x-page.x));
       page.x-=bounding_box.x;
       if (page.x < 0)
         page.x=0;
     }
   if ((page.y < 0) && (bounding_box.y >= 0))
     {
-      page.height+=page.y-bounding_box.y;
+      page.height=(size_t) ((ssize_t) page.height+page.y-bounding_box.y);
       page.y=0;
     }
   else
     {
-      page.height-=bounding_box.y-page.y;
+      page.height=(size_t) ((ssize_t) page.height-(bounding_box.y-page.y));
       page.y-=bounding_box.y;
       if (page.y < 0)
         page.y=0;
     }
   if ((page.x+(ssize_t) page.width) > (ssize_t) image->columns)
-    page.width=image->columns-page.x;
+    page.width=(size_t) ((ssize_t) image->columns-page.x);
   if ((geometry->width != 0) && (page.width > geometry->width))
     page.width=geometry->width;
   if ((page.y+(ssize_t) page.height) > (ssize_t) image->rows)
-    page.height=image->rows-page.y;
+    page.height=(size_t) ((ssize_t) image->rows-page.y);
   if ((geometry->height != 0) && (page.height > geometry->height))
     page.height=geometry->height;
   bounding_box.x+=page.x;
@@ -658,8 +661,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     return((Image *) NULL);
   crop_image->page.width=image->page.width;
   crop_image->page.height=image->page.height;
-  offset.x=(ssize_t) (bounding_box.x+bounding_box.width);
-  offset.y=(ssize_t) (bounding_box.y+bounding_box.height);
+  offset.x=bounding_box.x+(ssize_t) bounding_box.width;
+  offset.y=bounding_box.y+(ssize_t) bounding_box.height;
   if ((offset.x > (ssize_t) image->page.width) ||
       (offset.y > (ssize_t) image->page.height))
     {
@@ -824,13 +827,15 @@ MagickExport Image *CropImageToTiles(const Image *image,
         geometry.height=1;
       if ((flags & AspectValue) == 0)
         {
-          width-=(geometry.x < 0 ? -1 : 1)*geometry.x;
-          height-=(geometry.y < 0 ? -1 : 1)*geometry.y;
+          width=(size_t) ((ssize_t) width-(geometry.x < 0 ? -1 : 1)*geometry.x);
+          height=(size_t) ((ssize_t) height-(geometry.y < 0 ? -1 : 1)*
+            geometry.y);
         }
       else
         {
-          width+=(geometry.x < 0 ? -1 : 1)*geometry.x;
-          height+=(geometry.y < 0 ? -1 : 1)*geometry.y;
+          width=(size_t) ((ssize_t) width+(geometry.x < 0 ? -1 : 1)*geometry.x);
+          height=(size_t) ((ssize_t) height+(geometry.y < 0 ? -1 : 1)*
+            geometry.y);
         }
       delta.x=(double) width/geometry.width;
       delta.y=(double) height/geometry.height;
@@ -856,7 +861,7 @@ MagickExport Image *CropImageToTiles(const Image *image,
             crop.height=(size_t) PixelRoundOffset((double)
               (offset.y+(geometry.y < -1 ? geometry.y : 0)));
           }
-        crop.height-=crop.y;
+        crop.height=(size_t) ((ssize_t) crop.height-crop.y);
         crop.y+=image->page.y;
         for (offset.x=0; offset.x < (double) width; )
         {
@@ -876,7 +881,7 @@ MagickExport Image *CropImageToTiles(const Image *image,
               crop.width=(size_t) PixelRoundOffset((double) (offset.x+
                 (geometry.x < 0 ? geometry.x : 0)));
             }
-          crop.width-=crop.x;
+          crop.width=(size_t) ((ssize_t) crop.width-crop.x);
           crop.x+=image->page.x;
           next=CropImage(image,&crop,exception);
           if (next != (Image *) NULL)
@@ -1240,7 +1245,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(flip_view,0,(ssize_t) (flip_image->rows-y-
+    q=QueueCacheViewAuthenticPixels(flip_view,0,((ssize_t) flip_image->rows-y-
       1),flip_image->columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -1285,7 +1290,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   image_view=DestroyCacheView(image_view);
   flip_image->type=image->type;
   if (page.height != 0)
-    page.y=(ssize_t) (page.height-flip_image->rows-page.y);
+    page.y=((ssize_t) page.height-(ssize_t) flip_image->rows-page.y);
   flip_image->page=page;
   if (status == MagickFalse)
     flip_image=DestroyImage(flip_image);
@@ -1421,7 +1426,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   image_view=DestroyCacheView(image_view);
   flop_image->type=image->type;
   if (page.width != 0)
-    page.x=(ssize_t) (page.width-flop_image->columns-page.x);
+    page.x=((ssize_t) page.width-(ssize_t) flop_image->columns-page.x);
   flop_image->page=page;
   if (status == MagickFalse)
     flop_image=DestroyImage(flop_image);
@@ -1577,15 +1582,17 @@ MagickExport Image *RollImage(const Image *image,const ssize_t x_offset,
     (size_t) offset.y,(ssize_t) image->columns-offset.x,(ssize_t) image->rows-
     offset.y,0,0,exception);
   (void) SetImageProgress(image,RollImageTag,0,3);
-  status&=CopyImageRegion(roll_image,image,image->columns-offset.x,
-    (size_t) offset.y,0,(ssize_t) image->rows-offset.y,offset.x,0,
+  status&=CopyImageRegion(roll_image,image,(size_t) ((ssize_t) image->columns-
+    offset.x),(size_t) offset.y,0,(ssize_t) image->rows-offset.y,offset.x,0,
     exception);
   (void) SetImageProgress(image,RollImageTag,1,3);
-  status&=CopyImageRegion(roll_image,image,(size_t) offset.x,image->rows-
-    offset.y,(ssize_t) image->columns-offset.x,0,0,offset.y,exception);
+  status&=CopyImageRegion(roll_image,image,(size_t) offset.x,(size_t)
+    ((ssize_t) image->rows-offset.y),(ssize_t) image->columns-offset.x,0,0,
+    offset.y,exception);
   (void) SetImageProgress(image,RollImageTag,2,3);
-  status&=CopyImageRegion(roll_image,image,image->columns-offset.x,image->rows-
-    offset.y,0,0,offset.x,offset.y,exception);
+  status&=CopyImageRegion(roll_image,image,(size_t) ((ssize_t) image->columns-
+    offset.x),(size_t) ((ssize_t) image->rows-offset.y),0,0,offset.x,offset.y,
+    exception);
   (void) SetImageProgress(image,RollImageTag,3,3);
   roll_image->type=image->type;
   if (status == MagickFalse)
@@ -1803,7 +1810,7 @@ MagickExport Image *SpliceImage(const Image *image,
   splice_view=AcquireAuthenticCacheView(splice_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,splice_image,splice_geometry.y,1)
+    magick_number_threads(image,splice_image,(size_t) splice_geometry.y,1)
 #endif
   for (y=0; y < (ssize_t) splice_geometry.y; y++)
   {
@@ -1849,7 +1856,7 @@ MagickExport Image *SpliceImage(const Image *image,
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
     }
-    for ( ; x < (ssize_t) (splice_geometry.x+splice_geometry.width); x++)
+    for ( ; x < (splice_geometry.x+(ssize_t) splice_geometry.width); x++)
       q+=GetPixelChannels(splice_image);
     for ( ; x < (ssize_t) splice_image->columns; x++)
     {
@@ -1894,8 +1901,7 @@ MagickExport Image *SpliceImage(const Image *image,
   #pragma omp parallel for schedule(static) shared(progress,status) \
     magick_number_threads(image,splice_image,splice_image->rows,2)
 #endif
-  for (y=(ssize_t) (splice_geometry.y+splice_geometry.height);
-       y < (ssize_t) splice_image->rows; y++)
+  for (y=splice_geometry.y+(ssize_t) splice_geometry.height; y < (ssize_t) splice_image->rows; y++)
   {
     const Quantum
       *magick_restrict p;
@@ -1908,7 +1914,7 @@ MagickExport Image *SpliceImage(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    if ((y < 0) || (y >= (ssize_t)splice_image->rows))
+    if ((y < 0) || (y >= (ssize_t) splice_image->rows))
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y-(ssize_t) splice_geometry.height,
       splice_image->columns,1,exception);
@@ -1941,7 +1947,7 @@ MagickExport Image *SpliceImage(const Image *image,
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(splice_image);
     }
-    for ( ; x < (ssize_t) (splice_geometry.x+splice_geometry.width); x++)
+    for ( ; x < (splice_geometry.x+(ssize_t) splice_geometry.width); x++)
       q+=GetPixelChannels(splice_image);
     for ( ; x < (ssize_t) splice_image->columns; x++)
     {
@@ -2173,7 +2179,7 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-y-1,
       image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(transpose_view,(ssize_t) (image->rows-y-1),
+    q=QueueCacheViewAuthenticPixels(transpose_view,(ssize_t) image->rows-y-1,
       0,1,transpose_image->rows,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -2313,7 +2319,7 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(transverse_view,(ssize_t) (image->rows-y-1),
+    q=QueueCacheViewAuthenticPixels(transverse_view,(ssize_t) image->rows-y-1,
       0,1,transverse_image->rows,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -2364,9 +2370,9 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
   Swap(page.width,page.height);
   Swap(page.x,page.y);
   if (page.width != 0)
-    page.x=(ssize_t) (page.width-transverse_image->columns-page.x);
+    page.x=(ssize_t) page.width-(ssize_t) transverse_image->columns-page.x;
   if (page.height != 0)
-    page.y=(ssize_t) (page.height-transverse_image->rows-page.y);
+    page.y=(ssize_t) page.height-(ssize_t) transverse_image->rows-page.y;
   transverse_image->page=page;
   if (status == MagickFalse)
     transverse_image=DestroyImage(transverse_image);
@@ -2445,48 +2451,48 @@ MagickExport Image *TrimImage(const Image *image,ExceptionInfo *exception)
       {
         case CenterGravity:
         {
-          geometry.x-=((ssize_t) page.width-geometry.width)/2;
-          geometry.y-=((ssize_t) page.height-geometry.height)/2;
+          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width)/2;
+          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height)/2;
           break;
         }
         case NorthWestGravity:
         {
-          geometry.x-=((ssize_t) page.width-geometry.width);
-          geometry.y-=((ssize_t) page.height-geometry.height);
+          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width);
+          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height);
           break;
         }
         case NorthGravity:
         {
-          geometry.x-=((ssize_t) page.width-geometry.width)/2;
-          geometry.y-=((ssize_t) page.height-geometry.height);
+          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width)/2;
+          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height);
           break;
         }
         case NorthEastGravity:
         {
-          geometry.y-=((ssize_t) page.height-geometry.height);
+          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height);
           break;
         }
         case EastGravity:
         {
-          geometry.y-=((ssize_t) page.height-geometry.height)/2;
+          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height)/2;
           break;
         }
         case SouthEastGravity:
           break;
         case SouthGravity:
         {
-          geometry.x-=((ssize_t) page.width-geometry.width)/2;
+          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width)/2;
           break;
         }
         case SouthWestGravity:
         {
-          geometry.x-=((ssize_t) page.width-geometry.width);
+          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width);
           break;
         }
         case WestGravity:
         {
-          geometry.x-=((ssize_t) page.width-geometry.width);
-          geometry.y-=((ssize_t) page.height-geometry.height)/2;
+          geometry.x-=((ssize_t) page.width-(ssize_t) geometry.width);
+          geometry.y-=((ssize_t) page.height-(ssize_t) geometry.height)/2;
           break;
         }
         default:

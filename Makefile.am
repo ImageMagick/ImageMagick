@@ -224,7 +224,7 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(/.git)|(/\.#)|(/\.deps)|(/\.git)' \
+	      find $$dir -depth -print | grep -E -v '(~$$)|(/.git)|(/\.#)|(/\.deps)|(/\.git)' \
 	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \

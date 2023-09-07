@@ -23,6 +23,7 @@
   MagickCoderAlias("JPEG", "JPE") \
   MagickCoderAlias("JPEG", "JPG") \
   MagickCoderAlias("JPEG", "JPS") \
+  MagickCoderAlias("JPEG", "MPO") \
   MagickCoderAlias("JPEG", "PJPEG")
 
 #if defined(__cplusplus) || defined(c_plusplus)

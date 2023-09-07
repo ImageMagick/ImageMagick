@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policymap [
+<!ELEMENT policymap (policy)*>
+<!ATTLIST policymap xmlns CDATA #FIXED "">
+<!ELEMENT policy EMPTY>
+<!ATTLIST policy xmlns CDATA #FIXED "">
+<!ATTLIST policy domain NMTOKEN #REQUIRED>
+<!ATTLIST policy name NMTOKEN #IMPLIED>
+<!ATTLIST policy pattern CDATA #IMPLIED>
+<!ATTLIST policy rights NMTOKEN #IMPLIED>
+<!ATTLIST policy stealth NMTOKEN #IMPLIED>
+<!ATTLIST policy value CDATA #IMPLIED>
+]>
+<!--
+  Creating a security policy that fits your specific local environment
+  before making use of ImageMagick is highly advised. You can find guidance on
+  setting up this policy at https://imagemagick.org/script/security-policy.php,
+  and it's important to verify your policy using the validation tool located
+  at https://imagemagick-secevaluator.doyensec.com/.
+
+
+  Web-safe ImageMagick security policy:
+
+  This security protocol designed for web-safe usage focuses on situations
+  where ImageMagick is applied in publicly accessible contexts, like websites.
+  It deactivates the capability to read from or write to any image formats
+  other than web-safe formats like GIF, JPEG, and PNG. Additionally, this
+  policy prohibits the execution of image filters and indirect reads, thereby
+  thwarting potential security breaches. By implementing these limitations,
+  the web-safe policy fortifies the safeguarding of systems accessible to
+  the public, reducing the risk of exploiting ImageMagick's capabilities
+  for potential attacks.
+-->
+<policymap>
+  <!-- Set maximum parallel threads. -->
+  <policy domain="resource" name="thread" value="2"/>
+  <!-- Set maximum time in seconds. When this limit is exceeded, an exception
+       is thrown and processing stops. -->
+  <policy domain="resource" name="time" value="60"/>
+  <!-- Set maximum number of open pixel cache files. When this limit is
+       exceeded, any subsequent pixels cached to disk are closed and reopened
+       on demand. -->
+  <policy domain="resource" name="file" value="768"/>
+  <!-- Set maximum amount of memory in bytes to allocate for the pixel cache
+       from the heap. When this limit is exceeded, the image pixels are cached
+       to memory-mapped disk. -->
+  <policy domain="resource" name="memory" value="256MiB"/>
+  <!-- Set maximum amount of memory map in bytes to allocate for the pixel
+       cache. When this limit is exceeded, the image pixels are cached to
+       disk. -->
+  <policy domain="resource" name="map" value="512MiB"/>
+  <!-- Set the maximum width * height of an image that can reside in the pixel
+       cache memory. Images that exceed the area limit are cached to disk. -->
+  <policy domain="resource" name="area" value="16KP"/>
+  <!-- Set maximum amount of disk space in bytes permitted for use by the pixel
+       cache. When this limit is exceeded, the pixel cache is not be created
+       and an exception is thrown. -->
+  <policy domain="resource" name="disk" value="1GiB"/>
+  <!-- Set the maximum length of an image sequence.  When this limit is
+       exceeded, an exception is thrown. -->
+  <policy domain="resource" name="list-length" value="16"/>
+  <!-- Set the maximum width of an image.  When this limit is exceeded, an
+       exception is thrown. -->
+  <policy domain="resource" name="width" value="4KP"/>
+  <!-- Set the maximum height of an image.  When this limit is exceeded, an
+       exception is thrown. -->
+  <policy domain="resource" name="height" value="4KP"/>
+  <!-- Periodically yield the CPU for at least the time specified in
+       milliseconds. -->
+  <policy domain="resource" name="throttle" value="2"/>
+  <!-- Do not create temporary files in the default shared directories, instead
+       specify a private area to store only ImageMagick temporary files. -->
+  <!-- <policy domain="resource" name="temporary-path" value="/magick/tmp"/> -->
+  <!-- Force memory initialization by memory mapping select memory
+       allocations. -->
+  <policy domain="cache" name="memory-map" value="anonymous"/>
+  <!-- Ensure all image data is fully flushed and synchronized to disk. -->
+  <policy domain="cache" name="synchronize" value="true"/>
+  <!-- Replace passphrase for secure distributed processing -->
+  <!-- <policy domain="cache" name="shared-secret" value="secret-passphrase" stealth="true"/> -->
+  <!-- Do not permit any delegates to execute. -->
+  <policy domain="delegate" rights="none" pattern="*"/>
+  <!-- Do not permit any image filters to load. -->
+  <policy domain="filter" rights="none" pattern="*"/>
+  <!-- Don't read/write from/to stdin/stdout. -->
+  <policy domain="path" rights="none" pattern="-"/>
+  <!-- don't read sensitive paths. -->
+  <policy domain="path" rights="none" pattern="/etc/*"/>
+  <!-- Indirect reads are not permitted. -->
+  <policy domain="path" rights="none" pattern="@*"/>
+  <!-- Deny all image modules and specifically exempt reading or writing
+       web-safe image formats. -->
+  <policy domain="module" rights="none" pattern="*" />
+  <policy domain="module" rights="read | write" pattern="{BMP,GIF,JPEG,PNG,TIFF,WEBP}"/>
+  <policy domain="module" rights="read | write" pattern="{MPC}" stealth="true"/>
+  <policy domain="module" rights="write" pattern="{JSON,INFO,PNM,PS}"/>
+  <!-- This policy sets the number of times to replace content of certain
+       memory buffers and temporary files before they are freed or deleted. -->
+  <policy domain="system" name="shred" value="1"/>
+  <!-- Enable the initialization of buffers with zeros, resulting in a minor
+       performance penalty but with improved security. -->
+  <policy domain="system" name="memory-map" value="anonymous"/>
+  <!-- Set the maximum amount of memory in bytes that is permitted for
+       allocation requests. -->
+  <policy domain="system" name="max-memory-request" value="256MiB"/>
+</policymap>

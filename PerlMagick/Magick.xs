@@ -908,10 +908,8 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,
         *head,
         *previous;
 
-      register ssize_t
-        i;
-
       ssize_t
+        i,
         n;
 
       /*
@@ -962,11 +960,11 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,
             {
               *last+=256;
               if (*reference_vector == (SV **) NULL)
-                *reference_vector=(SV **) AcquireQuantumMemory(*last,
+                *reference_vector=(SV **) AcquireQuantumMemory((size_t) *last,
                   sizeof(*reference_vector));
               else
                 *reference_vector=(SV **) ResizeQuantumMemory(*reference_vector,
-                  *last,sizeof(*reference_vector));
+                  (size_t) *last,sizeof(*reference_vector));
             }
           if (*reference_vector == (SV **) NULL)
             {
@@ -1288,7 +1286,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             int
               items;
 
-            long
+            ssize_t
               i;
 
             if (image->storage_class == DirectClass)
@@ -1297,7 +1295,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             items=sscanf(attribute,"%*[^[][%ld",&i);
             (void) items;
             if (i > (ssize_t) image->colors)
-              i%=image->colors;
+              i%=(ssize_t) image->colors;
             if ((strchr(SvPV(sval,na),',') == 0) ||
                 (strchr(SvPV(sval,na),')') != 0))
               QueryColorCompliance(SvPV(sval,na),AllCompliance,
@@ -1421,9 +1419,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"depth") == 0)
         {
           if (info)
-            info->image_info->depth=SvIV(sval);
+            info->image_info->depth=(size_t) SvIV(sval);
           for ( ; image; image=image->next)
-            (void) SetImageDepth(image,SvIV(sval),exception);
+            (void) SetImageDepth(image,(size_t) SvIV(sval),exception);
           break;
         }
       if (LocaleCompare(attribute,"dispose") == 0)
@@ -1633,17 +1631,17 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     {
       if (LocaleNCompare(attribute,"index",5) == 0)
         {
+          CacheView
+            *image_view;
+
           int
             items;
 
           long
             index;
 
-          register Quantum
+          Quantum
             *q;
-
-          CacheView
-            *image_view;
 
           for ( ; image; image=image->next)
           {
@@ -1670,7 +1668,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         {
   iterations:
           for ( ; image; image=image->next)
-            image->iterations=SvIV(sval);
+            image->iterations=(size_t) SvIV(sval);
           break;
         }
       if (LocaleCompare(attribute,"interlace") == 0)
@@ -1870,17 +1868,17 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleNCompare(attribute,"pixel",5) == 0)
         {
+          CacheView
+            *image_view;
+
           int
             items;
 
           PixelInfo
             pixel;
 
-          register Quantum
+          Quantum
             *q;
-
-          CacheView
-            *image_view;
 
           for ( ; image; image=image->next)
           {
@@ -1953,9 +1951,9 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"quality") == 0)
         {
           if (info)
-            info->image_info->quality=SvIV(sval);
+            info->image_info->quality=(size_t) SvIV(sval);
           for ( ; image; image=image->next)
-            image->quality=SvIV(sval);
+            image->quality=(size_t) SvIV(sval);
           break;
         }
       if (info)
@@ -2037,13 +2035,15 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                   {
                     image->page.x=geometry.x;
                     if (((flags & WidthValue) != 0) && (geometry.x > 0))
-                      image->page.width=image->columns+geometry.x;
+                      image->page.width=(size_t) ((ssize_t) image->columns+
+                        geometry.x);
                   }
                 if ((flags & YValue) != 0)
                   {
                     image->page.y=geometry.y;
                     if (((flags & HeightValue) != 0) && (geometry.y > 0))
-                      image->page.height=image->rows+geometry.y;
+                      image->page.height=(size_t) ((ssize_t) image->rows+
+                        geometry.y);
                   }
               }
           }
@@ -2077,7 +2077,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleCompare(attribute,"scene") == 0)
         {
           for ( ; image; image=image->next)
-            image->scene=SvIV(sval);
+            image->scene=(size_t) SvIV(sval);
           break;
         }
       if (LocaleCompare(attribute,"server") == 0)
@@ -2428,7 +2428,7 @@ static ssize_t strEQcase(const char *p,const char *q)
   char
     c;
 
-  register ssize_t
+  ssize_t
     i;
 
   for (i=0 ; (c=(*q)) != 0; i++)
@@ -2507,7 +2507,7 @@ Animate(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -2595,10 +2595,8 @@ Append(ref,...)
     Image
       *image;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       stack;
 
     struct PackageInfo
@@ -2821,7 +2819,8 @@ BlobToImage(ref,...)
 
     char
       **keep,
-      **list;
+      **list,
+      **p;
 
     ExceptionInfo
       *exception;
@@ -2832,14 +2831,9 @@ BlobToImage(ref,...)
     Image
       *image;
 
-    register char
-      **p;
-
-    register ssize_t
-      i;
-
     ssize_t
       ac,
+      i,
       n,
       number_images;
 
@@ -2992,7 +2986,7 @@ ChannelFx(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -3230,7 +3224,7 @@ CLONE(ref,...)
     PERL_UNUSED_VAR(ref);
     if (magick_registry != (SplayTreeInfo *) NULL)
       {
-        register Image
+        Image
           *p;
 
         ResetSplayTreeIterator(magick_registry);
@@ -3377,10 +3371,8 @@ Compare(ref,...)
     MetricType
       metric;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       option;
 
     struct PackageInfo
@@ -3567,7 +3559,7 @@ ComplexImages(ref)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -3724,10 +3716,8 @@ CompareLayers(ref)
     LayerMethod
       method;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       option;
 
     struct PackageInfo
@@ -3871,7 +3861,7 @@ DESTROY(ref)
           Array (AV *) reference
         */
         (void) FormatLocaleString(message,MagickPathExtent,"package%s%p",
-          XS_VERSION,reference);
+          XS_VERSION,(void *) reference);
         hv=gv_stashpv(PackageName, FALSE);
         if (!hv)
           break;
@@ -3933,7 +3923,7 @@ Display(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -4024,7 +4014,7 @@ EvaluateImages(ref)
     MagickEvaluateOperator
       op;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -4228,10 +4218,8 @@ Features(ref,...)
     Image
       *image;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       count;
 
     struct PackageInfo
@@ -4291,7 +4279,7 @@ Features(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      register ssize_t
+      ssize_t
         j;
 
       channel_features=GetImageFeatures(image,distance,exception);
@@ -4360,7 +4348,7 @@ Flatten(ref)
     PixelInfo
       background_color;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -4498,7 +4486,7 @@ Fx(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -4659,7 +4647,7 @@ Get(ref,...)
     long
       j;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -4710,7 +4698,7 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"area") == 0)
             {
-              s=newSViv(GetMagickResource(AreaResource));
+              s=newSViv((MagickOffsetType) GetMagickResource(AreaResource));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -4943,7 +4931,7 @@ Get(ref,...)
               items=sscanf(attribute,"%*[^[][%ld",&j);
               (void) items;
               if (j > (ssize_t) image->colors)
-                j%=image->colors;
+                j%=(ssize_t) image->colors;
               (void) FormatLocaleString(color,MagickPathExtent,
                 "%.20g,%.20g,%.20g,%.20g",(double) image->colormap[j].red,
                 (double) image->colormap[j].green,
@@ -5033,7 +5021,7 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"disk") == 0)
             {
-              s=newSViv(GetMagickResource(DiskResource));
+              s=newSViv((MagickOffsetType) GetMagickResource(DiskResource));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -5268,8 +5256,14 @@ Get(ref,...)
             }
           if (LocaleNCompare(attribute,"index",5) == 0)
             {
+              CacheView
+                *image_view;
+
               char
                 name[MagickPathExtent];
+
+              const Quantum
+                *p;
 
               int
                 items;
@@ -5277,12 +5271,6 @@ Get(ref,...)
               long
                 x,
                 y;
-
-              register const Quantum
-                *p;
-
-              CacheView
-                *image_view;
 
               if (image == (Image *) NULL)
                 break;
@@ -5385,7 +5373,7 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"map") == 0)
             {
-              s=newSViv(GetMagickResource(MapResource));
+              s=newSViv((MagickOffsetType) GetMagickResource(MapResource));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -5398,7 +5386,7 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"memory") == 0)
             {
-              s=newSViv(GetMagickResource(MemoryResource));
+              s=newSViv((MagickOffsetType) GetMagickResource(MemoryResource));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -5543,15 +5531,15 @@ Get(ref,...)
               char
                 tuple[MagickPathExtent];
 
+              const Quantum
+                *p;
+
               int
                 items;
 
               long
                 x,
                 y;
-
-              register const Quantum
-                *p;
 
               if (image == (Image *) NULL)
                 break;
@@ -6018,7 +6006,7 @@ GetAuthenticPixels(ref,...)
         {
           if (LocaleCompare(attribute,"height") == 0)
             {
-              region.height=SvIV(ST(i));
+              region.height=(size_t) SvIV(ST(i));
               continue;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedOption",
@@ -6054,7 +6042,7 @@ GetAuthenticPixels(ref,...)
         {
           if (LocaleCompare(attribute,"width") == 0)
             {
-              region.width=SvIV(ST(i));
+              region.width=(size_t) SvIV(ST(i));
               continue;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedOption",
@@ -6173,7 +6161,7 @@ GetVirtualPixels(ref,...)
         {
           if (LocaleCompare(attribute,"height") == 0)
             {
-              region.height=SvIV(ST(i));
+              region.height=(size_t) SvIV(ST(i));
               continue;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedOption",
@@ -6209,7 +6197,7 @@ GetVirtualPixels(ref,...)
         {
           if (LocaleCompare(attribute,"width") == 0)
             {
-              region.width=SvIV(ST(i));
+              region.width=(size_t) SvIV(ST(i));
               continue;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedOption",
@@ -6412,10 +6400,8 @@ Histogram(ref,...)
     Image
       *image;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       count;
 
     struct PackageInfo
@@ -6516,6 +6502,9 @@ GetPixel(ref,...)
     char
       *attribute;
 
+    const Quantum
+      *p;
+
     ExceptionInfo
       *exception;
 
@@ -6528,13 +6517,8 @@ GetPixel(ref,...)
     RectangleInfo
       region;
 
-    register const Quantum
-      *p;
-
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       option;
 
     struct PackageInfo
@@ -6729,10 +6713,8 @@ GetPixels(ref,...)
     RectangleInfo
       region;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       option;
 
     struct PackageInfo
@@ -6795,7 +6777,7 @@ GetPixels(ref,...)
         {
           if (LocaleCompare(attribute,"height") == 0)
             {
-              region.height=SvIV(ST(i));
+              region.height=(size_t) SvIV(ST(i));
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -6839,7 +6821,7 @@ GetPixels(ref,...)
         {
           if (LocaleCompare(attribute,"width") == 0)
             {
-              region.width=SvIV(ST(i));
+              region.width=(size_t) SvIV(ST(i));
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -6901,7 +6883,7 @@ GetPixels(ref,...)
           PUSHs(&sv_undef);
         else
           {
-            EXTEND(sp,strlen(map)*region.width*region.height);
+            EXTEND(sp,(ssize_t) (strlen(map)*region.width*region.height));
             for (i=0; i < (ssize_t) (strlen(map)*region.width*region.height); i++)
               PUSHs(sv_2mortal(newSVnv(pixels[i])));
           }
@@ -6930,7 +6912,7 @@ GetPixels(ref,...)
           PUSHs(&sv_undef);
         else
           {
-            EXTEND(sp,strlen(map)*region.width*region.height);
+            EXTEND(sp,(ssize_t) (strlen(map)*region.width*region.height));
             for (i=0; i < (ssize_t) (strlen(map)*region.width*region.height); i++)
               PUSHs(sv_2mortal(newSViv(pixels[i])));
           }
@@ -6975,7 +6957,7 @@ ImageToBlob(ref,...)
       *image,
       *next;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -7023,7 +7005,7 @@ ImageToBlob(ref,...)
     for (next=image; next; next=next->next)
     {
       (void) CopyMagickString(next->filename,filename,MagickPathExtent);
-      next->scene=scene++;
+      next->scene=(size_t) scene++;
     }
     SetImageInfo(package_info->image_info,(unsigned int)
       GetImageListLength(image),exception);
@@ -7094,10 +7076,8 @@ Layers(ref,...)
     LayerMethod
       method;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       option,
       sp;
 
@@ -7745,11 +7725,9 @@ Mogrify(ref,...)
       geometry,
       region_info;
 
-    register ssize_t
-      i;
-
     ssize_t
       base,
+      i,
       j,
       number_images;
 
@@ -8031,9 +8009,9 @@ Mogrify(ref,...)
             flags=ParsePageGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
             QueryColorCompliance(argument_list[3].string_reference,
               AllCompliance,&image->border_color,exception);
@@ -8079,9 +8057,9 @@ Mogrify(ref,...)
             flags=ParseGravityGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
             geometry.x=argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
@@ -8097,9 +8075,9 @@ Mogrify(ref,...)
             flags=ParseGravityGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
             geometry.x=argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
@@ -8172,9 +8150,9 @@ Mogrify(ref,...)
               frame_info.inner_bevel=geometry.y;
             }
           if (attribute_flag[1] != 0)
-            frame_info.width=argument_list[1].integer_reference;
+            frame_info.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            frame_info.height=argument_list[2].integer_reference;
+            frame_info.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
             frame_info.inner_bevel=argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
@@ -8187,8 +8165,8 @@ Mogrify(ref,...)
               AllCompliance,&fill_color,exception);
           frame_info.x=(ssize_t) frame_info.width;
           frame_info.y=(ssize_t) frame_info.height;
-          frame_info.width=image->columns+2*frame_info.x;
-          frame_info.height=image->rows+2*frame_info.y;
+          frame_info.width=(size_t) ((ssize_t) image->columns+2*frame_info.x);
+          frame_info.height=(size_t) ((ssize_t) image->rows+2*frame_info.y);
           if ((attribute_flag[5] != 0) || (attribute_flag[6] != 0))
             image->alpha_color=fill_color;
           compose=image->compose;
@@ -8315,9 +8293,9 @@ Mogrify(ref,...)
             flags=ParseRegionGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           image=SampleImage(image,geometry.width,geometry.height,exception);
           break;
         }
@@ -8327,9 +8305,9 @@ Mogrify(ref,...)
             flags=ParseRegionGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           image=ScaleImage(image,geometry.width,geometry.height,exception);
           break;
         }
@@ -8431,9 +8409,9 @@ Mogrify(ref,...)
             flags=ParseRegionGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] == 0)
             argument_list[3].integer_reference=(ssize_t) UndefinedFilter;
           if (attribute_flag[4] != 0)
@@ -8621,7 +8599,7 @@ Mogrify(ref,...)
               (void) CloneString(&draw_info->geometry,geometry);
             }
           if (attribute_flag[17] != 0)
-            draw_info->stroke_width=argument_list[17].real_reference;
+            draw_info->stroke_width=(size_t) argument_list[17].real_reference;
           if (attribute_flag[18] != 0)
             {
               draw_info->text_antialias=argument_list[18].integer_reference != 0 ?
@@ -8636,7 +8614,7 @@ Mogrify(ref,...)
           if (attribute_flag[21] != 0)
             draw_info->stretch=(StretchType) argument_list[21].integer_reference;
           if (attribute_flag[22] != 0)
-            draw_info->weight=argument_list[22].integer_reference;
+            draw_info->weight=(size_t) argument_list[22].integer_reference;
           if (attribute_flag[23] != 0)
             draw_info->align=(AlignType) argument_list[23].integer_reference;
           if (attribute_flag[24] != 0)
@@ -8755,13 +8733,11 @@ Mogrify(ref,...)
                   MagickBooleanType
                     sync;
 
-                  register ssize_t
-                    x;
-
-                  register Quantum
+                  Quantum
                     *q;
 
                   ssize_t
+                    x,
                     y;
 
                   /*
@@ -8778,7 +8754,7 @@ Mogrify(ref,...)
                   composite_view=AcquireAuthenticCacheView(composite_image,exception);
                   for (y=0; y < (ssize_t) composite_image->rows ; y++)
                   {
-                    q=GetCacheViewAuthenticPixels(composite_view,0,y,(ssize_t)
+                    q=GetCacheViewAuthenticPixels(composite_view,0,y,
                       composite_image->columns,1,exception);
                     for (x=0; x < (ssize_t) composite_image->columns; x++)
                     {
@@ -9031,7 +9007,7 @@ Mogrify(ref,...)
                   argument_list[4].image_reference,0,0,MagickTrue,exception);
             }
           if (attribute_flag[5] != 0)
-            draw_info->stroke_width=argument_list[5].real_reference;
+            draw_info->stroke_width=(size_t) argument_list[5].real_reference;
           if (attribute_flag[6] != 0)
             (void) CloneString(&draw_info->font,
               argument_list[6].string_reference);
@@ -9158,7 +9134,7 @@ Mogrify(ref,...)
             (void) CloneString(&draw_info->density,
               argument_list[18].string_reference);
           if (attribute_flag[19] != 0)
-            draw_info->stroke_width=argument_list[19].real_reference;
+            draw_info->stroke_width=(size_t) argument_list[19].real_reference;
           if (attribute_flag[21] != 0)
             draw_info->dash_offset=argument_list[21].real_reference;
           if (attribute_flag[22] != 0)
@@ -9168,7 +9144,7 @@ Mogrify(ref,...)
 
               av=(AV *) argument_list[22].array_reference;
               draw_info->dash_pattern=(double *) AcquireQuantumMemory(
-                av_len(av)+2UL,sizeof(*draw_info->dash_pattern));
+                (size_t) av_len(av)+2UL,sizeof(*draw_info->dash_pattern));
               if (draw_info->dash_pattern != (double *) NULL)
                 {
                   for (i=0; i <= av_len(av); i++)
@@ -9452,9 +9428,9 @@ Mogrify(ref,...)
             flags=ParsePageGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] == 0)
             argument_list[3].integer_reference=1;
           (void) RaiseImage(image,&geometry,
@@ -9906,9 +9882,9 @@ Mogrify(ref,...)
             flags=ParsePageGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           image=ShaveImage(image,&geometry,exception);
           break;
         }
@@ -10211,9 +10187,9 @@ Mogrify(ref,...)
             flags=ParseRegionGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           image=ThumbnailImage(image,geometry.width,geometry.height,exception);
           break;
         }
@@ -10252,9 +10228,9 @@ Mogrify(ref,...)
             flags=ParseGravityGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
             geometry.x=argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
@@ -10274,7 +10250,8 @@ Mogrify(ref,...)
             argument_list[0].integer_reference=3;
           if (attribute_flag[1] == 0)
             argument_list[1].integer_reference=0;
-          (void) PosterizeImage(image,argument_list[0].integer_reference,
+          (void) PosterizeImage(image,(size_t)
+            argument_list[0].integer_reference,
             argument_list[1].integer_reference ? RiemersmaDitherMethod :
             NoDitherMethod,exception);
           break;
@@ -10366,7 +10343,7 @@ Mogrify(ref,...)
             image->gravity=(GravityType) argument_list[7].integer_reference;
           if (attribute_flag[0] != 0)
             {
-              int
+              MagickStatusType
                 flags;
 
               flags=ParseGravityGeometry(image,
@@ -10378,9 +10355,9 @@ Mogrify(ref,...)
                 geometry.height=image->rows;
             }
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
             geometry.x=argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
@@ -10562,9 +10539,9 @@ Mogrify(ref,...)
             flags=ParseRegionGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
             image->filter=(FilterType) argument_list[4].integer_reference;
           if (attribute_flag[4] != 0)
@@ -10718,7 +10695,7 @@ Mogrify(ref,...)
             (void) QueryColorCompliance(argument_list[4].string_reference,
               AllCompliance,&draw_info->fill,exception);
           if (attribute_flag[5] != 0)
-            draw_info->stroke_width=argument_list[5].real_reference;
+            draw_info->stroke_width=(size_t) argument_list[5].real_reference;
           if (attribute_flag[6] != 0)
             draw_info->pointsize=argument_list[6].real_reference;
           if (attribute_flag[7] != 0)
@@ -10853,9 +10830,9 @@ Mogrify(ref,...)
             flags=ParseRegionGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] == 0)
             argument_list[3].real_reference=1.0;
           if (attribute_flag[4] == 0)
@@ -11179,7 +11156,7 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[1].integer_reference;
           method=UndefinedMorphology;
           if (attribute_flag[2] != 0)
-            method=argument_list[2].integer_reference;
+            method=(MorphologyMethod) argument_list[2].integer_reference;
           iterations=1;
           if (attribute_flag[3] != 0)
             iterations=argument_list[3].integer_reference;
@@ -11404,7 +11381,7 @@ Mogrify(ref,...)
 
           connectivity=4;
           if (attribute_flag[0] != 0)
-            connectivity=argument_list[0].integer_reference;
+            connectivity=(size_t) argument_list[0].integer_reference;
           image=ConnectedComponentsImage(image,connectivity,
             (CCObjectInfo **) NULL,exception);
           break;
@@ -11428,9 +11405,9 @@ Mogrify(ref,...)
             flags=ParseGravityGeometry(source_image,
               argument_list[1].string_reference,&geometry,exception);
           if (attribute_flag[2] != 0)
-            geometry.width=argument_list[2].integer_reference;
+            geometry.width=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            geometry.height=argument_list[3].integer_reference;
+            geometry.height=(size_t) argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
             geometry.x=argument_list[4].integer_reference;
           if (attribute_flag[5] != 0)
@@ -11552,15 +11529,15 @@ Mogrify(ref,...)
                 &geometry,exception);
             }
           if (attribute_flag[1] != 0)
-            geometry.width=argument_list[1].integer_reference;
+            geometry.width=(size_t) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
-            geometry.height=argument_list[2].integer_reference;
+            geometry.height=(size_t) argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
             geometry.x=argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
             geometry_info.psi=argument_list[4].real_reference;
-          (void) CLAHEImage(image,geometry.width,geometry.height,geometry.x,
-            geometry_info.psi,exception);
+          (void) CLAHEImage(image,geometry.width,geometry.height,(size_t)
+            geometry.x,(size_t) geometry_info.psi,exception);
           break;
         }
         case 150:  /* Kmeans */
@@ -11729,10 +11706,8 @@ Montage(ref,...)
     MontageInfo
       *montage_info;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       sp;
 
     struct PackageInfo
@@ -11794,7 +11769,7 @@ Montage(ref,...)
             }
           if (LocaleCompare(attribute,"border") == 0)
             {
-              montage_info->border_width=SvIV(ST(i));
+              montage_info->border_width=(size_t) SvIV(ST(i));
               break;
             }
           if (LocaleCompare(attribute,"bordercolor") == 0)
@@ -11807,7 +11782,7 @@ Montage(ref,...)
             }
           if (LocaleCompare(attribute,"borderwidth") == 0)
             {
-              montage_info->border_width=SvIV(ST(i));
+              montage_info->border_width=(size_t) SvIV(ST(i));
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -12134,10 +12109,8 @@ Morph(ref,...)
     Image
       *image;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       number_frames;
 
     struct PackageInfo
@@ -12205,7 +12178,7 @@ Morph(ref,...)
         }
       }
     }
-    image=MorphImages(image,number_frames,exception);
+    image=MorphImages(image,(size_t) number_frames,exception);
     if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
@@ -12323,6 +12296,118 @@ Mosaic(ref)
 #                                                                             #
 #                                                                             #
 #                                                                             #
+#   P e r c e p t u a l H a s h                                               #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+PerceptualHash(ref)
+  Image::Magick ref = NO_INIT
+  ALIAS:
+    PerceptualHashImage = 1
+    perceptualhash      = 2
+    perceptualhashimage = 3
+  PPCODE:
+  {
+    AV
+      *av;
+
+    ChannelPerceptualHash
+      *channel_phash;
+
+    char
+      message[MagickPathExtent];
+
+    ExceptionInfo
+      *exception;
+
+    Image
+      *image;
+
+    ssize_t
+      count;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *perl_exception,
+      *reference;
+
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
+    exception=AcquireExceptionInfo();
+    perl_exception=newSVpv("",0);
+    av=NULL;
+    if (sv_isobject(ST(0)) == 0)
+      {
+        ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
+          PackageName);
+        goto PerlException;
+      }
+    reference=SvRV(ST(0));
+    av=newAV();
+    SvREFCNT_dec(av);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
+    if (image == (Image *) NULL)
+      {
+        ThrowPerlException(exception,OptionError,"NoImagesDefined",
+          PackageName);
+        goto PerlException;
+      }
+    count=0;
+    for ( ; image; image=image->next)
+    {
+      ssize_t
+        i;
+
+      channel_phash=GetImagePerceptualHash(image,exception);
+      if (channel_phash == (ChannelPerceptualHash *) NULL)
+        continue;
+      count++;
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        ssize_t
+          j;
+
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        EXTEND(sp,(ssize_t) (GetPixelChannels(image)*
+          MaximumNumberOfPerceptualHashes*
+          channel_phash[0].number_colorspaces*(i+1)*count));
+        for (j=0; j < MaximumNumberOfPerceptualHashes; j++)
+        {
+          ssize_t
+            k;
+
+          for (k=0; k < (ssize_t) channel_phash[0].number_colorspaces; k++)
+          {
+            (void) FormatLocaleString(message,MagickPathExtent,"%.20g",
+              channel_phash[channel].phash[k][j]);
+            PUSHs(sv_2mortal(newSVpv(message,0)));
+          }
+        }
+      }
+      channel_phash=(ChannelPerceptualHash *)
+        RelinquishMagickMemory(channel_phash);
+    }
+
+  PerlException:
+    InheritPerlException(exception,perl_exception);
+    exception=DestroyExceptionInfo(exception);
+    SvREFCNT_dec(perl_exception);
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
 #   P i n g                                                                   #
 #                                                                             #
 #                                                                             #
@@ -12344,7 +12429,8 @@ Ping(ref,...)
 
     char
       **keep,
-      **list;
+      **list,
+      **p;
 
     ExceptionInfo
       *exception;
@@ -12359,14 +12445,9 @@ Ping(ref,...)
     MagickBooleanType
       status;
 
-    register char
-      **p;
-
-    register ssize_t
-      i;
-
     ssize_t
-      ac;
+      ac,
+      i;
 
     STRLEN
       *length;
@@ -12491,12 +12572,12 @@ Ping(ref,...)
           (package_info->image_info->blob != (void *) NULL))
         DisassociateImageStream(image);
       count+=GetImageListLength(image);
-      EXTEND(sp,4*count);
+      EXTEND(sp,4*(ssize_t) count);
       for (next=image; next; next=next->next)
       {
-        PUSHs(sv_2mortal(newSViv(next->columns)));
-        PUSHs(sv_2mortal(newSViv(next->rows)));
-        PUSHs(sv_2mortal(newSViv((size_t) GetBlobSize(next))));
+        PUSHs(sv_2mortal(newSViv((ssize_t) next->columns)));
+        PUSHs(sv_2mortal(newSViv((ssize_t) next->rows)));
+        PUSHs(sv_2mortal(newSViv((ssize_t) GetBlobSize(next))));
         PUSHs(sv_2mortal(newSVpv(next->magick,0)));
       }
       image=DestroyImageList(image);
@@ -12655,7 +12736,7 @@ QueryColor(ref,...)
     PixelInfo
       color;
 
-    register ssize_t
+    ssize_t
       i;
 
     SV
@@ -12674,7 +12755,7 @@ QueryColor(ref,...)
           colors;
 
         colorlist=GetColorInfoList("*",&colors,exception);
-        EXTEND(sp,colors);
+        EXTEND(sp,(ssize_t) colors);
         for (i=0; i < (ssize_t) colors; i++)
         {
           PUSHs(sv_2mortal(newSVpv(colorlist[i]->name,0)));
@@ -12692,13 +12773,13 @@ QueryColor(ref,...)
           PUSHs(&sv_undef);
           continue;
         }
-      PUSHs(sv_2mortal(newSViv((size_t) floor(color.red+0.5))));
-      PUSHs(sv_2mortal(newSViv((size_t) floor(color.green+0.5))));
-      PUSHs(sv_2mortal(newSViv((size_t) floor(color.blue+0.5))));
+      PUSHs(sv_2mortal(newSViv((ssize_t) floor(color.red+0.5))));
+      PUSHs(sv_2mortal(newSViv((ssize_t) floor(color.green+0.5))));
+      PUSHs(sv_2mortal(newSViv((ssize_t) floor(color.blue+0.5))));
       if (color.colorspace == CMYKColorspace)
-        PUSHs(sv_2mortal(newSViv((size_t) floor(color.black+0.5))));
+        PUSHs(sv_2mortal(newSViv((ssize_t) floor(color.black+0.5))));
       if (color.alpha_trait != UndefinedPixelTrait)
-        PUSHs(sv_2mortal(newSViv((size_t) floor(color.alpha+0.5))));
+        PUSHs(sv_2mortal(newSViv((ssize_t) floor(color.alpha+0.5))));
     }
 
   PerlException:
@@ -12741,7 +12822,7 @@ QueryColorname(ref,...)
     PixelInfo
       target_color;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -12808,7 +12889,7 @@ QueryFont(ref,...)
     ExceptionInfo
       *exception;
 
-    register ssize_t
+    ssize_t
       i;
 
     SV
@@ -12830,7 +12911,7 @@ QueryFont(ref,...)
           types;
 
         typelist=GetTypeInfoList("*",&types,exception);
-        EXTEND(sp,types);
+        EXTEND(sp,(ssize_t) types);
         for (i=0; i < (ssize_t) types; i++)
         {
           PUSHs(sv_2mortal(newSVpv(typelist[i]->name,0)));
@@ -12953,10 +13034,8 @@ QueryFontMetrics(ref,...)
     MagickStatusType
       flags;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       type;
 
     struct PackageInfo
@@ -13364,10 +13443,8 @@ QueryMultilineFontMetrics(ref,...)
     MagickStatusType
       flags;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       type;
 
     struct PackageInfo
@@ -13711,7 +13788,7 @@ QueryFormat(ref,...)
     ExceptionInfo
       *exception;
 
-    register ssize_t
+    ssize_t
       i;
 
     SV
@@ -13736,7 +13813,7 @@ QueryFormat(ref,...)
           types;
 
         format_list=GetMagickInfoList("*",&types,exception);
-        EXTEND(sp,types);
+        EXTEND(sp,(ssize_t) types);
         for (i=0; i < (ssize_t) types; i++)
         {
           (void) CopyMagickString(format,format_list[i]->name,MagickPathExtent);
@@ -13798,10 +13875,8 @@ QueryOption(ref,...)
     ExceptionInfo
       *exception;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       j,
       option;
 
@@ -13859,8 +13934,9 @@ Read(ref,...)
 
     char
       **keep,
-      **list;
-
+      **list,
+      **p;
+    
     ExceptionInfo
       *exception;
 
@@ -13876,14 +13952,9 @@ Read(ref,...)
     MagickBooleanType
       status;
 
-    register char
-      **p;
-
-    register ssize_t
-      i;
-
     ssize_t
       ac,
+      i,
       number_images;
 
     STRLEN
@@ -14078,7 +14149,7 @@ Remote(ref,...)
     ExceptionInfo
       *exception;
 
-    register ssize_t
+    ssize_t
       i;
 
     SV
@@ -14133,7 +14204,7 @@ Set(ref,...)
     Image
       *image;
 
-    register ssize_t
+    ssize_t
       i;
 
     struct PackageInfo
@@ -14209,16 +14280,14 @@ SetPixel(ref,...)
     MagickBooleanType
       normalize;
 
+    Quantum
+      *q;
+
     RectangleInfo
       region;
 
-    register ssize_t
-      i;
-
-    register Quantum
-      *q;
-
     ssize_t
+      i,
       option;
 
     struct PackageInfo
@@ -14369,7 +14438,7 @@ SetPixel(ref,...)
         double
           scale;
 
-        register ssize_t
+        ssize_t
           i;
 
         i=0;
@@ -14457,14 +14526,14 @@ SetPixels(ref,...)
     Image
       *image;
 
+    Quantum
+      *q;
+
     RectangleInfo
       region;
 
-    register ssize_t
+    ssize_t
       i;
-
-    register Quantum
-      *q;
 
     struct PackageInfo
       *info;
@@ -14555,7 +14624,7 @@ SetPixels(ref,...)
         {
           if (LocaleCompare(attribute,"height") == 0)
             {
-              region.height=SvIV(ST(i));
+              region.height=(size_t) SvIV(ST(i));
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -14567,7 +14636,7 @@ SetPixels(ref,...)
         {
           if (LocaleCompare(attribute,"width") == 0)
             {
-              region.width=SvIV(ST(i));
+              region.width=(size_t) SvIV(ST(i));
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -14618,7 +14687,7 @@ SetPixels(ref,...)
         double
           scale;
 
-        register ssize_t
+        ssize_t
           i,
           n,
           number_pixels;
@@ -14626,7 +14695,7 @@ SetPixels(ref,...)
         i=0;
         n=0;
         scale=(double) QuantumRange;
-        number_pixels=region.width*region.height;
+        number_pixels=(ssize_t) (region.width*region.height);
         while ((n < number_pixels) && (i < av_len(av)))
         {
           if (((GetPixelRedTraits(image) & UpdatePixelTrait) != 0) &&
@@ -14713,10 +14782,8 @@ Smush(ref,...)
     Image
       *image;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       offset,
       stack;
 
@@ -14928,7 +14995,7 @@ Statistics(ref,...)
     count=0;
     for ( ; image; image=image->next)
     {
-      register size_t
+      ssize_t
         i;
 
       channel_statistics=GetImageStatistics(image,exception);
@@ -15054,10 +15121,8 @@ Write(ref,...)
       *image,
       *next;
 
-    register ssize_t
-      i;
-
     ssize_t
+      i,
       number_images,
       scene;
 
@@ -15091,7 +15156,7 @@ Write(ref,...)
       }
     scene=0;
     for (next=image; next; next=next->next)
-      next->scene=scene++;
+      next->scene=(size_t) scene++;
     package_info=ClonePackageInfo(info,exception);
     if (items == 2)
       SetAttribute(aTHX_ package_info,NULL,"filename",ST(1),exception);

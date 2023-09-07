@@ -400,10 +400,8 @@ MagickExport size_t ConcatenateMagickString(char *magick_restrict destination,
     *magick_restrict p;
 
   size_t
+    count,
     i;
-
-  size_t
-    count;
 
   assert(destination != (char *) NULL);
   assert(source != (const char *) NULL);
@@ -427,7 +425,7 @@ MagickExport size_t ConcatenateMagickString(char *magick_restrict destination,
     p++;
   }
   *q='\0';
-  return(count+(p-source));
+  return(count+(size_t) (p-source));
 }
 
 /*
@@ -624,7 +622,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
         count;
 
       (void) lseek(file,0,SEEK_SET);
-      for (i=0; i < length; i+=count)
+      for (i=0; i < length; i+=(size_t) count)
       {
         count=read(file,string+i,(size_t) MagickMin(length-i,(size_t)
           MAGICK_SSIZE_MAX));
@@ -2073,7 +2071,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
       p++;
   }
   (*argc)++;
-  argv=(char **) AcquireQuantumMemory((size_t) (*argc+1UL),sizeof(*argv));
+  argv=(char **) AcquireQuantumMemory((size_t) *argc+1UL,sizeof(*argv));
   if (argv == (char **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToConvertStringToARGV");
   /*

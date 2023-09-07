@@ -330,7 +330,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
       if (traits == UndefinedPixelTrait)
         continue;
       offset=GetPixelChannelOffset(image,channel);
-      match=fabs((double) (p[offset]-target)) < 0.5 ? MagickTrue : MagickFalse;
+      match=fabs((double) p[offset]-target) < 0.5 ? MagickTrue : MagickFalse;
       if (match != MagickFalse)
         {
           if ((max_locations != 0) && (n >= (ssize_t) max_locations))
@@ -857,7 +857,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         for (i=0; i < (ssize_t) image->number_meta_channels; i++)
         {
           PixelChannel
-            channel = (PixelChannel) (MetaPixelChannel+i);
+            channel = (PixelChannel) (MetaPixelChannels+i);
 
           (void) FormatLocaleFile(file,"    Meta channel[%.20g]: %.20g-bit\n",
             (double) i,(double) channel_statistics[channel].depth);
@@ -941,7 +941,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
             label[MagickPathExtent];
 
           PixelChannel
-            channel = (PixelChannel) (MetaPixelChannel+i);
+            channel = (PixelChannel) (MetaPixelChannels+i);
 
           (void) FormatLocaleString(label,MagickPathExtent,
             "Meta channel[%.20g]",(double) i);
@@ -1225,15 +1225,18 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         Display image chromaticity.
       */
       (void) FormatLocaleFile(file,"  Chromaticity:\n");
-      (void) FormatLocaleFile(file,"    red primary: (%g,%g)\n",
-        image->chromaticity.red_primary.x,image->chromaticity.red_primary.y);
-      (void) FormatLocaleFile(file,"    green primary: (%g,%g)\n",
-        image->chromaticity.green_primary.x,
-        image->chromaticity.green_primary.y);
-      (void) FormatLocaleFile(file,"    blue primary: (%g,%g)\n",
-        image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y);
-      (void) FormatLocaleFile(file,"    white point: (%g,%g)\n",
-        image->chromaticity.white_point.x,image->chromaticity.white_point.y);
+      (void) FormatLocaleFile(file,"    red primary: (%g,%g,%g)\n",
+        image->chromaticity.red_primary.x,image->chromaticity.red_primary.y,
+        image->chromaticity.red_primary.z);
+      (void) FormatLocaleFile(file,"    green primary: (%g,%g,%g)\n",
+        image->chromaticity.green_primary.x,image->chromaticity.green_primary.y,
+        image->chromaticity.green_primary.z);
+      (void) FormatLocaleFile(file,"    blue primary: (%g,%g,%g)\n",
+        image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y,
+        image->chromaticity.blue_primary.z);
+      (void) FormatLocaleFile(file,"    white point: (%g,%g,%g)\n",
+        image->chromaticity.white_point.x,image->chromaticity.white_point.y,
+        image->chromaticity.white_point.z);
     }
   if ((image->extract_info.width*image->extract_info.height) != 0)
     (void) FormatLocaleFile(file,"  Tile geometry: %.20gx%.20g%+.20g%+.20g\n",
@@ -1516,7 +1519,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                 (double) dataset,(double) record);
               length=(size_t) (GetStringInfoDatum(profile)[i++] << 8);
               length|=GetStringInfoDatum(profile)[i++];
-              length=MagickMin(length,profile_length-i);
+              length=MagickMin(length,profile_length-(size_t) i);
               attribute=(char *) NULL;
               if (~length >= (MagickPathExtent-1))
                 attribute=(char *) AcquireQuantumMemory(length+MagickPathExtent,

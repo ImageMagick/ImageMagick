@@ -108,7 +108,7 @@
   <delegate decode="ps:mono" stealth="True" command="&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
   <delegate decode="shtml" command="&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="sid" command="&quot;mrsidgeodecode&quot; -if sid -i &quot;%i&quot; -of tif -o &quot;%o&quot; &gt; &quot;%u&quot;"/>
-  <delegate decode="svg" command="&quot;rsvg-convert&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="svg" command="&quot;rsvg-convert&quot; --dpi-x %x --dpi-y %y -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="svg:decode" stealth="True" command="&quot;inkscape&quot; &quot;%s&quot; --export-png=&quot;%s&quot; --export-dpi=&quot;%s&quot; --export-background=&quot;%s&quot; --export-background-opacity=&quot;%s&quot; &gt; &quot;%s&quot; 2&gt;&amp;1"/>
   <delegate decode="tiff" encode="launch" mode="encode" command="&quot;gimp&quot; &quot;%i&quot;"/>
   <delegate decode="wdp" command="/usr/bin/mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;JxrDecApp&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot;; /usr/bin/mv &quot;%i.jxr&quot; &quot;%i&quot;; /usr/bin/mv &quot;%o.bmp&quot; &quot;%o&quot;"/>

@@ -53,12 +53,12 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/module.h"
 #include "MagickCore/option.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/module.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
@@ -66,8 +66,8 @@
 /*
   Global declarations.
 */
-static const char*
-  intermediate_formats[] =
+static const char
+  *intermediate_formats[] =
   {
     "pam",
     "webp"
@@ -136,9 +136,9 @@ static MagickBooleanType IsVIDEO(const unsigned char *magick,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadVIDEOImage() reads an binary file in the VIDEO video stream format
-%  and returns it.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
+%  ReadVIDEOImage() reads an binary file in the VIDEO video stream format and
+%  returns it.  It allocates the memory necessary for the new Image structure
+%  and returns a pointer to the new image.
 %
 %  The format of the ReadVIDEOImage method is:
 %
@@ -214,11 +214,8 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
     {
       char
         command[MagickPathExtent],
-        message[MagickPathExtent];
-
-      char
-        *options,
-        *sanitized_option;
+        message[MagickPathExtent],
+        *options;
 
       const char
         *intermediate_format,
@@ -234,19 +231,15 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
       option=GetImageOption(image_info,"video:vsync");
       if (option != (const char *) NULL)
         {
-          sanitized_option=SanitizeDelegateString(option);
-          (void) FormatLocaleString(command,MagickPathExtent," -vsync %s",
-            sanitized_option);
-          DestroyString(sanitized_option);
+          FormatSanitizedDelegateOption(command,MagickPathExtent,
+            " -vsync \"%s\""," -vsync '%s'",option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
       option=GetImageOption(image_info,"video:pixel-format");
       if (option != (const char *) NULL)
         {
-          sanitized_option=SanitizeDelegateString(option);
-          (void) FormatLocaleString(command,MagickPathExtent," -pix_fmt %s",
-            sanitized_option);
-          DestroyString(sanitized_option);
+          FormatSanitizedDelegateOption(command,MagickPathExtent,
+            " -pix_fmt \"%s\""," -pix_fmt '%s'",option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
       else
@@ -254,8 +247,8 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
           (void) ConcatenateMagickString(options," -pix_fmt rgba",
             MagickPathExtent);
       intermediate_format=GetIntermediateFormat(image_info);
-      (void) FormatLocaleString(command,MagickPathExtent," -vcodec %s",
-        intermediate_format);
+      (void) FormatLocaleString(command,MagickPathExtent,
+        " -vcodec %s -lossless 1",intermediate_format);
       (void) ConcatenateMagickString(options,command,MagickPathExtent);
       AcquireUniqueFilename(read_info->unique);
       (void) AcquireUniqueSymbolicLink(image_info->filename,
@@ -474,9 +467,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     source_file;
 
   size_t
-    i;
-
-  size_t
+    i,
     length,
     quantum;
 
@@ -519,7 +510,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
       return(MagickFalse);
     }
   length=0;
-  for (i=0; ; i+=count)
+  for (i=0; ; i+=(size_t) count)
   {
     count=(ssize_t) read(source_file,buffer,quantum);
     if (count <= 0)
@@ -553,7 +544,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     delay;
 
   Image
-    *clone_images;
+    *clone_images,
+    *p;
 
   ImageInfo
     *write_info;
@@ -564,16 +556,13 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  Image
-    *p;
-
-  ssize_t
-    i;
-
   size_t
     count,
     length,
     scene;
+
+  ssize_t
+    i;
 
   unsigned char
     *blob;
@@ -644,6 +633,7 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
         {
           blob=(unsigned char *) FileToBlob(previous_image,~0UL,&length,
             exception);
+          magick_fallthrough;
         }
         default:
         {
@@ -681,11 +671,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
     {
       char
         command[MagickPathExtent],
-        message[MagickPathExtent];
-
-      char
-        *options,
-        *sanitized_option;
+        message[MagickPathExtent],
+        *options;
 
       const char
         *option;
@@ -699,10 +686,8 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
       option=GetImageOption(image_info,"video:pixel-format");
       if (option != (const char *) NULL)
         {
-          sanitized_option=SanitizeDelegateString(option);
-          (void) FormatLocaleString(command,MagickPathExtent," -pix_fmt %s",
-            sanitized_option);
-          DestroyString(sanitized_option);
+          FormatSanitizedDelegateOption(command,MagickPathExtent,
+            " -pix_fmt \"%s\""," -pix_fmt '%s'",option);
           (void) ConcatenateMagickString(options,command,MagickPathExtent);
         }
       AcquireUniqueFilename(write_info->unique);
@@ -720,11 +705,10 @@ static MagickBooleanType WriteVIDEOImage(const ImageInfo *image_info,
           status=CopyDelegateFile(filename,image->filename);
           (void) RelinquishUniqueFileResource(filename);
         }
-      else if (*message != '\0')
-        {
+      else
+        if (*message != '\0')
           (void) ThrowMagickException(exception,GetMagickModule(),
             DelegateError,"VideoDelegateFailed","`%s'",message);
-        }
       (void) RelinquishUniqueFileResource(write_info->unique);
   }
   write_info=DestroyImageInfo(write_info);

@@ -140,7 +140,7 @@ jobs:
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd ImageMagick-Windows\ImageMagick\PerlMagick
         set PATH=%PATH%;C:\Strawberry${{matrix.bit}}\c\bin;C:\Strawberry${{matrix.bit}}\perl\site\bin;C:\Strawberry${{matrix.bit}}\perl\bin;C:\WINDOWS\System32\WindowsPowerShell\v1.0
-        perl "Makefile.PL" "MAKE=nmake"
+        perl "Makefile.PL" "MAKE=nmake" "CC=g++"
         nmake
         nmake release
 
@@ -266,7 +266,7 @@ jobs:
       shell: cmd
       run: |
         cd ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2022 /noOpenMP /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /smt
+        configure.exe /noWizard /VS2022 /${{matrix.hdri}} /${{matrix.quantum}} /${{matrix.platform}} /smt
 
     - name: Build ImageMagick
       shell: cmd
@@ -285,7 +285,7 @@ jobs:
 
     - name: Copy Files
       id: package
-      shell: powershell
+      shell: pwsh
       run: |
         [void](New-Item -Name "portable" -ItemType directory)
         Copy-Item "ImageMagick-Windows\VisualMagick\bin\*.exe" "portable"
@@ -313,7 +313,7 @@ jobs:
         $version = ($version | Select-String '".*"' -AllMatches |  Select -Expand Matches | Select -Expand Value | Out-String)
         $version = $version -Replace "`n|`r|""",""
         $version = $version -Replace " ","-"
-        Write-Host "::set-output name=version::$version"
+        echo "version=$version" >> $env:GITHUB_OUTPUT
 
     - uses: actions/upload-artifact@v3
       with:

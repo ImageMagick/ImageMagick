@@ -319,7 +319,7 @@ MagickExport magick_hot_spot size_t GetNextToken(
     p++;
   if (end != (const char **) NULL)
     *end=(const char *) p;
-  return(p-start+1);
+  return((size_t) (p-start+1));
 }
 
 /*
@@ -523,6 +523,7 @@ MagickExport MagickBooleanType GlobExpression(
         pattern+=GetUTFOctets(pattern);
         if (GetUTFCode(pattern) == 0)
           break;
+        magick_fallthrough;
       }
       default:
       {

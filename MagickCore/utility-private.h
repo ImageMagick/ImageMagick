@@ -79,12 +79,13 @@ static inline wchar_t *create_wchar_path(const char *utf8)
 
       (void) FormatLocaleString(buffer,MagickPathExtent,"\\\\?\\%s",utf8);
       count+=4;
-      longPath=(wchar_t *) NTAcquireQuantumMemory(count,sizeof(*longPath));
+      longPath=(wchar_t *) NTAcquireQuantumMemory((size_t) count,
+        sizeof(*longPath));
       if (longPath == (wchar_t *) NULL)
         return((wchar_t *) NULL);
       count=MultiByteToWideChar(CP_UTF8,0,buffer,-1,longPath,count);
       if (count != 0)
-        count=GetShortPathNameW(longPath,shortPath,MAX_PATH);
+        count=(int) GetShortPathNameW(longPath,shortPath,MAX_PATH);
       longPath=(wchar_t *) RelinquishMagickMemory(longPath);
       if ((count < 5) || (count >= MAX_PATH))
         return((wchar_t *) NULL);
@@ -92,7 +93,7 @@ static inline wchar_t *create_wchar_path(const char *utf8)
       wcscpy(wide,shortPath+4);
       return(wide);
     }
-  wide=(wchar_t *) NTAcquireQuantumMemory(count,sizeof(*wide));
+  wide=(wchar_t *) NTAcquireQuantumMemory((size_t) count,sizeof(*wide));
   if ((wide != (wchar_t *) NULL) &&
       (MultiByteToWideChar(CP_UTF8,0,utf8,-1,wide,count) == 0))
     wide=(wchar_t *) RelinquishMagickMemory(wide);
@@ -239,7 +240,8 @@ static inline FILE *popen_utf8(const char *command,const char *type)
   length=MultiByteToWideChar(CP_UTF8,0,command,-1,NULL,0);
   if (length == 0)
     return(file);
-  command_wide=(wchar_t *) AcquireQuantumMemory(length,sizeof(*command_wide));
+  command_wide=(wchar_t *) AcquireQuantumMemory((size_t) length,
+    sizeof(*command_wide));
   if (command_wide == (wchar_t *) NULL)
     return(file);
   length=MultiByteToWideChar(CP_UTF8,0,command,-1,command_wide,length);
@@ -350,13 +352,16 @@ static inline int set_file_timestamp(const char *path,struct stat *attributes)
       ULARGE_INTEGER
         date_time;
 
-      date_time.QuadPart=(attributes->st_ctime*10000000LL)+116444736000000000LL;
+      date_time.QuadPart=(ULONGLONG) (attributes->st_ctime*10000000LL)+
+        116444736000000000LL;
       creation_time.dwLowDateTime=date_time.LowPart;
       creation_time.dwHighDateTime=date_time.HighPart;
-      date_time.QuadPart=(attributes->st_atime*10000000LL)+116444736000000000LL;
+      date_time.QuadPart=(ULONGLONG) (attributes->st_atime*10000000LL)+
+        116444736000000000LL;
       last_access_time.dwLowDateTime=date_time.LowPart;
       last_access_time.dwHighDateTime=date_time.HighPart;
-      date_time.QuadPart=(attributes->st_mtime*10000000LL)+116444736000000000LL;
+      date_time.QuadPart=(ULONGLONG) (attributes->st_mtime*10000000LL)+
+        116444736000000000LL;
       last_write_time.dwLowDateTime=date_time.LowPart;
       last_write_time.dwHighDateTime=date_time.HighPart;
       status=SetFileTime(handle,&creation_time,&last_access_time,&last_write_time);

@@ -253,12 +253,12 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
       break;
     case AbsEvaluateOperator:
     {
-      result=(double) fabs((double) (pixel+value));
+      result=(double) fabs((double) pixel+value);
       break;
     }
     case AddEvaluateOperator:
     {
-      result=(double) (pixel+value);
+      result=(double) pixel+value;
       break;
     }
     case AddModulusEvaluateOperator:
@@ -269,8 +269,9 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
         result, where floor() is replaced by trunc() and could return a
         negative result (which is clipped).
       */
-      result=pixel+value;
-      result-=(QuantumRange+1.0)*floor((double) result/(QuantumRange+1.0));
+      result=(double) pixel+value;
+      result-=((double) QuantumRange+1.0)*floor(result/((double)
+        QuantumRange+1.0));
       break;
     }
     case AndEvaluateOperator:
@@ -280,18 +281,18 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case CosineEvaluateOperator:
     {
-      result=(double) (QuantumRange*(0.5*cos((double) (2.0*MagickPI*
-        QuantumScale*pixel*value))+0.5));
+      result=(double) QuantumRange*(0.5*cos((double) (2.0*MagickPI*
+        QuantumScale*(double) pixel*value))+0.5);
       break;
     }
     case DivideEvaluateOperator:
     {
-      result=pixel/(value == 0.0 ? 1.0 : value);
+      result=(double) pixel/(value == 0.0 ? 1.0 : value);
       break;
     }
     case ExponentialEvaluateOperator:
     {
-      result=(double) (QuantumRange*exp((double) (value*QuantumScale*pixel)));
+      result=(double) QuantumRange*exp(value*QuantumScale*(double) pixel);
       break;
     }
     case GaussianNoiseEvaluateOperator:
@@ -308,8 +309,8 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case InverseLogEvaluateOperator:
     {
-      result=(QuantumRange*pow((value+1.0),QuantumScale*pixel)-1.0)*
-        PerceptibleReciprocal(value);
+      result=(double) QuantumRange*pow((value+1.0),QuantumScale*(double)
+        pixel-1.0)*PerceptibleReciprocal(value);
       break;
     }
     case LaplacianNoiseEvaluateOperator:
@@ -327,9 +328,9 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case LogEvaluateOperator:
     {
-      if ((QuantumScale*pixel) >= MagickEpsilon)
-        result=(double) (QuantumRange*log((double) (QuantumScale*value*pixel+
-          1.0))/log((double) (value+1.0)));
+      if ((QuantumScale*(double) pixel) >= MagickEpsilon)
+        result=(double) QuantumRange*log(QuantumScale*value*
+          (double) pixel+1.0)/log((double) (value+1.0));
       break;
     }
     case MaxEvaluateOperator:
@@ -339,17 +340,17 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case MeanEvaluateOperator:
     {
-      result=(double) (pixel+value);
+      result=(double) pixel+value;
       break;
     }
     case MedianEvaluateOperator:
     {
-      result=(double) (pixel+value);
+      result=(double) pixel+value;
       break;
     }
     case MinEvaluateOperator:
     {
-      result=(double) MagickMin((double) pixel,value);
+      result=MagickMin((double) pixel,value);
       break;
     }
     case MultiplicativeNoiseEvaluateOperator:
@@ -360,7 +361,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case MultiplyEvaluateOperator:
     {
-      result=(double) (value*pixel);
+      result=(double) pixel*value;
       break;
     }
     case OrEvaluateOperator:
@@ -376,12 +377,12 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case PowEvaluateOperator:
     {
-      if ((pixel < 0) && ((value-floor(value)) > MagickEpsilon))
-        result=(double) -(QuantumRange*pow((double) -(QuantumScale*pixel),
-          (double) value));
+      if (((double) pixel < 0) && ((value-floor(value)) > MagickEpsilon))
+        result=(double) -((double) QuantumRange*pow(-(QuantumScale*(double)
+          pixel),(double) value));
       else
-        result=(double) (QuantumRange*pow((double) (QuantumScale*pixel),
-          (double) value));
+        result=(double) QuantumRange*pow(QuantumScale*(double) pixel,
+          (double) value);
       break;
     }
     case RightShiftEvaluateOperator:
@@ -393,7 +394,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case RootMeanSquareEvaluateOperator:
     {
-      result=((double) pixel*pixel+value);
+      result=((double) pixel*(double) pixel+value);
       break;
     }
     case SetEvaluateOperator:
@@ -403,18 +404,18 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case SineEvaluateOperator:
     {
-      result=(double) (QuantumRange*(0.5*sin((double) (2.0*MagickPI*
-        QuantumScale*pixel*value))+0.5));
+      result=(double) QuantumRange*(0.5*sin((double) (2.0*MagickPI*
+        QuantumScale*(double) pixel*value))+0.5);
       break;
     }
     case SubtractEvaluateOperator:
     {
-      result=(double) (pixel-value);
+      result=(double) pixel-value;
       break;
     }
     case SumEvaluateOperator:
     {
-      result=(double) (pixel+value);
+      result=(double) pixel+value;
       break;
     }
     case ThresholdEvaluateOperator:
@@ -996,8 +997,8 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
       */
       result=0.0;
       for (i=0; i < (ssize_t) number_parameters; i++)
-        result=result*QuantumScale*pixel+parameters[i];
-      result*=QuantumRange;
+        result=result*QuantumScale*(double) pixel+parameters[i];
+      result*=(double) QuantumRange;
       break;
     }
     case SinusoidFunction:
@@ -1015,8 +1016,8 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
       phase=(number_parameters >= 2) ? parameters[1] : 0.0;
       amplitude=(number_parameters >= 3) ? parameters[2] : 0.5;
       bias=(number_parameters >= 4) ? parameters[3] : 0.5;
-      result=(double) (QuantumRange*(amplitude*sin((double) (2.0*
-        MagickPI*(frequency*QuantumScale*pixel+phase/360.0)))+bias));
+      result=(double) QuantumRange*(amplitude*sin((double) (2.0*
+        MagickPI*(frequency*QuantumScale*(double) pixel+phase/360.0)))+bias);
       break;
     }
     case ArcsinFunction:
@@ -1035,7 +1036,8 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
       center=(number_parameters >= 2) ? parameters[1] : 0.5;
       range=(number_parameters >= 3) ? parameters[2] : 1.0;
       bias=(number_parameters >= 4) ? parameters[3] : 0.5;
-      result=2.0*PerceptibleReciprocal(width)*(QuantumScale*pixel-center);
+      result=2.0*PerceptibleReciprocal(width)*(QuantumScale*(double) pixel-
+        center);
       if (result <= -1.0)
         result=bias-range/2.0;
       else
@@ -1043,7 +1045,7 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
           result=bias+range/2.0;
         else
           result=(double) (range/MagickPI*asin((double) result)+bias);
-      result*=QuantumRange;
+      result*=(double) QuantumRange;
       break;
     }
     case ArctanFunction:
@@ -1061,9 +1063,8 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
       center=(number_parameters >= 2) ? parameters[1] : 0.5;
       range=(number_parameters >= 3) ? parameters[2] : 1.0;
       bias=(number_parameters >= 4) ? parameters[3] : 0.5;
-      result=(double) (MagickPI*slope*(QuantumScale*pixel-center));
-      result=(double) (QuantumRange*(range/MagickPI*atan((double)
-        result)+bias));
+      result=MagickPI*slope*(QuantumScale*(double) pixel-center);
+      result=(double) QuantumRange*(range/MagickPI*atan((double) result)+bias);
       break;
     }
     case UndefinedFunction:
@@ -1514,12 +1515,12 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
           continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        M00[channel]+=QuantumScale*p[i];
-        M00[MaxPixelChannels]+=QuantumScale*p[i];
-        M10[channel]+=x*QuantumScale*p[i];
-        M10[MaxPixelChannels]+=x*QuantumScale*p[i];
-        M01[channel]+=y*QuantumScale*p[i];
-        M01[MaxPixelChannels]+=y*QuantumScale*p[i];
+        M00[channel]+=QuantumScale*(double) p[i];
+        M00[MaxPixelChannels]+=QuantumScale*(double) p[i];
+        M10[channel]+=x*QuantumScale*(double) p[i];
+        M10[MaxPixelChannels]+=x*QuantumScale*(double) p[i];
+        M01[channel]+=y*QuantumScale*(double) p[i];
+        M01[MaxPixelChannels]+=y*QuantumScale*(double) p[i];
       }
       p+=GetPixelChannels(image);
     }
@@ -1560,37 +1561,39 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         M11[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
-          QuantumScale*p[i];
+          QuantumScale*(double) p[i];
         M11[MaxPixelChannels]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
-          QuantumScale*p[i];
+          QuantumScale*(double) p[i];
         M20[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          QuantumScale*p[i];
+          QuantumScale*(double) p[i];
         M20[MaxPixelChannels]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          QuantumScale*p[i];
+          QuantumScale*(double) p[i];
         M02[channel]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
-          QuantumScale*p[i];
+          QuantumScale*(double) p[i];
         M02[MaxPixelChannels]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
-          QuantumScale*p[i];
+          QuantumScale*(double) p[i];
         M21[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (y-centroid[channel].y)*QuantumScale*p[i];
+          (y-centroid[channel].y)*QuantumScale*(double) p[i];
         M21[MaxPixelChannels]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (y-centroid[channel].y)*QuantumScale*p[i];
+          (y-centroid[channel].y)*QuantumScale*(double) p[i];
         M12[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
-          (y-centroid[channel].y)*QuantumScale*p[i];
+          (y-centroid[channel].y)*QuantumScale*(double) p[i];
         M12[MaxPixelChannels]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
-          (y-centroid[channel].y)*QuantumScale*p[i];
+          (y-centroid[channel].y)*QuantumScale*(double) p[i];
         M22[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (y-centroid[channel].y)*(y-centroid[channel].y)*QuantumScale*p[i];
+          (y-centroid[channel].y)*(y-centroid[channel].y)*QuantumScale*(double)
+          p[i];
         M22[MaxPixelChannels]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (y-centroid[channel].y)*(y-centroid[channel].y)*QuantumScale*p[i];
+          (y-centroid[channel].y)*(y-centroid[channel].y)*QuantumScale*(double)
+          p[i];
         M30[channel]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (x-centroid[channel].x)*QuantumScale*p[i];
+          (x-centroid[channel].x)*QuantumScale*(double) p[i];
         M30[MaxPixelChannels]+=(x-centroid[channel].x)*(x-centroid[channel].x)*
-          (x-centroid[channel].x)*QuantumScale*p[i];
+          (x-centroid[channel].x)*QuantumScale*(double) p[i];
         M03[channel]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
-          (y-centroid[channel].y)*QuantumScale*p[i];
+          (y-centroid[channel].y)*QuantumScale*(double) p[i];
         M03[MaxPixelChannels]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
-          (y-centroid[channel].y)*QuantumScale*p[i];
+          (y-centroid[channel].y)*QuantumScale*(double) p[i];
       }
       p+=GetPixelChannels(image);
     }
@@ -1752,7 +1755,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
   if (artifact != NULL)
     colorspaces=AcquireString(artifact);
   else
-    colorspaces=AcquireString("sRGB,HCLp");
+    colorspaces=AcquireString("xyY,HSB");
   perceptual_hash[0].number_colorspaces=0;
   perceptual_hash[0].number_channels=0;
   q=colorspaces;
@@ -2126,25 +2129,26 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           channel_statistics[channel].minima=(double) p[i];
         if ((double) p[i] > channel_statistics[channel].maxima)
           channel_statistics[channel].maxima=(double) p[i];
-        channel_statistics[channel].sum+=p[i];
-        channel_statistics[channel].sum_squared+=(double) p[i]*p[i];
-        channel_statistics[channel].sum_cubed+=(double) p[i]*p[i]*p[i];
-        channel_statistics[channel].sum_fourth_power+=(double) p[i]*p[i]*p[i]*
-          p[i];
+        channel_statistics[channel].sum+=(double) p[i];
+        channel_statistics[channel].sum_squared+=(double) p[i]*(double) p[i];
+        channel_statistics[channel].sum_cubed+=(double) p[i]*(double) p[i]*
+          (double) p[i];
+        channel_statistics[channel].sum_fourth_power+=(double) p[i]*(double)
+          p[i]*(double) p[i]*(double) p[i];
         channel_statistics[channel].area++;
         if ((double) p[i] < channel_statistics[CompositePixelChannel].minima)
           channel_statistics[CompositePixelChannel].minima=(double) p[i];
         if ((double) p[i] > channel_statistics[CompositePixelChannel].maxima)
           channel_statistics[CompositePixelChannel].maxima=(double) p[i];
-        histogram[GetPixelChannels(image)*ScaleQuantumToMap(
+        histogram[(ssize_t) GetPixelChannels(image)*ScaleQuantumToMap(
           ClampToQuantum((double) p[i]))+i]++;
         channel_statistics[CompositePixelChannel].sum+=(double) p[i];
         channel_statistics[CompositePixelChannel].sum_squared+=(double)
-          p[i]*p[i];
+          p[i]*(double) p[i];
         channel_statistics[CompositePixelChannel].sum_cubed+=(double)
-          p[i]*p[i]*p[i];
+          p[i]*(double) p[i]*(double) p[i];
         channel_statistics[CompositePixelChannel].sum_fourth_power+=(double)
-          p[i]*p[i]*p[i]*p[i];
+          p[i]*(double) p[i]*(double) p[i]*(double) p[i];
         channel_statistics[CompositePixelChannel].area++;
       }
       p+=GetPixelChannels(image);
@@ -2182,7 +2186,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     PixelChannel channel = GetPixelChannelChannel(image,i);
     number_bins=0.0;
     for (j=0; j <= (ssize_t) MaxMap; j++)
-      if (histogram[GetPixelChannels(image)*j+i] > 0.0)
+      if (histogram[(ssize_t) GetPixelChannels(image)*j+i] > 0.0)
         number_bins++;
     area=PerceptibleReciprocal(channel_statistics[channel].area);
     for (j=0; j <= (ssize_t) MaxMap; j++)
@@ -2190,7 +2194,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       double
         count;
 
-      count=area*histogram[GetPixelChannels(image)*j+i];
+      count=area*histogram[(ssize_t) GetPixelChannels(image)*j+i];
       channel_statistics[channel].entropy+=-count*MagickLog10(count)*
         PerceptibleReciprocal(MagickLog10(number_bins));
       channel_statistics[CompositePixelChannel].entropy+=-count*
@@ -2454,7 +2458,7 @@ MagickExport Image *PolynomialImage(const Image *images,
           coefficient=(MagickRealType) terms[2*j];
           degree=(MagickRealType) terms[(j << 1)+1];
           polynomial_pixel[x].channel[i]+=coefficient*
-            pow(QuantumScale*GetPixelChannel(image,channel,p),degree);
+            pow(QuantumScale*(double) GetPixelChannel(image,channel,p),degree);
         }
         p+=GetPixelChannels(next);
       }
@@ -2471,7 +2475,8 @@ MagickExport Image *PolynomialImage(const Image *images,
           continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumRange*polynomial_pixel[x].channel[i]);
+        q[i]=ClampToQuantum((double) QuantumRange*
+          polynomial_pixel[x].channel[i]);
       }
       q+=GetPixelChannels(image);
     }
@@ -2712,7 +2717,7 @@ static inline void GetMedianPixelList(PixelList *pixel_list,Quantum *pixel)
   do
   {
     color=p->nodes[color].next[0];
-    count+=p->nodes[color].count;
+    count+=(ssize_t) p->nodes[color].count;
   } while (count <= (ssize_t) (pixel_list->length >> 1));
   *pixel=ScaleShortToQuantum((unsigned short) color);
 }
@@ -2746,7 +2751,7 @@ static inline void GetModePixelList(PixelList *pixel_list,Quantum *pixel)
         mode=color;
         max_count=p->nodes[mode].count;
       }
-    count+=p->nodes[color].count;
+    count+=(ssize_t) p->nodes[color].count;
   } while (count < (ssize_t) pixel_list->length);
   *pixel=ScaleShortToQuantum((unsigned short) mode);
 }
@@ -2776,7 +2781,7 @@ static inline void GetNonpeakPixelList(PixelList *pixel_list,Quantum *pixel)
     previous=color;
     color=next;
     next=p->nodes[color].next[0];
-    count+=p->nodes[color].count;
+    count+=(ssize_t) p->nodes[color].count;
   } while (count <= (ssize_t) (pixel_list->length >> 1));
   if ((previous == 65536UL) && (next != 65536UL))
     color=next;
@@ -2879,8 +2884,9 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
   /*
     Make each pixel the min / max / median / mode / etc. of the neighborhood.
   */
-  center=(ssize_t) GetPixelChannels(image)*(image->columns+MagickMax(width,1))*
-    (MagickMax(height,1)/2L)+GetPixelChannels(image)*(MagickMax(width,1)/2L);
+  center=(ssize_t) GetPixelChannels(image)*((ssize_t) image->columns+
+    MagickMax((ssize_t) width,1L))*(MagickMax((ssize_t) height,1)/2L)+(ssize_t)
+    GetPixelChannels(image)*(MagickMax((ssize_t) width,1L)/2L);
   status=MagickTrue;
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -2974,12 +2980,12 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
                 continue;
               }
             area++;
-            if (pixels[i] < minimum)
+            if ((double) pixels[i] < minimum)
               minimum=(double) pixels[i];
-            if (pixels[i] > maximum)
+            if ((double) pixels[i] > maximum)
               maximum=(double) pixels[i];
             sum+=(double) pixels[i];
-            sum_squared+=(double) pixels[i]*pixels[i];
+            sum_squared+=(double) pixels[i]*(double) pixels[i];
             pixels+=GetPixelChannels(image);
           }
           pixels+=GetPixelChannels(image)*image->columns;

@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 extern MagickExport double
-  ExpandAffine(const AffineMatrix *);
+  ExpandAffine(const AffineMatrix *) magick_attribute((__pure__));
 
 extern MagickExport void
   ConvertHSLToRGB(const double,const double,const double,double *,double *,

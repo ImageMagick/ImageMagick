@@ -162,19 +162,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *pixel_info;
 
   Quantum
-    index;
-
-  ssize_t
-    x;
-
-  Quantum
+    index,
     *q;
-
-  ssize_t
-    i;
-
-  unsigned char
-    *p;
 
   size_t
     bits_per_pixel,
@@ -187,12 +176,15 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
+    i,
     offset,
+    x,
     y;
 
   unsigned char
     background_color[256] = { 0 },
     *colormap,
+    *p,
     pixel,
     plane,
     *pixels;
@@ -370,7 +362,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=pixels;
         for (i=0; i < (ssize_t) number_pixels; i++)
         {
-          if (image->alpha_trait == UndefinedPixelTrait)
+          if ((image->alpha_trait & BlendPixelTrait) == 0)
             for (j=0; j < (ssize_t) number_planes; j++)
               *p++=background_color[j];
           else
@@ -449,11 +441,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (operand == EOF)
                 ThrowRLEException(CorruptImageError,"UnexpectedEndOfFile");
             }
-          offset=(ssize_t) (((image->rows-y-1)*image->columns*number_planes)+x*
+          offset=(ssize_t) ((((ssize_t) image->rows-y-1)*(ssize_t)
+            image->columns*(ssize_t) number_planes)+x*(ssize_t)
             number_planes+plane);
           operand++;
           if ((offset < 0) ||
-              ((size_t) (offset+operand*number_planes) > pixel_info_length))
+              ((size_t) (offset+operand*(ssize_t) number_planes) > pixel_info_length))
             ThrowRLEException(CorruptImageError,"UnableToReadImageData");
           p=pixels+offset;
           for (i=0; i < (ssize_t) operand; i++)
@@ -482,11 +475,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           pixel=(unsigned char) ReadBlobByte(image);
           (void) ReadBlobByte(image);
-          offset=(ssize_t) (((image->rows-y-1)*image->columns*number_planes)+x*
-            number_planes+plane);
+          offset=(((ssize_t) image->rows-y-1)*(ssize_t) image->columns*
+            (ssize_t) number_planes)+x*(ssize_t) number_planes+plane;
           operand++;
           if ((offset < 0) ||
-              ((size_t) (offset+operand*number_planes) > pixel_info_length))
+              ((size_t) (offset+operand*(ssize_t) number_planes) > pixel_info_length))
             ThrowRLEException(CorruptImageError,"UnableToReadImageData");
           p=pixels+offset;
           for (i=0; i < (ssize_t) operand; i++)
@@ -529,8 +522,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < (ssize_t) number_pixels; i++)
               for (x=0; x < (ssize_t) number_planes; x++)
               {
-                ValidateColormapValue(image,(ssize_t) (x*map_length+
-                  (*p & mask)),&index,exception);
+                ValidateColormapValue(image,x*(ssize_t) map_length+
+                  (*p & mask),&index,exception);
                 *p=colormap[(ssize_t) index];
                 p++;
               }
@@ -607,7 +600,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               p++;
             }
         p=pixels;
-        if (image->alpha_trait == UndefinedPixelTrait)
+        if ((image->alpha_trait & BlendPixelTrait) == 0)
           {
             /*
               Convert raster image to PseudoClass pixel packets.

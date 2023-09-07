@@ -173,17 +173,17 @@ static inline StorageType JXLDataTypeToStorageType(Image *image,
   switch (data_type)
   {
     case JXL_TYPE_FLOAT:
-      return FloatPixel;
+      return(FloatPixel);
     case JXL_TYPE_FLOAT16:
       (void) SetImageProperty(image,"quantum:format","floating-point",
         exception);
-      return FloatPixel;
+      return(FloatPixel);
     case JXL_TYPE_UINT16:
-      return ShortPixel;
+      return(ShortPixel);
     case JXL_TYPE_UINT8:
-      return CharPixel;
+      return(CharPixel);
     default:
-      return UndefinedPixel;
+      return(UndefinedPixel);
   }
 }
 
@@ -194,21 +194,21 @@ static inline OrientationType JXLOrientationToOrientation(
   {
     default:
     case JXL_ORIENT_IDENTITY:
-      return TopLeftOrientation;
+      return(TopLeftOrientation);
     case JXL_ORIENT_FLIP_HORIZONTAL:
-      return TopRightOrientation;
+      return(TopRightOrientation);
     case JXL_ORIENT_ROTATE_180:
-      return BottomRightOrientation;
+      return(BottomRightOrientation);
     case JXL_ORIENT_FLIP_VERTICAL:
-      return BottomLeftOrientation;
+      return(BottomLeftOrientation);
     case JXL_ORIENT_TRANSPOSE:
-      return LeftTopOrientation;
+      return(LeftTopOrientation);
     case JXL_ORIENT_ROTATE_90_CW:
-      return RightTopOrientation;
+      return(RightTopOrientation);
     case JXL_ORIENT_ANTI_TRANSPOSE:
-      return RightBottomOrientation;
+      return(RightBottomOrientation);
     case JXL_ORIENT_ROTATE_90_CCW:
-      return LeftBottomOrientation;
+      return(LeftBottomOrientation);
   }
 }
 
@@ -234,9 +234,10 @@ static inline void JXLSetFormat(Image *image,JxlPixelFormat *pixel_format,
   const char
     *property;
 
-  pixel_format->num_channels=(image->alpha_trait == BlendPixelTrait) ? 4U : 3U;
+  pixel_format->num_channels=((image->alpha_trait & BlendPixelTrait) != 0) ?
+    4U : 3U;
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    pixel_format->num_channels=(image->alpha_trait == BlendPixelTrait) ?
+    pixel_format->num_channels=((image->alpha_trait & BlendPixelTrait) != 0) ?
       2U : 1U;
   pixel_format->data_type=(image->depth > 16) ? JXL_TYPE_FLOAT :
     (image->depth > 8) ? JXL_TYPE_UINT16 : JXL_TYPE_UINT8;
@@ -279,7 +280,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   JxlBasicInfo
-    basic_info = { 0 };
+    basic_info;
 
   JxlDecoder
     *jxl_info;
@@ -292,7 +293,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     memory_manager;
 
   JxlPixelFormat
-    pixel_format = { 0 };
+    pixel_format;
 
   MagickBooleanType
     status;
@@ -336,6 +337,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize JXL delegate library.
   */
+  memset(&basic_info,0,sizeof(basic_info));
+  memset(&pixel_format,0,sizeof(pixel_format));
   JXLSetMemoryManager(&memory_manager,&memory_manager_info,image,exception);
   jxl_info=JxlDecoderCreate(&memory_manager);
   if (jxl_info == (JxlDecoder *) NULL)
@@ -435,7 +438,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case JXL_DEC_COLOR_ENCODING:
       {
         JxlColorEncoding
-          color_encoding = { JXL_COLOR_SPACE_RGB };
+          color_encoding;
 
         size_t
           profile_size;
@@ -443,32 +446,108 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         StringInfo
           *profile;
 
+        memset(&color_encoding,0,sizeof(color_encoding));
         JXLSetFormat(image,&pixel_format,exception);
+#if JPEGXL_NUMERIC_VERSION >= JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
+        jxl_status=JxlDecoderGetColorAsEncodedProfile(jxl_info,
+          JXL_COLOR_PROFILE_TARGET_DATA,&color_encoding);
+#else
         jxl_status=JxlDecoderGetColorAsEncodedProfile(jxl_info,&pixel_format,
           JXL_COLOR_PROFILE_TARGET_DATA,&color_encoding);
+#endif
         if (jxl_status == JXL_DEC_SUCCESS)
           {
             if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_LINEAR)
-              image->colorspace=RGBColorspace;
+              {
+                image->colorspace=RGBColorspace;
+                image->gamma=1.0;
+              }
             if (color_encoding.color_space == JXL_COLOR_SPACE_GRAY)
               {
                 image->colorspace=GRAYColorspace;
                 if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_LINEAR)
-                  image->colorspace=LinearGRAYColorspace;
+                  {
+                    image->colorspace=LinearGRAYColorspace;
+                    image->gamma=1.0;
+                  }
               }
+            if (color_encoding.white_point == JXL_WHITE_POINT_CUSTOM)
+              {
+                image->chromaticity.white_point.x=
+                  color_encoding.white_point_xy[0];
+                image->chromaticity.white_point.y=
+                  color_encoding.white_point_xy[1];
+              }
+            if (color_encoding.primaries == JXL_PRIMARIES_CUSTOM)
+              {
+                image->chromaticity.red_primary.x=
+                  color_encoding.primaries_red_xy[0];
+                image->chromaticity.red_primary.y=
+                  color_encoding.primaries_red_xy[1];
+                image->chromaticity.green_primary.x=
+                  color_encoding.primaries_green_xy[0];
+                image->chromaticity.green_primary.y=
+                  color_encoding.primaries_green_xy[1];
+                image->chromaticity.blue_primary.x=
+                  color_encoding.primaries_blue_xy[0];
+                image->chromaticity.blue_primary.y=
+                  color_encoding.primaries_blue_xy[1];
+              }
+            if (color_encoding.transfer_function == JXL_TRANSFER_FUNCTION_GAMMA)
+              image->gamma=color_encoding.gamma;
+            switch (color_encoding.rendering_intent)
+            {
+              case JXL_RENDERING_INTENT_PERCEPTUAL:
+              {
+                image->rendering_intent=PerceptualIntent;
+                break;
+              }
+              case JXL_RENDERING_INTENT_RELATIVE:
+              {
+                image->rendering_intent=RelativeIntent;
+                break;
+              }
+              case JXL_RENDERING_INTENT_SATURATION: 
+              {
+                image->rendering_intent=SaturationIntent;
+                break;
+              }
+              case JXL_RENDERING_INTENT_ABSOLUTE: 
+              {
+                image->rendering_intent=AbsoluteIntent;
+                break;
+              }
+              default:
+              {
+                image->rendering_intent=UndefinedIntent;
+                break;
+              }
+            }
           }
         else
           if (jxl_status != JXL_DEC_ERROR)
             break;
+#if JPEGXL_NUMERIC_VERSION >= JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
+        jxl_status=JxlDecoderGetICCProfileSize(jxl_info,
+          JXL_COLOR_PROFILE_TARGET_ORIGINAL,&profile_size);
+#else
         jxl_status=JxlDecoderGetICCProfileSize(jxl_info,&pixel_format,
           JXL_COLOR_PROFILE_TARGET_ORIGINAL,&profile_size);
+#endif
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
         profile=AcquireStringInfo(profile_size);
+#if JPEGXL_NUMERIC_VERSION >= JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
+        jxl_status=JxlDecoderGetColorAsICCProfile(jxl_info,
+          JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
+          profile_size);
+#else
         jxl_status=JxlDecoderGetColorAsICCProfile(jxl_info,&pixel_format,
           JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
           profile_size);
-        (void) SetImageProfile(image,"icc",profile,exception);
+#endif
+        if (jxl_status == JXL_DEC_SUCCESS)
+          (void) SetImageProfile(image,"icm",profile,exception);
         profile=DestroyStringInfo(profile);
         if (jxl_status == JXL_DEC_SUCCESS)
           jxl_status=JXL_DEC_COLOR_ENCODING;
@@ -537,12 +616,12 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
               CorruptImageError,"Unsupported data type","`%s'",image->filename);
             break;
           }
-        if (image->alpha_trait == BlendPixelTrait)
+        if ((image->alpha_trait & BlendPixelTrait) != 0)
           map="RGBA";
         if (IsGrayColorspace(image->colorspace) != MagickFalse)
           {
             map="I";
-            if (image->alpha_trait == BlendPixelTrait)
+            if ((image->alpha_trait & BlendPixelTrait) != 0)
               map="IA";
           }
         status=ImportImagePixels(image,0,0,image->columns,image->rows,map,
@@ -605,8 +684,14 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((exif_profile != (StringInfo *) NULL) &&
       (GetStringInfoLength(exif_profile) > 4))
     {
+      size_t
+        exif_length;
+
       StringInfo
         *snippet;
+
+      unsigned char
+        *exif_datum;
 
       unsigned int
         offset=0;
@@ -623,19 +708,18 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Strip any EOI marker if payload starts with a JPEG marker.
       */
-      size_t exif_length = GetStringInfoLength(exif_profile);
-      unsigned char *exif_datum = GetStringInfoDatum(exif_profile);
-      if (exif_length > 2 && 
-          (memcmp(exif_datum, "\xff\xd8", 2) == 0 ||
-           memcmp(exif_datum, "\xff\xe1", 2) == 0) &&
-          memcmp(exif_datum+exif_length-2, "\xff\xd9", 2) == 0)
-        SetStringInfoLength(exif_profile, exif_length-2);
+      exif_length=GetStringInfoLength(exif_profile);
+      exif_datum=GetStringInfoDatum(exif_profile);
+      if ((exif_length > 2) && 
+          ((memcmp(exif_datum,"\xff\xd8",2) == 0) ||
+           (memcmp(exif_datum,"\xff\xe1",2) == 0)) &&
+          (memcmp(exif_datum+exif_length-2,"\xff\xd9",2) == 0))
+        SetStringInfoLength(exif_profile,exif_length-2);
       /*
         Skip to actual Exif payload.
       */
       if (offset < GetStringInfoLength(exif_profile))
-        (void) DestroyStringInfo(SplitStringInfo(exif_profile,
-          offset));
+        (void) DestroyStringInfo(SplitStringInfo(exif_profile,offset));
       (void) SetImageProfile(image,"exif",exif_profile,exception);
       exif_profile=DestroyStringInfo(exif_profile);
     }
@@ -789,7 +873,7 @@ static inline float JXLGetDistance(const ImageInfo *image_info)
     return(1.0f);
   if (image_info->quality >= 30)
     return(0.1f+(float) (100-MagickMin(100,image_info->quality))*0.09f);
-  return(6.24f+(float) pow(2.5f,(30.0-image_info->quality)/5.0f)/6.25f);
+  return(6.24f+(float) pow(2.5f,(30.0-image_info->quality)/5.0)/6.25f);
 }
 
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
@@ -803,7 +887,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     *xmp_profile = (StringInfo *) NULL;
 
   JxlBasicInfo
-    basic_info = { 0 };
+    basic_info;
 
   JxlEncoder
     *jxl_info;
@@ -815,13 +899,13 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     jxl_status;
 
   JxlFrameHeader
-    frame_header = { 0 };
+    frame_header;
 
   JxlMemoryManager
     memory_manager;
 
   JxlPixelFormat
-    pixel_format = { 0 };
+    pixel_format;
 
   MagickBooleanType
     status;
@@ -861,6 +945,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   /*
     Initialize JXL delegate library.
   */
+  memset(&basic_info,0,sizeof(basic_info));
+  memset(&frame_header,0,sizeof(frame_header));
+  memset(&pixel_format,0,sizeof(pixel_format));
   JXLSetMemoryManager(&memory_manager,&memory_manager_info,image,exception);
   jxl_info=JxlEncoderCreate(&memory_manager);
   if (jxl_info == (JxlEncoder *) NULL)
@@ -901,7 +988,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         }
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     basic_info.num_color_channels=1;
-  if (image->alpha_trait == BlendPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) != 0)
     {
       basic_info.alpha_bits=basic_info.bits_per_sample;
       basic_info.alpha_exponent_bits=basic_info.exponent_bits_per_sample;
@@ -992,13 +1079,13 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     Write image as a JXL stream.
   */
   bytes_per_row=image->columns*
-    ((image->alpha_trait == BlendPixelTrait) ? 4 : 3)*
+    (((image->alpha_trait & BlendPixelTrait) != 0) ? 4 : 3)*
     ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
      (pixel_format.data_type == JXL_TYPE_UINT16) ? sizeof(short) :
      sizeof(char));
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     bytes_per_row=image->columns*
-      ((image->alpha_trait == BlendPixelTrait) ? 2 : 1)*
+      (((image->alpha_trait & BlendPixelTrait) != 0) ? 2 : 1)*
       ((pixel_format.data_type == JXL_TYPE_FLOAT) ? sizeof(float) :
        (pixel_format.data_type == JXL_TYPE_UINT16) ? sizeof(short) :
        sizeof(char));
@@ -1023,12 +1110,12 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
     if (IsGrayColorspace(image->colorspace) != MagickFalse)
       status=ExportImagePixels(image,0,0,image->columns,image->rows,
-        image->alpha_trait == BlendPixelTrait ? "IA" : "I",
+        ((image->alpha_trait & BlendPixelTrait) != 0) ? "IA" : "I",
         JXLDataTypeToStorageType(image,pixel_format.data_type,exception),
         pixels,exception);
     else
       status=ExportImagePixels(image,0,0,image->columns,image->rows,
-        image->alpha_trait == BlendPixelTrait ? "RGBA" : "RGB",
+        ((image->alpha_trait & BlendPixelTrait) != 0) ? "RGBA" : "RGB",
         JXLDataTypeToStorageType(image,pixel_format.data_type,exception),
         pixels,exception);
     if (status == MagickFalse)

@@ -937,7 +937,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         v=0;
         while (grays[u].red != ScaleQuantumToMap(GetPixelRed(image,p)))
           u++;
-        while (grays[v].red != ScaleQuantumToMap(GetPixelRed(image,p+offset*GetPixelChannels(image))))
+        while (grays[v].red != ScaleQuantumToMap(GetPixelRed(image,p+offset*(ssize_t) GetPixelChannels(image))))
           v++;
         cooccurrence[u][v].direction[i].red++;
         cooccurrence[v][u].direction[i].red++;
@@ -945,7 +945,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         v=0;
         while (grays[u].green != ScaleQuantumToMap(GetPixelGreen(image,p)))
           u++;
-        while (grays[v].green != ScaleQuantumToMap(GetPixelGreen(image,p+offset*GetPixelChannels(image))))
+        while (grays[v].green != ScaleQuantumToMap(GetPixelGreen(image,p+offset*(ssize_t) GetPixelChannels(image))))
           v++;
         cooccurrence[u][v].direction[i].green++;
         cooccurrence[v][u].direction[i].green++;
@@ -953,7 +953,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         v=0;
         while (grays[u].blue != ScaleQuantumToMap(GetPixelBlue(image,p)))
           u++;
-        while (grays[v].blue != ScaleQuantumToMap(GetPixelBlue(image,p+offset*GetPixelChannels(image))))
+        while (grays[v].blue != ScaleQuantumToMap(GetPixelBlue(image,p+offset*(ssize_t) GetPixelChannels(image))))
           v++;
         cooccurrence[u][v].direction[i].blue++;
         cooccurrence[v][u].direction[i].blue++;
@@ -963,7 +963,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
             v=0;
             while (grays[u].black != ScaleQuantumToMap(GetPixelBlack(image,p)))
               u++;
-            while (grays[v].black != ScaleQuantumToMap(GetPixelBlack(image,p+offset*GetPixelChannels(image))))
+            while (grays[v].black != ScaleQuantumToMap(GetPixelBlack(image,p+offset*(ssize_t) GetPixelChannels(image))))
               v++;
             cooccurrence[u][v].direction[i].black++;
             cooccurrence[v][u].direction[i].black++;
@@ -974,7 +974,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
             v=0;
             while (grays[u].alpha != ScaleQuantumToMap(GetPixelAlpha(image,p)))
               u++;
-            while (grays[v].alpha != ScaleQuantumToMap(GetPixelAlpha(image,p+offset*GetPixelChannels(image))))
+            while (grays[v].alpha != ScaleQuantumToMap(GetPixelAlpha(image,p+offset*(ssize_t) GetPixelChannels(image))))
               v++;
             cooccurrence[u][v].direction[i].alpha++;
             cooccurrence[v][u].direction[i].alpha++;
@@ -1921,7 +1921,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelIntensity(image,p) > (QuantumRange/2.0))
+      if (GetPixelIntensity(image,p) > ((double) QuantumRange/2.0))
         {
           ssize_t
             i;

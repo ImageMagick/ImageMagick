@@ -57,6 +57,7 @@ extern MagickExport MagickBooleanType
     const ssize_t,const ssize_t,PixelInfo *,ExceptionInfo *),
   PersistPixelCache(Image *,const char *,const MagickBooleanType,
     MagickOffsetType *,ExceptionInfo *),
+  ReshapePixelCache(Image *,const size_t,const size_t,ExceptionInfo *),
   SyncAuthenticPixels(Image *,ExceptionInfo *) magick_hot_spot;
 
 extern MagickExport MagickSizeType

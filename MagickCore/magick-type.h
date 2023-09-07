@@ -20,7 +20,7 @@
 
 #include "MagickCore/magick-config.h"
 
-#if MAGICKCORE_HAVE_UINTPTR_T
+#if defined(MAGICKCORE_HAVE_UINTPTR_T)
 #  include <stdint.h>
 #endif
 
@@ -67,7 +67,7 @@ typedef double MagickDoubleType;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef MagickFloatType Quantum;
-#define QuantumRange  255.0
+#define QuantumRange  ((Quantum) 255.0)
 #define QuantumFormat  "%g"
 #else
 typedef unsigned char Quantum;
@@ -80,7 +80,7 @@ typedef unsigned char Quantum;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef MagickFloatType Quantum;
-#define QuantumRange  65535.0f
+#define QuantumRange  ((Quantum) 65535.0)
 #define QuantumFormat  "%g"
 #else
 typedef unsigned short Quantum;
@@ -93,7 +93,7 @@ typedef unsigned short Quantum;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef MagickDoubleType Quantum;
-#define QuantumRange  4294967295.0
+#define QuantumRange  ((Quantum) 4294967295.0)
 #define QuantumFormat  "%g"
 #else
 typedef unsigned int Quantum;
@@ -106,7 +106,7 @@ typedef unsigned int Quantum;
 #define MaxMap  65535UL
 
 typedef MagickDoubleType Quantum;
-#define QuantumRange  18446744073709551615.0
+#define QuantumRange  ((Quantum) 18446744073709551615.0)
 #define QuantumFormat  "%g"
 #else
 #error "MAGICKCORE_QUANTUM_DEPTH must be one of 8, 16, 32, or 64"
@@ -142,7 +142,7 @@ typedef unsigned __int64 MagickSizeType;
 #define MagickSizeFormat  "I64u"
 #endif
 
-#if MAGICKCORE_HAVE_UINTPTR_T || defined(uintptr_t)
+#if defined(MAGICKCORE_HAVE_UINTPTR_T) || defined(uintptr_t)
 typedef uintptr_t MagickAddressType;
 #else
 /* Hope for the best, I guess. */

@@ -170,8 +170,8 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
   (void) FormatMagickTime(raw_info->other.timestamp,sizeof(timestamp),
     timestamp);
   (void) SetImageProperty(image,"dng:create.date",timestamp,exception);
-  (void) FormatImageProperty(image,"dng:iso.setting","%.0f",
-    raw_info->other.iso_speed);
+  (void) FormatImageProperty(image,"dng:iso.setting","%.0g",
+    (double) raw_info->other.iso_speed);
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
   (void) SetImageProperty(image,"dng:software",raw_info->idata.software,
     exception);
@@ -180,47 +180,48 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
       raw_info->shootinginfo.BodySerial,exception);
   (void) FormatImageProperty(image,"dng:exposure.time","1/%.0f",
     PerceptibleReciprocal(raw_info->other.shutter));
-  (void) FormatImageProperty(image,"dng:f.number","%0.1f",
-    raw_info->other.aperture);
-  (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1f",
-    raw_info->lens.EXIF_MaxAp);
-  (void) FormatImageProperty(image,"dng:focal.length","%0.1f mm",
-    raw_info->other.focal_len);
-  (void) FormatImageProperty(image,"dng:wb.rb.levels","%f %f %f %f",
-    raw_info->color.cam_mul[0],raw_info->color.cam_mul[2],
-    raw_info->color.cam_mul[1],raw_info->color.cam_mul[3]);
+  (void) FormatImageProperty(image,"dng:f.number","%0.1g",
+    (double) raw_info->other.aperture);
+  (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1g",
+    (double) raw_info->lens.EXIF_MaxAp);
+  (void) FormatImageProperty(image,"dng:focal.length","%0.1g mm",
+    (double) raw_info->other.focal_len);
+  (void) FormatImageProperty(image,"dng:wb.rb.levels","%g %g %g %g",
+    (double) raw_info->color.cam_mul[0],(double) raw_info->color.cam_mul[2],
+    (double) raw_info->color.cam_mul[1],(double) raw_info->color.cam_mul[3]);
   (void) SetImageProperty(image,"dng:lens.type",
     raw_info->lens.makernotes.LensFeatures_suf,exception);
-  (void) FormatImageProperty(image,"dng:lens","%0.1f-%0.1fmm f/%0.1f-%0.1f",
-    raw_info->lens.makernotes.MinFocal,raw_info->lens.makernotes.MaxFocal,
-    raw_info->lens.makernotes.MaxAp4MinFocal,
-    raw_info->lens.makernotes.MaxAp4MaxFocal);
+  (void) FormatImageProperty(image,"dng:lens","%0.1g-%0.1gmm f/%0.1g-%0.1g",
+    (double) raw_info->lens.makernotes.MinFocal,
+    (double) raw_info->lens.makernotes.MaxFocal,
+    (double) raw_info->lens.makernotes.MaxAp4MinFocal,
+    (double) raw_info->lens.makernotes.MaxAp4MaxFocal);
   (void) FormatImageProperty(image,"dng:lens.f.stops","%0.2f",
-    raw_info->lens.makernotes.LensFStops);
+    (double) raw_info->lens.makernotes.LensFStops);
   (void) FormatImageProperty(image,"dng:min.focal.length","%0.1f mm",
-    raw_info->lens.makernotes.MinFocal);
-  (void) FormatImageProperty(image,"dng:max.focal.length","%0.1f mm",
-    raw_info->lens.makernotes.MaxFocal);
-  (void) FormatImageProperty(image,"dng:max.aperture.at.min.focal","%0.1f",
-    raw_info->lens.makernotes.MaxAp4MinFocal);
-  (void) FormatImageProperty(image,"dng:max.aperture.at.max.focal","%0.1f",
-    raw_info->lens.makernotes.MaxAp4MaxFocal);
+    (double) raw_info->lens.makernotes.MinFocal);
+  (void) FormatImageProperty(image,"dng:max.focal.length","%0.1g mm",
+    (double) raw_info->lens.makernotes.MaxFocal);
+  (void) FormatImageProperty(image,"dng:max.aperture.at.min.focal","%0.1g",
+    (double) raw_info->lens.makernotes.MaxAp4MinFocal);
+  (void) FormatImageProperty(image,"dng:max.aperture.at.max.focal","%0.1g",
+    (double) raw_info->lens.makernotes.MaxAp4MaxFocal);
   (void) FormatImageProperty(image,"dng:focal.length.in.35mm.format","%d mm",
     raw_info->lens.FocalLengthIn35mmFormat);
 #endif
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,20)
   (void) FormatImageProperty(image,"dng:gps.latitude",
-    "%.0f deg %.0f' %.2f\" N",
-    raw_info->other.parsed_gps.latitude[0],
-    raw_info->other.parsed_gps.latitude[1],
-    raw_info->other.parsed_gps.latitude[2]);
+    "%.0g deg %.0g' %.2g\" N",
+    (double) raw_info->other.parsed_gps.latitude[0],
+    (double) raw_info->other.parsed_gps.latitude[1],
+    (double) raw_info->other.parsed_gps.latitude[2]);
   (void) FormatImageProperty(image,"dng:gps.longitude",
-    "%.0f deg %.0f' %.2f\" W",
-    raw_info->other.parsed_gps.longitude[0],
-    raw_info->other.parsed_gps.longitude[1],
-    raw_info->other.parsed_gps.longitude[2]);
-  (void) FormatImageProperty(image,"dng:gps.altitude","%.1f m",
-    raw_info->other.parsed_gps.altitude);
+    "%.0g deg %.0g' %.2g\" W",
+    (double) raw_info->other.parsed_gps.longitude[0],
+    (double) raw_info->other.parsed_gps.longitude[1],
+    (double) raw_info->other.parsed_gps.longitude[2]);
+  (void) FormatImageProperty(image,"dng:gps.altitude","%.1g m",
+    (double) raw_info->other.parsed_gps.altitude);
 #endif
 }
 #endif
@@ -334,21 +335,22 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
 
   raw_info->params.user_flip=0;
   raw_info->params.output_bps=16;
+  raw_info->params.use_camera_wb=1;
   option=GetImageOption(image_info,"dng:use-camera-wb");
   if (option == (const char *) NULL)
     option=GetImageOption(image_info,"dng:use_camera_wb");
   if (option != (const char *) NULL)
-    raw_info->params.use_camera_wb=IsStringTrue(option);
+    raw_info->params.use_camera_wb=IsStringTrue(option) != MagickFalse ? 1 : 0;
   option=GetImageOption(image_info,"dng:use-auto-wb");
   if (option == (const char *) NULL)
     option=GetImageOption(image_info,"dng:use_auto_wb");
   if (option != (const char *) NULL)
-    raw_info->params.use_auto_wb=IsStringTrue(option);
+    raw_info->params.use_auto_wb=IsStringTrue(option) != MagickFalse ? 1 : 0;
   option=GetImageOption(image_info,"dng:no-auto-bright");
   if (option == (const char *) NULL)
     option=GetImageOption(image_info,"dng:no_auto_bright");
   if (option != (const char *) NULL)
-    raw_info->params.no_auto_bright=IsStringTrue(option);
+    raw_info->params.no_auto_bright=IsStringTrue(option) != MagickFalse ? 1 : 0;
   option=GetImageOption(image_info,"dng:output-color");
   if (option == (const char *) NULL)
     option=GetImageOption(image_info,"dng:output_color");
@@ -358,6 +360,7 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
       if (raw_info->params.output_color == 5)
         image->colorspace=XYZColorspace;
     }
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,21)
   option=GetImageOption(image_info,"dng:interpolation-quality");
   if (option != (const char *) NULL)
     {
@@ -370,6 +373,7 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
       else
         raw_info->params.user_qual=value;
     }
+#endif
 }
 
 static void LibRawDataError(void *data,const char *magick_unused(file),
@@ -414,6 +418,22 @@ static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
       StringInfo
         *profile;
 
+      if (thumbnail->type == LIBRAW_IMAGE_JPEG)
+        SetImageProperty(image,"dng:thumbnail.type","jpeg",exception);
+      else if (thumbnail->type == LIBRAW_IMAGE_BITMAP)
+        {
+          char
+            value[15];
+
+          SetImageProperty(image,"dng:thumbnail.type","bitmap",exception);
+          (void) FormatLocaleString(value,sizeof(value),"%hu",thumbnail->bits);
+          SetImageProperty(image,"dng:thumbnail.bits",value,exception);
+          (void) FormatLocaleString(value,sizeof(value),"%hu",thumbnail->colors);
+          SetImageProperty(image,"dng:thumbnail.colors",value,exception);
+          (void) FormatLocaleString(value,sizeof(value),"%hux%hu",thumbnail->width,
+            thumbnail->height);
+          SetImageProperty(image,"dng:thumbnail.geometry",value,exception);
+        }
       profile=BlobToStringInfo(thumbnail->data,thumbnail->data_size);
       (void) SetImageProfile(image,"dng:thumbnail",profile,exception);
     }
@@ -426,11 +446,17 @@ static OrientationType LibRawFlipToOrientation(int flip)
   switch(flip)
   {
     case 5:
+    {
       return(LeftBottomOrientation);
+    }
     case 8:
+    {
       return(LeftTopOrientation);
+    }
     default:
+    {
       return((OrientationType) flip);
+    }
   }
 }
 
@@ -563,7 +589,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((errcode != LIBRAW_SUCCESS) ||
         (raw_image == (libraw_processed_image_t *) NULL) ||
         (raw_image->type != LIBRAW_IMAGE_BITMAP) || (raw_image->bits != 16) ||
-        (raw_image->colors < 3) || (raw_image->colors > 4))
+        (raw_image->colors < 1) || (raw_image->colors > 4))
       {
         if (raw_image != (libraw_processed_image_t *) NULL)
           libraw_dcraw_clear_mem(raw_image);
@@ -571,6 +597,11 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           libraw_strerror(errcode),"`%s'",image->filename);
         libraw_close(raw_info);
         return(DestroyImageList(image));
+      }
+    if (raw_image->colors < 3)
+      {
+        image->colorspace=GRAYColorspace;
+        image->type=raw_image->colors == 1 ? GrayscaleType : GrayscaleAlphaType;
       }
     image->columns=raw_image->width;
     image->rows=raw_image->height;
@@ -597,9 +628,12 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         SetPixelRed(image,ScaleShortToQuantum(*p++),q);
-        SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
-        SetPixelBlue(image,ScaleShortToQuantum(*p++),q);
-        if (raw_image->colors > 3)
+        if (raw_image->colors > 2)
+          {
+            SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
+            SetPixelBlue(image,ScaleShortToQuantum(*p++),q);
+          }
+        if ((raw_image->colors) == 2 || (raw_image->colors > 3))
           SetPixelAlpha(image,ScaleShortToQuantum(*p++),q);
         q+=GetPixelChannels(image);
       }

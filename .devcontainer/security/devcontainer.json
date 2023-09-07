@@ -1,0 +1,15 @@
+{
+  "name": "Security",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "../.."
+  },
+  "onCreateCommand": "bash .devcontainer/security/build_imagemagick.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "extensions.ignoreRecommendations": true
+      }
+    }
+  }
+}

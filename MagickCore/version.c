@@ -43,6 +43,7 @@
 #include "MagickCore/linked-list.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/option.h"
+#include "MagickCore/pixel.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
@@ -108,6 +109,9 @@ MagickExport const char *GetMagickDelegates(void)
 #endif
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
   "cairo "
+#endif
+#if defined(MAGICKCORE_DMR_DELEGATE)
+  "dmr "
 #endif
 #if defined(MAGICKCORE_DJVU_DELEGATE)
   "djvu "
@@ -241,10 +245,13 @@ MagickExport const char *GetMagickFeatures(void)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_DEBUG)
   "Debug "
 #endif
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
+  "Channel-masks(64-bit) "
+#endif
 #if defined(MAGICKCORE_CIPHER_SUPPORT)
   "Cipher "
 #endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_THREAD_SUPPORT)
+#if defined(MAGICKCORE_DPC_SUPPORT)
   "DPC "
 #endif
 #if defined(MAGICKCORE_HDRI_SUPPORT)
@@ -486,8 +493,8 @@ MagickExport const char *GetMagickReleaseDate(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetMagickSignature() returns a signature that uniquely encodes the
-%  MagickCore library version, quantum depth, HDRI status, OS word size, and
-%  endianness.
+%  MagickCore library version, quantum depth, HDRI status, OS word size, 
+%  channel type, and endianness.
 %
 %  The format of the GetMagickSignature method is:
 %
@@ -567,7 +574,12 @@ MagickExport unsigned int GetMagickSignature(const StringInfo *nonce)
   signature=1;  /* endianness */
   (void) memcpy(p,&signature,sizeof(signature));
   p+=sizeof(signature);
-  SetStringInfoLength(version,p-GetStringInfoDatum(version));
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
+  signature=sizeof(ChannelType);
+  (void) memcpy(p,&signature,sizeof(signature));
+  p+=sizeof(signature);
+#endif
+  SetStringInfoLength(version,(size_t) (p-GetStringInfoDatum(version)));
   if (nonce != (const StringInfo *) NULL)
     ConcatenateStringInfo(version,nonce);
   signature=CRC32(GetStringInfoDatum(version),GetStringInfoLength(version));

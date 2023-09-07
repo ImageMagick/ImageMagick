@@ -125,7 +125,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image,
     i;
 
   log_mean=log(0.5);
-  if (image->channel_mask == DefaultChannels)
+  if (image->channel_mask == AllChannels)
     {
       /*
         Apply gamma correction equally across all given channels.
@@ -226,7 +226,6 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
 #define BrightnessContrastImageTag  "BrightnessContrast/Image"
 
   double
-    alpha,
     coefficients[2],
     intercept,
     slope;
@@ -241,11 +240,10 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  alpha=contrast;
-  slope=tan((double) (MagickPI*(alpha/100.0+1.0)/4.0));
-  if (slope < 0.0)
-    slope=0.0;
-  intercept=brightness/100.0+((100-brightness)/200.0)*(1.0-slope);
+  slope=100.0*PerceptibleReciprocal(100.0-contrast);
+  if (contrast < 0.0)
+    slope=0.01*contrast+1.0;
+  intercept=(0.01*brightness-0.5)*slope+0.5;
   coefficients[0]=slope;
   coefficients[1]=intercept;
   status=FunctionImage(image,PolynomialFunction,2,coefficients,exception);
@@ -306,15 +304,11 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
 #define NumberCLAHEGrays  (65536)
 
   ssize_t
-    i;
-
-  size_t
     cumulative_excess,
+    excess,
+    i,
     previous_excess,
     step;
-
-  ssize_t
-    excess;
 
   /*
     Compute total number of excess pixels.
@@ -331,7 +325,7 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
   /*
     Clip histogram and redistribute excess pixels across all bins.
   */
-  step=cumulative_excess/number_bins;
+  step=cumulative_excess/(ssize_t) number_bins;
   excess=(ssize_t) (clip_limit-step);
   for (i=0; i < (ssize_t) number_bins; i++)
   {
@@ -340,13 +334,13 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
     else
       if ((ssize_t) histogram[i] > excess)
         {
-          cumulative_excess-=histogram[i]-excess;
+          cumulative_excess-=(ssize_t) histogram[i]-excess;
           histogram[i]=(size_t) clip_limit;
         }
       else
         {
           cumulative_excess-=step;
-          histogram[i]+=step;
+          histogram[i]+=(size_t) step;
         }
   }
   /*
@@ -365,7 +359,7 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
     q=histogram+number_bins;
     while ((cumulative_excess != 0) && (p < q))
     {
-      step=number_bins/cumulative_excess;
+      step=(ssize_t) number_bins/cumulative_excess;
       if (step < 1)
         step=1;
       for (p=histogram; (p < q) && (cumulative_excess != 0); p+=step)
@@ -430,9 +424,9 @@ static void InterpolateCLAHE(const RectangleInfo *clahe_info,const size_t *Q12,
     {
       intensity=lut[*pixels];
       *pixels++=(unsigned short) (PerceptibleReciprocal((double) tile->width*
-        tile->height)*(y*((double) x*Q12[intensity]+(tile->width-x)*
-        Q22[intensity])+(tile->height-y)*((double) x*Q11[intensity]+
-        (tile->width-x)*Q21[intensity])));
+        tile->height)*(y*((double) x*Q12[intensity]+((double) tile->width-x)*
+        Q22[intensity])+((double) tile->height-y)*((double) x*Q11[intensity]+
+        ((double) tile->width-x)*Q21[intensity])));
     }
     pixels+=(clahe_info->width-tile->width);
   }
@@ -505,7 +499,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
   if (clip_limit == 1.0)
     return(MagickTrue);
   tile_cache=AcquireVirtualMemory((size_t) clahe_info->x*number_bins,
-    clahe_info->y*sizeof(*tiles));
+    (size_t) clahe_info->y*sizeof(*tiles));
   if (tile_cache == (MemoryInfo *) NULL)
     return(MagickFalse);
   lut=(unsigned short *) AcquireQuantumMemory(NumberCLAHEGrays,sizeof(*lut));
@@ -533,7 +527,7 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
       size_t
         *histogram;
 
-      histogram=tiles+(number_bins*(y*clahe_info->x+x));
+      histogram=tiles+((ssize_t) number_bins*(y*clahe_info->x+x));
       GenerateCLAHEHistogram(clahe_info,tile_info,number_bins,lut,p,histogram);
       ClipCLAHEHistogram((double) limit,number_bins,histogram);
       MapCLAHEHistogram(range_info,number_bins,tile_info->width*
@@ -604,10 +598,10 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
             offset.x=tile.x;
           }
       InterpolateCLAHE(clahe_info,
-        tiles+(number_bins*(tile.y*clahe_info->x+tile.x)),     /* Q12 */
-        tiles+(number_bins*(tile.y*clahe_info->x+offset.x)),   /* Q22 */
-        tiles+(number_bins*(offset.y*clahe_info->x+tile.x)),   /* Q11 */
-        tiles+(number_bins*(offset.y*clahe_info->x+offset.x)), /* Q21 */
+        tiles+((ssize_t) number_bins*(tile.y*clahe_info->x+tile.x)),   /* Q12 */
+        tiles+((ssize_t) number_bins*(tile.y*clahe_info->x+offset.x)), /* Q22 */
+        tiles+((ssize_t) number_bins*(offset.y*clahe_info->x+tile.x)), /* Q11 */
+        tiles+((ssize_t) number_bins*(offset.y*clahe_info->x+offset.x)), /* Q21 */
         &tile,lut,p);
       p+=tile.width;
     }
@@ -672,14 +666,14 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
     tile_info.height=image->rows >> 3;
   tile_info.x=0;
   if ((image->columns % tile_info.width) != 0)
-    tile_info.x=(ssize_t) tile_info.width-(image->columns % tile_info.width);
+    tile_info.x=(ssize_t) (tile_info.width-(image->columns % tile_info.width));
   tile_info.y=0;
   if ((image->rows % tile_info.height) != 0)
-    tile_info.y=(ssize_t) tile_info.height-(image->rows % tile_info.height);
-  clahe_info.width=image->columns+tile_info.x;
-  clahe_info.height=image->rows+tile_info.y;
-  clahe_info.x=(ssize_t) clahe_info.width/tile_info.width;
-  clahe_info.y=(ssize_t) clahe_info.height/tile_info.height;
+    tile_info.y=(ssize_t) (tile_info.height-(image->rows % tile_info.height));
+  clahe_info.width=(size_t) ((ssize_t) image->columns+tile_info.x);
+  clahe_info.height=(size_t) ((ssize_t) image->rows+tile_info.y);
+  clahe_info.x=(ssize_t) (clahe_info.width/tile_info.width);
+  clahe_info.y=(ssize_t) (clahe_info.height/tile_info.height);
   pixel_cache=AcquireVirtualMemory(clahe_info.width,clahe_info.height*
     sizeof(*pixels));
   if (pixel_cache == (MemoryInfo *) NULL)
@@ -743,7 +737,7 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
     Push CLAHE pixels to CLAHE image.
   */
   image_view=AcquireAuthenticCacheView(image,exception);
-  n=clahe_info.width*(tile_info.y >> 1);
+  n=clahe_info.width*(size_t) (tile_info.y/2);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     Quantum
@@ -760,13 +754,14 @@ MagickExport MagickBooleanType CLAHEImage(Image *image,const size_t width,
         status=MagickFalse;
         continue;
       }
-    n+=tile_info.x >> 1;
+    n+=(size_t) (tile_info.x/2);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       q[0]=ScaleShortToQuantum(pixels[n++]);
       q+=GetPixelChannels(image);
     }
-    n+=(clahe_info.width-image->columns-(tile_info.x >> 1));
+    n+=(size_t) ((ssize_t) clahe_info.width-(ssize_t) image->columns-
+      (tile_info.x/2));
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
@@ -882,8 +877,8 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   {
     GetPixelInfo(clut_image,clut_map+i);
     status=InterpolatePixelInfo(clut_image,clut_view,method,(double) i*
-      (clut_image->columns-adjust)/MaxMap,(double) i*(clut_image->rows-adjust)/
-      MaxMap,clut_map+i,exception);
+      ((double) clut_image->columns-adjust)/MaxMap,(double) i*
+      ((double) clut_image->rows-adjust)/MaxMap,clut_map+i,exception);
     if (status == MagickFalse)
       break;
   }
@@ -1269,8 +1264,8 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       double
         luma;
 
-      luma=0.21267f*image->colormap[i].red+0.71526*image->colormap[i].green+
-        0.07217f*image->colormap[i].blue;
+      luma=0.21267*image->colormap[i].red+0.71526*image->colormap[i].green+
+        0.07217*image->colormap[i].blue;
       image->colormap[i].red=luma+color_correction.saturation*cdl_map[
         ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))].red-luma;
       image->colormap[i].green=luma+color_correction.saturation*cdl_map[
@@ -1309,8 +1304,8 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      luma=0.21267f*GetPixelRed(image,q)+0.71526*GetPixelGreen(image,q)+
-        0.07217f*GetPixelBlue(image,q);
+      luma=0.21267*(double) GetPixelRed(image,q)+0.71526*(double)
+        GetPixelGreen(image,q)+0.07217*(double) GetPixelBlue(image,q);
       SetPixelRed(image,ClampToQuantum(luma+color_correction.saturation*
         (cdl_map[ScaleQuantumToMap(GetPixelRed(image,q))].red-luma)),q);
       SetPixelGreen(image,ClampToQuantum(luma+color_correction.saturation*
@@ -1371,7 +1366,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 %
 */
 
-static void inline Contrast(const int sign,double *red,double *green,
+static inline void Contrast(const int sign,double *red,double *green,
   double *blue)
 {
   double
@@ -1641,10 +1636,10 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       pixel=GetPixelIntensity(image,p);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        if (image->channel_mask != DefaultChannels)
+        if (image->channel_mask != AllChannels)
           pixel=(double) p[i];
         histogram[GetPixelChannels(image)*ScaleQuantumToMap(
-          ClampToQuantum(pixel))+i]++;
+          ClampToQuantum(pixel))+(size_t) i]++;
       }
       p+=GetPixelChannels(image);
     }
@@ -1666,7 +1661,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     intensity=0.0;
     for (j=0; j <= (ssize_t) MaxMap; j++)
     {
-      intensity+=histogram[GetPixelChannels(image)*j+i];
+      intensity+=histogram[(ssize_t) GetPixelChannels(image)*j+i];
       if (intensity > black_point)
         break;
     }
@@ -1674,7 +1669,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     intensity=0.0;
     for (j=(ssize_t) MaxMap; j != 0; j--)
     {
-      intensity+=histogram[GetPixelChannels(image)*j+i];
+      intensity+=histogram[(ssize_t) GetPixelChannels(image)*j+i];
       if (intensity > ((double) image->columns*image->rows-white_point))
         break;
     }
@@ -1698,14 +1693,14 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 
       gamma=PerceptibleReciprocal(white[i]-black[i]);
       if (j < (ssize_t) black[i])
-        stretch_map[GetPixelChannels(image)*j+i]=0.0;
+        stretch_map[(ssize_t) GetPixelChannels(image)*j+i]=0.0;
       else
         if (j > (ssize_t) white[i])
-          stretch_map[GetPixelChannels(image)*j+i]=QuantumRange;
+          stretch_map[(ssize_t) GetPixelChannels(image)*j+i]=QuantumRange;
         else
           if (black[i] != white[i])
-            stretch_map[GetPixelChannels(image)*j+i]=ScaleMapToQuantum((double)
-              (MaxMap*gamma*(j-black[i])));
+            stretch_map[(ssize_t) GetPixelChannels(image)*j+i]=
+              ScaleMapToQuantum((double) (MaxMap*gamma*(j-(double) black[i])));
     }
   }
   if (image->storage_class == PseudoClass)
@@ -1723,28 +1718,28 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
             i=GetPixelChannelOffset(image,RedPixelChannel);
             image->colormap[j].red=(MagickRealType) stretch_map[
               GetPixelChannels(image)*ScaleQuantumToMap(ClampToQuantum(
-              image->colormap[j].red))+i];
+              image->colormap[j].red))+(size_t) i];
           }
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           {
             i=GetPixelChannelOffset(image,GreenPixelChannel);
             image->colormap[j].green=(MagickRealType) stretch_map[
               GetPixelChannels(image)*ScaleQuantumToMap(ClampToQuantum(
-              image->colormap[j].green))+i];
+              image->colormap[j].green))+(size_t) i];
           }
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           {
             i=GetPixelChannelOffset(image,BluePixelChannel);
             image->colormap[j].blue=(MagickRealType) stretch_map[
               GetPixelChannels(image)*ScaleQuantumToMap(ClampToQuantum(
-              image->colormap[j].blue))+i];
+              image->colormap[j].blue))+(size_t) i];
           }
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
           {
             i=GetPixelChannelOffset(image,AlphaPixelChannel);
             image->colormap[j].alpha=(MagickRealType) stretch_map[
               GetPixelChannels(image)*ScaleQuantumToMap(ClampToQuantum(
-              image->colormap[j].alpha))+i];
+              image->colormap[j].alpha))+(size_t) i];
           }
       }
     }
@@ -1788,7 +1783,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
         if (black[j] == white[j])
           continue;
         q[j]=ClampToQuantum(stretch_map[GetPixelChannels(image)*
-          ScaleQuantumToMap(q[j])+j]);
+          ScaleQuantumToMap(q[j])+(size_t) j]);
       }
       q+=GetPixelChannels(image);
     }
@@ -1867,11 +1862,11 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   distance_squared+=(5.0-mean)*distance*distance; \
   if (distance_squared < 0.069) \
     { \
-      aggregate.red+=(weight)*GetPixelRed(image,r); \
-      aggregate.green+=(weight)*GetPixelGreen(image,r); \
-      aggregate.blue+=(weight)*GetPixelBlue(image,r); \
-      aggregate.black+=(weight)*GetPixelBlack(image,r); \
-      aggregate.alpha+=(weight)*GetPixelAlpha(image,r); \
+      aggregate.red+=(weight)*(double) GetPixelRed(image,r); \
+      aggregate.green+=(weight)*(double) GetPixelGreen(image,r); \
+      aggregate.blue+=(weight)*(double) GetPixelBlue(image,r); \
+      aggregate.black+=(weight)*(double) GetPixelBlack(image,r); \
+      aggregate.alpha+=(weight)*(double) GetPixelAlpha(image,r); \
       total_weight+=(weight); \
     } \
   r+=GetPixelChannels(image);
@@ -1948,7 +1943,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         status=MagickFalse;
         continue;
       }
-    center=(ssize_t) GetPixelChannels(image)*(2*(image->columns+4)+2);
+    center=(ssize_t) GetPixelChannels(image)*(2*((ssize_t) image->columns+4)+2);
     GetPixelInfo(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -2130,7 +2125,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
         if ((image->channel_mask & SyncChannels) != 0)
           intensity=GetPixelIntensity(image,p);
         histogram[GetPixelChannels(image)*ScaleQuantumToMap(
-          ClampToQuantum(intensity))+i]++;
+          ClampToQuantum(intensity))+(size_t) i]++;
       }
       p+=GetPixelChannels(image);
     }
@@ -2150,8 +2145,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     intensity=0.0;
     for (j=0; j <= (ssize_t) MaxMap; j++)
     {
-      intensity+=histogram[GetPixelChannels(image)*j+i];
-      map[GetPixelChannels(image)*j+i]=intensity;
+      intensity+=histogram[(ssize_t) GetPixelChannels(image)*j+i];
+      map[(ssize_t) GetPixelChannels(image)*j+i]=intensity;
     }
   }
   (void) memset(equalize_map,0,(MaxMap+1)*GetPixelChannels(image)*
@@ -2164,12 +2159,12 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
       j;
 
     black[i]=map[i];
-    white[i]=map[GetPixelChannels(image)*MaxMap+i];
+    white[i]=map[GetPixelChannels(image)*MaxMap+(size_t) i];
     if (black[i] != white[i])
       for (j=0; j <= (ssize_t) MaxMap; j++)
-        equalize_map[GetPixelChannels(image)*j+i]=(double)
-          ScaleMapToQuantum((double) ((MaxMap*(map[
-          GetPixelChannels(image)*j+i]-black[i]))/(white[i]-black[i])));
+        equalize_map[GetPixelChannels(image)*(size_t) j+(size_t) i]=(double)
+          ScaleMapToQuantum((double) ((MaxMap*(map[GetPixelChannels(image)*
+          (size_t) j+(size_t) i]-black[i]))/(white[i]-black[i])));
   }
   histogram=(double *) RelinquishMagickMemory(histogram);
   map=(double *) RelinquishMagickMemory(map);
@@ -2188,36 +2183,36 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
             PixelChannel channel = GetPixelChannelChannel(image,
               RedPixelChannel);
             if (black[channel] != white[channel])
-              image->colormap[j].red=equalize_map[GetPixelChannels(image)*
-                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].red))+
-                channel];
+              image->colormap[j].red=equalize_map[(ssize_t)
+                GetPixelChannels(image)*ScaleQuantumToMap(
+                ClampToQuantum(image->colormap[j].red))+channel];
           }
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           {
             PixelChannel channel = GetPixelChannelChannel(image,
               GreenPixelChannel);
             if (black[channel] != white[channel])
-              image->colormap[j].green=equalize_map[GetPixelChannels(image)*
-                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].green))+
-                channel];
+              image->colormap[j].green=equalize_map[(ssize_t)
+                GetPixelChannels(image)*ScaleQuantumToMap(
+                ClampToQuantum(image->colormap[j].green))+channel];
           }
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           {
             PixelChannel channel = GetPixelChannelChannel(image,
               BluePixelChannel);
             if (black[channel] != white[channel])
-              image->colormap[j].blue=equalize_map[GetPixelChannels(image)*
-                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].blue))+
-                channel];
+              image->colormap[j].blue=equalize_map[(ssize_t)
+                GetPixelChannels(image)*ScaleQuantumToMap(
+                ClampToQuantum(image->colormap[j].blue))+channel];
           }
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
           {
             PixelChannel channel = GetPixelChannelChannel(image,
               AlphaPixelChannel);
             if (black[channel] != white[channel])
-              image->colormap[j].alpha=equalize_map[GetPixelChannels(image)*
-                ScaleQuantumToMap(ClampToQuantum(image->colormap[j].alpha))+
-                channel];
+              image->colormap[j].alpha=equalize_map[(ssize_t)
+                GetPixelChannels(image)*ScaleQuantumToMap(
+                ClampToQuantum(image->colormap[j].alpha))+channel];
           }
       }
     }
@@ -2258,7 +2253,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
         if (((traits & UpdatePixelTrait) == 0) || (black[j] == white[j]))
           continue;
         q[j]=ClampToQuantum(equalize_map[GetPixelChannels(image)*
-          ScaleQuantumToMap(q[j])+j]);
+          ScaleQuantumToMap(q[j])+(size_t) j]);
       }
       q+=GetPixelChannels(image);
     }
@@ -2732,8 +2727,10 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
   assert(hald_image->signature == MagickCoreSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (image->alpha_trait == UndefinedPixelTrait)
+  if ((image->alpha_trait & BlendPixelTrait) == 0)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+  if (image->colorspace != hald_image->colorspace)
+    (void) SetImageColorspace(image,hald_image->colorspace,exception);
   /*
     Hald clut image.
   */
@@ -2771,37 +2768,34 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       double
-        area,
-        offset;
+        area = 0.0,
+        offset = 0.0;
 
       HaldInfo
-        point;
+        point = { 0, 0, 0 };
 
       PixelInfo
-        pixel,
-        pixel1,
-        pixel2,
-        pixel3,
-        pixel4;
+        pixel = zero,
+        pixel1 = zero,
+        pixel2 = zero,
+        pixel3 = zero,
+        pixel4 = zero;
 
-      point.x=QuantumScale*(level-1.0)*GetPixelRed(image,q);
-      point.y=QuantumScale*(level-1.0)*GetPixelGreen(image,q);
-      point.z=QuantumScale*(level-1.0)*GetPixelBlue(image,q);
+      point.x=QuantumScale*(level-1.0)*(double) GetPixelRed(image,q);
+      point.y=QuantumScale*(level-1.0)*(double) GetPixelGreen(image,q);
+      point.z=QuantumScale*(level-1.0)*(double) GetPixelBlue(image,q);
       offset=point.x+level*floor(point.y)+cube_size*floor(point.z);
       point.x-=floor(point.x);
       point.y-=floor(point.y);
       point.z-=floor(point.z);
-      pixel1=zero;
       status=InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset,width),floor(offset/width),&pixel1,exception);
       if (status == MagickFalse)
         break;
-      pixel2=zero;
       status=InterpolatePixelInfo(hald_image,hald_view,hald_image->interpolate,
         fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
       if (status == MagickFalse)
         break;
-      pixel3=zero;
       area=point.y;
       if (hald_image->interpolate == NearestInterpolatePixel)
         area=(point.y < 0.5) ? 0.0 : 1.0;
@@ -2816,10 +2810,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
         fmod(offset+level,width),floor((offset+level)/width),&pixel2,exception);
       if (status == MagickFalse)
         break;
-      pixel4=zero;
       CompositePixelInfoAreaBlend(&pixel1,pixel1.alpha,&pixel2,pixel2.alpha,
         area,&pixel4);
-      pixel=zero;
       area=point.z;
       if (hald_image->interpolate == NearestInterpolatePixel)
         area=(point.z < 0.5)? 0.0 : 1.0;
@@ -2912,8 +2904,8 @@ static inline double LevelPixel(const double black_point,
     scale;
 
   scale=PerceptibleReciprocal(white_point-black_point);
-  level_pixel=QuantumRange*gamma_pow(scale*((double) pixel-black_point),
-    PerceptibleReciprocal(gamma));
+  level_pixel=(double) QuantumRange*gamma_pow(scale*((double) pixel-(double)
+    black_point),PerceptibleReciprocal(gamma));
   return(level_pixel);
 }
 
@@ -3072,7 +3064,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 {
 #define LevelizeImageTag  "Levelize/Image"
 #define LevelizeValue(x) ClampToQuantum(((MagickRealType) gamma_pow((double) \
-  (QuantumScale*(x)),gamma))*(white_point-black_point)+black_point)
+  (QuantumScale*((double) x)),gamma))*(white_point-black_point)+black_point)
 
   CacheView
     *image_view;
@@ -3701,13 +3693,18 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   artifact=GetImageArtifact(image,"color:illuminant");
   if (artifact != (const char *) NULL)
     {
-      illuminant=(IlluminantType) ParseCommandOption(MagickIlluminantOptions,
-        MagickFalse,artifact);
-      if ((ssize_t) illuminant < 0)
+      ssize_t
+        illuminant_type;
+
+      illuminant_type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
+        artifact);
+      if (illuminant_type < 0)
         {
           illuminant=UndefinedIlluminant;
           colorspace=UndefinedColorspace;
         }
+      else
+        illuminant=(IlluminantType) illuminant_type;
     }
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
@@ -3974,11 +3971,11 @@ MagickExport MagickBooleanType NegateImage(Image *image,
             (image->colormap[i].green != image->colormap[i].blue))
           continue;
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].red=QuantumRange-image->colormap[i].red;
+        image->colormap[i].red=(double) QuantumRange-image->colormap[i].red;
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].green=QuantumRange-image->colormap[i].green;
+        image->colormap[i].green=(double) QuantumRange-image->colormap[i].green;
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].blue=QuantumRange-image->colormap[i].blue;
+        image->colormap[i].blue=(double) QuantumRange-image->colormap[i].blue;
     }
   /*
     Negate image.
@@ -4271,10 +4268,11 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   ExceptionInfo *exception)
 {
 #define SigmoidalContrastImageTag  "SigmoidalContrast/Image"
-#define ScaledSig(x) ( ClampToQuantum(QuantumRange* \
-  ScaledSigmoidal(contrast,QuantumScale*midpoint,QuantumScale*(x))) )
-#define InverseScaledSig(x) ( ClampToQuantum(QuantumRange* \
-  InverseScaledSigmoidal(contrast,QuantumScale*midpoint,QuantumScale*(x))) )
+#define ScaledSig(x) (ClampToQuantum((double) QuantumRange* \
+  ScaledSigmoidal(contrast,QuantumScale*midpoint,QuantumScale*((double) x))) )
+#define InverseScaledSig(x) (ClampToQuantum((double) QuantumRange* \
+  InverseScaledSigmoidal(contrast,QuantumScale*midpoint,QuantumScale* \
+  ((double) x))) )
 
   CacheView
     *image_view;
@@ -4488,8 +4486,8 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      a_mean+=QuantumScale*GetPixela(image,p)-0.5;
-      b_mean+=QuantumScale*GetPixelb(image,p)-0.5;
+      a_mean+=QuantumScale*(double) GetPixela(image,p)-0.5;
+      b_mean+=QuantumScale*(double) GetPixelb(image,p)-0.5;
       p+=GetPixelChannels(image);
     }
   }
@@ -4525,8 +4523,8 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       /*
         Scale the chroma distance shifted according to amount of luminance.
       */
-      a=(double) GetPixela(image,q)-1.1*GetPixelL(image,q)*a_mean;
-      b=(double) GetPixelb(image,q)-1.1*GetPixelL(image,q)*b_mean;
+      a=(double) GetPixela(image,q)-1.1*(double) GetPixelL(image,q)*a_mean;
+      b=(double) GetPixelb(image,q)-1.1*(double) GetPixelL(image,q)*b_mean;
       SetPixela(image,ClampToQuantum(a),q);
       SetPixelb(image,ClampToQuantum(b),q);
       q+=GetPixelChannels(image);
@@ -4570,7 +4568,7 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
       if ((flags & RhoValue) != 0)
         black_point=geometry_info.rho;
       if ((flags & PercentValue) != 0)
-        black_point*=(double) (QuantumRange/100.0);
+        black_point*=((double) QuantumRange/100.0);
       channel_mask=SetImageChannelMask(image,(ChannelType) (aChannel |
         bChannel));
       status&=LevelImage(image,black_point,(double) QuantumRange-black_point,

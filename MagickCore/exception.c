@@ -69,7 +69,8 @@ extern "C" {
 
 static void
   DefaultErrorHandler(const ExceptionType,const char *,const char *),
-  DefaultFatalErrorHandler(const ExceptionType,const char *,const char *),
+  DefaultFatalErrorHandler(const ExceptionType,const char *,const char *)
+    magick_attribute((__noreturn__)),
   DefaultWarningHandler(const ExceptionType,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -337,9 +338,9 @@ static void DefaultErrorHandler(const ExceptionType magick_unused(severity),
 static void DefaultFatalErrorHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
-  if (reason == (char *) NULL)
-    return;
-  (void) FormatLocaleFile(stderr,"%s: %s",GetClientName(),reason);
+  (void) FormatLocaleFile(stderr,"%s:",GetClientName());
+  if (reason != (char *) NULL)
+    (void) FormatLocaleFile(stderr," %s",reason);
   if (description != (char *) NULL)
     (void) FormatLocaleFile(stderr," (%s)",description);
   (void) FormatLocaleFile(stderr,".\n");
@@ -806,8 +807,10 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
 MagickExport void MagickFatalError(const ExceptionType error,const char *reason,
   const char *description)
 {
-  if (fatal_error_handler != (ErrorHandler) NULL)
+  if (fatal_error_handler != (FatalErrorHandler) NULL)
     (*fatal_error_handler)(error,reason,description);
+  MagickCoreTerminus();
+  exit(1);
 }
 
 /*

@@ -15,14 +15,14 @@
 %                           C      L        I                                 %
 %                            CCCC  LLLLL  IIIII                               %
 %                                                                             %
-%       Perform "Magick" on Images via the Command Line Interface             %
+%        Perform "Magick" on Images via the Command Line Interface            %
 %                                                                             %
 %                             Dragon Computing                                %
 %                             Anthony Thyssen                                 %
 %                               January 2012                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2012 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -130,14 +130,12 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
     regard_warnings,
     status;
 
-  ssize_t
-    i;
-
   size_t
     iterations,
     number_threads;
 
   ssize_t
+    i,
     n;
 
   (void) setlocale(LC_ALL,"");
@@ -613,7 +611,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
      order of location format escapes: filename, line, column */
   cli_wand->location="at %s arg %u";
   cli_wand->filename="CLI";
-  cli_wand->line=index;  /* note first argument we will process */
+  cli_wand->line=(size_t) index;  /* note first argument we will process */
 
   if (cli_wand->wand.debug != MagickFalse)
     (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
@@ -631,7 +629,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
     do { /* use break to loop to exception handler and loop */
 
       option=argv[i];
-      cli_wand->line=i;  /* note the argument for this option */
+      cli_wand->line=(size_t) i;  /* note the argument for this option */
 
       /* get option, its argument count, and option type */
       cli_wand->command = GetCommandOptionInfo(argv[i]);
@@ -729,7 +727,7 @@ RestoreMSCWarning
      Implicit Write of images to final CLI argument
   */
   option=argv[i];
-  cli_wand->line=i;
+  cli_wand->line=(size_t) i;
 
   /* check that stacks are empty - or cause exception */
   if (cli_wand->image_list_stack != (CLIStack *) NULL)

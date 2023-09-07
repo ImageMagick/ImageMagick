@@ -21,15 +21,15 @@
 #  4. PATCH version when you make backwards compatible bug fixes.
 #
 #  Additional labels for pre-release and build metadata are available as
-#  extensions to the MAJOR.MINOR.MICRO-PATCH format.
+#  extensions to the MAJOR.MINOR.MICRO-PATCH format. 
 #
 m4_define([magick_name], [ImageMagick])
 m4_define([magick_major_version], [7])
 m4_define([magick_minor_version], [1])
 m4_define([magick_micro_version], [1])
-m4_define([magick_patchlevel_version], [1])
+m4_define([magick_patchlevel_version], [16])
 m4_define([magick_is_beta], [y])
-m4_define([magick_bugreport]
+m4_define([magick_bugreport],
           [https://github.com/ImageMagick/ImageMagick/issues])
 m4_define([magick_url], [https://imagemagick.org])
 m4_define([magick_lib_version], [0x711])

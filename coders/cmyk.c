@@ -1247,7 +1247,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
     if (LocaleCompare(image_info->magick,"CMYKA") == 0)
       {
         quantum_type=CMYKAQuantum;
-        if (image->alpha_trait == UndefinedPixelTrait)
+        if ((image->alpha_trait & BlendPixelTrait) == 0)
           (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       }
     quantum_info=AcquireQuantumInfo(image_info,image);

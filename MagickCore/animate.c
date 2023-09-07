@@ -82,12 +82,12 @@
 /*
   Animate state declarations.
 */
-#define AutoReverseAnimationState 0x0004
-#define ForwardAnimationState 0x0008
-#define HighlightState  0x0010
-#define PlayAnimationState 0x0020
-#define RepeatAnimationState 0x0040
-#define StepAnimationState 0x0080
+#define AutoReverseAnimationState 0x0004U
+#define ForwardAnimationState 0x0008U
+#define HighlightState  0x0010U
+#define PlayAnimationState 0x0020U
+#define RepeatAnimationState 0x0040U
+#define StepAnimationState 0x0080U
 
 /*
   Static declarations.
@@ -1130,7 +1130,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     window_info.matte_pixmaps[scene]=window_info.matte_pixmap;
     if (image_list[scene]->alpha_trait)
       (void) XClearWindow(display,window_info.id);
-    delay=1000*image_list[scene]->delay/MagickMax(
+    delay=1000*image_list[scene]->delay/(size_t) MagickMax(
       image_list[scene]->ticks_per_second,1L);
     XDelay(display,resources.delay*(delay == 0 ? 10 : delay));
   }
@@ -1157,7 +1157,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         window_info.pixmap);
       (void) XClearWindow(display,window_info.id);
       (void) XSync(display,MagickFalse);
-      delay=1000*image_list[scene]->delay/MagickMax(
+      delay=1000*image_list[scene]->delay/(size_t) MagickMax(
         image_list[scene]->ticks_per_second,1L);
       XDelay(display,resources.delay*(delay == 0 ? 10 : delay));
     }
@@ -1744,9 +1744,9 @@ MagickExport Image *XAnimateImages(Display *display,
       */
       windows->image.flags|=USPosition;
       windows->image.x=(XDisplayWidth(display,visual_info->screen)/2)-
-        (windows->image.width/2);
+        ((ssize_t) windows->image.width/2);
       windows->image.y=(XDisplayHeight(display,visual_info->screen)/2)-
-        (windows->image.height/2);
+        ((ssize_t) windows->image.height/2);
     }
   manager_hints->flags=IconWindowHint | InputHint | StateHint;
   manager_hints->icon_window=windows->icon.id;
@@ -2032,7 +2032,8 @@ MagickExport Image *XAnimateImages(Display *display,
             pause;
 
           pause=MagickFalse;
-          delay=1000*image->delay/MagickMax(image->ticks_per_second,1L);
+          delay=1000*image->delay/(size_t) MagickMax(image->ticks_per_second,
+            1L);
           XDelay(display,resource_info->delay*(delay == 0 ? 10 : delay));
           if (state & ForwardAnimationState)
             {
@@ -2236,7 +2237,7 @@ MagickExport Image *XAnimateImages(Display *display,
               Convert Alt-Button3 to Button2.
             */
             event.xbutton.button=Button2;
-            event.xbutton.state&=(~Mod1Mask);
+            event.xbutton.state&=(~(unsigned int) Mod1Mask);
           }
         if (event.xbutton.window == windows->backdrop.id)
           {
@@ -2423,8 +2424,8 @@ MagickExport Image *XAnimateImages(Display *display,
                 if (windows->command.geometry == (char *) NULL)
                   if (windows->command.mapped == MagickFalse)
                     {
-                       windows->command.x=
-                          event.xconfigure.x-windows->command.width-25;
+                        windows->command.x=event.xconfigure.x-
+                          (ssize_t) windows->command.width-25;
                         windows->command.y=event.xconfigure.y;
                         XConstrainWindowPosition(display,&windows->command);
                         window_changes.x=windows->command.x;

@@ -230,7 +230,8 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=(ssize_t) (GetPixelIndex(image,q)+displace) % image->colors;
+      index=(ssize_t) (GetPixelIndex(image,q)+displace) % (ssize_t)
+        image->colors;
       if (index < 0)
         index+=(ssize_t) image->colors;
       SetPixelIndex(image,(Quantum) index,q);

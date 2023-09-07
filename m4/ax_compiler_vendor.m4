@@ -12,10 +12,11 @@
 #   returned in the cache variable $ax_cv_c_compiler_vendor for C,
 #   $ax_cv_cxx_compiler_vendor for C++ or $ax_cv_fc_compiler_vendor for
 #   (modern) Fortran.  The value is one of "intel", "ibm", "pathscale",
-#   "clang" (LLVM), "cray", "fujitsu", "sdcc", "sx", "portland" (PGI), "gnu"
-#   (GCC), "sun" (Oracle Developer Studio), "hp", "dec", "borland",
-#   "comeau", "kai", "lcc", "sgi", "microsoft", "metrowerks", "watcom",
-#   "tcc" (Tiny CC) or "unknown" (if the compiler cannot be determined).
+#   "clang" (LLVM), "cray", "fujitsu", "sdcc", "sx", "nvhpc" (NVIDIA HPC
+#   Compiler), "portland" (PGI), "gnu" (GCC), "sun" (Oracle Developer
+#   Studio), "hp", "dec", "borland", "comeau", "kai", "lcc", "sgi",
+#   "microsoft", "metrowerks", "watcom", "tcc" (Tiny CC) or "unknown" (if
+#   the compiler cannot be determined).
 #
 #   To check for a Fortran compiler, you must first call AC_FC_PP_SRCEXT
 #   with an appropriate preprocessor-enabled extension.  For example:
@@ -58,7 +59,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 30
+#serial 32
 
 AC_DEFUN([AX_COMPILER_VENDOR], [dnl
     AC_CACHE_CHECK([for _AC_LANG compiler vendor], ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor, [dnl
@@ -78,6 +79,7 @@ AC_DEFUN([AX_COMPILER_VENDOR], [dnl
 		fujitsu:	__FUJITSU
 		sdcc:		SDCC,__SDCC
 		sx:		_SX
+		nvhpc:		__NVCOMPILER
 		portland:	__PGI
 		gnu:		__GNUC__
 		sun:		__SUNPRO_C,__SUNPRO_CC,__SUNPRO_F90,__SUNPRO_F95

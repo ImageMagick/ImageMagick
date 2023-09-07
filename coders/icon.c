@@ -172,7 +172,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   IconFile
-    icon_file = { 0 };
+    icon_file;
 
   IconInfo
     icon_info;
@@ -223,6 +223,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  (void) memset(&icon_file,0,sizeof(icon_file));
   icon_file.reserved=(short) ReadBlobLSBShort(image);
   icon_file.resource_type=(short) ReadBlobLSBShort(image);
   icon_file.count=(short) ReadBlobLSBShort(image);
@@ -415,11 +416,11 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         status=SetImageExtent(image,image->columns,image->rows,exception);
         if (status == MagickFalse)
           return(DestroyImageList(image));
-        bytes_per_line=(((image->columns*icon_info.bits_per_pixel)+31) &
-          ~31) >> 3;
+        bytes_per_line=(((image->columns*icon_info.bits_per_pixel)+31U) &
+          ~31U) >> 3;
         (void) bytes_per_line;
-        scanline_pad=((((image->columns*icon_info.bits_per_pixel)+31) & ~31)-
-          (image->columns*icon_info.bits_per_pixel)) >> 3;
+        scanline_pad=((((image->columns*icon_info.bits_per_pixel)+31U) &
+          ~31U)-(image->columns*icon_info.bits_per_pixel)) >> 3;
         switch (icon_info.bits_per_pixel)
         {
           case 1:
@@ -458,8 +459,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,LoadImageTag,image->rows-y-1,
-                    image->rows);
+                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                    image->rows-y-1,(MagickSizeType) image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -496,8 +497,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,LoadImageTag,image->rows-y-1,
-                    image->rows);
+                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                    image->rows-y-1,(MagickSizeType) image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -526,8 +527,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,LoadImageTag,image->rows-y-1,
-                    image->rows);
+                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                    image->rows-y-1,(MagickSizeType) image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -557,8 +558,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,LoadImageTag,image->rows-y-1,
-                    image->rows);
+                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                    image->rows-y-1,(MagickSizeType) image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -596,8 +597,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 break;
               if (image->previous == (Image *) NULL)
                 {
-                  status=SetImageProgress(image,LoadImageTag,image->rows-y-1,
-                    image->rows);
+                  status=SetImageProgress(image,LoadImageTag,(MagickOffsetType)
+                    image->rows-y-1,(MagickSizeType) image->rows);
                   if (status == MagickFalse)
                     break;
                 }
@@ -1063,8 +1064,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                 icon_info.offset_bits+=(one << icon_info.bits_per_pixel);
               }
           }
-        bytes_per_line=(((next->columns*icon_info.bits_per_pixel)+31) & ~31) >>
-          3;
+        bytes_per_line=(((next->columns*icon_info.bits_per_pixel)+31U) &
+          ~31U) >> 3;
         icon_info.ba_offset=0;
         icon_info.width=(ssize_t) next->columns;
         icon_info.height=(ssize_t) next->rows;
@@ -1073,7 +1074,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         icon_info.size=40;
         icon_info.size+=(4*icon_info.number_colors);
         icon_info.size+=icon_info.image_size;
-        icon_info.size+=(((icon_info.width+31) & ~31) >> 3)*icon_info.height;
+        icon_info.size+=(size_t) ((((icon_info.width+31U) & ~31U) >> 3)*
+          icon_info.height);
         icon_info.file_size+=icon_info.image_size;
         icon_info.x_pixels=0;
         icon_info.y_pixels=0;
@@ -1121,7 +1123,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               p=GetVirtualPixels(next,0,y,next->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
-              q=pixels+(next->rows-y-1)*bytes_per_line;
+              q=pixels+((ssize_t) next->rows-y-1)*(ssize_t) bytes_per_line;
               bit=0;
               byte=0;
               for (x=0; x < (ssize_t) next->columns; x++)
@@ -1162,7 +1164,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               p=GetVirtualPixels(next,0,y,next->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
-              q=pixels+(next->rows-y-1)*bytes_per_line;
+              q=pixels+((ssize_t) next->rows-y-1)*(ssize_t) bytes_per_line;
               nibble=0;
               byte=0;
               for (x=0; x < (ssize_t) next->columns; x++)
@@ -1199,7 +1201,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               p=GetVirtualPixels(next,0,y,next->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
-              q=pixels+(next->rows-y-1)*bytes_per_line;
+              q=pixels+((ssize_t) next->rows-y-1)*(ssize_t) bytes_per_line;
               for (x=0; x < (ssize_t) next->columns; x++)
               {
                 *q++=(unsigned char) GetPixelIndex(next,p);
@@ -1225,7 +1227,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               p=GetVirtualPixels(next,0,y,next->columns,1,exception);
               if (p == (const Quantum *) NULL)
                 break;
-              q=pixels+(next->rows-y-1)*bytes_per_line;
+              q=pixels+((ssize_t) next->rows-y-1)*(ssize_t) bytes_per_line;
               for (x=0; x < (ssize_t) next->columns; x++)
               {
                 *q++=ScaleQuantumToChar(GetPixelBlue(next,p));
@@ -1282,8 +1284,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             /*
               Dump colormap to file.
             */
-            icon_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
-              (1UL << icon_info.bits_per_pixel),4UL*sizeof(*icon_colormap));
+            icon_colormap=(unsigned char *) AcquireQuantumMemory((size_t) 1UL
+              << icon_info.bits_per_pixel,4UL*sizeof(*icon_colormap));
             if (icon_colormap == (unsigned char *) NULL)
               {
                 images=DestroyImageList(images);
@@ -1298,7 +1300,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               *q++=ScaleQuantumToChar(next->colormap[i].red);
               *q++=(unsigned char) 0x0;
             }
-            for ( ; i < (ssize_t) (1UL << icon_info.bits_per_pixel); i++)
+            for ( ; i < (ssize_t) 1UL << icon_info.bits_per_pixel; i++)
             {
               *q++=(unsigned char) 0x00;
               *q++=(unsigned char) 0x00;
@@ -1315,7 +1317,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         /*
           Write matte mask.
         */
-        scanline_pad=(((next->columns+31) & ~31)-next->columns) >> 3;
+        scanline_pad=(((next->columns+31U) & ~31U)-next->columns) >> 3;
         for (y=((ssize_t) next->rows - 1); y >= 0; y--)
         {
           unsigned char

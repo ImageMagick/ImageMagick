@@ -159,7 +159,7 @@ static int XBMInteger(Image *image,short int *hex_digits)
         value*=16;
         c&=0xff;
         if (value <= (unsigned int) ((INT_MAX-1)-hex_digits[c]))
-          value+=hex_digits[c];
+          value+=(unsigned int) hex_digits[c];
       }
     c=ReadBlobByte(image);
     if (c == EOF)
@@ -574,7 +574,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte>>=1;
-      if (GetPixelLuma(image,p) < (QuantumRange/2))
+      if (GetPixelLuma(image,p) < ((double) QuantumRange/2))
         byte|=0x80;
       bit++;
       if (bit == 8)

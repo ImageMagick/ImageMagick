@@ -325,7 +325,8 @@ static Image* BayerApplyMask(Image *images,size_t index_a,size_t index_b,
   (void) QueryColorCompliance("#000",AllCompliance,
     &draw_info->fill_pattern->background_color,exception);
   (void) SetImageBackgroundColor(draw_info->fill_pattern,exception);
-  q=GetAuthenticPixels(draw_info->fill_pattern,fill_x,fill_y,1,1,exception);
+  q=GetAuthenticPixels(draw_info->fill_pattern,(ssize_t) fill_x,(ssize_t)
+    fill_y,1,1,exception);
   if (q == (Quantum *) NULL)
     {
       draw_info=DestroyDrawInfo(draw_info);
@@ -333,8 +334,8 @@ static Image* BayerApplyMask(Image *images,size_t index_a,size_t index_b,
     }
   (void) QueryColorCompliance("#fff",AllCompliance,&pixel,exception);
   SetPixelViaPixelInfo(draw_info->fill_pattern,&pixel,q);
-  mask_image=CloneImage(GetImageFromList(images,index_a),0,0,MagickTrue,
-    exception);
+  mask_image=CloneImage(GetImageFromList(images,(ssize_t) index_a),0,0,
+    MagickTrue,exception);
   if (mask_image == (Image *) NULL)
     {
       draw_info=DestroyDrawInfo(draw_info);
@@ -344,7 +345,8 @@ static Image* BayerApplyMask(Image *images,size_t index_a,size_t index_b,
   (void) DrawImage(mask_image,draw_info,exception);
   (void) SetImageAlphaChannel(mask_image,OffAlphaChannel,exception);
   draw_info=DestroyDrawInfo(draw_info);
-  canvas=CloneImage(GetImageFromList(images,index_b),0,0,MagickTrue,exception);
+  canvas=CloneImage(GetImageFromList(images,(ssize_t) index_b),0,0,MagickTrue,
+    exception);
   if (canvas == (Image *) NULL)
     {
       mask_image=DestroyImage(mask_image);
@@ -353,7 +355,8 @@ static Image* BayerApplyMask(Image *images,size_t index_a,size_t index_b,
   (void) CompositeImage(canvas,mask_image,CopyAlphaCompositeOp,MagickTrue,0,0,
     exception);
   mask_image=DestroyImage(mask_image);
-  result=CloneImage(GetImageFromList(images,index_a),0,0,MagickTrue,exception);
+  result=CloneImage(GetImageFromList(images,(ssize_t) index_a),0,0,MagickTrue,
+    exception);
   if (result != (Image *) NULL)
     {
       (void) CompositeImage(result,canvas,OverCompositeOp,MagickTrue,0,0,

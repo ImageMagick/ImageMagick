@@ -625,18 +625,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (option != (char *) NULL)
     {
       char
-        passphrase[MagickPathExtent],
-        *sanitize_passphrase;
+        passphrase[MagickPathExtent];
 
-      sanitize_passphrase=SanitizeDelegateString(option);
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-      (void) FormatLocaleString(passphrase,MagickPathExtent,
-        "\"-sPDFPassword=%s\" ",sanitize_passphrase);
-#else
-      (void) FormatLocaleString(passphrase,MagickPathExtent,
-        "-sPDFPassword='%s' ",sanitize_passphrase);
-#endif
-      sanitize_passphrase=DestroyString(sanitize_passphrase);
+      FormatSanitizedDelegateOption(passphrase,MagickPathExtent,
+        "\"-sPDFPassword=%s\" ","-sPDFPassword='%s' ",option);
       (void) ConcatenateMagickString(options,passphrase,MagickPathExtent);
     }
   read_info=CloneImageInfo(image_info);
@@ -1251,8 +1243,7 @@ static const char *GetPDFTitle(const ImageInfo *image_info,
   return(default_title);
 }
 
-static const time_t GetPdfCreationDate(const ImageInfo *image_info,
-  const Image* image)
+static time_t GetPdfCreationDate(const ImageInfo *image_info,const Image* image)
 {
   const char
     *option;
@@ -1270,8 +1261,7 @@ static const time_t GetPdfCreationDate(const ImageInfo *image_info,
   return(GetBlobProperties(image)->st_ctime);
 }
 
-static const time_t GetPdfModDate(const ImageInfo *image_info,
-  const Image* image)
+static time_t GetPdfModDate(const ImageInfo *image_info,const Image* image)
 {
   const char
     *option;
@@ -1877,15 +1867,16 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     (void) ParseMetaGeometry(temp,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     scale.x=(double) (geometry.width*delta.x)/resolution.x;
-    geometry.width=(size_t) floor(scale.x+0.5);
+    geometry.width=CastDoubleToUnsigned(scale.x+0.5);
     scale.y=(double) (geometry.height*delta.y)/resolution.y;
-    geometry.height=(size_t) floor(scale.y+0.5);
+    geometry.height=CastDoubleToUnsigned(scale.y+0.5);
     (void) ParseAbsoluteGeometry(temp,&media_info);
     (void) ParseGravityGeometry(image,temp,&page_info,exception);
     if (image->gravity != UndefinedGravity)
       {
         geometry.x=(-page_info.x);
-        geometry.y=(ssize_t) (media_info.height+page_info.y-image->rows);
+        geometry.y=(ssize_t) media_info.height+page_info.y-(ssize_t)
+          image->rows;
       }
     pointsize=12.0;
     if (image_info->pointsize != 0.0)
@@ -1967,8 +1958,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           (double) image->scene,pointsize);
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g %.20g Td\n",
-          (double) geometry.x,(double) (geometry.y+geometry.height+i*pointsize+
-          12));
+          (double) geometry.x,(double) (geometry.y+(ssize_t) geometry.height+
+          i*pointsize+12));
         (void) WriteBlobString(image,buffer);
         (void) FormatLocaleString(buffer,MagickPathExtent,"(%s) Tj\n",
            labels[i]);
@@ -2567,11 +2558,12 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       Write Thumb object.
     */
     SetGeometry(image,&geometry);
-    (void) ParseMetaGeometry("106x106+0+0>",&geometry.x,&geometry.y,
-      &geometry.width,&geometry.height);
     thumbnail=IsStringTrue(GetImageOption(image_info,"pdf:thumbnail"));
     if (thumbnail == MagickFalse)
       (void) ParseMetaGeometry("1x1+0+0>",&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
+    else
+      (void) ParseMetaGeometry("106x106+0+0>",&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
     tile_image=ThumbnailImage(image,geometry.width,geometry.height,exception);
     if (tile_image == (Image *) NULL)
@@ -3068,7 +3060,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
-    if (image->alpha_trait == UndefinedPixelTrait)
+    if ((image->alpha_trait & BlendPixelTrait) == 0)
       (void) WriteBlobString(image,">>\n");
     else
       {

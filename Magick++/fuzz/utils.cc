@@ -22,20 +22,21 @@
 #define FUZZ_MAX_SIZE 2048
 #endif
 
-static bool IsInvalidSize(const size_t size, const size_t min = 1, const size_t max = MagickPathExtent)
+static bool IsInvalidSize(const size_t size,const size_t min = 1,
+  const size_t max = MagickPathExtent)
 {
   if (size < min)
-    return true;
+    return(true);
   if (max > 0 && size > max)
-    return true;
-  return false;
+    return(true);
+  return(false);
 }
 
 class FuzzingInitializer
 {
 public:
-  FuzzingInitializer() {
-
+  FuzzingInitializer()
+  {
     // Disable SIMD in jpeg turbo.
     (void) putenv(const_cast<char *>("JSIMD_FORCENONE=1"));
 

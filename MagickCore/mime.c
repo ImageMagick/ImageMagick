@@ -366,7 +366,7 @@ MagickExport const MimeInfo *GetMimeInfo(const char *filename,
       {
         for (i=0; i <= (ssize_t) q->extent; i++)
         {
-          if ((size_t) (q->offset+i+q->length) > length)
+          if ((size_t) (q->offset+i+(ssize_t) q->length) > length)
             break;
           if (memcmp(magic+q->offset+i,q->magic,q->length) == 0)
             {

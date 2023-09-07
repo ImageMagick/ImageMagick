@@ -145,17 +145,17 @@ typedef struct _XDrawInfo
 
 typedef enum
 {
-  DefaultState = 0x0000,
-  EscapeState = 0x0001,
-  ExitState = 0x0002,
-  FormerImageState = 0x0004,
-  ModifierState = 0x0008,
-  MontageImageState = 0x0010,
-  NextImageState = 0x0020,
-  RetainColorsState = 0x0040,
-  SuspendTime = 50,
-  UpdateConfigurationState = 0x0080,
-  UpdateRegionState = 0x0100
+  DefaultState = 0x0000U,
+  EscapeState = 0x0001U,
+  ExitState = 0x0002U,
+  FormerImageState = 0x0004U,
+  ModifierState = 0x0008U,
+  MontageImageState = 0x0010U,
+  NextImageState = 0x0020U,
+  RetainColorsState = 0x0040U,
+  SuspendTime = 50U,
+  UpdateConfigurationState = 0x0080U,
+  UpdateRegionState = 0x0100U
 } XState;
 
 typedef struct _XAnnotateInfo

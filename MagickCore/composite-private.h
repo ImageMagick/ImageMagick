@@ -107,7 +107,8 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
       }
       case AlphaPixelChannel:
       {
-        composite[i]=ClampToQuantum(QuantumRange*RoundToUnity(Sa+Da-Sa*Da));
+        composite[i]=ClampToQuantum((double) QuantumRange*
+          RoundToUnity(Sa+Da-Sa*Da));
         break;
       }
       default:

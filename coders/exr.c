@@ -206,8 +206,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   hdr_info=ImfInputHeader(file);
   ImfHeaderDataWindow(hdr_info,&display_window.min_x,&display_window.min_y,
     &display_window.max_x,&display_window.max_y);
-  image->columns=((size_t) display_window.max_x-display_window.min_x+1UL);
-  image->rows=((size_t) display_window.max_y-display_window.min_y+1UL);
+  image->columns=(size_t) (display_window.max_x-display_window.min_x+1L);
+  image->rows=(size_t) (display_window.max_y-display_window.min_y+1L);
   image->alpha_trait=BlendPixelTrait;
   (void) SetImageColorspace(image,RGBColorspace,exception);
   image->gamma=1.0;
@@ -253,7 +253,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   ImfHeaderDataWindow(hdr_info,&data_window.min_x,&data_window.min_y,
     &data_window.max_x,&data_window.max_y);
-  columns=((size_t) data_window.max_x-data_window.min_x+1UL);
+  columns=(size_t) (data_window.max_x-data_window.min_x+1L);
   if ((display_window.min_x > data_window.max_x) ||
       (display_window.min_x+(int) image->columns <= data_window.min_x))
     scanline=(ImfRgba *) NULL;
@@ -292,8 +292,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         continue;
       }
     (void) memset(scanline,0,columns*sizeof(*scanline));
-    if (ImfInputSetFrameBuffer(file,scanline-data_window.min_x-columns*yy,1,
-      columns) == 0)
+    if (ImfInputSetFrameBuffer(file,scanline-data_window.min_x-(ssize_t) columns*yy,1,columns) == 0)
       {
         status=MagickFalse;
         break;
@@ -313,14 +312,14 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelViaPixelInfo(image,&image->background_color,q);
       else
         {
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            ImfHalfToFloat(scanline[xx].r)),q);
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            ImfHalfToFloat(scanline[xx].g)),q);
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            ImfHalfToFloat(scanline[xx].b)),q);
-          SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
-            ImfHalfToFloat(scanline[xx].a)),q);
+          SetPixelRed(image,ClampToQuantum((double) QuantumRange*
+            (double) ImfHalfToFloat(scanline[xx].r)),q);
+          SetPixelGreen(image,ClampToQuantum((double) QuantumRange*
+            (double) ImfHalfToFloat(scanline[xx].g)),q);
+          SetPixelBlue(image,ClampToQuantum((double) QuantumRange*
+            (double) ImfHalfToFloat(scanline[xx].b)),q);
+          SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*
+            (double) ImfHalfToFloat(scanline[xx].a)),q);
         }
       q+=GetPixelChannels(image);
     }
@@ -634,20 +633,23 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ImfFloatToHalf(QuantumScale*GetPixelRed(image,p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*(double) GetPixelRed(image,p),&half_quantum);
       scanline[x].r=half_quantum;
-      ImfFloatToHalf(QuantumScale*GetPixelGreen(image,p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*(double) GetPixelGreen(image,p),
+        &half_quantum);
       scanline[x].g=half_quantum;
-      ImfFloatToHalf(QuantumScale*GetPixelBlue(image,p),&half_quantum);
+      ImfFloatToHalf(QuantumScale*(double) GetPixelBlue(image,p),&half_quantum);
       scanline[x].b=half_quantum;
-      if (image->alpha_trait == UndefinedPixelTrait)
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
         ImfFloatToHalf(1.0,&half_quantum);
       else
-        ImfFloatToHalf(QuantumScale*GetPixelAlpha(image,p),&half_quantum);
+        ImfFloatToHalf(QuantumScale*(double) GetPixelAlpha(image,p),
+          &half_quantum);
       scanline[x].a=half_quantum;
       p+=GetPixelChannels(image);
     }
-    ImfOutputSetFrameBuffer(file,scanline-(y*image->columns),1,image->columns);
+    ImfOutputSetFrameBuffer(file,scanline-(y*(ssize_t) image->columns),1,
+      image->columns);
     ImfOutputWritePixels(file,1);
   }
   (void) ImfCloseOutputFile(file);

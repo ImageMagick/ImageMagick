@@ -56,8 +56,9 @@ with the resulting image written to the file <kbd>appended_image.miff</kbd>:</fo
 using namespace std; 
 using namespace Magick;
 
-int main(int /*argc*/,char **/*argv*/) 
+int main(int argc,char **argv) 
 { 
+   InitializeMagick(*argv);
    list&lt;Image> imageList; 
    readImages( &amp;imageList, "test_image_anim.gif" );
 

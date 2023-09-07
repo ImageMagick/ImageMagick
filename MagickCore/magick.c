@@ -94,11 +94,6 @@
 #include "MagickCore/utility-private.h"
 #include "MagickCore/xwindow-private.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
-#    if !defined(__MINGW32__)
-#      include <win32config.h>
-#    endif
-#  endif
 #  include <libxml/parser.h>
 #endif
 
@@ -981,8 +976,7 @@ MagickExport MagickBooleanType GetMagickRawSupport(
   return(((magick_info->flags & CoderRawSupportFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1012,8 +1006,7 @@ MagickExport MagickBooleanType GetMagickStealth(const MagickInfo *magick_info)
   return(((magick_info->flags & CoderStealthFlag) == 0) ? MagickFalse :
     MagickTrue);
 }
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1244,7 +1237,7 @@ MagickExport MagickBooleanType ListMagickInfo(FILE *file,
           {
             for (j=0; text[j] != (char *) NULL; j++)
             {
-              (void) FormatLocaleFile(file,"           %s\n",text[j]);
+              (void) FormatLocaleFile(file,"             %s\n",text[j]);
               text[j]=DestroyString(text[j]);
             }
             text=(char **) RelinquishMagickMemory(text);
@@ -1613,7 +1606,29 @@ MagickExport void MagickCoreGenesis(const char *path,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickCoreTerminus() destroys the MagickCore environment.
+%  MagickCoreTerminus() is a function in the ImageMagick library that is
+%  used to clean up and release resources when shutting down an application
+%  that uses ImageMagick. This function should be called in the primary thread
+%  of the application's process during the shutdown process. It's crucial that
+%  this function is invoked only after any threads that are using ImageMagick
+%  functions have terminated.
+%
+%  ImageMagick might internally use threads via OpenMP (a method for parallel
+%  programming). As a result, it's important to ensure that any function calls
+%  into ImageMagick have completed before calling MagickCoreTerminus(). This
+%  prevents issues with OpenMP worker threads accessing resources that are
+%  destroyed by this termination function.
+%
+%  If OpenMP is being used (starting from version 5.0), the OpenMP
+%  implementation itself handles starting and stopping worker threads and
+%  allocating and freeing resources using its own methods. This means that
+%  after calling MagickCoreTerminus(), some OpenMP resources and worker
+%  threads might still remain allocated. To address this, the function
+%  omp_pause_resource_all(omp_pause_hard) can be invoked. This function,
+%  introduced in OpenMP version 5.0, ensures that any resources allocated by
+%  OpenMP (such as threads and thread-specific memory) are freed. It's
+%  recommended to call this function after MagickCoreTerminus() has completed
+%  its execution.
 %
 %  The format of the MagickCoreTerminus function is:
 %
@@ -1631,9 +1646,6 @@ MagickExport void MagickCoreTerminus(void)
     }
   MonitorComponentTerminus();
   RegistryComponentTerminus();
-#if defined(MAGICKCORE_X11_DELEGATE)
-  XComponentTerminus();
-#endif
 #if defined(MAGICKCORE_XML_DELEGATE)
   xmlCleanupParser();
 #endif
@@ -1655,6 +1667,9 @@ MagickExport void MagickCoreTerminus(void)
 #endif
 #if defined(MAGICKCORE_MODULES_SUPPORT)
   ModuleComponentTerminus();
+#endif
+#if defined(MAGICKCORE_X11_DELEGATE)
+  XComponentTerminus();
 #endif
   CoderComponentTerminus();
   ResourceComponentTerminus();

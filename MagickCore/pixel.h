@@ -30,7 +30,11 @@ extern "C" {
 /*
   Pixel enum declarations.
 */
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
+typedef enum : MagickOffsetType
+#else
 typedef enum
+#endif
 {
   UndefinedChannel = 0x0000,
   RedChannel = 0x0001,
@@ -49,10 +53,14 @@ typedef enum
   IndexChannel = 0x0020,             /* Color Index Table? */
   ReadMaskChannel = 0x0040,          /* Pixel is Not Readable? */
   WriteMaskChannel = 0x0080,         /* Pixel is Write Protected? */
-  CompositeMaskChannel = 0x0100,     /* SVG mask */
-  MetaChannel = 0x0200,              /* not used */
+  MetaChannel = 0x0100,              /* not used */
+  CompositeMaskChannel = 0x0200,     /* SVG mask */
   CompositeChannels = 0x001F,
-  AllChannels = 0x7ffffff,
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
+  AllChannels = MagickLLConstant(0x7FFFFFFFFFFFFFFF),
+#else
+  AllChannels = 0X7FFFFFF,
+#endif
   /*
     Special purpose channel types.
     FUTURE: are these needed any more - they are more like hacks
@@ -89,8 +97,8 @@ typedef enum
   IndexPixelChannel = 5,
   ReadMaskPixelChannel = 6,
   WriteMaskPixelChannel = 7,
-  CompositeMaskPixelChannel = 8,
-  MetaPixelChannel = 9,
+  MetaPixelChannel = 8, /* deprecated */
+  CompositeMaskPixelChannel = 9,
   MetaPixelChannels = 10,
   IntensityPixelChannel = MaxPixelChannels,  /* ???? */
   CompositePixelChannel = MaxPixelChannels,  /* ???? */

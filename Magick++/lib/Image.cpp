@@ -764,7 +764,7 @@ void Magick::Image::fileName(const std::string &fileName_)
   modifyImage();
 
   max_length=sizeof(image()->filename)-1;
-  fileName_.copy(image()->filename,max_length);
+  fileName_.copy(image()->filename,(size_t) max_length);
   if ((ssize_t) fileName_.length() > max_length)
     image()->filename[max_length]=0;
   else
@@ -4210,14 +4210,13 @@ void Magick::Image::roll(const Geometry &roll_)
   ThrowImageException;
 }
 
-void Magick::Image::roll(const size_t columns_,const size_t rows_)
+void Magick::Image::roll(const ssize_t columns_,const ssize_t rows_)
 {
   MagickCore::Image
     *newImage;
 
   GetPPException;
-  newImage=RollImage(constImage(),static_cast<ssize_t>(columns_),
-    static_cast<ssize_t>(rows_),exceptionInfo);
+  newImage=RollImage(constImage(),columns_, rows_,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }

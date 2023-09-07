@@ -976,9 +976,11 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatLocaleString(thresholds,MagickPathExtent,
-    QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
-    PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
-    PixelGetBlueQuantum(threshold),PixelGetAlphaQuantum(threshold));
+    "%g" "," "%g" "," "%g" "," "%g",
+    (double) PixelGetRedQuantum(threshold),
+    (double) PixelGetGreenQuantum(threshold),
+    (double) PixelGetBlueQuantum(threshold),
+    (double) PixelGetAlphaQuantum(threshold));
   return(BlackThresholdImage(wand->images,thresholds,wand->exception));
 }
 
@@ -1772,18 +1774,18 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
   if (target.colorspace != CMYKColorspace)
     (void) FormatLocaleString(percent_blend,MagickPathExtent,
       "%g,%g,%g,%g",(double) (100.0*QuantumScale*
-      PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetAlphaQuantum(blend)));
+      (double) PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetAlphaQuantum(blend)));
   else
     (void) FormatLocaleString(percent_blend,MagickPathExtent,
       "%g,%g,%g,%g,%g",(double) (100.0*QuantumScale*
-      PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetBlackQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetAlphaQuantum(blend)));
+      (double) PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetBlackQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetAlphaQuantum(blend)));
   target=PixelGetPixel(colorize);
   colorize_image=ColorizeImage(wand->images,percent_blend,&target,
     wand->exception);
@@ -3616,7 +3618,8 @@ WandExport MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
   draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
   PixelGetQuantumPacket(fill,&draw_info->fill);
   (void) GetOneVirtualPixelInfo(wand->images,TileVirtualPixelMethod,x %
-    wand->images->columns,y % wand->images->rows,&target,wand->exception);
+    (ssize_t) wand->images->columns,y % (ssize_t) wand->images->rows,&target,
+    wand->exception);
   if (bordercolor != (PixelWand *) NULL)
     PixelGetMagickColor(bordercolor,&target);
   wand->images->fuzz=fuzz;
@@ -10998,7 +11001,7 @@ WandExport MagickBooleanType MagickSetImageAlpha(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SetImageAlpha(wand->images,ClampToQuantum(QuantumRange*alpha),
+  status=SetImageAlpha(wand->images,ClampToQuantum((double) QuantumRange*alpha),
     wand->exception);
   return(status);
 }
@@ -12717,18 +12720,18 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
   if (wand->images->colorspace != CMYKColorspace)
     (void) FormatLocaleString(percent_blend,MagickPathExtent,
       "%g,%g,%g,%g",(double) (100.0*QuantumScale*
-      PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetAlphaQuantum(blend)));
+      (double) PixelGetRedQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetGreenQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetBlueQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetAlphaQuantum(blend)));
   else
     (void) FormatLocaleString(percent_blend,MagickPathExtent,
       "%g,%g,%g,%g,%g",(double) (100.0*QuantumScale*
-      PixelGetCyanQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetMagentaQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetYellowQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetBlackQuantum(blend)),(double) (100.0*QuantumScale*
-      PixelGetAlphaQuantum(blend)));
+      (double) PixelGetCyanQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetMagentaQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetYellowQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetBlackQuantum(blend)),(double) (100.0*QuantumScale*
+      (double) PixelGetAlphaQuantum(blend)));
   target=PixelGetPixel(tint);
   tint_image=TintImage(wand->images,percent_blend,&target,wand->exception);
   if (tint_image == (Image *) NULL)
@@ -12840,7 +12843,7 @@ WandExport MagickBooleanType MagickTransparentPaintImage(MagickWand *wand,
   PixelGetMagickColor(target,&target_pixel);
   wand->images->fuzz=fuzz;
   status=TransparentPaintImage(wand->images,&target_pixel,ClampToQuantum(
-    QuantumRange*alpha),invert,wand->exception);
+    (double) QuantumRange*alpha),invert,wand->exception);
   return(status);
 }
 
@@ -13303,9 +13306,11 @@ WandExport MagickBooleanType MagickWhiteThresholdImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatLocaleString(thresholds,MagickPathExtent,
-    QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
-    PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
-    PixelGetBlueQuantum(threshold),PixelGetAlphaQuantum(threshold));
+    "%g" "," "%g" "," "%g" "," "%g",
+    (double) PixelGetRedQuantum(threshold),
+    (double) PixelGetGreenQuantum(threshold),
+    (double) PixelGetBlueQuantum(threshold),
+    (double) PixelGetAlphaQuantum(threshold));
   return(WhiteThresholdImage(wand->images,thresholds,wand->exception));
 }
 

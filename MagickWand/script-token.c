@@ -415,6 +415,7 @@ RestoreMSCWarning
         case IN_WHITE:
           token_info->token_line=token_info->curr_line;
           token_info->token_column=token_info->curr_column;
+          magick_fallthrough;
         case IN_TOKEN:
           state=IN_QUOTE;
           quote=c;
@@ -443,9 +444,11 @@ RestoreMSCWarning
           switch (state) {
             case IN_COMMENT:
               state=IN_WHITE;  /* end comment */
+              magick_fallthrough;
             case IN_QUOTE:
               if (quote != '"')
                 break;         /* in double quotes only */
+              magick_fallthrough;
             case IN_WHITE:
             case IN_TOKEN:
               continue;        /* line continuation - remove line feed */
@@ -470,6 +473,7 @@ RestoreMSCWarning
         token_info->token_line=token_info->curr_line;
         token_info->token_column=token_info->curr_column;
         state=IN_TOKEN;
+        magick_fallthrough;
       case IN_TOKEN:
       case IN_QUOTE:
         SaveChar(c);

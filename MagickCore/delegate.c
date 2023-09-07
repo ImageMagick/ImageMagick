@@ -144,7 +144,7 @@ static const char
     "  <delegate decode=\"ps:mono\" stealth=\"True\" command=\"&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;\"/>"
     "  <delegate decode=\"shtml\" command=\"&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"sid\" command=\"&quot;mrsidgeodecode&quot; -if sid -i &quot;%i&quot; -of tif -o &quot;%o&quot; &gt; &quot;%u&quot;\"/>"
-    "  <delegate decode=\"svg\" command=\"&quot;rsvg-convert&quot; -o &quot;%o&quot; &quot;%i&quot;\"/>"
+    "  <delegate decode=\"svg\" command=\"&quot;rsvg-convert&quot; --dpi-x %x --dpi-y %y -o &quot;%o&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"svg:decode\" stealth=\"True\" command=\"&quot;inkscape&quot; &quot;%s&quot; --export-png=&quot;%s&quot; --export-dpi=&quot;%s&quot; --export-background=&quot;%s&quot; --export-background-opacity=&quot;%s&quot; &gt; &quot;%s&quot; 2&gt;&amp;1\"/>"
     "  <delegate decode=\"tiff\" encode=\"launch\" mode=\"encode\" command=\"&quot;gimp&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"wdp\" command=\"mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;JxrDecApp&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot;; mv &quot;%i.jxr&quot; &quot;%i&quot;; mv &quot;%o.bmp&quot; &quot;%o&quot;\"/>"
@@ -919,7 +919,7 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
 #define ExtendInterpretText(string_length) \
 { \
   size_t length=(string_length); \
-  if ((size_t) (q-interpret_text+length+1) >= extent) \
+  if ((size_t) (q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
@@ -948,7 +948,7 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
 #define AppendString2Text(string) \
 { \
   size_t length=strlen((string)); \
-  if ((size_t) (q-interpret_text+length+1) >= extent) \
+  if ((size_t) (q-interpret_text+(ssize_t) length+1) >= extent) \
     { \
       extent+=length; \
       interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+ \
@@ -1635,15 +1635,13 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   MagickBooleanType
     status;
 
-  size_t
+  ssize_t
+    count,
     i;
 
   size_t
     length,
     quantum;
-
-  ssize_t
-    count;
 
   struct stat
     attributes;
@@ -1682,7 +1680,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
       return(MagickFalse);
     }
   length=0;
-  for (i=0; ; i+=count)
+  for (i=0; ; i+=(ssize_t) count)
   {
     count=(ssize_t) read(source_file,buffer,quantum);
     if (count <= 0)

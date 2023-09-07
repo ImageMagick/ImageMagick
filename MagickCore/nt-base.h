@@ -61,15 +61,9 @@ extern "C" {
 #  if !defined(SSIZE_MAX)
 #    define SSIZE_MAX LLONG_MAX
 #  endif
-#  if defined(_MSC_VER)
-#    define MAGICKCORE_SIZEOF_SSIZE_T 8
-#  endif
 #else
 #  if !defined(SSIZE_MAX)
 #    define SSIZE_MAX LONG_MAX
-#  endif
-#  if defined(_MSC_VER)
-#    define MAGICKCORE_SIZEOF_SSIZE_T 4
 #  endif
 #endif
 #ifndef S_ISCHR
@@ -156,17 +150,8 @@ extern "C" {
 #if !defined(lt_dlerror)
 #  define lt_dlerror()  NTGetLibraryError()
 #endif
-#if !defined(lt_dlexit)
-#  define lt_dlexit()  NTExitLibrary()
-#endif
-#if !defined(lt_dlinit)
-#  define lt_dlinit()  NTInitializeLibrary()
-#endif
 #if !defined(lt_dlopen)
 #  define lt_dlopen(filename)  NTOpenLibrary(filename)
-#endif
-#if !defined(lt_dlsetsearchpath)
-#  define lt_dlsetsearchpath(path)  NTSetSearchPath(path)
 #endif
 #if !defined(lt_dlsym)
 #  define lt_dlsym(handle,name)  NTGetLibrarySymbol(handle,name)

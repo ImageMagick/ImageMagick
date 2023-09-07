@@ -33,14 +33,15 @@ jobs:
         path: artifacts
 
   build_linux:
-    name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})'
+    name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}}) (${{ matrix.compiler }})'
     container:
-      image: ubuntu:bionic
+      image: ubuntu:18.04
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
+        compiler: [ gcc, clang ]
         quantum: [ 8, 16, 32, 64 ]
         hdri: [ yes, no ]
         modules: [ 'with-modules', 'without-modules' ]
@@ -51,13 +52,20 @@ jobs:
             hdri: no
           - quantum: 64
             hdri: no
+        include:
+          - compiler: gcc
+            cxx_compiler: g++
+            compiler_flags: -Wall -Wextra -Werror -Wno-builtin-declaration-mismatch
+          - compiler: clang
+            cxx_compiler: clang++
+            compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration
 
     steps:
     - name: Install dependencies
       run: |
         set -e
         apt update
-        apt-get install -y autoconf pkg-config gcc libfontconfig1-dev libfreetype6-dev libltdl-dev
+        apt-get install -y autoconf pkg-config libfontconfig1-dev libfreetype6-dev libltdl-dev ${{ matrix.compiler }}
 
     - name: Clone msttcorefonts
       uses: actions/checkout@v3
@@ -73,8 +81,12 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Configure ImageMagick
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.cxx_compiler }}
+        CFLAGS: ${{ matrix.compiler_flags }}
+        CXXFLAGS: ${{ matrix.compiler_flags }}
       run: |
-        export CFLAGS="-Wno-deprecated-declarations"
         ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
 
     - name: Build ImageMagick

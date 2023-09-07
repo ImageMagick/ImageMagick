@@ -124,40 +124,36 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   char
     magick[2];
 
-  Image
-    *image;
-
-  MagickBooleanType
-    status;
-
   double
     height,
     width;
 
+  Image
+    *image;
+
   int
     c;
 
-  Quantum
-    pixel;
-
-  ssize_t
-    i,
-    x;
+  MagickBooleanType
+    status;
 
   Quantum
+    pixel,
     *q;
-
-  ssize_t
-    count,
-    y;
-
-  unsigned char
-    buffer[768];
 
   size_t
     separations,
     separations_mask,
     units;
+
+  ssize_t
+    count,
+    i,
+    x,
+    y;
+
+  unsigned char
+    buffer[768];
 
   /*
     Open image file.
@@ -200,10 +196,10 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read parameter block.
   */
-  units=1UL*ReadBlobByte(image);
+  units=(size_t) ReadBlobByte(image);
   if (units == 0)
     image->units=PixelsPerCentimeterResolution;
-  separations=1UL*ReadBlobByte(image);
+  separations=(size_t) ReadBlobByte(image);
   separations_mask=ReadBlobMSBShort(image);
   count=ReadBlob(image,14,buffer);
   buffer[14]='\0';

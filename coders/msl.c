@@ -93,11 +93,6 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/visual-effects.h"
 #if defined(MAGICKCORE_XML_DELEGATE)
-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
-#    if !defined(__MINGW32__)
-#      include <win32config.h>
-#    endif
-#  endif
 #  include <libxml/xmlmemory.h>
 #  include <libxml/parserInternals.h>
 #  include <libxml/xmlerror.h>
@@ -574,13 +569,13 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   msl_info->n++;
   n=msl_info->n;
   msl_info->image_info=(ImageInfo **) ResizeQuantumMemory(msl_info->image_info,
-    (n+1),sizeof(*msl_info->image_info));
+    (size_t) (n+1),sizeof(*msl_info->image_info));
   msl_info->draw_info=(DrawInfo **) ResizeQuantumMemory(msl_info->draw_info,
-    (n+1),sizeof(*msl_info->draw_info));
+    (size_t) (n+1),sizeof(*msl_info->draw_info));
   msl_info->attributes=(Image **) ResizeQuantumMemory(msl_info->attributes,
-    (n+1),sizeof(*msl_info->attributes));
-  msl_info->image=(Image **) ResizeQuantumMemory(msl_info->image,(n+1),
-    sizeof(*msl_info->image));
+    (size_t) (n+1),sizeof(*msl_info->attributes));
+  msl_info->image=(Image **) ResizeQuantumMemory(msl_info->image,
+    (size_t) (n+1),sizeof(*msl_info->image));
   if ((msl_info->image_info == (ImageInfo **) NULL) ||
       (msl_info->draw_info == (DrawInfo **) NULL) ||
       (msl_info->attributes == (Image **) NULL) ||
@@ -650,15 +645,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
   Image
     *image;
 
-  int
+  MagickStatusType
     flags;
-
-  ssize_t
-    option,
-    j,
-    n,
-    x,
-    y;
 
   MSLInfo
     *msl_info;
@@ -667,7 +655,13 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     geometry;
 
   ssize_t
-    i;
+    i,
+    j,
+    n,
+    option,
+    x,
+    y;
+
 
   size_t
     height,
@@ -993,7 +987,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
                     {
-                      draw_info->stroke_width=StringToLong(value);
+                      draw_info->stroke_width=(size_t) StringToLong(value);
                       break;
                     }
                   if (LocaleCompare(keyword,"style") == 0)
@@ -1049,7 +1043,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"weight") == 0)
                     {
-                      draw_info->weight=StringToLong(value);
+                      draw_info->weight=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1364,7 +1358,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      geometry.height=StringToLong(value);
+                      geometry.height=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1376,7 +1370,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"width") == 0)
                     {
-                      geometry.width=StringToLong(value);
+                      geometry.width=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1400,6 +1394,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'C':
     case 'c':
@@ -1595,7 +1590,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      geometry.height=StringToLong(value);
+                      geometry.height=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1607,7 +1602,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"width") == 0)
                     {
-                      geometry.width=StringToLong(value);
+                      geometry.width=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1999,7 +1994,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       for (r=0; r < (ssize_t) composite_image->rows ; r++)
                       {
                         q=GetCacheViewAuthenticPixels(composite_view,0,r,
-                          (ssize_t) composite_image->columns,1,exception);
+                          composite_image->columns,1,exception);
                         for (k=0; k < (ssize_t) composite_image->columns; k++)
                         {
                           if (GetPixelAlpha(composite_image,q) == OpaqueAlpha)
@@ -2229,7 +2224,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      geometry.height=StringToLong(value);
+                      geometry.height=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -2241,7 +2236,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"width") == 0)
                     {
-                      geometry.width=StringToLong(value);
+                      geometry.width=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -2337,6 +2332,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'D':
     case 'd':
@@ -2389,15 +2385,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 msl_info->attributes[n],(const char *) attributes[i],exception);
               CloneString(&value,attribute);
               attribute=DestroyString(attribute);
-              switch (*keyword)
-              {
-                default:
-                {
-                  ThrowMSLException(OptionError,"UnrecognizedAttribute",
-                    keyword);
-                  break;
-                }
-              }
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
             }
           (void) DisplayImages(msl_info->image_info[n],msl_info->image[n],
             msl_info->exception);
@@ -2647,7 +2635,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
                     {
-                      draw_info->stroke_width=StringToLong(value);
+                      draw_info->stroke_width=(size_t) StringToLong(value);
                       break;
                     }
                   if (LocaleCompare(keyword,"style") == 0)
@@ -2705,7 +2693,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"weight") == 0)
                     {
-                      draw_info->weight=StringToLong(value);
+                      draw_info->weight=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -2761,6 +2749,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'E':
     case 'e':
@@ -2961,21 +2950,14 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 msl_info->attributes[n],(const char *) attributes[i],exception);
               CloneString(&value,attribute);
               attribute=DestroyString(attribute);
-              switch (*keyword)
-              {
-                default:
-                {
-                  ThrowMSLException(OptionError,"UnrecognizedAttribute",
-                    keyword);
-                  break;
-                }
-              }
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
             }
           (void) EqualizeImage(msl_info->image[n],
             msl_info->exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'F':
     case 'f':
@@ -3152,7 +3134,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      frame_info.height=StringToLong(value);
+                      frame_info.height=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3188,7 +3170,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"width") == 0)
                     {
-                      frame_info.width=StringToLong(value);
+                      frame_info.width=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3205,8 +3187,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           frame_info.x=(ssize_t) frame_info.width;
           frame_info.y=(ssize_t) frame_info.height;
-          frame_info.width=msl_info->image[n]->columns+2*frame_info.x;
-          frame_info.height=msl_info->image[n]->rows+2*frame_info.y;
+          frame_info.width=(size_t) ((ssize_t) msl_info->image[n]->columns+2*
+            frame_info.x);
+          frame_info.height=(size_t) ((ssize_t) msl_info->image[n]->rows+2*
+            frame_info.y);
           frame_image=FrameImage(msl_info->image[n],&frame_info,
             msl_info->image[n]->compose,msl_info->exception);
           if (frame_image == (Image *) NULL)
@@ -3216,6 +3200,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'G':
     case 'g':
@@ -3353,6 +3338,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     break;
                   }
                 ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                magick_fallthrough;
               }
               case 'W':
               case 'w':
@@ -3366,6 +3352,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     break;
                   }
                 ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+                magick_fallthrough;
               }
               default:
               {
@@ -3380,11 +3367,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     {
       msl_info->number_groups++;
       msl_info->group_info=(MSLGroupInfo *) ResizeQuantumMemory(
-        msl_info->group_info,msl_info->number_groups+1UL,
+        msl_info->group_info,(size_t) (msl_info->number_groups+1),
         sizeof(*msl_info->group_info));
       break;
     }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'I':
     case 'i':
@@ -3517,6 +3505,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'L':
     case 'l':
@@ -3589,6 +3578,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           msl_info->exception);
         break;
       }
+      ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'M':
     case 'm':
@@ -4078,6 +4069,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'N':
     case 'n':
@@ -4204,6 +4196,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'O':
     case 'o':
@@ -4354,6 +4347,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'P':
     case 'p':
@@ -4494,6 +4488,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             break;
           }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'Q':
     case 'q':
@@ -4528,7 +4523,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"colors") == 0)
                     {
-                      quantize_info.number_colors=StringToLong(value);
+                      quantize_info.number_colors=(size_t) StringToLong(value);
                       break;
                     }
                   if (LocaleCompare(keyword,"colorspace") == 0)
@@ -4584,7 +4579,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"treedepth") == 0)
                     {
-                      quantize_info.tree_depth=StringToLong(value);
+                      quantize_info.tree_depth=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -4826,7 +4821,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
                     {
-                      draw_info->stroke_width=StringToLong(value);
+                      draw_info->stroke_width=(size_t) StringToLong(value);
                       break;
                     }
                   if (LocaleCompare(keyword,"style") == 0)
@@ -4882,7 +4877,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"weight") == 0)
                     {
-                      draw_info->weight=StringToLong(value);
+                      draw_info->weight=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -4972,6 +4967,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'R':
     case 'r':
@@ -5022,7 +5018,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      geometry.height=StringToLong(value);
+                      geometry.height=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5051,7 +5047,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"width") == 0)
                     {
-                      geometry.width=StringToLong(value);
+                      geometry.width=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5236,13 +5232,15 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   {
                     x=region.x;
                     if ((width == 0) && (region.x > 0))
-                      width=msl_info->image[n]->columns+region.x;
+                      width=(size_t) ((ssize_t) msl_info->image[n]->columns+
+                        region.x);
                   }
                 if ((flags & YValue) != 0)
                   {
                     y=region.y;
                     if ((height == 0) && (region.y > 0))
-                      height=msl_info->image[n]->rows+region.y;
+                      height=(size_t) ((ssize_t) msl_info->image[n]->rows+
+                        region.y);
                   }
               }
             break;
@@ -5255,8 +5253,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
           if (LocaleCompare(keyword,"height") == 0)
             {
-            height = StringToLong( value );
-            break;
+              height=(size_t) StringToLong(value);
+              break;
             }
           ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
           break;
@@ -5266,7 +5264,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
           if (LocaleCompare(keyword,"width") == 0)
             {
-            width = StringToLong( value );
+            width=(size_t) StringToLong(value);
             break;
             }
           ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -5468,7 +5466,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      geometry.height=StringToUnsignedLong(value);
+                      geometry.height=(size_t) StringToUnsignedLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5480,7 +5478,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"width") == 0)
                     {
-                      geometry.width=StringToLong(value);
+                      geometry.width=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5789,6 +5787,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         break;
       }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'S':
     case 's':
@@ -5835,7 +5834,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      geometry.height=StringToUnsignedLong(value);
+                      geometry.height=(size_t) StringToUnsignedLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5847,7 +5846,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"width") == 0)
                     {
-                      geometry.width=StringToLong(value);
+                      geometry.width=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5912,7 +5911,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"height") == 0)
                     {
-                      geometry.height=StringToUnsignedLong(value);
+                      geometry.height=(size_t) StringToUnsignedLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5924,7 +5923,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"width") == 0)
                     {
-                      geometry.width=StringToLong(value);
+                      geometry.width=(size_t) StringToLong(value);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -6145,7 +6144,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
 
                   if (value[len-1] == '%') {
                     char  tmp[100];
-                    (void) CopyMagickString(tmp,value,len);
+                    (void) CopyMagickString(tmp,value,(size_t) len);
                     opac = StringToLong( tmp );
                     opac = (int)(QuantumRange * ((float)opac/100));
                   } else
@@ -6513,7 +6512,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
           if (LocaleCompare(keyword,"height") == 0)
             {
-            height = StringToLong( value );
+            height = (size_t) StringToLong( value );
             break;
             }
           ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -6524,7 +6523,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
           if (LocaleCompare(keyword,"width") == 0)
             {
-            width = StringToLong( value );
+            width = (size_t) StringToLong( value );
             break;
             }
           ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -6674,15 +6673,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 msl_info->attributes[n],(const char *) attributes[i],exception);
               CloneString(&value,attribute);
               attribute=DestroyString(attribute);
-              switch (*keyword)
-              {
-                default:
-                {
-                  ThrowMSLException(OptionError,"UnrecognizedAttribute",
-                    keyword);
-                  break;
-                }
-              }
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
             }
           (void) SignatureImage(msl_info->image[n],exception);
           break;
@@ -6698,7 +6689,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 (const char *) tag);
               break;
             }
-          geometry_info.rho=QuantumRange/2.0;
+          geometry_info.rho=(double) QuantumRange/2.0;
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
             {
@@ -7128,20 +7119,13 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 msl_info->attributes[n],(const char *) attributes[i],exception);
               CloneString(&value,attribute);
               attribute=DestroyString(attribute);
-              switch (*keyword)
-              {
-                default:
-                {
-                  ThrowMSLException(OptionError,"UnrecognizedAttribute",
-                    keyword);
-                  break;
-                }
-              }
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
             }
           (void) SyncImage(msl_info->image[n],exception);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'T':
     case 't':
@@ -7326,6 +7310,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
       }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     case 'W':
     case 'w':
@@ -7359,6 +7344,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     break;
                   }
                 (void) SetMSLAttributes(msl_info,keyword,value);
+                magick_fallthrough;
               }
               default:
               {
@@ -7377,6 +7363,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           }
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
+      break;
     }
     default:
     {
@@ -7510,14 +7497,14 @@ static void MSLCharacters(void *context,const xmlChar *c,int length)
   msl_info=(MSLInfo *) context;
   if (msl_info->content != (char *) NULL)
     msl_info->content=(char *) ResizeQuantumMemory(msl_info->content,
-      strlen(msl_info->content)+length+MagickPathExtent,
+      strlen(msl_info->content)+(size_t) length+MagickPathExtent,
       sizeof(*msl_info->content));
   else
     {
       msl_info->content=(char *) NULL;
       if (~(size_t) length >= (MagickPathExtent-1))
-        msl_info->content=(char *) AcquireQuantumMemory(length+MagickPathExtent,
-          sizeof(*msl_info->content));
+        msl_info->content=(char *) AcquireQuantumMemory((size_t) (length+
+          MagickPathExtent),sizeof(*msl_info->content));
       if (msl_info->content != (char *) NULL)
         *msl_info->content='\0';
     }
@@ -7525,7 +7512,7 @@ static void MSLCharacters(void *context,const xmlChar *c,int length)
     return;
   p=msl_info->content+strlen(msl_info->content);
   for (i=0; i < length; i++)
-    *p++=c[i];
+    *p++=(char) c[i];
   *p='\0';
 }
 
@@ -7779,11 +7766,11 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   int
     status;
 
-  ssize_t
-    n;
-
   MSLInfo
     msl_info;
+
+  ssize_t
+    n;
 
   xmlSAXHandler
     sax_modules;
@@ -7842,7 +7829,6 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   if (*image != (Image *) NULL)
     MSLPushImage(&msl_info,*image);
   xmlInitParser();
-  (void) xmlSubstituteEntitiesDefault(1);
   (void) memset(&sax_modules,0,sizeof(sax_modules));
   sax_modules.internalSubset=MSLInternalSubset;
   sax_modules.isStandalone=MSLIsStandalone;
@@ -7874,6 +7860,15 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   sax_handler=(&sax_modules);
   msl_info.parser=xmlCreatePushParserCtxt(sax_handler,&msl_info,(char *) NULL,0,
     msl_image->filename);
+  if (msl_info.parser != (xmlParserCtxtPtr) NULL)
+    {
+      const char *option = GetImageOption(image_info,"msl:parse-huge");
+      if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
+        (void) xmlCtxtUseOptions(msl_info.parser,XML_PARSE_HUGE);
+      option=GetImageOption(image_info,"msl:substitute-entities");
+      if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
+        (void) xmlCtxtUseOptions(msl_info.parser,XML_PARSE_NOENT);
+    }
   while (ReadBlobString(msl_image,message) != (char *) NULL)
   {
     n=(ssize_t) strlen(message);
@@ -8015,9 +8010,6 @@ ModuleExport size_t RegisterMSLImage(void)
 static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
   const char *value)
 {
-  Image
-    *attributes;
-
   DrawInfo
     *draw_info;
 
@@ -8028,12 +8020,13 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     geometry_info;
 
   Image
+    *attributes,
     *image;
 
   ImageInfo
     *image_info;
 
-  int
+  MagickStatusType
     flags;
 
   ssize_t
@@ -8113,6 +8106,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
       break;
+      break;
     }
     case 'B':
     case 'b':
@@ -8142,6 +8136,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+      break;
       break;
     }
     case 'D':
@@ -8236,10 +8231,10 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"quality") == 0)
         {
-          image_info->quality=StringToLong(value);
+          image_info->quality=(size_t) StringToLong(value);
           if (image == (Image *) NULL)
             break;
-          image->quality=StringToLong(value);
+          image->quality=(size_t) StringToLong(value);
           break;
         }
       break;
