@@ -5174,7 +5174,7 @@ MAGICK_PATCHLEVEL_VERSION=16
 
 MAGICK_VERSION=7.1.1-16
 
-MAGICK_GIT_REVISION=58fc88cbc:20230907
+MAGICK_GIT_REVISION=c3a856986:20230907
 
 
 # Substitute library versioning
@@ -26324,6 +26324,12 @@ fi
 #
 # Find math library
 #
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
 MATH_LIBS=''
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for sqrt in -lm" >&5
 printf %s "checking for sqrt in -lm... " >&6; }
@@ -26366,6 +26372,12 @@ then :
 fi
 
 LIBS="$MATH_LIBS $LIBS"
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 #
