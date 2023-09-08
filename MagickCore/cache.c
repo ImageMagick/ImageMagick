@@ -5167,7 +5167,7 @@ static Quantum *SetPixelCacheNexusPixels(
             Pixels are accessed directly from memory.
           */
           if (IsOffsetOverflow(y,cache_info->columns) != MagickFalse)
-            return(MagickFalse);
+            return((Quantum *) NULL);
           offset=y*(MagickOffsetType) cache_info->columns+x;
           nexus_info->pixels=cache_info->pixels+(MagickOffsetType)
             cache_info->number_channels*offset;
