@@ -922,6 +922,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         tga_info.colormap_length=(unsigned short) image->colors;
         if (image_info->depth == 5)
           tga_info.colormap_size=16;
+        else if (image->alpha_trait != UndefinedPixelTrait)
+          tga_info.colormap_size=32;
         else
           tga_info.colormap_size=24;
       }
@@ -984,6 +986,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].blue));
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].green));
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red));
+            if (image->alpha_trait != UndefinedPixelTrait)
+              *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].alpha));
           }
       }
       (void) WriteBlob(image,(size_t) ((tga_info.colormap_size/8)*
