@@ -134,6 +134,11 @@ static MagickBooleanType checkAccelerateCondition(const Image* image)
   if (image->number_channels > 4)
     return(MagickFalse);
 
+  /* check if */
+  if ((image->channel_mask != AllChannels) &&
+      (image->channel_mask > 0x7ffffff))
+    return(MagickFalse);
+
   /* check if pixel order is R */
   if (GetPixelChannelOffset(image,RedPixelChannel) != 0)
     return(MagickFalse);
@@ -307,6 +312,15 @@ static cl_mem createKernelInfo(MagickCLDevice device,const double radius,
   return(imageKernelBuffer);
 }
 
+static cl_int get32BitChannelValue(const ChannelType channel)
+{
+#if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
+  if (channel == AllChannels)
+    return(0x7ffffff);
+#endif
+  return((cl_int) channel);
+}
+
 static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
   MagickCLDevice device,cl_command_queue queue,cl_mem imageBuffer,
   cl_mem histogramBuffer,Image *image,const ChannelType channel,
@@ -316,6 +330,7 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
     outputReady;
 
   cl_int
+    channel_mask=get32BitChannelValue(channel),
     clStatus;
 
   cl_kernel
@@ -351,7 +366,7 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
   /* set the kernel arguments */
   i = 0;
   clStatus=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(ChannelType),&channel);
+  clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_int),&channel_mask);
   clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_uint),&colorspace);
   clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_uint),&method);
   clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_mem),(void *)&histogramBuffer);
@@ -403,6 +418,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
     queue;
 
   cl_int
+    channel_mask=get32BitChannelValue(image->channel_mask),
     status;
 
   cl_kernel
@@ -493,7 +509,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   i=0;
   status =SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_uint),&number_channels);
-  status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(ChannelType),&image->channel_mask);
+  status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_int),&channel_mask);
   status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
   status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_uint),(void *)&kernelWidth);
   status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_uint),(void *)&imageColumns);
@@ -528,7 +544,7 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   i=0;
   status =SetOpenCLKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
   status|=SetOpenCLKernelArg(blurColumnKernel,i++,sizeof(cl_uint),&number_channels);
-  status|=SetOpenCLKernelArg(blurColumnKernel,i++,sizeof(ChannelType),&image->channel_mask);
+  status|=SetOpenCLKernelArg(blurColumnKernel,i++,sizeof(cl_int),&channel_mask);
   status|=SetOpenCLKernelArg(blurColumnKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
   status|=SetOpenCLKernelArg(blurColumnKernel,i++,sizeof(cl_uint),(void *)&kernelWidth);
   status|=SetOpenCLKernelArg(blurColumnKernel,i++,sizeof(cl_uint),(void *)&imageColumns);
@@ -748,6 +764,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
     queue;
 
   cl_int
+    channel_mask=get32BitChannelValue(image->channel_mask),
     clStatus;
 
   cl_mem_flags
@@ -1190,7 +1207,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   /* set the kernel arguments */
   i = 0;
   clStatus=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(ChannelType),&image->channel_mask);
+  clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_int),&channel_mask);
   clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_mem),(void *)&stretchMapBuffer);
   clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_float4),&white);
   clStatus|=clEnv->library->clSetKernelArg(stretchKernel,i++,sizeof(cl_float4),&black);
@@ -1710,6 +1727,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
     queue;
 
   cl_int
+    channel_mask=get32BitChannelValue(image->channel_mask),
     clStatus;
 
   cl_mem_flags
@@ -2039,7 +2057,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
   /* set the kernel arguments */
   i = 0;
   clStatus=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
-  clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(ChannelType),&image->channel_mask);
+  clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_int),&channel_mask);
   clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_mem),(void *)&equalizeMapBuffer);
   clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_float4),&white);
   clStatus|=clEnv->library->clSetKernelArg(equalizeKernel,i++,sizeof(cl_float4),&black);
@@ -2155,6 +2173,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
     queue;
 
   cl_int
+    channel_mask=get32BitChannelValue(image->channel_mask),
     status;
 
   cl_kernel
@@ -2228,7 +2247,7 @@ static MagickBooleanType ComputeFunctionImage(Image *image,MagickCLEnv clEnv,
   i=0;
   status =SetOpenCLKernelArg(functionKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   status|=SetOpenCLKernelArg(functionKernel,i++,sizeof(cl_uint),(void *)&number_channels);
-  status|=SetOpenCLKernelArg(functionKernel,i++,sizeof(ChannelType),(void *)&image->channel_mask);
+  status|=SetOpenCLKernelArg(functionKernel,i++,sizeof(cl_int),&channel_mask);
   status|=SetOpenCLKernelArg(functionKernel,i++,sizeof(MagickFunction),(void *)&function);
   status|=SetOpenCLKernelArg(functionKernel,i++,sizeof(cl_uint),(void *)&number_params);
   status|=SetOpenCLKernelArg(functionKernel,i++,sizeof(cl_mem),(void *)&parametersBuffer);
@@ -3013,6 +3032,7 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
     biasPixel;
 
   cl_int
+    channel_mask=get32BitChannelValue(image->channel_mask),
     clStatus;
 
   cl_kernel
@@ -3269,7 +3289,7 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
   biasPixel.s[3] = bias.alpha;
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(cl_float4), &biasPixel);
 
-  clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(ChannelType), &image->channel_mask);
+  clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(cl_int),&channel_mask);
   matte = (image->alpha_trait > CopyPixelTrait)?1:0;
   clStatus|=clEnv->library->clSetKernelArg(motionBlurKernel,i++,sizeof(unsigned int), &matte);
   if (clStatus != CL_SUCCESS)
@@ -3962,6 +3982,7 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
     blurCenter;
 
   cl_int
+    channel_mask=get32BitChannelValue(image->channel_mask),
     status;
 
   cl_mem
@@ -4074,7 +4095,7 @@ static Image* ComputeRotationalBlurImage(const Image *image,MagickCLEnv clEnv,
   i=0;
   status =SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_uint),&number_channels);
-  status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(ChannelType), &image->channel_mask);
+  status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_int),&channel_mask);
   status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_float2), &blurCenter);
   status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&cosThetaBuffer);
   status|=SetOpenCLKernelArg(rotationalBlurKernel,i++,sizeof(cl_mem),(void *)&sinThetaBuffer);
@@ -4160,6 +4181,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
     queue;
 
   cl_int
+    channel_mask=get32BitChannelValue(image->channel_mask),
     status;
 
   cl_kernel
@@ -4264,7 +4286,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   i=0;
   status =SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_uint),&number_channels);
-  status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(ChannelType),&image->channel_mask);
+  status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_int),&channel_mask);
   status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
   status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_uint),(void *)&kernelWidth);
   status|=SetOpenCLKernelArg(blurRowKernel,i++,sizeof(cl_uint),(void *)&imageColumns);
@@ -4294,7 +4316,7 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   status =SetOpenCLKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   status|=SetOpenCLKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(cl_mem),(void *)&tempImageBuffer);
   status|=SetOpenCLKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(cl_uint),&number_channels);
-  status|=SetOpenCLKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(ChannelType),&image->channel_mask);
+  status|=SetOpenCLKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(cl_int),&channel_mask);
   status|=SetOpenCLKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(cl_uint),(void *)&imageColumns);
   status|=SetOpenCLKernelArg(unsharpMaskBlurColumnKernel,i++,sizeof(cl_uint),(void *)&imageRows);
   status|=SetOpenCLKernelArg(unsharpMaskBlurColumnKernel,i++,(chunkSize+kernelWidth-1)*sizeof(cl_float4),NULL);
@@ -4351,6 +4373,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
     queue;
 
   cl_int
+    channel_mask=get32BitChannelValue(image->channel_mask),
     status;
 
   cl_kernel
@@ -4426,7 +4449,7 @@ static Image *ComputeUnsharpMaskImageSingle(const Image *image,
   i=0;
   status =SetOpenCLKernelArg(unsharpMaskKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   status|=SetOpenCLKernelArg(unsharpMaskKernel,i++,sizeof(cl_uint),(void *)&number_channels);
-  status|=SetOpenCLKernelArg(unsharpMaskKernel,i++,sizeof(ChannelType),(void *)&image->channel_mask);
+  status|=SetOpenCLKernelArg(unsharpMaskKernel,i++,sizeof(cl_int),&channel_mask);
   status|=SetOpenCLKernelArg(unsharpMaskKernel,i++,sizeof(cl_mem),(void *)&imageKernelBuffer);
   status|=SetOpenCLKernelArg(unsharpMaskKernel,i++,sizeof(cl_uint),(void *)&kernelWidth);
   status|=SetOpenCLKernelArg(unsharpMaskKernel,i++,sizeof(cl_uint),(void *)&imageColumns);
