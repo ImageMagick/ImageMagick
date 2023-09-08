@@ -1082,7 +1082,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
             Implode the pixel.
           */
           factor=1.0;
-          if (distance > 1.0)
+          if (distance > 0.0)
             factor=pow(sin(MagickPI*sqrt((double) distance)*
               PerceptibleReciprocal(radius)/2),-amount);
           status=InterpolatePixelChannels(canvas_image,interpolate_view,
