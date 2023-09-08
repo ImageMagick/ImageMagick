@@ -50,6 +50,7 @@ const char *accelerateKernels =
   OPENCL_DEFINE(TauGaussian, (attenuate*0.078125f))
   OPENCL_DEFINE(MagickMax(x,y), (((x) > (y)) ? (x) : (y)))
   OPENCL_DEFINE(MagickMin(x,y), (((x) < (y)) ? (x) : (y)))
+  OPENCL_DEFINE(QuantumScale, (1.0/QuantumRange))
 
 /*
   Typedef declarations.
