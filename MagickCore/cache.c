@@ -2699,7 +2699,7 @@ static inline MagickBooleanType IsOffsetOverflow(const ssize_t y,
 {
   if ((y == 0) || (columns == 0))
     return(MagickFalse);
-  if (y > (MAGICK_SSIZE_MAX/columns))
+  if (y > (ssize_t) (MAGICK_SSIZE_MAX/columns))
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -5167,7 +5167,7 @@ static Quantum *SetPixelCacheNexusPixels(
             Pixels are accessed directly from memory.
           */
           if (IsOffsetOverflow(y,cache_info->columns) != MagickFalse)
-            return(MagickFalse);
+            return((Quantum *) NULL);
           offset=y*(MagickOffsetType) cache_info->columns+x;
           nexus_info->pixels=cache_info->pixels+(MagickOffsetType)
             cache_info->number_channels*offset;
