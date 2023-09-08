@@ -2699,7 +2699,7 @@ static inline MagickBooleanType IsOffsetOverflow(const ssize_t y,
 {
   if ((y == 0) || (columns == 0))
     return(MagickFalse);
-  if (y > (MAGICK_SSIZE_MAX/columns))
+  if (y > (ssize_t) (MAGICK_SSIZE_MAX/columns))
     return(MagickTrue);
   return(MagickFalse);
 }
