@@ -408,42 +408,42 @@ static void         draw_pattern_push(wmfAPI* API, unsigned long id, unsigned lo
 static int          ipa_blob_read(void* wand);
 static int          ipa_blob_seek(void* wand,long position);
 static long         ipa_blob_tell(void* wand);
-static void         ipa_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw);
-static void         ipa_bmp_free(wmfAPI * API, wmfBMP * bmp);
-static void         ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read);
-static void         ipa_device_begin(wmfAPI * API);
-static void         ipa_device_close(wmfAPI * API);
-static void         ipa_device_end(wmfAPI * API);
-static void         ipa_device_open(wmfAPI * API);
-static void         ipa_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc);
-static void         ipa_draw_chord(wmfAPI * API, wmfDrawArc_t * draw_arc);
-static void         ipa_draw_ellipse(wmfAPI * API, wmfDrawArc_t * draw_arc);
-static void         ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line);
-static void         ipa_draw_pie(wmfAPI * API, wmfDrawArc_t * draw_arc);
-static void         ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel);
-static void         ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line);
+static void         ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw);
+static void         ipa_bmp_free(wmfAPI *API, wmfBMP *bmp);
+static void         ipa_bmp_read(wmfAPI *API, wmfBMP_Read_t *bmp_read);
+static void         ipa_device_begin(wmfAPI *API);
+static void         ipa_device_close(wmfAPI *API);
+static void         ipa_device_end(wmfAPI *API);
+static void         ipa_device_open(wmfAPI *API);
+static void         ipa_draw_arc(wmfAPI *API, wmfDrawArc_t *draw_arc);
+static void         ipa_draw_chord(wmfAPI *API, wmfDrawArc_t *draw_arc);
+static void         ipa_draw_ellipse(wmfAPI *API, wmfDrawArc_t *draw_arc);
+static void         ipa_draw_line(wmfAPI *API, wmfDrawLine_t *draw_line);
+static void         ipa_draw_pie(wmfAPI *API, wmfDrawArc_t *draw_arc);
+static void         ipa_draw_pixel(wmfAPI *API, wmfDrawPixel_t *draw_pixel);
+static void         ipa_draw_polygon(wmfAPI *API, wmfPolyLine_t *poly_line);
 #if defined(MAGICKCORE_WMF_DELEGATE)
-static void         ipa_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon);
+static void         ipa_draw_polypolygon(wmfAPI *API, wmfPolyPoly_t* polypolygon);
 #endif
-static void         ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect);
-static void         ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text);
-static void         ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood);
-static void         ipa_flood_interior(wmfAPI * API, wmfFlood_t * flood);
-static void         ipa_functions(wmfAPI * API);
-static void         ipa_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line);
-static void         ipa_region_clip(wmfAPI * API, wmfPolyRectangle_t * poly_rect);
-static void         ipa_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect);
-static void         ipa_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect);
-static void         ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw);
-static void         ipa_udata_copy(wmfAPI * API, wmfUserData_t * userdata);
-static void         ipa_udata_free(wmfAPI * API, wmfUserData_t * userdata);
-static void         ipa_udata_init(wmfAPI * API, wmfUserData_t * userdata);
-static void         ipa_udata_set(wmfAPI * API, wmfUserData_t * userdata);
+static void         ipa_draw_rectangle(wmfAPI *API, wmfDrawRectangle_t *draw_rect);
+static void         ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text);
+static void         ipa_flood_exterior(wmfAPI *API, wmfFlood_t *flood);
+static void         ipa_flood_interior(wmfAPI *API, wmfFlood_t *flood);
+static void         ipa_functions(wmfAPI *API);
+static void         ipa_poly_line(wmfAPI *API, wmfPolyLine_t *poly_line);
+static void         ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect);
+static void         ipa_region_frame(wmfAPI *API, wmfPolyRectangle_t *poly_rect);
+static void         ipa_region_paint(wmfAPI *API, wmfPolyRectangle_t *poly_rect);
+static void         ipa_rop_draw(wmfAPI *API, wmfROP_Draw_t *rop_draw);
+static void         ipa_udata_copy(wmfAPI *API, wmfUserData_t *userdata);
+static void         ipa_udata_free(wmfAPI *API, wmfUserData_t *userdata);
+static void         ipa_udata_init(wmfAPI *API, wmfUserData_t *userdata);
+static void         ipa_udata_set(wmfAPI *API, wmfUserData_t *userdata);
 static int          magick_progress_callback(void* wand,float quantum);
-static void         util_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,magick_arc_t finish);
-static double       util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height, ExceptionInfo *);
-static void         util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_apply);
-static void         util_set_pen(wmfAPI * API, wmfDC * dc);
+static void         util_draw_arc(wmfAPI *API, wmfDrawArc_t *draw_arc,magick_arc_t finish);
+static double       util_pointsize(wmfAPI* API, wmfFont* font, char* str, double font_height, ExceptionInfo *);
+static void         util_set_brush(wmfAPI *API, wmfDC *dc, const BrushApply brush_apply);
+static void         util_set_pen(wmfAPI *API, wmfDC *dc);
 
 /* Progress callback */
 int magick_progress_callback(void *context,float quantum)
@@ -473,7 +473,7 @@ static void draw_fill_color_string(DrawingWand *drawing_wand,const char *color)
   DrawSetFillColor(drawing_wand,fill_color);
   fill_color=DestroyPixelWand(fill_color);
 }
-static void draw_fill_color_rgb( wmfAPI* API, const wmfRGB* rgb )
+static void draw_fill_color_rgb(wmfAPI* API, const wmfRGB* rgb)
 {
   PixelWand
     *fill_color;
@@ -499,7 +499,7 @@ static void draw_stroke_color_string(DrawingWand *drawing_wand,const char *color
   stroke_color=DestroyPixelWand(stroke_color);
 }
 
-static void draw_stroke_color_rgb( wmfAPI* API, const wmfRGB* rgb )
+static void draw_stroke_color_rgb(wmfAPI* API, const wmfRGB* rgb)
 {
   PixelWand
     *stroke_color;
@@ -525,10 +525,10 @@ static void draw_under_color_string(DrawingWand *drawing_wand,const char *color)
   under_color=DestroyPixelWand(under_color);
 }
 
-static void draw_pattern_push( wmfAPI* API,
+static void draw_pattern_push(wmfAPI* API,
                                unsigned long id,
                                unsigned long columns,
-                               unsigned long rows )
+                               unsigned long rows)
 {
   char
     pattern_id[MagickPathExtent];
@@ -545,7 +545,7 @@ static void draw_pattern_push( wmfAPI* API,
    device wand called the 'source', to a rectangular area of the
    same size in another device wand, called the 'destination'. */
 
-static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
+static void ipa_rop_draw(wmfAPI *API, wmfROP_Draw_t *rop_draw)
 {
 /*   wmfBrush */
 /*     *brush = WMF_DC_BRUSH(rop_draw->dc); */
@@ -581,43 +581,43 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
   switch (rop_draw->ROP) /* Ternary raster operations */
     {
     case SRCCOPY: /* dest = source */
-      printf("ipa_rop_draw SRCCOPY ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw SRCCOPY ROP mode not implemented\n");
       break;
     case SRCPAINT: /* dest = source OR dest */
-      printf("ipa_rop_draw SRCPAINT ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw SRCPAINT ROP mode not implemented\n");
       break;
     case SRCAND: /* dest = source AND dest */
-      printf("ipa_rop_draw SRCAND ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw SRCAND ROP mode not implemented\n");
       break;
     case SRCINVERT: /* dest = source XOR dest */
-      printf("ipa_rop_draw SRCINVERT ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw SRCINVERT ROP mode not implemented\n");
       break;
     case SRCERASE: /* dest = source AND (NOT dest) */
-      printf("ipa_rop_draw SRCERASE ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw SRCERASE ROP mode not implemented\n");
       break;
     case NOTSRCCOPY: /* dest = (NOT source) */
-      printf("ipa_rop_draw NOTSRCCOPY ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw NOTSRCCOPY ROP mode not implemented\n");
       break;
     case NOTSRCERASE: /* dest = (NOT src) AND (NOT dest) */
-      printf("ipa_rop_draw NOTSRCERASE ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw NOTSRCERASE ROP mode not implemented\n");
       break;
     case MERGECOPY: /* dest = (source AND pattern) */
-      printf("ipa_rop_draw MERGECOPY ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw MERGECOPY ROP mode not implemented\n");
       break;
     case MERGEPAINT: /* dest = (NOT source) OR dest */
-      printf("ipa_rop_draw MERGEPAINT ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw MERGEPAINT ROP mode not implemented\n");
       break;
     case PATCOPY: /* dest = pattern */
       util_set_brush(API, rop_draw->dc, BrushApplyFill);
       break;
     case PATPAINT: /* dest = DPSnoo */
-      printf("ipa_rop_draw PATPAINT ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw PATPAINT ROP mode not implemented\n");
       break;
     case PATINVERT: /* dest = pattern XOR dest */
-      printf("ipa_rop_draw PATINVERT ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw PATINVERT ROP mode not implemented\n");
       break;
     case DSTINVERT: /* dest = (NOT dest) */
-      printf("ipa_rop_draw DSTINVERT ROP mode not implemented\n");
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw DSTINVERT ROP mode not implemented\n");
       break;
     case BLACKNESS: /* dest = BLACK */
       draw_fill_color_string(WmfDrawingWand,"black");
@@ -626,7 +626,7 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
       draw_fill_color_string(WmfDrawingWand,"white");
       break;
     default:
-      printf("ipa_rop_draw 0x%x ROP mode not implemented\n", rop_draw->ROP);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"ipa_rop_draw 0x%x ROP mode not implemented\n", rop_draw->ROP);
       break;
     }
 
@@ -683,7 +683,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
       crop_info.width = bmp_draw->crop.w;
       crop_info.height = bmp_draw->crop.h;
 
-      crop_image = CropImage( image, &crop_info, exception );
+      crop_image = CropImage(image, &crop_info, exception);
       if (crop_image)
         {
           image=DestroyImageList(image);
@@ -692,26 +692,26 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
         }
     }
 
-  QueryColorCompliance( "white", AllCompliance, &white, exception );
+  QueryColorCompliance("white", AllCompliance, &white, exception);
 
-  if ( ddata->image_info->texture ||
+  if (ddata->image_info->texture ||
        !(IsPixelInfoEquivalent(&ddata->image_info->background_color,&white)) ||
-       ddata->image_info->background_color.alpha != (double) OpaqueAlpha )
+       ddata->image_info->background_color.alpha != (double) OpaqueAlpha)
   {
     /*
       Set image white background to transparent so that it may be
       overlaid over non-white backgrounds.
     */
-    QueryColorCompliance( "white", AllCompliance, &white, exception );
-    TransparentPaintImage( image, &white, QuantumRange, MagickFalse, exception );
+    QueryColorCompliance("white", AllCompliance, &white, exception);
+    TransparentPaintImage(image, &white, QuantumRange, MagickFalse, exception);
   }
 
-  width = fabs(bmp_draw->pixel_width * (double) bmp_draw->crop.w);
-  height = fabs(bmp_draw->pixel_height * (double) bmp_draw->crop.h);
+  width = fabs(bmp_draw->pixel_width *(double) bmp_draw->crop.w);
+  height = fabs(bmp_draw->pixel_height *(double) bmp_draw->crop.h);
   magick_wand=NewMagickWandFromImage(image);
   (void) DrawComposite(WmfDrawingWand, CopyCompositeOp,
-    XC(bmp_draw->pt.x) * ddata->scale_x, YC(bmp_draw->pt.y) * ddata->scale_y,
-    width * ddata->scale_x, height * ddata->scale_y, magick_wand);
+    XC(bmp_draw->pt.x) *ddata->scale_x, YC(bmp_draw->pt.y) *ddata->scale_y,
+    width *ddata->scale_x, height *ddata->scale_y, magick_wand);
   magick_wand=DestroyMagickWand(magick_wand);
 
 #if 0
@@ -726,7 +726,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
 #endif
 }
 
-static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
+static void ipa_bmp_read(wmfAPI *API, wmfBMP_Read_t *bmp_read) {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
 
@@ -773,7 +773,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
     }
 }
 
-static void ipa_bmp_free(wmfAPI * API, wmfBMP * bmp)
+static void ipa_bmp_free(wmfAPI *API, wmfBMP *bmp)
 {
   (void) API;
   DestroyImageList((Image*)bmp->data);
@@ -785,7 +785,7 @@ static void ipa_bmp_free(wmfAPI * API, wmfBMP * bmp)
 /*
   This called by wmf_play() the *first* time the meta file is played
  */
-static void ipa_device_open(wmfAPI * API)
+static void ipa_device_open(wmfAPI *API)
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData (API);
@@ -802,7 +802,7 @@ static void ipa_device_open(wmfAPI * API)
 /*
   This called by wmf_api_destroy()
  */
-static void ipa_device_close(wmfAPI * API)
+static void ipa_device_close(wmfAPI *API)
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -825,7 +825,7 @@ static void ipa_device_close(wmfAPI * API)
 /*
   This called from the beginning of each play for initial page setup
  */
-static void ipa_device_begin(wmfAPI * API)
+static void ipa_device_begin(wmfAPI *API)
 {
   char
     comment[MagickPathExtent];
@@ -882,7 +882,7 @@ static void ipa_device_begin(wmfAPI * API)
       image_info = CloneImageInfo((ImageInfo *) 0);
       (void) CopyMagickString(image_info->filename,ddata->image_info->texture,
         MagickPathExtent);
-      if ( ddata->image_info->size )
+      if (ddata->image_info->size)
         CloneString(&image_info->size,ddata->image_info->size);
 
       image = ReadImage(image_info,exception);
@@ -932,7 +932,7 @@ static void ipa_device_begin(wmfAPI * API)
 /*
   This called from the end of each play for page termination
  */
-static void ipa_device_end(wmfAPI * API)
+static void ipa_device_end(wmfAPI *API)
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -946,7 +946,7 @@ static void ipa_device_end(wmfAPI * API)
   (void) PopDrawingWand(WmfDrawingWand);
 }
 
-static void ipa_flood_interior(wmfAPI * API, wmfFlood_t * flood)
+static void ipa_flood_interior(wmfAPI *API, wmfFlood_t *flood)
 {
   /* Save graphic wand */
   (void) PushDrawingWand(WmfDrawingWand);
@@ -960,7 +960,7 @@ static void ipa_flood_interior(wmfAPI * API, wmfFlood_t * flood)
   (void) PopDrawingWand(WmfDrawingWand);
 }
 
-static void ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
+static void ipa_flood_exterior(wmfAPI *API, wmfFlood_t *flood)
 {
   /* Save graphic wand */
   (void) PushDrawingWand(WmfDrawingWand);
@@ -978,7 +978,7 @@ static void ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
   (void) PopDrawingWand(WmfDrawingWand);
 }
 
-static void ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
+static void ipa_draw_pixel(wmfAPI *API, wmfDrawPixel_t *draw_pixel)
 {
   /* Save graphic wand */
   (void) PushDrawingWand(WmfDrawingWand);
@@ -997,28 +997,28 @@ static void ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
   (void) PopDrawingWand(WmfDrawingWand);
 }
 
-static void ipa_draw_pie(wmfAPI * API, wmfDrawArc_t * draw_arc)
+static void ipa_draw_pie(wmfAPI *API, wmfDrawArc_t *draw_arc)
 {
   util_draw_arc(API, draw_arc, magick_arc_pie);
 }
 
-static void ipa_draw_chord(wmfAPI * API, wmfDrawArc_t * draw_arc)
+static void ipa_draw_chord(wmfAPI *API, wmfDrawArc_t *draw_arc)
 {
   util_draw_arc(API, draw_arc, magick_arc_chord);
 }
 
-static void ipa_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc)
+static void ipa_draw_arc(wmfAPI *API, wmfDrawArc_t *draw_arc)
 {
   util_draw_arc(API, draw_arc, magick_arc_open);
 }
 
-static void ipa_draw_ellipse(wmfAPI * API, wmfDrawArc_t * draw_arc)
+static void ipa_draw_ellipse(wmfAPI *API, wmfDrawArc_t *draw_arc)
 {
   util_draw_arc(API, draw_arc, magick_arc_ellipse);
 }
 
-static void util_draw_arc(wmfAPI * API,
-          wmfDrawArc_t * draw_arc, magick_arc_t finish)
+static void util_draw_arc(wmfAPI *API,
+          wmfDrawArc_t *draw_arc, magick_arc_t finish)
 {
   wmfD_Coord
     BR,
@@ -1077,8 +1077,8 @@ static void util_draw_arc(wmfAPI * API,
           end.x -= O.x;
           end.y -= O.y;
 
-          phi_s = atan2((double) start.y, (double) start.x) * 180 / MagickPI;
-          phi_e = atan2((double) end.y, (double) end.x) * 180 / MagickPI;
+          phi_s = atan2((double) start.y, (double) start.x) *180 / MagickPI;
+          phi_e = atan2((double) end.y, (double) end.x) *180 / MagickPI;
 
           if (phi_e <= phi_s)
             phi_e += 360;
@@ -1120,7 +1120,7 @@ static void util_draw_arc(wmfAPI * API,
   (void) PopDrawingWand(WmfDrawingWand);
 }
 
-static void ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
+static void ipa_draw_line(wmfAPI *API, wmfDrawLine_t *draw_line)
 {
   /* Save graphic wand */
   (void) PushDrawingWand(WmfDrawingWand);
@@ -1137,7 +1137,7 @@ static void ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
   (void) PopDrawingWand(WmfDrawingWand);
 }
 
-static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * polyline)
+static void ipa_poly_line(wmfAPI *API, wmfPolyLine_t *polyline)
 {
   if (polyline->count <= 2)
     return;
@@ -1169,7 +1169,7 @@ static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * polyline)
     }
 }
 
-static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * polyline)
+static void ipa_draw_polygon(wmfAPI *API, wmfPolyLine_t *polyline)
 {
   if (polyline->count <= 2)
     return;
@@ -1205,7 +1205,7 @@ static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * polyline)
 
 /* Draw a polypolygon.  A polypolygon is a list of polygons */
 #if defined(MAGICKCORE_WMF_DELEGATE)
-static void ipa_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon)
+static void ipa_draw_polypolygon(wmfAPI *API, wmfPolyPoly_t* polypolygon)
 {
   if (TO_FILL(polypolygon) || TO_DRAW(polypolygon))
     {
@@ -1253,7 +1253,7 @@ static void ipa_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon)
 }
 #endif
 
-static void ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
+static void ipa_draw_rectangle(wmfAPI *API, wmfDrawRectangle_t *draw_rect)
 {
   /* Save graphic wand */
   (void) PushDrawingWand(WmfDrawingWand);
@@ -1279,7 +1279,7 @@ static void ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
 }
 
 /* Draw an un-filled rectangle using the current brush */
-static void ipa_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
+static void ipa_region_frame(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
 {
   /* Save graphic wand */
   (void) PushDrawingWand(WmfDrawingWand);
@@ -1304,7 +1304,7 @@ static void ipa_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
   (void) PopDrawingWand(WmfDrawingWand);
 }
 
-static void ipa_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
+static void ipa_region_paint(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
 {
 
   if (poly_rect->count == 0)
@@ -1433,11 +1433,11 @@ static void ipa_functions(wmfAPI *API)
   ddata->image = 0;
 }
 
-static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
+static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
 {
   double
-    angle = 0,      /* text rotation angle */
-    pointsize = 0;    /* pointsize to output font with desired height */
+    angle = 0.0,      /* text rotation angle */
+    pointsize = 0.0;    /* pointsize to output font with desired height */
 
   ExceptionInfo
     *exception;
@@ -1464,7 +1464,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
     *font;
 
   wmf_magick_t
-    * ddata = WMF_MAGICK_GetData(API);
+    *ddata = WMF_MAGICK_GetData(API);
 
   point = draw_text->pt;
 
@@ -1474,7 +1474,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
     double dx,
       dy;
 
-    if ( draw_text->flags)
+    if (draw_text->flags)
       {
         TL = draw_text->TL;
         BR = draw_text->BR;
@@ -1503,7 +1503,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
   /* Convert font_height to equivalent pointsize */
   exception=ddata->exception;
-  pointsize = util_pointsize( API, font, draw_text->str, draw_text->font_height, exception);
+  pointsize = util_pointsize(API, font, draw_text->str, draw_text->font_height, exception);
 
   /* Save graphic wand */
   (void) PushDrawingWand(WmfDrawingWand);
@@ -1514,7 +1514,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   /* printf("WMF_FONT_NAME:          = \"%s\"\n", WMF_FONT_NAME(font)); */
   printf("WMF_FONT_PSNAME:        = \"%s\"\n", WMF_FONT_PSNAME(font));
   printf("Bounding box            TL=%g,%g BR=%g,%g\n",
-         TL.x, TL.y, BR.x, BR.y );
+         TL.x, TL.y, BR.x, BR.y);
   /* printf("Text box                = %gx%g\n", bbox_width, bbox_height); */
   /* printf("WMF_FONT_HEIGHT         = %i\n", (int)WMF_FONT_HEIGHT(font)); */
   printf("Pointsize               = %g\n", pointsize);
@@ -1522,7 +1522,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 #endif
 
   /*
-   * Obtain font metrics if required
+   *Obtain font metrics if required
    *
    */
   if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER) ||
@@ -1545,7 +1545,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
           if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER))
             {
               double
-                text_width = metrics.width * (ddata->scale_y / ddata->scale_x);
+                text_width = metrics.width *(ddata->scale_y / ddata->scale_x);
 
 #if defined(MAGICKCORE_WMF_DELEGATE)
               point.x -= (float) text_width / 2;
@@ -1593,7 +1593,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
     }
 
   /* Set text clipping (META_EXTTEXTOUT mode) */
-  if ( draw_text->flags & ETO_CLIPPED)
+  if (draw_text->flags & ETO_CLIPPED)
     {
     }
 
@@ -1625,7 +1625,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
     DrawRotate(WmfDrawingWand, angle);
 
   /*
-   * Render text
+   *Render text
    *
    */
 
@@ -1693,7 +1693,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
 }
 
-static void ipa_udata_init(wmfAPI * API, wmfUserData_t * userdata)
+static void ipa_udata_init(wmfAPI *API, wmfUserData_t *userdata)
 {
   (void) API;
   (void) userdata;
@@ -1701,7 +1701,7 @@ static void ipa_udata_init(wmfAPI * API, wmfUserData_t * userdata)
 
 }
 
-static void ipa_udata_copy(wmfAPI * API, wmfUserData_t * userdata)
+static void ipa_udata_copy(wmfAPI *API, wmfUserData_t *userdata)
 {
   (void) API;
   (void) userdata;
@@ -1709,7 +1709,7 @@ static void ipa_udata_copy(wmfAPI * API, wmfUserData_t * userdata)
 
 }
 
-static void ipa_udata_set(wmfAPI * API, wmfUserData_t * userdata)
+static void ipa_udata_set(wmfAPI *API, wmfUserData_t *userdata)
 {
   (void) API;
   (void) userdata;
@@ -1752,7 +1752,7 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
       /* WMF_BRUSH_COLOR specifies brush color, WMF_BRUSH_HATCH
          ignored */
       {
-        if ( brush_apply == BrushApplyStroke )
+        if (brush_apply == BrushApplyStroke)
           draw_stroke_color_rgb(API,WMF_BRUSH_COLOR(brush));
         else
           draw_fill_color_rgb(API,WMF_BRUSH_COLOR(brush));
@@ -1761,7 +1761,7 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
     case BS_HOLLOW /* 1 */:    /* BS_HOLLOW & BS_NULL share enum */
       /* WMF_BRUSH_COLOR and WMF_BRUSH_HATCH ignored */
       {
-        if ( brush_apply == BrushApplyStroke )
+        if (brush_apply == BrushApplyStroke)
           draw_stroke_color_string(WmfDrawingWand,"none");
         else
           draw_fill_color_string(WmfDrawingWand,"none");
@@ -1778,12 +1778,12 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
 
         if (WMF_DC_OPAQUE(dc))
           {
-            if ( brush_apply == BrushApplyStroke )
+            if (brush_apply == BrushApplyStroke)
               draw_stroke_color_rgb(API,WMF_DC_BACKGROUND(dc));
             else
               draw_fill_color_rgb(API,WMF_DC_BACKGROUND(dc));
 
-            DrawRectangle(WmfDrawingWand, 0, 0, 7, 7 );
+            DrawRectangle(WmfDrawingWand, 0, 0, 7, 7);
           }
 
         DrawSetStrokeAntialias(WmfDrawingWand, MagickFalse);
@@ -1811,24 +1811,24 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
             }
           case HS_BDIAGONAL:  /* / */
             {
-              DrawLine(WmfDrawingWand, 0, 7, 7, 0 );
+              DrawLine(WmfDrawingWand, 0, 7, 7, 0);
               break;
             }
           case HS_CROSS:  /* +++++ */
             {
-              DrawLine(WmfDrawingWand, 0, 3, 7, 3 );
-              DrawLine(WmfDrawingWand, 3, 0, 3, 7 );
+              DrawLine(WmfDrawingWand, 0, 3, 7, 3);
+              DrawLine(WmfDrawingWand, 3, 0, 3, 7);
               break;
             }
           case HS_DIAGCROSS:  /* xxxxx */
             {
-              DrawLine(WmfDrawingWand, 0, 0, 7, 7 );
-              DrawLine(WmfDrawingWand, 0, 7, 7, 0 );
+              DrawLine(WmfDrawingWand, 0, 0, 7, 7);
+              DrawLine(WmfDrawingWand, 0, 7, 7, 0);
               break;
             }
           default:
             {
-              printf("util_set_brush: unexpected brush hatch enumeration %u\n",
+              LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: unexpected brush hatch enumeration %u\n",
                      (unsigned int)WMF_BRUSH_HATCH(brush));
             }
           }
@@ -1841,7 +1841,7 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
 
           (void) FormatLocaleString(pattern_id,MagickPathExtent,"#brush_%lu",
             ddata->pattern_id);
-          if (brush_apply == BrushApplyStroke )
+          if (brush_apply == BrushApplyStroke)
             (void) DrawSetStrokePatternURL(WmfDrawingWand,pattern_id);
           else
             (void) DrawSetFillPatternURL(WmfDrawingWand,pattern_id);
@@ -1853,12 +1853,12 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
       /* WMF_BRUSH_COLOR ignored, WMF_BRUSH_HATCH provides handle to
          bitmap */
       {
-        printf("util_set_brush: BS_PATTERN not supported\n");
+        LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: BS_PATTERN not supported\n");
         break;
       }
     case BS_INDEXED /* 4 */:
       {
-        printf("util_set_brush: BS_INDEXED not supported\n");
+        LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: BS_INDEXED not supported\n");
         break;
       }
     case BS_DIBPATTERN /* 5 */:
@@ -1884,56 +1884,56 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
               {
                 /* Binary raster ops */
               case R2_BLACK:
-                printf("util_set_brush: R2_BLACK ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_BLACK ROP2 mode not supported!\n");
                 break;
               case R2_NOTMERGEPEN:
-                printf("util_set_brush: R2_NOTMERGEPEN ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_NOTMERGEPEN ROP2 mode not supported!\n");
                 break;
               case R2_MASKNOTPEN:
-                printf("util_set_brush R2_MASKNOTPEN ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush R2_MASKNOTPEN ROP2 mode not supported!\n");
                 break;
               case R2_NOTCOPYPEN:
-                printf("util_set_brush: R2_NOTCOPYPEN ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_NOTCOPYPEN ROP2 mode not supported!\n");
                 break;
               case R2_MASKPENNOT:
-                printf("util_set_brush: R2_MASKPENNOT ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_MASKPENNOT ROP2 mode not supported!\n");
                 break;
               case R2_NOT:
-                printf("util_set_brush: R2_NOT ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_NOT ROP2 mode not supported!\n");
                 break;
               case R2_XORPEN:
-                printf("util_set_brush: R2_XORPEN ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_XORPEN ROP2 mode not supported!\n");
                 break;
               case R2_NOTMASKPEN:
-                printf("util_set_brush: R2_NOTMASKPEN ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_NOTMASKPEN ROP2 mode not supported!\n");
                 break;
               case R2_MASKPEN:
-                printf("util_set_brush: R2_MASKPEN ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_MASKPEN ROP2 mode not supported!\n");
                 break;
               case R2_NOTXORPEN:
-                printf("util_set_brush: R2_NOTXORPEN ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_NOTXORPEN ROP2 mode not supported!\n");
                 break;
               case R2_NOP:
-                printf("util_set_brush: R2_NOP ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_NOP ROP2 mode not supported!\n");
                 break;
               case R2_MERGENOTPEN:
-                printf("util_set_brush: R2_MERGENOTPEN ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_MERGENOTPEN ROP2 mode not supported!\n");
                 break;
               case R2_COPYPEN:
                 mode = CopyCompositeOp;
                 break;
               case R2_MERGEPENNOT:
-                printf("util_set_brush: R2_MERGEPENNOT ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_MERGEPENNOT ROP2 mode not supported!\n");
                 break;
               case R2_MERGEPEN:
-                printf("util_set_brush: R2_MERGEPEN ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_MERGEPEN ROP2 mode not supported!\n");
                 break;
               case R2_WHITE:
-                printf("util_set_brush: R2_WHITE ROP2 mode not supported!\n");
+                LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: R2_WHITE ROP2 mode not supported!\n");
                 break;
               default:
                 {
-                  printf("util_set_brush: unexpected ROP2 enumeration %u!\n",
+                  LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: unexpected ROP2 enumeration %u!\n",
                          (unsigned int)WMF_DC_ROP(dc));
                 }
               }
@@ -1954,7 +1954,7 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
 
               (void) FormatLocaleString(pattern_id,MagickPathExtent,"#brush_%lu",
                 ddata->pattern_id);
-              if ( brush_apply == BrushApplyStroke )
+              if (brush_apply == BrushApplyStroke)
                 (void) DrawSetStrokePatternURL(WmfDrawingWand,pattern_id);
               else
                 (void) DrawSetFillPatternURL(WmfDrawingWand,pattern_id);
@@ -1962,7 +1962,7 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
             }
           }
         else
-          printf("util_set_brush: no BMP image data!\n");
+          LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: no BMP image data!\n");
 
         break;
       }
@@ -1970,17 +1970,17 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
       /* WMF_BRUSH_COLOR ignored, WMF_BRUSH_HATCH provides pointer to
          DIB */
       {
-        printf("util_set_brush: BS_DIBPATTERNPT not supported\n");
+        LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: BS_DIBPATTERNPT not supported\n");
         break;
       }
     case BS_PATTERN8X8 /* 7 */:
       {
-        printf("util_set_brush: BS_PATTERN8X8 not supported\n");
+        LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: BS_PATTERN8X8 not supported\n");
         break;
       }
     case BS_DIBPATTERN8X8 /* 8 */:
       {
-        printf("util_set_brush: BS_DIBPATTERN8X8 not supported\n");
+        LogMagickEvent(CoderEvent,GetMagickModule(),"util_set_brush: BS_DIBPATTERN8X8 not supported\n");
         break;
       }
     default:
@@ -1989,7 +1989,7 @@ static void util_set_brush(wmfAPI *API, wmfDC *dc,const BrushApply brush_apply)
     }
 }
 
-static void util_set_pen(wmfAPI * API, wmfDC * dc)
+static void util_set_pen(wmfAPI *API, wmfDC *dc)
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -2025,7 +2025,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
       return;
     }
 
-  DrawSetStrokeAntialias(WmfDrawingWand, MagickTrue );
+  DrawSetStrokeAntialias(WmfDrawingWand, MagickTrue);
   DrawSetStrokeWidth(WmfDrawingWand,MagickMax(0.0, pen_width));
 
   {
@@ -2077,8 +2077,8 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
       case PS_DASH:    /* -------  */
         {
           /* Pattern 18,7 */
-          dasharray[0] = pixel_width * 18;
-          dasharray[1] = pixel_width * 7;
+          dasharray[0] = pixel_width *18;
+          dasharray[1] = pixel_width *7;
           dasharray[2] = 0;
 
           DrawSetStrokeAntialias(WmfDrawingWand,MagickFalse);
@@ -2089,8 +2089,8 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
       case PS_DOT:    /* .......  */
         {
           /* Pattern 3,3 */
-          dasharray[0] = pixel_width * 3;
-          dasharray[1] = pixel_width * 3;
+          dasharray[0] = pixel_width *3;
+          dasharray[1] = pixel_width *3;
           dasharray[2] = 0;
 
           DrawSetStrokeAntialias(WmfDrawingWand,MagickFalse);
@@ -2100,10 +2100,10 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
       case PS_DASHDOT:    /* _._._._  */
         {
           /* Pattern 9,6,3,6 */
-          dasharray[0] = pixel_width * 9;
-          dasharray[1] = pixel_width * 6;
-          dasharray[2] = pixel_width * 3;
-          dasharray[3] = pixel_width * 6;
+          dasharray[0] = pixel_width *9;
+          dasharray[1] = pixel_width *6;
+          dasharray[2] = pixel_width *3;
+          dasharray[3] = pixel_width *6;
           dasharray[4] = 0;
 
           DrawSetStrokeAntialias(WmfDrawingWand,MagickFalse);
@@ -2113,12 +2113,12 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
       case PS_DASHDOTDOT:  /* _.._.._  */
         {
           /* Pattern 9,3,3,3,3,3 */
-          dasharray[0] = pixel_width * 9;
-          dasharray[1] = pixel_width * 3;
-          dasharray[2] = pixel_width * 3;
-          dasharray[3] = pixel_width * 3;
-          dasharray[4] = pixel_width * 3;
-          dasharray[5] = pixel_width * 3;
+          dasharray[0] = pixel_width *9;
+          dasharray[1] = pixel_width *3;
+          dasharray[2] = pixel_width *3;
+          dasharray[3] = pixel_width *3;
+          dasharray[4] = pixel_width *3;
+          dasharray[5] = pixel_width *3;
           dasharray[6] = 0;
 
           DrawSetStrokeAntialias(WmfDrawingWand,MagickFalse);
@@ -2139,7 +2139,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
 }
 
 /* Estimate font pointsize based on Windows font parameters */
-static double util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height, ExceptionInfo *exception)
+static double util_pointsize(wmfAPI* API, wmfFont* font, char* str, double font_height, ExceptionInfo *exception)
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -2170,17 +2170,17 @@ static double util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font
       if (strlen(str) == 1)
         {
           pointsize = (font_height *
-                       ( font_height * PerceptibleReciprocal(metrics.ascent + fabs(metrics.descent))));
+                       (font_height *PerceptibleReciprocal(metrics.ascent + fabs(metrics.descent))));
           draw_info->pointsize = pointsize;
           if (GetTypeMetrics(image, draw_info, &metrics, exception) != MagickFalse)
-            pointsize *= (font_height * PerceptibleReciprocal( metrics.ascent + fabs(metrics.descent)));
+            pointsize *= (font_height *PerceptibleReciprocal(metrics.ascent + fabs(metrics.descent)));
         }
       else
         {
-          pointsize = (font_height * (font_height * PerceptibleReciprocal(metrics.height)));
+          pointsize = (font_height *(font_height *PerceptibleReciprocal(metrics.height)));
           draw_info->pointsize = pointsize;
           if (GetTypeMetrics(image, draw_info, &metrics, exception) != MagickFalse)
-            pointsize *= (font_height * PerceptibleReciprocal((double) metrics.height));
+            pointsize *= (font_height *PerceptibleReciprocal((double) metrics.height));
 
         }
 #if 0
@@ -2210,14 +2210,14 @@ static double util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font
 
 #if defined(MAGICKCORE_WMF_DELEGATE)
 /*
- * Returns width of string in points, assuming (unstretched) font size of 1pt
- * (similar to wmf_ipa_font_stringwidth)
+ *Returns width of string in points, assuming (unstretched) font size of 1pt
+ *(similar to wmf_ipa_font_stringwidth)
  *
- * This extremely odd at best, particularly since player/meta.h has access
- * to the corrected font_height (as drawtext.font_height) when it invokes the
- * stringwidth callback.  It should be possible to compute the real stringwidth!
+ *This extremely odd at best, particularly since player/meta.h has access
+ *to the corrected font_height (as drawtext.font_height) when it invokes the
+ *stringwidth callback.  It should be possible to compute the real stringwidth!
  */
-static float lite_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
+static float lite_font_stringwidth(wmfAPI* API, wmfFont* font, char* str)
 {
 #if 0
   wmf_magick_t
@@ -2263,7 +2263,7 @@ static float lite_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
 
   exception=ddata->exception;
   if (GetTypeMetrics(image, draw_info, &metrics, exception) != MagickFalse)
-    stringwidth = ((metrics.width * 72)/(image->resolution.x * draw_info->pointsize)); /* *0.916348; */
+    stringwidth = ((metrics.width *72)/(image->resolution.x *draw_info->pointsize)); /* *0.916348; */
 
   draw_info->font=NULL;
   draw_info->text=NULL;
@@ -2342,7 +2342,7 @@ static wmfMapping SubFontMap[] =
   { (char *)  NULL, (char *) NULL, FT_ENCODING_NONE }
 };
 
-static void lite_font_map( wmfAPI* API, wmfFont* font)
+static void lite_font_map(wmfAPI* API, wmfFont* font)
 {
   wmfFontData
     *font_data;
@@ -2411,7 +2411,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
     }
 
   /* Look for exact full match */
-  if(!magick_font->ps_name)
+  if (!magick_font->ps_name)
     {
       type_info=GetTypeInfo(wmf_font_name,exception);
       if (type_info != (const TypeInfo *) NULL)
@@ -2430,20 +2430,20 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
         want_bold = MagickFalse,
         i;
 
-      if ( WMF_FONT_WEIGHT(font) != 0 )
+      if (WMF_FONT_WEIGHT(font) != 0)
         target_weight = WMF_FONT_WEIGHT(font);
 
-      if ( (target_weight > 550) || ((strstr(wmf_font_name,"Bold") ||
+      if ((target_weight > 550) || ((strstr(wmf_font_name,"Bold") ||
                                      strstr(wmf_font_name,"Heavy") ||
-                                     strstr(wmf_font_name,"Black"))) )
+                                     strstr(wmf_font_name,"Black"))))
         want_bold = MagickTrue;
 
-      if ( (WMF_FONT_ITALIC(font)) || ((strstr(wmf_font_name,"Italic") ||
-                                       strstr(wmf_font_name,"Oblique"))) )
+      if ((WMF_FONT_ITALIC(font)) || ((strstr(wmf_font_name,"Italic") ||
+                                       strstr(wmf_font_name,"Oblique"))))
         want_italic = MagickTrue;
 
       (void) CopyMagickString(target,"Times",MagickPathExtent);
-      for( i=0; SubFontMap[i].name != NULL; i++ )
+      for(i=0; SubFontMap[i].name != NULL; i++)
         {
           if (LocaleCompare(wmf_font_name, SubFontMap[i].name) == 0)
             {
@@ -2453,7 +2453,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
             }
         }
 
-      for( i=0; WMFFontMap[i].name != NULL; i++ )
+      for(i=0; WMFFontMap[i].name != NULL; i++)
         {
           if (LocaleNCompare(WMFFontMap[i].name,target,strlen(WMFFontMap[i].name)) == 0)
             {
@@ -2480,7 +2480,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
 }
 
 /* Initialize API font structures */
-static void lite_font_init( wmfAPI* API, wmfAPI_Options* options)
+static void lite_font_init(wmfAPI* API, wmfAPI_Options* options)
 {
   wmfFontData
     *font_data;
@@ -2585,7 +2585,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   /*
-   * Create WMF API
+   *Create WMF API
    *
    */
 
@@ -2633,7 +2633,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
 
   /*
-   * Open BLOB input via libwmf API
+   *Open BLOB input via libwmf API
    *
    */
   wmf_error = wmf_bbuf_input(API,ipa_blob_read,ipa_blob_seek,
@@ -2655,7 +2655,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   /*
-   * Scan WMF file
+   *Scan WMF file
    *
    */
   if (image->debug != MagickFalse)
@@ -2677,7 +2677,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   /*
-   * Compute dimensions and scale factors
+   *Compute dimensions and scale factors
    *
    */
 
@@ -2718,7 +2718,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /* Obtain (or guess) metafile units */
   if ((API)->File->placeable && (API)->File->pmh->Inch)
     units_per_inch=(API)->File->pmh->Inch;
-  else if ( (wmf_width*wmf_height) < 1024*1024)
+  else if ((wmf_width*wmf_height) < 1024*1024)
     units_per_inch=POINTS_PER_INCH;  /* MM_TEXT */
   else
     units_per_inch=TWIPS_PER_INCH;  /* MM_TWIPS */
@@ -2727,15 +2727,15 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
      resolution */
   image_width_inch  = (double) wmf_width / units_per_inch;
   image_height_inch = (double) wmf_height / units_per_inch;
-  image_width       = image_width_inch * resolution_x;
-  image_height      = image_height_inch * resolution_y;
+  image_width       = image_width_inch *resolution_x;
+  image_height      = image_height_inch *resolution_y;
 
   /* Compute bounding box scale factors and origin translations
    *
-   * This all just a hack since libwmf does not currently seem to
-   * provide the mapping between LOGICAL coordinates and DEVICE
-   * coordinates. This mapping is necessary in order to know
-   * where to place the logical bounding box within the image.
+   *This all just a hack since libwmf does not currently seem to
+   *provide the mapping between LOGICAL coordinates and DEVICE
+   *coordinates. This mapping is necessary in order to know
+   *where to place the logical bounding box within the image.
    *
    */
 
@@ -2753,7 +2753,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   /* Heuristic: guess that if the vertical coordinates mostly span
      negative values, then the image must be inverted. */
-  if ( fabs(bbox.BR.y) > fabs(bbox.TL.y) )
+  if (fabs(bbox.BR.y) > fabs(bbox.TL.y))
     {
       /* Normal (Origin at top left of image) */
       ddata->scale_y = (image_height/bounding_height);
@@ -2837,7 +2837,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
 
   /*
-   * Create canvas image
+   *Create canvas image
    *
    */
   image->rows=(unsigned long) ceil(image_height);
@@ -2862,7 +2862,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
        (unsigned long) image->columns);
 
   /*
-   * Set solid background color
+   *Set solid background color
    */
   {
     image->background_color = image_info->background_color;
@@ -2871,7 +2871,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) SetImageBackgroundColor(image,exception);
   }
   /*
-   * Play file to generate Vector drawing commands
+   *Play file to generate Vector drawing commands
    *
    */
 
@@ -2895,7 +2895,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   /*
-   * Scribble on canvas image
+   *Scribble on canvas image
    *
    */
 
