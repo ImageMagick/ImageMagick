@@ -66,7 +66,7 @@
   <!-- <policy domain="resource" name="throttle" value="2"/> -->
   <!-- Do not create temporary files in the default shared directories, instead
        specify a private area to store only ImageMagick temporary files. -->
-  <!-- <policy domain="resource" name="temporary-path" value="/magick/tmp"/> -->
+  <!-- <policy domain="resource" name="temporary-path" value="/magick/tmp/"/> -->
   <!-- Force memory initialization by memory mapping select memory
        allocations. -->
   <!-- <policy domain="cache" name="memory-map" value="anonymous"/> -->
