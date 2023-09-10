@@ -1471,7 +1471,8 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
   /* Choose bounding box and calculate its width and height */
 #if !defined(MAGICKCORE_WMF_DELEGATE)
   {
-    double dx,
+    double
+      dx,
       dy;
 
     if (draw_text->flags)
@@ -1501,9 +1502,15 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
 
   font = WMF_DC_FONT(draw_text->dc);
 
+  if (!draw_text->str)
+    return;
+
   /* Convert font_height to equivalent pointsize */
   exception=ddata->exception;
   pointsize = util_pointsize(API, font, draw_text->str, draw_text->font_height, exception);
+
+  if (pointsize <= 0.0)
+    return;
 
   /* Save graphic wand */
   (void) PushDrawingWand(WmfDrawingWand);
@@ -1548,9 +1555,9 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
                 text_width = metrics.width *(ddata->scale_y / ddata->scale_x);
 
 #if defined(MAGICKCORE_WMF_DELEGATE)
-              point.x -= (float) text_width / 2;
+              point.x -= (float) (text_width / 2.0);
 #else
-              point.x += (float) bbox_width / 2 - text_width / 2;
+              point.x += (float) (bbox_width / 2.0 - text_width / 2.0);
 #endif
             }
         }
@@ -1646,9 +1653,9 @@ static void ipa_draw_text(wmfAPI *API, wmfDrawText_t *draw_text)
       if (metrics.underline_thickness < 1.5)
         line_height *= 0.55;
       ulTL.x = 0;
-      ulTL.y = fabs(metrics.descent) - line_height;
-      ulBR.x = metrics.width;
-      ulBR.y = fabs(metrics.descent);
+      ulTL.y = (float) fabs(metrics.descent) - line_height;
+      ulBR.x = (float) metrics.width;
+      ulBR.y = (float) fabs(metrics.descent);
 
       DrawRectangle(WmfDrawingWand,
                     XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
@@ -2348,7 +2355,7 @@ static void lite_font_map(wmfAPI* API, wmfFont* font)
     *font_data;
 
   wmf_magick_font_t
-    *magick_font;
+    *wmfD_Coordmagick_font;
 
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
