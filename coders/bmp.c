@@ -972,10 +972,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       case BI_BITFIELDS:
         break;
-      case BI_JPEG:
-        ThrowReaderException(CoderError,"JPEGCompressNotSupported");
-      case BI_PNG:
-        ThrowReaderException(CoderError,"PNGCompressNotSupported");
       default:
         ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression");
     }
