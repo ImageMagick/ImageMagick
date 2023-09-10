@@ -5174,7 +5174,7 @@ MAGICK_PATCHLEVEL_VERSION=16
 
 MAGICK_VERSION=7.1.1-16
 
-MAGICK_GIT_REVISION=c3a856986:20230907
+MAGICK_GIT_REVISION=88abbe116:20230910
 
 
 # Substitute library versioning
@@ -5208,7 +5208,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,16
 
-PACKAGE_RELEASE_DATE=2023-09-07
+PACKAGE_RELEASE_DATE=2023-09-10
 
 
 # Ensure that make can run correctly
@@ -26331,46 +26331,28 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 MATH_LIBS=''
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for sqrt in -lm" >&5
-printf %s "checking for sqrt in -lm... " >&6; }
-if test ${ac_cv_lib_m_sqrt+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lm  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-char sqrt ();
+
+    #include <math.h>
+
 int
 main (void)
 {
-return sqrt ();
+
+    double x = sqrt(2.0);
+
   ;
   return 0;
 }
+
 _ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_m_sqrt=yes
-else $as_nop
-  ac_cv_lib_m_sqrt=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_m_sqrt" >&5
-printf "%s\n" "$ac_cv_lib_m_sqrt" >&6; }
-if test "x$ac_cv_lib_m_sqrt" = xyes
+if ac_fn_c_try_compile "$LINENO"
 then :
   MATH_LIBS="-lm"
 fi
-
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 LIBS="$MATH_LIBS $LIBS"
 
 ac_ext=c
