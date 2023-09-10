@@ -690,10 +690,8 @@ if test "$enable_64bit_channel_masks" = 'yes'; then
     MAGICK_64BIT_CHANNEL_MASK="Channel-masks(64-bit)"
     magick_channel_mask_depth='64';
     MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
-    AC_LANG([C++])
 else
     magick_channel_mask_depth='32'
-    AC_LANG([C])
 fi
 AC_DEFINE_UNQUOTED([CHANNEL_MASK_DEPTH],[$magick_channel_mask_depth],[Whether 64-bit channel masks are enabled or not])
 AC_SUBST([MAGICK_64BIT_CHANNEL_MASK])dnl
@@ -1106,13 +1104,7 @@ AC_FUNC_STRERROR_R
 # Find math library
 #
 MATH_LIBS=''
-AC_COMPILE_IFELSE([
-  AC_LANG_PROGRAM([[
-    #include <math.h>
-  ]], [[
-    double x = sqrt(2.0);
-  ]])
-], [MATH_LIBS="-lm"], [])
+AC_CHECK_LIB([m],[sqrt],[MATH_LIBS="-lm"],[])
 LIBS="$MATH_LIBS $LIBS"
 AC_SUBST([MATH_LIBS])
 
