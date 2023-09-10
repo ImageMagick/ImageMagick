@@ -811,7 +811,8 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
     compression;
 
   const char
-    *comment;
+    *comment,
+    *option;
 
   const double
     midpoint = (double) QuantumRange/2.0;
@@ -1099,10 +1100,14 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   /*
      Optional footer.
   */
-  WriteBlobLong(image,0);
-  WriteBlobLong(image,0);
-  WriteBlobString(image,"TRUEVISION-XFILE.");
-  WriteBlobByte(image,0);
+  option=GetImageOption(image_info,"tga:write-footer");
+  if (IsStringTrue(option) != MagickFalse)
+    {
+      WriteBlobLong(image,0);
+      WriteBlobLong(image,0);
+      WriteBlobString(image,"TRUEVISION-XFILE.");
+      WriteBlobByte(image,0);
+    }
   (void) CloseBlob(image);
   return(MagickTrue);
 }
