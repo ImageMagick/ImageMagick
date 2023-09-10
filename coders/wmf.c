@@ -2355,7 +2355,7 @@ static void lite_font_map(wmfAPI* API, wmfFont* font)
     *font_data;
 
   wmf_magick_font_t
-    *wmfD_Coordmagick_font;
+    *magick_font;
 
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
