@@ -515,6 +515,59 @@ static MagickBooleanType IsBMP(const unsigned char *magick,const size_t length)
 %
 */
 
+static Image *ReadEmbedImage(const ImageInfo *image_info,Image *image,
+  const char *magick,ExceptionInfo *exception)
+{
+  const void
+    *stream;
+
+  Image
+    *embed_image;
+
+  ImageInfo
+    *embed_info;
+
+  size_t
+    length;
+
+  ssize_t
+    count;
+
+  unsigned char
+    *pixels;
+
+  /*
+    Read embedded image.
+  */
+  length=(size_t) ((MagickOffsetType) GetBlobSize(image)-TellBlob(image));
+  pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
+  if (pixels == (unsigned char *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  stream=ReadBlobStream(image,length,pixels,&count);
+  if (count != (ssize_t) length)
+    {
+      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    }
+  embed_info=AcquireImageInfo();
+  (void) FormatLocaleString(embed_info->filename,MagickPathExtent,
+    "%s:%s",magick,image_info->filename);
+  embed_image=BlobToImage(embed_info,stream,(size_t) count,exception);
+  embed_info=DestroyImageInfo(embed_info);
+  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+  (void) CloseBlob(image);
+  if (embed_image != (Image *) NULL)
+    {
+      (void) CopyMagickString(embed_image->filename,image->filename,
+        MagickPathExtent);
+      (void) CopyMagickString(embed_image->magick_filename,
+        image->magick_filename,MagickPathExtent);
+      (void) CopyMagickString(embed_image->magick,image->magick,
+        MagickPathExtent);
+    }
+  return(embed_image);
+}
+
 static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   BMPInfo
@@ -849,8 +902,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
             }
-            profile_data=(MagickOffsetType)ReadBlobLSBLong(image);
-            profile_size=(MagickOffsetType)ReadBlobLSBLong(image);
+            profile_data=(MagickOffsetType) ReadBlobLSBLong(image);
+            profile_size=(MagickOffsetType) ReadBlobLSBLong(image);
             (void) ReadBlobLSBLong(image);  /* Reserved byte */
           }
       }
@@ -869,6 +922,26 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
     if (bmp_info.height == 0)
       ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
+    if (bmp_info.compression == BI_JPEG)
+      {
+        /*
+          Read embedded JPEG image.
+        */
+        Image *embed_image = ReadEmbedImage(image_info,image,"jpeg",exception);
+        (void) CloseBlob(image);
+        image=DestroyImageList(image);
+        return(embed_image);
+      }
+    if (bmp_info.compression == BI_PNG)
+      {
+        /*
+          Read embedded PNG image.
+        */
+        Image *embed_image = ReadEmbedImage(image_info,image,"png",exception);
+        (void) CloseBlob(image);
+        image=DestroyImageList(image);
+        return(embed_image);
+      }
     if (bmp_info.planes != 1)
       ThrowReaderException(CorruptImageError,"StaticPlanesValueNotEqualToOne");
     if ((bmp_info.bits_per_pixel != 1) && (bmp_info.bits_per_pixel != 4) &&
@@ -2338,8 +2411,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           (void) WriteBlobLSBLong(image,0x4D424544U);  /* PROFILE_EMBEDDED */
         else
           (void) WriteBlobLSBLong(image,0x73524742U);  /* sRGB */
-        
-        // bounds check, assign .0 if invalid value
+
+        /* bounds check, assign .0 if invalid value */
         if (isgreater(image->chromaticity.red_primary.x, 1.0) ||
             !isgreater(image->chromaticity.red_primary.x, 0.0))
           image->chromaticity.red_primary.x = 0.0;
