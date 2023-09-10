@@ -1105,18 +1105,10 @@ AC_FUNC_STRERROR_R
 #
 # Find math library
 #
-AC_LANG_PUSH([C])
 MATH_LIBS=''
-AC_COMPILE_IFELSE([
-  AC_LANG_PROGRAM([[
-    #include <math.h>
-  ]], [[
-    double x = sqrt(2.0);
-  ]])
-], [MATH_LIBS="-lm"], [])
+AC_CHECK_LIB([m],[sqrt],[MATH_LIBS="-lm"],[])
 LIBS="$MATH_LIBS $LIBS"
 AC_SUBST([MATH_LIBS])
-AC_LANG_POP([C])
 
 #
 # Find socket library
