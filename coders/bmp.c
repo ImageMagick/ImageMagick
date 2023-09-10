@@ -807,12 +807,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.blue_mask=ReadBlobLSBLong(image);
           }
         if ((bmp_info.size > 40) || (bmp_info.compression == BI_ALPHABITFIELDS))
-          {
-            bmp_info.red_mask=ReadBlobLSBLong(image);
-            bmp_info.green_mask=ReadBlobLSBLong(image);
-            bmp_info.blue_mask=ReadBlobLSBLong(image);
-            bmp_info.alpha_mask=ReadBlobLSBLong(image);
-          } 
+          bmp_info.alpha_mask=ReadBlobLSBLong(image);
         if (bmp_info.size > 40)
           {
             double
@@ -821,7 +816,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read color management information.
             */
-            bmp_info.alpha_mask=ReadBlobLSBLong(image);
             bmp_info.colorspace=ReadBlobLSBSignedLong(image);
             /*
               Decode 2^30 fixed point formatted CIE primaries.
