@@ -75,6 +75,9 @@
 #define BI_JPEG  4
 #undef BI_PNG
 #define BI_PNG  5
+#ifndef BI_ALPHABITFIELDS
+ #define BI_ALPHABITFIELDS 6
+#endif
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__MINGW32__)
 #undef BI_RGB
 #define BI_RGB  0
@@ -803,6 +806,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.green_mask=ReadBlobLSBLong(image);
             bmp_info.blue_mask=ReadBlobLSBLong(image);
           }
+        if ((bmp_info.size > 40) || (bmp_info.compression == BI_ALPHABITFIELDS))
+          {
+            bmp_info.red_mask=ReadBlobLSBLong(image);
+            bmp_info.green_mask=ReadBlobLSBLong(image);
+            bmp_info.blue_mask=ReadBlobLSBLong(image);
+            bmp_info.alpha_mask=ReadBlobLSBLong(image);
+          } 
         if (bmp_info.size > 40)
           {
             double
