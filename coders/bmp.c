@@ -530,6 +530,9 @@ static Image *ReadEmbedImage(const ImageInfo *image_info,Image *image,
   ImageInfo
     *embed_info;
 
+  MemoryInfo
+    *pixel_info;
+
   size_t
     length;
 
@@ -543,13 +546,14 @@ static Image *ReadEmbedImage(const ImageInfo *image_info,Image *image,
     Read embedded image.
   */
   length=(size_t) ((MagickOffsetType) GetBlobSize(image)-TellBlob(image));
-  pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
-  if (pixels == (unsigned char *) NULL)
+  pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
+  if (pixel_info == (MemoryInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
   stream=ReadBlobStream(image,length,pixels,&count);
   if (count != (ssize_t) length)
     {
-      pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+      pixel_info=RelinquishVirtualMemory(pixel_info);
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
   embed_info=AcquireImageInfo();
@@ -557,7 +561,7 @@ static Image *ReadEmbedImage(const ImageInfo *image_info,Image *image,
     "%s:%s",magick,image_info->filename);
   embed_image=BlobToImage(embed_info,stream,(size_t) count,exception);
   embed_info=DestroyImageInfo(embed_info);
-  pixels=(unsigned char *) RelinquishMagickMemory(pixels);
+  pixel_info=RelinquishVirtualMemory(pixel_info);
   (void) CloseBlob(image);
   if (embed_image != (Image *) NULL)
     {
@@ -779,6 +783,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   "  Compression: BI_BITFIELDS");
                 break;
               }
+              case BI_ALPHABITFIELDS:
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "  Compression: BI_ALPHABITFIELDS");
+                break;
+              }
               case BI_PNG:
               {
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -800,14 +810,16 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "  Number of colors: %u",bmp_info.number_colors);
           }
-        if ((bmp_info.size > 40) || (bmp_info.compression == BI_BITFIELDS))
+        if ((bmp_info.size > 40) || (bmp_info.compression == BI_BITFIELDS) ||
+            (bmp_info.compression == BI_ALPHABITFIELDS))
+
           {
             bmp_info.red_mask=ReadBlobLSBLong(image);
             bmp_info.green_mask=ReadBlobLSBLong(image);
             bmp_info.blue_mask=ReadBlobLSBLong(image);
+            if (bmp_info.compression == BI_ALPHABITFIELDS)
+              bmp_info.alpha_mask=ReadBlobLSBLong(image);
           }
-        if ((bmp_info.size > 40) || (bmp_info.compression == BI_ALPHABITFIELDS))
-          bmp_info.alpha_mask=ReadBlobLSBLong(image);
         if (bmp_info.size > 40)
           {
             double
@@ -816,6 +828,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read color management information.
             */
+            bmp_info.alpha_mask=ReadBlobLSBLong(image);
             bmp_info.colorspace=ReadBlobLSBSignedLong(image);
             /*
               Decode 2^30 fixed point formatted CIE primaries.
@@ -972,6 +985,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       case BI_BITFIELDS:
         break;
+      case BI_ALPHABITFIELDS:
+        break;
+      case BI_JPEG:
+        ThrowReaderException(CoderError,"JPEGCompressNotSupported");
+      case BI_PNG:
+        ThrowReaderException(CoderError,"PNGCompressNotSupported");
       default:
         ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression");
     }
@@ -1065,7 +1084,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((MagickSizeType) (length/256) > blob_size)
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     if ((bmp_info.compression == BI_RGB) ||
-        (bmp_info.compression == BI_BITFIELDS))
+        (bmp_info.compression == BI_BITFIELDS) ||
+        (bmp_info.compression == BI_ALPHABITFIELDS))
       {
         pixel_info=AcquireVirtualMemory(image->rows,
           MagickMax(bytes_per_line,image->columns+256UL)*sizeof(*pixels));
@@ -2335,6 +2355,12 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
              break;
            }
            case BI_BITFIELDS:
+           {
+             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "   Compression=BI_BITFIELDS");
+             break;
+           }
+           case BI_ALPHABITFIELDS:
            {
              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "   Compression=BI_BITFIELDS");
