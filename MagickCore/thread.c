@@ -103,7 +103,7 @@ MagickExport MagickBooleanType CreateMagickThreadKey(MagickThreadKey *key,
         (*keys)->values=AcquireQuantumMemory((*keys)->number_threads,
           sizeof(void *));
         if ((*keys)->values == (void *) NULL)
-          *keys=RelinquishMagickMemory(*keys);
+          *keys=(MagickThreadValue *) RelinquishMagickMemory(*keys);
         else
           (void) memset((*keys)->values,0,(*keys)->number_threads*
             sizeof(void *));
