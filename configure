@@ -973,6 +973,7 @@ MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
 MAGICK_64BIT_CHANNEL_MASK
+CHANNEL_MASK_DEPTH
 MAGICK_HDRI
 MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_FALSE
 MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE
@@ -5174,7 +5175,7 @@ MAGICK_PATCHLEVEL_VERSION=16
 
 MAGICK_VERSION=7.1.1-16
 
-MAGICK_GIT_REVISION=6d1885768:20230910
+MAGICK_GIT_REVISION=6608547b7:20230910
 
 
 # Substitute library versioning
@@ -23317,6 +23318,7 @@ fi
 
 printf "%s\n" "#define CHANNEL_MASK_DEPTH $magick_channel_mask_depth" >>confdefs.h
 
+CHANNEL_MASK_DEPTH=$magick_channel_mask_depth
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
@@ -23565,6 +23567,7 @@ printf "%s\n" "#define PixelCacheThreshold \"$with_cache\"" >>confdefs.h
 fi
 
 # Set security policy
+with_security_policy="open"
  # MAGICK_SECURITY_POLICY
 
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking which variant of security policy to enforce" >&5
@@ -40997,7 +41000,7 @@ Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
 Security policy     --with-security-policy=$with_security_policy		$with_security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
-Channel mask depth  --enable-64bit-channel-masks=$magick_channel_mask_depth	$magick_channel_mask_depth
+Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
 High Dynamic Range Imagery
                     --enable-hdri=$enable_hdri			$enable_hdri
 
@@ -41100,7 +41103,7 @@ Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
 Security policy     --with-security-policy=$with_security_policy		$with_security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
-Channel mask depth  --enable-64bit-channel-masks=$magick_channel_mask_depth	$magick_channel_mask_depth
+Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
 High Dynamic Range Imagery
                     --enable-hdri=$enable_hdri			$enable_hdri
 

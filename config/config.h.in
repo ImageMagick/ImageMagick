@@ -15,7 +15,7 @@
 /* Define if you have CAIRO library */
 #undef CAIRO_DELEGATE
 
-/* Whether 64-bit channel masks are enabled or not */
+/* Channel mask depth */
 #undef CHANNEL_MASK_DEPTH
 
 /* permit enciphering and deciphering image pixels */

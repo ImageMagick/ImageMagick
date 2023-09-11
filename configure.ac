@@ -693,7 +693,9 @@ if test "$enable_64bit_channel_masks" = 'yes'; then
 else
     magick_channel_mask_depth='32'
 fi
-AC_DEFINE_UNQUOTED([CHANNEL_MASK_DEPTH],[$magick_channel_mask_depth],[Whether 64-bit channel masks are enabled or not])
+AC_DEFINE_UNQUOTED([CHANNEL_MASK_DEPTH],[$magick_channel_mask_depth],[Channel mask depth])
+CHANNEL_MASK_DEPTH=$magick_channel_mask_depth
+AC_SUBST([CHANNEL_MASK_DEPTH])dnl
 AC_SUBST([MAGICK_64BIT_CHANNEL_MASK])dnl
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
@@ -849,6 +851,7 @@ if test "$with_cache" != ''; then
 fi
 
 # Set security policy
+with_security_policy="open"
 m4_define([_MAGICK_SECURITY_POLICY],
 [m4_define([MAGICK_SECURITY_POLICY_DEFAULT], [m4_if($1, limited, limited, m4_if($1, secure, secure, open))])dnl
   AC_MSG_CHECKING([which variant of security policy to enforce])
@@ -4141,7 +4144,7 @@ Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
 Security policy     --with-security-policy=$with_security_policy		$with_security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
-Channel mask depth  --enable-64bit-channel-masks=$magick_channel_mask_depth	$magick_channel_mask_depth
+Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
 High Dynamic Range Imagery
                     --enable-hdri=$enable_hdri			$enable_hdri
 

@@ -12,6 +12,7 @@
 <configuremap>
   <configure name="CC" value="@CC@"/>
   <configure name="CFLAGS" value="@MAGICK_CFLAGS@"/>
+  <configure name="CHANNEL_MASK_DEPTH" value="@CHANNEL_MASK_DEPTH@"/>
   <configure name="CODER_PATH" value="@CODER_PATH@"/>
   <configure name="CONFIGURE_PATH" value="@CONFIGURE_PATH@"/>
   <configure name="CONFIGURE" value="@CONFIGURE_ARGS@"/>
