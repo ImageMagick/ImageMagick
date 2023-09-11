@@ -100,9 +100,9 @@ MagickExport MagickBooleanType CreateMagickThreadKey(MagickThreadKey *key,
     if (*keys != (MagickThreadValue *) NULL)
       {
         (*keys)->number_threads=GetOpenMPMaximumThreads();
-        (*keys)->values=AcquireQuantumMemory((*keys)->number_threads,
+        (*keys)->values=(void **) AcquireQuantumMemory((*keys)->number_threads,
           sizeof(void *));
-        if ((*keys)->values == (void *) NULL)
+        if ((*keys)->values == (void **) NULL)
           *keys=(MagickThreadValue *) RelinquishMagickMemory(*keys);
         else
           (void) memset((*keys)->values,0,(*keys)->number_threads*
