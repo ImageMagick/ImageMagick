@@ -57,6 +57,7 @@
 #include <stdlib.h>
 #include <sys\types.h>
 #endif
+#include <locale.h>
 #include <time.h>
 #include <MagickWand/MagickWand.h>
 

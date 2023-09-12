@@ -46,6 +46,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 #include <MagickWand/MagickWand.h>
 
 #define ThrowWandException(wand) \
