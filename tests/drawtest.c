@@ -427,6 +427,8 @@ int main(int argc,char **argv)
     Create canvas image.
   */
   MagickWandGenesis();
+  (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
   canvas=NewMagickWand();
   status=MagickSetSize(canvas,596,842);
   if (status == MagickFalse)

@@ -5207,6 +5207,8 @@ int main(int argc,char **argv)
   (void) argc;
   (void) argv;
   MagickWandGenesis();
+  (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
   magick_wand=NewMagickWand();
   (void) MagickSetSize(magick_wand,640,480);
   (void) MagickGetSize(magick_wand,&columns,&rows);
