@@ -5175,7 +5175,7 @@ MAGICK_PATCHLEVEL_VERSION=16
 
 MAGICK_VERSION=7.1.1-16
 
-MAGICK_GIT_REVISION=6608547b7:20230910
+MAGICK_GIT_REVISION=0f22c438a:20230911
 
 
 # Substitute library versioning
@@ -5209,7 +5209,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,16
 
-PACKAGE_RELEASE_DATE=2023-09-10
+PACKAGE_RELEASE_DATE=2023-09-11
 
 
 # Ensure that make can run correctly
@@ -36880,6 +36880,47 @@ fi
 
 
 
+
+#
+# Need C++ for 64-bit channels masks to 64-birt enums.
+#
+if test "$enable_64bit_channel_masks" = 'yes'; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -x option" >&5
+printf %s "checking whether the compiler supports -x option... " >&6; }
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+      #include <stdio.h>
+
+int
+main (void)
+{
+
+      int main() {
+        return 0;
+      }
+
+  ;
+  return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+    CFLAGS="$CFLAGS -x c++"
+
+else $as_nop
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
 
 #
 # Handle case where user doesn't want frozen paths
