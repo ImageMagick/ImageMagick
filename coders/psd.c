@@ -2654,7 +2654,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Image
         *merged;
 
-      if ((image_list_length == 1) || (EOFBlob(image) != MagickFalse))
+      if (image_list_length == 1)
         {
           if (profile != (StringInfo *) NULL)
             profile=DestroyStringInfo(profile);
