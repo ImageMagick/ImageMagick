@@ -2698,12 +2698,12 @@ static inline MagickBooleanType IsValidOffset(const ssize_t y,
   const size_t columns)
 {
   if (columns == 0)
+    return(MagickTrue);
+  if (y >= (MAGICK_SSIZE_MAX/(ssize_t) columns))
     return(MagickFalse);
-  if (y > (ssize_t) (MAGICK_SSIZE_MAX/columns-1))
-    return(MagickTrue);
-  if (y < (ssize_t) (MAGICK_SSIZE_MIN/columns+1))
-    return(MagickTrue);
-  return(MagickFalse);
+  if (y <= (MAGICK_SSIZE_MIN/(ssize_t) columns))
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 static inline ssize_t RandomX(RandomInfo *random_info,const size_t columns)
