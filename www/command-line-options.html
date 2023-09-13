@@ -213,7 +213,7 @@
   <li><a class="dropdown-item" href="command-line-options.html#font">font</a></li>
   <li><a class="dropdown-item" href="command-line-options.html#foreground">foreground</a></li>
   <li><a class="dropdown-item" href="command-line-options.html#format">format</a></li>
-  <li><a class="dropdown-item" href="command-line-options.html#format_identify_">format[identify]</a></li>
+  <li><a class="dropdown-item" href="command-line-options.html#format_identify">format[identify]</a></li>
   <li><a class="dropdown-item" href="command-line-options.html#frame">frame</a></li>
   <li><a class="dropdown-item" href="command-line-options.html#frame_import_">frame[import]</a></li>
   <li><a class="dropdown-item" href="command-line-options.html#function">function</a></li>
@@ -340,6 +340,7 @@
   <li><a class="dropdown-item" href="command-line-options.html#scale">scale</a></li>
   <li><a class="dropdown-item" href="command-line-options.html#scene">scene</a></li>
   <li><a class="dropdown-item" href="command-line-options.html#screen">screen</a></li>
+  <li><a class="dropdown-item" href="command-line-options.html#script">script</a></li>
   <li><a class="dropdown-item" href="command-line-options.html#seed">seed</a></li>
   <li><a class="dropdown-item" href="command-line-options.html#segment">segment</a></li>
   <li><a class="dropdown-item" href="command-line-options.html#selective-blur">selective-blur</a></li>
@@ -3929,7 +3930,7 @@ input image filename is <var>image.gif</var>, the output image
 filename becomes <var>image.tiff</var>.</p>
 
 <div style="margin: auto;">
-  <h2><a class="anchor" id="format_identify_"></a>-format <var>expression</var></h2>
+  <h2><a class="anchor" id="format_identify"></a>-format <var>expression</var></h2>
 </div>
 
 <p class="magick-description">Output formatted image characteristics.</p>
@@ -4441,10 +4442,21 @@ handle negative offsets.</p>
 
 <p class="magick-description">Identify the format and characteristics of the image.</p>
 
-<p>This information is printed: image scene number; image name; image size;
-the image class (<var>DirectClass</var> or <var>PseudoClass</var>); the total number of unique colors; and the
-number of seconds to read and transform the image. Refer to <a href="miff.html">MIFF</a> for
-a description of the image class.</p>
+<p>This information is printed by default:
+<ul>
+<li>image scene number (if its not zero)</li>
+<li>image name</li>
+<li>image format</li>
+<li>image size</li>
+<li>virtual page offset</li>
+<li>color depth</li>
+<li>colorspace</li>
+<li>file size in bytes</li>
+<li>consumed user time identifying the image</li>
+<li>elapsed time identifying the image</li>
+</ul></p>
+
+<p>To customize the attributes you want to identify, use <a href="command-line-options.html#format_identify_">-format</a>.</p>
 
 <p>If <a href="command-line-options.html#colors">-colors</a> is also specified, the total unique colors
 in the image and color reduction error values are printed. Refer to <a
@@ -5247,7 +5259,7 @@ environment variables <samp>MAGICK_AREA_LIMIT</samp>,
 image area, disk space, open files, heap memory, memory map, number of threads
 of execution, and maximum elapsed time in seconds respectively.</p>
 
-<p>Note, you can restrict limits relative to any <a href="../www/security-policy.xml">security policies</a>, but you cannot relax them.</p>
+<p>Note, you can restrict limits relative to any <a href="../www/policy-open.xml">security policies</a>, but you cannot relax them.</p>
 
 <p> Inquisitive users can try adding <a href="command-line-options.html#debug">-debug cache</a> to
 their commands and then scouring the generated output for references to the
@@ -6599,10 +6611,6 @@ light conditions. </p>
 
 <p>This option sets the scene number of an image or the first image in an image sequence.</p>
 
-<div style="margin: auto;">
-  <h2><a class="anchor" id="screen"></a>-screen</h2>
-</div>
-
 <p class="magick-description">Specify the screen to capture.</p>
 
 <p>This option indicates that the GetImage request used to obtain the image
@@ -6610,6 +6618,12 @@ should be done on the root window, rather than directly on the specified
 window. In this way, you can obtain pieces of other windows that overlap the
 specified window, and more importantly, you can capture menus or other popups
 that are independent windows but appear over the specified window.</p>
+
+<div style="margin: auto;">
+  <h2><a class="anchor" id="script"></a>-script  <var>filename</var></h2>
+</div>
+
+<p class="magick-description">Transfer control to the named file.</p>
 
 <div style="margin: auto;">
   <h2><a class="anchor" id="seed"></a>-seed</h2>
@@ -7920,4 +7934,4 @@ but with strict boolean masking. </p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 12th August 2023 16:36 -->
+<!-- Magick Cache 12th September 2023 23:56 -->
