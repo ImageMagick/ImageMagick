@@ -2694,12 +2694,14 @@ static inline ssize_t EdgeY(const ssize_t y,const size_t rows)
   return(y);
 }
 
-static inline MagickBooleanType IsOffsetOverflow(const ssize_t y,
+static inline MagickBooleanType IsValidOffset(const ssize_t y,
   const size_t columns)
 {
-  if ((y == 0) || (columns == 0))
+  if (columns == 0)
     return(MagickFalse);
-  if (y >= (ssize_t) (MAGICK_SSIZE_MAX/columns))
+  if (y > (ssize_t) (MAGICK_SSIZE_MAX/columns-1))
+    return(MagickTrue);
+  if (y < (ssize_t) (MAGICK_SSIZE_MIN/columns+1))
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -2798,7 +2800,7 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
     nexus_info,exception);
   if (pixels == (Quantum *) NULL)
     return((const Quantum *) NULL);
-  if (IsOffsetOverflow(nexus_info->region.y,cache_info->columns) != MagickFalse)
+  if (IsValidOffset(nexus_info->region.y,cache_info->columns) == MagickFalse)
     return((const Quantum *) NULL);
   offset=nexus_info->region.y*(MagickOffsetType) cache_info->columns+
     nexus_info->region.x;
@@ -4206,7 +4208,7 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
         "PixelsAreNotAuthentic","`%s'",image->filename);
       return((Quantum *) NULL);
     }
-  if (IsOffsetOverflow(y,cache_info->columns) != MagickFalse)
+  if (IsValidOffset(y,cache_info->columns) == MagickFalse)
     return((Quantum *) NULL);
   offset=y*(MagickOffsetType) cache_info->columns+x;
   if (offset < 0)
@@ -4457,7 +4459,7 @@ static MagickBooleanType ReadPixelCacheMetacontent(
     return(MagickFalse);
   if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
-  if (IsOffsetOverflow(nexus_info->region.y,cache_info->columns) != MagickFalse)
+  if (IsValidOffset(nexus_info->region.y,cache_info->columns) == MagickFalse)
     return(MagickFalse);
   offset=nexus_info->region.y*(MagickOffsetType) cache_info->columns+
     nexus_info->region.x;
@@ -4631,7 +4633,7 @@ static MagickBooleanType ReadPixelCachePixels(
 
   if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
-  if (IsOffsetOverflow(nexus_info->region.y,cache_info->columns) != MagickFalse)
+  if (IsValidOffset(nexus_info->region.y,cache_info->columns) == MagickFalse)
     return(MagickFalse);
   offset=nexus_info->region.y*(MagickOffsetType) cache_info->columns;
   if ((offset/(MagickOffsetType) cache_info->columns) != nexus_info->region.y)
@@ -5166,7 +5168,7 @@ static Quantum *SetPixelCacheNexusPixels(
           /*
             Pixels are accessed directly from memory.
           */
-          if (IsOffsetOverflow(y,cache_info->columns) != MagickFalse)
+          if (IsValidOffset(y,cache_info->columns) == MagickFalse)
             return((Quantum *) NULL);
           offset=y*(MagickOffsetType) cache_info->columns+x;
           nexus_info->pixels=cache_info->pixels+(MagickOffsetType)
@@ -5666,7 +5668,7 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
     return(MagickTrue);
   if (nexus_info->metacontent == (unsigned char *) NULL)
     return(MagickFalse);
-  if (IsOffsetOverflow(nexus_info->region.y,cache_info->columns) != MagickFalse)
+  if (IsValidOffset(nexus_info->region.y,cache_info->columns) == MagickFalse)
     return(MagickFalse);
   offset=nexus_info->region.y*(MagickOffsetType) cache_info->columns+
     nexus_info->region.x;
@@ -5839,7 +5841,7 @@ static MagickBooleanType WritePixelCachePixels(
 
   if (nexus_info->authentic_pixel_cache != MagickFalse)
     return(MagickTrue);
-  if (IsOffsetOverflow(nexus_info->region.y,cache_info->columns) != MagickFalse)
+  if (IsValidOffset(nexus_info->region.y,cache_info->columns) == MagickFalse)
     return(MagickFalse);
   offset=nexus_info->region.y*(MagickOffsetType) cache_info->columns+
     nexus_info->region.x;
