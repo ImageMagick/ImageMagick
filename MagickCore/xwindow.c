@@ -3551,7 +3551,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     client_name,"geometry",(char *) NULL));
   resource_value=XGetResourceClass(database,client_name,"gravity",
     (char *) "Center");
-  resource_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
+  resource_info->gravity=(int) ParseCommandOption(MagickGravityOptions,
     MagickFalse,resource_value);
   directory=getcwd(resource_info->home_directory,MagickPathExtent);
   (void) directory;
@@ -4405,7 +4405,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
                     ScaleShortToQuantum(colors[index].blue),q);
                   q+=GetPixelChannels(composite_image);
                 }
-                status=SyncCacheViewAuthenticPixels(composite_view,exception);
+                status=SyncCacheViewAuthenticPixels(composite_view,exception)
+                  == MagickFalse ? 0 : 1;
                 if (status == MagickFalse)
                   break;
               }
@@ -4436,7 +4437,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
                     (unsigned short) color),q);
                   q+=GetPixelChannels(composite_image);
                 }
-                status=SyncCacheViewAuthenticPixels(composite_view,exception);
+                status=SyncCacheViewAuthenticPixels(composite_view,exception)
+                  == MagickFalse ? 0 : 1;
                 if (status == MagickFalse)
                   break;
               }
@@ -4448,7 +4450,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
               Create colormap.
             */
             status=AcquireImageColormap(composite_image,number_colors,
-              exception);
+              exception) == MagickFalse ? 0 : 1;
             if (status == MagickFalse)
               {
                 XDestroyImage(ximage);
@@ -4483,7 +4485,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
                   composite_image->colormap+(ssize_t) index,q);
                 q+=GetPixelChannels(composite_image);
               }
-              status=SyncCacheViewAuthenticPixels(composite_view,exception);
+              status=SyncCacheViewAuthenticPixels(composite_view,exception)
+                == MagickFalse ? 0 : 1;
               if (status == MagickFalse)
                 break;
             }

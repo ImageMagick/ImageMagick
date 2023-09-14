@@ -1223,10 +1223,10 @@ static size_t ComplexRaqmTextLayout(const Image *image,
   for (i=0; i < (ssize_t) extent; i++)
   {
     (*grapheme)[i].index=glyphs[i].index;
-    (*grapheme)[i].x_offset=(size_t) glyphs[i].x_offset;
-    (*grapheme)[i].x_advance=(size_t) glyphs[i].x_advance;
-    (*grapheme)[i].y_offset=(size_t) glyphs[i].y_offset;
-    (*grapheme)[i].y_advance=(size_t) glyphs[i].y_advance;
+    (*grapheme)[i].x_offset=glyphs[i].x_offset;
+    (*grapheme)[i].x_advance=glyphs[i].x_advance;
+    (*grapheme)[i].y_offset=glyphs[i].y_offset;
+    (*grapheme)[i].y_advance=glyphs[i].y_advance;
     (*grapheme)[i].cluster=glyphs[i].cluster;
   }
 

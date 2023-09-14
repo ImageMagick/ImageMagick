@@ -678,7 +678,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                quantum=(*p << 8);
+                quantum=(size_t) (*p << 8);
                 quantum|=(*(p+1));
                 SetPixelIndex(image,(Quantum) quantum,q);
                 p+=8;

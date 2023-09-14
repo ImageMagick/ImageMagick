@@ -191,13 +191,13 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     for (i=0; i < (ssize_t) image->colors; i++)
     {
-      quantum=(*p++ << 8);
+      quantum=(size_t) (*p++ << 8);
       quantum|=(*p++);
       image->colormap[i].red=(Quantum) quantum;
-      quantum=(*p++ << 8);
-      quantum|=(*p++);
+      quantum=(size_t) (*p++ << 8);
+      quantum|=(size_t) (*p++);
       image->colormap[i].green=(Quantum) quantum;
-      quantum=(*p++ << 8);
+      quantum=(size_t) (*p++ << 8);
       quantum|=(*p++);
       image->colormap[i].blue=(Quantum) quantum;
     }
@@ -234,7 +234,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->colors > 256)
         {
           index=ConstrainColormapIndex(image,(ssize_t) (((size_t) index << 8)+
-            (ssize_t) (*p)),exception);
+            (size_t) (*p)),exception);
           p++;
         }
       SetPixelIndex(image,index,q);

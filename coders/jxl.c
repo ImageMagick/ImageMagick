@@ -367,7 +367,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CoderError,"MemoryAllocationFailed");
         }
     }
-  if (JxlDecoderSubscribeEvents(jxl_info,events_wanted) != JXL_DEC_SUCCESS)
+  if (JxlDecoderSubscribeEvents(jxl_info,(int) events_wanted) != JXL_DEC_SUCCESS)
     {
       if (runner != NULL)
         JxlThreadParallelRunnerDestroy(runner);
