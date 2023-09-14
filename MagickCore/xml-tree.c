@@ -1283,7 +1283,7 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
     while (bits != 0)
     {
       bits--;
-      utf8[j]=0x80 | ((c >> (6*bits)) & 0x3f);
+      utf8[j]=(char) (0x80 | ((c >> (6*bits)) & 0x3f));
       j++;
     }
   }

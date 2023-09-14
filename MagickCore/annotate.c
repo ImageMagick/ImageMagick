@@ -119,7 +119,7 @@
 #endif
 typedef struct _GraphemeInfo
 {
-  size_t
+  ssize_t
     index,
     x_offset,
     x_advance,
@@ -1257,7 +1257,8 @@ static size_t ComplexTextLayout(const DrawInfo *draw_info,const char *text,
   p=text;
   for (i=0; GetUTFCode(p) != 0; p+=GetUTFOctets(p), i++)
   {
-    (*grapheme)[i].index=(ssize_t) FT_Get_Char_Index(face,GetUTFCode(p));
+    (*grapheme)[i].index=(ssize_t) FT_Get_Char_Index(face,(FT_ULong)
+      GetUTFCode(p));
     (*grapheme)[i].x_offset=0;
     (*grapheme)[i].y_offset=0;
     if (((*grapheme)[i].index != 0) && (last_glyph != 0))
@@ -1280,7 +1281,7 @@ static size_t ComplexTextLayout(const DrawInfo *draw_info,const char *text,
     (void) FT_Load_Glyph(face,(FT_UInt) (*grapheme)[i].index,flags);
     (*grapheme)[i].x_advance=face->glyph->advance.x;
     (*grapheme)[i].y_advance=face->glyph->advance.y;
-    (*grapheme)[i].cluster=p-text;
+    (*grapheme)[i].cluster=(size_t) (p-text);
     last_glyph=(*grapheme)[i].index;
   }
   return((size_t) i);

@@ -242,9 +242,6 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
   Quantum
     *q;
 
-  unsigned char
-    *p;
-
   size_t
     bits_per_line,
     bytes_per_line;
@@ -254,6 +251,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
     y;
 
   unsigned char
+    *p,
     *row_data;
 
   unsigned int
@@ -545,8 +543,8 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
       {
         for (i=0; i < (ssize_t) image->colors; i++)
         {
-          word = ((unsigned short)* p   )<<0*8 |
-                  ((unsigned short)*(p+1))<<1*8;
+          word = (unsigned int) (((unsigned short)* p   )<<0*8 |
+                  ((unsigned short)*(p+1))<<1*8);
 
           image->colormap[i].red=GetChannelValue(word,0,RGBA16);
           image->colormap[i].green=GetChannelValue(word,1,RGBA16);

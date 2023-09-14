@@ -149,11 +149,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     opcode,
-    operand,
-    status;
+    operand;
 
   MagickStatusType
-    flags;
+    flags,
+    status;
 
   MagickSizeType
     number_pixels;

@@ -2653,7 +2653,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
         if (image->rendering_intent == UndefinedIntent)
           image->rendering_intent=
             Magick_RenderingIntent_from_PNG_RenderingIntent
-            (mng_info->global_srgb_intent);
+            ((int) mng_info->global_srgb_intent);
       }
   }
 #endif
@@ -5346,7 +5346,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                 ThrowReaderException(CorruptImageError,"CorruptImage");
               }
 
-            object_id=((unsigned int) p[0] << 8) | (unsigned int) p[1];
+            object_id=(int) (((unsigned int) p[0] << 8) | (unsigned int) p[1]);
 
             if (mng_type == 2 && object_id != 0)
               (void) ThrowMagickException(exception,GetMagickModule(),
@@ -5753,8 +5753,8 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
             */
             if (length > 3)
               {
-                first_object=(p[0] << 8) | p[1];
-                last_object=(p[2] << 8) | p[3];
+                first_object=(unsigned int) ((p[0] << 8) | p[1]);
+                last_object=(unsigned int) ((p[2] << 8) | p[3]);
                 p+=4;
 
                 for (i=(int) first_object; i <= (int) last_object; i++)
@@ -5827,8 +5827,8 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
 
             if (length > 3)
             {
-              first_object=(p[0] << 8) | p[1];
-              last_object=(p[2] << 8) | p[3];
+              first_object=(unsigned int) ((p[0] << 8) | p[1]);
+              last_object=(unsigned int) ((p[2] << 8) | p[3]);
               p+=4;
 
               for (i=(ssize_t) first_object; i <= (ssize_t) last_object; i++)
@@ -13057,7 +13057,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
               all_images_are_gray=MagickFalse;
             mng_info->equal_palettes=PalettesAreEqual(image,next_image);
             if (use_global_plte == 0)
-              use_global_plte=mng_info->equal_palettes;
+              use_global_plte=(int) mng_info->equal_palettes;
             need_local_plte=!mng_info->equal_palettes;
           }
         if (GetNextImageInList(next_image) != (Image *) NULL)

@@ -2693,7 +2693,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
       Annotate image with text.
     */
     status=XAnnotateImage(display,windows->pixel_info,annotate_info,image,
-      exception);
+      exception) == MagickFalse ? 0 : 1;
     if (status == 0)
       return(MagickFalse);
     /*
@@ -2783,7 +2783,7 @@ static MagickBooleanType XBackgroundImage(Display *display,
   background_resources.window_id=window_id;
   background_resources.backdrop=status != 0 ? MagickTrue : MagickFalse;
   status=XDisplayBackgroundImage(display,&background_resources,*image,
-    exception);
+    exception) == MagickFalse ? 0 : 1;
   if (status != MagickFalse)
     XClientMessage(display,windows->image.id,windows->im_protocols,
       windows->im_retain_colors,CurrentTime);
@@ -13239,7 +13239,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       status=XConfirmWidget(display,windows,"Really delete tile",filename);
       if (status <= 0)
         break;
-      status=ShredFile(filename);
+      status=ShredFile(filename) == MagickFalse ? 0 : 1;
       status|=remove_utf8(filename);
       if (status != MagickFalse)
         {
@@ -13959,7 +13959,7 @@ MagickExport MagickBooleanType XDisplayBackgroundImage(Display *display,
   window_info.x=(int) geometry_info.x;
   window_info.y=(int) geometry_info.y;
   status=XMakeImage(display,&resources,&window_info,image,window_info.width,
-    window_info.height,exception);
+    window_info.height,exception) == MagickFalse ? 0 : 1;
   if (status == MagickFalse)
     ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
       image->filename);

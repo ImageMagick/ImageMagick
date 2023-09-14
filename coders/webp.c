@@ -219,7 +219,7 @@ static int FillBasicWEBPInfo(Image *image,const uint8_t *stream,size_t length,
   int
     webp_status;
 
-  webp_status=WebPGetFeatures(stream,length,features);
+  webp_status=(int) WebPGetFeatures(stream,length,features);
 
   if (webp_status != VP8_STATUS_OK)
     return(webp_status);
@@ -295,7 +295,7 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
   if (image_info->ping != MagickFalse)
     return(webp_status);
 
-  webp_status=WebPDecode(stream,length,configure);
+  webp_status=(int) WebPDecode(stream,length,configure);
   if (webp_status != VP8_STATUS_OK)
     return(webp_status);
 

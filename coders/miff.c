@@ -1431,7 +1431,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         allocator.opaque=(void *) image;
         lzma_info=initialize_lzma;
         lzma_info.allocator=(&allocator);
-        code=lzma_auto_decoder(&lzma_info,(uint64_t) -1,0);
+        code=(int) lzma_auto_decoder(&lzma_info,(uint64_t) -1,0);
         if (code != LZMA_OK)
           status=MagickFalse;
         break;
@@ -1542,7 +1542,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       "UnableToReadImageData");
                   }
               }
-            code=lzma_code(&lzma_info,LZMA_RUN);
+            code=(int) lzma_code(&lzma_info,LZMA_RUN);
             if ((code != LZMA_OK) && (code != LZMA_STREAM_END))
               {
                 status=MagickFalse;
@@ -1679,7 +1679,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         int
           code;
 
-        code=lzma_code(&lzma_info,LZMA_FINISH);
+        code=(int) lzma_code(&lzma_info,LZMA_FINISH);
         if ((code != LZMA_STREAM_END) && (code != LZMA_OK))
           status=MagickFalse;
         lzma_end(&lzma_info);
@@ -2571,7 +2571,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         allocator.opaque=(void *) NULL;
         lzma_info=initialize_lzma;
         lzma_info.allocator=&allocator;
-        code=lzma_easy_encoder(&lzma_info,(uint32_t) (image->quality/10),
+        code=(int) lzma_easy_encoder(&lzma_info,(uint32_t) (image->quality/10),
           LZMA_CHECK_SHA256);
         if (code != LZMA_OK)
           status=MagickTrue;
@@ -2661,7 +2661,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
 
             lzma_info.next_out=compress_pixels;
             lzma_info.avail_out=LZMAMaxExtent(packet_size*image->columns);
-            code=lzma_code(&lzma_info,LZMA_RUN);
+            code=(int) lzma_code(&lzma_info,LZMA_RUN);
             if (code != LZMA_OK)
               status=MagickFalse;
             length=(size_t) (lzma_info.next_out-compress_pixels);
@@ -2793,7 +2793,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             break;
           lzma_info.next_out=compress_pixels;
           lzma_info.avail_out=packet_size*image->columns;
-          code=lzma_code(&lzma_info,LZMA_FINISH);
+          code=(int) lzma_code(&lzma_info,LZMA_FINISH);
           length=(size_t) (lzma_info.next_out-compress_pixels);
           if (length > 6)
             {

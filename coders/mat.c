@@ -495,7 +495,7 @@ ssize_t magick_size;
 size_t extent;
 int file;
 
-int status;
+MagickBooleanType status;
 int zip_status;
 ssize_t TotalSize = 0;
 
@@ -652,10 +652,10 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
     if(EOFBlob(image)) break;
     if ((ldblk > 9999) || (ldblk < 0))
       break;
-    HDR.Type[3]=ldblk % 10; ldblk /= 10;  /* T digit */
-    HDR.Type[2]=ldblk % 10; ldblk /= 10;  /* P digit */
-    HDR.Type[1]=ldblk % 10; ldblk /= 10;  /* O digit */
-    HDR.Type[0]=ldblk;        /* M digit */
+    HDR.Type[3]=(unsigned char) (ldblk % 10); ldblk /= 10;  /* T digit */
+    HDR.Type[2]=(unsigned char) (ldblk % 10); ldblk /= 10;  /* P digit */
+    HDR.Type[1]=(unsigned char) (ldblk % 10); ldblk /= 10;  /* O digit */
+    HDR.Type[0]=(unsigned char) (ldblk);        /* M digit */
     if (HDR.Type[3] != 0)
       break;  /* Data format */
     if (HDR.Type[2] != 0)
@@ -891,7 +891,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   double MinVal, MaxVal;
   unsigned z, z2;
   unsigned Frames;
-  int logging;
+  MagickBooleanType logging;
   int sample_size;
   MagickOffsetType filepos=0x80;
 
@@ -1265,8 +1265,8 @@ RestoreMSCWarning
     MaxVal = 0;
     if (CellType==miDOUBLE || CellType==miSINGLE)        /* Find Min and Max Values for floats */
       {
-        CalcMinMax(image2,image_info->endian,MATLAB_HDR.SizeX,MATLAB_HDR.SizeY,
-          CellType,ldblk,BImgBuff,&quantum_info->minimum,
+        CalcMinMax(image2,(int) image_info->endian,MATLAB_HDR.SizeX,
+          MATLAB_HDR.SizeY,CellType,ldblk,BImgBuff,&quantum_info->minimum,
           &quantum_info->maximum);
       }
 
@@ -1339,7 +1339,8 @@ ExitLoop:
 
       if (CellType==miDOUBLE || CellType==miSINGLE)
       {
-        CalcMinMax(image2,  image_info->endian, MATLAB_HDR.SizeX, MATLAB_HDR.SizeY, CellType, ldblk, BImgBuff, &MinVal, &MaxVal);
+        CalcMinMax(image2,  (int) image_info->endian, MATLAB_HDR.SizeX,
+          MATLAB_HDR.SizeY, CellType, ldblk, BImgBuff, &MinVal, &MaxVal);
       }
 
       if (CellType==miDOUBLE)

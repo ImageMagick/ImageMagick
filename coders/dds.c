@@ -3220,7 +3220,7 @@ static MagickBooleanType ConstructOrdering(const size_t count,
     DDSVector4
       v;
 
-    j = (size_t) o[i];
+    j = (ssize_t) o[i];
 
     v.x = points[j].w * points[j].x;
     v.y = points[j].w * points[j].y;
@@ -3977,7 +3977,7 @@ static void WriteFourCC(Image *image, const size_t compression,
                 max5 = alpha;
             }
           
-          alphas[4*by + bx] = (size_t)alpha;
+          alphas[4*by + bx] = (ssize_t)alpha;
 
           point.x = (float)ScaleQuantumToChar(GetPixelRed(image,p)) / 255.0f;
           point.y = (float)ScaleQuantumToChar(GetPixelGreen(image,p)) / 255.0f;

@@ -1311,6 +1311,7 @@ MagickExport Image *XAnimateImages(Display *display,
     command[MagickPathExtent],
     *directory,
     geometry[MagickPathExtent],
+    *p,
     resource_name[MagickPathExtent];
 
   CommandType
@@ -1336,14 +1337,9 @@ MagickExport Image *XAnimateImages(Display *display,
   RectangleInfo
     geometry_info;
 
-  char
-    *p;
-
-  ssize_t
-    i;
-
   ssize_t
     first_scene,
+    i,
     iterations,
     scene;
 
@@ -1949,7 +1945,7 @@ MagickExport Image *XAnimateImages(Display *display,
       ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
         image_list[scene]->filename);
     status=XMakeImage(display,resource_info,&windows->image,image_list[scene],
-      columns,rows,exception);
+      columns,rows,exception) == MagickFalse ? 0 : 1;
     if (status == MagickFalse)
       ThrowXWindowFatalException(XServerFatalError,"UnableToCreateXImage",
         images->filename);

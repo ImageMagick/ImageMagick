@@ -306,7 +306,7 @@ process_message(ddjvu_message_t *message)
    default:
       printf("unexpected\n");
    };
-  return(message->m_any.tag);
+  return((int) message->m_any.tag);
 }
 
 
@@ -566,7 +566,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
   ddjvu_pageinfo_t info;
   ddjvu_message_t *message;
   Image *image;
-  int logging;
+  MagickBooleanType logging;
   int tag;
   MagickBooleanType status;
 
@@ -751,13 +751,13 @@ static Image *ReadDJVUImage(const ImageInfo *image_info,
     *images;
 
   int
-    logging = MagickFalse,
     use_cache;
 
   LoadContext
     *lc;
 
   MagickBooleanType
+    logging = MagickFalse,
     status;
 
   ssize_t

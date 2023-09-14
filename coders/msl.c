@@ -7763,7 +7763,7 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   Image
     *msl_image;
 
-  int
+  MagickStatusType
     status;
 
   MSLInfo
@@ -7874,10 +7874,11 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
     n=(ssize_t) strlen(message);
     if (n == 0)
       continue;
-    status=xmlParseChunk(msl_info.parser,message,(int) n,MagickFalse);
+    status=(MagickStatusType) xmlParseChunk(msl_info.parser,message,(int) n,
+      MagickFalse);
     if (status != 0)
       break;
-    status=xmlParseChunk(msl_info.parser," ",1,MagickFalse);
+    status=(MagickStatusType) xmlParseChunk(msl_info.parser," ",1,MagickFalse);
     if (status != 0)
       break;
     if (msl_info.exception->severity >= ErrorException)

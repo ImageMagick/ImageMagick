@@ -1303,7 +1303,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                         SetPixelRed(tile_image,ScaleCharToQuantum(
                           (unsigned char) ((i & 0x7c) << 1)),q);
                         SetPixelGreen(tile_image,ScaleCharToQuantum(
-                          (unsigned char) (((i & 0x03) << 6) |
+                          (unsigned char) ((size_t) ((i & 0x03) << 6) |
                           ((k & 0xe0) >> 2))),q);
                         SetPixelBlue(tile_image,ScaleCharToQuantum(
                           (unsigned char) ((k & 0x1f) << 3)),q);

@@ -565,7 +565,8 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
             return(status);
           client_info=(JPEGClientInfo *) jpeg_info->client_data;
           status=SetImageProfile(client_info->image,"MPF",
-            client_info->profiles[ICC_INDEX],client_info->exception);
+            client_info->profiles[ICC_INDEX],client_info->exception) ==
+            MagickFalse ? FALSE : TRUE;
           client_info->profiles[ICC_INDEX]=DestroyStringInfo(
             client_info->profiles[ICC_INDEX]);
           return(TRUE);
@@ -2729,7 +2730,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
         }
     }
 #endif
-  colorspace=jpeg_info->in_color_space;
+  colorspace=(int) jpeg_info->in_color_space;
   value=GetImageOption(image_info,"jpeg:colorspace");
   if (value == (char *) NULL)
     value=GetImageProperty(image,"jpeg:colorspace",exception);

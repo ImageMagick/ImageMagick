@@ -1085,7 +1085,7 @@ static MagickBooleanType DumpRPN (FxInfo * pfx, FILE * fh)
                pel->DoPush ? "push" : "NO push");
 
     if (pel->ImgAttrQual != aNull)
-      fprintf (fh, " ia=%s", OprStr(pel->ImgAttrQual));
+      fprintf (fh, " ia=%s", OprStr((int) pel->ImgAttrQual));
 
     if (pel->ChannelQual != NO_CHAN_QUAL) {
       if (pel->ChannelQual == THIS_CHANNEL) fprintf (stderr, "  ch=this");
@@ -1309,7 +1309,7 @@ static int MaybeXYWH (FxInfo * pfx, ImgAttrE * pop)
       "Invalid 'x' or 'y' or 'width' or 'height' token=", "'%s' at '%s'",
       pfx->token, SetShortExp(pfx));
 
-  if (*pop == aPage) (*pop) = (ImgAttrE) (*pop + ret);
+  if (*pop == aPage) (*pop) = (ImgAttrE) ((int) *pop + ret);
   else {
     if (ret > 2) {
       (void) ThrowMagickException (
@@ -1317,7 +1317,7 @@ static int MaybeXYWH (FxInfo * pfx, ImgAttrE * pop)
         "Invalid 'width' or 'height' token=", "'%s' at '%s'",
         pfx->token, SetShortExp(pfx));
     } else {
-      (*pop) = (ImgAttrE) (*pop + ret);
+      (*pop) = (ImgAttrE) ((int) *pop + ret);
     }
   }
   pfx->pex+=pfx->lenToken;
@@ -1764,7 +1764,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
   } else {
     if (!ExpectChar (pfx, '(')) return MagickFalse;
   }
-  if (!PushOperatorStack (pfx, pushOp)) return MagickFalse;
+  if (!PushOperatorStack (pfx, (int) pushOp)) return MagickFalse;
 
   pExpStart = pfx->pex;
   ndx0 = pfx->usedElements;
@@ -1920,7 +1920,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
 
     if (fe == fU || fe == fV || fe == fS) {
 
-      coordQual = (GetCoordQualifier (pfx, fe) == 1) ? MagickTrue : MagickFalse;
+      coordQual = (GetCoordQualifier (pfx, (int) fe) == 1) ? MagickTrue : MagickFalse;
 
       if (coordQual) {
 
@@ -1947,15 +1947,15 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
          (fe == fP || fe == fS || fe == fSP || fe == fU || fe == fUP || fe == fV || fe == fVP)
        )
     {
-      chQual = GetChannelQualifier (pfx, fe);
+      chQual = GetChannelQualifier (pfx, (int) fe);
     }
 
     if (chQual == NO_CHAN_QUAL && (fe == fU || fe == fV || fe == fS)) {
       /* Note: we don't allow "p.mean" etc. */
-      iaQual = GetImgAttrQualifier (pfx, fe);
+      iaQual = GetImgAttrQualifier (pfx, (int) fe);
     }
     if (IsQualifier (pfx) && chQual == NO_CHAN_QUAL && iaQual != aNull) {
-      chQual = GetChannelQualifier (pfx, fe);
+      chQual = GetChannelQualifier (pfx, (int) fe);
     }
     if (coordQual && iaQual != aNull) {
       (void) ThrowMagickException (
@@ -2030,7 +2030,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
         fe = fU0;
       }
     }
-    (void) AddElement (pfx, (fxFltType) 0, fe);
+    (void) AddElement (pfx, (fxFltType) 0, (int) fe);
     if (fe == fP || fe == fU  || fe == fU0 || fe == fUP ||
         fe == fV || fe == fVP || fe == fS || fe == fSP)
     {
@@ -2082,7 +2082,7 @@ static MagickBooleanType GetOperand (
     OperatorE op = GetLeadingOp (pfx);
     if (op==oOpenParen) {
       char chLimit = '\0';
-      if (!PushOperatorStack (pfx, op)) return MagickFalse;
+      if (!PushOperatorStack (pfx, (int) op)) return MagickFalse;
       pfx->pex++;
       if (!TranslateExpression (pfx, ")", &chLimit, needPopAll)) {
         (void) ThrowMagickException (
@@ -2108,7 +2108,7 @@ static MagickBooleanType GetOperand (
       }
       return MagickTrue;
     } else if (OprIsUnaryPrefix (op)) {
-      if (!PushOperatorStack (pfx, op)) return MagickFalse;
+      if (!PushOperatorStack (pfx, (int) op)) return MagickFalse;
       pfx->pex++;
       SkipSpaces (pfx);
       if (!*pfx->pex) return MagickFalse;
@@ -2238,7 +2238,7 @@ static MagickBooleanType GetOperand (
         return MagickFalse;
       }
 
-      if (IsStealth (fe)) {
+      if (IsStealth ((int) fe)) {
         (void) ThrowMagickException (
           pfx->exception, GetMagickModule(), OptionError,
           "Function", "'%s' not permitted at '%s'",
@@ -2258,11 +2258,11 @@ static MagickBooleanType GetOperand (
       ImgAttrE ia = GetImgAttrToken (pfx);
       if (ia != aNull) {
         fxFltType val = 0;
-        (void) AddElement (pfx, val, ia);
+        (void) AddElement (pfx, val, (int) ia);
 
         if (ImgAttrs[ia-(int) FirstImgAttr].NeedStats==1) {
           if (IsQualifier (pfx)) {
-            PixelChannel chQual = GetChannelQualifier (pfx, ia);
+            PixelChannel chQual = GetChannelQualifier (pfx, (int) ia);
             ElementT * pel;
             if (chQual == NO_CHAN_QUAL) {
               (void) ThrowMagickException (
@@ -2292,7 +2292,7 @@ static MagickBooleanType GetOperand (
       }
       if (se != sNull) {
         fxFltType val = 0;
-        (void) AddElement (pfx, val, se);
+        (void) AddElement (pfx, val, (int) se);
         pfx->pex += pfx->lenToken;
 
         if (se==sHue || se==sSaturation || se==sLightness) pfx->NeedHsl = MagickTrue;
@@ -2447,7 +2447,7 @@ static MagickBooleanType GetOperator (
   }
 
   *Assign = (op==oAssign) ? MagickTrue : MagickFalse;
-  *Update = OprInPlace (op);
+  *Update = OprInPlace ((int) op);
   *IncrDecr = (op == oPlusPlus || op == oSubSub) ? MagickTrue : MagickFalse;
 
   /* while top of OperatorStack is not empty and is not open-parens or assign,
@@ -2458,14 +2458,14 @@ static MagickBooleanType GetOperator (
   while (pfx->usedOprStack > 0) {
     OperatorE top = pfx->OperatorStack[pfx->usedOprStack-1]; 
     int precTop, precNew;
-    if (top == oOpenParen || top == oAssign || OprInPlace (top)) break;
+    if (top == oOpenParen || top == oAssign || OprInPlace ((int) top)) break;
     precTop = Operators[top].precedence;
     precNew = Operators[op].precedence;
     /* Assume left associativity.
        If right assoc, this would be "<=".
     */
     if (precTop < precNew) break;
-    (void) AddElement (pfx, (fxFltType) 0, top);
+    (void) AddElement (pfx, (fxFltType) 0, (int) top);
     pfx->usedOprStack--;
   }
 
@@ -2493,7 +2493,7 @@ static MagickBooleanType GetOperator (
   }
 
   if (!DoneIt) {
-    if (!PushOperatorStack (pfx, op)) return MagickFalse;
+    if (!PushOperatorStack (pfx, (int) op)) return MagickFalse;
   }
 
   pfx->pex += len;
@@ -2615,7 +2615,7 @@ static MagickBooleanType TranslateExpression (
     if (UserSymbol) {
       while (TopOprIsUnaryPrefix (pfx)) {
         OperatorE op = pfx->OperatorStack[pfx->usedOprStack-1];
-        (void) AddElement (pfx, (fxFltType) 0, op);
+        (void) AddElement (pfx, (fxFltType) 0, (int) op);
         pfx->usedOprStack--;
       }
     }
@@ -2693,11 +2693,11 @@ static MagickBooleanType TranslateExpression (
     if (op == oOpenParen || op == oOpenBracket || op == oOpenBrace) {
       break;
     }
-    if ( (op==oAssign && !Assign) || (OprInPlace(op) && !Update) ) {
+    if ( (op==oAssign && !Assign) || (OprInPlace((int) op) && !Update) ) {
       break;
     }
     pfx->usedOprStack--;
-    (void) AddElement (pfx, (fxFltType) 0, op);
+    (void) AddElement (pfx, (fxFltType) 0, (int) op);
     if (op == oAssign) {
       if (UserSymNdx0 < 0) {
         (void) ThrowMagickException (
@@ -2711,7 +2711,7 @@ static MagickBooleanType TranslateExpression (
       pfx->usedElements--;
       (void) AddAddressingElement (pfx, rCopyTo, UserSymNdx0);
       break;
-    } else if (OprInPlace (op)) {
+    } else if (OprInPlace ((int) op)) {
       if (UserSymNdx0 < 0) {
         (void) ThrowMagickException (
           pfx->exception, GetMagickModule(), OptionError,

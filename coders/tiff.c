@@ -640,7 +640,7 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
           (TIFFFieldDataType(field) == TIFF_LONG))
         {
           if (TIFFIsByteSwapped(tiff) != 0)
-            TIFFSwabArrayOfLong((uint32 *) profile,(size_t) length);
+            TIFFSwabArrayOfLong((uint32 *) profile,(tmsize_t) length);
           status=ReadProfile(image,"iptc",profile,4L*length,exception);
         }
       else

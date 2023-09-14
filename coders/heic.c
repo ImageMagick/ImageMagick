@@ -596,7 +596,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     }
   status=ReadHEICImageHandle(image_info,image,image_handle,exception);
   heif_image_handle_release(image_handle);
-  count=(size_t) heif_context_get_number_of_top_level_images(heif_context);
+  count=(ssize_t) heif_context_get_number_of_top_level_images(heif_context);
   if ((status != MagickFalse) && (count > 1))
     {
       heif_item_id
