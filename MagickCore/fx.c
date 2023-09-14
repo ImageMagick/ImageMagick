@@ -1309,7 +1309,7 @@ static int MaybeXYWH (FxInfo * pfx, ImgAttrE * pop)
       "Invalid 'x' or 'y' or 'width' or 'height' token=", "'%s' at '%s'",
       pfx->token, SetShortExp(pfx));
 
-  if (*pop == aPage) (*pop) = (ImgAttrE) (*pop + (unsigned int) ret);
+  if (*pop == aPage) (*pop) = (ImgAttrE) (*pop + ret);
   else {
     if (ret > 2) {
       (void) ThrowMagickException (
@@ -1317,7 +1317,7 @@ static int MaybeXYWH (FxInfo * pfx, ImgAttrE * pop)
         "Invalid 'width' or 'height' token=", "'%s' at '%s'",
         pfx->token, SetShortExp(pfx));
     } else {
-      (*pop) = (ImgAttrE) (*pop + (unsigned int) ret);
+      (*pop) = (ImgAttrE) (*pop + ret);
     }
   }
   pfx->pex+=pfx->lenToken;

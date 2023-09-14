@@ -201,8 +201,8 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadPolicyCache(cache,(const char *) GetStringInfoDatum(option),
-        GetStringInfoPath(option),0,exception);
+      status&=(MagickStatusType) LoadPolicyCache(cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
@@ -237,7 +237,7 @@ static LinkedListInfo *AcquirePolicyCache(const char *filename,
     policy_info->value=(char *) p->value;
     policy_info->exempt=MagickTrue;
     policy_info->signature=MagickCoreSignature;
-    status&=AppendValueToLinkedList(cache,policy_info);
+    status&=(MagickStatusType) AppendValueToLinkedList(cache,policy_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",policy_info->name);
@@ -895,8 +895,8 @@ static MagickBooleanType LoadPolicyCache(LinkedListInfo *cache,const char *xml,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=LoadPolicyCache(cache,file_xml,path,depth+1,
-                        exception);
+                      status&=(MagickStatusType) LoadPolicyCache(cache,file_xml,
+                        path,depth+1,exception);
                       file_xml=DestroyString(file_xml);
                     }
                 }

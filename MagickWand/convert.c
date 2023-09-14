@@ -614,7 +614,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
           images=PingImages(image_info,filename,exception);
         else
           images=ReadImages(image_info,filename,exception);
-        status&=(images != (Image *) NULL) &&
+        status&=(MagickStatusType) (images != (Image *) NULL) &&
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)
           continue;
@@ -3356,7 +3356,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
     ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   if (LocaleCompare(" ",argv[argc-1]) == 0)  /* common line continuation error */
     ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
-  status&=WriteImages(image_info,image,argv[argc-1],exception);
+  status&=(MagickStatusType) WriteImages(image_info,image,argv[argc-1],
+    exception);
   if (metadata != (char **) NULL)
     {
       char

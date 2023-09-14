@@ -4090,8 +4090,8 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
             new_images->gravity, &geometry);
           mask_image=RemoveFirstImageFromList(&_images);
           if (mask_image == (Image *) NULL)
-            status&=CompositeImage(new_images,source_image,compose,clip_to_self,
-              geometry.x,geometry.y,_exception);
+            status&=(MagickStatusType) CompositeImage(new_images,source_image,
+              compose,clip_to_self,geometry.x,geometry.y,_exception);
           else
             {
               Image
@@ -4104,30 +4104,33 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
               {
                 case BlendCompositeOp:
                 {
-                  status&=CompositeImage(new_images,source_image,compose,
-                    clip_to_self,geometry.x,geometry.y,_exception);
-                  status&=CompositeImage(new_images,mask_image,
-                    CopyAlphaCompositeOp,MagickTrue,0,0,_exception);
+                  status&=(MagickStatusType) CompositeImage(new_images,
+                    source_image,compose,clip_to_self,geometry.x,geometry.y,
+                    _exception);
+                  status&=(MagickStatusType) CompositeImage(new_images,
+                    mask_image,CopyAlphaCompositeOp,MagickTrue,0,0,_exception);
                   break;
                 }
                 case DisplaceCompositeOp:
                 case DistortCompositeOp:
                 {
-                  status&=CompositeImage(source_image,mask_image,
-                    CopyGreenCompositeOp,MagickTrue,0,0,_exception);
+                  status&=(MagickStatusType) CompositeImage(source_image,
+                    mask_image,CopyGreenCompositeOp,MagickTrue,0,0,_exception);
                   (void) SetImageColorspace(source_image,sRGBColorspace,
                     _exception);
-                  status&=CompositeImage(new_images,source_image,compose,
-                    clip_to_self,geometry.x,geometry.y,_exception);
+                  status&=(MagickStatusType) CompositeImage(new_images,
+                    source_image,compose,clip_to_self,geometry.x,geometry.y,
+                    _exception);
                   break;
                 }
                 case SaliencyBlendCompositeOp:
                 case SeamlessBlendCompositeOp:
                 {
-                  status&=CompositeImage(source_image,mask_image,
-                    CopyAlphaCompositeOp,MagickTrue,0,0,_exception);
-                  status&=CompositeImage(new_images,source_image,compose,
-                    clip_to_self,geometry.x,geometry.y,_exception);
+                  status&=(MagickStatusType) CompositeImage(source_image,
+                    mask_image,CopyAlphaCompositeOp,MagickTrue,0,0,_exception);
+                  status&=(MagickStatusType) CompositeImage(new_images,
+                    source_image,compose,clip_to_self,geometry.x,geometry.y,
+                    _exception);
                   break;
                 }
                 default:
@@ -4138,12 +4141,13 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                   clone_image=CloneImage(new_images,0,0,MagickTrue,_exception);
                   if (clone_image == (Image *) NULL)
                     break;
-                  status&=CompositeImage(new_images,source_image,compose,
-                    clip_to_self,geometry.x,geometry.y,_exception);
-                  status&=CompositeImage(new_images,mask_image,
-                    CopyAlphaCompositeOp,MagickTrue,0,0,_exception);
-                  status&=CompositeImage(clone_image,new_images,OverCompositeOp,
-                    clip_to_self,0,0,_exception);
+                  status&=(MagickStatusType) CompositeImage(new_images,
+                    source_image,compose,clip_to_self,geometry.x,geometry.y,
+                    _exception);
+                  status&=(MagickStatusType) CompositeImage(new_images,
+                    mask_image,CopyAlphaCompositeOp,MagickTrue,0,0,_exception);
+                  status&=(MagickStatusType) CompositeImage(clone_image,
+                    new_images,OverCompositeOp,clip_to_self,0,0,_exception);
                   new_images=DestroyImageList(new_images);
                   new_images=clone_image;
                   break;
@@ -4154,14 +4158,14 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
                 case DisplaceCompositeOp:
                 case DistortCompositeOp:
                 { 
-                  status&=CompositeImage(canvas_image,new_images,
-                    CopyCompositeOp,clip_to_self,0,0,_exception);
+                  status&=(MagickStatusType) CompositeImage(canvas_image,
+                    new_images,CopyCompositeOp,clip_to_self,0,0,_exception);
                   break;
                 }
                 default:
                 {
-                  status&=CompositeImage(canvas_image,new_images,
-                    OverCompositeOp,clip_to_self,0,0,_exception);
+                  status&=(MagickStatusType) CompositeImage(canvas_image,
+                    new_images,OverCompositeOp,clip_to_self,0,0,_exception);
                   break;
                 }
               }

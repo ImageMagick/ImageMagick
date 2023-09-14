@@ -448,7 +448,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
         {
           MagickDelay(1000*resource_info.pause);
           images=XImportImage(image_info,&ximage_info,exception);
-          status&=(images != (Image *) NULL) &&
+          status&=(MagickStatusType) (images != (Image *) NULL) &&
             (exception->severity < ErrorException);
           if (images == (Image *) NULL)
             continue;
@@ -1288,7 +1288,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   if (image == (Image *) NULL)
     ThrowImportException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   FinalizeImageSettings(image_info,image,MagickTrue);
-  status&=WriteImages(image_info,image,filename,exception);
+  status&=(MagickStatusType) WriteImages(image_info,image,filename,exception);
   DestroyImport();
   return(status != 0 ? MagickTrue : MagickFalse);
 #else

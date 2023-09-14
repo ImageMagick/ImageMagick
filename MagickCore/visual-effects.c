@@ -1447,18 +1447,18 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
       local_info=(*segment);
       local_info.y1=(double) y_mid;
       local_info.x2=(double) x_mid;
-      status&=PlasmaImageProxy(image,image_view,u_view,v_view,random_info,
-        &local_info,attenuate,depth,exception);
+      status&=(MagickStatusType) PlasmaImageProxy(image,image_view,u_view,
+        v_view,random_info,&local_info,attenuate,depth,exception);
       local_info=(*segment);
       local_info.x1=(double) x_mid;
       local_info.y2=(double) y_mid;
-      status&=PlasmaImageProxy(image,image_view,u_view,v_view,random_info,
-        &local_info,attenuate,depth,exception);
+      status&=(MagickStatusType) PlasmaImageProxy(image,image_view,u_view,
+        v_view,random_info,&local_info,attenuate,depth,exception);
       local_info=(*segment);
       local_info.x1=(double) x_mid;
       local_info.y1=(double) y_mid;
-      status&=PlasmaImageProxy(image,image_view,u_view,v_view,random_info,
-        &local_info,attenuate,depth,exception);
+      status&=(MagickStatusType) PlasmaImageProxy(image,image_view,u_view,
+        v_view,random_info,&local_info,attenuate,depth,exception);
       return(status == 0 ? MagickFalse : MagickTrue);
     }
   x_mid=CastDoubleToLong(ceil((segment->x1+segment->x2)/2-0.5));

@@ -150,7 +150,8 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image,
     channel_mask=SetImageChannelMask(image,(ChannelType) (1UL << i));
     status=GetImageMean(image,&mean,&sans,exception);
     gamma=log(mean*QuantumScale)/log_mean;
-    status&=LevelImage(image,0.0,(double) QuantumRange,gamma,exception);
+    status&=(MagickStatusType) LevelImage(image,0.0,(double) QuantumRange,gamma,
+      exception);
     (void) SetImageChannelMask(image,channel_mask);
     if (status == MagickFalse)
       break;
@@ -3234,38 +3235,38 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,RedChannel);
-          status&=LevelImage(image,black_color->red,white_color->red,1.0,
-            exception);
+          status&=(MagickStatusType) LevelImage(image,black_color->red,
+            white_color->red,1.0,exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,GreenChannel);
-          status&=LevelImage(image,black_color->green,white_color->green,1.0,
-            exception);
+          status&=(MagickStatusType) LevelImage(image,black_color->green,
+            white_color->green,1.0,exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,BlueChannel);
-          status&=LevelImage(image,black_color->blue,white_color->blue,1.0,
-            exception);
+          status&=(MagickStatusType) LevelImage(image,black_color->blue,
+            white_color->blue,1.0,exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           channel_mask=SetImageChannelMask(image,BlackChannel);
-          status&=LevelImage(image,black_color->black,white_color->black,1.0,
-            exception);
+          status&=(MagickStatusType) LevelImage(image,black_color->black,
+            white_color->black,1.0,exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->alpha_trait != UndefinedPixelTrait))
         {
           channel_mask=SetImageChannelMask(image,AlphaChannel);
-          status&=LevelImage(image,black_color->alpha,white_color->alpha,1.0,
-            exception);
+          status&=(MagickStatusType) LevelImage(image,black_color->alpha,
+            white_color->alpha,1.0,exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
     }
@@ -3274,38 +3275,38 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,RedChannel);
-          status&=LevelizeImage(image,black_color->red,white_color->red,1.0,
-            exception);
+          status&=(MagickStatusType) LevelizeImage(image,black_color->red,
+            white_color->red,1.0,exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,GreenChannel);
-          status&=LevelizeImage(image,black_color->green,white_color->green,1.0,
-            exception);
+          status&=(MagickStatusType) LevelizeImage(image,black_color->green,
+            white_color->green,1.0,exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
           channel_mask=SetImageChannelMask(image,BlueChannel);
-          status&=LevelizeImage(image,black_color->blue,white_color->blue,1.0,
-            exception);
+          status&=(MagickStatusType) LevelizeImage(image,black_color->blue,
+            white_color->blue,1.0,exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           channel_mask=SetImageChannelMask(image,BlackChannel);
-          status&=LevelizeImage(image,black_color->black,white_color->black,1.0,
-            exception);
+          status&=(MagickStatusType) LevelizeImage(image,black_color->black,
+            white_color->black,1.0,exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->alpha_trait != UndefinedPixelTrait))
         {
           channel_mask=SetImageChannelMask(image,AlphaChannel);
-          status&=LevelizeImage(image,black_color->alpha,white_color->alpha,1.0,
-            exception);
+          status&=(MagickStatusType) LevelizeImage(image,black_color->alpha,
+            white_color->alpha,1.0,exception);
           (void) SetImageChannelMask(image,channel_mask);
         }
     }
@@ -4571,10 +4572,11 @@ MagickExport MagickBooleanType WhiteBalanceImage(Image *image,
         black_point*=((double) QuantumRange/100.0);
       channel_mask=SetImageChannelMask(image,(ChannelType) (aChannel |
         bChannel));
-      status&=LevelImage(image,black_point,(double) QuantumRange-black_point,
-        1.0,exception);
+      status&=(MagickStatusType) LevelImage(image,black_point,(double)
+        QuantumRange-black_point,1.0,exception);
       (void) SetImageChannelMask(image,channel_mask);
     }
-  status&=TransformImageColorspace(image,sRGBColorspace,exception);
+  status&=(MagickStatusType) TransformImageColorspace(image,sRGBColorspace,
+    exception);
   return(status != 0 ? MagickTrue : MagickFalse);
 }

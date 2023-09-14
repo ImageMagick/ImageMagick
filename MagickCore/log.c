@@ -294,8 +294,8 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
     option=(const StringInfo *) GetNextValueInLinkedList(options);
     while (option != (const StringInfo *) NULL)
     {
-      status&=LoadLogCache(cache,(const char *) GetStringInfoDatum(option),
-        GetStringInfoPath(option),0,exception);
+      status&=(MagickStatusType) LoadLogCache(cache,(const char *)
+        GetStringInfoDatum(option),GetStringInfoPath(option),0,exception);
       option=(const StringInfo *) GetNextValueInLinkedList(options);
     }
     options=DestroyConfigureOptions(options);
@@ -330,7 +330,7 @@ static LinkedListInfo *AcquireLogCache(const char *filename,
     log_info->filename=ConstantString(p->filename);
     log_info->format=ConstantString(p->format);
     log_info->signature=MagickCoreSignature;
-    status&=AppendValueToLinkedList(cache,log_info);
+    status&=(MagickStatusType) AppendValueToLinkedList(cache,log_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",log_info->name);
@@ -847,7 +847,7 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
             break;
           mask=1;
           mask<<=j;
-          if ((log_info[i]->handler_mask & mask) != 0)
+          if (((size_t) log_info[i]->handler_mask & mask) != 0)
             {
               (void) FormatLocaleFile(file,"%s ",LogHandlers[j].name);
               length+=strlen(LogHandlers[j].name);
@@ -996,8 +996,8 @@ static MagickBooleanType LoadLogCache(LinkedListInfo *cache,const char *xml,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=LoadLogCache(cache,file_xml,path,depth+1,
-                        exception);
+                      status&=(MagickStatusType) LoadLogCache(cache,file_xml,
+                        path,depth+1,exception);
                       file_xml=DestroyString(file_xml);
                     }
                 }

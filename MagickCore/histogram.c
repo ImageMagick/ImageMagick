@@ -170,8 +170,8 @@ static inline size_t ColorToNodeId(const PixelInfo *pixel,size_t index)
     ((ScaleQuantumToChar(ClampToQuantum(pixel->green)) >> index) & 0x01) << 1 |
     ((ScaleQuantumToChar(ClampToQuantum(pixel->blue)) >> index) & 0x01) << 2);
   if (pixel->alpha_trait != UndefinedPixelTrait)
-    id|=((ScaleQuantumToChar(ClampToQuantum(pixel->alpha)) >> index) &
-      0x01) << 3;
+    id|=((size_t) ((ScaleQuantumToChar(ClampToQuantum(pixel->alpha)) >> index) &
+      0x01) << 3);
   return(id);
 }
 
@@ -948,7 +948,7 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
       min+=black;
       max-=white;
       if (fabs(min-max) >= MagickEpsilon)
-        status&=LevelImage(image,min,max,gamma,exception);
+        status&=(MagickStatusType) LevelImage(image,min,max,gamma,exception);
       return(status != 0 ? MagickTrue : MagickFalse);
     }
   /*
@@ -964,11 +964,11 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
     if ((traits & UpdatePixelTrait) == 0)
       continue;
     channel_mask=SetImageChannelMask(image,(ChannelType) (1UL << i));
-    status&=GetImageRange(image,&min,&max,exception);
+    status&=(MagickStatusType) GetImageRange(image,&min,&max,exception);
     min+=black;
     max-=white;
     if (fabs(min-max) >= MagickEpsilon)
-      status&=LevelImage(image,min,max,gamma,exception);
+      status&=(MagickStatusType) LevelImage(image,min,max,gamma,exception);
     (void) SetImageChannelMask(image,channel_mask);
   }
   return(status != 0 ? MagickTrue : MagickFalse);

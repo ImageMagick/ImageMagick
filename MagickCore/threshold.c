@@ -1837,8 +1837,8 @@ MagickExport MagickBooleanType ListThresholdMaps(FILE *file,
   while (option != (const StringInfo *) NULL)
   {
     (void) FormatLocaleFile(file,"\nPath: %s\n\n",GetStringInfoPath(option));
-    status&=ListThresholdMapFile(file,(const char *) GetStringInfoDatum(option),
-      GetStringInfoPath(option),exception);
+    status&=(MagickStatusType) ListThresholdMapFile(file,(const char *)
+      GetStringInfoDatum(option),GetStringInfoPath(option),exception);
     option=(const StringInfo *) GetNextValueInLinkedList(options);
   }
   options=DestroyConfigureOptions(options);

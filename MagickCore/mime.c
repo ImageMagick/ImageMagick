@@ -854,7 +854,8 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
             file_xml=FileToXML(path,~0UL);
             if (file_xml != (char *) NULL)
               {
-                status&=LoadMimeCache(cache,file_xml,path,depth+1,exception);
+                status&=(MagickStatusType) LoadMimeCache(cache,file_xml,path,
+                  depth+1,exception);
                 file_xml=DestroyString(file_xml);
               }
           }

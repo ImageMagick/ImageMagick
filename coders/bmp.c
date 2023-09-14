@@ -1392,7 +1392,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             pixel=(unsigned int) (*p++);
-            pixel|=(*p++) << 8;
+            pixel|=(unsigned int) (*p++) << 8;
             red=((pixel & bmp_info.red_mask) << shift.red) >> 16;
             if (quantum_bits.red == 5)
               red|=((red & 0xe000) >> 5);
@@ -2049,7 +2049,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             byte<<=1;
-            byte|=GetPixelIndex(image,p) != 0 ? 0x01 : 0x00;
+            byte|=(size_t) (GetPixelIndex(image,p) != 0 ? 0x01 : 0x00);
             bit++;
             if (bit == 8)
               {

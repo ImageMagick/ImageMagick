@@ -223,8 +223,8 @@ static LinkedListInfo *AcquireMagicList(ExceptionInfo *exception)
     magic_info->length=p->length;
     magic_info->skip_spaces=p->skip_spaces;
     magic_info->signature=MagickCoreSignature;
-    status&=InsertValueInSortedLinkedList(list,CompareMagickInfoExtent,
-      NULL,magic_info);
+    status&=(MagickStatusType) InsertValueInSortedLinkedList(list,
+      CompareMagickInfoExtent,NULL,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);

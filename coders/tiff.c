@@ -1665,7 +1665,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         return(DestroyImageList(image));
       }
     status=SetImageColorspace(image,image->colorspace,exception);
-    status&=ResetImagePixels(image,exception);
+    status&=(MagickStatusType) ResetImagePixels(image,exception);
     if (status == MagickFalse)
       {
         TIFFClose(tiff);

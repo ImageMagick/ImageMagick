@@ -493,7 +493,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
         images=ReadImage(image_info,exception);
         CatchException(exception);
-        status&=(images != (Image *) NULL) &&
+        status&=(MagickStatusType) (images != (Image *) NULL) &&
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)
           continue;
@@ -578,7 +578,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
               (void) CopyMagickString(display_image->filename,
                 resource_info.write_filename,MagickPathExtent);
               (void) SetImageInfo(image_info,1,exception);
-              status&=WriteImage(image_info,display_image,exception);
+              status&=(MagickStatusType) WriteImage(image_info,display_image,
+                exception);
             }
           /*
             Proceed to next/previous image.

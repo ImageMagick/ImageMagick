@@ -186,22 +186,21 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
       random_info=AcquireRandomInfo();
       status=PlasmaPixel(image,random_info,segment_info.x1,segment_info.y1,
         exception);
-      status&=PlasmaPixel(image,random_info,segment_info.x1,(segment_info.y1+
-        segment_info.y2)/2,exception);
-      status&=PlasmaPixel(image,random_info,segment_info.x1,segment_info.y2,
-        exception);
-      status&=PlasmaPixel(image,random_info,(segment_info.x1+segment_info.x2)/2,
-        segment_info.y1,exception);
-      status&=PlasmaPixel(image,random_info,(segment_info.x1+segment_info.x2)/2,
+      status&=(MagickStatusType) PlasmaPixel(image,random_info,segment_info.x1,
         (segment_info.y1+segment_info.y2)/2,exception);
-      status&=PlasmaPixel(image,random_info,(segment_info.x1+segment_info.x2)/2,
+      status&=(MagickStatusType) PlasmaPixel(image,random_info,segment_info.x1,
         segment_info.y2,exception);
-      status&=PlasmaPixel(image,random_info,segment_info.x2,segment_info.y1,
-        exception);
-      status&=PlasmaPixel(image,random_info,segment_info.x2,(segment_info.y1+
-        segment_info.y2)/2,exception);
-      status&=PlasmaPixel(image,random_info,segment_info.x2,segment_info.y2,
-        exception);
+      status&=(MagickStatusType) PlasmaPixel(image,random_info,(segment_info.x1+        segment_info.x2)/2,segment_info.y1,exception);
+      status&=(MagickStatusType) PlasmaPixel(image,random_info,(segment_info.x1+
+        segment_info.x2)/2,(segment_info.y1+segment_info.y2)/2,exception);
+      status&=(MagickStatusType) PlasmaPixel(image,random_info,(segment_info.x1+
+        segment_info.x2)/2,segment_info.y2,exception);
+      status&=(MagickStatusType) PlasmaPixel(image,random_info,segment_info.x2,
+        segment_info.y1,exception);
+      status&=(MagickStatusType) PlasmaPixel(image,random_info,segment_info.x2,
+        (segment_info.y1+segment_info.y2)/2,exception);
+      status&=(MagickStatusType) PlasmaPixel(image,random_info,segment_info.x2,
+        segment_info.y2,exception);
       random_info=DestroyRandomInfo(random_info);
       if (status == MagickFalse)
         return(image);  

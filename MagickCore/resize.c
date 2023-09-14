@@ -3791,16 +3791,16 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       span=(MagickSizeType) (filter_image->columns+rows);
       status=HorizontalFilter(resize_filter,image,filter_image,x_factor,span,
         &offset,exception);
-      status&=VerticalFilter(resize_filter,filter_image,resize_image,y_factor,
-        span,&offset,exception);
+      status&=(MagickStatusType) VerticalFilter(resize_filter,filter_image,
+        resize_image,y_factor,span,&offset,exception);
     }
   else
     {
       span=(MagickSizeType) (filter_image->rows+columns);
       status=VerticalFilter(resize_filter,image,filter_image,y_factor,span,
         &offset,exception);
-      status&=HorizontalFilter(resize_filter,filter_image,resize_image,x_factor,
-        span,&offset,exception);
+      status&=(MagickStatusType) HorizontalFilter(resize_filter,filter_image,
+        resize_image,x_factor,span,&offset,exception);
     }
   /*
     Free resources.

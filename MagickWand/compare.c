@@ -350,7 +350,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
         images=ReadImages(image_info,filename,exception);
-        status&=(images != (Image *) NULL) &&
+        status&=(MagickStatusType) (images != (Image *) NULL) &&
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)
           continue;
@@ -1460,7 +1460,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       (void) ResetImagePage(difference_image,"0x0+0+0");
       if (difference_image->next != (Image *) NULL)
         (void) ResetImagePage(difference_image->next,"0x0+0+0");
-      status&=WriteImages(image_info,difference_image,argv[argc-1],exception);
+      status&=(MagickStatusType) WriteImages(image_info,difference_image,
+        argv[argc-1],exception);
       if ((metadata != (char **) NULL) && (format != (char *) NULL))
         {
           char

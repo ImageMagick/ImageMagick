@@ -1266,8 +1266,8 @@ static MagickBooleanType LoadLocaleCache(SplayTreeInfo *cache,const char *xml,
                   file_xml=FileToXML(path,~0UL);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=LoadLocaleCache(cache,file_xml,path,locale,
-                        depth+1,exception);
+                      status&=(MagickStatusType) LoadLocaleCache(cache,file_xml,
+                        path,locale,depth+1,exception);
                       file_xml=DestroyString(file_xml);
                     }
                 }

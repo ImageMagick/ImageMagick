@@ -282,7 +282,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
           filename=argv[++i];
         (void) CopyMagickString(image_info->filename,filename,MagickPathExtent);
         images=StreamImage(image_info,stream_info,exception);
-        status&=(images != (Image *) NULL) &&
+        status&=(MagickStatusType) (images != (Image *) NULL) &&
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)
           continue;

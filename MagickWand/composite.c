@@ -210,8 +210,9 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               columns=composite_image->columns;
               for (y=0; y < (ssize_t) (*image)->rows; y+=(ssize_t) composite_image->rows)
                 for (x=0; x < (ssize_t) (*image)->columns; x+=(ssize_t) columns)
-                  status&=CompositeImage(*image,composite_image,
-                    composite_options->compose,MagickTrue,x,y,exception);
+                  status&=(MagickStatusType) CompositeImage(*image,
+                    composite_image,composite_options->compose,MagickTrue,x,y,
+                    exception);
             }
           else
             {
@@ -233,9 +234,10 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
                 Digitally composite image.
               */
               if (mask_image == (Image *) NULL)
-                status&=CompositeImage(*image,composite_image,
-                  composite_options->compose,composite_options->clip_to_self,
-                  geometry.x,geometry.y,exception);
+                status&=(MagickStatusType) CompositeImage(*image,
+                  composite_image,composite_options->compose,
+                  composite_options->clip_to_self,geometry.x,geometry.y,
+                  exception);
               else
                 {
                   Image
@@ -244,14 +246,16 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
                   clone_image=CloneImage(*image,0,0,MagickTrue,exception);
                   if (clone_image != (Image *) NULL)
                     {
-                      status&=CompositeImage(*image,composite_image,
-                        composite_options->compose,
+                      status&=(MagickStatusType) CompositeImage(*image,
+                        composite_image,composite_options->compose,
                         composite_options->clip_to_self,geometry.x,geometry.y,
                         exception);
-                      status&=CompositeImage(*image,mask_image,
-                        CopyAlphaCompositeOp,MagickTrue,0,0,exception);
-                      status&=CompositeImage(clone_image,*image,OverCompositeOp,
-                        composite_options->clip_to_self,0,0,exception);
+                      status&=(MagickStatusType) CompositeImage(*image,
+                        mask_image,CopyAlphaCompositeOp,MagickTrue,0,0,
+                        exception);
+                      status&=(MagickStatusType) CompositeImage(clone_image,
+                        *image,OverCompositeOp,composite_options->clip_to_self,
+                        0,0,exception);
                       *image=DestroyImageList(*image);
                       *image=clone_image;
                     }
@@ -536,7 +540,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
         images=ReadImages(image_info,filename,exception);
-        status&=(images != (Image *) NULL) &&
+        status&=(MagickStatusType) (images != (Image *) NULL) &&
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)
           continue;
@@ -1663,13 +1667,14 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         }
     }
   RemoveImageStack(mask_image);
-  status&=CompositeImageList(image_info,&images,composite_image,mask_image,
-    &composite_options,exception);
+  status&=(MagickStatusType) CompositeImageList(image_info,&images,
+    composite_image,mask_image,&composite_options,exception);
   composite_image=DestroyImage(composite_image);
   /*
     Write composite images.
   */
-  status&=WriteImages(image_info,images,argv[argc-1],exception);
+  status&=(MagickStatusType) WriteImages(image_info,images,argv[argc-1],
+    exception);
   if (metadata != (char **) NULL)
     {
       char

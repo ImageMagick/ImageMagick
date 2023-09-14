@@ -423,7 +423,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
           images=PingImages(image_info,filename,exception);
         else
           images=ReadImages(image_info,filename,exception);
-        status&=(images != (Image *) NULL) &&
+        status&=(MagickStatusType) (images != (Image *) NULL) &&
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)
           continue;
@@ -1420,7 +1420,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   if (resource_info.window_id != (char *) NULL)
     {
       XAnimateBackgroundImage(display,&resource_info,image,exception);
-      status&=MagickTrue;
+      status&=(MagickStatusType) MagickTrue;
     }
   else
     {

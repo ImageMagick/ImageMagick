@@ -1129,7 +1129,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) next->columns; x++)
               {
                 byte<<=1;
-                byte|=GetPixelIndex(next,p) != 0 ? 0x01 : 0x00;
+                byte|=(size_t) (GetPixelIndex(next,p) != 0 ? 0x01 : 0x00);
                 bit++;
                 if (bit == 8)
                   {

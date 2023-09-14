@@ -405,7 +405,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
                   "%s.%.20g",image_info->filename,(double) scene);
               images=ReadImages(image_info,scene_filename,exception);
             }
-          status&=(images != (Image *) NULL) &&
+          status&=(MagickStatusType) (images != (Image *) NULL) &&
             (exception->severity < ErrorException);
           if (images == (Image *) NULL)
             continue;
@@ -1833,7 +1833,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       if (*montage_image->magick == '\0')
         (void) CopyMagickString(montage_image->magick,image->magick,
           MagickPathExtent);
-      status&=WriteImages(image_info,montage_image,argv[argc-1],exception);
+      status&=(MagickStatusType) WriteImages(image_info,montage_image,
+        argv[argc-1],exception);
       if (metadata != (char **) NULL)
         {
           char

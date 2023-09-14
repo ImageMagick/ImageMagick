@@ -3849,7 +3849,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
         images=ReadImages(image_info,filename,exception);
-        status&=(images != (Image *) NULL) &&
+        status&=(MagickStatusType) (images != (Image *) NULL) &&
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)
           continue;
@@ -3915,7 +3915,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           Write transmogrified image to disk.
         */
         image_info->synchronize=MagickTrue;
-        status&=WriteImages(image_info,image,image->filename,exception);
+        status&=(MagickStatusType) WriteImages(image_info,image,image->filename,
+          exception);
         if (status != MagickFalse)
           {
 #if defined(MAGICKCORE_HAVE_UTIME)
@@ -8074,8 +8075,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               new_images->gravity,&geometry);
             mask_image=RemoveFirstImageFromList(images);
             if (mask_image == (Image *) NULL)
-              status&=CompositeImage(new_images,source_image,compose,
-                clip_to_self,geometry.x,geometry.y,exception);
+              status&=(MagickStatusType) CompositeImage(new_images,source_image,
+                compose,clip_to_self,geometry.x,geometry.y,exception);
             else
               {
                 Image
@@ -8088,30 +8089,33 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 {
                   case BlendCompositeOp:
                   {
-                    status&=CompositeImage(new_images,source_image,compose,
-                      clip_to_self,geometry.x,geometry.y,exception);
-                    status&=CompositeImage(new_images,mask_image,
-                      CopyAlphaCompositeOp,MagickTrue,0,0,exception);
+                    status&=(MagickStatusType) CompositeImage(new_images,
+                      source_image,compose,clip_to_self,geometry.x,geometry.y,
+                      exception);
+                    status&=(MagickStatusType) CompositeImage(new_images,
+                      mask_image,CopyAlphaCompositeOp,MagickTrue,0,0,exception);
                     break;
                   }
                   case DisplaceCompositeOp:
                   case DistortCompositeOp:
                   {
-                    status&=CompositeImage(source_image,mask_image,
-                      CopyGreenCompositeOp,MagickTrue,0,0,exception);
+                    status&=(MagickStatusType) CompositeImage(source_image,
+                      mask_image,CopyGreenCompositeOp,MagickTrue,0,0,exception);
                     (void) SetImageColorspace(source_image,sRGBColorspace,
                       exception);
-                    status&=CompositeImage(new_images,source_image,compose,
-                      clip_to_self,geometry.x,geometry.y,exception);
+                    status&=(MagickStatusType) CompositeImage(new_images,
+                      source_image,compose,clip_to_self,geometry.x,geometry.y,
+                      exception);
                     break;
                   }
                   case SaliencyBlendCompositeOp:
                   case SeamlessBlendCompositeOp:
                   {
-                    status&=CompositeImage(source_image,mask_image,
-                      CopyAlphaCompositeOp,MagickTrue,0,0,exception);
-                    status&=CompositeImage(new_images,source_image,compose,
-                      clip_to_self,geometry.x,geometry.y,exception);
+                    status&=(MagickStatusType) CompositeImage(source_image,
+                      mask_image,CopyAlphaCompositeOp,MagickTrue,0,0,exception);
+                    status&=(MagickStatusType) CompositeImage(new_images,
+                      source_image,compose,clip_to_self,geometry.x,geometry.y,
+                      exception);
                     break;
                   }
                   default:
@@ -8122,12 +8126,13 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                     clone_image=CloneImage(new_images,0,0,MagickTrue,exception);
                     if (clone_image == (Image *) NULL)
                       break;
-                    status&=CompositeImage(new_images,source_image,compose,
-                      clip_to_self,geometry.x,geometry.y,exception);
-                    status&=CompositeImage(new_images,mask_image,
-                      CopyAlphaCompositeOp,MagickTrue,0,0,exception);
-                    status&=CompositeImage(clone_image,new_images,
-                      OverCompositeOp,clip_to_self,0,0,exception);
+                    status&=(MagickStatusType) CompositeImage(new_images,
+                      source_image,compose,clip_to_self,geometry.x,geometry.y,
+                      exception);
+                    status&=(MagickStatusType) CompositeImage(new_images,
+                      mask_image,CopyAlphaCompositeOp,MagickTrue,0,0,exception);
+                    status&=(MagickStatusType) CompositeImage(clone_image,
+                      new_images,OverCompositeOp,clip_to_self,0,0,exception);
                     new_images=DestroyImageList(new_images);
                     new_images=clone_image;
                     break;
@@ -8138,14 +8143,14 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                   case DisplaceCompositeOp:
                   case DistortCompositeOp:
                   { 
-                    status&=CompositeImage(canvas_image,new_images,
-                      CopyCompositeOp,clip_to_self,0,0,exception);
+                    status&=(MagickStatusType) CompositeImage(canvas_image,
+                      new_images,CopyCompositeOp,clip_to_self,0,0,exception);
                     break;
                   }
                   default:
                   {
-                    status&=CompositeImage(canvas_image,new_images,
-                      OverCompositeOp,clip_to_self,0,0,exception);
+                    status&=(MagickStatusType) CompositeImage(canvas_image,
+                      new_images,OverCompositeOp,clip_to_self,0,0,exception);
                     break;
                   }
                 }
@@ -8951,7 +8956,8 @@ puts("list");
             (void) DeleteImageRegistry(key);
             write_images=CloneImageList(*images,exception);
             write_info=CloneImageInfo(mogrify_info);
-            status&=WriteImages(write_info,write_images,argv[i+1],exception);
+            status&=(MagickStatusType) WriteImages(write_info,write_images,
+              argv[i+1],exception);
             write_info=DestroyImageInfo(write_info);
             write_images=DestroyImageList(write_images);
             break;
@@ -8965,7 +8971,7 @@ puts("list");
   }
   quantize_info=DestroyQuantizeInfo(quantize_info);
   mogrify_info=DestroyImageInfo(mogrify_info);
-  status&=MogrifyImageInfo(image_info,argc,argv,exception);
+  status&=(MagickStatusType) MogrifyImageInfo(image_info,argc,argv,exception);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
@@ -9046,7 +9052,8 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
     Pre-process multi-image sequence operators
   */
   if (post == MagickFalse)
-    status&=MogrifyImageList(image_info,argc,argv,images,exception);
+    status&=(MagickStatusType) MogrifyImageList(image_info,argc,argv,images,
+      exception);
   /*
     For each image, process simple single image operators
   */
@@ -9058,7 +9065,8 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
   (void) FormatLocaleFile(stderr,"mogrify %ld of %ld\n",(long)
     GetImageIndexInList(*images),(long)GetImageListLength(*images));
 #endif
-    status&=MogrifyImage(image_info,argc,argv,images,exception);
+    status&=(MagickStatusType) MogrifyImage(image_info,argc,argv,images,
+      exception);
     proceed=SetImageProgress(*images,MogrifyImageTag,(MagickOffsetType) i, n);
     if (proceed == MagickFalse)
       break;
@@ -9077,6 +9085,7 @@ WandExport MagickBooleanType MogrifyImages(ImageInfo *image_info,
   */
   *images=GetFirstImageInList(*images);
   if (post != MagickFalse)
-    status&=MogrifyImageList(image_info,argc,argv,images,exception);
+    status&=(MagickStatusType) MogrifyImageList(image_info,argc,argv,images,
+      exception);
   return(status != 0 ? MagickTrue : MagickFalse);
 }

@@ -305,7 +305,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
         else
           images=ReadImages(identify_info,filename,exception);
         identify_info=DestroyImageInfo(identify_info);
-        status&=(images != (Image *) NULL) &&
+        status&=(MagickStatusType) (images != (Image *) NULL) &&
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)
           continue;

@@ -1170,8 +1170,8 @@ static MagickBooleanType LoadTypeCache(SplayTreeInfo *cache,const char *xml,
                   sans_exception=DestroyExceptionInfo(sans_exception);
                   if (file_xml != (char *) NULL)
                     {
-                      status&=LoadTypeCache(cache,file_xml,path,depth+1,
-                        exception);
+                      status&=(MagickStatusType) LoadTypeCache(cache,file_xml,
+                        path,depth+1,exception);
                       file_xml=(char *) RelinquishMagickMemory(file_xml);
                     }
                 }
