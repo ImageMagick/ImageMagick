@@ -3481,7 +3481,7 @@ AC_SUBST([windows_font_dir])
 AC_SUBST([type_include_files])
 
 #
-# Need C++ for 64-bit channels masks to 64-birt enums.
+# Need C++ for 64-bit channels masks to 64-bit enums.
 #
 if test "$enable_64bit_channel_masks" = 'yes'; then
   AC_MSG_CHECKING([whether the compiler supports -x option])
