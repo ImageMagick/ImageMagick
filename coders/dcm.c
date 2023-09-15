@@ -4099,7 +4099,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (colors == 0)
             colors=one << info.depth;
           if (AcquireImageColormap(image,colors,exception) == MagickFalse)
-            ThrowDCMException(ResourceLimitError,"MemoryAllocationFailed")
+            ThrowDCMException(ResourceLimitError,"UnableToCreateColormap")
           if (map.red != (int *) NULL)
             for (i=0; i < (ssize_t) colors; i++)
             {
