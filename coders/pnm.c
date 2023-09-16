@@ -865,7 +865,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             offset,
             x;
 
-
           stream=ReadBlobStream(image,extent,pixels,&count);
           if (count != (ssize_t) extent)
             break;
