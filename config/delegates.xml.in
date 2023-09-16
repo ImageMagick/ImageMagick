@@ -78,7 +78,7 @@
   <delegate decode="html" command="&quot;@HTMLDecodeDelegate@&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="ilbm" command="&quot;@ILBMDecodeDelegate@&quot; &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="jpg" encode="lep" mode="encode" command="&quot;@LEPDelegate@&quot; &quot;%i&quot; &quot;%o&quot;"/>
-  <delegate decode="jxr" command="@MVDelegate@ &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.pnm&quot;; @MVDelegate@ &quot;%i.jxr&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.pnm&quot; &quot;%o&quot;"/>
+  <delegate decode="jxr" command="@MVDelegate@ &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.tiff&quot;; @MVDelegate@ &quot;%i.jxr&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.tiff&quot; &quot;%o&quot;"/>
   <delegate decode="lep" mode="decode" command="&quot;@LEPDelegate@&quot; &quot;%i&quot; &quot;%o&quot;"/>
   <delegate decode="miff" encode="show" spawn="True" command="&quot;@DisplayDelegate@&quot; display -immutable -delay 0 -title &quot;%M&quot; &quot;%i&quot;"/>
   <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;@DisplayDelegate@&quot; display -immutable -delay 0 -title &quot;%M&quot; &quot;%i&quot;"/>
@@ -91,8 +91,8 @@
   <delegate decode="pnm" encode="trace" command="&quot;@TraceEncodeDelegate@&quot; --svg --output &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="png" encode="webp" command="&quot;@WebPEncodeDelegate@&quot; -quiet -q %Q &quot;%i&quot; -o &quot;%o&quot;"/>
   <delegate decode="pnm" encode="ilbm" mode="encode" command="&quot;@ILBMEncodeDelegate@&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="bmp" encode="jxr" command="@MVDelegate@ &quot;%i&quot; &quot;%i.bmp&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; @MVDelegate@ &quot;%i.bmp&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.jxr&quot; &quot;%o&quot;"/>
-  <delegate decode="bmp" encode="wdp" command="@MVDelegate@ &quot;%i&quot; &quot;%i.bmp&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; @MVDelegate@ &quot;%i.bmp&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.jxr&quot; &quot;%o&quot;"/>
+  <delegate decode="tiff" encode="jxr" command="@MVDelegate@ &quot;%i&quot; &quot;%i.tiff&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.tiff&quot; -o &quot;%o.jxr&quot;; @MVDelegate@ &quot;%i.tiff&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.jxr&quot; &quot;%o&quot;"/>
+  <delegate decode="tiff" encode="wdp" command="@MVDelegate@ &quot;%i&quot; &quot;%i.tiff&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.tiff&quot; -o &quot;%o.jxr&quot;; @MVDelegate@ &quot;%i.tiff&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.jxr&quot; &quot;%o&quot;"/>
   <delegate decode="ppt" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="pptx" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="ps" encode="prt" command="&quot;@LPRDelegate@&quot; &quot;%i&quot;"/>
@@ -110,7 +110,7 @@
   <delegate decode="svg:decode" stealth="True" command="&quot;@SVGDecodeDelegate@&quot; &quot;%s&quot; --export-filename=&quot;%s&quot; --export-dpi=&quot;%s&quot; --export-background=&quot;%s&quot; --export-background-opacity=&quot;%s&quot; &gt; &quot;%s&quot; 2&gt;&amp;1"/>
   <delegate decode="tiff" encode="text" command="&quot;@TextEncodeDelegate@&quot; &quot;%i&quot; &quot;%u&quot;; @MVDelegate@ &quot;%u.txt&quot; &quot;%o&quot;"/>
   <delegate decode="tiff" encode="launch" mode="encode" command="&quot;@LaunchDelegate@&quot; &quot;%i&quot;"/>
-  <delegate decode="wdp" command="@MVDelegate@ &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot;; @MVDelegate@ &quot;%i.jxr&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.bmp&quot; &quot;%o&quot;"/>
+  <delegate decode="wdp" command="@MVDelegate@ &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.tiff&quot;; @MVDelegate@ &quot;%i.jxr&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.tiff&quot; &quot;%o&quot;"/>
   <delegate decode="webp" command="&quot;@WebPDecodeDelegate@&quot; -pam &quot;%i&quot; -o &quot;%o&quot;"/>
   <delegate decode="xls" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="xlsx" command="&quot;@DOCDecodeDelegate@&quot; --headless --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
