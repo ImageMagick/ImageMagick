@@ -369,12 +369,12 @@ static MagickBooleanType WriteDMRImage(const ImageInfo *image_info,Image *image,
   MagickCacheResourceType
     type;
 
-  size_t
-    ttl = 0;
-
   StringInfo
     *passkey = (StringInfo *) NULL,
     *passphrase = (StringInfo *) NULL;
+
+  time_t
+    ttl = 0;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -421,7 +421,7 @@ static MagickBooleanType WriteDMRImage(const ImageInfo *image_info,Image *image,
       /*
         Time to live, absolute or relative, e.g. 1440, 2 hours, 3 days, ...
       */
-      ttl=(size_t) InterpretLocaleValue(option,&q);
+      ttl=(time_t) InterpretLocaleValue(option,&q);
       if (q != option)
         {
           while (isspace((int) ((unsigned char) *q)) != 0)
