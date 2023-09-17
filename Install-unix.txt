@@ -1,14 +1,13 @@
 Download & Unpack
   
   ImageMagick builds on a variety of Unix and Unix-like operating systems
-  including Linux, Solaris, FreeBSD, Mac OS X, and others. A compiler is
-  required and fortunately almost all modern Unix systems have one. Download
-  ImageMagick.tar.gz from ftp.imagemagick.org or its mirrors and verify the
-  distribution against its message digest.
+  including Linux, Ubuntu, FreeBSD, WIndows, Mac OS X, and others. A compiler
+  is required and fortunately almost all modern Unix systems have one. Download
+  https://imagemagick.org/archive/ImageMagick.tar.gz.
   
   Unpack the distribution with this command:
   
-    $magick> tar xvfz ImageMagick.tar.gz
+    $ tar xvfz ImageMagick.tar.gz
   
   Now that you have the ImageMagick Unix/Linux source distribution unpacked,
   let's configure it.
@@ -23,86 +22,12 @@ Configure
   default options, and build from within the source directory, you can simply
   type:
   
-    $magick> cd ImageMagick-7.1.1
-    $magick> ./configure
+    $ cd ImageMagick-7.1.1
+    $ ./configure
   
   Watch the configure script output to verify that it finds everything that
   you think it should. Pay particular attention to the last lines of the script
-  output. For example, here is a recent report from our system:
-  
-  ImageMagick is configured as follows. Please verify that this configuration
-  matches your expectations.
-  
-    Host system type: x86_64-unknown-linux-gnu
-    Build system type: x86_64-unknown-linux-gnu
-    
-                      Option                     Value
-    ----------------------------------------------------------------------------
-    Shared libraries  --enable-shared=yes		yes
-    Static libraries  --enable-static=yes		yes
-    Module support    --with-modules=yes		yes
-    GNU ld            --with-gnu-ld=yes		yes
-    Quantum depth     --with-quantum-depth=16	16
-    High Dynamic Range Imagery
-                      --enable-hdri=no		no
-    
-    Delegate Configuration:
-    BZLIB             --with-bzlib=yes		yes
-    Autotrace         --with-autotrace=yes	yes
-    DJVU              --with-djvu=yes		no
-    DPS               --with-dps=yes		no
-    FlashPIX          --with-fpx=yes		no
-    FontConfig        --with-fontconfig=yes	yes
-    FreeType          --with-freetype=yes		yes
-    GhostPCL          None			pcl6 (unknown)
-    GhostXPS          None			gxps (unknown)
-    Ghostscript       None			gs (8.63)
-    result_ghostscript_font_dir='none'
-    Ghostscript fonts --with-gs-font-dir=default
-    Ghostscript lib   --with-gslib=yes		no (failed tests)
-    Graphviz          --with-gvc=yes		yes
-    JBIG              --with-jbig=		no
-    JPEG v1           --with-jpeg=yes		yes
-    JPEG-2000         --with-jp2=yes		yes
-    LCMS v1           --with-lcms=yes		yes
-    LCMS v2           --with-lcms2=yes		yes
-    LQR               --with-lqr=yes		no
-    Magick++          --with-magick-plus-plus=yes	yes
-    OpenEXR           --with-openexr=yes		yes
-    PERL              --with-perl=yes		/usr/bin/perl
-    PNG               --with-png=yes		yes
-    RSVG              --with-rsvg=yes		yes
-    TIFF              --with-tiff=yes		yes
-    result_windows_font_dir='none'
-    Windows fonts     --with-windows-font-dir=
-    WMF               --with-wmf=yes		yes
-    X11               --with-x=			yes
-    XML               --with-xml=yes		yes
-    ZLIB              --with-zlib=yes		yes
-    
-    X11 Configuration:
-          X_CFLAGS        =
-          X_PRE_LIBS      = -lSM -lICE
-          X_LIBS          =
-          X_EXTRA_LIBS    =
-    
-    Options used to compile and link:
-      PREFIX          = /usr/local
-      EXEC-PREFIX     = /usr/local
-      VERSION         = 7.1.1
-      CC              = gcc -std=gnu99
-      CFLAGS          = -fopenmp -g -O2 -Wall -W -pthread
-      MAGICK_CFLAGS   = -fopenmp -g -O2 -Wall -W -pthread
-      CPPFLAGS        = -I/usr/local/include/ImageMagick
-      PCFLAGS         = -fopenmp
-      DEFS            = -DHAVE_CONFIG_H
-      LDFLAGS         = -lfreetype
-      MAGICK_LDFLAGS  = -L/usr/local/lib -lfreetype
-      LIBS            = -lMagickCore -llcms -ltiff -lfreetype -ljpeg
-                        -lfontconfig -lXext -lSM -lICE -lX11 -lXt -lbz2 -lz
-                        -lm -lgomp -lpthread -lltdl
-      CXX             = g++
-      CXXFLAGS        = -g -O2 -Wall -W -pthread
+  output.
   
   You can influence the choice of compiler, compilation flags, or libraries of
   the configure script by setting initial values for variables in the configure
@@ -137,7 +62,7 @@ Configure
   
   Here is an example of setting configure variables from the command line:
   
-    $magick> ./configure CC=c99 CFLAGS=-O2 LIBS=-lposix
+    $ ./configure CC=c99 CFLAGS=-O2 LIBS=-lposix
   
   Any variable (e.g. CPPFLAGS or LDFLAGS) which requires a directory path must
   specify an absolute path rather than a relative path.
@@ -521,7 +446,7 @@ Build
   
   In most cases you will simply want to compile ImageMagick with this command:
   
-    $magick> make
+    $ make
   
   Once built, you can optionally install ImageMagick on your system as
   discussed below.
@@ -530,7 +455,7 @@ Install
   
   Now that ImageMagick is configured and built, type:
   
-    $magick> make install
+    $ make install
   
   to install it.
   
@@ -545,21 +470,21 @@ Install
   ensure that the installation directory is in your executable search path
   and type:
   
-    $magick> display
+    $ display
   
   The ImageMagick logo is displayed on your X11 display.
   
   To verify the ImageMagick build configuration, type:
   
-    $magick> identify -list configure
+    $ identify -list configure
   
   To list which image formats are supported , type:
   
-    $magick> identify -list format
+    $ identify -list format
   
   For a more comprehensive test, you run the ImageMagick test suite by typing:
   
-    $magick> make check
+    $ make check
   
   Ghostscript is a prerequisite, otherwise the EPS, PS, and PDF tests will
   fail. Note that due to differences between the developer's environment and
@@ -575,12 +500,12 @@ Linux-specific Build instructions
   
   Build ImageMagick with this command:
   
-    $magick> rpmbuild --rebuild ImageMagick.src.rpm
+    $ rpmbuild --rebuild ImageMagick.src.rpm
   
   After the build you, locate the RPMS folder and install the ImageMagick
   binary RPM distribution:
   
-    $magick> rpm -ivh ImageMagick-7.1.1-?.*.rpm
+    $ rpm -ivh ImageMagick-7.1.1-?.*.rpm
   
 MinGW-specific Build instructions
   
@@ -590,12 +515,13 @@ MinGW-specific Build instructions
   sure you specify the development headers when you install a package. Next
   type,
   
-    $magick> tar jxvf ImageMagick-7.1.1-?.tar.bz2
-    $magick> cd ImageMagick-7.1.1
-    $magick> export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"
-    $magick> export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"
-    $magick> ./configure --without-perl
-    $magick> make $magick> sudo make install
+    $ tar jxvf ImageMagick-7.1.1-?.tar.bz2
+    $ cd ImageMagick-7.1.1
+    $ export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"
+    $ export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"
+    $ ./configure --without-perl
+    $ make
+    $ sudo make install
   
 Dealing with Unexpected Problems
   
@@ -613,19 +539,19 @@ Dealing with Unexpected Problems
   Some systems may fail to link at build time due to unresolved symbols. Try
   adding the LDFLAGS to the configure command line:
   
-    $magick> configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib'
+    $ configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib'
   
   Dynamic Linker Run-time Bindings
   
   On some systems, ImageMagick may not find its shared library, libMagick.so. Try
   running the ldconfig with the library path:
   
-    $magick> /sbin/ldconfig /usr/local/lib
+    $ /sbin/ldconfig /usr/local/lib
   
   Solaris and Linux systems have the ldd command which is useful to track which
   libraries ImageMagick depends on:
   
-    $magick> ldd `which convert`
+    $ ldd `which convert`
   
   Delegate Libraries
   
@@ -640,12 +566,12 @@ Dealing with Unexpected Problems
   files and reconfigure, rebuild, and reinstall ImageMagick. As an example,
   lets add support for the JPEG image format. First we install the JPEG RPMS:
   
-    $magick> yum install libjpeg libjpeg-devel
+    $ yum install libjpeg libjpeg-devel
   
   Now reconfigure, rebuild, and reinstall ImageMagick. To verify JPEG is now
   properly supported within ImageMagick, use this command:
   
-    $magick> identify -list format
+    $ identify -list format
   
   You should see a mode of rw- associated with the JPEG tag. This mode means
   the image can be read or written and can only support one image per image
