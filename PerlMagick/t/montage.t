@@ -20,7 +20,7 @@ END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
 
-require '/home/cristy/ImageMagick-7.1.1-16/PerlMagick/t/subroutines.pl';
+require 't/subroutines.pl';
 
 chdir 't' || die 'Cd failed';
 
