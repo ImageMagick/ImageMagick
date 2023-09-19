@@ -12388,9 +12388,9 @@ PerceptualHash(ref)
         PixelTrait traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        EXTEND(sp,(ssize_t) (GetPixelChannels(image)*
+        EXTEND(sp,((ssize_t) GetPixelChannels(image)*
           MaximumNumberOfPerceptualHashes*
-          channel_phash[0].number_colorspaces*(i+1)*count));
+          (ssize_t) channel_phash[0].number_colorspaces*(i+1)*count));
         for (j=0; j < MaximumNumberOfPerceptualHashes; j++)
         {
           ssize_t
