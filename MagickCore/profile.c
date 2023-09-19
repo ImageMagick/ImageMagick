@@ -1914,15 +1914,15 @@ static void PatchCorruptProfile(const char *name,StringInfo *profile)
     }
 }
 
-#if defined(MAGICKCORE_XML_DELEGATE)
 static MagickBooleanType ValidateXMPProfile(Image *image,
   const StringInfo *profile,ExceptionInfo *exception)
 {
+#if defined(MAGICKCORE_XML_DELEGATE)
   xmlDocPtr
     document;
 
   /*
-    Parse XML profile.
+    Validate XMP profile.
   */
   document=xmlReadMemory((const char *) GetStringInfoDatum(profile),(int)
     GetStringInfoLength(profile),"xmp.xml",NULL,XML_PARSE_NOERROR |
@@ -1934,19 +1934,13 @@ static MagickBooleanType ValidateXMPProfile(Image *image,
       return(MagickFalse);
     }
   xmlFreeDoc(document);
+#else
+  (void) image;
+  (void) profile;
+  (void) exception;
+#endif
   return(MagickTrue);
 }
-#else
-static MagickBooleanType ValidateXMPProfile(Image *image,
-  const StringInfo *magick_unused(profile),ExceptionInfo *exception)
-{
-  magick_unreferenced(profile);
-  (void) ThrowMagickException(exception,GetMagickModule(),
-    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","'%s' (XML)",
-    image->filename);
-  return(MagickFalse);
-}
-#endif
 
 static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   const StringInfo *profile,const MagickBooleanType recursive,
