@@ -221,6 +221,9 @@
         <message name="IncludeElementNestedTooDeeply">
           trop de niveau d'inclusion d'éléments
         </message>
+        <message name="PolicyValidationException">
+          security policy failed to validate
+        </message>
       </error>
       <warning>
         <message name="UnableToOpenConfigureFile">
