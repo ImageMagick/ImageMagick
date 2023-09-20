@@ -842,11 +842,35 @@ static void GetEXIFProperty(const Image *image,const char *property,
 #define EXIF_FMT_SRATIONAL  10
 #define EXIF_FMT_SINGLE  11
 #define EXIF_FMT_DOUBLE  12
+#define GPS_LATITUDE  0x10002
+#define GPS_LONGITUDE  0x10004
+#define GPS_TIMESTAMP  0x10007
 #define TAG_EXIF_OFFSET  0x8769
 #define TAG_GPS_OFFSET  0x8825
 #define TAG_INTEROP_OFFSET  0xa005
 
-#define EXIFMultipleValues(size,format,arg) \
+#define EXIFGPSFractions(format,arg1,arg2,arg3,arg4,arg5,arg6) \
+{ \
+   size_t \
+     extent = 0; \
+ \
+   ssize_t \
+     component = 0; \
+ \
+   for ( ; component < components; component++) \
+   { \
+     extent=(size_t) ((ssize_t) extent+FormatLocaleString(buffer+extent, \
+       MagickPathExtent-extent,format", ",(arg1),(arg2),(arg3),(arg4),(arg5), \
+       (arg6))); \
+     if (extent >= (MagickPathExtent-1)) \
+       extent=MagickPathExtent-1; \
+   } \
+   if (extent > 1) \
+     buffer[extent-2]='\0'; \
+   value=AcquireString(buffer); \
+}
+
+#define EXIFMultipleValues(format,arg) \
 { \
    size_t \
      extent = 0; \
@@ -866,7 +890,7 @@ static void GetEXIFProperty(const Image *image,const char *property,
    value=AcquireString(buffer); \
 }
 
-#define EXIFMultipleFractions(size,format,arg1,arg2) \
+#define EXIFMultipleFractions(format,arg1,arg2) \
 { \
    size_t \
      extent = 0; \
@@ -1484,54 +1508,67 @@ static void GetEXIFProperty(const Image *image,const char *property,
             }
             case EXIF_FMT_SBYTE:
             {
-              EXIFMultipleValues(1,"%.20g",(double) (*(signed char *) p));
+              EXIFMultipleValues("%.20g",(double) (*(signed char *) p));
               break;
             }
             case EXIF_FMT_SSHORT:
             {
-              EXIFMultipleValues(2,"%hd",ReadPropertySignedShort(endian,p));
+              EXIFMultipleValues("%hd",ReadPropertySignedShort(endian,p));
               break;
             }
             case EXIF_FMT_USHORT:
             {
-              EXIFMultipleValues(2,"%hu",ReadPropertyUnsignedShort(endian,p));
+              EXIFMultipleValues("%hu",ReadPropertyUnsignedShort(endian,p));
               break;
             }
             case EXIF_FMT_ULONG:
             {
-              EXIFMultipleValues(4,"%.20g",(double)
+              EXIFMultipleValues("%.20g",(double)
                 ReadPropertyUnsignedLong(endian,p));
               break;
             }
             case EXIF_FMT_SLONG:
             {
-              EXIFMultipleValues(4,"%.20g",(double)
+              EXIFMultipleValues("%.20g",(double)
                 ReadPropertySignedLong(endian,p));
               break;
             }
             case EXIF_FMT_URATIONAL:
             {
-              EXIFMultipleFractions(8,"%.20g/%.20g",(double)
+              if ((tag_value == GPS_LATITUDE) || (tag_value == GPS_LONGITUDE) ||
+                  (tag_value == GPS_TIMESTAMP))
+                {
+                  components=1;
+                  EXIFGPSFractions("%.20g/%.20g,%.20g/%.20g,%.20g/%.20g",
+                    (double) ReadPropertyUnsignedLong(endian,p),
+                    (double) ReadPropertyUnsignedLong(endian,p+4),
+                    (double) ReadPropertyUnsignedLong(endian,p+8),
+                    (double) ReadPropertyUnsignedLong(endian,p+12),
+                    (double) ReadPropertyUnsignedLong(endian,p+16),
+                    (double) ReadPropertyUnsignedLong(endian,p+20));
+                  break;
+                }
+              EXIFMultipleFractions("%.20g/%.20g",(double)
                 ReadPropertyUnsignedLong(endian,p),(double)
                 ReadPropertyUnsignedLong(endian,p+4));
               break;
             }
             case EXIF_FMT_SRATIONAL:
             {
-              EXIFMultipleFractions(8,"%.20g/%.20g",(double)
+              EXIFMultipleFractions("%.20g/%.20g",(double)
                 ReadPropertySignedLong(endian,p),(double)
                 ReadPropertySignedLong(endian,p+4));
               break;
             }
             case EXIF_FMT_SINGLE:
             {
-              EXIFMultipleValues(4,"%.20g",(double)
+              EXIFMultipleValues("%.20g",(double)
                 ReadPropertySignedLong(endian,p));
               break;
             }
             case EXIF_FMT_DOUBLE:
             {
-              EXIFMultipleValues(8,"%.20g",(double)
+              EXIFMultipleValues("%.20g",(double)
                 ReadPropertySignedLong(endian,p));
               break;
             }
