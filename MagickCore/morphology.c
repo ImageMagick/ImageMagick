@@ -226,7 +226,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
     i;
 
   double
-    nan = sqrt((double)-1.0);  /* Special Value : Not A Number */
+    nan = sqrt(-1.0);  /* Special Value : Not A Number */
 
   MagickStatusType
     flags;
@@ -961,7 +961,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     v;
 
   double
-    nan = sqrt((double)-1.0);  /* Special Value : Not A Number */
+    nan = sqrt(-1.0);  /* Special Value : Not A Number */
 
   /* Generate a new empty kernel if needed */
   kernel=(KernelInfo *) NULL;
@@ -2172,7 +2172,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
           for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
             kernel->positive_range += ( kernel->values[i] =
-              args->sigma*sqrt((double)(u*u+v*v)) );
+              args->sigma*sqrt((double) (u*u+v*v)) );
         kernel->maximum = kernel->values[0];
         break;
       }

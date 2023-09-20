@@ -5136,7 +5136,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
   do
   {
     char
-      type[MagickPathExtent];
+      type[MagickPathExtent] = "\0";
 
     if (LocaleCompare(image_info->magick,"MNG") == 0)
       {

@@ -822,7 +822,7 @@ char *NTGetLastError(void)
     status;
 
   LPVOID
-    buffer;
+    buffer = (LPVOID) NULL;
 
   status=FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
     FORMAT_MESSAGE_FROM_SYSTEM,NULL,GetLastError(),

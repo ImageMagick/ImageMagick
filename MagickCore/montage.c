@@ -664,7 +664,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
     tile=0;
     while (tile < MagickMin((ssize_t) tiles_per_page,(ssize_t) number_images))
     {
-      if (strchr(image_list[tile]->filename,'\xff') == (char *) NULL)
+      if (strchr(image_list[tile]->filename,(int) '\xff') == (char *) NULL)
         (void) ConcatenateMagickString(montage->directory,
           image_list[tile]->filename,extent);
       else

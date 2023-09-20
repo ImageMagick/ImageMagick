@@ -279,7 +279,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
     *format;
 
   Image
-    *image,
+    *image = (Image *) NULL,
     *montage_image;
 
   ImageStack

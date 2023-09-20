@@ -1,5 +1,5 @@
 /*
-  Copyright @ 2018 ImageMagick Studio LLC, a non-profit organization
+  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
 
   You may not use this file except in compliance with the License.  You may
@@ -13,6 +13,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+
+#include "coders/coders-private.h"
 
 AddMagickCoder(AAI)
 AddMagickCoder(ART)

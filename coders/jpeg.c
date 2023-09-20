@@ -1082,7 +1082,8 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
     *client_info = (JPEGClientInfo *) NULL;
 
   JSAMPLE
-    *volatile jpeg_pixels;
+    *volatile jpeg_pixels,
+    *p;
 
   JSAMPROW
     scanline[1];
@@ -1107,9 +1108,6 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
 
   struct jpeg_progress_mgr
     jpeg_progress;
-
-  JSAMPLE
-    *p;
 
   size_t
     max_memory_to_use,

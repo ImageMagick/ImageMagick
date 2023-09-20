@@ -246,7 +246,7 @@ MagickExport MagickBooleanType VMSIsMagickConflict(const char *magick)
     item_list[2];
 
   int
-    device_class,
+    device_class = 0,
     status;
 
   struct dsc$descriptor_s

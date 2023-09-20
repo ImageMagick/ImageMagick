@@ -633,7 +633,7 @@ static void TransformSignature(SignatureInfo *signature_info)
     };  /* 32-bit fractional part of the cube root of the first 64 primes */
 
   unsigned int
-    A,
+    A = 0,
     B,
     C,
     D,
