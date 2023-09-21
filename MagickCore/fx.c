@@ -565,12 +565,12 @@ typedef struct {
   PixelChannel pixChan;
 } ChannelT;
 
-#define NO_CHAN_QUAL      ((PixelChannel) (-1))
-#define THIS_CHANNEL      ((PixelChannel) (-2))
-#define HUE_CHANNEL       ((PixelChannel) (-3))
-#define SAT_CHANNEL       ((PixelChannel) (-4))
-#define LIGHT_CHANNEL     ((PixelChannel) (-5))
-#define INTENSITY_CHANNEL ((PixelChannel) (-6))
+#define NO_CHAN_QUAL      ((PixelChannel) (AllChannels-1))
+#define THIS_CHANNEL      ((PixelChannel) (AllChannels-2))
+#define HUE_CHANNEL       ((PixelChannel) (AllChannels-3))
+#define SAT_CHANNEL       ((PixelChannel) (AllChannels-4))
+#define LIGHT_CHANNEL     ((PixelChannel) (AllChannels-5))
+#define INTENSITY_CHANNEL ((PixelChannel) (AllChannels-6))
 
 static const ChannelT Channels[] = {
   {"r",          RedPixelChannel},
