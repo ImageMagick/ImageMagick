@@ -1847,6 +1847,7 @@ MagickExport void XDestroyResourceInfo(XResourceInfo *resource_info)
   if (resource_info->name != (char *) NULL)
     resource_info->name=DestroyString(resource_info->name);
   (void) memset(resource_info,0,sizeof(*resource_info));
+  (void) XSetWindows((XWindows *) NULL);
 }
 
 /*
