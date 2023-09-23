@@ -5173,7 +5173,9 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
           }
         if (LocaleCompare(arg1,"profile") == 0)
           {
-            (void) CopyMagickString(_image_info->filename,arg2,MagickPathExtent);
+            if (arg2 != (char *) NULL)
+              (void) CopyMagickString(_image_info->filename,arg2,
+                MagickPathExtent);
             (void) SetImageInfo(_image_info,1,_exception);
             if (LocaleCompare(_image_info->filename,"-") != 0)
               profile=FileToStringInfo(_image_info->filename,~0UL,_exception);

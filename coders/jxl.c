@@ -1053,10 +1053,13 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
             *profile;
 
           profile=BlobToStringInfo("\0\0\0\6",4);
-          ConcatenateStringInfo(profile,exif_profile);
-          (void) JxlEncoderAddBox(jxl_info,"Exif",GetStringInfoDatum(profile),
-            GetStringInfoLength(profile),0);
-          profile=DestroyStringInfo(profile);
+          if (profile != (StringInfo *) NULL)
+            {
+              ConcatenateStringInfo(profile,exif_profile);
+              (void) JxlEncoderAddBox(jxl_info,"Exif",
+                GetStringInfoDatum(profile),GetStringInfoLength(profile),0);
+              profile=DestroyStringInfo(profile);
+            }
         }
       if (xmp_profile != (StringInfo *) NULL)
         {

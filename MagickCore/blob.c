@@ -2121,7 +2121,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
               (void) CloseBlob(image);
               (void) fclose(blob_info->file);
               if (status != MagickFalse)
-                blob=FileToBlob(unique,~0UL,length,exception);
+                blob=FileToBlob(unique,MAGICK_SSIZE_MAX,length,exception);
             }
           (void) RelinquishUniqueFileResource(unique);
         }
@@ -2532,7 +2532,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
               (void) CloseBlob(images);
               (void) fclose(blob_info->file);
               if (status != MagickFalse)
-                blob=FileToBlob(unique,~0UL,length,exception);
+                blob=FileToBlob(unique,MAGICK_SSIZE_MAX,length,exception);
             }
           (void) RelinquishUniqueFileResource(unique);
         }

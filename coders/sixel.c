@@ -121,7 +121,7 @@ typedef struct sixel_output {
     *node_top;
 
   unsigned char
-    buffer[SIXEL_OUTPUT_PACKET_SIZE*2],
+    buffer[MagickMax(SIXEL_OUTPUT_PACKET_SIZE*2,MagickPathExtent)],
     has_8bit_control; /* 0: 7bit terminal, 1: 8bit terminal */
 } sixel_output_t;
 

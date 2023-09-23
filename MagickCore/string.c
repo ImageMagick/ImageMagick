@@ -54,6 +54,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/resource_.h"
+#include "MagickCore/resource-private.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -1111,8 +1112,8 @@ MagickExport ssize_t FormatMagickSize(const MagickSizeType size,
       units=bi_units;
     }
   extent=(double) size;
-  (void) FormatLocaleString(format,MagickPathExtent,"%.*g",GetMagickPrecision(),
-    extent);
+  (void) FormatLocaleString(format,MagickFormatExtent,"%.*g",
+    GetMagickPrecision(),extent);
   if (strstr(format,"e+") == (char *) NULL)
     {
       if (suffix == (const char *) NULL)

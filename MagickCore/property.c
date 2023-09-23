@@ -1645,8 +1645,7 @@ static void GetEXIFProperty(const Image *image,const char *property,
                 }
               }
               if ((image->properties == (void *) NULL) ||
-                  (GetValueFromSplayTree((SplayTreeInfo *) image->properties,
-                    key) == (const void *) NULL))
+                  (GetValueFromSplayTree((SplayTreeInfo *) image->properties,key) == (const void *) NULL))
                 (void) SetImageProperty((Image *) image,key,value,exception);
               value=DestroyString(value);
               key=DestroyString(key);

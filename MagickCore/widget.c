@@ -6179,9 +6179,10 @@ MagickPrivate void XFontBrowserWidget(Display *display,XWindows *windows,
               Move text cursor to position of button press.
             */
             x=event.xbutton.x-reply_info.x-(int) (QuantumMargin >> 2);
-            for (i=1; i <= Extent(reply_info.marker); i++)
-              if (XTextWidth(font_info,reply_info.marker,i) > x)
-                break;
+            if (font_info != (XFontStruct *) NULL)
+              for (i=1; i <= Extent(reply_info.marker); i++)
+                if (XTextWidth(font_info,reply_info.marker,i) > x)
+                  break;
             reply_info.cursor=reply_info.marker+i-1;
             if (event.xbutton.time > (click_time+(unsigned long) DoubleClick))
               reply_info.highlight=MagickFalse;
