@@ -44,7 +44,7 @@ require AutoLoader;
       ConfigureError FatalErrorException
     );
 
-$VERSION = '7.1.10';
+$VERSION = '7.1.1';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -124,7 +124,7 @@ It was originally developed to be used by CGI scripts for Web pages.
 
 A web page has been set up for this extension. See:
 
-	 https://imagemagick.org/script/perl-magick.php
+   https://imagemagick.org/script/perl-magick.php
 
 If you have problems, go to
 
