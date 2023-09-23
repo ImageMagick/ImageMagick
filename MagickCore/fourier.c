@@ -61,12 +61,18 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
-#if defined(MAGICKCORE_FFTW_DELEGATE) && !defined(__cplusplus) && !defined(c_plusplus)
+#if defined(MAGICKCORE_FFTW_DELEGATE)
+#if defined(_MSC_VER)
+#define ENABLE_FFTW_DELEGATE
+#elif !defined(__cplusplus) && !defined(c_plusplus)
+#define ENABLE_FFTW_DELEGATE
+#endif
+#endif
+#if defined(ENABLE_FFTW_DELEGATE)
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
 #include <complex.h>
 #endif
 #include <fftw3.h>
-#if !defined(MAGICKCORE_CHANNEL_MASK_DEPTH)
 #if !defined(MAGICKCORE_HAVE_CABS)
 #define cabs(z)  (sqrt(z[0]*z[0]+z[1]*z[1]))
 #endif
@@ -78,7 +84,6 @@
 #endif
 #if !defined(MAGICKCORE_HAVE_CREAL)
 #define creal(z)  (z[0])
-#endif
 #endif
 #endif
 
@@ -405,7 +410,7 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
 %
 */
 
-#if defined(MAGICKCORE_FFTW_DELEGATE) && !defined(__cplusplus) && !defined(c_plusplus)
+#if defined(ENABLE_FFTW_DELEGATE)
 
 static MagickBooleanType RollFourier(const size_t width,const size_t height,
   const ssize_t x_offset,const ssize_t y_offset,double *roll_pixels)
@@ -912,7 +917,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
     *fourier_image;
 
   fourier_image=NewImageList();
-#if !defined(MAGICKCORE_FFTW_DELEGATE) || defined(__cplusplus) || defined(c_plusplus)
+#if !defined(ENABLE_FFTW_DELEGATE)
   (void) modulus;
   (void) ThrowMagickException(exception,GetMagickModule(),
     MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (FFTW)",
@@ -1080,7 +1085,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 %
 */
 
-#if defined(MAGICKCORE_FFTW_DELEGATE) && !defined(__cplusplus) && !defined(c_plusplus)
+#if defined(ENABLE_FFTW_DELEGATE)
 static MagickBooleanType InverseQuadrantSwap(const size_t width,
   const size_t height,const double *source,double *destination)
 {
@@ -1514,7 +1519,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
         "ImageSequenceRequired","`%s'",magnitude_image->filename);
       return((Image *) NULL);
     }
-#if !defined(MAGICKCORE_FFTW_DELEGATE) || defined(__cplusplus) || defined(c_plusplus)
+#if !defined(ENABLE_FFTW_DELEGATE)
   fourier_image=(Image *) NULL;
   (void) modulus;
   (void) ThrowMagickException(exception,GetMagickModule(),
