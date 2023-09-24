@@ -1934,12 +1934,13 @@ static MagickBooleanType ValidateXMPProfile(Image *image,
       return(MagickFalse);
     }
   xmlFreeDoc(document);
-#else
-  (void) image;
-  (void) profile;
-  (void) exception;
-#endif
   return(MagickTrue);
+#else
+  (void) profile;
+  (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
+    "DelegateLibrarySupportNotBuiltIn","`%s' (XML)",image->filename);
+  return(MagickFalse);
+#endif
 }
 
 static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
