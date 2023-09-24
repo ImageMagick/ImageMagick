@@ -1325,7 +1325,7 @@ static MagickBooleanType LoadCachedOpenCLKernels(MagickCLDevice device,
     *binaryProgram;
 
   sans_exception=AcquireExceptionInfo();
-  binaryProgram=(unsigned char *) FileToBlob(filename,~0UL,&length,
+  binaryProgram=(unsigned char *) FileToBlob(filename,SIZE_MAX,&length,
     sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (binaryProgram == (unsigned char *) NULL)

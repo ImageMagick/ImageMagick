@@ -774,8 +774,8 @@ static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
   return(status);
 }
 
-static void TIFFSetImageProperties(TIFF *tiff,Image *image,
-  const char *tag,ExceptionInfo *exception)
+static void TIFFSetImageProperties(TIFF *tiff,Image *image,const char *tag,
+  ExceptionInfo *exception)
 {
   char
     buffer[MagickPathExtent],
