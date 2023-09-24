@@ -695,6 +695,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (bmp_info.size > 124)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    if ((bmp_info.file_size != 0) &&
+        ((MagickSizeType) bmp_info.file_size > GetBlobSize(image)))
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if (bmp_info.offset_bits < bmp_info.size)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     bmp_info.offset_bits=MagickMax(14+bmp_info.size,bmp_info.offset_bits);
