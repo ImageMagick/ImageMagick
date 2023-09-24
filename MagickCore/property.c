@@ -1837,6 +1837,10 @@ static void GetXMPProperty(const Image *image,const char *property)
     return;
   if ((property == (const char *) NULL) || (*property == '\0'))
     return;
+#if !defined(MAGICKCORE_XML_DELEGATE)
+  if (1)
+    return;  /* Don't trust XMP profile if its not validated */
+#endif
   xmp_profile=StringInfoToString(profile);
   if (xmp_profile == (char *) NULL)
     return;
