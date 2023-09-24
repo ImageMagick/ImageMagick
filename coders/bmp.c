@@ -548,13 +548,19 @@ static Image *ReadEmbedImage(const ImageInfo *image_info,Image *image,
   length=(size_t) ((MagickOffsetType) GetBlobSize(image)-TellBlob(image));
   pixel_info=AcquireVirtualMemory(length,sizeof(*pixels));
   if (pixel_info == (MemoryInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((Image *) NULL);
+    }
   pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
   stream=ReadBlobStream(image,length,pixels,&count);
   if (count != (ssize_t) length)
     {
       pixel_info=RelinquishVirtualMemory(pixel_info);
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "ImproperImageHeader","`%s'",image->filename);
+      return((Image *) NULL);
     }
   embed_info=AcquireImageInfo();
   (void) FormatLocaleString(embed_info->filename,MagickPathExtent,
@@ -562,7 +568,6 @@ static Image *ReadEmbedImage(const ImageInfo *image_info,Image *image,
   embed_image=BlobToImage(embed_info,stream,(size_t) count,exception);
   embed_info=DestroyImageInfo(embed_info);
   pixel_info=RelinquishVirtualMemory(pixel_info);
-  (void) CloseBlob(image);
   if (embed_image != (Image *) NULL)
     {
       (void) CopyMagickString(embed_image->filename,image->filename,
