@@ -46,7 +46,7 @@ extern "C" {
   _exit((int) (severity-FatalErrorException)+1); \
 }
 
-static inline void CheckMagickCoreCompatibility()
+static inline void CheckMagickCoreCompatibility(void)
 {
   const char
     *quantum;
