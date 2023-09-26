@@ -103,7 +103,7 @@ static const ModuleInfo
 
 static MagickBooleanType
   GetMagickModulePath(const char *,MagickModuleType,char *,ExceptionInfo *),
-  IsModuleTreeInstantiated(),
+  IsModuleTreeInstantiated(void),
   UnregisterModule(const ModuleInfo *,ExceptionInfo *);
 
 static void
@@ -867,7 +867,7 @@ static void *DestroyModuleNode(void *module_info)
   return(RelinquishMagickMemory(p));
 }
 
-static MagickBooleanType IsModuleTreeInstantiated()
+static MagickBooleanType IsModuleTreeInstantiated(void)
 {
   if (module_list == (SplayTreeInfo *) NULL)
     {

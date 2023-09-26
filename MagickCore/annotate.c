@@ -1433,7 +1433,7 @@ static void FreetypeFree(FT_Memory magick_unused(memory),void *block)
   (void) RelinquishMagickMemory(block);
 }
 
-static FT_Memory FreetypeAcquireMemoryManager()
+static FT_Memory FreetypeAcquireMemoryManager(void)
 {
   FT_Memory
     memory;

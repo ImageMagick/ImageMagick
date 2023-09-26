@@ -286,7 +286,7 @@ static inline MagickBooleanType CompareMagic(const unsigned char *magic,
   return(MagickFalse);
 }
 
-static MagickBooleanType IsMagicCacheInstantiated()
+static MagickBooleanType IsMagicCacheInstantiated(void)
 {
   if (magic_cache == (LinkedListInfo *) NULL)
     {

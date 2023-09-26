@@ -139,7 +139,7 @@ MagickExport char *AcquireString(const char *source)
 %
 */
 
-static StringInfo *AcquireStringInfoContainer()
+static StringInfo *AcquireStringInfoContainer(void)
 {
   StringInfo
     *string_info;

@@ -715,7 +715,7 @@ MagickExport const char *GetLogName(void)
 %
 */
 
-static inline void CheckEventLogging()
+static inline void CheckEventLogging(void)
 {
   /*
     Are we logging events?
