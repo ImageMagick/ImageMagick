@@ -44,7 +44,7 @@ AC_DEFUN([AX_HAVE_OPENCL],
   [enable_opencl=$enableval],
   [enable_opencl='no'])
   if test x"$enable_opencl" != xno ; then
-    CPPFLAGS_CL=""
+    CL_CPPFLAGS=""
     AC_CHECK_HEADERS([CL/cl.h OpenCL/cl.h], [HAVE_CL_H="yes"; break], [HAVE_CL_H="no"])
     if test x"$HAVE_CL_H" = xno ; then
       # check for AMD's SDK
@@ -52,7 +52,7 @@ AC_DEFUN([AX_HAVE_OPENCL],
       if test -d /opt/AMDAPP/include/CL ; then
         HAVE_CL_H="yes"
         AC_DEFINE([HAVE_CL_CL_H])
-        CPPFLAGS_CL="-I/opt/AMDAPP/include"
+        CL_CPPFLAGS="-I/opt/AMDAPP/include"
       fi
       AC_MSG_RESULT([$HAVE_CL_H])
     fi
@@ -62,19 +62,19 @@ AC_DEFUN([AX_HAVE_OPENCL],
       if test -d /usr/local/cuda/include/CL ; then
         HAVE_CL_H="yes"
         AC_DEFINE([HAVE_CL_CL_H])
-        CPPFLAGS_CL="-I/usr/local/cuda/include"
+        CL_CPPFLAGS="-I/usr/local/cuda/include"
       elif test -d /usr/local/cuda-6.5/include/CL ; then
         HAVE_CL_H="yes"
         AC_DEFINE([HAVE_CL_CL_H])
-        CPPFLAGS_CL="-I/usr/local/cuda-6.5/include"
+        CL_CPPFLAGS="-I/usr/local/cuda-6.5/include"
       elif test -d /usr/local/cuda-6.0/include/CL ; then
         HAVE_CL_H="yes"
         AC_DEFINE([HAVE_CL_CL_H])
-        CPPFLAGS_CL="-I/usr/local/cuda-6.0/include"
+        CL_CPPFLAGS="-I/usr/local/cuda-6.0/include"
       elif test -d /usr/local/cuda-5.5/include/CL ; then
         HAVE_CL_H="yes"
         AC_DEFINE([HAVE_CL_CL_H])
-        CPPFLAGS_CL="-I/usr/local/cuda-5.5/include"
+        CL_CPPFLAGS="-I/usr/local/cuda-5.5/include"
       fi
       AC_MSG_RESULT([$HAVE_CL_H])
     fi
@@ -87,12 +87,12 @@ AC_DEFUN([AX_HAVE_OPENCL],
       #
       # First we check for Mac OS X, since OpenCL is standard there
       #
-      LIBS_CL="none"
+      CL_LIBS=""
       AC_MSG_CHECKING([for OpenCL library])
       case "$host_os" in
         darwin*) # On Mac OS X we check for installed frameworks
         AX_CHECK_FRAMEWORK([OpenCL], [
-          LIBS_CL="-framework OpenCL"
+          CL_LIBS="-framework OpenCL"
           no_cl=no
           AC_MSG_RESULT(yes)
           CL_ENABLED=true
@@ -109,7 +109,7 @@ AC_DEFUN([AX_HAVE_OPENCL],
       *)
         save_LIBS=$LIBS
         save_CFLAGS=$CFLAGS
-        CFLAGS=$CPPFLAGS_CL
+        CFLAGS=$CL_CPPFLAGS
         LIBS="$save_LIBS -L/usr/lib64/nvidia -L/usr/lib/nvidia -lOpenCL"
         AC_LINK_IFELSE(
         [AC_LANG_PROGRAM([
@@ -126,7 +126,7 @@ AC_DEFUN([AX_HAVE_OPENCL],
           AC_MSG_RESULT(yes)
           CL_ENABLED=true
           CL_VERSION=1
-          LIBS_CL="$save_LIBS -L/usr/lib64/nvidia -L/usr/lib/nvidia -lOpenCL"
+          CL_LIBS="-L/usr/lib64/nvidia -L/usr/lib/nvidia -lOpenCL"
         ],[
           no_cl=yes
           AC_MSG_RESULT(no)

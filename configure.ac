@@ -483,6 +483,7 @@ fi
 no_cl=yes
 AX_HAVE_OPENCL([C])
 if test "X$no_cl" != 'Xyes'; then
+  CPPFLAGS="$CL_CPPFLAGS $CPPFLAGS"
   MAGICK_FEATURES="OpenCL $MAGICK_FEATURES"
 fi
 
