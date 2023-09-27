@@ -5175,7 +5175,7 @@ MAGICK_PATCHLEVEL_VERSION=19
 
 MAGICK_VERSION=7.1.1-19
 
-MAGICK_GIT_REVISION=44b2ac8c0:20230923
+MAGICK_GIT_REVISION=8ea731d39:20230927
 
 
 # Substitute library versioning
@@ -5209,7 +5209,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,19
 
-PACKAGE_RELEASE_DATE=2023-09-23
+PACKAGE_RELEASE_DATE=2023-09-27
 
 
 # Ensure that make can run correctly
@@ -11300,7 +11300,7 @@ else $as_nop
 fi
 
   if test x"$enable_opencl" != xno ; then
-    CPPFLAGS_CL=""
+    CL_CPPFLAGS=""
            for ac_header in CL/cl.h OpenCL/cl.h
 do :
   as_ac_Header=`printf "%s\n" "ac_cv_header_$ac_header" | $as_tr_sh`
@@ -11324,7 +11324,7 @@ printf %s "checking for AMD's SDK cl.h... " >&6; }
         HAVE_CL_H="yes"
         printf "%s\n" "#define HAVE_CL_CL_H 1" >>confdefs.h
 
-        CPPFLAGS_CL="-I/opt/AMDAPP/include"
+        CL_CPPFLAGS="-I/opt/AMDAPP/include"
       fi
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $HAVE_CL_H" >&5
 printf "%s\n" "$HAVE_CL_H" >&6; }
@@ -11337,22 +11337,22 @@ printf %s "checking for NVIDIA's SDK cl.h... " >&6; }
         HAVE_CL_H="yes"
         printf "%s\n" "#define HAVE_CL_CL_H 1" >>confdefs.h
 
-        CPPFLAGS_CL="-I/usr/local/cuda/include"
+        CL_CPPFLAGS="-I/usr/local/cuda/include"
       elif test -d /usr/local/cuda-6.5/include/CL ; then
         HAVE_CL_H="yes"
         printf "%s\n" "#define HAVE_CL_CL_H 1" >>confdefs.h
 
-        CPPFLAGS_CL="-I/usr/local/cuda-6.5/include"
+        CL_CPPFLAGS="-I/usr/local/cuda-6.5/include"
       elif test -d /usr/local/cuda-6.0/include/CL ; then
         HAVE_CL_H="yes"
         printf "%s\n" "#define HAVE_CL_CL_H 1" >>confdefs.h
 
-        CPPFLAGS_CL="-I/usr/local/cuda-6.0/include"
+        CL_CPPFLAGS="-I/usr/local/cuda-6.0/include"
       elif test -d /usr/local/cuda-5.5/include/CL ; then
         HAVE_CL_H="yes"
         printf "%s\n" "#define HAVE_CL_CL_H 1" >>confdefs.h
 
-        CPPFLAGS_CL="-I/usr/local/cuda-5.5/include"
+        CL_CPPFLAGS="-I/usr/local/cuda-5.5/include"
       fi
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $HAVE_CL_H" >&5
 printf "%s\n" "$HAVE_CL_H" >&6; }
@@ -11367,7 +11367,7 @@ printf "%s\n" "$as_me: WARNING: no OpenCL headers found" >&2;}
       #
       # First we check for Mac OS X, since OpenCL is standard there
       #
-      LIBS_CL="none"
+      CL_LIBS=""
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for OpenCL library" >&5
 printf %s "checking for OpenCL library... " >&6; }
       case "$host_os" in
@@ -11421,7 +11421,7 @@ fi
 printf "%s\n" "$ax_cv_check_OpenCL" >&6; }
       if test x"$ax_cv_check_OpenCL" = "xyes" ; then
 
-          LIBS_CL="-framework OpenCL"
+          CL_LIBS="-framework OpenCL"
           no_cl=no
           { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
@@ -11446,7 +11446,7 @@ printf "%s\n" "no" >&6; }
       *)
         save_LIBS=$LIBS
         save_CFLAGS=$CFLAGS
-        CFLAGS=$CPPFLAGS_CL
+        CFLAGS=$CL_CPPFLAGS
         LIBS="$save_LIBS -L/usr/lib64/nvidia -L/usr/lib/nvidia -lOpenCL"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -11476,7 +11476,7 @@ then :
 printf "%s\n" "yes" >&6; }
           CL_ENABLED=true
           CL_VERSION=1
-          LIBS_CL="$save_LIBS -L/usr/lib64/nvidia -L/usr/lib/nvidia -lOpenCL"
+          CL_LIBS="-L/usr/lib64/nvidia -L/usr/lib/nvidia -lOpenCL"
 
 else $as_nop
 
@@ -11506,6 +11506,7 @@ printf "%s\n" "disabled" >&6; }
   fi
 
 if test "X$no_cl" != 'Xyes'; then
+  CPPFLAGS="$CL_CPPFLAGS $CPPFLAGS"
   MAGICK_FEATURES="OpenCL $MAGICK_FEATURES"
 fi
 
