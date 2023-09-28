@@ -292,7 +292,12 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         }
     }
   if (argc < 3)
-    return(CompareUsage());
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "MissingArgument","%s","");
+      (void) CompareUsage();
+      return(MagickFalse);
+    }
   difference_image=NewImageList();
   similarity_image=NewImageList();
   dissimilarity_threshold=DefaultDissimilarityThreshold;

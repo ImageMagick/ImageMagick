@@ -241,7 +241,12 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 2)
-    return(IdentifyUsage());
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "MissingArgument","%s","");
+      (void) IdentifyUsage();
+      return(MagickFalse);
+    }
   count=0;
   format=NULL;
   j=1;

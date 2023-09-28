@@ -3789,7 +3789,12 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 2)
-    return(MogrifyUsage());
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "MissingArgument","%s","");
+      (void) MogrifyUsage();
+      return(MagickFalse);
+    }
   format=(char *) NULL;
   path=(char *) NULL;
   global_colormap=MagickFalse;

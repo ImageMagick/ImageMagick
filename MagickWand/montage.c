@@ -327,7 +327,12 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 3)
-    return(MontageUsage());
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "MissingArgument","%s","");
+      (void) MontgagUsage();
+      return(MagickFalse);
+    }
   format="%w,%h,%m";
   first_scene=0;
   j=1;

@@ -558,7 +558,12 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 3)
-    return(ConvertUsage());
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "MissingArgument","%s","");
+      (void) ConvertUsage();
+      return(MagickFalse);
+    }
   filename=(char *) NULL;
   format="%w,%h,%m";
   j=1;

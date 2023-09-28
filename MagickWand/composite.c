@@ -488,7 +488,12 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
         }
     }
   if (argc < 4)
-    return(CompositeUsage());
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "MissingArgument","%s","");
+      (void) CompositeUsage();
+      return(MagickFalse);
+    }
   GetCompositeOptions(image_info,&composite_options);
   filename=(char *) NULL;
   format="%w,%h,%m";
