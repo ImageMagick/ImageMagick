@@ -330,7 +330,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
         "MissingArgument","%s","");
-      (void) MontgagUsage();
+      (void) MontageUsage();
       return(MagickFalse);
     }
   format="%w,%h,%m";
