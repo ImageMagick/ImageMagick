@@ -1577,10 +1577,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelBlue(image,ScaleCharToQuantum(*p16++),q);
-            SetPixelGreen(image,ScaleCharToQuantum(*p16++),q);
-            SetPixelRed(image,ScaleCharToQuantum(*p16++),q);
-            SetPixelAlpha(image,ScaleCharToQuantum(*p16++),q);
+            SetPixelBlue(image,ScaleShortToQuantum(*p16++),q);
+            SetPixelGreen(image,ScaleShortToQuantum(*p16++),q);
+            SetPixelRed(image,ScaleShortToQuantum(*p16++),q);
+            SetPixelAlpha(image,ScaleShortToQuantum(*p16++),q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
