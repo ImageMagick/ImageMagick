@@ -8777,33 +8777,12 @@ Mogrify(ref,...)
             image->interpolate=(PixelInterpolateMethod)
               argument_list[12].integer_reference;
           if (attribute_flag[13] != 0)   /* "args=>" */
-            (void) SetImageArtifact(composite_image,"compose:args",
+            (void) SetImageArtifact(image,"compose:args",
               argument_list[13].string_reference);
           if (attribute_flag[14] != 0)   /* "blend=>"  depreciated */
-            (void) SetImageArtifact(composite_image,"compose:args",
+            (void) SetImageArtifact(image,"compose:args",
               argument_list[14].string_reference);
           clip_to_self=MagickTrue;
-          switch (compose)
-          {
-            case ClearCompositeOp:
-            case SrcCompositeOp:
-            case InCompositeOp:
-            case SrcInCompositeOp:
-            case OutCompositeOp:
-            case SrcOutCompositeOp:
-            case DstInCompositeOp:
-            case DstAtopCompositeOp:
-            case CopyAlphaCompositeOp:
-            case ChangeMaskCompositeOp:
-            case DissolveCompositeOp:
-            case BlendCompositeOp:
-            {
-              clip_to_self=MagickFalse;
-              break;
-            }
-            default:
-              break;
-          }
           if (attribute_flag[15] != 0)
             clip_to_self=(MagickBooleanType)
               argument_list[15].integer_reference;
