@@ -738,8 +738,19 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Microsoft Windows BMP image file.
         */
-        if (bmp_info.size < 40)
-          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        switch (bmp_info.size)
+        {
+          case 40: case 52: case 56: case 64: case 78: case 108: case 124:
+          {
+            break;
+          }
+          default:
+          {
+            if (bmp_info.size < 64)
+              ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+            break;
+          }
+        }
         bmp_info.width=(ssize_t) ReadBlobLSBSignedLong(image);
         bmp_info.height=(ssize_t) ReadBlobLSBSignedLong(image);
         bmp_info.planes=ReadBlobLSBShort(image);
@@ -751,9 +762,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.x_pixels=ReadBlobLSBLong(image);
             bmp_info.y_pixels=ReadBlobLSBLong(image);
             bmp_info.number_colors=ReadBlobLSBLong(image);
-            if ((MagickSizeType) bmp_info.number_colors > blob_size)
-              ThrowReaderException(CorruptImageError,
-                "InsufficientImageDataInFile");
             bmp_info.colors_important=ReadBlobLSBLong(image);
           }
         if (image->debug != MagickFalse)
@@ -969,18 +977,26 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (bmp_info.planes != 1)
       ThrowReaderException(CorruptImageError,"StaticPlanesValueNotEqualToOne");
-    if ((bmp_info.bits_per_pixel != 1) && (bmp_info.bits_per_pixel != 4) &&
-        (bmp_info.bits_per_pixel != 8) && (bmp_info.bits_per_pixel != 16) &&
-        (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
-      ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
-    if (bmp_info.bits_per_pixel < 16 &&
-        bmp_info.number_colors > (1U << bmp_info.bits_per_pixel))
+    switch (bmp_info.bits_per_pixel)
+    {
+      case 1: case 4: case 8: case 16: case 24: case 32: case 64:
+      {
+        break;
+      }
+      default:
+        ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
+    }
+    if ((bmp_info.bits_per_pixel < 16) &&
+        (bmp_info.number_colors > (1U << bmp_info.bits_per_pixel)))
       ThrowReaderException(CorruptImageError,"UnrecognizedNumberOfColors");
+    if ((MagickSizeType) bmp_info.number_colors > blob_size)
+      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
     if ((bmp_info.compression == BI_RLE8) && (bmp_info.bits_per_pixel != 8))
       ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
     if ((bmp_info.compression == BI_RLE4) && (bmp_info.bits_per_pixel != 4))
       ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
-    if ((bmp_info.compression == BI_BITFIELDS) && (bmp_info.bits_per_pixel < 16))
+    if ((bmp_info.compression == BI_BITFIELDS) &&
+        (bmp_info.bits_per_pixel < 16))
       ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
     switch (bmp_info.compression)
     {
@@ -1528,6 +1544,43 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 SetPixelAlpha(image,ScaleShortToQuantum(
                   (unsigned short) alpha),q);
               }
+            q+=GetPixelChannels(image);
+          }
+          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            break;
+          offset=((MagickOffsetType) image->rows-y-1);
+          if (image->previous == (Image *) NULL)
+            {
+              status=SetImageProgress(image,LoadImageTag,((MagickOffsetType)
+                image->rows-y),image->rows);
+              if (status == MagickFalse)
+                break;
+            }
+        }
+        break;
+      }
+      case 64:
+      {
+        /*
+          Convert DirectColor scanline.
+        */
+        bytes_per_line=4*((image->columns*64+31)/32);
+        for (y=(ssize_t) image->rows-1; y >= 0; y--)
+        {
+          unsigned short
+            *p16;
+
+          p16=(unsigned short *) pixels+((ssize_t) image->rows-y-1)*
+            (ssize_t) bytes_per_line;
+          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+          if (q == (Quantum *) NULL)
+            break;
+          for (x=0; x < (ssize_t) image->columns; x++)
+          {
+            SetPixelBlue(image,ScaleCharToQuantum(*p16++),q);
+            SetPixelGreen(image,ScaleCharToQuantum(*p16++),q);
+            SetPixelRed(image,ScaleCharToQuantum(*p16++),q);
+            SetPixelAlpha(image,ScaleCharToQuantum(*p16++),q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2273,7 +2326,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             Quantum alpha=GetPixelAlpha(image,p);
-            if (type == 3 && alpha == TransparentAlpha)
+            if ((type == 3) && alpha == TransparentAlpha)
               {
                 *q++=255;
                 *q++=255;
