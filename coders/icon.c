@@ -168,6 +168,104 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static Image *Read1XImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
+{
+  MagickBooleanType
+    status;
+
+  size_t
+    columns,
+    rows;
+
+  ssize_t
+    i,
+    y;
+
+  /*
+    Read Windows 1.0 Icon.
+  */
+  (void) ReadBlobLSBLong(image);  /* hot spot X/Y */
+  columns=(size_t) ReadBlobLSBShort(image);
+  rows=(size_t) (ReadBlobLSBShort(image));
+  (void) ReadBlobLSBShort(image);  /* width of bitmap in bytes */
+  (void) ReadBlobLSBShort(image);  /* cursor color */
+  /*
+    Convert bitmap scanline.
+  */
+  status=MagickTrue;
+  for (i=0; ; i++)
+  {
+    status=SetImageExtent(image,columns,rows,exception);
+    if (status == MagickFalse)
+      break;
+    if (AcquireImageColormap(image,2,exception) == MagickFalse)
+      {
+        status=MagickFalse;
+        break;
+      }
+    for (y=0; y < (ssize_t) image->columns; y++)
+    {
+      Quantum
+        *q;
+  
+      size_t
+        bit,
+        byte;
+  
+      ssize_t
+        x;
+  
+      q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+      if (q == (Quantum *) NULL)
+        break;
+      for (x=0; x < (ssize_t) (image->columns-7); x+=8)
+      {
+        byte=(size_t) ReadBlobByte(image);
+        for (bit=0; bit < 8; bit++)
+        {
+          SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
+            0x00),q);
+          q+=GetPixelChannels(image);
+        }
+      }
+      if ((image->columns % 8) != 0)
+        {
+          byte=(size_t) ReadBlobByte(image);
+          for (bit=0; bit < (image->columns % 8); bit++)
+          {
+            SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
+              0x00),q);
+            q+=GetPixelChannels(image);
+          }
+        }
+      if (SyncAuthenticPixels(image,exception) == MagickFalse)
+        break;
+      if (image->previous == (Image *) NULL)
+        {
+          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+            (MagickSizeType) image->rows);
+          if (status == MagickFalse)
+            break;
+        }
+    }
+    if (i > 0)
+      break;
+    AcquireNextImage(image_info,image,exception);
+    if (GetNextImageInList(image) == (Image *) NULL)
+      {
+        status=MagickFalse;
+        break;
+      }
+    image=SyncNextImageInList(image);
+  }
+  (void) CloseBlob(image);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
+  return(GetFirstImageInList(image));
+}
+
 static Image *ReadICONImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -186,15 +284,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   MagickSizeType
     extent;
 
-  ssize_t
-    i,
-    x;
-
   Quantum
     *q;
-
-  unsigned char
-    *p;
 
   size_t
     bit,
@@ -205,8 +296,13 @@ static Image *ReadICONImage(const ImageInfo *image_info,
 
   ssize_t
     count,
+    i,
     offset,
+    x,
     y;
+
+  unsigned char
+    *p;
 
   /*
     Open image file.
@@ -225,6 +321,9 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     }
   (void) memset(&icon_file,0,sizeof(icon_file));
   icon_file.reserved=(short) ReadBlobLSBShort(image);
+  if ((icon_file.reserved == 0x0001) || (icon_file.reserved == 0x0101) ||
+      (icon_file.reserved == 0x0201))
+    return(Read1XImage(image_info,image,exception));
   icon_file.resource_type=(short) ReadBlobLSBShort(image);
   icon_file.count=(short) ReadBlobLSBShort(image);
   if ((icon_file.reserved != 0) ||
@@ -381,8 +480,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           if (image->colors > GetBlobSize(image))
             ThrowReaderException(CorruptImageError,
               "InsufficientImageDataInFile");
-          if (AcquireImageColormap(image,image->colors,exception) ==
-              MagickFalse)
+          if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
           icon_colormap=(unsigned char *) AcquireQuantumMemory((size_t)
             image->colors,4UL*sizeof(*icon_colormap));
@@ -812,11 +910,11 @@ static Image *AutoResizeImage(const Image *image,const char *option,
     *images,
     *resized;
 
-  ssize_t
-    i;
-
   size_t
     sizes[MAX_SIZES]={256, 192, 128, 96, 64, 48, 40, 32, 24, 16};
+
+  ssize_t
+    i;
 
   images=NULL;
   *count=0;
