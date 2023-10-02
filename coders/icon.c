@@ -209,14 +209,14 @@ static Image *Read1XImage(const ImageInfo *image_info,Image *image,
     {
       Quantum
         *q;
-  
+
       size_t
         bit,
         byte;
-  
+ 
       ssize_t
         x;
-  
+
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (Quantum *) NULL)
         break;
