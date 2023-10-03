@@ -76,9 +76,6 @@ static void
 */
 static ssize_t
   date_precision = -1;
-
-static time_t
-  magick_epoch = (time_t) 0;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -353,7 +350,7 @@ MagickExport double GetElapsedTime(TimerInfo *time_info)
 MagickExport time_t GetMagickTime(void)
 {
   static time_t
-    constant_magick_time = 0;
+    constant_magick_time = (time_t) 0;
 
   static MagickBooleanType
     epoch_initialized = MagickFalse;
@@ -363,6 +360,7 @@ MagickExport time_t GetMagickTime(void)
       const char
         *source_date_epoch;
 
+      epoch_initialized=MagickTrue;
       source_date_epoch=getenv("SOURCE_DATE_EPOCH");
       if (source_date_epoch != (const char *) NULL)
         {
@@ -373,7 +371,6 @@ MagickExport time_t GetMagickTime(void)
           if ((epoch > 0) && (epoch <= time((time_t *) NULL)))
             constant_magick_time=epoch;
         }
-      epoch_initialized=MagickTrue;
     }
   if (constant_magick_time != 0)
     return(constant_magick_time);
@@ -398,15 +395,19 @@ MagickExport time_t GetMagickTime(void)
 %      MagickOffsetType GetMagickTTL(void)
 %
 */
-
-MagickPrivate void SetMagickTTL(void)
-{
-  if (magick_epoch == (time_t) 0)
-    magick_epoch=time((time_t *) NULL);
-}
-
 MagickPrivate MagickOffsetType GetMagickTTL(void)
 {
+  static time_t
+    magick_epoch = (time_t) 0;
+
+  static MagickBooleanType
+    epoch_initialized = MagickFalse;
+
+  if (epoch_initialized == MagickFalse)
+    {
+      epoch_initialized=MagickTrue;
+      magick_epoch=time((time_t *) NULL);
+    }
   return((MagickOffsetType) GetMagickResourceLimit(TimeResource)-
     (GetMagickTime()-magick_epoch));
 }

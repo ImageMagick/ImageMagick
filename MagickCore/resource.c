@@ -1490,7 +1490,6 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
           100.0));
       resource_info.time_limit=MagickMin(resource_info.time_limit,
         (MagickSizeType) MAGICK_SSIZE_MAX);
-      (void) SetMagickTTL();
       break;
     }
     case WidthResource:

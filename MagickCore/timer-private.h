@@ -61,8 +61,7 @@ extern MagickExport time_t
   GetMagickTime(void);
 
 extern MagickPrivate void
-  SetMagickDatePrecision(const unsigned long),
-  SetMagickTTL(void);
+  SetMagickDatePrecision(const unsigned long);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
