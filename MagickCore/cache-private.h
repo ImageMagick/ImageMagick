@@ -289,7 +289,6 @@ extern MagickPrivate void
   GetPixelCacheTileSize(const Image *,size_t *,size_t *),
   GetPixelCacheMethods(CacheMethods *),
   ResetCacheAnonymousMemory(void),
-  ResetPixelCacheEpoch(void),
   ResetPixelCacheChannels(Image *),
   SetPixelCacheMethods(Cache,CacheMethods *);
 

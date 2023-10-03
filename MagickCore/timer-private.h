@@ -54,6 +54,9 @@ static inline void GetMagickLocaltime(const time_t *timep,struct tm *result)
 #endif
 }
 
+extern MagickPrivate MagickOffsetType
+  GetMagickTTL(void);
+
 extern MagickExport time_t
   GetMagickTime(void);
 

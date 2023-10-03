@@ -43,12 +43,14 @@
 #include "MagickCore/studio.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/registry.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/timer.h"
 #include "MagickCore/timer-private.h"
@@ -340,7 +342,7 @@ MagickExport double GetElapsedTime(TimerInfo *time_info)
 %
 %  GetMagickTime() returns the time as the number of seconds since the Epoch.
 %
-%  The format of the GetElapsedTime method is:
+%  The format of the GetMagickTime method is:
 %
 %      time_t GetElapsedTime(void)
 %
@@ -373,6 +375,38 @@ MagickExport time_t GetMagickTime(void)
   if (constant_magick_time != 0)
     return(constant_magick_time);
   return(time((time_t *) NULL));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t M a g i c k T T L                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickTTL() returns the time as the number of seconds to live.
+%
+%  The format of the GetMagickTTL method is:
+%
+%      MagickOffsetType GetMagickTTL(void)
+%
+*/
+MagickPrivate MagickOffsetType GetMagickTTL(void)
+{
+  static time_t
+    epoch = (time_t) 0;
+
+  if (epoch == 0)
+    {
+      epoch=time((time_t *) NULL);
+      return(0);
+    }
+  return((MagickOffsetType) GetMagickResourceLimit(TimeResource)-
+    (GetMagickTime()-epoch));
 }
 
 /*

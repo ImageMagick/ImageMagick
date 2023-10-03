@@ -41,7 +41,6 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/cache.h"
-#include "MagickCore/cache-private.h"
 #include "MagickCore/configure.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
@@ -63,6 +62,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/thread-private.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
@@ -126,8 +126,8 @@ static ResourceInfo
     MagickULLConstant(0),              /* initial thread */
     MagickULLConstant(0),              /* initial throttle */
     MagickULLConstant(0),              /* initial time */
-    (MagickSizeType) (SSIZE_MAX/sizeof(Quantum)/MaxPixelChannels), /* width limit */
-    (MagickSizeType) (SSIZE_MAX/sizeof(Quantum)/MaxPixelChannels), /* height limit */
+    (MagickSizeType) (MAGICK_SSIZE_MAX/sizeof(Quantum)/MaxPixelChannels), /* width limit */
+    (MagickSizeType) (MAGICK_SSIZE_MAX/sizeof(Quantum)/MaxPixelChannels), /* height limit */
     MagickResourceInfinity,            /* list length limit */
     MagickULLConstant(3072)*1024*1024, /* area limit */
     MagickULLConstant(1536)*1024*1024, /* memory limit */
@@ -136,7 +136,7 @@ static ResourceInfo
     MagickULLConstant(768),            /* file limit */
     MagickULLConstant(1),              /* thread limit */
     MagickULLConstant(0),              /* throttle limit */
-    MagickResourceInfinity             /* time limit */
+    (MagickSizeType) MAGICK_SSIZE_MAX                   /* time limit */
   };
 
 static SemaphoreInfo
@@ -1488,7 +1488,9 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
       else
         resource_info.time_limit=MagickMin(limit,StringToMagickSizeType(value,
           100.0));
-      ResetPixelCacheEpoch();
+      resource_info.time_limit=MagickMin(resource_info.time_limit,
+        (MagickSizeType) MAGICK_SSIZE_MAX);
+      (void) GetMagickTTL();
       break;
     }
     case WidthResource:
