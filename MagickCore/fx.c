@@ -92,6 +92,7 @@
 #include "MagickCore/statistic.h"
 #include "MagickCore/statistic-private.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/token.h"
@@ -529,6 +530,7 @@ static const SymbolT Symbols[] = {
 /* Run-time controls are in the RPN, not explicitly in the input string. */
 typedef enum {
   rGoto = FirstCont,
+  rGotoChk,
   rIfZeroGoto,
   rIfNotZeroGoto,
   rCopyFrom,
@@ -545,6 +547,7 @@ typedef struct {
 
 static const ControlT Controls[] = {
   {rGoto,          "goto",          0},
+  {rGotoChk,       "gotochk",       0},
   {rIfZeroGoto,    "ifzerogoto",    1},
   {rIfNotZeroGoto, "ifnotzerogoto", 1},
   {rCopyFrom,      "copyfrom",      0},
@@ -652,6 +655,8 @@ typedef struct {
   fxFltType * ValStack;
   fxFltType * UserSymVals;
   Quantum * thisPixel;
+  MagickSizeType loopCount;
+  MagickSizeType cpu_throttle;
 } fxRtT;
 
 struct _FxInfo {
@@ -995,6 +1000,10 @@ static MagickBooleanType AllocFxRt (FxInfo * pfx, fxRtT * pfxrt)
     }
     for (i = 0; i < pfx->usedUserSymbols; i++) pfxrt->UserSymVals[i] = (fxFltType) 0;
   }
+
+  pfxrt->loopCount = 0;
+  pfxrt->cpu_throttle = GetMagickResourceLimit (ThrottleResource);
+
   return MagickTrue;
 }
 
@@ -1055,7 +1064,7 @@ static MagickBooleanType DumpRPN (FxInfo * pfx, FILE * fh)
   }
   for (i=0; i < pfx->usedElements; i++) {
     ElementT * pel = &pfx->Elements[i];
-    if (pel->oprNum == rGoto || pel->oprNum == rIfZeroGoto || pel->oprNum == rIfNotZeroGoto) {
+    if (pel->oprNum == rGoto || pel->oprNum == rGotoChk || pel->oprNum == rIfZeroGoto || pel->oprNum == rIfNotZeroGoto) {
       if (pel->EleNdx >= 0 && pel->EleNdx < pfx->numElements) {
         ElementT * pelDest = &pfx->Elements[pel->EleNdx];
         pelDest->nDest++;
@@ -1230,7 +1239,7 @@ static MagickBooleanType AddAddressingElement (FxInfo * pfx, int oprNum, int Ele
   if (!AddElement (pfx, (fxFltType) 0, oprNum)) return MagickFalse;
   pel = &pfx->Elements[pfx->usedElements-1];
   pel->EleNdx = EleNdx;
-  if (oprNum == rGoto || oprNum == rIfZeroGoto || oprNum == rIfNotZeroGoto 
+  if (oprNum == rGoto || oprNum == rGotoChk || oprNum == rIfZeroGoto || oprNum == rIfNotZeroGoto 
    || oprNum == rZerStk)
   {
     pel->DoPush = MagickFalse;
@@ -1824,10 +1833,10 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
         ndx2 = pfx->usedElements;
         if (fe==fWhile) {
           pfx->Elements[pfx->usedElements-1].DoPush = MagickFalse;
-          (void) AddAddressingElement (pfx, rGoto, ndx0);
+          (void) AddAddressingElement (pfx, rGotoChk, ndx0);
         } else if (fe==fDo) {
           pfx->Elements[pfx->usedElements-1].DoPush = MagickFalse;
-          (void) AddAddressingElement (pfx, rGoto, ndx0 + 1);
+          (void) AddAddressingElement (pfx, rGotoChk, ndx0 + 1);
         } else if (fe==fFor) {
           (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx3 */
           pfx->Elements[pfx->usedElements-1].DoPush = MagickTrue; /* we may need return from for() */
@@ -1846,7 +1855,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
         }
         if (fe==fFor) {
           pfx->Elements[pfx->usedElements-1].DoPush = MagickFalse;
-          (void) AddAddressingElement (pfx, rGoto, ndx1);
+          (void) AddAddressingElement (pfx, rGotoChk, ndx1);
         }
         ndx3 = pfx->usedElements;
         break;
@@ -3170,8 +3179,13 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
   }
 
   for (i=0; i < pfx->usedElements; i++) {
+    if (i < 0) {
+      (void) ThrowMagickException (
+        pfx->exception, GetMagickModule(), OptionError,
+        "Bad run-time address", "%i", i);
+    }
     ElementT *pel = &pfx->Elements[i];
-      switch (pel->nArgs) {
+    switch (pel->nArgs) {
         case 0:
           break;
         case 1:
@@ -3919,6 +3933,20 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           assert (pel->EleNdx >= 0);
           i = pel->EleNdx-1; /* -1 because 'for' loop will increment. */
           break;
+        case rGotoChk:
+          assert (pel->EleNdx >= 0);
+          i = pel->EleNdx-1; /* -1 because 'for' loop will increment. */
+          if ((pfxrt->loopCount++ % 4096) == 0) {
+            if (GetMagickTTL() <= 0) {
+              i = pfx->usedElements-1; /* Do no more opcodes. */
+              (void) ThrowMagickException (pfx->exception, GetMagickModule(),
+                ResourceLimitFatalError, "TimeLimitExceeded", "`%s'", img->filename);
+            }
+            if (pfxrt->cpu_throttle != 0) {
+              MagickDelay (pfxrt->cpu_throttle);
+            }
+          }
+          break;
         case rIfZeroGoto:
           assert (pel->EleNdx >= 0);
           if (fabs((double) regA) < MagickEpsilon) i = pel->EleNdx-1;
@@ -3947,11 +3975,6 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
             "pel->oprNum", "%i '%s' not yet implemented",
             (int)pel->oprNum, OprStr(pel->oprNum));
           break;
-    }
-    if (i < 0) {
-      (void) ThrowMagickException (
-        pfx->exception, GetMagickModule(), OptionError,
-        "Bad run-time address", "%i", i);
     }
     if (pel->DoPush) 
       if (!PushVal (pfx, pfxrt, regA, i)) break;

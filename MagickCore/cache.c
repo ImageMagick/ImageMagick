@@ -1697,19 +1697,22 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   status=MagickTrue;
   if (cpu_throttle == MagickResourceInfinity)
     cpu_throttle=GetMagickResourceLimit(ThrottleResource);
-  if ((cpu_throttle != 0) && ((cycles++ % 4096) == 0))
-    MagickDelay(cpu_throttle);
-  if (GetMagickTTL() <= 0)
+  if ((cycles++ % 4096) == 0)
     {
+      if (GetMagickTTL() <= 0)
+        {
 #if defined(ECANCELED)
-      errno=ECANCELED;
+          errno=ECANCELED;
 #endif
-      cache_info=(CacheInfo *) image->cache;
-      if (cache_info->file != -1)
-        (void) ClosePixelCacheOnDisk(cache_info);
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitFatalError,"TimeLimitExceeded","`%s'",image->filename);
-      return((Cache) NULL);
+          cache_info=(CacheInfo *) image->cache;
+          if (cache_info->file != -1)
+            (void) ClosePixelCacheOnDisk(cache_info);
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitFatalError,"TimeLimitExceeded","`%s'",image->filename);
+          return((Cache) NULL);
+        }
+      if (cpu_throttle != 0)
+        MagickDelay(cpu_throttle);
     }
   LockSemaphoreInfo(image->semaphore);
   assert(image->cache != (Cache) NULL);
