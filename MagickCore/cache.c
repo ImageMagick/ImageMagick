@@ -2681,7 +2681,8 @@ static inline ssize_t EdgeY(const ssize_t y,const size_t rows)
   return(y);
 }
 
-static inline MagickBooleanType IsOffsetOverflow(const ssize_t x,const size_t y)
+static inline MagickBooleanType IsOffsetOverflow(const ssize_t x,
+  const ssize_t y)
 {
   if (((y > 0) && (x > (MAGICK_SSIZE_MAX-y))) ||
       ((y < 0) && (x < (MAGICK_SSIZE_MIN-y))))
