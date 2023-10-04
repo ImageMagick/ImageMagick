@@ -3039,6 +3039,11 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
 
       p=GetCacheViewVirtualPixels(image_view,x-width/2,y-width/2,width,width,
         exception);
+      if (p == (Quantum *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
       channels=GetPixelChannels(source_image);
       scaling_method(source_image,p,r,channels);
       /*
