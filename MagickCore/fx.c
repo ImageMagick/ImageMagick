@@ -656,7 +656,6 @@ typedef struct {
   fxFltType * UserSymVals;
   Quantum * thisPixel;
   MagickSizeType loopCount;
-  MagickSizeType cpu_throttle;
 } fxRtT;
 
 struct _FxInfo {
@@ -1002,7 +1001,6 @@ static MagickBooleanType AllocFxRt (FxInfo * pfx, fxRtT * pfxrt)
   }
 
   pfxrt->loopCount = 0;
-  pfxrt->cpu_throttle = GetMagickResourceLimit (ThrottleResource);
 
   return MagickTrue;
 }
@@ -3936,14 +3934,14 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         case rGotoChk:
           assert (pel->EleNdx >= 0);
           i = pel->EleNdx-1; /* -1 because 'for' loop will increment. */
-          if ((pfxrt->loopCount++ % 4096) == 0) {
+          if ((pfxrt->loopCount++ % 8192) == 0) {
             if (GetMagickTTL() <= 0) {
               i = pfx->usedElements-1; /* Do no more opcodes. */
+#if defined(ECANCELED)
+              errno=ECANCELED;
+#endif
               (void) ThrowMagickException (pfx->exception, GetMagickModule(),
                 ResourceLimitFatalError, "TimeLimitExceeded", "`%s'", img->filename);
-            }
-            if (pfxrt->cpu_throttle != 0) {
-              MagickDelay (pfxrt->cpu_throttle);
             }
           }
           break;
