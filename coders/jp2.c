@@ -439,9 +439,22 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     else
       if (jp2_image->color_space == 3)
         SetImageColorspace(image,Rec601YCbCrColorspace,exception);
-  for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
-    if (jp2_image->comps[i].alpha != 0)
-      image->alpha_trait=BlendPixelTrait;
+  if (jp2_image->numcomps > 3)
+    {
+      size_t
+        number_meta_channels;
+
+      number_meta_channels=jp2_image->numcomps-3;
+      if (jp2_image->comps[3].alpha != 0)
+        {
+          image->alpha_trait=BlendPixelTrait;
+          number_meta_channels-=1;
+        }
+      if (number_meta_channels > 0)
+        (void) SetPixelMetaChannels(image,(size_t) number_meta_channels,exception);
+    }
+  else if (jp2_image->numcomps > 1 && jp2_image->comps[1].alpha != 0)
+    image->alpha_trait=BlendPixelTrait;
   if (jp2_image->icc_profile_buf != (unsigned char *) NULL)
     {
       StringInfo
@@ -514,19 +527,17 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
             if (jp2_image->numcomps == 1)
               {
                 SetPixelGray(image,ClampToQuantum(pixel),q);
-                if ((image->alpha_trait & BlendPixelTrait) != 0)
-                  break;
+                break;
               }
             SetPixelRed(image,ClampToQuantum(pixel),q);
             SetPixelGreen(image,ClampToQuantum(pixel),q);
             SetPixelBlue(image,ClampToQuantum(pixel),q);
-            if ((image->alpha_trait & BlendPixelTrait) != 0)
-              SetPixelAlpha(image,OpaqueAlpha,q);
             break;
           }
           case 1:
           {
-            if ((image->alpha_trait & BlendPixelTrait) != 0)
+            if ((jp2_image->comps[i].alpha != 0) &&
+                (image->alpha_trait & BlendPixelTrait))
               {
                 SetPixelAlpha(image,ClampToQuantum(pixel),q);
                 break;
@@ -543,6 +554,18 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if ((image->alpha_trait & BlendPixelTrait) != 0)
               SetPixelAlpha(image,ClampToQuantum(pixel),q);
+            else
+              SetPixelChannel(image,MetaPixelChannels,ClampToQuantum(pixel),q);
+            break;
+          }
+          default:
+          {
+            size_t
+              offset=MetaPixelChannels+i-3;
+
+            if ((image->alpha_trait & BlendPixelTrait) != 0)
+              offset--;
+            SetPixelChannel(image,(PixelChannel) offset,ClampToQuantum(pixel),q);
             break;
           }
         }
