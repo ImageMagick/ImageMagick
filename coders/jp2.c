@@ -471,11 +471,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       if (JP2ComponentHasAlpha(image_info,jp2_image->comps[1]) != MagickFalse)
         image->alpha_trait=BlendPixelTrait;
     }
-  else if (jp2_image->numcomps == 1)
-    {
-      if (JP2ComponentHasAlpha(image_info,jp2_image->comps[0]) != MagickFalse)
-        image->alpha_trait=BlendPixelTrait;
-    }
+  else if ((jp2_image->numcomps == 1) && (jp2_image->comps[0].alpha != 0))
+    image->alpha_trait=BlendPixelTrait;
   if (jp2_image->icc_profile_buf != (unsigned char *) NULL)
     {
       StringInfo
