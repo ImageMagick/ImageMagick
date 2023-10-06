@@ -254,6 +254,18 @@ static OPJ_SIZE_T JP2WriteHandler(void *buffer,OPJ_SIZE_T length,void *context)
   return((OPJ_SIZE_T) count);
 }
 
+static MagickBooleanType JP2ComponentHasAlpha(const ImageInfo* image_info,
+  opj_image_comp_t comp)
+{
+  const char
+    *option;
+
+  if (comp.alpha != 0)
+    return(MagickTrue);
+  option=GetImageOption(image_info, "jp2:assume-alpha");
+  return(IsStringTrue(option));
+}
+
 static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   const char
@@ -445,16 +457,25 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         number_meta_channels;
 
       number_meta_channels=jp2_image->numcomps-3;
-      if (jp2_image->comps[3].alpha != 0)
+      if (JP2ComponentHasAlpha(image_info,jp2_image->comps[3]) != MagickFalse)
         {
           image->alpha_trait=BlendPixelTrait;
           number_meta_channels-=1;
         }
       if (number_meta_channels > 0)
-        (void) SetPixelMetaChannels(image,(size_t) number_meta_channels,exception);
+        (void) SetPixelMetaChannels(image,(size_t) number_meta_channels,
+          exception);
     }
-  else if (jp2_image->numcomps > 1 && jp2_image->comps[1].alpha != 0)
-    image->alpha_trait=BlendPixelTrait;
+  else if (jp2_image->numcomps == 2)
+    {
+      if (JP2ComponentHasAlpha(image_info,jp2_image->comps[1]) != MagickFalse)
+        image->alpha_trait=BlendPixelTrait;
+    }
+  else if (jp2_image->numcomps == 1)
+    {
+      if (JP2ComponentHasAlpha(image_info,jp2_image->comps[0]) != MagickFalse)
+        image->alpha_trait=BlendPixelTrait;
+    }
   if (jp2_image->icc_profile_buf != (unsigned char *) NULL)
     {
       StringInfo
@@ -527,6 +548,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
             if (jp2_image->numcomps == 1)
               {
                 SetPixelGray(image,ClampToQuantum(pixel),q);
+                if (jp2_image->comps[i].alpha != 0)
+                  SetPixelAlpha(image,ClampToQuantum(pixel),q);
                 break;
               }
             SetPixelRed(image,ClampToQuantum(pixel),q);
@@ -536,8 +559,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           case 1:
           {
-            if ((jp2_image->comps[i].alpha != 0) &&
-                (image->alpha_trait & BlendPixelTrait))
+            if ((jp2_image->numcomps == 2) && (jp2_image->comps[i].alpha != 0))
               {
                 SetPixelAlpha(image,ClampToQuantum(pixel),q);
                 break;
