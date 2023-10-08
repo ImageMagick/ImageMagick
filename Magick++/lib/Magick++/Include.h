@@ -110,6 +110,7 @@ namespace MagickCore
 #          pragma comment(lib, "CORE_DB_cairo_.lib")
 #        endif
 #        if defined(MAGICKCORE_OPENEXR_DELEGATE)
+#          pragma comment(lib, "CORE_DB_deflate_.lib")
 #          pragma comment(lib, "CORE_DB_exr_.lib")
 #        endif
 #        if defined(MAGICKCORE_FLIF_DELEGATE)
@@ -199,6 +200,7 @@ namespace MagickCore
 #          pragma comment(lib, "CORE_RL_cairo_.lib")
 #        endif
 #        if defined(MAGICKCORE_OPENEXR_DELEGATE)
+#          pragma comment(lib, "CORE_RL_deflate_.lib")
 #          pragma comment(lib, "CORE_RL_exr_.lib")
 #        endif
 #        if defined(MAGICKCORE_FLIF_DELEGATE)
