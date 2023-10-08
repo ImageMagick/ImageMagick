@@ -1924,6 +1924,9 @@ static MagickBooleanType ValidateXMPProfile(Image *image,
   /*
     Validate XMP profile.
   */
+  const char *artifact=GetImageArtifact(image,"xmp:validate");
+  if (IsStringTrue(artifact) == MagickFalse)
+    return(MagickTrue);
   document=xmlReadMemory((const char *) GetStringInfoDatum(profile),(int)
     GetStringInfoLength(profile),"xmp.xml",NULL,XML_PARSE_NOERROR |
     XML_PARSE_NOWARNING);

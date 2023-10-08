@@ -33,7 +33,7 @@
 
   ImageMagick security policies in a nutshell:
 
-  Domains include system, delegate, coder, filter, path, or resource.
+  Domains include system, delegate, coder, filter, module, path, or resource.
 
   Rights include none, read, write, execute and all.  Use | to combine them,
   for example: "read | write" to permit read from, or write to, a path.
