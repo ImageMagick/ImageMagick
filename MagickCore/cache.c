@@ -1701,9 +1701,6 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
     {
       if (GetMagickTTL() <= 0)
         {
-#if defined(ECANCELED)
-          errno=ECANCELED;
-#endif
           cache_info=(CacheInfo *) image->cache;
           if (cache_info->file != -1)
             (void) ClosePixelCacheOnDisk(cache_info);

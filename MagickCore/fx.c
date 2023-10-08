@@ -3937,9 +3937,6 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           if ((pfxrt->loopCount++ % 8192) == 0) {
             if (GetMagickTTL() <= 0) {
               i = pfx->usedElements-1; /* Do no more opcodes. */
-#if defined(ECANCELED)
-              errno=ECANCELED;
-#endif
               (void) ThrowMagickException (pfx->exception, GetMagickModule(),
                 ResourceLimitFatalError, "TimeLimitExceeded", "`%s'", img->filename);
             }
