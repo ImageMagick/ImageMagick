@@ -187,24 +187,23 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  ssize_t
-    i,
-    x;
+  MagickOffsetType
+    offset;
 
   Quantum
     *q;
-
-  unsigned char
-    *p;
 
   short int
     hex_digits[256];
 
   ssize_t
+    i,
+    x,
     y;
 
   unsigned char
-    *data;
+    *data,
+    *p;
 
   unsigned int
     bit,
@@ -258,6 +257,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Scan until hex digits.
   */
   version=11;
+  offset=TellBlob(image);
   while (ReadBlobString(image,buffer) != (char *) NULL)
   {
     if (sscanf(buffer,"static short %1024s = {",name) == 1)
@@ -277,7 +277,10 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       p++;
     if (LocaleCompare("bits[]",(char *) p) == 0)
       break;
+    offset=TellBlob(image);
   }
+  if (strchr(buffer,'{') != (char *) NULL)
+    (void) SeekBlob(image,offset+(strchr(buffer,'{')-buffer)+1,SEEK_SET);
   /*
     Initialize image structure.
   */
@@ -444,6 +447,7 @@ ModuleExport size_t RegisterXBMImage(void)
   entry->decoder=(DecodeImageHandler *) ReadXBMImage;
   entry->encoder=(EncodeImageHandler *) WriteXBMImage;
   entry->magick=(IsImageFormatHandler *) IsXBM;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderAdjoinFlag;
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
