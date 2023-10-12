@@ -20,7 +20,7 @@
 %                                August 2020                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2020 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -211,7 +211,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
           offset=0;
       }
     else
-      offset+=read_bytes;
+      offset+=(zip_int64_t) read_bytes;
   }
   (void) fclose(file);
   (void) zip_fclose(merged_image_file);
@@ -239,7 +239,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
       out_image->timestamp=time(&stat_info.st_mtime);
       (void) CopyMagickString(out_image->magick,image_metadata->magick,
         MagickPathExtent);
-      out_image->extent=stat_info.st_size;
+      out_image->extent=(MagickSizeType) stat_info.st_size;
     }
   image_metadata=DestroyImage(image_metadata);
   return(out_image);
