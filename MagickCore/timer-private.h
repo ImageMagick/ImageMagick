@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "MagickCore/locale_.h"
+
 static inline void GetMagickUTCtime(const time_t *timep,struct tm *result)
 {
 #if defined(MAGICKCORE_HAVE_GMTIME_R)
@@ -52,6 +54,40 @@ static inline void GetMagickLocaltime(const time_t *timep,struct tm *result)
       (void) memcpy(result,my_time,sizeof(*my_time));
   }
 #endif
+}
+
+static inline time_t ParseMagickTimeToLive(const char *time_to_live)
+{
+  char
+    *q;
+
+  time_t
+    ttl;
+
+  /*
+    Time to live, absolute or relative, e.g. 1440, 2 hours, 3 days, ...
+  */
+  ttl=(time_t) InterpretLocaleValue(time_to_live,&q);
+  if (q != time_to_live)
+    {
+      while (isspace((int) ((unsigned char) *q)) != 0)
+        q++;
+      if (LocaleNCompare(q,"second",6) == 0)
+        ttl*=1;
+      if (LocaleNCompare(q,"minute",6) == 0)
+        ttl*=60;
+      if (LocaleNCompare(q,"hour",4) == 0)
+        ttl*=3600;
+      if (LocaleNCompare(q,"day",3) == 0)
+        ttl*=86400;
+      if (LocaleNCompare(q,"week",4) == 0)
+        ttl*=604800;
+      if (LocaleNCompare(q,"month",5) == 0)
+        ttl*=2628000;
+      if (LocaleNCompare(q,"year",4) == 0)
+        ttl*=31536000;
+   }
+  return(ttl);
 }
 
 extern MagickPrivate MagickOffsetType

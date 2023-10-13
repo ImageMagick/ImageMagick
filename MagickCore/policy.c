@@ -60,6 +60,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/xml-tree.h"
@@ -1296,6 +1297,8 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",value) != 0)
             limit=StringToMagickSizeType(value,100.0);
+          if ((ResourceType) type == TimeResource)
+            limit=ParseMagickTimeToLive(value);
           return(SetMagickResourceLimit((ResourceType) type,limit));
         }
       break;

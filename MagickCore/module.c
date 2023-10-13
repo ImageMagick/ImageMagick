@@ -62,6 +62,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
@@ -147,7 +148,7 @@ MagickExport ModuleInfo *AcquireModuleInfo(const char *path,const char *tag)
     module_info->path=ConstantString(path);
   if (tag != (const char *) NULL)
     module_info->tag=ConstantString(tag);
-  module_info->timestamp=time(0);
+  module_info->timestamp=GetMagickTime();
   module_info->signature=MagickCoreSignature;
   return(module_info);
 }

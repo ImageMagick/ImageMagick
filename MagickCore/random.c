@@ -16,7 +16,7 @@
 %                              December 2001                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -61,6 +61,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/thread_.h"
 #include "MagickCore/thread-private.h"
+#include "MagickCore/timer-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #if defined(MAGICKCORE_HAVE_GETENTROPY)
@@ -194,7 +195,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   random_info->protocol_major=RandomProtocolMajorVersion;
   random_info->protocol_minor=RandomProtocolMinorVersion;
   random_info->semaphore=AcquireSemaphoreInfo();
-  random_info->timestamp=(ssize_t) time(0);
+  random_info->timestamp=(ssize_t) GetMagickTime();
   random_info->signature=MagickCoreSignature;
   /*
     Seed random nonce.

@@ -85,8 +85,8 @@
   <policy domain="Undefined" rights="none"/>
   <!-- Set maximum parallel threads. -->
   <!-- <policy domain="resource" name="thread" value="2"/> -->
-  <!-- Set maximum time in seconds. When this limit is exceeded, an exception
-       is thrown and processing stops. -->
+  <!-- Set maximum time in seconds or neumonics, e.g. "2 minutes". When this
+       limit is exceeded, an exception is thrown and processing stops. -->
   <!-- <policy domain="resource" name="time" value="120"/> -->
   <!-- Set maximum number of open pixel cache files. When this limit is
        exceeded, any subsequent pixels cached to disk are closed and reopened

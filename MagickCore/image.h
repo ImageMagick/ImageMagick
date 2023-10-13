@@ -364,6 +364,9 @@ struct _Image
 
   ChannelType
     channels;
+
+  time_t
+    ttl;
 };
 
 /*

@@ -92,7 +92,6 @@
 #include "MagickCore/statistic.h"
 #include "MagickCore/statistic-private.h"
 #include "MagickCore/string_.h"
-#include "MagickCore/timer-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/token.h"
@@ -655,7 +654,6 @@ typedef struct {
   fxFltType * ValStack;
   fxFltType * UserSymVals;
   Quantum * thisPixel;
-  MagickSizeType loopCount;
 } fxRtT;
 
 struct _FxInfo {
@@ -999,8 +997,6 @@ static MagickBooleanType AllocFxRt (FxInfo * pfx, fxRtT * pfxrt)
     }
     for (i = 0; i < pfx->usedUserSymbols; i++) pfxrt->UserSymVals[i] = (fxFltType) 0;
   }
-
-  pfxrt->loopCount = 0;
 
   return MagickTrue;
 }
@@ -3934,12 +3930,10 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         case rGotoChk:
           assert (pel->EleNdx >= 0);
           i = pel->EleNdx-1; /* -1 because 'for' loop will increment. */
-          if ((pfxrt->loopCount++ % 8192) == 0) {
-            if (GetMagickTTL() <= 0) {
-              i = pfx->usedElements-1; /* Do no more opcodes. */
-              (void) ThrowMagickException (pfx->exception, GetMagickModule(),
-                ResourceLimitFatalError, "TimeLimitExceeded", "`%s'", img->filename);
-            }
+          if (((double) img->timestamp+img->ttl) < (double) GetMagickTime()) {
+            i = pfx->usedElements-1; /* Do no more opcodes. */
+            (void) ThrowMagickException (pfx->exception, GetMagickModule(),
+              ResourceLimitFatalError, "TimeLimitExceeded", "`%s'", img->filename);
           }
           break;
         case rIfZeroGoto:
