@@ -987,13 +987,10 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
     status;
 
   static const char
-    *products[5] =
+    *products[2] =
     {
-      "GPL Ghostscript",
-      "GNU Ghostscript",
-      "AFPL Ghostscript",
-      "Aladdin Ghostscript",
-      "Artifex Ghostscript"
+      "Artifex Ghostscript",
+      "GPL Ghostscript"
     };
 
   /*
