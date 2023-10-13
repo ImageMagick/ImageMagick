@@ -246,7 +246,7 @@ static MagickBooleanType IsPSD(const unsigned char *magick,const size_t length)
 %
 */
 
-static const char *CompositeOperatorToPSDBlendMode(Image *image)
+static const char *CompositeOperatorToPSDBlendMode(const Image *image)
 {
   switch (image->compose)
   {
@@ -373,7 +373,7 @@ static MagickBooleanType CorrectPSDAlphaBlend(const ImageInfo *image_info,
 }
 
 static inline CompressionType ConvertPSDCompression(
-  PSDCompressionType compression)
+  const PSDCompressionType compression)
 {
   switch (compression)
   {
@@ -387,8 +387,8 @@ static inline CompressionType ConvertPSDCompression(
   }
 }
 
-static MagickBooleanType ApplyPSDLayerOpacity(Image *image,Quantum opacity,
-  MagickBooleanType revert,ExceptionInfo *exception)
+static MagickBooleanType ApplyPSDLayerOpacity(Image *image,
+  const Quantum opacity,const MagickBooleanType revert,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -442,7 +442,8 @@ static MagickBooleanType ApplyPSDLayerOpacity(Image *image,Quantum opacity,
 }
 
 static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
-  Quantum background,MagickBooleanType revert,ExceptionInfo *exception)
+  const Quantum background,const MagickBooleanType revert,
+  ExceptionInfo *exception)
 {
   Image
     *complete_mask;
@@ -524,7 +525,7 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
   return(status);
 }
 
-static void PreservePSDOpacityMask(Image *image,LayerInfo* layer_info,
+static void PreservePSDOpacityMask(Image *image,LayerInfo *layer_info,
   ExceptionInfo *exception)
 {
   char
@@ -699,8 +700,7 @@ static inline LayerInfo *DestroyLayerInfo(LayerInfo *layer_info,
     if (layer_info[i].info != (StringInfo *) NULL)
       layer_info[i].info=DestroyStringInfo(layer_info[i].info);
   }
-
-  return (LayerInfo *) RelinquishMagickMemory(layer_info);
+  return((LayerInfo *) RelinquishMagickMemory(layer_info));
 }
 
 static inline size_t GetPSDPacketSize(const Image *image)
@@ -725,7 +725,7 @@ static inline MagickSizeType GetPSDSize(const PSDInfo *psd_info,Image *image)
   return((MagickSizeType) ReadBlobLongLong(image));
 }
 
-static inline size_t GetPSDRowSize(Image *image)
+static inline size_t GetPSDRowSize(const Image *image)
 {
   if (image->depth == 1)
     return(((image->columns+7)/8)*GetPSDPacketSize(image));
@@ -733,7 +733,7 @@ static inline size_t GetPSDRowSize(Image *image)
     return(image->columns*GetPSDPacketSize(image));
 }
 
-static const char *ModeToString(PSDImageType type)
+static const char *ModeToString(const PSDImageType type)
 {
   switch (type)
   {
@@ -1039,8 +1039,8 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,const ssize_t row,
   return(SyncAuthenticPixels(image,exception));
 }
 
-static MagickBooleanType ReadPSDChannelRaw(Image *image,const PixelChannel channel,
-  ExceptionInfo *exception)
+static MagickBooleanType ReadPSDChannelRaw(Image *image,
+  const PixelChannel channel,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -2592,8 +2592,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   else
     {
-      if (ReadPSDLayersInternal(image,image_info,&psd_info,skip_layers,
-            exception) != MagickTrue)
+      if (ReadPSDLayersInternal(image,image_info,&psd_info,skip_layers,exception) != MagickTrue)
         {
           if (profile != (StringInfo *) NULL)
             profile=DestroyStringInfo(profile);
@@ -2666,6 +2665,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       merged=MergeImageLayers(image,FlattenLayer,exception);
       if (merged == (Image *) NULL)
         {
+          if (profile != (StringInfo *) NULL)
+            profile=DestroyStringInfo(profile);
           (void) CloseBlob(image);
           image=DestroyImageList(image);
           return((Image *) NULL);
