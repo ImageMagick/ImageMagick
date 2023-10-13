@@ -1591,7 +1591,6 @@ MagickExport void MagickCoreGenesis(const char *path,
 #endif
   (void) RegistryComponentGenesis();
   (void) MonitorComponentGenesis();
-  (void) GetMagickTTL();
   magickcore_instantiated=MagickTrue;
   UnlockMagickMutex();
 }

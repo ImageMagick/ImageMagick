@@ -90,9 +90,6 @@ static inline time_t ParseMagickTimeToLive(const char *time_to_live)
   return(ttl);
 }
 
-extern MagickPrivate MagickOffsetType
-  GetMagickTTL(void);
-
 extern MagickExport time_t
   GetMagickTime(void);
 

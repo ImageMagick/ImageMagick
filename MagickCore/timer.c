@@ -383,41 +383,6 @@ MagickExport time_t GetMagickTime(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t M a g i c k T T L                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetMagickTTL() returns the time as the number of seconds to live.
-%
-%  The format of the GetMagickTTL method is:
-%
-%      MagickOffsetType GetMagickTTL(void)
-%
-*/
-MagickPrivate MagickOffsetType GetMagickTTL(void)
-{
-  static time_t
-    magick_epoch = (time_t) 0;
-
-  static MagickBooleanType
-    epoch_initialized = MagickFalse;
-
-  if (epoch_initialized == MagickFalse)
-    {
-      epoch_initialized=MagickTrue;
-      magick_epoch=time((time_t *) NULL);
-    }
-  return((MagickOffsetType) GetMagickResourceLimit(TimeResource)-
-    (time((time_t *) NULL)-magick_epoch));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   G e t T i m e r I n f o                                                   %
 %                                                                             %
 %                                                                             %
