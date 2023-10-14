@@ -1073,10 +1073,12 @@ static void CLISettingOptionInfo(MagickCLI *cli_wand,
           parse= ParseCommandOption(MagickResourceOptions,MagickFalse,arg1);
           if ( parse < 0 )
             CLIWandExceptArgBreak(OptionError,"UnrecognizedResourceType",
-                option,arg1);
+              option,arg1);
           if (LocaleCompare("unlimited",arg2) != 0)
             limit=(MagickSizeType) SiPrefixToDoubleInterval(arg2,100.0);
-          (void) SetMagickResourceLimit((ResourceType)parse,limit);
+          if ((ResourceType) parse == TimeResource)
+            limit=(MagickSizeType) ParseMagickTimeToLive(arg2);
+          (void) SetMagickResourceLimit((ResourceType) parse,limit);
           break;
         }
       if (LocaleCompare("log",option+1) == 0)

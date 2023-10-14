@@ -7175,6 +7175,8 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             limit=MagickResourceInfinity;
             if (LocaleCompare("unlimited",argv[i+2]) != 0)
               limit=(MagickSizeType) SiPrefixToDoubleInterval(argv[i+2],100.0);
+            if (type == TimeResource)
+              limit=(MagickSizeType) ParseMagickTimeToLive(argv[i+2]);
             (void) SetMagickResourceLimit(type,limit);
             break;
           }

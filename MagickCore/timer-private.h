@@ -83,7 +83,7 @@ static inline time_t ParseMagickTimeToLive(const char *time_to_live)
       if (LocaleNCompare(q,"week",4) == 0)
         ttl*=604800;
       if (LocaleNCompare(q,"month",5) == 0)
-        ttl*=2628000;
+        ttl*=2592000;
       if (LocaleNCompare(q,"year",4) == 0)
         ttl*=31536000;
    }
