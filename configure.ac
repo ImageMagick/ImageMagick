@@ -1528,6 +1528,11 @@ if test "$with_bzlib" != 'no'; then
   failed=0
   passed=0
   found_libbz=0
+
+  PKG_CHECK_MODULES([BZLIB],[bzip2 >= 1.0.0],[have_bzlib=yes],[have_bzlib=no])
+  CFLAGS="$CFLAGS $BZLIB_CFLAGS"
+  LIBS="$LIBS $BZLIB_LIBS"
+
   AC_CHECK_HEADER([bzlib.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
   AC_CHECK_LIB([bz2],[BZ2_bzDecompress],[found_libbz=`expr $found_libbz + 1`],,)
   if test "$native_win32_build" = 'yes'; then
@@ -1556,6 +1561,7 @@ if test "$with_bzlib" != 'no'; then
 fi
 AM_CONDITIONAL([BZLIB_DELEGATE],[test "$have_bzlib" = 'yes'])
 AC_SUBST([BZLIB_LIBS])
+AC_SUBST([BZLIB_CFLAGS])
 
 #
 # Find the X11 include and library directories.
