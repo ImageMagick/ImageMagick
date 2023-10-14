@@ -136,7 +136,7 @@ static ResourceInfo
     MagickULLConstant(768),            /* file limit */
     MagickULLConstant(1),              /* thread limit */
     MagickULLConstant(0),              /* throttle limit */
-    (MagickSizeType) MAGICK_SSIZE_MAX  /* time limit */
+    MagickResourceInfinity             /* time limit */
   };
 
 static SemaphoreInfo
@@ -1333,7 +1333,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
         limit,100.0));
       limit=DestroyString(limit);
     }
-  (void) SetMagickResourceLimit(TimeResource,(MagickSizeType) MAGICK_SSIZE_MAX);
+  (void) SetMagickResourceLimit(TimeResource,MagickResourceInfinity);
   limit=GetEnvironmentValue("MAGICK_TIME_LIMIT");
   if (limit != (char *) NULL)
     {
@@ -1545,8 +1545,6 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
       else
         resource_info.time_limit=MagickMin(limit,(MagickSizeType)
           ParseMagickTimeToLive(value));
-      resource_info.time_limit=MagickMin(resource_info.time_limit,
-        (MagickSizeType) MAGICK_SSIZE_MAX);
       break;
     }
     case WidthResource:
