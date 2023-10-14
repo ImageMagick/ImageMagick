@@ -1694,7 +1694,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
     cpu_throttle = MagickResourceInfinity,
     cycles = 0;
 
-  if (((double) image->timestamp+image->ttl) < (double) GetMagickTime())
+  if (difftime(GetMagickTime(),image->timestamp) > (double) image->ttl)
     {
       cache_info=(CacheInfo *) image->cache;
       if (cache_info->file != -1)
