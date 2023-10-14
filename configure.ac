@@ -2470,6 +2470,11 @@ if test "$with_jpeg" != 'no'; then
     AC_MSG_RESULT([])
     failed=0
     passed=0
+
+    PKG_CHECK_MODULES([JPEG],[libjpeg >= 2.0.0],[have_jpeg=yes],[have_jpeg=no])
+    CFLAGS="$CFLAGS $JPEG_CFLAGS"
+    LIBS="$LIBS $JPEG_LIBS"
+
     AC_CHECK_HEADER([jconfig.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
     AC_CHECK_HEADER([jerror.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
     AC_CHECK_HEADER([jmorecfg.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
@@ -2493,6 +2498,7 @@ if test "$with_jpeg" != 'no'; then
     fi
 fi
 AM_CONDITIONAL([JPEG_DELEGATE],[test "$have_jpeg" = 'yes'])
+AC_SUBST([JPEG_CFLAGS])
 AC_SUBST([JPEG_LIBS])
 
 dnl ===========================================================================
