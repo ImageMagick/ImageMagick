@@ -81,7 +81,9 @@ typedef struct _AESInfo
     *decipher_key;
 
   ssize_t
-    rounds,
+    rounds;
+
+  time_t
     timestamp;
 
   size_t
@@ -204,7 +206,7 @@ static AESInfo *AcquireAESInfo(void)
       (aes_info->encipher_key == (unsigned int *) NULL) ||
       (aes_info->decipher_key == (unsigned int *) NULL))
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  aes_info->timestamp=(ssize_t) GetMagickTime();
+  aes_info->timestamp=GetMagickTime();
   aes_info->signature=MagickCoreSignature;
   return(aes_info);
 }

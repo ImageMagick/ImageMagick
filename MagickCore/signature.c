@@ -84,7 +84,7 @@ struct _SignatureInfo
   MagickBooleanType
     lsb_first;
 
-  ssize_t
+  time_t
     timestamp;
 
   size_t
@@ -139,7 +139,7 @@ MagickPrivate SignatureInfo *AcquireSignatureInfo(void)
   lsb_first=1;
   signature_info->lsb_first=(int) (*(char *) &lsb_first) == 1 ? MagickTrue :
     MagickFalse;
-  signature_info->timestamp=(ssize_t) GetMagickTime();
+  signature_info->timestamp=GetMagickTime();
   signature_info->signature=MagickCoreSignature;
   InitializeSignature(signature_info);
   return(signature_info);
