@@ -892,8 +892,8 @@ static void FormatTimeToLive(const MagickSizeType ttl,char *timeString)
       (void) FormatLocaleString(timeString,MagickPathExtent,"%lld years",years);
       return;
     }
-  months=seconds/2592000;
-  seconds=seconds % 2592000;
+  months=seconds/2628000;
+  seconds=seconds % 2628000;
   if (seconds == 0)
     {
       (void) FormatLocaleString(timeString,MagickPathExtent,"%lld months",
