@@ -367,8 +367,7 @@ MagickExport time_t GetMagickTime(void)
           time_t
             epoch;
 
-          epoch=(time_t) CastDoubleToLong(StringToDouble(source_date_epoch,
-            (char **) NULL));
+          epoch=(time_t) StringToUnsignedLong(source_date_epoch);
           if ((epoch > 0) && (epoch <= time((time_t *) NULL)))
             magick_epoch=epoch;
         }
