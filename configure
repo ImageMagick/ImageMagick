@@ -846,9 +846,10 @@ JXL_DELEGATE_FALSE
 JXL_DELEGATE_TRUE
 JXL_LIBS
 JXL_CFLAGS
-JPEG_LIBS
 JPEG_DELEGATE_FALSE
 JPEG_DELEGATE_TRUE
+JPEG_LIBS
+JPEG_CFLAGS
 JBIG_LIBS
 JBIG_DELEGATE_FALSE
 JBIG_DELEGATE_TRUE
@@ -1331,6 +1332,8 @@ MagickCache_CFLAGS
 MagickCache_LIBS
 HEIF_CFLAGS
 HEIF_LIBS
+JPEG_CFLAGS
+JPEG_LIBS
 JXL_CFLAGS
 JXL_LIBS
 LCMS2_CFLAGS
@@ -2190,6 +2193,8 @@ Some influential environment variables:
               linker flags for MagickCache, overriding pkg-config
   HEIF_CFLAGS C compiler flags for HEIF, overriding pkg-config
   HEIF_LIBS   linker flags for HEIF, overriding pkg-config
+  JPEG_CFLAGS C compiler flags for JPEG, overriding pkg-config
+  JPEG_LIBS   linker flags for JPEG, overriding pkg-config
   JXL_CFLAGS  C compiler flags for JXL, overriding pkg-config
   JXL_LIBS    linker flags for JXL, overriding pkg-config
   LCMS2_CFLAGS
@@ -5175,7 +5180,7 @@ MAGICK_PATCHLEVEL_VERSION=21
 
 MAGICK_VERSION=7.1.1-21
 
-MAGICK_GIT_REVISION=98bb1d414:20231008
+MAGICK_GIT_REVISION=40591f0e9:20231014
 
 
 # Substitute library versioning
@@ -5209,7 +5214,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,21
 
-PACKAGE_RELEASE_DATE=2023-10-08
+PACKAGE_RELEASE_DATE=2023-10-14
 
 
 # Ensure that make can run correctly
@@ -31907,6 +31912,81 @@ printf %s "checking for JPEG... " >&6; }
 printf "%s\n" "" >&6; }
     failed=0
     passed=0
+
+
+pkg_failed=no
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libjpeg >= 2.0.0" >&5
+printf %s "checking for libjpeg >= 2.0.0... " >&6; }
+
+if test -n "$JPEG_CFLAGS"; then
+    pkg_cv_JPEG_CFLAGS="$JPEG_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libjpeg >= 2.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libjpeg >= 2.0.0") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_JPEG_CFLAGS=`$PKG_CONFIG --cflags "libjpeg >= 2.0.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$JPEG_LIBS"; then
+    pkg_cv_JPEG_LIBS="$JPEG_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libjpeg >= 2.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libjpeg >= 2.0.0") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_JPEG_LIBS=`$PKG_CONFIG --libs "libjpeg >= 2.0.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        JPEG_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libjpeg >= 2.0.0" 2>&1`
+        else
+	        JPEG_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libjpeg >= 2.0.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$JPEG_PKG_ERRORS" >&5
+
+	have_jpeg=no
+elif test $pkg_failed = untried; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+	have_jpeg=no
+else
+	JPEG_CFLAGS=$pkg_cv_JPEG_CFLAGS
+	JPEG_LIBS=$pkg_cv_JPEG_LIBS
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+	have_jpeg=yes
+fi
+    CFLAGS="$CFLAGS $JPEG_CFLAGS"
+    LIBS="$LIBS $JPEG_LIBS"
+
     ac_fn_c_check_header_compile "$LINENO" "jconfig.h" "ac_cv_header_jconfig_h" "$ac_includes_default"
 if test "x$ac_cv_header_jconfig_h" = xyes
 then :
@@ -32011,6 +32091,7 @@ else
   JPEG_DELEGATE_TRUE='#'
   JPEG_DELEGATE_FALSE=
 fi
+
 
 
 
