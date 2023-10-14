@@ -2498,7 +2498,7 @@ if test "$with_jpeg" != 'no'; then
     fi
 fi
 AM_CONDITIONAL([JPEG_DELEGATE],[test "$have_jpeg" = 'yes'])
-AC_SUBST([JPEG_FLAGS])
+AC_SUBST([JPEG_CFLAGS])
 AC_SUBST([JPEG_LIBS])
 
 dnl ===========================================================================
