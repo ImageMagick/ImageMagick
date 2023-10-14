@@ -350,7 +350,7 @@ MagickExport double GetElapsedTime(TimerInfo *time_info)
 MagickExport time_t GetMagickTime(void)
 {
   static time_t
-    constant_magick_time = (time_t) 0;
+    magick_epoch = (time_t) 0;
 
   static MagickBooleanType
     epoch_initialized = MagickFalse;
@@ -370,11 +370,11 @@ MagickExport time_t GetMagickTime(void)
           epoch=(time_t) CastDoubleToLong(StringToDouble(source_date_epoch,
             (char **) NULL));
           if ((epoch > 0) && (epoch <= time((time_t *) NULL)))
-            constant_magick_time=epoch;
+            magick_epoch=epoch;
         }
     }
-  if (constant_magick_time != 0)
-    return(constant_magick_time);
+  if (magick_epoch != 0)
+    return(magick_epoch);
   return(time((time_t *) NULL));
 }
 
