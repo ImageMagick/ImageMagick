@@ -892,44 +892,44 @@ static void FormatTimeToLive(const MagickSizeType ttl,char *timeString)
       (void) FormatLocaleString(timeString,MagickPathExtent,"%lld years",years);
       return;
     }
-  months=seconds/2628000;
-  seconds=seconds % 2628000;
+  months=ttl/2628000;
+  seconds=ttl % 2628000;
   if (seconds == 0)
     {
       (void) FormatLocaleString(timeString,MagickPathExtent,"%lld months",
         months);
       return;
     }
-  weeks=seconds/604800;
-  seconds=seconds % 604800;
+  weeks=ttl/604800;
+  seconds=ttl % 604800;
   if (seconds == 0)
     {
       (void) FormatLocaleString(timeString,MagickPathExtent,"%lld weeks",weeks);
       return;
     }
-  days=seconds/86400;
-  seconds=seconds % 86400;
+  days=ttl/86400;
+  seconds=ttl % 86400;
   if (seconds == 0)
     {
       (void) FormatLocaleString(timeString,MagickPathExtent,"%lld days",days);
       return;
     }
-  hours=seconds/3600;
-  seconds=seconds % 3600;
+  hours=ttl/3600;
+  seconds=ttl % 3600;
   if (seconds == 0)
     {
       (void) FormatLocaleString(timeString,MagickPathExtent,"%lld hours",hours);
       return;
     }
-  minutes=seconds/60;
-  seconds=seconds % 60;
+  minutes=ttl/60;
+  seconds=ttl % 60;
   if (seconds == 0)
     {
       (void) FormatLocaleString(timeString,MagickPathExtent,"%lld minutes",
         minutes);
       return;
     }
-  (void) FormatLocaleString(timeString,MagickPathExtent,"%lld seconds",seconds);
+  (void) FormatLocaleString(timeString,MagickPathExtent,"%lld seconds",ttl);
 }
 
 MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
