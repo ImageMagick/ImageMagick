@@ -935,9 +935,10 @@ X_LIBS
 X_PRE_LIBS
 X_CFLAGS
 XMKMF
-BZLIB_LIBS
 BZLIB_DELEGATE_FALSE
 BZLIB_DELEGATE_TRUE
+BZLIB_LIBS
+BZLIB_CFLAGS
 CCMALLOCDelegate
 UMEM_LIBS
 HAVE_UMEM_FALSE
@@ -1307,6 +1308,8 @@ PKG_CONFIG_PATH
 PKG_CONFIG_LIBDIR
 LT_SYS_LIBRARY_PATH
 CXXCPP
+BZLIB_CFLAGS
+BZLIB_LIBS
 XMKMF
 ZIP_CFLAGS
 ZIP_LIBS
@@ -2155,6 +2158,9 @@ Some influential environment variables:
   LT_SYS_LIBRARY_PATH
               User-defined run-time library search path.
   CXXCPP      C++ preprocessor
+  BZLIB_CFLAGS
+              C compiler flags for BZLIB, overriding pkg-config
+  BZLIB_LIBS  linker flags for BZLIB, overriding pkg-config
   XMKMF       Path to xmkmf, Makefile generator for X Window System
   ZIP_CFLAGS  C compiler flags for ZIP, overriding pkg-config
   ZIP_LIBS    linker flags for ZIP, overriding pkg-config
@@ -5180,7 +5186,7 @@ MAGICK_PATCHLEVEL_VERSION=21
 
 MAGICK_VERSION=7.1.1-21
 
-MAGICK_GIT_REVISION=40591f0e9:20231014
+MAGICK_GIT_REVISION=664dd58cf:20231015
 
 
 # Substitute library versioning
@@ -5214,7 +5220,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,21
 
-PACKAGE_RELEASE_DATE=2023-10-14
+PACKAGE_RELEASE_DATE=2023-10-15
 
 
 # Ensure that make can run correctly
@@ -28374,6 +28380,81 @@ printf "%s\n" "" >&6; }
   failed=0
   passed=0
   found_libbz=0
+
+
+pkg_failed=no
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for bzip2 >= 1.0.0" >&5
+printf %s "checking for bzip2 >= 1.0.0... " >&6; }
+
+if test -n "$BZLIB_CFLAGS"; then
+    pkg_cv_BZLIB_CFLAGS="$BZLIB_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"bzip2 >= 1.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "bzip2 >= 1.0.0") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_BZLIB_CFLAGS=`$PKG_CONFIG --cflags "bzip2 >= 1.0.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$BZLIB_LIBS"; then
+    pkg_cv_BZLIB_LIBS="$BZLIB_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"bzip2 >= 1.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "bzip2 >= 1.0.0") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_BZLIB_LIBS=`$PKG_CONFIG --libs "bzip2 >= 1.0.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        BZLIB_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "bzip2 >= 1.0.0" 2>&1`
+        else
+	        BZLIB_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "bzip2 >= 1.0.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$BZLIB_PKG_ERRORS" >&5
+
+	have_bzlib=no
+elif test $pkg_failed = untried; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+	have_bzlib=no
+else
+	BZLIB_CFLAGS=$pkg_cv_BZLIB_CFLAGS
+	BZLIB_LIBS=$pkg_cv_BZLIB_LIBS
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+	have_bzlib=yes
+fi
+  CFLAGS="$CFLAGS $BZLIB_CFLAGS"
+  LIBS="$LIBS $BZLIB_LIBS"
+
   ac_fn_c_check_header_compile "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
 if test "x$ac_cv_header_bzlib_h" = xyes
 then :
@@ -28498,6 +28579,7 @@ else
   BZLIB_DELEGATE_TRUE='#'
   BZLIB_DELEGATE_FALSE=
 fi
+
 
 
 
