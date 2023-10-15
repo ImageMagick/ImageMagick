@@ -360,17 +360,17 @@ MagickExport time_t GetMagickTime(void)
       const char
         *source_date_epoch;
 
-      epoch_initialized=MagickTrue;
       source_date_epoch=getenv("SOURCE_DATE_EPOCH");
       if (source_date_epoch != (const char *) NULL)
         {
           time_t
             epoch;
 
-          epoch=(time_t) StringToUnsignedLong(source_date_epoch);
+          epoch=(time_t) StringToMagickOffsetType(source_date_epoch,100.0);
           if ((epoch > 0) && (epoch <= time((time_t *) NULL)))
             magick_epoch=epoch;
         }
+      epoch_initialized=MagickTrue;
     }
   if (magick_epoch != 0)
     return(magick_epoch);

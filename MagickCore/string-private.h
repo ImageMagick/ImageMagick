@@ -114,6 +114,18 @@ static inline long StringToLong(const char *magick_restrict value)
   return(strtol(value,(char **) NULL,10));
 }
 
+static inline MagickOffsetType StringToMagickOffsetType(const char *string,
+  const double interval)
+{
+  double
+    value;
+
+  value=SiPrefixToDoubleInterval(string,interval);
+  if (value >= (double) MagickULLConstant(~0))
+    return((MagickOffsetType) MagickULLConstant(~0));
+  return((MagickOffsetType) value);
+}
+
 static inline MagickSizeType StringToMagickSizeType(const char *string,
   const double interval)
 {
