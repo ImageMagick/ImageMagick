@@ -1017,7 +1017,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
       {
         if (y < y_offset)
           continue;
-        if ((y-y_offset) >= (ssize_t) source_image->rows)
+        if ((y-(double) y_offset) >= (double) source_image->rows)
           continue;
       }
     /*
@@ -1025,10 +1025,12 @@ static MagickBooleanType CompositeOverImage(Image *image,
     */
     pixels=(Quantum *) NULL;
     p=(Quantum *) NULL;
-    if ((y >= y_offset) && ((y-y_offset) < (ssize_t) source_image->rows))
+    if ((y >= y_offset) &&
+        ((y-(double) y_offset) < (double) source_image->rows))
       {
-        p=GetCacheViewVirtualPixels(source_view,0,y-y_offset,
-          source_image->columns,1,exception);
+        p=GetCacheViewVirtualPixels(source_view,0,
+          CastDoubleToLong(y-(double) y_offset),source_image->columns,1,
+          exception);
         if (p == (const Quantum *) NULL)
           {
             status=MagickFalse;
@@ -1073,11 +1075,11 @@ static MagickBooleanType CompositeOverImage(Image *image,
               q+=GetPixelChannels(image);
               continue;
             }
-          if ((x-x_offset) >= (ssize_t) source_image->columns)
+          if ((x-(double) x_offset) >= (double) source_image->columns)
             break;
         }
       if ((pixels == (Quantum *) NULL) || (x < x_offset) ||
-          ((x-x_offset) >= (ssize_t) source_image->columns))
+          ((x-(double) x_offset) >= (double) source_image->columns))
         {
           Quantum
             source[MaxPixelChannels];
@@ -1087,8 +1089,9 @@ static MagickBooleanType CompositeOverImage(Image *image,
               Sc: source color.
               Dc: canvas color.
           */
-          (void) GetOneVirtualPixel(source_image,x-x_offset,y-y_offset,source,
-            exception);
+          (void) GetOneVirtualPixel(source_image,
+            CastDoubleToLong(x-(double) x_offset),
+            CastDoubleToLong(y-(double) y_offset),source,exception);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             MagickRealType
@@ -2304,7 +2307,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       {
         if (y < y_offset)
           continue;
-        if ((y-y_offset) >= (ssize_t) source_image->rows)
+        if ((y-(double) y_offset) >= (double) source_image->rows)
           continue;
       }
     /*
@@ -2312,10 +2315,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     */
     pixels=(Quantum *) NULL;
     p=(Quantum *) NULL;
-    if ((y >= y_offset) && ((y-y_offset) < (ssize_t) source_image->rows))
+    if ((y >= y_offset) &&
+        ((y-(double) y_offset) < (double) source_image->rows))
       {
-        p=GetCacheViewVirtualPixels(source_view,0,y-y_offset,
-          source_image->columns,1,exception);
+        p=GetCacheViewVirtualPixels(source_view,0,
+          CastDoubleToLong(y-(double) y_offset),source_image->columns,1,
+          exception);
         if (p == (const Quantum *) NULL)
           {
             status=MagickFalse;
@@ -2351,11 +2356,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Sca = 0.0,
         Si = 0.0;
 
-      ssize_t
-        i;
-
       size_t
         channels;
+
+      ssize_t
+        i;
 
       if (clip_to_self != MagickFalse)
         {
@@ -2364,11 +2369,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               q+=GetPixelChannels(image);
               continue;
             }
-          if ((x-x_offset) >= (ssize_t) source_image->columns)
+          if ((x-(double) x_offset) >= (double) source_image->columns)
             break;
         }
       if ((pixels == (Quantum *) NULL) || (x < x_offset) ||
-          ((x-x_offset) >= (ssize_t) source_image->columns))
+          ((x-(double) x_offset) >= (double) source_image->columns))
         {
           Quantum
             source[MaxPixelChannels];
@@ -2378,8 +2383,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               Sc: source color.
               Dc: canvas color.
           */
-          (void) GetOneVirtualPixel(source_image,x-x_offset,y-y_offset,source,
-            exception);
+          (void) GetOneVirtualPixel(source_image,
+            CastDoubleToLong(x-(double) x_offset),
+            CastDoubleToLong(y-(double) y_offset),source,exception);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             MagickRealType
