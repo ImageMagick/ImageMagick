@@ -1337,7 +1337,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
   limit=GetEnvironmentValue("MAGICK_TIME_LIMIT");
   if (limit != (char *) NULL)
     {
-      (void) SetMagickResourceLimit(TimeResource,ParseMagickTimeToLive(limit));
+      (void) SetMagickResourceLimit(TimeResource,ParseMagickTimeToLive((time_t) limit));
       limit=DestroyString(limit);
     }
   (void) SetMagickResourceLimit(ListLengthResource,MagickResourceInfinity);
