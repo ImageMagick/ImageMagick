@@ -1370,5 +1370,5 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
     default:
       break;
   }
-  return(MagickFalse);
+  return(MagickTrue);
 }
