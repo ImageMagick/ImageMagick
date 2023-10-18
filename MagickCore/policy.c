@@ -1151,32 +1151,46 @@ static MagickBooleanType ValidateSecurityPolicy(const char *policy,
 MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
   ExceptionInfo *exception)
 {
-  PolicyInfo
-    *p;
-
   MagickBooleanType
     status;
+
+  LinkedListInfo
+    *user_policies;
+
+  PolicyInfo
+    *p;
 
   assert(exception != (ExceptionInfo *) NULL);
   if (policy == (const char *) NULL)
     return(MagickFalse);
   if (ValidateSecurityPolicy(policy,PolicyFilename,exception) == MagickFalse)
     return(MagickFalse);
-  if (IsPolicyCacheInstantiated(exception) == MagickFalse)
-    return(MagickFalse);
-  LockSemaphoreInfo(policy_semaphore);
-  ResetLinkedListIterator(policy_cache);
-  p=(PolicyInfo *) GetNextValueInLinkedList(policy_cache);
-  if ((p != (PolicyInfo *) NULL) && (p->domain != UndefinedPolicyDomain))
-    {
-      UnlockSemaphoreInfo(policy_semaphore);
-      return(MagickFalse);
-    }
-  UnlockSemaphoreInfo(policy_semaphore);
   status=LoadPolicyCache(policy_cache,policy,"[user-policy]",0,exception);
   if (status == MagickFalse)
     return(MagickFalse);
-  return(ResourceComponentGenesis());
+  user_policies=NewLinkedList(0);
+  status=LoadPolicyCache(user_policies,policy,"[user-policy]",0,exception);
+  if (status == MagickFalse)
+    {
+      user_policies=DestroyLinkedList(user_policies,DestroyPolicyElement);
+      return(MagickFalse);
+    }
+  ResetLinkedListIterator(user_policies);
+  p=(PolicyInfo *) GetNextValueInLinkedList(user_policies);
+  while (p != (PolicyInfo *) NULL)
+  {
+    if ((p->domain != (PolicyDomain) NULL) && (p->name != (char *) NULL) &&
+        (p->value != (char *) NULL))
+      {
+        status=SetMagickSecurityPolicyValue(p->domain,p->name,p->value,
+          exception);
+        if (status == MagickFalse)
+          break;
+      }
+    p=(PolicyInfo *) GetNextValueInLinkedList(user_policies);
+  }
+  user_policies=DestroyLinkedList(user_policies,DestroyPolicyElement);
+  return(status);
 }
 
 /*
@@ -1265,7 +1279,7 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
   assert(exception != (ExceptionInfo *) NULL);
   if ((name == (const char *) NULL) || (value == (const char *) NULL))
     return(MagickFalse);
-  switch(domain)
+  switch (domain)
   {
     case CachePolicyDomain:
     {

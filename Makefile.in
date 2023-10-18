@@ -3153,6 +3153,7 @@ AWK = @AWK@
 BIN_DIR = @BIN_DIR@
 BPGDecodeDelegate = @BPGDecodeDelegate@
 BPGEncodeDelegate = @BPGEncodeDelegate@
+BZLIB_CFLAGS = @BZLIB_CFLAGS@
 BZLIB_LIBS = @BZLIB_LIBS@
 BlenderDecodeDelegate = @BlenderDecodeDelegate@
 BrowseDelegate = @BrowseDelegate@
