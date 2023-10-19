@@ -319,6 +319,9 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
   if (argc == 2)
     {
       option=argv[1];
+      if ((LocaleCompare("help",option+1) == 0) ||
+          (LocaleCompare("-help",option+1) == 0))
+        return(MontageUsage());
       if ((LocaleCompare("version",option+1) == 0) ||
           (LocaleCompare("-version",option+1) == 0))
         {
