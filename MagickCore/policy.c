@@ -288,7 +288,8 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
     *q;
 
   ElementInfo
-    *p;
+    *p,
+    *pp;
 
   PolicyDomain
     domain;
@@ -340,18 +341,25 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
         policy=(PolicyInfo *) p->value;
       return(policy);
     }
+  pp=(ElementInfo *) NULL;
   while (p != (ElementInfo *) NULL)
   {
     policy=(PolicyInfo *) p->value;
     if ((domain == UndefinedPolicyDomain) || (policy->domain == domain))
       if (LocaleCompare(policyname,policy->name) == 0)
-        break;
+        {
+          if (pp == (ElementInfo *) NULL)
+            pp=p;
+          else
+            if (StringToMagickSizeType(policy->value,100.0) < StringToMagickSizeType(((PolicyInfo *) pp->value)->value,100.0))
+              pp=p;
+        }
     p=p->next;
   }
   if (p == (ElementInfo *) NULL)
     policy=(PolicyInfo *) NULL;
   else
-    (void) SetHeadElementInLinkedList(policy_cache,p);
+    (void) SetHeadElementInLinkedList(policy_cache,pp);
   UnlockSemaphoreInfo(policy_semaphore);
   return(policy);
 }
@@ -1184,12 +1192,7 @@ MagickExport MagickBooleanType SetMagickSecurityPolicy(const char *policy,
   while (p != (PolicyInfo *) NULL)
   {
     if ((p->name != (char *) NULL) && (p->value != (char *) NULL))
-      {
-        status=SetMagickSecurityPolicyValue(p->domain,p->name,p->value,
-          exception);
-        if (status == MagickFalse)
-          break;
-      }
+      (void) SetMagickSecurityPolicyValue(p->domain,p->name,p->value,exception);
     p=(PolicyInfo *) GetNextValueInLinkedList(user_policies);
   }
   user_policies=DestroyLinkedList(user_policies,DestroyPolicyElement);
@@ -1233,9 +1236,6 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
   const PolicyDomain domain,const char *name,const char *value,
   ExceptionInfo *exception)
 {
-  char
-    *current_value;
-
   magick_unreferenced(exception);
   assert(exception != (ExceptionInfo *) NULL);
   if ((name == (const char *) NULL) || (value == (const char *) NULL))
@@ -1252,8 +1252,6 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
           ResetStreamAnonymousMemory();
           return(MagickTrue);
         }
-      if (LocaleCompare(name,"synchronize") == 0)
-        return(MagickTrue);
       break;
     }
     case ResourcePolicyDomain:
@@ -1261,8 +1259,6 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
       ssize_t
         type;
 
-      if (LocaleCompare(name,"temporary-path") == 0)
-        return(MagickTrue);
       type=ParseCommandOption(MagickResourceOptions,MagickFalse,name);
       if (type >= 0)
         {
@@ -1280,21 +1276,10 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
     }
     case SystemPolicyDomain:
     {
-      if (LocaleCompare(name,"font") == 0)
-        return(MagickTrue);
       if (LocaleCompare(name,"max-memory-request") == 0)
         {
-          current_value=GetPolicyValue("system:max-memory-request");
-          if ((current_value == (char *) NULL) ||
-              (StringToSizeType(value,100.0) < StringToSizeType(current_value,100.0)))
-            {
-              if (current_value != (char *) NULL)
-                current_value=DestroyString(current_value);
-              ResetMaxMemoryRequest();
-              return(MagickTrue);
-            }
-          if (current_value != (char *) NULL)
-            current_value=DestroyString(current_value);
+          ResetMaxMemoryRequest();
+          return(MagickTrue);
         }
       if (LocaleCompare(name,"memory-map") == 0)
         {
@@ -1307,19 +1292,6 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
         {
           ResetMagickPrecision();
           return(MagickTrue);
-        }
-      if (LocaleCompare(name,"shred") == 0)
-        {
-          current_value=GetPolicyValue("system:shred");
-          if ((current_value == (char *) NULL) ||
-              (StringToInteger(value) > StringToInteger(current_value)))
-            {
-              if (current_value != (char *) NULL)
-                current_value=DestroyString(current_value);
-              return(MagickTrue);
-            }
-          if (current_value != (char *) NULL)
-            current_value=DestroyString(current_value);
         }
       break;
     }
