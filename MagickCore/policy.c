@@ -351,8 +351,9 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
           if (pp == (ElementInfo *) NULL)
             pp=p;
           else
-            if (StringToMagickSizeType(policy->value,100.0) < StringToMagickSizeType(((PolicyInfo *) pp->value)->value,100.0))
-              pp=p;
+            if (policy->domain == ResourcePolicyDomain)
+              if (StringToMagickSizeType(policy->value,100.0) < StringToMagickSizeType(((PolicyInfo *) pp->value)->value,100.0))
+                pp=p;
         }
     p=p->next;
   }
