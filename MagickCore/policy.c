@@ -288,8 +288,7 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
     *q;
 
   ElementInfo
-    *p,
-    *pp;
+    *p;
 
   PolicyDomain
     domain;
@@ -341,26 +340,18 @@ static PolicyInfo *GetPolicyInfo(const char *name,ExceptionInfo *exception)
         policy=(PolicyInfo *) p->value;
       return(policy);
     }
-  pp=(ElementInfo *) NULL;
   while (p != (ElementInfo *) NULL)
   {
     policy=(PolicyInfo *) p->value;
     if ((domain == UndefinedPolicyDomain) || (policy->domain == domain))
       if (LocaleCompare(policyname,policy->name) == 0)
-        {
-          if (pp == (ElementInfo *) NULL)
-            pp=p;
-          else
-            if (policy->domain == ResourcePolicyDomain)
-              if (StringToMagickSizeType(policy->value,100.0) < StringToMagickSizeType(((PolicyInfo *) pp->value)->value,100.0))
-                pp=p;
-        }
+        break;
     p=p->next;
   }
   if (p == (ElementInfo *) NULL)
     policy=(PolicyInfo *) NULL;
   else
-    (void) SetHeadElementInLinkedList(policy_cache,pp);
+    (void) SetHeadElementInLinkedList(policy_cache,p);
   UnlockSemaphoreInfo(policy_semaphore);
   return(policy);
 }
