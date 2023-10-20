@@ -211,7 +211,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
           offset=0;
       }
     else
-      offset+=(zip_int64_t) read_bytes;
+      offset+=(zip_uint64_t) read_bytes;
   }
   (void) fclose(file);
   (void) zip_fclose(merged_image_file);
