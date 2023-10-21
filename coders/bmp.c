@@ -1103,7 +1103,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     if (bmp_info.compression == BI_RLE4)
       bmp_info.bits_per_pixel<<=1;
-    bytes_per_line=image->columns*(4*(bmp_info.bits_per_pixel+31)/32);
+    bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=(size_t) bytes_per_line*image->rows;
     if ((MagickSizeType) (length/256) > blob_size)
       ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
@@ -1565,8 +1565,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           unsigned short
             *p16;
 
-          p16=(unsigned short *) pixels+((ssize_t) image->rows-y-1)*
-            (ssize_t) bytes_per_line;
+          p16=(unsigned short *) (pixels+((ssize_t) image->rows-y-1)*
+            (ssize_t) bytes_per_line);
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
