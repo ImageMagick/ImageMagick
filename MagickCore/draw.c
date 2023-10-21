@@ -6557,13 +6557,16 @@ static MagickBooleanType TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
     y+=360.0;
   angle.y=DegreesToRadians(y);
   coordinates=ceil((angle.y-angle.x)/step+1.0);
-  if (CheckPrimitiveExtent(mvg_info,coordinates) == MagickFalse)
+  if (CheckPrimitiveExtent(mvg_info,coordinates+1) == MagickFalse)
     return(MagickFalse);
+  i=0;
   primitive_info=(*mvg_info->primitive_info)+mvg_info->offset;
   for (p=primitive_info; angle.x < angle.y; angle.x+=step)
   {
     point.x=cos(fmod(angle.x,DegreesToRadians(360.0)))*radii.x+center.x;
     point.y=sin(fmod(angle.x,DegreesToRadians(360.0)))*radii.y+center.y;
+    if (i++ >= (ssize_t) coordinates)
+      break;
     if (TracePoint(p,point) == MagickFalse)
       return(MagickFalse);
     p+=(ssize_t) p->coordinates;
