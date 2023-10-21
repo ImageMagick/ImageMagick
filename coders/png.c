@@ -2300,8 +2300,6 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
     if (option != (const char *) NULL)
       png_set_chunk_malloc_max(ping,(png_alloc_size_t) MagickMin(
         MAGICK_SSIZE_MAX,(size_t) StringToLong(option)));
-    else
-      png_set_chunk_malloc_max(ping,(png_alloc_size_t) GetMaxMemoryRequest());
 #endif
   }
 #endif /* PNG_SET_USER_LIMITS_SUPPORTED */
