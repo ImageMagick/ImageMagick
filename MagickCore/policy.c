@@ -1103,8 +1103,8 @@ MagickPrivate void PolicyComponentTerminus(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMagickSecurityPolicy() sets the ImageMagick security policy.  It returns
-%  MagickFalse if the policy is already set or if the policy does not parse.
+%  SetMagickSecurityPolicy() sets or restricts the ImageMagick security policy.
+%  It returns MagickFalse if the policy the policy does not parse.
 %
 %  The format of the SetMagickSecurityPolicy method is:
 %
