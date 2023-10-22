@@ -1048,7 +1048,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       #pragma omp parallel for schedule(static)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
-        logmap[i]=ScaleMapToQuantum((double) (MaxMap*(reference_white+
+        logmap[i]=ScaleMapToQuantum(((double) MaxMap*(reference_white+
           log10(black+(1.0*i/MaxMap)*(1.0-black))/((gamma/density)*0.002*
           PerceptibleReciprocal(film_gamma)))/1024.0));
       image_view=AcquireAuthenticCacheView(image,exception);
@@ -1207,8 +1207,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.
       */
-      primary_info.y=(double) (MaxMap+1.0)/2.0;
-      primary_info.z=(double) (MaxMap+1.0)/2.0;
+      primary_info.y=((double) MaxMap+1.0)/2.0;
+      primary_info.z=((double) MaxMap+1.0)/2.0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static)
 #endif
@@ -1238,8 +1238,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.
       */
-      primary_info.y=(double) (MaxMap+1.0)/2.0;
-      primary_info.z=(double) (MaxMap+1.0)/2.0;
+      primary_info.y=((double) MaxMap+1.0)/2.0;
+      primary_info.z=((double) MaxMap+1.0)/2.0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static)
 #endif
@@ -1269,8 +1269,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.
       */
-      primary_info.y=(double) (MaxMap+1.0)/2.0;
-      primary_info.z=(double) (MaxMap+1.0)/2.0;
+      primary_info.y=((double) MaxMap+1.0)/2.0;
+      primary_info.z=((double) MaxMap+1.0)/2.0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static)
 #endif

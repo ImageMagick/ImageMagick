@@ -53,6 +53,7 @@
 #include "MagickCore/artifact.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/cache.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/cache-view.h"
 #include "MagickCore/channel.h"
 #include "MagickCore/color.h"
@@ -1024,14 +1025,14 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 #endif
   for (y=0; y < (ssize_t) canvas_image->rows; y++)
   {
+    const Quantum
+      *magick_restrict p;
+
     double
       distance;
 
     PointInfo
       delta;
-
-    const Quantum
-      *magick_restrict p;
 
     ssize_t
       x;
@@ -1050,7 +1051,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
         status=MagickFalse;
         continue;
       }
-    delta.y=scale.y*(double) (y-center.y);
+    delta.y=scale.y*((double) y-center.y);
     for (x=0; x < (ssize_t) canvas_image->columns; x++)
     {
       ssize_t
@@ -1059,7 +1060,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       /*
         Determine if the pixel is within an ellipse.
       */
-      delta.x=scale.x*(double) (x-center.x);
+      delta.x=scale.x*((double) x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
       if (distance >= (radius*radius))
         for (i=0; i < (ssize_t) GetPixelChannels(canvas_image); i++)
@@ -1078,17 +1079,20 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           double
             factor;
 
+          PointInfo
+            offset;
+
           /*
             Implode the pixel.
           */
           factor=1.0;
           if (distance > 0.0)
-            factor=pow(sin(MagickPI*sqrt((double) distance)*
-              PerceptibleReciprocal(radius)/2),-amount);
+            factor=pow(sin(MagickPI*sqrt(distance)*
+              PerceptibleReciprocal(radius)/2.0),-amount);
+          offset.x=factor*delta.x*PerceptibleReciprocal(scale.x)+center.x;
+          offset.y=factor*delta.y*PerceptibleReciprocal(scale.y)+center.y;
           status=InterpolatePixelChannels(canvas_image,interpolate_view,
-            implode_image,method,(double) (factor*delta.x*
-            PerceptibleReciprocal(scale.x)+center.x),(double) (factor*delta.y*
-            PerceptibleReciprocal(scale.y)+center.y),q,exception);
+            implode_image,method,offset.x,offset.y,q,exception);
           if (status == MagickFalse)
             break;
         }

@@ -235,6 +235,16 @@ typedef struct _CacheInfo
     height_limit;
 } CacheInfo;
 
+static inline MagickBooleanType ValidatePixelOffset(const ssize_t x,
+  const size_t a)
+{
+  if ((x >= 0) && (x >= ((ssize_t) (MAGICK_SSIZE_MAX-MaxPixelChannels*a))))
+    return(MagickFalse);
+  if (x <= ((ssize_t) (MAGICK_SSIZE_MIN+MaxPixelChannels*(MagickOffsetType) a)))
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
 extern MagickPrivate Cache
   AcquirePixelCache(const size_t),
   ClonePixelCache(const Cache),
