@@ -4987,9 +4987,6 @@ MagickExport MagickBooleanType InterpolatePixelChannels(
   status=MagickTrue;
   x_offset=CastDoubleToLong(floor(x));
   y_offset=CastDoubleToLong(floor(y));
-  if ((IsValidPixelOffset(x_offset,source->columns) == MagickFalse) ||
-      (IsValidPixelOffset(y_offset,source->rows) == MagickFalse))
-    return(MagickFalse);
   interpolate=method;
   if (interpolate == UndefinedInterpolatePixel)
     interpolate=source->interpolate;
