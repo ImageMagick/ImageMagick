@@ -240,8 +240,8 @@ static inline MagickBooleanType IsValidPixelOffset(const ssize_t x,
 {
   if (a == 0)
     return(MagickTrue);
-  if ((x >= (MAGICK_SSIZE_MAX/(ssize_t) a)) ||
-      (x <= (MAGICK_SSIZE_MIN/(ssize_t) a)))
+  if ((x >= (MAGICK_SSIZE_MAX/MaxPixelChannels/(ssize_t) a)) ||
+      (x <= (MAGICK_SSIZE_MIN/MaxPixelChannels/(ssize_t) a)))
     return(MagickFalse);
   return(MagickTrue);
 }
