@@ -238,10 +238,6 @@ typedef struct _CacheInfo
 static inline MagickBooleanType IsValidPixelOffset(const ssize_t x,
   const size_t a)
 {
-  if ((x >= 0) && (x >= ((ssize_t) (MAGICK_SSIZE_MAX-MaxPixelChannels*a))))
-    return(MagickFalse);
-  if (x <= ((ssize_t) (MAGICK_SSIZE_MIN+MaxPixelChannels*(MagickOffsetType) a)))
-    return(MagickFalse);
   if (a == 0)
     return(MagickTrue);
   if ((x >= (MAGICK_SSIZE_MAX/(ssize_t) a)) ||
