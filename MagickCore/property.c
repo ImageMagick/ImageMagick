@@ -2280,8 +2280,7 @@ MagickExport const char *GetImageProperty(const Image *image,
           if (p != (const char *) NULL)
             return(p);
         }
-      if ((property == (const char *) NULL) ||
-          (strchr(property,':') == (char *) NULL))
+      if (strchr(property,':') == (char *) NULL)
         return(p);
     }
   switch (*property)
