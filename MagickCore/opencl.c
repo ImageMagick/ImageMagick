@@ -2329,20 +2329,11 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
     }
   for (i = 0; i < number_platforms; i++)
   {
-    char
-      *platform_name;
-
-    number_devices=0;
-    platform_name=GetOpenCLPlatformString(platforms[i],CL_PLATFORM_NAME);
-    /* NVIDIA is disabled by default due to reported access violation */
-    if (strncmp(platform_name,"NVIDIA",6) != 0)
-      {
-        number_devices=GetOpenCLDeviceCount(clEnv,platforms[i]);
-        clEnv->number_devices+=number_devices;
-      }
-    platform_name=(char *) RelinquishMagickMemory(platform_name);
+    number_devices=GetOpenCLDeviceCount(clEnv,platforms[i]);
     if (number_devices == 0)
       platforms[i]=(cl_platform_id) NULL;
+    else
+      clEnv->number_devices+=number_devices;
   }
   if (clEnv->number_devices == 0)
     {
@@ -2445,9 +2436,6 @@ static void LoadOpenCLDevices(MagickCLEnv clEnv)
 MagickPrivate MagickBooleanType InitializeOpenCL(MagickCLEnv clEnv,
   ExceptionInfo *exception)
 {
-  size_t
-    i;
-
   LockSemaphoreInfo(clEnv->lock);
   if (clEnv->initialized != MagickFalse)
     {
@@ -2462,12 +2450,6 @@ MagickPrivate MagickBooleanType InitializeOpenCL(MagickCLEnv clEnv,
         AutoSelectOpenCLDevices(clEnv);
     }
   clEnv->initialized=MagickTrue;
-  /* NVIDIA is disabled by default due to reported access violation */
-  for (i=0; i < (ssize_t) clEnv->number_devices; i++)
-  {
-    if (strncmp(clEnv->devices[i]->platform_name,"NVIDIA",6) == 0)
-      clEnv->devices[i]->enabled=MagickFalse;
-  }
   UnlockSemaphoreInfo(clEnv->lock);
   return(HasOpenCLDevices(clEnv,exception));
 }
