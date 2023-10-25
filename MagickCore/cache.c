@@ -2574,12 +2574,11 @@ MagickExport const void *GetVirtualMetacontent(const Image *image)
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickCoreSignature);
-  if (cache_info->methods.get_virtual_metacontent_from_handler !=
-       (GetVirtualMetacontentFromHandler) NULL)
+  if (cache_info->methods.get_virtual_metacontent_from_handler != (GetVirtualMetacontentFromHandler) NULL)
     {
       metacontent=cache_info->methods.get_virtual_metacontent_from_handler(
         image);
-      if (metacontent != (void *) NULL)
+      if (metacontent != (const void *) NULL)
         return(metacontent);
     }
   assert(id < (int) cache_info->number_threads);
