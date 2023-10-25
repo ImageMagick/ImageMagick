@@ -2729,6 +2729,12 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
   CacheInfo
     *magick_restrict cache_info;
 
+  const Quantum
+    *magick_restrict p;
+
+  const void
+    *magick_restrict r;
+
   MagickOffsetType
     offset;
 
@@ -2741,26 +2747,16 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
 
   Quantum
     *magick_restrict pixels,
+    *magick_restrict q,
     virtual_pixel[MaxPixelChannels];
-
-  const Quantum
-    *magick_restrict p;
-
-  const void
-    *magick_restrict r;
-
-  Quantum
-    *magick_restrict q;
 
   ssize_t
     i,
-    u;
+    u,
+    v;
 
   unsigned char
     *magick_restrict s;
-
-  ssize_t
-    v;
 
   void
     *magick_restrict virtual_metacontent;
