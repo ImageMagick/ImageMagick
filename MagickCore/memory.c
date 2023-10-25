@@ -1559,6 +1559,33 @@ MagickExport void SetMagickMemoryMethods(
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   S e t M a x M e m o r y R e q u e s t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetMaxMemoryRequest() sets the max_memory_request value.
+%
+%  The format of the ResetMaxMemoryRequest method is:
+%
+%      void SetMaxMemoryRequest(const MagickSizeType limit)
+%
+%  A description of each parameter follows:
+%
+%    o limit: the maximum memory request limit.
+%
+*/
+MagickPrivate void SetMaxMemoryRequest(const MagickSizeType limit)
+{
+  max_memory_request=MagickMin(limit,GetMaxMemoryRequest());
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S h r e d M a g i c k M e m o r y                                         %
 %                                                                             %
 %                                                                             %

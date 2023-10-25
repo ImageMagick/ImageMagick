@@ -62,7 +62,8 @@ extern MagickPrivate MagickBooleanType
 
 extern MagickPrivate void
   ResetMaxMemoryRequest(void),
-  ResetVirtualAnonymousMemory(void);
+  ResetVirtualAnonymousMemory(void),
+  SetMaxMemoryRequest(const MagickSizeType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
