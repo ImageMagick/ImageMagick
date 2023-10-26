@@ -1288,7 +1288,11 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
         }
       if (LocaleCompare(name,"precision") == 0)
         {
-          ResetMagickPrecision();
+          int
+            limit;
+
+          limit=StringToInteger(value);
+          SetMagickPrecision(limit);
           return(MagickTrue);
         }
       break;
