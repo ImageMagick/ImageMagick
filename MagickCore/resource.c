@@ -136,7 +136,7 @@ static ResourceInfo
     MagickULLConstant(768),            /* file limit */
     MagickULLConstant(1),              /* thread limit */
     MagickULLConstant(0),              /* throttle limit */
-    MagickResourceInfinity             /* time limit */
+    INT_MAX                            /* time limit */
   };
 
 static SemaphoreInfo
@@ -1333,7 +1333,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
         limit,100.0));
       limit=DestroyString(limit);
     }
-  (void) SetMagickResourceLimit(TimeResource,MagickResourceInfinity);
+  (void) SetMagickResourceLimit(TimeResource,INT_MAX);
   limit=GetEnvironmentValue("MAGICK_TIME_LIMIT");
   if (limit != (char *) NULL)
     {
