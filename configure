@@ -5186,7 +5186,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=58d86e4e1:20231021
+MAGICK_GIT_REVISION=3a7b915d9:20231027
 
 
 # Substitute library versioning
@@ -5210,7 +5210,7 @@ PACKAGE_BASE_VERSION=7.1.1
 
 PACKAGE_PATCHLEVEL_VERSION=22
 
-if test "y" = 'y'; then
+if test "n" = 'y'; then
   PACKAGE_VERSION_ADDENDUM='-22 (Beta)'
 else
   PACKAGE_VERSION_ADDENDUM=-22
@@ -5220,7 +5220,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,22
 
-PACKAGE_RELEASE_DATE=2023-10-21
+PACKAGE_RELEASE_DATE=2023-10-27
 
 
 # Ensure that make can run correctly
@@ -25865,33 +25865,33 @@ printf "%s\n" "#define SIZEOF_UNSIGNED_LONG_LONG $ac_cv_sizeof_unsigned_long_lon
 # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
 # declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
 # This bug is HP SR number 8606223364.
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking size of ssize_t" >&5
-printf %s "checking size of ssize_t... " >&6; }
-if test ${ac_cv_sizeof_ssize_t+y}
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking size of size_t" >&5
+printf %s "checking size of size_t... " >&6; }
+if test ${ac_cv_sizeof_size_t+y}
 then :
   printf %s "(cached) " >&6
 else $as_nop
-  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (ssize_t))" "ac_cv_sizeof_ssize_t"        "$ac_includes_default"
+  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (size_t))" "ac_cv_sizeof_size_t"        "$ac_includes_default"
 then :
 
 else $as_nop
-  if test "$ac_cv_type_ssize_t" = yes; then
+  if test "$ac_cv_type_size_t" = yes; then
      { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error 77 "cannot compute sizeof (ssize_t)
+as_fn_error 77 "cannot compute sizeof (size_t)
 See \`config.log' for more details" "$LINENO" 5; }
    else
-     ac_cv_sizeof_ssize_t=0
+     ac_cv_sizeof_size_t=0
    fi
 fi
 
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_ssize_t" >&5
-printf "%s\n" "$ac_cv_sizeof_ssize_t" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_size_t" >&5
+printf "%s\n" "$ac_cv_sizeof_size_t" >&6; }
 
 
 
-printf "%s\n" "#define SIZEOF_SSIZE_T $ac_cv_sizeof_ssize_t" >>confdefs.h
+printf "%s\n" "#define SIZEOF_SIZE_T $ac_cv_sizeof_size_t" >>confdefs.h
 
 
 
