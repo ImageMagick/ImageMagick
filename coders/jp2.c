@@ -579,12 +579,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           default:
           {
-            size_t
-              offset=MetaPixelChannels+i-3;
+            ssize_t
+              offset = MetaPixelChannels+i-3;
 
             if ((image->alpha_trait & BlendPixelTrait) != 0)
               offset--;
-            SetPixelChannel(image,(PixelChannel) offset,ClampToQuantum(pixel),q);
+            SetPixelChannel(image,(PixelChannel) offset,ClampToQuantum(pixel),
+              q);
             break;
           }
         }
