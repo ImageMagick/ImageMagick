@@ -34,7 +34,7 @@ jobs:
     - name: Install dependencies
       run: |
         set -e
-        DEBIAN_FRONTEND=noninteractive
+        export DEBIAN_FRONTEND=noninteractive
         apt-get update -y
         apt-get install -y autoconf git libtool pkg-config ${{ matrix.compiler }}
 
