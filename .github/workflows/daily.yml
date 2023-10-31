@@ -71,7 +71,7 @@ jobs:
         set -e
         export DEBIAN_FRONTEND=noninteractive
         apt update
-        apt-get install -y autoconf pkg-config libfontconfig1-dev libfreetype6-dev libltdl-dev ${{ matrix.compiler }}
+        apt-get install -y autoconf libfontconfig1-dev libfreetype6-dev libltdl-dev make pkg-config ${{ matrix.compiler }}
 
     - name: Clone msttcorefonts
       uses: actions/checkout@v3

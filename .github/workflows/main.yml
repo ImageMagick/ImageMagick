@@ -36,7 +36,7 @@ jobs:
         set -e
         export DEBIAN_FRONTEND=noninteractive
         apt-get update -y
-        apt-get install -y autoconf git libtool pkg-config ${{ matrix.compiler }}
+        apt-get install -y autoconf git libtool make pkg-config ${{ matrix.compiler }}
 
     - name: Configure ImageMagick
       env:
