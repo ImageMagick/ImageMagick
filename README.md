@@ -10,13 +10,13 @@
 
 [ImageMagick®](https://imagemagick.org/) is a free and [open-source](https://imagemagick.org/script/license.php) software suite for displaying, converting, and editing raster image and vector image files. It can read and write over 200 image file [formats](https://imagemagick.org/script/formats.php), and can support a wide range of image manipulation operations, such as resizing, cropping, and color correction.
 
-#### What is ImageMagick?
+## What is ImageMagick?
 
 ImageMagick is written in C and is available for a wide range of operating systems, including Linux, macOS, and Windows. It can be used as a standalone application, or as a library that can be integrated into other software programs.
 
 The main website for ImageMagick can be found at [https://imagemagick.org](https://imagemagick.org/). The source code for this software can be accessed through the repository located at [https://github.com/ImageMagick/ImageMagick](https://github.com/ImageMagick/ImageMagick). In addition, a legacy version of ImageMagick, version 6, is also still maintained and can be found at [https://legacy.imagemagick.org](https://legacy.imagemagick.org/).
 
-#### Features and Capabilities
+## Features and Capabilities
 
 One of the key features of ImageMagick is its support for scripting and automation. This allows users to create complex image manipulation pipelines that can be run automatically, without the need for manual intervention. This can be especially useful for tasks that require the processing of large numbers of images, or for tasks that need to be performed on a regular basis.
 
@@ -67,7 +67,7 @@ Here are just a few [examples](https://imagemagick.org/script/examples.php) of w
 
 [Examples of ImageMagick Usage](https://imagemagick.org/Usage/), demonstrates how to use the software from the [command line](https://imagemagick.org/script/command-line-processing.php) to achieve various effects. There are also several scripts available on the website called [Fred's ImageMagick Scripts](http://www.fmwconcepts.com/imagemagick/), which can be used to apply geometric transforms, blur and sharpen images, remove noise, and perform other operations. Additionally, there is a tool called [Magick.NET](https://github.com/dlemstra/Magick.NET) that allows users to access the functionality of ImageMagick without having to install the software on their own systems. Finally, the website also includes a [Cookbook](http://im.snibgo.com/) with tips and examples for using ImageMagick on Windows systems.
 
-#### News
+## News
 
 ImageMagick best practices **strongly** encourages you to configure a [security policy](https://imagemagick.org/script/security-policy.php) that suits your local environment.
 
