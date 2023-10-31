@@ -61,9 +61,11 @@ jobs:
           - compiler: gcc
             cxx_compiler: g++
             compiler_flags: -Wall -Wextra -Werror -Wno-builtin-declaration-mismatch
+            packages: gcc g++
           - compiler: clang
             cxx_compiler: clang++
             compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration
+            packages: clang
 
     steps:
     - name: Install dependencies
@@ -71,7 +73,7 @@ jobs:
         set -e
         export DEBIAN_FRONTEND=noninteractive
         apt update
-        apt-get install -y autoconf libfontconfig1-dev libfreetype6-dev libltdl-dev make pkg-config ${{ matrix.compiler }}
+        apt-get install -y autoconf libfontconfig1-dev libfreetype6-dev libltdl-dev make pkg-config ${{ matrix.packages }}
 
     - name: Clone msttcorefonts
       uses: actions/checkout@v3
