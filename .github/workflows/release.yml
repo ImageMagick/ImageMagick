@@ -6,6 +6,12 @@ on:
     paths:
     - 'configure'
     - 'm4/version.m4'
+    - '.github/workflows/release.yml'
+  pull_request:
+    branches:
+    - main
+    paths:
+    - '.github/workflows/release.yml'
 
 name: release
 jobs:
