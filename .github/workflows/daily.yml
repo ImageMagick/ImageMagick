@@ -69,6 +69,7 @@ jobs:
     - name: Install dependencies
       run: |
         set -e
+        export DEBIAN_FRONTEND=noninteractive
         apt update
         apt-get install -y autoconf pkg-config libfontconfig1-dev libfreetype6-dev libltdl-dev ${{ matrix.compiler }}
 
