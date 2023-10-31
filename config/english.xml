@@ -1054,6 +1054,9 @@
           <message name="PixelCacheAllocationFailed">
             pixel cache allocation failed
           </message>
+          <message name="TimeLimitExceeded">
+            time limit exceeded
+          </message>
           <message name="TooManyExceptions">
             too many exceptions
           </message>
@@ -1083,9 +1086,6 @@
           </message>
         </error>
         <fatalerror>
-          <message name="TimeLimitExceeded">
-            time limit exceeded
-          </message>
           <message name="UnableToAllocateDashPattern">
             unable to allocate dash pattern
           </message>

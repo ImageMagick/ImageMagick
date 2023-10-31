@@ -1042,6 +1042,9 @@
           <message name="PixelCacheAllocationFailed">
             Échec allocation du cache pixel
           </message>
+          <message name="TimeLimitExceeded">
+            time limit exceeded
+          </message>
           <message name="TooManyExceptions">
             too many exceptions
           </message>
@@ -1071,9 +1074,6 @@
           </message>
         </error>
         <fatalerror>
-          <message name="TimeLimitExceeded">
-            time limit exceeded
-          </message>
           <message name="UnableToAllocateDashPattern">
             impossible d'allouer le motif de traits
           </message>
