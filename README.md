@@ -67,6 +67,10 @@ Here are just a few [examples](https://imagemagick.org/script/examples.php) of w
 
 [Examples of ImageMagick Usage](https://imagemagick.org/Usage/), demonstrates how to use the software from the [command line](https://imagemagick.org/script/command-line-processing.php) to achieve various effects. There are also several scripts available on the website called [Fred's ImageMagick Scripts](http://www.fmwconcepts.com/imagemagick/), which can be used to apply geometric transforms, blur and sharpen images, remove noise, and perform other operations. Additionally, there is a tool called [Magick.NET](https://github.com/dlemstra/Magick.NET) that allows users to access the functionality of ImageMagick without having to install the software on their own systems. Finally, the website also includes a [Cookbook](http://im.snibgo.com/) with tips and examples for using ImageMagick on Windows systems.
 
+## Contributing
+
+To contribute to imagemagick, you can check out our [Contributing Guidlines](.github/CONTRIBUTING.md)
+
 ## News
 
 ImageMagick best practices **strongly** encourages you to configure a [security policy](https://imagemagick.org/script/security-policy.php) that suits your local environment.
