@@ -79,8 +79,9 @@
 %    =>      copy one channel to another channel (e.g. red=>green)
 %    =       assign a constant value to a channel (e.g. red=50%)
 %    ,       write new image channels in the specified order (e.g. red, green)
-%    |       add a new output image for the next set of channel operations
-%    ;       move to the next input image for the source of channel data
+%    ;       add a new output image for the next set of channel operations
+%    |       move to the next input image for the source of channel data
+%             If there are no more images in the list, | has no effect.
 %
 %  For example, to create 3 grayscale images from the red, green, and blue
 %  channels of an image, use:
@@ -269,7 +270,6 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       }
       case '|':
       {
-        source_image=GetFirstImageInList(source_image);
         if (GetNextImageInList(source_image) != (Image *) NULL)
           source_image=GetNextImageInList(source_image);
         (void) GetNextToken(p,&p,MagickPathExtent,token);
