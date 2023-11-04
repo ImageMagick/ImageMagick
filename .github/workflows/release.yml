@@ -150,11 +150,41 @@ jobs:
         nmake
         nmake release
 
+    - name: Sign binaries
+      uses: azure/azure-code-signing-action@v0.2.21
+      with:
+        azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        endpoint: https://eus.codesigning.azure.net/
+        code-signing-account-name: ImageMagick
+        certificate-profile-name: ImageMagick
+        files-folder: 'ImageMagick-Windows\VisualMagick\bin'
+        files-folder-filter: dll,exe
+        file-digest: SHA256
+        timestamp-rfc3161: http://timestamp.acs.microsoft.com
+        timestamp-digest: SHA256
+
     - name: Create installer
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" ImageMagick-Windows\VisualMagick\installer\im-${{matrix.platform}}${{matrix.hdri_flag}}-${{matrix.type}}-${{matrix.quantum}}.iss
+
+    - name: Sign installer
+      uses: azure/azure-code-signing-action@v0.2.21
+      with:
+        azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        endpoint: https://eus.codesigning.azure.net/
+        code-signing-account-name: ImageMagick
+        certificate-profile-name: ImageMagick
+        files-folder: 'ImageMagick-Windows\VisualMagick\installer\output'
+        files-folder-filter: dll,exe
+        file-digest: SHA256
+        timestamp-rfc3161: http://timestamp.acs.microsoft.com
+        timestamp-digest: SHA256
 
     - uses: actions/upload-artifact@v3
       with:
@@ -267,6 +297,21 @@ jobs:
         cd ImageMagick-Windows\VisualMagick
         set /p solution=<solution
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+
+    - name: Sign executables
+      uses: azure/azure-code-signing-action@v0.2.21
+      with:
+        azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        endpoint: https://eus.codesigning.azure.net/
+        code-signing-account-name: ImageMagick
+        certificate-profile-name: ImageMagick
+        files-folder: 'ImageMagick-Windows\VisualMagick\bin'
+        files-folder-filter: exe
+        file-digest: SHA256
+        timestamp-rfc3161: http://timestamp.acs.microsoft.com
+        timestamp-digest: SHA256
 
     - name: Copy Files
       id: package
