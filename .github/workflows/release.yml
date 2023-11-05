@@ -164,6 +164,7 @@ jobs:
         file-digest: SHA256
         timestamp-rfc3161: http://timestamp.acs.microsoft.com
         timestamp-digest: SHA256
+        timeout: 600
 
     - name: Create installer
       shell: cmd
@@ -185,6 +186,7 @@ jobs:
         file-digest: SHA256
         timestamp-rfc3161: http://timestamp.acs.microsoft.com
         timestamp-digest: SHA256
+        timeout: 600
 
     - uses: actions/upload-artifact@v3
       with:
@@ -312,6 +314,7 @@ jobs:
         file-digest: SHA256
         timestamp-rfc3161: http://timestamp.acs.microsoft.com
         timestamp-digest: SHA256
+        timeout: 600
 
     - name: Copy Files
       id: package
