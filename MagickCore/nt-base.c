@@ -764,6 +764,57 @@ MagickPrivate MagickBooleanType NTGatherRandomData(const size_t length,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   N T G e t E n v i r o n m e n t V a l u e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  NTGetEnvironmentValue() returns the environment string that matches the
+%  specified name.
+%
+%  The format of the NTGetEnvironmentValue method is:
+%
+%      char *GetEnvironmentValue(const char *name)
+%
+%  A description of each parameter follows:
+%
+%    o name: the environment name.
+%
+*/
+extern MagickPrivate char *NTGetEnvironmentValue(const char *name)
+{
+  char
+    *environment = (char *) NULL;
+
+  DWORD
+    size;
+
+  LPWSTR
+    wide;
+
+  wchar_t
+    wide_name[50];
+
+  if (MultiByteToWideChar(CP_UTF8,0,name,-1,wide_name,50) == 0)
+    return(environment);
+  size=GetEnvironmentVariableW(wide_name,(LPWSTR) NULL,0);
+  if (size == 0)
+    return(environment);
+  wide=(LPWSTR) NTAcquireQuantumMemory((const size_t) size,sizeof(*wide));
+  if (wide == (LPWSTR) NULL)
+    return(environment);
+  if (GetEnvironmentVariableW(wide_name,wide,size) != 0)
+    environment=create_utf8_string(wide);
+  wide=(LPWSTR) RelinquishMagickMemory(wide);
+  return(environment);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   N T G e t E x e c u t i o n P a t h                                       %
 %                                                                             %
 %                                                                             %
