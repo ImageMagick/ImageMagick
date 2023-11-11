@@ -73,6 +73,7 @@
 #if !defined(MAP_FAILED)
 #define MAP_FAILED      ((void *)(LONG_PTR)-1)
 #endif
+#define MaxWideByteExtent  100
 
 /*
   Typedef declarations.
@@ -83,8 +84,8 @@
   is why we wrap the new/delete instance methods.
 
   From: http://www.ghostscript.com/doc/current/API.htm
-  "The Win32 DLL gsdll32.dll can be used by multiple programs simultaneously,
-   but only once within each process"
+    "The Win32 DLL gsdll32.dll can be used by multiple programs simultaneously,
+     but only once within each process"
 */
 typedef struct _NTGhostInfo
 {
@@ -198,13 +199,13 @@ static unsigned char *NTGetRegistryValue(HKEY root,const char *key,DWORD flags,
     status;
 
   wchar_t
-    wide_name[100];
+    wide_name[MaxWideByteExtent];
 
   value=(unsigned char *) NULL;
   status=RegOpenKeyExA(root,key,0,(KEY_READ | flags),&registry_key);
   if (status != ERROR_SUCCESS)
     return(value);
-  if (MultiByteToWideChar(CP_UTF8,0,name,-1,wide_name,100) == 0)
+  if (MultiByteToWideChar(CP_UTF8,0,name,-1,wide_name,MaxWideByteExtent) == 0)
     {
       RegCloseKey(registry_key);
       return(value);
@@ -794,9 +795,9 @@ extern MagickPrivate char *NTGetEnvironmentValue(const char *name)
     wide;
 
   wchar_t
-    wide_name[50];
+    wide_name[MaxWideByteExtent];
 
-  if (MultiByteToWideChar(CP_UTF8,0,name,-1,wide_name,50) == 0)
+  if (MultiByteToWideChar(CP_UTF8,0,name,-1,wide_name,MaxWideByteExtent) == 0)
     return(environment);
   size=GetEnvironmentVariableW(wide_name,(LPWSTR) NULL,0);
   if (size == 0)
