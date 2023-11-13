@@ -151,6 +151,7 @@ jobs:
         nmake release
 
     - name: Sign binaries
+      if: github.event_name != 'pull_request'
       uses: azure/azure-code-signing-action@v0.2.21
       with:
         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -173,6 +174,7 @@ jobs:
         "C:\Program Files (x86)\Inno Setup 6\iscc.exe" ImageMagick-Windows\VisualMagick\installer\im-${{matrix.platform}}${{matrix.hdri_flag}}-${{matrix.type}}-${{matrix.quantum}}.iss
 
     - name: Sign installer
+      if: github.event_name != 'pull_request'
       uses: azure/azure-code-signing-action@v0.2.21
       with:
         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -301,6 +303,7 @@ jobs:
         msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
     - name: Sign executables
+      if: github.event_name != 'pull_request'
       uses: azure/azure-code-signing-action@v0.2.21
       with:
         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
