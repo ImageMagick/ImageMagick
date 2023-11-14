@@ -5186,7 +5186,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=6b00651f5:20231101
+MAGICK_GIT_REVISION=b700d0cad:20231111
 
 
 # Substitute library versioning
@@ -5220,7 +5220,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,22
 
-PACKAGE_RELEASE_DATE=2023-11-01
+PACKAGE_RELEASE_DATE=2023-11-11
 
 
 # Ensure that make can run correctly
@@ -23579,7 +23579,7 @@ printf "%s\n" "#define PixelCacheThreshold \"$with_cache\"" >>confdefs.h
 fi
 
 # Set security policy
-with_security_policy="open"
+security_policy="open"
  # MAGICK_SECURITY_POLICY
 
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking which variant of security policy to enforce" >&5
@@ -23590,12 +23590,13 @@ if test ${with_security_policy+y}
 then :
   withval=$with_security_policy; case $withval in
     open|limited|secure|websafe)
+      security_policy=$withval
       ;;
     *)
       as_fn_error $? "Unknown argument to --with-security-policy" "$LINENO" 5
       ;;
     esac
-    magick_cv_with_security_policy=$with_security_policy
+    magick_cv_with_security_policy=$security_policy
 else $as_nop
   if test ${magick_cv_with_security_policy+y}
 then :
@@ -23607,8 +23608,8 @@ fi
     MAGICK_SECURITY_POLICY=$magick_cv_with_security_policy
 fi
 
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $with_security_policy" >&5
-printf "%s\n" "$with_security_policy" >&6; }
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $security_policy" >&5
+printf "%s\n" "$security_policy" >&6; }
 
 
 
@@ -41203,7 +41204,7 @@ Static libraries    --enable-static=$enable_static			$libtool_build_static_libs
 Build utilities     --with-utilities=$with_utilities		$with_utilities
 Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
-Security policy     --with-security-policy=$with_security_policy		$with_security_policy
+Security policy     --with-security-policy=$security_policy	$security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
 Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
 High Dynamic Range Imagery
@@ -41306,7 +41307,7 @@ Static libraries    --enable-static=$enable_static			$libtool_build_static_libs
 Build utilities     --with-utilities=$with_utilities		$with_utilities
 Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
-Security policy     --with-security-policy=$with_security_policy		$with_security_policy
+Security policy     --with-security-policy=$security_policy	$security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
 Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
 High Dynamic Range Imagery

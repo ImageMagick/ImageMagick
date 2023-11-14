@@ -852,7 +852,7 @@ if test "$with_cache" != ''; then
 fi
 
 # Set security policy
-with_security_policy="open"
+security_policy="open"
 m4_define([_MAGICK_SECURITY_POLICY],
 [m4_define([MAGICK_SECURITY_POLICY_DEFAULT], [m4_if($1, limited, limited, m4_if($1, secure, secure, open))])dnl
   AC_MSG_CHECKING([which variant of security policy to enforce])
@@ -861,16 +861,17 @@ m4_define([_MAGICK_SECURITY_POLICY],
       [security policy variant to enforce, @<:@default=]MAGICK_SECURITY_POLICY_DEFAULT[@:>@.])],
     [case $withval in
     open|limited|secure|websafe)
+      security_policy=$withval
       ;;
     *)
       AC_MSG_ERROR([Unknown argument to --with-security-policy])
       ;;
     esac
-    magick_cv_with_security_policy=$with_security_policy],
+    magick_cv_with_security_policy=$security_policy],
     [AC_CACHE_VAL([magick_cv_with_security_policy],
       [magick_cv_with_security_policy=]MAGICK_SECURITY_POLICY_DEFAULT)
     MAGICK_SECURITY_POLICY=$magick_cv_with_security_policy])
-  AC_MSG_RESULT([$with_security_policy])
+  AC_MSG_RESULT([$security_policy])
 ]) # MAGICK_SECURITY_POLICY
 
 _MAGICK_SECURITY_POLICY([open])
@@ -4177,7 +4178,7 @@ Static libraries    --enable-static=$enable_static			$libtool_build_static_libs
 Build utilities     --with-utilities=$with_utilities		$with_utilities
 Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
-Security policy     --with-security-policy=$with_security_policy		$with_security_policy
+Security policy     --with-security-policy=$security_policy	$security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
 Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
 High Dynamic Range Imagery
