@@ -4327,6 +4327,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   } while (adjoin != MagickFalse);
+  if (TIFFFlush(tiff) != 1)
+    status=MagickFalse;
   TIFFClose(tiff);
   return(status);
 }
