@@ -107,7 +107,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   MagickOffsetType
     scene;
@@ -710,7 +710,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (status == MagickFalse)
               break;
           }
-        (void) CloseBlob(image);
+        if (CloseBlob(image) == MagickFalse)
+          break;
         AppendImageFormat("G",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == MagickFalse)
@@ -780,7 +781,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (status == MagickFalse)
               break;
           }
-        (void) CloseBlob(image);
+        if (CloseBlob(image) == MagickFalse)
+          break;
         AppendImageFormat("B",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == MagickFalse)
@@ -852,7 +854,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (image->alpha_trait != UndefinedPixelTrait)
           {
-            (void) CloseBlob(image);
+            if (CloseBlob(image) == MagickFalse)
+              break;
             AppendImageFormat("A",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == MagickFalse)
@@ -1322,7 +1325,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   MagickOffsetType
     scene;
@@ -1597,7 +1600,8 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
           }
-        (void) CloseBlob(image);
+        if (CloseBlob(image) == MagickFalse)
+          break;
         AppendImageFormat("G",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
@@ -1623,7 +1627,8 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
           }
-        (void) CloseBlob(image);
+        if (CloseBlob(image) == MagickFalse)
+          break;
         AppendImageFormat("B",image->filename);
         status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
           AppendBinaryBlobMode,exception);
@@ -1651,7 +1656,8 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
           }
         if (quantum_type == RGBAQuantum)
           {
-            (void) CloseBlob(image);
+            if (CloseBlob(image) == MagickFalse)
+              break;
             AppendImageFormat("A",image->filename);
             status=OpenBlob(image_info,image,scene == 0 ? WriteBinaryBlobMode :
               AppendBinaryBlobMode,exception);

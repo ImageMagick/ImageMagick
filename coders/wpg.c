@@ -1981,6 +1981,7 @@ static MagickBooleanType WriteWPGImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobLSBShort(image,offset & 0xffff);
   if (y < (ssize_t) image->rows)
     ThrowWriterException(CorruptImageError,"UnableToWriteImageData");
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }

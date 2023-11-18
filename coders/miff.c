@@ -2849,6 +2849,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }

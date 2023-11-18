@@ -2071,6 +2071,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   quantum_info=DestroyQuantumInfo(quantum_info);
   if (y < (ssize_t) image->rows)
     ThrowWriterException(CorruptImageError,"UnableToWriteImageData");
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }

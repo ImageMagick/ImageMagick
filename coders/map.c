@@ -454,6 +454,7 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlob(image,(size_t) (q-pixels),pixels);
   }
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }

@@ -1195,7 +1195,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   JxlEncoderDestroy(jxl_info);
   if (jxl_status != JXL_ENC_SUCCESS)
     ThrowWriterException(CoderError,"UnableToWriteImageData");
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }
 #endif

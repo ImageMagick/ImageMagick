@@ -4023,6 +4023,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,
         status=MagickFalse;
       image->compression=compression;
     }
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }

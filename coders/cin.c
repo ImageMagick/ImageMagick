@@ -1229,6 +1229,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
       break;
   }
   quantum_info=DestroyQuantumInfo(quantum_info);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }

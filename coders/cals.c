@@ -575,7 +575,8 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   if (WriteBlob(image,length,group4) != (ssize_t) length)
     status=MagickFalse;
   group4=(unsigned char *) RelinquishMagickMemory(group4);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }
 #endif

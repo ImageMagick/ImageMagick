@@ -1745,6 +1745,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }

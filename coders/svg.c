@@ -5277,6 +5277,7 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
   token=DestroyString(token);
   if (primitive_info != (PrimitiveInfo *) NULL)
     primitive_info=(PrimitiveInfo *) RelinquishMagickMemory(primitive_info);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }

@@ -1372,7 +1372,8 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
   if (heif_image != (struct heif_image*) NULL)
     heif_image_release(heif_image);
   heif_context_free(heif_context);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }
 #endif

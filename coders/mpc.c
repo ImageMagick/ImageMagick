@@ -1567,6 +1567,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       }
     scene++;
   } while (image_info->adjoin != MagickFalse);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }

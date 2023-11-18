@@ -351,7 +351,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (interlace == PartitionInterlace)
       {
-        (void) CloseBlob(image);
+        if (CloseBlob(image) == MagickFalse)
+          break;
         AppendImageFormat("U",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
         if (status == MagickFalse)
@@ -398,7 +399,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       if (interlace == PartitionInterlace)
         {
-          (void) CloseBlob(image);
+          if (CloseBlob(image) == MagickFalse)
+            break;
           AppendImageFormat("V",image->filename);
           status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
           if (status == MagickFalse)
@@ -703,7 +705,8 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
       Sample image to an even width and height, if necessary.
     */
     image->depth=(size_t) (quantum == 1 ? 8 : 16);
-    width=image->columns+(image->columns & (unsigned int) (horizontal_factor-1));
+    width=image->columns+(image->columns & (unsigned int) (horizontal_factor
+      -1));
     height=image->rows+(image->rows & (unsigned int) (vertical_factor-1));
     yuv_image=ResizeImage(image,width,height,TriangleFilter,exception);
     if (yuv_image == (Image *) NULL)
@@ -816,7 +819,8 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
         */
         if (interlace == PartitionInterlace)
           {
-            (void) CloseBlob(image);
+            if (CloseBlob(image) == MagickFalse)
+              break;
             AppendImageFormat("U",image->filename);
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
             if (status == MagickFalse)
@@ -850,7 +854,8 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
         */
         if (interlace == PartitionInterlace)
           {
-            (void) CloseBlob(image);
+            if (CloseBlob(image) == MagickFalse)
+              break;
             AppendImageFormat("V",image->filename);
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
             if (status == MagickFalse)

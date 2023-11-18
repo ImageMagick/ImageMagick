@@ -1417,6 +1417,7 @@ static MagickBooleanType WriteSIXELImage(const ImageInfo *image_info,
     sixel_palette,image->colors,-1,output);
   sixel_pixels=(sixel_pixel_t *) RelinquishMagickMemory(sixel_pixels);
   output=(sixel_output_t *) RelinquishMagickMemory(output);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   return(status);
 }
