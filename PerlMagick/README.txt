@@ -110,7 +110,7 @@ Testing PerlMagick
     some of the tests will fail if you do not have the proper delegates
     installed for formats like JPEG, TIFF, etc.
 
-    Use the 'prove' utilize to execute a test from the build folder:
+    Use the 'prove' utility to execute a test from the build folder:
 
         prove --blib blib -I `pwd` -bv ./t/read.t
 
