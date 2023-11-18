@@ -824,8 +824,6 @@ MagickExport Image *CustomStreamToImage(const ImageInfo *image_info,
       (void) FormatLocaleString(blob_info->filename,MagickPathExtent,"%s:%s",
         blob_info->magick,filename);
       image=ReadImage(blob_info,exception);
-      if (image != (Image *) NULL)
-        (void) CloseBlob(image);
     }
   else
     {
@@ -897,7 +895,6 @@ MagickExport Image *CustomStreamToImage(const ImageInfo *image_info,
                   image_info->filename,MagickPathExtent);
                 (void) CopyMagickString(images->magick,magick_info->name,
                   MagickPathExtent);
-                (void) CloseBlob(images);
                 images=GetNextImageInList(images);
               }
             }
@@ -907,6 +904,9 @@ MagickExport Image *CustomStreamToImage(const ImageInfo *image_info,
       (void) RelinquishUniqueFileResource(unique);
     }
   blob_info=DestroyImageInfo(blob_info);
+  if (image != (Image *) NULL)
+    if (CloseBlob(image) == MagickFalse)
+      image=DestroyImageList(image);
   return(image);
 }
 
@@ -2118,7 +2118,6 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
               (void) FormatLocaleString(image->filename,MagickPathExtent,
                 "%s:%s",image->magick,unique);
               status=WriteImage(blob_info,image,exception);
-              (void) CloseBlob(image);
               (void) fclose(blob_info->file);
               if (status != MagickFalse)
                 blob=FileToBlob(unique,SIZE_MAX,length,exception);
@@ -2213,7 +2212,6 @@ MagickExport void ImageToCustomStream(const ImageInfo *image_info,Image *image,
       (void) CloseBlob(image);
       *image->filename='\0';
       (void) WriteImage(clone_info,image,exception);
-      (void) CloseBlob(image);
     }
   else
     {
@@ -2257,7 +2255,6 @@ MagickExport void ImageToCustomStream(const ImageInfo *image_info,Image *image,
           (void) FormatLocaleString(image->filename,MagickPathExtent,
             "%s:%s",image->magick,unique);
           status=WriteImage(clone_info,image,exception);
-          (void) CloseBlob(image);
           if (status != MagickFalse)
             {
               (void) fseek(clone_info->file,0,SEEK_SET);
@@ -2529,7 +2526,6 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
               (void) FormatLocaleString(filename,MagickPathExtent,"%s:%s",
                 images->magick,unique);
               status=WriteImages(blob_info,images,filename,exception);
-              (void) CloseBlob(images);
               (void) fclose(blob_info->file);
               if (status != MagickFalse)
                 blob=FileToBlob(unique,SIZE_MAX,length,exception);
@@ -2624,7 +2620,6 @@ MagickExport void ImagesToCustomStream(const ImageInfo *image_info,
       (void) CloseBlob(images);
       *images->filename='\0';
       (void) WriteImages(clone_info,images,images->filename,exception);
-      (void) CloseBlob(images);
     }
   else
     {
@@ -2669,7 +2664,6 @@ MagickExport void ImagesToCustomStream(const ImageInfo *image_info,
           (void) FormatLocaleString(filename,MagickPathExtent,"%s:%s",
             images->magick,unique);
           status=WriteImages(clone_info,images,filename,exception);
-          (void) CloseBlob(images);
           if (status != MagickFalse)
             {
               (void) fseek(clone_info->file,0,SEEK_SET);

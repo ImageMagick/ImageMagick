@@ -1332,7 +1332,8 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
               (void) AcquireUniqueFilename(image->filename);
               temporary=MagickTrue;
             }
-          (void) CloseBlob(image);
+          if (CloseBlob(image) == MagickFalse)
+            status=MagickFalse;
         }
     }
   encoder=GetImageEncoder(magick_info);
@@ -1436,7 +1437,8 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
           (void) RelinquishUniqueFileResource(write_info->filename);
           status=ImageToFile(image,write_info->filename,exception);
         }
-      (void) CloseBlob(image);
+      if (CloseBlob(image) == MagickFalse)
+        status=MagickFalse;
       (void) RelinquishUniqueFileResource(image->filename);
       (void) CopyMagickString(image->filename,write_info->filename,
         MagickPathExtent);

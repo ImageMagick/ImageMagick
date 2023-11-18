@@ -2986,7 +2986,8 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
           */
           *component='\0';
           status=ImageToFile(image,component,exception);
-          (void) CloseBlob(image);
+          if (CloseBlob(image) == MagickFalse)
+            status=MagickFalse;
           if (status == MagickFalse)
             {
               (void) RelinquishUniqueFileResource(component);
