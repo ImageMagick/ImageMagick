@@ -294,6 +294,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   image=AcquireImage(image_info,exception);
+  image->columns=0;
+  image->rows=0;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {

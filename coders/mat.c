@@ -583,6 +583,8 @@ DblBreak:
 
   if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL) goto UnlinkFile;
   if( (image2 = AcquireImage(clone_info,exception))==NULL ) goto EraseFile;
+  image2->columns=0;
+  image2->rows=0;
   status = OpenBlob(clone_info,image2,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
   {

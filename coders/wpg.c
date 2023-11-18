@@ -1091,6 +1091,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickCoreSignature);
   one=1;
   image=AcquireImage(image_info,exception);
+  image->columns=0;
+  image->rows=0;
   image->depth=8;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)

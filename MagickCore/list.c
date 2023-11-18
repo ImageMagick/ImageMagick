@@ -17,7 +17,7 @@
 %                               December 2002                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2002 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -719,7 +719,7 @@ MagickExport ssize_t GetImageIndexInList(const Image *images)
 */
 MagickExport size_t GetImageListLength(const Image *images)
 {
-  ssize_t
+  size_t
     i;
 
   if (images == (Image *) NULL)
@@ -733,7 +733,7 @@ MagickExport size_t GetImageListLength(const Image *images)
     assert(images != images->previous);
     i++;
   }
-  return((size_t) i);
+  return(i);
 }
 
 /*

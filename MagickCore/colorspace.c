@@ -1207,8 +1207,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.
       */
-      primary_info.y=((double) MaxMap+1.0)/2.0;
-      primary_info.z=((double) MaxMap+1.0)/2.0;
+      primary_info.y=(MagickRealType) ((MaxMap+1)/2);
+      primary_info.z=(MagickRealType) ((MaxMap+1)/2);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static)
 #endif
@@ -1238,8 +1238,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.
       */
-      primary_info.y=((double) MaxMap+1.0)/2.0;
-      primary_info.z=((double) MaxMap+1.0)/2.0;
+      primary_info.y=(MagickRealType) ((MaxMap+1)/2);
+      primary_info.z=(MagickRealType) ((MaxMap+1)/2);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static)
 #endif
@@ -1269,8 +1269,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.
       */
-      primary_info.y=((double) MaxMap+1.0)/2.0;
-      primary_info.z=((double) MaxMap+1.0)/2.0;
+      primary_info.y=(double) ((MaxMap+1)/2);
+      primary_info.z=(double) ((MaxMap+1)/2);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static)
 #endif
@@ -1299,8 +1299,10 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 
         YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      primary_info.y=(double) ScaleQuantumToMap(ScaleCharToQuantum(156));
-      primary_info.z=(double) ScaleQuantumToMap(ScaleCharToQuantum(137));
+      primary_info.y=(MagickRealType) ScaleQuantumToMap(
+        ScaleCharToQuantum(156));
+      primary_info.z=(MagickRealType) ScaleQuantumToMap(
+        ScaleCharToQuantum(137));
       for (i=0; i <= (ssize_t) (0.018*MaxMap); i++)
       {
         x_map[i].x=0.005382*i;

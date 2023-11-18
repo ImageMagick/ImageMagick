@@ -16,7 +16,7 @@
 %                                 July 2012                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2012 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -153,6 +153,8 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   image=AcquireImage(image_info,exception);
+  image->columns=0;
+  image->rows=0;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {

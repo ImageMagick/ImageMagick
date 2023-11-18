@@ -2660,6 +2660,7 @@ static void AddNodePixelList(PixelList *pixel_list,const size_t color)
     Determine where it belongs in the list.
   */
   search=65536UL;
+  (void) memset(update,0,sizeof(update));
   for (level=p->level; level >= 0; level--)
   {
     while (p->nodes[search].next[level] < color)
