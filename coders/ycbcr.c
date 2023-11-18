@@ -1063,7 +1063,7 @@ static MagickBooleanType WriteYCBCRImage(const ImageInfo *image_info,
     *p;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   MagickOffsetType
     scene;

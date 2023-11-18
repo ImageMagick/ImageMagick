@@ -1200,7 +1200,7 @@ static Image *ReadRGB565Image(const ImageInfo *image_info,
   quantum_info=DestroyQuantumInfo(quantum_info);
   canvas_image=DestroyImage(canvas_image);
   if (CloseBlob(image) == MagickFalse)
-    status=MafgickFalse;
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
