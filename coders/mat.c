@@ -837,7 +837,8 @@ skip_reading_current:
     if (status == MagickFalse)
       break;
   }
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));

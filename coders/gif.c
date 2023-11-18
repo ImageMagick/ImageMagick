@@ -1402,7 +1402,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
@@ -1944,6 +1945,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
   global_colormap=(unsigned char *) RelinquishMagickMemory(global_colormap);
   colormap=(unsigned char *) RelinquishMagickMemory(colormap);
   write_info=DestroyImageInfo(write_info);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

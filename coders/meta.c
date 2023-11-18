@@ -1427,7 +1427,10 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       buff=DestroyImage(buff);
     }
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 

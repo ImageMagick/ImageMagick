@@ -429,7 +429,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
   } while (tim_info.id == 0x00000010);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));

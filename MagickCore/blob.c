@@ -593,9 +593,9 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 
 static inline void ThrowBlobException(BlobInfo *blob_info)
 {
-  if ((blob_info->status == MagickFalse) && (errno != 0))
+  if ((blob_info->status == 0) && (errno != 0))
     blob_info->error_number=errno;
-  blob_info->status=MagickTrue;
+  blob_info->status=(-1);
 }
 
 MagickExport MagickBooleanType CloseBlob(Image *image)
@@ -616,7 +616,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   blob_info=image->blob;
   if ((blob_info == (BlobInfo *) NULL) || (blob_info->type == UndefinedStream))
     return(MagickTrue);
-  status=SyncBlob(image);
+  status=blob_info->status;
   switch (blob_info->type)
   {
     case UndefinedStream:
@@ -689,7 +689,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   if (blob_info->exempt != MagickFalse)
     {
       blob_info->type=UndefinedStream;
-      return(blob_info->status);
+      return(blob_info->status != 0 ? MagickFalse : MagickTrue);
     }
   switch (blob_info->type)
   {
@@ -747,7 +747,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       break;
   }
   (void) DetachBlob(blob_info);
-  return(blob_info->status);
+  return(blob_info->status != 0 ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -5494,7 +5494,8 @@ MagickExport void SetCustomStreamWriter(CustomStreamInfo *custom_stream,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SyncBlob() flushes the datastream if it is a file or synchronizes the data
-%  attributes if it is an blob.
+%  attributes if it is an blob.  It returns 0 on success; otherwise, it returns
+%  -1 and set errno to indicate the error.
 %
 %  The format of the SyncBlob method is:
 %

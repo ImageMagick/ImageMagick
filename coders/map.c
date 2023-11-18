@@ -248,7 +248,10 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (y < (ssize_t) image->rows)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 

@@ -648,7 +648,10 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->alpha_trait=UndefinedPixelTrait;
         }
     }
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
@@ -1108,6 +1111,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
       WriteBlobString(image,"TRUEVISION-XFILE.");
       WriteBlobByte(image,0);
     }
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

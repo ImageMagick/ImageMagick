@@ -559,7 +559,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   } while (1);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
@@ -909,6 +910,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
       break;
   } while (image_info->adjoin != MagickFalse);
   fits_info=DestroyString(fits_info);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

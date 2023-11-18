@@ -523,7 +523,10 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
     (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 #endif

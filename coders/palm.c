@@ -590,7 +590,8 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
           break;
       }
   } while (nextDepthOffset != 0);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
@@ -1032,6 +1033,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
       break;
   } while (image_info->adjoin != MagickFalse);
   quantize_info=DestroyQuantizeInfo(quantize_info);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

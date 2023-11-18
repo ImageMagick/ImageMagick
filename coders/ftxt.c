@@ -736,7 +736,10 @@ static Image *ReadFTXTImage(const ImageInfo *image_info,
            (maxY >= (ssize_t) image->rows))
     ThrowMagickException(exception,GetMagickModule(),CorruptImageWarning,
       "ImageBoundsExceeded","`%s'",image_info->filename);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
@@ -1058,6 +1061,7 @@ static MagickBooleanType WriteFTXTImage(const ImageInfo *image_info,Image *image
       break;
     scene++;
   } while (image_info->adjoin != MagickFalse);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

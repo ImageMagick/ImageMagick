@@ -690,7 +690,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if (page_table != (MagickOffsetType *) NULL)
     page_table=(MagickOffsetType *) RelinquishMagickMemory(page_table);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
@@ -1203,6 +1204,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
         "UnableToWriteFile","`%s': %s",image->filename,message);
       message=DestroyString(message);
     }
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

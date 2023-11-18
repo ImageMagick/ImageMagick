@@ -292,6 +292,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
   }
   (void) WriteBlobString(image,"</Data>\n");
   (void) WriteBlobString(image,"</CiscoIPPhoneImage>\n");
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

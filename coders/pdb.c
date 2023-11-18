@@ -630,7 +630,10 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) SetImageProperty(image,"comment",comment,exception);
       comment=DestroyString(comment);
     }
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
@@ -1009,6 +1012,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image,
   runlength=(unsigned char *) RelinquishMagickMemory(runlength);
   if (comment != (const char *) NULL)
     (void) WriteBlobString(image,comment);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

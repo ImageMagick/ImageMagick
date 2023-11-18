@@ -513,7 +513,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
   } while (count != 0);
   scanline=(unsigned char *) RelinquishMagickMemory(scanline);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
@@ -890,6 +891,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

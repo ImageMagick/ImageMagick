@@ -3972,6 +3972,9 @@ static MagickBooleanType IsPoint(const char *point)
 
 static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
 {
+  MagickBooleanType
+    status = MagickTrue; 
+
 #if defined(MAGICKCORE_AUTOTRACE_DELEGATE)
   {
     at_bitmap
@@ -4053,9 +4056,6 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     ImageInfo
       *image_info;
 
-    MagickBooleanType
-      status;
-
     size_t
       blob_length,
       encode_length;
@@ -4132,8 +4132,9 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     (void) WriteBlobString(image,"</svg>\n");
   }
 #endif
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }
 
 static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,

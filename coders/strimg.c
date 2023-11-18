@@ -165,7 +165,10 @@ static Image *ReadSTRIMGImage(const ImageInfo *image_info,
       (void) CloseBlob(image);
       return(DestroyImageList(image));
     }
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 

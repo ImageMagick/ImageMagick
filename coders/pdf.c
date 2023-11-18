@@ -3279,6 +3279,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"%%EOF\n");
   xref=(MagickOffsetType *) RelinquishMagickMemory(xref);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

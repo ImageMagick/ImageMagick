@@ -224,6 +224,7 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
       }
   }
   (void) WriteBlobString(image,"\n");
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

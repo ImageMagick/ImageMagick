@@ -706,7 +706,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   } while ((count != 0) && (memcmp(magick,"\122\314",2) == 0));
   if (colormap != (unsigned char *) NULL)
     colormap=(unsigned char *) RelinquishMagickMemory(colormap);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));

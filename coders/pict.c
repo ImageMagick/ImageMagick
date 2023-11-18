@@ -1544,7 +1544,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         continue;
       }
   }
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
@@ -2101,6 +2104,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   scanline=(unsigned char *) RelinquishMagickMemory(scanline);
   packed_scanline=(unsigned char *) RelinquishMagickMemory(packed_scanline);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

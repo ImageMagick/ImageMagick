@@ -215,7 +215,10 @@ static Image *ReadRGFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   data=(unsigned char *) RelinquishMagickMemory(data);
   (void) SyncImage(image,exception);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
@@ -390,6 +393,7 @@ static MagickBooleanType WriteRGFImage(const ImageInfo *image_info,Image *image,
     if (status == MagickFalse)
       break;
   }
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

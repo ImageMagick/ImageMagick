@@ -334,7 +334,8 @@ static Image *ReadQOIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,
       "UnexpectedEndOfFile",image->filename);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
@@ -600,6 +601,7 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
   for (i=0; i < 7; i++)
     (void) WriteBlobByte(image,0x00);
   (void) WriteBlobByte(image,0x01);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

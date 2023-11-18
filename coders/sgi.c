@@ -752,7 +752,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
   } while (iris_info.magic == 0x01DA);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
@@ -1189,6 +1190,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

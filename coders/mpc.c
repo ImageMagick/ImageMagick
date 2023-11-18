@@ -1035,7 +1035,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
   } while ((c != EOF) && ((c == 'i') || (c == 'I')));
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));

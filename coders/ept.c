@@ -530,6 +530,7 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
   ept_info.postscript=(unsigned char *) RelinquishMagickMemory(
     ept_info.postscript);
   ept_info.tiff=(unsigned char *) RelinquishMagickMemory(ept_info.tiff);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

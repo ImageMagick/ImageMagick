@@ -330,7 +330,10 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ImfCloseInputFile(file);
   if (status == MagickFalse)
     ThrowReaderException(CorruptImageError,"UnableToReadImageData");
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 #endif
@@ -657,7 +660,8 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
   (void) FileToImage(image,write_info->filename,exception);
   (void) RelinquishUniqueFileResource(write_info->filename);
   write_info=DestroyImageInfo(write_info);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }
 #endif

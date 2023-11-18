@@ -772,7 +772,8 @@ static Image *ReadTIM2Image(const ImageInfo *image_info,
         break;
       }
   }
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));

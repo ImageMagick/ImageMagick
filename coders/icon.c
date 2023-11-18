@@ -260,7 +260,8 @@ static Image *Read1XImage(const ImageInfo *image_info,Image *image,
       }
     image=SyncNextImageInList(image);
   }
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));

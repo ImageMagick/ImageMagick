@@ -292,7 +292,10 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   (void) RelinquishUniqueFileResource(draw_info->font);
   draw_info=DestroyDrawInfo(draw_info);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 #endif /* MAGICKCORE_FREETYPE_DELEGATE */

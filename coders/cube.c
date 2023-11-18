@@ -312,7 +312,8 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
     }
   }
   cube_info=RelinquishVirtualMemory(cube_info);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
   if (status == MagickFalse)
     return(DestroyImageList(image));
   if (image_info->scene != 0)

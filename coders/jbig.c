@@ -270,7 +270,10 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   */
   jbg_dec_free(&jbig_info);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 #endif
@@ -562,7 +565,8 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   } while (image_info->adjoin != MagickFalse);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }
 #endif

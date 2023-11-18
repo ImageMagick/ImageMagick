@@ -350,6 +350,7 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   (void) WriteBlobString(image,message);
   (void) WriteBlobString(image,base64);
   base64=DestroyString(base64);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

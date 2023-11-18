@@ -410,7 +410,10 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   data=(unsigned char *) RelinquishMagickMemory(data);
   (void) SyncImage(image,exception);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
@@ -627,6 +630,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
   }
   (void) CopyMagickString(buffer,"};\n",MagickPathExtent);
   (void) WriteBlob(image,strlen(buffer),(unsigned char *) buffer);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }

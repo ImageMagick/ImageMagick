@@ -179,7 +179,10 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
-  (void) CloseBlob(image);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
 
@@ -347,6 +350,7 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image,
   }
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   hrz_image=DestroyImage(hrz_image);
-  (void) CloseBlob(image);
-  return(MagickTrue);
+  if (CloseBlob(image) == MagickFalse)
+    status=MagickFalse;
+  return(status);
 }
