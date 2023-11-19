@@ -2791,7 +2791,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("map",option+1) == 0)
         {
           CLIWandWarnReplaced("-remap");
-          (void) CLISimpleOperatorImage(cli_wand,"-remap",NULL,NULL,exception);
+          (void) CLISimpleOperatorImage(cli_wand,"-remap",arg1,NULL,exception);
           break;
         }
       if (LocaleCompare("mask",option+1) == 0)
