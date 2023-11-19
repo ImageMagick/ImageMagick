@@ -593,9 +593,9 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 
 static inline void ThrowBlobException(BlobInfo *blob_info)
 {
-  if ((blob_info->status == 0) && (errno != 0))
+  if ((blob_info->status == MagickFalse) && (errno != 0))
     blob_info->error_number=errno;
-  blob_info->status=(-1);
+  blob_info->status=MagickTrue;
 }
 
 MagickExport MagickBooleanType CloseBlob(Image *image)
@@ -689,7 +689,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   if (blob_info->exempt != MagickFalse)
     {
       blob_info->type=UndefinedStream;
-      return(blob_info->status != 0 ? MagickFalse : MagickTrue);
+      return(blob_info->status != MagickFalse ? MagickFalse : MagickTrue);
     }
   switch (blob_info->type)
   {
@@ -747,7 +747,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       break;
   }
   (void) DetachBlob(blob_info);
-  return(blob_info->status != 0 ? MagickFalse : MagickTrue);
+  return(blob_info->status != MagickFalse ? MagickFalse : MagickTrue);
 }
 
 /*
