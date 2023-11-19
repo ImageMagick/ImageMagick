@@ -140,8 +140,10 @@ struct _BlobInfo
   MagickBooleanType
     exempt,
     synchronize,
-    status,
     temporary;
+
+  int
+    status;
 
   StreamType
     type;
@@ -593,9 +595,9 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 
 static inline void ThrowBlobException(BlobInfo *blob_info)
 {
-  if ((blob_info->status == MagickFalse) && (errno != 0))
+  if ((blob_info->status == 0) && (errno != 0))
     blob_info->error_number=errno;
-  blob_info->status=MagickTrue;
+  blob_info->status=(-1);
 }
 
 MagickExport MagickBooleanType CloseBlob(Image *image)
@@ -689,7 +691,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   if (blob_info->exempt != MagickFalse)
     {
       blob_info->type=UndefinedStream;
-      return(blob_info->status != MagickFalse ? MagickFalse : MagickTrue);
+      return(blob_info->status != 0 ? MagickFalse : MagickTrue);
     }
   switch (blob_info->type)
   {
@@ -747,7 +749,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       break;
   }
   (void) DetachBlob(blob_info);
-  return(blob_info->status != MagickFalse ? MagickFalse : MagickTrue);
+  return(blob_info->status != 0 ? MagickFalse : MagickTrue);
 }
 
 /*
@@ -1723,7 +1725,7 @@ MagickExport MagickBooleanType GetBlobError(const Image *image)
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((image->blob->status != MagickFalse) && (image->blob->error_number != 0))
+  if ((image->blob->status != 0) && (image->blob->error_number != 0))
     errno=image->blob->error_number;
   return(image->blob->status);
 }
@@ -3558,7 +3560,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 (void) SetStreamBuffering(image_info,blob_info);
               }
           }
-  blob_info->status=MagickFalse;
+  blob_info->status=0;
   blob_info->error_number=0;
   if (blob_info->type != UndefinedStream)
     blob_info->size=GetBlobSize(image);
