@@ -1727,7 +1727,7 @@ MagickExport MagickBooleanType GetBlobError(const Image *image)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if ((image->blob->status != 0) && (image->blob->error_number != 0))
     errno=image->blob->error_number;
-  return(image->blob->status);
+  return(image->blob->status == 0 ? MagickFalse : MagickTrue);
 }
 
 /*
