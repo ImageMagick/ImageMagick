@@ -199,7 +199,7 @@ struct _CustomStreamInfo
   Forward declarations.
 */
 static int
-  SyncBlob(Image *);
+  SyncBlob(const Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1863,6 +1863,7 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
   assert(image->blob != (BlobInfo *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  (void) SyncBlob(image);
   blob_info=image->blob;
   extent=0;
   switch (blob_info->type)
@@ -5496,14 +5497,14 @@ MagickExport void SetCustomStreamWriter(CustomStreamInfo *custom_stream,
 %
 %  The format of the SyncBlob method is:
 %
-%      int SyncBlob(Image *image)
+%      int SyncBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 */
-static int SyncBlob(Image *image)
+static int SyncBlob(const Image *image)
 {
   BlobInfo
     *magick_restrict blob_info;
@@ -5514,7 +5515,6 @@ static int SyncBlob(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(image->blob != (BlobInfo *) NULL);
-  assert(image->blob->type != UndefinedStream);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   blob_info=image->blob;
