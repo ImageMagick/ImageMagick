@@ -1038,4 +1038,7 @@ macro(magick_check_env)
   else()
     set(volatile "")
   endif()
+
+  #TODO check if this is actually true
+  set(SETJMP_IS_THREAD_SAFE TRUE)
 endmacro()
