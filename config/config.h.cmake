@@ -873,6 +873,9 @@
 /* Define to the type of arg 5 for `select'. */
 #cmakedefine SELECT_TYPE_ARG5 @SELECT_TYPE_ARG5@
 
+/* Setjmp/longjmp are thread safe */
+#cmakedefine SETJMP_IS_THREAD_SAFE
+
 /* Sharearch directory name without ABI part. */
 #cmakedefine SHAREARCH_BASEDIRNAME @SHAREARCH_BASEDIRNAME@
 
