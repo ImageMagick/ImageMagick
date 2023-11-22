@@ -91,12 +91,6 @@ jobs:
         name: ChangeLog
         path: ImageMagick-Windows\ImageMagick
 
-    - name: Download FFmpeg
-      shell: cmd
-      run: |
-        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/ffmpeg-4.2.3-win${{matrix.bit}}.exe -OutFile ffmpeg.exe
-        copy /Y ffmpeg.exe ImageMagick-Windows\VisualMagick\bin
-
     - name: Download hp2xx
       shell: cmd
       run: |
@@ -274,12 +268,6 @@ jobs:
       with:
         name: ChangeLog
         path: ImageMagick-Windows\ImageMagick
-
-    - name: Download FFmpeg
-      shell: cmd
-      run: |
-        powershell Invoke-WebRequest -Uri https://github.com/ImageMagick/ImageMagick-Windows/releases/download/20200615/ffmpeg-4.2.3-win${{matrix.bit}}.exe -OutFile ffmpeg.exe
-        copy /Y ffmpeg.exe ImageMagick-Windows\VisualMagick\bin
 
     - name: Build configure
       shell: cmd
