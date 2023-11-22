@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/artifact.h"
 #include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
@@ -2133,8 +2134,12 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           }
       }
     else
-      if (image->depth < 16)
-        (void) DeleteImageProperty(image,"quantum:format");
+      if ((quantum_info->format == FloatingPointQuantumFormat) &&
+          (image->depth < 16))
+        {
+          status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
+          status=SetQuantumDepth(image,quantum_info,image->depth);
+        }
     compression=UndefinedCompression;
     if (image_info->compression != UndefinedCompression)
       compression=image_info->compression;
