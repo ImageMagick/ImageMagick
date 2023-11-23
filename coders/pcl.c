@@ -168,6 +168,9 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImageInfo
     *read_info;
 
+  int
+    exit_code; 
+
   MagickBooleanType
     cmyk,
     status;
@@ -295,8 +298,8 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Set PCL render geometry.
     */
-    width=(size_t)CastDoubleToLong(floor(bounds.x2-bounds.x1+0.5));
-    height=(size_t)CastDoubleToLong(floor(bounds.y2-bounds.y1+0.5));
+    width=(size_t) CastDoubleToLong(floor(bounds.x2-bounds.x1+0.5));
+    height=(size_t) CastDoubleToLong(floor(bounds.y2-bounds.y1+0.5));
     if (width > page.width)
       page.width=width;
     if (height > page.height)
@@ -363,8 +366,13 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->filename,input_filename);
   options=DestroyString(options);
   density=DestroyString(density);
-  status=ExternalDelegateCommand(MagickFalse,read_info->verbose,command,
-    (char *) NULL,exception) != 0 ? MagickTrue : MagickFalse;
+  exit_code=ExternalDelegateCommand(MagickFalse,read_info->verbose,command,
+    (char *) NULL,exception);
+  if (exit_code != 0)
+    {
+      read_info=DestroyImageInfo(read_info);
+      ThrowReaderException(DelegateError,"PCLDelegateFailed");
+    }
   image=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   (void) RelinquishUniqueFileResource(input_filename);
