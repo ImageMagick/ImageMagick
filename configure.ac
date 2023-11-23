@@ -4260,7 +4260,7 @@ Options used to compile and link:
   PCFLAGS           = $PCFLAGS
   DEFS              = $DEFS
   LDFLAGS           = $LDFLAGS
-  LIBS              = $MAGICK_DEP_LIBS
+  LIBS              = $MAGICK_DEP_LIBS $MAGICK_EXTRA_DEP_LIBS
   CXX               = $CXX
   CXXFLAGS          = $CXXFLAGS
   FEATURES          = $MAGICK_FEATURES

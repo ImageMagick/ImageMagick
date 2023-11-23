@@ -5186,7 +5186,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=482584c34:20231122
+MAGICK_GIT_REVISION=21fd17aac:20231122
 
 
 # Substitute library versioning
@@ -41292,7 +41292,7 @@ Options used to compile and link:
   PCFLAGS           = $PCFLAGS
   DEFS              = $DEFS
   LDFLAGS           = $LDFLAGS
-  LIBS              = $MAGICK_DEP_LIBS
+  LIBS              = $MAGICK_DEP_LIBS $MAGICK_EXTRA_DEP_LIBS
   CXX               = $CXX
   CXXFLAGS          = $CXXFLAGS
   FEATURES          = $MAGICK_FEATURES
@@ -41395,7 +41395,7 @@ Options used to compile and link:
   PCFLAGS           = $PCFLAGS
   DEFS              = $DEFS
   LDFLAGS           = $LDFLAGS
-  LIBS              = $MAGICK_DEP_LIBS
+  LIBS              = $MAGICK_DEP_LIBS $MAGICK_EXTRA_DEP_LIBS
   CXX               = $CXX
   CXXFLAGS          = $CXXFLAGS
   FEATURES          = $MAGICK_FEATURES
