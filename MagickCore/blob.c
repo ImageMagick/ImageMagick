@@ -624,8 +624,8 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   switch (blob_info->type)
   {
     case UndefinedStream:
-    case StandardStream:
       break;
+    case StandardStream:
     case FileStream:
     case PipeStream:
     {
