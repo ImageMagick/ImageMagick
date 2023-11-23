@@ -619,7 +619,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   if ((blob_info == (BlobInfo *) NULL) || (blob_info->type == UndefinedStream))
     return(MagickTrue);
   if (SyncBlob(image) != 0)
-    return(MagickFalse);
+    ThrowBlobException(blob_info);
   status=blob_info->status;
   switch (blob_info->type)
   {
