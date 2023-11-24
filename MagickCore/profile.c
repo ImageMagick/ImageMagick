@@ -2521,7 +2521,7 @@ static void GetXmpNumeratorAndDenominator(double value,size_t *numerator,
   }
 }
 
-static void SyncXmpProfile(const Image *image,StringInfo *profile)
+static void SyncXMPProfile(const Image *image,StringInfo *profile)
 {
   char
     value[MagickPathExtent];
@@ -2537,8 +2537,8 @@ static void SyncXmpProfile(const Image *image,StringInfo *profile)
     {
       GetXmpNumeratorAndDenominator(image->resolution.x,&numerator,
         &denominator);
-      (void) FormatLocaleString(value,MagickPathExtent,"%zu/%zu",numerator,
-        denominator);
+      (void) FormatLocaleString(value,MagickPathExtent,"%g/%g",
+        (double) numerator,(double) denominator);
       ReplaceXmpValue(profile,start,end,value);
     }
   if (GetXmpOffsets(profile,"tiff:YResolution",&start,&end) != MagickFalse)
@@ -2548,8 +2548,8 @@ static void SyncXmpProfile(const Image *image,StringInfo *profile)
         {
           GetXmpNumeratorAndDenominator(image->resolution.y,&numerator,
             &denominator);
-          (void) FormatLocaleString(value,MagickPathExtent,"%zu/%zu",numerator,
-            denominator);
+          (void) FormatLocaleString(value,MagickPathExtent,"%g/%g",
+            (double) numerator,(double) denominator);
         }
       ReplaceXmpValue(profile,start,end,value);
     }
@@ -2581,7 +2581,7 @@ MagickPrivate void SyncImageProfiles(Image *image)
       profile));
   profile=(StringInfo *) GetImageProfile(image,"XMP");
   if (profile != (StringInfo *) NULL)
-    SyncXmpProfile(image,profile);
+    SyncXMPProfile(image,profile);
 }
 
 static void UpdateClipPath(unsigned char *blob,size_t length,
