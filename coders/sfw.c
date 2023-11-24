@@ -284,7 +284,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Translate remaining markers.
   */
   offset=header+2;
-  offset+=(((unsigned int) offset[2]) << 8)+offset[3]+2;
+  offset+=(((size_t) offset[2]) << 8)+(size_t) offset[3]+2;
   for ( ; ; )
   {
     if ((offset+4) > (buffer+count-1))
@@ -295,7 +295,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     TranslateSFWMarker(offset);
     if (offset[1] == 0xda)
       break;
-    offset+=(((unsigned int) offset[2]) << 8)+offset[3]+2;
+    offset+=(((size_t) offset[2]) << 8)+(size_t) offset[3]+2;
   }
   offset--;
   data=SFWScan(offset,buffer+count-1,(const unsigned char *) "\377\311",2);

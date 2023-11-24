@@ -211,14 +211,12 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
 
   ssize_t
     i,
-    x;
+    x,
+    y;
 
   unsigned char
     *p,
     *q;
-
-  ssize_t
-    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
