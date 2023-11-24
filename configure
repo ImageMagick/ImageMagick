@@ -5186,7 +5186,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=d55033b60:20231124
+MAGICK_GIT_REVISION=022b98c93:20231124
 
 
 # Substitute library versioning
@@ -23398,8 +23398,8 @@ CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 # Check for extended channel masks.
 #
 magick_channel_mask_depth='32';
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports enum types" >&5
-printf %s "checking whether the compiler supports enum types... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports enum struct types" >&5
+printf %s "checking whether the compiler supports enum struct types... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 

@@ -682,7 +682,7 @@ CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 # Check for extended channel masks.
 #   
 magick_channel_mask_depth='32';
-AC_MSG_CHECKING([whether the compiler supports enum types])
+AC_MSG_CHECKING([whether the compiler supports enum struct types])
 AC_COMPILE_IFELSE([
   AC_LANG_PROGRAM([
     #include <stdio.h>
