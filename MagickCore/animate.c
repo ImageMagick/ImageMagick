@@ -229,7 +229,7 @@ typedef enum
   StepBackwardCommand,
   StepForwardCommand,
   NullCommand
-} AnimateCommands;
+} AnimateCommand;
 
 /*
   Stipples.
@@ -243,7 +243,7 @@ typedef enum
   Forward declarations.
 */
 static Image
-  *XMagickCommand(Display *,XResourceInfo *,XWindows *,const AnimateCommands,
+  *XMagickCommand(Display *,XResourceInfo *,XWindows *,const AnimateCommand,
     Image **,MagickStatusType *,ExceptionInfo *);
 
 static MagickBooleanType
@@ -346,7 +346,7 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
 %  The format of the XMagickCommand method is:
 %
 %      Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
-%        XWindows *windows,const AnimateCommands animate_command,Image **image,
+%        XWindows *windows,const AnimateCommand animate_command,Image **image,
 %        MagickStatusType *state,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -369,7 +369,7 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
 %
 */
 static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
-  XWindows *windows,const AnimateCommands animate_command,Image **image,
+  XWindows *windows,const AnimateCommand animate_command,Image **image,
   MagickStatusType *state,ExceptionInfo *exception)
 {
   Image
@@ -1262,7 +1262,7 @@ MagickExport Image *XAnimateImages(Display *display,
       HelpMenu
     };
 
-  static const AnimateCommands
+  static const AnimateCommand
     CommandMenus[]=
     {
       NullCommand,
@@ -1272,7 +1272,7 @@ MagickExport Image *XAnimateImages(Display *display,
       InfoCommand,
       QuitCommand
     },
-    AnimateCommandss[]=
+    AnimateCommands[]=
     {
       OpenCommand,
       PlayCommand,
@@ -1298,16 +1298,16 @@ MagickExport Image *XAnimateImages(Display *display,
       VersionCommand
     };
 
-  static const AnimateCommands
+  static const AnimateCommand
     *Commands[MagickMenus]=
     {
-      AnimateCommandss,
+      AnimateCommands,
       SpeedCommands,
       DirectionCommands,
       HelpCommands
     };
 
-  AnimateCommands
+  AnimateCommand
     animate_command;
 
   char
