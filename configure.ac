@@ -1304,7 +1304,7 @@ AC_DEFINE_UNQUOTED([X11_CONFIGURE_PATH],["$X11ConfigurePath"],[Location of X11 c
 # Find OpenMP library
 #
 GOMP_LIBS=''
-if test "${OPENMP_ENABLED}" == 'yes'; then
+if test "${OPENMP_ENABLED}" = 'yes'; then
   if test "${GCC}" = "yes"; then
     # Open64 (passes for GCC but uses different OpenMP implementation)
     if test "x$GOMP_LIBS" = x ; then
@@ -1329,14 +1329,20 @@ if test "${OPENMP_ENABLED}" == 'yes'; then
     fi
     # AIX xlc
     if test "x$GOMP_LIBS" = x ; then
-    AC_CHECK_LIB([xlsmp],[_xlsmpFlush],[GOMP_LIBS="-lxlsmp"],[],[])
+      AC_CHECK_LIB([xlsmp],[_xlsmpFlush],[GOMP_LIBS="-lxlsmp"],[],[])
     fi
     # SGI IRIX 6.5 MIPSpro C/C++
     if test "x$GOMP_LIBS" = x ; then
-    AC_CHECK_LIB([mp],[mp_destroy],[GOMP_LIBS="-lmp"],[],[])
+      AC_CHECK_LIB([mp],[mp_destroy],[GOMP_LIBS="-lmp"],[],[])
     fi
   fi
   LIBS="$GOMP_LIBS $LIBS"
+  AC_MSG_CHECKING([for OpenMP library ])
+  if test "x$GOMP_LIBS" = x ; then
+    AC_MSG_RESULT([not found!])
+  else
+    AC_MSG_RESULT([${GOMP_LIBS}])
+  fi
 fi
 AC_SUBST([GOMP_LIBS])
 
