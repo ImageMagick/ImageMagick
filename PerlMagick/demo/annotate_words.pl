@@ -66,6 +66,3 @@ foreach my $word (@words){
 }
 
 $image->Write("show:");
-
-exit;
-

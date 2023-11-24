@@ -249,4 +249,3 @@ my $montage=$results->Montage(font=>'Generic.ttf',
 );
 $montage->Write('show:');
 $montage->Write('compose-specials.jpg');
-
