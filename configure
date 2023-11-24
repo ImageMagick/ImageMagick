@@ -5186,7 +5186,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=1a9ada9a3:20231122
+MAGICK_GIT_REVISION=8a226d6fd:20231124
 
 
 # Substitute library versioning
@@ -5220,7 +5220,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,22
 
-PACKAGE_RELEASE_DATE=2023-11-22
+PACKAGE_RELEASE_DATE=2023-11-24
 
 
 # Ensure that make can run correctly
@@ -37056,7 +37056,7 @@ fi
 #
 # Need C++ for { 64-bit channels masks, FPX, JXL}.
 #
-if test "$enable_64bit_channel_masks" = 'yes' || test "$have_jxl" != 'no' || test "$with_fpx" != 'no'; then
+if test "$enable_64bit_channel_masks" = 'yes'; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -x option" >&5
 printf %s "checking whether the compiler supports -x option... " >&6; }
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext

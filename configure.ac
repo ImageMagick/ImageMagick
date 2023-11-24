@@ -3498,7 +3498,7 @@ AC_SUBST([type_include_files])
 #
 # Need C++ for { 64-bit channels masks, FPX, JXL}.
 #
-if test "$enable_64bit_channel_masks" = 'yes' || test "$have_jxl" != 'no' || test "$with_fpx" != 'no'; then
+if test "$enable_64bit_channel_masks" = 'yes'; then
   AC_MSG_CHECKING([whether the compiler supports -x option])
   AC_COMPILE_IFELSE([
     AC_LANG_PROGRAM([
