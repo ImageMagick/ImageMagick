@@ -593,7 +593,7 @@ if test "$with_modules" != 'no' ; then
 fi
 if test "$build_modules" != 'no' ; then
     AC_DEFINE([BUILD_MODULES],[1],[Define if coders and filters are to be built as modules.])
-    MAGICK_FEATURES="$MAGICK_FEATURES Modules"
+    MAGICK_FEATURES="Modules $MAGICK_FEATURES"
 fi
 AM_CONDITIONAL([WITH_MODULES],[test "$build_modules" != 'no'])
 
@@ -682,13 +682,13 @@ CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 # Check for extended channel masks.
 #   
 magick_channel_mask_depth='32';
-AC_MSG_CHECKING([whether the compiler supports enum struct types])
+AC_MSG_CHECKING([whether the compiler supports enum type modifiers])
 AC_COMPILE_IFELSE([
   AC_LANG_PROGRAM([
     #include <stdio.h>
   ],
   [
-    enum : size_t { UNDEFINED };
+    enum : size_t { UndefinedType };
     int main() {
       return 0;
     }
@@ -706,17 +706,15 @@ AC_ARG_ENABLE([64bit_channel_masks],
     [enable_64bit_channel_masks=$enableval],
     [enable_64bit_channel_masks='no'])
 
-MAGICK_64BIT_CHANNEL_MASK=""
 if test "$enable_64bit_channel_masks" = 'yes' && test "$magick_channel_mask_depth" = '64'; then
-    MAGICK_64BIT_CHANNEL_MASK="Channel-masks(64-bit)"
     MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
 else
     magick_channel_mask_depth='32'
+    MAGICK_FEATURES="Channel-masks(32-bit) $MAGICK_FEATURES"
 fi
 AC_DEFINE_UNQUOTED([CHANNEL_MASK_DEPTH],[$magick_channel_mask_depth],[Channel mask depth])
 CHANNEL_MASK_DEPTH=$magick_channel_mask_depth
 AC_SUBST([CHANNEL_MASK_DEPTH])dnl
-AC_SUBST([MAGICK_64BIT_CHANNEL_MASK])dnl
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"

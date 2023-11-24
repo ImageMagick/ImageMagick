@@ -974,7 +974,6 @@ LEGACY_SUPPORT_TRUE
 MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
-MAGICK_64BIT_CHANNEL_MASK
 CHANNEL_MASK_DEPTH
 MAGICK_HDRI
 MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_FALSE
@@ -5186,7 +5185,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=022b98c93:20231124
+MAGICK_GIT_REVISION=1fcd64654:20231124
 
 
 # Substitute library versioning
@@ -23270,7 +23269,7 @@ if test "$build_modules" != 'no' ; then
 
 printf "%s\n" "#define BUILD_MODULES 1" >>confdefs.h
 
-    MAGICK_FEATURES="$MAGICK_FEATURES Modules"
+    MAGICK_FEATURES="Modules $MAGICK_FEATURES"
 fi
  if test "$build_modules" != 'no'; then
   WITH_MODULES_TRUE=
@@ -23398,8 +23397,8 @@ CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 # Check for extended channel masks.
 #
 magick_channel_mask_depth='32';
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports enum struct types" >&5
-printf %s "checking whether the compiler supports enum struct types... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports enum type modifiers" >&5
+printf %s "checking whether the compiler supports enum type modifiers... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -23410,7 +23409,7 @@ int
 main (void)
 {
 
-    enum : size_t { UNDEFINED };
+    enum : size_t { UndefinedType };
     int main() {
       return 0;
     }
@@ -23444,12 +23443,11 @@ else $as_nop
 fi
 
 
-MAGICK_64BIT_CHANNEL_MASK=""
 if test "$enable_64bit_channel_masks" = 'yes' && test "$magick_channel_mask_depth" = '64'; then
-    MAGICK_64BIT_CHANNEL_MASK="Channel-masks(64-bit)"
     MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
 else
     magick_channel_mask_depth='32'
+    MAGICK_FEATURES="Channel-masks(32-bit) $MAGICK_FEATURES"
 fi
 
 printf "%s\n" "#define CHANNEL_MASK_DEPTH $magick_channel_mask_depth" >>confdefs.h
