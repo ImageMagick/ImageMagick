@@ -5186,7 +5186,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=1d9e98b69:20231124
+MAGICK_GIT_REVISION=d55033b60:20231124
 
 
 # Substitute library versioning
@@ -23395,8 +23395,46 @@ CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 
 #
-# Extend channel masks from 32 to 64-bits.
+# Check for extended channel masks.
 #
+magick_channel_mask_depth='32';
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports enum types" >&5
+printf %s "checking whether the compiler supports enum types... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+    #include <stdio.h>
+
+int
+main (void)
+{
+
+    enum : size_t { UNDEFINED };
+    int main() {
+      return 0;
+    }
+
+  ;
+  return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+  magick_channel_mask_depth='64';
+
+else $as_nop
+
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
 # Check whether --enable-64bit_channel_masks was given.
 if test ${enable_64bit_channel_masks+y}
 then :
@@ -23407,9 +23445,8 @@ fi
 
 
 MAGICK_64BIT_CHANNEL_MASK=""
-if test "$enable_64bit_channel_masks" = 'yes'; then
+if test "$enable_64bit_channel_masks" = 'yes' && test "$magick_channel_mask_depth" = '64'; then
     MAGICK_64BIT_CHANNEL_MASK="Channel-masks(64-bit)"
-    magick_channel_mask_depth='64';
     MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
 else
     magick_channel_mask_depth='32'
@@ -37061,47 +37098,6 @@ fi
 
 
 
-
-#
-# Need C++ for { 64-bit channels masks, FPX, JXL}.
-#
-if test "$enable_64bit_channel_masks" = 'yes'; then
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -x option" >&5
-printf %s "checking whether the compiler supports -x option... " >&6; }
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-      #include <stdio.h>
-
-int
-main (void)
-{
-
-      int main() {
-        return 0;
-      }
-
-  ;
-  return 0;
-}
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-    CFLAGS="$CFLAGS -x c++"
-
-else $as_nop
-
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
 #
 # Handle case where user doesn't want frozen paths

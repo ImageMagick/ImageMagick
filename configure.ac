@@ -679,8 +679,27 @@ CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 
 #
-# Extend channel masks from 32 to 64-bits.
-#
+# Check for extended channel masks.
+#   
+magick_channel_mask_depth='32';
+AC_MSG_CHECKING([whether the compiler supports enum types])
+AC_COMPILE_IFELSE([
+  AC_LANG_PROGRAM([
+    #include <stdio.h>
+  ],
+  [
+    enum : size_t { UNDEFINED };
+    int main() {
+      return 0;
+    }
+  ])
+], [
+  AC_MSG_RESULT([yes])
+  magick_channel_mask_depth='64';
+], [
+  AC_MSG_RESULT([no])
+])
+
 AC_ARG_ENABLE([64bit_channel_masks],
     [AS_HELP_STRING([--enable-64bit-channel-masks],
                     [enable 64-bit channel masks])],
@@ -688,9 +707,8 @@ AC_ARG_ENABLE([64bit_channel_masks],
     [enable_64bit_channel_masks='no'])
 
 MAGICK_64BIT_CHANNEL_MASK=""
-if test "$enable_64bit_channel_masks" = 'yes'; then
+if test "$enable_64bit_channel_masks" = 'yes' && test "$magick_channel_mask_depth" = '64'; then
     MAGICK_64BIT_CHANNEL_MASK="Channel-masks(64-bit)"
-    magick_channel_mask_depth='64';
     MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
 else
     magick_channel_mask_depth='32'
@@ -3500,28 +3518,6 @@ fi
 AC_SUBST([windows_font_dir])
 
 AC_SUBST([type_include_files])
-
-#
-# Need C++ for { 64-bit channels masks, FPX, JXL}.
-#
-if test "$enable_64bit_channel_masks" = 'yes'; then
-  AC_MSG_CHECKING([whether the compiler supports -x option])
-  AC_COMPILE_IFELSE([
-    AC_LANG_PROGRAM([
-      #include <stdio.h>
-    ],
-    [
-      int main() {
-        return 0;
-      }
-    ])
-  ], [
-    AC_MSG_RESULT([yes])
-    CFLAGS="$CFLAGS -x c++"
-  ], [
-    AC_MSG_RESULT([no])
-  ])
-fi
 
 #
 # Handle case where user doesn't want frozen paths
