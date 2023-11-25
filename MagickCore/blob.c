@@ -5536,7 +5536,7 @@ static int SyncBlob(const Image *image)
     case ZipStream:
     {
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-      status=gzflush(blob_info->file_info.gzfile,Z_SYNC_FLUSH);
+      (void) gzflush(blob_info->file_info.gzfile,Z_SYNC_FLUSH);
 #endif
       break;
     }
