@@ -524,7 +524,7 @@ $logo->Read('logo:');
 $logo->Zoom('40%');
 $montage->Composite(image=>$logo,gravity=>'North');
 
-print "Display...\n";
-$montage->Write('show:');
 print "Write...\n";
 $montage->Write('demo.jpg');
+print "Display...\n";
+$montage->Write('show:');

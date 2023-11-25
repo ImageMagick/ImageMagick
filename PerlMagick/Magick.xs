@@ -15133,6 +15133,13 @@ Write(ref,...)
           PackageName);
         goto PerlException;
       }
+    image=CloneImageList(image,exception);
+    if (image == (Image *) NULL)
+      {
+        ThrowPerlException(exception,OptionError,"NoImagesDefined",
+          PackageName);
+        goto PerlException;
+      }
     scene=0;
     for (next=image; next; next=next->next)
       next->scene=(size_t) scene++;
@@ -15158,6 +15165,7 @@ Write(ref,...)
       if (package_info->image_info->adjoin)
         break;
     }
+    image=DestroyImageList(image);
 
   PerlException:
     if (package_info != (struct PackageInfo *) NULL)
