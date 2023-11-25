@@ -2496,8 +2496,8 @@ static MagickBooleanType GetXmpOffsets(const StringInfo *profile,
   return(MagickTrue);
 }
 
-static void GetXmpNumeratorAndDenominator(double value,size_t *numerator,
-  size_t *denominator)
+static void GetXmpNumeratorAndDenominator(double value,
+  unsigned long *numerator,unsigned long *denominator)
 {
   double
     df;
@@ -2515,30 +2515,32 @@ static void GetXmpNumeratorAndDenominator(double value,size_t *numerator,
     else
       {
         (*denominator)++;
-        *numerator=(size_t) (value*(*denominator));
+        *numerator=(unsigned long) (value*(*denominator));
       }
     df=*numerator/(double)*denominator;
   }
 }
 
-static void SyncXMPProfile(const Image *image,StringInfo *profile)
+static void SyncXmpProfile(const Image *image,StringInfo *profile)
 {
   char
     value[MagickPathExtent];
 
   size_t
-    denominator,
     end,
-    numerator,
     start;
+
+  unsigned long
+    denominator,
+    numerator;
 
   *value='\0';
   if (GetXmpOffsets(profile,"tiff:XResolution",&start,&end) != MagickFalse)
     {
       GetXmpNumeratorAndDenominator(image->resolution.x,&numerator,
         &denominator);
-      (void) FormatLocaleString(value,MagickPathExtent,"%g/%g",
-        (double) numerator,(double) denominator);
+      (void) FormatLocaleString(value,MagickPathExtent,"%lu/%lu",numerator,
+        denominator);
       ReplaceXmpValue(profile,start,end,value);
     }
   if (GetXmpOffsets(profile,"tiff:YResolution",&start,&end) != MagickFalse)
@@ -2548,8 +2550,8 @@ static void SyncXMPProfile(const Image *image,StringInfo *profile)
         {
           GetXmpNumeratorAndDenominator(image->resolution.y,&numerator,
             &denominator);
-          (void) FormatLocaleString(value,MagickPathExtent,"%g/%g",
-            (double) numerator,(double) denominator);
+          (void) FormatLocaleString(value,MagickPathExtent,"%lu/%lu",
+            numerator,denominator);
         }
       ReplaceXmpValue(profile,start,end,value);
     }
@@ -2581,7 +2583,7 @@ MagickPrivate void SyncImageProfiles(Image *image)
       profile));
   profile=(StringInfo *) GetImageProfile(image,"XMP");
   if (profile != (StringInfo *) NULL)
-    SyncXMPProfile(image,profile);
+    SyncXmpProfile(image,profile);
 }
 
 static void UpdateClipPath(unsigned char *blob,size_t length,
