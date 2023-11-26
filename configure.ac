@@ -699,20 +699,24 @@ AC_ARG_ENABLE([force_cpp],
 magick_channel_mask_depth='32';
 if test "$enable_64bit_channel_masks" = 'yes'; then
     if test "$enable_force_cpp" = 'yes'; then
-      AC_MSG_CHECKING([whether the compiler supports -x c++ option])
-      AC_COMPILE_IFELSE([
-        AC_LANG_PROGRAM([
-          enum Days : int { Monday = 1 };
-        ],
-        [
-        ])
-      ], [
-        AC_MSG_RESULT([yes])
+        AC_MSG_CHECKING([whether the compiler supports -x c++ option])
+        old_CFLAGS="$CFLAGS"
         CFLAGS="$CFLAGS -x c++"
-        magick_channel_mask_depth='64';
-      ], [
-        AC_MSG_RESULT([no])
-      ])
+        AC_COMPILE_IFELSE([
+          AC_LANG_PROGRAM([
+            enum Days : int { Monday = 1 };
+          ],
+          [
+          ])
+        ], [
+          AC_MSG_RESULT([yes])
+          magick_channel_mask_depth='64';
+        ], [
+          AC_MSG_RESULT([no])
+        ])
+        if test "$magick_channel_mask_depth" != '64'; then
+          CFLAGS="$old_CFLAGS"
+        fi
     else
         AC_MSG_CHECKING([whether the compiler supports enum type modifiers])
         AC_COMPILE_IFELSE([
