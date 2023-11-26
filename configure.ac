@@ -1346,7 +1346,7 @@ AC_DEFINE_UNQUOTED([X11_CONFIGURE_PATH],["$X11ConfigurePath"],[Location of X11 c
 #
 GOMP_LIBS=''
 if test "${OPENMP_ENABLED}" = 'yes'; then
-  AC_CHECK_HEADER([omp.h], [], [AC_MSG_ERROR([OpenMP header file not found])])
+  AC_CHECK_HEADER([omp.h], [], [AC_MSG_RESULT([OpenMP header file not found])])
   if test "${GCC}" = "yes"; then
     # Open64 (passes for GCC but uses different OpenMP implementation)
     if test "x$GOMP_LIBS" = x ; then

@@ -5187,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=d46f0142e:20231126
+MAGICK_GIT_REVISION=da2c681a8:20231126
 
 
 # Substitute library versioning
@@ -27714,7 +27714,8 @@ if test "x$ac_cv_header_omp_h" = xyes
 then :
 
 else $as_nop
-  as_fn_error $? "OpenMP header file not found" "$LINENO" 5
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: OpenMP header file not found" >&5
+printf "%s\n" "OpenMP header file not found" >&6; }
 fi
 
   if test "${GCC}" = "yes"; then
