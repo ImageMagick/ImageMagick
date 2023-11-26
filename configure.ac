@@ -683,33 +683,62 @@ CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 
 #
 # Check for extended channel masks.
-#   
-magick_channel_mask_depth='32';
-#include <stdio.h>
-AC_MSG_CHECKING([whether the compiler supports enum type modifiers])
-AC_COMPILE_IFELSE([
-  AC_LANG_PROGRAM([
-    enum Days : int { Monday = 1 };
-  ],
-  [
-  ])
-], [
-  AC_MSG_RESULT([yes])
-  magick_channel_mask_depth='64';
-], [
-  AC_MSG_RESULT([no])
-])
-
+#
 AC_ARG_ENABLE([64bit_channel_masks],
     [AS_HELP_STRING([--enable-64bit-channel-masks],
                     [enable 64-bit channel masks])],
     [enable_64bit_channel_masks=$enableval],
     [enable_64bit_channel_masks='no'])
 
-if test "$enable_64bit_channel_masks" = 'yes' && test "$magick_channel_mask_depth" = '64'; then
+AC_ARG_ENABLE([force_cpp],
+    [AS_HELP_STRING([--enable-force-cpp],
+                    [treat the input files as C++ code])],
+    [enable_force_cpp=$enableval],
+    [enable_force_cpp='no'])
+
+magick_channel_mask_depth='32';
+if test "$enable_64bit_channel_masks" = 'yes'; then
+    if test "$enable_force_cpp" = 'yes'; then
+      AC_MSG_CHECKING([whether the compiler supports -x c++ option])
+      AC_COMPILE_IFELSE([
+        AC_LANG_PROGRAM([
+          #include <stdio.h>
+        ],
+        [
+          int main() {
+            return 0;
+          }
+        ])
+      ], [
+        AC_MSG_RESULT([yes])
+        CFLAGS="$CFLAGS -x c++"
+        magick_channel_mask_depth='64';
+      ], [
+        AC_MSG_RESULT([no])
+      ])
+    else
+        AC_MSG_CHECKING([whether the compiler supports enum type modifiers])
+        AC_COMPILE_IFELSE([
+          AC_LANG_PROGRAM([
+            #include <stdio.h>
+          ],
+          [
+            enum : size_t { UndefinedType };
+            int main() {
+              return 0;
+            }
+          ])
+        ], [
+          AC_MSG_RESULT([yes])
+          magick_channel_mask_depth='64';
+        ], [
+          AC_MSG_RESULT([no])
+        ])
+    fi
+fi
+if test "$magick_channel_mask_depth" == '64'; then
     MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
 else
-    magick_channel_mask_depth='32'
     MAGICK_FEATURES="Channel-masks(32-bit) $MAGICK_FEATURES"
 fi
 AC_DEFINE_UNQUOTED([CHANNEL_MASK_DEPTH],[$magick_channel_mask_depth],[Channel mask depth])
