@@ -1221,6 +1221,7 @@ enable_cipher
 enable_zero_configuration
 enable_hdri
 enable_64bit_channel_masks
+enable_force_cpp
 enable_dpc
 enable_pipes
 enable_maintainer_mode
@@ -2031,6 +2032,7 @@ Optional Features:
                           levels found in real scenes
   --enable-64bit-channel-masks
                           enable 64-bit channel masks
+  --enable-force-cpp      treat the input files as C++ code
   --disable-dpc           disable distributed pixel cache support
   --enable-pipes          enable pipes (|) in filenames. Be sure to properly
                           validate and sanitize user input to prevent
@@ -5185,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=264c11a32:20231125
+MAGICK_GIT_REVISION=d46f0142e:20231126
 
 
 # Substitute library versioning
@@ -5219,7 +5221,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,22
 
-PACKAGE_RELEASE_DATE=2023-11-25
+PACKAGE_RELEASE_DATE=2023-11-26
 
 
 # Ensure that make can run correctly
@@ -23472,15 +23474,71 @@ CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 #
 # Check for extended channel masks.
 #
+# Check whether --enable-64bit_channel_masks was given.
+if test ${enable_64bit_channel_masks+y}
+then :
+  enableval=$enable_64bit_channel_masks; enable_64bit_channel_masks=$enableval
+else $as_nop
+  enable_64bit_channel_masks='no'
+fi
+
+
+# Check whether --enable-force_cpp was given.
+if test ${enable_force_cpp+y}
+then :
+  enableval=$enable_force_cpp; enable_force_cpp=$enableval
+else $as_nop
+  enable_force_cpp='no'
+fi
+
+
 magick_channel_mask_depth='32';
-#include <stdio.h>
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports enum type modifiers" >&5
-printf %s "checking whether the compiler supports enum type modifiers... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+if test "$enable_64bit_channel_masks" = 'yes'; then
+    if test "$enable_force_cpp" = 'yes'; then
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -x c++ option" >&5
+printf %s "checking whether the compiler supports -x c++ option... " >&6; }
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 
-    enum Days : int { Monday = 1 };
+          #include <stdio.h>
+
+int
+main (void)
+{
+
+          int main() {
+            return 0;
+          }
+
+  ;
+  return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+        CFLAGS="$CFLAGS -x c++"
+        magick_channel_mask_depth='64';
+
+else $as_nop
+
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+    else
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports enum type modifiers" >&5
+printf %s "checking whether the compiler supports enum type modifiers... " >&6; }
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+            enum Days : int { Monday = 1 };
 
 int
 main (void)
@@ -23495,31 +23553,22 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"
 then :
 
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-  magick_channel_mask_depth='64';
+          magick_channel_mask_depth='64';
 
 else $as_nop
 
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-
-# Check whether --enable-64bit_channel_masks was given.
-if test ${enable_64bit_channel_masks+y}
-then :
-  enableval=$enable_64bit_channel_masks; enable_64bit_channel_masks=$enableval
-else $as_nop
-  enable_64bit_channel_masks='no'
+    fi
 fi
-
-
-if test "$enable_64bit_channel_masks" = 'yes' && test "$magick_channel_mask_depth" = '64'; then
+if test "$magick_channel_mask_depth" == '64'; then
     MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
 else
-    magick_channel_mask_depth='32'
     MAGICK_FEATURES="Channel-masks(32-bit) $MAGICK_FEATURES"
 fi
 
