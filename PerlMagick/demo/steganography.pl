@@ -14,13 +14,13 @@ $watermark->ReadImage('smile.gif');
 $image=Image::Magick->new;
 $image->ReadImage('model.gif');
 $image->SteganoImage(image=>$watermark,offset=>91);
-$image->Write('model.png');
+$image->Write('model.pam');
 $image->Write('show:');
 #
 # Extract image from image.
 #
 $size="$width" . "x" . "$height" . "+91";
 $stegano=Image::Magick->new(size=>$size);
-$stegano->ReadImage('stegano:model.png');
-$stegano->Write('stegano.gif');
+$stegano->ReadImage('stegano:model.pam');
+$stegano->Write('stegano.pam');
 $stegano->Write('show:');

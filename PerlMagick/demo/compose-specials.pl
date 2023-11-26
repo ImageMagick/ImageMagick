@@ -247,5 +247,5 @@ my $montage=$results->Montage(font=>'Generic.ttf',
   frame=>'6x6+2+2',
   shadow=>'True',
 );
-$montage->Write('compose-specials.jpg');
+$montage->Write('compose-specials.pam');
 $montage->Write('show:');

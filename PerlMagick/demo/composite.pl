@@ -35,5 +35,5 @@ for ($angle=0; $angle < 360; $angle+=30)
   push(@$image,$thumbnail);
 }
 $image->Set(delay=>20);
-$image->Write("composite.miff");
+$image->Write("composite.pam");
 $image->Animate();

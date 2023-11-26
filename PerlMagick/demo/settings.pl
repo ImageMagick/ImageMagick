@@ -28,5 +28,5 @@ die $e if $e;
 $e = $im->Trim();
 die $e if $e;
 
-$e = $im->Write('settings.png');
+$e = $im->Write('settings.pam');
 die $e if $e;

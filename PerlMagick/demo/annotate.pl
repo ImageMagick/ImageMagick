@@ -37,5 +37,5 @@ for ($angle=0; $angle < 360; $angle+=30)
   push(@$image,$label);
 }
 $image->Set(delay=>20);
-$image->Write("annotate.miff");
+$image->Write("annotate.pam");
 $image->Animate();

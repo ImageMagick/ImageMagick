@@ -32,4 +32,4 @@ require "lsys.pl";
 
 $changes = \%stemchanges;
 lsys_init(400);
-lsys_execute('A', 10, "tree.gif", %rule);
+lsys_execute('A', 10, "tree.pam", %rule);
