@@ -5187,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=da2c681a8:20231126
+MAGICK_GIT_REVISION=a373b1fd3:20231126
 
 
 # Substitute library versioning
@@ -23501,15 +23501,12 @@ printf %s "checking whether the compiler supports -x c++ option... " >&6; }
 /* end confdefs.h.  */
 
 
-          #include <stdio.h>
+          enum Days : int { Monday = 1 };
 
 int
 main (void)
 {
 
-          int main() {
-            return 0;
-          }
 
   ;
   return 0;

@@ -702,12 +702,9 @@ if test "$enable_64bit_channel_masks" = 'yes'; then
       AC_MSG_CHECKING([whether the compiler supports -x c++ option])
       AC_COMPILE_IFELSE([
         AC_LANG_PROGRAM([
-          #include <stdio.h>
+          enum Days : int { Monday = 1 };
         ],
         [
-          int main() {
-            return 0;
-          }
         ])
       ], [
         AC_MSG_RESULT([yes])
