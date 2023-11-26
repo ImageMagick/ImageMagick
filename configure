@@ -5185,7 +5185,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=89a94af13:20231125
+MAGICK_GIT_REVISION=264c11a32:20231125
 
 
 # Substitute library versioning
@@ -27795,7 +27795,6 @@ fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
     fi
   fi
-  LIBS="$GOMP_LIBS $LIBS"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for OpenMP library " >&5
 printf %s "checking for OpenMP library ... " >&6; }
   if test "x$GOMP_LIBS" = x ; then

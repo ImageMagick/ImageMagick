@@ -1359,7 +1359,6 @@ if test "${OPENMP_ENABLED}" = 'yes'; then
         omp_set_num_threads(1);])],[GOMP_LIBS="-lmp"],[])
     fi
   fi
-  LIBS="$GOMP_LIBS $LIBS"
   AC_MSG_CHECKING([for OpenMP library ])
   if test "x$GOMP_LIBS" = x ; then
     AC_MSG_RESULT([not found!])
