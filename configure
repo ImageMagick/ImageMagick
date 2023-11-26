@@ -5187,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=a373b1fd3:20231126
+MAGICK_GIT_REVISION=705aef3e4:20231126
 
 
 # Substitute library versioning
@@ -23495,13 +23495,15 @@ fi
 magick_channel_mask_depth='32';
 if test "$enable_64bit_channel_masks" = 'yes'; then
     if test "$enable_force_cpp" = 'yes'; then
-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -x c++ option" >&5
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -x c++ option" >&5
 printf %s "checking whether the compiler supports -x c++ option... " >&6; }
-      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+        old_CFLAGS="$CFLAGS"
+        CFLAGS="$CFLAGS -x c++"
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 
-          enum Days : int { Monday = 1 };
+            enum Days : int { Monday = 1 };
 
 int
 main (void)
@@ -23516,18 +23518,20 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"
 then :
 
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-        CFLAGS="$CFLAGS -x c++"
-        magick_channel_mask_depth='64';
+          magick_channel_mask_depth='64';
 
 else $as_nop
 
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+        if test "$magick_channel_mask_depth" != '64'; then
+          CFLAGS="$old_CFLAGS"
+        fi
     else
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports enum type modifiers" >&5
 printf %s "checking whether the compiler supports enum type modifiers... " >&6; }
