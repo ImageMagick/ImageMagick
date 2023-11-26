@@ -682,70 +682,6 @@ CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 
 #
-# Check for extended channel masks.
-#
-AC_ARG_ENABLE([64bit_channel_masks],
-    [AS_HELP_STRING([--enable-64bit-channel-masks],
-                    [enable 64-bit channel masks])],
-    [enable_64bit_channel_masks=$enableval],
-    [enable_64bit_channel_masks='no'])
-
-AC_ARG_ENABLE([force_cpp],
-    [AS_HELP_STRING([--enable-force-cpp],
-                    [treat the input files as C++ code])],
-    [enable_force_cpp=$enableval],
-    [enable_force_cpp='no'])
-
-magick_channel_mask_depth='32';
-if test "$enable_64bit_channel_masks" = 'yes'; then
-    if test "$enable_force_cpp" = 'yes'; then
-        AC_MSG_CHECKING([whether the compiler supports -x c++ option])
-        old_CFLAGS="$CFLAGS"
-        CFLAGS="$CFLAGS -x c++"
-        AC_COMPILE_IFELSE([
-          AC_LANG_PROGRAM([
-            enum Days : int { Monday = 1 };
-          ],
-          [
-          ])
-        ], [
-          AC_MSG_RESULT([yes])
-          magick_channel_mask_depth='64';
-        ], [
-          AC_MSG_RESULT([no])
-        ])
-        if test "$magick_channel_mask_depth" != '64'; then
-          CFLAGS="$old_CFLAGS"
-        fi
-    else
-        AC_MSG_CHECKING([whether the compiler supports enum type modifiers])
-        AC_COMPILE_IFELSE([
-          AC_LANG_PROGRAM([
-            enum Days : int { Monday = 1 };
-          ],
-          [
-          ])
-        ], [
-          AC_MSG_RESULT([yes])
-          magick_channel_mask_depth='64';
-        ], [
-          AC_MSG_RESULT([no])
-        ])
-    fi
-fi
-if test "$magick_channel_mask_depth" == '64'; then
-    MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
-else
-    MAGICK_FEATURES="Channel-masks(32-bit) $MAGICK_FEATURES"
-fi
-AC_DEFINE_UNQUOTED([CHANNEL_MASK_DEPTH],[$magick_channel_mask_depth],[Channel mask depth])
-CHANNEL_MASK_DEPTH=$magick_channel_mask_depth
-AC_SUBST([CHANNEL_MASK_DEPTH])dnl
-MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
-CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
-CPPFLAGS="$CPPFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
-
-#
 # Support the distributed pixel cache.
 #
 AC_ARG_ENABLE([dpc],
@@ -3548,6 +3484,71 @@ fi
 AC_SUBST([windows_font_dir])
 
 AC_SUBST([type_include_files])
+
+#
+# Check for extended channel masks.
+#
+AC_ARG_ENABLE([64bit_channel_masks],
+    [AS_HELP_STRING([--enable-64bit-channel-masks],
+                    [enable 64-bit channel masks])],
+    [enable_64bit_channel_masks=$enableval],
+    [enable_64bit_channel_masks='no'])
+
+AC_ARG_ENABLE([force_cpp],
+    [AS_HELP_STRING([--enable-force-cpp],
+                    [treat the input files as C++ code])],
+    [enable_force_cpp=$enableval],
+    [enable_force_cpp='no'])
+
+magick_channel_mask_depth='32';
+if test "$enable_64bit_channel_masks" = 'yes'; then
+    if test "$enable_force_cpp" = 'yes'; then
+        AC_MSG_CHECKING([whether the compiler supports -x c++ option])
+        old_CFLAGS="$CFLAGS"
+        CFLAGS="$CFLAGS -x c++"
+        AC_COMPILE_IFELSE([
+          AC_LANG_PROGRAM([
+            enum Days : int { Monday = 1 };
+          ],
+          [
+          ])
+        ], [
+          AC_MSG_RESULT([yes])
+          magick_channel_mask_depth='64';
+        ], [
+          AC_MSG_RESULT([no])
+        ])
+        if test "$magick_channel_mask_depth" != '64'; then
+          CFLAGS="$old_CFLAGS"
+        fi
+    else
+        AC_MSG_CHECKING([whether the compiler supports enum type modifiers])
+        AC_COMPILE_IFELSE([
+          AC_LANG_PROGRAM([
+            enum Days : int { Monday = 1 };
+          ],
+          [
+          ])
+        ], [
+          AC_MSG_RESULT([yes])
+          magick_channel_mask_depth='64';
+        ], [
+          AC_MSG_RESULT([no])
+        ])
+    fi
+fi
+if test "$magick_channel_mask_depth" == '64'; then
+    MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
+else
+    MAGICK_FEATURES="Channel-masks(32-bit) $MAGICK_FEATURES"
+fi
+AC_DEFINE_UNQUOTED([CHANNEL_MASK_DEPTH],[$magick_channel_mask_depth],[Channel mask depth])
+CHANNEL_MASK_DEPTH=$magick_channel_mask_depth
+AC_SUBST([CHANNEL_MASK_DEPTH])dnl
+MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+CPPFLAGS="$CPPFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+
 
 #
 # Handle case where user doesn't want frozen paths
