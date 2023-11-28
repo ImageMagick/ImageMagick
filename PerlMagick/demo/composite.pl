@@ -36,4 +36,4 @@ for ($angle=0; $angle < 360; $angle+=30)
 }
 $image->Set(delay=>20);
 $image->Write("composite.pam");
-$image->Animate();
+$image->Animate(title=>"Rotating Smiles");
