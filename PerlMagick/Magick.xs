@@ -5717,6 +5717,13 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          if (LocaleCompare(attribute,"title") == 0)
+            {
+              if (image != (Image *) NULL)
+                s=newSVpv(image->magick_filename,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
           if (LocaleCompare(attribute,"total-ink-density") == 0)
             {
               s=newSViv(MAGICKCORE_QUANTUM_DEPTH);
