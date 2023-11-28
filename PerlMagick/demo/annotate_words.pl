@@ -65,4 +65,4 @@ foreach my $word (@words){
 
 }
 
-$image->Write("show:");
+$image->Write(magick=>'SHOW',title=>"Annotate Words");

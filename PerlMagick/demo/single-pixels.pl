@@ -44,4 +44,4 @@ $im->Scale('1000%');
 
 # Output the changed pixels
 $im->Write('single-pixels.pam');
-$im->Write('show:');
+$im->Write(magick=>'SHOW',title=>"Single Pixel");

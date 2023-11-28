@@ -12,4 +12,4 @@ $q->Raise('6x6');
 $q->Annotate(font=>'Generic.ttf',text=>'Push Me',fill=>'black',
   gravity=>'Center',pointsize=>18);
 $q->Write('button.pam');
-$q->Write('show:');
+$q->Write(magick=>'SHOW',title=>"Button");

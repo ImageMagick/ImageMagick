@@ -30,8 +30,8 @@ for ($angle=0; $angle < 360; $angle+=30)
     x=>$x,rotate=>$angle);
   $label->Annotate(font=>'Generic.ttf',text=>"South West",gravity=>"SouthWest",
     x=>$x,y=>$y,rotate=>$angle);
-  $label->Annotate(font=>'Generic.ttf',text=>"South",gravity=>"South",y=>$y,
-    rotate=>$angle);
+  $label->Annotate(font=>'Generic.ttf',text=>"South",gravity=>"South",
+    y=>$y,rotate=>$angle);
   $label->Annotate(font=>'Generic.ttf',text=>"South East",gravity=>"SouthEast",
     x=>$x,y=>$y,rotate=>$angle);
   push(@$image,$label);

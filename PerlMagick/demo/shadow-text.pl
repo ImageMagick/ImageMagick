@@ -12,4 +12,4 @@ $image->Blur('0x1');
 $image->Annotate(font=>'Generic.ttf',fill=>'red',stroke=>'blue',pointsize=>60,
   text=>'Works like magick!',geometry=>'+4+86');
 $image->Write('shadow.pam');
-$image->Write('show:');
+$image->Write(magick=>'SHOW',title=>"Shadow Text");

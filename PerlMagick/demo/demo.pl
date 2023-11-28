@@ -85,12 +85,6 @@ $example->Label('Auto Threshold');
 $example->AutoThreshold();
 push(@$images,$example);
 
-print "Bilateral Blur...\n";
-$example=$model->Clone();
-$example->Label('Bilateral Blur');
-$example->BilateralBlur('8x8');
-push(@$images,$example);
-
 print "Blur...\n";
 $example=$model->Clone();
 $example->Label('Blur');
@@ -101,12 +95,6 @@ print "Border...\n";
 $example=$model->Clone();
 $example->Label('Border');
 $example->Border(geometry=>'6x6',color=>'gold');
-push(@$images,$example);
-
-print "CLAHE...\n";
-$example=$model->Clone();
-$example->Label('CLAHE');
-$example->CLAHE('128x192+32+3');
 push(@$images,$example);
 
 print "Channel...\n";
@@ -515,9 +503,9 @@ push(@$images,$example);
 # Create image montage.
 #
 print "Montage...\n";
-$montage=$images->Montage(font=>'Generic.ttf',geometry=>'160x200+8+4>',
+$montage=$images->Montage(font=>'Generic.ttf',geometry=>'140x160+8+4>',
   gravity=>'Center',tile=>'5x+10+200',compose=>'over',background=>'#ffffff',
-  pointsize=>20,fill=>'#600',stroke=>'none',shadow=>'true');
+  pointsize=>18,fill=>'#600',stroke=>'none',shadow=>'true');
 
 $logo=Image::Magick->new();
 $logo->Read('logo:');
@@ -527,4 +515,4 @@ $montage->Composite(image=>$logo,gravity=>'North');
 print "Write...\n";
 $montage->Write('demo.pam');
 print "Display...\n";
-$montage->Write('show:');
+$montage->Write(magick=>'SHOW',title=>"PerlMagick Demo");

@@ -23,4 +23,4 @@ $size="$width" . "x" . "$height" . "+91";
 $stegano=Image::Magick->new(size=>$size);
 $stegano->ReadImage('stegano:model.pam');
 $stegano->Write('stegano.pam');
-$stegano->Write('show:');
+$image->Write(magick=>'SHOW',title=>"Steganography Demo");

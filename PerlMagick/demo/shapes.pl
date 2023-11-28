@@ -37,4 +37,4 @@ $image->Annotate(font=>'Generic.ttf',fill=>'black',geometry=>'+280+120',
 print "Write image...\n";
 $image->Write('shapes.pam');
 print "Display image...\n";
-$image->Write('show:');
+$image->Write(magick=>'SHOW',title=>"Shapes");

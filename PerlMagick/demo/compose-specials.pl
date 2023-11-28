@@ -248,4 +248,4 @@ my $montage=$results->Montage(font=>'Generic.ttf',
   shadow=>'True',
 );
 $montage->Write('compose-specials.pam');
-$montage->Write('show:');
+$montage->Write(magick=>'SHOW',title=>"Compose");
