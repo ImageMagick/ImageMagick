@@ -469,6 +469,7 @@ AC_SUBST([THREAD_LIBS])
 if test "$have_threads" != 'yes'; then
   ac_cv_prog_c_openmp=unsupported
 fi
+enable_openmp='yes'
 AC_OPENMP([C++])
 CXXFLAGS="$OPENMP_CXXFLAGS $CXXFLAGS"
 AC_OPENMP([C])
@@ -476,8 +477,8 @@ CFLAGS="$OPENMP_CFLAGS $CFLAGS"
 CPPFLAGS="$OPENMP_CFLAGS $CPPFLAGS"
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS $OPENMP_CFLAGS"
 AC_SUBST([OPENMP_CFLAGS])
-AC_CHECK_DECL([_OPENMP],[OPENMP_ENABLED='yes'],[OPENMP_ENABLED='yes'],[])
-if test "$enable_openmp" != no; then
+AC_CHECK_DECL([_OPENMP],[OPENMP_ENABLED='yes'],[OPENMP_ENABLED='no'],[])
+if test "${OPENMP_ENABLED}" = 'yes'; then
   if test "$ac_cv_prog_c_openmp" != 'unsupported'; then
     MAGICK_FEATURES="OpenMP $MAGICK_FEATURES"
   fi
@@ -4094,12 +4095,20 @@ AC_SUBST([X_CFLAGS])
 #AC_SUBST([X_LIBS])
 #AC_SUBST([X_EXTRA_LIBS])
 
+CC=`echo $CC | sed -e 's/  */ /g'`
+CFLAGS=`echo $CFLAGS | sed -e 's/  */ /g'`
+CPPFLAGS=`echo $CPPFLAGS | sed -e 's/  */ /g'`
+CXXFLAGS=`echo $CXXFLAGS | sed -e 's/  */ /g'`
+LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
+
 MAGICK_CFLAGS=$CFLAGS
 MAGICK_CXXFLAGS="$CXXFLAGS"
 MAGICK_CPPFLAGS=`echo $MAGICK_CPPFLAGS | sed -e 's/  */ /g'`
 MAGICK_PCFLAGS=`echo $MAGICK_PCFLAGS | sed -e 's/  */ /g'`
 MAGICK_LDFLAGS="-L$LIB_DIR $LDFLAGS"
 MAGICK_LIBS="$MAGICK_DEP_LIBS $MAGICK_EXTRA_DEP_LIBS"
+MAGICK_DEP_LIBS=`echo $MAGICK_DEP_LIBS | sed -e 's/  */ /g'`
+MAGICK_EXTRA_DEP_LIBS=`echo $MAGICK_EXTRA_DEP_LIBS | sed -e 's/  */ /g'`
 
 AC_SUBST([MAGICK_CFLAGS])
 AC_SUBST([MAGICK_CXXFLAGS])
@@ -4212,7 +4221,8 @@ Static libraries    --enable-static=$enable_static			$libtool_build_static_libs
 Build utilities     --with-utilities=$with_utilities		$with_utilities
 Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
-Security policy     --with-security-policy=$security_policy	$security_policy
+OpenMP              --enable-openmp=$enable_openmp			$OPENMP_ENABLED
+Security policy     --with-security-policy=$security_policy	        $security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
 Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
 High Dynamic Range Imagery

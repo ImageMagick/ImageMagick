@@ -709,6 +709,7 @@ RPM
 PERL
 TAR
 ShowImageDelegate
+CHANNEL_MASK_DEPTH
 type_include_files
 windows_font_dir
 urw_base35_font_dir
@@ -974,7 +975,6 @@ LEGACY_SUPPORT_TRUE
 MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
-CHANNEL_MASK_DEPTH
 MAGICK_HDRI
 MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_FALSE
 MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE
@@ -1220,8 +1220,6 @@ enable_installed
 enable_cipher
 enable_zero_configuration
 enable_hdri
-enable_64bit_channel_masks
-enable_force_cpp
 enable_dpc
 enable_pipes
 enable_maintainer_mode
@@ -1290,6 +1288,8 @@ with_windows_font_dir
 with_wmf
 with_xml
 enable_docs
+enable_64bit_channel_masks
+enable_force_cpp
 '
       ac_precious_vars='build_alias
 host_alias
@@ -2030,9 +2030,6 @@ Optional Features:
                           zero-configuration ImageMagick
   --enable-hdri           accurately represent the wide range of intensity
                           levels found in real scenes
-  --enable-64bit-channel-masks
-                          enable 64-bit channel masks
-  --enable-force-cpp      treat the input files as C++ code
   --disable-dpc           disable distributed pixel cache support
   --enable-pipes          enable pipes (|) in filenames. Be sure to properly
                           validate and sanitize user input to prevent
@@ -2049,6 +2046,9 @@ Optional Features:
   --enable-legacy-support install legacy command-line utilities (default disabled)
   --disable-assert        turn off assertions
   --disable-docs          disable building of documentation
+  --enable-64bit-channel-masks
+                          enable 64-bit channel masks
+  --enable-force-cpp      treat the input files as C++ code
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -5187,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=705aef3e4:20231126
+MAGICK_GIT_REVISION=2c4205d20:20231128
 
 
 # Substitute library versioning
@@ -5221,7 +5221,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,22
 
-PACKAGE_RELEASE_DATE=2023-11-26
+PACKAGE_RELEASE_DATE=2023-11-28
 
 
 # Ensure that make can run correctly
@@ -11215,6 +11215,7 @@ LIBS="$LIBS $THREAD_LIBS"
 if test "$have_threads" != 'yes'; then
   ac_cv_prog_c_openmp=unsupported
 fi
+enable_openmp='yes'
 if test -e penmp || test -e mp; then
   as_fn_error $? "AC_OPENMP clobbers files named 'mp' and 'penmp'. Aborting configure because one of these files already exists." "$LINENO" 5
 fi
@@ -11456,9 +11457,9 @@ if test "x$ac_cv_have_decl__OPENMP" = xyes
 then :
   OPENMP_ENABLED='yes'
 else $as_nop
-  OPENMP_ENABLED='yes'
+  OPENMP_ENABLED='no'
 fi
-if test "$enable_openmp" != no; then
+if test "${OPENMP_ENABLED}" = 'yes'; then
   if test "$ac_cv_prog_c_openmp" != 'unsupported'; then
     MAGICK_FEATURES="OpenMP $MAGICK_FEATURES"
   fi
@@ -23470,115 +23471,6 @@ fi
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
-
-#
-# Check for extended channel masks.
-#
-# Check whether --enable-64bit_channel_masks was given.
-if test ${enable_64bit_channel_masks+y}
-then :
-  enableval=$enable_64bit_channel_masks; enable_64bit_channel_masks=$enableval
-else $as_nop
-  enable_64bit_channel_masks='no'
-fi
-
-
-# Check whether --enable-force_cpp was given.
-if test ${enable_force_cpp+y}
-then :
-  enableval=$enable_force_cpp; enable_force_cpp=$enableval
-else $as_nop
-  enable_force_cpp='no'
-fi
-
-
-magick_channel_mask_depth='32';
-if test "$enable_64bit_channel_masks" = 'yes'; then
-    if test "$enable_force_cpp" = 'yes'; then
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -x c++ option" >&5
-printf %s "checking whether the compiler supports -x c++ option... " >&6; }
-        old_CFLAGS="$CFLAGS"
-        CFLAGS="$CFLAGS -x c++"
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-            enum Days : int { Monday = 1 };
-
-int
-main (void)
-{
-
-
-  ;
-  return 0;
-}
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-
-          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-          magick_channel_mask_depth='64';
-
-else $as_nop
-
-          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-        if test "$magick_channel_mask_depth" != '64'; then
-          CFLAGS="$old_CFLAGS"
-        fi
-    else
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports enum type modifiers" >&5
-printf %s "checking whether the compiler supports enum type modifiers... " >&6; }
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-            enum Days : int { Monday = 1 };
-
-int
-main (void)
-{
-
-
-  ;
-  return 0;
-}
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-
-          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-          magick_channel_mask_depth='64';
-
-else $as_nop
-
-          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-    fi
-fi
-if test "$magick_channel_mask_depth" == '64'; then
-    MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
-else
-    MAGICK_FEATURES="Channel-masks(32-bit) $MAGICK_FEATURES"
-fi
-
-printf "%s\n" "#define CHANNEL_MASK_DEPTH $magick_channel_mask_depth" >>confdefs.h
-
-CHANNEL_MASK_DEPTH=$magick_channel_mask_depth
-MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
-CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
-CPPFLAGS="$CPPFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 
 #
 # Support the distributed pixel cache.
@@ -37091,6 +36983,116 @@ fi
 
 
 #
+# Check for extended channel masks.
+#
+# Check whether --enable-64bit_channel_masks was given.
+if test ${enable_64bit_channel_masks+y}
+then :
+  enableval=$enable_64bit_channel_masks; enable_64bit_channel_masks=$enableval
+else $as_nop
+  enable_64bit_channel_masks='no'
+fi
+
+
+# Check whether --enable-force_cpp was given.
+if test ${enable_force_cpp+y}
+then :
+  enableval=$enable_force_cpp; enable_force_cpp=$enableval
+else $as_nop
+  enable_force_cpp='no'
+fi
+
+
+magick_channel_mask_depth='32';
+if test "$enable_64bit_channel_masks" = 'yes'; then
+    if test "$enable_force_cpp" = 'yes'; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -x c++ option" >&5
+printf %s "checking whether the compiler supports -x c++ option... " >&6; }
+        old_CFLAGS="$CFLAGS"
+        CFLAGS="$CFLAGS -x c++"
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+            enum Days : int { Monday = 1 };
+
+int
+main (void)
+{
+
+
+  ;
+  return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+          magick_channel_mask_depth='64';
+
+else $as_nop
+
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+        if test "$magick_channel_mask_depth" != '64'; then
+          CFLAGS="$old_CFLAGS"
+        fi
+    else
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports enum type modifiers" >&5
+printf %s "checking whether the compiler supports enum type modifiers... " >&6; }
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+            enum Days : int { Monday = 1 };
+
+int
+main (void)
+{
+
+
+  ;
+  return 0;
+}
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"
+then :
+
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+          magick_channel_mask_depth='64';
+
+else $as_nop
+
+          { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+    fi
+fi
+if test "$magick_channel_mask_depth" == '64'; then
+    MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
+else
+    MAGICK_FEATURES="Channel-masks(32-bit) $MAGICK_FEATURES"
+fi
+
+printf "%s\n" "#define CHANNEL_MASK_DEPTH $magick_channel_mask_depth" >>confdefs.h
+
+CHANNEL_MASK_DEPTH=$magick_channel_mask_depth
+MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+CPPFLAGS="$CPPFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
+
+
+#
 # Handle case where user doesn't want frozen paths
 #
 if test "$with_frozenpaths" != 'yes'; then
@@ -38168,12 +38170,20 @@ LIBS=$USER_LIBS
 #AC_SUBST([X_LIBS])
 #AC_SUBST([X_EXTRA_LIBS])
 
+CC=`echo $CC | sed -e 's/  */ /g'`
+CFLAGS=`echo $CFLAGS | sed -e 's/  */ /g'`
+CPPFLAGS=`echo $CPPFLAGS | sed -e 's/  */ /g'`
+CXXFLAGS=`echo $CXXFLAGS | sed -e 's/  */ /g'`
+LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
+
 MAGICK_CFLAGS=$CFLAGS
 MAGICK_CXXFLAGS="$CXXFLAGS"
 MAGICK_CPPFLAGS=`echo $MAGICK_CPPFLAGS | sed -e 's/  */ /g'`
 MAGICK_PCFLAGS=`echo $MAGICK_PCFLAGS | sed -e 's/  */ /g'`
 MAGICK_LDFLAGS="-L$LIB_DIR $LDFLAGS"
 MAGICK_LIBS="$MAGICK_DEP_LIBS $MAGICK_EXTRA_DEP_LIBS"
+MAGICK_DEP_LIBS=`echo $MAGICK_DEP_LIBS | sed -e 's/  */ /g'`
+MAGICK_EXTRA_DEP_LIBS=`echo $MAGICK_EXTRA_DEP_LIBS | sed -e 's/  */ /g'`
 
 
 
@@ -41207,7 +41217,8 @@ Static libraries    --enable-static=$enable_static			$libtool_build_static_libs
 Build utilities     --with-utilities=$with_utilities		$with_utilities
 Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
-Security policy     --with-security-policy=$security_policy	$security_policy
+OpenMP              --enable-openmp=$enable_openmp			$OPENMP_ENABLED
+Security policy     --with-security-policy=$security_policy	        $security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
 Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
 High Dynamic Range Imagery
@@ -41310,7 +41321,8 @@ Static libraries    --enable-static=$enable_static			$libtool_build_static_libs
 Build utilities     --with-utilities=$with_utilities		$with_utilities
 Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
-Security policy     --with-security-policy=$security_policy	$security_policy
+OpenMP              --enable-openmp=$enable_openmp			$OPENMP_ENABLED
+Security policy     --with-security-policy=$security_policy	        $security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
 Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
 High Dynamic Range Imagery

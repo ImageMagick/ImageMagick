@@ -728,7 +728,7 @@ ModuleExport size_t RegisterHEICImage(void)
 
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 #if LIBHEIF_NUMERIC_VERSION >= 0x010e0000
-  heif_init(NULL);
+  heif_init((struct heif_init_params *) NULL);
 #endif
 #endif
   entry=AcquireMagickInfo("HEIC","HEIC","High Efficiency Image Format");
