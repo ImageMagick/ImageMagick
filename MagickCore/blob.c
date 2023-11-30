@@ -1865,8 +1865,6 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
   assert(image->blob != (BlobInfo *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (SyncBlob(image) != 0)
-    return(0);
   blob_info=image->blob;
   extent=0;
   switch (blob_info->type)
