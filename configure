@@ -1217,7 +1217,6 @@ with_modules
 enable_delegate_build
 enable_deprecated
 enable_installed
-enable_cipher
 enable_zero_configuration
 enable_hdri
 enable_dpc
@@ -1288,6 +1287,7 @@ with_windows_font_dir
 with_wmf
 with_xml
 enable_docs
+enable_cipher
 enable_64bit_channel_masks
 enable_force_cpp
 '
@@ -2024,7 +2024,6 @@ Optional Features:
   --disable-deprecated    exclude deprecated methods in MagickCore and
                           MagickWand APIs
   --disable-installed     Formally install ImageMagick under PREFIX
-  --disable-cipher        disable enciphering and deciphering image pixels
   --enable-zero-configuration
                           enable self-contained, embeddable,
                           zero-configuration ImageMagick
@@ -2046,6 +2045,7 @@ Optional Features:
   --enable-legacy-support install legacy command-line utilities (default disabled)
   --disable-assert        turn off assertions
   --disable-docs          disable building of documentation
+  --disable-cipher        disable enciphering and deciphering image pixels
   --enable-64bit-channel-masks
                           enable 64-bit channel masks
   --enable-force-cpp      treat the input files as C++ code
@@ -5187,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=22
 
 MAGICK_VERSION=7.1.1-22
 
-MAGICK_GIT_REVISION=2c4205d20:20231128
+MAGICK_GIT_REVISION=eec76f406:20231202
 
 
 # Substitute library versioning
@@ -5221,7 +5221,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,22
 
-PACKAGE_RELEASE_DATE=2023-11-28
+PACKAGE_RELEASE_DATE=2023-12-02
 
 
 # Ensure that make can run correctly
@@ -11215,7 +11215,6 @@ LIBS="$LIBS $THREAD_LIBS"
 if test "$have_threads" != 'yes'; then
   ac_cv_prog_c_openmp=unsupported
 fi
-enable_openmp='yes'
 if test -e penmp || test -e mp; then
   as_fn_error $? "AC_OPENMP clobbers files named 'mp' and 'penmp'. Aborting configure because one of these files already exists." "$LINENO" 5
 fi
@@ -11293,83 +11292,7 @@ printf "%s\n" "$ac_cv_prog_c_openmp" >&6; }
   fi
 
 
-CXXFLAGS="$OPENMP_CXXFLAGS $CXXFLAGS"
-# Check whether --enable-openmp was given.
-if test ${enable_openmp+y}
-then :
-  enableval=$enable_openmp;
-fi
-
-  OPENMP_CFLAGS=
-  if test "$enable_openmp" != no; then
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CC option to support OpenMP" >&5
-printf %s "checking for $CC option to support OpenMP... " >&6; }
-if test ${ac_cv_prog_c_openmp+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-  ac_cv_prog_c_openmp='not found'
-                                                                        for ac_option in '' -fopenmp -xopenmp -openmp -mp -omp -qsmp=omp -homp \
-                       -Popenmp --openmp; do
-
-        ac_save_CFLAGS=$CFLAGS
-        CFLAGS="$CFLAGS $ac_option"
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#ifndef _OPENMP
-#error "OpenMP not supported"
-#endif
-#include <omp.h>
-int main (void) { return omp_get_num_threads (); }
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"
-then :
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#ifndef _OPENMP
-#error "OpenMP not supported"
-#endif
-#include <omp.h>
-int main (void) { return omp_get_num_threads (); }
-
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_prog_c_openmp=$ac_option
-else $as_nop
-  ac_cv_prog_c_openmp='unsupported'
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
-        CFLAGS=$ac_save_CFLAGS
-
-        if test "$ac_cv_prog_c_openmp" != 'not found'; then
-          break
-        fi
-      done
-      if test "$ac_cv_prog_c_openmp" = 'not found'; then
-        ac_cv_prog_c_openmp='unsupported'
-      elif test "$ac_cv_prog_c_openmp" = ''; then
-        ac_cv_prog_c_openmp='none needed'
-      fi
-                        rm -f penmp mp
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_c_openmp" >&5
-printf "%s\n" "$ac_cv_prog_c_openmp" >&6; }
-    if test "$ac_cv_prog_c_openmp" != 'unsupported' && \
-       test "$ac_cv_prog_c_openmp" != 'none needed'; then
-      OPENMP_CFLAGS="$ac_cv_prog_c_openmp"
-    fi
-  fi
-
-
 CFLAGS="$OPENMP_CFLAGS $CFLAGS"
-CPPFLAGS="$OPENMP_CFLAGS $CPPFLAGS"
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS $OPENMP_CFLAGS"
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $CC options needed to detect all undeclared functions" >&5
@@ -11459,10 +11382,9 @@ then :
 else $as_nop
   OPENMP_ENABLED='no'
 fi
-if test "${OPENMP_ENABLED}" = 'yes'; then
-  if test "$ac_cv_prog_c_openmp" != 'unsupported'; then
+if test "${OPENMP_ENABLED}" == 'yes' && \
+   test "$ac_cv_prog_c_openmp" != 'unsupported'; then
     MAGICK_FEATURES="OpenMP $MAGICK_FEATURES"
-  fi
 fi
 
 # Enable support for OpenCL
@@ -23406,23 +23328,6 @@ else
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --disable-installed "
 fi
 
-# Permit enciphering and deciphering image pixels.
-# Check whether --enable-cipher was given.
-if test ${enable_cipher+y}
-then :
-  enableval=$enable_cipher; enable_cipher=$enableval
-else $as_nop
-  enable_cipher='yes'
-fi
-
-
-if test "$enable_cipher" = 'yes'; then
-
-printf "%s\n" "#define CIPHER_SUPPORT 1" >>confdefs.h
-
-    MAGICK_FEATURES="Cipher $MAGICK_FEATURES"
-fi
-
 # Build a zero-configuration version of ImageMagick.
 # Check whether --enable-zero-configuration was given.
 if test ${enable_zero_configuration+y}
@@ -27601,7 +27506,7 @@ printf "%s\n" "#define X11_CONFIGURE_PATH \"$X11ConfigurePath\"" >>confdefs.h
 # Find OpenMP library
 #
 GOMP_LIBS=''
-if test "${OPENMP_ENABLED}" = 'yes'; then
+if test "${OPENMP_ENABLED}" == 'yes'; then
   ac_fn_c_check_header_compile "$LINENO" "omp.h" "ac_cv_header_omp_h" "$ac_includes_default"
 if test "x$ac_cv_header_omp_h" = xyes
 then :
@@ -36982,6 +36887,23 @@ fi
 
 
 
+# Permit enciphering and deciphering image pixels.
+# Check whether --enable-cipher was given.
+if test ${enable_cipher+y}
+then :
+  enableval=$enable_cipher; enable_cipher=$enableval
+else $as_nop
+  enable_cipher='yes'
+fi
+
+
+if test "$enable_cipher" = 'yes'; then
+
+printf "%s\n" "#define CIPHER_SUPPORT 1" >>confdefs.h
+
+    MAGICK_FEATURES="Cipher $MAGICK_FEATURES"
+fi
+
 #
 # Check for extended channel masks.
 #
@@ -37090,7 +37012,6 @@ CHANNEL_MASK_DEPTH=$magick_channel_mask_depth
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 CFLAGS="$CFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
 CPPFLAGS="$CPPFLAGS -DMAGICKCORE_CHANNEL_MASK_DEPTH=$magick_channel_mask_depth"
-
 
 #
 # Handle case where user doesn't want frozen paths
@@ -38175,6 +38096,7 @@ CFLAGS=`echo $CFLAGS | sed -e 's/  */ /g'`
 CPPFLAGS=`echo $CPPFLAGS | sed -e 's/  */ /g'`
 CXXFLAGS=`echo $CXXFLAGS | sed -e 's/  */ /g'`
 LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
+LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 
 MAGICK_CFLAGS=$CFLAGS
 MAGICK_CXXFLAGS="$CXXFLAGS"
@@ -41217,7 +41139,7 @@ Static libraries    --enable-static=$enable_static			$libtool_build_static_libs
 Build utilities     --with-utilities=$with_utilities		$with_utilities
 Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
-OpenMP              --enable-openmp=$enable_openmp			$OPENMP_ENABLED
+OpenMP              --enable-openmp=$enable_openmp			${OPENMP_ENABLED}
 Security policy     --with-security-policy=$security_policy	        $security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
 Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
@@ -41321,7 +41243,7 @@ Static libraries    --enable-static=$enable_static			$libtool_build_static_libs
 Build utilities     --with-utilities=$with_utilities		$with_utilities
 Module support      --with-modules=$build_modules			$build_modules
 GNU ld              --with-gnu-ld=$with_gnu_ld			$lt_cv_prog_gnu_ld
-OpenMP              --enable-openmp=$enable_openmp			$OPENMP_ENABLED
+OpenMP              --enable-openmp=$enable_openmp			${OPENMP_ENABLED}
 Security policy     --with-security-policy=$security_policy	        $security_policy
 Quantum depth       --with-quantum-depth=$with_quantum_depth		$with_quantum_depth
 Channel mask depth  --enable-64bit-channel-masks=$enable_64bit_channel_masks	$magick_channel_mask_depth
