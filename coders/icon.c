@@ -169,12 +169,8 @@ static MagickBooleanType
 %
 */
 
-static Image *Read1XImage(const ImageInfo *image_info,Image *image,
-  ExceptionInfo *exception)
+static Image *Read1XImage(Image *image,ExceptionInfo *exception)
 {
-  MagickBooleanType
-    status;
-
   size_t
     columns,
     rows;
@@ -191,24 +187,27 @@ static Image *Read1XImage(const ImageInfo *image_info,Image *image,
   rows=(size_t) (ReadBlobLSBShort(image));
   (void) ReadBlobLSBShort(image);  /* width of bitmap in bytes */
   (void) ReadBlobLSBShort(image);  /* cursor color */
+  if ((rows != 32 && rows != 64) ||
+      (columns != 32 && columns != 64))
+    ThrowImageException(CorruptImageError,"ImproperImageHeader");
   /*
     Convert bitmap scanline.
   */
-  status=MagickTrue;
-  for (i=0; ; i++)
+  if (SetImageExtent(image,columns,rows,exception) == MagickFalse)
+    return((Image *) NULL);
+  image->alpha_trait=BlendPixelTrait;
+  if (AcquireImageColormap(image,3,exception) == MagickFalse)
+    return((Image *) NULL);
+  image->colormap[1].alpha=0;
+  for (i=0; i < 2; i++)
   {
-    status=SetImageExtent(image,columns,rows,exception);
-    if (status == MagickFalse)
-      break;
-    if (AcquireImageColormap(image,2,exception) == MagickFalse)
-      {
-        status=MagickFalse;
-        break;
-      }
     for (y=0; y < (ssize_t) image->columns; y++)
     {
       Quantum
         *q;
+
+      Quantum
+        index;
 
       size_t
         bit,
@@ -225,46 +224,22 @@ static Image *Read1XImage(const ImageInfo *image_info,Image *image,
         byte=(size_t) ReadBlobByte(image);
         for (bit=0; bit < 8; bit++)
         {
-          SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
-            0x00),q);
+          index=((byte & (0x80 >> bit)) != 0 ? (i == 0 ? 0x01 : 0x02) : 0x00);
+          if (i==0)
+            SetPixelIndex(image,index,q);
+          else if (GetPixelIndex(image,q) != 0x01)
+            SetPixelIndex(image,index,q);
           q+=GetPixelChannels(image);
         }
       }
-      if ((image->columns % 8) != 0)
-        {
-          byte=(size_t) ReadBlobByte(image);
-          for (bit=0; bit < (image->columns % 8); bit++)
-          {
-            SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
-              0x00),q);
-            q+=GetPixelChannels(image);
-          }
-        }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
-      if (image->previous == (Image *) NULL)
-        {
-          status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
-            (MagickSizeType) image->rows);
-          if (status == MagickFalse)
-            break;
-        }
     }
-    if (i > 0)
-      break;
-    AcquireNextImage(image_info,image,exception);
-    if (GetNextImageInList(image) == (Image *) NULL)
-      {
-        status=MagickFalse;
-        break;
-      }
-    image=SyncNextImageInList(image);
   }
+  (void) SyncImage(image,exception);
   if (CloseBlob(image) == MagickFalse)
-    status=MagickFalse;
-  if (status == MagickFalse)
-    return(DestroyImageList(image));
-  return(GetFirstImageInList(image));
+    return(DestroyImage(image));
+  return(image);
 }
 
 static Image *ReadICONImage(const ImageInfo *image_info,
@@ -324,7 +299,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   icon_file.reserved=(short) ReadBlobLSBShort(image);
   if ((icon_file.reserved == 0x0001) || (icon_file.reserved == 0x0101) ||
       (icon_file.reserved == 0x0201))
-    return(Read1XImage(image_info,image,exception));
+    return(Read1XImage(image,exception));
   icon_file.resource_type=(short) ReadBlobLSBShort(image);
   icon_file.count=(short) ReadBlobLSBShort(image);
   if ((icon_file.reserved != 0) ||
