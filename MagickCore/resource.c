@@ -73,6 +73,7 @@
 #define MagickPathTemplate "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  /* min 6 X's */
 #define NumberOfResourceTypes  \
   (sizeof(resource_semaphore)/sizeof(*resource_semaphore))
+#define TimeToLiveMax  INT_MAX
 
 /*
   Typedef declarations.
@@ -136,7 +137,7 @@ static ResourceInfo
     MagickULLConstant(768),            /* file limit */
     MagickULLConstant(1),              /* thread limit */
     MagickULLConstant(0),              /* throttle limit */
-    INT_MAX                            /* time limit */
+    TimeToLiveMax                      /* time limit */
   };
 
 static SemaphoreInfo
@@ -332,7 +333,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       if (((MagickSizeType) resource_info.time+(MagickSizeType) request) > (MagickSizeType) resource_info.time)
         {
           resource_info.time+=request;
-          if ((limit == MagickResourceInfinity) ||
+          if ((limit == TimeToLiveMax) ||
               (resource_info.time < (MagickOffsetType) limit))
             status=MagickTrue;
           else
@@ -971,7 +972,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
     (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,"B",
       MagickFormatExtent,disk_limit);
   (void) CopyMagickString(time_limit,"unlimited",MagickFormatExtent);
-  if (resource_info.time_limit != INT_MAX)
+  if (resource_info.time_limit != TimeToLiveMax)
     FormatTimeToLive(resource_info.time_limit,time_limit);
   (void) FormatLocaleFile(file,"Resource limits:\n");
   (void) FormatLocaleFile(file,"  Width: %s\n",width_limit);
@@ -1333,7 +1334,7 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
         limit,100.0));
       limit=DestroyString(limit);
     }
-  (void) SetMagickResourceLimit(TimeResource,INT_MAX);
+  (void) SetMagickResourceLimit(TimeResource,TimeToLiveMax);
   limit=GetEnvironmentValue("MAGICK_TIME_LIMIT");
   if (limit != (char *) NULL)
     {
