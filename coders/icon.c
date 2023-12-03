@@ -176,8 +176,7 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
     rows;
 
   ssize_t
-    i,
-    y;
+    i;
 
   /*
     Read Windows 1.0 Icon.
@@ -187,8 +186,7 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
   rows=(size_t) (ReadBlobLSBShort(image));
   (void) ReadBlobLSBShort(image);  /* width of bitmap in bytes */
   (void) ReadBlobLSBShort(image);  /* cursor color */
-  if ((rows != 32 && rows != 64) ||
-      (columns != 32 && columns != 64))
+  if ((rows != 32 && rows != 64) || (columns != 32 && columns != 64))
     ThrowImageException(CorruptImageError,"ImproperImageHeader");
   /*
     Convert bitmap scanline.
@@ -198,21 +196,17 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
   image->alpha_trait=BlendPixelTrait;
   if (AcquireImageColormap(image,3,exception) == MagickFalse)
     return((Image *) NULL);
-  image->colormap[1].alpha=0;
+  image->colormap[1].alpha=TransparentAlpha;
   for (i=0; i < 2; i++)
   {
+    ssize_t
+      y;
+
     for (y=0; y < (ssize_t) image->columns; y++)
     {
       Quantum
         *q;
 
-      Quantum
-        index;
-
-      size_t
-        bit,
-        byte;
- 
       ssize_t
         x;
 
@@ -221,14 +215,22 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) (image->columns-7); x+=8)
       {
+        size_t
+          bit,
+          byte;
+ 
         byte=(size_t) ReadBlobByte(image);
         for (bit=0; bit < 8; bit++)
         {
+          Quantum
+            index;
+
           index=((byte & (0x80 >> bit)) != 0 ? (i == 0 ? 0x01 : 0x02) : 0x00);
-          if (i==0)
+          if (i == 0)
             SetPixelIndex(image,index,q);
-          else if (GetPixelIndex(image,q) != 0x01)
-            SetPixelIndex(image,index,q);
+          else
+            if (GetPixelIndex(image,q) != 0x01)
+              SetPixelIndex(image,index,q);
           q+=GetPixelChannels(image);
         }
       }
