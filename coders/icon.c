@@ -240,7 +240,7 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
   }
   (void) SyncImage(image,exception);
   if (CloseBlob(image) == MagickFalse)
-    return(DestroyImage(image));
+    return(DestroyImageList(image));
   return(image);
 }
 
