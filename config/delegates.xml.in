@@ -121,4 +121,6 @@
   <delegate decode="xps:mono" stealth="True" command="&quot;@XPSDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@XPSMonoDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
   <delegate decode="video:decode" command="&quot;@VIDEODecodeDelegate@&quot; -nostdin -loglevel error -i &quot;%s&quot; -an -f rawvideo -y %s &quot;%s&quot;"/>
   <delegate encode="video:encode" stealth="True" command="&quot;@VIDEOEncodeDelegate@&quot; -nostdin -loglevel error -i &quot;%s%%d.%s&quot; %s &quot;%s.%s&quot;"/>
+  <delegate decode="vsd" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
+  <delegate decode="vsdx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
 </delegatemap>
