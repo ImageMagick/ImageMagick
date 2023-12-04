@@ -73,7 +73,7 @@
 #define MagickPathTemplate "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  /* min 6 X's */
 #define NumberOfResourceTypes  \
   (sizeof(resource_semaphore)/sizeof(*resource_semaphore))
-#define TimeToLiveMax  INT_MAX
+#define TimeToLiveMax  ((time_t) ((((time_t) 1U << (sizeof(time_t)*CHAR_BIT-2))-1)*2+1))
 
 /*
   Typedef declarations.
