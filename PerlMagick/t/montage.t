@@ -1,14 +1,4 @@
-#!/usr/bin/perl
-#  Copyright 1999 ImageMagick Studio LLC, a non-profit organization
-#  dedicated to making software imaging solutions freely available.
-#
-#  You may not use this file except in compliance with the License.  You may
-#  obtain a copy of the License at
-#
-#    https://imagemagick.org/script/license.php
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
+
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
@@ -133,7 +123,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
-  '40d6c29a9e85135eed35cf47b79cdfd8091f4a72459fbea0cc80f94bfff87d88',
+  '420aecbcab063e2735156a2b4d0b96e89d1b89dd84d3b2f217c9cf980f25939c',
   '51b8db221299cea2bea84b11247bfa4b41a0cc3a9af27ff4c20f9c23ee7f2117',
   '9899c23919efd2e3ac51a60cb62a780d114ecdab40478bed21c40a2b1c9832b9');
 
@@ -144,7 +134,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
   q/background=>'#696e7e',  tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
-  '9a23ef5366121cee8d101af2d6def5920b4984ce8e37f5e46db8fd5b18c47896',
+  'c10b9d30b4a3312df15f4a55c195992670dd22d59dbf2c4e3436ad730d647ed2',
   'e2fe0b56decf6fd791813e99d7b0f40646a479589e7519d97e2f92969dd17a1e',
   'e9882a3ad383424e5bf803ec1522c61cfdd0b6f503ac378a03d674e2ef957d32');
 
