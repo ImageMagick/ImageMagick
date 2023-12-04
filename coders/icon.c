@@ -192,10 +192,10 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
     Convert bitmap scanline.
   */
   if (SetImageExtent(image,columns,rows,exception) == MagickFalse)
-    return((Image *) NULL);
+    return(DestroyImage(image));
   image->alpha_trait=BlendPixelTrait;
   if (AcquireImageColormap(image,3,exception) == MagickFalse)
-    return((Image *) NULL);
+    return(DestroyImage(image));
   image->colormap[1].alpha=TransparentAlpha;
   for (i=0; i < 2; i++)
   {
