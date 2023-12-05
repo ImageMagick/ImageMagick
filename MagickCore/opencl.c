@@ -17,7 +17,7 @@
 %                                 March 2000                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2000 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1073,6 +1073,8 @@ static double RunOpenCLBenchmark(MagickBooleanType is_cpu)
   CloneString(&imageInfo->size,"2048x1536");
   CopyMagickString(imageInfo->filename,"xc:none",MagickPathExtent);
   inputImage=ReadImage(imageInfo,exception);
+  if (inputImage == (Image *) NULL)
+    return(0.0);
 
   InitAccelerateTimer(&timer);
 
