@@ -157,6 +157,12 @@ nmake install
 
 <p>Use <samp>nmake test</samp> under Windows. There are a few demonstration scripts available to exercise many of the functions PerlMagick can perform. Type</p>
 
+<p>Use the <samp>prove</samp> utility to execute a test from the build folder:</p>
+
+<pre class="bg-light text-dark mx-4"><samp>prove --blib blib -I `pwd` -bv ./t/read.t
+</samp></pre>
+
+
 <pre class="bg-light text-dark mx-4"><samp>cd demo
 make
 </samp></pre>
@@ -1746,6 +1752,12 @@ can use the integers 1 and 0.</p>
     <td>time-limit</td>
     <td><i>integer</i></td>
     <td>set time resource limit in seconds</td>
+  </tr>
+
+  <tr>
+    <td>title</td>
+    <td><i>string</i></td>
+    <td>set the image title</td>
   </tr>
 
   <tr>

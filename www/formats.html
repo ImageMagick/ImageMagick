@@ -178,7 +178,7 @@ the supported image formats.</p>
     <td>ARW</td>
     <td>R</td>
     <td>Sony Digital Camera Alpha Raw Image Format</td>
-    <td>Set <samp>-define dng:use-camera-wb=true</samp> to use the RAW-embedded color profile for Sony cameras.  You can also set these options: <samp>use-auto-wb</samp>, <samp>use-auto-bright</samp>, and <samp>output-color</samp>.</td>
+    <td>Set <samp>-define dng:use-camera-wb=true</samp> to use the RAW-embedded color profile for Sony cameras.  You can also set these options: <samp>use-auto-wb</samp>, <samp>no-auto-bright</samp>, and <samp>output-color</samp>.</td>
   </tr>
 
   <tr>
@@ -648,7 +648,7 @@ the supported image formats.</p>
     <td><a href="https://en.wikipedia.org/wiki/JPEG_XR">JXR</a></td>
     <td>RW</td>
     <td>JPEG extended range</td>
-    <td>Requires the <a href="https://jxrlib.codeplex.com/">jxrlib</a> delegate library. Put the JxrDecApp and JxrEncApp applications in your execution path. </td>
+    <td>Requires the <a href="https://jxrlib.codeplex.com/">jxrlib</a> delegate library. Put the JxrDecApp and JxrEncApp applications in your execution path.</p>
   </tr>
 
   <tr>
@@ -952,7 +952,7 @@ the supported image formats.</p>
     <td><a href="http://www.libpng.org/pub/png/">PNG</a></td>
     <td>RW</td>
     <td>Portable Network Graphics</td>
-    <td>Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. The PNG specification does not support pixels-per-inch units, only pixels-per-centimeter. To avoid reading a particular associated image profile, use <a href="command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).</td>
+    <td>Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. The PNG specification does not support pixels-per-inch units, only pixels-per-centimeter. To avoid reading a particular associated image profile, use <a href="command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).  Set the maximum chunk size with <a href="command-line-options.html#define">-define png:chunk-malloc-max=<i>value</i></a>.</td>
   </tr>
 
   <tr>
@@ -2179,4 +2179,4 @@ the supported image formats.</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 12th September 2023 23:57 -->
+<!-- Magick Cache 6th December 2023 11:37 -->
