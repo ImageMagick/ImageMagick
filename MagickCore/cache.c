@@ -1694,8 +1694,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
     cpu_throttle = MagickResourceInfinity,
     cycles = 0;
 
-  if (((double) image->ttl > 0) &&
-      (difftime(GetMagickTime(),image->timestamp) > (double) image->ttl))
+  if (IsImageTTLExpired(image) != MagickFalse)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"TimeLimitExceeded","`%s'",image->filename);

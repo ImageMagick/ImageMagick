@@ -96,6 +96,13 @@ extern MagickExport time_t
 extern MagickPrivate void
   SetMagickDatePrecision(const unsigned long);
 
+static inline MagickBooleanType IsImageTTLExpired(const Image* image)
+{
+  if (image->ttl == (time_t) 0)
+    return(MagickFalse);
+  return(image->ttl < GetMagickTime() ? MagickTrue : MagickFalse);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

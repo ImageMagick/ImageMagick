@@ -3931,7 +3931,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         case rGotoChk:
           assert (pel->EleNdx >= 0);
           i = pel->EleNdx-1; /* -1 because 'for' loop will increment. */
-          if (difftime(GetMagickTime(),img->timestamp) > (double) img->ttl) {
+          if (IsImageTTLExpired(img) != MagickFalse) {
             i = pfx->usedElements-1; /* Do no more opcodes. */
             (void) ThrowMagickException (pfx->exception, GetMagickModule(),
               ResourceLimitFatalError, "TimeLimitExceeded", "`%s'", img->filename);
