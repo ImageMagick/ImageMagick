@@ -474,7 +474,7 @@ CFLAGS="$OPENMP_CFLAGS $CFLAGS"
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS $OPENMP_CFLAGS"
 AC_SUBST([OPENMP_CFLAGS])
 AC_CHECK_DECL([_OPENMP],[OPENMP_ENABLED='yes'],[OPENMP_ENABLED='no'],[])
-if test "${OPENMP_ENABLED}" == 'yes' && \
+if test "${OPENMP_ENABLED}" = 'yes' && \
    test "$ac_cv_prog_c_openmp" != 'unsupported'; then
     MAGICK_FEATURES="OpenMP $MAGICK_FEATURES"
 fi
@@ -1266,7 +1266,7 @@ AC_DEFINE_UNQUOTED([X11_CONFIGURE_PATH],["$X11ConfigurePath"],[Location of X11 c
 # Find OpenMP library
 #
 GOMP_LIBS=''
-if test "${OPENMP_ENABLED}" == 'yes'; then
+if test "${OPENMP_ENABLED}" = 'yes'; then
   AC_CHECK_HEADER([omp.h], [], [AC_MSG_RESULT([OpenMP header file not found])])
   if test "${GCC}" = "yes"; then
     # Open64 (passes for GCC but uses different OpenMP implementation)
@@ -3533,7 +3533,7 @@ if test "$enable_64bit_channel_masks" = 'yes'; then
         ])
     fi
 fi
-if test "$magick_channel_mask_depth" == '64'; then
+if test "$magick_channel_mask_depth" = '64'; then
     MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
 else
     MAGICK_FEATURES="Channel-masks(32-bit) $MAGICK_FEATURES"
