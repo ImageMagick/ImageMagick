@@ -5187,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=23
 
 MAGICK_VERSION=7.1.1-23
 
-MAGICK_GIT_REVISION=51291ec84:20231204
+MAGICK_GIT_REVISION=5f59a784f:20231208
 
 
 # Substitute library versioning
@@ -5221,7 +5221,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,23
 
-PACKAGE_RELEASE_DATE=2023-12-04
+PACKAGE_RELEASE_DATE=2023-12-08
 
 
 # Ensure that make can run correctly
@@ -11382,7 +11382,7 @@ then :
 else $as_nop
   OPENMP_ENABLED='no'
 fi
-if test "${OPENMP_ENABLED}" == 'yes' && \
+if test "${OPENMP_ENABLED}" = 'yes' && \
    test "$ac_cv_prog_c_openmp" != 'unsupported'; then
     MAGICK_FEATURES="OpenMP $MAGICK_FEATURES"
 fi
@@ -27506,7 +27506,7 @@ printf "%s\n" "#define X11_CONFIGURE_PATH \"$X11ConfigurePath\"" >>confdefs.h
 # Find OpenMP library
 #
 GOMP_LIBS=''
-if test "${OPENMP_ENABLED}" == 'yes'; then
+if test "${OPENMP_ENABLED}" = 'yes'; then
   ac_fn_c_check_header_compile "$LINENO" "omp.h" "ac_cv_header_omp_h" "$ac_includes_default"
 if test "x$ac_cv_header_omp_h" = xyes
 then :
@@ -37000,7 +37000,7 @@ fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
     fi
 fi
-if test "$magick_channel_mask_depth" == '64'; then
+if test "$magick_channel_mask_depth" = '64'; then
     MAGICK_FEATURES="Channel-masks(64-bit) $MAGICK_FEATURES"
 else
     MAGICK_FEATURES="Channel-masks(32-bit) $MAGICK_FEATURES"
