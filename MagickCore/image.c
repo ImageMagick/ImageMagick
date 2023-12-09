@@ -3228,19 +3228,19 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
       {
         case ReadPixelMask:
         {
-          image->channels=(ChannelType) (image->channels &
+          image->channels=(ChannelType) ((unsigned int) image->channels &
             (unsigned int) ~ReadMaskChannel);
           break;
         }
         case WritePixelMask:
         {
-          image->channels=(ChannelType) (image->channels &
+          image->channels=(ChannelType) ((unsigned int) image->channels &
             (unsigned int) ~WriteMaskChannel);
           magick_fallthrough;
         }
         default:
         {
-          image->channels=(ChannelType) (image->channels &
+          image->channels=(ChannelType) ((unsigned int) image->channels &
             (unsigned int) ~CompositeMaskChannel);
           break;
         }
@@ -3388,19 +3388,19 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
       {
         case ReadPixelMask:
         {
-          image->channels=(ChannelType) (image->channels &
+          image->channels=(ChannelType) ((unsigned int) image->channels &
             (unsigned int) ~ReadMaskChannel);
           break;
         }
         case WritePixelMask:
         {
-          image->channels=(ChannelType) (image->channels &
+          image->channels=(ChannelType) ((unsigned int) image->channels &
             (unsigned int) ~WriteMaskChannel);
           break;
         }
         default:
         {
-          image->channels=(ChannelType) (image->channels &
+          image->channels=(ChannelType) ((unsigned int) image->channels &
             (unsigned int) ~CompositeMaskChannel);
           break;
         }

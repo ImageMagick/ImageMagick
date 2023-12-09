@@ -3354,16 +3354,16 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
-            GetMagickPrecision(),PerceptibleReciprocal(image->resolution.x)*
-              image->columns);
+            GetMagickPrecision(),(double) PerceptibleReciprocal(
+              image->resolution.x)*image->columns);
           break;
         }
       if (LocaleCompare("printsize.y",property) == 0)
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
-            GetMagickPrecision(),PerceptibleReciprocal(image->resolution.y)*
-              image->rows);
+            GetMagickPrecision(),(double) PerceptibleReciprocal(
+              image->resolution.y)*image->rows);
           break;
         }
       if (LocaleCompare("profiles",property) == 0)

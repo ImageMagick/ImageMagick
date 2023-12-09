@@ -156,7 +156,7 @@ MagickExport MagickBooleanType SetImageProgress(const Image *image,
   LockSemaphoreInfo(monitor_semaphore);
   status=image->progress_monitor(message,offset,extent,image->client_data);
   (void) FormatLocaleString(message,MagickPathExtent,"%g%%:%s:%s",
-    (100.0*offset*PerceptibleReciprocal(extent-1.0)),
+    (double) (100.0*offset*PerceptibleReciprocal(extent-1.0)),
     tag == (const char *) NULL ? "null" : tag,image->filename);
   (void) SetImageArtifact((Image *) image,"monitor:progress",message);
   UnlockSemaphoreInfo(monitor_semaphore);
