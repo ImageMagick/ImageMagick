@@ -214,7 +214,10 @@ MagickExport const char *GetMagickDelegates(void)
   "zip "
 #endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-  "zlib"
+  "zlib "
+#endif
+#if defined(MAGICKCORE_ZSTD_DELEGATE)
+  "zstd"
 #endif
   ;
 }
