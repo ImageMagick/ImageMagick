@@ -102,124 +102,124 @@ MagickExport const char *GetMagickDelegates(void)
 {
   return ""
 #if defined(MAGICKCORE_AUTOTRACE_DELEGATE)
-  "autotrace "
+  " autotrace"
 #endif
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
-  "bzlib "
+  " bzlib"
 #endif
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
-  "cairo "
+  " cairo"
 #endif
 #if defined(MAGICKCORE_DMR_DELEGATE)
-  "dmr "
+  " dmr"
 #endif
 #if defined(MAGICKCORE_DJVU_DELEGATE)
-  "djvu "
+  " djvu"
 #endif
 #if defined(MAGICKCORE_DPS_DELEGATE)
-  "dps "
+  " dps"
 #endif
 #if defined(MAGICKCORE_EMF_DELEGATE)
-  "emf "
+  " emf"
 #endif
 #if defined(MAGICKCORE_FFTW_DELEGATE)
-  "fftw "
+  " fftw"
 #endif
 #if defined(MAGICKCORE_FLIF_DELEGATE)
-  "flif "
+  " flif"
 #endif
 #if defined(MAGICKCORE_FONTCONFIG_DELEGATE)
-  "fontconfig "
+  " fontconfig"
 #endif
 #if defined(MAGICKCORE_FPX_DELEGATE)
-  "fpx "
+  " fpx"
 #endif
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
-  "freetype "
+  " freetype"
 #endif
 #if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
-  "gslib "
+  " gslib"
 #endif
 #if defined(MAGICKCORE_GVC_DELEGATE)
-  "gvc "
+  " gvc"
 #endif
 #if defined(MAGICKCORE_HEIC_DELEGATE)
-  "heic "
+  " heic"
 #endif
 #if defined(MAGICKCORE_JBIG_DELEGATE)
-  "jbig "
+  " jbig"
 #endif
 #if defined(MAGICKCORE_JPEG_DELEGATE) && defined(MAGICKCORE_PNG_DELEGATE)
-  "jng "
+  " jng"
 #endif
 #if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
-  "jp2 "
+  " jp2"
 #endif
 #if defined(MAGICKCORE_JPEG_DELEGATE)
-  "jpeg "
+  " jpeg"
 #endif
 #if defined(MAGICKCORE_JXL_DELEGATE)
-  "jxl "
+  " jxl"
 #endif
 #if defined(MAGICKCORE_LCMS_DELEGATE)
-  "lcms "
+  " lcms"
 #endif
 #if defined(MAGICKCORE_LQR_DELEGATE)
-  "lqr "
+  " lqr"
 #endif
 #if defined(MAGICKCORE_LTDL_DELEGATE)
-  "ltdl "
+  " ltdl"
 #endif
 #if defined(MAGICKCORE_LZMA_DELEGATE)
-  "lzma "
+  " lzma"
 #endif
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
-  "openexr "
+  " openexr"
 #endif
 #if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
-  "pangocairo "
+  " pangocairo"
 #endif
 #if defined(MAGICKCORE_PNG_DELEGATE)
-  "png "
+  " png"
 #endif
 #if defined(MAGICKCORE_DPS_DELEGATE) || defined(MAGICKCORE_GS_DELEGATE) || \
     defined(MAGICKCORE_WINDOWS_SUPPORT)
-  "ps "
+  " ps"
 #endif
 #if defined(MAGICKCORE_RAQM_DELEGATE)
-  "raqm "
+  " raqm"
 #endif
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
-  "raw "
+  " raw"
 #endif
 #if defined(MAGICKCORE_RSVG_DELEGATE)
-  "rsvg "
+  " rsvg"
 #endif
 #if defined(MAGICKCORE_TIFF_DELEGATE)
-  "tiff "
+  " tiff"
 #endif
 #if defined(MAGICKCORE_WEBP_DELEGATE)
-  "webp "
+  " webp"
 #endif
 #if defined(MAGICKCORE_WMF_DELEGATE) || defined (MAGICKCORE_WMFLITE_DELEGATE)
-  "wmf "
+  " wmf"
 #endif
 #if defined(MAGICKCORE_X11_DELEGATE)
-  "x "
+  " x"
 #endif
 #if defined(MAGICKCORE_XML_DELEGATE)
-  "xml "
+  " xml"
 #endif
 #if defined(MAGICKCORE_ZIP_DELEGATE)
-  "zip "
+  " zip"
 #endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-  "zlib "
+  " zlib"
 #endif
 #if defined(MAGICKCORE_ZSTD_DELEGATE)
-  "zstd"
+  " zstd"
 #endif
-  ;
+  +1;
 }
 
 /*
