@@ -2142,7 +2142,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         if ((double) p[i] > channel_statistics[CompositePixelChannel].maxima)
           channel_statistics[CompositePixelChannel].maxima=p[i];
         histogram[(ssize_t) GetPixelChannels(image)*ScaleQuantumToMap(
-          ClampToQuantum(QuantumScale*p[i]))+i]++;
+          ClampToQuantum(p[i]))+i]++;
         channel_statistics[CompositePixelChannel].sum+=QuantumScale*p[i];
         channel_statistics[CompositePixelChannel].sum_squared+=QuantumScale*
           p[i]*QuantumScale*p[i];
