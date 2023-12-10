@@ -100,7 +100,8 @@ MagickExport const char *GetMagickCopyright(void)
 */
 MagickExport const char *GetMagickDelegates(void)
 {
-  return ""
+  static const char
+    *delegates = ""
 #if defined(MAGICKCORE_AUTOTRACE_DELEGATE)
   " autotrace"
 #endif
@@ -219,7 +220,8 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_ZSTD_DELEGATE)
   " zstd"
 #endif
-  +1;
+  ;
+  return(delegates+1);
 }
 
 /*
