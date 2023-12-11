@@ -122,19 +122,12 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     status;
 
   Quantum
-    index;
-
-  ssize_t
-    x;
-
-  Quantum
+    index,
     *q;
-
-  unsigned char
-    *p;
 
   ssize_t
     length,
+    x,
     y;
 
   struct jbg_dec_state
@@ -143,7 +136,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   unsigned char
     bit,
     *buffer,
-    byte;
+    byte,
+    *p;
 
   /*
     Open image file.
@@ -165,6 +159,9 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   /*
     Initialize JBIG toolkit.
   */
+  if ((image->columns != (unsigned long) image->columns) ||
+      (image->rows != (unsigned long) image->rows))
+    ThrowReaderException(ImageError,"WidthOrHeightExceedsLimit");
   jbg_dec_init(&jbig_info);
   jbg_dec_maxsize(&jbig_info,(unsigned long) image->columns,(unsigned long)
     image->rows);
@@ -410,6 +407,9 @@ static void JBIGEncode(unsigned char *pixels,size_t length,void *data)
 static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
+  const Quantum
+    *p;
+
   double
     version;
 
@@ -422,20 +422,12 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
   MemoryInfo
     *pixel_info;
 
-  const Quantum
-    *p;
-
-  ssize_t
-    x;
-
-  unsigned char
-    *q;
-
   size_t
     number_images,
     number_packets;
 
   ssize_t
+    x,
     y;
 
   struct jbg_enc_state
@@ -444,7 +436,8 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
   unsigned char
     bit,
     byte,
-    *pixels;
+    *pixels,
+    *q;
 
   /*
     Open image file.
