@@ -909,9 +909,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     *jp2_stream;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     y;
 
   unsigned int
@@ -955,11 +953,11 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     }
   if (image_info->extract != (char *) NULL)
     {
-      RectangleInfo
-        geometry;
-
       int
         flags;
+
+      RectangleInfo
+        geometry;
 
       /*
         Set tile size.
@@ -1048,10 +1046,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   channels=3;
   jp2_colorspace=OPJ_CLRSPC_SRGB;
   if (image->colorspace == YUVColorspace)
-    {
-      jp2_colorspace=OPJ_CLRSPC_SYCC;
-      parameters->subsampling_dx=2;
-    }
+    jp2_colorspace=OPJ_CLRSPC_SYCC;
   else
     {
       if (IsGrayColorspace(image->colorspace) != MagickFalse)
