@@ -5187,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=24
 
 MAGICK_VERSION=7.1.1-24
 
-MAGICK_GIT_REVISION=9e5eb3a09:20231210
+MAGICK_GIT_REVISION=66a3868a4:20231213
 
 
 # Substitute library versioning
@@ -5221,7 +5221,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,24
 
-PACKAGE_RELEASE_DATE=2023-12-10
+PACKAGE_RELEASE_DATE=2023-12-13
 
 
 # Ensure that make can run correctly
@@ -34925,9 +34925,9 @@ GVCDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
 EditorDelegateDefault='xterm'
 ConvertDelegateDefault=`echo magick | sed ${configure_transform_name}`
-DisplayDelegateDefault=`echo magick display | sed ${configure_transform_name}`
+DisplayDelegateDefault=`echo magick | sed ${configure_transform_name}`
 Fig2devDelegateDefault='fig2dev'
-MogrifyDelegateDefault=`echo magick mogrify | sed ${configure_transform_name}`
+MogrifyDelegateDefault=`echo magick | sed ${configure_transform_name}`
 HPGLDecodeDelegateDefault='hp2xx'
 HTMLDecodeDelegateDefault='html2ps'
 ILBMDecodeDelegateDefault='ilbmtoppm'
