@@ -607,6 +607,8 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
                if (tag == 0) break;
         } while (!ddjvu_page_decoding_done(lc->page));
 
+        if (ddjvu_page_decoding_error(lc->page) != 0)
+          ThrowReaderException(CorruptImageError,"CorruptImage");
         ddjvu_document_get_pageinfo(lc->document, pagenum, &info);
 
         image->resolution.x = (float) info.dpi;
