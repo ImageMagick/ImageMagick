@@ -11208,20 +11208,22 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 #else
       text=(png_textp) png_malloc(ping,(png_size_t) sizeof(png_text));
 #endif
+      (void) memset(text,0,sizeof(png_text));
       text[0].key=(char *) property;
       text[0].text=(char *) value;
-      text[0].text_length=strlen(value);
+      text[0].text_length=0;
+      text[0].itxt_length=strlen(value);
       if (mng_info->exclude_tEXt != MagickFalse)
-        text[0].compression=PNG_TEXT_COMPRESSION_zTXt;
-      else if (mng_info->exclude_zTXt != MagickFalse)
-        text[0].compression=PNG_TEXT_COMPRESSION_NONE;
+        text[0].compression=PNG_ITXT_COMPRESSION_zTXt;
       else
-      {
-        text[0].compression=image_info->compression == NoCompression ||
-          (image_info->compression == UndefinedCompression &&
-          text[0].text_length < 128) ? PNG_TEXT_COMPRESSION_NONE :
-          PNG_TEXT_COMPRESSION_zTXt ;
-      }
+        if (mng_info->exclude_zTXt != MagickFalse)
+          text[0].compression=PNG_ITXT_COMPRESSION_NONE;
+        else
+          text[0].compression=
+            image_info->compression == NoCompression ||
+            (image_info->compression == UndefinedCompression &&
+            (text[0].text_length < 128)) ?  PNG_ITXT_COMPRESSION_NONE :
+            PNG_ITXT_COMPRESSION_zTXt;
       if (logging != MagickFalse)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
