@@ -1791,8 +1791,6 @@ static int PNGParseiTXt(Image *image,png_byte *data,png_size_t size,
   (void) FormatLocaleString(key,MagickPathExtent,"%s",(const char *)
     GetStringInfoDatum(profile));
   offset=(ssize_t) strlen(key)+1;
-  (void) FormatLocaleString(key,MagickPathExtent,"png:%s",(const char *)
-    GetStringInfoDatum(profile));
   if (((MagickOffsetType) size-offset) < 1)
     {
       profile=DestroyStringInfo(profile);
