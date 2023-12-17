@@ -11220,7 +11220,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
           text[0].compression=
             image_info->compression == NoCompression ||
             (image_info->compression == UndefinedCompression &&
-            (text[0].text_length < 128)) ?  PNG_ITXT_COMPRESSION_NONE :
+            (text[0].itxt_length < 128)) ?  PNG_ITXT_COMPRESSION_NONE :
             PNG_ITXT_COMPRESSION_zTXt;
       if (logging != MagickFalse)
         {
