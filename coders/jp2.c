@@ -1037,9 +1037,21 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       parameters->tcp_numlayers=i+1;
       parameters->cp_disto_alloc=OPJ_TRUE;
     }
-  if (image_info->sampling_factor != (const char *) NULL)
-    (void) sscanf(image_info->sampling_factor,"%d:%d",
-      &parameters->subsampling_dx,&parameters->subsampling_dy);
+  if (image_info->sampling_factor != (char *) NULL)
+    {
+      GeometryInfo
+        geometry_info;
+
+      MagickStatusType
+        flags;
+
+      flags=ParseGeometry(image_info->sampling_factor,&geometry_info);
+      if ((flags & RhoValue) != 0)
+        parameters->subsampling_dx=(int) geometry_info.rho;
+      parameters->subsampling_dy=parameters->subsampling_dx;
+      if ((flags & SigmaValue) != 0)
+        parameters->subsampling_dy=(int) geometry_info.sigma;
+    }   
   property=GetImageProperty(image,"comment",exception);
   if (property != (const char *) NULL)
     parameters->cp_comment=(char *) property;
