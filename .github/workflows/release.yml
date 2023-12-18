@@ -37,7 +37,7 @@ jobs:
         mv ChangeLog.md artifacts/ChangeLog.md
 
     - name: Upload ChangeLog.md
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ChangeLog
         path: artifacts
@@ -184,7 +184,7 @@ jobs:
         timestamp-digest: SHA256
         timeout: 600
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: installers
         path: 'ImageMagick-Windows\VisualMagick\installer\output'
@@ -220,7 +220,7 @@ jobs:
         cd ImageMagick-Windows
         7z a ImageMagick-Windows.7z .\source\*
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: ImageMagick-Windows
         path: 'ImageMagick-Windows\ImageMagick-Windows.7z'
@@ -339,7 +339,7 @@ jobs:
         $version = $version -Replace " ","-"
         echo "version=$version" >> $env:GITHUB_OUTPUT
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: 'ImageMagick-${{steps.package.outputs.version}}-portable-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}'
         path: portable
