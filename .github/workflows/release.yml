@@ -186,7 +186,7 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: 'ImageMagick-${{steps.package.outputs.version}}-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}'
+        name: 'ImageMagick-${{steps.package.outputs.version}}-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}-${{matrix.type}}'
         path: 'ImageMagick-Windows\VisualMagick\installer\output'
 
   release_windows_source:
