@@ -21,7 +21,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -73,7 +73,7 @@ jobs:
             hdri_flag: '-HDRI'
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
@@ -196,7 +196,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
@@ -251,7 +251,7 @@ jobs:
             hdri_flag: '-HDRI'
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: ImageMagick/ImageMagick-Windows
         path: ImageMagick-Windows
