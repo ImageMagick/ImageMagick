@@ -3174,12 +3174,15 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
   }
 
   for (i=0; i < pfx->usedElements; i++) {
+    ElementT
+      *pel;
+
     if (i < 0) {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
         "Bad run-time address", "%i", i);
     }
-    ElementT *pel = &pfx->Elements[i];
+    pel=&pfx->Elements[i];
     switch (pel->nArgs) {
         case 0:
           break;
