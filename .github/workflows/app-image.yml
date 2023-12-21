@@ -5,9 +5,13 @@ on:
   push:
     tags:
     - '*'
+    paths:
+    - '.github/workflows/app-image.yml'
   pull_request:
     branches:
     - main
+    paths:
+    - '.github/workflows/app-image.yml'
 
 permissions:
   contents: write
@@ -18,7 +22,7 @@ jobs:
     name: 'Create AppImage'
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:18.04
+      image: ubuntu:20.04
       options: --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined
 
     strategy:
@@ -109,6 +113,7 @@ jobs:
         path: artifacts
 
     - name: Publish release
+      if: contains(github.event.ref_type, 'tag')
       uses: softprops/action-gh-release@v1
       with:
         generate_release_notes: true
