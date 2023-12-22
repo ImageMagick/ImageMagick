@@ -2818,9 +2818,6 @@ static ChannelStatistics *CollectOneImgStats (FxInfo * pfx, Image * img)
     cs[ch].maxima *= QuantumScale;
     cs[ch].minima *= QuantumScale;
     cs[ch].standard_deviation *= QuantumScale;
-    cs[ch].kurtosis *= QuantumScale;
-    cs[ch].skewness *= QuantumScale;
-    cs[ch].entropy *= QuantumScale;
   }
 
   return cs;
