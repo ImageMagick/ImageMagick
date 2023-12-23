@@ -17,7 +17,7 @@
 %                                January 2014                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -718,11 +718,14 @@ static ssize_t PrintChannelStatistics(FILE *file,const PixelChannel channel,
     n;
 
   n=FormatLocaleFile(file,StatisticsFormat,name,GetMagickPrecision(),
+    channel_statistics[channel].minima == MagickMaximumValue ? 0.0 :
     (double) ClampToQuantum(scale*channel_statistics[channel].minima),
-    GetMagickPrecision(),(double) ClampToQuantum(scale*
-    channel_statistics[channel].maxima),GetMagickPrecision(),
-    scale*channel_statistics[channel].mean,GetMagickPrecision(),
-    scale*channel_statistics[channel].median,GetMagickPrecision(),
+    GetMagickPrecision(),
+    channel_statistics[channel].maxima == -MagickMaximumValue ? 0.0 :
+    (double) ClampToQuantum(scale*channel_statistics[channel].maxima),
+    GetMagickPrecision(),scale*channel_statistics[channel].mean,
+    GetMagickPrecision(),scale*channel_statistics[channel].median,
+    GetMagickPrecision(),
     IsNaN(channel_statistics[channel].standard_deviation) != 0 ? MagickEpsilon :
     scale*channel_statistics[channel].standard_deviation,GetMagickPrecision(),
     channel_statistics[channel].kurtosis,GetMagickPrecision(),
@@ -1730,7 +1733,9 @@ static MagickBooleanType WriteJSONImage(const ImageInfo *image_info,
       (void) WriteBlobString(image,"[");
     image->magick_columns=image->columns;
     image->magick_rows=image->rows;
-    (void) EncodeImageAttributes(image,file,exception);
+    status=EncodeImageAttributes(image,file,exception);
+    if (status == MagickFalse)
+      break;
     if (GetNextImageInList(image) == (Image *) NULL)
       {
         (void) WriteBlobString(image,"]");

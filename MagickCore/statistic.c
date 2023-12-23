@@ -2070,8 +2070,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,GetPixelChannels(image)*
-    sizeof(*histogram));
+  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,
+    MagickMax(GetPixelChannels(image),1)*sizeof(*histogram));
   channel_statistics=(ChannelStatistics *) AcquireQuantumMemory(
     MaxPixelChannels+1,sizeof(*channel_statistics));
   if ((channel_statistics == (ChannelStatistics *) NULL) ||
@@ -2082,6 +2082,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       if (channel_statistics != (ChannelStatistics *) NULL)
         channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
           channel_statistics);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(channel_statistics);
     }
   (void) memset(channel_statistics,0,(MaxPixelChannels+1)*
