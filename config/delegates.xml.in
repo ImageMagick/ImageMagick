@@ -63,7 +63,7 @@
   <delegate decode="png" encode="bpg" command="&quot;@BPGEncodeDelegate@&quot; -b 12 -q &quot;%~&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="blender" command="&quot;@BlenderDecodeDelegate@&quot; -b &quot;%i&quot; -F PNG -o &quot;%o&quot;&quot;\n&quot;@ConvertDelegate@&quot; convert -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
   <delegate decode="browse" stealth="True" spawn="True" command="&quot;@BrowseDelegate@&quot; https://imagemagick.org/; @RMDelegate@ &quot;%i&quot;"/>
-  <delegate decode="https:decode" command="&quot;@WWWDecodeDelegate@&quot; -s -k -L -o &quot;%u.dat&quot; &quot;https:%M&quot;"/>
+  <delegate decode="https:decode" command="&quot;@WWWDecodeDelegate@&quot; -s -L -o &quot;%u.dat&quot; &quot;https:%M&quot;"/>
   <delegate decode="doc" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="docx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="dng:decode" command="&quot;@DNGDecodeDelegate@&quot; --silent --create-id=also --out-type=png --out-depth=16 &quot;--output=%u.png&quot; &quot;%i&quot;"/>
