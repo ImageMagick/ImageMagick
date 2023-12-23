@@ -6413,6 +6413,7 @@ MagickExport MagickBooleanType SetPixelMetaChannels(Image *image,
   if (number_meta_channels >= (MaxPixelChannels-MetaPixelChannels))
     ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
       image->filename);
+  image->number_meta_channels=number_meta_channels;
   InitializePixelChannelMap(image);
   return(SyncImagePixelCache(image,exception));
 }
