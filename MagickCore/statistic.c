@@ -2259,11 +2259,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         count;
 
       count=area*histogram[(ssize_t) GetPixelChannels(image)*j+i];
-      channel_statistics[channel].entropy+=-count*MagickLog10(count)*
-        PerceptibleReciprocalLD(MagickLog10(number_bins));
-      channel_statistics[CompositePixelChannel].entropy+=-count*
+      channel_statistics[channel].entropy+=(double) (-count*MagickLog10(count)*
+        PerceptibleReciprocalLD(MagickLog10(number_bins)));
+      channel_statistics[CompositePixelChannel].entropy+=(double) (-count*
         MagickLog10(count)*PerceptibleReciprocalLD(MagickLog10(number_bins))/
-        GetPixelChannels(image);
+        GetPixelChannels(image));
     }
   }
   histogram=(double *) RelinquishMagickMemory(histogram);

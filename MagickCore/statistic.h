@@ -49,9 +49,7 @@ typedef struct _ChannelStatistics
 
   long double
     sumLD,
-    M1;
-
-  double
+    M1,
     M2,
     M3,
     M4;
