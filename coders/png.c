@@ -7931,10 +7931,13 @@ static void Magick_png_set_text(png_struct *ping,png_info *ping_info,
   size_t
     length;
 
+  /*
+    Check if the string contains non-Latin1 characters.
+  */
   c=key;
   while(*c != '\0')
   {
-      if (*c < 0 || *c > 127) {
+      if (((const unsigned char) *c) > 255) {
         write_itxt=MagickTrue;
         compresion_none=PNG_ITXT_COMPRESSION_NONE;
         compresion_zTXt=PNG_ITXT_COMPRESSION_zTXt;
@@ -7943,8 +7946,7 @@ static void Magick_png_set_text(png_struct *ping,png_info *ping_info,
       c++;
   }
 #if PNG_LIBPNG_VER >= 10400
-  text=(png_textp) png_malloc(ping,
-        (png_alloc_size_t) sizeof(png_text));
+  text=(png_textp) png_malloc(ping,(png_alloc_size_t) sizeof(png_text));
 #else
   text=(png_textp) png_malloc(ping,(png_size_t) sizeof(png_text));
 #endif
