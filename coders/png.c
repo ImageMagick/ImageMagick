@@ -7934,10 +7934,10 @@ static void Magick_png_set_text(png_struct *ping,png_info *ping_info,
   /*
     Check if the string contains non-Latin1 characters.
   */
-  c=key;
+  c=value;
   while(*c != '\0')
   {
-      if (((const unsigned char) *c) > 255) {
+      if (((const unsigned char) *c) > 127) {
         write_itxt=MagickTrue;
         compresion_none=PNG_ITXT_COMPRESSION_NONE;
         compresion_zTXt=PNG_ITXT_COMPRESSION_zTXt;
