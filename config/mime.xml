@@ -777,7 +777,9 @@
   <mime type="image/x-olympus-orf" description="Olympus Raw Format" data-type="string" offset="0" magic="IIRO\x08\x00\x00\x00" priority="50" />
   <mime type="image/x-olympus-orf" acronym="ORF" description="Olympus Raw Format" priority="100" pattern="*.orf" />
   <mime type="image/x-panasonic-raw" description="Panasonic raw image" data-type="string" offset="0" magic="IIU\x00\x08\x00\x00\x00" priority="50" />
-  <mime type="image/x-panasonic-raw" description="Panasonic raw image" priority="100" pattern="*.raw" />
+  <mime type="image/x-panasonic-raw" acronym="RAW" description="Panasonic raw image" priority="100" pattern="*.raw" />
+  <mime type="image/x-panasonic-rw2" description="Panasonic raw2 image" data-type="string" offset="0" magic="IIU\x00\x18\x00\x00\x00" priority="50" />
+  <mime type="image/x-panasonic-rw2" acronym="RW2" description="Panasonic raw2 image" priority="100" pattern="*.rw2" />
   <mime type="image/x-pentax-pef" acronym="PEF" description="Pentax Electronic Format" priority="100" pattern="*.pef" />
   <mime type="image/x-sigma-x3f" description="X3 Foveon" data-type="string" offset="0" magic="FOVb" priority="50" />
   <mime type="image/x-sigma-x3f" acronym="X3F" description="X3 Foveon" priority="100" pattern="*.x3f" />
