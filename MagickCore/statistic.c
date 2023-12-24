@@ -2172,7 +2172,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         {
           /* Calculate running totals for Welford's method.
           */
-          double delta, delta_n, delta_n2, term1;
+          long double delta, delta_n, delta_n2, term1;
           double n1 = cs->area-1;
           double n = cs->area;
 
@@ -2255,7 +2255,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     area=PerceptibleReciprocalLD(channel_statistics[channel].area);
     for (j=0; j <= (ssize_t) MaxMap; j++)
     {
-      double
+      long double
         count;
 
       count=area*histogram[(ssize_t) GetPixelChannels(image)*j+i];
