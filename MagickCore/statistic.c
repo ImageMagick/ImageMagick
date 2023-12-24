@@ -2341,6 +2341,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       PixelTrait traits = GetPixelChannelTraits(image,channel);
       if (traits == UndefinedPixelTrait)
         continue;
+      if ((traits & UpdatePixelTrait) == 0)
+        continue;
       cs=channel_statistics+i;
       if (csComp->maxima < cs->maxima)
         csComp->maxima = cs->maxima;
