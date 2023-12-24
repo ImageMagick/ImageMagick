@@ -763,6 +763,8 @@
   <mime type="image/x-adobe-dng" acronym="DNG" description="Digital Negative" priority="100" pattern="*.dng" />
   <mime type="image/x-canon-crw" description="Canon RaW" data-type="string" offset="0" magic="II\x1a\x00\x00\x00HEAPCCDR" priority="50" />
   <mime type="image/x-canon-crw" acronym="CRW" description="Canon RaW" priority="100" pattern="*.crw" />
+  <mime type="image/x-canon-cr2" description="Canon Raw 2" data-type="string" offset="0" magic="MM\x00\x2a\x00\x10\x00\x00RC\x02" priority="50" />
+  <mime type="image/x-canon-cr2" description="Canon Raw 2" data-type="string" offset="0" magic="II\x2a\x00\x10\x00\x00\x00CR\x02" priority="50" />
   <mime type="image/x-canon-cr2" acronym="CR2" description="Canon Raw 2" priority="100" pattern="*.cr2" />
   <mime type="image/x-canon-cr3" description="Canon Raw 3" data-type="string" offset="4" magic="ftypcrx " priority="50" />
   <mime type="image/x-canon-cr3" acronym="CR3" description="Canon Raw 3" priority="100" pattern="*.cr3" />
