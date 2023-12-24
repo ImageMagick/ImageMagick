@@ -336,7 +336,8 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
   raw_info->rawparams.max_raw_memory_mb=8192;
   option=GetImageOption(image_info,"dng:max-raw-memory");
   if (option != (const char *) NULL)
-    raw_info->rawparams.max_raw_memory_mb=StringToInteger(option);
+    raw_info->rawparams.max_raw_memory_mb=(unsigned int)
+      StringToInteger(option);
   raw_info->params.user_flip=0;
   raw_info->params.output_bps=16;
   raw_info->params.use_camera_wb=1;
