@@ -929,9 +929,6 @@ if test "$with_libstdc" != ''; then
 fi
 AC_SUBST([LIBSTDCLDFLAGS])
 
-# Does gcc required -traditional?
-AC_PROG_GCC_TRADITIONAL
-
 ########
 #
 # Set defines required to build DLLs and modules using MinGW
