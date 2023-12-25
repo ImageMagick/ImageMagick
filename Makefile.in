@@ -263,8 +263,7 @@ check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4)
 @MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@am__append_5 = MagickCore/threshold-map.h
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
-	$(top_srcdir)/m4/ax_c___attribute__.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_c___attribute__.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
 	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/ax_check_framework.m4 \
@@ -3638,7 +3637,6 @@ EXTRA_LTLIBRARIES =
 BUILT_SOURCES = 
 MOSTLYCLEANFILES = 
 M4_EXTRA_DIST = \
-  ac_func_fseeko.m4  \
   ax_append_flag.m4  \
   ax_c___attribute__.m4  \
   ax_cflags_warn_all.m4  \

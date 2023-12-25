@@ -5187,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=24
 
 MAGICK_VERSION=7.1.1-24
 
-MAGICK_GIT_REVISION=57ff82753:20231224
+MAGICK_GIT_REVISION=b2fb6f187:20231225
 
 
 # Substitute library versioning
@@ -5221,7 +5221,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,24
 
-PACKAGE_RELEASE_DATE=2023-12-24
+PACKAGE_RELEASE_DATE=2023-12-25
 
 
 # Ensure that make can run correctly
@@ -10644,7 +10644,7 @@ then :
 fi
 
 
-# The presence of a feature test macro requesting reentrant function
+# The presence of a feature test macro requesting re-entrant function
 # definitions is, on some systems, a strong hint that pthreads support is
 # correctly enabled
 
@@ -23781,53 +23781,6 @@ if test "$with_libstdc" != ''; then
     if test -d "$with_libstdc"; then
         LIBSTDCLDFLAGS="-L$with_libstdc"
     fi
-fi
-
-
-# Does gcc required -traditional?
-if test $ac_cv_c_compiler_gnu = yes; then
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether $CC needs -traditional" >&5
-printf %s "checking whether $CC needs -traditional... " >&6; }
-if test ${ac_cv_prog_gcc_traditional+y}
-then :
-  printf %s "(cached) " >&6
-else $as_nop
-    ac_pattern="Autoconf.*'x'"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <sgtty.h>
-Autoconf TIOCGETP
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "$ac_pattern" >/dev/null 2>&1
-then :
-  ac_cv_prog_gcc_traditional=yes
-else $as_nop
-  ac_cv_prog_gcc_traditional=no
-fi
-rm -rf conftest*
-
-
-  if test $ac_cv_prog_gcc_traditional = no; then
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <termio.h>
-Autoconf TCGETA
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "$ac_pattern" >/dev/null 2>&1
-then :
-  ac_cv_prog_gcc_traditional=yes
-fi
-rm -rf conftest*
-
-  fi
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_gcc_traditional" >&5
-printf "%s\n" "$ac_cv_prog_gcc_traditional" >&6; }
-  if test $ac_cv_prog_gcc_traditional = yes; then
-    CC="$CC -traditional"
-  fi
 fi
 
 
