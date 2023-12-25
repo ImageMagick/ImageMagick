@@ -28,13 +28,12 @@ m4_define([magick_major_version], [7])
 m4_define([magick_minor_version], [1])
 m4_define([magick_micro_version], [1])
 m4_define([magick_patchlevel_version], [24])
-m4_define([magick_is_beta], [n])
+m4_define([magick_is_beta], [y])
 m4_define([magick_bugreport],
           [https://github.com/ImageMagick/ImageMagick/issues])
 m4_define([magick_url], [https://imagemagick.org])
 m4_define([magick_lib_version], [0x711])
 m4_define([magick_tarname], [ImageMagick])
-
 
 #
 # If the library source code has changed at all since the last update,
