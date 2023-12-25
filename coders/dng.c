@@ -333,11 +333,13 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
   const char
     *option;
 
+#if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
   raw_info->rawparams.max_raw_memory_mb=8192;
   option=GetImageOption(image_info,"dng:max-raw-memory");
   if (option != (const char *) NULL)
     raw_info->rawparams.max_raw_memory_mb=(unsigned int)
       StringToInteger(option);
+#endif
   raw_info->params.user_flip=0;
   raw_info->params.output_bps=16;
   raw_info->params.use_camera_wb=1;
@@ -433,10 +435,11 @@ static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
           SetImageProperty(image,"dng:thumbnail.type","bitmap",exception);
           (void) FormatLocaleString(value,sizeof(value),"%hu",thumbnail->bits);
           SetImageProperty(image,"dng:thumbnail.bits",value,exception);
-          (void) FormatLocaleString(value,sizeof(value),"%hu",thumbnail->colors);
+          (void) FormatLocaleString(value,sizeof(value),"%hu",
+            thumbnail->colors);
           SetImageProperty(image,"dng:thumbnail.colors",value,exception);
-          (void) FormatLocaleString(value,sizeof(value),"%hux%hu",thumbnail->width,
-            thumbnail->height);
+          (void) FormatLocaleString(value,sizeof(value),"%hux%hu",
+            thumbnail->width,thumbnail->height);
           SetImageProperty(image,"dng:thumbnail.geometry",value,exception);
         }
       profile=BlobToStringInfo(thumbnail->data,thumbnail->data_size);
