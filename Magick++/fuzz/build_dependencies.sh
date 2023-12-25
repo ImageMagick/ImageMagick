@@ -7,6 +7,13 @@ make -j$(nproc) CFLAGS="$CFLAGS -fPIC"
 make install
 popd
 
+# build deflate
+pushd "$SRC/libdeflate"
+cmake .  -DCMAKE_INSTALL_PREFIX=$WORK -DLIBDEFLATE_BUILD_SHARED_LIB=off -DLIBDEFLATE_BUILD_GZIP=off
+make -j$(nproc)
+make install
+popd
+
 # Build xz
 pushd "$SRC/xz"
 ./autogen.sh --no-po4a --no-doxygen

@@ -13,6 +13,7 @@ RUN git clone --depth 1 https://github.com/strukturag/libheif
 RUN git clone --depth 1 https://github.com/uclouvain/openjpeg
 RUN git clone --depth 1 https://github.com/webmproject/libwebp
 RUN git clone --depth 1 https://github.com/madler/zlib
+RUN git clone --depth 1 https://github.com/ebiggers/libdeflate
 RUN git clone --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo
 RUN git clone --depth 1 https://github.com/xz-mirror/xz
 RUN git clone --depth 1 https://github.com/libraw/libraw
