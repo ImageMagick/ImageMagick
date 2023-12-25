@@ -15,7 +15,6 @@
 #  Makefile for building ImageMagick m4 macros.
 
 M4_EXTRA_DIST =  \
-  ac_func_fseeko.m4  \
   ax_append_flag.m4  \
   ax_c___attribute__.m4  \
   ax_cflags_warn_all.m4  \
