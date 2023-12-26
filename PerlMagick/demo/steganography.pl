@@ -15,7 +15,7 @@ $image=Image::Magick->new;
 $image->ReadImage('model.gif');
 $image->SteganoImage(image=>$watermark,offset=>91);
 $image->Write('model.pam');
-$image->Write('show:');
+$image->Write(magick=>'SHOW',title=>"Steganography Model");
 #
 # Extract image from image.
 #
@@ -23,4 +23,4 @@ $size="$width" . "x" . "$height" . "+91";
 $stegano=Image::Magick->new(size=>$size);
 $stegano->ReadImage('stegano:model.pam');
 $stegano->Write('stegano.pam');
-$image->Write(magick=>'SHOW',title=>"Steganography Demo");
+$stegano->Write(magick=>'SHOW',title=>"Hidden Image");
