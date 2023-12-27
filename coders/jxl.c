@@ -84,7 +84,7 @@ typedef struct MemoryManagerInfo
 */
 static MagickBooleanType
   WriteJXLImage(const ImageInfo *,Image *,ExceptionInfo *);
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -337,8 +337,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize JXL delegate library.
   */
-  memset(&basic_info,0,sizeof(basic_info));
-  memset(&pixel_format,0,sizeof(pixel_format));
+  (void) memset(&basic_info,0,sizeof(basic_info));
+  (void) memset(&pixel_format,0,sizeof(pixel_format));
   JXLSetMemoryManager(&memory_manager,&memory_manager_info,image,exception);
   jxl_info=JxlDecoderCreate(&memory_manager);
   if (jxl_info == (JxlDecoder *) NULL)
@@ -402,7 +402,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         remaining=JxlDecoderReleaseInput(jxl_info);
         if (remaining > 0)
-          memmove(pixels,pixels+input_size-remaining,remaining);
+          (void) memmove(pixels,pixels+input_size-remaining,remaining);
         count=ReadBlob(image,input_size-remaining,pixels+remaining);
         if (count <= 0)
           {
@@ -446,7 +446,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         StringInfo
           *profile;
 
-        memset(&color_encoding,0,sizeof(color_encoding));
+        (void) memset(&color_encoding,0,sizeof(color_encoding));
         JXLSetFormat(image,&pixel_format,exception);
 #if JPEGXL_NUMERIC_VERSION >= JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
         jxl_status=JxlDecoderGetColorAsEncodedProfile(jxl_info,
@@ -948,9 +948,9 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   /*
     Initialize JXL delegate library.
   */
-  memset(&basic_info,0,sizeof(basic_info));
-  memset(&frame_header,0,sizeof(frame_header));
-  memset(&pixel_format,0,sizeof(pixel_format));
+  (void) memset(&basic_info,0,sizeof(basic_info));
+  (void) memset(&frame_header,0,sizeof(frame_header));
+  (void) memset(&pixel_format,0,sizeof(pixel_format));
   JXLSetMemoryManager(&memory_manager,&memory_manager_info,image,exception);
   jxl_info=JxlEncoderCreate(&memory_manager);
   if (jxl_info == (JxlEncoder *) NULL)
