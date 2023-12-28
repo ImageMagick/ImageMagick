@@ -284,7 +284,7 @@ MagickExport ssize_t FormatMagickTime(const time_t time,const size_t length,
           limit=DestroyString(limit);
         }
     }
-  GetMagickUTCtime(&time,&utc_time);
+  GetMagickUTCTime(&time,&utc_time);
   count=FormatLocaleString(timestamp,length,
     "%04d-%02d-%02dT%02d:%02d:%02d%+03d:00",utc_time.tm_year+1900,
     utc_time.tm_mon+1,utc_time.tm_mday,utc_time.tm_hour,utc_time.tm_min,

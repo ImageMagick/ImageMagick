@@ -998,7 +998,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   offset+=WriteBlob(image,sizeof(cin.file.filename),(unsigned char *)
     cin.file.filename);
   seconds=GetMagickTime();
-  GetMagickUTCtime(&seconds,&utc_time);
+  GetMagickUTCTime(&seconds,&utc_time);
   (void) memset(timestamp,0,sizeof(timestamp));
   (void) strftime(timestamp,MagickPathExtent,"%Y:%m:%d:%H:%M:%SUTC",&utc_time);
   (void) memset(cin.file.create_date,0,sizeof(cin.file.create_date));

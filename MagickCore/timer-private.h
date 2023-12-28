@@ -24,7 +24,7 @@ extern "C" {
 
 #include "MagickCore/locale_.h"
 
-static inline void GetMagickUTCtime(const time_t *timep,struct tm *result)
+static inline void GetMagickUTCTime(const time_t *timep,struct tm *result)
 {
 #if defined(MAGICKCORE_HAVE_GMTIME_R)
   (void) gmtime_r(timep,result);
@@ -54,6 +54,16 @@ static inline void GetMagickLocaltime(const time_t *timep,struct tm *result)
       (void) memcpy(result,my_time,sizeof(*my_time));
   }
 #endif
+}
+
+extern MagickExport time_t
+  GetMagickTime(void);
+
+static inline MagickBooleanType IsImageTTLExpired(const Image* image)
+{
+  if (image->ttl == (time_t) 0)
+    return(MagickFalse);
+  return((image->timestamp+image->ttl) < GetMagickTime() ? MagickTrue : MagickFalse);
 }
 
 static inline time_t ParseMagickTimeToLive(const char *time_to_live)
@@ -90,18 +100,8 @@ static inline time_t ParseMagickTimeToLive(const char *time_to_live)
   return(ttl);
 }
 
-extern MagickExport time_t
-  GetMagickTime(void);
-
 extern MagickPrivate void
   SetMagickDatePrecision(const unsigned long);
-
-static inline MagickBooleanType IsImageTTLExpired(const Image* image)
-{
-  if (image->ttl == (time_t) 0)
-    return(MagickFalse);
-  return(image->ttl < GetMagickTime() ? MagickTrue : MagickFalse);
-}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -3226,7 +3226,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   WritePDFValue(image,"Subject",GetPDFSubject(image_info),is_pdfa);
   WritePDFValue(image,"Keywords",GetPDFKeywords(image_info),is_pdfa);
   seconds=GetPdfCreationDate(image_info,image);
-  GetMagickUTCtime(&seconds,&utc_time);
+  GetMagickUTCTime(&seconds,&utc_time);
   (void) FormatLocaleString(temp,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
     utc_time.tm_year+1900,utc_time.tm_mon+1,utc_time.tm_mday,
     utc_time.tm_hour,utc_time.tm_min,utc_time.tm_sec);
@@ -3234,7 +3234,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     temp);
   (void) WriteBlobString(image,buffer);
   seconds=GetPdfModDate(image_info,image);
-  GetMagickUTCtime(&seconds,&utc_time);
+  GetMagickUTCTime(&seconds,&utc_time);
   (void) FormatLocaleString(temp,MagickPathExtent,"D:%04d%02d%02d%02d%02d%02d",
     utc_time.tm_year+1900,utc_time.tm_mon+1,utc_time.tm_mday,
     utc_time.tm_hour,utc_time.tm_min,utc_time.tm_sec);

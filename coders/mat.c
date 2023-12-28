@@ -1633,7 +1633,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
   image->depth=8;
 
   current_time=GetMagickTime();
-  GetMagickUTCtime(&current_time,&utc_time);
+  GetMagickUTCTime(&current_time,&utc_time);
   (void) memset(MATLAB_HDR,' ',MagickMin(sizeof(MATLAB_HDR),124));
   FormatLocaleString(MATLAB_HDR,sizeof(MATLAB_HDR),
     "MATLAB 5.0 MAT-file, Platform: %s, Created on: %s %s %2d %2d:%2d:%2d %d",
