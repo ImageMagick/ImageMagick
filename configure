@@ -5187,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=25
 
 MAGICK_VERSION=7.1.1-25
 
-MAGICK_GIT_REVISION=3e8b0fa1c:20231225
+MAGICK_GIT_REVISION=e119d19f1:20231227
 
 
 # Substitute library versioning
@@ -5221,7 +5221,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,25
 
-PACKAGE_RELEASE_DATE=2023-12-25
+PACKAGE_RELEASE_DATE=2023-12-27
 
 
 # Ensure that make can run correctly
@@ -11905,7 +11905,8 @@ else $as_nop
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <unistd.h>
-          main () {
+          #include <stdlib.h>
+          int main () {
           exit(!(sizeof(off_t) == 8));
         }
 int
@@ -11932,6 +11933,9 @@ fi
 
         ;;
     *)
+        if test "$ac_cv_sys_file_offset_bits" = ''; then
+            ac_cv_sys_file_offset_bits=64;
+        fi
         LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
         ;;
     esac
