@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-./Magick++/fuzz/build_imagemagick.sh
+./oss-fuzz/build_imagemagick.sh
 
 cat <<EOT >> /ImageMagick/etc/ImageMagick-7/policy.xml
 <policymap>
