@@ -61,9 +61,10 @@ extern MagickExport time_t
 
 static inline MagickBooleanType IsImageTTLExpired(const Image* image)
 {
-  if (image->ttl == (time_t) 0)
-    return(MagickFalse);
-  return((image->timestamp+image->ttl) < GetMagickTime() ? MagickTrue : MagickFalse);
+  if ((image->ttl != (time_t) 0) &&
+      (image->timestamp+image->ttl) < GetMagickTime())
+    return(MagickTrue);
+  return(MagickFalse);
 }
 
 static inline time_t ParseMagickTimeToLive(const char *time_to_live)
