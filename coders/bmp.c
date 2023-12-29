@@ -2016,7 +2016,10 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
-    profile=GetImageProfile(image,"icc");
+    if (type <= 3)
+      profile=(StringInfo *) NULL;
+    else
+      profile=GetImageProfile(image,"icc");
     have_color_info=(image->rendering_intent != UndefinedIntent) ||
       (profile != (StringInfo *) NULL) || (image->gamma != 0.0) ?  MagickTrue :
       MagickFalse;
