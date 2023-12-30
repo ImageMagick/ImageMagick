@@ -618,8 +618,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   blob_info=image->blob;
   if ((blob_info == (BlobInfo *) NULL) || (blob_info->type == UndefinedStream))
     return(MagickTrue);
-  if (SyncBlob(image) != 0)
-    ThrowBlobException(blob_info);
+  (void) SyncBlob(image);
   status=blob_info->status;
   switch (blob_info->type)
   {
@@ -5518,6 +5517,8 @@ static int SyncBlob(const Image *image)
   assert(image->blob != (BlobInfo *) NULL);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (EOFBlob(image) != 0)
+    return(0);
   blob_info=image->blob;
   status=0;
   switch (blob_info->type)
