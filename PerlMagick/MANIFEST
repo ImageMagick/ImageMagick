@@ -6,7 +6,6 @@ demo/button.pl
 demo/compose-specials.pl
 demo/composite.pl
 demo/demo.pl
-demo/dst.png
 demo/Generic.ttf
 demo/lsys.pl
 demo/Makefile
@@ -20,7 +19,6 @@ demo/shadow-text.pl
 demo/shapes.pl
 demo/single-pixels.pl
 demo/smile.gif
-demo/src.png
 demo/steganography.pl
 demo/tile.gif
 demo/tree.pl
