@@ -27,9 +27,8 @@
 extern "C" {
 #endif
 
-#define magick_number_threads(source,destination,chunk,multithreaded) \
-  num_threads(GetMagickNumberThreads((source),(destination),(chunk), \
-    (multithreaded)))
+#define magick_number_threads(source,destination,chunk,factor) \
+  num_threads(GetMagickNumberThreads((source),(destination),(chunk),(factor)))
 #if defined(__clang__) || (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
 #define MagickCachePrefetch(address,mode,locality) \
   __builtin_prefetch(address,mode,locality)
@@ -49,8 +48,10 @@ extern "C" {
 #endif
 
 static inline int GetMagickNumberThreads(const Image *source,
-  const Image *destination,const size_t chunk,int multithreaded)
+  const Image *destination,const size_t chunk,int factor)
 {
+#define WorkLoadFactor  (32 << factor)
+
   const CacheType
     destination_type = (CacheType) GetImagePixelCacheType(destination),
     source_type = (CacheType) GetImagePixelCacheType(source);
@@ -61,14 +62,14 @@ static inline int GetMagickNumberThreads(const Image *source,
   /*
     Return number of threads dependent on cache type and work load.
   */
-  if (multithreaded == 0)
+  if (factor == 0)
     return(1);
   if (((source_type != MemoryCache) && (source_type != MapCache)) ||
       ((destination_type != MemoryCache) && (destination_type != MapCache)))
     number_threads=(int) MagickMin(GetMagickResourceLimit(ThreadResource),2);
   else
-    number_threads=(int) MagickMin((ssize_t)
-      GetMagickResourceLimit(ThreadResource),(ssize_t) (chunk)/64);
+    number_threads=(int) MagickMin((ssize_t) GetMagickResourceLimit(
+      ThreadResource),(ssize_t) (chunk)/WorkLoadFactor);
   return(MagickMax(number_threads,1));
 }
 
