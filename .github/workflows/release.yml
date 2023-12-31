@@ -184,9 +184,19 @@ jobs:
         timestamp-digest: SHA256
         timeout: 600
 
+    - name: Get version
+      id: version
+      shell: pwsh
+      run: |
+        $version = (cat "ImageMagick-Windows\VisualMagick\installer\inc\version.isx" | Select-String "MagickPackageFullVersionText") | Out-String
+        $version = ($version | Select-String '".*"' -AllMatches |  Select -Expand Matches | Select -Expand Value | Out-String)
+        $version = $version -Replace "`n|`r|""",""
+        $version = $version -Replace " ","-"
+        echo "version=$version" >> $env:GITHUB_OUTPUT
+
     - uses: actions/upload-artifact@v4
       with:
-        name: 'ImageMagick-${{steps.package.outputs.version}}-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.type}}-${{matrix.platform}}'
+        name: 'ImageMagick-${{steps.version.outputs.version}}-installer-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.type}}-${{matrix.platform}}'
         path: 'ImageMagick-Windows\VisualMagick\installer\output'
 
   release_windows_source:
