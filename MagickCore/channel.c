@@ -1261,6 +1261,49 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image->alpha_trait=image->background_color.alpha_trait;
       break;
     }
+    case RemoveOpaqueAlphaChannel:
+    {
+      MagickBooleanType
+        opaque = MagickTrue;
+
+      /*
+        Remove opaque alpha channel.
+      */
+      if ((image->alpha_trait & BlendPixelTrait) == 0)
+        break;
+      image_view=AcquireVirtualCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static) shared(opaque,status) \
+        magick_number_threads(image,image,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        const Quantum
+          *magick_restrict p;
+
+        ssize_t
+          x;
+
+        if ((status == MagickFalse) || (opaque == MagickFalse))
+          continue;
+        p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+        if (p == (const Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          if (GetPixelAlpha(image,p) != OpaqueAlpha)
+            opaque=MagickFalse;
+          p+=GetPixelChannels(image);
+        }
+      }
+      image_view=DestroyCacheView(image_view);
+      if (opaque != MagickFalse)
+        image->alpha_trait=UndefinedPixelTrait;
+      break;
+    }
     case SetAlphaChannel:
     {
       if ((image->alpha_trait & BlendPixelTrait) == 0)
