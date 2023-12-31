@@ -190,6 +190,7 @@ jobs:
       run: |
         $version = (cat "ImageMagick-Windows\VisualMagick\installer\inc\version.isx" | Select-String "MagickPackageFullVersionText") | Out-String
         $version = ($version | Select-String '".*"' -AllMatches |  Select -Expand Matches | Select -Expand Value | Out-String)
+        $version = $version.Trim()
         $version = $version -Replace "`n|`r|""",""
         $version = $version -Replace " ","-"
         echo "version=$version" >> $env:GITHUB_OUTPUT
@@ -345,6 +346,7 @@ jobs:
 
         $version = (cat "ImageMagick-Windows\VisualMagick\installer\inc\version.isx" | Select-String "MagickPackageFullVersionText") | Out-String
         $version = ($version | Select-String '".*"' -AllMatches |  Select -Expand Matches | Select -Expand Value | Out-String)
+        $version = $version.Trim()
         $version = $version -Replace "`n|`r|""",""
         $version = $version -Replace " ","-"
         echo "version=$version" >> $env:GITHUB_OUTPUT
