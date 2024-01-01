@@ -634,7 +634,7 @@ static MagickBooleanType BlendMaskAlphaChannel(Image *image,
   mask_view=AcquireVirtualCacheView(mask_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,image->rows,2)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -747,7 +747,7 @@ static Image *BlendMeanImage(Image *image,const Image *mask_image,
   mean_view=AcquireAuthenticCacheView(mean_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(mask_image,mean_image,mean_image->rows,1)
+    magick_number_threads(mask_image,mean_image,mean_image->rows,4)
 #endif
   for (y=0; y < (ssize_t) mean_image->rows; y++)
   {
@@ -1623,7 +1623,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(source_image,image,source_image->rows,1)
+        magick_number_threads(source_image,image,source_image->rows,4)
 #endif
       for (y=0; y < (ssize_t) source_image->rows; y++)
       {
@@ -1707,7 +1707,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(source_image,image,source_image->rows,1)
+        magick_number_threads(source_image,image,source_image->rows,4)
 #endif
       for (y=0; y < (ssize_t) source_image->rows; y++)
       {
@@ -3756,7 +3756,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(texture_image,image,image->rows,1)
+    magick_number_threads(texture_image,image,image->rows,2)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

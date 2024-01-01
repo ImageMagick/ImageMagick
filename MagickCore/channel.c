@@ -141,7 +141,7 @@ static MagickBooleanType ChannelImage(Image *destination_image,
   destination_view=AcquireAuthenticCacheView(destination_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(source_image,source_image,height,1)
+    magick_number_threads(source_image,source_image,height,4)
 #endif
   for (y=0; y < (ssize_t) height; y++)
   {
@@ -570,6 +570,10 @@ MagickExport Image *CombineImages(const Image *image,
   status=MagickTrue;
   progress=0;
   combine_view=AcquireAuthenticCacheView(combine_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    magick_number_threads(combine_image,combine_image,combine_image->rows,4)
+#endif
   for (y=0; y < (ssize_t) combine_image->rows; y++)
   {
     CacheView
@@ -578,13 +582,11 @@ MagickExport Image *CombineImages(const Image *image,
     const Image
       *next;
 
-    Quantum
-      *pixels;
-
     const Quantum
       *magick_restrict p;
 
     Quantum
+      *pixels,
       *magick_restrict q;
 
     ssize_t
@@ -763,7 +765,7 @@ MagickExport Image *SeparateImage(const Image *image,
   separate_view=AcquireAuthenticCacheView(separate_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,image->rows,2)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1014,7 +1016,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(image,image,image->rows,4)
+        magick_number_threads(image,image,image->rows,2)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1074,7 +1076,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(image,image,image->rows,4)
+        magick_number_threads(image,image,image->rows,2)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1134,7 +1136,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(image,image,image->rows,4)
+        magick_number_threads(image,image,image->rows,2)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1217,7 +1219,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(opaque,status) \
-        magick_number_threads(image,image,image->rows,4)
+        magick_number_threads(image,image,image->rows,2)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1275,7 +1277,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(image,image,image->rows,4)
+        magick_number_threads(image,image,image->rows,2)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1330,7 +1332,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(image,image,image->rows,4)
+        magick_number_threads(image,image,image->rows,2)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {

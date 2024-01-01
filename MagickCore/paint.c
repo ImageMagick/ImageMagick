@@ -153,7 +153,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     *segment_info;
 
   PixelInfo
-    fill_color,
     pixel;
 
   SegmentInfo
@@ -325,6 +324,10 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     } while (x <= x2);
   }
   status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(floodplane_image,image,image->rows,2)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const Quantum
@@ -352,6 +355,9 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     {
       if (GetPixelGray(floodplane_image,p) != 0)
         {
+          PixelInfo
+            fill_color;
+
           GetFillColor(draw_info,x,y,&fill_color,exception);
           if ((image->channel_mask & RedChannel) != 0)
             SetPixelRed(image,(Quantum) fill_color.red,q);

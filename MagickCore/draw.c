@@ -1247,7 +1247,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(source,image,(size_t) (stop-start),1)
+    magick_number_threads(source,image,(size_t) (stop-start),2)
 #endif
   for (y=start; y <= stop; y++)
   {

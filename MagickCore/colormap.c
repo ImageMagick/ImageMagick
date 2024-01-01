@@ -207,7 +207,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
-    magick_number_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,image->rows,2)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -345,25 +345,34 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
     pixels[(ssize_t) image->colormap[i].alpha]=(unsigned short) i;
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) \
+    magick_number_threads(image,image,image->rows,2)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     Quantum
-      index;
+      *magick_restrict q;
 
     ssize_t
       x;
 
-    Quantum
-      *magick_restrict q;
-
+    if (status == MagickFalse)
+      continue;
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
-        break;
+        continue;
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      Quantum
+        index;
+
+      ssize_t
+        i;
+
       i=ConstrainColormapIndex(image,GetPixelIndex(image,q),exception);
       index=(Quantum) pixels[i];
       SetPixelIndex(image,index,q);
@@ -372,8 +381,6 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
-    if (status == MagickFalse)
-      break;
   }
   image_view=DestroyCacheView(image_view);
   pixels=(unsigned short *) RelinquishMagickMemory(pixels);

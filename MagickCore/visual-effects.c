@@ -192,7 +192,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,noise_image,image->rows,key == ~0UL)
+    magick_number_threads(image,noise_image,image->rows,key == ~0UL ? 0 : 2)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -611,7 +611,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   image_view=AcquireAuthenticCacheView(colorize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(colorize_image,colorize_image,colorize_image->rows,1)
+    magick_number_threads(colorize_image,colorize_image,colorize_image->rows,2)
 #endif
   for (y=0; y < (ssize_t) colorize_image->rows; y++)
   {
@@ -1267,7 +1267,7 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
       morph_view=AcquireAuthenticCacheView(morph_images,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(morph_image,morph_image,morph_image->rows,1)
+        magick_number_threads(morph_image,morph_image,morph_image->rows,2)
 #endif
       for (y=0; y < (ssize_t) morph_images->rows; y++)
       {
@@ -2216,7 +2216,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(random_image,random_image,random_image->rows,key == ~0UL)
+    magick_number_threads(random_image,random_image,random_image->rows,key == ~0UL ? 0 : 2)
 #endif
   for (y=0; y < (ssize_t) random_image->rows; y++)
   {
@@ -2387,7 +2387,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,image->rows,2)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

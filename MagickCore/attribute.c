@@ -482,7 +482,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   GetPixelInfo(image,&zero);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,image->rows,2)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1568,13 +1568,7 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
     *image_view;
 
   ImageType
-    type;
-
-  const Quantum
-    *p;
-
-  ssize_t
-    x;
+    type = BilevelType;
 
   ssize_t
     y;
@@ -1587,13 +1581,27 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
     return(image->type);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     return(UndefinedType);
-  type=BilevelType;
   image_view=AcquireVirtualCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(type) \
+    magick_number_threads(image,image,image->rows,2)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    const Quantum
+      *p;
+
+    ssize_t
+      x;
+
+    if (type == UndefinedType)
+      continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        type=UndefinedType;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (IsPixelGray(image,p) == MagickFalse)
@@ -1605,8 +1613,6 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
         type=GrayscaleType;
       p+=GetPixelChannels(image);
     }
-    if (type == UndefinedType)
-      break;
   }
   image_view=DestroyCacheView(image_view);
   if ((type == GrayscaleType) && (image->alpha_trait != UndefinedPixelTrait))
@@ -1647,14 +1653,8 @@ MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
   CacheView
     *image_view;
 
-  MagickBooleanType
-    bilevel;
-
-  ssize_t
-    x;
-
-  const Quantum
-    *p;
+  ImageType
+    type = BilevelType;
 
   ssize_t
     y;
@@ -1667,27 +1667,39 @@ MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
     return(MagickTrue);
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     return(MagickFalse);
-  bilevel=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(type) \
+    magick_number_threads(image,image,image->rows,2)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    const Quantum
+      *p;
+
+    ssize_t
+      x;
+
+    if (type == UndefinedType)
+      continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        type=UndefinedType;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (IsPixelMonochrome(image,p) == MagickFalse)
         {
-          bilevel=MagickFalse;
+          type=UndefinedType;
           break;
         }
       p+=GetPixelChannels(image);
     }
-    if (bilevel == MagickFalse)
-      break;
   }
   image_view=DestroyCacheView(image_view);
-  return(bilevel);
+  return(type == BilevelType ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -1849,11 +1861,8 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
   CacheView
     *image_view;
 
-  const Quantum
-    *p;
-
-  ssize_t
-    x;
+  MagickBooleanType
+    opaque = MagickTrue;
 
   ssize_t
     y;
@@ -1868,22 +1877,38 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
   if ((image->alpha_trait & BlendPixelTrait) == 0)
     return(MagickTrue);
   image_view=AcquireVirtualCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(opaque) \
+    magick_number_threads(image,image,image->rows,2)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    const Quantum
+      *p;
+
+    ssize_t
+      x;
+
+    if (opaque == MagickFalse)
+      continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
-      break;
+      {
+        opaque=MagickFalse;
+        continue;
+      }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (GetPixelAlpha(image,p) != OpaqueAlpha)
-        break;
+        {
+          opaque=MagickFalse;
+          break;
+        }
       p+=GetPixelChannels(image);
     }
-    if (x < (ssize_t) image->columns)
-      break;
   }
   image_view=DestroyCacheView(image_view);
-  return(y < (ssize_t) image->rows ? MagickFalse : MagickTrue);
+  return(opaque);
 }
 
 /*
@@ -1989,7 +2014,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           range);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        magick_number_threads(image,image,image->rows,1)
+        magick_number_threads(image,image,image->rows,2)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -2047,7 +2072,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,image->rows,1)
+    magick_number_threads(image,image,image->rows,2)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

@@ -625,6 +625,12 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
        ((width-(size_t) j)/2L)+GetPixelChannels(image)*((width-(size_t) j)/2));
       for (i=0; i < (ssize_t) GetPixelChannels(sharp_image); i++)
       {
+        const double
+          *magick_restrict k;
+
+        const Quantum
+          *magick_restrict pixels;
+
         double
           alpha,
           gamma,
@@ -637,16 +643,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
           sharp_traits,
           traits;
 
-        const double
-          *magick_restrict k;
-
-        const Quantum
-          *magick_restrict pixels;
-
         ssize_t
-          u;
-
-        ssize_t
+          u,
           v;
 
         channel=GetPixelChannelChannel(image,i);
@@ -1236,7 +1234,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
   r=p+(y_offset*((ssize_t) columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
-    magick_number_threads(image,image,rows,1)
+    magick_number_threads(image,image,rows,2)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -1273,7 +1271,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
   s=q-(y_offset*((ssize_t) columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
-    magick_number_threads(image,image,rows,1)
+    magick_number_threads(image,image,rows,2)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
