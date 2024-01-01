@@ -1238,7 +1238,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           if (GetPixelAlpha(image,p) != OpaqueAlpha)
-            opaque=MagickFalse;
+            {
+              opaque=MagickFalse;
+              break;
+            }
           p+=GetPixelChannels(image);
         }
       }
