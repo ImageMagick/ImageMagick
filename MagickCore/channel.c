@@ -1261,7 +1261,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image->alpha_trait=image->background_color.alpha_trait;
       break;
     }
-    case RemoveOpaqueAlphaChannel:
+    case DeactivateIfOpaqueAlphaChannel:
     {
       MagickBooleanType
         opaque = MagickTrue;

@@ -42,7 +42,7 @@ typedef enum
   SetAlphaChannel,
   ShapeAlphaChannel,
   TransparentAlphaChannel,
-  RemoveOpaqueAlphaChannel
+  DeactivateIfOpaqueAlphaChannel
 } AlphaChannelOption;
 
 extern MagickExport Image
