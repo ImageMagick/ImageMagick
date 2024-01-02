@@ -1212,10 +1212,9 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
     memory;
 
   ssize_t
-    i;
-
-  ssize_t
     files,
+    i,
+    number_threads,
     pages,
     pagesize;
 
@@ -1316,7 +1315,10 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
         100.0));
       limit=DestroyString(limit);
     }
-  (void) SetMagickResourceLimit(ThreadResource,GetOpenMPMaximumThreads());
+  number_threads=(ssize_t) GetOpenMPMaximumThreads();
+  if (number_threads > 1)
+    number_threads--;  /* reserve core for OS */
+  (void) SetMagickResourceLimit(ThreadResource,(size_t) number_threads);
   limit=GetEnvironmentValue("MAGICK_THREAD_LIMIT");
   if (limit != (char *) NULL)
     {

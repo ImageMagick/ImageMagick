@@ -50,7 +50,7 @@ extern "C" {
 static inline int GetMagickNumberThreads(const Image *source,
   const Image *destination,const size_t chunk,int factor)
 {
-#define WorkLoadFactor  (32 << factor)
+#define WorkLoadFactor  (64UL << factor)
 
   const CacheType
     destination_type = (CacheType) GetImagePixelCacheType(destination),
@@ -62,15 +62,12 @@ static inline int GetMagickNumberThreads(const Image *source,
   /*
     Return number of threads dependent on cache type and work load.
   */
-  if (factor == 0)
-    return(1);
+  number_threads=MagickMax(MagickMin(chunk/WorkLoadFactor,
+    GetMagickResourceLimit(ThreadResource)),1);
   if (((source_type != MemoryCache) && (source_type != MapCache)) ||
       ((destination_type != MemoryCache) && (destination_type != MapCache)))
-    number_threads=(int) MagickMin(GetMagickResourceLimit(ThreadResource),2);
-  else
-    number_threads=(int) MagickMin((ssize_t) GetMagickResourceLimit(
-      ThreadResource),(ssize_t) (chunk)/WorkLoadFactor);
-  return(MagickMax(number_threads,1));
+    number_threads=MagickMin(number_threads,2);
+  return(number_threads);
 }
 
 static inline MagickThreadType GetMagickThreadId(void)
@@ -161,7 +158,7 @@ static inline void SetOpenMPNested(const int value)
   omp_set_nested(value);
 #else
 static inline void SetOpenMPNested(const int magick_unused(value))
-{  
+{
   magick_unreferenced(value);
 #endif
 }
