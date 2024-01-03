@@ -62,7 +62,7 @@ static inline int GetMagickNumberThreads(const Image *source,
   /*
     Return number of threads dependent on cache type and work load.
   */
-  number_threads=MagickMax(MagickMin(chunk/WorkLoadFactor,
+  number_threads=(int) MagickMax(MagickMin(chunk/WorkLoadFactor,
     GetMagickResourceLimit(ThreadResource)),1);
   if (((source_type != MemoryCache) && (source_type != MapCache)) ||
       ((destination_type != MemoryCache) && (destination_type != MapCache)))
