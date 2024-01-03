@@ -48,7 +48,7 @@ extern "C" {
 #endif
 
 static inline int GetMagickNumberThreads(const Image *source,
-  const Image *destination,const size_t chunk,int factor)
+  const Image *destination,const size_t chunk,const int factor)
 {
 #define WorkLoadFactor  (64UL << factor)
 
