@@ -1523,7 +1523,7 @@ static MagickBooleanType ReadPSDChannel(Image *image,
   return(status);
 }
 
-static MagickBooleanType GetPixelChannelFromPsdIndex(const PSDInfo *psd_info,
+static MagickBooleanType GetPixelChannelFromPSDIndex(const PSDInfo *psd_info,
   ssize_t index,PixelChannel *channel)
 {
   *channel=RedPixelChannel;
@@ -1569,7 +1569,7 @@ static MagickBooleanType GetPixelChannelFromPsdIndex(const PSDInfo *psd_info,
   return(MagickTrue);
 }
 
-static void SetPsdMetaChannels(Image *image,const PSDInfo *psd_info,
+static void SetPSDMetaChannels(Image *image,const PSDInfo *psd_info,
   const unsigned short channels,ExceptionInfo *exception)
 {
   ssize_t
@@ -1621,7 +1621,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
   (void) SetImageProperty(layer_info->image,"label",(char *) layer_info->name,
     exception);
 
-  SetPsdMetaChannels(layer_info->image,psd_info,layer_info->channels,exception);
+  SetPSDMetaChannels(layer_info->image,psd_info,layer_info->channels,exception);
   status=MagickTrue;
   for (j=0; j < (ssize_t) layer_info->channels; j++)
   {
@@ -1670,7 +1670,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
   return(status);
 }
 
-static MagickBooleanType IsEmptyLayer(LayerInfo *layer_info)
+static MagickBooleanType IsEmptyPSDLayer(LayerInfo *layer_info)
 {
   if ((layer_info->page.width == 0) || (layer_info->page.height == 0))
     return(MagickTrue);
@@ -1689,7 +1689,7 @@ static MagickBooleanType CheckPSDChannels(const Image *image,
   ssize_t
     i;
 
-  if (IsEmptyLayer(layer_info) != MagickFalse)
+  if (IsEmptyPSDLayer(layer_info) != MagickFalse)
     return(MagickTrue);
   if (layer_info->channels < psd_info->min_channels)
     return(MagickFalse);
@@ -2015,7 +2015,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
         layer_info[i].page.width,(double) layer_info[i].channels);
     for (j=0; j < (ssize_t) layer_info[i].channels; j++)
     {
-      layer_info[i].channel_info[j].supported=GetPixelChannelFromPsdIndex(
+      layer_info[i].channel_info[j].supported=GetPixelChannelFromPSDIndex(
         psd_info,(ssize_t) ReadBlobSignedShort(image),
         &layer_info[i].channel_info[j].channel);
       layer_info[i].channel_info[j].size=(size_t) GetPSDSize(psd_info,
@@ -2176,7 +2176,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
 
   for (i=0; i < number_layers; i++)
   {
-    if (IsEmptyLayer(&layer_info[i]) != MagickFalse)
+    if (IsEmptyPSDLayer(&layer_info[i]) != MagickFalse)
       {
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2312,14 +2312,14 @@ static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
           image->filename);
     }
 
-  SetPsdMetaChannels(image,psd_info,psd_info->channels,exception);
+  SetPSDMetaChannels(image,psd_info,psd_info->channels,exception);
   status=MagickTrue;
   for (i=0; i < (ssize_t) psd_info->channels; i++)
   {
     PixelChannel
       channel;
 
-    status=GetPixelChannelFromPsdIndex(psd_info,i,&channel);
+    status=GetPixelChannelFromPSDIndex(psd_info,i,&channel);
     if (status == MagickFalse)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
