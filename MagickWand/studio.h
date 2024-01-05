@@ -97,10 +97,6 @@ extern "C" {
 #if defined(MAGICKWAND_WINDOWS_SUPPORT) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #endif
-
-#if defined(MAGICKWAND_WINDOWS_SUPPORT) && defined(_DEBUG)
-#define _CRTDBG_MAP_ALLOC
-#endif
 #if defined(MAGICKWAND_WINDOWS_SUPPORT)
 # include <io.h>
 #if !defined(__CYGWIN__)
