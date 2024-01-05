@@ -163,6 +163,19 @@ static inline uint32_t ReadWebPLSBWord(
   return(value);
 }
 
+static inline void WriteWebPLSBWord(unsigned char *magick_restrict data,
+  const size_t value)
+{
+  unsigned char
+    *p;
+
+  p=data;
+  *(p++)=(unsigned char) value;
+  *(p++)=(unsigned char) (value >> 8);
+  *(p++)=(unsigned char) (value >> 16);
+  *(p++)=(unsigned char) (value >> 24);
+}
+
 static MagickBooleanType IsWEBPImageLossless(const unsigned char *stream,
   const size_t length)
 {
@@ -514,6 +527,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
     status;
 
   size_t
+    blob_size,
     length;
 
   ssize_t
@@ -559,8 +573,14 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   length=(size_t) (ReadWebPLSBWord(header+4)+8);
   if (length < 12)
     ThrowWEBPException(CorruptImageError,"CorruptImage");
-  if ((MagickSizeType) length > GetBlobSize(image))
-    ThrowWEBPException(CorruptImageError,"InsufficientImageDataInFile");
+  blob_size=(size_t) GetBlobSize(image);
+  if (length > blob_size)
+    {
+      if (length-blob_size != 12)
+        ThrowWEBPException(CorruptImageError,"InsufficientImageDataInFile");
+      length-=12;
+      WriteWebPLSBWord(header+4,length-8);
+    }
   stream=(unsigned char *) AcquireQuantumMemory(length,sizeof(*stream));
   if (stream == (unsigned char *) NULL)
     ThrowWEBPException(ResourceLimitError,"MemoryAllocationFailed");
