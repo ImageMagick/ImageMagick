@@ -1670,6 +1670,13 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
   return(status);
 }
 
+static MagickBooleanType IsEmptyLayer(LayerInfo *layer_info)
+{
+  if ((layer_info->page.width == 0) || (layer_info->page.height == 0))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static MagickBooleanType CheckPSDChannels(const Image *image,
   const PSDInfo *psd_info,LayerInfo *layer_info)
 {
@@ -1682,6 +1689,8 @@ static MagickBooleanType CheckPSDChannels(const Image *image,
   ssize_t
     i;
 
+  if (IsEmptyLayer(layer_info) != MagickFalse)
+    return(MagickTrue);
   if (layer_info->channels < psd_info->min_channels)
     return(MagickFalse);
   channel_type=RedChannel;
@@ -2167,7 +2176,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
 
   for (i=0; i < number_layers; i++)
   {
-    if ((layer_info[i].page.width == 0) || (layer_info[i].page.height == 0))
+    if (IsEmptyLayer(&layer_info[i]) != MagickFalse)
       {
         if (image->debug != MagickFalse)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
