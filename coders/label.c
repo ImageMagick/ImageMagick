@@ -221,14 +221,14 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
                 draw_info->stroke_width+0.5);
               if ((image->columns != 0) && (image->rows != 0))
                 {
-                  if ((width >= image->columns) && (height >= image->rows))
+                  if ((width > image->columns) && (height > image->rows))
                     break;
-                  if ((width < image->columns) && (height < image->rows))
+                  if ((width <= image->columns) && (height <= image->rows))
                     low=draw_info->pointsize;
                 }
               else
-                if (((image->columns != 0) && (width >= image->columns)) ||
-                    ((image->rows != 0) && (height >= image->rows)))
+                if (((image->columns != 0) && (width > image->columns)) ||
+                    ((image->rows != 0) && (height > image->rows)))
                   break;
             }
             if (status == MagickFalse)
@@ -269,11 +269,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
               high=draw_info->pointsize-0.5;
         }
         if (status != MagickFalse)
-          {
-            draw_info->pointsize=floor((low+high)/2.0-0.5);
-            status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-            AdjustTypeMetricBounds(&metrics);
-          }
+          draw_info->pointsize=floor((low+high)/2.0+0.5);
       }
    label=DestroyString(label);
    if (status == MagickFalse)
@@ -282,6 +278,11 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
        image=DestroyImageList(image);
        return((Image *) NULL);
      }
+  /*
+    Draw label.
+  */
+  status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
+  AdjustTypeMetricBounds(&metrics);
   if (image->columns == 0)
     image->columns=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
   if (image->columns == 0)
