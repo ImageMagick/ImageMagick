@@ -435,21 +435,27 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
   rsvg_handle_set_base_uri(svg_handle,image_info->filename);
   if ((fabs(image->resolution.x) > MagickEpsilon) &&
       (fabs(image->resolution.y) > MagickEpsilon))
-    rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
-      image->resolution.y);
+    rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,image->resolution.y);
   while ((n=ReadBlob(image,MagickMaxBufferExtent-1,buffer)) != 0)
   {
     buffer[n]='\0';
     error=(GError *) NULL;
     (void) rsvg_handle_write(svg_handle,buffer,(gsize) n,&error);
     if (error != (GError *) NULL)
-      g_error_free(error);
+      {
+        g_error_free(error);
+        break;
+      }
   }
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   error=(GError *) NULL;
   rsvg_handle_close(svg_handle,&error);
   if (error != (GError *) NULL)
-    g_error_free(error);
+    {
+      g_error_free(error);
+      g_object_unref(svg_handle);
+      ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+    }
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
   apply_density=MagickTrue;
   rsvg_handle_get_dimensions(svg_handle,&dimension_info);
@@ -556,8 +562,7 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
             cairo_surface_destroy(cairo_surface);
           pixel_info=RelinquishVirtualMemory(pixel_info);
           g_object_unref(svg_handle);
-          ThrowReaderException(ResourceLimitError,
-            "MemoryAllocationFailed");
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
       cairo_image=cairo_create(cairo_surface);
       cairo_set_operator(cairo_image,CAIRO_OPERATOR_CLEAR);
