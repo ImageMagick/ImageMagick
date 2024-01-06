@@ -284,14 +284,14 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
               draw_info->interline_spacing+draw_info->stroke_width+0.5);
             if ((image->columns != 0) && (image->rows != 0))
               {
-                if ((width > image->columns) || (height > image->rows))
+                if ((width >= image->columns) && (height >= image->rows))
                   break;
-                if ((width <= image->columns) && (height <= image->rows))
+                if ((width < image->columns) && (height < image->rows))
                   low=draw_info->pointsize;
               }
             else
-              if (((image->columns != 0) && (width > image->columns)) ||
-                  ((image->rows != 0) && (height > image->rows)))
+              if (((image->columns != 0) && (width >= image->columns)) ||
+                  ((image->rows != 0) && (height >= image->rows)))
                 break;
           }
           high=draw_info->pointsize;
@@ -317,14 +317,14 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           draw_info->interline_spacing+draw_info->stroke_width+0.5);
         if ((image->columns != 0) && (image->rows != 0))
           {
-            if ((width <= image->columns) && (height <= image->rows))
+            if ((width < image->columns) && (height < image->rows))
               low=draw_info->pointsize+0.5;
             else
               high=draw_info->pointsize-0.5;
           }
         else
-          if (((image->columns != 0) && (width <= image->columns)) ||
-              ((image->rows != 0) && (height <= image->rows)))
+          if (((image->columns != 0) && (width < image->columns)) ||
+              ((image->rows != 0) && (height < image->rows)))
             low=draw_info->pointsize+0.5;
           else
             high=draw_info->pointsize-0.5;
