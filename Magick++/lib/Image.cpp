@@ -2192,7 +2192,7 @@ void Magick::Image::channel(const ChannelType channel_)
     *newImage;
 
   GetPPException;
-  newImage=SeparateImage(image(),channel_,exceptionInfo);
+  newImage=SeparateImage(constImage(),channel_,exceptionInfo);
   replaceImage(newImage);
   ThrowImageException;
 }
