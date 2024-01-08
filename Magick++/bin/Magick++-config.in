@@ -7,7 +7,9 @@
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-export PKG_CONFIG_LIBDIR="${exec_prefix}/lib/pkgconfig"
+libdir=@libdir@
+pkgconfigdir=@pkgconfigdir@
+export PKG_CONFIG_LIBDIR="${pkgconfigdir}"
 
 usage='Usage: Magick++-config [--cppflags] [--cxxflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]
 
