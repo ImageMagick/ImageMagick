@@ -634,7 +634,7 @@ typedef struct {
   PixelChannel ChannelQual;
   ImgAttrE ImgAttrQual;
   char * pExpStart;
-  int lenExp;
+  size_t lenExp;
 } ElementT;
 
 typedef enum {
@@ -1717,7 +1717,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
 
   char * pExpStart;
 
-  int lenExp = 0;
+  size_t lenExp = 0;
 
   int FndArgs = 0;
   int ndx0 = NULL_ADDRESS, ndx1 = NULL_ADDRESS, ndx2 = NULL_ADDRESS, ndx3 = NULL_ADDRESS;
@@ -1780,6 +1780,13 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
     if (TranslateStatementList (pfx, strLimit, &chLimit)) {
       FndOne = 1;
     } else {
+      if (!*pfx->pex) {
+        (void) ThrowMagickException (
+          pfx->exception, GetMagickModule(), OptionError,
+          "For function", "'%s' expected ')' at '%s'",
+          funStr, SetShortExp(pfx));
+        return MagickFalse;
+      }
       /* Maybe don't break because other expressions may be not empty. */
       if (!chLimit) break;
       if (fe == fP || fe == fS|| fe == fIf) {
@@ -1858,7 +1865,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
         break;
     }
     if (chLimit == expChLimit) {
-      lenExp = pfx->pex - pExpStart - 1;
+      lenExp = (size_t) (pfx->pex - pExpStart - 1);
       break;
     }
   } /* end while args of a function */
@@ -2175,7 +2182,7 @@ static MagickBooleanType GetOperand (
           double Pow = 0.0;
           const char Prefixes[] = "yzafpnum.kMGTPEZY";
           const char * pSi = strchr (Prefixes, *tailptr);
-          if (pSi && *pSi != '.') Pow = (pSi - Prefixes) * 3 - 24;
+          if (pSi && *pSi != '.') Pow = (double) ((pSi - Prefixes) * 3 - 24);
           else if (*tailptr == 'c') Pow = -2;
           else if (*tailptr == 'h') Pow =  2;
           else if (*tailptr == 'k') Pow =  3;
