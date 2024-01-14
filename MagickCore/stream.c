@@ -911,6 +911,13 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
         "ImageDoesNotContainTheStreamGeometry","`%s'",image->filename);
       return((Quantum *) NULL);
     }
+  if ((image->number_channels >= MaxPixelChannels) ||
+      (image->number_meta_channels >= (MaxPixelChannels-MetaPixelChannels)))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
+        "MaximumChannelsExceeded","`%s'",image->filename);
+      return((Quantum *) NULL);
+    }
   stream_handler=GetBlobStreamHandler(image);
   if (stream_handler == (StreamHandler) NULL)
     {
@@ -1048,6 +1055,10 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
   image=ReadImage(read_info,exception);
   if (image != (Image *) NULL)
     {
+      if ((image->number_channels >= MaxPixelChannels) ||
+          (image->number_meta_channels >= (MaxPixelChannels-MetaPixelChannels)))
+        ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
+          image->filename);
       InitializePixelChannelMap(image);
       ResetPixelCacheChannels(image);
     }
