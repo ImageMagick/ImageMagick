@@ -1057,8 +1057,11 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
     {
       if ((image->number_channels >= MaxPixelChannels) ||
           (image->number_meta_channels >= (MaxPixelChannels-MetaPixelChannels)))
-        ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
-          image->filename);
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            CorruptImageError,"MaximumChannelsExceeded","`%s'",image->filename);
+          return((Image *) NULL);
+        }
       InitializePixelChannelMap(image);
       ResetPixelCacheChannels(image);
     }
