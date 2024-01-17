@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+extern MagickPrivate MagickBooleanType
+  ResetPixelChannelMap(Image *,ExceptionInfo *);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

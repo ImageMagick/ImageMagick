@@ -61,6 +61,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/random_.h"
@@ -3693,10 +3694,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       ((MagickSizeType) image->rows > cache_info->height_limit))
     ThrowBinaryException(ImageError,"WidthOrHeightExceedsLimit",
       image->filename);
-  if ((image->number_channels >= MaxPixelChannels) ||
-      (image->number_meta_channels >= (MaxPixelChannels-MetaPixelChannels)))
-    ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
-      image->filename);
   if (GetMagickResourceLimit(ListLengthResource) != MagickResourceInfinity)
     {
       length=GetImageListLength(image);
@@ -3714,7 +3711,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->channels=image->channels;
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
-  InitializePixelChannelMap(image);
+  status=ResetPixelChannelMap(image,exception);
+  if (status == MagickFalse)
+    return(MagickFalse);
   cache_info->number_channels=GetPixelChannels(image);
   (void) memcpy(cache_info->channel_map,image->channel_map,MaxPixelChannels*
     sizeof(*image->channel_map));

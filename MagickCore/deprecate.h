@@ -38,6 +38,9 @@ extern MagickExport void
   *ImageToHBITMAP(Image *,ExceptionInfo *);
 #endif
 
+extern MagickExport void 
+  InitializePixelChannelMap(Image *) magick_attribute((deprecated));
+
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

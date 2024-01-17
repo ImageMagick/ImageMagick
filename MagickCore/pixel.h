@@ -267,8 +267,7 @@ extern MagickExport MagickRealType
 
 extern MagickExport void
   ConformPixelInfo(Image *,const PixelInfo *,PixelInfo *,ExceptionInfo *),
-  GetPixelInfo(const Image *,PixelInfo *),
-  InitializePixelChannelMap(Image *);
+  GetPixelInfo(const Image *,PixelInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

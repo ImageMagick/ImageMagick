@@ -55,6 +55,7 @@
 #include "MagickCore/memory-private.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
@@ -911,13 +912,6 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
         "ImageDoesNotContainTheStreamGeometry","`%s'",image->filename);
       return((Quantum *) NULL);
     }
-  if ((image->number_channels >= MaxPixelChannels) ||
-      (image->number_meta_channels >= (MaxPixelChannels-MetaPixelChannels)))
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
-        "MaximumChannelsExceeded","`%s'",image->filename);
-      return((Quantum *) NULL);
-    }
   stream_handler=GetBlobStreamHandler(image);
   if (stream_handler == (StreamHandler) NULL)
     {
@@ -939,7 +933,9 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
       cache_info->columns=image->columns;
       cache_info->rows=image->rows;
       cache_info->number_channels=image->number_channels;
-      InitializePixelChannelMap(image);
+      status=ResetPixelChannelMap(image,exception);
+      if (status == MagickFalse)
+        return((Quantum *) NULL);
       ResetPixelCacheChannels(image);
       image->cache=cache_info;
     }
@@ -1053,19 +1049,14 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
   SetPixelCacheMethods(read_info->cache,&cache_methods);
   read_info->stream=stream;
   image=ReadImage(read_info,exception);
+  read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)
     {
-      if ((image->number_channels >= MaxPixelChannels) ||
-          (image->number_meta_channels >= (MaxPixelChannels-MetaPixelChannels)))
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            CorruptImageError,"MaximumChannelsExceeded","`%s'",image->filename);
-          return((Image *) NULL);
-        }
-      InitializePixelChannelMap(image);
+      MagickBooleanType status = ResetPixelChannelMap(image,exception);
+      if (status == MagickFalse)
+        return(DestroyImage(image));
       ResetPixelCacheChannels(image);
     }
-  read_info=DestroyImageInfo(read_info);
   return(image);
 }
 
