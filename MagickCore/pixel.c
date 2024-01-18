@@ -6191,7 +6191,8 @@ MagickPrivate MagickBooleanType ResetPixelChannelMap(Image *image,
       }
     }
   image->number_channels=(size_t) n;
-  return(SetPixelChannelMask(image,image->channel_mask));
+  (void) SetPixelChannelMask(image,image->channel_mask);
+  return(MagickTrue);
 }
 
 /*
