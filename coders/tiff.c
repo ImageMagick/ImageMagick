@@ -1938,7 +1938,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
           switch (i)
           {
-            case 0: break;
+            case 0: quantum_type=RedQuantum; break;
             case 1: quantum_type=GreenQuantum; break;
             case 2: quantum_type=BlueQuantum; break;
             case 3:
@@ -2040,7 +2040,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
           switch (i)
           {
-            case 0: break;
+            case 0: quantum_type=RedQuantum; break;
             case 1: quantum_type=GreenQuantum; break;
             case 2: quantum_type=BlueQuantum; break;
             case 3:
