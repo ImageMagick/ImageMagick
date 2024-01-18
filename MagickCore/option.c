@@ -305,7 +305,6 @@ static const OptionInfo
     { "60", MetaPixelChannelBit(50), UndefinedOptionFlag, MagickFalse },
     { "61", MetaPixelChannelBit(51), UndefinedOptionFlag, MagickFalse },
     { "62", MetaPixelChannelBit(52), UndefinedOptionFlag, MagickFalse },
-    { "63", MetaPixelChannelBit(53), UndefinedOptionFlag, MagickFalse },
 #endif
     { (char *) NULL, UndefinedChannel, UndefinedOptionFlag, MagickFalse }
   },
