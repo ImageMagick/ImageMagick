@@ -6138,10 +6138,6 @@ MagickPrivate MagickBooleanType ResetPixelChannelMap(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
-  if ((image->number_channels >= MaxPixelChannels) ||
-      (image->number_meta_channels >= (MaxPixelChannels-MetaPixelChannels)))
-    ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
-      image->filename);
   (void) memset(image->channel_map,0,MaxPixelChannels*
     sizeof(*image->channel_map));
   trait=UpdatePixelTrait;
@@ -6182,6 +6178,13 @@ MagickPrivate MagickBooleanType ResetPixelChannelMap(Image *image,
       ssize_t
         i;
 
+      if (image->number_meta_channels >= (MaxPixelChannels-MetaPixelChannels))
+        {
+          image->number_channels=(size_t) n;
+          (void) SetPixelChannelMask(image,image->channel_mask);
+          ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
+            image->filename);
+        }
       meta_channel=MetaPixelChannels;
       for (i=0; i < (ssize_t) image->number_meta_channels; i++)
       {
