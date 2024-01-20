@@ -1840,11 +1840,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           }
-      }
-    if (image->number_meta_channels != 0)
-      {
-        quantum_type=MultispectralQuantum;
-        (void) SetQuantumPad(image,quantum_info,0);
+        if (image->number_meta_channels != 0)
+          {
+            quantum_type=MultispectralQuantum;
+            (void) SetQuantumPad(image,quantum_info,0);
+          }
       }
     switch (method)
     {
@@ -1938,7 +1938,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
           switch (i)
           {
-            case 0: quantum_type=RedQuantum; break;
+            case 0: break;
             case 1: quantum_type=GreenQuantum; break;
             case 2: quantum_type=BlueQuantum; break;
             case 3:
@@ -2040,7 +2040,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
           switch (i)
           {
-            case 0: quantum_type=RedQuantum; break;
+            case 0: break;
             case 1: quantum_type=GreenQuantum; break;
             case 2: quantum_type=BlueQuantum; break;
             case 3:
