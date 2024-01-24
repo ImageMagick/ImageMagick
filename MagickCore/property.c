@@ -859,14 +859,15 @@ static void GetEXIFProperty(const Image *image,const char *property,
  \
    for ( ; component < components; component++) \
    { \
-     extent=(size_t) ((ssize_t) extent+FormatLocaleString(buffer+extent, \
-       MagickPathExtent-extent,format", ",(arg1),(arg2),(arg3),(arg4),(arg5), \
-       (arg6))); \
+     if (component != 0) \
+       extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
+         extent,", "); \
+     extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
+       extent,format,(arg1),(arg2),(arg3),(arg4),(arg5),(arg6)); \
      if (extent >= (MagickPathExtent-1)) \
        extent=MagickPathExtent-1; \
    } \
-   if (extent > 1) \
-     buffer[extent-2]='\0'; \
+   buffer[extent]='\0'; \
    value=AcquireString(buffer); \
 }
 
@@ -880,13 +881,15 @@ static void GetEXIFProperty(const Image *image,const char *property,
  \
    for ( ; component < components; component++) \
    { \
-     extent=(size_t) ((ssize_t) extent-FormatLocaleString(buffer+extent, \
-       MagickPathExtent-extent,format", ",arg)); \
+     if (component != 0) \
+       extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
+         extent,", "); \
+     extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
+       extent,format,arg); \
      if (extent >= (MagickPathExtent-1)) \
        extent=MagickPathExtent-1; \
    } \
-   if (extent > 1) \
-     buffer[extent-2]='\0'; \
+   buffer[extent]='\0'; \
    value=AcquireString(buffer); \
 }
 
@@ -900,13 +903,15 @@ static void GetEXIFProperty(const Image *image,const char *property,
  \
    for ( ; component < components; component++) \
    { \
-     extent=(size_t) ((ssize_t) extent+FormatLocaleString(buffer+extent, \
-       MagickPathExtent-extent,format", ",(arg1),(arg2))); \
+     if (component != 0) \
+       extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent-\
+         extent,", "); \
+     extent+=(size_t) FormatLocaleString(buffer+extent,MagickPathExtent- \
+       extent,format,(arg1),(arg2)); \
      if (extent >= (MagickPathExtent-1)) \
        extent=MagickPathExtent-1; \
    } \
-   if (extent > 1) \
-     buffer[extent-2]='\0'; \
+   buffer[extent]='\0'; \
    value=AcquireString(buffer); \
 }
 
