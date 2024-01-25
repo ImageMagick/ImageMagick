@@ -239,7 +239,12 @@ const Magick::Color& Magick::Color::operator=(const std::string &color_)
       setPixelType(target_color);
     }
   else
-    _isValid = false;
+    {
+      _isValid = false;
+      _pixelOwn = false;
+      delete _pixel;
+      _pixel = nullptr;
+    }
   ThrowPPException(false);
 
   return(*this);
