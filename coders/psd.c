@@ -1618,6 +1618,9 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
   (void) FormatLocaleString(message,MagickPathExtent,"%.20g",(double)
     layer_info->opacity);
   (void) SetImageArtifact(layer_info->image,"psd:layer.opacity",message);
+  (void) FormatLocaleString(message,MagickPathExtent,"%.20g",(double)
+    layer_info->visible);
+  (void) SetImageArtifact(layer_info->image,"psd:layer.visible",message);
   (void) SetImageProperty(layer_info->image,"label",(char *) layer_info->name,
     exception);
 
