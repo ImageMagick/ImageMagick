@@ -1417,7 +1417,7 @@ static MagickBooleanType ReadMipmaps(const ImageInfo *image_info,Image *image,
     status;
 
   /*
-    Only skip mipmaps for textures and cube maps
+    Only read mipmaps for textures and cube maps
   */
   if (EOFBlob(image) != MagickFalse)
     {
