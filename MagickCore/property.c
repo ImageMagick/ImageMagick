@@ -1484,7 +1484,7 @@ static void GetEXIFProperty(const Image *image,const char *property,
       if ((all != 0) || (tag == (size_t) tag_value))
         {
           char
-            buffer[MagickPathExtent],
+            buffer[6*sizeof(double)+MagickPathExtent],
             *value;
 
           if ((p < exif) || (p > (exif+length-tag_bytes[format])))
