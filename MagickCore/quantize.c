@@ -2413,11 +2413,11 @@ static KmeansInfo **AcquireKmeansTLS(const size_t number_colors)
   KmeansInfo
     **kmeans_info;
 
-  ssize_t
-    i;
-
   size_t
     number_threads;
+
+  ssize_t
+    i;
 
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   kmeans_info=(KmeansInfo **) AcquireQuantumMemory(number_threads,
@@ -2855,9 +2855,8 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   const DitherMethod dither_method,ExceptionInfo *exception)
 {
 #define PosterizeImageTag  "Posterize/Image"
-#define PosterizePixel(pixel) ClampToQuantum((MagickRealType) QuantumRange*( \
-  MagickRound(QuantumScale*(double) pixel*(levels-1)))/ \
-  MagickMax((ssize_t) levels-1,1))
+#define PosterizePixel(pixel) ClampToQuantum(((MagickRealType) \
+  QuantumScale*(pixel)*levels)*((MagickRealType) QuantumRange/levels))
 
   CacheView
     *image_view;
@@ -2872,9 +2871,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
     *quantize_info;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     y;
 
   assert(image != (Image *) NULL);
@@ -2967,9 +2964,8 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   image_view=DestroyCacheView(image_view);
   quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
   quantize_info->number_colors=(size_t) MagickMin(levels*levels*levels,
-    MaxColormapSize+1);
+    MaxColormapSize);
   quantize_info->dither_method=dither_method;
-  quantize_info->tree_depth=MaxTreeDepth;
   status=QuantizeImage(quantize_info,image,exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
   return(status);
