@@ -2851,12 +2851,18 @@ static inline double MagickRound(double x)
   return(ceil(x));
 }
 
+static inline Quantum PosterizePixel(const Quantum pixel,const size_t levels)
+{
+  ssize_t
+    alpha = (ssize_t) ((QuantumRange+1)/levels);
+
+  return(ClampToQuantum((MagickRealType) (alpha*(pixel/alpha))));
+}
+
 MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   const DitherMethod dither_method,ExceptionInfo *exception)
 {
 #define PosterizeImageTag  "Posterize/Image"
-#define PosterizePixel(pixel) ClampToQuantum((MagickRealType) (QuantumScale* \
-  (pixel)*(levels-1))*(QuantumRange*PerceptibleReciprocal((double) levels-1)))
 
   CacheView
     *image_view;
@@ -2880,6 +2886,8 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (levels == 0)
+    return(MagickTrue);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static) shared(progress,status) \
@@ -2892,16 +2900,16 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
       */
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].red=(double)
-          PosterizePixel(image->colormap[i].red);
+          PosterizePixel(image->colormap[i].red,levels);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].green=(double)
-          PosterizePixel(image->colormap[i].green);
+          PosterizePixel(image->colormap[i].green,levels);
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].blue=(double)
-          PosterizePixel(image->colormap[i].blue);
+          PosterizePixel(image->colormap[i].blue,levels);
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].alpha=(double)
-          PosterizePixel(image->colormap[i].alpha);
+          PosterizePixel(image->colormap[i].alpha,levels);
     }
   /*
     Posterize image.
@@ -2932,17 +2940,17 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,PosterizePixel(GetPixelRed(image,q)),q);
+        SetPixelRed(image,PosterizePixel(GetPixelRed(image,q),levels),q);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,PosterizePixel(GetPixelGreen(image,q)),q);
+        SetPixelGreen(image,PosterizePixel(GetPixelGreen(image,q),levels),q);
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,PosterizePixel(GetPixelBlue(image,q)),q);
+        SetPixelBlue(image,PosterizePixel(GetPixelBlue(image,q),levels),q);
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,PosterizePixel(GetPixelBlack(image,q)),q);
+        SetPixelBlack(image,PosterizePixel(GetPixelBlack(image,q),levels),q);
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->alpha_trait != UndefinedPixelTrait))
-        SetPixelAlpha(image,PosterizePixel(GetPixelAlpha(image,q)),q);
+        SetPixelAlpha(image,PosterizePixel(GetPixelAlpha(image,q),levels),q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
