@@ -1990,6 +1990,12 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           }
           break;
         }
+      if (LocaleNCompare(attribute,"registry:",9) == 0)
+        {
+          (void) SetImageRegistry(StringRegistryType,attribute+9,SvPV(sval,na),
+            exception);
+          break;
+        }
       if (LocaleCompare(attribute,"render") == 0)
         {
           sp=SvPOK(sval) ? ParseCommandOption(MagickIntentOptions,MagickFalse,
@@ -5631,6 +5637,17 @@ Get(ref,...)
                 image->chromaticity.red_primary.x,
                 image->chromaticity.red_primary.y);
               s=newSVpv(color,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleNCompare(attribute,"registry:",9) == 0)
+            {   
+              const char
+                *value;
+        
+              value=GetImageRegistry(StringRegistryType,attribute+9,exception);
+              if (value != (const char *) NULL)
+                s=newSVpv(value,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
