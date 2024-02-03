@@ -2853,10 +2853,17 @@ static inline double MagickRound(double x)
 
 static inline Quantum PosterizePixel(const Quantum pixel,const size_t levels)
 {
-  ssize_t
-    alpha = (ssize_t) ((QuantumRange+1)/levels);
+  double
+    step_size;
 
-  return(ClampToQuantum((MagickRealType) (alpha*(pixel/alpha))));
+  size_t
+    level_index;
+
+  if (levels < 2)
+    return(pixel);
+  step_size=1.0/(levels-1.0);
+  level_index=(step_size == 0.0) ? 0 : floor((double) pixel/step_size);
+  return(ClampToQuantum(level_index*step_size));
 }
 
 MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
@@ -2886,8 +2893,6 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (levels == 0)
-    return(MagickTrue);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static) shared(progress,status) \
@@ -2939,18 +2944,17 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(image,PosterizePixel(GetPixelRed(image,q),levels),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(image,PosterizePixel(GetPixelGreen(image,q),levels),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(image,PosterizePixel(GetPixelBlue(image,q),levels),q);
-      if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelBlack(image,PosterizePixel(GetPixelBlack(image,q),levels),q);
-      if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->alpha_trait != UndefinedPixelTrait))
-        SetPixelAlpha(image,PosterizePixel(GetPixelAlpha(image,q),levels),q);
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        SetPixelChannel(image,channel,PosterizePixel(q[i],levels),q);
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
