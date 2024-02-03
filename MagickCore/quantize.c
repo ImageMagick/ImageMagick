@@ -2884,7 +2884,6 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
     *quantize_info;
 
   ssize_t
-    i,
     y;
 
   assert(image != (Image *) NULL);
@@ -2894,27 +2893,32 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static) shared(progress,status) \
-      magick_number_threads(image,image,image->colors,1)
-#endif
-    for (i=0; i < (ssize_t) image->colors; i++)
     {
-      /*
-        Posterize colormap.
-      */
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].red=(double)
-          PosterizePixel(image->colormap[i].red,levels);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].green=(double)
-          PosterizePixel(image->colormap[i].green,levels);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].blue=(double)
-          PosterizePixel(image->colormap[i].blue,levels);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].alpha=(double)
-          PosterizePixel(image->colormap[i].alpha,levels);
+      ssize_t
+        i;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static) shared(progress,status) \
+        magick_number_threads(image,image,image->colors,1)
+#endif
+      for (i=0; i < (ssize_t) image->colors; i++)
+      {
+        /*
+          Posterize colormap.
+        */
+        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+          image->colormap[i].red=(double)
+            PosterizePixel(image->colormap[i].red,levels);
+        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+          image->colormap[i].green=(double)
+            PosterizePixel(image->colormap[i].green,levels);
+        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+          image->colormap[i].blue=(double)
+            PosterizePixel(image->colormap[i].blue,levels);
+        if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+          image->colormap[i].alpha=(double)
+            PosterizePixel(image->colormap[i].alpha,levels);
+      }
     }
   /*
     Posterize image.
