@@ -2492,6 +2492,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
     *token;
 
   const char
+    *p,
     *q;
 
   double
@@ -2523,13 +2524,6 @@ static MagickBooleanType RenderMVGContent(Image *image,
   PrimitiveType
     primitive_type;
 
-  const char
-    *p;
-
-  ssize_t
-    i,
-    x;
-
   SegmentInfo
     bounds;
 
@@ -2543,10 +2537,12 @@ static MagickBooleanType RenderMVGContent(Image *image,
 
   ssize_t
     defsDepth,
+    i,
     j,
     k,
     n,
-    symbolDepth;
+    symbolDepth,
+    x;
 
   StopInfo
     *stops;
@@ -2743,7 +2739,13 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 status=MagickFalse;
                 break;
               }
-            if (LocaleCompare(token,graphic_context[n]->id) == 0)
+            /*
+              Identify recursion.
+            */
+            for (i=0; i < n; i++)
+              if (LocaleCompare(token,graphic_context[i]->id) == 0)
+                break;
+            if (i < n)
               break;
             mvg_class=(const char *) GetValueFromSplayTree(macros,token);
             if ((graphic_context[n]->render != MagickFalse) &&
