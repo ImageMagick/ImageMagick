@@ -2853,17 +2853,9 @@ static inline double MagickRound(double x)
 
 static inline Quantum PosterizePixel(const Quantum pixel,const size_t levels)
 {
-  double
-    step_size;
-
-  size_t
-    level_index;
-
-  if (levels < 2)
-    return(pixel);
-  step_size=1.0/(levels-1.0);
-  level_index=(step_size == 0.0) ? 0 : floor((double) pixel/step_size);
-  return(ClampToQuantum(level_index*step_size));
+  double posterize_pixel = QuantumRange*MagickRound(QuantumScale*(double)
+    pixel*(levels-1.0))/MagickMax(levels-1.0,1.0);
+  return(ClampToQuantum((MagickRealType) posterize_pixel));
 }
 
 MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
@@ -2880,9 +2872,6 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   MagickOffsetType
     progress;
 
-  QuantizeInfo
-    *quantize_info;
-
   ssize_t
     y;
 
@@ -2892,98 +2881,179 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->storage_class == PseudoClass)
-    {
-      ssize_t
-        i;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status) \
-        magick_number_threads(image,image,image->colors,1)
-#endif
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        /*
-          Posterize colormap.
-        */
-        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=(double)
-            PosterizePixel(image->colormap[i].red,levels);
-        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=(double)
-            PosterizePixel(image->colormap[i].green,levels);
-        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=(double)
-            PosterizePixel(image->colormap[i].blue,levels);
-        if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].alpha=(double)
-            PosterizePixel(image->colormap[i].alpha,levels);
-      }
-    }
-  /*
-    Posterize image.
-  */
-  status=MagickTrue;
-  progress=0;
-  image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) \
-    magick_number_threads(image,image,image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    Quantum
-      *magick_restrict q;
+  if (dither_method != NoDitherMethod && levels > 1) {
+    Image 
+      *map_image;
 
     ssize_t
-      x;
+      i;
 
-    if (status == MagickFalse)
-      continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) image->columns; x++)
+    size_t
+      channels = 0,
+      numPoolCols;
+
+    for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
     {
-      ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        SetPixelChannel(image,channel,PosterizePixel(q[i],levels),q);
-      }
-      q+=GetPixelChannels(image);
+      PixelChannel channel = GetPixelChannelChannel(image,i);
+      PixelTrait traits = GetPixelChannelTraits(image,channel);
+      if ((traits & UpdatePixelTrait) != 0)
+        channels++;
     }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+    numPoolCols = pow (levels, channels);
+
+    map_image = CloneImage(image, numPoolCols, 1, MagickTrue, exception);
+    if (map_image == (Image *) NULL)
+      return MagickFalse;
+
+    if (SetImageStorageClass (map_image, DirectClass, exception) == MagickFalse)
+      return MagickFalse;
+
+    { /* Populate the map image */
+      CacheView
+        *map_image_view;
+
+      Quantum
+        *magick_restrict q;
+
+      MagickRealType
+        valmult = QuantumRange / (levels - 1.0);
+
+      size_t
+        x, c;
+
+      map_image_view=AcquireAuthenticCacheView (map_image,exception);
+
+      q = GetCacheViewAuthenticPixels (map_image_view,0,0,numPoolCols,1,
+        exception);
+      if (q == (const Quantum *) NULL)
+        return MagickFalse;
+
+      for (x=0; x < numPoolCols; x++) {
+        size_t rem = x;
+        for (c=0; c < (ssize_t) GetPixelChannels(image); c++) {
+          PixelChannel channel = GetPixelChannelChannel (image, c);
+          PixelTrait traits = GetPixelChannelTraits (image, channel);
+          if ((traits & UpdatePixelTrait) != 0) {
+            size_t val = rem % levels;
+            SetPixelChannel (map_image, channel, val * valmult, q);
+            rem  = (rem - val) / levels;
+          }
+        }
+        q += GetPixelChannels (map_image);
+      }
+      if (SyncCacheViewAuthenticPixels (map_image_view,exception) == MagickFalse)
+        return MagickFalse;
+      map_image_view = DestroyCacheView (map_image_view);
+    }
+
+    { /* Remap to the map_image. */
+      ImageInfo *ii = AcquireImageInfo ();
+      QuantizeInfo *quantize_info = AcquireQuantizeInfo (ii);
+      quantize_info->dither_method = dither_method;
+      (void) RemapImage (quantize_info, image, map_image, exception);
+      quantize_info=DestroyQuantizeInfo(quantize_info);
+    }
+    map_image = DestroyImage (map_image);
+
+  } else {
+    /* No dither. */
+    if (image->storage_class == PseudoClass)
       {
-        MagickBooleanType
-          proceed;
+        ssize_t
+          i;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp atomic
+        #pragma omp parallel for schedule(static) shared(progress,status) \
+          magick_number_threads(image,image,image->colors,1)
 #endif
-        progress++;
-        proceed=SetImageProgress(image,PosterizeImageTag,progress,image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
+        for (i=0; i < (ssize_t) image->colors; i++)
+        {
+          /*
+            Posterize colormap.
+          */
+          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+            image->colormap[i].red=(double)
+              PosterizePixel(image->colormap[i].red,levels);
+          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+            image->colormap[i].green=(double)
+              PosterizePixel(image->colormap[i].green,levels);
+          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+            image->colormap[i].blue=(double)
+              PosterizePixel(image->colormap[i].blue,levels);
+          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+            image->colormap[i].alpha=(double)
+              PosterizePixel(image->colormap[i].alpha,levels);
+        }
       }
+    /*
+      Posterize image.
+    */
+    status=MagickTrue;
+    progress=0;
+    image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp parallel for schedule(static) shared(progress,status) \
+      magick_number_threads(image,image,image->rows,1)
+#endif
+    for (y=0; y < (ssize_t) image->rows; y++)
+    {
+      Quantum
+        *magick_restrict q;
+
+      ssize_t
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+      if (q == (Quantum *) NULL)
+        {
+          status=MagickFalse;
+          continue;
+        }
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        ssize_t
+          i;
+
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+        {
+          PixelChannel channel = GetPixelChannelChannel(image,i);
+          PixelTrait traits = GetPixelChannelTraits(image,channel);
+          if ((traits & UpdatePixelTrait) == 0)
+            continue;
+          SetPixelChannel(image,channel,PosterizePixel(q[i],levels),q);
+        }
+        q+=GetPixelChannels(image);
+      }
+      if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+        status=MagickFalse;
+      if (image->progress_monitor != (MagickProgressMonitor) NULL)
+        {
+          MagickBooleanType
+            proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+          #pragma omp atomic
+#endif
+          progress++;
+          proceed=SetImageProgress(image,PosterizeImageTag,progress,
+            image->rows);
+          if (proceed == MagickFalse)
+            status=MagickFalse;
+        }
+    }
+    image_view=DestroyCacheView(image_view);
+    {
+      QuantizeInfo *quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
+      quantize_info->number_colors=(size_t) MagickMin(levels*levels*levels,
+        MaxColormapSize);
+      quantize_info->dither_method=dither_method;
+      status=QuantizeImage(quantize_info,image,exception);
+      quantize_info=DestroyQuantizeInfo(quantize_info);
+    }
   }
-  image_view=DestroyCacheView(image_view);
-  quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
-  quantize_info->number_colors=(size_t) MagickMin(levels*levels*levels,
-    MaxColormapSize);
-  quantize_info->dither_method=dither_method;
-  status=QuantizeImage(quantize_info,image,exception);
-  quantize_info=DestroyQuantizeInfo(quantize_info);
   return(status);
 }
 
