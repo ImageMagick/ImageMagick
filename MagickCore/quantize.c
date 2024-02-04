@@ -2929,7 +2929,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
       if (q == (const Quantum *) NULL)
         return MagickFalse;
 
-      for (x=0; x < numPoolCols; x++) {
+      for (x=0; x < (ssize_t) numPoolCols; x++) {
         size_t rem = x;
         for (c=0; c < (ssize_t) GetPixelChannels(image); c++) {
           PixelChannel channel = GetPixelChannelChannel (image, c);
