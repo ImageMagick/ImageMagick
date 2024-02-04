@@ -2867,7 +2867,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
     *image_view;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   MagickOffsetType
     progress;
@@ -2919,7 +2919,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
       MagickRealType
         valmult = QuantumRange / (levels - 1.0);
 
-      size_t
+     ssize_t
         x, c;
 
       map_image_view=AcquireAuthenticCacheView (map_image,exception);
@@ -2989,7 +2989,6 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
     /*
       Posterize image.
     */
-    status=MagickTrue;
     progress=0;
     image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
