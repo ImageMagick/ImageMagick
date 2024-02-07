@@ -1567,7 +1567,7 @@ static MagickBooleanType ReadDXT1Pixels(Image *image,
 /*
   Skip the mipmap images for compressed (DXTn) dds files
 */
-static MagickBooleanType SkipDXTMipmaps(Image *image,const DDSInfo *dds_info,
+static MagickBooleanType SkipMipmaps(Image *image,const DDSInfo *dds_info,
   int texel_size,ExceptionInfo *exception)
 {
   /*
@@ -1624,7 +1624,7 @@ static MagickBooleanType ReadDXT1(const ImageInfo *image_info,Image *image,
   if (read_mipmaps != MagickFalse)
     return(ReadMipmaps(image_info,image,dds_info,ReadDXT1Pixels,exception));
   else
-    return(SkipDXTMipmaps(image,dds_info,8,exception));
+    return(SkipMipmaps(image,dds_info,8,exception));
 }
 
 static MagickBooleanType ReadDXT3Pixels(Image *image,
@@ -1726,7 +1726,7 @@ static MagickBooleanType ReadDXT3(const ImageInfo *image_info,Image *image,
   if (read_mipmaps != MagickFalse)
     return(ReadMipmaps(image_info,image,dds_info,ReadDXT3Pixels,exception));
   else
-    return(SkipDXTMipmaps(image,dds_info,16,exception));
+    return(SkipMipmaps(image,dds_info,16,exception));
 }
 
 static MagickBooleanType ReadDXT5Pixels(Image *image,
@@ -1841,7 +1841,7 @@ static MagickBooleanType ReadDXT5(const ImageInfo *image_info,Image *image,
   if (read_mipmaps != MagickFalse)
     return(ReadMipmaps(image_info,image,dds_info,ReadDXT5Pixels,exception));
   else
-    return(SkipDXTMipmaps(image,dds_info,16,exception));
+    return(SkipMipmaps(image,dds_info,16,exception));
 }
 
 static unsigned char GetBit(const unsigned char *block,size_t *start_bit)
@@ -2148,7 +2148,7 @@ static MagickBooleanType ReadBC5(const ImageInfo *image_info,Image *image,
   if (read_mipmaps != MagickFalse)
     return(ReadMipmaps(image_info,image,dds_info,ReadBC5Pixels,exception));
   else
-    return(SkipDXTMipmaps(image,dds_info,16,exception));
+    return(SkipMipmaps(image,dds_info,16,exception));
 }
 
 static MagickBooleanType ReadBC7Pixels(Image *image,
@@ -2365,7 +2365,7 @@ static MagickBooleanType ReadBC7(const ImageInfo *image_info,Image *image,
   if (read_mipmaps != MagickFalse)
     return(ReadMipmaps(image_info,image,dds_info,ReadBC7Pixels,exception));
   else
-    return(SkipDXTMipmaps(image,dds_info,16,exception));
+    return(SkipMipmaps(image,dds_info,16,exception));
 }
 
 static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
