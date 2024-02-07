@@ -1940,8 +1940,9 @@ static MagickBooleanType ValidateXMPProfile(Image *image,
   return(MagickTrue);
 #else
   (void) profile;
-  (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","`%s' (XML)",image->filename);
+  (void) ThrowMagickException(exception,GetMagickModule(),
+    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (XML)",
+    image->filename);
   return(MagickFalse);
 #endif
 }
