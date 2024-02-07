@@ -477,7 +477,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   char
     buffer[MagickPathExtent],
     color[MagickPathExtent],
-    iso8601[sizeof("9999-99-99T99:99:99Z")],
     key[MagickPathExtent];
 
   ChannelFeatures
@@ -534,9 +533,6 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
 
   struct stat
     properties;
-
-  struct tm
-    timestamp;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
@@ -1670,15 +1666,28 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         image->rows/elapsed_time+0.5),MagickFalse,"P",MagickPathExtent,buffer);
       (void) FormatLocaleFile(file,"  Pixels per second: %s\n",buffer);
     }
-  (void) GetMagickUTCTime(&image->timestamp,&timestamp);
-  (void) strftime(iso8601,sizeof(iso8601),"%FT%TZ",&timestamp);
-  expired=' ';
-  if (IsImageTTLExpired(image) != MagickFalse)
-    expired='*';
-  (void) FormatLocaleFile(file,"  Time-to-live: %g:%g:%g:%g%c %s\n",
-    (double) (image->ttl/(3600*24)),(double) ((image->ttl % (24*3600))/3600),
-    (double) ((image->ttl % 3600)/60),(double) ((image->ttl % 3600) % 60),
-    expired,iso8601);
+  if (image->ttl != (time_t) 0)
+    {
+      char
+        iso8601[sizeof("9999-99-99T99:99:99Z")];
+
+      int
+        seconds;
+
+      struct tm
+        timestamp;
+
+      (void) GetMagickUTCTime(&image->ttl,&timestamp);
+      (void) strftime(iso8601,sizeof(iso8601),"%FT%TZ",&timestamp);
+      seconds=MagickMax((int)(image->ttl-GetMagickTime()),0);
+      expired=' ';
+      if (seconds == 0)
+        expired='*';
+      (void) FormatLocaleFile(file,"  Time-to-live: %g:%g:%g:%g%c %s\n",
+        (double) (seconds/(3600*24)),(double) ((seconds % (24*3600))/3600),
+        (double) ((seconds % 3600)/60),(double) ((seconds % 3600) % 60),
+        expired,iso8601);
+    }
   (void) FormatLocaleFile(file,"  User time: %0.3fu\n",user_time);
   (void) FormatLocaleFile(file,"  Elapsed time: %lu:%02lu.%03lu\n",
     (unsigned long) (elapsed_time/60.0),(unsigned long) ceil(fmod(elapsed_time,
