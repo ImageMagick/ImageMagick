@@ -1605,10 +1605,10 @@ static MagickBooleanType SkipMipmaps(Image *image,const DDSInfo *dds_info,
           texel_size);
         if (SeekBlob(image,offset,SEEK_CUR) < 0)
           break;
-        w=DIV2(w);
-        h=DIV2(h);
         if ((w == 1) && (h == 1))
           break;
+        w=DIV2(w);
+        h=DIV2(h);
       }
     }
   return(MagickTrue);
