@@ -2955,10 +2955,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->endian=LSBEndian;
     image->depth=8;
     if (image_info->ping != MagickFalse)
-      {
-        (void) CloseBlob(image);
-        return(GetFirstImageInList(image));
-      }
+      continue;
     status=SetImageExtent(image,image->columns,image->rows,exception);
     if (status == MagickFalse)
       return(DestroyImageList(image));
