@@ -1683,10 +1683,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       expired=' ';
       if (seconds == 0)
         expired='*';
-      (void) FormatLocaleFile(file,"  Time-to-live: %g:%g:%g:%g%c %s\n",
-        (double) (seconds/(3600*24)),(double) ((seconds % (24*3600))/3600),
-        (double) ((seconds % 3600)/60),(double) ((seconds % 3600) % 60),
-        expired,iso8601);
+      (void) FormatLocaleFile(file,"  Time-to-live: %g:%02g:%02g:%02g%c %s\n",
+        ceil((double) (seconds/(3600*24))),
+        ceil((double) ((seconds % (24*3600))/3600)),
+        ceil((double) ((seconds % 3600)/60)),
+        ceil((double) ((seconds % 3600) % 60)),expired,iso8601);
     }
   (void) FormatLocaleFile(file,"  User time: %0.3fu\n",user_time);
   (void) FormatLocaleFile(file,"  Elapsed time: %lu:%02lu.%03lu\n",
