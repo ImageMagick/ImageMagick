@@ -3515,15 +3515,15 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 (void) GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
-                region.width=(size_t) CastDoubleToLong(floor(GetDrawValue(
+                region.width=CastDoubleToUnsigned(floor(GetDrawValue(
                   token,&next_token)+0.5));
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
-                region.height=CastDoubleToUnsigned(GetDrawValue(token,&next_token)+
-                  0.5);
+                region.height=CastDoubleToUnsigned(GetDrawValue(token,
+                  &next_token)+0.5);
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 for (p=q; *q != '\0'; )
@@ -3945,21 +3945,21 @@ static MagickBooleanType RenderMVGContent(Image *image,
             (void) GetNextToken(q,&q,extent,token);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
-            graphic_context[n]->viewbox.y=CastDoubleToLong(ceil(
-              GetDrawValue(token,&next_token)-0.5));
+            graphic_context[n]->viewbox.y=CastDoubleToLong(
+              ceil(GetDrawValue(token,&next_token)-0.5));
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
-            graphic_context[n]->viewbox.width=(size_t) CastDoubleToLong(
+            graphic_context[n]->viewbox.width=CastDoubleToUnsigned(
               floor(GetDrawValue(token,&next_token)+0.5));
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
-            graphic_context[n]->viewbox.height=(size_t) CastDoubleToLong(
+            graphic_context[n]->viewbox.height=(size_t) CastDoubleToUnsigned(
               floor(GetDrawValue(token,&next_token)+0.5));
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
