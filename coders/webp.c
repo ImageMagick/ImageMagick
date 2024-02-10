@@ -576,9 +576,12 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   blob_size=(size_t) GetBlobSize(image);
   if (length > blob_size)
     {
-      if (length-blob_size != 12)
+      size_t
+        delta=length-blob_size;
+
+      if (delta != 12 && delta != (12 + 8))
         ThrowWEBPException(CorruptImageError,"InsufficientImageDataInFile");
-      length-=12;
+      length-=delta;
       WriteWebPLSBWord(header+4,length-8);
     }
   stream=(unsigned char *) AcquireQuantumMemory(length,sizeof(*stream));
