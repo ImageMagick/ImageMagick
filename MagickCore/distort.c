@@ -2378,7 +2378,7 @@ MagickExport Image *DistortImage(const Image *image, DistortMethod method,
           "       jj=jj%s(%lf*rr*rr*rr %+lf*rr*rr %+lf*rr %+lf);\n",
           method == BarrelDistortion ? "*" : "/",coeff[4],coeff[5],coeff[6],
           coeff[7]);
-        (void) FormatLocaleFile(stderr,"       v.p{fx*ii+xc,fy*jj+yc}' \\\n");
+        (void) FormatLocaleFile(stderr,"       p{ii+xc,jj+yc}' \\\n");
       }
       default:
         break;

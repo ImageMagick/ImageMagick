@@ -4432,9 +4432,12 @@ static inline double MeshInterpolate(const PointInfo *delta,const double p,
 
 MagickExport MagickBooleanType InterpolatePixelChannel(
   const Image *magick_restrict image,const CacheView_ *image_view,
-  const PixelChannel channel,const PixelInterpolateMethod method,
-  const double x,const double y,double *pixel,ExceptionInfo *exception)
+  const PixelChannel channel,const PixelInterpolateMethod method,const double x,
+  const double y,double *pixel,ExceptionInfo *exception)
 {
+  const Quantum
+    *magick_restrict p;
+
   double
     alpha[16],
     gamma,
@@ -4449,13 +4452,8 @@ MagickExport MagickBooleanType InterpolatePixelChannel(
   PixelTrait
     traits;
 
-  const Quantum
-    *magick_restrict p;
-
   ssize_t
-    i;
-
-  ssize_t
+    i,
     x_offset,
     y_offset;
 
