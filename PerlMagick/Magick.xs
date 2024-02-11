@@ -5637,7 +5637,8 @@ Get(ref,...)
               const char
                 *value;
 
-              value=GetImageRegistry(StringRegistryType,attribute+9,exception);
+              value=(const char *) GetImageRegistry(StringRegistryType,
+                attribute+9,exception);
               if (value != (const char *) NULL)
                 s=newSVpv(value,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
