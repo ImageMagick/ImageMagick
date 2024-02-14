@@ -347,11 +347,6 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
   struct heif_image
     *heif_image;
 
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,16,0)
-  const char
-    *option;
-#endif
-
   /*
     Read HEIC image from container.
   */
@@ -382,25 +377,30 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
     return(MagickFalse);
   decode_options=heif_decoding_options_alloc();
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,16,0)
-  option=GetImageOption(image_info,"heic:chroma-upsampling");
-  if (option != (char *) NULL)
-    {
-      if (LocaleCompare(option,"nearest-neighbor") == 0)
-        {
-          decode_options->color_conversion_options.
-            preferred_chroma_upsampling_algorithm =
+  {
+    const char
+      *option;
+
+    option=GetImageOption(image_info,"heic:chroma-upsampling");
+    if (option != (char *) NULL)
+      {
+        if (LocaleCompare(option,"nearest-neighbor") == 0)
+          {
+            decode_options->color_conversion_options.
+              only_use_preferred_chroma_algorithm=1;
+            decode_options->color_conversion_options.
+              preferred_chroma_upsampling_algorithm=
               heif_chroma_upsampling_nearest_neighbor;
-          decode_options->color_conversion_options.
-            only_use_preferred_chroma_algorithm = 1;
-        }
-      if (LocaleCompare(option,"bilinear") == 0)
-        {
-          decode_options->color_conversion_options.
-            preferred_chroma_upsampling_algorithm =
+          }
+        else if (LocaleCompare(option,"bilinear") == 0)
+          {
+            decode_options->color_conversion_options.
+              only_use_preferred_chroma_algorithm=1;
+            decode_options->color_conversion_options.
+              preferred_chroma_upsampling_algorithm=
               heif_chroma_upsampling_bilinear;
-          decode_options->color_conversion_options.
-            only_use_preferred_chroma_algorithm = 1;
-        }
+          }
+      }
     }
 #endif
   if (preserve_orientation != MagickFalse)
@@ -1339,19 +1339,14 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     status=IsHEIFSuccess(image,&error,exception);
     if (status == MagickFalse)
       break;
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,7,0)
-    if (encode_avif != MagickFalse)
+    option=GetImageOption(image_info,"heic:speed");
+    if (option != (char *) NULL)
       {
-        option=GetImageOption(image_info,"heic:speed");
-        if (option != (char *) NULL)
-          {
-            error=heif_encoder_set_parameter(heif_encoder,"speed",option);
-            status=IsHEIFSuccess(image,&error,exception);
-            if (status == MagickFalse)
-              break;
-          }
+        error=heif_encoder_set_parameter(heif_encoder,"speed",option);
+        status=IsHEIFSuccess(image,&error,exception);
+        if (status == MagickFalse)
+          break;
       }
-#endif
     option=GetImageOption(image_info,"heic:chroma");
     if (option != (char *) NULL)
       {
@@ -1368,26 +1363,26 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
         if (LocaleCompare(option,"nearest-neighbor") == 0)
           {
             options->color_conversion_options.
-              preferred_chroma_downsampling_algorithm =
-                heif_chroma_downsampling_nearest_neighbor;
+              only_use_preferred_chroma_algorithm=1;
             options->color_conversion_options.
-              only_use_preferred_chroma_algorithm = 1;
+              preferred_chroma_downsampling_algorithm=
+              heif_chroma_downsampling_nearest_neighbor;
           }
-        if (LocaleCompare(option,"average") == 0)
+        else if (LocaleCompare(option,"average") == 0)
           {
             options->color_conversion_options.
-              preferred_chroma_downsampling_algorithm =
-                heif_chroma_downsampling_average;
+              only_use_preferred_chroma_algorithm=1;
             options->color_conversion_options.
-              only_use_preferred_chroma_algorithm = 1;
+              preferred_chroma_downsampling_algorithm=
+              heif_chroma_downsampling_average;
           }
-        if (LocaleCompare(option,"sharp-yuv") == 0)
+        else if (LocaleCompare(option,"sharp-yuv") == 0)
           {
             options->color_conversion_options.
-              preferred_chroma_downsampling_algorithm =
-                heif_chroma_downsampling_sharp_yuv;
+              only_use_preferred_chroma_algorithm=1;
             options->color_conversion_options.
-              only_use_preferred_chroma_algorithm = 1;
+              preferred_chroma_downsampling_algorithm=
+              heif_chroma_downsampling_sharp_yuv;
           }
       }
 #endif
