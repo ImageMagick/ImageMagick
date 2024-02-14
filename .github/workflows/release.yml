@@ -159,6 +159,7 @@ jobs:
         file-digest: SHA256
         timestamp-rfc3161: http://timestamp.acs.microsoft.com
         timestamp-digest: SHA256
+        append-signature: true
         timeout: 600
 
     - name: Create installer
@@ -182,6 +183,7 @@ jobs:
         file-digest: SHA256
         timestamp-rfc3161: http://timestamp.acs.microsoft.com
         timestamp-digest: SHA256
+        append-signature: true
         timeout: 600
 
     - name: Get version
@@ -315,6 +317,7 @@ jobs:
         file-digest: SHA256
         timestamp-rfc3161: http://timestamp.acs.microsoft.com
         timestamp-digest: SHA256
+        append-signature: true
         timeout: 600
 
     - name: Copy Files
