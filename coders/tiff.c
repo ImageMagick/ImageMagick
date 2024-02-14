@@ -3802,41 +3802,39 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);
         if (IssRGBCompatibleColorspace(image->colorspace) != MagickFalse)
+          (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);
+        if (IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse)
           {
-            (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);
-            if (IsYCbCrCompatibleColorspace(image->colorspace) != MagickFalse)
+            const char
+              *sampling_factor,
+              *value;
+
+            GeometryInfo
+              geometry_info;
+
+            MagickStatusType
+              flags;
+
+            sampling_factor=(const char *) NULL;
+            value=GetImageProperty(image,"jpeg:sampling-factor",exception);
+            if (value != (char *) NULL)
               {
-                const char
-                  *sampling_factor,
-                  *value;
-
-                GeometryInfo
-                  geometry_info;
-
-                MagickStatusType
-                  flags;
-
-                sampling_factor=(const char *) NULL;
-                value=GetImageProperty(image,"jpeg:sampling-factor",exception);
-                if (value != (char *) NULL)
-                  {
-                    sampling_factor=value;
-                    if (image->debug != MagickFalse)
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "  Input sampling-factors=%s",sampling_factor);
-                  }
-                if (image_info->sampling_factor != (char *) NULL)
-                  sampling_factor=image_info->sampling_factor;
-                if (sampling_factor != (const char *) NULL)
-                  {
-                    flags=ParseGeometry(sampling_factor,&geometry_info);
-                    if ((flags & SigmaValue) == 0)
-                      geometry_info.sigma=geometry_info.rho;
-                    (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,(uint16)
-                      geometry_info.rho,(uint16) geometry_info.sigma);
-                  }
-                }
-          }
+                sampling_factor=value;
+                if (image->debug != MagickFalse)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  Input sampling-factors=%s",sampling_factor);
+              }
+            if (image_info->sampling_factor != (char *) NULL)
+              sampling_factor=image_info->sampling_factor;
+            if (sampling_factor != (const char *) NULL)
+              {
+                flags=ParseGeometry(sampling_factor,&geometry_info);
+                if ((flags & SigmaValue) == 0)
+                  geometry_info.sigma=geometry_info.rho;
+                (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,(uint16)
+                  geometry_info.rho,(uint16) geometry_info.sigma);
+              }
+            }
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
           &bits_per_sample,sans);
         if (bits_per_sample == 12)

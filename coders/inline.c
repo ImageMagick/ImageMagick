@@ -307,9 +307,6 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
-  if (status == MagickFalse)
-    return(status);
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"INLINE") == 0)
@@ -323,6 +320,12 @@ static MagickBooleanType WriteINLINEImage(const ImageInfo *image_info,
     }
   (void) CopyMagickString(image->filename,write_info->filename,
     MagickPathExtent);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      write_info=DestroyImageInfo(write_info);
+      return(status);
+    }
   blob_length=2048;
   write_image=CloneImage(image,0,0,MagickTrue,exception);
   if (write_image == (Image *) NULL)
