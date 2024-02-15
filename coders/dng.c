@@ -249,7 +249,10 @@ static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
   status=InvokeDelegate(read_info,image,"dng:decode",(char *) NULL,exception);
   image=DestroyImage(image);
   if (status == MagickFalse)
-    return(image);
+    {
+      read_info=DestroyImageInfo(read_info);
+      return(image);
+    }
   *read_info->magick='\0';
   (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.tif",
     read_info->unique);
