@@ -66,7 +66,7 @@
   <delegate decode="https:decode" command="&quot;@WWWDecodeDelegate@&quot; -s -L -o &quot;%u.dat&quot; &quot;https:%M&quot;"/>
   <delegate decode="doc" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="docx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
-  <delegate decode="dng:decode" command="@MVDelegate@ &quot;%i&quot; &quot;%i.%e&quot;; &quot;@DNGDecodeDelegate@&quot; --import &quot;%i.%e&quot; &quot;%u.tif&quot;"/>
+  <delegate decode="dng:decode" command="@MVDelegate@ &quot;%i&quot; &quot;%i.%e&quot;; &quot;@DNGDecodeDelegate@&quot; --import &quot;%i.%e&quot; &quot;%u.tif&quot; &gt; &quot;%u&quot;"/>
   <delegate decode="dot" command="&quot;@GVCDecodeDelegate@&quot; -Tsvg &quot;%i&quot; -o &quot;%o&quot;" />
   <delegate decode="dvi" command="&quot;@DVIDecodeDelegate@&quot; -sstdout=%%stderr -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="edit" stealth="True" command="&quot;@EditorDelegate@&quot; -title &quot;Edit Image Comment&quot; -e vi &quot;%o&quot;"/>
