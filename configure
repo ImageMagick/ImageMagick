@@ -5187,7 +5187,7 @@ MAGICK_PATCHLEVEL_VERSION=29
 
 MAGICK_VERSION=7.1.1-29
 
-MAGICK_GIT_REVISION=365d9b6f6:20240211
+MAGICK_GIT_REVISION=3132d7884:20240214
 
 
 # Substitute library versioning
@@ -5221,7 +5221,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,29
 
-PACKAGE_RELEASE_DATE=2024-02-11
+PACKAGE_RELEASE_DATE=2024-02-14
 
 
 # Ensure that make can run correctly
@@ -34876,7 +34876,7 @@ BPGDecodeDelegateDefault='bpgdec'
 BPGEncodeDelegateDefault='bpgenc'
 BlenderDecodeDelegateDefault='blender'
 BrowseDelegateDefault='xdg-open'
-DNGDecodeDelegateDefault='ufraw-batch'
+DNGDecodeDelegateDefault='darktable-cli'
 DOCDecodeDelegateDefault='libreoffice'
 GVCDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'

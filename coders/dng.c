@@ -235,6 +235,9 @@ static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
   ImageInfo
     *read_info;
 
+  MagickBooleanType
+    status;
+
   /*
     Convert DNG to TIFF with delegate program.
   */
@@ -243,17 +246,19 @@ static Image *InvokeDNGDelegate(const ImageInfo *image_info,Image *image,
   image=AcquireImage(image_info,exception);
   read_info=CloneImageInfo(image_info);
   SetImageInfoBlob(read_info,(void *) NULL,0);
-  (void) InvokeDelegate(read_info,image,"dng:decode",(char *) NULL,exception);
+  status=InvokeDelegate(read_info,image,"dng:decode",(char *) NULL,exception);
   image=DestroyImage(image);
+  if (status == MagickFalse)
+    return(image);
+  *read_info->magick='\0';
   (void) FormatLocaleString(read_info->filename,MagickPathExtent,"%s.tif",
     read_info->unique);
   sans_exception=AcquireExceptionInfo();
-  *read_info->magick='\0';
   image=ReadImage(read_info,sans_exception);
-  (void) RelinquishUniqueFileResource(read_info->filename);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (image != (Image *) NULL)
     (void) CopyMagickString(image->magick,read_info->magick,MagickPathExtent);
+  (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
   return(image);
 }
