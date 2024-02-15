@@ -1216,15 +1216,38 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
 #if defined(MAGICKCORE_WEBPMUX_DELEGATE)
   {
+    Image
+      *next;
+
     WebPData
       webp_data;
 
     memset(&webp_data,0,sizeof(webp_data));
-    if ((image_info->adjoin != MagickFalse) &&
-        (GetPreviousImageInList(image) == (Image *) NULL) &&
-        (GetNextImageInList(image) != (Image *) NULL))
-      status=WriteAnimatedWEBPImage(image_info,image,&configure,&webp_data,
-        exception);
+    next=GetNextImageInList(image);
+    if ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse))
+      {
+        Image
+          *coalesce_image=(Image *) NULL;;
+
+        while(next != (Image *) NULL)
+        {
+          if ((next->rows != image->rows) || (next->columns != image->columns))
+            {
+              coalesce_image=CoalesceImages(image,exception);
+              break;
+            }
+          next=GetNextImageInList(next);
+        }
+        if (coalesce_image != (Image *) NULL)
+          {
+            status=WriteAnimatedWEBPImage(image_info,coalesce_image,&configure,
+              &webp_data,exception);
+            (void) DestroyImageList(coalesce_image);
+          }
+        else
+          status=WriteAnimatedWEBPImage(image_info,image,&configure,&webp_data,
+            exception);
+      }
     else
       {
         WebPMemoryWriterInit(&writer);
