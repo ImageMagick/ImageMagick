@@ -244,7 +244,7 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
       */
       length=GetStringInfoLength(exif_profile);
       datum=GetStringInfoDatum(exif_profile);
-      if ((length > 2) && 
+      if ((length > 2) &&
           ((memcmp(datum,"\xff\xd8",2) == 0) ||
            (memcmp(datum,"\xff\xe1",2) == 0)) &&
            (memcmp(datum+length-2,"\xff\xd9",2) == 0))
@@ -1243,6 +1243,9 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
 #endif
   do
   {
+    const char
+      *option;
+
     const StringInfo
       *profile;
 
@@ -1254,9 +1257,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
 
     MagickBooleanType
       lossless = image_info->quality >= 100 ? MagickTrue : MagickFalse;
-
-    const char
-      *option;
 
     struct heif_encoding_options
       *options;
