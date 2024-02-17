@@ -1733,6 +1733,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     break;
                   }
             }
+            if ((image->alpha_trait == UndefinedPixelTrait) &&
+                 (extra_samples == 1))
+              {
+                const char
+                  *option;
+
+                option=GetImageOption(image_info,"tiff:assume-alpha");
+                if (IsStringTrue(option) != MagickFalse)
+                  image->alpha_trait=BlendPixelTrait;
+              }
             if (image->alpha_trait != UndefinedPixelTrait)
               extra_samples--;
             if (extra_samples > 0)
