@@ -259,7 +259,7 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
      const size_t line,const char *format,...)
 {
   char
-    new_format[MagickPathExtent];
+    decorate_format[MagickPathExtent];
 
   MagickBooleanType
     status;
@@ -270,21 +270,14 @@ WandExport MagickBooleanType CLILogEvent(MagickCLI *cli_wand,
   if (IsEventLogging() == MagickFalse)
     return(MagickFalse);
 
-  /* HACK - prepend the CLI location to format string.
-     The better way would be add more arguments to the 'va' operands
-     list, but that does not appear to be possible! So we do some
-     pre-formatting of the location info here.
-  */
-  (void) FormatLocaleString(new_format,MagickPathExtent,cli_wand->location,
-       cli_wand->filename, cli_wand->line, cli_wand->column);
-  (void) ConcatenateMagickString(new_format," ",MagickPathExtent);
-  (void) ConcatenateMagickString(new_format,format,MagickPathExtent);
-
+  (void) FormatLocaleString(decorate_format,MagickPathExtent,cli_wand->location,
+     cli_wand->filename,cli_wand->line,cli_wand->column);
+  (void) ConcatenateMagickString(decorate_format," ",MagickPathExtent);
+  (void) ConcatenateMagickString(decorate_format,format,MagickPathExtent);
   va_start(operands,format);
-  status=LogMagickEventList(type,magick_module,function,line,new_format,
+  status=LogMagickEventList(type,magick_module,function,line,decorate_format,
     operands);
   va_end(operands);
-
   return(status);
 }
 
@@ -307,10 +300,7 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
   const ExceptionType severity,const char *tag,const char *format,...)
 {
   char
-    new_format[MagickPathExtent];
-
-  size_t
-    len;
+    decorate_format[MagickPathExtent];
 
   MagickBooleanType
     status;
@@ -318,21 +308,13 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
   va_list
     operands;
 
-  /* HACK - append location to format string.
-     The better way would be add more arguments to the 'va' operands
-     list, but that does not appear to be possible! So we do some
-     pre-formatting of the location info here.
-  */
-  (void) CopyMagickString(new_format,format,MagickPathExtent);
-  (void) ConcatenateMagickString(new_format," ",MagickPathExtent);
-
-  len=strlen(new_format);
-  (void) FormatLocaleString(new_format+len,MagickPathExtent-len,
-    cli_wand->location,cli_wand->filename,cli_wand->line,cli_wand->column);
-
+  (void) FormatLocaleString(decorate_format,MagickPathExtent,cli_wand->location,
+    cli_wand->filename,cli_wand->line,cli_wand->column);
+  (void) ConcatenateMagickString(decorate_format," ",MagickPathExtent);
+  (void) ConcatenateMagickString(decorate_format,format,MagickPathExtent);
   va_start(operands,format);
   status=ThrowMagickExceptionList(cli_wand->wand.exception,magick_module,
-    function,line,severity,tag,new_format,operands);
+    function,line,severity,tag,decorate_format,operands);
   va_end(operands);
   return(status);
 }
