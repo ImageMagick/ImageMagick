@@ -332,7 +332,7 @@ WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
 
   va_start(operands,format);
   status=ThrowMagickExceptionList(cli_wand->wand.exception,magick_module,
-    function,line,severity,tag,format,operands);
+    function,line,severity,tag,new_format,operands);
   va_end(operands);
   return(status);
 }
