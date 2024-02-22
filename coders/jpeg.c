@@ -2521,22 +2521,29 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Image resolution: %.20g,%.20g",image->resolution.x,image->resolution.y);
-  if ((image->resolution.x >= 0) && (image->resolution.x < (double) SHRT_MAX) &&
-      (image->resolution.y >= 0) && (image->resolution.y < (double) SHRT_MAX))
+  if ((image->resolution.x > 0) && (image->resolution.x < (double) SHRT_MAX) &&
+      (image->resolution.y > 0) && (image->resolution.y < (double) SHRT_MAX))
     {
-      /*
-        Set image resolution.
-      */
-      jpeg_info->write_JFIF_header=TRUE;
-      jpeg_info->X_density=(UINT16) image->resolution.x;
-      jpeg_info->Y_density=(UINT16) image->resolution.y;
-      /*
-        Set image resolution units.
-      */
-      if (image->units == PixelsPerInchResolution)
-        jpeg_info->density_unit=(UINT8) 1;
-      if (image->units == PixelsPerCentimeterResolution)
-        jpeg_info->density_unit=(UINT8) 2;
+      UINT16
+        x_density=(UINT16) image->resolution.x,
+        y_density=(UINT16) image->resolution.y;
+
+      if ((x_density > 0) && (y_density > 0))
+        {
+          /*
+            Set image resolution.
+          */
+          jpeg_info->write_JFIF_header=TRUE;
+          jpeg_info->X_density=x_density;
+          jpeg_info->Y_density=y_density;
+          /*
+            Set image resolution units.
+          */
+          if (image->units == PixelsPerInchResolution)
+            jpeg_info->density_unit=(UINT8) 1;
+          else if (image->units == PixelsPerCentimeterResolution)
+            jpeg_info->density_unit=(UINT8) 2;
+        }
     }
   dct_method=GetImageOption(image_info,"jpeg:dct-method");
   if (dct_method != (const char *) NULL)
