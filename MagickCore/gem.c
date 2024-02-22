@@ -733,8 +733,8 @@ static inline void ConvertLCHabToXYZ(const double luma,const double chroma,
   const double hue,const IlluminantType illuminant,double *X,double *Y,
   double *Z)
 {
-  ConvertLabToXYZ(luma,chroma*cos(hue*MagickPI/180.0),chroma*
-    sin(hue*MagickPI/180.0),illuminant,X,Y,Z);
+  ConvertLabToXYZ(luma,chroma*cos(DegreesToRadians(hue)),chroma*
+    sin(DegreesToRadians(hue)),illuminant,X,Y,Z);
 }
 
 MagickPrivate void ConvertLCHabToRGB(const double luma,const double chroma,
@@ -789,8 +789,8 @@ static inline void ConvertLCHuvToXYZ(const double luma,const double chroma,
   const double hue,const IlluminantType illuminant,double *X,double *Y,
   double *Z)
 {
-  ConvertLuvToXYZ(luma,chroma*cos(hue*MagickPI/180.0),chroma*
-    sin(hue*MagickPI/180.0),illuminant,X,Y,Z);
+  ConvertLuvToXYZ(luma,chroma*cos(DegreesToRadians(hue)),chroma*
+    sin(DegreesToRadians(hue)),illuminant,X,Y,Z);
 }
 
 MagickPrivate void ConvertLCHuvToRGB(const double luma,const double chroma,
