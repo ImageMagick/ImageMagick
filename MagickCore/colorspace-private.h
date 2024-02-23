@@ -119,6 +119,16 @@ static inline MagickBooleanType IsHueCompatibleColorspace(
   return(MagickFalse);
 }
 
+static inline MagickBooleanType IsLabCompatibleColorspace(
+  const ColorspaceType colorspace)
+{
+  if ((colorspace == LabColorspace) || (colorspace == LCHColorspace) ||
+      (colorspace == LCHabColorspace) || (colorspace == LCHuvColorspace) ||
+      (colorspace == OklabColorspace) || (colorspace == OklchColorspace))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static inline MagickBooleanType IsRGBColorspace(const ColorspaceType colorspace)
 {
   if ((colorspace == RGBColorspace) || (colorspace == scRGBColorspace) ||
