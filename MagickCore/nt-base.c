@@ -865,7 +865,7 @@ MagickPrivate MagickBooleanType NTGetExecutionPath(char *path,
 %      char *NTGetLastError(void)
 %
 */
-char *NTGetLastError(void)
+static char *NTGetLastError(void)
 {
   char
     *reason;

@@ -83,8 +83,7 @@ static inline void *NTAcquireQuantumMemory(const size_t count,
 }
 
 extern MagickPrivate char
-  *NTGetEnvironmentValue(const char *),
-  *NTGetLastError(void);
+  *NTGetEnvironmentValue(const char *);
 
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
 extern MagickPrivate const char
