@@ -852,20 +852,24 @@ MagickPrivate MagickBooleanType NTGetExecutionPath(char *path,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N T G e t L a s t E r r o r                                               %
+%   N T G e t L a s t E r r o r M e s s a g e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  NTGetLastError() returns the last error that occurred.
+%  NTGetLastErrorMessage() returns the last error that occurred.
 %
-%  The format of the NTGetLastError method is:
+%  The format of the NTGetLastErrorMessage method is:
 %
-%      char *NTGetLastError(void)
+%      char *NTGetLastErrorMessage(DWORD last_error)
+%
+%  A description of each parameter follows:
+%
+%    o last_error: The value of GetLastError.
 %
 */
-static char *NTGetLastError(void)
+static char *NTGetLastErrorMessage(DWORD last_error)
 {
   char
     *reason;
@@ -877,7 +881,7 @@ static char *NTGetLastError(void)
     buffer = (LPVOID) NULL;
 
   status=FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-    FORMAT_MESSAGE_FROM_SYSTEM,NULL,GetLastError(),
+    FORMAT_MESSAGE_FROM_SYSTEM,NULL,last_error,
     MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),(LPTSTR) &buffer,0,NULL);
   if (!status)
     reason=AcquireString("An unknown error occurred");
@@ -918,7 +922,7 @@ MagickPrivate const char *NTGetLibraryError(void)
     *error;
 
   *last_error='\0';
-  error=NTGetLastError();
+  error=NTGetLastErrorMessage(GetLastError());
   if (error)
     (void) CopyMagickString(last_error,error,MagickPathExtent);
   error=DestroyString(error);
@@ -2080,9 +2084,10 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
     }
 
 #define CopyLastError \
+  last_error=GetLastError(); \
   if (output != (char *) NULL) \
     { \
-      error=NTGetLastError(); \
+      error=NTGetLastErrorMessage(last_error); \
       if (error != (char *) NULL) \
         { \
           CopyMagickString(output,error,MagickPathExtent); \
@@ -2095,7 +2100,8 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
     local_command[MagickPathExtent];
 
   DWORD
-    child_status;
+    child_status,
+    last_error;
 
   int
     status;
@@ -2163,7 +2169,7 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
     {
       CopyLastError;
       CleanupOutputHandles;
-      return(-1);
+      return(last_error == ERROR_FILE_NOT_FOUND ? 127 : -1);
     }
   if (output != (char *) NULL)
     *output='\0';
