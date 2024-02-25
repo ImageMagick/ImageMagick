@@ -287,18 +287,10 @@ static void MVGAppendColor(DrawingWand *wand,const PixelInfo *packet)
       char
         tuple[MagickPathExtent];
 
-      PixelInfo
-        pixel;
-
-      GetPixelInfo(wand->image,&pixel);
-      pixel.colorspace=sRGBColorspace;
-      pixel.alpha_trait=packet->alpha != (double) OpaqueAlpha ?
-        BlendPixelTrait : UndefinedPixelTrait;
-      pixel.red=(double) packet->red;
-      pixel.green=(double) packet->green;
-      pixel.blue=(double) packet->blue;
-      pixel.alpha=(double) packet->alpha;
-      GetColorTuple(&pixel,MagickTrue,tuple);
+      if (packet->colorspace != sRGBColorspace)
+        GetColorTuple(packet,MagickFalse,tuple);
+      else
+        GetColorTuple(packet,MagickTrue,tuple);
       (void) MVGPrintf(wand,"%s",tuple);
     }
 }
