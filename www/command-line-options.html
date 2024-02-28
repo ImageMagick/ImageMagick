@@ -593,45 +593,42 @@ channel data, to create an alpha channel, or to perform other operations on the 
 
 <div class="pre-scrollable bg-light text-dark mx-4">
 <dl class="row">
-    <dt class="col-md-4">Activate</dt>
+    <dt class="col-md-4">activate</dt>
     <dd class="col-md-8">
        Enable the image's transparency channel. Note normally Set
        should be used instead of this, unless you specifically need to
        preserve existing (but specifically turned Off) transparency
        channel. </dd>
 
-    <dt class="col-md-4">Associate</dt>
+    <dt class="col-md-4">associate</dt>
     <dd class="col-md-8">
        associate the alpha channel with the image.</dd>
 
-    <dt class="col-md-4">Deactivate</dt>
+    <dt class="col-md-4">background</dt>
+    <dd class="col-md-8">
+       Set any fully-transparent pixel to the background color, while leaving
+       it fully-transparent.  This can make some image file formats, such as
+       PNG, smaller as the RGB values of transparent pixels are more uniform,
+       and thus can compress better.
+       </dd>
+
+    <dt class="col-md-4">copy</dt>
+    <dd class="col-md-8">
+       Turns 'On' the alpha/matte channel, then copies the
+       grayscale intensity of the image, into the alpha channel, converting
+       a grayscale mask into a transparent shaped mask ready to be colored
+       appropriately. The color channels are not modified.  </dd>
+
+    <dt class="col-md-4">deactivate</dt>
     <dd class="col-md-8">
        Disables the image's transparency channel. Does not delete or change the
        existing data, just turns off the use of that data.</dd>
 
-    <dt class="col-md-4">Disassociate</dt>
+    <dt class="col-md-4">disassociate</dt>
     <dd class="col-md-8">
        disassociate the alpha channel from the image.</dd>
 
-    <dt class="col-md-4">Set</dt>
-    <dd class="col-md-8">
-       Activates the alpha/matte channel. If it was previously turned off
-       then it also resets the channel to opaque.  If the image already had
-       the alpha channel turned on, it will have no effect.</dd>
-
-    <dt class="col-md-4">Opaque</dt>
-    <dd class="col-md-8">
-       Enables the alpha/matte channel and forces it to be fully opaque.
-       </dd>
-
-    <dt class="col-md-4">Transparent</dt>
-    <dd class="col-md-8">
-       Activates the alpha/matte channel and forces it to be fully
-       transparent. This effectively creates a fully transparent image the
-       same size as the original and with all its original RGB data still
-       intact, but fully transparent. </dd>
-
-    <dt class="col-md-4">Extract</dt>
+    <dt class="col-md-4">extract</dt>
     <dd class="col-md-8">
        Copies the alpha channel values into all the color channels and turns
        'Off' the image's transparency, so as to generate
@@ -639,32 +636,51 @@ channel data, to create an alpha channel, or to perform other operations on the 
        intact just deactivated.  This is the inverse of 'Copy'.
        </dd>
 
-    <dt class="col-md-4">Copy</dt>
+    <dt class="col-md-4">off</dt>
     <dd class="col-md-8">
-       Turns 'On' the alpha/matte channel, then copies the
-       grayscale intensity of the image, into the alpha channel, converting
-       a grayscale mask into a transparent shaped mask ready to be colored
-       appropriately. The color channels are not modified.  </dd>
+       disable the alpha channel.
+       </dd>
 
-    <dt class="col-md-4">Shape</dt>
+    <dt class="col-md-4">off-if-opaque</dt>
+    <dd class="col-md-8">
+       disable the alpha channel if and only if its entirely opaque.
+       </dd>
+
+    <dt class="col-md-4">on</dt>
+    <dd class="col-md-8">
+       enable the alpha channel.
+       </dd>
+
+    <dt class="col-md-4">opaque</dt>
+    <dd class="col-md-8">
+       Enables the alpha/matte channel and forces it to be fully opaque.
+       </dd>
+
+    <dt class="col-md-4">remove</dt>
+    <dd class="col-md-8">
+       Composite the image over the background color.
+       </dd>
+
+    <dt class="col-md-4">set</dt>
+    <dd class="col-md-8">
+       Activates the alpha/matte channel. If it was previously turned off
+       then it also resets the channel to opaque.  If the image already had
+       the alpha channel turned on, it will have no effect.</dd>
+
+    <dt class="col-md-4">shape</dt>
     <dd class="col-md-8">
        As per 'Copy' but also colors the resulting shape mask with
        the current background color.  That is the RGB color channels is
        replaced, with appropriate alpha shape.
        </dd>
 
-    <dt class="col-md-4">Remove</dt>
+    <dt class="col-md-4">transparent</dt>
     <dd class="col-md-8">
-       Composite the image over the background color.
-       </dd>
+       Activates the alpha/matte channel and forces it to be fully
+       transparent. This effectively creates a fully transparent image the
+       same size as the original and with all its original RGB data still
+       intact, but fully transparent. </dd>
 
-    <dt class="col-md-4">Background</dt>
-    <dd class="col-md-8">
-       Set any fully-transparent pixel to the background color, while leaving
-       it fully-transparent.  This can make some image file formats, such as
-       PNG, smaller as the RGB values of transparent pixels are more uniform,
-       and thus can compress better.
-       </dd>
 </dl>
 </div>
 <br/>
@@ -1347,7 +1363,7 @@ flag. </p>
 
 <p>For example <a href="command-line-options.html#threshold">-threshold</a> will by default grayscale
 the image before thresholding, if no <a href="command-line-options.html#channel" >-channel</a> setting
-has been defined. This is not 'Sync flag controlled, yet. </p>
+has been defined. This is not 'Sync' flag controlled, yet. </p>
 
 <p>Also some operators such as <a href="command-line-options.html#blur">-blur</a>, <a
 href="command-line-options.html#gaussian-blur">-gaussian-blur</a>, will modify their handling of the
@@ -6722,7 +6738,7 @@ using the options <a href="command-line-options.html#comment" >-comment</a>, <a 
 a global 'artifact' which are automatically assigned (and any <a href="../www/escape.html" >Format Percent
 Escapes</a> expanded) to images as they are read in.  For example:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>$ magick rose: -set comment 'Rose is a rose is a rose is a rose' rose.jpg
+<pre class="bg-light text-dark mx-4"><samp>$ magick rose: -set Comment 'Rose is a rose is a rose is a rose' rose.jpg
 identify -format %c rose.jpg
 Rose is a rose is a rose is a rose
 </samp></pre>
@@ -7934,4 +7950,4 @@ but with strict boolean masking. </p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 6th December 2023 11:11 -->
+<!-- Magick Cache 28th February 2024 09:57 -->

@@ -668,14 +668,14 @@ image.write("myImage.tiff");
                     <td>
                         <font size="-1">
                             <a href="https://imagemagick.org/Magick++/Enumerations.html#ChannelType">ChannelType</a>
-                            layer_
+                            channel_
                         </font>
                     </td>
                     <td>
                         <font size="-1">
                             Extract channel from image. Use this option
                             to extract a particular channel from&#160; the image.&#160; <i>alphaChannel</i>
-                            &#160; for&#160; example, is useful for extracting the opacity values
+                            &#160; for&#160; example, is useful for extracting the alpha values
                             from an image.
                         </font>
                     </td>
@@ -4394,22 +4394,16 @@ image.write("horse.png");
                     <td><font size="-1">void</font></td>
                     <td>
                         <font size="-1">
-                            Returns a pointer to the Image pixel indexes
+                            Returns a pointer to the Image pixel meta-content
                             corresponding to a previous
                         </font><font size="-1">
-                            getPixel,
-                            getConstPixels, or setPixels call. &#160;
+                            getPixel(), getConstPixels(), or setPixels() call. &#160;
                         </font><font size="-1">
-                            The
-                            returned pointer remains valid until the next getPixel, getConstPixels,
+                            The returned pointer remains valid until the next getPixel, getConstPixels,
                             or setPixels call and should never be deallocated by the user.
                         </font><font size="-1">
-                            Only valid for PseudoClass images or CMYKA images. The
-                            pixel indexes represent an array of type void, with each entry
-                            corresponding to an x,y pixel position. For PseudoClass images, the
-                            entry's value is the offset into the colormap (see <a href="Image++.html#colorMap">colorMap</a>
-                            ) for that pixel. For CMYKA images, the indexes are used to contain the
-                            alpha channel.
+                            The pixel meta-content represent an array of type void, with each entry
+                            corresponding to an x,y pixel position. 
                         </font>
                     </td>
                 </tr>
@@ -4421,12 +4415,11 @@ image.write("horse.png");
                     <td><font size="-1">void</font></td>
                     <td>
                         <font size="-1">
-                            Returns a pointer to the Image pixel meta content
+                            Returns a pointer to the Image pixel meta-content
                             corresponding to the pixel region requested by the last <a href="Image++.html#getConstPixels">getConstPixels</a> , <a href="Image++.html#getPixels">getPixels</a>
                             , or <a href="Image++.html#setPixels">setPixels</a> call.
                         </font><font size="-1">
-                            The
-                            returned pointer remains valid until the next getPixel, getConstPixels,
+                            The returned pointer remains valid until the next getPixel, getConstPixels,
                             or setPixels call and should never be deallocated by the user.
                         </font>
                     </td>
@@ -4449,7 +4442,7 @@ image.write("horse.png");
                             may be subsequently transferred back to the image via syncPixels.
                         </font><font size="-1">
                             The returned pointer remains valid until the next getPixel,
-                            getConstPixels, or setPixels call and should never be deallocated by
+                            getConstPixels(), or setPixels() call and should never be deallocated by
                             the
                             user.
                         </font><font size="-1"></font>

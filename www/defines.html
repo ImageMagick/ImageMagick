@@ -830,6 +830,11 @@ use:</p>
   </tr>
 
   <tr>
+    <td>dng:max-raw-memory=<var>value</var></td>
+    <td>Stop processing if raw buffer size grows larger than that value (in megabytes). Default is 8192.</td>
+  </tr>
+
+  <tr>
     <td>dng:no-auto-bright=<var>true</var></td>
     <td>Disable the histogram-based white level.</td>
   </tr>
@@ -1129,7 +1134,7 @@ use:</p>
 
   <tr>
     <td>pdf:thumbnail=<var>false</var></td>
-    <td>Skip writing a thumbnail when saving a PDF file.</td>
+    <td>Generate image thumbnails when saving a PDF file.</td>
   </tr>
 
   <tr>
@@ -1406,6 +1411,11 @@ use:</p>
     <td>tiff:alpha=<var>associated|unassociated|unspecified</var></td>
     <td>Specify the alpha extra samples as associated, unassociated or
     unspecified.</td>
+  </tr>
+
+  <tr>
+    <td>tiff:assume-alpha=<var>true|false</var></td>
+    <td>Assume undeclared extra channels are alpha.</td>
   </tr>
 
   <tr>
@@ -1737,4 +1747,4 @@ use:</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 6th December 2023 13:10 -->
+<!-- Magick Cache 28th February 2024 09:18 -->

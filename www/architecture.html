@@ -168,7 +168,7 @@ if (image == (Image *) NULL)
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to 8-bit gray image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a class="text-nowrap" href="../www/command-line-options.html#version">-version</a> option: </p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/>Version: ImageMagick 7.1.1-22 2023-12-03 Q16 https://imagemagick.org</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>identify -version</span><span class='crtout'><br/>Version: ImageMagick 7.1.1-29 2024-02-11 Q16 https://imagemagick.org</span></code></pre></ul>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 
 <h2><a class="anchor" id="authentic-pixels"></a>Access the Pixel Cache</h2>
@@ -620,7 +620,7 @@ if (profile != (StringInfo *) NULL)
 </samp></pre>
 
 <h2><a class="anchor" id="multispectral"></a>Multispectral Imagery</h2>
-<p>ImageMagick supports <a href="multispectral-imagery.html">multispectral imagery</a> where all channels have the same dimensions and number of pixels as the original image.  However, not all image formats support multispectral images.  PSD, TIFF, MIFF, MPC, and FTXT have full support for multispectral images up to 31 bands, 21 of them meta channels.  Note, if you build ImageMagick with the configure script <samp>--enable-64bit-channel-masks</samp> option, you can process 63 band multispectral images with up to 53 meta channels.</p>
+<p>ImageMagick supports <a href="multispectral-imagery.html">multispectral imagery</a> where all channels have the same dimensions and number of pixels as the original image.  However, not all image formats support multispectral images.  PSD, TIFF, MIFF, MPC, and FTXT have full support for multispectral images up to 31 bands, 21 of them meta channels.  Note, if you build ImageMagick with the configure script <samp>--enable-64bit-channel-masks</samp> option, you can process 62 band multispectral images with up to 52 meta channels.</p>
 <p>If you have a use case that is not currently supported by an image format, post it to the <a href="https://github.com/ImageMagick/ImageMagick/discussions">discussion forum</a>. There is a good chance, we can support your use case in a future release of ImageMagick.</p>
 
 
@@ -1672,4 +1672,4 @@ Image: logo:
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 6th December 2023 12:53 -->
+<!-- Magick Cache 28th February 2024 09:23 -->

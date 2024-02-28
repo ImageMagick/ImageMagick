@@ -310,8 +310,8 @@ the supported image formats.</p>
   <tr>
     <td>DCR</td>
     <td>R</td>
-    <td>Kodak Digital Camera Raw Image File</td>
-    <td> </td>
+    <td>Digital Camera Raw Image File</td>
+    <td>Use DCRAW to leverage the raw photo decoder delegate program, e.g., dcraw:IMG_2600.dng</td>
   </tr>
 
   <tr>
@@ -875,7 +875,7 @@ the supported image formats.</p>
     <td>PDF</td>
     <td>RW</td>
     <td>Portable Document Format</td>
-    <td>Requires <a href="https://www.ghostscript.com/download.html">Ghostscript</a> to read.  By default, ImageMagick sets the page size to the MediaBox. Some PDF files, however, have a CropBox or TrimBox that is smaller than the MediaBox and may include white space, registration or cutting marks outside the CropBox or TrimBox. To force ImageMagick to use the CropBox or TrimBox rather than the MediaBox, use <a href="command-line-options.html#define">-define</a> (e.g. <samp>-define pdf:use-cropbox=true</samp> or <samp>-define pdf:use-trimbox=true</samp>).  Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your PDF rendering (e.g. -density 300x300).  To specify direct conversion from  Postscript to PDF, use <samp>-define delegate:bimodel=true</samp>. Use <samp>-define pdf:fit-page=true</samp> to scale to the page size. To immediately stop processing upon an error, set <samp>-define pdf:stop-on-error</samp> to <samp>true</samp>. To set the page direction preferences to right-to-left, try  <samp>-define pdf:page-direction=right-to-left</samp>. By default, the PDF is printed using "screen" for annotations and images.  Use <samp>-define pdf:printed=true</samp> to instead utilize the printer options. Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency.  When writing to a PDF, thumbnails are included by default.  To skip generating thumbnails, <samp>-define pdf:thumbnail=false</samp>. To enable interpolation when rendering, use <samp>-define pdf:interpolate=true</samp>.</td>
+    <td>Requires <a href="https://www.ghostscript.com/download.html">Ghostscript</a> to read.  By default, ImageMagick sets the page size to the MediaBox. Some PDF files, however, have a CropBox or TrimBox that is smaller than the MediaBox and may include white space, registration or cutting marks outside the CropBox or TrimBox. To force ImageMagick to use the CropBox or TrimBox rather than the MediaBox, use <a href="command-line-options.html#define">-define</a> (e.g. <samp>-define pdf:use-cropbox=true</samp> or <samp>-define pdf:use-trimbox=true</samp>).  Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your PDF rendering (e.g. -density 300x300).  To specify direct conversion from  Postscript to PDF, use <samp>-define delegate:bimodel=true</samp>. Use <samp>-define pdf:fit-page=true</samp> to scale to the page size. To immediately stop processing upon an error, set <samp>-define pdf:stop-on-error</samp> to <samp>true</samp>. To set the page direction preferences to right-to-left, try  <samp>-define pdf:page-direction=right-to-left</samp>. By default, the PDF is printed using "screen" for annotations and images.  Use <samp>-define pdf:printed=true</samp> to instead utilize the printer options. Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency.  When writing to a PDF, thumbnails are included by default.  Generate thumbnails with <samp>-define pdf:thumbnail=true</samp>. To enable interpolation when rendering, use <samp>-define pdf:interpolate=true</samp>.</td>
   </tr>
 
   <tr>
@@ -1070,7 +1070,7 @@ the supported image formats.</p>
   <tr>
     <td><a href="https://qoiformat.org/">QOI</a></td>
     <td>RW</td>
-    <td>Quite OK Image Forma</td>
+    <td>Quite OK Image Format</td>
     <td>Fast, lossless image compression.</td>
   </tr>
 
@@ -2179,4 +2179,4 @@ the supported image formats.</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 6th December 2023 11:37 -->
+<!-- Magick Cache 28th February 2024 10:34 -->
