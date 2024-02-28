@@ -37,7 +37,7 @@
 <body>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -45,16 +45,16 @@
     <div class="collapse navbar-collapse" id="magick-navbars">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link " href="../www/download.html">Download</a>
+          <a class="nav-link " href="download.html">Download</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
+          <a class="nav-link " href="command-line-tools.html">Tools</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-processing.html">CLI</a>
+          <a class="nav-link " href="command-line-processing.html">CLI</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/develop.html">Develop</a>
+          <a class="nav-link " href="develop.html">Develop</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
@@ -93,7 +93,7 @@
 <p class="lead magick-description">This page descibed the Image composition methods that is used to define how
 two images should be merged together in various image operations.  For the
 Command Line API it is typically set using the <a
-href="../www/command-line-options.html#compose" >-compose</a> setting option. </p>
+href="command-line-options.html#compose" >-compose</a> setting option. </p>
 
 
 <p>The description of composition uses abstract terminology in order to allow
@@ -217,13 +217,13 @@ For example the default compose method can be specified as just 'Over'.</p>
 <p>Many of these compose methods will clear the destination image which was
 not overlaid by the source image.  This is to be expected as part of that
 specific composition methods defintion. You can disable this by setting the
-special <a href="../www/command-line-options.html#define"
+special <a href="command-line-options.html#define"
 >-define</a> 'compose:outside-overlay' to a value of 'false' will turn off
 this behavior. </p>
 
 <p>On top of the above 12 Duff-Porter Alpha Composition methods, one special
 related method '<samp>Copy</samp>' has been provided. This is equivalent to
-using the '<samp>Src</samp>'  with the special <a href="../www/command-line-options.html#define"
+using the '<samp>Src</samp>'  with the special <a href="command-line-options.html#define"
 >-define</a> option '<samp>compose:outside-overlay</samp>' set to
 '<samp>false</samp>', so as to only modify the overlaid area, without clearing
 the rest of the image outside the overlaid area.  </p>
@@ -346,10 +346,10 @@ any values are weighted by the alpha channel of the input and output images.
 This 'Over' alpha blending is also applied to the lighting composition methods
 below. </p>
 
-<p> The math composition is applied on an individual channel basis as defined by the <a href="../www/command-line-options.html#channel" >-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha
+<p> The math composition is applied on an individual channel basis as defined by the <a href="command-line-options.html#channel" >-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha
 composition effects, becoming involved. </p>
 
-<p>Use <samp>-define compose:sync=false</samp> and the above mathematical compositions will no longer synchronise its actions with the alpha channel.  Instead the math composition is applied on an individual channel basis as defined by the <a href="../www/command-line-options.html#channel">-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha composition effects, becoming involved.</p> 
+<p>Use <samp>-define compose:sync=false</samp> and the above mathematical compositions will no longer synchronise its actions with the alpha channel.  Instead the math composition is applied on an individual channel basis as defined by the <a href="command-line-options.html#channel">-channel</a>.  This includes the alpha channel. This special usage allows you to perform true mathematics of the image channels, without alpha composition effects, becoming involved.</p> 
 
 <p>This define is not applied to the lighting composition methods (see below) even though they are closely related to mathematical composition methods.</p>
 
@@ -492,7 +492,7 @@ composition effects, becoming involved. </p>
     <td>change-mask</td>
     <td>Replace any destination pixel that is the similar to the
     source images pixel (as defined by the current <a
-    href="../www/command-line-options.html#fuzz">-fuzz</a> factor), with transparency.
+    href="command-line-options.html#fuzz">-fuzz</a> factor), with transparency.
     </td>
   </tr>
 
@@ -510,15 +510,15 @@ arguments, which are tabled below. </p>
 <p>In the "<samp>composite</samp>" command these composition methods are
 selected using special options with the arguments needed. They are usually,
 but not always, the same name as the composite 'method' they use, and replaces
-the normal use of the <a href="../www/command-line-options.html#compose" >-compose</a>
+the normal use of the <a href="command-line-options.html#compose" >-compose</a>
 setting in the "<samp>composite</samp>" command.  For example... </p>
 
 <pre class="bg-light text-dark mx-4"><samp>composite ... -blend 50x50 ...  </samp></pre>
 
-<p>The "<samp>magick</samp>" command can accept these extra arguments to its <a href="../www/command-line-options.html#composite"
->-composite</a> operator, using the special <a href="../www/command-line-options.html#define">-define</a>
+<p>The "<samp>magick</samp>" command can accept these extra arguments to its <a href="command-line-options.html#composite"
+>-composite</a> operator, using the special <a href="command-line-options.html#define">-define</a>
 attribute of <samp>compose:args</samp>.  This means you can now
-make use of these special augmented <a href="../www/command-line-options.html#compose"
+make use of these special augmented <a href="command-line-options.html#compose"
 >-compose</a> methods, those the argument and the method both need to be set
 separately.  For example... </p>
 
@@ -539,7 +539,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>dissolve</td>
     <td>Arguments:
         <var>src_percent</var>[x<var>dst_percent</var>]
-    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#dissolve">-dissolve</a>.
+    <br/>Equivalent to "<samp>composite</samp>" <a href="command-line-options.html#dissolve">-dissolve</a>.
     Dissolve the 'source' image by the percentage given before overlaying
         'over' the 'destination' image. If <var>src_percent</var> is
         greater than 100, it starts dissolving the main image so it will
@@ -554,7 +554,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>Arguments:
         <var>src_percent</var>[x<var>dst_percent</var>]
     <br/>Equivalent to "<samp>composite</samp>" <a
-        href="../www/command-line-options.html#blend">-blend</a>.
+        href="command-line-options.html#blend">-blend</a>.
     Average the images together ('plus') according to the percentages
         given and each pixels transparency.  If only a single percentage value
         is given it sets the weight of the composite or 'source' image, while
@@ -573,7 +573,7 @@ with a brief summary of what they do. For more details see the equivalent
     <ul><samp>A*Sc*Dc + B*Sc + C*Dc + D</samp></ul>
     Can be used to generate a custom composition method that would
         otherwise need to be implemented using the slow <a
-        href="../www/command-line-options.html#fx">-fx</a> DIY image operator.
+        href="command-line-options.html#fx">-fx</a> DIY image operator.
     </td>
   </tr>
 
@@ -581,7 +581,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>modulate</td>
     <td>Arguments:
         <var>brightness</var>[x<var>saturation</var>]
-    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#watermark">-watermark</a>.
+    <br/>Equivalent to "<samp>composite</samp>" <a href="command-line-options.html#watermark">-watermark</a>.
     Take a grayscale image (with alpha mask) and modify the destination
         image's brightness according to watermark image's grayscale value and
         the <var>brightness</var> percentage.  The destinations
@@ -595,7 +595,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>displace</td>
     <td>Arguments:
         <var>X-scale</var>[x<var>Y-scale</var>][!][%]
-    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#displace">-displace</a>.
+    <br/>Equivalent to "<samp>composite</samp>" <a href="command-line-options.html#displace">-displace</a>.
     With this option, the 'overlay' image, and optionally the 'mask'
         image, is used as a relative displacement map, which is used to
         displace the lookup of what part of the destination image is seen at
@@ -642,7 +642,7 @@ with a brief summary of what they do. For more details see the equivalent
     <td>blur</td>
     <td>Arguments:
         <var>Width</var>[x<var>Height</var>[+<var>Angle</var>][+<var>Angle2</var>]]
-    <br/>Equivalent to "<samp>composite</samp>" <a href="../www/command-line-options.html#blur-composite">-blur</a>.
+    <br/>Equivalent to "<samp>composite</samp>" <a href="command-line-options.html#blur-composite">-blur</a>.
     A Variable Blur Mapping Composition method, where each pixel in the
         overlaid region is replaced with an Elliptical Weighted Average (EWA),
         with an ellipse (typically a circle) of the given sigma size, scaled
@@ -680,23 +680,23 @@ with a brief summary of what they do. For more details see the equivalent
 </table>
 
 <p>To print a complete list of all the available compose operators, use <a
-href="../www/command-line-options.html#list">-list compose</a>.</p>
+href="command-line-options.html#list">-list compose</a>.</p>
 </div>  </div>
   </main><!-- /.container -->
   <footer class="magick-footer">
     <div class="container-fluid">
-      <a href="../www/security-policy.html">Security</a> •
-      <a href="../www/news.html">News</a>
+      <a href="security-policy.html">Security</a> •
+      <a href="news.html">News</a>
      
       <a href="compose.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-      <a href="../www/links.html">Related</a> •
-      <a href="../www/sitemap.html">Sitemap</a>
+      <a href="links.html">Related</a> •
+      <a href="sitemap.html">Sitemap</a>
    <br/>
-     <a href="../www/support.html">Sponsor</a> •
-     <a href="../www/cite.html">Cite</a> •
+     <a href="support.html">Sponsor</a> •
+     <a href="cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
+     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
    <br/>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
@@ -709,3 +709,4 @@ href="../www/command-line-options.html#list">-list compose</a>.</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
+<!-- Magick Cache 28th February 2024 23:12 -->
