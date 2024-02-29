@@ -1305,34 +1305,37 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   image->columns=jpeg_info->output_width;
   image->rows=jpeg_info->output_height;
   image->depth=(size_t) jpeg_info->data_precision;
-  switch (jpeg_info->out_color_space)
-  {
-    case JCS_RGB:
-    default:
-    {
-      (void) SetImageColorspace(image,sRGBColorspace,exception);
-      break;
-    }
-    case JCS_GRAYSCALE:
-    {
-      (void) SetImageColorspace(image,GRAYColorspace,exception);
-      break;
-    }
-    case JCS_YCbCr:
-    {
-      (void) SetImageColorspace(image,YCbCrColorspace,exception);
-      break;
-    }
-    case JCS_CMYK:
-    {
-      (void) SetImageColorspace(image,CMYKColorspace,exception);
-      break;
-    }
-  }
   if (IsITUFaxImage(image) != MagickFalse)
     {
       (void) SetImageColorspace(image,LabColorspace,exception);
       jpeg_info->out_color_space=JCS_YCbCr;
+    }
+  else
+    {
+      switch (jpeg_info->out_color_space)
+      {
+        case JCS_RGB:
+        default:
+        {
+          (void) SetImageColorspace(image,sRGBColorspace,exception);
+          break;
+        }
+        case JCS_GRAYSCALE:
+        {
+          (void) SetImageColorspace(image,GRAYColorspace,exception);
+          break;
+        }
+        case JCS_YCbCr:
+        {
+          (void) SetImageColorspace(image,YCbCrColorspace,exception);
+          break;
+        }
+        case JCS_CMYK:
+        {
+          (void) SetImageColorspace(image,CMYKColorspace,exception);
+          break;
+        }
+      }
     }
   option=GetImageOption(image_info,"jpeg:colors");
   if (option != (const char *) NULL)
