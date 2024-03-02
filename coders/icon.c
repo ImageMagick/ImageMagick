@@ -186,16 +186,19 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
   rows=(size_t) (ReadBlobLSBShort(image));
   (void) ReadBlobLSBShort(image);  /* width of bitmap in bytes */
   (void) ReadBlobLSBShort(image);  /* cursor color */
-  if ((rows != 32 && rows != 64) || (columns != 32 && columns != 64))
-    ThrowImageException(CorruptImageError,"ImproperImageHeader");
+  if (((rows != 32) && (rows != 64)) || ((columns != 32) && (columns != 64)))
+    {
+      image=DestroyImageList(image);
+      ThrowImageException(CorruptImageError,"ImproperImageHeader");
+    }
   /*
     Convert bitmap scanline.
   */
   if (SetImageExtent(image,columns,rows,exception) == MagickFalse)
-    return(DestroyImage(image));
+    return(DestroyImageList(image));
   image->alpha_trait=BlendPixelTrait;
   if (AcquireImageColormap(image,3,exception) == MagickFalse)
-    return(DestroyImage(image));
+    return(DestroyImageList(image));
   image->colormap[1].alpha=TransparentAlpha;
   for (i=0; i < 2; i++)
   {
@@ -238,7 +241,8 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
         break;
     }
   }
-  (void) SyncImage(image,exception);
+  if (SyncImage(image,exception) == MagickFalse)
+    return(DestroyImageList(image));
   if (CloseBlob(image) == MagickFalse)
     return(DestroyImageList(image));
   return(image);
