@@ -82,6 +82,33 @@ jobs:
         set -e
         make install
 
+  build_macos_arm64:
+    name: Build MacOS arm64
+    runs-on: macos-14
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        set -e
+        export HOMEBREW_NO_AUTO_UPDATE=1
+        brew install automake fftw flif jbigkit libxml2 pango libraqm librsvg libtool
+
+    - name: Configure ImageMagick
+      run: |
+        export CFLAGS="-Wall -Wextra -Werror -Wno-incompatible-library-redeclaration -Wno-deprecated-declarations -Wno-unused-parameter -Wno-unused-function -Wno-missing-declarations -Wno-incompatible-pointer-types-discards-qualifiers"
+        export LDFLAGS=$(pkg-config --libs libjpeg)
+        autoreconf -fiv
+        ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --with-fftw --with-flif --with-rsvg
+
+    - name: Build ImageMagick
+      run: |
+        set -e
+        make
+        make check
+        sudo make install
+
   build_windows:
     name: Build Windows ${{matrix.platform}}
     runs-on: windows-2022
