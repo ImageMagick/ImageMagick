@@ -188,8 +188,9 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
   (void) ReadBlobLSBShort(image);  /* cursor color */
   if (((rows != 32) && (rows != 64)) || ((columns != 32) && (columns != 64)))
     {
-      image=DestroyImageList(image);
-      ThrowImageException(CorruptImageError,"ImproperImageHeader");
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "ImproperImageHeader","`%s'",image->filename);
+      return(DestroyImageList(image));
     }
   /*
     Convert bitmap scanline.
