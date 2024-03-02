@@ -944,7 +944,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     *p;
 
   IconFile
-    icon_file;
+    *icon_file;
 
   IconInfo
     icon_info;
@@ -1016,22 +1016,25 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   (void) WriteBlobLSBShort(image,0);
   (void) WriteBlobLSBShort(image,1);
   (void) WriteBlobLSBShort(image,(unsigned char) scene);
-  (void) memset(&icon_file,0,sizeof(icon_file));
+  icon_file=(IconFile*) AcquireMagickMemory(sizeof(*icon_file));
+  if (icon_file == (IconFile*) NULL)
+    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) memset(icon_file,0,sizeof(*icon_file));
   (void) memset(&icon_info,0,sizeof(icon_info));
   scene=0;
   next=(images != (Image *) NULL) ? images : image;
   do
   {
-    (void) WriteBlobByte(image,icon_file.directory[scene].width);
-    (void) WriteBlobByte(image,icon_file.directory[scene].height);
-    (void) WriteBlobByte(image,icon_file.directory[scene].colors);
-    (void) WriteBlobByte(image,icon_file.directory[scene].reserved);
-    (void) WriteBlobLSBShort(image,icon_file.directory[scene].planes);
-    (void) WriteBlobLSBShort(image,icon_file.directory[scene].bits_per_pixel);
+    (void) WriteBlobByte(image,icon_file->directory[scene].width);
+    (void) WriteBlobByte(image,icon_file->directory[scene].height);
+    (void) WriteBlobByte(image,icon_file->directory[scene].colors);
+    (void) WriteBlobByte(image,icon_file->directory[scene].reserved);
+    (void) WriteBlobLSBShort(image,icon_file->directory[scene].planes);
+    (void) WriteBlobLSBShort(image,icon_file->directory[scene].bits_per_pixel);
     (void) WriteBlobLSBLong(image,(unsigned int)
-      icon_file.directory[scene].size);
+      icon_file->directory[scene].size);
     (void) WriteBlobLSBLong(image,(unsigned int)
-      icon_file.directory[scene].offset);
+      icon_file->directory[scene].offset);
     scene++;
     next=SyncNextImageInList(next);
   } while ((next != (Image *) NULL) && (adjoin != MagickFalse));
@@ -1059,6 +1062,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         write_image=CloneImage(next,0,0,MagickTrue,exception);
         if (write_image == (Image *) NULL)
           {
+            icon_file=(IconFile*) RelinquishMagickMemory(icon_file);
             images=DestroyImageList(images);
             return(MagickFalse);
           }
@@ -1080,17 +1084,18 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         write_info=DestroyImageInfo(write_info);
         if (png == (unsigned char *) NULL)
           {
+            icon_file=(IconFile*) RelinquishMagickMemory(icon_file);
             images=DestroyImageList(images);
             return(MagickFalse);
           }
-        icon_file.directory[scene].width=0;
-        icon_file.directory[scene].height=0;
-        icon_file.directory[scene].colors=0;
-        icon_file.directory[scene].reserved=0;
-        icon_file.directory[scene].planes=1;
-        icon_file.directory[scene].bits_per_pixel=32;
-        icon_file.directory[scene].size=(size_t) length;
-        icon_file.directory[scene].offset=(size_t) TellBlob(image);
+        icon_file->directory[scene].width=0;
+        icon_file->directory[scene].height=0;
+        icon_file->directory[scene].colors=0;
+        icon_file->directory[scene].reserved=0;
+        icon_file->directory[scene].planes=1;
+        icon_file->directory[scene].bits_per_pixel=32;
+        icon_file->directory[scene].size=(size_t) length;
+        icon_file->directory[scene].offset=(size_t) TellBlob(image);
         (void) WriteBlob(image,(size_t) length,png);
         png=(unsigned char *) RelinquishMagickMemory(png);
       }
@@ -1184,6 +1189,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           icon_info.image_size,sizeof(*pixels));
         if (pixels == (unsigned char *) NULL)
           {
+            icon_file=(IconFile*) RelinquishMagickMemory(icon_file);
             images=DestroyImageList(images);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           }
@@ -1336,15 +1342,15 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         /*
           Write 40-byte version 3+ bitmap header.
         */
-        icon_file.directory[scene].width=(unsigned char) icon_info.width;
-        icon_file.directory[scene].height=(unsigned char) icon_info.height;
-        icon_file.directory[scene].colors=(unsigned char)
+        icon_file->directory[scene].width=(unsigned char) icon_info.width;
+        icon_file->directory[scene].height=(unsigned char) icon_info.height;
+        icon_file->directory[scene].colors=(unsigned char)
           icon_info.number_colors;
-        icon_file.directory[scene].reserved=0;
-        icon_file.directory[scene].planes=icon_info.planes;
-        icon_file.directory[scene].bits_per_pixel=icon_info.bits_per_pixel;
-        icon_file.directory[scene].size=icon_info.size;
-        icon_file.directory[scene].offset=(size_t) TellBlob(image);
+        icon_file->directory[scene].reserved=0;
+        icon_file->directory[scene].planes=icon_info.planes;
+        icon_file->directory[scene].bits_per_pixel=icon_info.bits_per_pixel;
+        icon_file->directory[scene].size=icon_info.size;
+        icon_file->directory[scene].offset=(size_t) TellBlob(image);
         (void) WriteBlobLSBLong(image,(unsigned int) 40);
         (void) WriteBlobLSBLong(image,(unsigned int) icon_info.width);
         (void) WriteBlobLSBLong(image,(unsigned int) icon_info.height*2);
@@ -1369,6 +1375,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               << icon_info.bits_per_pixel,4UL*sizeof(*icon_colormap));
             if (icon_colormap == (unsigned char *) NULL)
               {
+                icon_file=(IconFile*) RelinquishMagickMemory(icon_file);
                 images=DestroyImageList(images);
                 ThrowWriterException(ResourceLimitError,
                   "MemoryAllocationFailed");
@@ -1447,20 +1454,21 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   next=(images != (Image *) NULL) ? images : image;
   do
   {
-    (void) WriteBlobByte(image,icon_file.directory[scene].width);
-    (void) WriteBlobByte(image,icon_file.directory[scene].height);
-    (void) WriteBlobByte(image,icon_file.directory[scene].colors);
-    (void) WriteBlobByte(image,icon_file.directory[scene].reserved);
-    (void) WriteBlobLSBShort(image,icon_file.directory[scene].planes);
-    (void) WriteBlobLSBShort(image,icon_file.directory[scene].bits_per_pixel);
+    (void) WriteBlobByte(image,icon_file->directory[scene].width);
+    (void) WriteBlobByte(image,icon_file->directory[scene].height);
+    (void) WriteBlobByte(image,icon_file->directory[scene].colors);
+    (void) WriteBlobByte(image,icon_file->directory[scene].reserved);
+    (void) WriteBlobLSBShort(image,icon_file->directory[scene].planes);
+    (void) WriteBlobLSBShort(image,icon_file->directory[scene].bits_per_pixel);
     (void) WriteBlobLSBLong(image,(unsigned int)
-      icon_file.directory[scene].size);
+      icon_file->directory[scene].size);
     (void) WriteBlobLSBLong(image,(unsigned int)
-      icon_file.directory[scene].offset);
+      icon_file->directory[scene].offset);
     scene++;
     next=SyncNextImageInList(next);
   } while ((next != (Image *) NULL) && (adjoin != MagickFalse));
   (void) CloseBlob(image);
+  icon_file=(IconFile*) RelinquishMagickMemory(icon_file);
   images=DestroyImageList(images);
   return(MagickTrue);
 }
