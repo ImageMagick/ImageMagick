@@ -129,8 +129,7 @@ jobs:
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd ImageMagick-Windows\VisualMagick
-        set /p solution=<solution
-        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+        msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
     - name: Build PerlMagick
       if: ${{matrix.type == 'dll' && matrix.platform != 'arm64'}}
