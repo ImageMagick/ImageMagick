@@ -2055,7 +2055,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,(bounding_box.height-(size_t) bounding_box.y),1)
+    magick_number_threads(image,image,(size_t) (bounding_box.height-bounding_box.y+1),1)
 #endif
   for (y=bounding_box.y; y < (ssize_t) bounding_box.height; y++)
   {
@@ -2072,14 +2072,13 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 
     ssize_t
       i,
+      j,
       x;
-
-    ssize_t
-      j;
 
     if (status == MagickFalse)
       continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,bounding_box.x,y,(size_t)
+      (bounding_box.width-bounding_box.x+1),1,exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -4014,12 +4013,12 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 GradientType
                   type;
 
-              type=LinearGradient;
-              if (draw_info->gradient.type == RadialGradient)
-                type=RadialGradient;
-              (void) GradientImage(image,type,PadSpread,stops,number_stops,
-                exception);
-             }
+                type=LinearGradient;
+                if (draw_info->gradient.type == RadialGradient)
+                  type=RadialGradient;
+                (void) GradientImage(image,type,PadSpread,stops,number_stops,
+                  exception);
+              }
            if (number_stops > 0)
              stops=(StopInfo *) RelinquishMagickMemory(stops);
           }
