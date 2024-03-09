@@ -2402,9 +2402,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
     *q;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     y;
 
   struct jpeg_error_mgr

@@ -1547,7 +1547,7 @@ MagickExport ImageType GetImageType(const Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IdentifyImageGray() returns grayscale if all the pixels in the image have
-%  the same red, green, and blue intensities, and bi-level is the intensity is
+%  the same red, green, and blue intensities, and bi-level if the intensity is
 %  either 0 or QuantumRange. Otherwise undefined is returned.
 %
 %  The format of the IdentifyImageGray method is:
@@ -1570,6 +1570,9 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
   ImageType
     type = BilevelType;
 
+  MagickBooleanType
+    status = MagickTrue;
+
   ssize_t
     y;
 
@@ -1583,7 +1586,7 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
     return(UndefinedType);
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(type) \
+  #pragma omp parallel for schedule(static) shared(status,type) \
     magick_number_threads(image,image,image->rows,2)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1594,19 +1597,19 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
     ssize_t
       x;
 
-    if (type == UndefinedType)
+    if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
       {
-        type=UndefinedType;
+        status=MagickFalse;
         continue;
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (IsPixelGray(image,p) == MagickFalse)
         {
-          type=UndefinedType;
+          status=MagickFalse;
           break;
         }
       if ((type == BilevelType) && (IsPixelMonochrome(image,p) == MagickFalse))
@@ -1617,6 +1620,8 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
   image_view=DestroyCacheView(image_view);
   if ((type == GrayscaleType) && (image->alpha_trait != UndefinedPixelTrait))
     type=GrayscaleAlphaType;
+  if (status == MagickFalse)
+    return(UndefinedType);
   return(type);
 }
 
