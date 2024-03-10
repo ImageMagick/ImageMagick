@@ -8,13 +8,17 @@
 <img align="center" src="https://imagemagick.org/image/wizard.png" alt="ImageMagick logo" width="265" height="353"/>
 </p>
 
-[ImageMagick®](https://imagemagick.org/) is a free and [open-source](https://imagemagick.org/script/license.php) software suite for displaying, converting, and editing raster image and vector image files. It can read and write over 200 image file [formats](https://imagemagick.org/script/formats.php), and can support a wide range of image manipulation operations, such as resizing, cropping, and color correction.
+[ImageMagick®](https://imagemagick.org/) is a free and [open-source](https://imagemagick.org/script/license.php) oftware suite, used for editing and manipulating digital images. It can be used to create, edit, compose, or convert bitmap images, and supports a wide range of file [formats](https://imagemagick.org/script/formats.php), including JPEG, PNG, GIF, TIFF, and PDF.
 
 ## What is ImageMagick?
 
-ImageMagick is written in C and is available for a wide range of operating systems, including Linux, macOS, and Windows. It can be used as a standalone application, or as a library that can be integrated into other software programs.
+ImageMagick is widely used in industries such as web development, graphic design, and video editing, as well as in scientific research, medical imaging, and astronomy. Its versatile and customizable nature, along with its robust image processing capabilities, make it a popular choice for a wide range of image-related tasks.
 
-The main website for ImageMagick can be found at [https://imagemagick.org](https://imagemagick.org/). The source code for this software can be accessed through the repository located at [https://github.com/ImageMagick/ImageMagick](https://github.com/ImageMagick/ImageMagick). In addition, a legacy version of ImageMagick, version 6, is also still maintained and can be found at [https://legacy.imagemagick.org](https://legacy.imagemagick.org/).
+ImageMagick includes a command-line interface for executing complex image processing tasks, as well as APIs for integrating its features into software applications. It is written in C and can be used on a variety of operating systems, including Linux, Windows, and macOS.
+
+The main website for ImageMagick can be found at [https://imagemagick.org](https://imagemagick.org/). The source code for this software can be accessed through a [repository](https://github.com/ImageMagick/ImageMagick). In addition, we maintain a legacy version of ImageMagick [version 6](https://legacy.imagemagick.org/).
+
+Creating a security policy that fits your specific local environment before making use of ImageMagick is highly advised. You can find guidance on setting up this [policy](https://imagemagick.org/script/security-policy.php). Also, it's important to verify your policy using the [validation tool](https://imagemagick.org/script/security-policy.php).
 
 ## Features and Capabilities
 
@@ -69,9 +73,10 @@ Here are just a few [examples](https://imagemagick.org/script/examples.php) of w
 
 ## News
 
-ImageMagick best practices **strongly** encourages you to configure a [security policy](https://imagemagick.org/script/security-policy.php) that suits your local environment.
+Creating a security policy that fits your specific local environment before making use of ImageMagick is highly advised. You can find guidance on setting up this [policy](https://imagemagick.org/script/security-policy.php). Also, it's important to verify your policy using the [validation tool](https://imagemagick-secevaluator.doyensec.com/). As of ImageMagick version 7.1.1-16, you can choose and customize one of these [security policies](https://imagemagick.org/script/security-policy.php): Open, Limited, Secure, and Websafe.
 
-Now that ImageMagick version 7 is released, we continue to maintain the legacy release of ImageMagick, version 6, at https://legacy.imagemagick.org. Learn how ImageMagick version 7 differs from previous versions with our [porting guide](https://imagemagick.org/script/porting.php).
+By default, ImageMagick supports up to 32 channels. As of ImageMagick version 7.1.1-16, you can enable up to 64 channels by adding the **--enable-64bit-channel-masks** option to the Linux configure build script. For Windows, just select the option from the configure application.
+
 
 Want more performance from ImageMagick? Try these options:
 
@@ -80,4 +85,4 @@ Want more performance from ImageMagick? Try these options:
 * reduce lock contention with the [tcmalloc](http://goog-perftools.sourceforge.net/doc/tcmalloc.html) memory allocation library;
 * push large images to a solid-state drive, see [large image support](https://imagemagick.org/script/architecture.php#tera-pixel).
 
-If these options are prohibitive, you can reduce the quality of the image results. The default build is Q16 HDRI. If you disable [HDRI](https://imagemagick.org/script/high-dynamic-range.php), you use half the memory and instead of predominantly floating point operations, you use the typically more efficient integer operations. The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative). If you build the Q8 non-HDRI version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values. For a Q8 non-HDRI build of ImageMagick, use these configure script options: --with-quantum-depth=8 --disable-hdri.
+If these options are prohibitive, you can reduce the quality of the image results. The default build is Q16 HDRI. If you disable [HDRI](https://imagemagick.org/script/high-dynamic-range.php), you use half the memory and instead of predominantly floating point operations, you use the typically more efficient integer operations. The tradeoff is reduced precision and you cannot process out of range pixel values (e.g. negative). If you build the Q8 non-HDRI version of ImageMagick, you again reduce the memory requirements in half-- and once again there is a tradeoff, even less precision and no out of range pixel values. For a Q8 non-HDRI build of ImageMagick, use these configure script options: **--with-quantum-depth=8 --disable-hdri**.
