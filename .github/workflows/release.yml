@@ -46,7 +46,7 @@ jobs:
     name: 'Windows ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}} (${{matrix.type}})'
     needs:
       - change_log
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     strategy:
       fail-fast: false
@@ -240,7 +240,7 @@ jobs:
     name: 'Windows portable ${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}'
     needs:
       - change_log
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     strategy:
       fail-fast: false
