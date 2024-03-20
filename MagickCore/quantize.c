@@ -2881,7 +2881,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   assert(exception->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if ((dither_method != NoDitherMethod) && (levels > 1) && (levels < 20))
+  if ((dither_method != NoDitherMethod) && (levels > 1) && (levels < 17))
     for (y=0; y < 1; y++)
     {
       Image 
@@ -2901,7 +2901,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
         if ((traits & UpdatePixelTrait) != 0)
           channels++;
       }
-      number_columns=pow(levels,channels);
+      number_columns=(size_t) pow(levels,channels);
       map_image=CloneImage(image,number_columns,1,MagickTrue,exception);
       if (map_image == (Image *) NULL)
         {
