@@ -96,7 +96,11 @@
 #include "jpeglib.h"
 #include "jerror.h"
 #endif
-
+
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+#include "uhdr.h"
+#endif
+
 /*
   Define declarations.
 */
@@ -1690,6 +1694,12 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
+
+#ifdef MAGICKCORE_UHDR_DELEGATE
+  if (IsUHDR(image_info, exception) == MagickTrue)
+    return ReadUHDRImage(image_info, exception);
+#endif
+
   offset=0;
   images=ReadOneJPEGImage(image_info,&jpeg_info,&offset,exception);
   if ((images != (Image *) NULL) &&
@@ -1778,7 +1788,10 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry->magick=(IsImageFormatHandler *) IsJPEG;
   entry->flags|=CoderDecoderSeekableStreamFlag;
+#ifndef MAGICKCORE_UHDR_DELEGATE
+  // hack! allow adjoin to support uhdr encoding. For default behavior use +adjoin
   entry->flags^=CoderAdjoinFlag;
+#endif
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jpeg");
@@ -1792,7 +1805,10 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
+#ifndef MAGICKCORE_UHDR_DELEGATE
+  // hack! allow adjoin to support uhdr encoding. For default behavior use +adjoin
   entry->flags^=CoderAdjoinFlag;
+#endif
   entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')
     entry->version=ConstantString(version);
@@ -3185,6 +3201,14 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   struct jpeg_compress_struct
     jpeg_info;
 
+#ifdef MAGICKCORE_UHDR_DELEGATE
+  if (image_info->adjoin == MagickTrue && HasResourcesForUHdrEncode(image))
+  {
+    MagickBooleanType status = WriteUHDRImage(image_info,image,exception);
+    if (status == MagickTrue)
+      return status;
+  }
+#endif
   return(WriteJPEGImage_(image_info,image,&jpeg_info,exception));
 }
 #endif
