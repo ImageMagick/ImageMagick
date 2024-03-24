@@ -129,6 +129,11 @@ jobs:
             hdri: no
 
     steps:
+    - name: Clone ImageMagick
+      uses: actions/checkout@v4
+      with:
+        path: ImageMagick
+
     - name: Clone ImageMagick-Windows
       uses: actions/checkout@v4
       with:
@@ -139,9 +144,10 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        for /f "tokens=* usebackq" %%f in (`git rev-parse head`) do set COMMIT=%%f
-        cd ImageMagick-Windows
-        CloneRepositories.cmd %COMMIT%
+        cd ImageMagick
+        for /f "tokens=* USEBACKQ" %%F IN (`git rev-parse HEAD`) do set COMMIT_SHA=%%F
+        cd ..\ImageMagick-Windows
+        CloneRepositories.cmd %COMMIT_SHA%
 
     - name: Download ChangeLog.md
       uses: actions/download-artifact@v4
@@ -181,6 +187,11 @@ jobs:
         buildType: [ dmt, smtd ]
 
     steps:
+    - name: Clone ImageMagick
+      uses: actions/checkout@v4
+      with:
+        path: ImageMagick
+
     - name: Clone ImageMagick-Windows
       uses: actions/checkout@v4
       with:
@@ -191,9 +202,10 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        for /f "tokens=* usebackq" %%f in (`git rev-parse head`) do set COMMIT=%%f
-        cd ImageMagick-Windows
-        CloneRepositories.cmd %COMMIT%
+        cd ImageMagick
+        for /f "tokens=* USEBACKQ" %%F IN (`git rev-parse HEAD`) do set COMMIT_SHA=%%F
+        cd ..\ImageMagick-Windows
+        CloneRepositories.cmd %COMMIT_SHA%
 
     - name: Build configure
       shell: cmd
