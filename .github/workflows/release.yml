@@ -82,7 +82,7 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        for /f "tokens=* usebackq" %f in (`git rev-parse head`) do set COMMIT=%f
+        for /f "tokens=* usebackq" %%f in (`git rev-parse head`) do set COMMIT=%%f
         cd ImageMagick-Windows
         CloneRepositories.cmd %COMMIT%
 
@@ -217,7 +217,7 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        for /f "tokens=* usebackq" %f in (`git rev-parse head`) do set COMMIT=%f
+        for /f "tokens=* usebackq" %%f in (`git rev-parse head`) do set COMMIT=%%f
         cd ImageMagick-Windows
         CloneRepositories.cmd %COMMIT% source
 
@@ -273,7 +273,7 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        for /f "tokens=* usebackq" %f in (`git rev-parse head`) do set COMMIT=%f
+        for /f "tokens=* usebackq" %%f in (`git rev-parse head`) do set COMMIT=%%f
         cd ImageMagick-Windows
         CloneRepositories.cmd %COMMIT%
 
