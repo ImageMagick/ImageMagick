@@ -661,7 +661,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   blob_size=GetBlobSize(image);
   
-  option=GetImageOption(image_info,"bmp:ignore-filesize");
   do
   {
     PixelInfo
@@ -705,6 +704,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (bmp_info.size > 124)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+    /*
+      Get option to bypass file size check
+    */
+    option=GetImageOption(image_info,"bmp:ignore-filesize");
     if (!IsStringTrue(option) && 
         (bmp_info.file_size != 0) &&
         ((MagickSizeType) bmp_info.file_size > GetBlobSize(image)))
@@ -948,6 +951,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if ((MagickSizeType) bmp_info.file_size != blob_size)
       {
+        option=GetImageOption(image_info,"bmp:ignore-filesize");
         if (IsStringTrue(option) == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
             CorruptImageError,"LengthAndFilesizeDoNotMatch","`%s'",
