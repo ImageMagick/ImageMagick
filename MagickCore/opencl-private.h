@@ -25,6 +25,13 @@ Include declarations.
 #include "MagickCore/opencl.h"
 #include "MagickCore/thread_.h"
 
+#if defined(MAGICKCORE_HAVE_CL_CL_H)
+#  include <CL/cl.h>
+#endif
+#if defined(MAGICKCORE_HAVE_OPENCL_CL_H)
+#  include <OpenCL/cl.h>
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
