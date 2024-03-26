@@ -82,6 +82,10 @@ MAGICKCORE_TIFF_MODULES = coders/ept.la coders/tiff.la
 MAGICKCORE_TIFF_SRCS = coders/ept.c coders/tiff.c
 endif
 
+if UHDR_DELEGATE
+MAGICKCORE_UHDR_SRCS = coders/uhdr.c
+endif
+
 if WEBP_DELEGATE
 MAGICKCORE_WEBP_MODULES = coders/webp.la
 MAGICKCORE_WEBP_SRCS = coders/webp.c
@@ -335,6 +339,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/ttf.h \
 	coders/txt.c \
 	coders/txt.h \
+	coders/uhdr.h \
 	coders/uil.c \
 	coders/uil.h \
 	coders/url.c \
@@ -389,6 +394,7 @@ MAGICKCORE_CODER_SRCS = \
 	$(MAGICKCORE_JXL_SRCS) \
 	$(MAGICKCORE_PNG_SRCS) \
 	$(MAGICKCORE_TIFF_SRCS) \
+	$(MAGICKCORE_UHDR_SRCS) \
 	$(MAGICKCORE_WEBP_SRCS) \
 	$(MAGICKCORE_WMF_SRCS) \
 	$(MAGICKCORE_X11_SRCS)
@@ -518,6 +524,7 @@ CODERS_NOINST_HDRS = \
 	coders/tim2.h \
 	coders/ttf.h \
 	coders/txt.h \
+	coders/uhdr.h \
 	coders/uil.h \
 	coders/url.h \
 	coders/uyvy.h \
