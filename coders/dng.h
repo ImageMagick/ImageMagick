@@ -36,10 +36,13 @@
   MagickCoderAlias("DNG", "DCR") \
   MagickCoderAlias("DNG", "DCRAW") \
   MagickCoderAlias("DNG", "ERF") \
+  MagickCoderAlias("DNG", "FFF") \
   MagickCoderAlias("DNG", "IIQ") \
   MagickCoderAlias("DNG", "KDC") \
   MagickCoderAlias("DNG", "K25") \
+  MagickCoderAlias("DNG", "MDC") \
   MagickCoderAlias("DNG", "MEF") \
+  MagickCoderAlias("DNG", "MOS") \
   MagickCoderAlias("DNG", "MRW") \
   MagickCoderAlias("DNG", "NEF") \
   MagickCoderAlias("DNG", "NRW") \
@@ -48,9 +51,12 @@
   MagickCoderAlias("DNG", "RAF") \
   MagickCoderAlias("DNG", "RAW") \
   MagickCoderAlias("DNG", "RMF") \
+  MagickCoderAlias("DNG", "RWL") \
   MagickCoderAlias("DNG", "RW2") \
-  MagickCoderAlias("DNG", "SRF") \
   MagickCoderAlias("DNG", "SR2") \
+  MagickCoderAlias("DNG", "SRF") \
+  MagickCoderAlias("DNG", "SRW") \
+  MagickCoderAlias("DNG", "STI") \
   MagickCoderAlias("DNG", "X3F")
 
 #if defined(__cplusplus) || defined(c_plusplus)

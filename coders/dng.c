@@ -686,35 +686,37 @@ ModuleExport size_t RegisterDNGImage(void)
 #if defined(MAGICKCORE_RAW_R_DELEGATE)
   (void) CopyMagickString(version,libraw_version(),MagickPathExtent);
 #endif
-  RegisterDNGMagickInfo("3FR","Hasselblad CFV/H3D39II",version);
-  RegisterDNGMagickInfo("ARW","Sony Alpha Raw Image Format",version);
-  RegisterDNGMagickInfo("DNG","Digital Negative",version);
-  RegisterDNGMagickInfo("CR2","Canon Digital Camera Raw Image Format",version);
-  RegisterDNGMagickInfo("CR3","Canon Digital Camera Raw Image Format",version);
-  RegisterDNGMagickInfo("CRW","Canon Digital Camera Raw Image Format",version);
-  RegisterDNGMagickInfo("DCR","Kodak Digital Camera Raw Image File",version);
+  RegisterDNGMagickInfo("3FR","Hasselblad CFV/H3D39II Raw Format",version);
+  RegisterDNGMagickInfo("ARW","Sony Alpha Raw Format",version);
+  RegisterDNGMagickInfo("DNG","Digital Negative Raw Format",version);
+  RegisterDNGMagickInfo("CR2","Canon Digital Camera Raw Format",version);
+  RegisterDNGMagickInfo("CR3","Canon Digital Camera Raw Format",version);
+  RegisterDNGMagickInfo("CRW","Canon Digital Camera Raw Format",version);
+  RegisterDNGMagickInfo("DCR","Kodak Digital Camera Raw Format",version);
   RegisterDNGMagickInfo("DCRAW","Raw Photo Decoder (dcraw)",version);
-  RegisterDNGMagickInfo("ERF","Epson RAW Format",version);
-  RegisterDNGMagickInfo("IIQ","Phase One Raw Image Format",version);
-  RegisterDNGMagickInfo("KDC","Kodak Digital Camera Raw Image Format"
-    ,version);
-  RegisterDNGMagickInfo("K25","Kodak Digital Camera Raw Image Format"
-    ,version);
-  RegisterDNGMagickInfo("MEF","Mamiya Raw Image File",version);
-  RegisterDNGMagickInfo("MRW","Sony (Minolta) Raw Image File",version);
-  RegisterDNGMagickInfo("NEF","Nikon Digital SLR Camera Raw Image File",
-    version);
-  RegisterDNGMagickInfo("NRW","Nikon Digital SLR Camera Raw Image File",
-    version);
-  RegisterDNGMagickInfo("ORF","Olympus Digital Camera Raw Image File",version);
-  RegisterDNGMagickInfo("PEF","Pentax Electronic File",version);
-  RegisterDNGMagickInfo("RAF","Fuji CCD-RAW Graphic File",version);
+  RegisterDNGMagickInfo("ERF","Epson Raw Format",version);
+  RegisterDNGMagickInfo("FFF","Hasselblad CFV/H3D39II",version);
+  RegisterDNGMagickInfo("IIQ","Phase One Raw Format",version);
+  RegisterDNGMagickInfo("KDC","Kodak Digital Camera Raw Format",version);
+  RegisterDNGMagickInfo("K25","Kodak Digital Camera Raw Format",version);
+  RegisterDNGMagickInfo("MDC","Minolta Digital Camera Raw Format",version);
+  RegisterDNGMagickInfo("MEF","Mamiya Raw Format",version);
+  RegisterDNGMagickInfo("MRW","Sony (Minolta) Raw Format",version);
+  RegisterDNGMagickInfo("MOS","Aptus Leaf Raw Format",version);
+  RegisterDNGMagickInfo("NEF","Nikon Digital SLR Camera Raw Format",version);
+  RegisterDNGMagickInfo("NRW","Nikon Digital SLR Camera Raw Format",version);
+  RegisterDNGMagickInfo("ORF","Olympus Digital Camera Raw Format",version);
+  RegisterDNGMagickInfo("PEF","Pentax Electronic Raw Format",version);
+  RegisterDNGMagickInfo("RAF","Fuji CCD-RAW Graphic Raw Format",version);
   RegisterDNGMagickInfo("RAW","Raw",version);
   RegisterDNGMagickInfo("RMF","Raw Media Format",version);
-  RegisterDNGMagickInfo("RW2","Panasonic Lumix Raw Image",version);
-  RegisterDNGMagickInfo("SRF","Sony Raw Format",version);
+  RegisterDNGMagickInfo("RW2","Panasonic Lumix Raw Format",version);
+  RegisterDNGMagickInfo("RWL","Leica Raw Format",version);
   RegisterDNGMagickInfo("SR2","Sony Raw Format 2",version);
-  RegisterDNGMagickInfo("X3F","Sigma Camera RAW Picture File",version);
+  RegisterDNGMagickInfo("SRF","Sony Raw Format",version);
+  RegisterDNGMagickInfo("SRW","Samsung Raw Format",version);
+  RegisterDNGMagickInfo("STI","Sinar CaptureShop Raw Format",version);
+  RegisterDNGMagickInfo("X3F","Sigma Camera RAW Format",version);
   return(MagickImageCoderSignature);
 }
 
@@ -740,8 +742,11 @@ ModuleExport size_t RegisterDNGImage(void)
 ModuleExport void UnregisterDNGImage(void)
 {
   (void) UnregisterMagickInfo("X3F");
-  (void) UnregisterMagickInfo("SR2");
+  (void) UnregisterMagickInfo("STI");
+  (void) UnregisterMagickInfo("SRW");
   (void) UnregisterMagickInfo("SRF");
+  (void) UnregisterMagickInfo("SR2");
+  (void) UnregisterMagickInfo("RWL");
   (void) UnregisterMagickInfo("RW2");
   (void) UnregisterMagickInfo("RMF");
   (void) UnregisterMagickInfo("RAF");
@@ -750,10 +755,13 @@ ModuleExport void UnregisterDNGImage(void)
   (void) UnregisterMagickInfo("NRW");
   (void) UnregisterMagickInfo("NEF");
   (void) UnregisterMagickInfo("MRW");
+  (void) UnregisterMagickInfo("MOS");
   (void) UnregisterMagickInfo("MEF");
+  (void) UnregisterMagickInfo("MDC");
   (void) UnregisterMagickInfo("K25");
   (void) UnregisterMagickInfo("KDC");
   (void) UnregisterMagickInfo("IIQ");
+  (void) UnregisterMagickInfo("FFF");
   (void) UnregisterMagickInfo("ERF");
   (void) UnregisterMagickInfo("DCR");
   (void) UnregisterMagickInfo("CRW");
