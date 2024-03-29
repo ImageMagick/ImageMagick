@@ -199,6 +199,9 @@ MagickExport const char *GetMagickDelegates(void)
 #if defined(MAGICKCORE_TIFF_DELEGATE)
   " tiff"
 #endif
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+  " uhdr"
+#endif
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   " webp"
 #endif

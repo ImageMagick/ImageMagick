@@ -601,7 +601,7 @@ fi
 AM_CONDITIONAL([WITH_MODULES],[test "$build_modules" != 'no'])
 
 # Enable build using delegate libraries built in subdirectories rather than installed
-# delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms lzma png tiff ttf wmf xml zlib zip)
+# delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms lzma png tiff ttf uhdr wmf xml zlib zip)
 AC_ARG_ENABLE([delegate-build],
     [AS_HELP_STRING([--enable-delegate-build],
                     [look for delegate libraries in build directory])],
@@ -1174,7 +1174,7 @@ if test "$enable_delegate_build" != 'no'; then
     # Most delegates have includes in the same directory as the library, but not all...
     #
     # Includes
-    for dir in bzlib fftw fpx gslib/src jp2 jbig/libjbig jpeg lcms/include lzma magick openjp2/include png tiff/libtiff ttf/include wand webp/src wmf/include xml/include zlib zip; do
+    for dir in bzlib fftw fpx gslib/src jp2 jbig/libjbig jpeg lcms/include lzma magick openjp2/include png tiff/libtiff ttf/include uhdr wand webp/src wmf/include xml/include zlib zip; do
         if test -d "$builddir/$dir"; then
             CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
         else
@@ -1185,7 +1185,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in bzlib fftw fpx gslib/src jbig/libjbig jpeg lcms/src lzma magick openjp2 png tiff/libtiff ttf/objs wand webp wmf/src xml zlib zip; do
+    for dir in bzlib fftw fpx gslib/src jbig/libjbig jpeg lcms/src lzma magick openjp2 png tiff/libtiff ttf/objs uhdr wand webp wmf/src xml zlib zip; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
@@ -2869,6 +2869,58 @@ AC_SUBST([TIFF_LIBS])
 dnl ===========================================================================
 
 #
+# Check for google libultrahdr delegate library
+#
+# Test for ultrahdr_api.h & test for uhdr_create_decoder in -luhdr
+#
+AC_ARG_WITH([uhdr],
+    [AS_HELP_STRING([--with-uhdr],
+                    [enable google ultrahdr support])],
+    [with_uhdr=$withval],
+    [with_uhdr='no'])
+
+if test "$with_uhdr" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-uhdr=$with_uhdr "
+fi
+
+have_uhdr='no'
+UHDR_LIBS=""
+if test "$with_uhdr" != 'no'; then
+    AC_MSG_RESULT([-------------------------------------------------------------])
+    AC_MSG_CHECKING([for google ultrahdr])
+    AC_MSG_RESULT([])
+    failed=0
+    passed=0
+
+    AC_LANG_PUSH([C++])
+    AC_CHECK_HEADER([ultrahdr_api.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
+    AC_CHECK_LIB([uhdr],[uhdr_create_decoder],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
+
+    AC_MSG_CHECKING([if google ultrahdr package is complete])
+
+    if test $passed -gt 0; then
+        if test $failed -gt 0; then
+            AC_MSG_RESULT([no -- some components failed test])
+            have_uhdr='no (failed tests)'
+        else
+            UHDR_LIBS='-luhdr'
+            LIBS="$UHDR_LIBS $LIBS"
+            AC_DEFINE([UHDR_DELEGATE],[1],[Define if you have google ultrahdr library])
+            AC_MSG_RESULT([yes])
+            have_uhdr='yes'
+        fi
+    else
+        AC_MSG_RESULT([no])
+    fi
+fi
+
+AM_CONDITIONAL([UHDR_DELEGATE],[test "$have_uhdr" = 'yes'])
+AC_SUBST([UHDR_CFLAGS])
+AC_SUBST([UHDR_LIBS])
+
+dnl ===========================================================================
+
+#
 # Set URW Base35 font directory.
 #
 AC_ARG_WITH([urw-base35-font-dir],
@@ -3999,6 +4051,9 @@ fi
 if test "$have_ttf"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES ttf"
 fi
+if test "$have_uhdr"   = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES uhdr"
+fi
 if test "$have_video"   = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES video"
 fi
@@ -4074,7 +4129,7 @@ fi
 if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$USER_LIBS $LCMS_LIBS $DMR_LIBS $FREETYPE_LIBS $RAQM_LIBS $LQR_LIBS $FFTW_LIBS $XML_LIBS $FLIF_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $BZLIB_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS $MTMALLOC_LIBS"
 else
-    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $DMR_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS $MTMALLOC_LIBS"
+    MAGICK_DEP_LIBS="$USER_LIBS $JBIG_LIBS $LCMS_LIBS $DMR_LIBS $TIFF_LIBS $FREETYPE_LIBS $RAQM_LIBS $JPEG_LIBS $JXL_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FLIF_LIBS $FPX_LIBS $FONTCONFIG_LIBS $HEIF_LIBS $WEBPMUX_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $LIBOPENJP2_LIBS $PANGO_LIBS $RAW_R_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $ZIP_LIBS $ZSTD_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $CL_LIBS $UMEM_LIBS $JEMALLOC_LIBS $THREAD_LIBS $TCMALLOC_LIBS $MTMALLOC_LIBS $UHDR_LIBS"
 fi
 MAGICK_EXTRA_DEP_LIBS="$GOMP_LIBS"
 AC_SUBST([MAGICK_DEP_LIBS])
@@ -4263,6 +4318,7 @@ Delegate library configuration:
   RAW               --with-raw=$with_raw			$have_raw
   RSVG              --with-rsvg=$with_rsvg			$have_rsvg
   TIFF              --with-tiff=$with_tiff			$have_tiff
+  UHDR              --with-uhdr=$with_uhdr			$have_uhdr
   WEBP              --with-webp=$with_webp			$have_webp
   WMF               --with-wmf=$with_wmf			$have_wmf
   X11               --with-x=$with_x				$have_x
