@@ -83,6 +83,7 @@ MAGICKCORE_TIFF_SRCS = coders/ept.c coders/tiff.c
 endif
 
 if UHDR_DELEGATE
+MAGICKCORE_UHDR_MODULES = coders/uhdr.la
 MAGICKCORE_UHDR_SRCS = coders/uhdr.c
 endif
 
@@ -684,6 +685,7 @@ coders_LTLIBRARIES = \
 	$(MAGICKCORE_JXL_MODULES) \
 	$(MAGICKCORE_PNG_MODULES) \
 	$(MAGICKCORE_TIFF_MODULES) \
+	$(MAGICKCORE_UHDR_MODULES) \
 	$(MAGICKCORE_WEBP_MODULES) \
 	$(MAGICKCORE_WMF_MODULES) \
 	$(MAGICKCORE_X11_MODULES)
@@ -1328,10 +1330,10 @@ coders_stegano_la_LDFLAGS  = $(MODULECOMMONFLAGS)
 coders_stegano_la_LIBADD   = $(MAGICKCORE_LIBS)
 
 # STRIMG coder module
-coders_strimg_la_SOURCES      = coders/strimg.c
-coders_strimg_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
-coders_strimg_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_strimg_la_LIBADD       = $(MAGICKCORE_LIBS)
+coders_strimg_la_SOURCES   = coders/strimg.c
+coders_strimg_la_CPPFLAGS  = $(MAGICK_CODER_CPPFLAGS)
+coders_strimg_la_LDFLAGS   = $(MODULECOMMONFLAGS)
+coders_strimg_la_LIBADD    = $(MAGICKCORE_LIBS)
 
 # SUN coder module
 coders_sun_la_SOURCES      = coders/sun.c
@@ -1398,6 +1400,12 @@ coders_txt_la_SOURCES      = coders/txt.c
 coders_txt_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
 coders_txt_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_txt_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
+
+# UHDR coder module
+coders_uhdr_la_SOURCES     = coders/uhdr.c
+coders_uhdr_la_CPPFLAGS    = $(MAGICK_CODER_CPPFLAGS)
+coders_uhdr_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_uhdr_la_LIBADD      = $(MAGICKCORE_LIBS) $(UHDR_LIBS) $(MATH_LIBS)
 
 # UIL coder module
 coders_uil_la_SOURCES      = coders/uil.c

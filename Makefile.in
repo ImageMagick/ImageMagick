@@ -1830,6 +1830,16 @@ coders_txt_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_txt_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_txt_la_rpath = -rpath $(codersdir)
+coders_uhdr_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+am_coders_uhdr_la_OBJECTS = coders/uhdr_la-uhdr.lo
+coders_uhdr_la_OBJECTS = $(am_coders_uhdr_la_OBJECTS)
+coders_uhdr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(coders_uhdr_la_LDFLAGS) $(LDFLAGS) -o \
+	$@
+@UHDR_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_uhdr_la_rpath =  \
+@UHDR_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
 coders_uil_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
 am_coders_uil_la_OBJECTS = coders/uil_la-uil.lo
 coders_uil_la_OBJECTS = $(am_coders_uil_la_OBJECTS)
@@ -2581,6 +2591,7 @@ am__depfiles_remade = ./$(DEPDIR)/dummy.Po \
 	coders/$(DEPDIR)/tim_la-tim.Plo \
 	coders/$(DEPDIR)/ttf_la-ttf.Plo \
 	coders/$(DEPDIR)/txt_la-txt.Plo \
+	coders/$(DEPDIR)/uhdr_la-uhdr.Plo \
 	coders/$(DEPDIR)/uil_la-uil.Plo \
 	coders/$(DEPDIR)/url_la-url.Plo \
 	coders/$(DEPDIR)/uyvy_la-uyvy.Plo \
@@ -2707,18 +2718,19 @@ SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_
 	$(coders_tiff_la_SOURCES) $(coders_tile_la_SOURCES) \
 	$(coders_tim_la_SOURCES) $(coders_tim2_la_SOURCES) \
 	$(coders_ttf_la_SOURCES) $(coders_txt_la_SOURCES) \
-	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
-	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
-	$(coders_vid_la_SOURCES) $(coders_video_la_SOURCES) \
-	$(coders_viff_la_SOURCES) $(coders_vips_la_SOURCES) \
-	$(coders_wbmp_la_SOURCES) $(coders_webp_la_SOURCES) \
-	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
-	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
-	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
-	$(coders_xpm_la_SOURCES) $(coders_xps_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) $(coders_yaml_la_SOURCES) \
-	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
+	$(coders_uhdr_la_SOURCES) $(coders_uil_la_SOURCES) \
+	$(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) \
+	$(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) \
+	$(coders_video_la_SOURCES) $(coders_viff_la_SOURCES) \
+	$(coders_vips_la_SOURCES) $(coders_wbmp_la_SOURCES) \
+	$(coders_webp_la_SOURCES) $(coders_wmf_la_SOURCES) \
+	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
+	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
+	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
+	$(coders_xps_la_SOURCES) $(coders_xwd_la_SOURCES) \
+	$(coders_yaml_la_SOURCES) $(coders_ycbcr_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
+	$(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
 	$(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) \
 	$(Magick___demo_gravity_SOURCES) \
@@ -2802,18 +2814,19 @@ DIST_SOURCES = $(Magick___lib_libMagick___@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	$(coders_tiff_la_SOURCES) $(coders_tile_la_SOURCES) \
 	$(coders_tim_la_SOURCES) $(coders_tim2_la_SOURCES) \
 	$(coders_ttf_la_SOURCES) $(coders_txt_la_SOURCES) \
-	$(coders_uil_la_SOURCES) $(coders_url_la_SOURCES) \
-	$(coders_uyvy_la_SOURCES) $(coders_vicar_la_SOURCES) \
-	$(coders_vid_la_SOURCES) $(coders_video_la_SOURCES) \
-	$(coders_viff_la_SOURCES) $(coders_vips_la_SOURCES) \
-	$(coders_wbmp_la_SOURCES) $(coders_webp_la_SOURCES) \
-	$(coders_wmf_la_SOURCES) $(coders_wpg_la_SOURCES) \
-	$(coders_x_la_SOURCES) $(coders_xbm_la_SOURCES) \
-	$(coders_xc_la_SOURCES) $(coders_xcf_la_SOURCES) \
-	$(coders_xpm_la_SOURCES) $(coders_xps_la_SOURCES) \
-	$(coders_xwd_la_SOURCES) $(coders_yaml_la_SOURCES) \
-	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
+	$(coders_uhdr_la_SOURCES) $(coders_uil_la_SOURCES) \
+	$(coders_url_la_SOURCES) $(coders_uyvy_la_SOURCES) \
+	$(coders_vicar_la_SOURCES) $(coders_vid_la_SOURCES) \
+	$(coders_video_la_SOURCES) $(coders_viff_la_SOURCES) \
+	$(coders_vips_la_SOURCES) $(coders_wbmp_la_SOURCES) \
+	$(coders_webp_la_SOURCES) $(coders_wmf_la_SOURCES) \
+	$(coders_wpg_la_SOURCES) $(coders_x_la_SOURCES) \
+	$(coders_xbm_la_SOURCES) $(coders_xc_la_SOURCES) \
+	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
+	$(coders_xps_la_SOURCES) $(coders_xwd_la_SOURCES) \
+	$(coders_yaml_la_SOURCES) $(coders_ycbcr_la_SOURCES) \
+	$(coders_yuv_la_SOURCES) $(filters_analyze_la_SOURCES) \
+	$(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
 	$(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) \
 	$(Magick___demo_gravity_SOURCES) \
@@ -3761,6 +3774,7 @@ codersdir = $(CODER_PATH)
 @PNG_DELEGATE_TRUE@MAGICKCORE_PNG_SRCS = coders/png.c
 @TIFF_DELEGATE_TRUE@MAGICKCORE_TIFF_MODULES = coders/ept.la coders/tiff.la
 @TIFF_DELEGATE_TRUE@MAGICKCORE_TIFF_SRCS = coders/ept.c coders/tiff.c
+@UHDR_DELEGATE_TRUE@MAGICKCORE_UHDR_MODULES = coders/uhdr.la
 @UHDR_DELEGATE_TRUE@MAGICKCORE_UHDR_SRCS = coders/uhdr.c
 @WEBP_DELEGATE_TRUE@MAGICKCORE_WEBP_MODULES = coders/webp.la
 @WEBP_DELEGATE_TRUE@MAGICKCORE_WEBP_SRCS = coders/webp.c
@@ -4348,6 +4362,7 @@ CODERS_NOINST_HDRS = \
 @WITH_MODULES_TRUE@	$(MAGICKCORE_JXL_MODULES) \
 @WITH_MODULES_TRUE@	$(MAGICKCORE_PNG_MODULES) \
 @WITH_MODULES_TRUE@	$(MAGICKCORE_TIFF_MODULES) \
+@WITH_MODULES_TRUE@	$(MAGICKCORE_UHDR_MODULES) \
 @WITH_MODULES_TRUE@	$(MAGICKCORE_WEBP_MODULES) \
 @WITH_MODULES_TRUE@	$(MAGICKCORE_WMF_MODULES) \
 @WITH_MODULES_TRUE@	$(MAGICKCORE_X11_MODULES)
@@ -5060,6 +5075,12 @@ coders_txt_la_SOURCES = coders/txt.c
 coders_txt_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_txt_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_txt_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
+
+# UHDR coder module
+coders_uhdr_la_SOURCES = coders/uhdr.c
+coders_uhdr_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
+coders_uhdr_la_LDFLAGS = $(MODULECOMMONFLAGS)
+coders_uhdr_la_LIBADD = $(MAGICKCORE_LIBS) $(UHDR_LIBS) $(MATH_LIBS)
 
 # UIL coder module
 coders_uil_la_SOURCES = coders/uil.c
@@ -7895,6 +7916,11 @@ coders/txt_la-txt.lo: coders/$(am__dirstamp) \
 
 coders/txt.la: $(coders_txt_la_OBJECTS) $(coders_txt_la_DEPENDENCIES) $(EXTRA_coders_txt_la_DEPENDENCIES) coders/$(am__dirstamp)
 	$(AM_V_CCLD)$(coders_txt_la_LINK) $(am_coders_txt_la_rpath) $(coders_txt_la_OBJECTS) $(coders_txt_la_LIBADD) $(LIBS)
+coders/uhdr_la-uhdr.lo: coders/$(am__dirstamp) \
+	coders/$(DEPDIR)/$(am__dirstamp)
+
+coders/uhdr.la: $(coders_uhdr_la_OBJECTS) $(coders_uhdr_la_DEPENDENCIES) $(EXTRA_coders_uhdr_la_DEPENDENCIES) coders/$(am__dirstamp)
+	$(AM_V_CCLD)$(coders_uhdr_la_LINK) $(am_coders_uhdr_la_rpath) $(coders_uhdr_la_OBJECTS) $(coders_uhdr_la_LIBADD) $(LIBS)
 coders/uil_la-uil.lo: coders/$(am__dirstamp) \
 	coders/$(DEPDIR)/$(am__dirstamp)
 
@@ -8682,6 +8708,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/tim_la-tim.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/ttf_la-ttf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/txt_la-txt.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/uhdr_la-uhdr.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/uil_la-uil.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/url_la-url.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/uyvy_la-uyvy.Plo@am__quote@ # am--include-marker
@@ -11401,6 +11428,13 @@ coders/txt_la-txt.lo: coders/txt.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_txt_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/txt_la-txt.lo `test -f 'coders/txt.c' || echo '$(srcdir)/'`coders/txt.c
 
+coders/uhdr_la-uhdr.lo: coders/uhdr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_uhdr_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/uhdr_la-uhdr.lo -MD -MP -MF coders/$(DEPDIR)/uhdr_la-uhdr.Tpo -c -o coders/uhdr_la-uhdr.lo `test -f 'coders/uhdr.c' || echo '$(srcdir)/'`coders/uhdr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/uhdr_la-uhdr.Tpo coders/$(DEPDIR)/uhdr_la-uhdr.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/uhdr.c' object='coders/uhdr_la-uhdr.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_uhdr_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/uhdr_la-uhdr.lo `test -f 'coders/uhdr.c' || echo '$(srcdir)/'`coders/uhdr.c
+
 coders/uil_la-uil.lo: coders/uil.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(coders_uil_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/uil_la-uil.lo -MD -MP -MF coders/$(DEPDIR)/uil_la-uil.Tpo -c -o coders/uil_la-uil.lo `test -f 'coders/uil.c' || echo '$(srcdir)/'`coders/uil.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/uil_la-uil.Tpo coders/$(DEPDIR)/uil_la-uil.Plo
@@ -13292,6 +13326,7 @@ distclean: distclean-am
 	-rm -f coders/$(DEPDIR)/tim_la-tim.Plo
 	-rm -f coders/$(DEPDIR)/ttf_la-ttf.Plo
 	-rm -f coders/$(DEPDIR)/txt_la-txt.Plo
+	-rm -f coders/$(DEPDIR)/uhdr_la-uhdr.Plo
 	-rm -f coders/$(DEPDIR)/uil_la-uil.Plo
 	-rm -f coders/$(DEPDIR)/url_la-url.Plo
 	-rm -f coders/$(DEPDIR)/uyvy_la-uyvy.Plo
@@ -13796,6 +13831,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f coders/$(DEPDIR)/tim_la-tim.Plo
 	-rm -f coders/$(DEPDIR)/ttf_la-ttf.Plo
 	-rm -f coders/$(DEPDIR)/txt_la-txt.Plo
+	-rm -f coders/$(DEPDIR)/uhdr_la-uhdr.Plo
 	-rm -f coders/$(DEPDIR)/uil_la-uil.Plo
 	-rm -f coders/$(DEPDIR)/url_la-url.Plo
 	-rm -f coders/$(DEPDIR)/uyvy_la-uyvy.Plo
