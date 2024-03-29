@@ -585,21 +585,22 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	coders/thumbnail.h coders/tiff.h coders/tile.c coders/tile.h \
 	coders/tim2.c coders/tim2.h coders/tim.c coders/tim.h \
 	coders/ttf.c coders/ttf.h coders/txt.c coders/txt.h \
-	coders/uil.c coders/uil.h coders/url.c coders/url.h \
-	coders/uyvy.c coders/uyvy.h coders/vicar.c coders/vicar.h \
-	coders/vid.c coders/vid.h coders/video.c coders/video.h \
-	coders/viff.c coders/viff.h coders/vips.c coders/vips.h \
-	coders/wbmp.c coders/wbmp.h coders/webp.h coders/wmf.h \
-	coders/wpg.c coders/wpg.h coders/xbm.c coders/xbm.h \
-	coders/xc.c coders/xcf.c coders/xcf.h coders/xc.h coders/x.h \
-	coders/xpm.c coders/xpm.h coders/xps.c coders/xps.h \
+	coders/uhdr.h coders/uil.c coders/uil.h coders/url.c \
+	coders/url.h coders/uyvy.c coders/uyvy.h coders/vicar.c \
+	coders/vicar.h coders/vid.c coders/vid.h coders/video.c \
+	coders/video.h coders/viff.c coders/viff.h coders/vips.c \
+	coders/vips.h coders/wbmp.c coders/wbmp.h coders/webp.h \
+	coders/wmf.h coders/wpg.c coders/wpg.h coders/xbm.c \
+	coders/xbm.h coders/xc.c coders/xcf.c coders/xcf.h coders/xc.h \
+	coders/x.h coders/xpm.c coders/xpm.h coders/xps.c coders/xps.h \
 	coders/xwd.h coders/yaml.c coders/yaml.h coders/ycbcr.c \
 	coders/ycbcr.h coders/yuv.c coders/yuv.h coders/dps.c \
 	coders/djvu.c coders/dmr.c coders/exr.c coders/flif.c \
 	coders/fpx.c coders/clipboard.c coders/emf.c coders/heic.c \
 	coders/jbig.c coders/jpeg.c coders/jp2.c coders/jxl.c \
-	coders/png.c coders/ept.c coders/tiff.c coders/webp.c \
-	coders/wmf.c coders/x.c coders/xwd.c filters/analyze.c
+	coders/png.c coders/ept.c coders/tiff.c coders/uhdr.c \
+	coders/webp.c coders/wmf.c coders/x.c coders/xwd.c \
+	filters/analyze.c
 am__objects_1 = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-accelerate.lo \
 	MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-annotate.lo \
@@ -711,11 +712,12 @@ am__objects_1 = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFF
 @PNG_DELEGATE_TRUE@am__objects_15 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-png.lo
 @TIFF_DELEGATE_TRUE@am__objects_16 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ept.lo \
 @TIFF_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-tiff.lo
-@WEBP_DELEGATE_TRUE@am__objects_17 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-webp.lo
-@WMF_DELEGATE_TRUE@am__objects_18 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wmf.lo
-@X11_DELEGATE_TRUE@am__objects_19 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-x.lo \
+@UHDR_DELEGATE_TRUE@am__objects_17 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.lo
+@WEBP_DELEGATE_TRUE@am__objects_18 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-webp.lo
+@WMF_DELEGATE_TRUE@am__objects_19 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wmf.lo
+@X11_DELEGATE_TRUE@am__objects_20 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-x.lo \
 @X11_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-xwd.lo
-am__objects_20 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aai.lo \
+am__objects_21 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-aai.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-art.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ashlar.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-avs.lo \
@@ -841,16 +843,16 @@ am__objects_20 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_
 	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
 	$(am__objects_12) $(am__objects_13) $(am__objects_14) \
 	$(am__objects_15) $(am__objects_16) $(am__objects_17) \
-	$(am__objects_18) $(am__objects_19)
-am__objects_21 = filters/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-analyze.lo
+	$(am__objects_18) $(am__objects_19) $(am__objects_20)
+am__objects_22 = filters/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-analyze.lo
 @WITH_MODULES_FALSE@am_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS =  \
 @WITH_MODULES_FALSE@	$(am__objects_1) $(am__objects_2) \
-@WITH_MODULES_FALSE@	$(am__objects_20) $(am__objects_21)
+@WITH_MODULES_FALSE@	$(am__objects_21) $(am__objects_22)
 @WITH_MODULES_TRUE@am_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS =  \
 @WITH_MODULES_TRUE@	$(am__objects_1) $(am__objects_2)
-am__objects_22 =
+am__objects_23 =
 nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS =  \
-	$(am__objects_22)
+	$(am__objects_23)
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS = $(am_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS) \
 	$(nodist_MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS)
 MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LINK =  \
@@ -861,7 +863,7 @@ MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LINK =  \
 MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_DEPENDENCIES =  \
 	$(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am__objects_23 = MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
+am__objects_24 = MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-compare.lo \
 	MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-composite.lo \
 	MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-conjure.lo \
@@ -886,7 +888,7 @@ am__objects_23 = MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUF
 	MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wandcli.lo \
 	MagickWand/libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wand-view.lo
 am_MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS =  \
-	$(am__objects_23)
+	$(am__objects_24)
 MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS = $(am_MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_OBJECTS)
 MagickWand_libMagickWand_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LINK =  \
 	$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -2438,6 +2440,7 @@ am__depfiles_remade = ./$(DEPDIR)/dummy.Po \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-tim2.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ttf.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-txt.Plo \
+	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uil.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-url.Plo \
 	coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uyvy.Plo \
@@ -3445,6 +3448,8 @@ TIFF_CFLAGS = @TIFF_CFLAGS@
 TIFF_LIBS = @TIFF_LIBS@
 TextEncodeDelegate = @TextEncodeDelegate@
 TraceEncodeDelegate = @TraceEncodeDelegate@
+UHDR_CFLAGS = @UHDR_CFLAGS@
+UHDR_LIBS = @UHDR_LIBS@
 UMEM_LIBS = @UMEM_LIBS@
 VERSION = @VERSION@
 VIDEODecodeDelegate = @VIDEODecodeDelegate@
@@ -3756,6 +3761,7 @@ codersdir = $(CODER_PATH)
 @PNG_DELEGATE_TRUE@MAGICKCORE_PNG_SRCS = coders/png.c
 @TIFF_DELEGATE_TRUE@MAGICKCORE_TIFF_MODULES = coders/ept.la coders/tiff.la
 @TIFF_DELEGATE_TRUE@MAGICKCORE_TIFF_SRCS = coders/ept.c coders/tiff.c
+@UHDR_DELEGATE_TRUE@MAGICKCORE_UHDR_SRCS = coders/uhdr.c
 @WEBP_DELEGATE_TRUE@MAGICKCORE_WEBP_MODULES = coders/webp.la
 @WEBP_DELEGATE_TRUE@MAGICKCORE_WEBP_SRCS = coders/webp.c
 @WINGDI32_DELEGATE_TRUE@MAGICKCORE_GDI32_MODULES = coders/clipboard.la coders/emf.la
@@ -3997,6 +4003,7 @@ MAGICKCORE_CODER_SRCS = \
 	coders/ttf.h \
 	coders/txt.c \
 	coders/txt.h \
+	coders/uhdr.h \
 	coders/uil.c \
 	coders/uil.h \
 	coders/url.c \
@@ -4051,6 +4058,7 @@ MAGICKCORE_CODER_SRCS = \
 	$(MAGICKCORE_JXL_SRCS) \
 	$(MAGICKCORE_PNG_SRCS) \
 	$(MAGICKCORE_TIFF_SRCS) \
+	$(MAGICKCORE_UHDR_SRCS) \
 	$(MAGICKCORE_WEBP_SRCS) \
 	$(MAGICKCORE_WMF_SRCS) \
 	$(MAGICKCORE_X11_SRCS)
@@ -4180,6 +4188,7 @@ CODERS_NOINST_HDRS = \
 	coders/tim2.h \
 	coders/ttf.h \
 	coders/txt.h \
+	coders/uhdr.h \
 	coders/uil.h \
 	coders/url.h \
 	coders/uyvy.h \
@@ -7192,6 +7201,8 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ep
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-tiff.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
+coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.lo:  \
+	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-webp.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-wmf.lo:  \
@@ -8529,6 +8540,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-tim2.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ttf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-txt.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uil.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-url.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uyvy.Plo@am__quote@ # am--include-marker
@@ -10345,6 +10357,13 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ti
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/tiff.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-tiff.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-tiff.lo `test -f 'coders/tiff.c' || echo '$(srcdir)/'`coders/tiff.c
+
+coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.lo: coders/uhdr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.lo `test -f 'coders/uhdr.c' || echo '$(srcdir)/'`coders/uhdr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/uhdr.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.lo `test -f 'coders/uhdr.c' || echo '$(srcdir)/'`coders/uhdr.c
 
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-webp.lo: coders/webp.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-webp.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-webp.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-webp.lo `test -f 'coders/webp.c' || echo '$(srcdir)/'`coders/webp.c
@@ -13131,6 +13150,7 @@ distclean: distclean-am
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-tim2.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ttf.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-txt.Plo
+	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uil.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-url.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uyvy.Plo
@@ -13634,6 +13654,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-tim2.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ttf.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-txt.Plo
+	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uhdr.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uil.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-url.Plo
 	-rm -f coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-uyvy.Plo
