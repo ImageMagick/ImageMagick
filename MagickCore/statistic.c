@@ -2133,7 +2133,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        cs=channel_statistics+i;
+        cs=channel_statistics+channel;
         if (cs->depth != MAGICKCORE_QUANTUM_DEPTH)
           {
             depth=cs->depth;
@@ -2149,42 +2149,45 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
                 continue;
               }
           }
-
         cs->area++;
-
         if ((double) p[i] < cs->minima)
           cs->minima=(double) p[i];
         if ((double) p[i] > cs->maxima)
           cs->maxima=(double) p[i];
-
         histogram[(ssize_t) GetPixelChannels(image)*ScaleQuantumToMap(
           ClampToQuantum((double) p[i]))+i]++;
-
-        cs->sumLD += (long double) p[i];
-        /* sum_squared, sum_cubed and sum_fourth_power are not used in MagickCore or MagickWand,
-           but are made available in Magick++/lib/Statistic.cpp, so we need to calculate these.
+        cs->sumLD+=(long double) p[i];
+        /*
+          sum_squared, sum_cubed and sum_fourth_power are not used in
+          MagickCore or MagickWand, but are made available in
+          Magick++/lib/Statistic.cpp, so we need to calculate these.
         */
         cs->sum_squared+=(double) p[i]*(double) p[i];
         cs->sum_cubed+=(double) p[i]*(double) p[i]*(double) p[i];
         cs->sum_fourth_power+=(double) p[i]*(double) p[i]*(double) p[i]*
           (double) p[i];
-
         {
           /* Calculate running totals for Welford's method.
           */
-          long double delta, delta_n, delta_n2, term1;
-          double n1 = cs->area-1;
-          double n = cs->area;
+          double
+            n = cs->area,
+            n1 = cs->area-1;
 
-          delta = (double) p[i] - cs->M1;
-          delta_n = delta / n;
-          delta_n2 = delta_n * delta_n;
-          term1 = delta * delta_n * n1;
-          cs->M4 += term1 * delta_n2 * (n*n - 3*n + 3) + 6 * delta_n2 *
-            cs->M2 - 4 * delta_n * cs->M3;
-          cs->M3 += term1 * delta_n * (n - 2) - 3 * delta_n * cs->M2;
-          cs->M2 += term1;
-          cs->M1 += delta_n;
+          long double
+            delta,
+            delta_n,
+            delta_n2,
+            term1;
+
+          delta=(double) p[i]-cs->M1;
+          delta_n=delta/n;
+          delta_n2=delta_n*delta_n;
+          term1=delta*delta_n * n1;
+          cs->M4+=term1*delta_n2*(n*n-3.0*n+3.0)+6.0*delta_n2*cs->M2-4.0*
+            delta_n*cs->M3;
+          cs->M3+=term1*delta_n*(n-2.0)-3.0*delta_n*cs->M2;
+          cs->M2+=term1;
+          cs->M1+=delta_n;
         }
       }
       p+=GetPixelChannels(image);
