@@ -306,7 +306,7 @@ static Image *RenderSVGImage(const ImageInfo *image_info,Image *image,
   (void) RelinquishUniqueFileResource(unique);
   density=AcquireString("");
   (void) FormatLocaleString(density,MagickPathExtent,"%.20g",
-    ceil(sqrt(image->resolution.x*image->resolution.y)-0.5));
+    sqrt(image->resolution.x*image->resolution.y));
   (void) FormatLocaleString(background,MagickPathExtent,
     "rgb(%.20g%%,%.20g%%,%.20g%%)",
     100.0*QuantumScale*image->background_color.red,
