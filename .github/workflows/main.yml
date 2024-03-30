@@ -135,6 +135,7 @@ jobs:
       shell: cmd
       run: |
         for /f "tokens=* USEBACKQ" %%F IN (`git -C ImageMagick rev-parse HEAD`) do set COMMIT_SHA=%%F
+        cd ImageMagick-Windows
         CloneRepositories.cmd %COMMIT_SHA%
 
     - name: Build configure
