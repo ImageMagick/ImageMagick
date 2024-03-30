@@ -142,9 +142,6 @@ static MagickCLEnv
 static void
   BenchmarkOpenCLDevices(MagickCLEnv);
 
-extern const char
-  *accelerateKernels, *accelerateKernels2;
-
 /* OpenCL library */
 MagickLibrary
   *openCL_library;
