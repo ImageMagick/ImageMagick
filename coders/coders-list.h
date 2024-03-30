@@ -167,6 +167,9 @@ AddMagickCoder(TIM2)
   AddMagickCoder(TTF)
 #endif
 AddMagickCoder(TXT)
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+  AddMagickCoder(UHDR)
+#endif
 AddMagickCoder(UIL)
 AddMagickCoder(URL)
 AddMagickCoder(UYVY)
