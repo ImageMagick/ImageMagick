@@ -10,7 +10,7 @@
 %                                 Jan 2024                                    %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2024 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -28,7 +28,7 @@
 %
 %
 */
-
+
 /*
   Include declarations.
 */
@@ -83,7 +83,7 @@ static MagickBooleanType
 static MagickBooleanType IsUHDR(const unsigned char *magick,const size_t length)
 {
 #if defined(MAGICKCORE_UHDR_DELEGATE)
-  if (is_uhdr_image((void *) magick,(int) length);
+  if (is_uhdr_image((void *) magick,(int) length))
     return(MagickTrue);
 #else
   magick_unreferenced(magick);
@@ -365,7 +365,7 @@ ModuleExport size_t RegisterUHDRImage(void)
   entry=AcquireMagickInfo("UHDR","UHDR","UHDR Image Format");
 #if defined(MAGICKCORE_UHDR_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadUHDRImage;
-  entry->encoder=(EncodeImageHandler *) WriteWUHDRImage;
+  entry->encoder=(EncodeImageHandler *) WriteUHDRImage;
 #endif
   entry->magick=(IsImageFormatHandler *) IsUHDR;
   if (*version != '\0')
@@ -459,7 +459,7 @@ static uhdr_color_gamut_t map_cg_to_uhdr_cg(const char *input_cg)
     return UHDR_CG_UNSPECIFIED;
 }
 
-static MagickBooleanType HasResourcesForUHdrEncode(const Image *images)
+static MagickBooleanType HasResourcesForUHDREncode(const Image *images)
 {
   const Image
     *image = images;
