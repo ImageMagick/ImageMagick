@@ -343,12 +343,11 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterUHDRImage() adds attributes for the Uhdr image format to
-%  the list of supported formats.  The attributes include the image format
-%  tag, a method to read and/or write the format, whether the format
-%  supports the saving of more than one frame to the same file or blob,
-%  whether the format supports native in-memory I/O, and a brief
-%  description of the format.
+%  RegisterUHDRImage() adds attributes for the Uhdr image format to the list
+%  of supported formats.  The attributes include the image format tag, a
+%  method to read and/or write the format, whether the format supports the
+%  saving of more than one frame to the same file or blob, whether the format
+%  supports native in-memory I/O, and a brief description of the format.
 %
 %  The format of the RegisterUHDRImage method is:
 %
@@ -364,7 +363,7 @@ ModuleExport size_t RegisterUHDRImage(void)
     *entry;
 
   *version='\0';
-  entry=AcquireMagickInfo("UHDR","UHDR","UHDR Image Format");
+  entry=AcquireMagickInfo("UHDR","UHDR","Ultra HDR Image Format");
 #if defined(MAGICKCORE_UHDR_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadUHDRImage;
   entry->encoder=(EncodeImageHandler *) WriteUHDRImage;
@@ -387,8 +386,8 @@ ModuleExport size_t RegisterUHDRImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UnregisterUHDRImage() removes format registrations made by the
-%  UHDR module from the list of supported formats.
+%  UnregisterUHDRImage() removes format registrations made by the UHDR module
+%  from the list of supported formats.
 %
 %  The format of the UnregisterUHDRImage method is:
 %
@@ -412,8 +411,8 @@ ModuleExport void UnregisterUHDRImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteUHDRImage() writes an input hdr intent and sdr intent of an image in
-%  ultrahdr format
+%  WriteUHDRImage() writes an input HDR intent and SDR intent of an image in
+%  UltraHDR format.
 %
 %  The format of the WriteUHDRImage method is:
 %
@@ -429,6 +428,7 @@ ModuleExport void UnregisterUHDRImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
 static MagickBooleanType IsFloatEqual(float fa, float fb)
 {
   float diff = fa - fb;
@@ -490,12 +490,12 @@ static MagickBooleanType HasResourcesForUHDREncode(const Image *images)
   const Image
     *image = images;
 
-  ssize_t
-    imageCount = 0;
-
   MagickBooleanType
     hasHdrIntent = MagickFalse,
     hasSdrIntent = MagickFalse;
+
+  ssize_t
+    imageCount = 0;
 
   if (images == (Image *) NULL)
     return (MagickFalse);
@@ -525,11 +525,15 @@ static MagickBooleanType HasResourcesForUHDREncode(const Image *images)
 static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   Image *images,ExceptionInfo *exception)
 {
+  Image
+    *image = images;
+
   MagickBooleanType
     status = MagickTrue;
 
-  Image
-    *image = images;
+  uhdr_raw_image_t
+    hdrImgDescriptor = {0},
+    sdrImgDescriptor = {0};
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -541,12 +545,19 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return (status);
 
-  uhdr_raw_image_t
-    hdrImgDescriptor = {0},
-    sdrImgDescriptor = {0};
-
   for (int i = 0; i < GetImageListLength(image); i++)
   {
+    const char
+      *option;
+
+    int
+      bpp = (image->depth >= 10) ? 2 : 1;
+
+    ssize_t
+      picSize = image->columns * image->rows * bpp * 1.5 /* 2x2 sub-sampling */;
+
+    void
+      *crBuffer = NULL, *cbBuffer = NULL, *yBuffer = NULL;
 
     if (image->colorspace != YCbCrColorspace)
     {
@@ -555,24 +566,12 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
         break;
     }
 
-    void
-      *crBuffer = NULL, *cbBuffer = NULL, *yBuffer = NULL;
-
-    int
-      bpp = (image->depth >= 10) ? 2 : 1;
-
-    ssize_t
-      picSize = image->columns * image->rows * bpp * 1.5 /* 2x2 sub-sampling */;
-
     yBuffer = AcquireMagickMemory(picSize);
     if (yBuffer == NULL)
     {
       status = MagickFalse;
       break;
     }
-
-    const char
-      *option;
 
     if (image->depth >= 10)
     {
@@ -684,7 +683,8 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
         break;
     }
 
-    status = SetImageProgress(image, SaveImageTag, (MagickOffsetType)i, GetImageListLength(image));
+    status = SetImageProgress(image, SaveImageTag, (MagickOffsetType)i,
+      GetImageListLength(image));
     if (status == MagickFalse)
       break;
   }
