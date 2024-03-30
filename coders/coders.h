@@ -169,6 +169,9 @@
   #include "coders/ttf.h"
 #endif
 #include "coders/txt.h"
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+  #include "coders/uhdr.h"
+#endif
 #include "coders/uil.h"
 #include "coders/url.h"
 #include "coders/uyvy.h"

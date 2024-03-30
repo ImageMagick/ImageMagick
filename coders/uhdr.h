@@ -16,9 +16,9 @@
 
 #include "coders/coders-private.h"
 
-#define MagickUDHRHeaders
+#define MagickUHDRHeaders
 
-#define MagickUDHRAliases
+#define MagickUHDRAliases
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
