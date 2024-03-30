@@ -52,7 +52,7 @@
 */
 #if defined(MAGICKCORE_UHDR_DELEGATE)
 static MagickBooleanType
-  WriteWEBPImage(const ImageInfo *,Image *,ExceptionInfo *);
+  WriteUHDRImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
 /*
