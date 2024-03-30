@@ -14,18 +14,17 @@
   limitations under the License.
 */
 
+#include "coders/coders-private.h"
+
+#define MagickUDHRHeaders
+
+#define MagickUDHRAliases
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-MagickBooleanType IsUHDR(const ImageInfo *image_info, ExceptionInfo *exception);
-
-Image *ReadUHDRImage(const ImageInfo *image_info, ExceptionInfo *exception);
-
-MagickBooleanType HasResourcesForUHdrEncode(const Image *images);
-
-MagickBooleanType WriteUHDRImage(const ImageInfo *image_info, Image *image,
-                                 ExceptionInfo *exception);
+MagickCoderExports(UDHR)
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

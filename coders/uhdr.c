@@ -40,13 +40,21 @@
 #include "MagickCore/image.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
+#include "MagickCore/module.h"
 #include "MagickCore/option.h"
-
 #if defined(MAGICKCORE_UHDR_DELEGATE)
 #include "ultrahdr_api.h"
 #include "uhdr.h"
 #endif
-
+
+/*
+  Forward declarations.
+*/
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+static MagickBooleanType
+  WriteWEBPImage(const ImageInfo *,Image *,ExceptionInfo *);
+#endif
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -58,12 +66,12 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsUHDR() returns  MagickTrue if the input stream is a valid ultra hdr file,
+%  IsUHDR() returns MagickTrue if the input stream is a valid ultra hdr file,
 %  MagickFalse otherwise
 %
 %  The format of the IsUHDR  method is:
 %
-%      MagickBooleanType IsUHDR(const ImageInfo *image_info,ExceptionInfo *exception)
+%      MagickBooleanType IsUHDR(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -72,22 +80,19 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickBooleanType IsUHDR(const ImageInfo *image_info, ExceptionInfo *exception)
+static MagickBooleanType IsUHDR(const unsigned char *magick,const size_t length)
 {
-  Image
-    *image = AcquireImage(image_info, exception);
-
-  MagickBooleanType
-    status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
-
-  if (status == MagickTrue && !is_uhdr_image(GetBlobStreamData(image), GetBlobSize(image)))
-    status = MagickFalse;
-  CloseBlob(image);
-  DestroyImageList(image);
-
-  return status;
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+  if (is_uhdr_image((void *) magick,(int) length);
+    return(MagickTrue);
+#else
+  magick_unreferenced(magick);
+  magick_unreferenced(length);
+#endif
+  return(MagickFalse);
 }
-
+
+#if defined(MAGICKCORE_UHDR_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -128,7 +133,7 @@ uhdr_color_transfer_t map_ct_to_uhdr_ct(const char *input_ct)
     return UHDR_CT_UNSPECIFIED;
 }
 
-Image *ReadUHDRImage(const ImageInfo *image_info, ExceptionInfo *exception)
+static Image *ReadUHDRImage(const ImageInfo *image_info, ExceptionInfo *exception)
 {
   Image
     *image;
@@ -323,7 +328,53 @@ Image *ReadUHDRImage(const ImageInfo *image_info, ExceptionInfo *exception)
     return (DestroyImageList(image));
   return (GetFirstImageInList(image));
 }
+#endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r U H D R I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RegisterUHDRImage() adds attributes for the Uhdr image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterUHDRImage method is:
+%
+%      size_t RegisterUHDRImage(void)
+%
+*/
+ModuleExport size_t RegisterUHDRImage(void)
+{
+  char
+    version[MagickPathExtent];
 
+  MagickInfo
+    *entry;
+
+  *version='\0';
+  entry=AcquireMagickInfo("UHDR","UHDR","UHDR Image Format");
+#if defined(MAGICKCORE_UHDR_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadUHDRImage;
+  entry->encoder=(EncodeImageHandler *) WriteWUHDRImage;
+#endif
+  entry->magick=(IsImageFormatHandler *) IsUHDR;
+  if (*version != '\0')
+    entry->version=ConstantString(version);
+  (void) RegisterMagickInfo(entry);
+  return(MagickImageCoderSignature);
+}
+
+#if defined(MAGICKCORE_UHDR_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -396,7 +447,7 @@ static uhdr_color_gamut_t getImageColorGamut(ChromaticityInfo *info)
   return UHDR_CG_UNSPECIFIED;
 }
 
-uhdr_color_gamut_t map_cg_to_uhdr_cg(const char *input_cg)
+static uhdr_color_gamut_t map_cg_to_uhdr_cg(const char *input_cg)
 {
   if (!strcmp(input_cg, "display_p3"))
     return UHDR_CG_DISPLAY_P3;
@@ -408,7 +459,7 @@ uhdr_color_gamut_t map_cg_to_uhdr_cg(const char *input_cg)
     return UHDR_CG_UNSPECIFIED;
 }
 
-MagickBooleanType HasResourcesForUHdrEncode(const Image *images)
+static MagickBooleanType HasResourcesForUHdrEncode(const Image *images)
 {
   const Image
     *image = images;
@@ -445,7 +496,7 @@ MagickBooleanType HasResourcesForUHdrEncode(const Image *images)
   return ((imageCount == 1 && hasHdrIntent) || (imageCount == 2 && hasHdrIntent && hasSdrIntent));
 }
 
-MagickBooleanType WriteUHDRImage(const ImageInfo *image_info, Image *images,
+static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info, Image *images,
   ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -660,3 +711,4 @@ MagickBooleanType WriteUHDRImage(const ImageInfo *image_info, Image *images,
 
   return status;
 }
+#endif
