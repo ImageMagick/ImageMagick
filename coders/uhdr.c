@@ -80,7 +80,8 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType IsUHDR(const unsigned char *magick,const size_t length)
+static MagickBooleanType IsUHDR(const unsigned char *magick,
+  const size_t length)
 {
 #if defined(MAGICKCORE_UHDR_DELEGATE)
   if (is_uhdr_image((void *) magick,(int) length))
@@ -119,7 +120,7 @@ static MagickBooleanType IsUHDR(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-uhdr_color_transfer_t map_ct_to_uhdr_ct(const char *input_ct)
+static uhdr_color_transfer_t map_ct_to_uhdr_ct(const char *input_ct)
 {
   if (!strcmp(input_ct, "hlg"))
     return UHDR_CT_HLG;
@@ -133,7 +134,8 @@ uhdr_color_transfer_t map_ct_to_uhdr_ct(const char *input_ct)
     return UHDR_CT_UNSPECIFIED;
 }
 
-static Image *ReadUHDRImage(const ImageInfo *image_info, ExceptionInfo *exception)
+static Image *ReadUHDRImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -374,6 +376,30 @@ ModuleExport size_t RegisterUHDRImage(void)
   return(MagickImageCoderSignature);
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r U H D R I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UnregisterUHDRImage() removes format registrations made by the
+%  UHDR module from the list of supported formats.
+%
+%  The format of the UnregisterUHDRImage method is:
+%
+%      UnregisterUHDRImage(void)
+%
+*/
+ModuleExport void UnregisterUHDRImage(void)
+{
+  (void) UnregisterMagickInfo("UHDR");
+}
+
 #if defined(MAGICKCORE_UHDR_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -496,8 +522,8 @@ static MagickBooleanType HasResourcesForUHDREncode(const Image *images)
   return ((imageCount == 1 && hasHdrIntent) || (imageCount == 2 && hasHdrIntent && hasSdrIntent));
 }
 
-static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info, Image *images,
-  ExceptionInfo *exception)
+static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
+  Image *images,ExceptionInfo *exception)
 {
   MagickBooleanType
     status = MagickTrue;
