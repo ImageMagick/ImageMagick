@@ -136,7 +136,7 @@ jobs:
       run: |
         for /f "tokens=* USEBACKQ" %%F IN (`git -C ImageMagick rev-parse HEAD`) do set COMMIT_SHA=%%F
         cd ImageMagick-Windows
-        CloneRepositories.cmd %COMMIT_SHA%
+        CloneRepositories.IM7.cmd %COMMIT_SHA%
 
     - name: Build configure
       shell: cmd
@@ -180,7 +180,7 @@ jobs:
         update: true
 
     - name: Building ImageMagick
-      run: cd ImageMagick-Windows && makepkg-mingw --noconfirm --syncdeps
+      run: cd ImageMagick-Windows\Build\MSYS2 && makepkg-mingw --noconfirm --syncdeps
       env:
         MINGW_ARCH: mingw64
         PKGEXT: ".pkg.tar.xz"
