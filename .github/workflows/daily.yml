@@ -144,9 +144,8 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        cd ImageMagick
-        for /f "tokens=* USEBACKQ" %%F IN (`git rev-parse HEAD`) do set COMMIT_SHA=%%F
-        cd ..\ImageMagick-Windows
+        for /f "tokens=* USEBACKQ" %%F IN (`git -C ImageMagick rev-parse HEAD`) do set COMMIT_SHA=%%F
+        cd ImageMagick-Windows
         CloneRepositories.cmd %COMMIT_SHA%
 
     - name: Download ChangeLog.md
@@ -159,23 +158,21 @@ jobs:
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\VisualMagick\configure
-        msbuild configure.2022.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
+        cd ImageMagick-Windows\Configure
+        msbuild Configure.2022.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
 
     - name: Configure ImageMagick
       shell: cmd
       run: |
-        cd ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2022 /includeOptional /incompatibleLicense /deprecated /${{matrix.platform}} /${{matrix.buildType}}
+        cd ImageMagick-Windows\Configure
+        Configure.exe /noWizard /VS2022 /includeOptional /incompatibleLicense /deprecated /${{matrix.platform}} /${{matrix.buildType}}
 
     - name: Build ImageMagick
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\VisualMagick
-        dir /B *.sln > solution
-        set /p solution=<solution
-        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+        cd ImageMagick-Windows
+        msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
   build_windows_zero_configuration:
     name: 'Windows Q16-x64 hdri=yes (zero configuration ${{matrix.buildType}})'
@@ -202,32 +199,29 @@ jobs:
     - name: Clone repositories
       shell: cmd
       run: |
-        cd ImageMagick
-        for /f "tokens=* USEBACKQ" %%F IN (`git rev-parse HEAD`) do set COMMIT_SHA=%%F
-        cd ..\ImageMagick-Windows
+        for /f "tokens=* USEBACKQ" %%F IN (`git -C ImageMagick rev-parse HEAD`) do set COMMIT_SHA=%%F
+        cd ImageMagick-Windows
         CloneRepositories.cmd %COMMIT_SHA%
 
     - name: Build configure
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\VisualMagick\configure
-        msbuild configure.2022.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
+        cd ImageMagick-Windows\Configure
+        msbuild Configure.2022.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
 
     - name: Configure ImageMagick
       shell: cmd
       run: |
-        cd ImageMagick-Windows\VisualMagick\configure
-        configure.exe /noWizard /VS2022 /x64 /${{matrix.buildType}} /zeroConfigurationSupport
+        cd ImageMagick-Windows\Configure
+        Configure.exe /noWizard /VS2022 /x64 /${{matrix.buildType}} /zeroConfigurationSupport
 
     - name: Build ImageMagick
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\VisualMagick
-        dir /B *.sln > solution
-        set /p solution=<solution
-        msbuild %solution% /m /t:Rebuild /p:Configuration=Release,Platform=x64
+        cd ImageMagick-Windows
+        msbuild /m /t:Rebuild /p:Configuration=Release,Platform=x64
 
   build_msys2:
     name: 'Windows Q16-${{matrix.toolchain}} hdri=yes (MSYS2)'
