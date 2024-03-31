@@ -180,7 +180,7 @@ jobs:
         update: true
 
     - name: Building ImageMagick
-      run: cd ImageMagick-Windows\Build\MSYS2 && makepkg-mingw --noconfirm --syncdeps
+      run: cd ImageMagick-Windows/Build/MSYS2 && makepkg-mingw --noconfirm --syncdeps
       env:
         MINGW_ARCH: mingw64
         PKGEXT: ".pkg.tar.xz"
