@@ -2091,15 +2091,18 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {
     ChannelStatistics *cs = channel_statistics+i;
-    cs->area = 0;
-    cs->depth=1;
+    cs->area=0.0;
+    cs->depth=1.0;
     cs->maxima=(-MagickMaximumValue);
     cs->minima=MagickMaximumValue;
-    cs->sum=cs->sumLD=0;
-    cs->mean=0;
-    cs->standard_deviation = cs->variance = 0.0;
-    cs->skewness = cs->kurtosis = 0.0;
-    cs->entropy = 0.0;
+    cs->sum=0.0;
+    cs->sumLD=0.0;
+    cs->mean=0.0;
+    cs->standard_deviation=0.0;
+    cs->variance=0.0;
+    cs->skewness=0.0;
+    cs->kurtosis=0.0;
+    cs->entropy=0.0;
   }
   (void) memset(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
@@ -2138,8 +2141,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           {
             depth=cs->depth;
             range=GetQuantumRange(depth);
-            status=p[i] != ScaleAnyToQuantum(ScaleQuantumToAny(p[i],range),
-              range) ? MagickTrue : MagickFalse;
+            status=p[i] != ScaleAnyToQuantum(ScaleQuantumToAny(p[i],range),range) ?
+              MagickTrue : MagickFalse;
             if (status != MagickFalse)
               {
                 cs->depth++;
@@ -2193,7 +2196,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       p+=GetPixelChannels(image);
     }
   }
-
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     ChannelStatistics
@@ -2213,7 +2215,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           AdjArea=cs->area/(cs->area-1.0);
       }
     cs->sum=(double) cs->sum;
-    if (cs->M2 == 0)
+    if (cs->M2 == 0.0)
       {
         cs->standard_deviation=0.0;
         cs->variance=0.0;
@@ -2222,7 +2224,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       }
     else
       {
-        if (cs->area > 1)
+        if (cs->area > 1.0)
           cs->standard_deviation=sqrtl(cs->M2/((long double) cs->area-1.0));
         else
           cs->standard_deviation=sqrtl(cs->M2/((long double) cs->area));
