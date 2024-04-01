@@ -347,20 +347,8 @@ jobs:
       run: |
         [void](New-Item -Name "portable" -ItemType directory)
         Copy-Item "ImageMagick-Windows\Output\bin\*.exe" "portable"
-        Copy-Item "ImageMagick-Windows\ImageMagick\config\colors.xml" "portable"
-        Copy-Item "ImageMagick-Windows\ImageMagick\config\english.xml" "portable"
-        Copy-Item "ImageMagick-Windows\ImageMagick\config\locale.xml" "portable"
-        Copy-Item "ImageMagick-Windows\ImageMagick\config\log.xml" "portable"
-        Copy-Item "ImageMagick-Windows\ImageMagick\config\mime.xml" "portable"
-        Copy-Item "ImageMagick-Windows\ImageMagick\config\quantization-table.xml" "portable"
-        Copy-Item "ImageMagick-Windows\Output\bin\configure.xml" "portable"
-        Copy-Item "ImageMagick-Windows\Output\bin\ImageMagick.rdf" "portable"
-        Copy-Item "ImageMagick-Windows\Output\bin\delegates.xml" "portable"
-        Copy-Item "ImageMagick-Windows\Output\bin\policy.xml" "portable"
+        Copy-Item "ImageMagick-Windows\Output\bin\*.xml" "portable"
         Copy-Item "ImageMagick-Windows\Output\bin\sRGB.icc" "portable"
-        Copy-Item "ImageMagick-Windows\Output\bin\thresholds.xml" "portable"
-        Copy-Item "ImageMagick-Windows\Output\bin\type-ghostscript.xml" "portable"
-        Copy-Item "ImageMagick-Windows\Output\bin\type.xml" "portable"
 
         Copy-Item "ImageMagick-Windows\Output\NOTICE.txt" "portable"
         Copy-Item "ImageMagick-Windows\ImageMagick\ChangeLog.md" "portable"
