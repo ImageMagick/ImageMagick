@@ -222,6 +222,15 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
 
 #undef CHECK_IF_ERR
 
+  uhdr_mem_block_t *exif = uhdr_dec_get_exif(handle);
+  if (exif != NULL)
+  {
+    StringInfo *exif_data = AcquireStringInfo(exif->data_sz);
+    memcpy(GetStringInfoDatum(exif_data), exif->data, exif->data_sz);
+    (void)SetImageProfile(image, "exif", exif_data, exception);
+    exif_data = DestroyStringInfo(exif_data);
+  }
+
   SetImageColorspace(image, RGBColorspace, exception);
 
   if (decoded_img_ct == UHDR_CT_LINEAR)
@@ -487,41 +496,38 @@ static uhdr_color_gamut_t map_cg_to_uhdr_cg(const char *input_cg)
     return UHDR_CG_UNSPECIFIED;
 }
 
-static MagickBooleanType HasResourcesForUHDREncode(const Image *images)
+static uhdr_mem_block_t GetExifProfile(Image *image, ExceptionInfo *exception)
 {
-  const Image
-    *image = images;
+  const char
+    *name;
 
-  MagickBooleanType
-    hasHdrIntent = MagickFalse,
-    hasSdrIntent = MagickFalse;
+  const StringInfo
+    *profile;
 
-  ssize_t
-    imageCount = 0;
+  uhdr_mem_block_t
+    uhdr_profile = {};
 
-  if (images == (Image *) NULL)
-    return (MagickFalse);
-  assert(images->signature == MagickCoreSignature);
-
-  for (int i = 0; i < GetImageListLength(image); i++)
+  ResetImageProfileIterator(image);
+  for (name = GetNextImageProfile(image); name != (const char *)NULL;)
   {
-    if (image->depth == 8)
-      hasSdrIntent = MagickTrue;
-
-    if (image->depth >= 10)
-      hasHdrIntent = MagickTrue;
-
-    imageCount++;
-
-    if (i != GetImageListLength(image) - 1)
+    profile = GetImageProfile(image, name);
+    if (LocaleCompare(name, "EXIF") == 0)
     {
-      if (GetNextImageInList(image) == (Image *) NULL)
-        break;
-      image = SyncNextImageInList(image);
-    }
-  }
+      uhdr_profile.data_sz = (unsigned int)GetStringInfoLength(profile);
+      uhdr_profile.capacity = uhdr_profile.data_sz;
+      if (uhdr_profile.data_sz > 65533L)
+        (void)ThrowMagickException(exception, GetMagickModule(), CoderWarning,
+                                   "ExifProfileSizeExceedsLimit", "`%s'", image->filename);
 
-  return ((imageCount == 1 && hasHdrIntent) || (imageCount == 2 && hasHdrIntent && hasSdrIntent));
+      uhdr_profile.data = GetStringInfoDatum(profile);
+      return uhdr_profile;
+    }
+    if (image->debug != MagickFalse)
+      (void)LogMagickEvent(CoderEvent, GetMagickModule(), "%s profile: %.20g bytes", name,
+                           (double)GetStringInfoLength(profile));
+    name = GetNextImageProfile(image);
+  }
+  return uhdr_profile;
 }
 
 static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
@@ -536,6 +542,9 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   uhdr_raw_image_t
     hdrImgDescriptor = {0},
     sdrImgDescriptor = {0};
+
+  uhdr_mem_block_t
+    sdr_profile, hdr_profile;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickCoreSignature);
@@ -555,8 +564,14 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     int
       bpp = (image->depth >= 10) ? 2 : 1;
 
+    int
+      aligned_width = image->columns + (image->columns & 1);
+
+    int
+      aligned_height = image->rows + (image->rows & 1);
+
     ssize_t
-      picSize = image->columns * image->rows * bpp * 1.5 /* 2x2 sub-sampling */;
+      picSize = aligned_width * aligned_height * bpp * 1.5 /* 2x2 sub-sampling */;
 
     void
       *crBuffer = NULL, *cbBuffer = NULL, *yBuffer = NULL;
@@ -592,13 +607,15 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       hdrImgDescriptor.w = image->columns;
       hdrImgDescriptor.h = image->rows;
       hdrImgDescriptor.planes[UHDR_PLANE_Y] = yBuffer;
-      cbBuffer = ((unsigned short *) yBuffer) + image->columns * image->rows;
+      cbBuffer = ((unsigned short *) yBuffer) + aligned_width * aligned_height;
       crBuffer = ((unsigned short *) cbBuffer) + 1;
       hdrImgDescriptor.planes[UHDR_PLANE_UV] = cbBuffer;
       hdrImgDescriptor.planes[UHDR_PLANE_V] = NULL;
-      hdrImgDescriptor.stride[UHDR_PLANE_Y] = image->columns;
-      hdrImgDescriptor.stride[UHDR_PLANE_UV] = image->columns;
+      hdrImgDescriptor.stride[UHDR_PLANE_Y] = aligned_width;
+      hdrImgDescriptor.stride[UHDR_PLANE_UV] = aligned_width;
       hdrImgDescriptor.stride[UHDR_PLANE_V] = 0;
+
+      hdr_profile = GetExifProfile(image, exception);
     }
     else if (image->depth == 8)
     {
@@ -614,13 +631,15 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       sdrImgDescriptor.w = image->columns;
       sdrImgDescriptor.h = image->rows;
       sdrImgDescriptor.planes[UHDR_PLANE_Y] = yBuffer;
-      cbBuffer = ((uint8_t *) yBuffer) + image->columns * image->rows;
+      cbBuffer = ((uint8_t *) yBuffer) + aligned_width * aligned_height;
       sdrImgDescriptor.planes[UHDR_PLANE_U] = cbBuffer;
-      crBuffer = ((uint8_t *) cbBuffer) + ((image->columns / 2) * (image->rows / 2));
+      crBuffer = ((uint8_t *) cbBuffer) + ((aligned_width / 2) * (aligned_height / 2));
       sdrImgDescriptor.planes[UHDR_PLANE_V] = crBuffer;
-      sdrImgDescriptor.stride[UHDR_PLANE_Y] = image->columns;
-      sdrImgDescriptor.stride[UHDR_PLANE_U] = image->columns / 2;
-      sdrImgDescriptor.stride[UHDR_PLANE_V] = image->columns / 2;
+      sdrImgDescriptor.stride[UHDR_PLANE_Y] = aligned_width;
+      sdrImgDescriptor.stride[UHDR_PLANE_U] = aligned_width / 2;
+      sdrImgDescriptor.stride[UHDR_PLANE_V] = aligned_width / 2;
+
+      sdr_profile = GetExifProfile(image, exception);
     }
 
     for (int y = 0; y < (ssize_t) image->rows; y++)
@@ -711,10 +730,18 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       CHECK_IF_ERR(uhdr_enc_set_quality(handle, image->quality, UHDR_BASE_IMG))
 
     if (status != MagickFalse && hdrImgDescriptor.planes[UHDR_PLANE_Y])
+    {
       CHECK_IF_ERR(uhdr_enc_set_raw_image(handle, &hdrImgDescriptor, UHDR_HDR_IMG))
+      if (hdr_profile.data_sz != 0)
+        CHECK_IF_ERR(uhdr_enc_set_exif_data(handle, &hdr_profile))
+    }
 
     if (status != MagickFalse && sdrImgDescriptor.planes[UHDR_PLANE_Y])
+    {
       CHECK_IF_ERR(uhdr_enc_set_raw_image(handle, &sdrImgDescriptor, UHDR_SDR_IMG))
+      if (sdr_profile.data_sz != 0)
+        CHECK_IF_ERR(uhdr_enc_set_exif_data(handle, &sdr_profile))
+    }
 
     if (status != MagickFalse)
       CHECK_IF_ERR(uhdr_encode(handle))
