@@ -166,7 +166,7 @@ jobs:
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" ImageMagick-Windows\Installer\Inno\im-${{matrix.platform}}${{matrix.hdri_flag}}-${{matrix.type}}-${{matrix.quantum}}.iss
+        "C:\Program Files (x86)\Inno Setup 6\iscc.exe" ImageMagick-Windows\Installer\Inno\ImageMagick.iss
 
     - name: Sign installer
       if: github.event_name != 'pull_request'
