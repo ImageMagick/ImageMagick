@@ -18,7 +18,8 @@ Image Settings:
   \-clip-mask filename  associate a clip mask with the image
   \-clip-path id        clip along a named path from the 8BIM profile
   \-colorspace type     alternate image colorspace
-  \-crop geometry       cut out a rectangular region of the image
+  \-crop geometry       cut out a rectangular region of the image WIDTHxHEIGHT[+X_OFFSET+Y_OFFSET]
+  \                     (note the letter x between WIDTH and HEIGHT, and plus symbol before offsets)
   \-define format:option
                        define one or more image format options
   \-define unique=true  return the number of unique colors in the image
