@@ -698,6 +698,8 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     uhdr_error_info_t retval = (x); \
     if (retval.error_code != UHDR_CODEC_OK) \
     { \
+      (void) ThrowMagickException(exception,GetMagickModule(),CoderError, \
+        retval.detail,"`%s'",image->filename); \
       uhdr_release_encoder(handle); \
       status = MagickFalse; \
     } \
