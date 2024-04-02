@@ -688,21 +688,21 @@ ModuleExport size_t RegisterDNGImage(void)
 #endif
   RegisterDNGMagickInfo("3FR","Hasselblad CFV/H3D39II Raw Format",version);
   RegisterDNGMagickInfo("ARW","Sony Alpha Raw Format",version);
-  RegisterDNGMagickInfo("DNG","Digital Negative Raw Format",version);
   RegisterDNGMagickInfo("CR2","Canon Digital Camera Raw Format",version);
   RegisterDNGMagickInfo("CR3","Canon Digital Camera Raw Format",version);
   RegisterDNGMagickInfo("CRW","Canon Digital Camera Raw Format",version);
   RegisterDNGMagickInfo("DCR","Kodak Digital Camera Raw Format",version);
   RegisterDNGMagickInfo("DCRAW","Raw Photo Decoder (dcraw)",version);
+  RegisterDNGMagickInfo("DNG","Digital Negative Raw Format",version);
   RegisterDNGMagickInfo("ERF","Epson Raw Format",version);
-  RegisterDNGMagickInfo("FFF","Hasselblad CFV/H3D39II",version);
+  RegisterDNGMagickInfo("FFF","Hasselblad CFV/H3D39II Raw Format",version);
   RegisterDNGMagickInfo("IIQ","Phase One Raw Format",version);
-  RegisterDNGMagickInfo("KDC","Kodak Digital Camera Raw Format",version);
   RegisterDNGMagickInfo("K25","Kodak Digital Camera Raw Format",version);
+  RegisterDNGMagickInfo("KDC","Kodak Digital Camera Raw Format",version);
   RegisterDNGMagickInfo("MDC","Minolta Digital Camera Raw Format",version);
   RegisterDNGMagickInfo("MEF","Mamiya Raw Format",version);
-  RegisterDNGMagickInfo("MRW","Sony (Minolta) Raw Format",version);
   RegisterDNGMagickInfo("MOS","Aptus Leaf Raw Format",version);
+  RegisterDNGMagickInfo("MRW","Sony (Minolta) Raw Format",version);
   RegisterDNGMagickInfo("NEF","Nikon Digital SLR Camera Raw Format",version);
   RegisterDNGMagickInfo("NRW","Nikon Digital SLR Camera Raw Format",version);
   RegisterDNGMagickInfo("ORF","Olympus Digital Camera Raw Format",version);
@@ -758,16 +758,17 @@ ModuleExport void UnregisterDNGImage(void)
   (void) UnregisterMagickInfo("MOS");
   (void) UnregisterMagickInfo("MEF");
   (void) UnregisterMagickInfo("MDC");
-  (void) UnregisterMagickInfo("K25");
   (void) UnregisterMagickInfo("KDC");
+  (void) UnregisterMagickInfo("K25");
   (void) UnregisterMagickInfo("IIQ");
   (void) UnregisterMagickInfo("FFF");
   (void) UnregisterMagickInfo("ERF");
+  (void) UnregisterMagickInfo("DNG");
+  (void) UnregisterMagickInfo("DCRAW");
   (void) UnregisterMagickInfo("DCR");
   (void) UnregisterMagickInfo("CRW");
   (void) UnregisterMagickInfo("CR3");
   (void) UnregisterMagickInfo("CR2");
-  (void) UnregisterMagickInfo("DNG");
   (void) UnregisterMagickInfo("ARW");
   (void) UnregisterMagickInfo("3FR");
 }
