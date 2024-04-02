@@ -1778,6 +1778,7 @@ ModuleExport size_t RegisterJPEGImage(void)
 #endif
   entry->magick=(IsImageFormatHandler *) IsJPEG;
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderAdjoinFlag;
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->mime_type=ConstantString("image/jpeg");
@@ -1791,6 +1792,7 @@ ModuleExport size_t RegisterJPEGImage(void)
   entry->encoder=(EncodeImageHandler *) WriteJPEGImage;
 #endif
   entry->flags|=CoderDecoderSeekableStreamFlag;
+  entry->flags^=CoderAdjoinFlag;
   entry->flags^=CoderUseExtensionFlag;
   if (*version != '\0')
     entry->version=ConstantString(version);
