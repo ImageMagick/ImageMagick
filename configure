@@ -797,10 +797,10 @@ WEBPMUX_LIBS
 WEBPMUX_CFLAGS
 WEBP_LIBS
 WEBP_CFLAGS
-UHDR_LIBS
-UHDR_CFLAGS
 UHDR_DELEGATE_FALSE
 UHDR_DELEGATE_TRUE
+UHDR_LIBS
+UHDR_CFLAGS
 TIFF_DELEGATE_FALSE
 TIFF_DELEGATE_TRUE
 TIFF_LIBS
@@ -1366,6 +1366,8 @@ CAIRO_SVG_CFLAGS
 CAIRO_SVG_LIBS
 TIFF_CFLAGS
 TIFF_LIBS
+UHDR_CFLAGS
+UHDR_LIBS
 WEBP_CFLAGS
 WEBP_LIBS
 WEBPMUX_CFLAGS
@@ -2241,6 +2243,8 @@ Some influential environment variables:
               linker flags for CAIRO_SVG, overriding pkg-config
   TIFF_CFLAGS C compiler flags for TIFF, overriding pkg-config
   TIFF_LIBS   linker flags for TIFF, overriding pkg-config
+  UHDR_CFLAGS C compiler flags for UHDR, overriding pkg-config
+  UHDR_LIBS   linker flags for UHDR, overriding pkg-config
   WEBP_CFLAGS C compiler flags for WEBP, overriding pkg-config
   WEBP_LIBS   linker flags for WEBP, overriding pkg-config
   WEBPMUX_CFLAGS
@@ -5255,7 +5259,7 @@ MAGICK_PATCHLEVEL_VERSION=30
 
 MAGICK_VERSION=7.1.1-30
 
-MAGICK_GIT_REVISION=36d01b6d1:20240329
+MAGICK_GIT_REVISION=d8d8cb8c0:20240404
 
 
 # Substitute library versioning
@@ -5289,7 +5293,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,30
 
-PACKAGE_RELEASE_DATE=2024-03-29
+PACKAGE_RELEASE_DATE=2024-04-04
 
 
 # Ensure that make can run correctly
@@ -33546,6 +33550,79 @@ printf "%s\n" "" >&6; }
     failed=0
     passed=0
 
+
+pkg_failed=no
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libuhdr >= 1.0" >&5
+printf %s "checking for libuhdr >= 1.0... " >&6; }
+
+if test -n "$UHDR_CFLAGS"; then
+    pkg_cv_UHDR_CFLAGS="$UHDR_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libuhdr >= 1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libuhdr >= 1.0") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_UHDR_CFLAGS=`$PKG_CONFIG --cflags "libuhdr >= 1.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$UHDR_LIBS"; then
+    pkg_cv_UHDR_LIBS="$UHDR_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libuhdr >= 1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libuhdr >= 1.0") 2>&5
+  ac_status=$?
+  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_UHDR_LIBS=`$PKG_CONFIG --libs "libuhdr >= 1.0" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        UHDR_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libuhdr >= 1.0" 2>&1`
+        else
+	        UHDR_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libuhdr >= 1.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$UHDR_PKG_ERRORS" >&5
+
+	have_uhdr=no
+elif test $pkg_failed = untried; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+	have_uhdr=no
+else
+	UHDR_CFLAGS=$pkg_cv_UHDR_CFLAGS
+	UHDR_LIBS=$pkg_cv_UHDR_LIBS
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+	have_uhdr=yes
+fi
+    CFLAGS="$CFLAGS $UHDR_CFLAGS"
+    LIBS="$LIBS $UHDR_LIBS"
     ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
