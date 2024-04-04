@@ -2892,6 +2892,9 @@ if test "$with_uhdr" != 'no'; then
     failed=0
     passed=0
 
+    PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.0],[have_uhdr=yes],[have_uhdr=no])
+    CFLAGS="$CFLAGS $UHDR_CFLAGS"
+    LIBS="$LIBS $UHDR_LIBS"
     AC_LANG_PUSH([C++])
     AC_CHECK_HEADER([ultrahdr_api.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
     AC_CHECK_LIB([uhdr],[uhdr_create_decoder],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
