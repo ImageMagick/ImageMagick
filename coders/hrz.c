@@ -17,7 +17,7 @@
 %                                 July 1992                                   %
 %                                                                             %
 %                                                                             %
-  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -100,23 +100,19 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  ssize_t
-    x;
-
   Quantum
     *q;
-
-  unsigned char
-    *p;
-
-  ssize_t
-    count,
-    y;
 
   size_t
     length;
 
+  ssize_t
+    count,
+    x,
+    y;
+
   unsigned char
+    *p,
     *pixels;
 
   /*
@@ -142,6 +138,11 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=256;
   image->rows=240;
   image->depth=8;
+  if (image_info->ping != MagickFalse)
+    {
+      (void) CloseBlob(image);
+      return(GetFirstImageInList(image));
+    }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
@@ -275,27 +276,23 @@ ModuleExport void UnregisterHRZImage(void)
 static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
+  const Quantum
+    *p;
+
   Image
     *hrz_image;
 
   MagickBooleanType
     status;
 
-  const Quantum
-    *p;
-
   ssize_t
+    count,
     x,
     y;
 
   unsigned char
+    *pixels,
     *q;
-
-  ssize_t
-    count;
-
-  unsigned char
-    *pixels;
 
   /*
     Open output image file.
@@ -336,9 +333,9 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image,
     q=pixels;
     for (x=0; x < (ssize_t) hrz_image->columns; x++)
     {
-      *q++=ScaleQuantumToChar(GetPixelRed(hrz_image,p)/4);
-      *q++=ScaleQuantumToChar(GetPixelGreen(hrz_image,p)/4);
-      *q++=ScaleQuantumToChar(GetPixelBlue(hrz_image,p)/4);
+      *q++=ScaleQuantumToChar(GetPixelRed(hrz_image,p))/4;
+      *q++=ScaleQuantumToChar(GetPixelGreen(hrz_image,p))/4;
+      *q++=ScaleQuantumToChar(GetPixelBlue(hrz_image,p))/4;
       p+=GetPixelChannels(hrz_image);
     }
     count=WriteBlob(image,(size_t) (q-pixels),pixels);
