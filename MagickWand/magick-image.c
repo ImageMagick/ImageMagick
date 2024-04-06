@@ -401,12 +401,12 @@ static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
         wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
-  /*
-    User jumped to first image, so prepend new images - remain active.
-  */
   if ((wand->insert_before != MagickFalse) &&
       (wand->images->previous == (Image *) NULL))
     {
+      /*
+        User jumped to first image, so prepend new images - remain active.
+      */
       PrependImageToList(&wand->images,images);
       wand->images=GetFirstImageInList(images);
       return(MagickTrue);
