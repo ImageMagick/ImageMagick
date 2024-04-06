@@ -75,7 +75,7 @@ Here are just a few [examples](https://imagemagick.org/script/examples.php) of w
 
 Creating a security policy that fits your specific local environment before making use of ImageMagick is highly advised. You can find guidance on setting up this [policy](https://imagemagick.org/script/security-policy.php). Also, it's important to verify your policy using the [validation tool](https://imagemagick-secevaluator.doyensec.com/). As of ImageMagick version 7.1.1-16, you can choose and customize one of these [security policies](https://imagemagick.org/script/security-policy.php): Open, Limited, Secure, and Websafe.
 
-By default, ImageMagick supports up to 32 channels. As of ImageMagick version 7.1.1-16, you can enable up to 64 channels by adding the **--enable-64bit-channel-masks** option to the Linux configure build script. For Windows, just select the option from the configure application.
+By default, ImageMagick supports up to 32 channels. As of ImageMagick version 7.1.1-16, you can enable up to 64 channels by adding the **--enable-64bit-channel-masks** option to the Linux configure build script. For Windows this will be enabled automatically.
 
 
 Want more performance from ImageMagick? Try these options:
