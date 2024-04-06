@@ -23,7 +23,7 @@
 %                                 August 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -401,9 +401,11 @@ static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
         wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
-  /* user jumped to first image, so prepend new images - remain active */
+  /*
+    User jumped to first image, so prepend new images - remain active.
+  */
   if ((wand->insert_before != MagickFalse) &&
-       (wand->images->previous == (Image *) NULL))
+      (wand->images->previous == (Image *) NULL))
     {
       PrependImageToList(&wand->images,images);
       wand->images=GetFirstImageInList(images);
@@ -412,7 +414,7 @@ static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
   /*
     Note you should never have 'insert_before' true when current image is not
     the first image in the wand!  That is no insert before current image, only
-    after current image
+    after current image.
   */
   if (wand->images->next == (Image *) NULL)
     {
