@@ -3,41 +3,98 @@
 
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="auto">
 <head>
+  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
   <title>ImageMagick – Image Formats</title>
-  <meta name="application-name" content="ImageMagick" />
+  <meta name="keywords" content="image, formats, ImageMagick, image processing, command-line tool, format conversion, photo editing" />
   <meta name="description" content="Read and write images in a variety of formats (over 200)." />
+  <meta name="application-name" content="ImageMagick" />
   <meta name="application-url" content="https://imagemagick.org" />
-  <meta name="generator" content="PHP" />
-  <meta name="keywords" content="image, formats, image processing software" />
-  <meta name="rating" content="GENERAL" />
-  <meta name="robots" content="INDEX, FOLLOW" />
-  <meta name="generator" content="ImageMagick Studio LLC" />
-  <meta name="author" content="ImageMagick Studio LLC" />
-  <meta name="revisit-after" content="2 DAYS" />
-  <meta name="resource-type" content="document" />
   <meta name="copyright" content="Copyright (c) 1999 ImageMagick Studio LLC" />
-  <meta name="distribution" content="Global" />
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta itemprop='url' content='../' />
+  <meta itemprop='title' content='ImageMagick' />
+  <meta itemprop='description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
   <meta property='og:url' content='../' />
-  <meta property='og:title' content='ImageMagick' />
+  <meta property='og:name' content='ImageMagick' />
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
+  <meta property='og:description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
+  <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
+  <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="../www/formats.html" rel="canonical" />
-  <link href="../images/wand.png" rel="icon" />
-  <link href="../images/wand.ico" rel="shortcut icon" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
   <link href="assets/magick.css" rel="stylesheet" />
+  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
 </head>
 <body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+    <symbol id="check2" viewBox="0 0 16 16">
+      <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+    </symbol>
+    <symbol id="circle-half" viewBox="0 0 16 16">
+      <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+    </symbol>
+    <symbol id="moon-stars-fill" viewBox="0 0 16 16">
+      <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+      <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+    </symbol>
+    <symbol id="sun-fill" viewBox="0 0 16 16">
+      <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+    </symbol>
+  </svg>
+  <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+    <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+            id="bd-theme"
+            type="button"
+            aria-expanded="false"
+            data-bs-toggle="dropdown"
+            aria-label="Toggle theme (auto)">
+      <svg class="bi my-1 theme-icon-active" width="1em" height="1em"><use href="#circle-half"></use></svg>
+      <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
+          Light
+          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
+          Dark
+          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
+          Auto
+          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+    
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="arrow-right-circle" viewBox="0 0 16 16">
+    <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+  </symbol>
+  <symbol id="bootstrap" viewBox="0 0 118 94">
+    <title>Bootstrap</title>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
+  </symbol>
+</svg>
+
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
+    <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#magick-navbars" aria-controls="magick-navbars" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -45,16 +102,16 @@
     <div class="collapse navbar-collapse" id="magick-navbars">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="nav-link " href="../www/download.html">Download</a>
+          <a class="nav-link " href="download.html">Download</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-tools.html">Tools</a>
+          <a class="nav-link " href="command-line-tools.html">Tools</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/command-line-processing.html">CLI</a>
+          <a class="nav-link " href="command-line-processing.html">CLI</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " href="../www/develop.html">Develop</a>
+          <a class="nav-link " href="develop.html">Develop</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" target="_blank" href="https://github.com/ImageMagick/ImageMagick/discussions">Community</a>
@@ -71,31 +128,22 @@
   </div>
   </nav>
 
-  <div class="container">
-    <script async="async" src="http://localhost/pagead/js/adsbygoogle.js"></script>
-    <ins class="adsbygoogle"
-      style="display:block"
-      data-ad-client="ca-pub-3129977114552745"
-      data-ad-slot="6345125851"
-      data-full-width-responsive="true"
-      data-ad-format="horizontal"></ins>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-
-  </div>
+<div class="col-lg-8 mx-auto p-4 py-md-5 text-body-secondary">
+  <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+    <a href="../index.html" class="d-flex align-items-center text-decoration-none">
+      <h1 class="fs-4">Image Formats</h1>
+    </a>
+  </header>
 
   <main class="container">
-  <div class="magick-template">
-﻿<div class="magick-header">
-<h1 class="text-center">Image Formats</h1>
+﻿<div class="row">
 <p class="text-center"><a href="formats.html#colorspace">A Word about Colorspaces</a> • <a href="formats.html#supported">Supported Formats</a> • <a href="formats.html#pseudo">Pseudo Formats</a> • <a href="formats.html#builtin-images">Built-in Images</a>  • <a href="formats.html#builtin-patterns">Built-in Patterns</a> • <a href="formats.html#embedded">Embedded Profiles</a></p>
 
-<p class="lead magick-description">ImageMagick uses an ASCII string known as <var>magick</var> (e.g. <samp>GIF</samp>) to identify file formats, algorithms acting as formats, built-in patterns, and embedded profile types.  Support for some of the formats are delegated to libraries or external programs. The Installation Guide describes where to find these distributions and any special configuration options required.</p>
+<p class="lead">ImageMagick uses an ASCII string known as <var>magick</var> (e.g. <samp>GIF</samp>) to identify file formats, algorithms acting as formats, built-in patterns, and embedded profile types.  Support for some of the formats are delegated to libraries or external programs. The Installation Guide describes where to find these distributions and any special configuration options required.</p>
 
 <p>To get a complete listing of which image formats are supported on your system, type</p>
 
-<pre class="bg-light text-dark mx-4 cli"><samp>magick identify -list format </samp></pre>
+<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick identify -list format </samp></pre>
 
 <p>On some platforms, ImageMagick automagically processes these extensions: .gz for Zip compression, .Z for Linux compression, .bz2 for block compression, and .pgp for PGP encryption. For example, a PNM image called image.pnm.gz is automagically uncompressed.</p>
 
@@ -107,14 +155,14 @@ Then there is the occasional format that also supports LAB (that is CieLAB)
 (e.g. TIFF, PSD, JPG, JP2).  To determine the colorspace of your image, use
 this command:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>$ magick identify -verbose image.jpg
+<pre class="p-3 mb-2 bg-light text-dark"><samp>$ magick identify -verbose image.jpg
 Image: image.jpg
 Format: JPEG (Joint Photographic Experts Group JFIF format)
 ...
 Colorspace: sRGB </samp></pre>
 
 OR use the appropriate percent escape
-<pre class="bg-light text-dark mx-4"><samp>$ magick image.jpg -print "%[colorspace]\n" null:
+<pre class="p-3 mb-2 bg-light text-dark"><samp>$ magick image.jpg -print "%[colorspace]\n" null:
 sRGB </samp></pre>
 
 
@@ -124,14 +172,14 @@ satisfactory results processing in the sRGB colorspace, you may get improved
 results in linear RGB (essentially sRGB with the gamma function removed).  For
 example,</p>
 
-<pre class="bg-light text-dark mx-4 cli"><samp>magick image.jpg -colorspace RGB -resize 50% -colorspace sRGB resize.jpg </samp></pre>
+<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick image.jpg -colorspace RGB -resize 50% -colorspace sRGB resize.jpg </samp></pre>
 
 <p>As of IM 6.7.8-2 one can properly work in LAB colorspace whether or not
-Imagemagick is <a href="../www/high-dynamic-range.html">HDRI</a>-enabled.  Essentially the A and
+Imagemagick is <a href="high-dynamic-range.html">HDRI</a>-enabled.  Essentially the A and
 B channels are stored with a 50% gray bias, to allow it to handle the
 negatives required by the format.</p>
 
-<pre class="bg-light text-dark mx-4 cli"><samp>magick lab.tif -resize 50% resize.jpg </samp></pre> </ul>
+<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick lab.tif -resize 50% resize.jpg </samp></pre> </ul>
 
 <p>Again, it may not make sense for some image processing operators to work
 directly in LAB space, but ImageMagick permits it and generally returns
@@ -206,14 +254,14 @@ the supported image formats.</p>
     <td>BAYER</td>
     <td>RW</td>
     <td>Raw mosaiced samples</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.  For signed pixel data, use <samp>-define quantum:format=signed</samp>.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.  For signed pixel data, use <samp>-define quantum:format=signed</samp>.</td>
   </tr>
 
   <tr>
     <td><a href="http://bellard.org/bpg/">BPG</a></td>
     <td>RW</td>
     <td>Better Portable Graphics</td>
-    <td>Use <a href="../www/command-line-options.html#quality">-quality</a> to specify the image compression quality.  To meet the requirements of BPG, the quality argument divided by 2 (e.g. -quality 92 assigns 46 as the BPG compression.</td>
+    <td>Use <a href="command-line-options.html#quality">-quality</a> to specify the image compression quality.  To meet the requirements of BPG, the quality argument divided by 2 (e.g. -quality 92 assigns 46 as the BPG compression.</td>
   </tr>
 
   <tr>
@@ -241,7 +289,7 @@ the supported image formats.</p>
     <td><a href="http://www.cineon.com/ff_draft.html">CIN</a></td>
     <td>RW</td>
     <td>Kodak Cineon Image Format</td>
-    <td>Use <a href="../www/command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <samp>-set gamma 1.7</samp>, <samp>-set reference-black 95</samp>, <samp>-set reference-white 685</samp>).  Properties include cin:file.create_date, cin:file.create_time, cin:file.filename, cin:file.version, cin:film.count, cin:film.format, cin:film.frame_id, cin:film.frame_position, cin:film.frame_rate, cin:film.id, cin:film.offset, cin:film.prefix, cin:film.slate_info, cin:film.type, cin:image.label, cin:origination.create_date, cin:origination.create_time, cin:origination.device, cin:origination.filename, cin:origination.model, cin:origination.serial, cin:origination.x_offset, cin:origination.x_pitch, cin:origination.y_offset, cin:origination.y_pitch, cin:user.data.</td>
+    <td>Use <a href="command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <samp>-set gamma 1.7</samp>, <samp>-set reference-black 95</samp>, <samp>-set reference-white 685</samp>).  Properties include cin:file.create_date, cin:file.create_time, cin:file.filename, cin:file.version, cin:film.count, cin:film.format, cin:film.frame_id, cin:film.frame_position, cin:film.frame_rate, cin:film.id, cin:film.offset, cin:film.prefix, cin:film.slate_info, cin:film.type, cin:image.label, cin:origination.create_date, cin:origination.create_time, cin:origination.device, cin:origination.filename, cin:origination.model, cin:origination.serial, cin:origination.x_offset, cin:origination.x_pitch, cin:origination.y_offset, cin:origination.y_pitch, cin:user.data.</td>
   </tr>
 
   <tr>
@@ -255,14 +303,14 @@ the supported image formats.</p>
     <td>CMYK</td>
     <td>RW</td>
     <td>Raw cyan, magenta, yellow, and black samples</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
   </tr>
 
   <tr>
     <td>CMYKA</td>
     <td>RW</td>
     <td>Raw cyan, magenta, yellow, black, and alpha samples</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
   </tr>
 
   <tr>
@@ -304,7 +352,7 @@ the supported image formats.</p>
     <td>DCM</td>
     <td>R</td>
     <td>Digital Imaging and Communications in Medicine (DICOM) image</td>
-    <td>Used by the medical community for images like X-rays.  ImageMagick sets the initial display range based on the Window Center (0028,1050) and Window Width (0028,1051) tags. Use <a href="../www/command-line-options.html#define">-define dcm:display-range=reset</a> to set the display range to the minimum and maximum pixel values. Use <a href="../www/command-line-options.html#define">-define dcm:rescale=true</a> to enable interpretation of the rescale slope and intercept settings in the file. Use <a href="../www/command-line-options.html#define">-define dcm:window=centerXwidth</a> to override the center and width settings in the file with your own values.</td>
+    <td>Used by the medical community for images like X-rays.  ImageMagick sets the initial display range based on the Window Center (0028,1050) and Window Width (0028,1051) tags. Use <a href="command-line-options.html#define">-define dcm:display-range=reset</a> to set the display range to the minimum and maximum pixel values. Use <a href="command-line-options.html#define">-define dcm:rescale=true</a> to enable interpretation of the rescale slope and intercept settings in the file. Use <a href="command-line-options.html#define">-define dcm:window=centerXwidth</a> to override the center and width settings in the file with your own values.</td>
   </tr>
 
   <tr>
@@ -325,7 +373,7 @@ the supported image formats.</p>
     <td><a href="http://en.wikipedia.org/wiki/DirectDraw_Surface">DDS</a></td>
     <td>RW</td>
     <td>Microsoft Direct Draw Surface</td>
-    <td>Use <a href="../www/command-line-options.html#define">-define</a> to specify the compression (e.g. <samp>-define dds:compression={dxt1, dxt5, none}</samp>). Other defines include <samp>dds:cluster-fit={true,false}</samp>, <samp>dds:weight-by-alpha={true,false}</samp>, <samp>dds:fast-mipmaps={true,false}</samp>, and use <samp>dds:mipmaps</samp> to set the number of mipmaps (use <samp>fromlist</samp> to use the image list).</td>
+    <td>Use <a href="command-line-options.html#define">-define</a> to specify the compression (e.g. <samp>-define dds:compression={dxt1, dxt5, none}</samp>). Other defines include <samp>dds:cluster-fit={true,false}</samp>, <samp>dds:weight-by-alpha={true,false}</samp>, <samp>dds:fast-mipmaps={true,false}</samp>, and use <samp>dds:mipmaps</samp> to set the number of mipmaps (use <samp>fromlist</samp> to use the image list).</td>
 
   </tr>
 
@@ -368,21 +416,21 @@ the supported image formats.</p>
     <td><a href="http://www.graphviz.org">DOT</a></td>
     <td>R</td>
     <td>Graph Visualization</td>
-    <td>Use <a href="../www/command-line-options.html#define">-define</a> to specify the layout engine (e.g. <samp>-define dot:layout-engine=twopi</samp>).</td>
+    <td>Use <a href="command-line-options.html#define">-define</a> to specify the layout engine (e.g. <samp>-define dot:layout-engine=twopi</samp>).</td>
   </tr>
 
   <tr>
-    <td><a href="../www/motion-picture.html">DPX</a></td>
+    <td><a href="motion-picture.html">DPX</a></td>
     <td>RW</td>
     <td>SMPTE Digital Moving Picture Exchange 2.0 (SMPTE 268M-2003)</td>
-    <td>Use <a href="../www/command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <samp>-set gamma 1.7</samp>, <samp>-set reference-black 95</samp>, <samp>-set reference-white 685</samp>).</td>
+    <td>Use <a href="command-line-options.html#set">-set</a> to specify the image gamma or black and white points (e.g. <samp>-set gamma 1.7</samp>, <samp>-set reference-black 95</samp>, <samp>-set reference-white 685</samp>).</td>
   </tr>
 
   <tr>
     <td>EMF</td>
     <td>R</td>
     <td>Microsoft Enhanced Metafile (32-bit)</td>
-    <td>Only available under Microsoft Windows.  Use <a href="../www/command-line-options.html#size">-size</a> command line option to specify the maximum width and height.</td>
+    <td>Only available under Microsoft Windows.  Use <a href="command-line-options.html#size">-size</a> command line option to specify the maximum width and height.</td>
   </tr>
 
   <tr>
@@ -445,7 +493,7 @@ the supported image formats.</p>
     <td><a href="http://www.openexr.org">EXR</a></td>
     <td>RW</td>
     <td>High dynamic-range (HDR) file format developed by Industrial Light &amp; Magic</td>
-    <td>See <a href="../www/high-dynamic-range.html">High Dynamic-Range Images</a> for details on this image format. To specify the output color type, use <samp>-define exr:color-type={RGB,RGBA,YC,YCA,Y,YA,R,G,B,A}</samp>. Use <a href="../www/command-line-options.html#sampling-factor">-sampling-factor</a> to specify the sampling rate for YC(A) (e.g. <samp>2x2 or 4:2:0</samp>). Requires the <a href="http://www.openexr.org/">OpenEXR</a> delegate library.</td>
+    <td>See <a href="high-dynamic-range.html">High Dynamic-Range Images</a> for details on this image format. To specify the output color type, use <samp>-define exr:color-type={RGB,RGBA,YC,YCA,Y,YA,R,G,B,A}</samp>. Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to specify the sampling rate for YC(A) (e.g. <samp>2x2 or 4:2:0</samp>). Requires the <a href="http://www.openexr.org/">OpenEXR</a> delegate library.</td>
   </tr>
 
   <tr>
@@ -487,7 +535,7 @@ the supported image formats.</p>
     <td>FPX</td>
     <td>RW</td>
     <td>FlashPix Format</td>
-    <td>FlashPix has the option to store mega- and giga-pixel images at various resolutions in a single file which permits conservative bandwidth and fast reveal times when displayed within a Web browser.  Requires the <a href="../archive/delegates">FlashPix SDK</a>. Specify the FlashPix viewing parameters with the <a href="../www/command-line-options.html#define">-define fpx:view</a>.</td>
+    <td>FlashPix has the option to store mega- and giga-pixel images at various resolutions in a single file which permits conservative bandwidth and fast reveal times when displayed within a Web browser.  Requires the <a href="../archive/delegates">FlashPix SDK</a>. Specify the FlashPix viewing parameters with the <a href="command-line-options.html#define">-define fpx:view</a>.</td>
   </tr>
 
   <tr>
@@ -501,7 +549,7 @@ the supported image formats.</p>
     <td><a href="http://www.fileformat.info/format/gif/egff.htm">GIF</a></td>
     <td>RW</td>
     <td>CompuServe Graphics Interchange Format</td>
-    <td>8-bit RGB PseudoColor with up to 256 palette entries. Specify the format <samp>GIF87</samp> to write the older version 87a of the format.  Use <a href="../www/command-line-options.html#transparent-color">-transparent-color</a> to specify the GIF transparent color (e.g. <samp>-transparent-color wheat</samp>).</td>
+    <td>8-bit RGB PseudoColor with up to 256 palette entries. Specify the format <samp>GIF87</samp> to write the older version 87a of the format.  Use <a href="command-line-options.html#transparent-color">-transparent-color</a> to specify the GIF transparent color (e.g. <samp>-transparent-color wheat</samp>).</td>
   </tr>
 
   <tr>
@@ -515,14 +563,14 @@ the supported image formats.</p>
     <td>GRAY</td>
     <td>RW</td>
     <td>Raw gray samples</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.  For signed pixel data, use <samp>-define quantum:format=signed</samp>. ImageMagick supports scanline padding.  If your image is not padded, you can instead read the image as a 1-D vector and reshape it:  <samp>magick -size 38700x1 -depth 1 gray:image.bin -reshape 180x215 image.png</samp>.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.  For signed pixel data, use <samp>-define quantum:format=signed</samp>. ImageMagick supports scanline padding.  If your image is not padded, you can instead read the image as a 1-D vector and reshape it:  <samp>magick -size 38700x1 -depth 1 gray:image.bin -reshape 180x215 image.png</samp>.</td>
   </tr>
 
   <tr>
     <td>GRAYA</td>
     <td>RW</td>
     <td>Raw gray and alpha samples</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
   </tr>
 
   <tr>
@@ -613,35 +661,35 @@ the supported image formats.</p>
     <td><a href="http://www.openjpeg.org/">JP2</a></td>
     <td>RW</td>
     <td>JPEG-2000 JP2 File Format Syntax</td>
-    <td>Specify the encoding options with the <a href="../www/command-line-options.html#define">-define</a> option. See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option. See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="http://www.openjpeg.org/">JPT</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="../www/command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="http://www.openjpeg.org/">J2C</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="../www/command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="http://www.openjpeg.org/">J2K</a></td>
     <td>RW</td>
     <td>JPEG-2000 Code Stream Syntax</td>
-    <td>Specify the encoding options with the <a href="../www/command-line-options.html#define">-define</a> option  See <a href="../www/jp2.html">JP2 Encoding Options</a> for more details.</td>
+    <td>Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="jp2.html">JP2 Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
     <td><a href="http://www.jpeg.org/">JPEG</a></td>
     <td>RW</td>
     <td>Joint Photographic Experts Group JFIF format</td>
-    <td>Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br /><br /> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can set quality scaling for luminance and chrominance separately (e.g. <a href="../www/command-line-options.html#quality">-quality</a> 90,70). You can optionally define the DCT method, for example to specify the float method, use <a href="../www/command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="../www/command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Specify <a href="../www/command-line-options.html#define">-define jpeg:arithmetic-coding=true</a> to enable Huffman optimization. Two other options include <a href="../www/command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="../www/command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="../www/command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <samp>jpeg:size</samp>, for example <a href="../www/command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <samp>jpeg:extent</samp>, for example <a href="../www/command-line-options.html#define">-define jpeg:extent=400KB</a>.  To define one or more custom quantization tables, use <a href="../www/command-line-options.html#define">-define jpeg:q-table=<i>filename</i></a>. These values are multiplied by <a href="../www/command-line-options.html#quality">-quality</a> argument divided by 100.0. To avoid reading a particular associated image profile, use <a href="../www/command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).</td>
+    <td>Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br /><br /> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can set quality scaling for luminance and chrominance separately (e.g. <a href="command-line-options.html#quality">-quality</a> 90,70). You can optionally define the DCT method, for example to specify the float method, use <a href="command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Specify <a href="command-line-options.html#define">-define jpeg:arithmetic-coding=true</a> to enable Huffman optimization. Two other options include <a href="command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <samp>jpeg:size</samp>, for example <a href="command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <samp>jpeg:extent</samp>, for example <a href="command-line-options.html#define">-define jpeg:extent=400KB</a>.  To define one or more custom quantization tables, use <a href="command-line-options.html#define">-define jpeg:q-table=<i>filename</i></a>. These values are multiplied by <a href="command-line-options.html#quality">-quality</a> argument divided by 100.0. To avoid reading a particular associated image profile, use <a href="command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).</td>
   </tr>
 
   <tr>
@@ -655,7 +703,7 @@ the supported image formats.</p>
     <td><a href="http://www.json.org">JSON</a></td>
     <td>W</td>
     <td>JavaScript Object Notation, a lightweight data-interchange format</td>
-    <td>Include additional attributes about the image with these defines: <a href="../www/command-line-options.html#define">-define json:locate</a>, <a href="../www/command-line-options.html#define">-define json:limit</a>, <a href="../www/command-line-options.html#define">-define json:moments</a>, or <a href="../www/command-line-options.html#define">-define json:features</a>.  Specify the JSON model schema version with <a href="../www/command-line-options.html#define">-define json:version</a>.  The current version is 1.0.  Any version less than 1.0, returns the original JSON output which included misspelled labels.</td>
+    <td>Include additional attributes about the image with these defines: <a href="command-line-options.html#define">-define json:locate</a>, <a href="command-line-options.html#define">-define json:limit</a>, <a href="command-line-options.html#define">-define json:moments</a>, or <a href="command-line-options.html#define">-define json:features</a>.  Specify the JSON model schema version with <a href="command-line-options.html#define">-define json:version</a>.  The current version is 1.0.  Any version less than 1.0, returns the original JSON output which included misspelled labels.</td>
   </tr>
 
   <tr>
@@ -687,7 +735,7 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td><a href="../www/miff.html">MIFF</a></td>
+    <td><a href="miff.html">MIFF</a></td>
     <td>RW</td>
     <td>Magick multispectral image file format</td>
     <td>This format persists all image attributes known to ImageMagick.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
@@ -740,7 +788,7 @@ the supported image formats.</p>
     <td>RW</td>
     <td>Magick Persistent Registry</td>
     <td>This format permits you to write to and read images from memory.  The filename is the registry key.  The image persists until you explicity delete it or the program exits.  For example, let's use the MPR to create a checkerboard:
-<pre class="bg-light text-dark mx-4 cli"><samp>magick \( -size 15x15 canvas:black canvas:white -append \) \
+<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick \( -size 15x15 canvas:black canvas:white -append \) \
   \( +clone -flip \) +append -write mpr:checkers +delete \
   -size 240x240 tile:mpr:checkers -delete registry:checkers board.png </samp></pre>
   </td>
@@ -757,7 +805,7 @@ the supported image formats.</p>
     <td>MSL</td>
     <td>RW</td>
     <td>Magick Scripting Language</td>
-    <td>MSL is the XML-based scripting language supported by the <a href="../www/conjure.html">conjure</a> utility. MSL requires the <a href="http://xmlsoft.org/">libxml2</a> delegate library.</td>
+    <td>MSL is the XML-based scripting language supported by the <a href="conjure.html">conjure</a> utility. MSL requires the <a href="http://xmlsoft.org/">libxml2</a> delegate library.</td>
   </tr>
 
   <tr>
@@ -768,10 +816,10 @@ the supported image formats.</p>
   </tr>
 
   <tr>
-    <td><a href="../www/magick-vector-graphics.html">MVG</a></td>
+    <td><a href="magick-vector-graphics.html">MVG</a></td>
     <td>RW</td>
     <td>Magick Vector Graphics.</td>
-    <td>The native ImageMagick vector metafile format. A text file containing vector drawing commands accepted by <a href="../www/magick.html">magick</a>'s <a href="../www/command-line-options.html#draw">-draw</a> option.</td>
+    <td>The native ImageMagick vector metafile format. A text file containing vector drawing commands accepted by <a href="magick.html">magick</a>'s <a href="command-line-options.html#draw">-draw</a> option.</td>
   </tr>
 
   <tr>
@@ -840,7 +888,7 @@ the supported image formats.</p>
     <td>PCD</td>
     <td>RW</td>
     <td>Photo CD</td>
-    <td>The maximum resolution written is 768x512 pixels since larger images require huffman compression (which is not supported). Use <a href="../www/command-line-options.html#bordercolor">-bordercolor</a> to specify the border color (e.g. <samp>-bordercolor black</samp>).</td>
+    <td>The maximum resolution written is 768x512 pixels since larger images require huffman compression (which is not supported). Use <a href="command-line-options.html#bordercolor">-bordercolor</a> to specify the border color (e.g. <samp>-bordercolor black</samp>).</td>
   </tr>
 
   <tr>
@@ -854,7 +902,7 @@ the supported image formats.</p>
     <td>PCL</td>
     <td>W</td>
     <td>HP Page Control Language</td>
-    <td>Use <a href="../www/command-line-options.html#define">-define</a> to specify fit to page option (e.g. <samp>-define pcl:fit-to-page=true</samp>).</td>
+    <td>Use <a href="command-line-options.html#define">-define</a> to specify fit to page option (e.g. <samp>-define pcl:fit-to-page=true</samp>).</td>
   </tr>
 
   <tr>
@@ -875,7 +923,7 @@ the supported image formats.</p>
     <td>PDF</td>
     <td>RW</td>
     <td>Portable Document Format</td>
-    <td>Requires <a href="https://www.ghostscript.com/download.html">Ghostscript</a> to read.  By default, ImageMagick sets the page size to the MediaBox. Some PDF files, however, have a CropBox or TrimBox that is smaller than the MediaBox and may include white space, registration or cutting marks outside the CropBox or TrimBox. To force ImageMagick to use the CropBox or TrimBox rather than the MediaBox, use <a href="../www/command-line-options.html#define">-define</a> (e.g. <samp>-define pdf:use-cropbox=true</samp> or <samp>-define pdf:use-trimbox=true</samp>).  Use <a href="../www/command-line-options.html#density">-density</a> to improve the appearance of your PDF rendering (e.g. -density 300x300).  To specify direct conversion from  Postscript to PDF, use <samp>-define delegate:bimodel=true</samp>. Use <samp>-define pdf:fit-page=true</samp> to scale to the page size. To immediately stop processing upon an error, set <samp>-define pdf:stop-on-error</samp> to <samp>true</samp>. To set the page direction preferences to right-to-left, try  <samp>-define pdf:page-direction=right-to-left</samp>. By default, the PDF is printed using "screen" for annotations and images.  Use <samp>-define pdf:printed=true</samp> to instead utilize the printer options. Use <a href="../www/command-line-options.html#alpha">-alpha remove </a> to remove transparency.  When writing to a PDF, thumbnails are included by default.  Generate thumbnails with <samp>-define pdf:thumbnail=true</samp>. To enable interpolation when rendering, use <samp>-define pdf:interpolate=true</samp>.</td>
+    <td>Requires <a href="https://www.ghostscript.com/download.html">Ghostscript</a> to read.  By default, ImageMagick sets the page size to the MediaBox. Some PDF files, however, have a CropBox or TrimBox that is smaller than the MediaBox and may include white space, registration or cutting marks outside the CropBox or TrimBox. To force ImageMagick to use the CropBox or TrimBox rather than the MediaBox, use <a href="command-line-options.html#define">-define</a> (e.g. <samp>-define pdf:use-cropbox=true</samp> or <samp>-define pdf:use-trimbox=true</samp>).  Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your PDF rendering (e.g. -density 300x300).  To specify direct conversion from  Postscript to PDF, use <samp>-define delegate:bimodel=true</samp>. Use <samp>-define pdf:fit-page=true</samp> to scale to the page size. To immediately stop processing upon an error, set <samp>-define pdf:stop-on-error</samp> to <samp>true</samp>. To set the page direction preferences to right-to-left, try  <samp>-define pdf:page-direction=right-to-left</samp>. By default, the PDF is printed using "screen" for annotations and images.  Use <samp>-define pdf:printed=true</samp> to instead utilize the printer options. Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency.  When writing to a PDF, thumbnails are included by default.  Generate thumbnails with <samp>-define pdf:thumbnail=true</samp>. To enable interpolation when rendering, use <samp>-define pdf:interpolate=true</samp>.</td>
   </tr>
 
   <tr>
@@ -952,7 +1000,7 @@ the supported image formats.</p>
     <td><a href="http://www.libpng.org/pub/png/">PNG</a></td>
     <td>RW</td>
     <td>Portable Network Graphics</td>
-    <td>Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. The PNG specification does not support pixels-per-inch units, only pixels-per-centimeter. To avoid reading a particular associated image profile, use <a href="../www/command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).  Set the maximum chunk size with <a href="../www/command-line-options.html#define">-define png:chunk-malloc-max=<i>value</i></a>.</td>
+    <td>Requires libpng-1.0.11 or later, <a href="http://www.libpng.org/pub/png/libpng.html">libpng-1.2.5</a> or later recommended. The PNG specification does not support pixels-per-inch units, only pixels-per-centimeter. To avoid reading a particular associated image profile, use <a href="command-line-options.html#define">-define profile:skip=<i>name</i></a> (e.g. profile:skip=ICC).  Set the maximum chunk size with <a href="command-line-options.html#define">-define png:chunk-malloc-max=<i>value</i></a>.</td>
   </tr>
 
   <tr>
@@ -1001,7 +1049,7 @@ the supported image formats.</p>
     <td><a href="http://netpbm.sourceforge.net/doc/pnm.html">PNM</a></td>
     <td>RW</td>
     <td>Portable anymap</td>
-    <td>PNM is a family of formats supporting portable bitmaps (PBM) , graymaps (PGM), and pixmaps (PPM). There is no file format associated with pnm itself. If PNM is used as the output format specifier, then ImageMagick automagically selects the most appropriate format to represent the image.  The default is to write the binary version of the formats. Use <a href="../www/command-line-options.html#compress">-compress none</a> to write the ASCII version of the formats.</td>
+    <td>PNM is a family of formats supporting portable bitmaps (PBM) , graymaps (PGM), and pixmaps (PPM). There is no file format associated with pnm itself. If PNM is used as the output format specifier, then ImageMagick automagically selects the most appropriate format to represent the image.  The default is to write the binary version of the formats. Use <a href="command-line-options.html#compress">-compress none</a> to write the ASCII version of the formats.</td>
   </tr>
 
   <tr>
@@ -1022,7 +1070,7 @@ the supported image formats.</p>
     <td>PS</td>
     <td>RW</td>
     <td>Adobe PostScript file</td>
-    <td>Requires <a href="https://www.ghostscript.com/download.html">Ghostscript</a> to read. To force ImageMagick to respect the crop box, use <a href="../www/command-line-options.html#define">-define</a> (e.g. <samp>-define eps:use-cropbox=true</samp>). Use <a href="../www/command-line-options.html#density">-density</a> to improve the appearance of your Postscript rendering (e.g. -density 300x300).  Use <a href="../www/command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from PDF to Postscript, use <samp>-define delegate:bimodel=true</samp>.</td>
+    <td>Requires <a href="https://www.ghostscript.com/download.html">Ghostscript</a> to read. To force ImageMagick to respect the crop box, use <a href="command-line-options.html#define">-define</a> (e.g. <samp>-define eps:use-cropbox=true</samp>). Use <a href="command-line-options.html#density">-density</a> to improve the appearance of your Postscript rendering (e.g. -density 300x300).  Use <a href="command-line-options.html#alpha">-alpha remove </a> to remove transparency. To specify direct conversion from PDF to Postscript, use <samp>-define delegate:bimodel=true</samp>.</td>
   </tr>
 
   <tr>
@@ -1050,7 +1098,7 @@ the supported image formats.</p>
     <td><a href="http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/">PSD</a></td>
     <td>RW</td>
     <td>Adobe Photoshop multispectral bitmap file</td>
-    <td>Use <a href="../www/command-line-options.html#define">-define psd:alpha-unblend=off</a> to disable alpha blenning in the merged image. Use <a href="../www/command-line-options.html#define">-define psd:additional-info=all|selective</a> to transfer additional information from the input PSD file to output PSD file. The 'selective' option will preserve all additional information that is not related to the geometry of the image. The 'all' option should only be used when the geometry of the image has not been changed. This option is helpful when transferring non-simple layers, such as adjustment layers from the input PSD file to the output PSD file. This define is available as of Imagemagick version 6.9.5-8. Use <a href="../www/command-line-options.html#define">-define psd:preserve-opacity-mask=true</a> to preserve the opacity mask of a layer and add it back to the layer when the image is saved.</td>
+    <td>Use <a href="command-line-options.html#define">-define psd:alpha-unblend=off</a> to disable alpha blenning in the merged image. Use <a href="command-line-options.html#define">-define psd:additional-info=all|selective</a> to transfer additional information from the input PSD file to output PSD file. The 'selective' option will preserve all additional information that is not related to the geometry of the image. The 'all' option should only be used when the geometry of the image has not been changed. This option is helpful when transferring non-simple layers, such as adjustment layers from the input PSD file to the output PSD file. This define is available as of Imagemagick version 6.9.5-8. Use <a href="command-line-options.html#define">-define psd:preserve-opacity-mask=true</a> to preserve the opacity mask of a layer and add it back to the layer when the image is saved.</td>
   </tr>
 
   <tr>
@@ -1092,28 +1140,28 @@ the supported image formats.</p>
     <td>RAW</td>
     <td>RW</td>
     <td>Raw gray samples</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.  For signed pixel data, use <samp>-define quantum:format=signed</samp>.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.  For signed pixel data, use <samp>-define quantum:format=signed</samp>.</td>
   </tr>
 
   <tr>
     <td>RGB</td>
     <td>RW</td>
     <td>Raw red, green, and blue samples</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
   </tr>
 
   <tr>
     <td>RGB565</td>
     <td>R</td>
     <td>Raw red, green, blue pixels in the 5-6-5 format</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> to specify the image width and height.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> to specify the image width and height.</td>
   </tr>
 
   <tr>
     <td>RGBA</td>
     <td>RW</td>
     <td>Raw red, green, blue, and alpha samples</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.  To specify a single precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 32 for single precision floats, 64 for double precision, and 16 for half-precision.</td>
   </tr>
 
   <tr>
@@ -1162,7 +1210,7 @@ the supported image formats.</p>
     <td>SHTML</td>
     <td>W</td>
     <td>Hypertext Markup Language client-side image map</td>
-    <td>Used to write HTML clickable image maps based on a the output of <a href="../www/montage.html">montage</a> or a format which supports tiled images such as <a href="formats.html#MIFF">MIFF</a>.</td>
+    <td>Used to write HTML clickable image maps based on a the output of <a href="montage.html">montage</a> or a format which supports tiled images such as <a href="formats.html#MIFF">MIFF</a>.</td>
   </tr>
 
   <tr>
@@ -1176,7 +1224,7 @@ the supported image formats.</p>
     <td>SPARSE-COLOR</td>
     <td>W</td>
     <td>Raw text file</td>
-    <td>Format compatible with the <a href="../www/command-line-options.html#sparse-color">-sparse-color</a> option. Lists only non-fully-transparent pixels.</td>
+    <td>Format compatible with the <a href="command-line-options.html#sparse-color">-sparse-color</a> option. Lists only non-fully-transparent pixels.</td>
   </tr>
 
   <tr>
@@ -1197,7 +1245,7 @@ the supported image formats.</p>
     <td><a href="http://www.w3.org/Graphics/SVG">SVG</a></td>
     <td>RW</td>
     <td>Scalable Vector Graphics</td>
-    <td>ImageMagick utilizes <a href="http://www.inkscape.org/">inkscape</a> if its in your execution path otherwise <a href="http://developer.gnome.org/rsvg/">RSVG</a>. If neither are available, ImageMagick reverts to its internal SVG renderer. The default resolution is 96 DPI. Use <a href="../www/command-line-options.html#size">-size</a> command line option to specify the maximum width and height. If you want to substitute entities and you trust the SVG source, enable this option: <samp>-define svg:substitute-entities=true</samp>. If you want to render a very large SVG and you trust the source, enable this option: <samp>-define svg:parse-huge=true</samp>.</td>
+    <td>ImageMagick utilizes <a href="http://www.inkscape.org/">inkscape</a> if its in your execution path otherwise <a href="http://developer.gnome.org/rsvg/">RSVG</a>. If neither are available, ImageMagick reverts to its internal SVG renderer. The default resolution is 96 DPI. Use <a href="command-line-options.html#size">-size</a> command line option to specify the maximum width and height. If you want to substitute entities and you trust the SVG source, enable this option: <samp>-define svg:substitute-entities=true</samp>. If you want to render a very large SVG and you trust the source, enable this option: <samp>-define svg:parse-huge=true</samp>.</td>
   </tr>
 
   <tr>
@@ -1218,7 +1266,7 @@ the supported image formats.</p>
     <td><a href="http://www.libtiff.org/">TIFF</a></td>
     <td>RW</td>
     <td>Tagged image file multispectral format</td>
-    <td>Also known as <samp>TIF</samp>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="../www/command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <samp>-define tiff:rows-per-strip=8</samp>).  To define the tile geometry, use for example, <samp>-define tiff:tile-geometry=128x128</samp>. To specify a <var>signed</var> format, use  <samp>-define quantum:format=signed</samp>. To specify a single-precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 64 for a double-precision floating-point format.  Use <samp>-define quantum:polarity=min-is-black</samp> or <samp>-define quantum:polarity=min-is-white</samp> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <samp>-define tiff:alpha=unassociated</samp>.  Set the fill order with <samp>-define tiff:fill-order=msb|lsb</samp>. Set the TIFF endianness with <samp>-define tiff:endian=msb|lsb</samp>. Use <samp>-define tiff:exif-properties=false</samp> to skip reading the EXIF properties.  Use <samp>-define tiff:gps-properties=false</samp> to skip reading the GPS properties. You can set a number of TIFF software attributes including document name, host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="../www/command-line-options.html#set">-set tiff:software "My Company"</a>. If you want to ignore certain TIFF tags, use this option: <samp>-define tiff:ignore-tags=comma-separated-list-of-tag-IDs</samp>. Since version 6.9.1-4 there is support for reading photoshop layers in TIFF files, this can be disabled with <samp>-define tiff:ignore-layers=true</samp>. To preserve compression of the source image, use: <samp>-define tiff:preserve-compression=true</samp>.</td>
+    <td>Also known as <samp>TIF</samp>. Requires <a href="http://www.libtiff.org/">tiff-v3.6.1.tar.gz</a> or later.  Use <a href="command-line-options.html#define">-define</a> to specify the rows per strip (e.g. <samp>-define tiff:rows-per-strip=8</samp>).  To define the tile geometry, use for example, <samp>-define tiff:tile-geometry=128x128</samp>. To specify a <var>signed</var> format, use  <samp>-define quantum:format=signed</samp>. To specify a single-precision floating-point format, use <samp>-define quantum:format=floating-point</samp>.  Set the depth to 64 for a double-precision floating-point format.  Use <samp>-define quantum:polarity=min-is-black</samp> or <samp>-define quantum:polarity=min-is-white</samp> toggle the photometric interpretation for a bilevel image.  Specify the extra samples as associated or unassociated alpha with, for example, <samp>-define tiff:alpha=unassociated</samp>.  Set the fill order with <samp>-define tiff:fill-order=msb|lsb</samp>. Set the TIFF endianness with <samp>-define tiff:endian=msb|lsb</samp>. Use <samp>-define tiff:exif-properties=false</samp> to skip reading the EXIF properties.  Use <samp>-define tiff:gps-properties=false</samp> to skip reading the GPS properties. You can set a number of TIFF software attributes including document name, host computer, artist, timestamp, make, model, software, and copyright.  For example, <a href="command-line-options.html#set">-set tiff:software "My Company"</a>. If you want to ignore certain TIFF tags, use this option: <samp>-define tiff:ignore-tags=comma-separated-list-of-tag-IDs</samp>. Since version 6.9.1-4 there is support for reading photoshop layers in TIFF files, this can be disabled with <samp>-define tiff:ignore-layers=true</samp>. To preserve compression of the source image, use: <samp>-define tiff:preserve-compression=true</samp>.</td>
   </tr>
 
   <tr>
@@ -1232,14 +1280,14 @@ the supported image formats.</p>
     <td><a href="http://www.freetype.org/">TTF</a></td>
     <td>R</td>
     <td>TrueType font file</td>
-    <td>Requires <a href="http://www.freetype.org/">freetype 2</a>. Opening as file returns a preview image. Use <a href="../www/command-line-options.html#set">-set</a> if you do not want to hint glyph outlines after their scaling to device pixels (e.g. <samp>-set type:hinting off</samp>).</td>
+    <td>Requires <a href="http://www.freetype.org/">freetype 2</a>. Opening as file returns a preview image. Use <a href="command-line-options.html#set">-set</a> if you do not want to hint glyph outlines after their scaling to device pixels (e.g. <samp>-set type:hinting off</samp>).</td>
   </tr>
 
   <tr>
     <td>TXT</td>
     <td>RW</td>
     <td>Multispectral raw text file</td>
-    <td>Use <a href="../www/command-line-options.html#define">-define</a> to specify the color compliance (e.g. <samp>-define txt:compliance=css</samp>).</td>
+    <td>Use <a href="command-line-options.html#define">-define</a> to specify the color compliance (e.g. <samp>-define txt:compliance=css</samp>).</td>
   </tr>
 
    <tr>
@@ -1257,6 +1305,13 @@ the supported image formats.</p>
   </tr>
 
   <tr>
+    <td><a href="https://developer.android.com/media/platform/hdr-image-format">UHDR</a></td>
+    <td>RW</td>
+    <td>Ultra HDR</td>
+    <td>Requires the <a href="https://github.com/google/libultrahdr.git">libultrahdr</a> delegate library.</td>
+  </tr>
+
+  <tr>
     <td>UIL</td>
     <td>W</td>
     <td>X-Motif UIL table</td>
@@ -1267,7 +1322,7 @@ the supported image formats.</p>
     <td>UYVY</td>
     <td>RW</td>
     <td>Interleaved YUV raw image</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> command line options to specify width and height.  Use <a href="../www/command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> command line options to specify width and height.  Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>
   </tr>
 
   <tr>
@@ -1280,7 +1335,7 @@ the supported image formats.</p>
   <tr>
     <td>VIDEO</td>
     <td>RW</td>
-    <td>Various video formats such as APNG, AVI, MP4, WEBM, etc.  Refer to <a href="../www/defines.html">defines</a>  for a description of these defines: <samp>video:intermediate-format</samp>, <samp>video:pixel-format</samp>, and <samp>video:vsync</samp> defines, that can affect the operation on these video formats.</td>
+    <td>Various video formats such as APNG, AVI, MP4, WEBM, etc.  Refer to <a href="defines.html">defines</a>  for a description of these defines: <samp>video:intermediate-format</samp>, <samp>video:pixel-format</samp>, and <samp>video:vsync</samp> defines, that can affect the operation on these video formats.</td>
     <td> </td>
   </tr>
 
@@ -1309,7 +1364,7 @@ the supported image formats.</p>
     <td><a href="http://en.wikipedia.org/wiki/WebP">WEBP</a></td>
     <td>RW</td>
     <td>Weppy image format</td>
-    <td>Requires the <a href="https://developers.google.com/speed/webp/download">WEBP</a> delegate library.  The muxing delegate library is required to read animated Webp image containers. Specify the encoding options with the <a href="../www/command-line-options.html#define">-define</a> option  See <a href="../www/webp.html">WebP Encoding Options</a> for more details.</td>
+    <td>Requires the <a href="https://developers.google.com/speed/webp/download">WEBP</a> delegate library.  The muxing delegate library is required to read animated Webp image containers. Specify the encoding options with the <a href="command-line-options.html#define">-define</a> option  See <a href="webp.html">WebP Encoding Options</a> for more details.</td>
   </tr>
 
   <tr>
@@ -1330,7 +1385,7 @@ the supported image formats.</p>
     <td>X</td>
     <td>RW</td>
     <td>display or import an image to or from an X11 server</td>
-    <td>Use <a href="../www/command-line-options.html#define">-define</a> to obtain the image from the root window (e.g. <samp>-define x:screen=true</samp>).  Set <samp>x:silent=true</samp> to turn off the beep when importing an image.</td>
+    <td>Use <a href="command-line-options.html#define">-define</a> to obtain the image from the root window (e.g. <samp>-define x:screen=true</samp>).  Set <samp>x:silent=true</samp> to turn off the beep when importing an image.</td>
   </tr>
 
   <tr>
@@ -1372,28 +1427,28 @@ the supported image formats.</p>
     <td><a href="https://yaml.org/">YAML</a></td>
     <td>W</td>
     <td>human-readable data-serialization language</td>
-    <td>Include additional attributes about the image with these defines: <a href="../www/command-line-options.html#define">-define yaml:locate</a>, <a href="../www/command-line-options.html#define">-define yaml:limit</a>, <a href="../www/command-line-options.html#define">-define yaml:moments</a>, or <a href="../www/command-line-options.html#define">-define yaml:features</a>.  Specify the JSON model schema version with <a href="../www/command-line-options.html#define">-define yaml:version</a>.  The current version is 1.0.</td>
+    <td>Include additional attributes about the image with these defines: <a href="command-line-options.html#define">-define yaml:locate</a>, <a href="command-line-options.html#define">-define yaml:limit</a>, <a href="command-line-options.html#define">-define yaml:moments</a>, or <a href="command-line-options.html#define">-define yaml:features</a>.  Specify the JSON model schema version with <a href="command-line-options.html#define">-define yaml:version</a>.  The current version is 1.0.</td>
   </tr>
 
   <tr>
     <td>YCbCr</td>
     <td>RW</td>
     <td>Raw Y, Cb, and Cr samples</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>
   </tr>
 
   <tr>
     <td>YCbCrA</td>
     <td>RW</td>
     <td>Raw Y, Cb, Cr, and alpha samples</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> to specify the image width, height, and depth.</td>
   </tr>
 
   <tr>
     <td>YUV</td>
     <td>RW</td>
     <td>CCIR 601 4:1:1</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> and <a href="../www/command-line-options.html#depth">-depth</a> command line options to specify width, height, and depth.   Use <a href="../www/command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> and <a href="command-line-options.html#depth">-depth</a> command line options to specify width, height, and depth.   Use <a href="command-line-options.html#sampling-factor">-sampling-factor</a> to set the desired subsampling (e.g. -sampling-factor 4:2:2).</td>
   </tr>
   </tbody>
 </table>
@@ -1403,7 +1458,7 @@ the supported image formats.</p>
 
 <p>ImageMagick supports a number of image format specifications which refer to images prepared via an algorithm, or input/output targets. The following table lists these pseudo-image formats:</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollable p-3 mb-2 bg-light text-dark">
 <table class="table table-sm table-hover table-striped table-responsive">
   <tr>
     <th>Tag</th>
@@ -1424,13 +1479,13 @@ the supported image formats.</p>
     <td>R</td>
     <td>Canvas image of specified color</td>
     <td>Useful to create solid color <var>canvas</var> images. Use
-       <a href="../www/command-line-options.html#size" >-size</a> and <a
-       href="../www/command-line-options.html#depth" >-depth</a> to specify the
+       <a href="command-line-options.html#size" >-size</a> and <a
+       href="command-line-options.html#depth" >-depth</a> to specify the
        image width, height, and depth.  Example canvas color specifications
        include <samp>canvas:red</samp> and <samp>canvas:#FF0000</samp>.<br/>
 
        If no color is specified a '<samp>white</samp>' canvas image is
-       generated.  If no <a href="../www/command-line-options.html#size" >-size</a> is specified
+       generated.  If no <a href="command-line-options.html#size" >-size</a> is specified
        a single pixel image of the specified color is generated.</td>
 
   </tr>
@@ -1467,7 +1522,7 @@ the supported image formats.</p>
     <td>GRADIENT</td>
     <td>R</td>
     <td>Gradual passing from one shade to another</td>
-    <td>Returns a rendered linear or radial top-to-bottom <a href="../www/gradient.html">gradient image</a> using the specified image size.</td>
+    <td>Returns a rendered linear or radial top-to-bottom <a href="gradient.html">gradient image</a> using the specified image size.</td>
 
   </tr>
 
@@ -1503,7 +1558,7 @@ the supported image formats.</p>
     <td>MAP</td>
     <td>RW</td>
     <td>Colormap intensities and indices</td>
-    <td>Set <a href="../www/command-line-options.html#depth">-depth</a> to set the sample size of the intensities; indices are 16-bit if colors &gt; 256.</td>
+    <td>Set <a href="command-line-options.html#depth">-depth</a> to set the sample size of the intensities; indices are 16-bit if colors &gt; 256.</td>
   </tr>
 
   <tr>
@@ -1524,7 +1579,7 @@ the supported image formats.</p>
     <td>NULL</td>
     <td>RW</td>
     <td>NULL image</td>
-    <td>Useful for creating blank tiles with <a href="../www/montage.html">montage</a> (use <samp>NULL:</samp>). Also useful as an output format when evaluating image read performance.</td>
+    <td>Useful for creating blank tiles with <a href="montage.html">montage</a> (use <samp>NULL:</samp>). Also useful as an output format when evaluating image read performance.</td>
   </tr>
 
   <tr>
@@ -1567,7 +1622,7 @@ the supported image formats.</p>
     <td>RADIAL_GRADIENT</td>
     <td>R</td>
     <td>Gradual radial passing from one shade to another</td>
-    <td>Returns a rendered radial top-to-bottom <a href="../www/gradient.html">gradient image</a> using the specified image size.</td>
+    <td>Returns a rendered radial top-to-bottom <a href="gradient.html">gradient image</a> using the specified image size.</td>
   </tr>
 
   <tr>
@@ -1588,14 +1643,14 @@ the supported image formats.</p>
     <td>STEGANO</td>
     <td>R</td>
     <td>Steganographic image</td>
-    <td>Use <a href="../www/command-line-options.html#size">-size</a> command line option to specify width, height, and offset of the steganographic image</td>
+    <td>Use <a href="command-line-options.html#size">-size</a> command line option to specify width, height, and offset of the steganographic image</td>
   </tr>
 
   <tr>
     <td>TILE</td>
     <td>R</td>
     <td>Tiled image</td>
-    <td>Create a tiled version of an image at by tiling a image. Use <a href="../www/command-line-options.html#size">-size</a> to specify the tiled image size. Tiles are composited on an image background and therefore is responsive to the <a href="../www/command-line-options.html#compose">-compose</a> option.  The image is specified similar to
+    <td>Create a tiled version of an image at by tiling a image. Use <a href="command-line-options.html#size">-size</a> to specify the tiled image size. Tiles are composited on an image background and therefore is responsive to the <a href="command-line-options.html#compose">-compose</a> option.  The image is specified similar to
     <samp>TILE:image.miff</samp>.</td>
   </tr>
 
@@ -1610,7 +1665,7 @@ the supported image formats.</p>
     <td>VID</td>
     <td>RW</td>
     <td>Visual Image Directory</td>
-    <td>Used to create a thumbnailed directory (tiled thumbnails) of a set of images which may be used to select images to view via the <a href="../www/display.html">display</a> program, or saved to a <a href="formats.html#MIFF">MIFF</a> or <a href="formats.html#SHTML">SHTML</a> file.</td>
+    <td>Used to create a thumbnailed directory (tiled thumbnails) of a set of images which may be used to select images to view via the <a href="display.html">display</a> program, or saved to a <a href="formats.html#MIFF">MIFF</a> or <a href="formats.html#SHTML">SHTML</a> file.</td>
   </tr>
 
   <tr>
@@ -1624,7 +1679,7 @@ the supported image formats.</p>
     <td>X</td>
     <td>RW</td>
     <td>Select image from or display image to your X server screen</td>
-    <td>Also see the <a href="../www/import.html">import</a> and <a href="../www/display.html">display</a>
+    <td>Also see the <a href="import.html">import</a> and <a href="display.html">display</a>
     programs.</td>
   </tr>
 
@@ -1644,7 +1699,7 @@ the supported image formats.</p>
 
 <p>ImageMagick includes a number of built-in (embedded) images which may be referenced as if they were an image file. The <samp>magick:</samp> format tag may be used via the syntax <samp>magick:</samp><var>name</var> to request an embedded image (e.g. <samp>magick:logo</samp>). For backwards compatibility, the image specifications <samp>GRANITE:</samp>, <samp>LOGO:</samp>, <samp>NETSCAPE:</samp>, and <samp>ROSE:</samp> may also be used to request images with those names.</p>
 
-<div class="pre-scrollable">
+<div class="pre-scrollabl">
 <table class="table table-sm table-hover table-striped table-responsive">
   <tr>
     <th>Tag</th>
@@ -1671,7 +1726,7 @@ the supported image formats.</p>
     <td> NETSCAPE</td>
     <td>R</td>
     <td>image using colors in Netscape 216 (6x6x6 ) color cube, 216x144</td>
-    <td>Most commonly used with the <a href="../www/magick.html">magick</a> and <a href="../www/mogrify.html">magick mogrify</a> programs with the <a href="../www/command-line-options.html#map">-map</a> option to create <var>web safe</var> images.</td>
+    <td>Most commonly used with the <a href="magick.html">magick</a> and <a href="mogrify.html">magick mogrify</a> programs with the <a href="command-line-options.html#map">-map</a> option to create <var>web safe</var> images.</td>
   </tr>
 
   <tr>
@@ -1693,7 +1748,7 @@ the supported image formats.</p>
 <br/>
 <h2><a class="anchor" id="builtin-patterns"></a>Built-in Patterns</h2>
 
-<p>ImageMagick includes a number of built-in (embedded) patterns which may be referenced as if they were an image file. The <samp>pattern:</samp> format tag may be used via the syntax <samp>pattern:</samp><var>name</var> to request an embedded pattern (e.g. <samp>pattern:checkerboard</samp>). The pattern size is controlled with the <a href="../www/command-line-options.html#size">-size</a> command line option.</p>
+<p>ImageMagick includes a number of built-in (embedded) patterns which may be referenced as if they were an image file. The <samp>pattern:</samp> format tag may be used via the syntax <samp>pattern:</samp><var>name</var> to request an embedded pattern (e.g. <samp>pattern:checkerboard</samp>). The pattern size is controlled with the <a href="command-line-options.html#size">-size</a> command line option.</p>
 
 <div class="pre-scrollable">
 <table class="table table-sm table-hover table-striped table-responsive">
@@ -2130,15 +2185,15 @@ the supported image formats.</p>
     <td>ICC</td>
     <td>RW</td>
     <td>International Color Consortium color profile</td>
-    <td>Also known as <samp>ICM</samp>. To read, use <a href="../www/command-line-options.html#profile">-profile</a> with
-      <a href="../www/magick.html">magick</a>.</td>
+    <td>Also known as <samp>ICM</samp>. To read, use <a href="command-line-options.html#profile">-profile</a> with
+      <a href="magick.html">magick</a>.</td>
   </tr>
 
   <tr>
     <td>IPTC</td>
     <td>RW</td>
     <td>IPTC Newsphoto (binary)</td>
-    <td>To read, use <a href="../www/command-line-options.html#profile">-profile</a> with <a href="../www/magick.html">magick</a></td>
+    <td>To read, use <a href="command-line-options.html#profile">-profile</a> with <a href="magick.html">magick</a></td>
   </tr>
 
   <tr>
@@ -2153,20 +2208,20 @@ the supported image formats.</p>
 </div>
   </div>
   </main><!-- /.container -->
-  <footer class="magick-footer">
+  <footer class="py-5 text-center text-body-secondary bg-body-tertiary">
     <div class="container-fluid">
-      <a href="../www/security-policy.html">Security</a> •
-      <a href="../www/news.html">News</a>
+      <a href="security-policy.html">Security</a> •
+      <a href="news.html">News</a>
      
       <a href="formats.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
-      <a href="../www/links.html">Related</a> •
-      <a href="../www/sitemap.html">Sitemap</a>
+      <a href="links.html">Related</a> •
+      <a href="sitemap.html">Sitemap</a>
    <br/>
-     <a href="../www/support.html">Sponsor</a> •
-     <a href="../www/cite.html">Cite</a> •
+     <a href="support.html">Sponsor</a> •
+     <a href="cite.html">Cite</a> •
      <a href="http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x89AB63D48277377A">Public Key</a> •
-     <a href="../www/https://imagemagick.org/script/contact.php">Contact Us</a>
+     <a href="https://imagemagick.org/script/contact.php">Contact Us</a>
    <br/>
      <a href="https://github.com/imagemagick/imagemagick" target="_blank" rel="noopener" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 512 499.36" width="2%" height="2%" role="img" focusable="false"><title>GitHub</title><path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/></svg></a> •
      <a href="https://twitter.com/imagemagick" target="_blank" rel="noopener" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="navbar-nav-svg" viewBox="0 0 300 300" width="2%" height="2%" role="img" focusable="false"><title>Twitter</title><path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66"/></svg></a>
@@ -2174,9 +2229,10 @@ the supported image formats.</p>
     <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
   </footer>
+</div>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 28th February 2024 20:47 -->
+<!-- Magick Cache 7th April 2024 12:07 -->

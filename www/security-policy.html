@@ -3,38 +3,95 @@
 
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="auto">
 <head>
+  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8"  />
   <meta name="viewport" content="width=device-width, initial-scale=1"  />
   <title>ImageMagick – Security Policy</title>
+  <meta name="keywords" content="security, policy, ImageMagick, image processing, command-line tool, format conversion, photo editing" />
+  <meta name="description" content="It is strongly recommended to establish a security policy suitable for your local environment before utilizing ImageMagick." />
   <meta name="application-name" content="ImageMagick" />
-  <meta name="description" content="" />
   <meta name="application-url" content="https://imagemagick.org" />
-  <meta name="generator" content="PHP" />
-  <meta name="keywords" content="security, policy, image processing software" />
-  <meta name="rating" content="GENERAL" />
-  <meta name="robots" content="INDEX, FOLLOW" />
-  <meta name="generator" content="ImageMagick Studio LLC" />
-  <meta name="author" content="ImageMagick Studio LLC" />
-  <meta name="revisit-after" content="2 DAYS" />
-  <meta name="resource-type" content="document" />
   <meta name="copyright" content="Copyright (c) 1999 ImageMagick Studio LLC" />
-  <meta name="distribution" content="Global" />
-  <meta name="magick-serial" content="P131-S030410-R485315270133-P82224-A6668-G1245-1" />
+  <meta itemprop='url' content='../' />
+  <meta itemprop='title' content='ImageMagick' />
+  <meta itemprop='description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
   <meta property='og:url' content='../' />
-  <meta property='og:title' content='ImageMagick' />
+  <meta property='og:name' content='ImageMagick' />
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="Create, Edit, Compose, or Convert Digital Images" />
+  <meta property='og:description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
-  <link href="security-policy.html" rel="canonical" />
-  <link href="../images/wand.png" rel="icon" />
-  <link href="../images/wand.ico" rel="shortcut icon" />
+  <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
+  <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
+  <link href="../www/security-policy.html" rel="canonical" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
   <link href="assets/magick.css" rel="stylesheet" />
+  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
 </head>
 <body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+    <symbol id="check2" viewBox="0 0 16 16">
+      <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+    </symbol>
+    <symbol id="circle-half" viewBox="0 0 16 16">
+      <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+    </symbol>
+    <symbol id="moon-stars-fill" viewBox="0 0 16 16">
+      <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+      <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+    </symbol>
+    <symbol id="sun-fill" viewBox="0 0 16 16">
+      <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+    </symbol>
+  </svg>
+  <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+    <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+            id="bd-theme"
+            type="button"
+            aria-expanded="false"
+            data-bs-toggle="dropdown"
+            aria-label="Toggle theme (auto)">
+      <svg class="bi my-1 theme-icon-active" width="1em" height="1em"><use href="#circle-half"></use></svg>
+      <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
+          Light
+          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
+          Dark
+          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+          <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
+          Auto
+          <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+    
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="arrow-right-circle" viewBox="0 0 16 16">
+    <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+  </symbol>
+  <symbol id="bootstrap" viewBox="0 0 118 94">
+    <title>Bootstrap</title>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
+  </symbol>
+</svg>
+
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
@@ -63,7 +120,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="search.html">
+      <form class="d-flex form-inline" action="../www/search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -71,29 +128,20 @@
   </div>
   </nav>
 
-  <div class="container">
-    <script async="async" src="https://localhost/pagead/js/adsbygoogle.js"></script>
-    <ins class="adsbygoogle"
-      style="display:block"
-      data-ad-client="ca-pub-3129977114552745"
-      data-ad-slot="6345125851"
-      data-full-width-responsive="true"
-      data-ad-format="horizontal"></ins>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-
-  </div>
+<div class="col-lg-8 mx-auto p-4 py-md-5 text-body-secondary">
+  <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+    <a href="../index.html" class="d-flex align-items-center text-decoration-none">
+      <h1 class="fs-4">Security Policy</h1>
+    </a>
+  </header>
 
   <main class="container">
-  <div class="magick-template">
-<div class="magick-header">
-<h1 class="text-center">Security Policy</h1>
+<div class="row">
 <p class="text-center"><a href="security-policy.html#policy">Security Policy </a> • <a href="security-policy.html#example">Example Security Policy</a> • <a href="security-policy.html#synchronize">Pixel Cache Synchronize Policy</a> • <a href="security-policy.html#zero-configuration">Zero Configuration Security Policy</a> • <a href="security-policy.html#other">Other Security Considerations</a></p>
 
 <p class="text-info">It is strongly recommended to establish a security policy suitable for your local environment before utilizing ImageMagick.</p>
 
-<p class="lead magick-description">The default policy is open, which is useful for ImageMagick installations running in a secure environment, such as in a Docker container or behind a firewall.</p>
+<p class="lead">The default policy is open, which is useful for ImageMagick installations running in a secure environment, such as in a Docker container or behind a firewall.</p>
 
 <p>ImageMagick is a tool that allows you to manipulate images. While it offers a range of features and capabilities, there is often a trade-off between security and convenience. To ensure optimal security, you can restrict ImageMagick to only reading or writing web-safe image formats like GIF, JPEG, and PNG. Alternatively, you can customize the security policy to fit the needs of your local environment or organizational policies. This policy can include details such as memory usage limits, allowed paths for reading and writing, limits on the number of images in a sequence, maximum workflow runtime, allowed disk space for image pixels, a secret passphrase for remote connections, and which coders are permitted or denied. By customizing the security policy, you can help secure your environment and ensure that ImageMagick is a responsible member of your local system, such as by preventing overloading with large images.</p>
 
@@ -121,7 +169,7 @@
 
 <p>Here is an example security policy:</p>
 
-<pre class="pre-scrollable bg-light text-dark mx-4 text-dark mx-4"><code>&lt;?xml version="1.0" encoding="UTF-8"?>
+<pre class="pre-scrollable p-3 mb-2 bg-light text-dark"><code>&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;!DOCTYPE policymap [
 &lt;!ELEMENT policymap (policy)*>
 &lt;!ATTLIST policymap xmlns CDATA #FIXED "">
@@ -234,49 +282,49 @@
 
 <p>Here is what you can expect when you restrict the HTTPS coder, for example:</p>
 
-<pre class="bg-light text-dark mx-4">$ magick ../images/wizard.png wizard.jpg
+<pre class="p-3 mb-2 bg-light text-dark">$ magick ../images/wizard.png wizard.jpg
 convert: attempt to perform an operation not allowed by the security policy `HTTPS'
 convert: no images defined `wizard.jpg'</pre>
 
 <p>As of ImageMagick version 7.0.4-7, you can conveniently deny access to all delegates and coders except for a small subset of proven web-safe image types.  For example,</p>
 
-<pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="delegate" rights="none" pattern="*" />
+<pre class="p-3 mb-2 bg-light text-dark"><samp>&lt;policy domain="delegate" rights="none" pattern="*" />
 &lt;policy domain="module" rights="none" pattern="*" />
 &lt;policy domain="module" rights="read | write" pattern="{GIF,JPEG,PNG,WEBP}" /></samp></pre>
 
 <p>The module policy enables or disables a complete module for both read or write.  To just read or write an image format, use the coder policy instead.  For example, we disable reading just a few Postscript related formats, however, you can still write them:</p>
-<pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="coder" rights="write" pattern="{PDF,PS,PS2,PS3,XPS}" /></samp></pre>
+<pre class="p-3 mb-2 bg-light text-dark"><samp>&lt;policy domain="coder" rights="write" pattern="{PDF,PS,PS2,PS3,XPS}" /></samp></pre>
 
 <p>As of ImageMagick 7.0.7-0, you can allocate the pixel cache and some internal buffers with anonymous memory mapping rather than from heap.  As a consequence, the pixels are initialized to zero resulting in a minor performance penalty.  You can also jumble the contents of certain memory buffers (requires version 7.1.0-38) and temporary files before they are freed or deleted.  The shred value is the number of times to replace content with random data.  For example,</p>
-<pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="system" name="memory-map" value="anonymous"/>
+<pre class="p-3 mb-2 bg-light text-dark"><samp>&lt;policy domain="system" name="memory-map" value="anonymous"/>
 &lt;policy domain="cache" name="memory-map" value="anonymous"/>
 &lt;policy domain="system" name="shred" value="1"/></samp></pre>
 <p>For performance reasons, the first pass is fast by repeating the random sequence as necessary to overwrite the contents of the buffer or file.  Subsequent passes are an order of magnitude slower, but generate cryptographically strong random bytes for the length of the buffer or file.</p>
 
 <p>Some image processing algorithms (e.g. wavelet transform) might consume a substantial amount of memory to complete.  ImageMagick maintains a separate memory pool for these large resource requests and as of 7.0.6-1 permits you to set a maximum request limit.  If the limit is exceeded, the allocation is instead memory-mapped on disk.  Here we limit the maximum memory request by policy:</p>
-<pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="system" name="max-memory-request" value="256MiB"/> </samp></pre>
+<pre class="p-3 mb-2 bg-light text-dark"><samp>&lt;policy domain="system" name="max-memory-request" value="256MiB"/> </samp></pre>
 
 <p>As of ImageMagick version 7.0.4-23, you can limit the maximum number of images in a sequence.  For example, to limit an image sequence to at most 64 frames, use:</p>
-<pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="resource" name="list-length" value="64"/></samp></pre>
+<pre class="p-3 mb-2 bg-light text-dark"><samp>&lt;policy domain="resource" name="list-length" value="64"/></samp></pre>
 
 <p>Note, numeric values in policies are floating-point with an optional SI prefix (e.g., 10MiB).</p>
 
-<p>For additional details about resource limits and the policy configuration file, read <a href="resources.html">Resources</a> and <a href="architecture.html">Architecture</a>.</p>
+<p>For additional details about resource limits and the policy configuration file, read <a href="../www/resources.html">Resources</a> and <a href="../www/architecture.html">Architecture</a>.</p>
 
 <p>As of ImageMagick 7.0.6-0, you can programmatically set the ImageMagick security policy with SetMagickSecurityPolicy() (MagickCore) or MagickSetSecurityPolicy() (MagickWand).</p>
 
 <p>As of ImageMagick version 7.0.8-11, you can set a <samp>module</samp> security policy.  For example, to prevent Postscript or PDF interpretation, use:</p>
-<pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="module" rights="none" pattern="{ps,pdf,xps}/></samp></pre>
+<pre class="p-3 mb-2 bg-light text-dark"><samp>&lt;policy domain="module" rights="none" pattern="{ps,pdf,xps}/></samp></pre>
 
 <p>As of ImageMagick version 7.0-10-52, you can set a <samp>font</samp> policy.  Specify a path to a Unicode font that ImageMagick defaults to whenever the user does not specify a font preference:</p>
-<pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="system" name="font" value="/usr/share/fonts/arial-unicode.ttf"/></samp></pre>
+<pre class="p-3 mb-2 bg-light text-dark"><samp>&lt;policy domain="system" name="font" value="/usr/share/fonts/arial-unicode.ttf"/></samp></pre>
 
 <p>Note, in file path glob patterns, use the backslash character (\) to escape characters that would otherwise be interpreted as special characters. For example:</p>
-<pre class="bg-light text-dark mx-4"><samp>&lt;policy domain="path" rights="none" pattern="c:\\\\*"/></samp></pre>
+<pre class="p-3 mb-2 bg-light text-dark"><samp>&lt;policy domain="path" rights="none" pattern="c:\\\\*"/></samp></pre>
 
 <p>You can verify your policy changes are in effect with this command:</p>
 
-<pre class="pre-scrollable bg-light text-dark mx-4">$ magick identify -list policy
+<pre class="pre-scrollable p-3 mb-2 bg-light text-dark">$ magick identify -list policy
 Path: ImageMagick-7/policy.xml
   Policy: Cache
     name: memory-map
@@ -341,7 +389,7 @@ Path: [built-in]
 
 <p>When writing image pixels to disk, ImageMagick first preallocates the disk file, which is faster than fully populating the file with zeros. To improve performance even further, the file is memory-mapped on disk. This can result in an increase in performance of up to 5 times, but there is a possibility that the disk file may run out of free space as it is populated, causing the operating system (OS) to throw a SIGBUS signal which prevents ImageMagick from continuing. To prevent a SIGBUS signal from occurring, use this security policy:</p>
 
-<pre class="bg-light text-dark mx-4">
+<pre class="p-3 mb-2 bg-light text-dark">
 &lt;policy domain="cache" name="synchronize" value="True"/>
 </pre>
 
@@ -351,7 +399,7 @@ Path: [built-in]
 
 <p>A zero configuration build of ImageMagick does not permit external configuration files.  To define your security policy, you must instead edit the <samp>MagickCore/policy-private.h</samp> source module, add your policy statements, and then build the ImageMagick distribution.  Here is an example zero configuration security policy:</p>
 
-<pre class="bg-light text-dark mx-4"><samp>static const char
+<pre class="p-3 mb-2 bg-light text-dark"><samp>static const char
   *ZeroConfigurationPolicy = \
 "&lt;policymap> \
   &lt;policy domain=\"coder\" rights=\"none\" pattern=\"MVG\"/> \
@@ -381,7 +429,7 @@ Path: [built-in]
 </div>
   </div>
   </main><!-- /.container -->
-  <footer class="magick-footer">
+  <footer class="py-5 text-center text-body-secondary bg-body-tertiary">
     <div class="container-fluid">
       <a href="security-policy.html">Security</a> •
       <a href="news.html">News</a>
@@ -402,9 +450,10 @@ Path: [built-in]
     <small>Copyright © 1999 ImageMagick Studio LLC</small>
     </div>
   </footer>
+</div>
 
   <!-- Javascript assets -->
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 28th February 2024 21:49 -->
+<!-- Magick Cache 7th April 2024 12:07 -->
