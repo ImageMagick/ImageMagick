@@ -23,7 +23,6 @@
 #  Additional labels for pre-release and build metadata are available as
 #  extensions to the MAJOR.MINOR.MICRO-PATCH format. 
 #
-#
 m4_define([magick_name], [ImageMagick])
 m4_define([magick_major_version], [7])
 m4_define([magick_minor_version], [1])
