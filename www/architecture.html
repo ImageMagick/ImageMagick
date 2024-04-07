@@ -136,7 +136,7 @@
   </header>
 
   <main class="container">
-<div class="row"> 
+<div> 
 <p class="text-center"><a href="architecture.html#cache">The Pixel Cache</a> • <a href="architecture.html#properties">Image Properties and Profiles</a> • <a href="architecture.html#multispectral">Multispectral Imagery</a> • <a href="architecture.html#tera-pixel">Large Image Support</a> • <a href="architecture.html#stream">Streaming Pixels</a> • <a href="architecture.html#threads">Threads of Execution</a> • <a href="architecture.html#distributed">Heterogeneous Distributed Processing</a> • <a href="architecture.html#coders">Custom Image Coders</a> • <a href="architecture.html#filters">Custom Image Filters</a></p>
 
 <p class="lead">The citizens of Oz were quite content with their benefactor, the all-powerful Wizard.  They accepted his wisdom and benevolence without ever questioning the who, why, and where of his power.  Like the citizens of Oz, if you feel comfortable that ImageMagick can help you convert, edit, or compose your images without knowing what goes on behind the curtain, feel free to skip this section.  However, if you want to know more about the software and algorithms behind ImageMagick, read on.  To fully benefit from this discussion, you should be comfortable with image nomenclature and be familiar with computer programming.</p>
@@ -297,7 +297,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 <p>There are a plethora of image processing algorithms that require a neighborhood of pixels about a pixel of interest.  The algorithm typically includes a caveat concerning how to handle pixels around the image boundaries, known as edge pixels.  With virtual pixels, you do not need to concern yourself about special edge processing other than choosing  which virtual pixel method is most appropriate for your algorithm.</p>
  <p>Access to the virtual pixels are controlled by the <a href="api/cache.html#SetImageVirtualPixelMethod">SetImageVirtualPixelMethod()</a> method from the MagickCore API or the <a class="text-nowrap" href="../www/command-line-options.html#virtual-pixel">-virtual-pixel</a> option from the command line.  The methods include:</p>
 
-<div class="row">
+<div>
 <table class="table table-sm table-hover table-striped table-responsive">
   <tr>
     <td>background</td>
@@ -367,7 +367,7 @@ if (y &lt; (ssize_t) source-&gt;rows)
 
 <p>Recall that this simple and elegant design of the ImageMagick pixel cache comes at a cost in terms of storage and processing speed.  The pixel cache storage requirements scales with the area of the image and the bit depth of the pixel components.  For example, if we have a 640 by 480 image and we are using the non-HDRI Q16 version of ImageMagick, the pixel cache consumes image <var>width * height * bit-depth / 8 * channels</var> bytes or approximately 2.3 mebibytes (i.e. 640 * 480 * 2 * 4).  Not too bad, but what if your image is 25000 by 25000 pixels?  The pixel cache requires approximately 4.7 gibibytes of storage.  Ouch.  ImageMagick accounts for possible huge storage requirements by caching large images to disk rather than memory.  Typically the pixel cache is stored in memory using heap memory. If heap memory is exhausted, we create the pixel cache on disk and attempt to memory-map it. If memory-map memory is exhausted, we simply use standard disk I/O.  Disk storage is plentiful and cheap, but it is also very slow-- upwards of 1000 times slower than accessing pixels in memory.  We can get some speed improvements, up to 5 times, if we memory-map the disk-based cache.  These decisions about storage are made <var>automagically</var> by the pixel cache manager negotiating with the operating system.  However, you can influence how the pixel cache manager allocates the pixel cache with <var>cache resource limits</var>.  The limits include:</p>
 
-<div class="row">
+<div>
 <table class="table table-sm table-hover table-striped table-responsive">
   <tr>
     <td>width</td>
