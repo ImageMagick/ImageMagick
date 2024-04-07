@@ -17,7 +17,7 @@ permissions:
 name: release
 jobs:
   create_app_image:
-    name: 'Create AppImage'
+    name: Create AppImage
     runs-on: ubuntu-latest
     container:
       image: ubuntu:20.04
@@ -96,11 +96,142 @@ jobs:
         name: AppImage-${{ matrix.compiler }}
         path: artifacts
 
+  build_windows:
+    name: 'Build ${{ matrix.quantum }}${{ matrix.hdri_flag }} (${{ matrix.platform }})'
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ x64, arm64 ]
+        quantum: [ Q16 ]
+        hdri: [ HDRI ]
+        exclude:
+          - quantum: Q8
+            hdri: HDRI
+        include:
+          - hdri: HDRI
+            hdri_flag: '-HDRI'
+
+    steps:
+    - name: Clone ImageMagick
+      uses: actions/checkout@v4
+      with:
+        path: ImageMagick
+
+    - name: Clone ImageMagick-Windows
+      uses: actions/checkout@v4
+      with:
+        repository: ImageMagick/ImageMagick-Windows
+        path: ImageMagick-Windows
+
+    - name: Clone repositories
+      shell: cmd
+      run: |
+        cd ImageMagick-Windows
+        CloneRepositories.IM7.cmd
+
+    - name: Build configure
+      shell: cmd
+      run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd ImageMagick-Windows\Configure
+        msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
+
+    - name: Configure ImageMagick
+      shell: cmd
+      run: |
+        cd ImageMagick-Windows\Configure
+        Configure.exe /VS2022 /noWizard /noAliases /${{ matrix.hdri }} /${{ matrix.quantum }} /${{ matrix.platform }} /smtd
+
+    - name: Build ImageMagick (${{ matrix.platform }})
+      shell: cmd
+      run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
+        cd ImageMagick-Windows
+        msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Windows-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}
+        path: |
+          ImageMagick-Windows\Output\bin\*.xml
+          ImageMagick-Windows\Output\bin\*.exe
+
+  create_msix:
+    name: 'Create Msix ${{matrix.quantum}}${{matrix.hdri_flag}}'
+    runs-on: windows-latest
+    needs:
+      - build_windows
+
+    strategy:
+      fail-fast: false
+      matrix:
+        quantum: [ Q16 ]
+        hdri: [ HDRI ]
+        exclude:
+          - quantum: Q8
+            hdri: HDRI
+        include:
+          - hdri: HDRI
+            hdri_flag: '-HDRI'
+
+    steps:
+    - name: Clone ImageMagick
+      uses: actions/checkout@v4
+      with:
+        path: ImageMagick
+
+    - name: Clone ImageMagick-Windows
+      uses: actions/checkout@v4
+      with:
+        repository: ImageMagick/ImageMagick-Windows
+        path: ImageMagick-Windows
+
+    - name: Set version
+      id: version
+      run: |
+        $version = (Get-Content ImageMagick\configure -Raw) | Select-String -Pattern "PACKAGE_VERSION='([0-9\.-]*)" -AllMatches | % { $_.Matches } | % { $_.Groups[1].Value -replace '-', '.' }
+        echo "version=$version" >> $env:GITHUB_OUTPUT
+
+    - name: Download x64 artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: Windows-${{matrix.quantum}}${{matrix.hdri_flag}}-x64
+        path: ImageMagick-Windows\Installer\Msix\x64
+
+    - name: Download arm64 artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: Windows-${{matrix.quantum}}${{matrix.hdri_flag}}-arm64
+        path: ImageMagick-Windows\Installer\Msix\arm64
+
+    - name: Create msixbundle with Advanced Installer
+      env:
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        advancedinstaller_url: https://www.advancedinstaller.com/downloads/advinst-azts.msi
+      uses: caphyon/advinst-github-action@v1.0
+      with:
+        advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
+        advinst-enable-automation: 'true'
+        aip-path: ImageMagick-Windows\Installer\Msix\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.aip
+        aip-build-name: Build_MSIX
+        aip-commands: |
+            SetVersion ${{ steps.version.outputs.version }}
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Msix-${{matrix.quantum}}${{matrix.hdri_flag}}
+        path: 'ImageMagick-Windows\Installer\Msix\Output\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle'
+
   create_release:
-    name: 'Create release'
+    name: Create Release
     if: startsWith(github.ref, 'refs/tags/')
     needs:
       - create_app_image
+      - create_msix
     runs-on: ubuntu-latest
 
     steps:
@@ -116,3 +247,4 @@ jobs:
         files: |
           artifacts/AppImage-clang/ImageMagick--clang-x86_64.AppImage
           artifacts/AppImage-gcc/ImageMagick--gcc-x86_64.AppImage
+          artifacts/Msix-Q16-HDRI/ImageMagick.Q16-HDRI.msixbundle
