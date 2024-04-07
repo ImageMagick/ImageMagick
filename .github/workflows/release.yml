@@ -9,12 +9,12 @@ on:
     branches:
     - main
     paths:
-    - '.github/workflows/app-image.yml'
+    - '.github/workflows/release.yml'
 
 permissions:
   contents: write
 
-name: app image
+name: release
 jobs:
   create_app_image:
     name: 'Create AppImage'
