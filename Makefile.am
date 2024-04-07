@@ -268,9 +268,6 @@ uninstall-data-html:
 
 # Ensure that version.h at $(srcdir)/MagickCore/version.h is kept up to date.
 magick-version: MagickCore/version.h
-	@if test -f "$(srcdir)/VisualMagick/installer/inc/version.isx.in" ; then \
-	  ./config.status --file="$(srcdir)/../VisualMagick/installer/inc/version.isx" 2> /dev/null ; \
-	fi
 	@if test -n "$(VPATH)" ; then \
 	  cmp MagickCore/version.h $(srcdir)/MagickCore/version.h > /dev/null ; \
 	        if test $$? -eq 1 ; then \
