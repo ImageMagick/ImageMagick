@@ -5,6 +5,8 @@ on:
   push:
     tags:
     - '*'
+    paths:
+    - '.github/workflows/release.yml'
   pull_request:
     branches:
     - main
