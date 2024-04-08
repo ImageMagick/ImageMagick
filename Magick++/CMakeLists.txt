@@ -11,7 +11,7 @@
 #   under the License.
 #
 #   CMake script file to build ImageMagick
-# 
+#
 
 project(Magick++ CXX)
 
@@ -84,11 +84,24 @@ else()
 endif()
 
 set_target_properties(${MAGICKXX_BINARY_NAME} PROPERTIES PUBLIC_HEADER "${MAGICKXX_PUBLIC_HEADERS}")
-target_include_directories(${MAGICKXX_BINARY_NAME} PUBLIC ${IMAGEMAGICK_BASE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/lib)
-target_compile_definitions(${MAGICKXX_BINARY_NAME} PRIVATE ${MAGICK_BUILD_DEFINES} -D_MAGICKLIB_)
+target_include_directories(${MAGICKXX_BINARY_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib>
+  $<INSTALL_INTERFACE:include/ImageMagick-${MAGICK_MAJOR_VERSION}>
+)
+target_include_directories(${MAGICKXX_BINARY_NAME} PRIVATE ${IMAGEMAGICK_BASE_PATH})
+target_include_directories(${MAGICKXX_BINARY_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+target_compile_definitions(${MAGICKXX_BINARY_NAME} PUBLIC ${MAGICK_BUILD_DEFINES} -D_MAGICKLIB_)
+target_compile_options(${MAGICKXX_BINARY_NAME} PUBLIC ${MAGICK_COMPILE_OPTIONS})
+target_include_directories(${MAGICKXX_BINARY_NAME} PRIVATE ${IMAGEMAGICK_DELEGATES_INCLUDE_DIRS})
+target_compile_options(${MAGICKXX_BINARY_NAME} PRIVATE ${IMAGEMAGICK_DELEGATES_CFLAGS})
 target_link_libraries(${MAGICKXX_BINARY_NAME} PUBLIC ${MAGICKWAND_BINARY_NAME})
+# If any shared libararies are in non-standard, code this paths into the binaries
+set_target_properties(${MAGICKXX_BINARY_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+# Allow the different ImageMagick libraries to find each other after installation
+set_target_properties(${MAGICKXX_BINARY_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN")
 
 install(TARGETS ${MAGICKXX_BINARY_NAME}
+  EXPORT MAGICKPP_TARGETS
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
@@ -98,3 +111,20 @@ install(TARGETS ${MAGICKXX_BINARY_NAME}
 install(FILES
   lib/Magick++.h DESTINATION ${IMAGEMAGICK_INC_DIR}
 )
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/bin/Magick++-config.in ${CMAKE_CURRENT_BINARY_DIR}/Magick++-config @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lib/Magick++.pc.in ${CMAKE_CURRENT_BINARY_DIR}/Magick++.pc @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lib/Magick++.pc.in ${CMAKE_CURRENT_BINARY_DIR}/Magick++-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}.pc @ONLY)
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/Magick++.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/Magick++-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}.pc
+  DESTINATION lib
+)
+install(PROGRAMS
+  ${CMAKE_CURRENT_BINARY_DIR}/Magick++-config DESTINATION bin
+)
+
+# Create the CMake config files
+install(EXPORT MAGICKPP_TARGETS FILE "Magick++Targets.cmake" NAMESPACE ImageMagick:: DESTINATION lib/cmake)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file("Magick++.cmake" COMPATIBILITY AnyNewerVersion VERSION ${MAGICK_MAJOR_VERSION})

@@ -11,33 +11,74 @@
 #   under the License.
 #
 #   CMake script file to build ImageMagick
-#   
-cmake_minimum_required(VERSION 3.19.0)
-cmake_policy(VERSION 3.19.0)
+#
+cmake_minimum_required(VERSION 3.20.0)
+cmake_policy(VERSION 3.20.0)
 
 project(ImageMagick)
 
 include(cmake/checks.cmake)
+find_package(PkgConfig)
+set(CMAKE_TRY_COMPILE_CONFIGURATION ${CMAKE_BUILD_TYPE})
 
 macro(magick_find_delegate)
-  cmake_parse_arguments(MAGICK_FIND "" "DELEGATE;NAME;DEFAULT" "TARGETS" ${ARGN})
+  cmake_parse_arguments(MAGICK_FIND "" "DELEGATE;NAME;DEFAULT;PKGCONFIG" "TARGETS" ${ARGN})
 
+  unset(MAGICK_FIND_SEARCH_TARGET)
   if((NOT DEFINED ${MAGICK_FIND_DELEGATE} AND ${MAGICK_FIND_DEFAULT}) OR ${MAGICK_FIND_DELEGATE})
     find_package(${MAGICK_FIND_NAME} QUIET)
     set(${MAGICK_FIND_DELEGATE} ${${MAGICK_FIND_NAME}_FOUND})
     if(${MAGICK_FIND_DELEGATE})
-      message("Delegate ${MAGICK_FIND_NAME} found.")
+    # CMake config
+      message("-- Found CMake package ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
       if(MAGICK_FIND_TARGETS)
-        set(IMAGEMAGICK_DELEGATES_LIBRARIES ${IMAGEMAGICK_DELEGATES_LIBRARIES} ${MAGICK_FIND_TARGETS})
+        # Custom target
+        set(MAGICK_FIND_SEARCH_TARGET ${MAGICK_FIND_TARGETS})
       else()
-        set(IMAGEMAGICK_DELEGATES_LIBRARIES ${IMAGEMAGICK_DELEGATES_LIBRARIES} ${MAGICK_FIND_NAME}::${MAGICK_FIND_NAME})
+        # Default target
+        set(MAGICK_FIND_SEARCH_TARGET ${MAGICK_FIND_NAME}::${MAGICK_FIND_NAME})
       endif()
-    else()
-      message("Delegate ${MAGICK_FIND_NAME} disabled. (Not found)")
+      if(TARGET ${MAGICK_FIND_SEARCH_TARGET})
+        set(IMAGEMAGICK_DELEGATES_LIBRARIES ${IMAGEMAGICK_DELEGATES_LIBRARIES} ${MAGICK_FIND_SEARCH_TARGET})
+        # Add the include directories to CMAKE_REQUIRED_INCLUDES to check for header files
+        get_target_property(TARGET_INCLUDES ${MAGICK_FIND_SEARCH_TARGET} INTERFACE_INCLUDE_DIRECTORIES)
+        if(TARGET_INCLUDES)
+          list(APPEND CMAKE_REQUIRED_INCLUDES ${TARGET_INCLUDES})
+        endif()
+        # This goes into the FindImageMagick.cmake dependencies
+        list(APPEND IMAGEMAGICK_DEPENDENCIES ${MAGICK_FIND_NAME})
+        set(MAGICK_FIND_CURRENT_FOUND TRUE)
+      else()
+        message("-- Did not find expected target ${MAGICK_FIND_SEARCH_TARGET}, not using it")
+        set(${MAGICK_FIND_DELEGATE} FALSE)
+      endif()
     endif()
+  endif()
+
+  if(NOT ${MAGICK_FIND_DELEGATE} AND PkgConfig_FOUND)
+  # pkg-config
+    if(MAGICK_FIND_PKGCONFIG)
+      # Custom pkgconfig name
+      set(MAGICK_FIND_SEARCH_TARGET ${MAGICK_FIND_PKGCONFIG})
+    else()
+      # Default name
+      set(MAGICK_FIND_SEARCH_TARGET ${MAGICK_FIND_NAME})
+    endif()
+    pkg_check_modules(${MAGICK_FIND_NAME} ${MAGICK_FIND_SEARCH_TARGET})
+    if(${${MAGICK_FIND_NAME}_FOUND})
+      list(APPEND CMAKE_REQUIRED_INCLUDES ${${MAGICK_FIND_NAME}_INCLUDE_DIRS})
+      list(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES ${${MAGICK_FIND_NAME}_LIBRARIES})
+      list(APPEND IMAGEMAGICK_DELEGATES_LIBRARY_DIRS ${${MAGICK_FIND_NAME}_LIBRARY_DIRS})
+      list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${${MAGICK_FIND_NAME}_INCLUDE_DIRS})
+      list(APPEND IMAGEMAGICK_DELEGATES_CFLAGS ${${MAGICK_FIND_NAME}_CFLAGS})
+      list(APPEND IMAGEMAGICK_DELEGATES_LDFLAGS ${${MAGICK_FIND_NAME}_LDFLAGS_OTHER})
+      set(${MAGICK_FIND_DELEGATE} TRUE)
+    endif()
+  endif()
+  if(${MAGICK_FIND_DELEGATE})
+    message("Delegate ${MAGICK_FIND_NAME} enabled")
   else()
-    set(${MAGICK_FIND_DELEGATE} FALSE)
-    message("Delegate ${MAGICK_FIND_NAME} disabled.")
+    message("Delegate ${MAGICK_FIND_NAME} not found")
   endif()
 endmacro()
 
@@ -91,26 +132,39 @@ if(APPLE)
 	set(AC_APPLE_UNIVERSAL_BUILD TRUE)
 endif()
 
+# emscripten?
+if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
+  message(" * C++ compiler: Emscripten")
+  set(EMSCRIPTEN TRUE)
+  add_link_options("-s MODULARIZE" "-s 'EXPORT_NAME=ImageMagick'" "-lembind"
+    "-sAUTO_NATIVE_LIBRARIES=0" "-sAUTO_JS_LIBRARIES=0"
+  )
+endif()
+
 magick_check_env()
 
 ####### OPTIONS #######
 set(MAGICKCORE_QUANTUM_DEPTH "16" CACHE STRING "Number of bits in a pixel Quantum")
 set_property(CACHE MAGICKCORE_QUANTUM_DEPTH PROPERTY STRINGS "8;16;32;64")
-set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -DMAGICKCORE_QUANTUM_DEPTH=${MAGICKCORE_QUANTUM_DEPTH})
+set(CHANNEL_MASK_DEPTH 32)
+set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} MAGICKCORE_CHANNEL_MASK_DEPTH=${CHANNEL_MASK_DEPTH} MAGICKCORE_QUANTUM_DEPTH=${MAGICKCORE_QUANTUM_DEPTH})
+set(MAGICK_PCFLAGS ${MAGICK_PCFLAGS} -DMAGICKCORE_CHANNEL_MASK_DEPTH=${CHANNEL_MASK_DEPTH} -DMAGICKCORE_QUANTUM_DEPTH=${MAGICKCORE_QUANTUM_DEPTH})
 
 option(MAGICK_BUILD_STATIC "Build ImageMagick statically" FALSE)
 if(MAGICK_BUILD_STATIC)
-  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -D_LIB)
+  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} _LIB STATIC_MAGICK NOAUTOLINK_MAGICK)
 else()
-  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -D_DLL)
+  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} _DLL)
 endif()
 
 option(MAGICK_HDRI_ENABLE "Build ImageMagick with High dynamic-range imaging" TRUE)
 if(MAGICK_HDRI_ENABLE)
   set(HDRI_SUFFIX HDRI)
-  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -DMAGICKCORE_HDRI_ENABLE=1)
+  set(MAGICK_PCFLAGS ${MAGICK_PCFLAGS} -DMAGICKCORE_HDRI_ENABLE=1)
+  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} MAGICKCORE_HDRI_ENABLE=1)
 else()
-  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -DMAGICKCORE_HDRI_ENABLE=0)
+  set(MAGICK_PCFLAGS ${MAGICK_PCFLAGS} -DMAGICKCORE_HDRI_ENABLE=0)
+  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} MAGICKCORE_HDRI_ENABLE=1)
 endif()
 
 option(BUILD_MAGICKPP "Enable build/install of Magick++" TRUE)
@@ -150,12 +204,13 @@ string(REGEX MATCH "\nPACKAGE_BASE_VERSION=([0-9.]+)\n" FOUND_PACKAGE_VERSION ${
 if(FOUND_PACKAGE_VERSION)
   set(MAGICK_LIB_VERSION_TEXT ${CMAKE_MATCH_1})
   set(MAGICKPP_LIB_VERSION_TEXT ${CMAKE_MATCH_1})
+  set(PACKAGE_BASE_VERSION ${CMAKE_MATCH_1})
 endif()
 
 # Try parse just the major version number from MAGICK_LIB_VERSION_TEXT
 string(REGEX MATCH "([0-9])\\..*" FOUND_VERSION_MAJOR "${MAGICK_LIB_VERSION_TEXT}")
 if(FOUND_VERSION_MAJOR)
-  set(MAGICK_VERSION_MAJOR ${CMAKE_MATCH_1})
+  set(MAGICK_MAJOR_VERSION ${CMAKE_MATCH_1})
 endif()
 
 # Try to find `MAGICK_LIBRARY_CURRENT', `MAGICK_LIBRARY_REVISION' and `MAGICK_LIBRARY_AGE'
@@ -180,19 +235,19 @@ if(FOUND_MAGICKPP_LIBRARY_VERSION_INFO)
   set(MAGICKPP_LIBRARY_CURRENT_MIN ${CMAKE_MATCH_1})
 endif()
 
-# TODO
-set(VERSION "")
-set(MAGICK_TARGET_CPU "")
-set(MAGICK_TARGET_OS "")
-set(MAGICK_TARGET_VENDOR "")
-set(PACKAGE "")
-set(PACKAGE_BUGREPORT "")
-set(PACKAGE_STRING "")
-set(PACKAGE_TARNAME "")
-set(PACKAGE_URL "")
-set(PACKAGE_VERSION "")
+# TODO This hasn't been tested
+set(VERSION "\"${PACKAGE_BASE_VERSION}\"")
+set(MAGICK_TARGET_CPU "${CMAKE_SYSTEM_PROCESSOR}")
+set(MAGICK_TARGET_OS "\"${CMAKE_SYSTEM_NAME}\"")
+set(MAGICK_TARGET_VENDOR "\"${CMAKE_SYSTEM_NAME}\"")
+set(PACKAGE "\"ImageMagick\"")
+set(PACKAGE_BUGREPORT "\"https://github.com/ImageMagick/ImageMagick/issues\"")
+set(PACKAGE_STRING "${PACKAGE}-${PACKAGE_BASE_VERSION}")
+set(PACKAGE_TARNAME "\"ImageMagick\"")
+set(PACKAGE_URL "\"https://imagemagick.org\"")
+set(PACKAGE_VERSION "\"${PACKAGE_BASE_VERSION}\"")
 
-# Set if pipe (|) is enabled on filenames 
+# Set if pipe (|) is enabled on filenames
 # TODO Add linux and mac os X
 # TODO maybe this would be better with a test somehow
 if(WIN32)
@@ -229,7 +284,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR MINGW)
   set(_FILE_OFFSET_BITS 64)
   set(_LARGEFILE_SOURCE 1)
 else()
-# Not sure on Windows if code is made to work with 64 bits 
+# Not sure on Windows if code is made to work with 64 bits
   set(_FILE_OFFSET_BITS 32)
 endif()
 
@@ -237,25 +292,24 @@ endif()
 set(_FORTIFY_SOURCE FALSE)
 
 ####### PATHS #######
-# TODO Configure these correctly
-set(CODER_DIRNAME "")
-set(CONFIGURE_PATH "")
-set(CONFIGURE_RELATIVE_PATH "\"ImageMagick-7\"")
-set(DOCUMENTATION_PATH "")
-set(EXECUTABLE_PATH "")
+set(CODER_PATH "\"${CMAKE_INSTALL_PREFIX}/local/lib/ImageMagick-${MAGICK_MAJOR_VERSION}/modules-${MAGICK_ABI_SUFFIX}/coders\"")
+set(CONFIGURE_RELATIVE_PATH "\"ImageMagick-${MAGICK_MAJOR_VERSION}\"")
+set(CONFIGURE_PATH "\"${CMAKE_INSTALL_PREFIX}/\" ${CONFIGURE_RELATIVE_PATH}")
+set(DOCUMENTATION_PATH "${CMAKE_INSTALL_PREFIX}/share/doc/ImageMagick-${MAGICK_MAJOR_VERSION}")
+set(EXECUTABLE_PATH "\"${CMAKE_INSTALL_PREFIX}/bin\"")
 set(FILTER_DIRNAME "")
-set(INCLUDEARCH_PATH "")
-set(INCLUDE_PATH "")
+set(INCLUDEARCH_PATH "\"${CMAKE_INSTALL_PREFIX}/include\"")
+set(INCLUDE_PATH "\"${CMAKE_INSTALL_PREFIX}/include\"")
 set(INSTALLED_SUPPORT "")
-set(LIBRARY_PATH "\"ImageMagick-7\"")
-set(LIBRARY_RELATIVE_PATH "\"ImageMagick-7\"")
-set(LIB_BIN_BASEDIRNAME "")
-set(SHAREARCH_BASEDIRNAME "")
-set(SHAREARCH_DIRNAME "")
-set(SHARE_PATH "")
+set(LIBRARY_RELATIVE_PATH "\"ImageMagick-${MAGICK_MAJOR_VERSION}\"")
+set(LIBRARY_PATH "\"${CMAKE_INSTALL_PREFIX}/ImageMagick-${MAGICK_MAJOR_VERSION}\"")
+set(LIB_BIN_BASEDIRNAME "\"bin\"")
+set(SHAREARCH_BASEDIRNAME "\"share\"")
+set(SHAREARCH_DIRNAME "\"share\"")
 set(SHARE_RELATIVE_PATH "\"ImageMagick-7\"")
-set(MODULES_BASEDIRNAME "")
-set(MODULES_DIRNAME "")
+set(SHARE_PATH "\"${CMAKE_INSTALL_PREFIX}/\" ${SHAREARCH_DIRNAME} \"/\" ${SHARE_RELATIVE_PATH}")
+set(MODULES_BASEDIRNAME "\"modules\"")
+set(MODULES_DIRNAME "\"modules\"")
 set(LT_OBJDIR "")
 
 # Set the default font search path
@@ -273,14 +327,20 @@ endif()
 magick_find_delegate(DELEGATE BZLIB_DELEGATE NAME BZip2 DEFAULT TRUE)
 magick_find_delegate(DELEGATE LZMA_DELEGATE NAME LibLZMA DEFAULT TRUE)
 magick_find_delegate(DELEGATE ZLIB_DELEGATE NAME ZLIB DEFAULT TRUE)
-magick_find_delegate(DELEGATE ZSTD_DELEGATE NAME zstd DEFAULT TRUE)
+magick_find_delegate(DELEGATE ZIP_DELEGATE NAME ZIP DEFAULT TRUE TARGETS libzip::zip)
+# TODO: Detect whether zstd is static or not
+magick_find_delegate(DELEGATE ZSTD_DELEGATE NAME zstd DEFAULT TRUE TARGETS zstd::libzstd_static)
+magick_find_delegate(DELEGATE BROTLI_DELEGATE NAME brotli DEFAULT TRUE)
 magick_find_delegate(DELEGATE FREETYPE_DELEGATE NAME Freetype DEFAULT TRUE)
+
 magick_find_delegate(DELEGATE XML_DELEGATE NAME LibXml2 DEFAULT TRUE)
+# Alas, CMake has a very primitive built-in FindLibXml2.cmake that is cheeky enough
+# to get in the way without automatically including all the dependencies
+if(pkgcfg_lib_PC_LIBXML_iconv)
+  list(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES ${pkgcfg_lib_PC_LIBXML_iconv})
+endif()
 
 magick_find_delegate(DELEGATE OPENMP_SUPPORT NAME OpenMP DEFAULT TRUE TARGETS OpenMP::OpenMP_C)
-if(OPENMP_SUPPORT)
-  set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} -D_OPENMP=${OpenMP_C_SPEC_DATE})
-endif()
 
 magick_find_delegate(DELEGATE THREADS_SUPPORT NAME Threads DEFAULT TRUE TARGETS)
 if(CMAKE_USE_PTHREADS_INIT)
@@ -309,55 +369,81 @@ if(TIFF_FOUND)
   set(HAVE_TIFFSETWARNINGHANDLEREXT 1)
   set(HAVE_TIFFSWABARRAYOFTRIPLES 1)
 endif()
-magick_find_delegate(DELEGATE LCMS_DELEGATE NAME lcms DEFAULT TRUE)
-if(LCMS_FOUND)
+magick_find_delegate(DELEGATE LCMS_DELEGATE NAME lcms DEFAULT TRUE PKGCONFIG lcms2)
+if(lcms_FOUND)
   set(HAVE_LCMS2_H 1)
 endif()
 magick_find_delegate(DELEGATE RAW_R_DELEGATE NAME libraw DEFAULT TRUE)
-if(LIBRAW_FOUND)
+if(libraw_FOUND)
   set(HAVE_LIBRAW_LIBRAW_H 1)
 endif()
-magick_find_delegate(HEIC_DELEGATE libheif TRUE)
+magick_find_delegate(DELEGATE HEIC_DELEGATE NAME libheif DEFAULT TRUE TARGETS libheif::heif)
 
-magick_find_delegate(DELEGATE JBIG_DELEGATE NAME JBIG DEFAULT TRUE)
+magick_find_delegate(DELEGATE JBIG_DELEGATE NAME jbig DEFAULT TRUE)
 magick_find_delegate(DELEGATE JPEG_DELEGATE NAME JPEG DEFAULT TRUE)
-magick_find_delegate(DELEGATE LIBOPENJP2_DELEGATE NAME OpenJPEG DEFAULT TRUE)
+magick_find_delegate(DELEGATE LIBOPENJP2_DELEGATE NAME OpenJPEG DEFAULT TRUE TARGETS openjp2)
+# OpenJPEG has an ancient CMake that wasn't fixed until 2.5
+if(OPENJPEG_INCLUDE_DIRS)
+  list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${OPENJPEG_INCLUDE_DIRS})
+endif()
 magick_find_delegate(DELEGATE OPENEXR_DELEGATE NAME OpenEXR DEFAULT TRUE)
 magick_find_delegate(DELEGATE PNG_DELEGATE NAME PNG DEFAULT TRUE)
 magick_find_delegate(DELEGATE RSVG_DELEGATE NAME Rsvg DEFAULT TRUE)
-magick_find_delegate(DELEGATE WEBP_DELEGATE NAME WebP DEFAULT TRUE)
+magick_find_delegate(DELEGATE WEBP_DELEGATE NAME WebP DEFAULT TRUE
+    TARGETS WebP::webp PKGCONFIG libwebp)
+magick_find_delegate(DELEGATE WEBPMUX_DELEGATE NAME WebP DEFAULT TRUE
+    TARGETS WebP::libwebpmux PKGCONFIG libwebpmux)
+magick_find_delegate(DELEGATE WEBPDEMUX_DELEGATE NAME WebP DEFAULT TRUE
+    TARGETS WebP::webpdemux PKGCONFIG libwebpdemux)
 magick_find_delegate(DELEGATE JXL_DELEGATE NAME libjxl DEFAULT TRUE)
-
-# TODO are these correct and should they be off by default?
-magick_find_delegate(DELEGATE AUTOTRACE_DELEGATE NAME AUTOTRACE DEFAULT FALSE)
-magick_find_delegate(DELEGATE CAIRO_DELEGATE NAME Cairo DEFAULT FALSE)
-magick_find_delegate(DELEGATE DJVU_DELEGATE NAME DJVU DEFAULT FALSE)
-magick_find_delegate(DELEGATE DPS_DELEGATE NAME DPS DEFAULT FALSE)
-magick_find_delegate(DELEGATE FFTW_DELEGATE NAME FFTW DEFAULT FALSE)
-magick_find_delegate(DELEGATE FLIF_DELEGATE NAME FLIF DEFAULT FALSE)
-magick_find_delegate(DELEGATE FONTCONFIG_DELEGATE NAME Fontconfig DEFAULT FALSE)
-magick_find_delegate(DELEGATE FPX_DELEGATE NAME FlashPIX DEFAULT FALSE)
-magick_find_delegate(DELEGATE GS_DELEGATE NAME Ghostscript DEFAULT FALSE)
-magick_find_delegate(DELEGATE GVC_DELEGATE NAME GVC DEFAULT FALSE)
-magick_find_delegate(DELEGATE LTDL_DELEGATE NAME LTDL DEFAULT FALSE)
-# TODO
-set(LTDL_MODULE_EXT "")
-magick_find_delegate(DELEGATE PANGO_DELEGATE NAME Pango DEFAULT FALSE)
-magick_find_delegate(DELEGATE PANGOCAIRO_DELEGATE NAME PangoCairo DEFAULT FALSE)
-magick_find_delegate(DELEGATE RAQM_DELEGATE NAME RAQM DEFAULT FALSE)
-magick_find_delegate(DELEGATE WEBPMUX_DELEGATE NAME WEBPMUX DEFAULT FALSE)
-magick_find_delegate(DELEGATE WMF_DELEGATE NAME WMF DEFAULT FALSE)
-magick_find_delegate(DELEGATE LQR NAME Lqr DEFAULT FALSE)
-
-magick_find_delegate(DELEGATE HasJEMALLOC NAME Jemalloc DEFAULT FALSE)
-magick_find_delegate(DELEGATE HasUMEM NAME UMEM DEFAULT FALSE)
-
-magick_find_delegate(DELEGATE OPENCLLIB_DELEGATE NAME OpenCL DEFAULT FALSE)
-if(OpenCL_FOUND)
-  set(_OPENCL 1)
-  CHECK_INCLUDE_FILE(OpenCL/cl.h HAVE_OPENCL_CL_H)
-  CHECK_INCLUDE_FILE(CL/cl.h HAVE_CL_CL_H)
+if(${JXL_DELEGATE})
+  unset(JXL_DELEGATE)
+  # ImageMagick requires the threaded version, othewise it cannot work
+  magick_find_delegate(DELEGATE JXL_DELEGATE NAME libjxl_threads DEFAULT TRUE)
 endif()
+magick_find_delegate(DELEGATE FONTCONFIG_DELEGATE NAME Fontconfig DEFAULT TRUE)
+magick_find_delegate(DELEGATE CAIRO_DELEGATE NAME Cairo DEFAULT TRUE
+    TARGETS cairo::cairo PKGCONFIG cairo)
+
+magick_find_delegate(DELEGATE FFTW_DELEGATE NAME FFTW3 DEFAULT TRUE
+    TARGETS fftw::fftw PKGCONFIG fftw3)
+
+magick_find_delegate(DELEGATE HASJEMALLOC NAME jemalloc DEFAULT TRUE)
+
+magick_find_delegate(DELEGATE LTDL_DELEGATE NAME LTDL DEFAULT TRUE)
+set(LTDL_MODULE_EXT "")
+if (LTDL_FOUND)
+  magick_find_delegate(DELEGATE OPENCLLIB_DELEGATE NAME OpenCL DEFAULT TRUE)
+  if(NOT OpenCL_FOUND)
+    unset(OPENCLLIB_DELEGATE)
+    magick_find_delegate(DELEGATE OPENCLLIB_DELEGATE NAME OpenCLHeaders DEFAULT TRUE
+      TARGETS OpenCL::Headers PKGCONFIG OpenCL-Headers)
+  endif()
+  if(${OPENCLLIB_DELEGATE})
+    set(_OPENCL 1)
+    list(APPEND IMAGEMAGICK_DELEGATES_CFLAGS -DCL_TARGET_OPENCL_VERSION=300)
+    list(APPEND CMAKE_REQUIRED_DEFINITIONS -DCL_TARGET_OPENCL_VERSION=300)
+    check_c_source_compiles("#include <OpenCL/cl.h>\nint main(void) { return 0; }" HAVE_OPENCL_CL_H)
+    check_c_source_compiles("#include <CL/cl.h>\nint main(void) { return 0; }" HAVE_CL_CL_H)
+  endif()
+endif()
+
+# TODO
+# These are absent from conan
+magick_find_delegate(DELEGATE AUTOTRACE_DELEGATE NAME AUTOTRACE DEFAULT TRUE)
+magick_find_delegate(DELEGATE DJVU_DELEGATE NAME DJVU DEFAULT TRUE)
+magick_find_delegate(DELEGATE DPS_DELEGATE NAME DPS DEFAULT TRUE)
+magick_find_delegate(DELEGATE FLIF_DELEGATE NAME FLIF DEFAULT TRUE)
+magick_find_delegate(DELEGATE FPX_DELEGATE NAME FlashPIX DEFAULT TRUE)
+magick_find_delegate(DELEGATE GS_DELEGATE NAME Ghostscript DEFAULT TRUE)
+magick_find_delegate(DELEGATE GVC_DELEGATE NAME GVC DEFAULT TRUE)
+magick_find_delegate(DELEGATE PANGO_DELEGATE NAME Pango DEFAULT TRUE)
+magick_find_delegate(DELEGATE PANGOCAIRO_DELEGATE NAME PangoCairo DEFAULT TRUE)
+magick_find_delegate(DELEGATE RAQM_DELEGATE NAME RAQM DEFAULT TRUE)
+magick_find_delegate(DELEGATE WMF_DELEGATE NAME WMF DEFAULT TRUE)
+magick_find_delegate(DELEGATE LQR NAME Lqr DEFAULT TRUE)
+
+magick_find_delegate(DELEGATE HASUMEM NAME UMEM DEFAULT TRUE)
 
 # TODO Should we check if gdi32 exists if windows?
 if(WIN32)
@@ -377,7 +463,7 @@ set(IMAGEMAGICK_BASE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR
 set(CODERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/coders)
 set(FILTERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/filters)
 
-set(IMAGEMAGICK_INC_DIR "include/ImageMagick-${MAGICK_VERSION_MAJOR}")
+set(IMAGEMAGICK_INC_DIR "include/ImageMagick-${MAGICK_MAJOR_VERSION}")
 
 ####### CONFIG #######
 # Set the version.h file path to be autogenerated
@@ -399,7 +485,7 @@ endif()
 if(WIN32)
   set(MagickLibVersionNumber ${MAGICK_LIB_VERSION_NUMBER})
   set(MagickLibVersionText \"${MAGICK_LIB_VERSION_TEXT}\")
-  
+
   if(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
     set(MagickPlatform "x86")
   elseif(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
@@ -407,16 +493,16 @@ if(WIN32)
   else()
     set(MagickPlatform ${MAGICK_TARGET_CPU})
   endif()
-  
+
   # Read the version.h file so we can get some needed values using regex
   file(READ ${CMAKE_CURRENT_BINARY_DIR}/MagickCore/version.h CONTENT_VERSION_H)
-  
+
   # Try to find `MagickCopyright'
   string(REGEX MATCH "\n#define[ ]+MagickCopyright[ ]+\"([^\"]+)\"\n" FOUND_MAGICK_COPYRIGHT ${CONTENT_VERSION_H})
   if(FOUND_MAGICK_COPYRIGHT)
     set(MagickCopyright \"${CMAKE_MATCH_1}\")
   endif()
-  
+
   # Try to find `MagickAuthoritativeURL'
   string(REGEX MATCH "\n#define[ ]+MagickAuthoritativeURL[ ]+\"([^\"]+)\"\n" FOUND_MAGICK_AUTHORITATIVE_URL ${CONTENT_VERSION_H})
   if(FOUND_MAGICK_AUTHORITATIVE_URL)
@@ -424,12 +510,12 @@ if(WIN32)
   endif()
 
   set(MagickVersion "\"${PACKAGE_NAME} ${MAGICK_LIB_VERSION_TEXT}${PACKAGE_VERSION_ADDENDUM} ${MagickQuantumDepth} ${MagickPlatform} ${PACKAGE_RELEASE_DATE} ${MagickAuthoritativeURL}\"")
-  
+
   # Set the ImageMagick.rc file path to be autogenerated
   set(MAGICK_RESOURCE_FILE_PATH ${CMAKE_CURRENT_BINARY_DIR}/config/resources/ImageMagick.rc)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/ImageMagick.rc.cmake ${MAGICK_RESOURCE_FILE_PATH})
   # Copy only the needed resource files to output directory
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/images/ImageMagick.ico ${CMAKE_CURRENT_BINARY_DIR}/images/ImageMagick.ico COPYONLY)  
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/images/ImageMagick.ico ${CMAKE_CURRENT_BINARY_DIR}/images/ImageMagick.ico COPYONLY)
 endif()
 
 # Before making the config.h we still need to do somethings
@@ -443,14 +529,14 @@ file(READ ${CMAKE_CURRENT_BINARY_DIR}/config/config.h CONTENT_CONFIG_H)
 
 # Now we need to Regex Replace some things in the header file
 # All caps defines will be prefixed with a macro MAGICKCORE_
-string(REGEX REPLACE 
-  "\\*\\/\n#define[ ]+([A-Z0-9_]+)[ ]*([a-zA-Z0-9\":\\\-]*)\n" 
+string(REGEX REPLACE
+  "\\*\\/\n#define[ ]+([A-Z0-9_]+)[ ]*([\./ a-zA-Z0-9\":_\\\-]*)\n"
   "*/\n#ifndef MAGICKCORE_\\1\n#define MAGICKCORE_\\1 \\2\n#endif\n"
   CONTENT_CONFIG_H ${CONTENT_CONFIG_H}
 )
 # All uncaps defines will be prefixed with a macro _magickcore_
-string(REGEX REPLACE 
-  "\\*\\/\n#define[ ]+([a-z0-9_]+)[ ]*([a-zA-Z0-9 \"_]*)\n" 
+string(REGEX REPLACE
+  "\\*\\/\n#define[ ]+([a-z0-9_]+)[ ]*([\./ a-zA-Z0-9\":_\\\-]*)\n"
   "*/\n#ifndef _magickcore_\\1\n#define _magickcore_\\1 \\2\n#endif\n"
   CONTENT_CONFIG_H ${CONTENT_CONFIG_H}
 )
@@ -461,14 +547,14 @@ string(REGEX REPLACE
   CONTENT_CONFIG_H ${CONTENT_CONFIG_H}
 )
 # Also for ssize_t we need to typedef instead of define or else magick++ will not compile
-string(REGEX REPLACE 
-  "#ifndef _magickcore_ssize_t\n#define _magickcore_ssize_t ([a-zA-Z ]*)\n#endif" 
+string(REGEX REPLACE
+  "#ifndef _magickcore_ssize_t\n#define _magickcore_ssize_t ([a-zA-Z ]*)\n#endif"
   "typedef \\1 ssize_t;"
   CONTENT_CONFIG_H ${CONTENT_CONFIG_H}
 )
 
 # Now we need to append things to the previously read file content
-set(CONTENT_CONFIG_H 
+set(CONTENT_CONFIG_H
 "#ifndef _MAGICKCORE_MAGICK_BASECONFIG_H
 #define _MAGICKCORE_MAGICK_BASECONFIG_H 1
 
@@ -498,11 +584,36 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/MagickCore/threshold-map.h "${THRESHOLD_H
 endif()
 
 # Set the binaries name
-set(MAGICK_BINARY_SUFFIX "${MAGICK_VERSION_MAJOR}.${MagickQuantumDepth}${HDRI_SUFFIX}")
-set(MAGICKCORE_BINARY_NAME "MagickCore-${MAGICK_BINARY_SUFFIX}")
-set(MAGICKWAND_BINARY_NAME "MagickWand-${MAGICK_BINARY_SUFFIX}")
-set(MAGICKXX_BINARY_NAME "Magick++-${MAGICK_BINARY_SUFFIX}")
+set(MAGICK_ABI_SUFFIX "${MagickQuantumDepth}${HDRI_SUFFIX}")
+set(MAGICKCORE_BINARY_NAME "MagickCore-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}")
+set(MAGICKWAND_BINARY_NAME "MagickWand-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}")
+set(MAGICKXX_BINARY_NAME "Magick++-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}")
 set(MAGICK_BINARY_NAME "Magick")
+
+# Allow direct linking to the libraries from the build tree
+set(BUILD_RPATH ${CMAKE_LIBRARY_PATH} ${CMAKE_CURRENT_BINARY_DIR}/MagickCore ${CMAKE_CURRENT_BINARY_DIR}/MagickWand)
+
+# Configure Magick++-config
+if($ENV{PKG_CONFIG})
+  set(PKG_CONFIG "PKG_CONFIG_PATH=${CMAKE_INSTALL_PREFIX}/lib $ENV{PKG_CONFIG}")
+else()
+  set(PKG_CONFIG "PKG_CONFIG_PATH=${CMAKE_INSTALL_PREFIX}/lib pkg-config")
+endif()
+set(prefix ${CMAKE_INSTALL_PREFIX})
+if(NOT WIN32)
+  set(exec_prefix "\${prefix}/bin")
+else()
+  set(exec_prefix "\${prefix}")
+endif()
+set(libdir "\${prefix}/lib")
+set(includedir "\${prefix}/include")
+if(NOT INCLUDEARCH_DIR)
+  set(INCLUDEARCH_DIR "\${prefix}/include")
+endif()
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/ImageMagickConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/ImageMagickConfig.cmake @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/ImageMagickConfig.cmake DESTINATION lib/cmake)
 
 # Add the subdirectories to be compiled
 add_subdirectory("MagickCore")
@@ -512,6 +623,9 @@ if(BUILD_MAGICKPP)
 endif()
 if(BUILD_UTILITIES)
   add_subdirectory("utilities")
+endif()
+if(NOT ZERO_CONFIGURATION_SUPPORT)
+  add_subdirectory("config")
 endif()
 
 install(FILES
