@@ -857,6 +857,7 @@ JBIG_DELEGATE_FALSE
 JBIG_DELEGATE_TRUE
 HEIC_DELEGATE_FALSE
 HEIC_DELEGATE_TRUE
+HAVE_LIBHEIF_LIBHEIF_H
 HEIF_LIBS
 HEIF_CFLAGS
 DMR_LIBS
@@ -33884,6 +33885,13 @@ if test "$have_heic" = 'yes'; then
 printf "%s\n" "#define HEIC_DELEGATE 1" >>confdefs.h
 
   CFLAGS="$HEIF_CFLAGS $CFLAGS"
+  ac_fn_c_check_header_compile "$LINENO" "libheif/heif.h" "ac_cv_header_libheif_heif_h" "$ac_includes_default"
+if test "x$ac_cv_header_libheif_heif_h" = xyes
+then :
+  HAVE_LIBHEIF_LIBHEIF_H=1
+fi
+
+
 fi
 
  if test "$have_heic" = 'yes'; then
