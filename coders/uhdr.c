@@ -177,17 +177,18 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   else
     decoded_img_fmt = UHDR_IMG_FMT_UNSPECIFIED;
 
-#define CHECK_IF_ERR(x) \
-  { \
-    uhdr_error_info_t retval = (x); \
-    if (retval.error_code != UHDR_CODEC_OK) \
-    { \
-      (void) ThrowMagickException(exception,GetMagickModule(),CoderError, \
-        retval.detail,"`%s'",image->filename); \
-      uhdr_release_decoder(handle); \
-      CloseBlob(image); \
-      return DestroyImageList(image); \
-    } \
+#define CHECK_IF_ERR(x)                                                                       \
+  {                                                                                           \
+    uhdr_error_info_t retval = (x);                                                           \
+    if (retval.error_code != UHDR_CODEC_OK)                                                   \
+    {                                                                                         \
+      (void)ThrowMagickException(exception, GetMagickModule(), CoderError,                    \
+                                 retval.has_detail ? retval.detail : "unknown error", "`%s'", \
+                                 image->filename);                                            \
+      uhdr_release_decoder(handle);                                                           \
+      CloseBlob(image);                                                                       \
+      return DestroyImageList(image);                                                         \
+    }                                                                                         \
   }
 
   CHECK_IF_ERR(uhdr_dec_set_image(handle, &img))
@@ -714,16 +715,17 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   {
     uhdr_codec_private_t *handle = uhdr_create_encoder();
 
-#define CHECK_IF_ERR(x) \
-  { \
-    uhdr_error_info_t retval = (x); \
-    if (retval.error_code != UHDR_CODEC_OK) \
-    { \
-      (void) ThrowMagickException(exception,GetMagickModule(),CoderError, \
-        retval.detail,"`%s'",image->filename); \
-      uhdr_release_encoder(handle); \
-      status = MagickFalse; \
-    } \
+#define CHECK_IF_ERR(x)                                                                       \
+  {                                                                                           \
+    uhdr_error_info_t retval = (x);                                                           \
+    if (retval.error_code != UHDR_CODEC_OK)                                                   \
+    {                                                                                         \
+      (void)ThrowMagickException(exception, GetMagickModule(), CoderError,                    \
+                                 retval.has_detail ? retval.detail : "unknown error", "`%s'", \
+                                 image->filename);                                            \
+      uhdr_release_encoder(handle);                                                           \
+      status = MagickFalse;                                                                   \
+    }                                                                                         \
   }
 
     if (image->quality > 0 && image->quality <= 100)
