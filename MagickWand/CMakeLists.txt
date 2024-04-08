@@ -11,7 +11,7 @@
 #   under the License.
 #
 #   CMake script file to build ImageMagick
-# 
+#
 
 project(MagickWand C)
 
@@ -106,15 +106,39 @@ else()
 endif()
 
 set_target_properties(${MAGICKWAND_BINARY_NAME} PROPERTIES PUBLIC_HEADER "${MAGICKWAND_PUBLIC_HEADERS}")
-target_include_directories(${MAGICKWAND_BINARY_NAME} PUBLIC ${IMAGEMAGICK_BASE_PATH})
+target_include_directories(${MAGICKWAND_BINARY_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include/ImageMagick-${MAGICK_MAJOR_VERSION}>
+)
+target_include_directories(${MAGICKWAND_BINARY_NAME} PRIVATE ${IMAGEMAGICK_BASE_PATH})
 target_include_directories(${MAGICKWAND_BINARY_NAME} PRIVATE  ${IMAGEMAGICK_DELEGATES_INCLUDE_DIRS})
+target_compile_options(${MAGICKWAND_BINARY_NAME} PRIVATE  ${IMAGEMAGICK_DELEGATES_CFLAGS})
 # Set the MAGICKCORE_SHAREARCH_BASEDIRNAME to "config", not sure if I should add it to the <config.h>
-target_compile_definitions(${MAGICKWAND_BINARY_NAME} PRIVATE ${MAGICK_BUILD_DEFINES} -D_MAGICKLIB_ -DMAGICKCORE_SHAREARCH_BASEDIRNAME=\"config\")
+target_compile_definitions(${MAGICKWAND_BINARY_NAME} PUBLIC ${MAGICK_BUILD_DEFINES} -D_MAGICKLIB_ -DMAGICKCORE_SHAREARCH_BASEDIRNAME=\"config\")
+target_compile_options(${MAGICKWAND_BINARY_NAME} PUBLIC ${MAGICK_COMPILE_OPTIONS})
 target_link_libraries(${MAGICKWAND_BINARY_NAME} PUBLIC ${MAGICKCORE_BINARY_NAME})
+# If any shared libararies are in non-standard, code this paths into the binaries
+set_target_properties(${MAGICKWAND_BINARY_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+# Allow the different ImageMagick libraries to find each other after installation
+set_target_properties(${MAGICKWAND_BINARY_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN")
 
 install(TARGETS ${MAGICKWAND_BINARY_NAME}
+  EXPORT MAGICKWAND_TARGETS
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   PUBLIC_HEADER DESTINATION ${IMAGEMAGICK_INC_DIR}/MagickWand
 )
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MagickWand.pc.in ${CMAKE_CURRENT_BINARY_DIR}/MagickWand.pc @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MagickWand.pc.in ${CMAKE_CURRENT_BINARY_DIR}/MagickWand-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}.pc @ONLY)
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/MagickWand.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/MagickWand-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}.pc
+  DESTINATION lib
+)
+
+# Create the CMake config files
+install(EXPORT MAGICKWAND_TARGETS FILE MagickWandTargets.cmake NAMESPACE ImageMagick:: DESTINATION lib/cmake)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file("MagickWand.cmake" COMPATIBILITY AnyNewerVersion VERSION ${MAGICK_MAJOR_VERSION})

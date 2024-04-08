@@ -13,6 +13,9 @@
 /* Define if you have the bzip2 library */
 #cmakedefine BZLIB_DELEGATE
 
+/* Define if you have the zip library */
+#cmakedefine ZIP_DELEGATE
+
 /* Define if you have CAIRO library */
 #cmakedefine CAIRO_DELEGATE
 
@@ -726,16 +729,16 @@
 #cmakedefine HEIC_DELEGATE
 
 /* Define if you have jemalloc memory allocation library */
-#cmakedefine HasJEMALLOC
+#cmakedefine HASJEMALLOC
 
 /* Define if you have umem memory allocation library */
-#cmakedefine HasUMEM
+#cmakedefine HASUMEM
 
 /* Directory where ImageMagick architecture headers live. */
 #cmakedefine INCLUDEARCH_PATH @INCLUDEARCH_PATH@
 
 /* Directory where ImageMagick headers live. */
-#cmakedefine INCLUDE_PATH @INCLUDE_PATH
+#cmakedefine INCLUDE_PATH @INCLUDE_PATH@
 
 /* ImageMagick is formally installed under prefix */
 #cmakedefine INSTALLED_SUPPORT
@@ -968,9 +971,13 @@
 #ifndef _ALL_SOURCE
 #cmakedefine _ALL_SOURCE
 #endif
-/* Enable GNU extensions on systems that have them.  */
+/* Enable GNU extensions on systems that have them (emscripten is an unassuming GNU).  */
 #ifndef _GNU_SOURCE
-#cmakedefine _GNU_SOURCE
+   #ifdef __EMSCRIPTEN__
+      #define _GNU_SOURCE
+   #else
+      #cmakedefine _GNU_SOURCE
+   #endif
 #endif
 /* Enable threading extensions on Solaris.  */
 #ifndef _POSIX_PTHREAD_SEMANTICS
