@@ -49,15 +49,6 @@ macro(magick_check_env)
   # Check if `bool' exists (check_type_size is not working at least on windows)
   check_cxx_source_compiles ("void main () {bool b = false;}" HAVE_BOOL)
 
-  # Check if `carg' exists
-  check_function_exists(carg HAVE_CARG)
-
-  # Check if `cabs' exists
-  check_function_exists(cabs HAVE_CABS)
-
-  # Check if `cimag' exists
-  check_function_exists(cimag HAVE_CIMAG)
-
   # Check if `clock' exists
   check_function_exists(clock HAVE_CLOCK)
 
@@ -73,8 +64,16 @@ macro(magick_check_env)
   # Check if <complex.h> exists
   check_include_file(complex.h HAVE_COMPLEX_H)
 
-  # Check if `creal' exists
-  check_function_exists(creal HAVE_CREAL)
+  if(WIN32)
+    # FFTW is not compatible with complex.h in MSVC
+    set(HAVE_COMPLEX_H FALSE)
+  endif()
+  if(HAVE_COMPLEX_H)
+    check_c_source_compiles("#include <complex.h>\nint main(void) { cabs(1.0); return 0; }" HAVE_CABS)
+    check_c_source_compiles("#include <complex.h>\nint main(void) { carg(1.0); return 0; }" HAVE_CARG)
+    check_c_source_compiles("#include <complex.h>\nint main(void) { cimag(1.0); return 0; }" HAVE_CIMAG)
+    check_c_source_compiles("#include <complex.h>\nint main(void) { creal(1.0); return 0; }" HAVE_CREAL)
+  endif()
 
   # Check if `ctime_r' exists
   check_function_exists(ctime_r HAVE_CTIME_R)
@@ -965,6 +964,8 @@ macro(magick_check_env)
   "typedef struct abc *d;\nint test (d __restrict x);\nint main (void) {return 0;}"
     HAVE___RESTRICT)
 
+  # We prefer __restrict to restrict unlike the AC_C_RESTRICT macro
+  # because restrict requires C11 mode
   if(HAVE___RESTRICT)
     set(restrict __restrict)
   elseif(NOT HAVE_RESTRICT)
