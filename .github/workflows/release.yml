@@ -207,6 +207,7 @@ jobs:
         path: ImageMagick-Windows\Installer\Msix\arm64
 
     - name: Create msixbundle with Advanced Installer
+      if: github.event_name != 'pull_request'
       env:
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -222,6 +223,7 @@ jobs:
             SetVersion ${{ steps.version.outputs.version }}
 
     - uses: actions/upload-artifact@v4
+      if: github.event_name != 'pull_request'
       with:
         name: Msix-${{matrix.quantum}}${{matrix.hdri_flag}}
         path: 'ImageMagick-Windows\Installer\Msix\Output\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle'
