@@ -11,7 +11,7 @@
 #   under the License.
 #
 #   CMake script file to build ImageMagick
-# 
+#
 
 project(MagickCore C)
 
@@ -705,16 +705,31 @@ else()
 endif()
 
 set_target_properties(${MAGICKCORE_BINARY_NAME} PROPERTIES PUBLIC_HEADER "${MAGICKCORE_PUBLIC_HEADERS}")
-target_include_directories(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_BASE_PATH})
+target_include_directories(${MAGICKCORE_BINARY_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include/ImageMagick-${MAGICK_MAJOR_VERSION}>
+)
+target_include_directories(${MAGICKCORE_BINARY_NAME} PRIVATE ${IMAGEMAGICK_BASE_PATH})
+target_include_directories(${MAGICKCORE_BINARY_NAME} PRIVATE ${IMAGEMAGICK_DELEGATES_INCLUDE_DIRS})
+target_compile_options(${MAGICKCORE_BINARY_NAME} PRIVATE ${IMAGEMAGICK_DELEGATES_CFLAGS})
+target_link_directories(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LIBRARY_DIRS})
 target_link_libraries(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LIBRARIES})
+target_link_options(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LDFLAGS})
 #TODO should we make a test to see if we need to link -lm ??
 if(UNIX)
   target_link_libraries(${MAGICKCORE_BINARY_NAME} PUBLIC -lm)
+  set(MATH_LIBS "-lm")
 endif()
 # Set the MAGICKCORE_SHAREARCH_BASEDIRNAME to "config", not sure if I should add it to the <config.h>
-target_compile_definitions(${MAGICKCORE_BINARY_NAME} PRIVATE ${MAGICK_BUILD_DEFINES} -D_MAGICKLIB_ -DMAGICKCORE_SHAREARCH_BASEDIRNAME=\"config\")
+target_compile_definitions(${MAGICKCORE_BINARY_NAME} PUBLIC ${MAGICK_BUILD_DEFINES} -D_MAGICKLIB_ -DMAGICKCORE_SHAREARCH_BASEDIRNAME=\"config\")
+target_compile_options(${MAGICKCORE_BINARY_NAME} PUBLIC ${MAGICK_COMPILE_OPTIONS})
+# If any shared libararies are in non-standard, code this paths into the binaries
+set_target_properties(${MAGICKCORE_BINARY_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+# Allow the different ImageMagick libraries to find each other after installation
+set_target_properties(${MAGICKCORE_BINARY_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN")
 
 install(TARGETS ${MAGICKCORE_BINARY_NAME}
+  EXPORT MAGICKCORE_TARGETS
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
@@ -726,3 +741,21 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/version.h
   DESTINATION ${IMAGEMAGICK_INC_DIR}/MagickCore
 )
+
+# Create the .pc files (alas these lack the dependencies)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MagickCore.pc.in ${CMAKE_CURRENT_BINARY_DIR}/MagickCore.pc @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ImageMagick.pc.in ${CMAKE_CURRENT_BINARY_DIR}/ImageMagick.pc @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MagickCore.pc.in ${CMAKE_CURRENT_BINARY_DIR}/MagickCore-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}.pc @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ImageMagick.pc.in ${CMAKE_CURRENT_BINARY_DIR}/ImageMagick-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}.pc @ONLY)
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/MagickCore.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/MagickCore-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/ImageMagick.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/ImageMagick-${MAGICK_MAJOR_VERSION}.${MAGICK_ABI_SUFFIX}.pc
+  DESTINATION lib
+)
+
+# Create the CMake config files
+install(EXPORT MAGICKCORE_TARGETS FILE MagickCoreTargets.cmake NAMESPACE ImageMagick:: DESTINATION lib/cmake)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file("MagickCore.cmake" COMPATIBILITY AnyNewerVersion VERSION ${MAGICK_MAJOR_VERSION})
