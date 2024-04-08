@@ -287,6 +287,9 @@
 /* Define if you have the <lcms2/lcms2.h> header file. */
 #undef HAVE_LCMS2_LCMS2_H
 
+/* Define if you have the <libheif/heif.h> header file. */
+#undef HAVE_LIBHEIF_LIBHEIF_H
+
 /* Define to 1 if you have the `gcov' library (-lgcov). */
 #undef HAVE_LIBGCOV
 
