@@ -26,6 +26,8 @@ During those 4 years I have contributed to many large open-source projects who a
 
 I create open-source software to make the time pass and to raise awareness for my situation.
 
+*(this has been going for many years, but during this latest phase, officially, they are able to manipulate me - in reality they have been buying off "manipulators" in each open source project to which I have contributed - in order to get the project involved - which makes for some rather delicate situations - and which means that this PR will stay in its current state for some time to come - or at least until they the projects start demanipulating themselves....)*
+
 ## What?
 
 The build instructions can be found in `README.CMake.md` in the project root.
