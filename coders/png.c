@@ -11758,10 +11758,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         mng_info->depth = 16;
 
       else
-        (void) ThrowMagickException(exception,
-             GetMagickModule(),CoderWarning,
-             "ignoring invalid defined png:bit-depth",
-             "=%s",value);
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+          "ignoring invalid defined png:bit-depth","=%s",value);
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -11792,10 +11790,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         mng_info->colortype = 7;
 
       else
-        (void) ThrowMagickException(exception,
-             GetMagickModule(),CoderWarning,
-             "ignoring invalid defined png:color-type",
-             "=%s",value);
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+          "ignoring invalid defined png:color-type","=%s",value);
 
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -11922,10 +11918,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         mng_info->compression_level = 10;
 
       else
-        (void) ThrowMagickException(exception,
-             GetMagickModule(),CoderWarning,
-             "ignoring invalid defined png:compression-level",
-             "=%s",value);
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+          "ignoring invalid defined png:compression-level","=%s",value);
     }
 
   value=GetImageOption(image_info,"png:compression-strategy");
@@ -11957,10 +11951,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 #endif
 
       else
-        (void) ThrowMagickException(exception,
-             GetMagickModule(),CoderWarning,
-             "ignoring invalid defined png:compression-strategy",
-             "=%s",value);
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
+          "ignoring invalid defined png:compression-strategy","=%s",value);
     }
 
   value=GetImageOption(image_info,"png:compression-filter");
