@@ -531,6 +531,38 @@ static uhdr_mem_block_t GetExifProfile(Image *image, ExceptionInfo *exception)
   return uhdr_profile;
 }
 
+static void fillRawImageDescriptor(uhdr_raw_image_t *imgDescriptor, const ImageInfo *image_info,
+                                   Image *image, uhdr_img_fmt_t fmt)
+{
+  const char
+    *option;
+
+  imgDescriptor->fmt = fmt;
+
+  if (image->depth >= 10)
+  {
+    option = GetImageOption(image_info, "uhdr:hdr-color-gamut");
+    imgDescriptor->cg = (option != (const char *)NULL) ? map_cg_to_uhdr_cg(option)
+                                                       : getImageColorGamut(&image->chromaticity);
+
+    option = GetImageOption(image_info, "uhdr:hdr-color-transfer");
+    imgDescriptor->ct =
+        (option != (const char *)NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_UNSPECIFIED;
+  }
+  else if (image->depth == 8)
+  {
+    option = GetImageOption(image_info, "uhdr:sdr-color-gamut");
+    imgDescriptor->cg = (option != (const char *)NULL) ? map_cg_to_uhdr_cg(option)
+                                                       : getImageColorGamut(&image->chromaticity);
+
+    imgDescriptor->ct = UHDR_CT_SRGB;
+  }
+
+  imgDescriptor->range = UHDR_CR_UNSPECIFIED;
+  imgDescriptor->w = image->columns;
+  imgDescriptor->h = image->rows;
+}
+
 static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   Image *images,ExceptionInfo *exception)
 {
@@ -559,9 +591,6 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
 
   for (int i = 0; i < GetImageListLength(image); i++)
   {
-    const char
-      *option;
-
     int
       bpp = (image->depth >= 10) ? 2 : 1;
 
@@ -577,11 +606,27 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     void
       *crBuffer = NULL, *cbBuffer = NULL, *yBuffer = NULL;
 
-    if (image->colorspace != YCbCrColorspace)
+    if (image->colorspace == RGBColorspace || image->colorspace == sRGBColorspace)
+    {
+      bpp = 4;
+      picSize = aligned_width * aligned_height * bpp;
+    }
+    else if (image->colorspace != YCbCrColorspace)
     {
       status = TransformImageColorspace(image, YCbCrColorspace, exception);
       if (status == MagickFalse)
         break;
+    }
+
+    if (image->depth >= 10 && hdrImgDescriptor.planes[UHDR_PLANE_Y] != NULL)
+    {
+      RelinquishMagickMemory(hdrImgDescriptor.planes[UHDR_PLANE_Y]);
+      hdrImgDescriptor.planes[UHDR_PLANE_Y] = NULL;
+    }
+    else if (image->depth == 8 && sdrImgDescriptor.planes[UHDR_PLANE_Y] != NULL)
+    {
+      RelinquishMagickMemory(sdrImgDescriptor.planes[UHDR_PLANE_Y]);
+      sdrImgDescriptor.planes[UHDR_PLANE_Y] = NULL;
     }
 
     yBuffer = AcquireMagickMemory(picSize);
@@ -593,52 +638,65 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
 
     if (image->depth >= 10)
     {
-      hdrImgDescriptor.fmt = UHDR_IMG_FMT_24bppYCbCrP010;
+      if (image->colorspace == YCbCrColorspace)
+      {
+        cbBuffer = ((uint16_t *) yBuffer) + aligned_width * aligned_height;
+        crBuffer = ((uint16_t *) cbBuffer) + 1;
 
-      option = GetImageOption(image_info, "uhdr:hdr-color-gamut");
-      hdrImgDescriptor.cg = (option != (const char *)NULL)
-                                ? map_cg_to_uhdr_cg(option)
-                                : getImageColorGamut(&image->chromaticity);
+        fillRawImageDescriptor(&hdrImgDescriptor, image_info, image, UHDR_IMG_FMT_24bppYCbCrP010);
 
-      option = GetImageOption(image_info, "uhdr:hdr-color-transfer");
-      hdrImgDescriptor.ct =
-          (option != (const char *)NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_UNSPECIFIED;
+        hdrImgDescriptor.planes[UHDR_PLANE_Y] = yBuffer;
+        hdrImgDescriptor.planes[UHDR_PLANE_UV] = cbBuffer;
+        hdrImgDescriptor.planes[UHDR_PLANE_V] = NULL;
 
-      hdrImgDescriptor.range = UHDR_CR_UNSPECIFIED;
-      hdrImgDescriptor.w = image->columns;
-      hdrImgDescriptor.h = image->rows;
-      hdrImgDescriptor.planes[UHDR_PLANE_Y] = yBuffer;
-      cbBuffer = ((unsigned short *) yBuffer) + aligned_width * aligned_height;
-      crBuffer = ((unsigned short *) cbBuffer) + 1;
-      hdrImgDescriptor.planes[UHDR_PLANE_UV] = cbBuffer;
-      hdrImgDescriptor.planes[UHDR_PLANE_V] = NULL;
-      hdrImgDescriptor.stride[UHDR_PLANE_Y] = aligned_width;
-      hdrImgDescriptor.stride[UHDR_PLANE_UV] = aligned_width;
-      hdrImgDescriptor.stride[UHDR_PLANE_V] = 0;
+        hdrImgDescriptor.stride[UHDR_PLANE_Y] = aligned_width;
+        hdrImgDescriptor.stride[UHDR_PLANE_UV] = aligned_width;
+        hdrImgDescriptor.stride[UHDR_PLANE_V] = 0;
+      }
+      else
+      {
+        fillRawImageDescriptor(&hdrImgDescriptor, image_info, image, UHDR_IMG_FMT_32bppRGBA1010102);
+
+        hdrImgDescriptor.planes[UHDR_PLANE_PACKED] = yBuffer;
+        hdrImgDescriptor.planes[UHDR_PLANE_U] = NULL;
+        hdrImgDescriptor.planes[UHDR_PLANE_V] = NULL;
+
+        hdrImgDescriptor.stride[UHDR_PLANE_PACKED] = aligned_width;
+        hdrImgDescriptor.stride[UHDR_PLANE_U] = 0;
+        hdrImgDescriptor.stride[UHDR_PLANE_V] = 0;
+      }
 
       hdr_profile = GetExifProfile(image, exception);
     }
     else if (image->depth == 8)
     {
-      sdrImgDescriptor.fmt = UHDR_IMG_FMT_12bppYCbCr420;
+      if (image->colorspace == YCbCrColorspace)
+      {
+        cbBuffer = ((uint8_t *) yBuffer) + aligned_width * aligned_height;
+        crBuffer = ((uint8_t *) cbBuffer) + ((aligned_width / 2) * (aligned_height / 2));
 
-      option = GetImageOption(image_info, "uhdr:sdr-color-gamut");
-      sdrImgDescriptor.cg = (option != (const char *)NULL)
-                                ? map_cg_to_uhdr_cg(option)
-                                : getImageColorGamut(&image->chromaticity);
+        fillRawImageDescriptor(&sdrImgDescriptor, image_info, image, UHDR_IMG_FMT_12bppYCbCr420);
 
-      sdrImgDescriptor.ct = UHDR_CT_SRGB;
-      sdrImgDescriptor.range = UHDR_CR_UNSPECIFIED;
-      sdrImgDescriptor.w = image->columns;
-      sdrImgDescriptor.h = image->rows;
-      sdrImgDescriptor.planes[UHDR_PLANE_Y] = yBuffer;
-      cbBuffer = ((uint8_t *) yBuffer) + aligned_width * aligned_height;
-      sdrImgDescriptor.planes[UHDR_PLANE_U] = cbBuffer;
-      crBuffer = ((uint8_t *) cbBuffer) + ((aligned_width / 2) * (aligned_height / 2));
-      sdrImgDescriptor.planes[UHDR_PLANE_V] = crBuffer;
-      sdrImgDescriptor.stride[UHDR_PLANE_Y] = aligned_width;
-      sdrImgDescriptor.stride[UHDR_PLANE_U] = aligned_width / 2;
-      sdrImgDescriptor.stride[UHDR_PLANE_V] = aligned_width / 2;
+        sdrImgDescriptor.planes[UHDR_PLANE_Y] = yBuffer;
+        sdrImgDescriptor.planes[UHDR_PLANE_U] = cbBuffer;
+        sdrImgDescriptor.planes[UHDR_PLANE_V] = crBuffer;
+
+        sdrImgDescriptor.stride[UHDR_PLANE_Y] = aligned_width;
+        sdrImgDescriptor.stride[UHDR_PLANE_U] = aligned_width / 2;
+        sdrImgDescriptor.stride[UHDR_PLANE_V] = aligned_width / 2;
+      }
+      else
+      {
+        fillRawImageDescriptor(&sdrImgDescriptor, image_info, image, UHDR_IMG_FMT_32bppRGBA8888);
+
+        sdrImgDescriptor.planes[UHDR_PLANE_PACKED] = yBuffer;
+        sdrImgDescriptor.planes[UHDR_PLANE_U] = NULL;
+        sdrImgDescriptor.planes[UHDR_PLANE_V] = NULL;
+
+        sdrImgDescriptor.stride[UHDR_PLANE_PACKED] = aligned_width;
+        sdrImgDescriptor.stride[UHDR_PLANE_U] = 0;
+        sdrImgDescriptor.stride[UHDR_PLANE_V] = 0;
+      }
 
       sdr_profile = GetExifProfile(image, exception);
     }
@@ -662,32 +720,67 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       {
         if (image->depth >= 10)
         {
-          unsigned short
-            *crBase = crBuffer, *cbBase = cbBuffer, *yBase = yBuffer;
-
-          yBase[y * hdrImgDescriptor.stride[UHDR_PLANE_Y] + x] =
-            ScaleQuantumToShort(GetPixelY(image, p)) & 0xFFC0;
-          if ((y % 2 == 0) && (x % 2 == 0))
+          if (hdrImgDescriptor.fmt == UHDR_IMG_FMT_24bppYCbCrP010)
           {
-            cbBase[y / 2 * hdrImgDescriptor.stride[UHDR_PLANE_UV] + x] =
-              ScaleQuantumToShort(GetPixelCb(image, p)) & 0xFFC0;
-            crBase[y / 2 * hdrImgDescriptor.stride[UHDR_PLANE_UV] + x] =
-              ScaleQuantumToShort(GetPixelCr(image, p)) & 0xFFC0;
+            uint16_t
+              *crBase = crBuffer, *cbBase = cbBuffer, *yBase = yBuffer;
+
+            yBase[y * hdrImgDescriptor.stride[UHDR_PLANE_Y] + x] =
+              ScaleQuantumToShort(GetPixelY(image, p)) & 0xFFC0;
+            if ((y % 2 == 0) && (x % 2 == 0))
+            {
+              cbBase[y / 2 * hdrImgDescriptor.stride[UHDR_PLANE_UV] + x] =
+                ScaleQuantumToShort(GetPixelCb(image, p)) & 0xFFC0;
+              crBase[y / 2 * hdrImgDescriptor.stride[UHDR_PLANE_UV] + x] =
+                ScaleQuantumToShort(GetPixelCr(image, p)) & 0xFFC0;
+            }
+          }
+          else
+          {
+            uint32_t
+              *rgbBase = yBuffer;
+
+            unsigned short
+              r, g, b;
+
+            r = ScaleQuantumToShort(GetPixelRed(image, p)) & 0xFFC0;
+            g = ScaleQuantumToShort(GetPixelGreen(image, p)) & 0xFFC0;
+            b = ScaleQuantumToShort(GetPixelBlue(image, p)) & 0xFFC0;
+
+            rgbBase[y * hdrImgDescriptor.stride[UHDR_PLANE_PACKED] + x] =
+                (0x3 << 30) | (b << 14) | (g << 4) | (r >> 6);
           }
         }
         else if (image->depth == 8)
         {
-          unsigned char
-            *crBase = crBuffer, *cbBase = cbBuffer, *yBase = yBuffer;
-
-          yBase[y * sdrImgDescriptor.stride[UHDR_PLANE_Y] + x] =
-            ScaleQuantumToChar(GetPixelY(image, p));
-          if ((y % 2 == 0) && (x % 2 == 0))
+          if (sdrImgDescriptor.fmt == UHDR_IMG_FMT_12bppYCbCr420)
           {
-            cbBase[y / 2 * sdrImgDescriptor.stride[UHDR_PLANE_U] + x / 2] =
-              ScaleQuantumToChar(GetPixelCb(image, p));
-            crBase[y / 2 * sdrImgDescriptor.stride[UHDR_PLANE_V] + x / 2] =
-              ScaleQuantumToChar(GetPixelCr(image, p));
+            uint8_t
+              *crBase = crBuffer, *cbBase = cbBuffer, *yBase = yBuffer;
+
+            yBase[y * sdrImgDescriptor.stride[UHDR_PLANE_Y] + x] =
+              ScaleQuantumToChar(GetPixelY(image, p));
+            if ((y % 2 == 0) && (x % 2 == 0))
+            {
+              cbBase[y / 2 * sdrImgDescriptor.stride[UHDR_PLANE_U] + x / 2] =
+                ScaleQuantumToChar(GetPixelCb(image, p));
+              crBase[y / 2 * sdrImgDescriptor.stride[UHDR_PLANE_V] + x / 2] =
+                ScaleQuantumToChar(GetPixelCr(image, p));
+            }
+          }
+          else
+          {
+            uint32_t
+              *rgbBase = yBuffer;
+
+            unsigned char
+              r, g, b;
+
+            r = ScaleQuantumToChar(GetPixelRed(image, p));
+            g = ScaleQuantumToChar(GetPixelGreen(image, p));
+            b = ScaleQuantumToChar(GetPixelBlue(image, p));
+
+            rgbBase[y * sdrImgDescriptor.stride[UHDR_PLANE_PACKED] + x] = (b << 16) | (g << 8) | r;
           }
         }
         p += GetPixelChannels(image);
