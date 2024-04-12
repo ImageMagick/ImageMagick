@@ -352,7 +352,6 @@ jobs:
 
         Copy-Item "ImageMagick-Windows\Output\NOTICE.txt" "portable"
         Copy-Item "ImageMagick-Windows\ImageMagick\ChangeLog.md" "portable"
-        Copy-Item "ImageMagick-Windows\ImageMagick\README.txt" "portable"
         Copy-Item "ImageMagick-Windows\ImageMagick\LICENSE" "portable\LICENSE.txt"
 
         $version = (cat "ImageMagick-Windows\Installer\Inno\config.isx" | Select-String "MagickPackageFullVersionText") | Out-String

@@ -97,7 +97,6 @@ XFAIL_TESTS = \
 TOP_EXTRA_DIST = \
   AUTHORS.txt \
   LICENSE \
-  QuickStart.txt \
   NOTICE \
   Install-mac.txt \
   Install-unix.txt \
@@ -105,8 +104,6 @@ TOP_EXTRA_DIST = \
   Install-windows.txt \
   magick.sh.in \
   Magickshr.opt \
-  NEWS.txt \
-  README.txt \
   index.html \
   winpath.sh
 
@@ -168,8 +165,7 @@ man_MANS = \
   $(UTILITIES_MANS)
 
 doc_DATA = \
-  LICENSE \
-  NEWS.txt
+  LICENSE
 endif
 
 if MAINTAINER_MODE

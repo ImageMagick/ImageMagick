@@ -335,14 +335,14 @@ rm PerlMagick/demo/Generic.ttf
 %ldconfig_scriptlets c++
 
 %files
-%doc README.txt NOTICE AUTHORS.txt NEWS.txt
+%doc NOTICE AUTHORS.txt
 %license LICENSE
 %{_bindir}/[a-z]*
 %{_mandir}/man[145]/[a-z]*
 %{_mandir}/man1/%{name}.*
 
 %files libs
-%doc NOTICE AUTHORS.txt QuickStart.txt
+%doc NOTICE AUTHORS.txt
 %license LICENSE
 %{_libdir}/libMagickCore-7.Q16HDRI.so.%{libsover}{,.*}
 %{_libdir}/libMagickWand-7.Q16HDRI.so.%{libsover}{,.*}
