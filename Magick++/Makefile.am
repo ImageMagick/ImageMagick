@@ -46,11 +46,7 @@ MAGICKPP_TEST_SCRPTS_OPT = \
 
 MAGICKPP_EXTRA_DIST = \
   Magick++/AUTHORS \
-  Magick++/ChangeLog \
-  Magick++/INSTALL \
   Magick++/LICENSE \
-  Magick++/NEWS \
-  Magick++/README \
   Magick++/bin/Magick++-config.1 \
   Magick++/bin/Magick++-config.in \
   Magick++/lib/libMagick++.map \
