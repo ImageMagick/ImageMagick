@@ -17,7 +17,7 @@
 %                               December 2003                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2003 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -1484,6 +1484,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
   DestroyCompare();
   if ((metric == NormalizedCrossCorrelationErrorMetric) ||
+      (metric == StructuralSimilarityErrorMetric) ||
       (metric == UndefinedErrorMetric))
     {
       if (fabs(distortion-1.0) > CompareEpsilon)

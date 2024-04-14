@@ -1793,7 +1793,7 @@ MagickExport double *GetImageDistortions(Image *image,
     }
     case PerceptualHashErrorMetric:
     {
-      status=GetRootMeanSquaredDistortion(image,reconstruct_image,
+      status=GetPerceptualHashDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
