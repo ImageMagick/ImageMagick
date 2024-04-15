@@ -3624,7 +3624,6 @@ TESTS_ENVIRONMENT = \
 TOP_EXTRA_DIST = \
   AUTHORS.txt \
   LICENSE \
-  QuickStart.txt \
   NOTICE \
   Install-mac.txt \
   Install-unix.txt \
@@ -3632,8 +3631,6 @@ TOP_EXTRA_DIST = \
   Install-windows.txt \
   magick.sh.in \
   Magickshr.opt \
-  NEWS.txt \
-  README.txt \
   index.html \
   winpath.sh
 
@@ -5854,11 +5851,7 @@ MAGICKPP_TEST_SCRPTS_OPT = \
 
 MAGICKPP_EXTRA_DIST = \
   Magick++/AUTHORS \
-  Magick++/ChangeLog \
-  Magick++/INSTALL \
   Magick++/LICENSE \
-  Magick++/NEWS \
-  Magick++/README \
   Magick++/bin/Magick++-config.1 \
   Magick++/bin/Magick++-config.in \
   Magick++/lib/libMagick++.map \
@@ -6222,8 +6215,7 @@ pkgconfig_DATA = \
 @INSTALL_DOC_TRUE@  $(UTILITIES_MANS)
 
 @INSTALL_DOC_TRUE@doc_DATA = \
-@INSTALL_DOC_TRUE@  LICENSE \
-@INSTALL_DOC_TRUE@  NEWS.txt
+@INSTALL_DOC_TRUE@  LICENSE
 
 @MAINTAINER_MODE_TRUE@MAINTAINER_TARGETS = \
 @MAINTAINER_MODE_TRUE@  magick-version \
