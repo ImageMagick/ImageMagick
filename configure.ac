@@ -2915,6 +2915,7 @@ if test "$with_uhdr" != 'no'; then
     else
         AC_MSG_RESULT([no])
     fi
+    AC_LANG_POP([C++])
 fi
 
 AM_CONDITIONAL([UHDR_DELEGATE],[test "$have_uhdr" = 'yes'])
