@@ -146,7 +146,7 @@ jobs:
 
     - name: Sign binaries
       if: github.event_name != 'pull_request'
-      uses: azure/azure-code-signing-action@v0.3.1
+      uses: azure/trusted-signing-action@v0.3.16
       with:
         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -170,7 +170,7 @@ jobs:
 
     - name: Sign installer
       if: github.event_name != 'pull_request'
-      uses: azure/azure-code-signing-action@v0.3.1
+      uses: azure/trusted-signing-action@v0.3.16
       with:
         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -325,7 +325,7 @@ jobs:
 
     - name: Sign executables
       if: github.event_name != 'pull_request'
-      uses: azure/azure-code-signing-action@v0.3.1
+      uses: azure/trusted-signing-action@v0.3.16
       with:
         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
