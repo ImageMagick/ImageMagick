@@ -547,7 +547,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
 }
 
 static MagickBooleanType ReadProfile(Image *image,const char *name,
-  const unsigned char *datum,ssize_t length,ExceptionInfo *exception)
+  const unsigned char *datum,uint32 length,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -621,12 +621,12 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
 #if defined(TIFFTAG_ICCPROFILE)
   if ((TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
-    status=ReadProfile(image,"icc",profile,(ssize_t) length,exception);
+    status=ReadProfile(image,"icc",profile,length,exception);
 #endif
 #if defined(TIFFTAG_PHOTOSHOP)
   if ((TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
-    status=ReadProfile(image,"8bim",profile,(ssize_t) length,exception);
+    status=ReadProfile(image,"8bim",profile,length,exception);
 #endif
 #if defined(TIFFTAG_RICHTIFFIPTC) && (TIFFLIB_VERSION >= 20191103)
   if ((TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&profile) == 1) &&
@@ -654,7 +654,7 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
       StringInfo
         *dng;
 
-      status=ReadProfile(image,"xmp",profile,(ssize_t) length,exception);
+      status=ReadProfile(image,"xmp",profile,length,exception);
       dng=BlobToStringInfo(profile,length);
       if (dng != (StringInfo *) NULL)
         {
@@ -669,11 +669,10 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
 #endif
   if ((TIFFGetField(tiff,34118,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
-    status=ReadProfile(image,"tiff:34118",profile,(ssize_t) length,
-      exception);
+    status=ReadProfile(image,"tiff:34118",profile,length,exception);
   if ((TIFFGetField(tiff,37724,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
-    status=ReadProfile(image,"tiff:37724",profile,(ssize_t) length,exception);
+    status=ReadProfile(image,"tiff:37724",profile,length,exception);
   return(status);
 }
 
