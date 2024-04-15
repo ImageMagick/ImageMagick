@@ -1734,7 +1734,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   }
             }
             if ((image->alpha_trait == UndefinedPixelTrait) &&
-                 (extra_samples == 1))
+                 (extra_samples >= 1))
               {
                 const char
                   *option;
