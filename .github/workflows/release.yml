@@ -216,7 +216,6 @@ jobs:
       uses: caphyon/advinst-github-action@v1.1
       with:
         advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
-        advinst-enable-automation: 'true'
         aip-path: ImageMagick-Windows\Installer\Msix\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.aip
         aip-build-name: Build_MSIX
         aip-commands: |
