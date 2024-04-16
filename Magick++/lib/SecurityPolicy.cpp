@@ -45,6 +45,15 @@ bool Magick::SecurityPolicy::maxMemoryRequest(const MagickSizeType limit_)
   return(setValue(SystemPolicyDomain,"max-memory-request",value));
 }
 
+bool Magick::SecurityPolicy::maxProfileSize(const MagickSizeType limit_)
+{
+  string
+    value;
+
+  value=toString(limit_);
+  return(setValue(SystemPolicyDomain,"max-profile-size",value));
+}
+
 bool Magick::SecurityPolicy::shred(const int passes_)
 {
   string

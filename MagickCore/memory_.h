@@ -39,7 +39,8 @@ extern MagickExport MemoryInfo
   *RelinquishVirtualMemory(MemoryInfo *);
 
 extern MagickExport size_t
-  GetMaxMemoryRequest(void);
+  GetMaxMemoryRequest(void),
+  GetMaxProfileSize(void);
 
 extern MagickExport void
   *AcquireAlignedMemory(const size_t,const size_t)

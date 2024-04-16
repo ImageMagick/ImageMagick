@@ -199,6 +199,7 @@ typedef struct _MemoryPool
 */
 static size_t
   max_memory_request = 0,
+  max_profile_size = 0,
   virtual_anonymous_memory = 0;
 
 #if defined _MSC_VER
@@ -1034,7 +1035,7 @@ MagickExport void GetMagickMemoryMethods(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMaxMemoryRequest() returns the max_memory_request value.
+%  GetMaxMemoryRequest() returns the max memory request value.
 %
 %  The format of the GetMaxMemoryRequest method is:
 %
@@ -1063,6 +1064,44 @@ MagickExport size_t GetMaxMemoryRequest(void)
         }
     }
   return(MagickMin(max_memory_request,(size_t) MAGICK_SSIZE_MAX));
+}
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t M a x P r o f i l e S i z e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMaxProfileSize() returns the max profile size value.
+%
+%  The format of the GetMaxMemoryRequest method is:
+%
+%      size_t GetMaxProfileSize(void)
+%
+*/
+MagickExport size_t GetMaxProfileSize(void)
+{
+  if (max_profile_size == 0)
+    {
+      char
+        *value;
+
+      max_profile_size=(size_t) MAGICK_SSIZE_MAX;
+      value=GetPolicyValue("system:max-profile-size");
+      if (value != (char *) NULL)
+        {
+          /*
+            The security policy sets a max profile size limit.
+          */
+          max_profile_size=StringToSizeType(value,100.0);
+          value=DestroyString(value);
+        }
+    }
+  return(MagickMin(max_profile_size,(size_t) MAGICK_SSIZE_MAX));
 }
 
 /*
@@ -1565,9 +1604,9 @@ MagickExport void SetMagickMemoryMethods(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetMaxMemoryRequest() sets the max_memory_request value.
+%  SetMaxMemoryRequest() sets the max memory request value.
 %
-%  The format of the ResetMaxMemoryRequest method is:
+%  The format of the SetMaxMemoryRequest method is:
 %
 %      void SetMaxMemoryRequest(const MagickSizeType limit)
 %
@@ -1579,6 +1618,33 @@ MagickExport void SetMagickMemoryMethods(
 MagickPrivate void SetMaxMemoryRequest(const MagickSizeType limit)
 {
   max_memory_request=MagickMin(limit,GetMaxMemoryRequest());
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   S e t M a x P r o f i l e S i z e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetMaxProfileSize() sets the max profile size value.
+%
+%  The format of the SetMaxProfileSize method is:
+%
+%      void SetMaxProfileSize(const MagickSizeType limit)
+%
+%  A description of each parameter follows:
+%
+%    o limit: the maximum profile size limit.
+%
+*/
+MagickPrivate void SetMaxProfileSize(const MagickSizeType limit)
+{
+  max_profile_size=MagickMin(limit,GetMaxProfileSize());
 }
 
 /*
