@@ -1963,10 +1963,21 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   MagickBooleanType
     status;
 
+  size_t
+    length;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  length=GetStringInfoLength(profile);
+  if (length > GetMaxProfileSize())
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitWarning,"ProfileSizeExceedsLimit","`%.20g'",length);
+      profile=DestroyStringInfo(profile);
+      return(MagickFalse);
+    }
   PatchCorruptProfile(name,profile);
   if ((LocaleCompare(name,"xmp") == 0) &&
       (ValidateXMPProfile(image,profile,exception) == MagickFalse))
