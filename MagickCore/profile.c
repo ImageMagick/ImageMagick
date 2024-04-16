@@ -85,7 +85,7 @@
   Forward declarations
 */
 static MagickBooleanType
-  SetImageProfileInternal(Image *,const char *,const StringInfo *,
+  SetImageProfileInternal(Image *,const char *,StringInfo *,
     const MagickBooleanType,ExceptionInfo *);
 
 static void
@@ -633,8 +633,7 @@ static inline void SetLCMSInfoScale(LCMSInfo *info,const double scale)
 }
 #endif
 
-static MagickBooleanType SetsRGBImageProfile(Image *image,
-  ExceptionInfo *exception)
+static void SetsRGBImageProfile(Image *image,ExceptionInfo *exception)
 {
   static unsigned char
     sRGBProfile[] =
@@ -912,18 +911,16 @@ static MagickBooleanType SetsRGBImageProfile(Image *image,
   StringInfo
     *profile;
 
-  MagickBooleanType
-    status;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (GetImageProfile(image,"icc") != (const StringInfo *) NULL)
-    return(MagickFalse);
-  profile=AcquireStringInfo(sizeof(sRGBProfile));
-  SetStringInfoDatum(profile,sRGBProfile);
-  status=SetImageProfile(image,"icc",profile,exception);
-  profile=DestroyStringInfo(profile);
-  return(status);
+    return;
+  profile=AcquireProfileStringInfo(sizeof(sRGBProfile),exception);
+  if (profile != (StringInfo *) NULL)
+    {
+      SetStringInfoDatum(profile,sRGBProfile);
+      (void) SetImageProfilePrivate(image,"icc",profile,exception);
+    }
 }
 
 MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
@@ -981,10 +978,12 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
     Add a ICC, IPTC, or generic profile to the image.
   */
   status=MagickTrue;
-  profile=AcquireStringInfo((size_t) length);
+  profile=AcquireProfileStringInfo((size_t) length,exception);
+  if (profile == (StringInfo *) NULL)
+    return(MagickFalse);
   SetStringInfoDatum(profile,(unsigned char *) datum);
   if ((LocaleCompare(name,"icc") != 0) && (LocaleCompare(name,"icm") != 0))
-    status=SetImageProfile(image,name,profile,exception);
+    status=SetImageProfilePrivate(image,name,profile,exception);
   else
     {
       const StringInfo
@@ -1000,10 +999,10 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           value=GetImageProperty(image,"exif:ColorSpace",exception);
           (void) value;
           if (LocaleCompare(value,"1") != 0)
-            (void) SetsRGBImageProfile(image,exception);
+            SetsRGBImageProfile(image,exception);
           value=GetImageProperty(image,"exif:InteroperabilityIndex",exception);
           if (LocaleCompare(value,"R98.") != 0)
-            (void) SetsRGBImageProfile(image,exception);
+            SetsRGBImageProfile(image,exception);
           icc_profile=GetImageProfile(image,"icc");
         }
       if ((icc_profile != (const StringInfo *) NULL) &&
@@ -1053,7 +1052,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           }
         if ((cmsGetDeviceClass(source_info.profile) != cmsSigLinkClass) &&
             (icc_profile == (StringInfo *) NULL))
-          status=SetImageProfile(image,name,profile,exception);
+          status=SetImageProfilePrivate(image,name,profile,exception);
         else
           {
             CacheView
@@ -1432,7 +1431,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             transform=DestroyTransformTLS(transform);
             if ((status != MagickFalse) &&
                 (cmsGetDeviceClass(source_info.profile) != cmsSigLinkClass))
-              status=SetImageProfile(image,name,profile,exception);
+              status=SetImageProfilePrivate(image,name,profile,exception);
             if (target_info.profile != (cmsHPROFILE) NULL)
               (void) cmsCloseProfile(target_info.profile);
           }
@@ -1441,7 +1440,6 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
       }
 #endif
     }
-  profile=DestroyStringInfo(profile);
   return(status);
 }
 
@@ -1790,11 +1788,13 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           IPTC profile.
         */
-        profile=AcquireStringInfo((size_t) count);
-        SetStringInfoDatum(profile,p);
-        (void) SetImageProfileInternal(image,"iptc",profile,MagickTrue,
-          exception);
-        profile=DestroyStringInfo(profile);
+        profile=AcquireProfileStringInfo((size_t) count,exception);
+        if (profile != (StringInfo *) NULL)
+          {
+            SetStringInfoDatum(profile,p);
+            (void) SetImageProfileInternal(image,"iptc",profile,MagickTrue,
+              exception);
+          }
         p+=count;
         break;
       }
@@ -1811,11 +1811,13 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           ICC Profile.
         */
-        profile=AcquireStringInfo((size_t) count);
-        SetStringInfoDatum(profile,p);
-        (void) SetImageProfileInternal(image,"icc",profile,MagickTrue,
-          exception);
-        profile=DestroyStringInfo(profile);
+        profile=AcquireProfileStringInfo((size_t) count,exception);
+        if (profile != (StringInfo *) NULL)
+          {
+            SetStringInfoDatum(profile,p);
+            (void) SetImageProfileInternal(image,"icc",profile,MagickTrue,
+              exception);
+          }
         p+=count;
         break;
       }
@@ -1824,11 +1826,13 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           EXIF Profile.
         */
-        profile=AcquireStringInfo((size_t) count);
-        SetStringInfoDatum(profile,p);
-        (void) SetImageProfileInternal(image,"exif",profile,MagickTrue,
-          exception);
-        profile=DestroyStringInfo(profile);
+        profile=AcquireProfileStringInfo((size_t) count,exception);
+        if (profile != (StringInfo *) NULL)
+          {
+            SetStringInfoDatum(profile,p);
+            (void) SetImageProfileInternal(image,"exif",profile,MagickTrue,
+              exception);
+          }
         p+=count;
         break;
       }
@@ -1837,11 +1841,13 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           XMP Profile.
         */
-        profile=AcquireStringInfo((size_t) count);
-        SetStringInfoDatum(profile,p);
-        (void) SetImageProfileInternal(image,"xmp",profile,MagickTrue,
-          exception);
-        profile=DestroyStringInfo(profile);
+        profile=AcquireProfileStringInfo((size_t) count,exception);
+        if (profile != (StringInfo *) NULL)
+          {
+            SetStringInfoDatum(profile,p);
+            (void) SetImageProfileInternal(image,"xmp",profile,MagickTrue,
+              exception);
+          }
         p+=count;
         break;
       }
@@ -1948,7 +1954,7 @@ static MagickBooleanType ValidateXMPProfile(Image *image,
 }
 
 static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
-  const StringInfo *profile,const MagickBooleanType recursive,
+  StringInfo *profile,const MagickBooleanType recursive,
   ExceptionInfo *exception)
 {
   char
@@ -1957,19 +1963,15 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   MagickBooleanType
     status;
 
-  StringInfo
-    *clone_profile;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  clone_profile=CloneStringInfo(profile);
-  PatchCorruptProfile(name,clone_profile);
+  PatchCorruptProfile(name,profile);
   if ((LocaleCompare(name,"xmp") == 0) &&
-      (ValidateXMPProfile(image,clone_profile,exception) == MagickFalse))
+      (ValidateXMPProfile(image,profile,exception) == MagickFalse))
     {
-      clone_profile=DestroyStringInfo(clone_profile);
+      profile=DestroyStringInfo(profile);
       return(MagickTrue);
     }
   if (image->profiles == (SplayTreeInfo *) NULL)
@@ -1978,14 +1980,16 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   (void) CopyMagickString(key,name,MagickPathExtent);
   LocaleLower(key);
   status=AddValueToSplayTree((SplayTreeInfo *) image->profiles,
-    ConstantString(key),clone_profile);
-  if (status != MagickFalse)
+    ConstantString(key),profile);
+  if (status == MagickFalse)
+    profile=DestroyStringInfo(profile);
+  else
     {
       if (LocaleCompare(name,"8bim") == 0)
-        GetProfilesFromResourceBlock(image,clone_profile,exception);
+        GetProfilesFromResourceBlock(image,profile,exception);
       else
         if (recursive == MagickFalse)
-          WriteTo8BimProfile(image,name,clone_profile);
+          WriteTo8BimProfile(image,name,profile);
     }
   return(status);
 }
@@ -2004,6 +2008,17 @@ MagickExport StringInfo *AcquireProfileStringInfo(const size_t length,
 
 MagickExport MagickBooleanType SetImageProfile(Image *image,const char *name,
   const StringInfo *profile,ExceptionInfo *exception)
+{
+  StringInfo
+    *clone_profile;
+
+  clone_profile=CloneStringInfo(profile);
+  return(SetImageProfileInternal(image,name,clone_profile,MagickFalse,
+    exception));
+}
+
+MagickExport MagickBooleanType SetImageProfilePrivate(Image *image,
+  const char *name,StringInfo *profile,ExceptionInfo *exception)
 {
   return(SetImageProfileInternal(image,name,profile,MagickFalse,exception));
 }

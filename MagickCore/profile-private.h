@@ -24,8 +24,11 @@
 extern "C" {
 #endif
 
+extern MagickExport MagickBooleanType
+  SetImageProfilePrivate(Image *,const char *,StringInfo *,ExceptionInfo *);
+
 extern MagickExport StringInfo *
-  AcquireProfileStringInfo(const size_t length);
+  AcquireProfileStringInfo(const size_t length,ExceptionInfo *);
 
 extern MagickPrivate void
   Update8BIMClipPath(const Image *,const size_t,const size_t,
