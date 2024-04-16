@@ -1990,6 +1990,18 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   return(status);
 }
 
+MagickExport StringInfo *AcquireProfileStringInfo(const size_t length,
+  ExceptionInfo *exception)
+{
+  if (length > GetMaxProfileSize())
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitWarning,"ProfileSizeExceedsLimit","`%.20g'",length);
+      return((StringInfo *) NULL);
+    }
+  return(AcquireStringInfo(length));
+}
+
 MagickExport MagickBooleanType SetImageProfile(Image *image,const char *name,
   const StringInfo *profile,ExceptionInfo *exception)
 {

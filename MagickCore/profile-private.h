@@ -24,6 +24,9 @@
 extern "C" {
 #endif
 
+extern MagickExport StringInfo *
+  AcquireProfileStringInfo(const size_t length);
+
 extern MagickPrivate void
   Update8BIMClipPath(const Image *,const size_t,const size_t,
     const RectangleInfo *),

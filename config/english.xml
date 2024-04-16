@@ -1054,6 +1054,9 @@
           <message name="PixelCacheAllocationFailed">
             pixel cache allocation failed
           </message>
+          <message name="ProfileSizeExceedsLimit">
+            profile size exceeds limit
+          </message>
           <message name="TimeLimitExceeded">
             time limit exceeded
           </message>
