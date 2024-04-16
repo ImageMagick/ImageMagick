@@ -59,6 +59,7 @@
 #include "MagickCore/geometry-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/monitor-private.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/timer-private.h"
@@ -2722,11 +2723,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                     if (LocaleCompare(image_info->filename,"-") != 0)
                       profile=FileToStringInfo(image_info->filename,~0UL,exception);
                     if (profile != (StringInfo *) NULL)
-                      {
-                        status=SetImageProfile(*image,image_info->magick,profile,
-                          exception);
-                        profile=DestroyStringInfo(profile);
-                      }
+                      status=SetImageProfilePrivate(*image,image_info->magick,profile,
+                        exception);
                   }
                 else
                   (void) SetImageProperty(*image,argv[i+1],value,exception);
