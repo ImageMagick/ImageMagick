@@ -1958,15 +1958,11 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   length=GetStringInfoLength(profile);
-  if (length == 0)
+  if ((length == 0) || (length > GetMaxProfileSize()))
     {
-      profile=DestroyStringInfo(profile);
-      return(MagickFalse);
-    }
-  if (length > GetMaxProfileSize())
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitWarning,"ProfileSizeExceedsLimit","`%zu'",length);
+      if (length != 0)
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitWarning,"ProfileSizeExceedsLimit","`%zu'",length);
       profile=DestroyStringInfo(profile);
       return(MagickFalse);
     }
