@@ -25,11 +25,11 @@ extern "C" {
 #endif
 
 extern MagickExport MagickBooleanType
-  SetImageProfilePrivate(Image *,const char *,StringInfo *,ExceptionInfo *);
+  SetImageProfilePrivate(Image *,StringInfo *,ExceptionInfo *);
 
 extern MagickExport StringInfo
-  *AcquireProfileStringInfo(const size_t length,ExceptionInfo *),
-  *BlobToProfileStringInfo(const void *blob,const size_t length,
+  *AcquireProfileStringInfo(const char *,const size_t length,ExceptionInfo *),
+  *BlobToProfileStringInfo(const char *,const void *blob,const size_t length,
     ExceptionInfo *exception);
 
 extern MagickPrivate void
