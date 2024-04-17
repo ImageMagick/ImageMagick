@@ -1970,7 +1970,11 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (profile == (StringInfo *) NULL)
+    return(MagickFalse);
   length=GetStringInfoLength(profile);
+  if (length == 0)
+    return(MagickFalse);
   if (length > GetMaxProfileSize())
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
@@ -2023,6 +2027,8 @@ MagickExport MagickBooleanType SetImageProfile(Image *image,const char *name,
   StringInfo
     *clone_profile;
 
+  if (profile == (const StringInfo *) NULL)
+    return(MagickFalse);
   clone_profile=CloneStringInfo(profile);
   return(SetImageProfileInternal(image,name,clone_profile,MagickFalse,
     exception));
