@@ -2377,11 +2377,9 @@ WandExport MagickBooleanType MagickSetImageProfile(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  profile_info=AcquireProfileStringInfo((size_t) length,wand->exception);
-  if (profile_info == (StringInfo *) NULL)
-    return(MagickFalse);
-  SetStringInfoDatum(profile_info,(const unsigned char *) profile);
-  status=SetImageProfilePrivate(wand->images,name,profile_info,wand->exception);
+  profile_info=BlobToProfileStringInfo(profile,length,wand->exception);
+  status=SetImageProfilePrivate(wand->images,name,profile_info,
+    wand->exception);
   return(status);
 }
 

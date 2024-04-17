@@ -2021,6 +2021,18 @@ MagickExport StringInfo *AcquireProfileStringInfo(const size_t length,
   return(AcquireStringInfo(length));
 }
 
+MagickExport StringInfo *BlobToProfileStringInfo(const void *blob,
+  const size_t length,ExceptionInfo *exception)
+{
+  StringInfo
+    *profile;
+
+  profile=AcquireProfileStringInfo(length,exception);
+  if (profile != (const StringInfo *) NULL)
+    (void) memcpy(profile->datum,blob,length);
+  return(profile);
+}
+
 MagickExport MagickBooleanType SetImageProfile(Image *image,const char *name,
   const StringInfo *profile,ExceptionInfo *exception)
 {
