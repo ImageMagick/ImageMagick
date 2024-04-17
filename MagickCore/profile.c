@@ -2042,12 +2042,6 @@ MagickExport MagickBooleanType SetImageProfilePrivate(Image *image,
 {
   if (profile == (const StringInfo *) NULL)
     return(MagickFalse);
-  if (GetStringInfoLength(profile) > GetMaxProfileSize())
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitWarning,"ProfileSizeExceedsLimit","`%zu'",
-        GetStringInfoLength(profile));
-    }
   return(SetImageProfileInternal(image,GetStringInfoName(profile),profile,
     MagickFalse,exception));
 }
