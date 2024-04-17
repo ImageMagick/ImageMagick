@@ -275,6 +275,50 @@ static inline void JXLInitImage(Image *image,JxlBasicInfo *basic_info)
     }
 }
 
+static inline MagickBooleanType JXLPatchExifProfile(StringInfo *exif_profile)
+{
+  size_t
+    exif_length;
+
+  StringInfo
+    *snippet;
+
+  unsigned char
+    *exif_datum;
+
+  unsigned int
+    offset=0;
+
+  if (GetStringInfoLength(exif_profile) < 4)
+    return(MagickFalse);
+
+  /*
+    Extract and cache Exif profile.
+  */
+  snippet=SplitStringInfo(exif_profile,4);
+  offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+0)) << 24;
+  offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+1)) << 16;
+  offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+2)) << 8;
+  offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+3)) << 0;
+  snippet=DestroyStringInfo(snippet);
+  /*
+    Strip any EOI marker if payload starts with a JPEG marker.
+  */
+  exif_length=GetStringInfoLength(exif_profile);
+  exif_datum=GetStringInfoDatum(exif_profile);
+  if ((exif_length > 2) && 
+      ((memcmp(exif_datum,"\xff\xd8",2) == 0) ||
+        (memcmp(exif_datum,"\xff\xe1",2) == 0)) &&
+      (memcmp(exif_datum+exif_length-2,"\xff\xd9",2) == 0))
+    SetStringInfoLength(exif_profile,exif_length-2);
+  /*
+    Skip to actual Exif payload.
+  */
+  if (offset < GetStringInfoLength(exif_profile))
+    (void) DestroyStringInfo(SplitStringInfo(exif_profile,offset));
+  return(MagickTrue);
+}
+
 static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
@@ -682,46 +726,10 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   }
   (void) JxlDecoderReleaseBoxBuffer(jxl_info);
-  if ((exif_profile != (StringInfo *) NULL) &&
-      (GetStringInfoLength(exif_profile) > 4))
+  if (exif_profile != (StringInfo *) NULL)
     {
-      size_t
-        exif_length;
-
-      StringInfo
-        *snippet;
-
-      unsigned char
-        *exif_datum;
-
-      unsigned int
-        offset=0;
-
-      /*
-        Extract and cache Exif profile.
-      */
-      snippet=SplitStringInfo(exif_profile,4);
-      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+0)) << 24;
-      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+1)) << 16;
-      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+2)) << 8;
-      offset|=(unsigned int) (*(GetStringInfoDatum(snippet)+3)) << 0;
-      snippet=DestroyStringInfo(snippet);
-      /*
-        Strip any EOI marker if payload starts with a JPEG marker.
-      */
-      exif_length=GetStringInfoLength(exif_profile);
-      exif_datum=GetStringInfoDatum(exif_profile);
-      if ((exif_length > 2) && 
-          ((memcmp(exif_datum,"\xff\xd8",2) == 0) ||
-           (memcmp(exif_datum,"\xff\xe1",2) == 0)) &&
-          (memcmp(exif_datum+exif_length-2,"\xff\xd9",2) == 0))
-        SetStringInfoLength(exif_profile,exif_length-2);
-      /*
-        Skip to actual Exif payload.
-      */
-      if (offset < GetStringInfoLength(exif_profile))
-        (void) DestroyStringInfo(SplitStringInfo(exif_profile,offset));
-      (void) SetImageProfile(image,"exif",exif_profile,exception);
+      if (JXLPatchExifProfile(exif_profile) != MagickFalse)
+        (void) SetImageProfile(image,"exif",exif_profile,exception);
       exif_profile=DestroyStringInfo(exif_profile);
     }
   if (xmp_profile != (StringInfo *) NULL)
