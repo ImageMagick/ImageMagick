@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ubuntu:20.04
-      options: --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined
 
     strategy:
       matrix:
@@ -80,7 +79,7 @@ jobs:
         unset QT_PLUGIN_PATH
         unset LD_LIBRARY_PATH
         export VERSION=$(git rev-parse --short HEAD)-${{ matrix.compiler }}
-        /app-image/linuxdeployqt-continuous-x86_64.AppImage /appdir/usr/share/applications/imagemagick.desktop -bundle-non-qt-libs
+        /app-image/linuxdeployqt-continuous-x86_64.AppImage --appimage-extract-and-run /appdir/usr/share/applications/imagemagick.desktop -bundle-non-qt-libs
         rm /appdir/AppRun
         cp ./app-image/AppRun /appdir
         chmod a+x /appdir/AppRun
