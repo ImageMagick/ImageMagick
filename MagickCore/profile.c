@@ -1959,7 +1959,10 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   length=GetStringInfoLength(profile);
   if (length == 0)
-    return(MagickFalse);
+    {
+      profile=DestroyStringInfo(profile);
+      return(MagickFalse);
+    }
   if (length > GetMaxProfileSize())
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
