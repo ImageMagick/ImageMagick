@@ -356,6 +356,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   opj_stream_set_skip_function(jp2_stream,JP2SkipHandler);
   opj_stream_set_user_data(jp2_stream,image,NULL);
   opj_stream_set_user_data_length(jp2_stream,GetBlobSize(image));
+  jp2_image=(opj_image_t *) NULL;
   if (opj_read_header(jp2_stream,jp2_codec,&jp2_image) == 0)
     {
       opj_stream_destroy(jp2_stream);
