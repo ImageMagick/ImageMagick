@@ -1676,7 +1676,9 @@ static int PNGSetExifProfile(Image *image,png_byte *data,png_size_t size,
   StringInfo
     *profile;
 
-  if ((size > 6) && (data[0] == 'E') && (data[1] == 'x') && (data[2] == 'i') &&
+  if ((data == (png_byte *) NULL) || (size < 6))
+    return(1);
+  if ((data[0] == 'E') && (data[1] == 'x') && (data[2] == 'i') &&
       (data[3] == 'f') && (data[4] == '\0') && (data[5] == '\0'))
     profile=BlobToProfileStringInfo("exif",(const void *) data,size,exception);
   else
