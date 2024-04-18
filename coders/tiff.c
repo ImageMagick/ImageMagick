@@ -76,7 +76,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
-#include "MagickCore/profile.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/resize.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
@@ -549,21 +549,14 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
 static MagickBooleanType ReadProfile(Image *image,const char *name,
   const unsigned char *datum,uint32 length,ExceptionInfo *exception)
 {
-  MagickBooleanType
-    status;
-
   StringInfo
     *profile;
 
   if (length < 4)
     return(MagickFalse);
-  profile=BlobToStringInfo(datum,(size_t) length);
-  if (profile == (StringInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  status=SetImageProfile(image,name,profile,exception);
-  profile=DestroyStringInfo(profile);
-  return(status);
+  profile=BlobToProfileStringInfo(name,datum,(size_t) length,
+    exception);
+  return(SetImageProfilePrivate(image,profile,exception));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -3202,13 +3195,13 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
       image->filename);
   profile.offset=0;
   profile.quantum=MagickMinBlobExtent;
-  layers=AcquireStringInfo(profile.quantum);
+  layers=AcquireProfileStringInfo("tiff:37724",profile.quantum,
+    exception);
   if (layers == (StringInfo *) NULL)
     {
       base_image=DestroyImage(base_image);
       clone_info=DestroyImageInfo(clone_info);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
+      return(MagickFalse);
     }
   profile.data=layers;
   profile.extent=layers->length;
@@ -3247,15 +3240,16 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
   if (status != MagickFalse)
     {
       SetStringInfoLength(layers,(size_t) profile.offset);
-      status=SetImageProfile(image,"tiff:37724",layers,exception);
+      status=SetImageProfilePrivate(image,layers,exception);
     }
+  else
+    layers=DestroyStringInfo(layers);
   next=base_image;
   while (next != (Image *) NULL)
   {
     CloseBlob(next);
     next=next->next;
   }
-  layers=DestroyStringInfo(layers);
   clone_info=DestroyImageInfo(clone_info);
   custom_stream=DestroyCustomStreamInfo(custom_stream);
   return(status);

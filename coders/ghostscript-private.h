@@ -16,6 +16,7 @@
 #ifndef MAGICK_GHOSTSCRIPT_BUFFER_PRIVATE_H
 #define MAGICK_GHOSTSCRIPT_BUFFER_PRIVATE_H
 
+#include "MagickCore/profile-private.h"
 #include "coders/bytebuffer-private.h"
 
 #if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
@@ -218,7 +219,7 @@ static MagickBooleanType IsGhostscriptRendered(const char *path)
 }
 
 static inline void ReadGhostScriptXMPProfile(MagickByteBuffer *buffer,
-  StringInfo **profile)
+  StringInfo **profile,ExceptionInfo *exception)
 {
 #define BeginXMPPacket  "?xpacket begin="
 #define EndXMPPacket  "<?xpacket end="
@@ -245,7 +246,9 @@ static inline void ReadGhostScriptXMPProfile(MagickByteBuffer *buffer,
   if (status == MagickFalse)
     return;
   length=8192;
-  *profile=AcquireStringInfo(length);
+  *profile=AcquireProfileStringInfo("xmp",length,exception);
+  if (*profile == (StringInfo *) NULL)
+    return;
   found_end=MagickFalse;
   p=(char *) GetStringInfoDatum(*profile);
   *p++='<';

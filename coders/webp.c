@@ -58,7 +58,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/profile.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
@@ -371,35 +371,26 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
         (WebPMuxGetChunk(mux,"ICCP",&chunk) == WEBP_MUX_OK))
       if (chunk.size != 0)
         {
-          profile=BlobToStringInfo(chunk.bytes,chunk.size);
-          if (profile != (StringInfo *) NULL)
-            {
-              SetImageProfile(image,"ICC",profile,exception);
-              profile=DestroyStringInfo(profile);
-            }
+          profile=BlobToProfileStringInfo("icc",chunk.bytes,chunk.size,
+            exception);
+          (void) SetImageProfilePrivate(image,profile,exception);
         }
     if ((webp_flags & EXIF_FLAG) &&
         (WebPMuxGetChunk(mux,"EXIF",&chunk) == WEBP_MUX_OK))
       if (chunk.size != 0)
         {
-          profile=BlobToStringInfo(chunk.bytes,chunk.size);
-          if (profile != (StringInfo *) NULL)
-            {
-              (void) SetImageProfile(image,"EXIF",profile,exception);
-              profile=DestroyStringInfo(profile);
-            }
+          profile=BlobToProfileStringInfo("exif",chunk.bytes,chunk.size,
+            exception);
+          (void) SetImageProfilePrivate(image,profile,exception);
         }
     if (((webp_flags & XMP_FLAG) &&
          (WebPMuxGetChunk(mux,"XMP ",&chunk) == WEBP_MUX_OK)) ||
          (WebPMuxGetChunk(mux,"XMP\0",&chunk) == WEBP_MUX_OK))
       if (chunk.size != 0)
         {
-          profile=BlobToStringInfo(chunk.bytes,chunk.size);
-          if (profile != (StringInfo *) NULL)
-            {
-              SetImageProfile(image,"XMP",profile,exception);
-              profile=DestroyStringInfo(profile);
-            }
+          profile=BlobToProfileStringInfo("xmp",chunk.bytes,chunk.size,
+            exception);
+          (void) SetImageProfilePrivate(image,profile,exception);
         }
     WebPMuxDelete(mux);
   }

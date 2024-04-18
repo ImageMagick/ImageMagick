@@ -115,7 +115,7 @@ typedef struct _PDFInfo
     bounds;
 
   StringInfo
-    *profile;
+    *xmp_profile;
 } PDFInfo;
 
 /*
@@ -264,7 +264,7 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
         {
           case '<':
           {
-            ReadGhostScriptXMPProfile(&buffer,&pdf_info->profile);
+            ReadGhostScriptXMPProfile(&buffer,&pdf_info->xmp_profile,exception);
             continue;
           }
           case '/':
@@ -378,8 +378,8 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
 
 static inline void CleanupPDFInfo(PDFInfo *pdf_info)
 {
-  if (pdf_info->profile != (StringInfo *) NULL)
-    pdf_info->profile=DestroyStringInfo(pdf_info->profile);
+  if (pdf_info->xmp_profile != (StringInfo *) NULL)
+    pdf_info->xmp_profile=DestroyStringInfo(pdf_info->xmp_profile);
 }
 
 static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -727,17 +727,17 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           pdf_image=cmyk_image;
         }
     }
-  if (pdf_info.profile != (StringInfo *) NULL)
+  if (pdf_info.xmp_profile != (StringInfo *) NULL)
     {
       char
         *profile;
 
-      (void) SetImageProfile(image,"xmp",pdf_info.profile,exception);
-      profile=(char *) GetStringInfoDatum(pdf_info.profile);
+      (void) SetImageProfilePrivate(image,pdf_info.xmp_profile,exception);
+      profile=(char *) GetStringInfoDatum(pdf_info.xmp_profile);
       if (strstr(profile,"Adobe Illustrator") != (char *) NULL)
         (void) CopyMagickString(image->magick,"AI",MagickPathExtent);
+      pdf_info.xmp_profile=(StringInfo *) NULL;
     }
-  CleanupPDFInfo(&pdf_info);
   if (image_info->number_scenes != 0)
     {
       Image

@@ -71,7 +71,7 @@
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/pixel-private.h"
 #include "MagickCore/policy.h"
-#include "MagickCore/profile.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/registry.h"
 #include "MagickCore/quantum-private.h"
@@ -2169,7 +2169,8 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
                 ThrowBinaryException(CorruptImageError,
                   "InsufficientImageDataInFile",image->filename);
               }
-            layer_info[i].info=AcquireStringInfo((size_t) length);
+            layer_info[i].info=AcquireProfileStringInfo("psd:additional-info",
+              (size_t) length,exception);
             info=GetStringInfoDatum(layer_info[i].info);
             (void) ReadBlob(image,(size_t) length,info);
             ParseAdditionalInfo(&layer_info[i]);
@@ -2213,9 +2214,9 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
     }
     if (layer_info[i].info != (StringInfo *) NULL)
       {
-        (void) SetImageProfile(layer_info[i].image,"psd:additional-info",
-          layer_info[i].info,exception);
-        layer_info[i].info=DestroyStringInfo(layer_info[i].info);
+        (void) SetImageProfilePrivate(layer_info[i].image,layer_info[i].info,
+          exception);
+        layer_info[i].info=(StringInfo *) NULL;
       }
   }
   if (image_info->ping != MagickFalse)

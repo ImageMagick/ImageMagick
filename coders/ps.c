@@ -302,7 +302,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
     {
       case '<':
       {
-        ReadGhostScriptXMPProfile(&buffer,&ps_info->xmp_profile);
+        ReadGhostScriptXMPProfile(&buffer,&ps_info->xmp_profile,exception);
         continue;
       }
       case '\n':
@@ -439,7 +439,8 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
         */
         if (SkipMagickByteBufferUntilNewline(&buffer) != MagickFalse)
           {
-            ps_info->icc_profile=AcquireStringInfo(MagickPathExtent);
+            ps_info->icc_profile=AcquireProfileStringInfo("icc",MagickPathExtent,
+              exception);
             datum=GetStringInfoDatum(ps_info->icc_profile);
             for (i=0; (c=ProfileInteger(&buffer,hex_digits)) != EOF; i++)
             {
@@ -476,7 +477,8 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
         length=(size_t) extent;
         if (SkipMagickByteBufferUntilNewline(&buffer) != MagickFalse)
           {
-            ps_info->photoshop_profile=AcquireStringInfo(length+1U);
+            ps_info->photoshop_profile=AcquireProfileStringInfo("8bim",
+              length+1U,exception);
             q=GetStringInfoDatum(ps_info->photoshop_profile);
             while (extent > 0)
             {
@@ -876,12 +878,11 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   if (info.icc_profile != (StringInfo *) NULL)
-    (void) SetImageProfile(image,"icc",info.icc_profile,exception);
+    (void) SetImageProfilePrivate(image,info.icc_profile,exception);
   if (info.photoshop_profile != (StringInfo *) NULL)
-    (void) SetImageProfile(image,"8bim",info.photoshop_profile,exception);
+    (void) SetImageProfilePrivate(image,info.photoshop_profile,exception);
   if (info.xmp_profile != (StringInfo *) NULL)
-    (void) SetImageProfile(image,"xmp",info.xmp_profile,exception);
-  CleanupPSInfo(&info);
+    (void) SetImageProfilePrivate(image,info.xmp_profile,exception);
   if (image_info->number_scenes != 0)
     {
       Image

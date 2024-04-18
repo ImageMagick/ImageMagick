@@ -59,7 +59,7 @@
 #include "MagickCore/opencl.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/profile.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
@@ -390,8 +390,9 @@ static void ReadLibRawThumbnail(const ImageInfo *image_info,Image *image,
             thumbnail->width,thumbnail->height);
           SetImageProperty(image,"dng:thumbnail.geometry",value,exception);
         }
-      profile=BlobToStringInfo(thumbnail->data,thumbnail->data_size);
-      (void) SetImageProfile(image,"dng:thumbnail",profile,exception);
+      profile=BlobToProfileStringInfo("dng:thumbnail",thumbnail->data,
+        thumbnail->data_size,exception);
+      (void) SetImageProfilePrivate(image,profile,exception);
     }
   if (thumbnail != (libraw_processed_image_t *) NULL)
     libraw_dcraw_clear_mem(thumbnail);
@@ -609,24 +610,16 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (raw_info->color.profile != NULL)
       {
-        profile=BlobToStringInfo(raw_info->color.profile,
-          raw_info->color.profile_length);
-        if (profile != (StringInfo *) NULL)
-          {
-            SetImageProfile(image,"ICC",profile,exception);
-            profile=DestroyStringInfo(profile);
-          }
+        profile=BlobToProfileStringInfo("icc",raw_info->color.profile,
+          raw_info->color.profile_length,exception);
+        SetImageProfilePrivate(image,profile,exception);
       }
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
     if (raw_info->idata.xmpdata != NULL)
       {
-        profile=BlobToStringInfo(raw_info->idata.xmpdata,
-          raw_info->idata.xmplen);
-        if (profile != (StringInfo *) NULL)
-          {
-            SetImageProfile(image,"XMP",profile,exception);
-            profile=DestroyStringInfo(profile);
-          }
+        profile=BlobToProfileStringInfo("xmp",raw_info->idata.xmpdata,
+          raw_info->idata.xmplen,exception);
+        SetImageProfilePrivate(image,profile,exception);
       }
 #endif
     SetDNGProperties(image,raw_info,exception);

@@ -42,6 +42,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/module.h"
 #include "MagickCore/option.h"
+#include "MagickCore/profile-private.h"
 #if defined(MAGICKCORE_UHDR_DELEGATE)
 #include "ultrahdr_api.h"
 #include "uhdr.h"
@@ -226,10 +227,9 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   uhdr_mem_block_t *exif = uhdr_dec_get_exif(handle);
   if (exif != NULL)
   {
-    StringInfo *exif_data = AcquireStringInfo(exif->data_sz);
-    memcpy(GetStringInfoDatum(exif_data), exif->data, exif->data_sz);
-    (void)SetImageProfile(image, "exif", exif_data, exception);
-    exif_data = DestroyStringInfo(exif_data);
+    StringInfo *exif_data = BlobToProfileStringInfo("exif",exif->data,
+      exif->data_sz,exception);
+    (void) SetImageProfilePrivate(image,exif_data,exception);
   }
 
   SetImageColorspace(image, RGBColorspace, exception);

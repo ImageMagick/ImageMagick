@@ -1964,7 +1964,7 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
         (void) ThrowMagickException(exception,GetMagickModule(),
           ResourceLimitWarning,"ProfileSizeExceedsLimit","`%zu'",length);
       profile=DestroyStringInfo(profile);
-      return(MagickFalse);
+      return(MagickTrue);
     }
   PatchCorruptProfile(name,profile);
   if ((LocaleCompare(name,"xmp") == 0) &&

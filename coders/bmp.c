@@ -61,7 +61,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/profile.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
@@ -658,7 +658,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (count != 2)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   blob_size=GetBlobSize(image);
-  
   do
   {
     PixelInfo
@@ -1640,30 +1639,35 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (SeekBlob(image,offset,SEEK_SET) != offset) ||
             (blob_size < (MagickSizeType) (offset+profile_size)))
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-        profile=AcquireStringInfo((size_t) profile_size);
+        profile=AcquireProfileStringInfo("icc",(size_t) profile_size,
+          exception);
         if (profile == (StringInfo *) NULL)
-          ThrowReaderException(CorruptImageError,"MemoryAllocationFailed");
-        datum=GetStringInfoDatum(profile);
-        if (ReadBlob(image,(size_t) profile_size,datum) == (ssize_t) profile_size)
+          (void) SeekBlob(image,profile_size,SEEK_CUR);
+        else
           {
-            MagickOffsetType
-              profile_size_orig;
+            datum=GetStringInfoDatum(profile);
+            if (ReadBlob(image,(size_t) profile_size,datum) != (ssize_t) profile_size)
+              profile=DestroyStringInfo(profile);
+            else
+              {
+                MagickOffsetType
+                  profile_size_orig;
 
-            /*
-             Trimming padded bytes.
-            */
-            profile_size_orig=(MagickOffsetType) datum[0] << 24;
-            profile_size_orig|=(MagickOffsetType) datum[1] << 16;
-            profile_size_orig|=(MagickOffsetType) datum[2] << 8;
-            profile_size_orig|=(MagickOffsetType) datum[3];
-            if (profile_size_orig < profile_size)
-              SetStringInfoLength(profile,(size_t) profile_size_orig);
-            if (image->debug != MagickFalse)
-              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "Profile: ICC, %u bytes",(unsigned int) profile_size_orig);
-            (void) SetImageProfile(image,"icc",profile,exception);
+                /*
+                 Trimming padded bytes.
+                */
+                profile_size_orig=(MagickOffsetType) datum[0] << 24;
+                profile_size_orig|=(MagickOffsetType) datum[1] << 16;
+                profile_size_orig|=(MagickOffsetType) datum[2] << 8;
+                profile_size_orig|=(MagickOffsetType) datum[3];
+                if (profile_size_orig < profile_size)
+                  SetStringInfoLength(profile,(size_t) profile_size_orig);
+                if (image->debug != MagickFalse)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "Profile: ICC, %u bytes",(unsigned int) profile_size_orig);
+                (void) SetImageProfilePrivate(image,profile,exception);
+              }
           }
-        profile=DestroyStringInfo(profile);
       }
     /*
       Proceed to next image.

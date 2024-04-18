@@ -64,6 +64,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum-private.h"
@@ -1200,17 +1201,14 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                       "      profile name=%s",name);
-                    profile=BlobToStringInfo(info,(size_t) info_length);
-                    if (profile == (StringInfo *) NULL)
+                    profile=BlobToProfileStringInfo(name,info,(size_t) info_length,
+                      exception);
+                    if (profile != (StringInfo *) NULL)
                       {
-                        info=(unsigned char *) RelinquishMagickMemory(info);
-                        ThrowGIFException(ResourceLimitError,
-                          "MemoryAllocationFailed");
+                        if (profiles == (LinkedListInfo *) NULL)
+                          profiles=NewLinkedList(0);
+                        (void) AppendValueToLinkedList(profiles,profile);
                       }
-                    if (profiles == (LinkedListInfo *) NULL)
-                      profiles=NewLinkedList(0);
-                    SetStringInfoName(profile,name);
-                    (void) AppendValueToLinkedList(profiles,profile);
                   }
                 info=(unsigned char *) RelinquishMagickMemory(info);
               }
@@ -1363,11 +1361,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         profile=(StringInfo *) GetNextValueInLinkedList(profiles);
         while (profile != (StringInfo *) NULL)
         {
-          (void) SetImageProfile(image,GetStringInfoName(profile),profile,
-            exception);
+          (void) SetImageProfilePrivate(image,profile,exception);
           profile=(StringInfo *) GetNextValueInLinkedList(profiles);
         }
-        profiles=DestroyLinkedList(profiles,DestroyGIFProfile);
+        profiles=DestroyLinkedList(profiles,(void *(*)(void *)) NULL);
       }
     duration+=image->delay*image->iterations;
     if (image_info->number_scenes != 0)

@@ -61,7 +61,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
-#include "MagickCore/profile.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
@@ -1396,30 +1396,14 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             {
               case 0xe0:
               {
-                profile=BlobToStringInfo((const void *) NULL,length);
-                SetStringInfoDatum(profile,info);
-                status=SetImageProfile(image,"icc",profile,exception);
-                profile=DestroyStringInfo(profile);
-                if (status == MagickFalse)
-                  {
-                    info=(unsigned char *) RelinquishMagickMemory(info);
-                    ThrowPICTException(ResourceLimitError,
-                      "MemoryAllocationFailed");
-                  }
+                profile=BlobToProfileStringInfo("icc",info,length,exception);
+                (void) SetImageProfilePrivate(image,profile,exception);
                 break;
               }
               case 0x1f2:
               {
-                profile=BlobToStringInfo((const void *) NULL,length);
-                SetStringInfoDatum(profile,info);
-                status=SetImageProfile(image,"iptc",profile,exception);
-                if (status == MagickFalse)
-                  {
-                    info=(unsigned char *) RelinquishMagickMemory(info);
-                    ThrowPICTException(ResourceLimitError,
-                      "MemoryAllocationFailed");
-                  }
-                profile=DestroyStringInfo(profile);
+                profile=BlobToProfileStringInfo("iptc",info,length,exception);
+                (void) SetImageProfilePrivate(image,profile,exception);
                 break;
               }
               default:

@@ -54,6 +54,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/static.h"
@@ -581,19 +582,23 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
         if (jxl_status != JXL_DEC_SUCCESS)
           break;
-        profile=AcquireStringInfo(profile_size);
-#if JPEGXL_NUMERIC_VERSION >= JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
-        jxl_status=JxlDecoderGetColorAsICCProfile(jxl_info,
-          JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
-          profile_size);
+        profile=AcquireProfileStringInfo("icm",profile_size,exception);
+        if (profile != (StringInfo *) NULL)
+          {
+  #if JPEGXL_NUMERIC_VERSION >= JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
+            jxl_status=JxlDecoderGetColorAsICCProfile(jxl_info,
+              JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
+              profile_size);
 #else
-        jxl_status=JxlDecoderGetColorAsICCProfile(jxl_info,&pixel_format,
-          JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
-          profile_size);
+            jxl_status=JxlDecoderGetColorAsICCProfile(jxl_info,&pixel_format,
+              JXL_COLOR_PROFILE_TARGET_ORIGINAL,GetStringInfoDatum(profile),
+              profile_size);
 #endif
-        if (jxl_status == JXL_DEC_SUCCESS)
-          (void) SetImageProfile(image,"icm",profile,exception);
-        profile=DestroyStringInfo(profile);
+            if (jxl_status == JXL_DEC_SUCCESS)
+              (void) SetImageProfilePrivate(image,profile,exception);
+            else
+              profile=DestroyStringInfo(profile);
+          }
         if (jxl_status == JXL_DEC_SUCCESS)
           jxl_status=JXL_DEC_COLOR_ENCODING;
         break;
@@ -696,7 +701,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read Exif profile.
             */
-            exif_profile=AcquireStringInfo((size_t) size);
+            exif_profile=AcquireProfileStringInfo("exif",(size_t) size,
+              exception);
             jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
               GetStringInfoDatum(exif_profile),size);
           }
@@ -705,7 +711,8 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read XMP profile.
             */
-            xmp_profile=AcquireStringInfo((size_t) size);
+            xmp_profile=AcquireProfileStringInfo("xmp",(size_t) size,
+              exception);
             jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
               GetStringInfoDatum(xmp_profile),size);
           }
@@ -729,17 +736,12 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (exif_profile != (StringInfo *) NULL)
     {
       if (JXLPatchExifProfile(exif_profile) != MagickFalse)
-        (void) SetImageProfile(image,"exif",exif_profile,exception);
-      exif_profile=DestroyStringInfo(exif_profile);
+        (void) SetImageProfilePrivate(image,exif_profile,exception);
+      else
+        exif_profile=DestroyStringInfo(exif_profile);
     }
   if (xmp_profile != (StringInfo *) NULL)
-    {
-      /*
-        Cache XMP profile.
-      */
-      (void) SetImageProfile(image,"xmp",xmp_profile,exception);
-      xmp_profile=DestroyStringInfo(xmp_profile);
-    }
+    (void) SetImageProfilePrivate(image,xmp_profile,exception);
   output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (runner != NULL)
