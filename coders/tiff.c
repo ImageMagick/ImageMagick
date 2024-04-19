@@ -1738,7 +1738,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (image->alpha_trait != UndefinedPixelTrait)
               extra_samples--;
             if (extra_samples > 0)
-              (void) SetPixelMetaChannels(image,extra_samples,exception);
+              {
+                if (SetPixelMetaChannels(image,extra_samples,exception) == MagickFalse)
+                  ThrowTIFFException(OptionError,"SetPixelMetaChannelsFailure");
+              }
           }
       }
     if (image->alpha_trait != UndefinedPixelTrait)

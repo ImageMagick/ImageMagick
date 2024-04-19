@@ -1569,7 +1569,7 @@ static MagickBooleanType GetPixelChannelFromPSDIndex(const PSDInfo *psd_info,
   return(MagickTrue);
 }
 
-static void SetPSDMetaChannels(Image *image,const PSDInfo *psd_info,
+static MagickBooleanType SetPSDMetaChannels(Image *image,const PSDInfo *psd_info,
   const unsigned short channels,ExceptionInfo *exception)
 {
   ssize_t
@@ -1579,7 +1579,8 @@ static void SetPSDMetaChannels(Image *image,const PSDInfo *psd_info,
   if ((image->alpha_trait & BlendPixelTrait) != 0)
     number_meta_channels--;
   if (number_meta_channels > 0)
-    (void) SetPixelMetaChannels(image,(size_t) number_meta_channels,exception);
+    return(SetPixelMetaChannels(image,(size_t) number_meta_channels,exception));
+  return(MagickTrue);
 }
 
 static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
@@ -1624,23 +1625,26 @@ static MagickBooleanType ReadPSDLayer(Image *image,const ImageInfo *image_info,
   (void) SetImageProperty(layer_info->image,"label",(char *) layer_info->name,
     exception);
 
-  SetPSDMetaChannels(layer_info->image,psd_info,layer_info->channels,exception);
-  status=MagickTrue;
-  for (j=0; j < (ssize_t) layer_info->channels; j++)
-  {
-    if (image->debug != MagickFalse)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    reading data for channel %.20g",(double) j);
+  status=SetPSDMetaChannels(layer_info->image,psd_info,layer_info->channels,
+    exception);
+  if (status != MagickFalse)
+    {
+      for (j=0; j < (ssize_t) layer_info->channels; j++)
+      {
+        if (image->debug != MagickFalse)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "    reading data for channel %.20g",(double) j);
 
-    compression=(PSDCompressionType) ReadBlobShort(layer_info->image);
-    layer_info->image->compression=ConvertPSDCompression(compression);
+        compression=(PSDCompressionType) ReadBlobShort(layer_info->image);
+        layer_info->image->compression=ConvertPSDCompression(compression);
 
-    status=ReadPSDChannel(layer_info->image,image_info,psd_info,layer_info,
-      (size_t) j,compression,exception);
+        status=ReadPSDChannel(layer_info->image,image_info,psd_info,layer_info,
+          (size_t) j,compression,exception);
 
-    if (status == MagickFalse)
-      break;
-  }
+        if (status == MagickFalse)
+          break;
+      }
+    }
 
   if (status != MagickFalse)
     status=ApplyPSDLayerOpacity(layer_info->image,layer_info->opacity,
@@ -2316,34 +2320,36 @@ static MagickBooleanType ReadPSDMergedImage(const ImageInfo *image_info,
           image->filename);
     }
 
-  SetPSDMetaChannels(image,psd_info,psd_info->channels,exception);
-  status=MagickTrue;
-  for (i=0; i < (ssize_t) psd_info->channels; i++)
-  {
-    PixelChannel
-      channel;
-
-    status=GetPixelChannelFromPSDIndex(psd_info,i,&channel);
-    if (status == MagickFalse)
+  status=SetPSDMetaChannels(image,psd_info,psd_info->channels,exception);
+  if (status != MagickFalse)
+    {
+      for (i=0; i < (ssize_t) psd_info->channels; i++)
       {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          CorruptImageError,"MaximumChannelsExceeded","'%.20g'",(double) i);
-        break;
+        PixelChannel
+          channel;
+
+        status=GetPixelChannelFromPSDIndex(psd_info,i,&channel);
+        if (status == MagickFalse)
+          {
+            (void) ThrowMagickException(exception,GetMagickModule(),
+              CorruptImageError,"MaximumChannelsExceeded","'%.20g'",(double) i);
+            break;
+          }
+
+        if (compression == RLE)
+          status=ReadPSDChannelRLE(image,channel,sizes+(i*(ssize_t) image->rows),
+            exception);
+        else
+          status=ReadPSDChannelRaw(image,channel,exception);
+
+        if (status != MagickFalse)
+          status=SetImageProgress(image,LoadImagesTag,(MagickOffsetType) i,
+            psd_info->channels);
+
+        if (status == MagickFalse)
+          break;
       }
-
-    if (compression == RLE)
-      status=ReadPSDChannelRLE(image,channel,sizes+(i*(ssize_t) image->rows),
-        exception);
-    else
-      status=ReadPSDChannelRaw(image,channel,exception);
-
-    if (status != MagickFalse)
-      status=SetImageProgress(image,LoadImagesTag,(MagickOffsetType) i,
-        psd_info->channels);
-
-    if (status == MagickFalse)
-      break;
-  }
+    }
 
   if ((status != MagickFalse) && (image->colorspace == CMYKColorspace))
     status=NegateCMYK(image,exception);
