@@ -1124,6 +1124,9 @@
           <message name="MemoryAllocationFailed">
             échec allocation mémoire
           </message>
+          <message name="ProfileSizeExceedsLimit">
+            la taille du profil dépasse la limite
+          </message>
         </warning>
       </limit>
     </resource>
