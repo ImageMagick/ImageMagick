@@ -86,7 +86,7 @@ static inline ssize_t CastDoubleToLong(const double x)
       errno=ERANGE;
       return((ssize_t) MAGICK_SSIZE_MIN);
     }
-  return((ssize_t) x);
+  return((ssize_t) value);
 }
 
 static inline QuantumAny CastDoubleToQuantumAny(const double x)
@@ -125,13 +125,12 @@ static inline size_t CastDoubleToUnsigned(const double x)
       errno=ERANGE;
       return((size_t) MAGICK_SIZE_MAX);
     }
-  value=ceil(x);
   if (value < 0.0)
     {
       errno=ERANGE;
       return(0);
     }
-  return((size_t) x);
+  return((size_t) value);
 }
 
 static inline double DegreesToRadians(const double degrees)
