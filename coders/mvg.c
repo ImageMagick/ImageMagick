@@ -177,8 +177,8 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           &bounds.x2,&bounds.y2);
         if (count != 4)
           continue;
-        image->columns=(size_t) floor((bounds.x2-bounds.x1)+0.5);
-        image->rows=(size_t) floor((bounds.y2-bounds.y1)+0.5);
+        image->columns=CastDoubleToUnsigned(floor((bounds.x2-bounds.x1)+0.5));
+        image->rows=CastDoubleToUnsigned(floor((bounds.y2-bounds.y1)+0.5));
         break;
       }
     }
