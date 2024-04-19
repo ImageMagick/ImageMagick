@@ -6178,10 +6178,9 @@ MagickPrivate MagickBooleanType ResetPixelChannelMap(Image *image,
 
       if (image->number_meta_channels >= (MaxPixelChannels-MetaPixelChannels))
         {
-          image->number_channels=(size_t) n;
-          (void) SetPixelChannelMask(image,image->channel_mask);
-          ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
-            image->filename);
+          image->number_meta_channels=MaxPixelChannels-MetaPixelChannels-1;
+          (void) ThrowMagickException(exception,GetMagickModule(),
+            CorruptImageWarning,"MaximumChannelsExceeded","`%s'",image->filename);
         }
       meta_channel=MetaPixelChannels;
       for (i=0; i < (ssize_t) image->number_meta_channels; i++)
