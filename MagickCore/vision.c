@@ -17,7 +17,7 @@
 %                               September 2014                                %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2014 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -182,7 +182,7 @@ static void PerimeterThreshold(const Image *component_image,
       continue;
     component_view=AcquireAuthenticCacheView(component_image,exception);
     bounding_box=object[i].bounding_box;
-    for (y=(-1); y < (ssize_t) bounding_box.height+1; y++)
+    for (y=(-1); y < (ssize_t) bounding_box.height; y++)
     {
       const Quantum
         *magick_restrict p;
@@ -197,16 +197,16 @@ static void PerimeterThreshold(const Image *component_image,
           status=MagickFalse;
           break;
         }
-      for (x=(-1); x < (ssize_t) bounding_box.width+1; x++)
+      for (x=(-1); x < (ssize_t) bounding_box.width; x++)
       {
         Quantum
           pixels[4];
 
-        ssize_t
-          v;
-
         size_t
           foreground;
+
+        ssize_t
+          v;
 
         /*
           An Algorithm for Calculating Objects’ Shape Features in Binary
@@ -1291,7 +1291,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="perimeter";
-      PerimeterThreshold(image,object,n,exception);
+      PerimeterThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
              (object[i].metric[n] >= max_threshold)) && (i != background_id))
@@ -1305,10 +1305,10 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       */
       (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="circularity";
-      CircularityThreshold(image,object,n,exception);
+      CircularityThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
-              (object[i].metric[n] >= max_threshold)) && (i != background_id))
+             (object[i].metric[n] >= max_threshold)) && (i != background_id))
           object[i].merge=MagickTrue;
     }
   artifact=GetImageArtifact(image,"connected-components:diameter-threshold");
@@ -1323,7 +1323,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       {
         object[i].metric[n]=ceil(sqrt(4.0*object[i].area/MagickPI)-0.5);
         if (((object[i].metric[n] < min_threshold) ||
-             (object[i].metric[n] >= max_threshold)) && (i != background_id))
+            (object[i].metric[n] >= max_threshold)) && (i != background_id))
           object[i].merge=MagickTrue;
       }
     }
@@ -1338,7 +1338,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       MajorAxisThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
-              (object[i].metric[n] >= max_threshold)) && (i != background_id))
+             (object[i].metric[n] >= max_threshold)) && (i != background_id))
           object[i].merge=MagickTrue;
     }
   artifact=GetImageArtifact(image,"connected-components:minor-axis-threshold");
@@ -1352,7 +1352,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       MinorAxisThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].metric[n] < min_threshold) ||
-              (object[i].metric[n] >= max_threshold)) && (i != background_id))
+             (object[i].metric[n] >= max_threshold)) && (i != background_id))
           object[i].merge=MagickTrue;
     }
   artifact=GetImageArtifact(image,"connected-components:eccentricity-threshold");
