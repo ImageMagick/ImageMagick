@@ -3268,11 +3268,14 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   (void) FormatLocaleString(buffer,MagickPathExtent,"/Root %.20g 0 R\n",(double)
     root_id);
   (void) WriteBlobString(image,buffer);
-  (void) SignatureImage(image,exception);
-  (void) FormatLocaleString(buffer,MagickPathExtent,"/ID [<%s> <%s>]\n",
-    GetImageProperty(image,"signature",exception),
-    GetImageProperty(image,"signature",exception));
-  (void) WriteBlobString(image,buffer);
+  option=GetImageOption(image_info,"pdf:no-identifier");
+  if (IsStringTrue(option) == MagickFalse) {
+    (void) SignatureImage(image,exception);
+    (void) FormatLocaleString(buffer,MagickPathExtent,"/ID [<%s> <%s>]\n",
+      GetImageProperty(image,"signature",exception),
+      GetImageProperty(image,"signature",exception));
+    (void) WriteBlobString(image,buffer);
+  }
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"startxref\n");
   (void) FormatLocaleString(buffer,MagickPathExtent,"%.20g\n",(double) offset);
