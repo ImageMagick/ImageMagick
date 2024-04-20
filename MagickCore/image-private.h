@@ -74,17 +74,17 @@ static inline ssize_t CastDoubleToLong(const double x)
       errno=ERANGE;
       return(0);
     }
-  value=floor(x);
-  if (value > ((double) MAGICK_SSIZE_MAX))
-    {
-      errno=ERANGE;
-      return((ssize_t) MAGICK_SSIZE_MAX);
-    }
   value=ceil(x);
   if (value < ((double) MAGICK_SSIZE_MIN))
     {
       errno=ERANGE;
       return((ssize_t) MAGICK_SSIZE_MIN);
+    }
+  value=floor(x);
+  if (value > ((double) MAGICK_SSIZE_MAX))
+    {
+      errno=ERANGE;
+      return((ssize_t) MAGICK_SSIZE_MAX);
     }
   return((ssize_t) value);
 }
