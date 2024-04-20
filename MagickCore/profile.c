@@ -1805,7 +1805,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           ICC Profile.
         */
-        profile=AcquireProfileStringInfo("icc",(size_t) count,exception);
+        profile=BlobToProfileStringInfo("icc",p,(size_t) count,exception);
         if (profile != (StringInfo *) NULL)
           (void) SetImageProfileInternal(image,GetStringInfoName(profile),
             profile,MagickTrue,exception);
@@ -1817,7 +1817,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           EXIF Profile.
         */
-        profile=AcquireProfileStringInfo("exif",(size_t) count,exception);
+        profile=BlobToProfileStringInfo("exif",p,(size_t) count,exception);
         if (profile != (StringInfo *) NULL)
           (void) SetImageProfileInternal(image,GetStringInfoName(profile),
             profile,MagickTrue,exception);
@@ -1829,7 +1829,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         /*
           XMP Profile.
         */
-        profile=AcquireProfileStringInfo("xmp",(size_t) count,exception);
+        profile=BlobToProfileStringInfo("xmp",p,(size_t) count,exception);
         if (profile != (StringInfo *) NULL)
           (void) SetImageProfileInternal(image,GetStringInfoName(profile),
             profile,MagickTrue,exception);
