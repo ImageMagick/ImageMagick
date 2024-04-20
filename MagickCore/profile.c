@@ -1788,7 +1788,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         profile=BlobToProfileStringInfo("iptc",p,(size_t) count,exception);
         if (profile != (StringInfo *) NULL)
           (void) SetImageProfileInternal(image,GetStringInfoName(profile),
-            profile,MagickFalse,exception);
+            profile,MagickTrue,exception);
         p+=count;
         break;
       }
@@ -1808,7 +1808,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         profile=AcquireProfileStringInfo("icc",(size_t) count,exception);
         if (profile != (StringInfo *) NULL)
           (void) SetImageProfileInternal(image,GetStringInfoName(profile),
-            profile,MagickFalse,exception);
+            profile,MagickTrue,exception);
         p+=count;
         break;
       }
@@ -1820,7 +1820,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         profile=AcquireProfileStringInfo("exif",(size_t) count,exception);
         if (profile != (StringInfo *) NULL)
           (void) SetImageProfileInternal(image,GetStringInfoName(profile),
-            profile,MagickFalse,exception);
+            profile,MagickTrue,exception);
         p+=count;
         break;
       }
@@ -1832,7 +1832,7 @@ static void GetProfilesFromResourceBlock(Image *image,
         profile=AcquireProfileStringInfo("xmp",(size_t) count,exception);
         if (profile != (StringInfo *) NULL)
           (void) SetImageProfileInternal(image,GetStringInfoName(profile),
-            profile,MagickFalse,exception);
+            profile,MagickTrue,exception);
         p+=count;
         break;
       }
