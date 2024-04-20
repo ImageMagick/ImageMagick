@@ -464,8 +464,16 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           number_meta_channels-=1;
         }
       if (number_meta_channels > 0)
-        (void) SetPixelMetaChannels(image,(size_t) number_meta_channels,
-          exception);
+        {
+          status=SetPixelMetaChannels(image,(size_t) number_meta_channels,
+            exception);
+          if (status == MagickFalse)
+            {
+              opj_destroy_codec(jp2_codec);
+              opj_image_destroy(jp2_image);
+              return(DestroyImageList(image));
+            }
+        }
     }
   else if (jp2_image->numcomps == 2)
     {

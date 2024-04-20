@@ -48,7 +48,7 @@
     </symbol>
   </svg>
   <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-    <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+    <button class="btn btn-bd-secondary py-2 dropdown-toggle d-flex align-items-center"
             id="bd-theme"
             type="button"
             aria-expanded="false"
@@ -161,7 +161,7 @@
 <dt><a href="https://imagemagick.org/source/policy-websafe.xml">websafe</a></dt>
 <dd>  This security protocol designed for web-safe usage focuses on situations where ImageMagick is applied in publicly accessible contexts, like websites.  It deactivates the capability to read from or write to any image formats other than web-safe formats like GIF, JPEG, and PNG. Additionally, this policy prohibits the execution of image filters and indirect reads, thereby thwarting potential security breaches. By implementing these limitations, the web-safe policy fortifies the safeguarding of systems accessible to the public, reducing the risk of exploiting ImageMagick's capabilities for potential attacks.</dd>
 </ul>
-<p>Under Linux, select the policy with the <code>--with-security-policy={open,limited,secure,websafe}</code> configure script option.  Under Windows, the choice is presented when you run the configure app.</p>
+<p>Under Linux, select the policy with the <code>--with-security-policy={open, limited, secure, websafe}</code> configure script option.  Under Windows, the choice is presented when you run the configure app.</p>
 
 <p>We encourage you to review each rule in your <code>policy.xml</code> configuration file.  Adjust the parameters according to your organization's requirements. You can modify the allowed image formats, set specific paths, and restrict certain operations based on your security needs.  Remember that customizing the security policy is a delicate balance between functionality and security. Overly restrictive policies might hinder legitimate image processing tasks, while overly permissive policies can introduce vulnerabilities.</p>
 
@@ -456,4 +456,4 @@ Path: [built-in]
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 7th April 2024 16:36 -->
+<!-- Magick Cache 19th April 2024 11:42 -->

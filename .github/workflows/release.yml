@@ -49,6 +49,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+      # Avoid fatal: detected dubious ownership in repository at '/__w/ImageMagick/ImageMagick'
+      # Possible workaround: https://github.com/actions/runner/issues/2033#issuecomment-1598547465
+    - name: Flag current workspace as safe for git
+      run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
+
     - name: Download AppImage
       run: |
         mkdir /app-image
@@ -245,6 +250,6 @@ jobs:
       with:
         generate_release_notes: true
         files: |
-          artifacts/AppImage-clang/ImageMagick--clang-x86_64.AppImage
-          artifacts/AppImage-gcc/ImageMagick--gcc-x86_64.AppImage
+          artifacts/AppImage-clang/ImageMagick-*-clang-x86_64.AppImage
+          artifacts/AppImage-gcc/ImageMagick-*-gcc-x86_64.AppImage
           artifacts/Msix-Q16-HDRI/ImageMagick.Q16-HDRI.msixbundle

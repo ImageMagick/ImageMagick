@@ -48,7 +48,7 @@
     </symbol>
   </svg>
   <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-    <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+    <button class="btn btn-bd-secondary py-2 dropdown-toggle d-flex align-items-center"
             id="bd-theme"
             type="button"
             aria-expanded="false"
@@ -156,7 +156,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-29</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-30</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure</span></code></pre></ul>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -588,7 +588,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms </samp></pre>
 
 	  <p><a href="../www/download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="../archive/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar xvzf ImageMagick-7.1.1-29.tar.gz</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-29</span></code></pre></ul>	  <p>Configure ImageMagick:</p>
+		<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar xvzf ImageMagick-7.1.1-30.tar.gz</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-30</span></code></pre></ul>	  <p>Configure ImageMagick:</p>
 <pre class="p-3 mb-2 bg-light text-dark"><samp>./configure --prefix=/opt --with-quantum-depth=16 \
   --disable-dependency-tracking --with-x=yes \
   --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \
@@ -610,7 +610,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms </samp></pre>
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar jxvf ImageMagick-7.1.1-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-29</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>sudo make install</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar jxvf ImageMagick-7.1.1-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-30</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>sudo make install</span></code></pre></ul>
 <h2><a class="anchor" id="problems"></a>Dealing with Unexpected Problems</h2>
 
 <p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick</p>
@@ -678,4 +678,4 @@ no encode delegate for this image format </samp></pre>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 7th April 2024 16:45 -->
+<!-- Magick Cache 19th April 2024 13:01 -->

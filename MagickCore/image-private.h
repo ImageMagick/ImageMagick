@@ -66,22 +66,33 @@ extern "C" {
 
 static inline ssize_t CastDoubleToLong(const double x)
 {
+  double
+    value;
+
   if (IsNaN(x) != 0)
     {
       errno=ERANGE;
       return(0);
     }
-  if (floor(x) > ((double) MAGICK_SSIZE_MAX-1))
+  if (x < 0.0)
     {
-      errno=ERANGE;
-      return((ssize_t) MAGICK_SSIZE_MAX);
+      value=ceil(x);
+      if (value < ((double) MAGICK_SSIZE_MIN))
+        {
+          errno=ERANGE;
+          return((ssize_t) MAGICK_SSIZE_MIN);
+        }
     }
-  if (ceil(x) < ((double) MAGICK_SSIZE_MIN+1))
+  else
     {
-      errno=ERANGE;
-      return((ssize_t) MAGICK_SSIZE_MIN);
+      value=floor(x);
+      if (value > ((double) MAGICK_SSIZE_MAX))
+        {
+          errno=ERANGE;
+          return((ssize_t) MAGICK_SSIZE_MAX);
+        }
     }
-  return((ssize_t) x);
+  return((ssize_t) value);
 }
 
 static inline QuantumAny CastDoubleToQuantumAny(const double x)
@@ -106,22 +117,26 @@ static inline QuantumAny CastDoubleToQuantumAny(const double x)
 
 static inline size_t CastDoubleToUnsigned(const double x)
 {
+  double
+    value;
+
   if (IsNaN(x) != 0)
     {
       errno=ERANGE;
       return(0);
     }
-  if (floor(x) > ((double) MAGICK_SIZE_MAX-1))
+  value=floor(x);
+  if (value > ((double) MAGICK_SIZE_MAX))
     {
       errno=ERANGE;
       return((size_t) MAGICK_SIZE_MAX);
     }
-  if (ceil(x) < 0.0)
+  if (value < 0.0)
     {
       errno=ERANGE;
       return(0);
     }
-  return((size_t) x);
+  return((size_t) value);
 }
 
 static inline double DegreesToRadians(const double degrees)
