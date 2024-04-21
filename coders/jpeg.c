@@ -1378,6 +1378,12 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   if (jpeg_info->arith_code == TRUE)
     (void) SetImageProperty(image,"jpeg:arithmetic-coding","true",exception);
 #endif
+  if (JPEGSetImageProfiles(client_info) == MagickFalse)
+    {
+      JPEGDestroyDecompress(jpeg_info);
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
+      return(DestroyImageList(image));
+    }
   *offset=TellBlob(image);
   if (image_info->ping != MagickFalse)
     {
@@ -1398,14 +1404,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       (jpeg_info->output_components != 3) && (jpeg_info->output_components != 4))
     {
       JPEGDestroyDecompress(jpeg_info);
-      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
       ThrowJPEGReaderException(CorruptImageError,"ImageTypeNotSupported");
-    }
-  if (JPEGSetImageProfiles(client_info) == MagickFalse)
-    {
-      JPEGDestroyDecompress(jpeg_info);
-      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
-      return(DestroyImageList(image));
     }
   memory_info=AcquireVirtualMemory((size_t) image->columns,
     (size_t) jpeg_info->output_components*sizeof(*jpeg_pixels));
