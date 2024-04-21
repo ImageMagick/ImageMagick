@@ -1179,7 +1179,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
     if ((i != IPTC_INDEX) && (i != 14))
       if (IsOptionMember("APP",option) == MagickFalse)
         jpeg_set_marker_processor(jpeg_info,(int) (JPEG_APP0+i),ReadProfile);
-  i=(ssize_t) jpeg_read_header(jpeg_info,TRUE);
+  (void) jpeg_read_header(jpeg_info,TRUE);
   if (IsYCbCrCompatibleColorspace(image_info->colorspace) != MagickFalse)
     jpeg_info->out_color_space=JCS_YCbCr;
   /*
