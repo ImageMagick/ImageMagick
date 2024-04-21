@@ -451,7 +451,7 @@ static boolean ReadProfileData(j_decompress_ptr jpeg_info,const int index,
     }
   if (client_info->profiles[index] == (StringInfo *) NULL)
     {
-      client_info->profiles[index]=BlobToStringInfo((const void *) NULL,length);
+      client_info->profiles[index]=AcquireStringInfo(length);
       if (client_info->profiles[index] == (StringInfo *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
