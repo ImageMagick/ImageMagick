@@ -39,7 +39,8 @@
 %
 %
 */
-
+
+
 /*
   Include declarations.
 */
@@ -110,7 +111,8 @@
 #define XML_MARKER  (JPEG_APP0+XML_INDEX)
 #define MaxJPEGProfiles  16
 #define MaxJPEGScans  1024
-
+
+
 /*
   Typedef declarations.
 */
@@ -177,14 +179,16 @@ typedef struct _QuantizationTable
   unsigned int
     *levels;
 } QuantizationTable;
-
+
+
 /*
   Const declarations.
 */
 static const char
   xmp_namespace[] = "http://ns.adobe.com/xap/1.0/ ";
 #define XMPNamespaceExtent 28
-
+
+
 /*
   Forward declarations.
 */
@@ -192,7 +196,8 @@ static const char
 static MagickBooleanType
   WriteJPEGImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -226,7 +231,8 @@ static MagickBooleanType IsJPEG(const unsigned char *magick,const size_t length)
     return(MagickTrue);
   return(MagickFalse);
 }
-
+
+
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -974,21 +980,23 @@ static void JPEGSetImageSamplingFactor(struct jpeg_decompress_struct *jpeg_info,
     sampling_factor);
 }
 
-static void JPEGDestroyDecompress(j_decompress_ptr jpeg_info)
+static JPEGClientInfo *JPEGCleanup(struct jpeg_decompress_struct *jpeg_info,
+  JPEGClientInfo *client_info)
 {
-  JPEGClientInfo
-    *client_info;
-
   size_t
     i;
 
-  client_info=(JPEGClientInfo *) jpeg_info->client_data;
-  for (i=0; i < MaxJPEGProfiles; i++)
-  {
-    if (client_info->profiles[i] != (StringInfo *) NULL)
-      client_info->profiles[i]=DestroyStringInfo(client_info->profiles[i]);
-  }
+  if (client_info != (JPEGClientInfo *) NULL)
+    {
+      for (i=0; i < MaxJPEGProfiles; i++)
+      {
+        if (client_info->profiles[i] != (StringInfo *) NULL)
+          client_info->profiles[i]=DestroyStringInfo(client_info->profiles[i]);
+      }
+      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
+    }
   jpeg_destroy_decompress(jpeg_info);
+  return(client_info);
 }
 
 static MagickBooleanType JPEGSetImageProfiles(JPEGClientInfo *client_info)
@@ -1061,13 +1069,6 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   struct jpeg_decompress_struct *jpeg_info,MagickOffsetType *offset,
   ExceptionInfo *exception)
 {
-#define ThrowJPEGReaderException(exception,message) \
-{ \
-  if (client_info != (JPEGClientInfo *) NULL) \
-    client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info); \
-  ThrowReaderException((exception),(message)); \
-}
-
   char
     value[MagickPathExtent];
 
@@ -1132,13 +1133,13 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
     Verify that file size large enough to contain a JPEG datastream.
   */
   if (GetBlobSize(image) < 107)
-    ThrowJPEGReaderException(CorruptImageError,"InsufficientImageDataInFile");
+    ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
   /*
     Initialize JPEG parameters.
   */
   client_info=(JPEGClientInfo *) AcquireMagickMemory(sizeof(*client_info));
   if (client_info == (JPEGClientInfo *) NULL)
-    ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   (void) memset(client_info,0,sizeof(*client_info));
   (void) memset(jpeg_info,0,sizeof(*jpeg_info));
   (void) memset(&jpeg_error,0,sizeof(jpeg_error));
@@ -1151,8 +1152,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   client_info->image=image;
   if (setjmp(client_info->error_recovery) != 0)
     {
-      JPEGDestroyDecompress(jpeg_info);
-      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
+      client_info=JPEGCleanup(jpeg_info,client_info);
       (void) CloseBlob(image);
       if (exception->severity < ErrorException)
         return(GetFirstImageInList(image));
@@ -1341,8 +1341,8 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     if (AcquireImageColormap(image,StringToUnsignedLong(option),exception) == MagickFalse)
       {
-        JPEGDestroyDecompress(jpeg_info);
-        ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        client_info=JPEGCleanup(jpeg_info,client_info);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
   if ((jpeg_info->output_components == 1) && (jpeg_info->quantize_colors == 0))
     {
@@ -1352,8 +1352,8 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       colors=(size_t) GetQuantumRange(image->depth)+1;
       if (AcquireImageColormap(image,colors,exception) == MagickFalse)
         {
-          JPEGDestroyDecompress(jpeg_info);
-          ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          client_info=JPEGCleanup(jpeg_info,client_info);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
     }
   if (image->debug != MagickFalse)
@@ -1380,38 +1380,35 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
 #endif
   if (JPEGSetImageProfiles(client_info) == MagickFalse)
     {
-      JPEGDestroyDecompress(jpeg_info);
-      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
+      client_info=JPEGCleanup(jpeg_info,client_info);
       return(DestroyImageList(image));
     }
   *offset=TellBlob(image);
   if (image_info->ping != MagickFalse)
     {
-      JPEGDestroyDecompress(jpeg_info);
-      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
+      client_info=JPEGCleanup(jpeg_info,client_info);
       (void) CloseBlob(image);
       return(GetFirstImageInList(image));
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {
-      JPEGDestroyDecompress(jpeg_info);
-      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
+      client_info=JPEGCleanup(jpeg_info,client_info);
       return(DestroyImageList(image));
     }
   (void) jpeg_start_decompress(jpeg_info);
   if ((jpeg_info->output_components != 1) &&
       (jpeg_info->output_components != 3) && (jpeg_info->output_components != 4))
     {
-      JPEGDestroyDecompress(jpeg_info);
-      ThrowJPEGReaderException(CorruptImageError,"ImageTypeNotSupported");
+      client_info=JPEGCleanup(jpeg_info,client_info);
+      ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
     }
   memory_info=AcquireVirtualMemory((size_t) image->columns,
     (size_t) jpeg_info->output_components*sizeof(*jpeg_pixels));
   if (memory_info == (MemoryInfo *) NULL)
     {
-      JPEGDestroyDecompress(jpeg_info);
-      ThrowJPEGReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      client_info=JPEGCleanup(jpeg_info,client_info);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   jpeg_pixels=(JSAMPLE *) GetVirtualMemoryBlob(memory_info);
   (void) memset(jpeg_pixels,0,(size_t) (image->columns*
@@ -1423,8 +1420,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
     {
       if (memory_info != (MemoryInfo *) NULL)
         memory_info=RelinquishVirtualMemory(memory_info);
-      JPEGDestroyDecompress(jpeg_info);
-      client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
+      client_info=JPEGCleanup(jpeg_info,client_info);
       (void) CloseBlob(image);
       number_pixels=(MagickSizeType) image->columns*image->rows;
       if (number_pixels != 0)
@@ -1582,8 +1578,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   /*
     Free jpeg resources.
   */
-  JPEGDestroyDecompress(jpeg_info);
-  client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
+  client_info=JPEGCleanup(jpeg_info,client_info);
   memory_info=RelinquishVirtualMemory(memory_info);
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
@@ -1708,7 +1703,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   return(images);
 }
 #endif
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1843,7 +1839,8 @@ ModuleExport size_t RegisterJPEGImage(void)
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1872,7 +1869,8 @@ ModuleExport void UnregisterJPEGImage(void)
   (void) UnregisterMagickInfo("JPEG");
   (void) UnregisterMagickInfo("JPE");
 }
-
+
+
 #if defined(MAGICKCORE_JPEG_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
