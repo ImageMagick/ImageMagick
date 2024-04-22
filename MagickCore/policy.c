@@ -1287,7 +1287,7 @@ MagickExport MagickBooleanType SetMagickSecurityPolicyValue(
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",value) != 0)
             limit=StringToMagickSizeType(value,100.0);
-          SetMaxMemoryRequest(limit);
+          SetMaxProfileSize(limit);
           return(MagickTrue);
         }
       if (LocaleCompare(name,"memory-map") == 0)
