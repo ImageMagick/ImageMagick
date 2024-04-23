@@ -546,17 +546,17 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
   return(status);
 }
 
-static MagickBooleanType ReadProfile(Image *image,const char *name,
+static void ReadProfile(Image *image,const char *name,
   const unsigned char *datum,uint32 length,ExceptionInfo *exception)
 {
   StringInfo
     *profile;
 
   if (length < 4)
-    return(MagickFalse);
+    return;
   profile=BlobToProfileStringInfo(name,datum,(size_t) length,
     exception);
-  return(SetImageProfilePrivate(image,profile,exception));
+  (void) SetImageProfilePrivate(image,profile,exception);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -598,28 +598,24 @@ static toff_t TIFFGetBlobSize(thandle_t image)
   return((toff_t) GetBlobSize((Image *) image));
 }
 
-static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
+static void TIFFGetProfiles(TIFF *tiff,Image *image,
   ExceptionInfo *exception)
 {
-  MagickBooleanType
-    status;
-
   uint32
     length = 0;
 
   unsigned char
     *profile = (unsigned char *) NULL;
 
-  status=MagickTrue;
 #if defined(TIFFTAG_ICCPROFILE)
   if ((TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
-    status=ReadProfile(image,"icc",profile,length,exception);
+    ReadProfile(image,"icc",profile,length,exception);
 #endif
 #if defined(TIFFTAG_PHOTOSHOP)
   if ((TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
-    status=ReadProfile(image,"8bim",profile,length,exception);
+    ReadProfile(image,"8bim",profile,length,exception);
 #endif
 #if defined(TIFFTAG_RICHTIFFIPTC) && (TIFFLIB_VERSION >= 20191103)
   if ((TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&profile) == 1) &&
@@ -634,10 +630,10 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
         {
           if (TIFFIsByteSwapped(tiff) != 0)
             TIFFSwabArrayOfLong((uint32 *) profile,(tmsize_t) length);
-          status=ReadProfile(image,"iptc",profile,4L*length,exception);
+          ReadProfile(image,"iptc",profile,4L*length,exception);
         }
       else
-        status=ReadProfile(image,"iptc",profile,length,exception);
+        ReadProfile(image,"iptc",profile,length,exception);
     }
 #endif
 #if defined(TIFFTAG_XMLPACKET)
@@ -647,7 +643,7 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
       StringInfo
         *dng;
 
-      status=ReadProfile(image,"xmp",profile,length,exception);
+      ReadProfile(image,"xmp",profile,length,exception);
       dng=BlobToStringInfo(profile,length);
       if (dng != (StringInfo *) NULL)
         {
@@ -662,11 +658,10 @@ static MagickBooleanType TIFFGetProfiles(TIFF *tiff,Image *image,
 #endif
   if ((TIFFGetField(tiff,34118,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
-    status=ReadProfile(image,"tiff:34118",profile,length,exception);
+    ReadProfile(image,"tiff:34118",profile,length,exception);
   if ((TIFFGetField(tiff,37724,&length,&profile) == 1) &&
       (profile != (unsigned char *) NULL))
-    status=ReadProfile(image,"tiff:37724",profile,length,exception);
-  return(status);
+    ReadProfile(image,"tiff:37724",profile,length,exception);
 }
 
 static MagickBooleanType TIFFGetProperties(TIFF *tiff,Image *image,
@@ -1472,12 +1467,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         (compress_tag != COMPRESSION_OJPEG) &&
         (compress_tag != COMPRESSION_JPEG))
       (void) SetImageColorspace(image,YCbCrColorspace,exception);
-    status=TIFFGetProfiles(tiff,image,exception);
-    if (status == MagickFalse)
-      {
-        TIFFClose(tiff);
-        return(DestroyImageList(image));
-      }
+    TIFFGetProfiles(tiff,image,exception);
     status=TIFFGetProperties(tiff,image,exception);
     if (status == MagickFalse)
       {
@@ -3243,7 +3233,7 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
   if (status != MagickFalse)
     {
       SetStringInfoLength(layers,(size_t) profile.offset);
-      status=SetImageProfilePrivate(image,layers,exception);
+      (void) SetImageProfilePrivate(image,layers,exception);
     }
   else
     layers=DestroyStringInfo(layers);
