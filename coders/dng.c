@@ -612,14 +612,14 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         profile=BlobToProfileStringInfo("icc",raw_info->color.profile,
           raw_info->color.profile_length,exception);
-        SetImageProfilePrivate(image,profile,exception);
+        (void) SetImageProfilePrivate(image,profile,exception);
       }
 #if LIBRAW_COMPILE_CHECK_VERSION_NOTLESS(0,18)
     if (raw_info->idata.xmpdata != NULL)
       {
         profile=BlobToProfileStringInfo("xmp",raw_info->idata.xmpdata,
           raw_info->idata.xmplen,exception);
-        SetImageProfilePrivate(image,profile,exception);
+        (void) SetImageProfilePrivate(image,profile,exception);
       }
 #endif
     SetDNGProperties(image,raw_info,exception);
