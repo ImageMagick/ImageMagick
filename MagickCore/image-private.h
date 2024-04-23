@@ -126,7 +126,7 @@ static inline size_t CastDoubleToUnsigned(const double x)
       return(0);
     }
   value=floor(x);
-  if (value > ((double) MAGICK_SIZE_MAX))
+  if (value >= ((double) MAGICK_SIZE_MAX))
     {
       errno=ERANGE;
       return((size_t) MAGICK_SIZE_MAX);
