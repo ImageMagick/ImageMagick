@@ -1319,12 +1319,10 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         CopyBlob(image,buff);
       profile=BlobToProfileStringInfo(name,GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff),exception);
-      status=SetImageProfilePrivate(image,profile,exception);
+      (void) SetImageProfilePrivate(image,profile,exception);
       blob=(unsigned char *) DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       buff=DestroyImage(buff);
-      if (status == MagickFalse)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   if ((LocaleCompare(image_info->magick,"ICC") == 0) ||
       (LocaleCompare(image_info->magick,"ICM") == 0))
