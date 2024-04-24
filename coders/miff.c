@@ -2427,7 +2427,8 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
               else
                 for (i=0; i < (ssize_t) length; i++)
                 {
-                  if ((value[i] == (int) '{') || (value[i] == (int) '}'))
+                  if ((value[i] == (int) '{') || (value[i] == (int) '}') ||
+                      (value[i] == (int) '\\'))
                     (void) WriteBlobByte(image,'\\');
                   (void) WriteBlobByte(image,(unsigned char) value[i]);
                 }
