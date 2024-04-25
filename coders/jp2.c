@@ -365,7 +365,9 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   jp2_status=OPJ_TRUE;
   if ((AcquireMagickResource(WidthResource,(size_t) jp2_image->comps[0].w) == MagickFalse) ||
-      (AcquireMagickResource(HeightResource,(size_t) jp2_image->comps[0].h) == MagickFalse))
+      (AcquireMagickResource(WidthResource,(size_t) jp2_image->x1) == MagickFalse) ||
+      (AcquireMagickResource(HeightResource,(size_t) jp2_image->comps[0].h) == MagickFalse) ||
+      (AcquireMagickResource(HeightResource,(size_t) jp2_image->y1) == MagickFalse))
     {
       opj_stream_destroy(jp2_stream);
       opj_destroy_codec(jp2_codec);
