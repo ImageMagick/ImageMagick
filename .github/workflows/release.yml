@@ -227,7 +227,6 @@ jobs:
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-        advancedinstaller_url: https://www.advancedinstaller.com/downloads/advinst-azts.msi
       uses: caphyon/advinst-github-action@v1.1
       with:
         advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
