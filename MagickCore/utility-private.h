@@ -387,7 +387,7 @@ static inline int stat_utf8(const char *path,struct stat *attributes)
    path_wide=create_wchar_path(path);
    if (path_wide == (WCHAR *) NULL)
      return(-1);
-   status=wstat(path_wide,attributes);
+   status=_wstati64(path_wide,attributes);
    path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
    return(status);
 #endif

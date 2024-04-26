@@ -78,67 +78,18 @@ extern "C" {
 #     define MAGICKCORE_MSC_VER 2019
 #   elif (_MSC_VER >= 1910)
 #     define MAGICKCORE_MSC_VER 2017
-#   elif (_MSC_VER >= 1900)
-#     define MAGICKCORE_MSC_VER 2015
-#   elif (_MSC_VER >= 1800)
-#     define MAGICKCORE_MSC_VER 2013
-#   elif (_MSC_VER >= 1700)
-#     define MAGICKCORE_MSC_VER 2012
 #   endif
 # endif
 #endif
 
-#if !defined(chsize)
-# if defined(__BORLANDC__)
-#   define chsize(file,length)  chsize(file,length)
-# else
-#   define chsize(file,length)  _chsize(file,length)
-# endif
-#endif
-
-#if !defined(access)
-#if defined(_MSC_VER)
-#  define access(path,mode)  _access_s(path,mode)
-#endif
-#endif
-#if !defined(chdir)
-#  define chdir  _chdir
-#endif
-#if !defined(close)
-#  define close  _close
-#endif
 #if !defined(closedir)
 #  define closedir(directory)  NTCloseDirectory(directory)
-#endif
-#if !defined(MAGICKCORE_HAVE_ERF)
-#  define MAGICKCORE_HAVE_ERF
-#endif
-#if !defined(fdopen)
-#  define fdopen  _fdopen
-#endif
-#if !defined(fileno)
-#  define fileno  _fileno
 #endif
 #if !defined(freelocale)
 #  define freelocale  _free_locale
 #endif
 #if !defined(fsync)
 #  define fsync  _commit
-#endif
-#if !defined(ftruncate)
-#  define ftruncate(file,length)  NTTruncateFile(file,length)
-#endif
-#if !defined(getcwd)
-#  define getcwd  _getcwd
-#endif
-#if !defined(getpid)
-#  define getpid  _getpid
-#endif
-#if !defined(hypot)
-#  define hypot  _hypot
-#endif
-#if !defined(isatty)
-#  define isatty  _isatty
 #endif
 #if !defined(locale_t)
 #define locale_t _locale_t
@@ -157,9 +108,6 @@ extern "C" {
 #  define lt_dlsym(handle,name)  NTGetLibrarySymbol(handle,name)
 #endif
 #endif
-#if !defined(mkdir)
-#  define mkdir  _mkdir
-#endif
 #if !defined(mmap)
 #  define MAGICKCORE_HAVE_MMAP 1
 #  define mmap(address,length,protection,access,file,offset) \
@@ -171,32 +119,17 @@ extern "C" {
 #if !defined(opendir)
 #  define opendir(directory)  NTOpenDirectory(directory)
 #endif
-#if !defined(open)
-#  define open  _open
-#endif
 #if !defined(pclose)
 #  define pclose  _pclose
 #endif
 #if !defined(popen)
 #  define popen  _popen
 #endif
-#if !defined(putenv)
-#  define putenv  _putenv
-#endif
-#if !defined(fprintf_l)
-#define fprintf_l  _fprintf_s_l
-#endif
 #if !defined(read)
 #  define read(fd,buffer,count)  _read(fd,buffer,(unsigned int) count)
 #endif
 #if !defined(readdir)
 #  define readdir(directory)  NTReadDirectory(directory)
-#endif
-#if !defined(setmode)
-#  define setmode  _setmode
-#endif
-#if !defined(spawnvp)
-#  define spawnvp  _spawnvp
 #endif
 #if !defined(strtod_l)
 #define strtod_l  _strtod_l
@@ -211,30 +144,8 @@ extern "C" {
 #  define sysconf(name)  NTSystemConfiguration(name)
 #  define MAGICKCORE_HAVE_SYSCONF 1
 #endif
-#if !defined(tempnam)
-#  define tempnam  _tempnam_s
-#endif
-#if !defined(tolower_l)
-#define tolower_l  _tolower_l
-#endif
-#if !defined(toupper_l)
-#define toupper_l  _toupper_l
-#endif
-#if !defined(umask)
-#  define umask  _umask
-#endif
-#if !defined(unlink)
-#  define unlink  _unlink
-#endif
-#define MAGICKCORE_HAVE_UTIME 1
-#if !defined(utime)
-#  define utime(filename,time)  _utime(filename,(struct _utimbuf*) time)
-#endif
 #if !defined(vfprintf_l)
 #define vfprintf_l  _vfprintf_l
-#endif
-#if !defined(vsnprintf) && !defined(_MSC_VER)
-#define vsnprintf _vsnprintf
 #endif
 #if !defined(vsnprintf_l)
 #define vsnprintf_l  _vsnprintf_l
@@ -242,53 +153,12 @@ extern "C" {
 #if !defined(write)
 #  define write(fd,buffer,count)  _write(fd,buffer,(unsigned int) count)
 #endif
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && \
-  !(defined(__BORLANDC__)) && \
-  !(defined(__MSVCRT_VERSION__) && (__MSVCRT_VERSION__ < 0x800))
-#  if !defined(fseek)
-#    define fseek  _fseeki64
-#  endif
-#  if !defined(ftell)
-#    define ftell  _ftelli64
-#  endif
-#  if !defined(lseek)
-#    define lseek  _lseeki64
-#  endif
+#if !defined(__MINGW32__)
 #  if !defined(fstat)
 #    define fstat  _fstati64
 #  endif
 #  if !defined(stat)
 #    define stat  _stati64
-#  endif
-#  if !defined(tell)
-#    define tell  _telli64
-#  endif
-#  if !defined(wstat)
-#    define wstat  _wstati64
-#  endif
-#else
-#  if !defined(__MINGW32__)
-#    if !defined(fseek)
-#      define fseek  _fseek
-#    endif
-#    if !defined(ftell)
-#      define ftell  _ftell
-#    endif
-#  endif
-#  if !defined(lseek)
-#    define lseek  _lseek
-#  endif
-#  if !defined(fstat)
-#    define fstat  _fstat
-#  endif
-#  if !defined(stat)
-#    define stat  _stat
-#  endif
-#  if !defined(tell)
-#    define tell  _tell
-#  endif
-#  if !defined(wstat)
-#    define wstat  _wstat
 #  endif
 #endif
 
@@ -302,8 +172,6 @@ extern "C" {
 #undef _O_TEMPORARY
 #define _O_TEMPORARY 0
 #endif
-
-#undef gettimeofday
 
 typedef struct _GhostInfo
   GhostInfo_;
