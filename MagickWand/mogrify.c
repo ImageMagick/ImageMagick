@@ -3926,7 +3926,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
           exception);
         if (status != MagickFalse)
           {
-#if defined(MAGICKCORE_HAVE_UTIME)
             {
               MagickBooleanType
                 preserve_timestamp;
@@ -3936,7 +3935,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               if (preserve_timestamp != MagickFalse)
                 (void) set_file_timestamp(image->filename,&properties);
             }
-#endif
             if (*backup_filename != '\0')
               (void) remove_utf8(backup_filename);
           }
