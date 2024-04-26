@@ -2032,6 +2032,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
     bounding_box;
 
   ssize_t
+    height,
     y;
 
   /*
@@ -2053,11 +2054,12 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   status=MagickTrue;
   GetPixelInfo(image,&zero);
   image_view=AcquireAuthenticCacheView(image,exception);
+  height=(size_t) (bounding_box.y+bounding_box.height);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(image,image,(size_t) (bounding_box.height-bounding_box.y),1)
+    magick_number_threads(image,image,height,1)
 #endif
-  for (y=bounding_box.y; y < (ssize_t) bounding_box.height; y++)
+  for (y=bounding_box.y; y < (ssize_t) height; y++)
   {
     double
       alpha,
@@ -2073,12 +2075,13 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
     ssize_t
       i,
       j,
+      width,
       x;
 
     if (status == MagickFalse)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,bounding_box.x,y,(size_t)
-      (bounding_box.width-bounding_box.x),1,exception);
+      bounding_box.width,1,exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -2089,7 +2092,8 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
     offset=GetStopColorOffset(gradient,0,y);
     if (gradient->type != RadialGradient)
       offset*=PerceptibleReciprocal(length);
-    for (x=bounding_box.x; x < (ssize_t) bounding_box.width; x++)
+    width=(size_t) (bounding_box.x+bounding_box.width);
+    for (x=bounding_box.x; x < (ssize_t) width; x++)
     {
       GetPixelInfoPixel(image,q,&pixel);
       switch (gradient->spread)
