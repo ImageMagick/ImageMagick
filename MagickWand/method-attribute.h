@@ -22,13 +22,6 @@
 extern "C" {
 #endif
 
-#if defined(__BORLANDC__) && defined(_DLL)
-#  define _MAGICKDLL_
-#  define _MAGICKLIB_
-#  define MAGICKCORE_MODULES_SUPPORT
-#  undef MAGICKCORE_BUILD_MODULES
-#endif
-
 #if defined(MAGICKWAND_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 #  define WandPrivate
 #  if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)

@@ -32,10 +32,6 @@
 #include <errno.h>
 #include <stdint.h>
 
-#if defined(__BORLANDC__)
-#  include <vcl.h> /* Borland C++ Builder 4.0 requirement */
-#endif // defined(__BORLANDC__)
-
 //
 // Include ImageMagick headers into namespace "MagickCore". If
 // MAGICKCORE_IMPLEMENTATION is defined, include ImageMagick development

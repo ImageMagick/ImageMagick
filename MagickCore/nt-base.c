@@ -2446,7 +2446,7 @@ MagickPrivate void NTWindowsGenesis(void)
       (void) SetErrorMode(StringToInteger(mode));
       mode=DestroyString(mode);
     }
-#if defined(_DEBUG) && !defined(__BORLANDC__) && !defined(__MINGW32__)
+#if defined(_DEBUG) && !defined(__MINGW32__)
   if (IsEventLogging() != MagickFalse)
     {
       int

@@ -82,17 +82,6 @@ extern "C" {
 # endif
 #endif
 
-#if defined(__BORLANDC__)
-#undef _O_RANDOM
-#define _O_RANDOM 0
-#undef _O_SEQUENTIAL
-#define _O_SEQUENTIAL 0
-#undef _O_SHORT_LIVED
-#define _O_SHORT_LIVED 0
-#undef _O_TEMPORARY
-#define _O_TEMPORARY 0
-#endif
-
 typedef struct _GhostInfo
   GhostInfo_;
 
