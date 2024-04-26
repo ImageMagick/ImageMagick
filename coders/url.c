@@ -70,7 +70,9 @@
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #  include <urlmon.h>
-#  pragma comment(lib, "urlmon.lib")
+#  if !defined(__MINGW32__)
+#    pragma comment(lib, "urlmon.lib")
+#  endif
 #endif
 
 /*
