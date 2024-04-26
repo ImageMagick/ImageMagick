@@ -102,6 +102,7 @@ extern "C" {
 #define _CRTDBG_MAP_ALLOC
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
+# define NOMINMAX
 # include <io.h>
 #if !defined(__CYGWIN__)
 # include <direct.h>

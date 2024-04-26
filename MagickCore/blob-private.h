@@ -20,7 +20,6 @@
 
 #include "MagickCore/image.h"
 #include "MagickCore/stream.h"
-#include "MagickCore/nt-base-private.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -30,6 +29,11 @@ extern "C" {
 #if defined(MAGICKCORE_HAVE_FSEEKO)
 # define fseek  fseeko
 # define ftell  ftello
+#endif
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#if !defined(__MINGW32__)
+#  define stat  _stati64
+#endif
 #endif
 
 typedef enum
