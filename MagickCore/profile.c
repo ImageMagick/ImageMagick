@@ -1962,7 +1962,8 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
     {
       if (length != 0)
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitWarning,"ProfileSizeExceedsLimit","`%zu'",length);
+          ResourceLimitWarning,"ProfileSizeExceedsLimit","`%llu'",
+          (unsigned long) length);
       profile=DestroyStringInfo(profile);
       return(MagickTrue);
     }
@@ -2002,7 +2003,8 @@ MagickExport StringInfo *AcquireProfileStringInfo(const char *name,
 
   if (length > GetMaxProfileSize())
     (void) ThrowMagickException(exception,GetMagickModule(),
-      ResourceLimitWarning,"ProfileSizeExceedsLimit","`%zu'",length);
+      ResourceLimitWarning,"ProfileSizeExceedsLimit","`%llu'",
+      (unsigned long) length);
   else
     {
       profile=AcquireStringInfo(length);

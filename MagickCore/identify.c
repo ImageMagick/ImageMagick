@@ -1678,7 +1678,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         timestamp;
 
       (void) GetMagickUTCTime(&image->ttl,&timestamp);
-      (void) strftime(iso8601,sizeof(iso8601),"%FT%TZ",&timestamp);
+      (void) strftime(iso8601,sizeof(iso8601),"%Y-%m-%dT%H:%M:%SZ",&timestamp);
       seconds=MagickMax((int)(image->ttl-GetMagickTime()),0);
       expired=' ';
       if (seconds == 0)
