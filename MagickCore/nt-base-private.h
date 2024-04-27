@@ -33,9 +33,6 @@ extern "C" {
 #if !defined(closedir)
 #  define closedir(directory)  NTCloseDirectory(directory)
 #endif
-#if !defined(fsync)
-#  define fsync  _commit
-#endif
 #if !defined(MAGICKCORE_LTDL_DELEGATE)
 #if !defined(lt_dlclose)
 #  define lt_dlclose(handle)  NTCloseLibrary(handle)
@@ -50,22 +47,8 @@ extern "C" {
 #  define lt_dlsym(handle,name)  NTGetLibrarySymbol(handle,name)
 #endif
 #endif
-#if !defined(mmap)
-#  define MAGICKCORE_HAVE_MMAP 1
-#  define mmap(address,length,protection,access,file,offset) \
-  NTMapMemory(address,length,protection,access,file,offset)
-#endif
-#if !defined(munmap)
-#  define munmap(address,length)  NTUnmapMemory(address,length)
-#endif
 #if !defined(opendir)
 #  define opendir(directory)  NTOpenDirectory(directory)
-#endif
-#if !defined(pclose)
-#  define pclose  _pclose
-#endif
-#if !defined(popen)
-#  define popen  _popen
 #endif
 #if !defined(read)
 #  define read(fd,buffer,count)  _read(fd,buffer,(unsigned int) count)

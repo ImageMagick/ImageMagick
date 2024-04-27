@@ -93,6 +93,25 @@
 #include <io.h>
 #define _O_BINARY O_BINARY
 #endif
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#  if !defined(fsync)
+#    define fsync  _commit
+#  endif
+#  if !defined(mmap)
+#    define MAGICKCORE_HAVE_MMAP 1
+#    define mmap(address,length,protection,access,file,offset) \
+  NTMapMemory(address,length,protection,access,file,offset)
+#  endif
+#  if !defined(munmap)
+#    define munmap(address,length)  NTUnmapMemory(address,length)
+#  endif
+#  if !defined(pclose)
+#    define pclose  _pclose
+#  endif
+#  if !defined(popen)
+#    define popen  _popen
+#  endif
+#endif
 
 /*
   Typedef declarations.
