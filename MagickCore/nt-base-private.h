@@ -73,9 +73,6 @@ extern "C" {
 #if !defined(readdir)
 #  define readdir(directory)  NTReadDirectory(directory)
 #endif
-#if !defined(strcasecmp)
-#  define strcasecmp  _stricmp
-#endif
 #if !defined(sysconf)
 #  define sysconf(name)  NTSystemConfiguration(name)
 #  define MAGICKCORE_HAVE_SYSCONF 1

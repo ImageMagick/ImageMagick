@@ -62,6 +62,12 @@
   Define declarations.
 */
 #define MimeFilename  "mime.xml"
+
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#  if !defined(strcasecmp)
+#    define strcasecmp  _stricmp
+#  endif
+#endif
 
 /*
   Typedef declaration.
