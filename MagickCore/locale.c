@@ -69,6 +69,25 @@
 #if (defined(MAGICKCORE_HAVE_NEWLOCALE) || defined(MAGICKCORE_WINDOWS_SUPPORT)) && !defined(__MINGW32__)
 #  define MAGICKCORE_LOCALE_SUPPORT
 #endif
+
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#  if !defined(freelocale)
+#    define freelocale  _free_locale
+#  endif
+#  if !defined(locale_t)
+#    define locale_t _locale_t
+#  endif
+#  if !defined(strtod_l)
+#    define strtod_l  _strtod_l
+#  endif
+#  if !defined(vfprintf_l)
+#    define vfprintf_l  _vfprintf_l
+#  endif
+#  if !defined(vsnprintf_l)
+#    define vsnprintf_l  _vsnprintf_l
+#  endif
+#endif
+
 #define LocaleFilename  "locale.xml"
 
 /*
