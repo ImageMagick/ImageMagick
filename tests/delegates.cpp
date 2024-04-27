@@ -42,5 +42,8 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  // Ensure the color information has been loaded
+  Magick::Color("blue");
+
   return 0;
 }
