@@ -88,59 +88,60 @@ class ImageMagickDelegates(ConanFile):
 
       # Fonts are not available on WASM targets
       if self.options.fonts and self.settings.arch != 'wasm':
-        [self.requires(x) for x in ('libffi/3.4.4', 'fontconfig/2.14.2', 'freetype/2.13.2', 'fribidi/1.0.12', 'glib/2.78.1', 'harfbuzz/8.3.0')]
+        [self.requires(x, force=True) for x in
+          ('libffi/3.4.4', 'fontconfig/2.14.2', 'freetype/2.13.2', 'fribidi/1.0.12', 'glib/2.78.1', 'harfbuzz/8.3.0')]
 
       # LZMA for WASM is blocked by https://github.com/conan-io/conan-center-index/issues/20602
       if self.options.lzma and self.settings.arch != 'wasm':
-        self.requires('lzma_sdk/9.20')
+        self.requires('lzma_sdk/9.20', force=True)
 
       if self.options.bzip2:
-        self.requires('bzip2/1.0.8')
+        self.requires('bzip2/1.0.8', force=True)
 
       if self.options.zstd:
-        self.requires('zstd/1.5.5')
+        self.requires('zstd/1.5.5', force=True)
 
       if self.options.zip:
-        self.requires('libzip/1.9.2')
+        self.requires('libzip/1.9.2', force=True)
 
       if self.options.brotli:
-        self.requires('brotli/1.1.0')
+        self.requires('brotli/1.1.0', force=True)
 
       if self.options.xz:
-        self.requires('xz_utils/5.4.5')
+        self.requires('xz_utils/5.4.5', force=True)
 
       if self.options.gzip:
-        self.requires('zlib/1.2.13')
+        self.requires('zlib/1.2.13', force=True)
 
       if self.options.fftw:
-        self.requires('fftw/3.3.10')
+        self.requires('fftw/3.3.10', force=True)
 
       if self.options.color:
-        self.requires('lcms/2.14')
+        self.requires('lcms/2.14', force=True)
 
       if self.options.xml:
-        self.requires('libxml2/2.10.4')
+        self.requires('libxml2/2.10.4', force=True)
 
       if self.options.openmedia:
-        self.requires('libaom-av1/3.6.0')
+        self.requires('libaom-av1/3.6.0', force=True)
 
       if self.options.h265:
-        self.requires('libde265/1.0.12')
+        self.requires('libde265/1.0.12', force=True)
 
       if self.options.heif:
-        self.requires('libheif/1.13.0')
+        self.requires('libheif/1.13.0', force=True)
 
       if self.options.jbig:
-        self.requires('jbig/20160605')
+        self.requires('jbig/20160605', force=True)
 
       if self.options.exr:
-        self.requires('openexr/3.1.5')
+        self.requires('openexr/3.1.5', force=True)
 
       if self.options.png:
         self.requires('libpng/1.6.42', force=True)
 
       if self.options.webp:
-        self.requires('libwebp/1.3.2')
+        self.requires('libwebp/1.3.2', force=True)
 
       if self.options.jpeg2000 or self.options.tiff or self.options.raw:
         self.requires('libjpeg-turbo/3.0.2', force=True)
@@ -149,34 +150,34 @@ class ImageMagickDelegates(ConanFile):
         self.requires('jasper/4.2.0', force=True)
 
       if self.options.tiff:
-        self.requires('libtiff/4.6.0')
+        self.requires('libtiff/4.6.0', force=True)
 
       if self.options.raw:
-        self.requires('libraw/0.21.2')
+        self.requires('libraw/0.21.2', force=True)
 
       if self.options.jpeg:
-        self.requires('openjpeg/2.5.0')
+        self.requires('openjpeg/2.5.0', force=True)
 
       if self.options.cairo and self.settings.arch != 'wasm':
-        self.requires('cairo/1.18.0')
-        self.requires('expat/2.6.0', override=True)
+        self.requires('cairo/1.17.8', force=True)
+        self.requires('expat/2.6.0', force=True)
 
       if self.options.simd and self.settings.arch != 'wasm':
-        self.requires('highway/1.0.3')
+        self.requires('highway/1.0.3', force=True)
 
       if self.options.openmp and self.settings.arch != 'wasm' and self.settings.os != 'Windows':
-        self.requires('llvm-openmp/17.0.6')
+        self.requires('llvm-openmp/17.0.6', force=True)
 
       if self.options.display and self.settings.arch != 'wasm':
-        self.requires('pixman/0.42.2')
+        self.requires('pixman/0.42.2', force=True)
 
       # Although supported in theory, using jemalloc on Windows is very difficult especially
       # with a generic build that supports options and shared/static builds
       if self.options.jemalloc and self.settings.arch != 'wasm' and self.settings.os != 'Windows':
-        self.requires('jemalloc/5.3.0')
+        self.requires('jemalloc/5.3.0', force=True)
 
       if self.options.opencl:
-        self.requires('opencl-headers/2023.12.14')
+        self.requires('opencl-headers/2023.12.14', force=True)
 
     def configure(self):
       if self.settings.arch != 'wasm' and self.options.fonts:

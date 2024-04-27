@@ -26,20 +26,20 @@
 #cmakedefine CLOSEDIR_VOID @CLOSEDIR_VOID@
 
 /* coders subdirectory. */
-#cmakedefine CODER_DIRNAME @CODER_DIRNAME@
+#cmakedefine CODER_DIRNAME "@CODER_DIRNAME@"
 
 /* Directory where architecture-dependent configuration files live. */
-#cmakedefine CONFIGURE_PATH @CONFIGURE_PATH@
+#cmakedefine CONFIGURE_PATH "@CONFIGURE_PATH@"
 
 /* Subdirectory of lib where architecture-dependent configuration files live.
    */
-#cmakedefine CONFIGURE_RELATIVE_PATH @CONFIGURE_RELATIVE_PATH@
+#cmakedefine CONFIGURE_RELATIVE_PATH "@CONFIGURE_RELATIVE_PATH@"
 
 /* Define if you have DJVU library */
 #cmakedefine DJVU_DELEGATE
 
 /* Directory where ImageMagick documents live. */
-#cmakedefine DOCUMENTATION_PATH @DOCUMENTATION_PATH@
+#cmakedefine DOCUMENTATION_PATH "@DOCUMENTATION_PATH@"
 
 /* Define if you have Display Postscript */
 #cmakedefine DPS_DELEGATE
@@ -48,13 +48,13 @@
 #cmakedefine EXCLUDE_DEPRECATED
 
 /* Directory where executables are installed. */
-#cmakedefine EXECUTABLE_PATH
+#cmakedefine EXECUTABLE_PATH "@EXECUTABLE_PATH@"
 
 /* Define if you have FFTW library */
 #cmakedefine FFTW_DELEGATE
 
 /* filter subdirectory. */
-#cmakedefine FILTER_DIRNAME @FILTER_DIRNAME@
+#cmakedefine FILTER_DIRNAME "@FILTER_DIRNAME@"
 
 /* Define if you have FLIF library */
 #cmakedefine FLIF_DELEGATE
@@ -735,13 +735,13 @@
 #cmakedefine HASUMEM
 
 /* Directory where ImageMagick architecture headers live. */
-#cmakedefine INCLUDEARCH_PATH @INCLUDEARCH_PATH@
+#cmakedefine INCLUDEARCH_PATH "@INCLUDEARCH_PATH@"
 
 /* Directory where ImageMagick headers live. */
-#cmakedefine INCLUDE_PATH @INCLUDE_PATH@
+#cmakedefine INCLUDE_PATH "@INCLUDE_PATH@"
 
 /* ImageMagick is formally installed under prefix */
-#cmakedefine INSTALLED_SUPPORT
+#cmakedefine INSTALLED_SUPPORT @INSTALLED_SUPPORT@
 
 /* Define if you have JBIG library */
 #cmakedefine JBIG_DELEGATE
@@ -759,15 +759,15 @@
 #cmakedefine LIBOPENJP2_DELEGATE
 
 /* Directory where architecture-dependent files live. */
-#cmakedefine LIBRARY_PATH @LIBRARY_PATH@
+#cmakedefine LIBRARY_PATH "@LIBRARY_PATH@"
 
 /* Subdirectory of lib where ImageMagick architecture dependent files are
    installed. */
-#cmakedefine LIBRARY_RELATIVE_PATH @LIBRARY_RELATIVE_PATH@
+#cmakedefine LIBRARY_RELATIVE_PATH "@LIBRARY_RELATIVE_PATH@"
 
 /* Binaries in libraries path base name (will be during install linked to bin)
    */
-#cmakedefine LIB_BIN_BASEDIRNAME @LIB_BIN_BASEDIRNAME@
+#cmakedefine LIB_BIN_BASEDIRNAME "@LIB_BIN_BASEDIRNAME@"
 
 /* Define if you have LQR library */
 #cmakedefine LQR_DELEGATE
@@ -786,7 +786,7 @@
 #cmakedefine LZMA_DELEGATE
 
 /* Define to prepend to default font search path. */
-#cmakedefine MAGICK_FONT_PATH @MAGICK_FONT_PATH@
+#cmakedefine MAGICK_FONT_PATH "@MAGICK_FONT_PATH@"
 
 /* Target Host CPU */
 #cmakedefine MAGICK_TARGET_CPU @MAGICK_TARGET_CPU@
@@ -801,7 +801,7 @@
 #cmakedefine MODULES_BASEDIRNAME @MODULES_BASEDIRNAME@
 
 /* Module directory dirname */
-#cmakedefine MODULES_DIRNAME @MODULES_DIRNAME@
+#cmakedefine MODULES_DIRNAME "@MODULES_DIRNAME@"
 
 /* Magick API method prefix */
 #cmakedefine NAMESPACE_PREFIX @NAMESPACE_PREFIX@
@@ -883,14 +883,14 @@
 #cmakedefine SHAREARCH_BASEDIRNAME @SHAREARCH_BASEDIRNAME@
 
 /* Sharearch directory dirname */
-#cmakedefine SHAREARCH_DIRNAME @SHAREARCH_DIRNAME@
+#cmakedefine SHAREARCH_DIRNAME "@SHAREARCH_DIRNAME@"
 
 /* Directory where architecture-independent configuration files live. */
-#cmakedefine SHARE_PATH @SHARE_PATH@
+#cmakedefine SHARE_PATH "@SHARE_PATH@"
 
 /* Subdirectory of lib where architecture-independent configuration files
    live. */
-#cmakedefine SHARE_RELATIVE_PATH @SHARE_RELATIVE_PATH@
+#cmakedefine SHARE_RELATIVE_PATH "@SHARE_RELATIVE_PATH@"
 
 /* The size of `double', as computed by sizeof. */
 #cmakedefine SIZEOF_DOUBLE @SIZEOF_DOUBLE@
@@ -1024,7 +1024,7 @@
 #endif
 
 /* Location of X11 configure files */
-#cmakedefine X11_CONFIGURE_PATH @X11_CONFIGURE_PATH@
+#cmakedefine X11_CONFIGURE_PATH "@X11_CONFIGURE_PATH@"
 
 /* Define if you have X11 library */
 #cmakedefine X11_DELEGATE
