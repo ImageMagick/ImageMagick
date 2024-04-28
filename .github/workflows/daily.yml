@@ -1,15 +1,15 @@
 on:
   workflow_dispatch:
-  schedule:
-  - cron: 0 6 * * *
+  #schedule:
+  #- cron: 0 6 * * *
   push:
     branches:
-    - main
+    - cmake-portable-build
     paths:
     - '.github/workflows/daily.yml'
   pull_request:
     branches:
-    - main
+    - cmake-portable-build
     paths:
     - '.github/workflows/daily.yml'
 
