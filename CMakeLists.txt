@@ -279,12 +279,11 @@ set(X11_CONFIGURE_PATH "")
 # TODO should this be an option ??
 set(X_DISPLAY_MISSING 1)
 
-# TODO does this suffice?
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR MINGW)
+if(NOT MSVC)
   set(_FILE_OFFSET_BITS 64)
   set(_LARGEFILE_SOURCE 1)
 else()
-# Not sure on Windows if code is made to work with 64 bits
+  # These days, the only compiler which requires it is MSVC
   set(_FILE_OFFSET_BITS 32)
 endif()
 
