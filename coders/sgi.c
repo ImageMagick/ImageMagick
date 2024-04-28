@@ -386,8 +386,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     bytes_per_pixel=(size_t) iris_info.bytes_per_pixel;
     number_pixels=(MagickSizeType) iris_info.columns*iris_info.rows;
-    if ((4*bytes_per_pixel*number_pixels) != ((MagickSizeType) (size_t)
-        (4*bytes_per_pixel*number_pixels)))
+    if ((4*bytes_per_pixel*number_pixels) !=
+        ((MagickSizeType) ((size_t) (4*bytes_per_pixel*number_pixels))))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     pixel_info=AcquireVirtualMemory(iris_info.columns,iris_info.rows*4*
       bytes_per_pixel*sizeof(*pixels));
