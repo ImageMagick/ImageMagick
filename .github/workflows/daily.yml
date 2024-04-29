@@ -5,11 +5,13 @@ on:
   push:
     branches:
     - cmake-portable-build
+    - cmake-testing
     paths:
     - '.github/workflows/daily.yml'
   pull_request:
     branches:
     - cmake-portable-build
+    - cmake-testing
     paths:
     - '.github/workflows/daily.yml'
 
