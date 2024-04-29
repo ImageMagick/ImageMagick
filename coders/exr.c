@@ -60,14 +60,29 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/utility.h"
 #if defined(MAGICKCORE_OPENEXR_DELEGATE)
-#include <ImfCRgbaFile.h>
-#if IMF_VERSION_NUMBER > 1
 #include <OpenEXRConfig.h>
+#include <ImfCRgbaFile.h>
+/*
+  Version 3.1.0 was released on 2021-07-21
+  We can remove backwards compatibility in a couple years.
+*/
+#if OPENEXR_VERSION_HEX >= 0x3010000
+#define USE_OPENEXR_CORE
+#include <openexr.h>
+#define IMATH_HALF_NO_LOOKUP_TABLE
+#include <half.h>
 #endif
 
 /*
   Typedef declarations.
 */
+#if defined(USE_OPENEXR_CORE)
+typedef struct _EXRUserData
+{
+  ExceptionInfo
+    *exception;
+} EXRUserData;
+#else
 typedef struct _EXRWindowInfo
 {
   int
@@ -76,6 +91,7 @@ typedef struct _EXRWindowInfo
     min_x,
     min_y;
 } EXRWindowInfo;
+#endif
 
 /*
   Forward declarations.
@@ -145,6 +161,305 @@ static MagickBooleanType IsEXR(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+#if defined(USE_OPENEXR_CORE)
+static void EXRError(exr_const_context_t ctxt,exr_result_t magick_unused(code),
+  const char* msg)
+{
+  EXRUserData
+    *user_data;
+
+  magick_unreferenced(code);
+  exr_get_user_data(ctxt,(void **) &user_data);
+  (void) ThrowMagickException(user_data->exception,GetMagickModule(),
+    CoderError,"CorruptImage","`%s'",msg);
+}
+
+static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
+{
+  exr_attr_box2i_t
+    data_window;
+  
+  exr_chunk_info_t
+    cinfo;
+
+  exr_coding_channel_info_t
+    *channel;
+
+  exr_compression_t
+    compression = EXR_COMPRESSION_NONE;
+
+  exr_context_t
+    ctxt;
+
+  exr_context_initializer_t
+    initializer = EXR_DEFAULT_CONTEXT_INITIALIZER;
+
+  exr_decode_pipeline_t
+    decoder = EXR_DECODE_PIPELINE_INITIALIZER;
+
+  exr_result_t
+    result;
+
+  exr_storage_t
+    storage_type = EXR_STORAGE_LAST_TYPE;
+
+  EXRUserData
+    user_data = { 0 };
+
+  Image
+    *image;
+
+  int
+    part_index = 0;
+  
+  int16_t
+    c;
+
+  int32_t
+    scans_per_chunk;
+
+  MagickBooleanType
+    status;
+
+  PixelChannel
+    pixel_channels[MaxPixelChannels] = { UndefinedPixelChannel };
+
+  size_t
+    pixel_count,
+    pixel_size,
+    number_meta_channels;
+
+  ssize_t
+    y;
+  
+  uint8_t
+    *chunk,
+    *p;
+
+  /*
+    Open image.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickCoreSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickCoreSignature);
+  if (IsEventLogging() != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  image=AcquireImage(image_info,exception);
+  status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  user_data.exception=exception;
+  initializer.error_handler_fn=EXRError;
+  initializer.user_data=(void *) &user_data;
+  initializer.max_image_height=(int) MagickMin(INT_MAX,
+    GetMagickResourceLimit(HeightResource));
+  initializer.max_image_width=(int) MagickMin(INT_MAX,
+    GetMagickResourceLimit(WidthResource));
+  result=exr_start_read(&ctxt,image->filename,&initializer);
+  if (result != EXR_ERR_SUCCESS)
+    {
+      exr_finish(&ctxt);
+      ThrowReaderException(BlobError,"UnableToOpenBlob");
+    }
+  result=exr_get_data_window(ctxt,part_index,&data_window);
+  if (result == EXR_ERR_SUCCESS)
+    result=exr_get_compression(ctxt,part_index,&compression);
+  if (result == EXR_ERR_SUCCESS)
+    result=exr_get_storage(ctxt,part_index,&storage_type);
+  if ((result != EXR_ERR_SUCCESS) ||
+      (data_window.min.x >= data_window.max.x) ||
+      (data_window.min.y >= data_window.max.y))
+    {
+      exr_finish(&ctxt);
+      ThrowReaderException(CorruptImageError,"CorruptImage");
+    }
+  if (storage_type != EXR_STORAGE_SCANLINE)
+    {
+      exr_finish(&ctxt);
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        CorruptImageError,"Unsupported storage type","`%d'",
+        (int) storage_type);
+      image=DestroyImageList(image);
+      (void) CloseBlob(image);
+      return((Image *) NULL);
+    }
+  image->columns=(size_t) (data_window.max.x-data_window.min.x+1L);
+  image->rows=(size_t) (data_window.max.y-data_window.min.y+1L);
+  image->gamma=1.0;
+  image->compression=NoCompression;
+  switch (compression)
+  {
+    case EXR_COMPRESSION_RLE: image->compression=RLECompression; break;
+    case EXR_COMPRESSION_ZIPS: image->compression=ZipSCompression; break;
+    case EXR_COMPRESSION_ZIP: image->compression=ZipCompression; break;
+    case EXR_COMPRESSION_PIZ: image->compression=PizCompression; break;
+    case EXR_COMPRESSION_PXR24: image->compression=Pxr24Compression; break;
+    case EXR_COMPRESSION_B44: image->compression=B44Compression; break;
+    case EXR_COMPRESSION_B44A: image->compression=B44ACompression; break;
+    case EXR_COMPRESSION_DWAA: image->compression=DWAACompression; break;
+    case EXR_COMPRESSION_DWAB: image->compression=DWABCompression; break;
+    default: break;
+  }
+  if (image_info->ping != MagickFalse)
+    {
+      exr_finish(&ctxt);
+      (void) CloseBlob(image);
+      return(GetFirstImageInList(image));
+    }
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    {
+      exr_finish(&ctxt);
+      (void) CloseBlob(image);
+      return(DestroyImageList(image));
+    }
+  result=exr_get_scanlines_per_chunk(ctxt,part_index,&scans_per_chunk);
+  if (result == EXR_ERR_SUCCESS)
+    result=exr_read_scanline_chunk_info(ctxt,part_index,data_window.min.y,
+      &cinfo);
+  if (result == EXR_ERR_SUCCESS)
+    result=exr_decoding_initialize(ctxt,part_index,&cinfo,&decoder);
+  if (result != EXR_ERR_SUCCESS)
+    {
+      exr_finish(&ctxt);
+      ThrowReaderException(CorruptImageError,"CorruptImage");
+    }
+  if (decoder.channel_count >= (MaxPixelChannels-MetaPixelChannels))
+    {
+      exr_decoding_destroy(ctxt,&decoder);
+      exr_finish(&ctxt);
+      ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
+    }
+  channel=decoder.channels;
+  pixel_size=0;
+  number_meta_channels=0;
+  for (c = 0; c < decoder.channel_count; ++c)
+  {
+    char
+      channel_name[MagickPathExtent];
+
+    if ((channel->data_type != EXR_PIXEL_HALF) &&
+        (channel->data_type != EXR_PIXEL_FLOAT))
+      {
+        status=MagickFalse;
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"Unsupported channel data type","`%d'",
+          (int) channel->data_type );
+        break;
+      }
+    pixel_size+=channel->bytes_per_element;
+    if (LocaleNCompare(channel->channel_name,"R",1) == 0)
+      pixel_channels[c]=RedPixelChannel;
+    else if (LocaleNCompare(channel->channel_name,"G",1) == 0)
+      pixel_channels[c]=GreenPixelChannel;
+    else if (LocaleNCompare(channel->channel_name,"B",1) == 0)
+      pixel_channels[c]=BluePixelChannel;
+    else if (LocaleNCompare(channel->channel_name,"A",1) == 0)
+      pixel_channels[c]=AlphaPixelChannel;
+    else if (LocaleNCompare(channel->channel_name,"Y",1) == 0)
+      pixel_channels[c]=IndexPixelChannel; /* Gray channel */
+    else
+      {
+        pixel_channels[c]=(PixelChannel) (MetaPixelChannels+
+          number_meta_channels);
+        FormatLocaleString(channel_name,MagickPathExtent,
+          "exr:meta-channel.%d",(int) number_meta_channels);
+        number_meta_channels++;
+        SetImageProperty(image,channel_name,channel->channel_name,exception);
+      }
+    channel++;
+  }
+  if (status != MagickFalse)
+    status=SetPixelMetaChannels(image,number_meta_channels,exception);
+  if (status == MagickFalse)
+    {
+      exr_decoding_destroy(ctxt,&decoder);
+      exr_finish(&ctxt);
+      (void) CloseBlob(image);
+      return(DestroyImageList(image));
+    }
+  pixel_count=scans_per_chunk*image->columns;
+  chunk=(uint8_t *) AcquireQuantumMemory(pixel_size,pixel_count);
+  memset(chunk,0,pixel_size*pixel_count);
+  p=chunk;
+  channel=decoder.channels;
+  for (c = 0; c < decoder.channel_count; ++c)
+  {
+    channel->decode_to_ptr=p;
+    channel->user_pixel_stride=(int32_t) pixel_size;
+    channel->user_line_stride=(int32_t) (image->columns*pixel_size);
+    p+=channel->bytes_per_element;
+    channel++;
+  }
+  for (y=0; y < (ssize_t) image->rows; y+= (ssize_t) scans_per_chunk)
+  {
+    Quantum
+      *q;
+
+    ssize_t
+      x;
+
+    if (y == 0)
+      result=exr_decoding_choose_default_routines(ctxt,part_index,&decoder);
+    else
+      {
+        int
+          yy = (int) y + data_window.min.y;
+
+        result=exr_read_scanline_chunk_info(ctxt,part_index,yy,&cinfo);
+        if (result == EXR_ERR_SUCCESS)
+          result=exr_decoding_update(ctxt,part_index,&cinfo,&decoder);
+      }
+    if (result == EXR_ERR_SUCCESS)
+      result=exr_decoding_run(ctxt,part_index,&decoder);
+    if (result != EXR_ERR_SUCCESS)
+      break;
+    q=QueueAuthenticPixels(image,0,y,image->columns,scans_per_chunk,exception);
+    if (q == (Quantum *) NULL)
+      break;
+    p=chunk;
+    for (x=0; x < (ssize_t) pixel_count; x++)
+    {
+      channel=decoder.channels;
+      for (c = 0; c < decoder.channel_count; ++c)
+      {
+        float
+          value;
+
+        PixelChannel
+          pixel_channel;
+
+        if (channel->data_type == EXR_PIXEL_HALF)
+          value=imath_half_to_float(*(imath_half_bits_t *) p);
+        else
+          value=*(float *) p;
+        pixel_channel=pixel_channels[c];
+        if (pixel_channel == IndexPixelChannel)
+          SetPixelGray(image,ClampToQuantum((double) QuantumRange*value),q);
+        else
+          SetPixelChannel(image,pixel_channel,ClampToQuantum(
+            (double) QuantumRange*value),q);
+        p+=channel->bytes_per_element;
+        channel++;
+      }
+      q+=GetPixelChannels(image);
+    }
+  }
+  chunk=(uint8_t *) RelinquishMagickMemory(chunk);
+  exr_decoding_destroy(ctxt,&decoder);
+  exr_finish(&ctxt);
+  (void) CloseBlob(image);
+  if (result != EXR_ERR_SUCCESS)
+    return(DestroyImageList(image));
+  return(GetFirstImageInList(image));
+}
+#else
 static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   const ImfHeader
@@ -336,6 +651,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
+#endif
 #endif
 
 /*
