@@ -73,8 +73,6 @@
 #if (OPENEXR_VERSION_HACK) >= 0x3010000
 #define USE_OPENEXR_CORE
 #include <openexr.h>
-#define IMATH_HALF_NO_LOOKUP_TABLE
-#include <half.h>
 #endif
 
 /*
@@ -440,7 +438,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           pixel_channel;
 
         if (channel->data_type == EXR_PIXEL_HALF)
-          value=imath_half_to_float(*(imath_half_bits_t *) p);
+          value=HalfToSinglePrecision(*(unsigned short *) p);
         else
           value=*(float *) p;
         pixel_channel=pixel_channels[c];
