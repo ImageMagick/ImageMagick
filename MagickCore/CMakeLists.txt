@@ -687,8 +687,24 @@ if(WEBP_DELEGATE)
   list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/webp.c)
 endif()
 if(WINGDI32_DELEGATE)
-  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/clipboard.c ${CODERS_PATH}/emf.c)
-  # Seems that emf.c uses namespaces so we need to compile as c++
+  list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/clipboard.c)
+  if(MSVC)
+    # This is hackish, but it is what allows to build ImageMagick with meson
+    # While CMake does support compiling individual files as different language, meson does not
+    # and it is probably a bad feature to have anyway, this should be fixed in ImageMagick
+    # This creates a separate compile target, a single object file and then uses MSVC /TP to build it
+    add_library(emf OBJECT ${CODERS_PATH}/emf.c)
+    target_compile_options(emf PRIVATE "/TP")
+    target_include_directories(emf PRIVATE ${IMAGEMAGICK_BASE_PATH})
+    target_include_directories(emf PRIVATE ${IMAGEMAGICK_DELEGATES_INCLUDE_DIRS})
+    target_compile_options(emf PRIVATE ${IMAGEMAGICK_DELEGATES_CFLAGS})
+    target_compile_definitions(emf PRIVATE ${MAGICK_BUILD_DEFINES} -D_MAGICKLIB_ -DMAGICKCORE_SHAREARCH_BASEDIRNAME=\"config\")
+    target_compile_options(emf PRIVATE ${MAGICK_COMPILE_OPTIONS})
+    list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS $<TARGET_OBJECTS:emf>)
+  else()
+    list(APPEND MAGICKCORE_CODERS_DELEGATES_SRCS ${CODERS_PATH}/emf.c)
+  endif()
+  # This is the CMake solution: emf.c uses namespaces so we need to compile as c++
   set_source_files_properties(${CODERS_PATH}/emf.c PROPERTIES LANGUAGE CXX)
 endif()
 if(WMF_DELEGATE)
