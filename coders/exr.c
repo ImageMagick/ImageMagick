@@ -363,7 +363,10 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     else if (LocaleNCompare(channel->channel_name,"B",1) == 0)
       pixel_channels[c]=BluePixelChannel;
     else if (LocaleNCompare(channel->channel_name,"A",1) == 0)
-      pixel_channels[c]=AlphaPixelChannel;
+      {
+        pixel_channels[c]=AlphaPixelChannel;
+        image->alpha_trait=BlendPixelTrait;
+      }
     else if (LocaleNCompare(channel->channel_name,"Y",1) == 0)
       pixel_channels[c]=IndexPixelChannel; /* Gray channel */
     else
