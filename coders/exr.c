@@ -66,7 +66,11 @@
   Version 3.1.0 was released on 2021-07-21
   We can remove backwards compatibility in a couple years.
 */
-#if OPENEXR_VERSION_HEX >= 0x3010000
+#define OPENEXR_VERSION_HACK  \
+    (((OPENEXR_VERSION_MAJOR) << 24) |  \
+     ((OPENEXR_VERSION_MINOR) << 16) |  \
+     ((OPENEXR_VERSION_PATCH) << 8))
+#if (OPENEXR_VERSION_HACK) >= 0x3010000
 #define USE_OPENEXR_CORE
 #include <openexr.h>
 #define IMATH_HALF_NO_LOOKUP_TABLE
