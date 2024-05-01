@@ -292,10 +292,6 @@ find %{buildroot} -name "perllocal.pod" |xargs rm -f
 echo "%defattr(-,root,root,-)" > perl-pkg-files
 find %{buildroot}/%{_libdir}/perl* -type f -print \
         | sed "s@^%{buildroot}@@g" > perl-pkg-files
-find %{buildroot}%{perl_vendorarch} -type d -print \
-        | sed "s@^%{buildroot}@%dir @g" \
-        | grep -v '^%dir %{perl_vendorarch}$' \
-        | grep -v '/auto$' >> perl-pkg-files
 if [ -z perl-pkg-files ] ; then
         echo "ERROR: EMPTY FILE LIST"
         exit -1
