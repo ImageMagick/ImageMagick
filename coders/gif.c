@@ -1156,7 +1156,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 */
                 if (LocaleNCompare((char *) buffer,"ImageMagick",11) == 0)
                   magick=MagickTrue;
-                else if (LocaleNCompare((char *) buffer,"ICCRGBG1012",11))
+                else if (LocaleNCompare((char *) buffer,"ICCRGBG1012",11) == 0)
                   (void) CopyMagickString(name,"icc",sizeof(name));
                 else if (LocaleNCompare((char *) buffer,"MGK8BIM0000",11) == 0)
                   (void) CopyMagickString(name,"8bim",sizeof(name));
