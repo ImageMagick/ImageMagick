@@ -290,6 +290,8 @@ find %{buildroot} -name "perllocal.pod" |xargs rm -f
 
 # perlmagick: build files list
 echo "%defattr(-,root,root,-)" > perl-pkg-files
+mv %{buildroot}/%{_prefix}/man/man3 %{buildroot}/%{_prefix}/share/man
+mv %{buildroot}/%{_prefix}/lib/perl* %{buildroot}/%{_libdir}
 find %{buildroot}/%{_libdir}/perl* -type f -print \
         | sed "s@^%{buildroot}@@g" > perl-pkg-files
 if [ -z perl-pkg-files ] ; then
@@ -385,7 +387,7 @@ rm PerlMagick/demo/Generic.ttf
 %doc LICENSE
 
 %files c++
-%doc Magick++/AUTHORS Magick++/ChangeLog Magick++/NEWS Magick++/README
+%doc Magick++/AUTHORS Magick++/LICENSE
 %doc www/Magick++/COPYING
 %{_libdir}/libMagick++-7.Q16HDRI.so.%{libcxxsover}{,.*}
 
