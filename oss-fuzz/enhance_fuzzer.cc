@@ -23,7 +23,7 @@
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
 {
-  if (IsInvalidSize(Size,1,0))
+  if (IsInvalidSize(Size))
     return(0);
   try
   {

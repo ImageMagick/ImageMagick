@@ -33,7 +33,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
   Magick::Image
     image;
 
-  if (IsInvalidSize(Size,1,0))
+  if (IsInvalidSize(Size))
     return(0);
   MagickCore::AttachBlob(image.image()->blob,(const void *) Data,Size);
   exceptionInfo=MagickCore::AcquireExceptionInfo();

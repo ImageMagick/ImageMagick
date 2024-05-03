@@ -22,12 +22,11 @@
 #define FUZZ_MAX_SIZE 2048
 #endif
 
-static bool IsInvalidSize(const size_t size,const size_t min = 1,
-  const size_t max = MagickPathExtent)
+static bool IsInvalidSize(const size_t size,const size_t min = 1)
 {
   if (size < min)
     return(true);
-  if (max > 0 && size > max)
+  if (size > MagickPathExtent)
     return(true);
   return(false);
 }
