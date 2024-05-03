@@ -401,14 +401,17 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
 #endif
   if (preserve_orientation != MagickFalse)
     decode_options->ignore_transformations=1;
-  chroma=heif_chroma_interleaved_RGB;
-  if (image->depth > 8)
-    chroma=heif_chroma_interleaved_RRGGBB_LE;
   if (image->alpha_trait != UndefinedPixelTrait)
     {
       chroma=heif_chroma_interleaved_RGBA;
       if (image->depth > 8)
         chroma=heif_chroma_interleaved_RRGGBBAA_LE;
+    }
+  else
+    {
+      chroma=heif_chroma_interleaved_RGB;
+      if (image->depth > 8)
+        chroma=heif_chroma_interleaved_RRGGBB_LE;
     }
   error=heif_decode_image(image_handle,&heif_image,heif_colorspace_RGB,chroma,
     decode_options);
