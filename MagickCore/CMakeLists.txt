@@ -720,6 +720,27 @@ else()
   add_library(${MAGICKCORE_BINARY_NAME} SHARED ${MAGICKCORE_SRC} ${MAGICKCORE_FILTERS_SRCS} ${MAGICKCORE_CODERS_SRCS} ${MAGICKCORE_CODERS_DELEGATES_SRCS} ${MAGICK_RESOURCE_FILE_PATH})
 endif()
 
+# on macOS some pkgconfigs place the frameworks in LDFLAGS
+# CMake has special handling for macOS frameworks but only in LIBRARIES
+if(APPLE)
+  set(I 0)
+  list(LENGTH IMAGEMAGICK_DELEGATES_LDFLAGS LEN)
+  while(${I} LESS ${LEN} )
+    list(GET IMAGEMAGICK_DELEGATES_LDFLAGS ${I} EL)
+    if(${EL} STREQUAL "-framework")
+      MATH(EXPR I "${I}+1")
+      list(GET IMAGEMAGICK_DELEGATES_LDFLAGS ${I} EL)
+      target_link_libraries(${MAGICKCORE_BINARY_NAME} PUBLIC "-framework ${EL}")
+    else()
+      target_link_options(${MAGICKCORE_BINARY_NAME} PUBLIC ${EL})
+    endif()
+    MATH(EXPR I "${I}+1")
+    unset(EL)
+  endwhile()
+else()
+  target_link_options(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LDFLAGS})
+endif()
+
 set_target_properties(${MAGICKCORE_BINARY_NAME} PROPERTIES PUBLIC_HEADER "${MAGICKCORE_PUBLIC_HEADERS}")
 target_include_directories(${MAGICKCORE_BINARY_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
@@ -730,7 +751,6 @@ target_include_directories(${MAGICKCORE_BINARY_NAME} PRIVATE ${IMAGEMAGICK_DELEG
 target_compile_options(${MAGICKCORE_BINARY_NAME} PRIVATE ${IMAGEMAGICK_DELEGATES_CFLAGS})
 target_link_directories(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LIBRARY_DIRS})
 target_link_libraries(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LIBRARIES})
-target_link_options(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LDFLAGS})
 #TODO should we make a test to see if we need to link -lm ??
 if(UNIX)
   target_link_libraries(${MAGICKCORE_BINARY_NAME} PUBLIC -lm)
