@@ -179,6 +179,14 @@ jobs:
       env:
         PATH: ${{ env.PATH }};${{ env.INSTALL_PREFIX }}/bin
 
+    - name: Check required shared libraries (Linux)
+      run: ldd build/utilities/Magick
+      if: runner.os == 'Linux'
+
+    - name: Check required shared libraries (macOS)
+      run: otool -L build/utilities/Magick
+      if: runner.os == 'macOS'
+
   wasm32:
 
     runs-on: ubuntu-latest
