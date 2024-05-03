@@ -21,6 +21,18 @@ include(cmake/checks.cmake)
 find_package(PkgConfig)
 set(CMAKE_TRY_COMPILE_CONFIGURATION ${CMAKE_BUILD_TYPE})
 
+# Prefer static pkgconfig settings when building a static library
+macro(get_pkgconfig_setting TARGET_LIST PKG SETTING)
+  if(MAGICK_BUILD_STATIC AND ${PKG}_STATIC_${SETTING})
+    list(APPEND ${TARGET_LIST} ${${PKG}_STATIC_${SETTING}})
+  else()
+    list(APPEND ${TARGET_LIST} ${${PKG}_${SETTING}})
+  endif()
+endmacro()
+
+#
+# This is the centralized dependency resolution procedure
+#
 macro(magick_find_delegate)
   cmake_parse_arguments(MAGICK_FIND "" "DELEGATE;NAME;DEFAULT;PKGCONFIG" "TARGETS" ${ARGN})
 
@@ -66,12 +78,12 @@ macro(magick_find_delegate)
     endif()
     pkg_check_modules(${MAGICK_FIND_NAME} ${MAGICK_FIND_SEARCH_TARGET})
     if(${${MAGICK_FIND_NAME}_FOUND})
-      list(APPEND CMAKE_REQUIRED_INCLUDES ${${MAGICK_FIND_NAME}_INCLUDE_DIRS})
-      list(APPEND IMAGEMAGICK_DELEGATES_LIBRARIES ${${MAGICK_FIND_NAME}_LIBRARIES})
-      list(APPEND IMAGEMAGICK_DELEGATES_LIBRARY_DIRS ${${MAGICK_FIND_NAME}_LIBRARY_DIRS})
-      list(APPEND IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${${MAGICK_FIND_NAME}_INCLUDE_DIRS})
-      list(APPEND IMAGEMAGICK_DELEGATES_CFLAGS ${${MAGICK_FIND_NAME}_CFLAGS})
-      list(APPEND IMAGEMAGICK_DELEGATES_LDFLAGS ${${MAGICK_FIND_NAME}_LDFLAGS_OTHER})
+      get_pkgconfig_setting(CMAKE_REQUIRED_INCLUDES ${MAGICK_FIND_NAME} INCLUDE_DIRS)
+      get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${MAGICK_FIND_NAME} INCLUDE_DIRS)
+      get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_LIBRARIES ${MAGICK_FIND_NAME} LIBRARIES)
+      get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_LIBRARY_DIRS ${MAGICK_FIND_NAME} LIBRARY_DIRS)
+      get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_CFLAGS ${MAGICK_FIND_NAME} CFLAGS)
+      get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_LDFLAGS ${MAGICK_FIND_NAME} LDFLAGS_OTHER)
       set(${MAGICK_FIND_DELEGATE} TRUE)
     endif()
   endif()
