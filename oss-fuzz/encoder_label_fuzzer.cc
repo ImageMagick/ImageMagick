@@ -24,11 +24,7 @@
 
 static bool validateFileName(const std::string &fileName)
 {
-  // Signature: this will most likely cause a timeout.
-  if (fileName.find("%#") != -1)
-    return(false);
-
-  return(true);
+  return (fileName.length() <= 64);
 }
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
