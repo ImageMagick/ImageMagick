@@ -142,6 +142,9 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
   if (image_info->depth == 0)
     ThrowReaderException(OptionError,"MustSpecifyImageDepth");
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {

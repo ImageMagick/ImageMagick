@@ -1044,6 +1044,9 @@ static Image *ReadRGB565Image(const ImageInfo *image_info,
   image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
+  status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
   image->depth=16;
   if (image_info->interlace != PartitionInterlace)
     {
