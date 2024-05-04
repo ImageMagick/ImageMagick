@@ -2271,7 +2271,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        for (x=(ssize_t) image->columns; x != 0; x--)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           MagickRealType
             gray;
@@ -2332,7 +2332,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        for (x=(ssize_t) image->columns; x != 0; x--)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           MagickRealType
             gray;
