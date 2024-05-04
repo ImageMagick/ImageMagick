@@ -370,11 +370,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   if (AcquireMagickResource(ListLengthResource,(MagickSizeType)
        jp2_codestream_info->m_default_tile_info.numlayers) == MagickFalse)
     {
+      opj_destroy_cstr_info(&jp2_codestream_info);
       opj_stream_destroy(jp2_stream);
       opj_destroy_codec(jp2_codec);
       opj_image_destroy(jp2_image);
       ThrowReaderException(ResourceLimitError,"ListLengthExceedsLimit");
     }
+  opj_destroy_cstr_info(&jp2_codestream_info);
   jp2_status=OPJ_TRUE;
   if ((AcquireMagickResource(WidthResource,(size_t) jp2_image->comps[0].w) == MagickFalse) ||
       (AcquireMagickResource(WidthResource,(size_t) jp2_image->x1) == MagickFalse) ||
