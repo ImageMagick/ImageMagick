@@ -1381,7 +1381,6 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       profile=BlobToProfileStringInfo("xmp",GetBlobStreamData(buff),(size_t)
         GetBlobSize(buff),exception);
       (void) SetImageProfilePrivate(image,profile,exception);
-      profile=DestroyStringInfo(profile);
       blob=(unsigned char *) DetachBlob(buff->blob);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
       buff=DestroyImage(buff);
