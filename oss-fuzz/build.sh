@@ -13,6 +13,9 @@ MAGICK_FAST_BUILD=0
 . $MAGICK_SRC/build_imagemagick.sh
 . $MAGICK_SRC/build_fuzzers.sh
 
+echo '#!/bin/sh' > $WORK/bin/gs
+chmod +x $WORK/bin/gs
+
 mkdir afl_testcases
 (cd afl_testcases; tar xvf "$SRC/afl_testcases.tgz")
 for format in gif jpg png bmp ico webp tif; do
