@@ -26,7 +26,7 @@ static bool IsInvalidSize(const size_t size,const size_t min = 1)
 {
   if (size < min)
     return(true);
-  if (size > MagickPathExtent)
+  if (size > 8192)
     return(true);
   return(false);
 }
