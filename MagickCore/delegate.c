@@ -405,33 +405,20 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
 #if defined(MAGICKCORE_HAVE_POPEN)
   if ((asynchronous == MagickFalse) && (message !=  (char *) NULL))
     {
-      char
-        buffer[MagickPathExtent];
-
       FILE
         *file;
 
-      size_t
-        offset;
-
-      offset=0;
       file=popen_utf8(sanitize_command,"r");
       if (file == (FILE *) NULL)
         status=system(sanitize_command);
       else
         {
-          while (fgets(buffer,(int) sizeof(buffer),file) != NULL)
-          {
-            size_t
-              length;
+          size_t
+            offset = 0;
 
-            length=MagickMin(MagickPathExtent-offset,strlen(buffer)+1);
-            if (length > 0)
-              {
-                (void) CopyMagickString(message+offset,buffer,length);
-                offset+=length-1;
-              }
-          }
+          while ((offset < MagickPathExtent) &&
+                 (fgets(message+offset,MagickPathExtent-offset,file) != NULL))
+            offset+=strlen(message);
           status=pclose(file);
         }
     }
