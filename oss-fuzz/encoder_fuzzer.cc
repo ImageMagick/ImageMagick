@@ -74,6 +74,13 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
     const Magick::Blob
       blob(Data+offset,Size-offset);
 
+#if BUILD_MAIN
+    std::string
+      image_data;
+
+    image_data=blob.base64();
+#endif
+
     image.read(blob);
   }
   catch (Magick::Exception &e)

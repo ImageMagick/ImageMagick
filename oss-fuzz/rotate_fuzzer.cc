@@ -39,6 +39,13 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
     Magick::Image
       image;
 
+#if BUILD_MAIN
+    std::string
+      image_data;
+
+    image_data=blob.base64();
+#endif
+
     image.read(blob);
     image.rotate(degrees);
   }

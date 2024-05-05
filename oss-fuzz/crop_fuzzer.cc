@@ -22,9 +22,6 @@
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 {
-  Magick::Image
-    image;
-
   uint16_t
     height,
     width;
@@ -38,6 +35,16 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
     const Magick::Blob
       blob(Data+sizeof(width)+sizeof(height),Size-(sizeof(width)+
         sizeof(height)));
+
+    Magick::Image
+      image;
+
+#if BUILD_MAIN
+    std::string
+      image_data;
+
+    image_data=blob.base64();
+#endif
 
     image.read(blob);
     image.crop(Magick::Geometry(width,height));
