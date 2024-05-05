@@ -2449,7 +2449,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             image->directory);
         (void) WriteBlobByte(image,'\0');
       }
-    if (image->profiles != 0)
+    if (image->profiles != (void *) NULL)
       {
         const char
           *name;
