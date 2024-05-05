@@ -1705,6 +1705,8 @@ static MagickBooleanType CheckPSDChannels(const Image *image,
     channel_type|=(GreenChannel | BlueChannel);
   if (psd_info->min_channels >= 4)
     channel_type|=BlackChannel;
+  if (psd_info->mode == IndexedMode)
+    channel_type|=IndexChannel;
   blob_size=(size_t) GetBlobSize(image);
   for (i=0; i < (ssize_t) layer_info->channels; i++)
   {
