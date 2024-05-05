@@ -74,7 +74,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
     const Magick::Blob
       blob(Data+offset,Size-offset);
 
-#if BUILD_MAIN
+#if defined(BUILD_MAIN)
     std::string
       image_data;
 
