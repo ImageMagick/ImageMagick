@@ -1066,6 +1066,10 @@ MagickExport void *DetachBlob(BlobInfo *blob_info)
     }
   blob_info->mapped=MagickFalse;
   blob_info->length=0;
+  /*
+    We should not reset blob_info->extent because we use it to check if the
+    blob was opened inside ImagesToBlob and ImagesToBlob.
+  */
   blob_info->offset=0;
   blob_info->mode=UndefinedBlobMode;
   blob_info->eof=MagickFalse;
@@ -2101,6 +2105,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
         {
           (void) CloseBlob(image);
           image->blob->exempt=MagickTrue;
+          image->blob->extent=0;
           *image->filename='\0';
           status=WriteImage(blob_info,image,exception);
           *length=image->blob->length;
@@ -2112,7 +2117,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,
               else
                 blob=ResizeQuantumMemory(blob,*length+1,sizeof(unsigned char));
             }
-          else if (status == MagickFalse)
+          else if ((status == MagickFalse) && (image->blob->extent == 0))
             blob_info->blob=RelinquishMagickMemory(blob_info->blob);
         }
     }
@@ -2508,6 +2513,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
         {
           (void) CloseBlob(images);
           images->blob->exempt=MagickTrue;
+          images->blob->extent=0;
           *images->filename='\0';
           status=WriteImages(blob_info,images,images->filename,exception);
           *length=images->blob->length;
@@ -2519,7 +2525,7 @@ MagickExport void *ImagesToBlob(const ImageInfo *image_info,Image *images,
               else
                 blob=ResizeQuantumMemory(blob,*length+1,sizeof(unsigned char));
             }
-          else if (status == MagickFalse)
+          else if ((status == MagickFalse) && (images->blob->extent == 0))
             blob_info->blob=RelinquishMagickMemory(blob_info->blob);
         }
     }
