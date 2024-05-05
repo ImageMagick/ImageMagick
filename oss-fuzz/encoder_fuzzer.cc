@@ -58,7 +58,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 
   ssize_t
     offset;
-  
+
   std::string
     encoder=FUZZ_ENCODER;
 
@@ -88,7 +88,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
     return(0);
   }
 
-#if FUZZ_IMAGEMAGICK_ENCODER_WRITE || BUILD_MAIN
+#if FUZZ_IMAGEMAGICK_ENCODER_WRITE || defined(BUILD_MAIN)
   try
   {
     Magick::Blob

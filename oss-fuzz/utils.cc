@@ -53,10 +53,10 @@ public:
 
 FuzzingInitializer fuzzingInitializer;
 
-#if BUILD_MAIN
+#if defined(BUILD_MAIN)
 #include "encoder_format.h"
 
 EncoderFormat encoderFormat;
 
 #define FUZZ_ENCODER encoderFormat.get()
-#endif // BUILD_MAIN
+#endif
