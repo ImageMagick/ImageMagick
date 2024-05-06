@@ -31,3 +31,12 @@ I create open-source software to make the time pass and to raise awareness for m
 ## What?
 
 The build instructions can be found in `README.CMake.md` in the project root.
+
+*WARNING* The `cmake-portable-build` branch, the default branch in this repository, is often rebased onto the latest ImageMagick release tag. Do not forget that you have to use:
+
+```
+git fetch origin
+git reset --hard origin/cmake-portable-build
+```
+
+in order to update your local checkout.
