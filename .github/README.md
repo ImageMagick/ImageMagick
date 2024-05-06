@@ -22,15 +22,13 @@ I am an engineer who has spent the last 4 years living in total isolation after 
 
 I regularly receive various kinds of simultaneous notifications by Google, Facebook, Twitter, reddit, Amazon, Microsoft, StackOverflow, Dropbox, upwork, Steam, Discord and many others in order to intimidate me to shut up.
 
-During those 4 years I have contributed to many large open-source projects who are trying to not notice me - I usually get various simultaneous notifications from them and from other criminal parties involved - including the French police.
+During those 4 years I have contributed to many large open-source projects who are trying hard to make it seem as they did not notice me - when it finally becomes impossible then I usually get various simultaneous notifications from them and from other criminal parties involved - including the French police.
 
 I create open-source software to make the time pass and to raise awareness for my situation.
 
-*(this has been going for many years, but during this latest phase, officially, they are able to manipulate me - in reality they have been buying off "manipulators" in each open source project to which I have contributed - in order to get the project involved - which makes for some rather delicate situations - and which means that this PR will stay in its current state for some time to come - or at least until they the projects start demanipulating themselves....)*
-
 ## What?
 
-The build instructions can be found in `README.CMake.md` in the project root.
+The build instructions can be found in [`README.CMake.md`](https://github.com/mmomtchev/ImageMagick/blob/cmake-portable-build/README.CMake.md) in the project root.
 
 *WARNING* The `cmake-portable-build` branch, the default branch in this repository, is often rebased onto the latest ImageMagick release tag. Do not forget that you have to use:
 
