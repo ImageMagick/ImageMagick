@@ -31,14 +31,26 @@ int main(int argc, char *argv[]) {
   Magick::Image im;
 
   vector<string> actual = split(MagickCore::GetMagickDelegates());
+#ifdef MAGICKCORE_HASJEMALLOC
+  actual.push_back("jemalloc");
+#else
+  actual.push_back("std_malloc");
+#endif
   sort(actual.begin(), actual.end());
   cout << "ACTUAL: " << actual << endl;
 
   auto i = expected.begin();
   for (auto i = expected.begin(); i != expected.end(); i++) {
-    if (find(actual.begin(), actual.end(), *i) == actual.end()) {
-      cerr << *i << " is missing" << endl;
-      return 1;
+    if ((*i).at(0) == '-') {
+      if (find(actual.begin(), actual.end(), (*i).substr(1)) != actual.end()) {
+        cerr << (*i).substr(1) << " is present" << endl;
+        return 1;
+      }
+    } else {
+      if (find(actual.begin(), actual.end(), *i) == actual.end()) {
+        cerr << *i << " is missing" << endl;
+        return 1;
+      }
     }
   }
 

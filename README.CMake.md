@@ -113,13 +113,19 @@ You need to have `CMake` 3.20 or later installed.
 
 Remember that when using `CMake`, on Linux and macOS `Release`/`Debug` is handled during the configure phase, while on Windows, it is handled during the build phase. UNIX makefiles contain only a single build, while Windows project files have both builds defined.
 
-### Disabling delegates
+### Disabling and enabling delegates
 
-Sometimes you need to disable including a delegate autodetected to be present on your system. Use the name of the `DELEGATE` argument to `magick_find_delegate` to disable it:
+Sometimes you need to disable including a delegate autodetected to be present on your system. Use the name of the `DELEGATE` argument to `magick_find_delegate` to explicitly disable it:
+
+`cmake .. -DPNG_DELEGATE=OFF`
+
+will build without `png` support.
+
+Similarly, 
 
 `cmake .. -DHASJEMALLOC=ON`
 
-will build without `jemalloc` support.
+will build with `jemalloc` support which is disabled by default.
 
 # Using The Library
 

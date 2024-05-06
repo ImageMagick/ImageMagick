@@ -76,6 +76,14 @@ jobs:
         provider: [conan, system, pkgconf]
         buildtype: [Release, Debug]
         zeroconf: [zeroconf, support]
+        delegates: [default-delegates]
+        include:
+          - os: ubuntu-latest
+            libtype: static
+            provider: conan
+            buildtype: Release
+            zeroconf: support
+            delegates: custom-delegates
         exclude:
           - buildtype: Debug
             libtype: shared
@@ -145,12 +153,20 @@ jobs:
       run: echo "EXPECTED_DELEGATES=bzlib cairo fftw fontconfig freetype heic jbig jng jp2 jpeg lcms lzma openexr png raw tiff webp xml zlib zstd" >> $GITHUB_ENV
       if: matrix.provider == 'conan' || matrix.provider == 'pkgconf'
 
+    - name: Set custom delegates
+      shell: bash
+      run: |
+        echo "CUSTOM_DELEGATES=-DHASJEMALLOC=ON -DPNG_DELEGATE=OFF" >> $GITHUB_ENV
+        echo "EXPECTED_DELEGATES=jemalloc -png" >> $GITHUB_ENV
+      if: matrix.delegates == 'custom-delegates'
+
     - name: Generate CMake build
       shell: bash
       run: |
         mkdir -p build
         cd build
-        cmake .. ${{ env.CONAN_TOOLCHAIN }} -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} ${{ env.LIBTYPE }} -DCMAKE_INSTALL_PREFIX="${{ env.INSTALL_PREFIX }}" ${{ env.ZERO_CONF }}
+        cmake .. ${{ env.CONAN_TOOLCHAIN }} -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} ${{ env.LIBTYPE }} \
+          -DCMAKE_INSTALL_PREFIX="${{ env.INSTALL_PREFIX }}" ${{ env.ZERO_CONF }} ${{ env.CUSTOM_DELEGATES }}
 
     - name: Build
       run: cmake --build build --config ${{ matrix.buildtype }}
