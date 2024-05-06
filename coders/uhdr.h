@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-MagickCoderExports(UDHR)
+MagickCoderExports(UHDR)
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
