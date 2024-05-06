@@ -1352,7 +1352,11 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   channel_statistics=GetImageStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
-    return(MagickFalse);
+    {
+      *mean=NAN;
+      *standard_deviation=NAN;
+      return(MagickFalse);
+    }
   *mean=channel_statistics[CompositePixelChannel].mean;
   *standard_deviation=
     channel_statistics[CompositePixelChannel].standard_deviation;
