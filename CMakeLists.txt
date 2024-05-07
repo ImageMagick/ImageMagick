@@ -98,6 +98,8 @@ endmacro()
 
 # Get the platform
 if(WIN32)
+  # CMake being a portable build system, all OS use the POSIX file system structure
+  set(POSIX_ON_WINDOWS_SUPPORT TRUE)
   if(NOT WINDOWS)
     set(WINDOWS TRUE)
   endif()
@@ -305,13 +307,14 @@ endif()
 # Disable run-time bounds-checking
 set(_FORTIFY_SOURCE FALSE)
 
-####### PATHS #######
-set(CODER_PATH "${CMAKE_INSTALL_PREFIX}/local/lib/ImageMagick-${MAGICK_MAJOR_VERSION}/modules-${MAGICK_ABI_SUFFIX}/coders/")
+# ###### PATHS #######
+set(CODER_DIRNAME "coders")
+set(CODER_PATH "${CMAKE_INSTALL_PREFIX}/local/lib/ImageMagick-${MAGICK_MAJOR_VERSION}/modules-${MAGICK_ABI_SUFFIX}/${CODER_DIRNAME}/")
 set(CONFIGURE_RELATIVE_PATH "ImageMagick-${MAGICK_MAJOR_VERSION}")
 set(CONFIGURE_PATH "${CMAKE_INSTALL_PREFIX}/etc/${CONFIGURE_RELATIVE_PATH}/")
 set(DOCUMENTATION_PATH "${CMAKE_INSTALL_PREFIX}/share/doc/ImageMagick-${MAGICK_MAJOR_VERSION}/")
 set(EXECUTABLE_PATH "${CMAKE_INSTALL_PREFIX}/bin/")
-set(FILTER_DIRNAME "")
+set(FILTER_DIRNAME "filters")
 set(INCLUDEARCH_PATH "${CMAKE_INSTALL_PREFIX}/include/")
 set(INCLUDE_PATH "${CMAKE_INSTALL_PREFIX}/include/")
 set(LIBRARY_RELATIVE_PATH "lib/ImageMagick-${MAGICK_MAJOR_VERSION}")
