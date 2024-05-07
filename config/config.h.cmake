@@ -842,6 +842,9 @@
 /* enable pipes (|) in filenames */
 #cmakedefine PIPES_SUPPORT
 
+/* enable POSIX support file tree on Windows */
+#cmakedefine POSIX_ON_WINDOWS_SUPPORT
+
 /* Define if you have PNG library */
 #cmakedefine PNG_DELEGATE
 
