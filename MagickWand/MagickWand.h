@@ -79,7 +79,6 @@ typedef struct _MagickWand
 #include "MagickWand/compare.h"
 #include "MagickWand/composite.h"
 #include "MagickWand/conjure.h"
-#include "MagickWand/convert.h"
 #include "MagickWand/deprecate.h"
 #include "MagickWand/display.h"
 #include "MagickWand/drawing-wand.h"

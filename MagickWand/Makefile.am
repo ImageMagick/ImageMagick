@@ -29,8 +29,6 @@ MAGICKWAND_SOURCES = \
   MagickWand/composite.h \
   MagickWand/conjure.c \
   MagickWand/conjure.h \
-  MagickWand/convert.c \
-  MagickWand/convert.h \
   MagickWand/deprecate.h \
   MagickWand/deprecate.c \
   MagickWand/display.c \
@@ -82,7 +80,6 @@ MAGICKWAND_INCLUDE_HDRS = \
   MagickWand/compare.h \
   MagickWand/composite.h \
   MagickWand/conjure.h \
-  MagickWand/convert.h \
   MagickWand/deprecate.h \
   MagickWand/display.h \
   MagickWand/drawing-wand.h \

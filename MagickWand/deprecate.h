@@ -27,6 +27,7 @@ extern "C" {
 #if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
 
 extern WandExport MagickBooleanType
+  ConvertImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *),
   MagickGetImageAlphaColor(MagickWand *,PixelWand *),
   MagickSetImageAlphaColor(MagickWand *,const PixelWand *);
 

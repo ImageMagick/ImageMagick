@@ -83,7 +83,9 @@ static int MagickMain(int argc,char **argv)
     MagickCommands[] =
     {
       MagickCommandSize("magick", MagickFalse, MagickImageCommand),
+#if !defined(MAGICKCORE_EXCLUDE_DEPRECATED)
       MagickCommandSize("convert", MagickFalse, ConvertImageCommand),
+#endif
       MagickCommandSize("composite", MagickFalse, CompositeImageCommand),
       MagickCommandSize("identify", MagickTrue, IdentifyImageCommand),
       MagickCommandSize("animate", MagickFalse, AnimateImageCommand),
