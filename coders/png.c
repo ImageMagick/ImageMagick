@@ -7984,7 +7984,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     ping_wrote_caNv;
 
   png_byte
-     ping_trans_alpha[256];
+     ping_trans_alpha[257];
 
   png_color
      palette[257];
