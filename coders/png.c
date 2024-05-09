@@ -9346,7 +9346,6 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
 
   quantum_info = (QuantumInfo *) NULL;
   number_colors=0;
-  image_colors=(int) image->colors;
   image_matte=image->alpha_trait !=
         UndefinedPixelTrait ? MagickTrue : MagickFalse;
 
@@ -9358,7 +9357,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
     mng_info->is_palette=MagickFalse;
 
   if (((mng_info->colortype == 4) || (mng_info->write_png8 != MagickFalse)) &&
-     ((image->colors == 0) || (image->colormap == NULL)))
+     ((image_colors == 0) || (image->colormap == NULL)))
     {
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
@@ -9807,7 +9806,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
            size_t one = 1;
            ping_bit_depth=1;
 
-           if (image->colors == 0)
+           if (image_colors == 0)
            {
               /* DO SOMETHING */
                 png_error(ping,"image has 0 colors");
