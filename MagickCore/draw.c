@@ -3248,6 +3248,20 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 graphic_context[n]->fill_alpha=(double) QuantumRange*opacity;
                 graphic_context[n]->stroke_alpha=(double) QuantumRange*opacity;
               }
+            if (graphic_context[n]->fill.alpha != (double) TransparentAlpha)
+              {
+                graphic_context[n]->fill.alpha=graphic_context[n]->fill_alpha;
+                graphic_context[n]->stroke.alpha=graphic_context[n]->stroke_alpha;
+              }
+            else
+              {
+                graphic_context[n]->fill.alpha=(MagickRealType)
+                  ClampToQuantum((double) QuantumRange*opacity);
+                graphic_context[n]->stroke.alpha=(MagickRealType)
+                  ClampToQuantum((double) QuantumRange*opacity);
+              }
+            graphic_context[n]->fill.alpha_trait=BlendPixelTrait;
+            graphic_context[n]->stroke.alpha_trait=BlendPixelTrait;
             break;
           }
         status=MagickFalse;
