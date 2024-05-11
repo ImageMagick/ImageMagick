@@ -13,8 +13,8 @@ MAGICK_FAST_BUILD=0
 . $MAGICK_SRC/build_imagemagick.sh
 . $MAGICK_SRC/build_fuzzers.sh
 
-echo '#!/bin/sh' > $OUT/bin/gs
-chmod +x $OUT/bin/gs
+echo '#!/bin/sh' > $OUT/gs
+chmod +x $OUT/gs
 
 mkdir afl_testcases
 (cd afl_testcases; tar xvf "$SRC/afl_testcases.tgz")
