@@ -33,4 +33,3 @@ ENV CXX=clang++
 ENV CC=clang
 ENV CFLAGS="-O1 -fno-omit-frame-pointer -fsanitize=address -fsanitize-address-use-after-scope"
 ENV CXXFLAGS="-O1 -fno-omit-frame-pointer -fsanitize=address -fsanitize-address-use-after-scope -stdlib=libc++"
-RUN bash ./build_dependencies.sh
