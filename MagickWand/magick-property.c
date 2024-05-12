@@ -609,7 +609,7 @@ WandExport char *MagickGetImageArtifact(MagickWand *wand,const char *artifact)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e P r o p e r t i e s                           %
+%   M a g i c k G e t I m a g e A r t i f a c t s                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -643,11 +643,11 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
   const char
     *artifact;
 
-  ssize_t
-    i;
-
   size_t
     length;
+
+  ssize_t
+    i;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickWandSignature);
@@ -659,13 +659,13 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
         "ContainsNoImages","`%s'",wand->name);
       return((char **) NULL);
     }
-  (void) GetImageProperty(wand->images,"exif:*",wand->exception);
+  (void) GetImageArtifact(wand->images,"exif:*");
   length=1024;
   artifacts=(char **) AcquireQuantumMemory(length,sizeof(*artifacts));
   if (artifacts == (char **) NULL)
     return((char **) NULL);
-  ResetImagePropertyIterator(wand->images);
-  artifact=GetNextImageProperty(wand->images);
+  ResetImageArtifactIterator(wand->images);
+  artifact=GetNextImageArtifact(wand->images);
   for (i=0; artifact != (const char *) NULL; )
   {
     if ((*artifact != '[') &&
@@ -687,7 +687,7 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
         artifacts[i]=ConstantString(artifact);
         i++;
       }
-    artifact=GetNextImageProperty(wand->images);
+    artifact=GetNextImageArtifact(wand->images);
   }
   artifacts[i]=(char *) NULL;
   *number_artifacts=(size_t) i;
