@@ -1204,7 +1204,10 @@ MagickExport MagickBooleanType GetImageEntropy(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   channel_statistics=GetImageStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
-    return(MagickFalse);
+    {
+      *entropy=NAN;
+      return(MagickFalse);
+    }
   *entropy=channel_statistics[CompositePixelChannel].entropy;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
     channel_statistics);
@@ -1302,7 +1305,11 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   channel_statistics=GetImageStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
-    return(MagickFalse);
+    {
+      *kurtosis=NAN;
+      *skewness=NAN;
+      return(MagickFalse);
+    }
   *kurtosis=channel_statistics[CompositePixelChannel].kurtosis;
   *skewness=channel_statistics[CompositePixelChannel].skewness;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
@@ -1404,7 +1411,10 @@ MagickExport MagickBooleanType GetImageMedian(const Image *image,double *median,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   channel_statistics=GetImageStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
-    return(MagickFalse);
+    {
+      *median=NAN;
+      return(MagickFalse);
+    }
   *median=channel_statistics[CompositePixelChannel].median;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
     channel_statistics);
