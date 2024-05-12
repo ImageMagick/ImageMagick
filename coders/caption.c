@@ -330,7 +330,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
             high=draw_info->pointsize-0.5;
       }
       if (status != MagickFalse)
-        draw_info->pointsize=floor((low+high)/2.0-0.5);
+        draw_info->pointsize=floor(low-0.5);
     }
   /*
     Draw caption.
