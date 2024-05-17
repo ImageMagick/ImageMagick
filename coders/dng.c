@@ -660,7 +660,7 @@ static inline void RegisterDNGMagickInfo(const char *name,
   MagickInfo
     *entry;
 
-   entry=AcquireMagickInfo("DNG",name,description);
+  entry=AcquireMagickInfo("DNG",name,description);
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
