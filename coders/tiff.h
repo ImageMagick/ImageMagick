@@ -17,10 +17,10 @@
 #include "coders/coders-private.h"
 
 #define MagickTIFFHeaders \
-  MagickCoderHeader("TIFF", 0, "\115\115\000\052") \
-  MagickCoderHeader("TIFF", 0, "\111\111\052\000") \
-  MagickCoderHeader("TIFF64", 0, "\115\115\000\053\000\010\000\000") \
-  MagickCoderHeader("TIFF64", 0, "\111\111\053\000\010\000\000\000")
+  MagickCoderHeader("TIFF", 0, "MM\x00\x2a") \
+  MagickCoderHeader("TIFF", 0, "II\x2a\x00") \
+  MagickCoderHeader("TIFF64", 0, "MM\x00\x35\x00\x08\x00\x00") \
+  MagickCoderHeader("TIFF64", 0, "II\x35\x00\x08\x00\x00\x00")
 
 #define MagickTIFFAliases \
   MagickCoderAlias("TIFF", "GROUP4") \
