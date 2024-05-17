@@ -25,6 +25,7 @@
   MagickCoderHeader("MRW", 0, "\x00MRM") \
   MagickCoderHeader("RAF", 0, "FUJIFILMCCD-RAW ") \
   MagickCoderHeader("RAW", 0, "IIU\x00\x08\x00\x00\x00") \
+  MagickCoderHeader("RAW", 0, "MM\x00\x2a\x00\x00\x00\x12\x41\x50\x50\x4c\x45\x44\x4e\x47") \
   MagickCoderHeader("RW2", 0, "IIU\x00\x18\x00\x00\x00")
 
 #define MagickDNGAliases \
