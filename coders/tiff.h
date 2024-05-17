@@ -19,8 +19,8 @@
 #define MagickTIFFHeaders \
   MagickCoderHeader("TIFF", 0, "MM\x00\x2a") \
   MagickCoderHeader("TIFF", 0, "II\x2a\x00") \
-  MagickCoderHeader("TIFF64", 0, "MM\x00\x35\x00\x08\x00\x00") \
-  MagickCoderHeader("TIFF64", 0, "II\x35\x00\x08\x00\x00\x00")
+  MagickCoderHeader("TIFF64", 0, "MM\x00\x2b\x00\x08\x00\x00") \
+  MagickCoderHeader("TIFF64", 0, "II\x2b\x00\x08\x00\x00\x00")
 
 #define MagickTIFFAliases \
   MagickCoderAlias("TIFF", "GROUP4") \
