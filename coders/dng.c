@@ -664,9 +664,7 @@ static inline void RegisterDNGMagickInfo(const char *name,
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags^=CoderBlobSupportFlag;
-#if !defined(MAGICKCORE_RAW_R_DELEGATE)
   entry->format_type=ExplicitFormatType;
-#endif
   if (*version != '\0')
     entry->version=ConstantString(version);
   (void) RegisterMagickInfo(entry);
