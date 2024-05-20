@@ -11,9 +11,6 @@ on:
     paths:
     - '.github/workflows/release.yml'
 
-permissions:
-  contents: write
-
 name: release
 jobs:
   create_app_image:
@@ -255,6 +252,9 @@ jobs:
       - create_app_image
       - create_msix
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
 
     steps:
     - name: Download artifacts
