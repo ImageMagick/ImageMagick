@@ -85,6 +85,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
   }
   catch (Magick::Exception &e)
   {
+#if defined(BUILD_MAIN)
+    std::cout << "Exception when reading: " << e.what() << std::endl;
+#endif
     return(0);
   }
 
@@ -98,6 +101,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
   }
   catch (Magick::Exception &e)
   {
+#if defined(BUILD_MAIN)
+    std::cout << "Exception when writing: " << e.what() << std::endl;
+#endif
   }
 #endif
   return(0);
