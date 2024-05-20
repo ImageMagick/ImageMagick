@@ -227,7 +227,7 @@ jobs:
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      uses: caphyon/advinst-github-action@v1.1
+      uses: caphyon/advinst-github-action@v2.0
       with:
         advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
         aip-path: ImageMagick-Windows\Installer\Msix\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.aip
