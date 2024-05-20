@@ -48,6 +48,10 @@ jobs:
       - change_log
     runs-on: windows-latest
 
+    permissions:
+      id-token: write
+      contents: read
+
     strategy:
       fail-fast: false
       matrix:
@@ -144,21 +148,22 @@ jobs:
         nmake
         nmake release
 
+    - name: 'Azure CLI login with federated credential'
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
     - name: Sign binaries
       if: github.event_name != 'pull_request'
       uses: azure/trusted-signing-action@v0.3.18
       with:
-        azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
         endpoint: https://eus.codesigning.azure.net/
-        code-signing-account-name: ImageMagick
+        trusted-signing-account-name: ImageMagick
         certificate-profile-name: ImageMagick
         files-folder: 'ImageMagick-Windows\Output\bin'
         files-folder-filter: dll,exe
-        file-digest: SHA256
-        timestamp-rfc3161: http://timestamp.acs.microsoft.com
-        timestamp-digest: SHA256
         append-signature: true
         timeout: 600
 
@@ -172,17 +177,11 @@ jobs:
       if: github.event_name != 'pull_request'
       uses: azure/trusted-signing-action@v0.3.18
       with:
-        azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
         endpoint: https://eus.codesigning.azure.net/
-        code-signing-account-name: ImageMagick
+        trusted-signing-account-name: ImageMagick
         certificate-profile-name: ImageMagick
         files-folder: 'ImageMagick-Windows\Installer\Inno\Output'
         files-folder-filter: dll,exe
-        file-digest: SHA256
-        timestamp-rfc3161: http://timestamp.acs.microsoft.com
-        timestamp-digest: SHA256
         append-signature: true
         timeout: 600
 
@@ -258,6 +257,10 @@ jobs:
       - change_log
     runs-on: windows-latest
 
+    permissions:
+      id-token: write
+      contents: read
+
     strategy:
       fail-fast: false
       matrix:
@@ -323,21 +326,22 @@ jobs:
         cd ImageMagick-Windows
         msbuild /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
+    - name: 'Azure CLI login with federated credential'
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
     - name: Sign executables
       if: github.event_name != 'pull_request'
       uses: azure/trusted-signing-action@v0.3.18
       with:
-        azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
         endpoint: https://eus.codesigning.azure.net/
-        code-signing-account-name: ImageMagick
+        trusted-signing-account-name: ImageMagick
         certificate-profile-name: ImageMagick
         files-folder: 'ImageMagick-Windows\Output\bin'
         files-folder-filter: exe
-        file-digest: SHA256
-        timestamp-rfc3161: http://timestamp.acs.microsoft.com
-        timestamp-digest: SHA256
         append-signature: true
         timeout: 600
 
