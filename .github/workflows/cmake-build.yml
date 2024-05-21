@@ -137,7 +137,7 @@ jobs:
     - name: Generate CMake options
       shell: bash
       if: matrix.libtype == 'static'
-      run: echo "LIBTYPE=-DMAGICK_BUILD_STATIC=ON" >> $GITHUB_ENV
+      run: echo "LIBTYPE=-DBUILD_SHARED_LIBS=OFF" >> $GITHUB_ENV
 
     - name: Set zero configuration
       shell: bash
@@ -231,7 +231,7 @@ jobs:
     - name: Generate CMake build (conan)
       run: |
         cd build
-        cmake .. -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release -DMAGICK_BUILD_STATIC=ON
+        cmake .. -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
 
     - name: Build
       run: cmake --build build --config Release -j 2
