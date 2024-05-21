@@ -92,7 +92,7 @@ You need to have `CMake` 3.20 or later installed.
 
       cmake .. -DCMAKE_BUILD_TYPE=Release                    \
               -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" \
-              -DMAGICK_BUILD_STATIC=ON                       \
+              -DBUILD_SHARED_LIBS=OFF                         \
               -DCMAKE_INSTALL_PREFIX=/opt/ImageMagick        \
               -DMAGICK_HDRI_ENABLE=ON                        \
               -DMAGICKCORE_QUANTUM_DEPTH=16
@@ -121,7 +121,7 @@ Sometimes you need to disable including a delegate autodetected to be present on
 
 will build without `png` support.
 
-Similarly, 
+Similarly,
 
 `cmake .. -DHASJEMALLOC=ON`
 
