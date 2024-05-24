@@ -398,6 +398,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         DestroyBlob(icon_image);
         icon_image->blob=ReferenceBlob(image->blob);
         ReplaceImageInList(&image,icon_image);
+        icon_image->scene=i;
       }
     else
       {
