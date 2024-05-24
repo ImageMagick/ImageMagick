@@ -119,7 +119,6 @@ typedef struct _IconInfo
     image_size,
     x_pixels,
     y_pixels,
-    number_colors,
     red_mask,
     green_mask,
     blue_mask,
@@ -404,14 +403,17 @@ static Image *ReadICONImage(const ImageInfo *image_info,
       }
     else
       {
+        size_t
+          number_colors;
+
         if (bits_per_pixel > 32)
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         icon_info.compression=ReadBlobLSBLong(image);
         icon_info.image_size=ReadBlobLSBLong(image);
         icon_info.x_pixels=ReadBlobLSBLong(image);
         icon_info.y_pixels=ReadBlobLSBLong(image);
-        icon_info.number_colors=ReadBlobLSBLong(image);
-        if (icon_info.number_colors > GetBlobSize(image))
+        number_colors=ReadBlobLSBLong(image);
+        if (number_colors > GetBlobSize(image))
           ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
         icon_info.colors_important=ReadBlobLSBLong(image);
         image->alpha_trait=BlendPixelTrait;
@@ -439,16 +441,16 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "   height = %.20g",(double) icon_file.directory[i].height);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   colors = %.20g",(double ) icon_info.number_colors);
+              "   colors = %.20g",(double ) number_colors);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "   planes = %.20g",(double) planes);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "   bpp    = %.20g",(double) bits_per_pixel);
           }
-      if ((icon_info.number_colors != 0) || (bits_per_pixel <= 16U))
+      if ((number_colors != 0) || (bits_per_pixel <= 16U))
         {
           image->storage_class=PseudoClass;
-          image->colors=icon_info.number_colors;
+          image->colors=number_colors;
           if ((image->colors == 0) || (image->colors > 256))
             image->colors=one << bits_per_pixel;
         }
@@ -1109,6 +1111,9 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       }
     else
       {
+        size_t
+          number_colors;
+
         /*
           Initialize ICON raster file header.
         */
@@ -1123,7 +1128,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             /*
               Full color ICON raster.
             */
-            icon_info.number_colors=0;
+            number_colors=0;
             bits_per_pixel=32;
             icon_info.compression=IconRgbCompression;
           }
@@ -1141,11 +1146,11 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             if (next->colors <= 2)
               bits_per_pixel=1;
             one=1;
-            icon_info.number_colors=one << bits_per_pixel;
-            if (icon_info.number_colors < next->colors)
+            number_colors=one << bits_per_pixel;
+            if (number_colors < next->colors)
               {
                 (void) SetImageStorageClass(next,DirectClass,exception);
-                icon_info.number_colors=0;
+                number_colors=0;
                 bits_per_pixel=(unsigned short) 24;
                 icon_info.compression=IconRgbCompression;
               }
@@ -1166,7 +1171,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         planes=1;
         icon_info.image_size=bytes_per_line*next->rows;
         size=40;
-        size+=(4*icon_info.number_colors);
+        size+=(4*number_colors);
         size+=icon_info.image_size;
         size+=(size_t) ((((icon_info.width+31U) & ~31U) >> 3)*
           icon_info.height);
@@ -1189,7 +1194,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             break;
           }
         }
-        icon_info.colors_important=icon_info.number_colors;
+        icon_info.colors_important=number_colors;
         /*
           Convert MIFF to ICON raster pixels.
         */
@@ -1352,8 +1357,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         */
         icon_file->directory[scene].width=(unsigned char) icon_info.width;
         icon_file->directory[scene].height=(unsigned char) icon_info.height;
-        icon_file->directory[scene].colors=(unsigned char)
-          icon_info.number_colors;
+        icon_file->directory[scene].colors=(unsigned char) number_colors;
         icon_file->directory[scene].reserved=0;
         icon_file->directory[scene].planes=planes;
         icon_file->directory[scene].bits_per_pixel=bits_per_pixel;
@@ -1368,7 +1372,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         (void) WriteBlobLSBLong(image,(unsigned int) icon_info.image_size);
         (void) WriteBlobLSBLong(image,(unsigned int) icon_info.x_pixels);
         (void) WriteBlobLSBLong(image,(unsigned int) icon_info.y_pixels);
-        (void) WriteBlobLSBLong(image,(unsigned int) icon_info.number_colors);
+        (void) WriteBlobLSBLong(image,(unsigned int) number_colors);
         (void) WriteBlobLSBLong(image,(unsigned int)
           icon_info.colors_important);
         if (next->storage_class == PseudoClass)
