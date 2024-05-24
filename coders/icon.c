@@ -447,16 +447,14 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     else
       {
         size_t
-          number_colors,
-          x_pixels,
-          y_pixels;
+          number_colors;
 
         if (bits_per_pixel > 32)
           ThrowICONReaderException(CorruptImageError,"ImproperImageHeader");
         (void) ReadBlobLSBLong(image); /* compression */
         (void) ReadBlobLSBLong(image); /* image_size */
-        x_pixels=ReadBlobLSBLong(image);
-        y_pixels=ReadBlobLSBLong(image);
+        (void) ReadBlobLSBLong(image); /* x_pixels */
+        (void) ReadBlobLSBLong(image); /* y_pixels */
         number_colors=ReadBlobLSBLong(image);
         if (number_colors > GetBlobSize(image))
           ThrowICONReaderException(CorruptImageError,"InsufficientImageDataInFile");
