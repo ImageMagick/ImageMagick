@@ -265,15 +265,11 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
 
 static inline size_t GetICONSize(size_t directory_size,size_t image_size)
 {
-  size_t
-    size;
-
-  size=directory_size;
-  if (size > image_size)
-    size=image_size;
-  if (size == 0)
-    size=256;
-  return(size);
+  if (image_size != 0)
+    return(image_size);
+  if (directory_size != 0)
+    return(directory_size);
+  return(256);
 }
 
 static Image *ReadICONImage(const ImageInfo *image_info,
@@ -390,8 +386,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     if (offset < 0)
       ThrowICONReaderException(CorruptImageError,"ImproperImageHeader");
     size=ReadBlobLSBLong(image);
-    width=(unsigned char) ReadBlobLSBSignedLong(image);
-    height=(unsigned char) (ReadBlobLSBSignedLong(image)/2);
+    width=ReadBlobLSBSignedLong(image);
+    height=(ReadBlobLSBSignedLong(image)/2);
     planes=ReadBlobLSBShort(image);
     bits_per_pixel=ReadBlobLSBShort(image);
     if (EOFBlob(image) != MagickFalse)
