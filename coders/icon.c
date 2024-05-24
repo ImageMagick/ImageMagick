@@ -102,23 +102,6 @@ typedef struct _IconFile
   IconEntry
     directory[MaxIcons];
 } IconFile;
-
-typedef struct _IconInfo
-{
-  size_t
-    file_size,
-    ba_offset,
-    offset_bits;
-
-  size_t
-    red_mask,
-    green_mask,
-    blue_mask,
-    alpha_mask;
-
-  ssize_t
-    colorspace;
-} IconInfo;
 
 /*
   Forward declarations.
@@ -943,9 +926,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   IconFile
     *icon_file;
 
-  IconInfo
-    icon_info;
-
   Image
     *images,
     *next;
@@ -1017,7 +997,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   if (icon_file == (IconFile*) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   (void) memset(icon_file,0,sizeof(*icon_file));
-  (void) memset(&icon_info,0,sizeof(icon_info));
   scene=0;
   next=(images != (Image *) NULL) ? images : image;
   do
@@ -1119,8 +1098,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           Initialize ICON raster file header.
         */
         (void) TransformImageColorspace(next,sRGBColorspace,exception);
-        icon_info.file_size=14+12+28;
-        icon_info.offset_bits=icon_info.file_size;
         if ((next->storage_class != DirectClass) && (next->colors > 256))
           (void) SetImageStorageClass(next,DirectClass,exception);
         if (next->storage_class == DirectClass)
@@ -1133,9 +1110,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           }
         else
           {
-            size_t
-              one;
-
             /*
               Colormapped ICON raster.
             */
@@ -1144,26 +1118,16 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               bits_per_pixel=4;
             if (next->colors <= 2)
               bits_per_pixel=1;
-            one=1;
-            number_colors=one << bits_per_pixel;
+            number_colors=(size_t) 1 << bits_per_pixel;
             if (number_colors < next->colors)
               {
                 (void) SetImageStorageClass(next,DirectClass,exception);
                 number_colors=0;
                 bits_per_pixel=(unsigned short) 24;
               }
-            else
-              {
-                one=1;
-                icon_info.file_size+=3*(one << bits_per_pixel);
-                icon_info.offset_bits+=3*(one << bits_per_pixel);
-                icon_info.file_size+=(one << bits_per_pixel);
-                icon_info.offset_bits+=(one << bits_per_pixel);
-              }
           }
         bytes_per_line=(((next->columns*bits_per_pixel)+31U) &
           ~31U) >> 3;
-        icon_info.ba_offset=0;
         width=(ssize_t) next->columns;
         height=(ssize_t) next->rows;
         planes=1;
@@ -1172,7 +1136,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         size+=(4*number_colors);
         size+=image_size;
         size+=(size_t) ((((width+31U) & ~31U) >> 3)*height);
-        icon_info.file_size+=image_size;
         x_pixels=0;
         y_pixels=0;
         switch (next->units)
