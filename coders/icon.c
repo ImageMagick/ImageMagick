@@ -115,9 +115,6 @@ typedef struct _IconInfo
     width,
     height;
 
-  unsigned short
-    planes;
-
   size_t
     compression,
     image_size,
@@ -286,9 +283,6 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   unsigned char
     *p;
 
-  unsigned short
-    bits_per_pixel;
-
   /*
     Open image file.
   */
@@ -336,6 +330,10 @@ static Image *ReadICONImage(const ImageInfo *image_info,
   one=1;
   for (i=0; i < icon_file.count; i++)
   {
+    unsigned short
+      bits_per_pixel,
+      planes;
+
     /*
       Verify Icon identifier.
     */
@@ -346,7 +344,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
     icon_info.size=ReadBlobLSBLong(image);
     icon_info.width=(unsigned char) ReadBlobLSBSignedLong(image);
     icon_info.height=(unsigned char) (ReadBlobLSBSignedLong(image)/2);
-    icon_info.planes=ReadBlobLSBShort(image);
+    planes=ReadBlobLSBShort(image);
     bits_per_pixel=ReadBlobLSBShort(image);
     if (EOFBlob(image) != MagickFalse)
       {
@@ -354,7 +352,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
           image->filename);
         break;
       }
-    if (((icon_info.planes == 18505) && (bits_per_pixel == 21060)) || 
+    if (((planes == 18505) && (bits_per_pixel == 21060)) || 
         (icon_info.size == 0x474e5089))
       {
         Image
@@ -379,8 +377,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         if (png == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         (void) memcpy(png,"\211PNG\r\n\032\n\000\000\000\015",12);
-        png[12]=(unsigned char) icon_info.planes;
-        png[13]=(unsigned char) (icon_info.planes >> 8);
+        png[12]=(unsigned char) planes;
+        png[13]=(unsigned char) (planes >> 8);
         png[14]=(unsigned char) bits_per_pixel;
         png[15]=(unsigned char) (bits_per_pixel >> 8);
         count=ReadBlob(image,length-16,png+16);
@@ -441,7 +439,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "   colors = %.20g",(double ) icon_info.number_colors);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "   planes = %.20g",(double) icon_info.planes);
+              "   planes = %.20g",(double) planes);
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "   bpp    = %.20g",(double) bits_per_pixel);
           }
@@ -976,9 +974,6 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     *pixels,
     *q;
 
-  unsigned short
-    bits_per_pixel;
-
   /*
     Open output image file.
   */
@@ -1047,6 +1042,10 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   number_scenes=GetImageListLength(image);
   do
   {
+    unsigned short
+      bits_per_pixel,
+      planes;
+
     if ((next->columns > 255L) && (next->rows > 255L) &&
         ((next->compression == UndefinedCompression) ||
         (next->compression == ZipCompression)))
@@ -1159,7 +1158,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         icon_info.ba_offset=0;
         icon_info.width=(ssize_t) next->columns;
         icon_info.height=(ssize_t) next->rows;
-        icon_info.planes=1;
+        planes=1;
         icon_info.image_size=bytes_per_line*next->rows;
         icon_info.size=40;
         icon_info.size+=(4*icon_info.number_colors);
@@ -1351,14 +1350,14 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         icon_file->directory[scene].colors=(unsigned char)
           icon_info.number_colors;
         icon_file->directory[scene].reserved=0;
-        icon_file->directory[scene].planes=icon_info.planes;
+        icon_file->directory[scene].planes=planes;
         icon_file->directory[scene].bits_per_pixel=bits_per_pixel;
         icon_file->directory[scene].size=icon_info.size;
         icon_file->directory[scene].offset=(size_t) TellBlob(image);
         (void) WriteBlobLSBLong(image,(unsigned int) 40);
         (void) WriteBlobLSBLong(image,(unsigned int) icon_info.width);
         (void) WriteBlobLSBLong(image,(unsigned int) icon_info.height*2);
-        (void) WriteBlobLSBShort(image,icon_info.planes);
+        (void) WriteBlobLSBShort(image,planes);
         (void) WriteBlobLSBShort(image,bits_per_pixel);
         (void) WriteBlobLSBLong(image,(unsigned int) icon_info.compression);
         (void) WriteBlobLSBLong(image,(unsigned int) icon_info.image_size);
