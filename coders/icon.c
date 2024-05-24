@@ -116,7 +116,7 @@ static IconDirectory *RelinquishIconDirectory(IconDirectory *directory)
 
   if (directory->icons != (IconEntry **) NULL)
     {
-      for (i=0; i < directory->count; i++)
+      for (i=0; i < (ssize_t) directory->count; i++)
       {
         if (directory->icons[i] != (IconEntry *) NULL)
           directory->icons[i]=(IconEntry *) RelinquishMagickMemory(
