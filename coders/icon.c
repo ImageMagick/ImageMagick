@@ -112,7 +112,6 @@ typedef struct _IconInfo
 
   size_t
     compression,
-    image_size,
     red_mask,
     green_mask,
     blue_mask,
@@ -408,7 +407,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         if (bits_per_pixel > 32)
           ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         icon_info.compression=ReadBlobLSBLong(image);
-        icon_info.image_size=ReadBlobLSBLong(image);
+        (void) ReadBlobLSBLong(image); /* image_size */
         x_pixels=ReadBlobLSBLong(image);
         y_pixels=ReadBlobLSBLong(image);
         number_colors=ReadBlobLSBLong(image);
@@ -1111,6 +1110,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
     else
       {
         size_t
+          image_size,
           number_colors,
           x_pixels,
           y_pixels;
@@ -1174,12 +1174,12 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         width=(ssize_t) next->columns;
         height=(ssize_t) next->rows;
         planes=1;
-        icon_info.image_size=bytes_per_line*next->rows;
+        image_size=bytes_per_line*next->rows;
         size=40;
         size+=(4*number_colors);
-        size+=icon_info.image_size;
+        size+=image_size;
         size+=(size_t) ((((width+31U) & ~31U) >> 3)*height);
-        icon_info.file_size+=icon_info.image_size;
+        icon_info.file_size+=image_size;
         x_pixels=0;
         y_pixels=0;
         switch (next->units)
@@ -1201,15 +1201,15 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         /*
           Convert MIFF to ICON raster pixels.
         */
-        pixels=(unsigned char *) AcquireQuantumMemory((size_t)
-          icon_info.image_size,sizeof(*pixels));
+        pixels=(unsigned char *) AcquireQuantumMemory(image_size,
+          sizeof(*pixels));
         if (pixels == (unsigned char *) NULL)
           {
             icon_file=(IconFile*) RelinquishMagickMemory(icon_file);
             images=DestroyImageList(images);
             ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
           }
-        (void) memset(pixels,0,(size_t) icon_info.image_size);
+        (void) memset(pixels,0,image_size);
         switch (bits_per_pixel)
         {
           case 1:
@@ -1372,7 +1372,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         (void) WriteBlobLSBShort(image,planes);
         (void) WriteBlobLSBShort(image,bits_per_pixel);
         (void) WriteBlobLSBLong(image,(unsigned int) icon_info.compression);
-        (void) WriteBlobLSBLong(image,(unsigned int) icon_info.image_size);
+        (void) WriteBlobLSBLong(image,(unsigned int) image_size);
         (void) WriteBlobLSBLong(image,(unsigned int) x_pixels);
         (void) WriteBlobLSBLong(image,(unsigned int) y_pixels);
         (void) WriteBlobLSBLong(image,(unsigned int) number_colors);
@@ -1414,7 +1414,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             icon_colormap=(unsigned char *) RelinquishMagickMemory(
               icon_colormap);
           }
-        (void) WriteBlob(image,(size_t) icon_info.image_size,pixels);
+        (void) WriteBlob(image,image_size,pixels);
         pixels=(unsigned char *) RelinquishMagickMemory(pixels);
         /*
           Write matte mask.
