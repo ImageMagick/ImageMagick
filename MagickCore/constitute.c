@@ -1543,13 +1543,7 @@ MagickExport MagickBooleanType WriteImages(const ImageInfo *image_info,
   p=images;
   for ( ; GetNextImageInList(p) != (Image *) NULL; p=GetNextImageInList(p))
   {
-    Image
-      *next;
-
-    next=GetNextImageInList(p);
-    if (next == (Image *) NULL)
-      break;
-    if (p->scene >= next->scene)
+    if (p->scene >= GetNextImageInList(p)->scene)
       {
         ssize_t
           i;
