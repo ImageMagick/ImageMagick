@@ -92,6 +92,185 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o n v e r t G e n e r i c T o R G B                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertGenericToRGB() transforms a generic pixel (X, Y, Z) to a (red,
+%  green, blue) triple.
+%
+%  The format of the ConvertGenericToRGBImage method is:
+%
+%      void ConvertHSLToRGB(const double hue,const double saturation,
+%        const double lightness,const double white_luminance,
+%        const double illuminant,double *red,double *green,double *blue)
+%
+%  A description of each parameter follows:
+%
+%    o X, Y, Z: A double value representing a component of a generic color
+%      space.
+%
+%    o white_luminance: white luminance.
+%
+%    o illuminant: illuminant, typically D65.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+*/
+MagickPrivate void ConvertGenericToRGB(const ColorspaceType colorspace,
+  const double X,const double Y,const double Z,const double white_luminance,
+  const double illuminant,double *red,double *green,double *blue)
+{
+  switch (colorspace)
+  {
+    case Adobe98Colorspace:
+    {
+      ConvertAdobe98ToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case CMYColorspace:
+    {
+      ConvertCMYToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case DisplayP3Colorspace:
+    {
+      ConvertDisplayP3ToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case HCLColorspace:
+    {
+      ConvertHCLToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case HCLpColorspace:
+    {
+      ConvertHCLpToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case HSBColorspace:
+    {
+      ConvertHSBToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case HSIColorspace:
+    {
+      ConvertHSIToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case HSLColorspace:
+    {
+      ConvertHSLToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case HSVColorspace:
+    {
+      ConvertHSVToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case HWBColorspace:
+    {
+      ConvertHWBToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case JzazbzColorspace:
+    {
+      ConvertJzazbzToRGB(X,Y,Z,white_luminance,red,green,blue);
+      break;
+    }
+    case LabColorspace:
+    {
+      ConvertLabToRGB(X,Y,Z,illuminant,red,green,blue);
+      break;
+    }
+    case LCHColorspace:
+    case LCHabColorspace:
+    {
+      ConvertLCHabToRGB(X,Y,Z,illuminant,red,green,blue);
+      break;
+    }
+    case LCHuvColorspace:
+    {
+      ConvertLCHuvToRGB(X,Y,Z,illuminant,red,green,blue);
+      break;
+    }
+    case LMSColorspace:
+    {
+      ConvertLMSToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case LuvColorspace:
+    {
+      ConvertLuvToRGB(X,Y,Z,illuminant,red,green,blue);
+      break;
+    }
+    case OklabColorspace:
+    {
+      ConvertOklabToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case OklchColorspace:
+    {
+      ConvertOklchToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case ProPhotoColorspace:
+    {
+      ConvertProPhotoToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case xyYColorspace:
+    {
+      ConvertxyYToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case XYZColorspace:
+    {
+      ConvertXYZToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case YCbCrColorspace:
+    {
+      ConvertYCbCrToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case YDbDrColorspace:
+    {
+      ConvertYDbDrToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case YIQColorspace:
+    {
+      ConvertYIQToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case YPbPrColorspace:
+    {
+      ConvertYPbPrToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    case YUVColorspace:
+    {
+      ConvertYUVToRGB(X,Y,Z,red,green,blue);
+      break;
+    }
+    default:
+    {
+      *red=(double) QuantumRange*X;
+      *green=(double) QuantumRange*Y;
+      *blue=(double) QuantumRange*Z;
+      break;
+    }
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t H S L T o R G B                                             %
 %                                                                             %
 %                                                                             %
@@ -181,6 +360,186 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
       *red=(double) QuantumRange*(min+c);
       *green=(double) QuantumRange*min;
       *blue=(double) QuantumRange*(min+x);
+      break;
+    }
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n v e r t R G B T o G e n e r i c                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertRGBToGeneric() transforms a (red, green, blue) to a generic (X, Y, Z)
+%  triple.
+%
+%  The format of the ConvertRGBToGeneric method is:
+%
+%      void ConvertRGBToGeneric(const double red,const double green,
+%        const double blue,double *hue,double *saturation,double *lightness)
+%
+%  A description of each parameter follows:
+%
+%    o red, green, blue: A Quantum value representing the red, green, and
+%      blue component of a pixel..
+%
+%    o white_luminance: white luminance.
+%
+%    o illuminant: illuminant, typically D65.
+%
+%    o X, Y, Z: A pointer to a double value representing a component of a
+%      generic color space.
+%
+*/
+MagickPrivate void ConvertRGBToGeneric(const ColorspaceType colorspace,
+  const double red,const double green,const double blue,
+  const double white_luminance,const double illuminant,double *X,double *Y,
+  double *Z)
+{
+  switch (colorspace)
+  {
+    case Adobe98Colorspace:
+    {
+      ConvertRGBToAdobe98(red,green,blue,X,Y,Z);
+      break;
+    }
+    case CMYColorspace:
+    {
+      ConvertRGBToCMY(red,green,blue,X,Y,Z);
+      break;
+    }
+    case DisplayP3Colorspace:
+    {
+      ConvertRGBToDisplayP3(red,green,blue,X,Y,Z);
+      break;
+    }
+    case HCLColorspace:
+    {
+      ConvertRGBToHCL(red,green,blue,X,Y,Z);
+      break;
+    }
+    case HCLpColorspace:
+    {
+      ConvertRGBToHCLp(red,green,blue,X,Y,Z);
+      break;
+    }
+    case HSBColorspace:
+    {
+      ConvertRGBToHSB(red,green,blue,X,Y,Z);
+      break;
+    }
+    case HSIColorspace:
+    {
+      ConvertRGBToHSI(red,green,blue,X,Y,Z);
+      break;
+    }
+    case HSLColorspace:
+    {
+      ConvertRGBToHSL(red,green,blue,X,Y,Z);
+      break;
+    }
+    case HSVColorspace:
+    {
+      ConvertRGBToHSV(red,green,blue,X,Y,Z);
+      break;
+    }
+    case HWBColorspace:
+    {
+      ConvertRGBToHWB(red,green,blue,X,Y,Z);
+      break;
+    }
+    case JzazbzColorspace:
+    {
+      ConvertRGBToJzazbz(red,green,blue,white_luminance,X,Y,Z);
+      break;
+    }
+    case LabColorspace:
+    {
+      ConvertRGBToLab(red,green,blue,illuminant,X,Y,Z);
+      break;
+    }
+    case LCHColorspace:
+    case LCHabColorspace:
+    {
+      ConvertRGBToLCHab(red,green,blue,illuminant,X,Y,Z);
+      break;
+    }
+    case LCHuvColorspace:
+    {
+      ConvertRGBToLCHuv(red,green,blue,illuminant,X,Y,Z);
+      break;
+    }
+    case LMSColorspace:
+    {
+      ConvertRGBToLMS(red,green,blue,X,Y,Z);
+      break;
+    }
+    case LuvColorspace:
+    {
+      ConvertRGBToLuv(red,green,blue,illuminant,X,Y,Z);
+      break;
+    }
+    case OklabColorspace:
+    {
+      ConvertRGBToOklab(red,green,blue,X,Y,Z);
+      break;
+    }
+    case OklchColorspace:
+    {
+      ConvertRGBToOklch(red,green,blue,X,Y,Z);
+      break;
+    }
+    case ProPhotoColorspace:
+    {
+      ConvertRGBToProPhoto(red,green,blue,X,Y,Z);
+      break;
+    }
+    case xyYColorspace:
+    {
+      ConvertRGBToxyY(red,green,blue,X,Y,Z);
+      break;
+    }
+    case XYZColorspace:
+    {
+      ConvertRGBToXYZ(red,green,blue,X,Y,Z);
+      break;
+    }
+    case YCbCrColorspace:
+    {
+      ConvertRGBToYCbCr(red,green,blue,X,Y,Z);
+      break;
+    }
+    case YDbDrColorspace:
+    {
+      ConvertRGBToYDbDr(red,green,blue,X,Y,Z);
+      break;
+    }
+    case YIQColorspace:
+    {
+      ConvertRGBToYIQ(red,green,blue,X,Y,Z);
+      break;
+    }
+    case YPbPrColorspace:
+    {
+      ConvertRGBToYPbPr(red,green,blue,X,Y,Z);
+      break;
+    }
+    case YUVColorspace:
+    {
+      ConvertRGBToYUV(red,green,blue,X,Y,Z);
+      break;
+    }
+    default:
+    {
+      *X=QuantumScale*red;
+      *Y=QuantumScale*green;
+      *Z=QuantumScale*blue;
       break;
     }
   }
