@@ -92,6 +92,177 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o n v e r t H S L T o R G B                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertHSLToRGB() transforms a (hue, saturation, lightness) to a (red,
+%  green, blue) triple.
+%
+%  The format of the ConvertHSLToRGBImage method is:
+%
+%      void ConvertHSLToRGB(const double hue,const double saturation,
+%        const double lightness,double *red,double *green,double *blue)
+%
+%  A description of each parameter follows:
+%
+%    o hue, saturation, lightness: A double value representing a
+%      component of the HSL color space.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+*/
+MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
+  const double lightness,double *red,double *green,double *blue)
+{
+  double
+    c,
+    h,
+    min,
+    x;
+
+  /*
+    Convert HSL to RGB colorspace.
+  */
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
+  h=hue*360.0;
+  if (lightness <= 0.5)
+    c=2.0*lightness*saturation;
+  else
+    c=(2.0-2.0*lightness)*saturation;
+  min=lightness-0.5*c;
+  h-=360.0*floor(h/360.0);
+  h/=60.0;
+  x=c*(1.0-fabs(h-2.0*floor(h/2.0)-1.0));
+  switch ((int) floor(h))
+  {
+    case 0:
+    default:
+    {
+      *red=(double) QuantumRange*(min+c);
+      *green=(double) QuantumRange*(min+x);
+      *blue=(double) QuantumRange*min;
+      break;
+    }
+    case 1:
+    {
+      *red=(double) QuantumRange*(min+x);
+      *green=(double) QuantumRange*(min+c);
+      *blue=(double) QuantumRange*min;
+      break;
+    }
+    case 2:
+    {
+      *red=(double) QuantumRange*min;
+      *green=(double) QuantumRange*(min+c);
+      *blue=(double) QuantumRange*(min+x);
+      break;
+    }
+    case 3:
+    {
+      *red=(double) QuantumRange*min;
+      *green=(double) QuantumRange*(min+x);
+      *blue=(double) QuantumRange*(min+c);
+      break;
+    }
+    case 4:
+    {
+      *red=(double) QuantumRange*(min+x);
+      *green=(double) QuantumRange*min;
+      *blue=(double) QuantumRange*(min+c);
+      break;
+    }
+    case 5:
+    {
+      *red=(double) QuantumRange*(min+c);
+      *green=(double) QuantumRange*min;
+      *blue=(double) QuantumRange*(min+x);
+      break;
+    }
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n v e r t R G B T o H S L                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertRGBToHSL() transforms a (red, green, blue) to a (hue, saturation,
+%  lightness) triple.
+%
+%  The format of the ConvertRGBToHSL method is:
+%
+%      void ConvertRGBToHSL(const double red,const double green,
+%        const double blue,double *hue,double *saturation,double *lightness)
+%
+%  A description of each parameter follows:
+%
+%    o red, green, blue: A Quantum value representing the red, green, and
+%      blue component of a pixel..
+%
+%    o hue, saturation, lightness: A pointer to a double value representing a
+%      component of the HSL color space.
+%
+*/
+MagickExport void ConvertRGBToHSL(const double red,const double green,
+  const double blue,double *hue,double *saturation,double *lightness)
+{
+  double
+    c,
+    max,
+    min;
+
+  /*
+    Convert RGB to HSL colorspace.
+  */
+  assert(hue != (double *) NULL);
+  assert(saturation != (double *) NULL);
+  assert(lightness != (double *) NULL);
+  max=MagickMax(QuantumScale*red,MagickMax(QuantumScale*green,
+    QuantumScale*blue));
+  min=MagickMin(QuantumScale*red,MagickMin(QuantumScale*green,
+    QuantumScale*blue));
+  c=max-min;
+  *lightness=(max+min)/2.0;
+  if (c <= 0.0)
+    {
+      *hue=0.0;
+      *saturation=0.0;
+      return;
+    }
+  if (fabs(max-QuantumScale*red) < MagickEpsilon)
+    {
+      *hue=(QuantumScale*green-QuantumScale*blue)/c;
+      if ((QuantumScale*green) < (QuantumScale*blue))
+        *hue+=6.0;
+    }
+  else
+    if (fabs(max-QuantumScale*green) < MagickEpsilon)
+      *hue=2.0+(QuantumScale*blue-QuantumScale*red)/c;
+    else
+      *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
+  *hue*=60.0/360.0;
+  if (*lightness <= 0.5)
+    *saturation=c*PerceptibleReciprocal(2.0*(*lightness));
+  else
+    *saturation=c*PerceptibleReciprocal(2.0-2.0*(*lightness));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e C o l o r s p a c e T y p e                               %
 %                                                                             %
 %                                                                             %
@@ -168,357 +339,6 @@ MagickExport ColorspaceType GetImageColorspaceType(const Image *image,
 %   o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline void ConvertAdobe98ToRGB(const double r,const double g,
-  const double b,double *red,double *green,double *blue)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertAdobe98ToXYZ(r,g,b,&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,green,blue);
-}
-
-static inline void ConvertDisplayP3ToRGB(const double r,const double g,
-  const double b,double *red,double *green,double *blue)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertDisplayP3ToXYZ(r,g,b,&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,green,blue);
-}
-
-static inline void ConvertProPhotoToRGB(const double r,const double g,
-  const double b,double *red,double *green,double *blue)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertProPhotoToXYZ(r,g,b,&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,green,blue);
-}
-
-static inline void ConvertRGBToCMY(const double red,const double green,
-  const double blue,double *cyan,double *magenta,double *yellow)
-{
-  *cyan=QuantumScale*((double) QuantumRange-red);
-  *magenta=QuantumScale*((double) QuantumRange-green);
-  *yellow=QuantumScale*((double) QuantumRange-blue);
-}
-
-static void ConvertRGBToAdobe98(const double red,const double green,
-  const double blue,double *r,double *g,double *b)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToAdobe98(X,Y,Z,r,g,b);
-}
-
-static void ConvertRGBToDisplayP3(const double red,const double green,
-  const double blue,double *r,double *g,double *b)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToDisplayP3(X,Y,Z,r,g,b);
-}
-
-static void ConvertRGBToProPhoto(const double red,const double green,
-  const double blue,double *r,double *g,double *b)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToProPhoto(X,Y,Z,r,g,b);
-}
-
-static inline void ConvertXYZToLMS(const double x,const double y,
-  const double z,double *L,double *M,double *S)
-{
-  *L=0.7328*x+0.4296*y-0.1624*z;
-  *M=(-0.7036*x+1.6975*y+0.0061*z);
-  *S=0.0030*x+0.0136*y+0.9834*z;
-}
-
-static void ConvertRGBToLMS(const double red,const double green,
-  const double blue,double *L,double *M,double *S)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLMS(X,Y,Z,L,M,S);
-}
-
-static void ConvertRGBToLuv(const double red,const double green,
-  const double blue,const IlluminantType illuminant,double *L,double *u,
-  double *v)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  ConvertXYZToLuv(X,Y,Z,illuminant,L,u,v);
-}
-
-static void ConvertRGBToxyY(const double red,const double green,
-  const double blue,double *low_x,double *low_y,double *cap_Y)
-{
-  double
-    gamma,
-    X,
-    Y,
-    Z;
-
-  ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  gamma=PerceptibleReciprocal(X+Y+Z);
-  *low_x=gamma*X;
-  *low_y=gamma*Y;
-  *cap_Y=Y;
-}
-
-static inline void ConvertXYZToJzazbz(const double X,const double Y,
-  const double Z,const double white_luminance,double *Jz,double *az,double *bz)
-{
-#define Jzazbz_b  1.15  /* https://observablehq.com/@jrus/jzazbz */
-#define Jzazbz_g  0.66
-#define Jzazbz_c1  (3424.0/4096.0)
-#define Jzazbz_c2  (2413.0/128.0)
-#define Jzazbz_c3  (2392.0/128.0)
-#define Jzazbz_n  (2610.0/16384.0)
-#define Jzazbz_p  (1.7*2523.0/32.0)
-#define Jzazbz_d  (-0.56)
-#define Jzazbz_d0  (1.6295499532821566e-11)
-
-  double
-    gamma,
-    Iz,
-    L,
-    Lp,
-    M,
-    Mp,
-    S,
-    Sp,
-    Xp,
-    Yp,
-    Zp;
-
-  Xp=(Jzazbz_b*X-(Jzazbz_b-1)*Z);
-  Yp=(Jzazbz_g*Y-(Jzazbz_g-1)*X);
-  Zp=Z;
-  L=0.41478972*Xp+0.579999*Yp+0.0146480*Zp;
-  M=(-0.2015100)*Xp+1.120649*Yp+0.0531008*Zp;
-  S=(-0.0166008)*Xp+0.264800*Yp+0.6684799*Zp;
-  gamma=pow(L*PerceptibleReciprocal(white_luminance),Jzazbz_n);
-  Lp=pow((Jzazbz_c1+Jzazbz_c2*gamma)/(1.0+Jzazbz_c3*gamma),Jzazbz_p);
-  gamma=pow(M*PerceptibleReciprocal(white_luminance),Jzazbz_n);
-  Mp=pow((Jzazbz_c1+Jzazbz_c2*gamma)/(1.0+Jzazbz_c3*gamma),Jzazbz_p);
-  gamma=pow(S*PerceptibleReciprocal(white_luminance),Jzazbz_n);
-  Sp=pow((Jzazbz_c1+Jzazbz_c2*gamma)/(1.0+Jzazbz_c3*gamma),Jzazbz_p);
-  Iz=0.5*Lp+0.5*Mp;
-  *az=3.52400*Lp-4.066708*Mp+0.542708*Sp+0.5;
-  *bz=0.199076*Lp+1.096799*Mp-1.295875*Sp+0.5;
-  *Jz=((Jzazbz_d+1.0)*Iz)/(Jzazbz_d*Iz+1.0)-Jzazbz_d0;
-}
-
-static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
-  const double bz,const double white_luminance,double *X,double *Y,double *Z)
-{
-  double
-    azz,
-    bzz,
-    gamma,
-    Iz,
-    L,
-    Lp,
-    M,
-    Mp,
-    S,
-    Sp,
-    Xp,
-    Yp,
-    Zp;
-
-  gamma=Jz+Jzazbz_d0;
-  Iz=gamma/(Jzazbz_d-Jzazbz_d*gamma+1.0);
-  azz=az-0.5;
-  bzz=bz-0.5;
-  Lp=Iz+0.138605043271539*azz+0.0580473161561189*bzz;
-  Mp=Iz-0.138605043271539*azz-0.0580473161561189*bzz;
-  Sp=Iz-0.0960192420263189*azz-0.811891896056039*bzz;
-  gamma=pow(Lp,1.0/Jzazbz_p);
-  L=white_luminance*pow((Jzazbz_c1-gamma)/(Jzazbz_c3*gamma-Jzazbz_c2),1.0/
-    Jzazbz_n);
-  gamma=pow(Mp,1.0/Jzazbz_p);
-  M=white_luminance*pow((Jzazbz_c1-gamma)/(Jzazbz_c3*gamma-Jzazbz_c2),1.0/
-    Jzazbz_n);
-  gamma=pow(Sp,1.0/Jzazbz_p);
-  S=white_luminance*pow((Jzazbz_c1-gamma)/(Jzazbz_c3*gamma-Jzazbz_c2),1.0/
-    Jzazbz_n);
-  Xp=1.92422643578761*L-1.00479231259537*M+0.037651404030618*S;
-  Yp=0.350316762094999*L+0.726481193931655*M-0.065384422948085*S;
-  Zp=(-0.0909828109828476)*L-0.312728290523074*M+1.52276656130526*S;
-  *X=(Xp+(Jzazbz_b-1.0)*Zp)/Jzazbz_b;
-  *Y=(Yp+(Jzazbz_g-1.0)**X)/Jzazbz_g;
-  *Z=Zp;
-}
-
-static void ConvertRGBToJzazbz(const double red,const double green,
-  const double blue,const double white_luminance,double *Jz,double *az,
-  double *bz)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertRGBToXYZ(red,blue,green,&X,&Y,&Z);
-  ConvertXYZToJzazbz(X,Y,Z,white_luminance,Jz,az,bz);
-}
-
-static void ConvertJzazbzToRGB(const double Jz,const double az,
-  const double bz,const double white_luminance,double *red,double *green,
-  double *blue)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertJzazbzToXYZ(Jz,az,bz,white_luminance,&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,blue,green);
-}
-
-static inline void ConvertOklabToRGB(const double L,const double a,
-  const double b,double *red,double *green,double *blue)
-{
-  double
-    B,
-    G,
-    l,
-    m,
-    R,
-    s;
-
-  l=L+0.3963377774*(a-0.5)+0.2158037573*(b-0.5);
-  m=L-0.1055613458*(a-0.5)-0.0638541728*(b-0.5);
-  s=L-0.0894841775*(a-0.5)-1.2914855480*(b-0.5);
-  l*=l*l;
-  m*=m*m;
-  s*=s*s;
-  R=4.0767416621*l-3.3077115913*m+0.2309699292*s;
-  G=(-1.2684380046)*l+2.6097574011*m-0.3413193965*s;
-  B=(-0.0041960863)*l-0.7034186147*m+1.7076147010*s;
-  *red=EncodePixelGamma((double) QuantumRange*R);
-  *green=EncodePixelGamma((double) QuantumRange*G);
-  *blue=EncodePixelGamma((double) QuantumRange*B);
-}
-
-static void ConvertRGBToOklab(const double red,const double green,
-  const double blue,double *L,double *a,double *b)
-{
-  double
-    B,
-    G,
-    l,
-    m,
-    R,
-    s;
-
-  R=QuantumScale*DecodePixelGamma(red);
-  G=QuantumScale*DecodePixelGamma(green);
-  B=QuantumScale*DecodePixelGamma(blue);
-  l=cbrt(0.4122214708*R+0.5363325363*G+0.0514459929*B);
-  m=cbrt(0.2119034982*R+0.6806995451*G+0.1073969566*B);
-  s=cbrt(0.0883024619*R+0.2817188376*G+0.6299787005*B);
-  *L=0.2104542553*l+0.7936177850*m-0.0040720468*s;
-  *a=1.9779984951*l-2.4285922050*m+0.4505937099*s+0.5;
-  *b=0.0259040371*l+0.7827717662*m-0.8086757660*s+0.5;
-}
-
-static inline void ConvertOklchToRGB(const double L,const double C,
-  const double h,double *red,double *green,double *blue)
-{
-  double
-    a,
-    b;
-
-  a=C*cos(2.0*MagickPI*h);
-  b=C*sin(2.0*MagickPI*h);
-  ConvertOklabToRGB(L,a,b,red,green,blue);
-}
-
-static void ConvertRGBToOklch(const double red,const double green,
-  const double blue,double *L,double *C,double *h)
-{
-  double
-    a,
-    b;
-
-  ConvertRGBToOklab(red,green,blue,L,&a,&b);
-  *C=sqrt(a*a+b*b);
-  *h=0.5+0.5*atan2(-b,-a)/MagickPI;
-}
-
-static void ConvertRGBToYDbDr(const double red,const double green,
-  const double blue,double *Y,double *Db,double *Dr)
-{
-  *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
-  *Db=QuantumScale*(-0.450*red-0.883*green+1.333*blue)+0.5;
-  *Dr=QuantumScale*(-1.333*red+1.116*green+0.217*blue)+0.5;
-}
-
-static void ConvertRGBToYIQ(const double red,const double green,
-  const double blue,double *Y,double *I,double *Q)
-{
-  *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
-  *I=QuantumScale*(0.595716*red-0.274453*green-0.321263*blue)+0.5;
-  *Q=QuantumScale*(0.211456*red-0.522591*green+0.311135*blue)+0.5;
-}
-
-static void ConvertRGBToYPbPr(const double red,const double green,
-  const double blue,double *Y,double *Pb,double *Pr)
-{
-  *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
-  *Pb=QuantumScale*((-0.1687367)*red-0.331264*green+0.5*blue)+0.5;
-  *Pr=QuantumScale*(0.5*red-0.418688*green-0.081312*blue)+0.5;
-}
-
-static void ConvertRGBToYCbCr(const double red,const double green,
-  const double blue,double *Y,double *Cb,double *Cr)
-{
-  ConvertRGBToYPbPr(red,green,blue,Y,Cb,Cr);
-}
-
-static void ConvertRGBToYUV(const double red,const double green,
-  const double blue,double *Y,double *U,double *V)
-{
-  *Y=QuantumScale*(0.298839*red+0.586811*green+0.114350*blue);
-  *U=QuantumScale*((-0.147)*red-0.289*green+0.436*blue)+0.5;
-  *V=QuantumScale*(0.615*red-0.515*green-0.100*blue)+0.5;
-}
-
 static MagickBooleanType sRGBTransformImage(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
@@ -831,157 +651,13 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
-            blue,
-            green,
-            red,
             X,
             Y,
             Z;
 
-          red=(double) GetPixelRed(image,q);
-          green=(double) GetPixelGreen(image,q);
-          blue=(double) GetPixelBlue(image,q);
-          switch (colorspace)
-          {
-            case Adobe98Colorspace:
-            {
-              ConvertRGBToAdobe98(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case CMYColorspace:
-            {
-              ConvertRGBToCMY(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case DisplayP3Colorspace:
-            {
-              ConvertRGBToDisplayP3(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case HCLColorspace:
-            {
-              ConvertRGBToHCL(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case HCLpColorspace:
-            {
-              ConvertRGBToHCLp(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case HSBColorspace:
-            {
-              ConvertRGBToHSB(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case HSIColorspace:
-            {
-              ConvertRGBToHSI(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case HSLColorspace:
-            {
-              ConvertRGBToHSL(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case HSVColorspace:
-            {
-              ConvertRGBToHSV(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case HWBColorspace:
-            {
-              ConvertRGBToHWB(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case JzazbzColorspace:
-            {
-              ConvertRGBToJzazbz(red,green,blue,white_luminance,&X,&Y,&Z);
-              break;
-            }
-            case LabColorspace:
-            {
-              ConvertRGBToLab(red,green,blue,illuminant,&X,&Y,&Z);
-              break;
-            }
-            case LCHColorspace:
-            case LCHabColorspace:
-            {
-              ConvertRGBToLCHab(red,green,blue,illuminant,&X,&Y,&Z);
-              break;
-            }
-            case LCHuvColorspace:
-            {
-              ConvertRGBToLCHuv(red,green,blue,illuminant,&X,&Y,&Z);
-              break;
-            }
-            case LMSColorspace:
-            {
-              ConvertRGBToLMS(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case LuvColorspace:
-            {
-              ConvertRGBToLuv(red,green,blue,illuminant,&X,&Y,&Z);
-              break;
-            }
-            case OklabColorspace:
-            {
-              ConvertRGBToOklab(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case OklchColorspace:
-            {
-              ConvertRGBToOklch(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case ProPhotoColorspace:
-            {
-              ConvertRGBToProPhoto(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case xyYColorspace:
-            {
-              ConvertRGBToxyY(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case XYZColorspace:
-            {
-              ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case YCbCrColorspace:
-            {
-              ConvertRGBToYCbCr(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case YDbDrColorspace:
-            {
-              ConvertRGBToYDbDr(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case YIQColorspace:
-            {
-              ConvertRGBToYIQ(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case YPbPrColorspace:
-            {
-              ConvertRGBToYPbPr(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            case YUVColorspace:
-            {
-              ConvertRGBToYUV(red,green,blue,&X,&Y,&Z);
-              break;
-            }
-            default:
-            {
-              X=QuantumScale*red;
-              Y=QuantumScale*green;
-              Z=QuantumScale*blue;
-              break;
-            }
-          }
+          ConvertRGBToGeneric(colorspace,(double) GetPixelRed(image,q),
+            (double) GetPixelGreen(image,q),(double) GetPixelBlue(image,q),
+            white_luminance,illuminant,&X,&Y,&Z);
           SetPixelRed(image,ClampToQuantum((double) QuantumRange*X),q);
           SetPixelGreen(image,ClampToQuantum((double) QuantumRange*Y),q);
           SetPixelBlue(image,ClampToQuantum((double) QuantumRange*Z),q);
@@ -1755,47 +1431,6 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 %
 */
 
-static inline void ConvertCMYToRGB(const double cyan,const double magenta,
-  const double yellow,double *red,double *green,double *blue)
-{
-	*red=(double) QuantumRange*(1.0-cyan);
-  *green=(double) QuantumRange*(1.0-magenta);
-  *blue=(double) QuantumRange*(1.0-yellow);
-}
-
-static inline void ConvertLMSToXYZ(const double L,const double M,const double S,
-  double *X,double *Y,double *Z)
-{
-  *X=1.096123820835514*L-0.278869000218287*M+0.182745179382773*S;
-  *Y=0.454369041975359*L+0.473533154307412*M+0.072097803717229*S;
-  *Z=(-0.009627608738429)*L-0.005698031216113*M+1.015325639954543*S;
-}
-
-static inline void ConvertLMSToRGB(const double L,const double M,
-  const double S,double *red,double *green,double *blue)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertLMSToXYZ(L,M,S,&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,green,blue);
-}
-
-static inline void ConvertLuvToRGB(const double L,const double u,
-  const double v,const IlluminantType illuminant,double *red,double *green,
-  double *blue)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertLuvToXYZ(100.0*L,354.0*u-134.0,262.0*v-140.0,illuminant,&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,green,blue);
-}
-
 static inline ssize_t RoundToYCC(const double value)
 {
   if (value <= 0.0)
@@ -1803,85 +1438,6 @@ static inline ssize_t RoundToYCC(const double value)
   if (value >= 1388.0)
     return(1388);
   return((ssize_t) (value+0.5));
-}
-
-static inline void ConvertLabToRGB(const double L,const double a,
-  const double b,const IlluminantType illuminant,double *red,double *green,
-  double *blue)
-{
-  double
-    X,
-    Y,
-    Z;
-
-  ConvertLabToXYZ(100.0*L,255.0*(a-0.5),255.0*(b-0.5),illuminant,&X,&Y,&Z);
-  ConvertXYZToRGB(X,Y,Z,red,green,blue);
-}
-
-static inline void ConvertxyYToRGB(const double low_x,const double low_y,
-  const double cap_Y,double *red,double *green,double *blue)
-{
-  double
-    gamma,
-    X,
-    Y,
-    Z;
-
-  gamma=PerceptibleReciprocal(low_y);
-  X=gamma*cap_Y*low_x;
-  Y=cap_Y;
-  Z=gamma*cap_Y*(1.0-low_x-low_y);
-  ConvertXYZToRGB(X,Y,Z,red,green,blue);
-}
-
-static void ConvertYPbPrToRGB(const double Y,const double Pb,const double Pr,
-  double *red,double *green,double *blue)
-{
-  *red=(double) QuantumRange*(0.99999999999914679361*Y-1.2188941887145875e-06*
-    (Pb-0.5)+1.4019995886561440468*(Pr-0.5));
-  *green=(double) QuantumRange*(0.99999975910502514331*Y-0.34413567816504303521*
-    (Pb-0.5)-0.71413649331646789076*(Pr-0.5));
-  *blue=(double) QuantumRange*(1.00000124040004623180*Y+1.77200006607230409200*
-    (Pb-0.5)+2.1453384174593273e-06*(Pr-0.5));
-}
-
-static void ConvertYCbCrToRGB(const double Y,const double Cb,
-  const double Cr,double *red,double *green,double *blue)
-{
-  ConvertYPbPrToRGB(Y,Cb,Cr,red,green,blue);
-}
-
-static void ConvertYIQToRGB(const double Y,const double I,const double Q,
-  double *red,double *green,double *blue)
-{
-  *red=(double) QuantumRange*(Y+0.9562957197589482261*(I-0.5)+0.6210244164652610754*
-    (Q-0.5));
-  *green=(double) QuantumRange*(Y-0.2721220993185104464*(I-0.5)-0.6473805968256950427*
-    (Q-0.5));
-  *blue=(double) QuantumRange*(Y-1.1069890167364901945*(I-0.5)+1.7046149983646481374*
-    (Q-0.5));
-}
-
-static void ConvertYDbDrToRGB(const double Y,const double Db,const double Dr,
-  double *red,double *green,double *blue)
-{
-  *red=(double) QuantumRange*(Y+9.2303716147657e-05*(Db-0.5)-
-    0.52591263066186533*(Dr-0.5));
-  *green=(double) QuantumRange*(Y-0.12913289889050927*(Db-0.5)+
-    0.26789932820759876*(Dr-0.5));
-  *blue=(double) QuantumRange*(Y+0.66467905997895482*(Db-0.5)-
-    7.9202543533108e-05*(Dr-0.5));
-}
-
-static void ConvertYUVToRGB(const double Y,const double U,const double V,
-  double *red,double *green,double *blue)
-{
-  *red=(double) QuantumRange*(Y-3.945707070708279e-05*(U-0.5)+
-    1.1398279671717170825*(V-0.5));
-  *green=(double) QuantumRange*(Y-0.3946101641414141437*(U-0.5)-
-    0.5805003156565656797*(V-0.5));
-  *blue=(double) QuantumRange*(Y+2.0319996843434342537*(U-0.5)-
-    4.813762626262513e-04*(V-0.5));
 }
 
 static MagickBooleanType TransformsRGBImage(Image *image,
@@ -2431,155 +1987,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           double
             blue,
             green,
-            red,
-            X,
-            Y,
-            Z;
+            red;
 
-          X=QuantumScale*(double) GetPixelRed(image,q);
-          Y=QuantumScale*(double) GetPixelGreen(image,q);
-          Z=QuantumScale*(double) GetPixelBlue(image,q);
-          switch (image->colorspace)
-          {
-            case Adobe98Colorspace:
-            {
-              ConvertAdobe98ToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case CMYColorspace:
-            {
-              ConvertCMYToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case DisplayP3Colorspace:
-            {
-              ConvertDisplayP3ToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case HCLColorspace:
-            {
-              ConvertHCLToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case HCLpColorspace:
-            {
-              ConvertHCLpToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case HSBColorspace:
-            {
-              ConvertHSBToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case HSIColorspace:
-            {
-              ConvertHSIToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case HSLColorspace:
-            {
-              ConvertHSLToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case HSVColorspace:
-            {
-              ConvertHSVToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case HWBColorspace:
-            {
-              ConvertHWBToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case JzazbzColorspace:
-            {
-              ConvertJzazbzToRGB(X,Y,Z,white_luminance,&red,&green,&blue);
-              break;
-            }
-            case LabColorspace:
-            {
-              ConvertLabToRGB(X,Y,Z,illuminant,&red,&green,&blue);
-              break;
-            }
-            case LCHColorspace:
-            case LCHabColorspace:
-            {
-              ConvertLCHabToRGB(X,Y,Z,illuminant,&red,&green,&blue);
-              break;
-            }
-            case LCHuvColorspace:
-            {
-              ConvertLCHuvToRGB(X,Y,Z,illuminant,&red,&green,&blue);
-              break;
-            }
-            case LMSColorspace:
-            {
-              ConvertLMSToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case LuvColorspace:
-            {
-              ConvertLuvToRGB(X,Y,Z,illuminant,&red,&green,&blue);
-              break;
-            }
-            case OklabColorspace:
-            {
-              ConvertOklabToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case OklchColorspace:
-            {
-              ConvertOklchToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case ProPhotoColorspace:
-            {
-              ConvertProPhotoToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case xyYColorspace:
-            {
-              ConvertxyYToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case XYZColorspace:
-            {
-              ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case YCbCrColorspace:
-            {
-              ConvertYCbCrToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case YDbDrColorspace:
-            {
-              ConvertYDbDrToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case YIQColorspace:
-            {
-              ConvertYIQToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case YPbPrColorspace:
-            {
-              ConvertYPbPrToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            case YUVColorspace:
-            {
-              ConvertYUVToRGB(X,Y,Z,&red,&green,&blue);
-              break;
-            }
-            default:
-            {
-              red=(double) QuantumRange*X;
-              green=(double) QuantumRange*Y;
-              blue=(double) QuantumRange*Z;
-              break;
-            }
-          }
+          ConvertGenericToRGB(image->colorspace,QuantumScale*
+            GetPixelRed(image,q),QuantumScale*GetPixelGreen(image,q),
+            QuantumScale*GetPixelBlue(image,q),white_luminance,illuminant,
+            &red,&green,&blue);
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
           SetPixelBlue(image,ClampToQuantum(blue),q);
