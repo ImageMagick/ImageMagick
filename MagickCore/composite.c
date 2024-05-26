@@ -3051,11 +3051,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(canvas_pixel.red,canvas_pixel.green,canvas_pixel.blue,
-              &hue,&chroma,&luma);
-            CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
-              &hue,&sans,&sans);
-            HCLComposite(hue,chroma,luma,&red,&green,&blue);
+            ConvertRGBToGeneric(colorspace,(double) canvas_pixel.red,
+              (double) canvas_pixel.green,(double) canvas_pixel.blue,
+              white_luminance,illuminant,&hue,&chroma,&luma);
+            ConvertRGBToGeneric(colorspace,(double) source_pixel.red,
+              (double) source_pixel.green,(double) source_pixel.blue,
+              white_luminance,illuminant,&hue,&sans,&sans);
+            ConvertGenericToRGB(colorspace,hue,chroma,luma,
+              white_luminance,illuminant,&red,&green,&blue);
             switch (channel)
             {
               case RedPixelChannel: pixel=red; break;
@@ -3146,11 +3149,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(canvas_pixel.red,canvas_pixel.green,canvas_pixel.blue,
-              &hue,&chroma,&luma);
-            CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
-              &sans,&sans,&luma);
-            HCLComposite(hue,chroma,luma,&red,&green,&blue);
+            ConvertRGBToGeneric(colorspace,(double) canvas_pixel.red,
+              (double) canvas_pixel.green,(double) canvas_pixel.blue,
+              white_luminance,illuminant,&hue,&chroma,&luma);
+            ConvertRGBToGeneric(colorspace,(double) source_pixel.red,
+              (double) source_pixel.green,(double) source_pixel.blue,
+              white_luminance,illuminant,&sans,&sans,&luma);
+            ConvertGenericToRGB(colorspace,hue,chroma,luma,
+              white_luminance,illuminant,&red,&green,&blue);
             switch (channel)
             {
               case RedPixelChannel: pixel=red; break;
@@ -3233,11 +3239,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Dc;
                 break;
               }
-            CompositeHCL(canvas_pixel.red,canvas_pixel.green,canvas_pixel.blue,
-              &hue,&chroma,&luma);
+            ConvertRGBToGeneric(colorspace,(double) canvas_pixel.red,
+              (double) canvas_pixel.green,(double) canvas_pixel.blue,
+              white_luminance,illuminant,&hue,&chroma,&luma);
             luma+=(0.01*percent_luma*offset)/midpoint;
             chroma*=0.01*percent_chroma;
-            HCLComposite(hue,chroma,luma,&red,&green,&blue);
+            ConvertGenericToRGB(colorspace,hue,chroma,luma,
+              white_luminance,illuminant,&red,&green,&blue);
             switch (channel)
             {
               case RedPixelChannel: pixel=red; break;
@@ -3419,11 +3427,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(canvas_pixel.red,canvas_pixel.green,canvas_pixel.blue,
-              &hue,&chroma,&luma);
-            CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
-              &sans,&chroma,&sans);
-            HCLComposite(hue,chroma,luma,&red,&green,&blue);
+            ConvertRGBToGeneric(colorspace,(double) canvas_pixel.red,
+              (double) canvas_pixel.green,(double) canvas_pixel.blue,
+              white_luminance,illuminant,&hue,&chroma,&luma);
+            ConvertRGBToGeneric(colorspace,(double) source_pixel.red,
+              (double) source_pixel.green,(double) source_pixel.blue,
+              white_luminance,illuminant,&sans,&chroma,&sans);
+            ConvertGenericToRGB(colorspace,hue,chroma,luma,
+              white_luminance,illuminant,&red,&green,&blue);
             switch (channel)
             {
               case RedPixelChannel: pixel=red; break;
