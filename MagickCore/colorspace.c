@@ -121,7 +121,7 @@ static MagickBooleanType
 */
 MagickPrivate void ConvertGenericToRGB(const ColorspaceType colorspace,
   const double X,const double Y,const double Z,const double white_luminance,
-  const double illuminant,double *red,double *green,double *blue)
+  const IlluminantType illuminant,double *red,double *green,double *blue)
 {
   switch (colorspace)
   {
@@ -399,8 +399,8 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
 */
 MagickPrivate void ConvertRGBToGeneric(const ColorspaceType colorspace,
   const double red,const double green,const double blue,
-  const double white_luminance,const double illuminant,double *X,double *Y,
-  double *Z)
+  const double white_luminance,const IlluminantType illuminant,double *X,
+  double *Y,double *Z)
 {
   switch (colorspace)
   {

@@ -1636,9 +1636,9 @@ static inline MagickBooleanType IsYCbCrCompatibleColorspace(
 
 extern MagickPrivate void
   ConvertGenericToRGB(const ColorspaceType,const double,const double,
-    const double,const double,const double,double *,double *,double *),
+    const double,const double,const IlluminantType,double *,double *,double *),
   ConvertRGBToGeneric(const ColorspaceType,const double,const double,
-    const double,const double,const double,double *,double *,double *);
+    const double,const double,const IlluminantType,double *,double *,double *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
