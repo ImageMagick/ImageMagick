@@ -1543,13 +1543,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
               }
             code=(int) lzma_code(&lzma_info,LZMA_RUN);
-            if ((code != LZMA_OK) && (code != LZMA_STREAM_END))
+            if (code == LZMA_STREAM_END)
+              break;
+            if (code != LZMA_OK)
               {
                 status=MagickFalse;
                 break;
               }
-            if (code == LZMA_STREAM_END)
-              break;
           } while (lzma_info.avail_out != 0);
           extent=ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
             quantum_type,pixels,exception);
