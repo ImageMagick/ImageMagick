@@ -84,8 +84,7 @@
 %
 %  ImportQuantumPixels() transfers one or more pixel components from a user
 %  supplied buffer into the image pixel cache of an image.  The pixels are
-%  expected in network byte order.  It returns MagickTrue if the pixels are
-%  successfully transferred, otherwise MagickFalse.
+%  expected in network byte order.  It returns the number of imported pixels.
 %
 %  The format of the ImportQuantumPixels method is:
 %

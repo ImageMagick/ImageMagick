@@ -84,8 +84,7 @@
 %
 %  ExportQuantumPixels() transfers one or more pixel components from the image
 %  pixel cache to a user supplied buffer.  The pixels are returned in network
-%  byte order.  MagickTrue is returned if the pixels are successfully
-%  transferred, otherwise MagickFalse.
+%  byte order.  It returns the number of exported pixels.
 %
 %  The format of the ExportQuantumPixels method is:
 %
