@@ -966,12 +966,11 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         *value;
 
       double
-        white_luminance;
+        white_luminance = 10000.0;
 
       /*
         Transform image from sRGB to target colorspace.
       */
-      white_luminance=10000.0;
       value=GetImageProperty(image,"white-luminance",exception);
       if (value != (const char *) NULL)
         white_luminance=StringToDouble(value,(char **) NULL);

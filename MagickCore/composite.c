@@ -74,6 +74,7 @@
 #include "MagickCore/resample.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/token.h"
@@ -913,46 +914,6 @@ static MagickBooleanType BlendRMSEResidual(const Image *alpha_image,
   return(status);
 }
 
-static void CompositeHCL(const MagickRealType red,const MagickRealType green,
-  const MagickRealType blue,MagickRealType *hue,MagickRealType *chroma,
-  MagickRealType *luma)
-{
-  MagickRealType
-    b,
-    c,
-    g,
-    h,
-    max,
-    r;
-
-  /*
-    Convert RGB to HCL colorspace.
-  */
-  assert(hue != (MagickRealType *) NULL);
-  assert(chroma != (MagickRealType *) NULL);
-  assert(luma != (MagickRealType *) NULL);
-  r=red;
-  g=green;
-  b=blue;
-  max=MagickMax(r,MagickMax(g,b));
-  c=max-(MagickRealType) MagickMin(r,MagickMin(g,b));
-  h=0.0;
-  if (c == 0)
-    h=0.0;
-  else
-    if (red == max)
-      h=fmod((g-b)/c+6.0,6.0);
-    else
-      if (green == max)
-        h=((b-r)/c)+2.0;
-      else
-        if (blue == max)
-          h=((r-g)/c)+4.0;
-  *hue=(h/6.0);
-  *chroma=QuantumScale*c;
-  *luma=QuantumScale*(0.298839*r+0.586811*g+0.114350*b);
-}
-
 static MagickBooleanType CompositeOverImage(Image *image,
   const Image *source_image,const MagickBooleanType clip_to_self,
   const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
@@ -1195,72 +1156,6 @@ static MagickBooleanType CompositeOverImage(Image *image,
   source_view=DestroyCacheView(source_view);
   image_view=DestroyCacheView(image_view);
   return(status);
-}
-
-static void HCLComposite(const MagickRealType hue,const MagickRealType chroma,
-  const MagickRealType luma,MagickRealType *red,MagickRealType *green,
-  MagickRealType *blue)
-{
-  MagickRealType
-    b,
-    c,
-    g,
-    h,
-    m,
-    r,
-    x;
-
-  /*
-    Convert HCL to RGB colorspace.
-  */
-  assert(red != (MagickRealType *) NULL);
-  assert(green != (MagickRealType *) NULL);
-  assert(blue != (MagickRealType *) NULL);
-  h=6.0*hue;
-  c=chroma;
-  x=c*(1.0-fabs(fmod(h,2.0)-1.0));
-  r=0.0;
-  g=0.0;
-  b=0.0;
-  if ((0.0 <= h) && (h < 1.0))
-    {
-      r=c;
-      g=x;
-    }
-  else
-    if ((1.0 <= h) && (h < 2.0))
-      {
-        r=x;
-        g=c;
-      }
-    else
-      if ((2.0 <= h) && (h < 3.0))
-        {
-          g=c;
-          b=x;
-        }
-      else
-        if ((3.0 <= h) && (h < 4.0))
-          {
-            g=x;
-            b=c;
-          }
-        else
-          if ((4.0 <= h) && (h < 5.0))
-            {
-              r=x;
-              b=c;
-            }
-          else
-            if ((5.0 <= h) && (h < 6.0))
-              {
-                r=c;
-                b=x;
-              }
-  m=luma-(0.298839*r+0.586811*g+0.114350*b);
-  *red=(double) QuantumRange*(r+m);
-  *green=(double) QuantumRange*(g+m);
-  *blue=(double) QuantumRange*(b+m);
 }
 
 static MagickBooleanType SaliencyBlendImage(Image *image,
@@ -1537,11 +1432,20 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     *source_view,
     *image_view;
 
+  ColorspaceType
+    colorspace = HCLColorspace;
+
   const char
-    *value;
+    *artifact;
+
+  double
+    white_luminance = 10000.0;
 
   GeometryInfo
     geometry_info;
+
+  IlluminantType
+    illuminant = D65Illuminant;
 
   Image
     *canvas_image,
@@ -1592,14 +1496,44 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   amount=0.5;
   canvas_image=(Image *) NULL;
   canvas_dissolve=1.0;
+  white_luminance=10000.0;
+  artifact=GetImageArtifact(image,"compose:white-luminance");
+  if (artifact != (const char *) NULL)
+    white_luminance=StringToDouble(artifact,(char **) NULL);
+  artifact=GetImageArtifact(image,"compose:illuminant");
+  if (artifact != (const char *) NULL)
+    {
+      ssize_t
+        illuminant_type;
+
+      illuminant_type=ParseCommandOption(MagickIlluminantOptions,MagickFalse,
+        artifact);
+      if (illuminant_type < 0)
+        illuminant=UndefinedIlluminant;
+      else
+        illuminant=(IlluminantType) illuminant_type;
+    }
+  artifact=GetImageArtifact(image,"compose:colorspace");
+  if (artifact != (const char *) NULL)
+    {
+      ssize_t
+        colorspace_type;
+
+      colorspace_type=ParseCommandOption(MagickColorspaceOptions,MagickFalse,
+        artifact);
+      if (colorspace_type < 0)
+        colorspace=UndefinedColorspace;
+      else
+        colorspace=(ColorspaceType) colorspace_type;
+    }
   clamp=MagickTrue;
-  value=GetImageArtifact(image,"compose:clamp");
-  if (value != (const char *) NULL)
-    clamp=IsStringTrue(value);
+  artifact=GetImageArtifact(image,"compose:clamp");
+  if (artifact != (const char *) NULL)
+    clamp=IsStringTrue(artifact);
   compose_sync=MagickTrue;
-  value=GetImageArtifact(image,"compose:sync");
-  if (value != (const char *) NULL)
-    compose_sync=IsStringTrue(value);
+  artifact=GetImageArtifact(image,"compose:sync");
+  if (artifact != (const char *) NULL)
+    compose_sync=IsStringTrue(artifact);
   SetGeometryInfo(&geometry_info);
   percent_luma=100.0;
   percent_chroma=100.0;
@@ -1813,13 +1747,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Gather the maximum blur sigma values from user.
       */
       flags=NoValue;
-      value=GetImageArtifact(image,"compose:args");
-      if (value != (const char *) NULL)
-        flags=ParseGeometry(value,&geometry_info);
+      artifact=GetImageArtifact(image,"compose:args");
+      if (artifact != (const char *) NULL)
+        flags=ParseGeometry(artifact,&geometry_info);
       if ((flags & WidthValue) == 0)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-            "InvalidSetting","'%s' '%s'","compose:args",value);
+            "InvalidSetting","'%s' '%s'","compose:args",artifact);
           source_image=DestroyImage(source_image);
           canvas_image=DestroyImage(canvas_image);
           return(MagickFalse);
@@ -1974,9 +1908,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         }
       SetGeometryInfo(&geometry_info);
       flags=NoValue;
-      value=GetImageArtifact(image,"compose:args");
-      if (value != (char *) NULL)
-        flags=ParseGeometry(value,&geometry_info);
+      artifact=GetImageArtifact(image,"compose:args");
+      if (artifact != (char *) NULL)
+        flags=ParseGeometry(artifact,&geometry_info);
       if ((flags & (WidthValue | HeightValue)) == 0 )
         {
           if ((flags & AspectValue) == 0)
@@ -2124,10 +2058,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /*
         Geometry arguments to dissolve factors.
       */
-      value=GetImageArtifact(image,"compose:args");
-      if (value != (char *) NULL)
+      artifact=GetImageArtifact(image,"compose:args");
+      if (artifact != (char *) NULL)
         {
-          flags=ParseGeometry(value,&geometry_info);
+          flags=ParseGeometry(artifact,&geometry_info);
           source_dissolve=geometry_info.rho/100.0;
           canvas_dissolve=1.0;
           if ((source_dissolve-MagickEpsilon) < 0.0)
@@ -2148,10 +2082,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     }
     case BlendCompositeOp:
     {
-      value=GetImageArtifact(image,"compose:args");
-      if (value != (char *) NULL)
+      artifact=GetImageArtifact(image,"compose:args");
+      if (artifact != (char *) NULL)
         {
-          flags=ParseGeometry(value,&geometry_info);
+          flags=ParseGeometry(artifact,&geometry_info);
           source_dissolve=geometry_info.rho/100.0;
           canvas_dissolve=1.0-source_dissolve;
           if ((flags & SigmaValue) != 0)
@@ -2168,10 +2102,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
      size_t
         tick = 100;
 
-      value=GetImageArtifact(image,"compose:args");
-      if (value != (char *) NULL)
+      artifact=GetImageArtifact(image,"compose:args");
+      if (artifact != (char *) NULL)
         {
-          flags=ParseGeometry(value,&geometry_info);
+          flags=ParseGeometry(artifact,&geometry_info);
           iterations=geometry_info.rho;
           if ((flags & SigmaValue) != 0)
             residual_threshold=geometry_info.sigma;
@@ -2189,13 +2123,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         residual_threshold = 0.0002,
         iterations = 400.0;
 
-     size_t
+      size_t
         tick = 100;
 
-      value=GetImageArtifact(image,"compose:args");
-      if (value != (char *) NULL)
+      artifact=GetImageArtifact(image,"compose:args");
+      if (artifact != (char *) NULL)
         {
-          flags=ParseGeometry(value,&geometry_info);
+          flags=ParseGeometry(artifact,&geometry_info);
           iterations=geometry_info.rho;
           if ((flags & SigmaValue) != 0)
             residual_threshold=geometry_info.sigma;
@@ -2218,13 +2152,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         number of values)
       */
       SetGeometryInfo(&geometry_info);
-      value=GetImageArtifact(image,"compose:args");
-      if (value != (char *) NULL)
+      artifact=GetImageArtifact(image,"compose:args");
+      if (artifact != (char *) NULL)
         {
-          flags=ParseGeometry(value,&geometry_info);
+          flags=ParseGeometry(artifact,&geometry_info);
           if (flags == NoValue)
             (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-              "InvalidGeometry","`%s'",value);
+              "InvalidGeometry","`%s'",artifact);
         }
       break;
     }
@@ -2233,10 +2167,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /*
         Determine the luma and chroma scale.
       */
-      value=GetImageArtifact(image,"compose:args");
-      if (value != (char *) NULL)
+      artifact=GetImageArtifact(image,"compose:args");
+      if (artifact != (char *) NULL)
         {
-          flags=ParseGeometry(value,&geometry_info);
+          flags=ParseGeometry(artifact,&geometry_info);
           percent_luma=geometry_info.rho;
           if ((flags & SigmaValue) != 0)
             percent_chroma=geometry_info.sigma;
@@ -2248,10 +2182,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /*
         Determine the amount and threshold.
       */
-      value=GetImageArtifact(image,"compose:args");
-      if (value != (char *) NULL)
+      artifact=GetImageArtifact(image,"compose:args");
+      if (artifact != (char *) NULL)
         {
-          flags=ParseGeometry(value,&geometry_info);
+          flags=ParseGeometry(artifact,&geometry_info);
           amount=geometry_info.rho;
           threshold=geometry_info.sigma;
           if ((flags & SigmaValue) == 0)
@@ -2906,11 +2840,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHCL(canvas_pixel.red,canvas_pixel.green,canvas_pixel.blue,
-              &sans,&sans,&luma);
-            CompositeHCL(source_pixel.red,source_pixel.green,source_pixel.blue,
-              &hue,&chroma,&sans);
-            HCLComposite(hue,chroma,luma,&red,&green,&blue);
+            ConvertRGBToGeneric(colorspace,(double) canvas_pixel.red,
+              (double) canvas_pixel.green,(double) canvas_pixel.blue,
+              white_luminance,illuminant,&sans,&sans,&luma);
+            ConvertRGBToGeneric(colorspace,(double) source_pixel.red,
+              (double) source_pixel.green,(double) source_pixel.blue,
+              white_luminance,illuminant,&hue,&chroma,&sans);
+            ConvertGenericToRGB(colorspace,hue,chroma,luma,
+              white_luminance,illuminant,&red,&green,&blue);
             switch (channel)
             {
               case RedPixelChannel: pixel=red; break;
