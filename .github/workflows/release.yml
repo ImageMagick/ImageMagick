@@ -183,6 +183,7 @@ jobs:
   create_msix:
     name: 'Create Msix ${{matrix.quantum}}${{matrix.hdri_flag}}'
     runs-on: windows-latest
+    environment: release
     needs:
       - version
       - build_windows
