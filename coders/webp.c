@@ -884,10 +884,13 @@ static MagickBooleanType WriteSingleWEBPImage(const ImageInfo *image_info,
   status=WriteSingleWEBPPicture(image_info,image,&picture,&memory_info,
     exception);
   if (status != MagickFalse)
-    status=(MagickBooleanType) WebPEncode(configure,&picture);
-  if (status == MagickFalse)
-    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-      WebPErrorCodeMessage(picture.error_code),"`%s'",image->filename);
+    {
+      status=(MagickBooleanType) WebPEncode(configure,&picture);
+      if (status == MagickFalse)
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,WebPErrorCodeMessage(picture.error_code),"`%s'",
+          image->filename);
+  }
   if (memory_info != (MemoryInfo *) NULL)
     memory_info=RelinquishVirtualMemory(memory_info);
   WebPPictureFree(&picture);
