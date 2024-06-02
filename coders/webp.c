@@ -814,8 +814,11 @@ static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
     *magick_restrict q;
 
 #if WEBP_ENCODER_ABI_VERSION >= 0x0100
-  picture->progress_hook=WebPEncodeProgress;
-  picture->user_data=(void *) image;
+  if (image->progress_monitor != (MagickProgressMonitor) NULL)
+    {
+      picture->progress_hook=WebPEncodeProgress;
+      picture->user_data=(void *) image;
+    }
 #endif
   picture->width=(int) image->columns;
   picture->height=(int) image->rows;
