@@ -156,7 +156,7 @@ jobs:
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
         cd ImageMagick-Windows
-        msbuild IM7.Static.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
+        msbuild IM7.Static.${{matrix.platform}}.sln /m /t:Rebuild /p:Configuration=Release,Platform=${{matrix.platform}}
 
   build_msys2:
     name: Build MSYS2
