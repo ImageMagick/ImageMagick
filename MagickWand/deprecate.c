@@ -552,7 +552,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   (void) FormatLocaleFile(stderr,"WARNING: %s\n",
-        "The convert command is deprecated in IMv7, use \"magick\"\n");
+        "The convert command is deprecated in IMv7, use \"magick\" instead of \"comvert\" or \"magick convert\"\n");
   if (argc == 2)
     {
       option=argv[1];
