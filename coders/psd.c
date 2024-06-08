@@ -2721,6 +2721,26 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         next=next->next;
       }
       profile=DestroyStringInfo(profile);
+      /*
+        Always replicate the color profile to all images.
+      */
+      if ((replicate_profile == MagickFalse) &&
+          (image->next != (Image *) NULL))
+        {
+          const StringInfo
+            *icc_profile;
+
+          icc_profile=GetImageProfile(image,"icc");
+          if (icc_profile != (const StringInfo *) NULL)
+            {
+              next=image->next;
+              while (next != (Image *) NULL)
+              {          
+                (void) SetImageProfile(next,"icc",icc_profile,exception);
+                next=next->next;
+              }
+            }
+        }
     }
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
