@@ -257,19 +257,21 @@ static Image *ReadVIDEOImage(const ImageInfo *image_info,
         GetDelegateCommands(delegate_info),read_info->filename,options,
         read_info->unique);
       options=DestroyString(options);
-      (void) CopyMagickString(read_info->magick,intermediate_format,
-        MagickPathExtent);
-      (void) CopyMagickString(read_info->filename,read_info->unique,
-        MagickPathExtent);
       exit_code=ExternalDelegateCommand(MagickFalse,image_info->verbose,
         command,message,exception);
+      (void) RelinquishUniqueFileResource(read_info->filename);
       if (exit_code == 0)
-        images=ReadImage(read_info,exception);
+        {
+          (void) CopyMagickString(read_info->magick,intermediate_format,
+            MagickPathExtent);
+          (void) CopyMagickString(read_info->filename,read_info->unique,
+            MagickPathExtent);
+          images=ReadImage(read_info,exception);
+        }
       else
         if (*message != '\0')
           (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
             "VideoDelegateFailed","`%s'",message);
-      (void) RelinquishUniqueFileResource(read_info->filename);
       (void) RelinquishUniqueFileResource(read_info->unique);
       if (images != (Image *) NULL)
         for (next=images; next != (Image *) NULL; next=next->next)
