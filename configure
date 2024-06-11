@@ -5197,7 +5197,7 @@ MAGICK_PATCHLEVEL_VERSION=34
 
 MAGICK_VERSION=7.1.1-34
 
-MAGICK_GIT_REVISION=057259c12:20240525
+MAGICK_GIT_REVISION=6f5ae6476:20240610
 
 
 # Substitute library versioning
@@ -5231,7 +5231,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,34
 
-PACKAGE_RELEASE_DATE=2024-05-25
+PACKAGE_RELEASE_DATE=2024-06-10
 
 
 # Ensure that make can run correctly
@@ -34415,6 +34415,12 @@ ac_fn_c_check_func "$LINENO" "mkstemp" "ac_cv_func_mkstemp"
 if test "x$ac_cv_func_mkstemp" = xyes
 then :
   printf "%s\n" "#define HAVE_MKSTEMP 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "mmap" "ac_cv_func_mmap"
+if test "x$ac_cv_func_mmap" = xyes
+then :
+  printf "%s\n" "#define HAVE_MMAP 1" >>confdefs.h
 
 fi
 ac_fn_c_check_func "$LINENO" "munmap" "ac_cv_func_munmap"
