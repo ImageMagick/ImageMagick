@@ -932,9 +932,6 @@ static MagickBooleanType IsTypeTreeInstantiated(ExceptionInfo *exception)
 */
 MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
 {
-  char
-    weight[MagickPathExtent];
-
   const char
     *family,
     *glyphs,
@@ -958,7 +955,6 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
   type_info=GetTypeInfoList("*",&number_fonts,exception);
   if (type_info == (const TypeInfo **) NULL)
     return(MagickFalse);
-  *weight='\0';
   path=(const char *) NULL;
   for (i=0; i < (ssize_t) number_fonts; i++)
   {
@@ -980,13 +976,12 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
     glyphs="unknown";
     if (type_info[i]->glyphs != (char *) NULL)
       glyphs=type_info[i]->glyphs;
-    (void) FormatLocaleString(weight,MagickPathExtent,"%.20g",(double)
-      type_info[i]->weight);
     (void) FormatLocaleFile(file,"  Font: %s\n",name);
     (void) FormatLocaleFile(file,"    family: %s\n",family);
     (void) FormatLocaleFile(file,"    style: %s\n",style);
     (void) FormatLocaleFile(file,"    stretch: %s\n",stretch);
-    (void) FormatLocaleFile(file,"    weight: %s\n",weight);
+    (void) FormatLocaleFile(file,"    weight: %.20g\n",(double)
+      type_info[i]->weight);
     (void) FormatLocaleFile(file,"    glyphs: %s\n",glyphs);
   }
   (void) fflush(file);
