@@ -68,7 +68,7 @@ jobs:
       run: |
         set -e
         export HOMEBREW_NO_AUTO_UPDATE=1
-        brew install automake fftw flif jbigkit libraqm librsvg libtool libxml2 pango
+        brew install automake fftw flif jbigkit librsvg libtool libxml2 pango
 
     - name: Configure ImageMagick
       run: |
