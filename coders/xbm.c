@@ -262,14 +262,15 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     if (sscanf(buffer,"static short %1024s = {",name) == 1)
       version=10;
+    else if (sscanf(buffer,"static unsigned char %1024s = {",name) == 1)
+      version=11;
+    else if (sscanf(buffer,"static char %1024s = {",name) == 1)
+      version=11;
     else
-      if (sscanf(buffer,"static unsigned char %1024s = {",name) == 1)
-        version=11;
-      else
-        if (sscanf(buffer,"static char %1024s = {",name) == 1)
-          version=11;
-        else
-          continue;
+      {
+        offset=TellBlob(image);
+        continue;
+      }
     p=(unsigned char *) strrchr(name,'_');
     if (p == (unsigned char *) NULL)
       p=(unsigned char *) name;
@@ -277,10 +278,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       p++;
     if (LocaleCompare("bits[]",(char *) p) == 0)
       break;
-    offset=TellBlob(image);
   }
-  if (strchr(buffer,'{') != (char *) NULL)
-    (void) SeekBlob(image,offset+(strchr(buffer,'{')-buffer)+1,SEEK_SET);
   /*
     Initialize image structure.
   */
@@ -303,6 +301,9 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
+  p=(unsigned char *) strrchr(buffer,'{');
+  if (p != (unsigned char *) NULL)
+    (void) SeekBlob(image,offset+((char *) p-buffer)+1,SEEK_SET);
   /*
     Initialize hex values.
   */
