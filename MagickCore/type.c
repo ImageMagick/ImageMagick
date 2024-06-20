@@ -748,6 +748,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
     status;
 
   int
+    index,
     slant,
     width,
     weight;
@@ -771,7 +772,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
   FcConfigSetRescanInterval(font_config,0);
   font_set=(FcFontSet *) NULL;
   object_set=FcObjectSetBuild(FC_FULLNAME,FC_FAMILY,FC_STYLE,FC_SLANT,
-    FC_WIDTH,FC_WEIGHT,FC_FILE,(char *) NULL);
+    FC_WIDTH,FC_WEIGHT,FC_FILE,FC_INDEX,(char *) NULL);
   if (object_set != (FcObjectSet *) NULL)
     {
       pattern=FcPatternCreate();
@@ -825,6 +826,9 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
     type_info->name=ConstantString(name);
     (void) SubstituteString(&type_info->name," ","-");
     type_info->family=ConstantString((const char *) family);
+    status=FcPatternGetInteger(font_set->fonts[i],FC_INDEX,0,&index);
+    if (status == FcResultMatch)
+      type_info->face=index;
     status=FcPatternGetInteger(font_set->fonts[i],FC_SLANT,0,&slant);
     type_info->style=NormalStyle;
     if (slant == FC_SLANT_ITALIC)
@@ -983,6 +987,8 @@ MagickExport MagickBooleanType ListTypeInfo(FILE *file,ExceptionInfo *exception)
     (void) FormatLocaleFile(file,"    weight: %.20g\n",(double)
       type_info[i]->weight);
     (void) FormatLocaleFile(file,"    glyphs: %s\n",glyphs);
+    (void) FormatLocaleFile(file,"    index: %d\n",(int)
+      type_info[i]->face);
   }
   (void) fflush(file);
   type_info=(const TypeInfo **) RelinquishMagickMemory((void *) type_info);
