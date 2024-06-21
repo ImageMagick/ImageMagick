@@ -5440,28 +5440,26 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   const CacheView_ *image_view,const PixelInterpolateMethod method,
   const double x,const double y,PixelInfo *pixel,ExceptionInfo *exception)
 {
-  MagickBooleanType
-    status;
+  const Quantum
+    *p;
 
   double
     alpha[16],
     gamma;
 
+  MagickBooleanType
+    status;
+
   PixelInfo
     pixels[16];
 
-  const Quantum
-    *p;
-
-  ssize_t
-    i;
-
-  ssize_t
-    x_offset,
-    y_offset;
-
   PixelInterpolateMethod
     interpolate;
+
+  ssize_t
+    i,
+    x_offset,
+    y_offset;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
