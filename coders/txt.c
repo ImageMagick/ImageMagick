@@ -504,10 +504,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (x-offset,y-offset) (red,green,blue,...) #HEX #CSS
         */
         if (ReadBlobString(image,text) == (char *) NULL)
-          {
-            status=MagickFalse;
-            break;
-          }
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         n=0;
         channels[0]=(double) x;
         channels[1]=(double) y;
@@ -571,7 +568,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     return(DestroyImageList(image));
   return(GetFirstImageInList(image));
 }
-
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
