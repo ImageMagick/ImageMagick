@@ -504,7 +504,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (x-offset,y-offset) (red,green,blue,...) #HEX #CSS
         */
         if (ReadBlobString(image,text) == (char *) NULL)
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
+          {
+            status=MagickFalse;
+            break;
+          }
         n=0;
         channels[0]=(double) x;
         channels[1]=(double) y;
