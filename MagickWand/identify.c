@@ -343,7 +343,15 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
         continue;
       }
     pend=image != (Image *) NULL ? MagickTrue : MagickFalse;
-    image_info->ping=MagickFalse;
+    {
+      const OptionInfo *option_info = GetCommandOptionInfo(option);
+      if (option_info != (const OptionInfo *) NULL)
+        {
+          CommandOptionFlags option_type = option_info->flags;
+          if ((option_type & (SimpleOperatorFlag | ListOperatorFlag)) != 0)
+            image_info->ping=MagickFalse;
+        }
+    }
     switch (*(option+1))
     {
       case 'a':

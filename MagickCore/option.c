@@ -2746,7 +2746,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
 %
 %  The format of the GetCommandOptionInfo method is:
 %
-%      const char **GetCommandOptionInfo(const char *option)
+%      const OptionInfo *GetCommandOptionInfo(const char *option)
 %
 %  A description of each parameter follows:
 %
