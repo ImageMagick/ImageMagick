@@ -344,7 +344,10 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       }
     pend=image != (Image *) NULL ? MagickTrue : MagickFalse;
     {
-      const OptionInfo *option_info = GetCommandOptionInfo(option);
+      const OptionInfo
+        *option_info;
+
+      option_info=GetCommandOptionInfo(option);
       if (option_info != (const OptionInfo *) NULL)
         {
           CommandOptionFlags option_type = option_info->flags;
