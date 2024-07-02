@@ -1,0 +1,293 @@
+name: CMake portable build
+
+on:
+  push:
+    branches:
+      - cmake-portable-build
+      - cmake-testing
+  schedule:
+      # schedule a regular Sunday Mass to check that
+      # everything still works
+      - cron: '30 12 * * 0'
+
+concurrency:
+  group: cmake-${{ github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+
+  conan:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-13, windows-latest]
+        libtype: [shared, static]
+        buildtype: [Release, Debug]
+        exclude:
+          - buildtype: Debug
+            libtype: shared
+          - buildtype: Debug
+            os: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: conanfile.py
+          sparse-checkout-cone-mode: false
+
+      - name: Get conan
+        id : conan
+        uses: turtlebrowser/get-conan@main
+
+      - name: Cache conan artifacts
+        id: conan-artifacts
+        uses: actions/cache@v4
+        with:
+          path: ~/.conan2
+          key: ${{ runner.os }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
+
+      - name: Restart from scratch every Sunday
+        run: rm -rf ~/.conan2
+        shell: bash
+        if: github.event_name == 'schedule'
+
+      - name: Install all delegates
+        run: |
+          conan profile detect || echo ok
+          conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }}
+          echo 'CONAN_TOOLCHAIN=-DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/build/conan_toolchain.cmake"' >> $GITHUB_ENV
+        shell: bash
+
+
+  native:
+
+    runs-on: ${{ matrix.os }}
+    # This build job is self-contained but it will run faster if
+    # the conan job has completed (ie all the artifacts are prebuilt)
+    needs: conan
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-13, windows-latest]
+        libtype: [shared, static]
+        provider: [conan, system, pkgconf]
+        buildtype: [Release, Debug]
+        zeroconf: [zeroconf, support]
+        delegates: [default-delegates]
+        include:
+          - os: ubuntu-latest
+            libtype: static
+            provider: conan
+            buildtype: Release
+            zeroconf: support
+            delegates: custom-delegates
+        exclude:
+          - buildtype: Debug
+            libtype: shared
+          - buildtype: Debug
+            os: windows-latest
+            provider: conan
+          - os: windows-latest
+            provider: pkgconf
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Get Conan (conan/pkgconf)
+      id : conan
+      uses: turtlebrowser/get-conan@main
+      if: matrix.provider == 'conan' || matrix.provider == 'pkgconf'
+
+    - name: Setup Visual Studio (system/pkgconf) (Windows)
+      uses: ilammy/msvc-dev-cmd@v1
+      if: runner.os == 'Windows' && matrix.provider != 'conan'
+
+    - name: Restore conan artifacts from shared cache (conan/pkgconf)
+      id: conan-artifacts
+      uses: actions/cache/restore@v3
+      with:
+        path: ~/.conan2
+        key: ${{ runner.os }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
+      if: matrix.provider == 'conan' || matrix.provider == 'pkgconf'
+
+    - name: Install all delegates (conan)
+      run: |
+        conan profile detect || echo ok
+        conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }}
+        echo 'CONAN_TOOLCHAIN=-DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/build/conan_toolchain.cmake"' >> $GITHUB_ENV
+      shell: bash
+      if: matrix.provider == 'conan'
+
+    # pkgconf also uses conan to build and install all the libraries, but is not integrated with
+    # the CMake bulid - it uses the pkg-config file of each library
+    - name: Install all delegates (pkgconf)
+      run: |
+        conan profile detect || echo ok
+        conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }}
+        echo "PKG_CONFIG_PATH=${{ github.workspace }}/build" >> $GITHUB_ENV
+      shell: bash
+      env:
+        CONAN_GENERATOR: PkgConfigDeps
+      if: matrix.provider == 'pkgconf'
+
+    - name: Generate CMake options
+      shell: bash
+      if: matrix.libtype == 'static'
+      run: echo "LIBTYPE=-DBUILD_SHARED_LIBS=OFF" >> $GITHUB_ENV
+
+    - name: Set zero configuration
+      shell: bash
+      run: echo "ZERO_CONF=-DZERO_CONFIGURATION_SUPPORT=ON" >> $GITHUB_ENV
+      if: matrix.zeroconf == 'zeroconf'
+
+    - name: Set install prefix
+      shell: bash
+      run: echo "INSTALL_PREFIX=${{ github.workspace }}/install" >> $GITHUB_ENV
+
+    - name: Set expected delegates (conan/pkgconfig)
+      shell: bash
+      run: echo "EXPECTED_DELEGATES=bzlib cairo fftw fontconfig freetype heic jbig jng jp2 jpeg lcms lzma openexr png raw tiff webp xml zlib zstd" >> $GITHUB_ENV
+      if: matrix.provider == 'conan' || matrix.provider == 'pkgconf'
+
+    - name: Set custom delegates
+      shell: bash
+      run: |
+        echo "CUSTOM_DELEGATES=-DHASJEMALLOC=ON -DPNG_DELEGATE=OFF" >> $GITHUB_ENV
+        echo "EXPECTED_DELEGATES=jemalloc -png" >> $GITHUB_ENV
+      if: matrix.delegates == 'custom-delegates'
+
+    - name: Generate CMake build
+      shell: bash
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. ${{ env.CONAN_TOOLCHAIN }} -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} ${{ env.LIBTYPE }} \
+          -DCMAKE_INSTALL_PREFIX="${{ env.INSTALL_PREFIX }}" ${{ env.ZERO_CONF }} ${{ env.CUSTOM_DELEGATES }}
+
+    - name: Build
+      run: cmake --build build --config ${{ matrix.buildtype }}
+
+    - name: Install
+      run: cmake --install build --config ${{ matrix.buildtype }}
+
+    - name: Build a simple program
+      shell: bash
+      run: |
+        mkdir -p build-test
+        cd build-test
+        cmake ../tests ${{ env.CONAN_TOOLCHAIN }} -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }}
+        cmake --build . --config ${{ matrix.buildtype }} -j 4
+      env:
+        ImageMagick_ROOT: ${{ env.INSTALL_PREFIX }}/lib/cmake
+
+    - name: Run the test program (POSIX)
+      run: cd build-test && ./delegates ${{ env.EXPECTED_DELEGATES }}
+      if: runner.os != 'Windows'
+
+    - name: Run the test program (Windows)
+      run: cd build-test/${{ matrix.buildtype }} && ./delegates.exe ${{ env.EXPECTED_DELEGATES }}
+      shell: bash
+      if: runner.os == 'Windows'
+      env:
+        PATH: ${{ env.PATH }};${{ env.INSTALL_PREFIX }}/bin
+
+    - name: Check required shared libraries (Linux)
+      run: ldd build/utilities/Magick
+      if: runner.os == 'Linux'
+
+    - name: Check required shared libraries (macOS)
+      run: otool -L build/utilities/Magick
+      if: runner.os == 'macOS'
+
+  wasm32:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Get Conan
+      id : conan
+      uses: turtlebrowser/get-conan@main
+
+    - name: Cache conan artifacts
+      id: conan-artifacts
+      uses: actions/cache@v4
+      with:
+        path: ~/.conan2
+        key: wasm-emscripten
+
+    - name: Install all delegates
+      shell: bash
+      run: |
+        conan profile detect || echo ok
+        conan install . -of build -pr:b=default -pr:h=./emscripten.profile --build=missing
+
+    - name: Generate CMake build (conan)
+      run: |
+        cd build
+        cmake .. -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+
+    - name: Build
+      run: cmake --build build --config Release -j 2
+
+
+  configurations:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        quant: [8, 16, 32, 64]
+        hdri: [true, false]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Generate CMake options
+      shell: bash
+      run: |
+        echo "HDRI=-DMMAGICK_HDRI_ENABLE=${{ matrix.hdri && 'ON' || 'OFF' }}" >> $GITHUB_ENV
+        echo "QUANT=-DMAGICKCORE_QUANTUM_DEPTH=${{ matrix.quant }}" >> $GITHUB_ENV
+
+    - name: Generate CMake build
+      shell: bash
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release ${{ env.HDRI }} ${{ env.QUANT }}
+
+    - name: Build
+      run: cmake --build build --config Release -j 4
+
+
+  containers:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Cache Docker images.
+      uses: ScribeMD/docker-cache@0.5.0
+      with:
+        key: docker-builds
+
+    - name: Run all available containers
+      shell: bash
+      run: |
+        for CONTAINER in docker/Docker*; do
+          echo "======================="
+          echo "======================="
+          echo "=== ${CONTAINER} ==="
+          echo "======================="
+          echo "======================="
+          docker/run_container_build.sh `echo $CONTAINER | cut -f 2 -d "."`
+        done

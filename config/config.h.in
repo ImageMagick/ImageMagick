@@ -272,6 +272,9 @@
 /* Define to 1 if you have the `gcov' library (-lgcov). */
 #undef HAVE_LIBGCOV
 
+/* Define if you have the <libheif/heif.h> header file. */
+#undef HAVE_LIBHEIF_HEIF_H
+
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
