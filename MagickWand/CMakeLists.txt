@@ -25,8 +25,6 @@ set(MAGICKWAND_SRC
   composite.h
   conjure.c
   conjure.h
-  convert.c
-  convert.h
   deprecate.h
   deprecate.c
   display.c
@@ -79,7 +77,6 @@ set(MAGICKWAND_PUBLIC_HEADERS
   compare.h
   composite.h
   conjure.h
-  convert.h
   deprecate.h
   display.h
   drawing-wand.h
