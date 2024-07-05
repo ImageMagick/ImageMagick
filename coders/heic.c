@@ -358,6 +358,11 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
     "heic:preserve-orientation"));
   if (preserve_orientation == MagickFalse)
     (void) SetImageProperty(image,"exif:Orientation","1",exception);
+  else
+    {
+      image->columns=(size_t) heif_image_handle_get_ispe_width(image_handle);
+      image->rows=(size_t) heif_image_handle_get_ispe_height(image_handle);
+    }
   if (ReadHEICColorProfile(image,image_handle,exception) == MagickFalse)
     return(MagickFalse);
   if (ReadHEICExifProfile(image,image_handle,exception) == MagickFalse)
