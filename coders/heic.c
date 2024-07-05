@@ -78,8 +78,10 @@
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
 #include <heif.h>
+#include <heif_properties.h>
 #else
 #include <libheif/heif.h>
+#include <libheif/heif_properties.h>
 #endif
 
 #define HEIC_COMPUTE_NUMERIC_VERSION(major,minor,patch) \
@@ -360,6 +362,67 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
     (void) SetImageProperty(image,"exif:Orientation","1",exception);
   else
     {
+      heif_item_id
+        item_id;
+
+      heif_property_id
+        transforms[1];
+
+      int
+        count;
+
+      struct heif_context
+        *heif_context;
+
+      heif_context=heif_image_handle_get_context(image_handle);
+      item_id=heif_image_handle_get_item_id(image_handle);
+      count=heif_item_get_transformation_properties(heif_context,item_id,
+        transforms,1);
+      if (count == 1)
+        {
+          heif_transform_mirror_direction
+            mirror;
+
+          int
+            rotation_ccw;
+
+          mirror=(heif_transform_mirror_direction)
+            heif_item_get_property_transform_mirror(heif_context,item_id,
+            transforms[0]);
+          rotation_ccw=heif_item_get_property_transform_rotation_ccw(
+            heif_context,item_id,transforms[0]);
+          switch(mirror)
+          {
+            case heif_transform_mirror_direction_horizontal:
+            {
+              if (rotation_ccw == 0)
+                image->orientation=TopRightOrientation;
+              else if (rotation_ccw == 270)
+                image->orientation=LeftTopOrientation;
+              break;
+            }
+            case heif_transform_mirror_direction_vertical:
+            {
+              if (rotation_ccw == 0)
+                image->orientation=BottomLeftOrientation;
+              else if (rotation_ccw == 270)
+                image->orientation=RightBottomOrientation;
+              break;
+            }
+            case heif_transform_mirror_direction_invalid:
+            {
+              if (rotation_ccw == 0)
+                image->orientation=TopLeftOrientation;
+              else if (rotation_ccw == 90)
+                image->orientation=LeftBottomOrientation;
+              else if (rotation_ccw == 180)
+                image->orientation=BottomRightOrientation;
+              else if (rotation_ccw == 270)
+                image->orientation=RightTopOrientation;
+              break;
+            }
+          }
+        }
       image->columns=(size_t) heif_image_handle_get_ispe_width(image_handle);
       image->rows=(size_t) heif_image_handle_get_ispe_height(image_handle);
     }
