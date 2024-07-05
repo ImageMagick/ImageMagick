@@ -380,14 +380,13 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
         transforms,1);
       if (count == 1)
         {
-          heif_transform_mirror_direction
+          enum heif_transform_mirror_direction
             mirror;
 
           int
             rotation_ccw;
 
-          mirror=(heif_transform_mirror_direction)
-            heif_item_get_property_transform_mirror(heif_context,item_id,
+          mirror=heif_item_get_property_transform_mirror(heif_context,item_id,
             transforms[0]);
           rotation_ccw=heif_item_get_property_transform_rotation_ccw(
             heif_context,item_id,transforms[0]);
