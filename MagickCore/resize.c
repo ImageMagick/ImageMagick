@@ -2022,6 +2022,10 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickCoreSignature);
+  magick_unreferenced(columns);
+  magick_unreferenced(rows);
+  magick_unreferenced(delta_x);
+  magick_unreferenced(rigidity);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
