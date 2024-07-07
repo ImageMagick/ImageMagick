@@ -514,6 +514,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->page.y=raw_info->sizes.top_margin;
     image->orientation=LibRawFlipToOrientation(raw_info->sizes.flip);
     ReadLibRawThumbnail(image_info,image,raw_info,exception);
+    SetDNGProperties(image,raw_info,exception);
     if (image_info->ping != MagickFalse)
       {
         libraw_close(raw_info);
@@ -622,7 +623,6 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetImageProfilePrivate(image,profile,exception);
       }
 #endif
-    SetDNGProperties(image,raw_info,exception);
     libraw_close(raw_info);
     return(image);
   }
