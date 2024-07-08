@@ -32,7 +32,7 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #if !defined(__MINGW32__)
-#  define stat  _stati64
+#  define stat  _stat64
 #endif
 #endif
 

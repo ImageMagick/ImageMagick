@@ -67,8 +67,8 @@ extern "C" {
 #  define fseek  _fseeki64
 #  define ftell  _ftelli64
 #  define lseek  _lseeki64
-#  define fstat  _fstati64
-#  define stat  _stati64
+#  define fstat  _fstat64
+#  define stat  _stat64
 #  define tell  _telli64
 #endif
 
