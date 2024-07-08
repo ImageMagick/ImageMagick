@@ -64,8 +64,12 @@ extern "C" {
 #  define write(fd,buffer,count)  _write(fd,buffer,(unsigned int) count)
 #endif
 #if !defined(__MINGW32__)
+#  define fseek  _fseeki64
+#  define ftell  _ftelli64
+#  define lseek  _lseeki64
 #  define fstat  _fstati64
 #  define stat  _stati64
+#  define tell  _telli64
 #endif
 
 #if !defined(XS_VERSION)
