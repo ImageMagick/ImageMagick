@@ -78,18 +78,10 @@
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 #define HEIC_COMPUTE_NUMERIC_VERSION(major,minor,patch) \
   ((major<<24) | (minor<<16) | (patch<<8) | 0)
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
-#include <heif.h>
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
-#include <heif_properties.h>
-#endif
-#else
 #include <libheif/heif.h>
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
 #include <libheif/heif_properties.h>
 #endif
-#endif
-
 #endif
 
 #if defined(MAGICKCORE_HEIC_DELEGATE)
