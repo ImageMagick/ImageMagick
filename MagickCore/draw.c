@@ -6566,10 +6566,8 @@ static MagickBooleanType TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
   primitive_info->coordinates=0;
   if ((fabs(radii.x) < MagickEpsilon) || (fabs(radii.y) < MagickEpsilon))
     return(MagickTrue);
-  delta=2.0*PerceptibleReciprocal(MagickMax(radii.x,radii.y));
-  step=MagickPI/8.0;
-  if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
-    step=MagickPI/4.0/(MagickPI*PerceptibleReciprocal(delta)/2.0);
+  delta=PerceptibleReciprocal(MagickMax(radii.x,radii.y));
+  step=MagickPI/(MagickPI*PerceptibleReciprocal(delta))/8.0;
   angle.x=DegreesToRadians(arc.x);
   y=arc.y;
   while (y < arc.x)
