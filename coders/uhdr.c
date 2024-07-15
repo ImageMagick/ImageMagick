@@ -558,7 +558,8 @@ static void fillRawImageDescriptor(uhdr_raw_image_t *imgDescriptor, const ImageI
     imgDescriptor->ct = UHDR_CT_SRGB;
   }
 
-  imgDescriptor->range = UHDR_CR_UNSPECIFIED;
+  imgDescriptor->range = imgDescriptor->fmt == UHDR_IMG_FMT_24bppYCbCrP010 ? UHDR_CR_LIMITED_RANGE
+                                                                           : UHDR_CR_FULL_RANGE;
   imgDescriptor->w = image->columns;
   imgDescriptor->h = image->rows;
 }
