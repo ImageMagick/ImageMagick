@@ -447,42 +447,47 @@ typedef enum {
 } ImgAttrE;
 
 typedef struct {
-  ImgAttrE attr;
-  const char * str;
-  int NeedStats;
+  ImgAttrE
+    attr;
+
+  const char
+    *str;
+
+  MagickBooleanType
+    need_stats;
 } ImgAttrT;
 
 static const ImgAttrT ImgAttrs[] = {
-  {aDepth,      "depth",              1},
-  {aExtent,     "extent",             0},
-  {aKurtosis,   "kurtosis",           1},
-  {aMaxima,     "maxima",             1},
-  {aMean,       "mean",               1},
-  {aMedian,     "median",             1},
-  {aMinima,     "minima",             1},
-  {aPage,       "page",               0},
-  {aPageX,      "page.x",             0},
-  {aPageY,      "page.y",             0},
-  {aPageWid,    "page.width",         0},
-  {aPageHt,     "page.height",        0},
-  {aPrintsize,  "printsize",          0},
-  {aPrintsizeX, "printsize.x",        0},
-  {aPrintsizeY, "printsize.y",        0},
-  {aQuality,    "quality",            0},
-  {aRes,        "resolution",         0},
-  {aResX,       "resolution.x",       0},
-  {aResY,       "resolution.y",       0},
-  {aSkewness,   "skewness",           1},
-  {aStdDev,     "standard_deviation", 1},
-  {aH,          "h", 0},
-  {aN,          "n", 0},
-  {aT,          "t", 0},
-  {aW,          "w", 0},
-  {aZ,          "z", 0},
-  {aNull,       "anull", 0},
-  {aNull,       "anull", 0},
-  {aNull,       "anull", 0},
-  {aNull,       "anull", 0}
+  {aDepth,      "depth",              MagickTrue},
+  {aExtent,     "extent",             MagickFalse},
+  {aKurtosis,   "kurtosis",           MagickTrue},
+  {aMaxima,     "maxima",             MagickTrue},
+  {aMean,       "mean",               MagickTrue},
+  {aMedian,     "median",             MagickTrue},
+  {aMinima,     "minima",             MagickTrue},
+  {aPage,       "page",               MagickFalse},
+  {aPageX,      "page.x",             MagickFalse},
+  {aPageY,      "page.y",             MagickFalse},
+  {aPageWid,    "page.width",         MagickFalse},
+  {aPageHt,     "page.height",        MagickFalse},
+  {aPrintsize,  "printsize",          MagickFalse},
+  {aPrintsizeX, "printsize.x",        MagickFalse},
+  {aPrintsizeY, "printsize.y",        MagickFalse},
+  {aQuality,    "quality",            MagickFalse},
+  {aRes,        "resolution",         MagickFalse},
+  {aResX,       "resolution.x",       MagickFalse},
+  {aResY,       "resolution.y",       MagickFalse},
+  {aSkewness,   "skewness",           MagickTrue},
+  {aStdDev,     "standard_deviation", MagickTrue},
+  {aH,          "h",                  MagickFalse},
+  {aN,          "n",                  MagickFalse},
+  {aT,          "t",                  MagickFalse},
+  {aW,          "w",                  MagickFalse},
+  {aZ,          "z",                  MagickFalse},
+  {aNull,       "anull",              MagickFalse},
+  {aNull,       "anull",              MagickFalse},
+  {aNull,       "anull",              MagickFalse},
+  {aNull,       "anull",              MagickFalse}
 };
 
 #define FirstSym ((SymbolE) (aNull+1))
@@ -1466,7 +1471,7 @@ static ImgAttrE GetImgAttrToken (FxInfo * pfx)
     iaStr = ImgAttrs[ia-(int) FirstImgAttr].str;
     if (LocaleCompare (iaStr, pfx->token)==0) {
       pfx->pex += strlen(pfx->token);
-      if (ImgAttrs[ia-(int) FirstImgAttr].NeedStats == 1) pfx->NeedStats = MagickTrue;
+      if (ImgAttrs[ia-(int) FirstImgAttr].need_stats != MagickFalse) pfx->NeedStats = MagickTrue;
       MaybeXYWH (pfx, &ia);
       break;
     }
@@ -2019,7 +2024,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
   }
 
   if (iaQual != aNull && chQual != NO_CHAN_QUAL) {
-    if (ImgAttrs[iaQual-(int) FirstImgAttr].NeedStats==0) {
+    if (ImgAttrs[iaQual-(int) FirstImgAttr].need_stats == MagickFalse) {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
         "Can't have image attribute ", "'%s' with channel qualifier '%s' at '%s'",
@@ -2286,7 +2291,7 @@ static MagickBooleanType GetOperand (
         fxFltType val = 0;
         (void) AddElement (pfx, val, (int) ia);
 
-        if (ImgAttrs[ia-(int) FirstImgAttr].NeedStats==1) {
+        if (ImgAttrs[ia-(int) FirstImgAttr].need_stats != MagickFalse) {
           if (IsQualifier (pfx)) {
             PixelChannel chQual = GetChannelQualifier (pfx, (int) ia);
             ElementT * pel;
