@@ -657,19 +657,35 @@ static const char * sElementTypes[] = {
 };
 
 typedef struct {
-  ElementTypeE type;
+  char
+    *exp_start;
+
+  ElementTypeE
+    type;
+
   fxFltType
-    val, val1, val2;
-  int oprNum;
-  int nArgs;
-  MagickBooleanType IsRelative;
-  MagickBooleanType DoPush;
-  int EleNdx;
-  int nDest; /* Number of Elements that "goto" this element */
-  PixelChannel ChannelQual;
-  ImgAttrE ImgAttrQual;
-  char * pExpStart;
-  size_t lenExp;
+    val,
+    val1,
+    val2;
+
+  ImgAttrE
+    img_attr_qual;
+
+  int
+    element_index,
+    number_args,
+    number_dest, /* Number of Elements that "goto" this element */
+    operator_index;
+
+  MagickBooleanType
+    do_push,
+    is_relative;
+
+  PixelChannel
+    channel_qual;
+
+  size_t
+    exp_len;
 } ElementT;
 
 typedef enum {
@@ -1090,14 +1106,14 @@ static MagickBooleanType DumpRPN (FxInfo * pfx, FILE * fh)
 
   for (i=0; i < pfx->usedElements; i++) {
     ElementT * pel = &pfx->Elements[i];
-    pel->nDest = 0;
+    pel->number_dest = 0;
   }
   for (i=0; i < pfx->usedElements; i++) {
     ElementT * pel = &pfx->Elements[i];
-    if (pel->oprNum == rGoto || pel->oprNum == rGotoChk || pel->oprNum == rIfZeroGoto || pel->oprNum == rIfNotZeroGoto) {
-      if (pel->EleNdx >= 0 && pel->EleNdx < pfx->numElements) {
-        ElementT * pelDest = &pfx->Elements[pel->EleNdx];
-        pelDest->nDest++;
+    if (pel->operator_index == rGoto || pel->operator_index == rGotoChk || pel->operator_index == rIfZeroGoto || pel->operator_index == rIfNotZeroGoto) {
+      if (pel->element_index >= 0 && pel->element_index < pfx->numElements) {
+        ElementT * pelDest = &pfx->Elements[pel->element_index];
+        pelDest->number_dest++;
       }
     }
   }
@@ -1105,40 +1121,40 @@ static MagickBooleanType DumpRPN (FxInfo * pfx, FILE * fh)
     char UserSym[MagickPathExtent];
 
     ElementT * pel = &pfx->Elements[i];
-    const char * str = OprStr (pel->oprNum);
+    const char * str = OprStr (pel->operator_index);
     const char *sRelAbs = "";
 
-    if (pel->oprNum == fP || pel->oprNum == fUP || pel->oprNum == fVP || pel->oprNum == fSP)
-      sRelAbs = pel->IsRelative ? "[]" : "{}";
+    if (pel->operator_index == fP || pel->operator_index == fUP || pel->operator_index == fVP || pel->operator_index == fSP)
+      sRelAbs = pel->is_relative ? "[]" : "{}";
 
     if (pel->type == etColourConstant)
       fprintf (fh, "  %i: %s vals=%.*Lg,%.*Lg,%.*Lg '%s%s' nArgs=%i ndx=%i  %s",
                i, sElementTypes[pel->type],
                pfx->precision, pel->val, pfx->precision, pel->val1, pfx->precision, pel->val2,
-               str, sRelAbs, pel->nArgs, pel->EleNdx,
-               pel->DoPush ? "push" : "NO push");
+               str, sRelAbs, pel->number_args, pel->element_index,
+               pel->do_push ? "push" : "NO push");
     else
       fprintf (fh, "  %i: %s val=%.*Lg '%s%s' nArgs=%i ndx=%i  %s",
                i, sElementTypes[pel->type], pfx->precision, pel->val, str, sRelAbs,
-               pel->nArgs, pel->EleNdx,
-               pel->DoPush ? "push" : "NO push");
+               pel->number_args, pel->element_index,
+               pel->do_push ? "push" : "NO push");
 
-    if (pel->ImgAttrQual != aNull)
-      fprintf (fh, " ia=%s", OprStr((int) pel->ImgAttrQual));
+    if (pel->img_attr_qual != aNull)
+      fprintf (fh, " ia=%s", OprStr((int) pel->img_attr_qual));
 
-    if (pel->ChannelQual != NO_CHAN_QUAL) {
-      if (pel->ChannelQual == THIS_CHANNEL) fprintf (stderr, "  ch=this");
-      else fprintf (stderr, "  ch=%i", pel->ChannelQual);
+    if (pel->channel_qual != NO_CHAN_QUAL) {
+      if (pel->channel_qual == THIS_CHANNEL) fprintf (stderr, "  ch=this");
+      else fprintf (stderr, "  ch=%i", pel->channel_qual);
     }
 
-    if (pel->oprNum == rCopyTo) {
-      fprintf (fh, "  CopyTo ==> %s", NameOfUserSym (pfx, pel->EleNdx, UserSym));
-    } else if (pel->oprNum == rCopyFrom) {
-      fprintf (fh, "  CopyFrom <== %s", NameOfUserSym (pfx, pel->EleNdx, UserSym));
-    } else if (OprInPlace (pel->oprNum)) {
-      fprintf (fh, "  <==> %s", NameOfUserSym (pfx, pel->EleNdx, UserSym));
+    if (pel->operator_index == rCopyTo) {
+      fprintf (fh, "  CopyTo ==> %s", NameOfUserSym (pfx, pel->element_index, UserSym));
+    } else if (pel->operator_index == rCopyFrom) {
+      fprintf (fh, "  CopyFrom <== %s", NameOfUserSym (pfx, pel->element_index, UserSym));
+    } else if (OprInPlace (pel->operator_index)) {
+      fprintf (fh, "  <==> %s", NameOfUserSym (pfx, pel->element_index, UserSym));
     }
-    if (pel->nDest > 0)  fprintf (fh, "  <==dest(%i)", pel->nDest);
+    if (pel->number_dest > 0)  fprintf (fh, "  <==dest(%i)", pel->number_dest);
     fprintf (fh, "\n");
   }
   return MagickTrue;
@@ -1245,20 +1261,20 @@ static MagickBooleanType AddElement (FxInfo * pfx, fxFltType val, int oprNum)
   pel->val = val;
   pel->val1 = (fxFltType) 0;
   pel->val2 = (fxFltType) 0;
-  pel->oprNum = oprNum;
-  pel->DoPush = MagickTrue;
-  pel->EleNdx = 0;
-  pel->ChannelQual = NO_CHAN_QUAL;
-  pel->ImgAttrQual = aNull;
-  pel->nDest = 0;
-  pel->pExpStart = NULL;
-  pel->lenExp = 0;
+  pel->operator_index = oprNum;
+  pel->do_push = MagickTrue;
+  pel->element_index = 0;
+  pel->channel_qual = NO_CHAN_QUAL;
+  pel->img_attr_qual = aNull;
+  pel->number_dest = 0;
+  pel->exp_start = NULL;
+  pel->exp_len = 0;
 
-  if (oprNum <= oNull) pel->nArgs = Operators[oprNum].number_args;
-  else if (oprNum <= fNull) pel->nArgs = Functions[oprNum-(int) FirstFunc].number_args;
-  else if (oprNum <= aNull) pel->nArgs = 0;
-  else if (oprNum <= sNull) pel->nArgs = 0;
-  else                      pel->nArgs = Controls[oprNum-(int) FirstCont].number_args;
+  if (oprNum <= oNull) pel->number_args = Operators[oprNum].number_args;
+  else if (oprNum <= fNull) pel->number_args = Functions[oprNum-(int) FirstFunc].number_args;
+  else if (oprNum <= aNull) pel->number_args = 0;
+  else if (oprNum <= sNull) pel->number_args = 0;
+  else                      pel->number_args = Controls[oprNum-(int) FirstCont].number_args;
 
   return MagickTrue;
 }
@@ -1268,11 +1284,11 @@ static MagickBooleanType AddAddressingElement (FxInfo * pfx, int oprNum, int Ele
   ElementT * pel;
   if (!AddElement (pfx, (fxFltType) 0, oprNum)) return MagickFalse;
   pel = &pfx->Elements[pfx->usedElements-1];
-  pel->EleNdx = EleNdx;
+  pel->element_index = EleNdx;
   if (oprNum == rGoto || oprNum == rGotoChk || oprNum == rIfZeroGoto || oprNum == rIfNotZeroGoto 
    || oprNum == rZerStk)
   {
-    pel->DoPush = MagickFalse;
+    pel->do_push = MagickFalse;
   }
 
   /* Note: for() may or may not need pushing,
@@ -1856,7 +1872,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
         } else if (fe==fDo) {
           (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx2+1 */
         } else if (fe==fFor) {
-          pfx->Elements[pfx->usedElements-1].DoPush = MagickFalse;
+          pfx->Elements[pfx->usedElements-1].do_push = MagickFalse;
         }
         break;
       case 2:
@@ -1869,14 +1885,14 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
         }
         ndx2 = pfx->usedElements;
         if (fe==fWhile) {
-          pfx->Elements[pfx->usedElements-1].DoPush = MagickFalse;
+          pfx->Elements[pfx->usedElements-1].do_push = MagickFalse;
           (void) AddAddressingElement (pfx, rGotoChk, ndx0);
         } else if (fe==fDo) {
-          pfx->Elements[pfx->usedElements-1].DoPush = MagickFalse;
+          pfx->Elements[pfx->usedElements-1].do_push = MagickFalse;
           (void) AddAddressingElement (pfx, rGotoChk, ndx0 + 1);
         } else if (fe==fFor) {
           (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS); /* address will be ndx3 */
-          pfx->Elements[pfx->usedElements-1].DoPush = MagickTrue; /* we may need return from for() */
+          pfx->Elements[pfx->usedElements-1].do_push = MagickTrue; /* we may need return from for() */
           (void) AddAddressingElement (pfx, rZerStk, NULL_ADDRESS);
         } else if (fe==fIf) {
           (void) AddAddressingElement (pfx, rGoto, NULL_ADDRESS); /* address will be ndx3 */
@@ -1891,7 +1907,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
           return MagickFalse;
         }
         if (fe==fFor) {
-          pfx->Elements[pfx->usedElements-1].DoPush = MagickFalse;
+          pfx->Elements[pfx->usedElements-1].do_push = MagickFalse;
           (void) AddAddressingElement (pfx, rGotoChk, ndx1);
         }
         ndx3 = pfx->usedElements;
@@ -1972,15 +1988,15 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
 
         /* Remove last element, which should be fP */
         ElementT * pel = &pfx->Elements[pfx->usedElements-1];
-        if (pel->oprNum != fP) {
+        if (pel->operator_index != fP) {
           (void) ThrowMagickException (
             pfx->exception, GetMagickModule(), OptionError,
             "Bug: For function", "'%s' last element not 'p' at '%s'",
             funStr, SetShortExp(pfx));
           return MagickFalse;
         }
-        chQual = pel->ChannelQual;
-        expChLimit = (pel->IsRelative) ? ']' : '}';
+        chQual = pel->channel_qual;
+        expChLimit = (pel->is_relative) ? ']' : '}';
         pfx->usedElements--;
         if (fe == fU) fe = fUP;
         else if (fe == fV) fe = fVP;
@@ -2059,15 +2075,15 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
   }
 
   if (fe==fWhile) {
-    pfx->Elements[ndx1].EleNdx = ndx2+1;
+    pfx->Elements[ndx1].element_index = ndx2+1;
   } else if (fe==fDo) {
-    pfx->Elements[ndx0].EleNdx = ndx1+1;
-    pfx->Elements[ndx1].EleNdx = ndx2+1;
+    pfx->Elements[ndx0].element_index = ndx1+1;
+    pfx->Elements[ndx1].element_index = ndx2+1;
   } else if (fe==fFor) {
-    pfx->Elements[ndx2].EleNdx = ndx3;
+    pfx->Elements[ndx2].element_index = ndx3;
   } else if (fe==fIf) {
-    pfx->Elements[ndx1].EleNdx = ndx2 + 1;
-    pfx->Elements[ndx2].EleNdx = ndx3;
+    pfx->Elements[ndx1].element_index = ndx2 + 1;
+    pfx->Elements[ndx2].element_index = ndx3;
   } else {
     if (fe == fU && iaQual == aNull) {
       ElementT * pel = &pfx->Elements[pfx->usedElements-1];
@@ -2081,19 +2097,19 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
         fe == fV || fe == fVP || fe == fS || fe == fSP)
     {
       ElementT * pel = &pfx->Elements[pfx->usedElements-1];
-      pel->IsRelative = (expChLimit == ']' ? MagickTrue : MagickFalse);
-      if (chQual >= 0) pel->ChannelQual = chQual;
+      pel->is_relative = (expChLimit == ']' ? MagickTrue : MagickFalse);
+      if (chQual >= 0) pel->channel_qual = chQual;
       if (iaQual != aNull && (fe == fU || fe == fV || fe == fS)) {
         /* Note: we don't allow "p[2,3].mean" or "p.mean" etc. */
-        pel->ImgAttrQual = iaQual;
+        pel->img_attr_qual = iaQual;
       }
     }
   }
 
   if (pExpStart && lenExp) {
     ElementT * pel = &pfx->Elements[pfx->usedElements-1];
-    pel->pExpStart = pExpStart;
-    pel->lenExp = lenExp;
+    pel->exp_start = pExpStart;
+    pel->exp_len = lenExp;
   }
 
   if (fe == fDebug)
@@ -2319,7 +2335,7 @@ static MagickBooleanType GetOperand (
             }
             /* Adjust the element */
             pel = &pfx->Elements[pfx->usedElements-1];
-            pel->ChannelQual = chQual;
+            pel->channel_qual = chQual;
           }
         }
         return MagickTrue;
@@ -2453,7 +2469,7 @@ static inline MagickBooleanType ProcessTernaryOpr (FxInfo * pfx, TernaryT * pter
     }
     pfx->usedOprStack--;
     ptern->addr_colon = pfx->usedElements;
-    pfx->Elements[pfx->usedElements-1].DoPush = MagickTrue;
+    pfx->Elements[pfx->usedElements-1].do_push = MagickTrue;
     (void) AddAddressingElement (pfx, rGoto, NULL_ADDRESS);
     /* address will be after the subexpression */
   }
@@ -2553,8 +2569,8 @@ static MagickBooleanType ResolveTernaryAddresses (FxInfo * pfx, TernaryT * ptern
     return MagickTrue;
 
   if (ptern->addr_query != NULL_ADDRESS && ptern->addr_colon != NULL_ADDRESS) {
-    pfx->Elements[ptern->addr_query].EleNdx = ptern->addr_colon + 1;
-    pfx->Elements[ptern->addr_colon].EleNdx = pfx->usedElements;
+    pfx->Elements[ptern->addr_query].element_index = ptern->addr_colon + 1;
+    pfx->Elements[ptern->addr_colon].element_index = pfx->usedElements;
     ptern->addr_query = NULL_ADDRESS;
     ptern->addr_colon = NULL_ADDRESS;
   } else if (ptern->addr_query != NULL_ADDRESS) {
@@ -2655,7 +2671,7 @@ static MagickBooleanType TranslateExpression (
       (void) AddAddressingElement (pfx, rCopyFrom, UserSymNdx0);
       UserSymNdx0 = NULL_ADDRESS;
       pel = &pfx->Elements[pfx->usedElements-1];
-      pel->DoPush = MagickTrue;
+      pel->do_push = MagickTrue;
     }
 
     if (UserSymbol) {
@@ -2727,7 +2743,7 @@ static MagickBooleanType TranslateExpression (
     }
     (void) AddAddressingElement (pfx, rCopyFrom, UserSymNdx0);
     pel = &pfx->Elements[pfx->usedElements-1];
-    pel->DoPush = MagickTrue;
+    pel->do_push = MagickTrue;
   }
 
   if (*pfx->pex && !*chLimit && (strchr(strLimit,*pfx->pex)!=NULL)) {
@@ -2767,7 +2783,7 @@ static MagickBooleanType TranslateExpression (
       }
       /* Modify latest element.
       */
-      pfx->Elements[pfx->usedElements-1].EleNdx = UserSymNdx0;
+      pfx->Elements[pfx->usedElements-1].element_index = UserSymNdx0;
       break;
     }
   }
@@ -2807,7 +2823,7 @@ static MagickBooleanType TranslateStatement (FxInfo * pfx, char * strLimit, char
        Pending a fix, we will use rZerStk.
     */
     ElementT * pel = &pfx->Elements[pfx->usedElements-1];
-    if (pel->DoPush) pel->DoPush = MagickFalse;
+    if (pel->do_push) pel->do_push = MagickFalse;
   }
 
   return MagickTrue;
@@ -3077,15 +3093,15 @@ static inline ssize_t ChkImgNum (FxInfo * pfx, fxFltType f)
 }
 
 #define WHICH_ATTR_CHAN \
-  (pel->ChannelQual == NO_CHAN_QUAL) ? CompositePixelChannel : \
-  (pel->ChannelQual == THIS_CHANNEL) ? channel : pel->ChannelQual
+  (pel->channel_qual == NO_CHAN_QUAL) ? CompositePixelChannel : \
+  (pel->channel_qual == THIS_CHANNEL) ? channel : pel->channel_qual
 
 #define WHICH_NON_ATTR_CHAN \
-  (pel->ChannelQual == NO_CHAN_QUAL || \
-   pel->ChannelQual == THIS_CHANNEL || \
-   pel->ChannelQual == CompositePixelChannel \
+  (pel->channel_qual == NO_CHAN_QUAL || \
+   pel->channel_qual == THIS_CHANNEL || \
+   pel->channel_qual == CompositePixelChannel \
   ) ? (channel == CompositePixelChannel ? RedPixelChannel: channel) \
-    : pel->ChannelQual
+    : pel->channel_qual
 
 static fxFltType GetHslFlt (FxInfo * pfx, ssize_t ImgNum, const fxFltType fx, const fxFltType fy,
   PixelChannel channel)
@@ -3222,7 +3238,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         "Bad run-time address", "%i", i);
     }
     pel=&pfx->Elements[i];
-    switch (pel->nArgs) {
+    switch (pel->number_args) {
         case 0:
           break;
         case 1:
@@ -3253,28 +3269,28 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         default:
           (void) ThrowMagickException (
             pfx->exception, GetMagickModule(), OptionError,
-            "Too many args:", "%i", pel->nArgs);
+            "Too many args:", "%i", pel->number_args);
           break;
       }
 
-      switch (pel->oprNum) {
+      switch (pel->operator_index) {
         case oAddEq:
-          regA = (pfxrt->UserSymVals[pel->EleNdx] += regA);
+          regA = (pfxrt->UserSymVals[pel->element_index] += regA);
           break;
         case oSubtractEq:
-          regA = (pfxrt->UserSymVals[pel->EleNdx] -= regA);
+          regA = (pfxrt->UserSymVals[pel->element_index] -= regA);
           break;
         case oMultiplyEq:
-          regA = (pfxrt->UserSymVals[pel->EleNdx] *= regA);
+          regA = (pfxrt->UserSymVals[pel->element_index] *= regA);
           break;
         case oDivideEq:
-          regA = (pfxrt->UserSymVals[pel->EleNdx] *= PerceptibleReciprocal((double)regA));
+          regA = (pfxrt->UserSymVals[pel->element_index] *= PerceptibleReciprocal((double)regA));
           break;
         case oPlusPlus:
-          regA = pfxrt->UserSymVals[pel->EleNdx]++;
+          regA = pfxrt->UserSymVals[pel->element_index]++;
           break;
         case oSubSub:
-          regA = pfxrt->UserSymVals[pel->EleNdx]--;
+          regA = pfxrt->UserSymVals[pel->element_index]--;
           break;
         case oAdd:
           regA += regB;
@@ -3458,7 +3474,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
 
           (void) fprintf (stderr, "%s[%g,%g].[%i]: %s=%.*g\n",
                    img->filename, (double) imgx, (double) imgy,
-                   channel, SetPtrShortExp (pfx, pel->pExpStart, (size_t) (pel->lenExp+1)),
+                   channel, SetPtrShortExp (pfx, pel->exp_start, (size_t) (pel->exp_len+1)),
                    pfx->precision, (double) regA);
           break;
         case fDrc:
@@ -3584,9 +3600,9 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (fxFltType) 0;
           if (ImgNum == 0) {
             Image * pimg = pfx->Images[0];
-            if (pel->ImgAttrQual == aNull) {
-              if ((int) pel->ChannelQual < 0) {
-                if (pel->ChannelQual == NO_CHAN_QUAL || pel->ChannelQual == THIS_CHANNEL) {
+            if (pel->img_attr_qual == aNull) {
+              if ((int) pel->channel_qual < 0) {
+                if (pel->channel_qual == NO_CHAN_QUAL || pel->channel_qual == THIS_CHANNEL) {
                   if (pfx->ImgNum==0) {
                     regA = QuantumScale * (double) p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
                   } else {
@@ -3600,11 +3616,11 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                     }
                     regA = QuantumScale * (double) pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
                   }
-                } else if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
-                    pel->ChannelQual == LIGHT_CHANNEL) {
-                  regA = GetHslInt (pfx, ImgNum, imgx, imgy, pel->ChannelQual);
+                } else if (pel->channel_qual == HUE_CHANNEL || pel->channel_qual == SAT_CHANNEL ||
+                    pel->channel_qual == LIGHT_CHANNEL) {
+                  regA = GetHslInt (pfx, ImgNum, imgx, imgy, pel->channel_qual);
                   break;
-                } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
+                } else if (pel->channel_qual == INTENSITY_CHANNEL) {
                   regA = GetIntensity (pfx, 0, (double) imgx, (double) imgy);
                   break;
                 }
@@ -3625,19 +3641,19 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               }
             } else {
               /* we have an image attribute */
-              regA = ImageStat (pfx, 0, WHICH_ATTR_CHAN, pel->ImgAttrQual);
+              regA = ImageStat (pfx, 0, WHICH_ATTR_CHAN, pel->img_attr_qual);
             }
           } else {
             /* We have non-zero ImgNum. */
-            if (pel->ImgAttrQual == aNull) {
+            if (pel->img_attr_qual == aNull) {
               const Quantum * pv;
-              if ((int) pel->ChannelQual < 0) {
-                if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
-                    pel->ChannelQual == LIGHT_CHANNEL)
+              if ((int) pel->channel_qual < 0) {
+                if (pel->channel_qual == HUE_CHANNEL || pel->channel_qual == SAT_CHANNEL ||
+                    pel->channel_qual == LIGHT_CHANNEL)
                 {
-                  regA = GetHslInt (pfx, ImgNum, imgx, imgy, pel->ChannelQual);
+                  regA = GetHslInt (pfx, ImgNum, imgx, imgy, pel->channel_qual);
                   break;
-                } else if (pel->ChannelQual == INTENSITY_CHANNEL)
+                } else if (pel->channel_qual == INTENSITY_CHANNEL)
                 {
                   regA = GetIntensity (pfx, ImgNum, (fxFltType) imgx, (fxFltType) imgy);
                   break;
@@ -3655,7 +3671,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               regA = QuantumScale * (double)
                 pv[pfx->Images[ImgNum]->channel_map[WHICH_NON_ATTR_CHAN].offset];
             } else {
-              regA = ImageStat (pfx, ImgNum, WHICH_ATTR_CHAN, pel->ImgAttrQual);
+              regA = ImageStat (pfx, ImgNum, WHICH_ATTR_CHAN, pel->img_attr_qual);
             }
           }
           break;
@@ -3665,8 +3681,8 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
              If called from %[fx:...], ChannelQual will be CompositePixelChannel.
           */
           Image * pimg = pfx->Images[0];
-          if ((int) pel->ChannelQual < 0) {
-            if (pel->ChannelQual == NO_CHAN_QUAL || pel->ChannelQual == THIS_CHANNEL) {
+          if ((int) pel->channel_qual < 0) {
+            if (pel->channel_qual == NO_CHAN_QUAL || pel->channel_qual == THIS_CHANNEL) {
 
               if (pfx->ImgNum==0) {
                 regA = QuantumScale * (double) p[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
@@ -3682,11 +3698,11 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
                 regA = QuantumScale * (double) pv[pimg->channel_map[WHICH_NON_ATTR_CHAN].offset];
               }
 
-            } else if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
-                       pel->ChannelQual == LIGHT_CHANNEL) {
-              regA = GetHslInt (pfx, 0, imgx, imgy, pel->ChannelQual);
+            } else if (pel->channel_qual == HUE_CHANNEL || pel->channel_qual == SAT_CHANNEL ||
+                       pel->channel_qual == LIGHT_CHANNEL) {
+              regA = GetHslInt (pfx, 0, imgx, imgy, pel->channel_qual);
               break;
-            } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
+            } else if (pel->channel_qual == INTENSITY_CHANNEL) {
               regA = GetIntensity (pfx, 0, (fxFltType) imgx, (fxFltType) imgy);
             }
           } else {
@@ -3713,7 +3729,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
 
           if (ImgNum < 0) break;
 
-          if (pel->IsRelative) {
+          if (pel->is_relative) {
             fx = imgx + regB;
             fy = imgy + regC;
           } else {
@@ -3721,12 +3737,12 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
             fy = regC;
           }
 
-          if ((int) pel->ChannelQual < 0) {
-            if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL
-             || pel->ChannelQual == LIGHT_CHANNEL) {
-              regA = GetHslFlt (pfx, ImgNum, fx, fy, pel->ChannelQual);
+          if ((int) pel->channel_qual < 0) {
+            if (pel->channel_qual == HUE_CHANNEL || pel->channel_qual == SAT_CHANNEL
+             || pel->channel_qual == LIGHT_CHANNEL) {
+              regA = GetHslFlt (pfx, ImgNum, fx, fy, pel->channel_qual);
               break;
-            } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
+            } else if (pel->channel_qual == INTENSITY_CHANNEL) {
               regA = GetIntensity (pfx, ImgNum, fx, fy);
               break;
             }
@@ -3752,9 +3768,9 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         case fV: {
           /* No args. */
           ssize_t ImgNum = 1;
-          if (pel->oprNum == fS) ImgNum = pfx->ImgNum;
+          if (pel->operator_index == fS) ImgNum = pfx->ImgNum;
 
-          if (pel->ImgAttrQual == aNull) {
+          if (pel->img_attr_qual == aNull) {
             const Quantum * pv = GetCacheViewVirtualPixels (
                                    pfx->Imgs[ImgNum].View, imgx, imgy, 1,1, pfx->exception);
             if (!pv) {
@@ -3764,12 +3780,12 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
               break;
             }
 
-            if ((int) pel->ChannelQual < 0) {
-              if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
-                  pel->ChannelQual == LIGHT_CHANNEL) {
-                regA = GetHslInt (pfx, ImgNum, imgx, imgy, pel->ChannelQual);
+            if ((int) pel->channel_qual < 0) {
+              if (pel->channel_qual == HUE_CHANNEL || pel->channel_qual == SAT_CHANNEL ||
+                  pel->channel_qual == LIGHT_CHANNEL) {
+                regA = GetHslInt (pfx, ImgNum, imgx, imgy, pel->channel_qual);
                 break;
-              } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
+              } else if (pel->channel_qual == INTENSITY_CHANNEL) {
                 regA = GetIntensity (pfx, ImgNum, (double) imgx, (double) imgy);
                 break;
               }
@@ -3778,7 +3794,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
             regA = QuantumScale * (double)
               pv[pfx->Images[ImgNum]->channel_map[WHICH_NON_ATTR_CHAN].offset];
           } else {
-            regA = ImageStat (pfx, ImgNum, WHICH_ATTR_CHAN, pel->ImgAttrQual);
+            regA = ImageStat (pfx, ImgNum, WHICH_ATTR_CHAN, pel->img_attr_qual);
           }
 
           break;
@@ -3789,20 +3805,20 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           /* 2 args are: x, y */
           fxFltType fx, fy;
           ssize_t ImgNum = pfx->ImgNum;
-          if (pel->oprNum == fVP) ImgNum = 1;
-          if (pel->IsRelative) {
+          if (pel->operator_index == fVP) ImgNum = 1;
+          if (pel->is_relative) {
             fx = imgx + regA;
             fy = imgy + regB;
           } else {
             fx = regA;
             fy = regB;
           }
-          if ((int) pel->ChannelQual < 0) {
-            if (pel->ChannelQual == HUE_CHANNEL || pel->ChannelQual == SAT_CHANNEL ||
-                pel->ChannelQual == LIGHT_CHANNEL) {
-              regA = GetHslFlt (pfx, ImgNum, fx, fy, pel->ChannelQual);
+          if ((int) pel->channel_qual < 0) {
+            if (pel->channel_qual == HUE_CHANNEL || pel->channel_qual == SAT_CHANNEL ||
+                pel->channel_qual == LIGHT_CHANNEL) {
+              regA = GetHslFlt (pfx, ImgNum, fx, fy, pel->channel_qual);
               break;
-            } else if (pel->ChannelQual == INTENSITY_CHANNEL) {
+            } else if (pel->channel_qual == INTENSITY_CHANNEL) {
               regA = GetIntensity (pfx, ImgNum, fx, fy);
               break;
             }
@@ -3967,12 +3983,12 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           break;
 
         case rGoto:
-          assert (pel->EleNdx >= 0);
-          i = pel->EleNdx-1; /* -1 because 'for' loop will increment. */
+          assert (pel->element_index >= 0);
+          i = pel->element_index-1; /* -1 because 'for' loop will increment. */
           break;
         case rGotoChk:
-          assert (pel->EleNdx >= 0);
-          i = pel->EleNdx-1; /* -1 because 'for' loop will increment. */
+          assert (pel->element_index >= 0);
+          i = pel->element_index-1; /* -1 because 'for' loop will increment. */
           if (IsImageTTLExpired(img) != MagickFalse) {
             i = pfx->usedElements-1; /* Do no more opcodes. */
             (void) ThrowMagickException (pfx->exception, GetMagickModule(),
@@ -3980,20 +3996,20 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           }
           break;
         case rIfZeroGoto:
-          assert (pel->EleNdx >= 0);
-          if (fabs((double) regA) < MagickEpsilon) i = pel->EleNdx-1;
+          assert (pel->element_index >= 0);
+          if (fabs((double) regA) < MagickEpsilon) i = pel->element_index-1;
           break;
         case rIfNotZeroGoto:
-          assert (pel->EleNdx >= 0);
-          if (fabs((double) regA) > MagickEpsilon) i = pel->EleNdx-1;
+          assert (pel->element_index >= 0);
+          if (fabs((double) regA) > MagickEpsilon) i = pel->element_index-1;
           break;
         case rCopyFrom:
-          assert (pel->EleNdx >= 0);
-          regA = pfxrt->UserSymVals[pel->EleNdx];
+          assert (pel->element_index >= 0);
+          regA = pfxrt->UserSymVals[pel->element_index];
           break;
         case rCopyTo:
-          assert (pel->EleNdx >= 0);
-          pfxrt->UserSymVals[pel->EleNdx] = regA;
+          assert (pel->element_index >= 0);
+          pfxrt->UserSymVals[pel->element_index] = regA;
           break;
         case rZerStk:
           pfxrt->usedValStack = 0;
@@ -4005,10 +4021,10 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           (void) ThrowMagickException (
             pfx->exception, GetMagickModule(), OptionError,
             "pel->oprNum", "%i '%s' not yet implemented",
-            (int)pel->oprNum, OprStr(pel->oprNum));
+            (int)pel->operator_index, OprStr(pel->operator_index));
           break;
     }
-    if (pel->DoPush) 
+    if (pel->do_push) 
       if (!PushVal (pfx, pfxrt, regA, i)) break;
   }
 
