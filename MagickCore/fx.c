@@ -514,8 +514,11 @@ typedef enum {
 } SymbolE;
 
 typedef struct {
-  SymbolE sym;
-  const char * str;
+  SymbolE
+    sym;
+
+  const char
+    *str;
 } SymbolT;
 
 static const SymbolT Symbols[] = {
@@ -560,9 +563,14 @@ typedef enum {
 } ControlE;
 
 typedef struct {
-  ControlE cont;
-  const char * str;
-  int nArgs;
+  ControlE
+    cont;
+
+  const char
+    *str;
+
+  int
+    number_args;
 } ControlT;
 
 static const ControlT Controls[] = {
@@ -579,13 +587,17 @@ static const ControlT Controls[] = {
 #define NULL_ADDRESS -2
 
 typedef struct {
-  int addrQuery;
-  int addrColon;
+  int
+    addr_query,
+    addr_colon;
 } TernaryT;
 
 typedef struct {
-  const char * str;
-  PixelChannel pixChan;
+  const char
+    *str;
+
+  PixelChannel
+    pixel_channel;
 } ChannelT;
 
 #define NO_CHAN_QUAL      ((PixelChannel) (-1))
@@ -617,8 +629,11 @@ static const ChannelT Channels[] = {
 /* The index into UserSymbols is also the index into run-time UserSymVals.
 */
 typedef struct {
-  char * pex;
-  size_t len;
+  char
+    *pex;
+
+  size_t
+    len;
 } UserSymbolT;
 
 typedef enum {
@@ -1243,7 +1258,7 @@ static MagickBooleanType AddElement (FxInfo * pfx, fxFltType val, int oprNum)
   else if (oprNum <= fNull) pel->nArgs = Functions[oprNum-(int) FirstFunc].number_args;
   else if (oprNum <= aNull) pel->nArgs = 0;
   else if (oprNum <= sNull) pel->nArgs = 0;
-  else                      pel->nArgs = Controls[oprNum-(int) FirstCont].nArgs;
+  else                      pel->nArgs = Controls[oprNum-(int) FirstCont].number_args;
 
   return MagickTrue;
 }
@@ -1444,7 +1459,7 @@ static PixelChannel GetChannelQualifier (FxInfo * pfx, int op)
       if (LocaleCompare (pch->str, pfx->token)==0) {
 
         if (op >= (int) FirstImgAttr && op <= (int) ((OperatorE)aNull) &&
-              ChanIsVirtual (pch->pixChan)
+              ChanIsVirtual (pch->pixel_channel)
            )
         {
           (void) ThrowMagickException (
@@ -1455,7 +1470,7 @@ static PixelChannel GetChannelQualifier (FxInfo * pfx, int op)
         }
 
         pfx->pex += pfx->lenToken;
-        return pch->pixChan;
+        return pch->pixel_channel;
       }
       pch++;
     }
@@ -2402,14 +2417,14 @@ static inline MagickBooleanType ProcessTernaryOpr (FxInfo * pfx, TernaryT * pter
   if (pfx->usedOprStack == 0)
     return MagickFalse;
   if (pfx->OperatorStack[pfx->usedOprStack-1] == oQuery) {
-    if (ptern->addrQuery != NULL_ADDRESS) {
+    if (ptern->addr_query != NULL_ADDRESS) {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
         "Already have '?' in sub-expression at", "'%s'",
         SetShortExp(pfx));
       return MagickFalse;
     }
-    if (ptern->addrColon != NULL_ADDRESS) {
+    if (ptern->addr_colon != NULL_ADDRESS) {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
         "Already have ':' in sub-expression at", "'%s'",
@@ -2417,19 +2432,19 @@ static inline MagickBooleanType ProcessTernaryOpr (FxInfo * pfx, TernaryT * pter
       return MagickFalse;
     }
     pfx->usedOprStack--;
-    ptern->addrQuery = pfx->usedElements;
+    ptern->addr_query = pfx->usedElements;
     (void) AddAddressingElement (pfx, rIfZeroGoto, NULL_ADDRESS);
     /* address will be one after the Colon address. */
   }
   else if (pfx->OperatorStack[pfx->usedOprStack-1] == oColon) {
-    if (ptern->addrQuery == NULL_ADDRESS) {
+    if (ptern->addr_query == NULL_ADDRESS) {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
         "Need '?' in sub-expression at", "'%s'",
         SetShortExp(pfx));
       return MagickFalse;
     }
-    if (ptern->addrColon != NULL_ADDRESS) {
+    if (ptern->addr_colon != NULL_ADDRESS) {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
         "Already have ':' in sub-expression at", "'%s'",
@@ -2437,7 +2452,7 @@ static inline MagickBooleanType ProcessTernaryOpr (FxInfo * pfx, TernaryT * pter
       return MagickFalse;
     }
     pfx->usedOprStack--;
-    ptern->addrColon = pfx->usedElements;
+    ptern->addr_colon = pfx->usedElements;
     pfx->Elements[pfx->usedElements-1].DoPush = MagickTrue;
     (void) AddAddressingElement (pfx, rGoto, NULL_ADDRESS);
     /* address will be after the subexpression */
@@ -2534,21 +2549,21 @@ static MagickBooleanType GetOperator (
 
 static MagickBooleanType ResolveTernaryAddresses (FxInfo * pfx, TernaryT * ptern)
 {
-  if (ptern->addrQuery == NULL_ADDRESS && ptern->addrColon == NULL_ADDRESS)
+  if (ptern->addr_query == NULL_ADDRESS && ptern->addr_colon == NULL_ADDRESS)
     return MagickTrue;
 
-  if (ptern->addrQuery != NULL_ADDRESS && ptern->addrColon != NULL_ADDRESS) {
-    pfx->Elements[ptern->addrQuery].EleNdx = ptern->addrColon + 1;
-    pfx->Elements[ptern->addrColon].EleNdx = pfx->usedElements;
-    ptern->addrQuery = NULL_ADDRESS;
-    ptern->addrColon = NULL_ADDRESS;
-  } else if (ptern->addrQuery != NULL_ADDRESS) {
+  if (ptern->addr_query != NULL_ADDRESS && ptern->addr_colon != NULL_ADDRESS) {
+    pfx->Elements[ptern->addr_query].EleNdx = ptern->addr_colon + 1;
+    pfx->Elements[ptern->addr_colon].EleNdx = pfx->usedElements;
+    ptern->addr_query = NULL_ADDRESS;
+    ptern->addr_colon = NULL_ADDRESS;
+  } else if (ptern->addr_query != NULL_ADDRESS) {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
         "'?' with no corresponding ':'", "'%s' at '%s'",
         pfx->token, SetShortExp(pfx));
       return MagickFalse;
-  } else if (ptern->addrColon != NULL_ADDRESS) {
+  } else if (ptern->addr_colon != NULL_ADDRESS) {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
         "':' with no corresponding '?'", "'%s' at '%s'",
@@ -2574,8 +2589,8 @@ static MagickBooleanType TranslateExpression (
   int StartEleNdx;
 
   TernaryT ternary;
-  ternary.addrQuery = NULL_ADDRESS;
-  ternary.addrColon = NULL_ADDRESS;
+  ternary.addr_query = NULL_ADDRESS;
+  ternary.addr_colon = NULL_ADDRESS;
 
   pfx->teDepth++;
 
@@ -2653,7 +2668,7 @@ static MagickBooleanType TranslateExpression (
 
     if (!ProcessTernaryOpr (pfx, &ternary)) return MagickFalse;
 
-    if (ternary.addrColon != NULL_ADDRESS) {
+    if (ternary.addr_colon != NULL_ADDRESS) {
       if (!TranslateExpression (pfx, ",);", chLimit, needPopAll)) return MagickFalse;
       break;
     }
@@ -2757,7 +2772,7 @@ static MagickBooleanType TranslateExpression (
     }
   }
 
-  if (ternary.addrQuery != NULL_ADDRESS) *needPopAll = MagickTrue;
+  if (ternary.addr_query != NULL_ADDRESS) *needPopAll = MagickTrue;
 
   (void) ResolveTernaryAddresses (pfx, &ternary);
 
