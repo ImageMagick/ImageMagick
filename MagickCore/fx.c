@@ -218,9 +218,14 @@ typedef enum {
 } ConstantE;
 
 typedef struct {
-  ConstantE cons;
-  fxFltType val;
-  const char * str;
+  ConstantE
+    cons;
+
+  fxFltType
+    val;
+
+  const char
+    *str;
 } ConstantT;
 
 static const ConstantT Constants[] = {
@@ -319,9 +324,14 @@ typedef enum {
 } FunctionE;
 
 typedef struct {
-  FunctionE func;
-  const char * str;
-  int nArgs;
+  FunctionE
+    func;
+
+  const char
+    *str;
+
+  int
+    number_args;
 } FunctionT;
 
 static const FunctionT Functions[] = {
@@ -1225,7 +1235,7 @@ static MagickBooleanType AddElement (FxInfo * pfx, fxFltType val, int oprNum)
   pel->lenExp = 0;
 
   if (oprNum <= oNull) pel->nArgs = Operators[oprNum].number_args;
-  else if (oprNum <= fNull) pel->nArgs = Functions[oprNum-(int) FirstFunc].nArgs;
+  else if (oprNum <= fNull) pel->nArgs = Functions[oprNum-(int) FirstFunc].number_args;
   else if (oprNum <= aNull) pel->nArgs = 0;
   else if (oprNum <= sNull) pel->nArgs = 0;
   else                      pel->nArgs = Controls[oprNum-(int) FirstCont].nArgs;
@@ -1714,7 +1724,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
   /* A function, so get open-parens, n args, close-parens
   */
   const char * funStr = Functions[fe-(int) FirstFunc].str;
-  int nArgs = Functions[fe-(int) FirstFunc].nArgs;
+  int nArgs = Functions[fe-(int) FirstFunc].number_args;
   char chLimit = ')';
   char expChLimit = ')';
   const char *strLimit = ",)";
@@ -1883,35 +1893,35 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
   }
 
   if (fe == fP || fe == fS || fe == fU || fe == fChannel) {
-    while (FndArgs < Functions[fe-(int) FirstFunc].nArgs) {
+    while (FndArgs < Functions[fe-(int) FirstFunc].number_args) {
       (void) AddElement (pfx, (fxFltType) 0, oNull);
       FndArgs++;
     }
   }
 
-  if (FndArgs > Functions[fe-(int) FirstFunc].nArgs)
+  if (FndArgs > Functions[fe-(int) FirstFunc].number_args)
   {
     if (fe==fChannel) {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
         "For function", "'%s' expected up to %i arguments, found '%i' at '%s'",
-        funStr, Functions[fe-(int) FirstFunc].nArgs, FndArgs, SetShortExp(pfx));
+        funStr, Functions[fe-(int) FirstFunc].number_args, FndArgs, SetShortExp(pfx));
     } else {
       (void) ThrowMagickException (
         pfx->exception, GetMagickModule(), OptionError,
         "For function", "'%s' expected %i arguments, found '%i' at '%s'",
-        funStr, Functions[fe-(int) FirstFunc].nArgs, FndArgs, SetShortExp(pfx));
+        funStr, Functions[fe-(int) FirstFunc].number_args, FndArgs, SetShortExp(pfx));
     }
     return MagickFalse;
   }
-  if (FndArgs < Functions[fe-(int) FirstFunc].nArgs) {
+  if (FndArgs < Functions[fe-(int) FirstFunc].number_args) {
     (void) ThrowMagickException (
       pfx->exception, GetMagickModule(), OptionError,
       "For function", "'%s' expected %i arguments, found too few (%i) at '%s'",
-      funStr, Functions[fe-(int) FirstFunc].nArgs, FndArgs, SetShortExp(pfx));
+      funStr, Functions[fe-(int) FirstFunc].number_args, FndArgs, SetShortExp(pfx));
     return MagickFalse;
   }
-  if (fe != fS && fe != fV && FndArgs == 0 && Functions[fe-(int) FirstFunc].nArgs == 0) {
+  if (fe != fS && fe != fV && FndArgs == 0 && Functions[fe-(int) FirstFunc].number_args == 0) {
     /* This is for "rand()" and similar. */
     chLimit = expChLimit;
     if (!ExpectChar (pfx, ')')) return MagickFalse;
