@@ -152,10 +152,15 @@ typedef enum {
 } OperatorE;
 
 typedef struct {
-  OperatorE op;
-  const char * str;
-  int precedence; /* Higher number is higher precedence */
-  int nArgs;
+  OperatorE
+    op;
+
+  const char *
+    str;
+
+  int
+    precedence, /* Higher number is higher precedence */
+    number_args;
 } OperatorT;
 
 static const OperatorT Operators[] = {
@@ -1219,7 +1224,7 @@ static MagickBooleanType AddElement (FxInfo * pfx, fxFltType val, int oprNum)
   pel->pExpStart = NULL;
   pel->lenExp = 0;
 
-  if (oprNum <= oNull) pel->nArgs = Operators[oprNum].nArgs;
+  if (oprNum <= oNull) pel->nArgs = Operators[oprNum].number_args;
   else if (oprNum <= fNull) pel->nArgs = Functions[oprNum-(int) FirstFunc].nArgs;
   else if (oprNum <= aNull) pel->nArgs = 0;
   else if (oprNum <= sNull) pel->nArgs = 0;
