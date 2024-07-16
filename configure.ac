@@ -4209,6 +4209,7 @@ fi
 # Generate build environment
 # ==============================================================================
 AC_CONFIG_FILES([\
+    app-image/AppRun \
     common.shi \
     config/policy.xml:config/policy-"$magick_cv_with_security_policy".xml \
     config/configure.xml \

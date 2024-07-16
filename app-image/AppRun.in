@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# The purpose of this custom AppRun script is
+# to allow symlinking the AppImage and invoking
+# the corresponding binary depending on which
+# symlink was used to invoke the AppImage
+
+HERE="$(dirname "$(readlink -f "${0}")")"
+
+export MAGICK_HOME="$HERE/usr:$MAGICK_HOME" # https://imagemagick.org/QuickStart.txt
+export MAGICK_CONFIGURE_PATH=$(readlink -f "$HERE/usr/lib/ImageMagick-@PACKAGE_BASE_VERSION@/config-Q16"):$(readlink -f "$HERE/usr/lib/ImageMagick-@PACKAGE_BASE_VERSION@/config-Q16HDRI"):$(readlink -f "$HERE/usr/share/ImageMagick-7"):$(readlink -f "$HERE/usr/etc/ImageMagick-7"):$MAGICK_CONFIGURE_PATH # Wildcards don't work
+
+export LD_LIBRARY_PATH=$(readlink -f "$HERE/usr/lib")${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${HERE}/usr/lib/ImageMagick-@PACKAGE_BASE_VERSION@/modules-Q16HDRI/coders${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+
+if [ "$1" == "man" ] ; then
+  export MANPATH="$HERE/usr/share/man:$MANPATH" ; exec "$@" ; exit $?
+elif [ "$1" == "info" ] ; then
+  export INFOPATH="$HERE/usr/share/info:$INFOPATH" ; exec "$@" ; exit $?
+fi
+
+if [ -n "$APPIMAGE" ] ; then
+  BINARY_NAME=$(basename "$ARGV0")
+  if [ -e "$HERE/usr/bin/$BINARY_NAME" ] ; then
+    exec "$HERE/usr/bin/$BINARY_NAME" "$@"
+  else
+    exec "$HERE/usr/bin/magick" "$@"
+  fi
+else
+  exec "$HERE/usr/bin/magick" "$@"
+fi
