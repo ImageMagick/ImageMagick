@@ -180,13 +180,13 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
     char
       *passes;
 
-    (void) AcquireUniqueFilename(destination);
-    (void) RelinquishUniqueFileResource(destination);
     passes=GetPolicyValue("system:shred");
     if (passes != (char *) NULL)
       passes=DestroyString(passes);
     else
       {
+        (void) AcquireUniqueFilename(destination);
+        (void) RelinquishUniqueFileResource(destination);
         if (*source == *DirectorySeparator)
           {
             if (symlink(source,destination) == 0)
