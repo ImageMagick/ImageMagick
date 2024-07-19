@@ -33884,17 +33884,6 @@ if test "$have_heic" = 'yes'; then
 printf "%s\n" "#define HEIC_DELEGATE 1" >>confdefs.h
 
   CFLAGS="$HEIF_CFLAGS $CFLAGS"
-  ac_fn_c_check_header_compile "$LINENO" "libheif/heif.h" "ac_cv_header_libheif_heif_h" "$ac_includes_default"
-if test "x$ac_cv_header_libheif_heif_h" = xyes
-then :
-  have_libheif_heif='yes'
-fi
-
-  if test "$have_libheif_heif" = 'yes'; then
-
-printf "%s\n" "#define HAVE_LIBHEIF_HEIF_H 1" >>confdefs.h
-
-  fi
 fi
 
  if test "$have_heic" = 'yes'; then
