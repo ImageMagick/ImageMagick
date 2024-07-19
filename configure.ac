@@ -2383,8 +2383,6 @@ fi
 if test "$have_heic" = 'yes'; then
   AC_DEFINE([HEIC_DELEGATE],[1],[Define if you have libheif library])
   CFLAGS="$HEIF_CFLAGS $CFLAGS"
-  AC_CHECK_HEADER([libheif/heif.h],[HAVE_LIBHEIF_LIBHEIF_H=1],[])
-  AC_SUBST(HAVE_LIBHEIF_LIBHEIF_H)
 fi
 
 AM_CONDITIONAL([HEIC_DELEGATE],[test "$have_heic" = 'yes'])
