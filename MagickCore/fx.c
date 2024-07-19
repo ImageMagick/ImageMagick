@@ -3208,7 +3208,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
   if (p == (const Quantum *) NULL)
     {
       (void) ThrowMagickException (pfx->exception,GetMagickModule(),
-        OptionError,"GetHslInt failure","%lu %li,%li",(unsigned long)
+        OptionError,"Can't get virtual pixels","%lu %li,%li",(unsigned long)
         pfx->ImgNum,(long) imgx,(long) imgy);
       return(MagickFalse);
     }
