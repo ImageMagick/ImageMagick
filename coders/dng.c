@@ -484,7 +484,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         return(DestroyImageList(image));
       }
     libraw_set_dataerror_handler(raw_info,LibRawDataError,exception);
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && defined(_MSC_VER) && (_MSC_VER > 1310)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
     {
       wchar_t
         *path;
