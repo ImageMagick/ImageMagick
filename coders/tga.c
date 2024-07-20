@@ -926,18 +926,33 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         tga_info.colormap_length=(unsigned short) image->colors;
         if (image_info->depth == 5)
           tga_info.colormap_size=16;
-        else if (image->alpha_trait != UndefinedPixelTrait)
-          tga_info.colormap_size=32;
         else
-          tga_info.colormap_size=24;
+          if (image->alpha_trait != UndefinedPixelTrait)
+            tga_info.colormap_size=32;
+          else
+            tga_info.colormap_size=24;
       }
-  if ((image->orientation == BottomRightOrientation) ||
-      (image->orientation == TopRightOrientation))
-    tga_info.attributes|=(1UL << 4);
-  if ((image->orientation == TopLeftOrientation) ||
-      (image->orientation == UndefinedOrientation) ||
-      (image->orientation == TopRightOrientation))
-    tga_info.attributes|=(1UL << 5);
+  switch (image->orientation)
+  {
+    case BottomRightOrientation:
+    {
+      tga_info.attributes|=0x10;
+      break;
+    }
+    case UndefinedOrientation:
+    case TopLeftOrientation:
+    {
+      tga_info.attributes|=0x20;
+      break;
+    }
+    case TopRightOrientation:
+    {
+      tga_info.attributes|=0x30;
+      break;
+    }
+    default:
+      break;
+  }
   if ((image->columns > 65535) || (image->rows > 65535))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   /*
