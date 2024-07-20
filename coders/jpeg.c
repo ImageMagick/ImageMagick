@@ -2355,7 +2355,7 @@ static inline void JPEGSetSample(const struct jpeg_compress_struct *jpeg_info,
 {
   if (jpeg_info->data_precision > 8)
     (*(unsigned short *) q)=(ScaleQuantumToShort(pixel)/scale);
-  *q=(ScaleQuantumToChar(pixel)/scale);
+  *q=(JSAMPLE) ScaleQuantumToChar(pixel);
 }
 
 static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
