@@ -111,7 +111,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
   const char
     *MERGED_IMAGE_PATH = "mergedimage.png";
 
-   FILE
+  FILE
     *file;
 
   Image

@@ -1285,8 +1285,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               image->transparent_color=image->colormap[opacity];
             }
         }
-        image->background_color=image->colormap[MagickMin((ssize_t) background,
-          (ssize_t) image->colors-1)];
+        if (image->colors > 0)
+          image->background_color=image->colormap[MagickMin((ssize_t)
+            background,(ssize_t) image->colors-1)];
       }
     else
       {
