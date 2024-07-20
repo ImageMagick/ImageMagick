@@ -263,6 +263,24 @@
 /* Define if you have jemalloc memory allocation library */
 #undef HAVE_JEMALLOC
 
+/* Define to 1 if you have the `jpeg12_read_scanlines' function. */
+#undef HAVE_JPEG12_READ_SCANLINES
+
+/* Define to 1 if you have the `jpeg12_write_scanlines' function. */
+#undef HAVE_JPEG12_WRITE_SCANLINES
+
+/* Define to 1 if you have the `jpeg16_read_scanlines' function. */
+#undef HAVE_JPEG16_READ_SCANLINES
+
+/* Define to 1 if you have the `jpeg16_write_scanlines' function. */
+#undef HAVE_JPEG16_WRITE_SCANLINES
+
+/* Define to 1 if you have the `jpeg_enable_lossless' function. */
+#undef HAVE_JPEG_ENABLE_LOSSLESS
+
+/* Define to 1 if you have the `jpeg_simple_lossless' function. */
+#undef HAVE_JPEG_SIMPLE_LOSSLESS
+
 /* Define if you have the <lcms2.h> header file. */
 #undef HAVE_LCMS2_H
 

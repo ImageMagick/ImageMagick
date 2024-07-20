@@ -2476,6 +2476,7 @@ if test "$with_jpeg" != 'no'; then
             AC_MSG_RESULT([yes])
             have_jpeg='yes'
         fi
+        AC_CHECK_FUNCS([jpeg12_read_scanlines jpeg12_write_scanlines jpeg16_read_scanlines jpeg16_write_scanlines jpeg_enable_lossless jpeg_simple_lossless])
     else
         AC_MSG_RESULT([no])
     fi

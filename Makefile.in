@@ -298,23 +298,24 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config/config.h
-CONFIG_CLEAN_FILES = common.shi config/policy.xml config/configure.xml \
-	config/delegates.xml config/ImageMagick.rdf \
-	config/MagickCore.dox config/MagickWand.dox \
-	config/Magick++.dox config/type-apple.xml \
-	config/type-dejavu.xml config/type-ghostscript.xml \
-	config/type-urw-base35.xml config/type-windows.xml \
-	config/type.xml ImageMagick.spec Magick++/bin/Magick++-config \
-	MagickCore/ImageMagick.pc Magick++/lib/Magick++.pc \
-	MagickCore/MagickCore-config MagickCore/MagickCore.pc \
-	MagickCore/version.h magick.sh PerlMagick/check.sh \
-	PerlMagick/default/Magick.pm PerlMagick/Makefile.PL \
-	PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL \
-	PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs \
-	PerlMagick/quantum/typemap utilities/animate.1 \
-	utilities/compare.1 utilities/composite.1 utilities/conjure.1 \
-	utilities/convert.1 utilities/display.1 utilities/identify.1 \
-	utilities/ImageMagick.1 utilities/import.1 utilities/magick.1 \
+CONFIG_CLEAN_FILES = app-image/AppRun common.shi config/policy.xml \
+	config/configure.xml config/delegates.xml \
+	config/ImageMagick.rdf config/MagickCore.dox \
+	config/MagickWand.dox config/Magick++.dox \
+	config/type-apple.xml config/type-dejavu.xml \
+	config/type-ghostscript.xml config/type-urw-base35.xml \
+	config/type-windows.xml config/type.xml ImageMagick.spec \
+	Magick++/bin/Magick++-config MagickCore/ImageMagick.pc \
+	Magick++/lib/Magick++.pc MagickCore/MagickCore-config \
+	MagickCore/MagickCore.pc MagickCore/version.h magick.sh \
+	PerlMagick/check.sh PerlMagick/default/Magick.pm \
+	PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL \
+	PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm \
+	PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap \
+	utilities/animate.1 utilities/compare.1 utilities/composite.1 \
+	utilities/conjure.1 utilities/convert.1 utilities/display.1 \
+	utilities/identify.1 utilities/ImageMagick.1 \
+	utilities/import.1 utilities/magick.1 \
 	utilities/magick-script.1 utilities/mogrify.1 \
 	utilities/montage.1 utilities/stream.1 \
 	MagickWand/MagickWand-config MagickWand/MagickWand.pc
@@ -3094,6 +3095,7 @@ am__DIST_COMMON = $(srcdir)/ImageMagick.spec.in \
 	$(top_srcdir)/PerlMagick/quantum/quantum.pm.in \
 	$(top_srcdir)/PerlMagick/quantum/quantum.xs.in \
 	$(top_srcdir)/PerlMagick/quantum/typemap.in \
+	$(top_srcdir)/app-image/AppRun.in \
 	$(top_srcdir)/config/ImageMagick.rdf.in \
 	$(top_srcdir)/config/Magick++.dox.in \
 	$(top_srcdir)/config/MagickCore.dox.in \
@@ -6309,6 +6311,8 @@ $(top_srcdir)/config/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config/config.h config/stamp-h1
+app-image/AppRun: $(top_builddir)/config.status $(top_srcdir)/app-image/AppRun.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 common.shi: $(top_builddir)/config.status $(srcdir)/common.shi.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/policy.xml: $(top_builddir)/config.status 

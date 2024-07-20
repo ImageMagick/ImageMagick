@@ -5197,7 +5197,7 @@ MAGICK_PATCHLEVEL_VERSION=36
 
 MAGICK_VERSION=7.1.1-36
 
-MAGICK_GIT_REVISION=4f6a11609:20240715
+MAGICK_GIT_REVISION=32591b858:20240720
 
 
 # Substitute library versioning
@@ -5231,7 +5231,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,36
 
-PACKAGE_RELEASE_DATE=2024-07-15
+PACKAGE_RELEASE_DATE=2024-07-20
 
 
 # Ensure that make can run correctly
@@ -31970,6 +31970,43 @@ printf "%s\n" "#define JPEG_DELEGATE 1" >>confdefs.h
 printf "%s\n" "yes" >&6; }
             have_jpeg='yes'
         fi
+        ac_fn_c_check_func "$LINENO" "jpeg12_read_scanlines" "ac_cv_func_jpeg12_read_scanlines"
+if test "x$ac_cv_func_jpeg12_read_scanlines" = xyes
+then :
+  printf "%s\n" "#define HAVE_JPEG12_READ_SCANLINES 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "jpeg12_write_scanlines" "ac_cv_func_jpeg12_write_scanlines"
+if test "x$ac_cv_func_jpeg12_write_scanlines" = xyes
+then :
+  printf "%s\n" "#define HAVE_JPEG12_WRITE_SCANLINES 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "jpeg16_read_scanlines" "ac_cv_func_jpeg16_read_scanlines"
+if test "x$ac_cv_func_jpeg16_read_scanlines" = xyes
+then :
+  printf "%s\n" "#define HAVE_JPEG16_READ_SCANLINES 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "jpeg16_write_scanlines" "ac_cv_func_jpeg16_write_scanlines"
+if test "x$ac_cv_func_jpeg16_write_scanlines" = xyes
+then :
+  printf "%s\n" "#define HAVE_JPEG16_WRITE_SCANLINES 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "jpeg_enable_lossless" "ac_cv_func_jpeg_enable_lossless"
+if test "x$ac_cv_func_jpeg_enable_lossless" = xyes
+then :
+  printf "%s\n" "#define HAVE_JPEG_ENABLE_LOSSLESS 1" >>confdefs.h
+
+fi
+ac_fn_c_check_func "$LINENO" "jpeg_simple_lossless" "ac_cv_func_jpeg_simple_lossless"
+if test "x$ac_cv_func_jpeg_simple_lossless" = xyes
+then :
+  printf "%s\n" "#define HAVE_JPEG_SIMPLE_LOSSLESS 1" >>confdefs.h
+
+fi
+
     else
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
