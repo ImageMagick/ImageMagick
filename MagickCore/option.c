@@ -626,7 +626,7 @@ static const OptionInfo
     { "+background", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-background", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+format", 0L, ImageInfoOptionFlag, MagickFalse },
-    { "-format", 1L, ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
+    { "-format", 1L, ListOperatorFlag | ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-quiet", 0L, GlobalOptionFlag | FireOptionFlag, MagickFalse },
     { "+quiet", 0L, GlobalOptionFlag | FireOptionFlag, MagickFalse },
     { "-regard-warnings", 0L, ImageInfoOptionFlag, MagickFalse },
