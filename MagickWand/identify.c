@@ -584,6 +584,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
             if (i == (ssize_t) argc)
               ThrowIdentifyException(OptionError,"MissingArgument",option);
             format=argv[i];
+            image_info->ping=MagickFalse;
             break;
           }
         if (LocaleCompare("fuzz",option+1) == 0)
