@@ -1489,16 +1489,12 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       if (jpeg_info->output_components == 1)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          ssize_t
-            pixel;
+          unsigned short
+            pixel=(unsigned short) (scale*JPEGGetSample(jpeg_info,p));
 
-          pixel=(ssize_t) (scale*JPEGGetSample(jpeg_info,p));
-          SetPixelRed(image,ScaleShortToQuantum((unsigned short)
-            (scale*JPEGGetSample(jpeg_info,p))),q);
-          SetPixelGreen(image,ScaleShortToQuantum((unsigned short)
-            (scale*JPEGGetSample(jpeg_info,p))),q);
-          SetPixelBlue(image,ScaleShortToQuantum((unsigned short)
-            (scale*JPEGGetSample(jpeg_info,p))),q);
+          SetPixelRed(image,ScaleShortToQuantum(pixel),q);
+          SetPixelGreen(image,ScaleShortToQuantum(pixel),q);
+          SetPixelBlue(image,ScaleShortToQuantum(pixel),q);
           p+=bytes_per_pixel;
           q+=GetPixelChannels(image);
         }
