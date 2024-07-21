@@ -152,7 +152,7 @@ WandExport Image *GetImageFromMagickWand(const MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k A d a p t i v e S h a r p e n I m a g e                       %
+%   M a g i c k A d a p t i v e B l u r I m a g e                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
