@@ -2632,7 +2632,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
             point_transform,
             predictor;
 
-          predictor=image->quality/100;  /* range 1-7 */
+          predictor=(int) image->quality/100;  /* range 1-7 */
           point_transform=image->quality % 20;  /* range 0-15 */
 #if defined(MAGICKCORE_HAVE_JPEG_SIMPLE_LOSSLESS)
           jpeg_simple_lossless(jpeg_info,predictor,point_transform);
