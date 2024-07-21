@@ -1120,6 +1120,9 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   ssize_t
     y;
 
+  unsigned int
+    scale;
+
   /*
     Open image file.
   */
@@ -1340,6 +1343,25 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         }
       }
     }
+  option=GetImageOption(image_info,"jpeg:colors");
+  if (option != (const char *) NULL)
+    if (AcquireImageColormap(image,StringToUnsignedLong(option),exception) == MagickFalse)
+      {
+        client_info=JPEGCleanup(jpeg_info,client_info);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
+  if ((jpeg_info->output_components == 1) && (jpeg_info->quantize_colors == 0))
+    {
+      size_t
+        colors;
+
+      colors=(size_t) GetQuantumRange(jpeg_info->data_precision)+1;
+      if (AcquireImageColormap(image,colors,exception) == MagickFalse)
+        {
+          client_info=JPEGCleanup(jpeg_info,client_info);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
+    }
   if (image->debug != MagickFalse)
     {
       if (image->interlace != NoInterlace)
@@ -1382,7 +1404,8 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
     }
   (void) jpeg_start_decompress(jpeg_info);
   if ((jpeg_info->output_components != 1) &&
-      (jpeg_info->output_components != 3) && (jpeg_info->output_components != 4))
+      (jpeg_info->output_components != 3) &&
+      (jpeg_info->output_components != 4))
     {
       client_info=JPEGCleanup(jpeg_info,client_info);
       ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
@@ -1436,6 +1459,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           image->colormap[i].alpha=(MagickRealType) OpaqueAlpha;
         }
     }
+  scale=65535U/(unsigned int) GetQuantumRange(jpeg_info->data_precision);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     JDIMENSION
@@ -1447,6 +1471,9 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
     ssize_t
       x;
 
+    /*
+      Uncompress one JPEG scanline.
+    */
     switch (jpeg_info->data_precision)
     {
       case 16:
@@ -1467,72 +1494,90 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       }
       default:
       {
-        number_scanlines=jpeg_read_scanlines(jpeg_info,(JSAMPROW *) &jpeg_pixels,1);
+        number_scanlines=jpeg_read_scanlines(jpeg_info,(JSAMPROW *)
+          &jpeg_pixels,1);
         break;
       }
     }
     if (number_scanlines != 1)
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          CorruptImageWarning,"SkipToSyncByte","`%s'",image->filename);
-        continue;
-      }
-    p=jpeg_pixels;
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "AnErrorHasOccurredReadingFromFile","`%s'",image->filename);
+    /*
+      Transfer image pixels from JPEG buffer.
+    */
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
+    p=jpeg_pixels;
+    switch (jpeg_info->output_components)
     {
-      const unsigned int
-        scale = 65535U/(unsigned int) GetQuantumRange(
-          jpeg_info->data_precision);
-
-      if (jpeg_info->output_components == 1)
+      case 1:
+      {
+        /*
+          Grayscale.
+        */
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          unsigned short
-            pixel=(unsigned short) (scale*JPEGGetSample(jpeg_info,p));
+          Quantum
+            index;
 
-          SetPixelRed(image,ScaleShortToQuantum(pixel),q);
-          SetPixelGreen(image,ScaleShortToQuantum(pixel),q);
-          SetPixelBlue(image,ScaleShortToQuantum(pixel),q);
+          unsigned short
+            pixel = (unsigned short) JPEGGetSample(jpeg_info,p);
+
+          index=(Quantum) ConstrainColormapIndex(image,pixel,exception);
+          SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
+          SetPixelIndex(image,index,q);
           p+=bytes_per_pixel;
           q+=GetPixelChannels(image);
         }
-      else
-        if (image->colorspace != CMYKColorspace)
-          for (x=0; x < (ssize_t) image->columns; x++)
-          {
-            SetPixelRed(image,ScaleShortToQuantum((unsigned short)
-              (scale*JPEGGetSample(jpeg_info,p))),q);
-            p+=bytes_per_pixel;
-            SetPixelGreen(image,ScaleShortToQuantum((unsigned short)
-              (scale*JPEGGetSample(jpeg_info,p))),q);
-            p+=bytes_per_pixel;
-            SetPixelBlue(image,ScaleShortToQuantum((unsigned short)
-              (scale*JPEGGetSample(jpeg_info,p))),q);
-            SetPixelAlpha(image,OpaqueAlpha,q);
-            p+=bytes_per_pixel;
-            q+=GetPixelChannels(image);
-          }
-        else
-          for (x=0; x < (ssize_t) image->columns; x++)
-          {
-            SetPixelCyan(image,QuantumRange-ScaleShortToQuantum(
-              (unsigned short) (scale*JPEGGetSample(jpeg_info,p))),q);
-            p+=bytes_per_pixel;
-            SetPixelMagenta(image,QuantumRange-ScaleShortToQuantum(
-              (unsigned short) (scale*JPEGGetSample(jpeg_info,p))),q);
-            p+=bytes_per_pixel;
-            SetPixelYellow(image,QuantumRange-ScaleShortToQuantum(
-              (unsigned short) (scale*JPEGGetSample(jpeg_info,p))),q);
-            p+=bytes_per_pixel;
-            SetPixelBlack(image,QuantumRange-ScaleShortToQuantum(
-              (unsigned short) (scale*JPEGGetSample(jpeg_info,p))),q);
-            SetPixelAlpha(image,OpaqueAlpha,q);
-            p+=bytes_per_pixel;
-            q+=GetPixelChannels(image);
-          }
+        break;
       }
+      case 4:
+      {
+        /*
+          CMYK.
+        */
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          SetPixelCyan(image,QuantumRange-ScaleShortToQuantum((unsigned short)
+            (scale*JPEGGetSample(jpeg_info,p))),q);
+          p+=bytes_per_pixel;
+          SetPixelMagenta(image,QuantumRange-ScaleShortToQuantum(
+            (unsigned short) (scale*JPEGGetSample(jpeg_info,p))),q);
+          p+=bytes_per_pixel;
+          SetPixelYellow(image,QuantumRange-ScaleShortToQuantum((unsigned short)
+            (scale*JPEGGetSample(jpeg_info,p))),q);
+          p+=bytes_per_pixel;
+          SetPixelBlack(image,QuantumRange-ScaleShortToQuantum((unsigned short)
+            (scale*JPEGGetSample(jpeg_info,p))),q);
+          p+=bytes_per_pixel;
+          SetPixelAlpha(image,OpaqueAlpha,q);
+          q+=GetPixelChannels(image);
+        }
+        break;
+      }
+      case 3:
+      {
+        /*
+          RGB || YCC.
+        */
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          SetPixelRed(image,ScaleShortToQuantum((unsigned short) (scale*
+            JPEGGetSample(jpeg_info,p))),q);
+          p+=bytes_per_pixel;
+          SetPixelGreen(image,ScaleShortToQuantum((unsigned short) (scale*
+            JPEGGetSample(jpeg_info,p))),q);
+          p+=bytes_per_pixel;
+          SetPixelBlue(image,ScaleShortToQuantum((unsigned short) (scale*
+            JPEGGetSample(jpeg_info,p))),q);
+          p+=bytes_per_pixel;
+          SetPixelAlpha(image,OpaqueAlpha,q);
+          q+=GetPixelChannels(image);
+        }
+        break;
+      }
+    }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
@@ -2364,9 +2409,6 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
   JPEGClientInfo
     *client_info = (JPEGClientInfo *) NULL;
 
-  JDIMENSION
-    number_scanlines = 0;
-
   JSAMPLE
     *volatile jpeg_pixels,
     *q;
@@ -2967,80 +3009,33 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
         jps_image=DestroyImage(jps_image);
       return(MagickFalse);
     }
-  scale=0;
-  if (GetQuantumRange((size_t) jpeg_info->data_precision) != 0)
-    scale=65535/(unsigned short) GetQuantumRange((size_t)
-      jpeg_info->data_precision);
-  if (scale == 0)
-    scale=1;
-  if ((jpeg_info->in_color_space == JCS_RGB) ||
-      (jpeg_info->in_color_space == JCS_YCbCr))
-    for (y=0; y < (ssize_t) image->rows; y++)
+  scale=65535/(unsigned short) GetQuantumRange((size_t)
+    jpeg_info->data_precision);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const Quantum
+      *p;
+
+    JDIMENSION
+      number_scanlines = 0;
+
+    ssize_t
+      x;
+
+    /*
+      Transfer image pixel to JPEG buffer.
+    */
+    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    if (p == (const Quantum *) NULL)
+      break;
+    q=jpeg_pixels;
+    switch (jpeg_info->input_components)
     {
-      const Quantum
-        *p;
-
-      ssize_t
-        x;
-
-      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-      if (p == (const Quantum *) NULL)
-        break;
-      q=jpeg_pixels;
-      for (x=0; x < (ssize_t) image->columns; x++)
+      case 1:
       {
-        JPEGSetSample(jpeg_info,scale,GetPixelRed(image,p),q);
-        q+=bytes_per_pixel;
-        JPEGSetSample(jpeg_info,scale,GetPixelGreen(image,p),q);
-        q+=bytes_per_pixel;
-        JPEGSetSample(jpeg_info,scale,GetPixelBlue(image,p),q);
-        q+=bytes_per_pixel;
-        p+=GetPixelChannels(image);
-      }
-      switch (jpeg_info->data_precision)
-      {
-        case 16:
-        {
-#if defined(MAGICKCORE_HAVE_JPEG16_WRITE_SCANLINES)
-          number_scanlines=jpeg16_write_scanlines(jpeg_info,(J16SAMPROW *)
-            &jpeg_pixels,1);
-          break;
-#endif
-        }
-        case 12:
-        {
-#if defined(MAGICKCORE_HAVE_JPEG12_WRITE_SCANLINES)
-          number_scanlines=jpeg12_write_scanlines(jpeg_info,(J12SAMPROW *)
-            &jpeg_pixels,1);
-          break;
-#endif
-        }
-        default:
-        {
-          number_scanlines=jpeg_write_scanlines(jpeg_info,(JSAMPROW *)
-            &jpeg_pixels,1);
-          break;
-        }
-      }
-      status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-        image->rows);
-      if (status == MagickFalse)
-        break;
-    }
-  else
-    if (jpeg_info->in_color_space == JCS_GRAYSCALE)
-      for (y=0; y < (ssize_t) image->rows; y++)
-      {
-        const Quantum
-          *p;
-
-        ssize_t
-          x;
-
-        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          break;
-        q=jpeg_pixels;
+        /*
+          Grayscale.
+        */
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           JPEGSetSample(jpeg_info,scale,ClampToQuantum(GetPixelLuma(image,p)),
@@ -3048,49 +3043,13 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           q+=bytes_per_pixel;
           p+=GetPixelChannels(image);
         }
-        switch (jpeg_info->data_precision)
-        {
-          case 16:
-          {
-#if   defined(MAGICKCORE_HAVE_JPEG16_WRITE_SCANLINES)
-            number_scanlines=jpeg16_write_scanlines(jpeg_info,(J16SAMPROW *)
-              &jpeg_pixels,1);
-            break;
-#endif
-          }
-          case 12:
-          {
-#if   defined(MAGICKCORE_HAVE_JPEG12_WRITE_SCANLINES)
-            number_scanlines=jpeg12_write_scanlines(jpeg_info,(J12SAMPROW *)
-              &jpeg_pixels,1);
-            break;
-#endif
-          }
-          default:
-          {
-            number_scanlines=jpeg_write_scanlines(jpeg_info,(JSAMPROW *)
-              &jpeg_pixels,1);
-            break;
-          }
-        }
-        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-          image->rows);
-        if (status == MagickFalse)
-          break;
+        break;
       }
-    else
-      for (y=0; y < (ssize_t) image->rows; y++)
+      case 4:
       {
-        const Quantum
-          *p;
-
-        ssize_t
-          x;
-
-        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-        if (p == (const Quantum *) NULL)
-          break;
-        q=jpeg_pixels;
+        /*
+          CMYK.
+        */
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           /*
@@ -3110,41 +3069,66 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           q+=bytes_per_pixel;
           p+=GetPixelChannels(image);
         }
-        switch (jpeg_info->data_precision)
-        {
-          case 16:
-          {
-#if   defined(MAGICKCORE_HAVE_JPEG16_WRITE_SCANLINES)
-            number_scanlines=jpeg16_write_scanlines(jpeg_info,(J16SAMPROW *)
-              &jpeg_pixels,1);
-            break;
-#endif
-          }
-          case 12:
-          {
-#if   defined(MAGICKCORE_HAVE_JPEG12_WRITE_SCANLINES)
-            number_scanlines=jpeg12_write_scanlines(jpeg_info,(J12SAMPROW *)
-              &jpeg_pixels,1);
-            break;
-#endif
-          }
-          default:
-          {
-            number_scanlines=jpeg_write_scanlines(jpeg_info,(JSAMPROW *)
-              &jpeg_pixels,1);
-            break;
-          }
-        }
-        status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
-          image->rows);
-        if (status == MagickFalse)
-          break;
+        break;
       }
-  if ((number_scanlines != 1) || (y == (ssize_t) image->rows))
-    jpeg_finish_compress(jpeg_info);
+      default:
+      {
+        /*
+          RGB || YCC.
+        */
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          JPEGSetSample(jpeg_info,scale,GetPixelRed(image,p),q);
+          q+=bytes_per_pixel;
+          JPEGSetSample(jpeg_info,scale,GetPixelGreen(image,p),q);
+          q+=bytes_per_pixel;
+          JPEGSetSample(jpeg_info,scale,GetPixelBlue(image,p),q);
+          q+=bytes_per_pixel;
+          p+=GetPixelChannels(image);
+        }
+        break;
+      }
+    }
+    /*
+      Compress one JPEG scanline.
+    */
+    switch (jpeg_info->data_precision)
+    {
+      case 16:
+      {
+#if defined(MAGICKCORE_HAVE_JPEG16_WRITE_SCANLINES)
+        number_scanlines=jpeg16_write_scanlines(jpeg_info,(J16SAMPROW *)
+          &jpeg_pixels,1);
+        break;
+#endif
+      }
+      case 12:
+      {
+#if defined(MAGICKCORE_HAVE_JPEG12_WRITE_SCANLINES)
+        number_scanlines=jpeg12_write_scanlines(jpeg_info,(J12SAMPROW *)
+          &jpeg_pixels,1);
+        break;
+#endif
+      }
+      default:
+      {
+        number_scanlines=jpeg_write_scanlines(jpeg_info,(JSAMPROW *)
+          &jpeg_pixels,1);
+        break;
+      }
+    }
+    if (number_scanlines != 1)
+      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
+        "AnErrorHasOccurredWritingToFile","`%s'",image->filename);
+    status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
+      image->rows);
+    if (status == MagickFalse)
+      break;
+  }
   /*
     Relinquish resources.
   */
+  jpeg_finish_compress(jpeg_info);
   jpeg_destroy_compress(jpeg_info);
   client_info=(JPEGClientInfo *) RelinquishMagickMemory(client_info);
   memory_info=RelinquishVirtualMemory(memory_info);
