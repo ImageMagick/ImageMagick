@@ -1103,9 +1103,6 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   MemoryInfo
     *memory_info;
 
-  Quantum
-    index;
-
   ssize_t
     i;
 
@@ -1343,25 +1340,6 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         }
       }
     }
-  option=GetImageOption(image_info,"jpeg:colors");
-  if (option != (const char *) NULL)
-    if (AcquireImageColormap(image,StringToUnsignedLong(option),exception) == MagickFalse)
-      {
-        client_info=JPEGCleanup(jpeg_info,client_info);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      }
-  if ((jpeg_info->output_components == 1) && (jpeg_info->quantize_colors == 0))
-    {
-      size_t
-        colors;
-
-      colors=(size_t) GetQuantumRange(image->depth)+1;
-      if (AcquireImageColormap(image,colors,exception) == MagickFalse)
-        {
-          client_info=JPEGCleanup(jpeg_info,client_info);
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        }
-    }
   if (image->debug != MagickFalse)
     {
       if (image->interlace != NoInterlace)
@@ -1515,9 +1493,12 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
             pixel;
 
           pixel=(ssize_t) (scale*JPEGGetSample(jpeg_info,p));
-          index=(Quantum) ConstrainColormapIndex(image,pixel,exception);
-          SetPixelIndex(image,index,q);
-          SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
+          SetPixelRed(image,ScaleShortToQuantum((unsigned short)
+            (scale*JPEGGetSample(jpeg_info,p))),q);
+          SetPixelGreen(image,ScaleShortToQuantum((unsigned short)
+            (scale*JPEGGetSample(jpeg_info,p))),q);
+          SetPixelBlue(image,ScaleShortToQuantum((unsigned short)
+            (scale*JPEGGetSample(jpeg_info,p))),q);
           p+=bytes_per_pixel;
           q+=GetPixelChannels(image);
         }
