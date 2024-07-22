@@ -1556,7 +1556,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         }
         break;
       }
-      case 3:
+      default:
       {
         /*
           RGB || YCC.
