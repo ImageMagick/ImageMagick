@@ -115,6 +115,7 @@
   <delegate decode="tiff" encode="launch" mode="encode" command="&quot;@LaunchDelegate@&quot; &quot;%i&quot;"/>
   <delegate decode="wdp" command="@MVDelegate@ &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.tiff&quot;; @MVDelegate@ &quot;%i.jxr&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.tiff&quot; &quot;%o&quot;"/>
   <delegate decode="webp" command="&quot;@WebPDecodeDelegate@&quot; -pam &quot;%i&quot; -o &quot;%o&quot;"/>
+  <delegate decode="wmf" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="xls" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="xlsx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf --outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
   <delegate decode="xps:cmyk" stealth="True" command="&quot;@XPSDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@XPSCMYKDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
