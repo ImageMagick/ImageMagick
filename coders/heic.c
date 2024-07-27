@@ -76,7 +76,7 @@
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
 #define HEIC_COMPUTE_NUMERIC_VERSION(major,minor,patch) \
-  ((major<<24) | (minor<<16) | (patch<<8) | 0)
+  (((major) << 24) | ((minor) << 16) | ((patch) << 8) | 0)
 #if defined(MAGICKCORE_HEIC_DELEGATE)
 #include <libheif/heif.h>
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
