@@ -75,9 +75,9 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/utility.h"
-#if defined(MAGICKCORE_HEIC_DELEGATE)
 #define HEIC_COMPUTE_NUMERIC_VERSION(major,minor,patch) \
   ((major<<24) | (minor<<16) | (patch<<8) | 0)
+#if defined(MAGICKCORE_HEIC_DELEGATE)
 #include <libheif/heif.h>
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
 #include <libheif/heif_properties.h>
@@ -796,6 +796,9 @@ static MagickBooleanType IsHEIC(const unsigned char *magick,const size_t length)
   type=heif_check_filetype(magick,(int) length);
   if (type == heif_filetype_yes_supported)
     return(MagickTrue);
+#else
+  magick_unreferenced(magick);
+  magick_unreferenced(length);
 #endif
   return(MagickFalse);
 }
