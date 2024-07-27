@@ -1119,7 +1119,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               "InsufficientImageDataInFile");
           profile=AcquireProfileStringInfo("dpx:user-data",length,exception);
           if (profile == (StringInfo *) NULL)
-            offset=SeekBlob(image,length,SEEK_CUR);
+            offset=SeekBlob(image,(MagickOffsetType) length,SEEK_CUR);
           else
             {
               offset+=ReadBlob(image,length,GetStringInfoDatum(profile));

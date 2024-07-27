@@ -475,27 +475,22 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   QuantumType
     quantum_type;
 
-  ssize_t
-    i;
-
   size_t
+    colors,
     compress_extent,
     extent,
     length,
     packet_size;
 
   ssize_t
-    count;
+    count,
+    i,
+    y;
 
   unsigned char
     *compress_pixels,
     *pixels;
 
-  size_t
-    colors;
-
-  ssize_t
-    y;
 
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
   z_stream
@@ -1207,7 +1202,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           profile=AcquireProfileStringInfo(name,length,exception);
           if (profile == (StringInfo *) NULL)
             {
-              count=SeekBlob(image,length,SEEK_CUR);
+              count=SeekBlob(image,(MagickOffsetType) length,SEEK_CUR);
               if (count != (ssize_t) length)
                 break;
             }

@@ -1118,10 +1118,8 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
     units;
 
   ssize_t
+    scale,
     y;
-
-  unsigned int
-    scale;
 
   /*
     Open image file.
@@ -1355,7 +1353,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       size_t
         colors;
 
-      colors=(size_t) GetQuantumRange(jpeg_info->data_precision)+1;
+      colors=(size_t) GetQuantumRange((size_t) jpeg_info->data_precision)+1;
       if (AcquireImageColormap(image,colors,exception) == MagickFalse)
         {
           client_info=JPEGCleanup(jpeg_info,client_info);
@@ -1410,7 +1408,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
       client_info=JPEGCleanup(jpeg_info,client_info);
       ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
     }
-  bytes_per_pixel=(jpeg_info->data_precision+7)/8;
+  bytes_per_pixel=((size_t) jpeg_info->data_precision+7)/8;
   memory_info=AcquireVirtualMemory((size_t) image->columns,
     (size_t) jpeg_info->output_components*bytes_per_pixel);
   if (memory_info == (MemoryInfo *) NULL)
@@ -1459,7 +1457,8 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           image->colormap[i].alpha=(MagickRealType) OpaqueAlpha;
         }
     }
-  scale=65535U/(unsigned int) GetQuantumRange(jpeg_info->data_precision);
+  scale=65535U/(unsigned int) GetQuantumRange((size_t)
+    jpeg_info->data_precision);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     JDIMENSION
@@ -3009,7 +3008,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
         jps_image=DestroyImage(jps_image);
       return(MagickFalse);
     }
-  scale=65535/(unsigned short) GetQuantumRange((size_t)
+  scale=65535U/(unsigned short) GetQuantumRange((size_t)
     jpeg_info->data_precision);
   for (y=0; y < (ssize_t) image->rows; y++)
   {

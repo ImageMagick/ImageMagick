@@ -371,8 +371,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
 
     ssize_t
       count,
-      width,
-      height;
+      height,
+      width;
 
     unsigned short
       bits_per_pixel,
@@ -442,7 +442,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         DestroyBlob(icon_image);
         icon_image->blob=ReferenceBlob(image->blob);
         ReplaceImageInList(&image,icon_image);
-        icon_image->scene=i;
+        icon_image->scene=(size_t) i;
       }
     else
       {
@@ -457,11 +457,14 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         (void) ReadBlobLSBLong(image); /* y_pixels */
         number_colors=ReadBlobLSBLong(image);
         if (number_colors > GetBlobSize(image))
-          ThrowICONReaderException(CorruptImageError,"InsufficientImageDataInFile");
+          ThrowICONReaderException(CorruptImageError,
+            "InsufficientImageDataInFile");
         (void) ReadBlobLSBLong(image); /* colors_important */
         image->alpha_trait=BlendPixelTrait;
-        image->columns=GetICONSize(directory->icons[i]->width,width);
-        image->rows=GetICONSize(directory->icons[i]->height,height);
+        image->columns=(size_t) GetICONSize( directory->icons[i]->width,
+          (size_t) width);
+        image->rows=(size_t) GetICONSize(directory->icons[i]->height,
+          (size_t) height);
         image->depth=bits_per_pixel;
         if (image->depth > 16)
           image->depth=8;

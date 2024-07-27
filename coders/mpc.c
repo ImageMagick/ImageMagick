@@ -177,16 +177,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickStatusType
     flags;
 
-  ssize_t
-    i;
-
   size_t
     depth,
     extent,
     length;
 
   ssize_t
-    count;
+    count,
+    i;
 
   StringInfo
     *nonce;
@@ -869,7 +867,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           profile=AcquireProfileStringInfo(name,length,exception);
           if (profile == (StringInfo *) NULL)
             {
-              count=SeekBlob(image,length,SEEK_CUR);
+              count=SeekBlob(image,(MagickOffsetType) length,SEEK_CUR);
               if (count != (ssize_t) length)
                 break;
             }

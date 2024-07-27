@@ -711,12 +711,14 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if (cin.file.user_length > GetBlobSize(image))
         ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-      profile=AcquireProfileStringInfo("dpx:user.data",cin.file.user_length,exception);
+      profile=AcquireProfileStringInfo("dpx:user.data",cin.file.user_length,
+        exception);
       if (profile == (StringInfo *) NULL)
-        offset=SeekBlob(image,cin.file.user_length,SEEK_CUR);
+        offset=SeekBlob(image,(MagickOffsetType) cin.file.user_length,SEEK_CUR);
       else
         {
-          offset+=ReadBlob(image,cin.file.user_length,GetStringInfoDatum(profile));
+          offset+=ReadBlob(image,cin.file.user_length,
+            GetStringInfoDatum(profile));
           (void) SetImageProfilePrivate(image,profile,exception);
         }
     }

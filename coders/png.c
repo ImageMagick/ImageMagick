@@ -9249,7 +9249,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
   if (mng_info->exclude_tRNS != MagickFalse &&
      (number_transparent != 0 || number_semitransparent != 0))
     {
-      unsigned int colortype=mng_info->colortype;
+      volatile unsigned int colortype = mng_info->colortype;
 
       if (ping_have_color == MagickFalse)
         mng_info->colortype=5;

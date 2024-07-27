@@ -355,7 +355,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (int) channel->data_type );
         break;
       }
-    pixel_size+=channel->bytes_per_element;
+    pixel_size+=(size_t) channel->bytes_per_element;
     if (LocaleNCompare(channel->channel_name,"R",1) == 0)
       pixel_channels[c]=RedPixelChannel;
     else if (LocaleNCompare(channel->channel_name,"G",1) == 0)
@@ -389,7 +389,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CloseBlob(image);
       return(DestroyImageList(image));
     }
-  pixel_count=scans_per_chunk*image->columns;
+  pixel_count=(size_t) scans_per_chunk*image->columns;
   chunk=(uint8_t *) AcquireQuantumMemory(pixel_size,pixel_count);
   memset(chunk,0,pixel_size*pixel_count);
   p=chunk;
@@ -425,7 +425,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       result=exr_decoding_run(ctxt,part_index,&decoder);
     if (result != EXR_ERR_SUCCESS)
       break;
-    q=QueueAuthenticPixels(image,0,y,image->columns,scans_per_chunk,exception);
+    q=QueueAuthenticPixels(image,0,y,image->columns,(size_t) scans_per_chunk,
+      exception);
     if (q == (Quantum *) NULL)
       break;
     p=chunk;
