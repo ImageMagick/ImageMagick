@@ -198,14 +198,14 @@ static Image *ReadORAImage(const ImageInfo *image_info,
     else if (read_bytes == 0)
       {
         /* Write up to offset of image_data_buffer to temp file */
-        if (!fwrite(image_data_buffer,offset,1,file))
+        if (!fwrite(image_data_buffer,1,offset,file))
           status=MagickFalse;
         break;
       }
     else if (read_bytes == (ssize_t) (sizeof(image_data_buffer)-offset))
       {
         /* Write the entirely of image_data_buffer to temp file */
-        if (!fwrite(image_data_buffer,sizeof(image_data_buffer),1,file))
+        if (!fwrite(image_data_buffer,1,sizeof(image_data_buffer),file))
           status=MagickFalse;
         else
           offset=0;

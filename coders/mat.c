@@ -16,7 +16,7 @@
 %                                2001-2008                                    %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 2001 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -562,7 +562,7 @@ ssize_t TotalSize = 0;
       zip_status = inflate(&zip_info,Z_NO_FLUSH);
       if ((zip_status != Z_OK) && (zip_status != Z_STREAM_END))
         break;
-      extent=fwrite(decompress_block, 4096-zip_info.avail_out, 1, mat_file);
+      extent=fwrite(decompress_block,1,4096-zip_info.avail_out,mat_file);
       (void) extent;
       TotalSize += 4096-zip_info.avail_out;
 

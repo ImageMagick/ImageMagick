@@ -325,10 +325,10 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  extent=fwrite(header,(size_t) (offset-header+1),1,file);
+  extent=fwrite(header,1,(size_t) (offset-header+1),file);
   (void) extent;
   extent=fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);
-  extent=fwrite(offset+1,(size_t) (data-offset),1,file);
+  extent=fwrite(offset+1,1,(size_t) (data-offset),file);
   status=ferror(file) != 0 ? MagickFalse : MagickTrue;
   (void) fclose(file);
   (void) close(unique_file);
