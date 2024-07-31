@@ -616,7 +616,7 @@ MagickPrivate char *FileToXML(const char *filename,const size_t extent)
       for (i=0; i < length; i+=(size_t) count)
       {
         count=read(file,xml+i,(size_t) MagickMin(length-i,(size_t)
-          MAGICK_SSIZE_MAX));
+          MagickMaxBufferExtent));
         if (count <= 0)
           {
             count=0;

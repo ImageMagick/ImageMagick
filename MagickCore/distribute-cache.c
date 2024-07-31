@@ -167,7 +167,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
     count=recv(file,(char *) message+i,(LENGTH_TYPE) MagickMin(length-
-      (MagickSizeType) i,(MagickSizeType) MAGICK_SSIZE_MAX),0);
+      (MagickSizeType) i,(MagickSizeType) MagickMaxBufferExtent),0);
     if (count <= 0)
       {
         count=0;
@@ -488,7 +488,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
     count=(MagickOffsetType) send(file,(char *) message+i,(LENGTH_TYPE)
-      MagickMin(length-(MagickSizeType) i,(MagickSizeType) MAGICK_SSIZE_MAX),
+      MagickMin(length-(MagickSizeType) i,(MagickSizeType) MagickMaxBufferExtent),
       MSG_NOSIGNAL);
     if (count <= 0)
       {

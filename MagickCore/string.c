@@ -626,7 +626,7 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
       for (i=0; i < length; i+=(size_t) count)
       {
         count=read(file,string+i,(size_t) MagickMin(length-i,(size_t)
-          MAGICK_SSIZE_MAX));
+          MagickMaxBufferExtent));
         if (count <= 0)
           {
             count=0;
