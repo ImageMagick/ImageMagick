@@ -320,7 +320,28 @@ static inline MagickBooleanType JXLPatchExifProfile(StringInfo *exif_profile)
   return(MagickTrue);
 }
 
-static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static inline void JXLAddProfilesToImage(Image *image,
+  StringInfo **exif_profile,StringInfo **xmp_profile,ExceptionInfo *exception)
+{
+  if (*exif_profile != (StringInfo *) NULL)
+    {
+      if (JXLPatchExifProfile(*exif_profile) != MagickFalse)
+        {
+          (void) SetImageProfilePrivate(image,*exif_profile,exception);
+          *exif_profile=(StringInfo *) NULL;
+        }
+      else
+        *exif_profile=DestroyStringInfo(*exif_profile);
+    }
+  if (*xmp_profile != (StringInfo *) NULL)
+    {
+      (void) SetImageProfilePrivate(image,*xmp_profile,exception);
+      *xmp_profile=(StringInfo *) NULL;
+    }
+}
+
+static Image *ReadJXLImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -607,6 +628,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if (image_count++ != 0)
           {
+            JXLAddProfilesToImage(image,&exif_profile,&xmp_profile,exception);
             /*
               Allocate next image structure.
             */
@@ -701,20 +723,28 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read Exif profile.
             */
-            exif_profile=AcquireProfileStringInfo("exif",(size_t) size,
-              exception);
-            jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
-              GetStringInfoDatum(exif_profile),size);
+          if (exif_profile == (StringInfo *) NULL)
+            {
+              exif_profile=AcquireProfileStringInfo("exif",(size_t) size,
+                exception);
+              if (exif_profile != (StringInfo *) NULL)
+                jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
+                  GetStringInfoDatum(exif_profile),size);
+            }
           }
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
           {
             /*
               Read XMP profile.
             */
-            xmp_profile=AcquireProfileStringInfo("xmp",(size_t) size,
-              exception);
-            jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
-              GetStringInfoDatum(xmp_profile),size);
+            if (xmp_profile == (StringInfo *) NULL)
+              {
+                xmp_profile=AcquireProfileStringInfo("xmp",(size_t) size,
+                  exception);
+                if (xmp_profile != (StringInfo *) NULL)
+                  jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
+                    GetStringInfoDatum(xmp_profile),size);
+              }
           }
         if (jxl_status == JXL_DEC_SUCCESS)
           jxl_status=JXL_DEC_BOX;
@@ -733,15 +763,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   }
   (void) JxlDecoderReleaseBoxBuffer(jxl_info);
-  if (exif_profile != (StringInfo *) NULL)
-    {
-      if (JXLPatchExifProfile(exif_profile) != MagickFalse)
-        (void) SetImageProfilePrivate(image,exif_profile,exception);
-      else
-        exif_profile=DestroyStringInfo(exif_profile);
-    }
-  if (xmp_profile != (StringInfo *) NULL)
-    (void) SetImageProfilePrivate(image,xmp_profile,exception);
+  JXLAddProfilesToImage(image,&exif_profile,&xmp_profile,exception);
   output_buffer=(unsigned char *) RelinquishMagickMemory(output_buffer);
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   if (runner != NULL)
