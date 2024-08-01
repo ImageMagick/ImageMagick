@@ -162,7 +162,7 @@ jobs:
         endpoint: https://eus.codesigning.azure.net/
         trusted-signing-account-name: ImageMagick
         certificate-profile-name: ImageMagick
-        files-folder: 'ImageMagick-Windows\Output\bin'
+        files-folder: 'ImageMagick-Windows\Artifacts\bin'
         files-folder-filter: dll,exe
         append-signature: true
         timeout: 600
@@ -180,7 +180,7 @@ jobs:
         endpoint: https://eus.codesigning.azure.net/
         trusted-signing-account-name: ImageMagick
         certificate-profile-name: ImageMagick
-        files-folder: 'ImageMagick-Windows\Installer\Inno\Output'
+        files-folder: 'ImageMagick-Windows\Installer\Inno\Artifacts'
         files-folder-filter: dll,exe
         append-signature: true
         timeout: 600
@@ -198,7 +198,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: 'ImageMagick-${{steps.version.outputs.version}}-installer-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.type}}-${{matrix.platform}}'
-        path: 'ImageMagick-Windows\Installer\Inno\Output'
+        path: 'ImageMagick-Windows\Installer\Inno\Artifacts'
 
   release_windows_source:
     name: 'Windows source'
@@ -241,7 +241,7 @@ jobs:
         move Dependencies Source
         move ImageMagick Source
         move OptionalDependencies Source
-        move Output Source
+        move Artifacts Source
         move Projects Source
         7z a ImageMagick-Windows.7z .\Source\*
 
@@ -339,7 +339,7 @@ jobs:
         endpoint: https://eus.codesigning.azure.net/
         trusted-signing-account-name: ImageMagick
         certificate-profile-name: ImageMagick
-        files-folder: 'ImageMagick-Windows\Output\bin'
+        files-folder: 'ImageMagick-Windows\Artifacts\bin'
         files-folder-filter: exe
         append-signature: true
         timeout: 600
@@ -349,11 +349,11 @@ jobs:
       shell: pwsh
       run: |
         [void](New-Item -Name "portable" -ItemType directory)
-        Copy-Item "ImageMagick-Windows\Output\bin\*.exe" "portable"
-        Copy-Item "ImageMagick-Windows\Output\bin\*.xml" "portable"
-        Copy-Item "ImageMagick-Windows\Output\bin\sRGB.icc" "portable"
+        Copy-Item "ImageMagick-Windows\Artifacts\bin\*.exe" "portable"
+        Copy-Item "ImageMagick-Windows\Artifacts\bin\*.xml" "portable"
+        Copy-Item "ImageMagick-Windows\Artifacts\bin\sRGB.icc" "portable"
 
-        Copy-Item "ImageMagick-Windows\Output\NOTICE.txt" "portable"
+        Copy-Item "ImageMagick-Windows\Artifacts\NOTICE.txt" "portable"
         Copy-Item "ImageMagick-Windows\ImageMagick\ChangeLog.md" "portable"
         Copy-Item "ImageMagick-Windows\ImageMagick\LICENSE" "portable\LICENSE.txt"
 

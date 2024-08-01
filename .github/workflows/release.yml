@@ -156,8 +156,8 @@ jobs:
       with:
         name: Windows-${{matrix.quantum}}${{matrix.hdri_flag}}-${{matrix.platform}}
         path: |
-          ImageMagick-Windows\Output\bin\*.xml
-          ImageMagick-Windows\Output\bin\*.exe
+          ImageMagick-Windows\Artifacts\bin\*.xml
+          ImageMagick-Windows\Artifacts\bin\*.exe
 
   version:
     name: Set release and version
@@ -244,7 +244,7 @@ jobs:
       if: github.event_name != 'pull_request'
       with:
         name: Msix-${{matrix.quantum}}${{matrix.hdri_flag}}
-        path: 'ImageMagick-Windows\Installer\Msix\Output\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle'
+        path: 'ImageMagick-Windows\Installer\Msix\Artifacts\ImageMagick.${{matrix.quantum}}${{matrix.hdri_flag}}.msixbundle'
 
   create_release:
     name: Create Release
