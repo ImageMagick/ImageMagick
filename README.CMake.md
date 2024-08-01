@@ -20,11 +20,11 @@ Unless explicitly stated, all the build instructions are valid for all three maj
 The build process will automatically identify available dependencies. It will look, in this order, for:
 
 * Manually provided `CMake` dependency with an environment variable
-* `conan` provided dependency
-* System-wide built-in `CMake` support for the package (`Find<PKG>.cmake` usually in `/usr/share/cmake`, part of the `CMake` installation)
+* CMake config file (`conan`-provided dependencies use this)
 * System-wide package-provided `CMake` support  (`<PKG>Config.cmake` usually somewhere in `/usr/lib/`)
 * Manually provided `pkg-config` dependency with an environment variable
 * System-wide `pkg-config`
+* System-wide built-in `CMake` find module (`Find<PKG>.cmake` usually in `/usr/share/cmake`, part of the `CMake` installation)
 
 ## `conan`
 
