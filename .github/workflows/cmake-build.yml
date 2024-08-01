@@ -160,6 +160,12 @@ jobs:
         echo "EXPECTED_DELEGATES=jemalloc -png" >> $GITHUB_ENV
       if: matrix.delegates == 'custom-delegates'
 
+    - name: Workaround for https://github.com/actions/runner-images/issues/10378
+      shell: bash
+      run: |
+        echo "CUSTOM_DELEGATES=-DTIFF_DELEGATE=OFF" >> $GITHUB_ENV
+      if: matrix.provider == 'system' && runner.os == 'Linux'
+
     - name: Generate CMake build
       shell: bash
       run: |
@@ -253,7 +259,7 @@ jobs:
     - name: Generate CMake options
       shell: bash
       run: |
-        echo "HDRI=-DMMAGICK_HDRI_ENABLE=${{ matrix.hdri && 'ON' || 'OFF' }}" >> $GITHUB_ENV
+        echo "HDRI=-DMAGICK_HDRI_ENABLE=${{ matrix.hdri && 'ON' || 'OFF' }}" >> $GITHUB_ENV
         echo "QUANT=-DMAGICKCORE_QUANTUM_DEPTH=${{ matrix.quant }}" >> $GITHUB_ENV
 
     - name: Generate CMake build

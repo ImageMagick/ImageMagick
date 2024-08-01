@@ -368,15 +368,6 @@ macro(magick_check_env)
   # Check if `setvbuf' exists
   check_function_exists(setvbuf HAVE_SETVBUF)
 
-  # Check supported X11 extensions  
-  find_package(X11)
-  if(X11_Xshape_FOUND)
-    set(HAVE_SHAPE 1)
-  endif()
-  if(X11_XShm_FOUND)
-    set(HAVE_SHARED_MEMORY 1)
-  endif()
-
   # Check if `sigaction' exists
   check_function_exists(sigaction HAVE_SIGACTION)
 
