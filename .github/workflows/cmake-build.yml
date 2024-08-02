@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-13, windows-latest]
+        os: [ubuntu-latest, macos-13, macos-14, windows-latest]
         libtype: [shared, static]
         buildtype: [Release, Debug]
         exclude:
@@ -38,6 +38,9 @@ jobs:
           sparse-checkout: conanfile.py
           sparse-checkout-cone-mode: false
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       - name: Get conan
         id : conan
         uses: turtlebrowser/get-conan@main
@@ -47,7 +50,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.conan2
-          key: ${{ runner.os }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
+          key: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
 
       - name: Restart from scratch every Sunday
         run: rm -rf ~/.conan2
@@ -97,6 +100,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+      if: matrix.provider == 'conan' || matrix.provider == 'pkgconf'
     - name: Get Conan (conan/pkgconf)
       id : conan
       uses: turtlebrowser/get-conan@main
@@ -217,6 +224,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
     - name: Get Conan
       id : conan
       uses: turtlebrowser/get-conan@main
