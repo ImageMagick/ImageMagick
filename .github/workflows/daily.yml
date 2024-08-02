@@ -5,11 +5,9 @@ on:
   push:
     branches:
     - cmake-portable-build
-    - cmake-testing
   pull_request:
     branches:
     - cmake-portable-build
-    - cmake-testing
 
 name: daily
 jobs:
