@@ -101,14 +101,8 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  ssize_t
-    x;
-
   Quantum
     *q;
-
-  unsigned char
-    *p;
 
   size_t
     height,
@@ -117,9 +111,11 @@ static Image *ReadAAIImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
+    x,
     y;
 
   unsigned char
+    *p,
     *pixels;
 
   /*

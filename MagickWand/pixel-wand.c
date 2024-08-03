@@ -1302,14 +1302,14 @@ WandExport void PixelGetQuantumPixel(const Image *image,const PixelWand *wand,
   if (wand->pixel.colorspace == CMYKColorspace)
     {
       SetPixelRed(image,ClampToQuantum((double) QuantumRange-
-        (wand->pixel.red*((double) QuantumRange-wand->pixel.black)+wand->pixel.black)),
-        pixel);
+        (wand->pixel.red*((double) QuantumRange-wand->pixel.black)+
+        wand->pixel.black)),pixel);
       SetPixelGreen(image,ClampToQuantum((double) QuantumRange-
-        (wand->pixel.green*((double) QuantumRange-wand->pixel.black)+wand->pixel.black)),
-        pixel);
+        (wand->pixel.green*((double) QuantumRange-wand->pixel.black)+
+        wand->pixel.black)),pixel);
       SetPixelBlue(image,ClampToQuantum((double) QuantumRange-
-        (wand->pixel.blue*((double) QuantumRange-wand->pixel.black)+wand->pixel.black)),
-        pixel);
+        (wand->pixel.blue*((double) QuantumRange-wand->pixel.black)+
+        wand->pixel.black)),pixel);
       SetPixelBlack(image,ClampToQuantum(wand->pixel.black),pixel);
       return;
     }

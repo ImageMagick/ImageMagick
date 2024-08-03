@@ -106,12 +106,6 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     *q;
 
-  ssize_t
-    x;
-
-  unsigned char
-    *p;
-
   size_t
     height,
     length,
@@ -119,9 +113,11 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   ssize_t
     count,
+    x,
     y;
 
   unsigned char
+    *p,
     *pixels;
 
   /*
