@@ -2853,8 +2853,8 @@ static inline double MagickRound(double x)
 
 static inline Quantum PosterizePixel(const Quantum pixel,const size_t levels)
 {
-  double posterize_pixel = QuantumRange*MagickRound(QuantumScale*(double)
-    pixel*(levels-1.0))/MagickMax(levels-1.0,1.0);
+  double posterize_pixel = QuantumRange*MagickRound(QuantumScale*(double) pixel*
+    (levels-1.0))/MagickMax(levels-1.0,1.0);
   return(ClampToQuantum((MagickRealType) posterize_pixel));
 }
 
@@ -2941,11 +2941,11 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
           }
         for (x=0; x < (ssize_t) number_columns; x++)
         {
-          size_t remainder = x;
+          size_t remainder = (size_t) x;
           for (c=0; c < (ssize_t) GetPixelChannels(image); c++)
           {
-            PixelChannel channel = GetPixelChannelChannel (image, c);
-            PixelTrait traits = GetPixelChannelTraits (image, channel);
+            PixelChannel channel = GetPixelChannelChannel(image,c);
+            PixelTrait traits = GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) != 0)
               {
                 size_t value = remainder % levels;
@@ -2968,8 +2968,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
           /*
             Remap to the map image.
           */
-          QuantizeInfo *quantize_info = AcquireQuantizeInfo(
-            (ImageInfo *) NULL);
+          QuantizeInfo *quantize_info = AcquireQuantizeInfo((ImageInfo *) NULL);
           quantize_info->dither_method=dither_method;
           (void) RemapImage(quantize_info,image,map_image,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
