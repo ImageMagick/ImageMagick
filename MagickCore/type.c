@@ -828,7 +828,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_cache,
     type_info->family=ConstantString((const char *) family);
     status=FcPatternGetInteger(font_set->fonts[i],FC_INDEX,0,&index);
     if (status == FcResultMatch)
-      type_info->face=index;
+      type_info->face=(size_t) index;
     status=FcPatternGetInteger(font_set->fonts[i],FC_SLANT,0,&slant);
     type_info->style=NormalStyle;
     if (slant == FC_SLANT_ITALIC)
