@@ -37,4 +37,6 @@ body:
 - type: textarea
   attributes:
     label: Images
-    description: Please upload images that can be used to reproduce issues in the area below. If the file type is not supported the file can be zipped and then uploaded instead.
+    description: Please upload images that can be used to reproduce issues in the area below. If the file type is not supported the file can be zipped and then uploaded instead. When you cannot provide an image that can be used to reproduce the issue, please provide an explanation why this is not possible.
+  validations:
+    required: true
