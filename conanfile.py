@@ -20,12 +20,12 @@ class ImageMagickDelegates(ConanFile):
       'jpeg2000': [ True, False ],
       'raw': [ True, False ],
       'openmedia': [ True, False ],
-      'brotli': [ True, False ],
       'h265': [ True, False ],
       'exr': [ True, False ],
       'fftw': [ True, False ],
       'heif': [ True, False ],
       'jbig': [ True, False ],
+      'jxl': [ True, False ],
       'color': [ True, False ],
       'xml': [ True, False ],
       'gzip': [ True, False ],
@@ -52,12 +52,12 @@ class ImageMagickDelegates(ConanFile):
       'jpeg2000': True,
       'raw': True,
       'openmedia': True,
-      'brotli': True,
       'h265': True,
       'exr': True,
       'fftw': True,
       'heif': True,
       'jbig': True,
+      'jxl': True,
       'color': True,
       'xml': True,
       'gzip':True,
@@ -103,9 +103,6 @@ class ImageMagickDelegates(ConanFile):
 
       if self.options.zip:
         self.requires('libzip/1.9.2', force=True)
-
-      if self.options.brotli:
-        self.requires('brotli/1.1.0', force=True)
 
       if self.options.xz:
         self.requires('xz_utils/5.4.5', force=True)
@@ -162,15 +159,15 @@ class ImageMagickDelegates(ConanFile):
         self.requires('cairo/1.17.8', force=True)
         self.requires('expat/2.6.0', force=True)
 
-      if self.options.simd and self.settings.arch != 'wasm':
-        self.requires('highway/1.0.3', force=True)
-
       if (self.options.openmp and self.settings.arch != 'wasm' and self.settings.os != 'Windows' and
           self.settings.os != 'Macos' and self.settings.arch != 'armv8' and self.settings.get_safe("build_type", default="Release") != 'Debug') :
         self.requires('llvm-openmp/17.0.6', force=True)
 
       if self.options.display and self.settings.arch != 'wasm':
         self.requires('pixman/0.42.2', force=True)
+
+      if self.options.jxl:
+        self.requires('libjxl/0.10.3', force=True)
 
       # Although supported in theory, using jemalloc on Windows is very difficult especially
       # with a generic build that supports options and shared/static builds

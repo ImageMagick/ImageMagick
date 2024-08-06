@@ -2,9 +2,7 @@ name: CMake portable build
 
 on:
   push:
-    branches:
-      - cmake-portable-build
-      - cmake-testing
+    branches: '*'
   schedule:
       # schedule a regular Sunday Mass to check that
       # everything still works
@@ -115,7 +113,7 @@ jobs:
 
     - name: Restore conan artifacts from shared cache (conan/pkgconf)
       id: conan-artifacts
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v4
       with:
         path: ~/.conan2
         key: ${{ runner.os }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
@@ -146,6 +144,14 @@ jobs:
       if: matrix.libtype == 'static'
       run: echo "LIBTYPE=-DBUILD_SHARED_LIBS=OFF" >> $GITHUB_ENV
 
+    # This option is usable only with conan, the CMake built-in find modules
+    # behave horribly with static modules
+    # Many of them call internally pkg-config and do not pass --static
+    - name: Enable fully self-contained libraries
+      shell: bash
+      if: matrix.libtype == 'static' && (matrix.provider == 'conan' || matrix.provider == 'pkgconf')
+      run: echo "LIBTYPE=-DBUILD_SHARED_LIBS=OFF -DMAGICK_PREFER_STATIC_LIBS=ON" >> $GITHUB_ENV
+
     - name: Set zero configuration
       shell: bash
       run: echo "ZERO_CONF=-DZERO_CONFIGURATION_SUPPORT=ON" >> $GITHUB_ENV
@@ -157,7 +163,7 @@ jobs:
 
     - name: Set expected delegates (conan/pkgconfig)
       shell: bash
-      run: echo "EXPECTED_DELEGATES=bzlib cairo fftw fontconfig freetype heic jbig jng jp2 jpeg lcms lzma openexr png raw tiff webp xml zlib zstd" >> $GITHUB_ENV
+      run: echo "EXPECTED_DELEGATES=bzlib cairo fftw fontconfig freetype heic jbig jng jp2 jpeg jxl lcms lzma openexr png raw tiff webp xml zlib zstd" >> $GITHUB_ENV
       if: matrix.provider == 'conan' || matrix.provider == 'pkgconf'
 
     - name: Set custom delegates
@@ -172,6 +178,13 @@ jobs:
       run: |
         echo "CUSTOM_DELEGATES=-DTIFF_DELEGATE=OFF" >> $GITHUB_ENV
       if: matrix.provider == 'system' && runner.os == 'Linux'
+
+    - name: Workaround for https://github.com/conan-io/conan-center-index/issues/24798
+      shell: bash
+      run: |
+        echo "CUSTOM_DELEGATES=-DJXL_DELEGATE=OFF" >> $GITHUB_ENV
+        echo "EXPECTED_DELEGATES=${EXPECTED_DELEGATES}" | sed s/jxl// >> $GITHUB_ENV
+      if: matrix.provider == 'conan' && runner.os == 'Linux' && matrix.libtype == 'shared'
 
     - name: Generate CMake build
       shell: bash
