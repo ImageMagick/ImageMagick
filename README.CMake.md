@@ -13,18 +13,23 @@ It supports using the system-provided libraries or `conan`-provided libraries. I
 
 # Build Instructions
 
-Unless explicitly stated, all the build instructions are valid for all three major OS. If something does not work as expected, you can always check the Github Action which has been tested to work: `.github/workflows/cmake-build.yml`.
+Unless explicitly stated, all the build instructions are valid for all three major OS. If something does not work as expected, you can always check the Github Action which has been tested to work: `.github/workflows/cmake-build.yml` or the `cmake_build.sh` shell script.
 
 ## Dependencies
 
 The build process will automatically identify available dependencies. It will look, in this order, for:
 
-* Manually provided `CMake` dependency with an environment variable
-* CMake config file (`conan`-provided dependencies use this)
+* Manually provided `CMake` dependency with an environment variable (`<pkg>_ROOT`, refer to https://cmake.org/cmake/help/latest/command/find_package.html)
+* User-provided CMake config file
+  - `conan`-provided dependencies use this
+* User-provided `pkg-config` dependency in `PKG_CONFIG_PATH`
+* User-provided CMake find module
+  - `conan`-provided dependencies that have alternatives such as `JPEG` being resolved to either `libjpeg` or `libjpeg-turbo` use this
 * System-wide package-provided `CMake` support  (`<PKG>Config.cmake` usually somewhere in `/usr/lib/`)
-* Manually provided `pkg-config` dependency with an environment variable
-* System-wide `pkg-config`
 * System-wide built-in `CMake` find module (`Find<PKG>.cmake` usually in `/usr/share/cmake`, part of the `CMake` installation)
+* System-wide `pkg-config`
+
+This is implemented in `magick_find_delegate()` in the main `CMakeLists.txt`.
 
 ## `conan`
 
@@ -126,6 +131,15 @@ Similarly,
 `cmake .. -DHASJEMALLOC=ON`
 
 will build with `jemalloc` support which is disabled by default.
+
+### Produce universal binaries
+
+A somewhat hackish option, `-DMAGICK_PREFER_STATIC_LIBS=ON`, allows to tweak the CMake `find_library()` detection mechanism in order to prefer static over shared libraries. This feature is not officially supported by CMake.
+
+It tends to break many built-in find modules that search for the libraries in the system environment.
+
+When used in an environment where all the delegates are provided via user-supplied CMake config files or `pkg-config` modules - such as when using `conan` - it allows to include statically the system libraries - and especially X11. It is used for the generation of the prebuilt universal binaries.
+
 
 # Using The Library
 
