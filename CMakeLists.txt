@@ -57,6 +57,27 @@ macro(handle_cmake_dep)
   endif()
 endmacro()
 
+macro(try_handle_pkgconfig_dep)
+  if(MAGICK_FIND_PKGCONFIG)
+    # Custom pkgconfig name
+    set(MAGICK_FIND_SEARCH_TARGET ${MAGICK_FIND_PKGCONFIG})
+  else()
+    # Default name
+    set(MAGICK_FIND_SEARCH_TARGET ${MAGICK_FIND_NAME})
+  endif()
+  pkg_check_modules(${MAGICK_FIND_NAME} QUIET ${MAGICK_FIND_SEARCH_TARGET})
+  if(${${MAGICK_FIND_NAME}_FOUND})
+    message(${ARGV0})
+    get_pkgconfig_setting(CMAKE_REQUIRED_INCLUDES ${MAGICK_FIND_NAME} INCLUDE_DIRS)
+    get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${MAGICK_FIND_NAME} INCLUDE_DIRS)
+    get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_LIBRARIES ${MAGICK_FIND_NAME} LIBRARIES)
+    get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_LIBRARY_DIRS ${MAGICK_FIND_NAME} LIBRARY_DIRS)
+    get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_CFLAGS ${MAGICK_FIND_NAME} CFLAGS)
+    get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_LDFLAGS ${MAGICK_FIND_NAME} LDFLAGS_OTHER)
+    set(${MAGICK_FIND_DELEGATE} TRUE)
+  endif()
+endmacro()
+
 #
 # This is the centralized dependency resolution procedure
 #
@@ -69,7 +90,7 @@ macro(magick_find_delegate)
     set(${MAGICK_FIND_NAME}_FOUND FALSE)
 
     # CMake insists on overwriting this variable to it must be set just before looking for a library
-    if(NOT ${BUILD_SHARED_LIBS})
+    if(MAGICK_PREFER_STATIC_LIBS)
       if(APPLE)
         set(CMAKE_FIND_LIBRARY_SUFFIXES .a;.dylib;.so)
       elseif(UNIX AND NOT APPLE)
@@ -77,38 +98,28 @@ macro(magick_find_delegate)
       endif()
     endif()
 
-    # First attempt, CMake config file
-    find_package(${MAGICK_FIND_NAME} QUIET NO_MODULE)
-    handle_cmake_dep("-- Found CMake config ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
+    # First attempt, user-supplied CMake config file (or user-suppied <pkg>_ROOT variable)
+    find_package(${MAGICK_FIND_NAME} QUIET NO_CMAKE_SYSTEM_PATH)
+    handle_cmake_dep("-- Found CMake user config ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
 
-    # Second attempt, pkg-config
-    # TODO: This should resolve only pkg-config modules in non-standard locations
-    # with the system-wide default locations being a seperate fourth attempt
-    if(NOT ${MAGICK_FIND_NAME}_FOUND AND DEFINED PkgConfig_FOUND)
-      if(MAGICK_FIND_PKGCONFIG)
-        # Custom pkgconfig name
-        set(MAGICK_FIND_SEARCH_TARGET ${MAGICK_FIND_PKGCONFIG})
-      else()
-        # Default name
-        set(MAGICK_FIND_SEARCH_TARGET ${MAGICK_FIND_NAME})
-      endif()
-      pkg_check_modules(${MAGICK_FIND_NAME} QUIET ${MAGICK_FIND_SEARCH_TARGET})
-      if(${${MAGICK_FIND_NAME}_FOUND})
-        message("-- Found pkg-config module ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
-        get_pkgconfig_setting(CMAKE_REQUIRED_INCLUDES ${MAGICK_FIND_NAME} INCLUDE_DIRS)
-        get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${MAGICK_FIND_NAME} INCLUDE_DIRS)
-        get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_LIBRARIES ${MAGICK_FIND_NAME} LIBRARIES)
-        get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_LIBRARY_DIRS ${MAGICK_FIND_NAME} LIBRARY_DIRS)
-        get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_CFLAGS ${MAGICK_FIND_NAME} CFLAGS)
-        get_pkgconfig_setting(IMAGEMAGICK_DELEGATES_LDFLAGS ${MAGICK_FIND_NAME} LDFLAGS_OTHER)
-        set(${MAGICK_FIND_DELEGATE} TRUE)
-      endif()
+    # Second attempt, pkg-config with a user-supplied path
+    if(DEFINED ENV{PKG_CONFIG_PATH} AND NOT ${MAGICK_FIND_NAME}_FOUND AND DEFINED PkgConfig_FOUND)
+      set(PKG_CONFIG_LIBDIR_SAVE $ENV{PKG_CONFIG_LIBDIR})
+      set(ENV{PKG_CONFIG_LIBDIR} "no-system-wide-packages")
+      try_handle_pkgconfig_dep("-- Found pkg-config user config ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
+      set(ENV{PKG_CONFIG_LIBDIR} ${PKG_CONFIG_LIBDIR_SAVE})
+      unset(PKG_CONFIG_LIBDIR_SAVE)
     endif()
 
     # Third attempt, built-in CMake find module
     if(NOT ${MAGICK_FIND_NAME}_FOUND)
       find_package(${MAGICK_FIND_NAME} QUIET)
-      handle_cmake_dep("-- Found CMake module ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
+      handle_cmake_dep("-- Found CMake system config ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
+    endif()
+
+    # Fourth attempt, system-wide pkg-config module
+    if(NOT ${MAGICK_FIND_NAME}_FOUND AND DEFINED PkgConfig_FOUND)
+      try_handle_pkgconfig_dep("-- Found pkg-config system config ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
     endif()
   endif()
 
@@ -195,6 +206,7 @@ if(${BUILD_SHARED_LIBS})
 else()
   set(MAGICK_BUILD_DEFINES ${MAGICK_BUILD_DEFINES} _LIB STATIC_MAGICK NOAUTOLINK_MAGICK)
 endif()
+option(MAGICK_PREFER_STATIC_LIBS "Prefer using static libraries when possible (works only on POSIX for libraries using find_library())" FALSE)
 
 option(MAGICK_HDRI_ENABLE "Build ImageMagick with High dynamic-range imaging" TRUE)
 if(MAGICK_HDRI_ENABLE)
@@ -447,12 +459,15 @@ magick_find_delegate(DELEGATE WEBPMUX_DELEGATE NAME WebP DEFAULT TRUE
     TARGETS WebP::libwebpmux PKGCONFIG libwebpmux)
 magick_find_delegate(DELEGATE WEBPDEMUX_DELEGATE NAME WebP DEFAULT TRUE
     TARGETS WebP::webpdemux PKGCONFIG libwebpdemux)
+
 magick_find_delegate(DELEGATE JXL_DELEGATE NAME libjxl DEFAULT TRUE)
-if(${JXL_DELEGATE})
-  unset(JXL_DELEGATE)
-  # ImageMagick requires the threaded version, othewise it cannot work
-  magick_find_delegate(DELEGATE JXL_DELEGATE NAME libjxl_threads DEFAULT TRUE)
-endif()
+# if there is a threaded version, ImageMagick requires it, othewise it cannot work
+magick_find_delegate(DELEGATE JXL_THREADS_DELEGATE NAME libjxl DEFAULT TRUE
+    TARGETS libjxl::jxl_threads PKGCONFIG libjxl_threads)
+# the _threads version may require (if present) a _cms version
+magick_find_delegate(DELEGATE JXL_CMS_DELEGATE NAME libjxl DEFAULT TRUE
+    TARGETS libjxl::jxl_cms PKGCONFIG libjxl_cms)
+
 magick_find_delegate(DELEGATE FONTCONFIG_DELEGATE NAME Fontconfig DEFAULT TRUE
     PKGCONFIG fontconfig)
 magick_find_delegate(DELEGATE CAIRO_DELEGATE NAME Cairo DEFAULT TRUE
