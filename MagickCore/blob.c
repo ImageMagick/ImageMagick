@@ -5137,8 +5137,6 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
           blob_info->eof=MagickFalse;
           break;
         }
-      if (blob_info->offset >= (MagickOffsetType) ((off_t) blob_info->extent))
-        return(-1);
       break;
     }
     case CustomStream:
