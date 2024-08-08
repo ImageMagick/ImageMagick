@@ -2588,7 +2588,11 @@ MagickPrivate void OpenCLTerminus()
   if (openCL_library != (MagickLibrary *) NULL)
     {
       if (openCL_library->library != (void *) NULL)
+#if defined(MAGICKCORE_DLOPEN)
+        (void) dlclose(openCL_library->library);
+#else
         (void) lt_dlclose(openCL_library->library);
+#endif
       openCL_library=(MagickLibrary *) RelinquishMagickMemory(openCL_library);
     }
 }
