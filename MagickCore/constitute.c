@@ -824,10 +824,13 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         *clones;
 
       clones=CloneImages(image,read_info->scenes,exception);
+      image=DestroyImageList(image);
       if (clones != (Image *) NULL)
+        image=GetFirstImageInList(clones);
+      if (image == (Image *) NULL)
         {
-          image=DestroyImageList(image);
-          image=GetFirstImageInList(clones);
+          read_info=DestroyImageInfo(read_info);
+          return(image);
         }
     }
   InitializeConstituteInfo(read_info,&constitute_info);

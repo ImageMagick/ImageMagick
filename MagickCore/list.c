@@ -219,15 +219,14 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     *clone_images,
     *image;
 
-  ssize_t
-    i;
-
   size_t
     length;
 
   ssize_t
     first,
+    i,
     last,
+    offset,
     step;
 
   assert(images != (const Image *) NULL);
@@ -249,6 +248,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
     while ((isspace((int) ((unsigned char) *p)) != 0) || (*p == ','))
       p++;
     first=(ssize_t) strtol(p,&p,10);
+    offset=first;
     if (first < 0)
       first+=(ssize_t) length;
     else
@@ -294,7 +294,7 @@ MagickExport Image *CloneImages(const Image *images,const char *scenes,
       }
       if (match == MagickFalse)
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "InvalidImageIndex","`%s'",images->filename);
+          "InvalidImageIndex","%g `%s'",(double) offset,images->filename);
     }
   }
   return(GetFirstImageInList(clone_images));
