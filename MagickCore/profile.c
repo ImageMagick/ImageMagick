@@ -1995,8 +1995,7 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
 }
 
 MagickExport StringInfo *AcquireProfileStringInfo(const char *name,
-  const size_t length,
-  ExceptionInfo *exception)
+  const size_t length,ExceptionInfo *exception)
 {
   StringInfo
     *profile = (StringInfo *) NULL;
