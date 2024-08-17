@@ -2439,15 +2439,21 @@ static SplayTreeInfo *GetMVGMacros(const char *primitive)
                 }
               if (LocaleCompare(token,"push") == 0)
                 n++;
-              if ((n == 0) && (end > start))
+              if ((n == 0) && (end >= start))
                 {
+                  size_t
+                    length=(size_t) (end-start);
+
                   /*
                     Extract macro.
                   */
                   (void) GetNextToken(p,&p,extent,token);
-                  (void) CopyMagickString(macro,start,(size_t) (end-start));
-                  (void) AddValueToSplayTree(macros,ConstantString(name),
-                    ConstantString(macro));
+                  if (length > 0)
+                    {
+                      (void) CopyMagickString(macro,start,length);
+                      (void) AddValueToSplayTree(macros,ConstantString(name),
+                        ConstantString(macro));
+                    }
                   break;
                 }
             }
