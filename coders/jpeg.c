@@ -423,7 +423,7 @@ static void JPEGWarningHandler(j_common_ptr jpeg_info,int level)
       }
 }
 
-static boolean ReadProfilePayload(j_decompress_ptr jpeg_info,const int index,
+static MagickBooleanType ReadProfilePayload(j_decompress_ptr jpeg_info,const int index,
   const size_t length)
 {
   ExceptionInfo
@@ -451,7 +451,7 @@ static boolean ReadProfilePayload(j_decompress_ptr jpeg_info,const int index,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
         "TooManyProfiles","`%s'",image->filename);
-      return(FALSE);
+      return(MagickFalse);
     }
   if (client_info->profiles[index] == (StringInfo *) NULL)
     client_info->profiles[index]=AcquireStringInfo(length);
@@ -475,13 +475,13 @@ static boolean ReadProfilePayload(j_decompress_ptr jpeg_info,const int index,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         CorruptImageError,"InsufficientImageDataInFile","`%s'",image->filename);
-      return(FALSE);
+      return(MagickFalse);
     }
   *p='\0';
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Profile[%.20g]: %.20g bytes",(double) index,(double) length);
-  return(TRUE);
+  return(MagickTrue);
 }
 
 static boolean ReadComment(j_decompress_ptr jpeg_info)
@@ -581,22 +581,15 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     {
       if (LocaleCompare(magick,"MPF") == 0)
         {
-          boolean
-            status;
-
-          JPEGClientInfo
-            *client_info;
-
           /*
             Multi-picture support (Future).
           */
           status=ReadProfilePayload(jpeg_info,ICC_INDEX,length-12);
-          if (status == FALSE)
-            return(status);
+          if (status == MagickFalse)
+            return(FALSE);
           client_info=(JPEGClientInfo *) jpeg_info->client_data;
           status=SetImageProfile(client_info->image,"MPF",
-            client_info->profiles[ICC_INDEX],client_info->exception) ==
-            MagickFalse ? FALSE : TRUE;
+            client_info->profiles[ICC_INDEX],client_info->exception);
           client_info->profiles[ICC_INDEX]=DestroyStringInfo(
             client_info->profiles[ICC_INDEX]);
           return(TRUE);
@@ -2218,7 +2211,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
             "ExifProfileSizeExceedsLimit","`%s'",image->filename);
         else
           jpeg_write_marker(jpeg_info,APP_MARKER+1,GetStringInfoDatum(profile),
-            length);
+            (unsigned int) length);
       }
     if (LocaleCompare(name,"ICC") == 0)
       {
