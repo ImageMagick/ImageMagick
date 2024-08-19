@@ -1315,7 +1315,7 @@ static void CLISettingOptionInfo(MagickCLI *cli_wand,
           _draw_info->render= ArgBooleanNot;
           break;
         }
-      if (LocaleCompare("respect-parenthesis",option+1) == 0)
+      if (LocaleCompare("respect-parentheses",option+1) == 0)
         {
           /* link image and setting stacks - option is itself saved on stack! */
           (void) SetImageOption(_image_info,option+1,ArgBooleanString);
@@ -5019,9 +5019,9 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       cli_wand->image_list_stack = node;
       cli_wand->wand.images = NewImageList();
 
-      /* handle respect-parenthesis */
+      /* handle respect-parentheses */
       if (IsStringTrue(GetImageOption(cli_wand->wand.image_info,
-                    "respect-parenthesis")) != MagickFalse)
+                    "respect-parentheses")) != MagickFalse)
         option="{"; /* fall-thru so as to push image settings too */
       else
         break;
@@ -5075,12 +5075,12 @@ static void CLINoImageOperator(MagickCLI *cli_wand,
       cli_wand->wand.images= (Image *)node->data;
       node = (CLIStack *)RelinquishMagickMemory(node);
 
-      /* handle respect-parenthesis - of the previous 'pushed' settings */
+      /* handle respect-parentheses - of the previous 'pushed' settings */
       node = cli_wand->image_info_stack;
       if ( node != (CLIStack *) NULL)
         {
           if (IsStringTrue(GetImageOption(
-                cli_wand->wand.image_info,"respect-parenthesis")) != MagickFalse)
+                cli_wand->wand.image_info,"respect-parentheses")) != MagickFalse)
             option="}"; /* fall-thru so as to pop image settings too */
           else
             break;
