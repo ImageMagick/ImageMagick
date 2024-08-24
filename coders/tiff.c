@@ -1772,7 +1772,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->compression == JPEGCompression)
       method=GetJPEGMethod(image,tiff,photometric,bits_per_sample,
         samples_per_pixel);
+#if defined(WORDS_BIGENDIAN)
+    (void) SetQuantumEndian(image,quantum_info,MSBEndian);
+#else
     (void) SetQuantumEndian(image,quantum_info,LSBEndian);
+#endif
     scanline_size=TIFFScanlineSize(tiff);
     if (scanline_size <= 0)
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
