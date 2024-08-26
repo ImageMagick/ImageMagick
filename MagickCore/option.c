@@ -1069,6 +1069,8 @@ static const OptionInfo
     { "+render", 0L, DrawInfoOptionFlag, MagickFalse },
     { "+resample", 1L, DeprecateOptionFlag, MagickTrue },
     { "-resample", 1L, SimpleOperatorFlag, MagickFalse },
+    { "-respect-parenthesis", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "+respect-parenthesis", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-respect-parentheses", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+respect-parentheses", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+reverse", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },

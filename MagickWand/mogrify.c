@@ -3758,7 +3758,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
   MagickBooleanType
     fire,
     pend,
-    respect_parenthesis;
+    respect_parentheses;
 
   MagickStatusType
     status;
@@ -3805,7 +3805,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
-  respect_parenthesis=MagickFalse;
+  respect_parentheses=MagickFalse;
   status=MagickTrue;
   /*
     Parse command line.
@@ -5910,9 +5910,10 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
-        if (LocaleNCompare("respect-parentheses",option+1,17) == 0)
+        if ((LocaleNCompare("respect-parentheses",option+1,17) == 0) ||
+            (LocaleNCompare("respect-parenthesis",option+1,17) == 0))
           {
-            respect_parenthesis=(*option == '-') ? MagickTrue : MagickFalse;
+            respect_parentheses=(*option == '-') ? MagickTrue : MagickFalse;
             break;
           }
         if (LocaleCompare("reverse",option+1) == 0)

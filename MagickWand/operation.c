@@ -1315,10 +1315,12 @@ static void CLISettingOptionInfo(MagickCLI *cli_wand,
           _draw_info->render= ArgBooleanNot;
           break;
         }
-      if (LocaleCompare("respect-parentheses",option+1) == 0)
+      if ((LocaleCompare("respect-parentheses",option+1) == 0) ||
+          (LocaleCompare("respect-parenthesis",option+1) == 0))
         {
           /* link image and setting stacks - option is itself saved on stack! */
-          (void) SetImageOption(_image_info,option+1,ArgBooleanString);
+          (void) SetImageOption(_image_info,"respect-parentheses",
+            ArgBooleanString);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);

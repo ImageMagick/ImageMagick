@@ -81,7 +81,7 @@ RestoreMSCWarning \
 }
 #define PopImageStack() \
 { \
-  if (respect_parenthesis == MagickFalse) \
+  if (respect_parentheses == MagickFalse) \
     { \
       image_stack[k-1].image_info=DestroyImageInfo(image_stack[k-1].image_info); \
       image_stack[k-1].image_info=CloneImageInfo(image_stack[k].image_info); \
