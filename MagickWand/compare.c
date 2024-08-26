@@ -254,7 +254,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   MagickBooleanType
     fire,
     pend,
-    respect_parenthesis,
+    respect_parentheses,
     subimage_search;
 
   MagickStatusType
@@ -311,7 +311,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   option=(char *) NULL;
   pend=MagickFalse;
   reconstruct_image=NewImageList();
-  respect_parenthesis=MagickFalse;
+  respect_parentheses=MagickFalse;
   status=MagickTrue;
   subimage_search=MagickFalse;
   /*
@@ -960,7 +960,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           }
         if (LocaleNCompare("respect-parentheses",option+1,17) == 0)
           {
-            respect_parenthesis=(*option == '-') ? MagickTrue : MagickFalse;
+            respect_parentheses=(*option == '-') ? MagickTrue : MagickFalse;
             break;
           }
         if (LocaleCompare("rotate",option+1) == 0)

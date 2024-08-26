@@ -250,7 +250,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   MagickBooleanType
     fire,
     pend,
-    respect_parenthesis;
+    respect_parentheses;
 
   MagickStatusType
     status;
@@ -301,7 +301,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   option=(char *) NULL;
   pend=MagickFalse;
   resource_database=(XrmDatabase) NULL;
-  respect_parenthesis=MagickFalse;
+  respect_parentheses=MagickFalse;
   (void) memset(&resource_info,0,sizeof(resource_info));
   server_name=(char *) NULL;
   status=MagickTrue;
@@ -1095,7 +1095,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
           }
         if (LocaleNCompare("respect-parentheses",option+1,17) == 0)
           {
-            respect_parenthesis=(*option == '-') ? MagickTrue : MagickFalse;
+            respect_parentheses=(*option == '-') ? MagickTrue : MagickFalse;
             break;
           }
         if (LocaleCompare("rotate",option+1) == 0)

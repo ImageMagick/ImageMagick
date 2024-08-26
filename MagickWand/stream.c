@@ -189,7 +189,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
   MagickBooleanType
     fire,
     pend,
-    respect_parenthesis;
+    respect_parentheses;
 
   MagickStatusType
     status;
@@ -240,7 +240,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
-  respect_parenthesis=MagickFalse;
+  respect_parentheses=MagickFalse;
   stream_info=AcquireStreamInfo(image_info,exception);
   status=MagickTrue;
   /*
@@ -620,7 +620,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
           break;
         if (LocaleNCompare("respect-parentheses",option+1,17) == 0)
           {
-            respect_parenthesis=(*option == '-') ? MagickTrue : MagickFalse;
+            respect_parentheses=(*option == '-') ? MagickTrue : MagickFalse;
             break;
           }
         ThrowStreamException(OptionError,"UnrecognizedOption",option)

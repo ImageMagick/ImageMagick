@@ -457,7 +457,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   MagickBooleanType
     fire,
     pend,
-    respect_parenthesis;
+    respect_parentheses;
 
   MagickStatusType
     status;
@@ -502,7 +502,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
-  respect_parenthesis=MagickFalse;
+  respect_parentheses=MagickFalse;
   status=MagickTrue;
   /*
     Check command syntax.
@@ -1319,7 +1319,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
           }
         if (LocaleNCompare("respect-parentheses",option+1,17) == 0)
           {
-            respect_parenthesis=(*option == '-') ? MagickTrue : MagickFalse;
+            respect_parentheses=(*option == '-') ? MagickTrue : MagickFalse;
             break;
           }
         if (LocaleCompare("resize",option+1) == 0)
