@@ -611,8 +611,8 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   client_info=(JPEGClientInfo *) jpeg_info->client_data;
   image=client_info->image;
   exception=client_info->exception;
-  status=SetImageProperty(image,"icc",(const char *) GetStringInfoDatum(
-    client_info->profiles[ICC_INDEX]),exception);
+  status=SetImageProfile(image,"icc",client_info->profiles[ICC_INDEX],
+    exception);
   return(status == MagickFalse ? FALSE : TRUE);
 }
 
@@ -689,8 +689,8 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   client_info=(JPEGClientInfo *) jpeg_info->client_data;
   image=client_info->image;
   exception=client_info->exception;
-  status=SetImageProperty(image,"iptc",(const char *) GetStringInfoDatum(
-    client_info->profiles[IPTC_INDEX]),exception);
+  status=SetImageProfile(image,"iptc",client_info->profiles[IPTC_INDEX],
+    exception);
   return(status == MagickFalse ? FALSE : TRUE);
 }
 
