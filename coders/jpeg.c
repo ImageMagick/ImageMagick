@@ -689,7 +689,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   client_info=(JPEGClientInfo *) jpeg_info->client_data;
   image=client_info->image;
   exception=client_info->exception;
-  status=SetImageProfile(image,"iptc",client_info->profiles[IPTC_INDEX],
+  status=SetImageProfile(image,"8bim",client_info->profiles[IPTC_INDEX],
     exception);
   return(status == MagickFalse ? FALSE : TRUE);
 }
