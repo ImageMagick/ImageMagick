@@ -1167,12 +1167,19 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
   JPEGSourceManager(jpeg_info,image);
   jpeg_set_marker_processor(jpeg_info,JPEG_COM,ReadComment);
   option=GetImageOption(image_info,"profile:skip");
-  if (IsOptionMember("ICC",option) == MagickFalse)
-    jpeg_set_marker_processor(jpeg_info,ICC_MARKER,ReadICCProfile);
-  if (IsOptionMember("IPTC",option) == MagickFalse)
-    jpeg_set_marker_processor(jpeg_info,IPTC_MARKER,ReadIPTCProfile);
   for (i=1; i < MaxJPEGProfiles; i++)
-    if ((i != IPTC_INDEX) && (i != 14))
+  {
+    if (i == ICC_INDEX)
+      {
+        if (IsOptionMember("ICC",option) == MagickFalse)
+          jpeg_set_marker_processor(jpeg_info,ICC_MARKER,ReadICCProfile);
+      }
+    else if (i == IPTC_INDEX)
+      {
+        if (IsOptionMember("IPTC",option) == MagickFalse)
+          jpeg_set_marker_processor(jpeg_info,IPTC_MARKER,ReadIPTCProfile);
+      }
+    else if (i != 14)
       {
         /*
           Ignore APP14 as this will change the colors of the image.
@@ -1181,6 +1188,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           jpeg_set_marker_processor(jpeg_info,(int) (JPEG_APP0+i),
             ReadAPPProfiles);
       }
+  }
   (void) jpeg_read_header(jpeg_info,TRUE);
   if (IsYCbCrCompatibleColorspace(image_info->colorspace) != MagickFalse)
     jpeg_info->out_color_space=JCS_YCbCr;
