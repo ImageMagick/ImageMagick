@@ -71,10 +71,8 @@
 /*
   Forward declarations.
 */
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
 static MagickBooleanType
   WriteCLIPBOARDImage(const ImageInfo *,Image *,ExceptionInfo *);
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -103,10 +101,10 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
 static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
   unsigned char
     *p;
 
@@ -205,8 +203,9 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   read_info=DestroyImageInfo(read_info);
   clip_data=RelinquishMagickMemory(clip_data);
   return(image);
-}
 #endif /* MAGICKCORE_WINGDI32_DELEGATE */
+  return((Image *) NULL);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -237,10 +236,8 @@ ModuleExport size_t RegisterCLIPBOARDImage(void)
     *entry;
 
   entry=AcquireMagickInfo("CLIPBOARD","CLIPBOARD","The system clipboard");
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadCLIPBOARDImage;
   entry->encoder=(EncodeImageHandler *) WriteCLIPBOARDImage;
-#endif
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
@@ -298,10 +295,10 @@ ModuleExport void UnregisterCLIPBOARDImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
 static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
   HANDLE
     clip_handle;
 
@@ -366,6 +363,6 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   else
     SetClipboardData(CF_DIBV5,clip_handle);
   (void) CloseClipboard();
+#endif /* MAGICKCORE_WINGDI32_DELEGATE */
   return(MagickTrue);
 }
-#endif /* MAGICKCORE_WINGDI32_DELEGATE */
