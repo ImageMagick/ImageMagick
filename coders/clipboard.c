@@ -203,8 +203,9 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   read_info=DestroyImageInfo(read_info);
   clip_data=RelinquishMagickMemory(clip_data);
   return(image);
-#endif /* MAGICKCORE_WINGDI32_DELEGATE */
+#else /* MAGICKCORE_WINGDI32_DELEGATE */
   return((Image *) NULL);
+#endif
 }
 
 /*
