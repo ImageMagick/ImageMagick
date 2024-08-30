@@ -35,7 +35,7 @@
 %
 %
 */
-
+
 /*
   Include declarations.
 */
@@ -101,10 +101,10 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
 static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
   unsigned char
     *p;
 
@@ -204,6 +204,9 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   clip_data=RelinquishMagickMemory(clip_data);
   return(image);
 #else /* MAGICKCORE_WINGDI32_DELEGATE */
+static Image *ReadCLIPBOARDImage(const ImageInfo *magick_unused(image_info),
+  ExceptionInfo *magick_unused(exception))
+{
   magick_unreferenced(image_info);
   magick_unreferenced(exception);
   return((Image *) NULL);
@@ -298,10 +301,10 @@ ModuleExport void UnregisterCLIPBOARDImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
 static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_WINGDI32_DELEGATE)
   HANDLE
     clip_handle;
 
@@ -366,6 +369,14 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   else
     SetClipboardData(CF_DIBV5,clip_handle);
   (void) CloseClipboard();
+#else
+static MagickBooleanType WriteCLIPBOARDImage(
+  const ImageInfo *magick_unused(image_info),
+  Image *magick_unused(image),ExceptionInfo *magick_unused(exception))
+{
+  magick_unreferenced(image_info);
+  magick_unreferenced(image);
+  magick_unreferenced(exception);
 #endif /* MAGICKCORE_WINGDI32_DELEGATE */
   return(MagickTrue);
 }
