@@ -73,6 +73,7 @@
 #include "MagickCore/option-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/profile.h"
+#include "MagickCore/profile-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
@@ -757,11 +758,10 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
       }
       if (i != length)
         {
-          profile=AcquireStringInfo(length);
+          profile=AcquireProfileStringInfo("xmp",length,exception);
           (void) memcpy(GetStringInfoDatum(profile),p+1,length-i-1);
           SetStringInfoLength(profile,length-i-1);
-          status=SetImageProfile(image,"xmp",profile,exception);
-          profile=DestroyStringInfo(profile);
+          status=SetImageProfilePrivate(image,profile,exception);
           client_info->profiles[marker]=DestroyStringInfo(
             client_info->profiles[marker]);
         }
@@ -776,10 +776,9 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
             /*
               Extract EXIF profile.
             */
-            profile=AcquireStringInfo(length);
+            profile=AcquireProfileStringInfo("exif",length,exception);
             (void) memcpy(GetStringInfoDatum(profile),p,length);
-            status=SetImageProfile(image,"exif",profile,exception);
-            profile=DestroyStringInfo(profile);
+            status=SetImageProfilePrivate(image,profile,exception);
             client_info->profiles[marker]=DestroyStringInfo(
               client_info->profiles[marker]);
           }
