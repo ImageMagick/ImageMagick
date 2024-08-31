@@ -35,7 +35,7 @@
 %
 %
 */
-
+
 /*
   Include declarations.
 */
@@ -205,17 +205,6 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   read_info=DestroyImageInfo(read_info);
   clip_data=RelinquishMagickMemory(clip_data);
   return(image);
-<<<<<<< HEAD
-#else /* MAGICKCORE_WINGDI32_DELEGATE */
-static Image *ReadCLIPBOARDImage(const ImageInfo *magick_unused(image_info),
-  ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image_info);
-  magick_unreferenced(exception);
-  return((Image *) NULL);
-#endif
-=======
->>>>>>> 42c884571 (support clipboard delegate)
 }
 #endif /* MAGICKCORE_WINGDI32_DELEGATE */
 
@@ -377,18 +366,6 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   else
     SetClipboardData(CF_DIBV5,clip_handle);
   (void) CloseClipboard();
-<<<<<<< HEAD
-#else
-static MagickBooleanType WriteCLIPBOARDImage(
-  const ImageInfo *magick_unused(image_info),
-  Image *magick_unused(image),ExceptionInfo *magick_unused(exception))
-{
-  magick_unreferenced(image_info);
-  magick_unreferenced(image);
-  magick_unreferenced(exception);
-#endif /* MAGICKCORE_WINGDI32_DELEGATE */
-=======
->>>>>>> 42c884571 (support clipboard delegate)
   return(MagickTrue);
 }
 #endif /* MAGICKCORE_WINGDI32_DELEGATE */
