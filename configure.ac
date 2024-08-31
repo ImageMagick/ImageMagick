@@ -3294,6 +3294,7 @@ BPGDecodeDelegateDefault='bpgdec'
 BPGEncodeDelegateDefault='bpgenc'
 BlenderDecodeDelegateDefault='blender'
 BrowseDelegateDefault='xdg-open'
+ClipboardDelegateDefault='xclip'
 DNGDecodeDelegateDefault='darktable-cli'
 DOCDecodeDelegateDefault='libreoffice'
 GVCDecodeDelegateDefault='dot'
@@ -3339,7 +3340,8 @@ XPSDelegateDefault='gxps'
 AC_PATH_PROG([BPGDecodeDelegate],["$BPGDecodeDelegateDefault"],["$BPGDecodeDelegateDefault"])
 AC_PATH_PROG([BPGEncodeDelegate],["$BPGEncodeDelegateDefault"],["$BPGEncodeDelegateDefault"])
 AC_PATH_PROG([BlenderDecodeDelegate],["$BlenderDecodeDelegateDefault"],["$BlenderDecodeDelegateDefault"])
-AC_PATH_PROGS([BrowseDelegate],["$BrowseDelegateDefault" google-chrome firefox konqueror mozilla lynx],["$BrowseDelegateDefault"])
+AC_PATH_PROGS([BrowseDelegate],["$BrowseDelegateDefault" brave-browser microsoft-edge google-chrome firefox konqueror lynx],["$BrowseDelegateDefault"])
+AC_PATH_PROGS([ClipboardDelegate],["$ClipboardDelegateDefault"],["$ClipboardDelegateDefault"])
 AC_PATH_PROG([DNGDecodeDelegate],["$DNGDecodeDelegateDefault"],["$DNGDecodeDelegateDefault"])
 AC_PATH_PROG([DOCDecodeDelegate],["$DOCDecodeDelegateDefault"],["$DOCDecodeDelegateDefault"])
 AC_PATH_PROG([DVIDecodeDelegate],["$DVIDecodeDelegateDefault"],["$DVIDecodeDelegateDefault"])
@@ -3612,6 +3614,7 @@ if test "$with_frozenpaths" != 'yes'; then
   BPGEncodeDelegate="$BPGEncodeDelegateDefault"
   BlenderDecodeDelegate="$BlenderDecodeDelegateDefault"
   BrowseDelegate="$BrowseDelegateDefault"
+  ClipboardDelegate="$ClipboardDelegateDefault"
   ConvertDelegate="$ConvertDelegateDefault"
   DisplayDelegate="$DisplayDelegateDefault"
   DNGDecodeDelegate="$DNGDecodeDelegateDefault"
@@ -3651,6 +3654,7 @@ AC_SUBST([BPGDecodeDelegate])
 AC_SUBST([BPGEncodeDelegate])
 AC_SUBST([BlenderDecodeDelegate])
 AC_SUBST([BrowseDelegate])
+AC_SUBST([ClipboardDelegate])
 AC_SUBST([ConvertDelegate])
 AC_SUBST([GVCDecodeDelegate])
 AC_SUBST([DVIDecodeDelegate])

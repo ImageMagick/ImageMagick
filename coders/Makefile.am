@@ -93,8 +93,8 @@ MAGICKCORE_WEBP_SRCS = coders/webp.c
 endif
 
 if WINGDI32_DELEGATE
-MAGICKCORE_GDI32_MODULES = coders/emf.la
-MAGICKCORE_GDI32_SRCS = coders/emf.c
+MAGICKCORE_GDI32_MODULES = coders/clipboard.la coders/emf.la
+MAGICKCORE_GDI32_SRCS = coders/clipboard.c coders/emf.c
 endif
 
 if WMF_DELEGATE
@@ -137,7 +137,6 @@ MAGICKCORE_CODER_SRCS = \
 	coders/cin.h \
 	coders/cip.c \
 	coders/cip.h \
-	coders/clipboard.c \
 	coders/clipboard.h \
 	coders/clip.c \
 	coders/clip.h \
@@ -564,7 +563,6 @@ coders_LTLIBRARIES = \
 	coders/caption.la \
 	coders/cin.la \
 	coders/cip.la \
-	coders/clipboard.la \
 	coders/clip.la \
 	coders/cmyk.la \
 	coders/cube.la \
@@ -777,7 +775,7 @@ coders_clip_la_LIBADD      = $(MAGICKCORE_LIBS)
 coders_clipboard_la_SOURCES= coders/clipboard.c
 coders_clipboard_la_CPPFLAGS= $(MAGICK_CODER_CPPFLAGS)
 coders_clipboard_la_LDFLAGS= $(MODULECOMMONFLAGS)
-coders_clipboard_la_LIBADD = $(MAGICKCORE_LIBS) $(GDI32_LIBS) $(XEXT_LIBS) $(X11_LIBS)
+coders_clipboard_la_LIBADD = $(MAGICKCORE_LIBS) $(GDI32_LIBS)
 
 # CMYK coder module
 coders_cmyk_la_SOURCES     = coders/cmyk.c

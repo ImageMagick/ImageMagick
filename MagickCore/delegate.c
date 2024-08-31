@@ -128,6 +128,8 @@ static const char
     "  <delegate decode=\"pcl:mono\" stealth=\"True\" command=\"&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pbmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;\"/>"
     "  <delegate decode=\"pdf\" encode=\"eps\" mode=\"bi\" command=\"&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 -sPDFPassword=&quot;%a&quot; &quot;-sDEVICE=eps2write&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;\"/>"
     "  <delegate decode=\"pdf\" encode=\"ps\" mode=\"bi\" command=\"&quot;gs&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ps2write&quot; -sPDFPassword=&quot;%a&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;\"/>"
+    "  <delegate decode=\"png\" encode=\"clipboard\" command=\"&quot;xclip&quot; -selection clipboard -t image/png &quot;%i&quot;\"/>"
+    "  <delegate decode=\"clipboard\" command=\"&quot;xclip&quot; -selection clipboard -o &gt; &quot;%o&quot;\"/>"
     "  <delegate decode=\"png\" encode=\"webp\" command=\"&quot;cwebp&quot; -quiet -q %Q &quot;%i&quot; -o &quot;%o&quot;\"/>"
     "  <delegate decode=\"pnm\" encode=\"ilbm\" mode=\"encode\" command=\"&quot;ppmtoilbm&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;\"/>"
     "  <delegate decode=\"tiff\" encode=\"jxr\" command=\"mv &quot;%i&quot; &quot;%i.tiff&quot;; &quot;JxrEncApp&quot; -i &quot;%i.tiff&quot; -o &quot;%o.jxr&quot;; mv &quot;%i.tiff&quot; &quot;%i&quot;; mv &quot;%o.jxr&quot; &quot;%o&quot;\"/>"

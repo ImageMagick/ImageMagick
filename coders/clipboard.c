@@ -17,7 +17,7 @@
 %                                 May 2002                                    %
 %                                                                             %
 %                                                                             %
-%  Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization         %
+%  Copyright @ 2002 ImageMagick Studio LLC, a non-profit organization         %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
 %  You may not use this file except in compliance with the License.  You may  %
@@ -71,8 +71,10 @@
 /*
   Forward declarations.
 */
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
 static MagickBooleanType
   WriteCLIPBOARDImage(const ImageInfo *,Image *,ExceptionInfo *);
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -203,6 +205,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
   read_info=DestroyImageInfo(read_info);
   clip_data=RelinquishMagickMemory(clip_data);
   return(image);
+<<<<<<< HEAD
 #else /* MAGICKCORE_WINGDI32_DELEGATE */
 static Image *ReadCLIPBOARDImage(const ImageInfo *magick_unused(image_info),
   ExceptionInfo *magick_unused(exception))
@@ -211,7 +214,10 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *magick_unused(image_info),
   magick_unreferenced(exception);
   return((Image *) NULL);
 #endif
+=======
+>>>>>>> 42c884571 (support clipboard delegate)
 }
+#endif /* MAGICKCORE_WINGDI32_DELEGATE */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -242,8 +248,10 @@ ModuleExport size_t RegisterCLIPBOARDImage(void)
     *entry;
 
   entry=AcquireMagickInfo("CLIPBOARD","CLIPBOARD","The system clipboard");
+#if defined(MAGICKCORE_WINGDI32_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadCLIPBOARDImage;
   entry->encoder=(EncodeImageHandler *) WriteCLIPBOARDImage;
+#endif
   entry->flags^=CoderAdjoinFlag;
   entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
@@ -369,6 +377,7 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
   else
     SetClipboardData(CF_DIBV5,clip_handle);
   (void) CloseClipboard();
+<<<<<<< HEAD
 #else
 static MagickBooleanType WriteCLIPBOARDImage(
   const ImageInfo *magick_unused(image_info),
@@ -378,5 +387,8 @@ static MagickBooleanType WriteCLIPBOARDImage(
   magick_unreferenced(image);
   magick_unreferenced(exception);
 #endif /* MAGICKCORE_WINGDI32_DELEGATE */
+=======
+>>>>>>> 42c884571 (support clipboard delegate)
   return(MagickTrue);
 }
+#endif /* MAGICKCORE_WINGDI32_DELEGATE */

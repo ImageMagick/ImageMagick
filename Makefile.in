@@ -533,20 +533,20 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	coders/bgr.h coders/bmp.c coders/bmp.h coders/braille.c \
 	coders/braille.h coders/bytebuffer-private.h coders/cals.c \
 	coders/cals.h coders/caption.c coders/caption.h coders/cin.c \
-	coders/cin.h coders/cip.c coders/cip.h coders/clipboard.c \
-	coders/clipboard.h coders/clip.c coders/clip.h coders/cmyk.c \
-	coders/cmyk.h coders/coders.h coders/coders-list.h \
-	coders/coders-private.h coders/cube.c coders/cube.h \
-	coders/cut.c coders/cut.h coders/dcm.c coders/dcm.h \
-	coders/dds.c coders/dds.h coders/debug.c coders/debug.h \
-	coders/dib.c coders/dib.h coders/djvu.h coders/dng.c \
-	coders/dng.h coders/dot.c coders/dot.h coders/dps.h \
-	coders/dpx.c coders/dpx.h coders/emf.h coders/ept.h \
-	coders/exr.h coders/farbfeld.c coders/farbfeld.h coders/fax.c \
-	coders/fax.h coders/fits.c coders/fits.h coders/fl32.c \
-	coders/fl32.h coders/flif.h coders/fpx.h coders/ftxt.h \
-	coders/ftxt.c coders/ghostscript-private.h coders/gif.c \
-	coders/gif.h coders/gradient.c coders/gradient.h coders/gray.c \
+	coders/cin.h coders/cip.c coders/cip.h coders/clipboard.h \
+	coders/clip.c coders/clip.h coders/cmyk.c coders/cmyk.h \
+	coders/coders.h coders/coders-list.h coders/coders-private.h \
+	coders/cube.c coders/cube.h coders/cut.c coders/cut.h \
+	coders/dcm.c coders/dcm.h coders/dds.c coders/dds.h \
+	coders/debug.c coders/debug.h coders/dib.c coders/dib.h \
+	coders/djvu.h coders/dng.c coders/dng.h coders/dot.c \
+	coders/dot.h coders/dps.h coders/dpx.c coders/dpx.h \
+	coders/emf.h coders/ept.h coders/exr.h coders/farbfeld.c \
+	coders/farbfeld.h coders/fax.c coders/fax.h coders/fits.c \
+	coders/fits.h coders/fl32.c coders/fl32.h coders/flif.h \
+	coders/fpx.h coders/ftxt.h coders/ftxt.c \
+	coders/ghostscript-private.h coders/gif.c coders/gif.h \
+	coders/gradient.c coders/gradient.h coders/gray.c \
 	coders/gray.h coders/hald.c coders/hald.h coders/hdr.c \
 	coders/hdr.h coders/heic.h coders/histogram.c \
 	coders/histogram.h coders/hrz.c coders/hrz.h coders/html.c \
@@ -597,10 +597,11 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	coders/xwd.h coders/yaml.c coders/yaml.h coders/ycbcr.c \
 	coders/ycbcr.h coders/yuv.c coders/yuv.h coders/dps.c \
 	coders/djvu.c coders/dmr.c coders/exr.c coders/flif.c \
-	coders/fpx.c coders/emf.c coders/heic.c coders/jbig.c \
-	coders/jpeg.c coders/jp2.c coders/jxl.c coders/png.c \
-	coders/ept.c coders/tiff.c coders/uhdr.c coders/webp.c \
-	coders/wmf.c coders/x.c coders/xwd.c filters/analyze.c
+	coders/fpx.c coders/clipboard.c coders/emf.c coders/heic.c \
+	coders/jbig.c coders/jpeg.c coders/jp2.c coders/jxl.c \
+	coders/png.c coders/ept.c coders/tiff.c coders/uhdr.c \
+	coders/webp.c coders/wmf.c coders/x.c coders/xwd.c \
+	filters/analyze.c
 am__objects_1 = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-accelerate.lo \
 	MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-annotate.lo \
@@ -702,7 +703,8 @@ am__objects_1 = MagickCore/libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFF
 @OPENEXR_DELEGATE_TRUE@am__objects_6 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-exr.lo
 @FLIF_DELEGATE_TRUE@am__objects_7 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-flif.lo
 @FPX_DELEGATE_TRUE@am__objects_8 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-fpx.lo
-@WINGDI32_DELEGATE_TRUE@am__objects_9 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-emf.lo
+@WINGDI32_DELEGATE_TRUE@am__objects_9 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo \
+@WINGDI32_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-emf.lo
 @HEIC_DELEGATE_TRUE@am__objects_10 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-heic.lo
 @JBIG_DELEGATE_TRUE@am__objects_11 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jbig.lo
 @JPEG_DELEGATE_TRUE@am__objects_12 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-jpeg.lo
@@ -728,7 +730,6 @@ am__objects_21 = coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-caption.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-cin.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-cip.lo \
-	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clip.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-cmyk.lo \
 	coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-cube.lo \
@@ -993,7 +994,6 @@ coders_clip_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @WITH_MODULES_TRUE@am_coders_clip_la_rpath = -rpath $(codersdir)
 coders_clipboard_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_coders_clipboard_la_OBJECTS = coders/clipboard_la-clipboard.lo
 coders_clipboard_la_OBJECTS = $(am_coders_clipboard_la_OBJECTS)
@@ -1001,7 +1001,8 @@ coders_clipboard_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_clipboard_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@WITH_MODULES_TRUE@am_coders_clipboard_la_rpath = -rpath $(codersdir)
+@WINGDI32_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_clipboard_la_rpath =  \
+@WINGDI32_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
 coders_cmyk_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
 am_coders_cmyk_la_OBJECTS = coders/cmyk_la-cmyk.lo
 coders_cmyk_la_OBJECTS = $(am_coders_cmyk_la_OBJECTS)
@@ -3192,6 +3193,7 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+ClipboardDelegate = @ClipboardDelegate@
 ConvertDelegate = @ConvertDelegate@
 DATA_DIR = @DATA_DIR@
 DEFS = @DEFS@
@@ -3774,8 +3776,8 @@ codersdir = $(CODER_PATH)
 @UHDR_DELEGATE_TRUE@MAGICKCORE_UHDR_SRCS = coders/uhdr.c
 @WEBP_DELEGATE_TRUE@MAGICKCORE_WEBP_MODULES = coders/webp.la
 @WEBP_DELEGATE_TRUE@MAGICKCORE_WEBP_SRCS = coders/webp.c
-@WINGDI32_DELEGATE_TRUE@MAGICKCORE_GDI32_MODULES = coders/emf.la
-@WINGDI32_DELEGATE_TRUE@MAGICKCORE_GDI32_SRCS = coders/emf.c
+@WINGDI32_DELEGATE_TRUE@MAGICKCORE_GDI32_MODULES = coders/clipboard.la coders/emf.la
+@WINGDI32_DELEGATE_TRUE@MAGICKCORE_GDI32_SRCS = coders/clipboard.c coders/emf.c
 @WMF_DELEGATE_TRUE@MAGICKCORE_WMF_MODULES = coders/wmf.la
 @WMF_DELEGATE_TRUE@MAGICKCORE_WMF_SRCS = coders/wmf.c
 @X11_DELEGATE_TRUE@MAGICKCORE_X11_MODULES = coders/x.la coders/xwd.la
@@ -3810,7 +3812,6 @@ MAGICKCORE_CODER_SRCS = \
 	coders/cin.h \
 	coders/cip.c \
 	coders/cip.h \
-	coders/clipboard.c \
 	coders/clipboard.h \
 	coders/clip.c \
 	coders/clip.h \
@@ -4237,7 +4238,6 @@ CODERS_NOINST_HDRS = \
 @WITH_MODULES_TRUE@	coders/caption.la \
 @WITH_MODULES_TRUE@	coders/cin.la \
 @WITH_MODULES_TRUE@	coders/cip.la \
-@WITH_MODULES_TRUE@	coders/clipboard.la \
 @WITH_MODULES_TRUE@	coders/clip.la \
 @WITH_MODULES_TRUE@	coders/cmyk.la \
 @WITH_MODULES_TRUE@	coders/cube.la \
@@ -4448,7 +4448,7 @@ coders_clip_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_clipboard_la_SOURCES = coders/clipboard.c
 coders_clipboard_la_CPPFLAGS = $(MAGICK_CODER_CPPFLAGS)
 coders_clipboard_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_clipboard_la_LIBADD = $(MAGICKCORE_LIBS) $(GDI32_LIBS) $(XEXT_LIBS) $(X11_LIBS)
+coders_clipboard_la_LIBADD = $(MAGICKCORE_LIBS) $(GDI32_LIBS)
 
 # CMYK coder module
 coders_cmyk_la_SOURCES = coders/cmyk.c
@@ -6964,8 +6964,6 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ci
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-cip.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
-coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo:  \
-	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clip.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-cmyk.lo:  \
@@ -7195,6 +7193,8 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ex
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-flif.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-fpx.lo:  \
+	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
+coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-emf.lo:  \
 	coders/$(am__dirstamp) coders/$(DEPDIR)/$(am__dirstamp)
@@ -9498,13 +9498,6 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-ci
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-cip.lo `test -f 'coders/cip.c' || echo '$(srcdir)/'`coders/cip.c
 
-coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo: coders/clipboard.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo `test -f 'coders/clipboard.c' || echo '$(srcdir)/'`coders/clipboard.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/clipboard.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo `test -f 'coders/clipboard.c' || echo '$(srcdir)/'`coders/clipboard.c
-
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clip.lo: coders/clip.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clip.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clip.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clip.lo `test -f 'coders/clip.c' || echo '$(srcdir)/'`coders/clip.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clip.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clip.Plo
@@ -10309,6 +10302,13 @@ coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-fp
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/fpx.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-fpx.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-fpx.lo `test -f 'coders/fpx.c' || echo '$(srcdir)/'`coders/fpx.c
+
+coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo: coders/clipboard.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo `test -f 'coders/clipboard.c' || echo '$(srcdir)/'`coders/clipboard.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.Tpo coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='coders/clipboard.c' object='coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-clipboard.lo `test -f 'coders/clipboard.c' || echo '$(srcdir)/'`coders/clipboard.c
 
 coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-emf.lo: coders/emf.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-emf.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-emf.Tpo -c -o coders/MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la-emf.lo `test -f 'coders/emf.c' || echo '$(srcdir)/'`coders/emf.c

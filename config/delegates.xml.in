@@ -92,6 +92,8 @@
   <delegate decode="pdf" encode="eps" mode="bi" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSEPSDevice@&quot; &quot;-sPDFPassword=%a&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="pdf" encode="ps" mode="bi" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSPSDevice@&quot; &quot;-sPDFPassword=%a&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="pnm" encode="trace" command="&quot;@TraceEncodeDelegate@&quot; --svg --output &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="png" encode="clipboard" command="&quot;@ClipboardDelegate@&quot; -selection clipboard -t image/png &quot;%i&quot;"/>
+  <delegate decode="clipboard" command="&quot;@ClipboardDelegate@&quot; -selection clipboard -o &gt; &quot;%o&quot;"/>
   <delegate decode="png" encode="webp" command="&quot;@WebPEncodeDelegate@&quot; -quiet -q %Q &quot;%i&quot; -o &quot;%o&quot;"/>
   <delegate decode="pnm" encode="ilbm" mode="encode" command="&quot;@ILBMEncodeDelegate@&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="tiff" encode="jxr" command="@MVDelegate@ &quot;%i&quot; &quot;%i.tiff&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.tiff&quot; -o &quot;%o.jxr&quot;; @MVDelegate@ &quot;%i.tiff&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.jxr&quot; &quot;%o&quot;"/>
