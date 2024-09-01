@@ -1415,19 +1415,19 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             pixel|=(unsigned int) (*p++) << 8;
             red=((pixel & bmp_info.red_mask) << shift.red) >> 16;
             if (quantum_bits.red == 5)
-              red|=((red & 0xe000) >> 5);
+              red|=((red & 0xff00) >> 5);
             if (quantum_bits.red <= 8)
               red|=((red & 0xff00) >> 8);
             green=((pixel & bmp_info.green_mask) << shift.green) >> 16;
             if (quantum_bits.green == 5)
-              green|=((green & 0xe000) >> 5);
+              green|=((green & 0xff00) >> 5);
             if (quantum_bits.green == 6)
-              green|=((green & 0xc000) >> 6);
+              green|=((green & 0xff00) >> 6);
             if (quantum_bits.green <= 8)
               green|=((green & 0xff00) >> 8);
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
             if (quantum_bits.blue == 5)
-              blue|=((blue & 0xe000) >> 5);
+              blue|=((blue & 0xff00) >> 5);
             if (quantum_bits.blue <= 8)
               blue|=((blue & 0xff00) >> 8);
             SetPixelRed(image,ScaleShortToQuantum((unsigned short) red),q);
@@ -1439,8 +1439,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 alpha=((pixel & bmp_info.alpha_mask) << shift.alpha) >> 16;
                 if (quantum_bits.alpha <= 8)
                   alpha|=((alpha & 0xff00) >> 8);
-                SetPixelAlpha(image,ScaleShortToQuantum(
-                  (unsigned short) alpha),q);
+                SetPixelAlpha(image,ScaleShortToQuantum((unsigned short)
+                  alpha),q);
               }
             q+=GetPixelChannels(image);
           }
