@@ -322,7 +322,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       width>>=1;
       height>>=1;
-      scene--;
+      if (scene != 0)
+        scene--;
     }
   image->depth=8;
   image->columns=width;
