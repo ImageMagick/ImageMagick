@@ -38,7 +38,7 @@ jobs:
         set -e
         export DEBIAN_FRONTEND=noninteractive
         apt-get update -y
-        apt-get install -y autoconf git libtool make pkg-config ${{ matrix.packages }}
+        apt-get install -y autoconf git libtool make pkg-config ${{ matrix.packages }} librsvg2-dev
 
     - name: Configure ImageMagick
       env:
@@ -48,7 +48,7 @@ jobs:
         CXXFLAGS: ${{ matrix.compiler_flags }}
       run: |
         autoreconf -fiv
-        ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr
+        ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --prefix=/usr --with-rsvg
 
     - name: Build ImageMagick
       run: |
