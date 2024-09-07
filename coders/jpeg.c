@@ -759,9 +759,12 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
       if (i != length)
         {
           profile=AcquireProfileStringInfo("xmp",length,exception);
-          (void) memcpy(GetStringInfoDatum(profile),p+1,length-i-1);
-          SetStringInfoLength(profile,length-i-1);
-          status=SetImageProfilePrivate(image,profile,exception);
+          if (profile != (StringInfo*) NULL)
+            {
+              (void) memcpy(GetStringInfoDatum(profile),p+1,length-i-1);
+              SetStringInfoLength(profile,length-i-1);
+              status=SetImageProfilePrivate(image,profile,exception);
+            }
           client_info->profiles[marker]=DestroyStringInfo(
             client_info->profiles[marker]);
         }
@@ -777,8 +780,11 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
               Extract EXIF profile.
             */
             profile=AcquireProfileStringInfo("exif",length,exception);
-            (void) memcpy(GetStringInfoDatum(profile),p,length);
-            status=SetImageProfilePrivate(image,profile,exception);
+            if (profile != (StringInfo*) NULL)
+              {
+              (void) memcpy(GetStringInfoDatum(profile),p,length);
+              status=SetImageProfilePrivate(image,profile,exception);
+              }
             client_info->profiles[marker]=DestroyStringInfo(
               client_info->profiles[marker]);
           }
