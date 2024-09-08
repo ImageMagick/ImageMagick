@@ -782,8 +782,8 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
             profile=AcquireProfileStringInfo("exif",length,exception);
             if (profile != (StringInfo*) NULL)
               {
-              (void) memcpy(GetStringInfoDatum(profile),p,length);
-              status=SetImageProfilePrivate(image,profile,exception);
+                (void) memcpy(GetStringInfoDatum(profile),p,length);
+                status=SetImageProfilePrivate(image,profile,exception);
               }
             client_info->profiles[marker]=DestroyStringInfo(
               client_info->profiles[marker]);
