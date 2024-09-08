@@ -220,9 +220,6 @@ WriteMakefile
    # Linker flags for building a dynamically loadable module
    'LDDLFLAGS' => $LDDLFLAGS_magick,
 
-   # Install PerlMagick into ImageMagick prefix
-   'INSTALL_BASE' => '@PREFIX_DIR@',
-
    # Install PerlMagick binary into ImageMagick bin directory
    'INSTALLBIN'	=> '@BIN_DIR@',
 
