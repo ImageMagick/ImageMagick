@@ -232,7 +232,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
         (void) CopyMagickString(p,p+1,MagickPathExtent);
         continue;
       }
-    c=(int) *p;
+    c=(int) ((unsigned char) *p);
     switch (c)
     {
       case '%':
@@ -282,6 +282,13 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       {
         (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
+      }
+      case 195:
+      {
+        p++;
+        c=(int) ((unsigned char) *p);
+        if (c != 151)
+          return(flags);
       }
       case 'x':
       case 'X':
@@ -340,7 +347,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
   if ((*p != '+') && (*p != '-'))
     {
       c=(int) ((unsigned char) *q);
-      if ((c == 215) || (*q == 'x') || (*q == 'X') || (*q == ':') ||
+      if ((c == 215) || (c == 195) || (*q == 'x') || (*q == 'X') || (*q == ':') ||
           (*q == '\0'))
         {
           /*
@@ -361,9 +368,11 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
   if ((*p != '+') && (*p != '-'))
     {
       c=(int) ((unsigned char) *p);
-      if ((c == 215) || (*p == 'x') || (*p == 'X') || (*p == ':'))
+      if ((c == 215) || (c == 195) || (*p == 'x') || (*p == 'X') || (*p == ':'))
         {
           p++;
+          if (c == 195)
+            p++;
           if ((*p != '+') && (*p != '-'))
             {
               /*
@@ -1026,6 +1035,13 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
         (void) CopyMagickString(p,p+1,MagickPathExtent);
         break;
       }
+      case 195:
+      {
+        p++;
+        c=(int) ((unsigned char) *p);
+        if (c != 151)
+          return(flags);
+      }
       case 'x':
       case 'X':
       {
@@ -1081,7 +1097,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   if (LocaleNCompare(p,"0x",2) == 0)
     (void) strtol(p,&q,10);
   c=(int) ((unsigned char) *q);
-  if ((c == 215) || (*q == 'x') || (*q == 'X') || (*q == ':') ||
+  if ((c == 215) || (c == 195) || (*q == 'x') || (*q == 'X') || (*q == ':') ||
       (*q == ',') || (*q == '/') || (*q =='\0'))
     {
       /*
@@ -1100,17 +1116,19 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
     }
   q=p;
   c=(int) ((unsigned char) *p);
-  if ((c == 215) || (*p == 'x') || (*p == 'X') || (*p == ':') || (*p == ',') ||
+  if ((c == 215) || (c == 195) || (*p == 'x') || (*p == 'X') || (*p == ':') || (*p == ',') ||
       (*p == '/'))
     {
       /*
         Parse sigma.
       */
       p++;
+      if (c == 195)
+        p++;
       while (isspace((int) ((unsigned char) *p)) != 0)
         p++;
       c=(int) ((unsigned char) *q);
-      if (((c != 215) && (*q != 'x') && (*q != 'X') && (*q != ':')) ||
+      if (((c != 215) && (c != 195) && (*q != 'x') && (*q != 'X') && (*q != ':')) ||
           ((*p != '+') && (*p != '-')))
         {
           q=p;
