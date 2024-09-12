@@ -176,7 +176,7 @@ macro(magick_check_env)
   check_function_exists(gettimeofday HAVE_GETTIMEOFDAY)
 
   # Check if `gmtime_r' exists
-  check_function_exists(gettimeofday HAVE_GMTIME_R)
+  check_function_exists(gmtime_r HAVE_GMTIME_R)
 
   # I don't think our program will have a big memory impact
   set(HAVE_HUGEPAGES FALSE)
