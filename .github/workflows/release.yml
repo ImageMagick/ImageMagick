@@ -105,8 +105,8 @@ jobs:
       fail-fast: false
       matrix:
         platform: [ x64, arm64 ]
-        quantum: [ Q16 ]
-        hdri: [ HDRI ]
+        quantum: [ Q8, Q16 ]
+        hdri: [ HDRI, noHDRI ]
         exclude:
           - quantum: Q8
             hdri: HDRI
@@ -195,8 +195,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        quantum: [ Q16 ]
-        hdri: [ HDRI ]
+        quantum: [ Q8, Q16 ]
+        hdri: [ HDRI, noHDRI ]
         exclude:
           - quantum: Q8
             hdri: HDRI
