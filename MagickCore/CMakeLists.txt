@@ -758,6 +758,13 @@ if(UNIX)
   target_link_libraries(${MAGICKCORE_BINARY_NAME} PUBLIC -lm)
   set(MATH_LIBS "-lm")
 endif()
+
+if(MINGW)
+  # MagickCore uses URLDownloadToFile
+  # (MSVC gets it from pragmas inside the code)
+  target_link_options(${MAGICKCORE_BINARY_NAME} PUBLIC -lurlmon)
+endif()
+
 # Set the MAGICKCORE_SHAREARCH_BASEDIRNAME to "config", not sure if I should add it to the <config.h>
 target_compile_definitions(${MAGICKCORE_BINARY_NAME} PUBLIC ${MAGICK_BUILD_DEFINES} -D_MAGICKLIB_ -DMAGICKCORE_SHAREARCH_BASEDIRNAME=\"config\")
 target_compile_options(${MAGICKCORE_BINARY_NAME} PUBLIC ${MAGICK_COMPILE_OPTIONS})
