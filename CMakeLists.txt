@@ -136,7 +136,10 @@ if(WIN32)
   if(NOT WINDOWS)
     set(WINDOWS TRUE)
   endif()
-  # TODO check for mingw or cygwin ???
+  # TODO check for cygwin
+  if(CMAKE_CXX_COMPILER MATCHES "/clang\\+\\+(-[a-zA-Z0-9.])?$" OR "/gcc\\+\\+(-[a-zA-Z0-9.])?$")
+    set(MINGW TRUE)
+  endif()
 elseif(UNIX AND NOT APPLE)
   if(CMAKE_SYSTEM_NAME MATCHES ".*Linux")
     set(LINUX TRUE)

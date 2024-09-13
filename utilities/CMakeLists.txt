@@ -25,6 +25,12 @@ target_include_directories(${MAGICK_BINARY_NAME} PRIVATE ${IMAGEMAGICK_BASE_PATH
 target_compile_definitions(${MAGICK_BINARY_NAME} PRIVATE ${MAGICK_BUILD_DEFINES})
 target_link_libraries(${MAGICK_BINARY_NAME} PRIVATE ${MAGICKWAND_BINARY_NAME})
 
+if(MINGW)
+  # Magick uses the new unicode wmain entrypoint and URLDownloadToFile
+  # (MSVC gets them from pragmas inside the code)
+  target_link_options(${MAGICK_BINARY_NAME} PRIVATE -lurlmon -municode)
+endif()
+
 install(TARGETS ${MAGICK_BINARY_NAME}
   RUNTIME DESTINATION bin
   BUNDLE DESTINATION bin
