@@ -270,6 +270,8 @@ jobs:
         files: |
           artifacts/AppImage-clang/ImageMagick-*-clang-x86_64.AppImage
           artifacts/AppImage-gcc/ImageMagick-*-gcc-x86_64.AppImage
+          artifacts/Msix-Q8/ImageMagick.Q8.msixbundle
+          artifacts/Msix-Q16/ImageMagick.Q16.msixbundle
           artifacts/Msix-Q16-HDRI/ImageMagick.Q16-HDRI.msixbundle
 
   publish_msix:
