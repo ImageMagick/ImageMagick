@@ -32,7 +32,7 @@
   <configure name="HOST" value="@host@"/>
   <configure name="INCLUDE_PATH" value="@INCLUDE_PATH@"/>
   <configure name="LDFLAGS" value="@MAGICK_LDFLAGS@"/>
-  <configure name="LIBRARY_PATH" value="@LIBRARY_PATH@"/>
+  <configure name="LIBRARY_ABSOLUTE_PATH" value="@LIBRARY_ABSOLUTE_PATH@"/>
   <configure name="LIBS" value="@MAGICK_LIBS@"/>
   <configure name="LIB_VERSION_NUMBER" value="@PACKAGE_LIB_VERSION_NUMBER@"/>
   <configure name="LIB_VERSION" value="@PACKAGE_LIB_VERSION@"/>

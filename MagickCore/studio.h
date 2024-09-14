@@ -276,7 +276,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  define Exit  exit
 #  define IsBasenameSeparator(c) \
   (((c) == ']') || ((c) == ':') || ((c) == '/') ? MagickTrue : MagickFalse)
-#  define MAGICKCORE_LIBRARY_PATH  "sys$login:"
+#  define MAGICKCORE_LIBRARY_ABSOLUTE_PATH  "sys$login:"
 #  define MAGICKCORE_SHARE_PATH  "sys$login:"
 #  define X11_PREFERENCES_PATH  "decw$user_defaults:"
 #  define ProcessPendingEvents(text)

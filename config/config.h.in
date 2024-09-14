@@ -751,7 +751,7 @@
 #undef LIBOPENJP2_DELEGATE
 
 /* Directory where architecture-dependent files live. */
-#undef LIBRARY_PATH
+#undef LIBRARY_ABSOLUTE_PATH
 
 /* Subdirectory of lib where ImageMagick architecture dependent files are
    installed. */

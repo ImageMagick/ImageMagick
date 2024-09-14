@@ -31,7 +31,7 @@
   <configure name="HOST" value="x86_64-pc-linux-gnu"/>
   <configure name="INCLUDE_PATH" value="/usr/local/include/ImageMagick-7"/>
   <configure name="LDFLAGS" value="-L/usr/local/lib  "/>
-  <configure name="LIBRARY_PATH" value="/usr/local/lib/ImageMagick-7.0.7"/>
+  <configure name="LIBRARY_ABSOLUTE_PATH" value="/usr/local/lib/ImageMagick-7.0.7"/>
   <configure name="LIBS" value=" -llcms2  -lfreetype    -lfftw3   -lfontconfig -lfreetype  -lXext   -lSM -lICE -lX11  -lXt -llzma  -lbz2 -lz  -lltdl  -lm -lgomp    "/>
   <configure name="LIB_VERSION_NUMBER" value="7,0,7,15"/>
   <configure name="LIB_VERSION" value="0x707"/>
