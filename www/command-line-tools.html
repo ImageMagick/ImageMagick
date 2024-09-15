@@ -6,10 +6,10 @@
 <html lang="en" data-bs-theme="auto">
 <head>
   <script src="assets/color-modes.js" ></script>
-  <meta charset="utf-8"  />
-  <meta name="viewport" content="width=device-width, initial-scale=1"  />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Command-line Tools</title>
-  <meta name="keywords" content="command-line, tools, ImageMagick, image processing, command-line tool, format conversion, photo editing" />
+  <meta name="keywords" content="command-line, tools, image processing, image manipulation, image conversion, graphic design tool, image editing" />
   <meta name="description" content="Command-line tools to create, edit, compose, and convert digital images." />
   <meta name="application-name" content="ImageMagick" />
   <meta name="application-url" content="https://imagemagick.org" />
@@ -26,10 +26,11 @@
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
-  <link href="../www/command-line-tools.html" rel="canonical" />
+  <link href="command-line-tools.html" rel="canonical" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
   <link href="assets/magick.css" rel="stylesheet" />
   <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+  <script async src="https://cse.google.com/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -66,14 +67,14 @@
         </button>
       </li>
       <li>
-        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="dark" aria-pressed="false">
           <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
           Dark
           <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
         </button>
       </li>
       <li>
-        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="true">
           <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
           Auto
           <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
@@ -81,17 +82,15 @@
       </li>
     </ul>
   </div>
-    
-<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-  <symbol id="arrow-right-circle" viewBox="0 0 16 16">
-    <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
-  </symbol>
-  <symbol id="bootstrap" viewBox="0 0 118 94">
-    <title>Bootstrap</title>
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
-  </symbol>
-</svg>
-
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+    <symbol id="arrow-right-circle" viewBox="0 0 16 16">
+      <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+    </symbol>
+    <symbol id="color-mode" viewBox="0 0 118 94">
+      <title>Color Modes</title>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
+    </symbol>
+  </svg>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
@@ -120,7 +119,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="../www/search.html">
+      <form class="d-flex form-inline" action="search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -141,28 +140,27 @@
 
 <p>The ImageMagick <a href="command-line-processing.html">command-line</a> tools exit with a status of 0 if the command line arguments have a proper syntax and no problems are encountered.  Expect a descriptive message and an exit status of 1 if any exception occurs such as improper syntax, a problem reading or writing an image, or any other problem that prevents the command from completing successfully.</p>
 
-<p>Here is a short description for each command-line tool. Click on the program name to get details about the program usage and a list of command-line options that alters how the program behaves.  If you are just getting acquainted with ImageMagick, start with the <a href="command-line-tools.html#magick">magick</a> program.  Be sure to peruse Anthony Thyssen's tutorial on how to use ImageMagick utilities to <a href="../Usage">create, edit, compose, or convert</a> images from the command-line.</p>
+<p>Here is a short description for each command-line tool. Click on the program name to get details about the program usage and a list of command-line options that alters how the program behaves.  If you are just getting acquainted with ImageMagick, start with the <a href="#magick">magick</a> program.  Be sure to peruse Anthony Thyssen's tutorial on how to use ImageMagick utilities to <a href="../index.html">create, edit, compose, or convert</a> images from the command-line.</p>
 
 <dl class="row">
   <dt class="col-md-4"><a class="anchor" id="magick"></a><a href="magick.html">magick</a></dt><dd class="col-md-8">convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
-  <dt class="col-md-4"><a class="anchor" id="magick-script"></a><a href="../www/magick-script.html">magick-script</a></dt><dd class="col-md-8">use this scripting language interpreter to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
+  <dt class="col-md-4"><a class="anchor" id="magick-script"></a><a href="magick-script.html">magick-script</a></dt><dd class="col-md-8">use this scripting language interpreter to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
 </dl>
-<p>We also support sub-commands for compatibility with ImageMagick <a href="http://legacy.imagemagick.org">version 6</a>:</p>
+<p>We also support sub-commands for compatibility with ImageMagick <a href="../index.html">version 6</a>:</p>
 <dl class="row">
-  <dt class="col-md-4"><a href="../www/animate.html">magick animate</a></dt><dd class="col-md-8">animate an image sequence on any X server.</dd>
-  <dt class="col-md-4"><a class="anchor" id="compare"></a><a href="../www/compare.html">magick compare</a></dt><dd class="col-md-8">mathematically and visually annotate the difference between an image and its reconstruction.</dd>
-  <dt class="col-md-4"><a class="anchor" id="composite"></a><a href="../www/composite.html">magick composite</a></dt><dd class="col-md-8">overlap one image over another.</dd>
+  <dt class="col-md-4"><a href="animate.html">magick animate</a></dt><dd class="col-md-8">animate an image sequence on any X server.</dd>
+  <dt class="col-md-4"><a class="anchor" id="compare"></a><a href="compare.html">magick compare</a></dt><dd class="col-md-8">mathematically and visually annotate the difference between an image and its reconstruction.</dd>
+  <dt class="col-md-4"><a class="anchor" id="composite"></a><a href="composite.html">magick composite</a></dt><dd class="col-md-8">overlap one image over another.</dd>
   <dt class="col-md-4"><a class="anchor" id="conjure"></a><a href="conjure.html">magick conjure</a></dt><dd class="col-md-8">interpret and execute scripts written in the Magick Scripting Language (MSL).</dd>
-  <dt class="col-md-4"><a class="anchor" id="convert"></a><a href="../www/convert.html">magick convert</a></dt><dd class="col-md-8">convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.</dd>
   <dt class="col-md-4"><a class="anchor" id="display"></a><a href="display.html">magick display</a></dt><dd class="col-md-8">display an image or image sequence on any X server.</dd>
-  <dt class="col-md-4"><a class="anchor" id="identify"></a><a href="../www/identify.html">magick identify</a></dt><dd class="col-md-8">describe the format and characteristics of one or more image files.</dd>
+  <dt class="col-md-4"><a class="anchor" id="identify"></a><a href="identify.html">magick identify</a></dt><dd class="col-md-8">describe the format and characteristics of one or more image files.</dd>
   <dt class="col-md-4"><a class="anchor" id="import"></a><a href="import.html">magick import</a></dt><dd class="col-md-8">save any visible window on an X server and outputs it as an image file. You can capture a single window, the entire screen, or any rectangular portion of the screen.</dd>
   <dt class="col-md-4"><a class="anchor" id="mogrify"></a><a href="mogrify.html">magick mogrify</a></dt><dd class="col-md-8">resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  Mogrify overwrites the original image file, whereas, <a href="magick.html">magick</a> writes to a different image file.</dd>
   <dt class="col-md-4"><a class="anchor" id="montage"></a><a href="montage.html">magick montage</a></dt><dd class="col-md-8">create a composite image by combining several separate images.  The images are tiled on the composite image optionally adorned with a border, frame, image name, and more.</dd>
-  <dt class="col-md-4"><a class="anchor" id="stream"></a><a href="../www/stream.html">magick stream</a></dt><dd class="col-md-8">a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <samp>stream</samp> desirable when working with large images or when you require raw pixel components.</dd>
+  <dt class="col-md-4"><a class="anchor" id="stream"></a><a href="stream.html">magick stream</a></dt><dd class="col-md-8">a lightweight tool to stream one or more pixel components of the image or portion of the image to your choice of storage formats.  It writes the pixel components as they are read from the input image a row at a time making <samp>stream</samp> desirable when working with large images or when you require raw pixel components.</dd>
 </dl>
 <p>Your installation may have direct ImageMagick version 6 compatibility links.  If so, you can access the tools directly by referring to them by name.  For example,
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick identify -verbose myImage.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick identify -verbose myImage.png</samp></pre>
 
 </div>
   </div>
@@ -172,7 +170,7 @@
       <a href="security-policy.html">Security</a> •
       <a href="news.html">News</a>
      
-      <a href="command-line-tools.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+      <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
       <a href="links.html">Related</a> •
       <a href="sitemap.html">Sitemap</a>
@@ -194,4 +192,4 @@
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 19th April 2024 11:26 -->
+<!-- Magick Cache 15th September 2024 23:10 -->

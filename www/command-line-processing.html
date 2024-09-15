@@ -6,10 +6,10 @@
 <html lang="en" data-bs-theme="auto">
 <head>
   <script src="assets/color-modes.js" ></script>
-  <meta charset="utf-8"  />
-  <meta name="viewport" content="width=device-width, initial-scale=1"  />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Command-line Processing</title>
-  <meta name="keywords" content="command-line, processing, ImageMagick, image processing, command-line tool, format conversion, photo editing" />
+  <meta name="keywords" content="command-line, processing, image processing, image manipulation, image conversion, graphic design tool, image editing" />
   <meta name="description" content="Create, edit, compose, and convert digital images from the command-line." />
   <meta name="application-name" content="ImageMagick" />
   <meta name="application-url" content="https://imagemagick.org" />
@@ -26,10 +26,11 @@
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
-  <link href="../www/command-line-processing.html" rel="canonical" />
+  <link href="command-line-processing.html" rel="canonical" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
   <link href="assets/magick.css" rel="stylesheet" />
   <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+  <script async src="https://cse.google.com/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -66,14 +67,14 @@
         </button>
       </li>
       <li>
-        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="dark" aria-pressed="false">
           <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
           Dark
           <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
         </button>
       </li>
       <li>
-        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="true">
           <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
           Auto
           <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
@@ -81,17 +82,15 @@
       </li>
     </ul>
   </div>
-    
-<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-  <symbol id="arrow-right-circle" viewBox="0 0 16 16">
-    <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
-  </symbol>
-  <symbol id="bootstrap" viewBox="0 0 118 94">
-    <title>Bootstrap</title>
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
-  </symbol>
-</svg>
-
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+    <symbol id="arrow-right-circle" viewBox="0 0 16 16">
+      <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+    </symbol>
+    <symbol id="color-mode" viewBox="0 0 118 94">
+      <title>Color Modes</title>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
+    </symbol>
+  </svg>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="../index.html"><img class="d-block" id="icon" alt="ImageMagick" width="32" height="32" src="../images/wand.ico"/></a>
@@ -120,7 +119,7 @@
           <iframe src="https://github.com/sponsors/ImageMagick/button" title="Sponsor ImageMagick" height="35" width="107" style="border: 0;"></iframe>
         </li>
       </ul>
-      <form class="d-flex form-inline" action="../www/search.html">
+      <form class="d-flex form-inline" action="search.html">
         <input class="form-control me-2" type="text" name="q" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit" name="sa">Search</button>
       </form>
@@ -137,20 +136,20 @@
 
   <main class="container">
 <div>
-<p class="text-center"><a href="command-line-processing.html#anatomy">The Anatomy of the Command-line</a> • <a href="command-line-processing.html#input">Input Filename</a> • <a href="command-line-processing.html#option">Command-line Options</a> • <a href="command-line-processing.html#output">Output Filename</a></p>
+<p class="text-center"><a href="#anatomy">The Anatomy of the Command-line</a> • <a href="#input">Input Filename</a> • <a href="#option">Command-line Options</a> • <a href="#output">Output Filename</a></p>
 
 <p class="lead">The ImageMagick command-line <a href="command-line-tools.html">tools</a> can be as simple as this:</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick image.jpg image.png </samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick image.jpg image.png </samp></pre>
 
-<p>Or it can be complex with a plethora of <a href="command-line-processing.html#option">options</a>, as in the following:</p>
+<p>Or it can be complex with a plethora of <a href="#option">options</a>, as in the following:</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick label.gif -alpha Set \
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick label.gif -alpha Set \
   \( +clone  -shade 110x90 -normalize -negate +clone  -compose Plus -composite \) \
   \( -clone 0 -shade 110x50 -normalize -channel BG -fx 0 +channel -alpha Off \) \
   -delete 0 +swap  -compose Multiply -composite  button.gif</samp></pre>
 
-<p class="text-info">This example command is long enough that the command must be written across several lines, so we formatted it for clarity by inserting backslashes (<samp>\</samp>). The backslash is the Linux <var>line-continuation</var> character. In the Windows shell, use a carat character (<samp>^</samp>) for line-continuation. We use the Linux style on these web pages, as above. Sometimes, however, the lines are wrapped by your browser if the browser window is small enough, but the command-lines, shown in white, are still intended to be typed as one line. Line continuation characters need not be entered. The <var>parentheses</var> that are <var>escaped</var> above using the backslash are not escaped in Windows. There are some other differences between Windows and Linux (involving quotation marks, for instance), but we'll discuss some of those issues later, as they arise. </p>
+<p class="text-info">This example command is long enough that the command must be written across several lines, so we formatted it for clarity by inserting backslashes (<samp>\</samp>). The backslash is the Linux <var>line-continuation</var> character. In the Windows shell, use a caret character (<samp>^</samp>) for line-continuation. We use the Linux style on these web pages, as above. Sometimes, however, the lines are wrapped by your browser if the browser window is small enough, but the command-lines, shown in white, are still intended to be typed as one line. Line continuation characters need not be entered. The <var>parentheses</var> that are <var>escaped</var> above using the backslash are not escaped in Windows. There are some other differences between Windows and Linux (involving quotation marks, for instance), but we'll discuss some of those issues later, as they arise. </p>
 
 <p class="text-info"><b>For most command line examples on this site, if there is an equivalent translation to run on windows there will be a dropdown in the bottom right, letting you switch which operating system you are previewing the command for.</b></p>
 
@@ -172,7 +171,7 @@
 
 <p>Given the complexity of the rendering, you might be surprised it is accomplished by a single command-line:</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick -size 320x90 canvas:none -stroke snow4 -size 1x90 -tile gradient:white-snow4 \
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick -size 320x90 canvas:none -stroke snow4 -size 1x90 -tile gradient:white-snow4 \
   -draw 'roundrectangle 16, 5, 304, 85 20,40' +tile -fill snow \
   -draw 'roundrectangle 264, 5, 304, 85  20,40' -tile gradient:chartreuse-green \
   -draw 'roundrectangle 16,  5, 180, 85  20,40' -tile gradient:chartreuse1-chartreuse3 \
@@ -185,7 +184,7 @@
   -append -background white -gravity center -extent 320x200 cylinder_shaded.png</samp></pre>
 
 <p>Run this script contributed by <a href="https://github.com/geemack">Geemack</a>.   You'll get a glimpse of the power and versatility of the ImageMagick command-line:</p>
-<pre class="pre-scrollable p-3 mb-2 bg-light text-dark cli"><samp>magick -background none -size 960x960 xc:black \( xc:darkred -duplicate 1 +append \) \
+<pre class="pre-scrollable p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick -background none -size 960x960 xc:black \( xc:darkred -duplicate 1 +append \) \
   xc:gold \( xc:teal -duplicate 2 +append \) -modulate 100,100,"%[fx:rand()*200]" \
   xc:white -scale x1 +append -write mpr:clut +delete radial-gradient: mpr:clut \
   -clut -scale 100x4% -wave "%[fx:rand()*24+24]"x"%[fx:w/ceil(rand()*4+1)]" -extent "%[w]x%[w]" \
@@ -198,12 +197,12 @@
 <p>To ensure the script can run under Windows, change any backslash-parens (\() to just parens, the backslash (\) to <samp>^</samp>, and double-up the percent (%) signs.</p>
 <p>In the next sections we dissect the anatomy of the ImageMagick command-line.  Hopefully, after carefully reading and better understanding how the command-line works, you should be able to accomplish complex image-processing tasks without resorting to the sometimes daunting <a href="develop.html">program interfaces</a>.</p>
 
-<p>See <a href="../Usage">Examples of ImageMagick Usage</a> for additional help when using ImageMagick from the command-line.</p>
+<p>See <a href="../index.html">Examples of ImageMagick Usage</a> for additional help when using ImageMagick from the command-line.</p>
 
 <h2><a class="anchor" id="anatomy"></a>The Anatomy of the Command-line</h2>
 <p>The ImageMagick command-line consists of</p>
 
-<ol>
+<ul>
 <li>one or more required input filenames.</li>
 <li>zero, one, or more image settings.</li>
 <li>zero, one, or more image operators.</li>
@@ -211,14 +210,14 @@
 <li>zero, one, or more image stacks.</li>
 <li>zero or one output image filenames (required by
 <a href="magick.html">magick</a>,
-<a href="../www/convert.html">convert</a>,
-<a href="../www/composite.html">composite</a>,
+<a href="convert.html">convert</a>,
+<a href="composite.html">composite</a>,
 <a href="montage.html">montage</a>,
-<a href="../www/compare.html">compare</a>,
+<a href="compare.html">compare</a>,
 <a href="import.html">import</a>,
 <a href="conjure.html">conjure</a>).
 </li>
-</ol>
+</ul>
 
 <p>You can find a detailed explanation of each of the constituent parts of the command-line in the sections that follow.</p>
 
@@ -239,20 +238,20 @@
 
 <p>These extensions are explained in the next few paragraphs.</p>
 
-<p>Note, by default, if a command-line option is also a filename (e.g., <samp>-quality</samp>), it is intrepetted as a filename.  Use <samp>-define registry:option:pedantic=true</samp> to instead interpret it as an option. </p>
+<p>Note, by default, if a command-line option is also a filename (e.g., <samp>-quality</samp>), it is interpreted as a filename.  Use <samp>-define registry:option:pedantic=true</samp> to instead interpret it as an option. </p>
 
 <h4>Filename Globbing</h4>
 <p>In Linux shells, certain characters such as the asterisk (<samp>*</samp>) and question mark (<samp>?</samp>) automagically cause lists of filenames to be generated based on pattern matches. This feature is known as globbing.  ImageMagick supports filename globbing for systems, such as Windows, that does not natively support it.  For example, suppose you want to convert <samp>1.jpg</samp>, <samp>2.jpg</samp>, <samp>3.jpg</samp>, <samp>4.jpg</samp>, and <samp>5.jpg</samp> in your current directory to a GIF animation.  You can conveniently  refer to all of the JPEG files with this command:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick *.jpg images.gif</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick *.jpg images.gif</samp></pre>
 
 <h4>Explicit Image Format</h4>
 <p>Images are stored in a myriad of image formats including
 the better known JPEG, PNG, TIFF and others.  ImageMagick must know the format
 of the image before it can be read and processed.  Most formats have a
 signature within the image that uniquely identifies the format.  Failing
-that, ImageMagick leverages the filename extension to determine the format. 
+that, ImageMagick leverages the filename extension to determine the format.
 For example, <samp>image.jpg</samp> or <samp>image.JPG</samp> tells ImageMagick
 it is reading an image in the JPEG format. </p>
 
@@ -264,42 +263,42 @@ values.  ImageMagick has no way to automagically determine the image format
 so we explicitly set one:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick -size 640x480 -depth 8 rgb:image image.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick -size 640x480 -depth 8 rgb:image image.png</samp></pre>
 
 <h4>Built-in Images and Patterns</h4>
 
 <p>ImageMagick has a number of built-in <a href="formats.html#builtin-images">images</a> and <a href="formats.html#builtin-patterns">patterns</a>.  To utilize the checkerboard pattern, for example, use:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick -size 640x480 pattern:checkerboard checkerboard.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick -size 640x480 pattern:checkerboard checkerboard.png</samp></pre>
 
 <h4>STDIN, STDOUT, and file descriptors</h4>
 <p>Linux and Windows permit the output of one command to be piped to the input of another. ImageMagick permits image data to be read and written from the <a href="http://en.wikipedia.org/wiki/Standard_streams">standard streams</a> STDIN (<var>standard in</var>) and STDOUT (<var>standard out</var>), respectively, using a pseudo-filename of <samp>-</samp>.  In this example we pipe the output of
   <a href="magick.html">magick</a> to the <a href="display.html">display</a> program:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick logo: gif:- | magick display gif:-</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick logo: gif:- | magick display gif:-</samp></pre>
 
 <p>The second explicit format "<samp>gif:</samp>" is optional in the preceding example.  The GIF image format has a unique signature within the image so ImageMagick's <a href="display.html">display</a> command can readily recognize the format as GIF.  The <a href="magick.html">magick</a> program also accepts STDIN as input in this way:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick rose: gif:- | magick - -resize "200%" bigrose.jpg'</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick rose: gif:- | magick - -resize "200%" bigrose.jpg'</samp></pre>
 
 <p>Other pipes can be accessed via their <var>file descriptors</var> (as of version 6.4.9-3). The file descriptors 0, 1, and 2 are reserved for the standard streams STDIN, STDOUT, and STDERR, respectively, but a pipe associated with a file descriptor number <var>N</var>&gt;2 can be accessed using the pseudonym <samp>fd:</samp><var>N</var>. (The pseudonyms <samp>fd:0</samp> and <samp>fd:1</samp> can be used for STDIN and STDOUT.) The next example shows how to append image data piped from files with  descriptors 3 and 4 and direct the result to the file with descriptor number 5.
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick fd:3 fd:4 -append fd:5</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick fd:3 fd:4 -append fd:5</samp></pre>
 
 <p>When needed, explicit image formats can be given as mentioned earlier, as in the following.
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick gif:fd:3 jpg:fd:4 -append tif:fd:5</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick gif:fd:3 jpg:fd:4 -append tif:fd:5</samp></pre>
 
 <h4>Selecting Frames</h4>
 <p>Some images formats contain more than one image frame.  Perhaps you only want the first image, or the last, or some number of images in-between.  You can specify which image frames to read by appending the image filename with the frame range enclosed in brackets.  Here our image (an animated GIF) contains more than one frame but we only want the first:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick 'images.gif[0]' image.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick 'images.gif[0]' image.png</samp></pre>
 
 <p class="text-info">Linux shells generally interpret brackets so we enclosed the filename in quotes above.
 In a Windows command shell the brackets are not interpreted but using quotes doesn't hurt. However, in most cases the roles of single-quotes and double-quotes are reversed with respect to Linux and Windows, so Windows users should usually try double-quotes where we display single-quotes, and vice versa.
@@ -308,53 +307,53 @@ In a Windows command shell the brackets are not interpreted but using quotes doe
 <p>You can read more than one image from a sequence with a frame range.  For example, you can extract the first four frames of an image sequence:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick 'images.gif[0-3]' images.mng</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick 'images.gif[0-3]' images.mng</samp></pre>
 
 <p>The default is to step one frame at a time so frames 0, 1, 2, and 3 are returned.  Set the step to 2 with <samp>-define frames:step=2</samp> and we instead get frames 0 and 2.</p>
 
 <p>Finally, you can read more than one image from a sequence, out-of-order. The next command gets the fourth image in the sequence, followed by the third, and then the fifth:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick 'images.gif[3,2,4]' images.mng</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick 'images.gif[3,2,4]' images.mng</samp></pre>
 
-<p>Notice that in the last two commands, a single image is written. The output in this case, where the image type is MNG, is a multi-frame file because the MNG format supports multiple frames. Had the output format been JPG, which only supports single frames, the output would have consisted of separate frames. More about that below, in the section about the <a href="command-line-processing.html#output">Output Filename</a>.
+<p>Notice that in the last two commands, a single image is written. The output in this case, where the image type is MNG, is a multi-frame file because the MNG format supports multiple frames. Had the output format been JPG, which only supports single frames, the output would have consisted of separate frames. More about that below, in the section about the <a href="#output">Output Filename</a>.
 </p>
 
 <h4>Selecting an Image Region</h4>
 <p>Raw images are a sequence of color intensities without additional meta information such as width, height, or image signature.  With raw image formats, you must specify the image width and height but you can also specify a region of the image to read.  In our example, the image is in the raw 8-bit RGB format and is 6000 pixels wide and 4000 pixels high.  However, we only want a region of 600 by 400 near the center of the image:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick -size 6000x4000 -depth 8 'rgb:image[600x400+1900+2900]' image.jpg</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick -size 6000x4000 -depth 8 'rgb:image[600x400+1900+2900]' image.jpg</samp></pre>
 
 <p>
   You can get the same results with the <a class="text-nowrap" href="command-line-options.html#extract">-extract</a> option:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick -size 6000x4000 -depth 8 -extract 600x400+1900+2900 rgb:image image.jpg</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick -size 6000x4000 -depth 8 -extract 600x400+1900+2900 rgb:image image.jpg</samp></pre>
 
 <h4>Inline Image Resize</h4>
-<p>It is sometimes convenient to resize an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbails:
+<p>It is sometimes convenient to resize an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbnails:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick '*.jpg' -resize 120x120 thumbnail%03d.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick '*.jpg' -resize 120x120 thumbnail%03d.png</samp></pre>
 
 <p>Here <var>all</var> the images are read and subsequently
 resized.  It is faster and less resource intensive to resize each image as it
 is read:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick '*.jpg[120x120]' thumbnail%03d.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick '*.jpg[120x120]' thumbnail%03d.png</samp></pre>
 
 <h4>Inline Image Crop</h4>
-<p>It is sometimes convenient to crop an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbails:
+<p>It is sometimes convenient to crop an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbnails:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick '*.jpg' -crop 120x120+10+5 thumbnail%03d.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick '*.jpg' -crop 120x120+10+5 thumbnail%03d.png</samp></pre>
 
 <p>Here <var>all</var> the images are read and subsequently cropped.  It is faster and less resource-intensive to crop each image as it is read:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick '*.jpg[120x120+10+5]' thumbnail%03d.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick '*.jpg[120x120+10+5]' thumbnail%03d.png</samp></pre>
 
 
 <h4>Filename References</h4>
@@ -363,17 +362,17 @@ is read:
 The first is with '<samp>@</samp>' which reads image filenames separated by white space from the specified file.  Assume the file <samp>myimages.txt</samp> consists of a list of filenames, like so:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark">frame001.jpg
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary">frame001.jpg
 frame002.jpg
 frame003.jpg</pre>
 
 <p>We then expect this command:</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick @myimages.txt mymovie.gif</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick @myimages.txt mymovie.gif</samp></pre>
 
 <p>to read the images <samp>frame001.jpg</samp>, <samp>frame002.jpg</samp>, and <samp>frame003.jpg</samp> and convert them to a GIF image sequence.  </p>
 <p>If the image path includes one or more spaces, enclose the path in quotes:</p>
-<pre class="p-3 mb-2 bg-light text-dark">'my title.jpg'</pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary">'my title.jpg'</pre>
 
 
     <p>Some ImageMagick command-line <a href="command-line-options.html">options</a> may exceed the capabilities of
@@ -387,12 +386,12 @@ the <samp>@</samp> (e.g. <samp>@mypoly.txt</samp>).</p>
 embedding a formatting character in the filename with a scene range.  Consider
 the filename <samp>image-%d.jpg[1-5]</samp>. The command</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick image-%d.jpg[1-5]</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick image-%d.jpg[1-5]</samp></pre>
 
 <p>causes ImageMagick to attempt to read images with these filenames:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark">image-1.jpg
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary">image-1.jpg
 image-2.jpg
 image-3.jpg
 image-4.jpg
@@ -401,19 +400,19 @@ image-5.jpg</pre>
 <h4>Stream Buffering</h4>
 <p>By default, the input stream is buffered.  To ensure information on the source file or terminal is read as soon as its available, set the buffer size to 0:</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick logo: gif:- | magick display -define stream:buffer-size=0 gif:-</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick logo: gif:- | magick display -define stream:buffer-size=0 gif:-</samp></pre>
 
 <h2><a class="anchor" id="option"></a>Command-line Options</h2>
 
 <p>You can direct the behavior of ImageMagick utilities with these command-line <a href="command-line-options.html">options</a>.  The behavior of an option falls into one of these categories:</p>
 
 <ul>
-<li><a href="command-line-processing.html#setting">Image Setting</a></li>
-<li><a href="command-line-processing.html#operator">Image Operator</a></li>
-<li><a href="command-line-processing.html#channel">Image Channel Operator</a></li>
-<li><a href="command-line-processing.html#sequence">Image Sequence Operator</a></li>
-<li><a href="command-line-processing.html#geometry">Image Geometry</a></li>
-<li><a href="command-line-processing.html#stack">Image Stack</a></li>
+<li><a href="#setting">Image Setting</a></li>
+<li><a href="#operator">Image Operator</a></li>
+<li><a href="#channel">Image Channel Operator</a></li>
+<li><a href="#sequence">Image Sequence Operator</a></li>
+<li><a href="#geometry">Image Geometry</a></li>
+<li><a href="#stack">Image Stack</a></li>
 </ul>
 
 <h4><a class="anchor" id="setting"></a>Image Setting</h4>
@@ -429,15 +428,15 @@ is reset or the command-line terminates.  The image settings include:</p>
 <p>In this example, <var>-channel</var> applies to each of the images, since, as we mentioned, settings persist:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick -channel RGB wand.png wizard.png images.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick -channel RGB wand.png wizard.png images.png</samp></pre>
 
 <h4><a class="anchor" id="operator"></a>Image Operator</h4>
 
 <p>An image operator differs from a setting in that it affects the image
 immediately as it appears on the command-line.  An operator is
 any command-line <a href="command-line-options.html">option</a> not listed as a
-<a href="command-line-processing.html#setting">image setting</a> or
-<a href="command-line-processing.html#sequence">image sequence operator</a>.  Unlike an
+<a href="#setting">image setting</a> or
+<a href="#sequence">image sequence operator</a>.  Unlike an
 image setting, which persists until the command-line terminates,
 an operator is applied to the current image set and forgotten.  The image operators include:</p>
 
@@ -446,7 +445,7 @@ an operator is applied to the current image set and forgotten.  The image operat
 
 <p>In this example, <var>-negate</var> negates the wand image but not the wizard:</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick wand.png -negate wizard.png images.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick wand.png -negate wizard.png images.png</samp></pre>
 
 <p>Note that an image operator will be applied to each images in an image
 sequence. For example, if you use <a class="text-nowrap" href="command-line-options.html#resize">-resize</a> option to resize a
@@ -470,7 +469,7 @@ these image sequence operators:</p>
 <a class="text-nowrap" href="command-line-options.html#append">-append</a> &#8226;<a class="text-nowrap" href="command-line-options.html#affinity">-affinity</a> &#8226;<a class="text-nowrap" href="command-line-options.html#average">-average</a> &#8226;<a class="text-nowrap" href="command-line-options.html#clut">-clut</a> &#8226;<a class="text-nowrap" href="command-line-options.html#coalesce">-coalesce</a> &#8226;<a class="text-nowrap" href="command-line-options.html#combine">-combine</a> &#8226;<a class="text-nowrap" href="command-line-options.html#compare">-compare</a> &#8226;<a class="text-nowrap" href="command-line-options.html#complex">-complex</a> &#8226;<a class="text-nowrap" href="command-line-options.html#composite">-composite</a> &#8226;<a class="text-nowrap" href="command-line-options.html#copy">-copy</a> &#8226;<a class="text-nowrap" href="command-line-options.html#crop">-crop</a> &#8226;<a class="text-nowrap" href="command-line-options.html#debug">-debug</a> &#8226;<a class="text-nowrap" href="command-line-options.html#deconstruct">-deconstruct</a> &#8226;<a class="text-nowrap" href="command-line-options.html#delete">-delete</a> &#8226;<a class="text-nowrap" href="command-line-options.html#evaluate-sequence">-evaluate-sequence</a> &#8226;<a class="text-nowrap" href="command-line-options.html#fft">-fft</a> &#8226;<a class="text-nowrap" href="command-line-options.html#flatten">-flatten</a> &#8226;<a class="text-nowrap" href="command-line-options.html#fx">-fx</a> &#8226;<a class="text-nowrap" href="command-line-options.html#hald-clut">-hald-clut</a> &#8226;<a class="text-nowrap" href="command-line-options.html#ift">-ift</a> &#8226;<a class="text-nowrap" href="command-line-options.html#identify">-identify</a> &#8226;<a class="text-nowrap" href="command-line-options.html#insert">-insert</a> &#8226;<a class="text-nowrap" href="command-line-options.html#layers">-layers</a> &#8226;<a class="text-nowrap" href="command-line-options.html#limit">-limit</a> &#8226;<a class="text-nowrap" href="command-line-options.html#map">-map</a> &#8226;<a class="text-nowrap" href="command-line-options.html#maximum">-maximum</a> &#8226;<a class="text-nowrap" href="command-line-options.html#minimum">-minimum</a> &#8226;<a class="text-nowrap" href="command-line-options.html#morph">-morph</a> &#8226;<a class="text-nowrap" href="command-line-options.html#mosaic">-mosaic</a> &#8226;<a class="text-nowrap" href="command-line-options.html#optimize">-optimize</a> &#8226;<a class="text-nowrap" href="command-line-options.html#print">-print</a> &#8226;<a class="text-nowrap" href="command-line-options.html#process">-process</a> &#8226;<a class="text-nowrap" href="command-line-options.html#quiet">-quiet</a> &#8226;<a class="text-nowrap" href="command-line-options.html#read">-read</a> &#8226;<a class="text-nowrap" href="command-line-options.html#swap">-swap</a> &#8226;<a class="text-nowrap" href="command-line-options.html#write">-write</a> </ul>
 <p>In this example, <var>-append</var> appends three images into one:</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick mikayla.png picnic.png beach.png -append vacation.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick mikayla.png picnic.png beach.png -append vacation.png</samp></pre>
 
 <h4><a class="anchor" id="geometry"></a>Image Geometry</h4>
 
@@ -572,7 +571,7 @@ setting for more specifics.</p>
 This fine image</a> is 640 pixels wide and 480 pixels high. We say its <var>dimensions</var> are 640x480. When we give dimensions of an image, the width (the horizontal dimension) always precedes the height (the vertical dimension). This will be true when we speak of coordinates or <var>offsets</var> into an image, which will always be <var>x</var>–value followed by <var>y</var>. Just think of your high school algebra classes and the <var>xy</var>–plane. (Well, almost: our <var>y</var>–axis will always go downward!)
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick logo: -resize '200%' bigWiz.png
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick logo: -resize '200%' bigWiz.png
 magick logo: -resize '200x50%' longShortWiz.png
 magick logo: -resize '100x200' notThinWiz.png
 magick logo: -resize '100x200^' biggerNotThinWiz.png
@@ -592,7 +591,7 @@ magick logo: -resize '100x200!' dochThinWiz.png</samp></pre>
 Here are a few more examples:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick logo: -resize '100' wiz1.png
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick logo: -resize '100' wiz1.png
 magick logo: -resize 'x200' wiz2.png
 magick logo: -resize '100x200&gt;' wiz3.png
 magick logo: -resize '100x200&lt;' wiz4.png</samp></pre>
@@ -604,9 +603,9 @@ magick logo: -resize '100x200&lt;' wiz4.png</samp></pre>
 
 <p>Finally, use <samp>@</samp> to specify the maximum area in pixels of an image, again while attempting to preserve aspect ratio. (Pixels take only integer values, so some approximation is always at work.) In the following example, an area of 10000 pixels is requested. The resulting file has dimensions 115x86, which has 9890 pixels. </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick logo: -resize '10000@' wiz10000.png</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick logo: -resize '10000@' wiz10000.png</samp></pre>
 
-<p class="text-info">In all the examples above and below, we have enclosed the <var>geometry</var> arguments  within quotation marks. Doing so is optional in many cases, but not always. We <var>must</var> enclose the geometry specifications in quotation marks when using <samp>&lt;</samp> or <samp>&gt;</samp> to prevent these characters from being interpreted by the shell as <var>file redirection</var>. On Windows systems, the carat <samp>^</samp>  needs to be within quotes, else it is ignored. To be safe, one should probably maintain a habit of enclosing all <var>geometry</var> arguments in quotes, as we have here.
+<p class="text-info">In all the examples above and below, we have enclosed the <var>geometry</var> arguments  within quotation marks. Doing so is optional in many cases, but not always. We <var>must</var> enclose the geometry specifications in quotation marks when using <samp>&lt;</samp> or <samp>&gt;</samp> to prevent these characters from being interpreted by the shell as <var>file redirection</var>. On Windows systems, the caret <samp>^</samp>  needs to be within quotes, else it is ignored. To be safe, one should probably maintain a habit of enclosing all <var>geometry</var> arguments in quotes, as we have here.
 </p>
 
 <h4>Offsets in geometry</h4>
@@ -615,7 +614,7 @@ Here are some examples to illustrate the use of <var>offsets</var> in <var>geome
 <a class="text-nowrap" href="command-line-options.html#region">-region</a> option. This option allows many other options to modify the pixels within a specified rectangular subregion of an image. As such, it needs to be given the width and height of that region, and also an <var>offset</var> into the image, which is a pair of coordinates that indicate the location of the region within the larger image. Below, in the first example, we specify a region of size <samp>100x200</samp> to be located at the <var>xy</var>–coordinates <var>x</var>=10, <var>y</var>=20. Let's use the usual algebraic notation (<var>x</var>,<var>y</var>)=(10,20), for convenience.
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick logo: -region '100x200+10+20' -negate wizNeg1.png
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick logo: -region '100x200+10+20' -negate wizNeg1.png
 magick logo: -region '100x200-10+20' -negate wizNeg2.png
 magick logo: -gravity center -region '100x200-10+20' -negate wizNeg3.png</samp></pre>
 
@@ -631,7 +630,7 @@ magick logo: -gravity center -region '100x200-10+20' -negate wizNeg3.png</samp><
 
 <p>In school, your teacher probably permitted you to work on problems on a scrap of paper and then copy the results to your test paper.  An image stack is similar.  It permits you to work on an image or image sequence in isolation and subsequently introduce the results back into the command-line.  The image stack is delineated with parenthesis.  Image operators only affect images in the current stack.  For example, we can limit the image rotation to just the wizard image like this:</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick wand.gif \( wizard.gif -rotate 30 \) +append images.gif</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick wand.gif \( wizard.gif -rotate 30 \) +append images.gif</samp></pre>
 
 
 <p class="text-info">Notice again that the  parentheses are <var>escaped</var> by preceding them with
@@ -667,14 +666,14 @@ above.</p>
   <p>Images can be stored in a myriad of image formats including the better known JPEG, PNG, TIFF and others.  ImageMagick must know the desired format of the image before it is written.  ImageMagick leverages the filename extension to determine the format.  For example, <samp>image.jpg</samp> tells ImageMagick to write the image in the JPEG format.  In some cases the filename does not identify the image format.  In these cases, the image is written in the format it was originally read unless an explicit image format is specified.  For example, suppose we want to write our image to a filename of <samp>image</samp> in the raw red, green, and blue intensity format:
   </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick image.jpg rgb:image</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick image.jpg rgb:image</samp></pre>
 
 
 <h4>Standard Out</h4>
   <p>Linux permits the output of one command to be piped to another.  ImageMagick permits piping one command to another with a filename of <samp>-</samp>.  In this example we pipe the output of <a href="magick.html">magick</a> to the <a href="display.html">display</a> program:
   </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick logo: gif:- | magick display gif:-</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick logo: gif:- | magick display gif:-</samp></pre>
 
 <p>Here the explicit format is optional.  The GIF image format has a signature that uniquely identifies it so ImageMagick can readily recognize the format as GIF.</p>
 
@@ -682,23 +681,23 @@ above.</p>
 <p>Optionally, use an embedded formatting character to write a sequential image list.  Suppose our output filename is <samp>image-%d.jpg</samp> and our image list includes 3 images.  You can expect these images files to be written:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark">image-0.jpg
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary">image-0.jpg
 image-1.jpg
 image-2.jpg</pre>
 
 <p>Or retrieve image properties to modify the image filename.  For example, the command
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick rose: -set filename:area '%wx%h' 'rose-%[filename:area].png'</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick rose: -set filename:area '%wx%h' 'rose-%[filename:area].png'</samp></pre>
 
 <p>writes an image with this filename:
 </p>
 
-<pre class="p-3 mb-2 bg-light text-dark">rose-70x46.png</pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary">rose-70x46.png</pre>
 
 <p>Finally to convert multiple JPEG images to individual PDF pages, use:</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick *.jpg +adjoin page-%d.pdf</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick *.jpg +adjoin page-%d.pdf</samp></pre>
 
 <p>Use <samp>-define filename:literal=true</samp> to bypass interpreting embedded formatting characters and instead use the filename literally.</p>
 
@@ -706,7 +705,7 @@ image-2.jpg</pre>
 
 <p>By default, the output stream is buffered.  To ensure information appears on the destination file or terminal as soon as written, set the buffer size to 0:</p>
 
-<pre class="p-3 mb-2 bg-light text-dark cli"><samp>magick -define stream:buffer-size=0 logo: gif:- | magick display gif:-</samp></pre>
+<pre class="p-3 mb-2 text-body-secondary bg-body-tertiary cli"><samp>magick -define stream:buffer-size=0 logo: gif:- | magick display gif:-</samp></pre>
 </div>
   </div>
   </main><!-- /.container -->
@@ -715,7 +714,7 @@ image-2.jpg</pre>
       <a href="security-policy.html">Security</a> •
       <a href="news.html">News</a>
      
-      <a href="command-line-processing.html#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
+      <a href="#"><img class="d-inline" id="wand" alt="And Now a Touch of Magick" width="16" height="16" src="../images/wand.ico"/></a>
      
       <a href="links.html">Related</a> •
       <a href="sitemap.html">Sitemap</a>
@@ -737,4 +736,3 @@ image-2.jpg</pre>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 19th April 2024 10:31 -->
