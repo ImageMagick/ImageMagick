@@ -3816,7 +3816,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               flags;
 
             sampling_factor=(const char *) NULL;
-            value=GetImageProperty(image,"jpeg:sampling-factor",exception);
+            value=GetImageOption(image_info,"jpeg:sampling-factor");
+            if (value == (char *) NULL)
+              value=GetImageProperty(image,"jpeg:sampling-factor",exception);
             if (value != (char *) NULL)
               {
                 sampling_factor=value;
@@ -3831,8 +3833,12 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 flags=ParseGeometry(sampling_factor,&geometry_info);
                 if ((flags & SigmaValue) == 0)
                   geometry_info.sigma=geometry_info.rho;
-                (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,(uint16)
-                  geometry_info.rho,(uint16) geometry_info.sigma);
+                /*
+                  To do: write pixel data in YCBCR subsampled format.
+
+                  (void) TIFFSetField(tiff,TIFFTAG_YCBCRSUBSAMPLING,(uint16)
+                    geometry_info.rho,(uint16) geometry_info.sigma);
+                */
               }
             }
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
