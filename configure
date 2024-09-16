@@ -5198,7 +5198,7 @@ MAGICK_PATCHLEVEL_VERSION=39
 
 MAGICK_VERSION=7.1.1-39
 
-MAGICK_GIT_REVISION=14bccf9d5:20240915
+MAGICK_GIT_REVISION=ca932f517:20240916
 
 
 # Substitute library versioning
@@ -5232,7 +5232,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,39
 
-PACKAGE_RELEASE_DATE=2024-09-15
+PACKAGE_RELEASE_DATE=2024-09-16
 
 
 # Ensure that make can run correctly
@@ -37044,7 +37044,7 @@ dejavu_font_dir=''
 if test "${with_dejavu_font_dir}" != 'default'; then
   dejavu_font_dir="${with_dejavu_font_dir}/"
 else
-  for font_dir in "${prefix}/share/dejavu/fonts/" '/usr/share/fonts/dejavu/'; do
+  for font_dir in "${prefix}/share/fonts/dejavu" "${prefix}/share/dejavu-serif-fonts/fonts/" '/usr/share/fonts/dejavu-serif-fonts/' '/usr/share/fonts/truetype/dejavu/'; do
     if test -f "${font_dir}DejaVuSerif.ttf"; then
       dejavu_font_dir="${font_dir}"
       break 1
