@@ -13,46 +13,369 @@
   ImageMagick DejaVU font configuration.
 -->
 <typemap>
-  <type name="DejaVu-LGC-Sans-Bold" fullname="DejaVu LGC Sans Bold" family="DejaVuGC Sans" style="Normal" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSans-Bold.ttf"/>
-  <type name="DejaVu-LGC-Sans-Bold-Oblique" fullname="DejaVu LGC Sans Bold Oblique" family="DejaVuGC Sans" style="Oblique" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSans-BoldOblique.ttf"/>
-  <type name="DejaVu-LGC-Sans-Book" fullname="DejaVu LGC Sans Book" family="DejaVuGC Sans" style="Normal" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuLGCSans.ttf"/>
-  <type name="DejaVu-LGC-Sans-Condensed" fullname="DejaVu LGC Sans Condensed" family="DejaVuGC Sans" style="Normal" stretch="SemiCondensed" weight="400" glyphs="@dejavu_font_dir@DejaVuLGCSansCondensed.ttf"/>
-  <type name="DejaVu-LGC-Sans-Condensed-Bold" fullname="DejaVu LGC Sans Condensed Bold" family="DejaVuGC Sans" style="Normal" stretch="SemiCondensed" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSansCondensed-Bold.ttf"/>
-  <type name="DejaVu-LGC-Sans-Condensed-Bold-Oblique" fullname="DejaVu LGC Sans Condensed Bold Oblique" family="DejaVuGC Sans" style="Oblique" stretch="SemiCondensed" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSansCondensed-BoldOblique.ttf"/>
-  <type name="DejaVu-LGC-Sans-Condensed-Oblique" fullname="DejaVu LGC Sans Condensed Oblique" family="DejaVuGC Sans" style="Oblique" stretch="SemiCondensed" weight="400" glyphs="@dejavu_font_dir@DejaVuLGCSansCondensed-Oblique.ttf"/>
-  <type name="DejaVu-LGC-Sans-ExtraLight" fullname="DejaVu LGC Sans ExtraLight" family="DejaVuGC Sans" style="Normal" stretch="Normal" weight="200" glyphs="@dejavu_font_dir@DejaVuLGCSans-ExtraLight.ttf"/>
-  <type name="DejaVu-LGC-Sans-Mono-Bold" fullname="DejaVu LGC Sans Mono Bold" family="DejaVuGC Sans Mono" style="Normal" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSansMono-Bold.ttf"/>
-  <type name="DejaVu-LGC-Sans-Mono-Bold-Oblique" fullname="DejaVu LGC Sans Mono Bold Oblique" family="DejaVuGC Sans Mono" style="Oblique" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSansMono-BoldOblique.ttf"/>
-  <type name="DejaVu-LGC-Sans-Mono-Book" fullname="DejaVu LGC Sans Mono Book" family="DejaVuGC Sans Mono" style="Normal" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuLGCSansMono.ttf"/>
-  <type name="DejaVu-LGC-Sans-Mono-Oblique" fullname="DejaVu LGC Sans Mono Oblique" family="DejaVuGC Sans Mono" style="Oblique" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuLGCSansMono-Oblique.ttf"/>
-  <type name="DejaVu-LGC-Sans-Oblique" fullname="DejaVu LGC Sans Oblique" family="DejaVuGC Sans" style="Oblique" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuLGCSans-Oblique.ttf"/>
-  <type name="DejaVu-LGC-Serif-Bold" fullname="DejaVu LGC Serif Bold" family="DejaVuGC Serif" style="Normal" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSerif-Bold.ttf"/>
-  <type name="DejaVu-LGC-Serif-Bold-Italic" fullname="DejaVu LGC Serif Bold Italic" family="DejaVuGC Serif" style="Italic" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSerif-BoldItalic.ttf"/>
-  <type name="DejaVu-LGC-Serif-Book" fullname="DejaVu LGC Serif Book" family="DejaVuGC Serif" style="Normal" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuLGCSerif.ttf"/>
-  <type name="DejaVu-LGC-Serif-Condensed" fullname="DejaVu LGC Serif Condensed" family="DejaVuGC Serif" style="Normal" stretch="SemiCondensed" weight="400" glyphs="@dejavu_font_dir@DejaVuLGCSerifCondensed.ttf"/>
-  <type name="DejaVu-LGC-Serif-Condensed-Bold" fullname="DejaVu LGC Serif Condensed Bold" family="DejaVuGC Serif" style="Normal" stretch="SemiCondensed" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSerifCondensed-Bold.ttf"/>
-  <type name="DejaVu-LGC-Serif-Condensed-Bold-Italic" fullname="DejaVu LGC Serif Condensed Bold Italic" family="DejaVuGC Serif" style="Italic" stretch="SemiCondensed" weight="700" glyphs="@dejavu_font_dir@DejaVuLGCSerifCondensed-BoldItalic.ttf"/>
-  <type name="DejaVu-LGC-Serif-Condensed-Italic" fullname="DejaVu LGC Serif -Condensed Italic" family="DejaVuGC Serif" style="Italic" stretch="SemiCondensed" weight="400" glyphs="@dejavu_font_dir@DejaVuLGCSerifCondensed-Italic.ttf"/>
-  <type name="DejaVu-LGC-Serif-Italic" fullname="DejaVu LGC Serif Italic" family="DejaVuGC Serif" style="Italic" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuLGCSerif-Italic.ttf"/>
-  <type name="DejaVu-Sans-Bold" fullname="DejaVu Sans Bold" family="DejaVu Sans" style="Normal" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuSans-Bold.ttf"/>
-  <type name="DejaVu-Sans-Bold-Oblique" fullname="DejaVu Sans Bold Oblique" family="DejaVu Sans" style="Oblique" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuSans-BoldOblique.ttf"/>
-  <type name="DejaVu-Sans-Book" fullname="DejaVu Sans Book" family="DejaVu Sans" style="Normal" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuSans.ttf"/>
-  <type name="DejaVu-Sans-Condensed" fullname="DejaVu Sans Condensed" family="DejaVu Sans" style="Normal" stretch="SemiCondensed" weight="400" glyphs="@dejavu_font_dir@DejaVuSansCondensed.ttf"/>
-  <type name="DejaVu-Sans-Condensed-Bold" fullname="DejaVu Sans Condensed Bold" family="DejaVu Sans" style="Normal" stretch="SemiCondensed" weight="700" glyphs="@dejavu_font_dir@DejaVuSansCondensed-Bold.ttf"/>
-  <type name="DejaVu-Sans-Condensed-Bold-Oblique" fullname="DejaVu Sans Condensed Bold Oblique" family="DejaVu Sans" style="Oblique" stretch="SemiCondensed" weight="700" glyphs="@dejavu_font_dir@DejaVuSansCondensed-BoldOblique.ttf"/>
-  <type name="DejaVu-Sans-Condensed-Oblique" fullname="DejaVu Sans Condensed Oblique" family="DejaVu Sans" style="Oblique" stretch="SemiCondensed" weight="400" glyphs="@dejavu_font_dir@DejaVuSansCondensed-Oblique.ttf"/>
-  <type name="DejaVu-Sans-ExtraLight" fullname="DejaVu Sans ExtraLight" family="DejaVu Sans" style="Normal" stretch="Normal" weight="200" glyphs="@dejavu_font_dir@DejaVuSans-ExtraLight.ttf"/>
-  <type name="DejaVu-Sans-Mono-Bold" fullname="DejaVu Sans Mono Bold" family="DejaVu Sans Mono" style="Normal" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuSansMono-Bold.ttf"/>
-  <type name="DejaVu-Sans-Mono-Bold-Oblique" fullname="DejaVu Sans Mono Bold Oblique" family="DejaVu Sans Mono" style="Oblique" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuSansMono-BoldOblique.ttf"/>
-  <type name="DejaVu-Sans-Mono-Book" fullname="DejaVu Sans Mono Book" family="DejaVu Sans Mono" style="Normal" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuSansMono.ttf"/>
-  <type name="DejaVu-Sans-Mono-Oblique" fullname="DejaVu Sans Mono Oblique" family="DejaVu Sans Mono" style="Oblique" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuSansMono-Oblique.ttf"/>
-  <type name="DejaVu-Sans-Oblique" fullname="DejaVu Sans Oblique" family="DejaVu Sans" style="Oblique" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuSans-Oblique.ttf"/>
-  <type name="DejaVu-Serif-Bold" fullname="DejaVu Serif Bold" family="DejaVu Serif" style="Normal" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuSerif-Bold.ttf"/>
-  <type name="DejaVu-Serif-Bold-Italic" fullname="DejaVu Serif Bold Italic" family="DejaVu Serif" style="Italic" stretch="Normal" weight="700" glyphs="@dejavu_font_dir@DejaVuSerif-BoldItalic.ttf"/>
-  <type name="DejaVu-Serif-Book" fullname="DejaVu Serif Book" family="DejaVu Serif" style="Normal" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuSerif.ttf"/>
-  <type name="DejaVu-Serif-Condensed" fullname="DejaVu Serif Condensed" family="DejaVu Serif" style="Normal" stretch="SemiCondensed" weight="400" glyphs="@dejavu_font_dir@DejaVuSerifCondensed.ttf"/>
-  <type name="DejaVu-Serif-Condensed-Bold" fullname="DejaVu Serif Condensed Bold" family="DejaVu Serif" style="Normal" stretch="SemiCondensed" weight="700" glyphs="@dejavu_font_dir@DejaVuSerifCondensed-Bold.ttf"/>
-  <type name="DejaVu-Serif-Condensed-Bold-Italic" fullname="DejaVu Serif Condensed Bold Italic" family="DejaVu Serif" style="Italic" stretch="SemiCondensed" weight="700" glyphs="@dejavu_font_dir@DejaVuSerifCondensed-BoldItalic.ttf"/>
-  <type name="DejaVu-Serif-Condensed-Italic" fullname="DejaVu Serif Condensed Italic" family="DejaVu Serif" style="Italic" stretch="SemiCondensed" weight="400" glyphs="@dejavu_font_dir@DejaVuSerifCondensed-Italic.ttf"/>
-  <type name="DejaVu-Serif-Italic" fullname="DejaVu Serif Italic" family="DejaVu Serif" style="Italic" stretch="Normal" weight="400" glyphs="@dejavu_font_dir@DejaVuSerif-Italic.ttf"/>
+  <type
+    name="AvantGarde-Book"
+    fullname="AvantGarde Book"
+    family="AvantGarde"
+    foundry="URW"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@URWGothic-Book.otf"
+    />
+  <type
+    name="AvantGarde-BookOblique"
+    fullname="AvantGarde Book Oblique"
+    family="AvantGarde"
+    foundry="URW"
+    weight="400"
+    style="oblique"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@URWGothic-BookOblique.otf"
+    />
+  <type
+    name="AvantGarde-Demi"
+    fullname="AvantGarde DemiBold"
+    family="AvantGarde"
+    foundry="URW"
+    weight="600"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@URWGothic-Demi.otf"
+    />
+  <type
+    name="AvantGarde-DemiOblique"
+    fullname="AvantGarde DemiOblique"
+    family="AvantGarde"
+    foundry="URW"
+    weight="600"
+    style="oblique"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@URWGothic-DemiOblique.otf"
+    />
+  <type
+    name="Bookman-Demi"
+    fullname="Bookman DemiBold"
+    family="Bookman"
+    foundry="URW"
+    weight="600"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@URWBookman-Demi.otf"
+    />
+  <type
+    name="Bookman-DemiItalic"
+    fullname="Bookman DemiBold Italic"
+    family="Bookman"
+    foundry="URW"
+    weight="600"
+    style="italic"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@URWBookman-DemiItalic.otf"
+    />
+  <type
+    name="Bookman-Light"
+    fullname="Bookman Light"
+    family="Bookman"
+    foundry="URW"
+    weight="300"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@URWBookman-Light.otf"
+    />
+  <type
+    name="Bookman-LightItalic"
+    fullname="Bookman Light Italic"
+    family="Bookman"
+    foundry="URW"
+    weight="300"
+    style="italic"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@URWBookman-LightItalic.otf"
+    />
+  <type
+    name="Courier"
+    fullname="Courier Regular"
+    family="Courier"
+    foundry="URW"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusMonoPS-Regular.otf"
+    />
+  <type
+    name="Courier-Bold"
+    fullname="Courier Bold"
+    family="Courier"
+    foundry="URW"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusMonoPS-Bold.otf"
+    />
+  <type
+    name="Courier-Oblique"
+    fullname="Courier Regular Oblique"
+    family="Courier"
+    foundry="URW"
+    weight="400"
+    style="oblique"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusMonoPS-Italic.otf"
+    />
+  <type
+    name="Courier-BoldOblique"
+    fullname="Courier Bold Oblique"
+    family="Courier"
+    foundry="URW"
+    weight="700"
+    style="oblique"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusMonoPS-BoldItalic.otf"
+    />
+  <type
+    name="Helvetica"
+    fullname="Helvetica Regular"
+    family="Helvetica"
+    foundry="URW"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusSans-Regular.otf"
+    />
+  <type
+    name="Helvetica-Bold"
+    fullname="Helvetica Bold"
+    family="Helvetica"
+    foundry="URW"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusSans-Bold.otf"
+    />
+  <type
+    name="Helvetica-Oblique"
+    fullname="Helvetica Regular Italic"
+    family="Helvetica"
+    foundry="URW"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusSans-Italic.otf"
+    />
+  <type
+    name="Helvetica-BoldOblique"
+    fullname="Helvetica Bold Italic"
+    family="Helvetica"
+    foundry="URW"
+    weight="700"
+    style="italic"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusSans-BoldItalic.otf"
+    />
+  <type
+    name="Helvetica-Narrow"
+    fullname="Helvetica Narrow"
+    family="Helvetica Narrow"
+    foundry="URW"
+    weight="400"
+    style="normal"
+    stretch="condensed"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusSansNarrow-Regular.otf"
+    />
+  <type
+    name="Helvetica-Narrow-Oblique"
+    fullname="Helvetica Narrow Oblique"
+    family="Helvetica Narrow"
+    foundry="URW"
+    weight="400"
+    style="oblique"
+    stretch="condensed"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusSansNarrow-Oblique.otf"
+    />
+  <type
+    name="Helvetica-Narrow-Bold"
+    fullname="Helvetica Narrow Bold"
+    family="Helvetica Narrow"
+    foundry="URW"
+    weight="700"
+    style="normal"
+    stretch="condensed"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusSansNarrow-Bold.otf"
+    />
+  <type
+    name="Helvetica-Narrow-BoldOblique"
+    fullname="Helvetica Narrow Bold Oblique"
+    family="Helvetica Narrow"
+    foundry="URW"
+    weight="700"
+    style="oblique"
+    stretch="condensed"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusSansNarrow-BoldOblique.otf"
+    />
+  <type
+    name="NewCenturySchlbk-Roman"
+    fullname="New Century Schoolbook"
+    family="NewCenturySchlbk"
+    foundry="URW"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@C059-Roman.otf"
+    />
+  <type
+    name="NewCenturySchlbk-Italic"
+    fullname="New Century Schoolbook Italic"
+    family="NewCenturySchlbk"
+    foundry="URW"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@C059-Italic.otf"
+    />
+  <type
+    name="NewCenturySchlbk-Bold"
+    fullname="New Century Schoolbook Bold"
+    family="NewCenturySchlbk"
+    foundry="URW"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@C059-Bold.otf"
+    />
+  <type
+    name="NewCenturySchlbk-BoldItalic"
+    fullname="New Century Schoolbook Bold Italic"
+    family="NewCenturySchlbk"
+    foundry="URW"
+    weight="700"
+    style="italic"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@C059-BdIta.otf"
+    />
+  <type
+    name="Palatino-Roman"
+    fullname="Palatino Regular"
+    family="Palatino"
+    foundry="URW"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@P052-Roman.otf"
+    />
+  <type
+    name="Palatino-Italic"
+    fullname="Palatino Italic"
+    family="Palatino"
+    foundry="URW"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@P052-Italic.otf"
+    />
+  <type
+    name="Palatino-Bold"
+    fullname="Palatino Bold"
+    family="Palatino"
+    foundry="URW"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@P052-Bold.otf"
+    />
+  <type
+    name="Palatino-BoldItalic"
+    fullname="Palatino Bold Italic"
+    family="Palatino"
+    foundry="URW"
+    weight="700"
+    style="italic"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@P052-BoldItalic.otf"
+    />
+  <type
+    name="Symbol"
+    fullname="Symbol"
+    family="Symbol"
+    foundry="URW"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@StandardSymbolsPS.otf"
+    version="0.1"
+    encoding="AdobeCustom"
+    />
+  <type
+    name="Times-Roman"
+    fullname="Times Regular"
+    family="Times"
+    foundry="URW"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusRoman-Regular.otf"
+    />
+  <type
+    name="Times-Bold"
+    fullname="Times Medium"
+    family="Times"
+    foundry="URW"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusRoman-Bold.otf"
+    />
+  <type
+    name="Times-Italic"
+    fullname="Times Regular Italic"
+    family="Times"
+    foundry="URW"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusRoman-Italic.otf"
+    />
+  <type
+    name="Times-BoldItalic"
+    fullname="Times Medium Italic"
+    family="Times"
+    foundry="URW"
+    weight="700"
+    style="italic"
+    stretch="normal"
+    format="opentype"
+    glyphs="@dejavu_font_dir@NimbusRoman-BoldItalic.otf"
+    />
 </typemap>
