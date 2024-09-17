@@ -748,11 +748,7 @@ target_include_directories(${MAGICKCORE_BINARY_NAME} PRIVATE ${IMAGEMAGICK_BASE_
 target_include_directories(${MAGICKCORE_BINARY_NAME} PRIVATE ${IMAGEMAGICK_DELEGATES_INCLUDE_DIRS})
 target_compile_options(${MAGICKCORE_BINARY_NAME} PRIVATE ${IMAGEMAGICK_DELEGATES_CFLAGS})
 target_link_directories(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LIBRARY_DIRS})
-if(UNIX AND NOT APPLE)
-  target_link_libraries(${MAGICKCORE_BINARY_NAME} PUBLIC -Wl,--start-group ${IMAGEMAGICK_DELEGATES_LIBRARIES} -Wl,--end-group)
-else()
-  target_link_libraries(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LIBRARIES})
-endif()
+target_link_libraries(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LIBRARIES})
 #TODO should we make a test to see if we need to link -lm ??
 if(UNIX)
   target_link_libraries(${MAGICKCORE_BINARY_NAME} PUBLIC -lm)
