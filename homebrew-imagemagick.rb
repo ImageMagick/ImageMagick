@@ -1,4 +1,4 @@
-class Imagemagick < Formula
+class HomebrewImagemagick < Formula
   desc "Home Brewed version of ImageMagick with display delegates"
   homepage "https://imagemagick.org/index.php"
   url "https://github.com/wdongw/homebrew-ImageMagick/releases/download/untagged-f844c72b6fda76d89950/imagemagick_7.11-38.zip"
