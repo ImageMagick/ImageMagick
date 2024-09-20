@@ -2893,7 +2893,7 @@ if test "$with_uhdr" != 'no'; then
     failed=0
     passed=0
 
-    PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.0],[have_uhdr=yes],[have_uhdr=no])
+    PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.2.0],[have_uhdr=yes],[have_uhdr=no])
     CFLAGS="$CFLAGS $UHDR_CFLAGS"
     LIBS="$LIBS $UHDR_LIBS"
     AC_LANG_PUSH([C++])
