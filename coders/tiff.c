@@ -3198,7 +3198,7 @@ static MagickBooleanType TIFFWritePhotoshopLayers(Image* image,
     {
       base_image=DestroyImage(base_image);
       clone_info=DestroyImageInfo(clone_info);
-      return(MagickFalse);
+      return(MagickTrue);
     }
   profile.data=layers;
   profile.extent=layers->length;
