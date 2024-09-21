@@ -162,7 +162,7 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   uhdr_codec_private_t
     *handle = uhdr_create_decoder();
 
-  const char *option = GetImageOption(image_info, "uhdr:output-transfer-function");
+  const char *option = GetImageOption(image_info, "uhdr:output-color-transfer");
   uhdr_color_transfer_t decoded_img_ct =
       (option != (const char *)NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_UNSPECIFIED;
 
@@ -193,8 +193,8 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
   }
 
   CHECK_IF_ERR(uhdr_dec_set_image(handle, &img))
-  CHECK_IF_ERR(uhdr_dec_set_out_img_format(handle, decoded_img_fmt));
   CHECK_IF_ERR(uhdr_dec_set_out_color_transfer(handle, decoded_img_ct))
+  CHECK_IF_ERR(uhdr_dec_set_out_img_format(handle, decoded_img_fmt))
   CHECK_IF_ERR(uhdr_dec_probe(handle))
 
   image->columns = uhdr_dec_get_image_width(handle);
@@ -621,11 +621,15 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
 
     if (image->depth >= 10 && hdrImgDescriptor.planes[UHDR_PLANE_Y] != NULL)
     {
+      (void) ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
+        "Received multiple hdr intent resources, ","%s","overwriting ...");
       RelinquishMagickMemory(hdrImgDescriptor.planes[UHDR_PLANE_Y]);
       hdrImgDescriptor.planes[UHDR_PLANE_Y] = NULL;
     }
     else if (image->depth == 8 && sdrImgDescriptor.planes[UHDR_PLANE_Y] != NULL)
     {
+      (void) ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
+        "Received multiple sdr intent resources, ","%s","overwriting ...");
       RelinquishMagickMemory(sdrImgDescriptor.planes[UHDR_PLANE_Y]);
       sdrImgDescriptor.planes[UHDR_PLANE_Y] = NULL;
     }
@@ -822,9 +826,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     }                                                                                         \
   }
 
-    if (image->quality > 0 && image->quality <= 100)
-      CHECK_IF_ERR(uhdr_enc_set_quality(handle, image->quality, UHDR_BASE_IMG))
-
+    // configure hdr and sdr intents
     if (status != MagickFalse && hdrImgDescriptor.planes[UHDR_PLANE_Y])
     {
       CHECK_IF_ERR(uhdr_enc_set_raw_image(handle, &hdrImgDescriptor, UHDR_HDR_IMG))
@@ -837,6 +839,49 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       CHECK_IF_ERR(uhdr_enc_set_raw_image(handle, &sdrImgDescriptor, UHDR_SDR_IMG))
       if (sdr_profile.data_sz != 0)
         CHECK_IF_ERR(uhdr_enc_set_exif_data(handle, &sdr_profile))
+    }
+
+    // Configure encoding settings
+    if (status != MagickFalse && image->quality > 0 && image->quality <= 100)
+      CHECK_IF_ERR(uhdr_enc_set_quality(handle, image->quality, UHDR_BASE_IMG))
+
+    const char
+      *option;
+
+    if (status != MagickFalse)
+    {
+      option = GetImageOption(image_info, "uhdr:gainmap-quality");
+      if (option != (const char *)NULL)
+        CHECK_IF_ERR(uhdr_enc_set_quality(handle, atoi(option), UHDR_GAIN_MAP_IMG))
+    }
+
+    if (status != MagickFalse)
+      CHECK_IF_ERR(uhdr_enc_set_using_multi_channel_gainmap(handle, 1))
+
+    if (status != MagickFalse)
+      CHECK_IF_ERR(uhdr_enc_set_gainmap_scale_factor(handle, 1))
+
+    if (status != MagickFalse)
+      CHECK_IF_ERR(uhdr_enc_set_preset(handle, UHDR_USAGE_BEST_QUALITY))
+
+    // Configure gainmap metadata
+    if (status != MagickFalse)
+    {
+      option = GetImageOption(image_info, "uhdr:gainmap-gamma");
+      if (option != (const char *)NULL)
+        CHECK_IF_ERR(uhdr_enc_set_gainmap_gamma(handle, atof(option)))
+    }
+
+    if (status != MagickFalse)
+    {
+      option = GetImageOption(image_info, "uhdr:gainmap-min-content-boost");
+      float minContentBoost = option != (const char *)NULL ? atof(option) : FLT_MIN;
+
+      option = GetImageOption(image_info, "uhdr:gainmap-max-content-boost");
+      float maxContentBoost = option != (const char *)NULL ? atof(option) : FLT_MAX;
+
+      if (minContentBoost != FLT_MIN || maxContentBoost != FLT_MAX)
+        CHECK_IF_ERR(uhdr_enc_set_min_max_content_boost(handle, minContentBoost, maxContentBoost))
     }
 
     if (status != MagickFalse)
