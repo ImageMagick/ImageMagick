@@ -7,6 +7,16 @@ class HomebrewImagemagick < Formula
   revision 1
   version "7.11-38"
   head "https://github.com/wdongw/homebrew-ImageMagick.git", branch: "main"
+  
+  bottle do
+    sha256 arm64_sequoia: "c2cb0b528e9d2265cd80df802438f8c42826c0f394c4862720082a4655061ead"
+    sha256 arm64_sonoma:  "0f83ef549c139885ac25385a001d9a9d6de78a49ac00c6b0d554857fede02159"
+    sha256 arm64_ventura: "0fb63cab295985d97f12b4244149a268f11c9fc73fa7ffd03595c7f7133a03f1"
+    sha256 sonoma:        "9e18354d5f1baf94e94d70a14fe8ef702b4ce505916c82acaff2a478f20d3790"
+    sha256 ventura:       "9e18354d5f1baf94e94d70a14fe8ef702b4ce505916c82acaff2a478f20d3790"
+    sha256 sequoia:       "9e18354d5f1baf94e94d70a14fe8ef702b4ce505916c82acaff2a478f20d3790"
+    sha256 x86_64_linux:  "76d2634d9692e27eb767449178d06999f6863d43e385317f5b3ee37f9c9852f4"
+  end
 
   depends_on "pkg-config" => :build
   depends_on "fontconfig"
@@ -50,26 +60,32 @@ class HomebrewImagemagick < Formula
     inreplace "configure", "${PACKAGE_NAME}-${PACKAGE_BASE_VERSION}", "${PACKAGE_NAME}"
 
     args = [
-      "--enable-delegate-build", 
-      "--enable-shared", 
-      "--disable-static", 
+      "--enable-osx-universal-binary=no",
+      "--disable-silent-rules",
+      "--disable-opencl",
+      "--enable-shared",
+      "--enable-static",
       "--with-freetype=yes",
-      "--with-modules", 
-      "--with-quantum-depth=16", 
-      "--enable-hdri"
+      "--with-gvc=no",
+      "--with-modules",
       "--with-openjp2",
       "--with-openexr",
       "--with-webp=yes",
       "--with-heic=yes",
       "--with-raw=yes",
-      "--with-gslib", 
-      "--with-rsvg", 
+      "--with-gslib",
       "--with-gs-font-dir=#{HOMEBREW_PREFIX}/share/ghostscript/fonts",
+      "--with-lqr",
+      "--without-djvu",
+      "--without-fftw",
+      "--without-pango",
+      "--without-wmf",
+      "--enable-openmp",
       "--with-x",
     ]
     if OS.mac?
       args += [
-        # "--without-x",
+        #"--without-x",
         # Work around "checking for clang option to support OpenMP... unsupported"
         "ac_cv_prog_c_openmp=-Xpreprocessor -fopenmp",
         "ac_cv_prog_cxx_openmp=-Xpreprocessor -fopenmp",
