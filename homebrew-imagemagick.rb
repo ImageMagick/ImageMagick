@@ -1,16 +1,12 @@
 class HomebrewImagemagick < Formula
   desc "Home Brewed version of ImageMagick with display delegates"
-  homepage "https://imagemagick.org/index.php"
-  url "https://github.com/wdongw/homebrew-ImageMagick/releases/download/untagged-f844c72b6fda76d89950/imagemagick_7.11-38.zip"
+  homepage "https://github.com/wdongw/homebrew-ImageMagick/releases"
+  url "https://github.com/wdongw/homebrew-ImageMagick/releases/download/X11/imagemagick_7.11-38.zip"
   sha256 "9e18354d5f1baf94e94d70a14fe8ef702b4ce505916c82acaff2a478f20d3790"
   license "ImageMagick"
   revision 1
-  head "https://github.com/ImageMagick/ImageMagick.git", branch: "main"
-
-
-  bottle do
-    sha256 arm64_sonoma:  "9e18354d5f1baf94e94d70a14fe8ef702b4ce505916c82acaff2a478f20d3790"
-  end
+  version "7.11-38"
+  head "https://github.com/wdongw/homebrew-ImageMagick.git", branch: "main"
 
   depends_on "pkg-config" => :build
   depends_on "fontconfig"
@@ -66,8 +62,8 @@ class HomebrewImagemagick < Formula
       "--with-webp=yes",
       "--with-heic=yes",
       "--with-raw=yes",
-      "--with-gslib", -
-      "--with-rsvg", -
+      "--with-gslib", 
+      "--with-rsvg", 
       "--with-gs-font-dir=#{HOMEBREW_PREFIX}/share/ghostscript/fonts",
       "--with-x",
     ]
