@@ -212,6 +212,8 @@ static MagickBooleanType ReadHEICExifProfile(Image *image,
     ThrowBinaryException(CorruptImageError,"InsufficientImageDataInFile",
       image->filename);
   exif_profile=AcquireProfileStringInfo("exif",length,exception);
+  if (exif_profile == (StringInfo*) NULL)
+    return(MagickTrue);
   error=heif_image_handle_get_metadata(image_handle,id,
     GetStringInfoDatum(exif_profile));
   if ((IsHEIFSuccess(image,&error,exception) != MagickFalse) && (length > 4))

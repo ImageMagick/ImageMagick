@@ -441,17 +441,20 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
           {
             ps_info->icc_profile=AcquireProfileStringInfo("icc",MagickPathExtent,
               exception);
-            datum=GetStringInfoDatum(ps_info->icc_profile);
-            for (i=0; (c=ProfileInteger(&buffer,hex_digits)) != EOF; i++)
-            {
-              if (i >= (ssize_t) GetStringInfoLength(ps_info->icc_profile))
+            if (ps_info->icc_profile != (StringInfo*) NULL)
+              {
+                datum=GetStringInfoDatum(ps_info->icc_profile);
+                for (i=0; (c=ProfileInteger(&buffer,hex_digits)) != EOF; i++)
                 {
-                  SetStringInfoLength(ps_info->icc_profile,(size_t) i << 1);
-                  datum=GetStringInfoDatum(ps_info->icc_profile);
+                  if (i >= (ssize_t) GetStringInfoLength(ps_info->icc_profile))
+                    {
+                      SetStringInfoLength(ps_info->icc_profile,(size_t) i << 1);
+                      datum=GetStringInfoDatum(ps_info->icc_profile);
+                    }
+                  datum[i]=(unsigned char) c;
                 }
-              datum[i]=(unsigned char) c;
-            }
-            SetStringInfoLength(ps_info->icc_profile,(size_t) i+1);
+                SetStringInfoLength(ps_info->icc_profile,(size_t) i+1);
+              }
           }
         continue;
       }
@@ -479,16 +482,19 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
           {
             ps_info->photoshop_profile=AcquireProfileStringInfo("8bim",
               length+1U,exception);
-            q=GetStringInfoDatum(ps_info->photoshop_profile);
-            while (extent > 0)
-            {
-              c=ProfileInteger(&buffer,hex_digits);
-              if (c == EOF)
-                break;
-              *q++=(unsigned char) c;
-              extent-=MagickMin(extent,1);
-            }
-            SetStringInfoLength(ps_info->photoshop_profile,length);
+            if (ps_info->icc_profile != (StringInfo*) NULL)
+              {
+                q=GetStringInfoDatum(ps_info->photoshop_profile);
+                while (extent > 0)
+                {
+                  c=ProfileInteger(&buffer,hex_digits);
+                  if (c == EOF)
+                    break;
+                  *q++=(unsigned char) c;
+                  extent-=MagickMin(extent,1);
+                }
+                SetStringInfoLength(ps_info->photoshop_profile,length);
+              }
           }
         continue;
       }

@@ -2177,9 +2177,14 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
               }
             layer_info[i].info=AcquireProfileStringInfo("psd:additional-info",
               (size_t) length,exception);
-            info=GetStringInfoDatum(layer_info[i].info);
-            (void) ReadBlob(image,(size_t) length,info);
-            ParseAdditionalInfo(&layer_info[i]);
+            if (layer_info[i].info == (StringInfo*) NULL)
+              (void) SeekBlob(image,(MagickOffsetType)length,SEEK_CUR);
+            else
+              {
+                info=GetStringInfoDatum(layer_info[i].info);
+                (void) ReadBlob(image,(size_t) length,info);
+                ParseAdditionalInfo(&layer_info[i]);
+              }
           }
       }
   }

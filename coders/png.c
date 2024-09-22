@@ -1699,7 +1699,8 @@ static int PNGSetExifProfile(Image *image,png_byte *data,png_size_t size,
           (void) CopyMagickMemory(p,data,size);
         }
     }
-  (void) SetImageProfilePrivate(image,profile,exception);
+  if (profile != (StringInfo*)NULL)
+    (void) SetImageProfilePrivate(image,profile,exception);
   return(1);
 }
 
