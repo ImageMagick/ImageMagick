@@ -2799,7 +2799,7 @@ static MagickBooleanType TranslateExpression (
     *needPopAll = MagickFalse;
   }
 
-  if (pfx->exception->severity != UndefinedException)
+  if (pfx->exception->severity >= ErrorException)
     return MagickFalse;
 
   return MagickTrue;
@@ -2851,7 +2851,7 @@ static MagickBooleanType TranslateStatementList (FxInfo * pfx, const char * strL
     }
   }
 
-  if (pfx->exception->severity != UndefinedException)
+  if (pfx->exception->severity >= ErrorException)
     return MagickFalse;
 
   return MagickTrue;
@@ -4034,9 +4034,8 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
 
   if (NeedRelinq) cs = (ChannelStatistics *)RelinquishMagickMemory (cs);
 
-  if (pfx->exception->severity != UndefinedException) {
+  if (pfx->exception->severity >= ErrorException)
     return MagickFalse;
-  }
 
   if (pfxrt->usedValStack != 0) {
       (void) ThrowMagickException (
@@ -4382,9 +4381,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     }
   }
 
-  if (pfx->exception->severity != UndefinedException) {
+  if (pfx->exception->severity != UndefinedException)
     status = MagickFalse;
-  }
 
   if (status == MagickFalse)
     fx_image = DestroyImage (fx_image);
