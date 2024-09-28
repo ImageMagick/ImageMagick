@@ -240,11 +240,11 @@ static inline void ReadGhostScriptXMPProfile(MagickByteBuffer *buffer,
   ssize_t
     count;
 
-  if (*profile != (StringInfo *) NULL)
-    return;
   status=CompareMagickByteBuffer(buffer,BeginXMPPacket,strlen(BeginXMPPacket));
   if (status == MagickFalse)
     return;
+  if (*profile != (StringInfo *) NULL)
+    *profile=DestroyStringInfo(*profile);
   length=8192;
   *profile=AcquireProfileStringInfo("xmp",length,exception);
   if (*profile == (StringInfo *) NULL)
