@@ -2437,7 +2437,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
     return(MagickFalse);
   if ((image->background_color.alpha_trait != UndefinedPixelTrait) &&
       ((image->alpha_trait & BlendPixelTrait) == 0))
-    (void) SetImageAlphaChannel(image,OnAlphaChannel,exception);
+    (void) SetImageAlphaChannel(image,ActivateAlphaChannel,exception);
   ConformPixelInfo(image,&image->background_color,&background,exception);
   /*
     Set image background color.
