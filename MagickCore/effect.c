@@ -1227,6 +1227,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
   assert(image->signature == MagickCoreSignature);
   assert(f != (Quantum *) NULL);
   assert(g != (Quantum *) NULL);
+  assert(columns <= (MAGICK_SSIZE_MAX-2));
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   p=f+(columns+2);
