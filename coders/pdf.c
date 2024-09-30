@@ -732,10 +732,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         *profile;
 
-      (void) SetImageProfilePrivate(image,pdf_info.xmp_profile,exception);
       profile=(char *) GetStringInfoDatum(pdf_info.xmp_profile);
       if (strstr(profile,"Adobe Illustrator") != (char *) NULL)
         (void) CopyMagickString(image->magick,"AI",MagickPathExtent);
+      (void) SetImageProfilePrivate(image,pdf_info.xmp_profile,exception);
       pdf_info.xmp_profile=(StringInfo *) NULL;
     }
   if (image_info->number_scenes != 0)
