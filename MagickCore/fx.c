@@ -4381,13 +4381,10 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     }
   }
 
-  if (pfx->exception->severity != UndefinedException)
-    status = MagickFalse;
+  if ((status == MagickFalse) || (pfx->exception->severity >= ErrorException))
+    fx_image=DestroyImage(fx_image);
 
-  if (status == MagickFalse)
-    fx_image = DestroyImage (fx_image);
-
-  pfx = DestroyFxInfo (pfx);
+  pfx=DestroyFxInfo(pfx);
 
   return(fx_image);
 }
