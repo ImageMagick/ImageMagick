@@ -2896,7 +2896,7 @@ if test "$with_uhdr" != 'no'; then
     PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.2.0],[have_uhdr=yes],[have_uhdr=no])
     CFLAGS="$CFLAGS $UHDR_CFLAGS"
     LIBS="$LIBS $UHDR_LIBS"
-    AC_LANG_PUSH([C++])
+    AC_LANG_PUSH([C])
     AC_CHECK_HEADER([ultrahdr_api.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
     AC_CHECK_LIB([uhdr],[uhdr_create_decoder],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
 
@@ -2916,7 +2916,7 @@ if test "$with_uhdr" != 'no'; then
     else
         AC_MSG_RESULT([no])
     fi
-    AC_LANG_POP([C++])
+    AC_LANG_POP([C])
 fi
 
 AM_CONDITIONAL([UHDR_DELEGATE],[test "$have_uhdr" = 'yes'])
