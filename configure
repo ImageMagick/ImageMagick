@@ -5198,7 +5198,7 @@ MAGICK_PATCHLEVEL_VERSION=39
 
 MAGICK_VERSION=7.1.1-39
 
-MAGICK_GIT_REVISION=8a83a2bb4:20240921
+MAGICK_GIT_REVISION=d33ec12ca:20241002
 
 
 # Substitute library versioning
@@ -5232,7 +5232,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,39
 
-PACKAGE_RELEASE_DATE=2024-09-21
+PACKAGE_RELEASE_DATE=2024-10-02
 
 
 # Ensure that make can run correctly
@@ -33599,13 +33599,7 @@ printf "%s\n" "yes" >&6; }
 fi
     CFLAGS="$CFLAGS $UHDR_CFLAGS"
     LIBS="$LIBS $UHDR_LIBS"
-    ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-    ac_fn_cxx_check_header_compile "$LINENO" "ultrahdr_api.h" "ac_cv_header_ultrahdr_api_h" "$ac_includes_default"
+    ac_fn_c_check_header_compile "$LINENO" "ultrahdr_api.h" "ac_cv_header_ultrahdr_api_h" "$ac_includes_default"
 if test "x$ac_cv_header_ultrahdr_api_h" = xyes
 then :
   passed=`expr $passed + 1`
@@ -33624,18 +33618,19 @@ LIBS="-luhdr  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-namespace conftest {
-  extern "C" int uhdr_create_decoder ();
-}
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char uhdr_create_decoder ();
 int
 main (void)
 {
-return conftest::uhdr_create_decoder ();
+return uhdr_create_decoder ();
   ;
   return 0;
 }
 _ACEOF
-if ac_fn_cxx_try_link "$LINENO"
+if ac_fn_c_try_link "$LINENO"
 then :
   ac_cv_lib_uhdr_uhdr_create_decoder=yes
 else $as_nop
@@ -33677,12 +33672,6 @@ printf "%s\n" "yes" >&6; }
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
     fi
-    ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
 fi
 
  if test "$have_uhdr" = 'yes'; then
