@@ -1,0 +1,9 @@
+ARG VERSION=39
+FROM fedora:${VERSION}
+
+RUN dnf groupinstall -y 'Development Tools'
+RUN dnf install -y rsync cmake g++
+RUN mkdir -p /build && chmod 777 /build
+COPY build_image_magick.sh /
+ENV EXPECTED_DELEGATES="lzma zlib"
+ENTRYPOINT [ "/build_image_magick.sh" ]
