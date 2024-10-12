@@ -287,9 +287,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ThrowMagickException(exception,GetMagickModule(),
         CorruptImageError,"Unsupported storage type","`%d'",
         (int) storage_type);
-      image=DestroyImageList(image);
       (void) CloseBlob(image);
-      return((Image *) NULL);
+      return(DestroyImageList(image));
     }
   image->columns=(size_t) (data_window.max.x-data_window.min.x+1L);
   image->rows=(size_t) (data_window.max.y-data_window.min.y+1L);
