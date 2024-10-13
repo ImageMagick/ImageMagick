@@ -923,7 +923,7 @@ ModuleExport void UnregisterICONImage(void)
 static Image *AutoResizeImage(const Image *image,const char *option,
   MagickOffsetType *count,ExceptionInfo *exception)
 {
-#define MAX_SIZES 16
+#define MAX_SIZES 11
 
   char
     *q;
@@ -936,7 +936,7 @@ static Image *AutoResizeImage(const Image *image,const char *option,
     *resized;
 
   size_t
-    sizes[MAX_SIZES]={256, 192, 128, 96, 64, 48, 40, 32, 24, 16};
+    sizes[MAX_SIZES] = { 512, 256, 192, 128, 96, 64, 48, 40, 32, 24, 16 };
 
   ssize_t
     i;
@@ -953,7 +953,7 @@ static Image *AutoResizeImage(const Image *image,const char *option,
     while ((isspace((int) ((unsigned char) *p)) != 0))
       p++;
     size=(size_t) strtol(p,&q,10);
-    if ((p == q) || (size < 16) || (size > 256))
+    if ((p == q) || (size < 16) || (size > 512))
       return((Image *) NULL);
     p=q;
     sizes[i++]=size;
@@ -961,7 +961,7 @@ static Image *AutoResizeImage(const Image *image,const char *option,
       p++;
   }
   if (i == 0)
-    i=10;
+    i=MAX_SIZES;
   *count=i;
   for (i=0; i < *count; i++)
   {
@@ -1050,7 +1050,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
       next=image;
       do
       {
-        if ((image->columns > 256L) || (image->rows > 256L))
+        if ((image->columns > 512L) || (image->rows > 512L))
           ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
         scene++;
         next=SyncNextImageInList(next);
