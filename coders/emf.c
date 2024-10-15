@@ -728,7 +728,6 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       Gdiplus::GdiplusShutdown(token);
       ThrowReaderException(FileOpenError,"UnableToOpenFile");
     }
-
   image->resolution.x=source->GetHorizontalResolution();
   image->resolution.y=source->GetVerticalResolution();
   image->columns=(size_t) source->GetWidth();
