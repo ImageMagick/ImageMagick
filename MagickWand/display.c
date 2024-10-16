@@ -316,7 +316,6 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
 
   ssize_t
     image_number,
-    iteration,
     j,
     k,
     l;
@@ -440,14 +439,13 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   /*
     Parse command line.
   */
-  iteration=0;
   for (i=1; ((i <= (ssize_t) argc) && ((state & ExitState) == 0)); i++)
   {
     if (i < (ssize_t) argc)
       option=argv[i];
     else
       if (image != (Image *) NULL)
-        break;
+        i = (argc > 1) ? argc-1 : i;
       else
         if (isatty(STDIN_FILENO) != MagickFalse || (nostdin != MagickFalse))
           option="logo:";
@@ -605,25 +603,29 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           Free image resources.
         */
         display_image=DestroyImageList(display_image);
-        if ((state & FormerImageState) == 0)
+        if (argc > 1)
           {
-            last_image=(size_t) image_number;
-            image_marker[i]=(size_t) image_number++;
+            if ((state & FormerImageState) == 0 && image_number < argc-2)
+              {
+                last_image=(size_t) image_number;
+                image_marker[i]=(size_t) image_number++;
+              }
+            else if ((state & NextImageState) == 0)
+              {
+                /*
+                  Proceed to previous image.
+                */
+                for (i--; i > 0; i--)
+                  if (image_marker[i] == (size_t) (image_number-2))
+                    break;
+                if (image_number > 0)
+                  image_number--;
+              }
+            if ((i == (ssize_t) argc) && ((state & ExitState) == 0))
+              i=0;
+            if ((state & ExitState) != 0)
+              break;
           }
-        else
-          {
-            /*
-              Proceed to previous image.
-            */
-            for (i--; i > 0; i--)
-              if (image_marker[i] == (size_t) (image_number-2))
-                break;
-            image_number--;
-          }
-        if ((i == (ssize_t) argc) && ((state & ExitState) == 0))
-          i=0;
-        if ((state & ExitState) != 0)
-          break;
         /*
           Determine if we should proceed to the first image.
         */
@@ -642,11 +644,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         if (resource_info.window_id != (char *) NULL)
           state|=ExitState;
         if (iterations != 0)
-          {
-            if (++iteration == (ssize_t) iterations)
-              state|=ExitState;
-            i=0;
-          }
+          i=0;
         if (LocaleCompare(filename,"-") == 0)
           state|=ExitState;
         RemoveAllImageStack();
