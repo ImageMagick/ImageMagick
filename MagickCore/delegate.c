@@ -2002,7 +2002,7 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
       (void) CopyMagickString(delegate,delegate_info[i]->encode,
         MagickPathExtent);
     (void) ConcatenateMagickString(delegate,"        ",MagickPathExtent);
-    delegate[8]='\0';
+    delegate[9]='\0';
     commands=StringToList(delegate_info[i]->commands);
     if (commands == (char **) NULL)
       continue;
