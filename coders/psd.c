@@ -1718,9 +1718,12 @@ static MagickBooleanType CheckPSDChannels(const Image *image,
     if (layer_info->channel_info[i].supported == MagickFalse)
       continue;
     channel=layer_info->channel_info[i].channel;
-    if ((i == 0) && (psd_info->mode == IndexedMode) &&
-        (channel != RedPixelChannel))
-      return(MagickFalse);
+    if ((i == 0) && (psd_info->mode == IndexedMode))
+      {
+        if (channel != RedPixelChannel)
+          return(MagickFalse);
+        channel_type&=~IndexChannel;
+      }
     if (channel == AlphaPixelChannel)
       {
         channel_type|=AlphaChannel;
