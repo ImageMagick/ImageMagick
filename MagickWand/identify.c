@@ -504,6 +504,8 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
                   ThrowIdentifyException(OptionError,"NoSuchOption",argv[i]);
                 break;
               }
+            if (LocaleNCompare("identify:locate",argv[i],15) == 0)
+              image_info->ping=MagickFalse;
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
