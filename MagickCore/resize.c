@@ -429,7 +429,7 @@ static double MagicKernelSharp(const double x,const ResizeFilter *resize_filter)
       if (x < 0.5)
         return(0.625+1.75*(0.5-x)*(0.5+x));
       if (x < 1.5)
-        return(-0.125+(1.5-x)*(1.25-x));
+        return((1.0-x)*(1.75-x));
       if (x < 2.5)
         return(-0.125*(2.5-x)*(2.5-x));
       return(0.0);
@@ -439,15 +439,15 @@ static double MagicKernelSharp(const double x,const ResizeFilter *resize_filter)
     Magic Kernel with Sharp2021 filter
   */
   if (x < 0.5)
-    return(169.0/288.0+239.0/144.0*(0.5-x)*(0.5+x));
+    return(577.0/576.0-239.0/144.0*x*x);
   if (x < 1.5)
-    return(-29.0/288.0+35.0/36.0*(1.5-x)*(169.0/140.0-x));
+    return(35.0/36.0*(x-1.0)*(x-239.0/140.0));
   if (x < 2.5)
-    return(5.0/288.0-1.0/6.0*(2.5-x)*(53.0/24.0-x));
+    return(1.0/6.0*(x-2.0)*(65.0/24.0-x));
   if (x < 3.5)
-    return(-1.0/288.0+1.0/36.0*(3.5-x)*(13.0/4.0-x));
+    return(1.0/36.0*(x-3.0)*(x-3.75));
   if (x < 4.5)
-    return(-1.0/288.0*(4.5-x)*(4.5-x));
+    return(-1.0/288.0*(x-4.5)*(x-4.5));
   return(0.0);
 }
 
