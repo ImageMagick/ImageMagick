@@ -841,13 +841,13 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { LanczosSharpFilter,  LanczosSharpFilter }, /* | these require */
     { Lanczos2Filter,      Lanczos2Filter },     /* | special handling */
     { Lanczos2SharpFilter, Lanczos2SharpFilter },
-    { MagicSharp2013Filter, BoxFilter },      /* Magic Kernal Sharp (2013)    */
     { RobidouxFilter,      BoxFilter      },  /* Cubic Keys tuned for EWA     */
     { RobidouxSharpFilter, BoxFilter      },  /* Sharper Cubic Keys for EWA   */
     { LanczosFilter,       CosineFilter   },  /* Cosine window (3 lobes)      */
     { SplineFilter,        BoxFilter      },  /* Spline Cubic Filter          */
     { LanczosRadiusFilter, LanczosFilter  },  /* Lanczos with integer radius  */
     { CubicSplineFilter,   BoxFilter      },  /* CubicSpline (2/3/4 lobes)    */
+    { MagicSharp2013Filter, BoxFilter     },  /* Magic Kernal Sharp (2013)    */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -902,7 +902,6 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, Sharpened          */
     { SincFast,  2.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, 2-lobed            */
     { SincFast,  2.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos2, sharpened         */
-    { MagicSharp2013, 2.5, 1.0, 0.0, 0.0, MagicSharp2013WeightingFunction }, /* MagicKernel, Sharp2013 */
     /* Robidoux: Keys cubic close to Lanczos2D sharpened */
     { CubicBC,   2.0, 1.1685777620836932,
                             0.37821575509399867, 0.31089212245300067, CubicBCWeightingFunction },
@@ -913,6 +912,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { CubicBC,   2.0, 2.0, 1.0, 0.0, CubicBCWeightingFunction },  /* Cubic B-Spline (B=1,C=0)    */
     { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, Integer Radius    */
     { CubicSpline,2.0, 0.5, 0.0, 0.0, BoxWeightingFunction },  /* Spline Lobes 2-lobed */
+    { MagicSharp2013, 2.5, 1.0, 0.0, 0.0, MagicSharp2013WeightingFunction }, /* MagicKernel, Sharp2013 */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)

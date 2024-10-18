@@ -57,13 +57,13 @@ typedef enum
   LanczosSharpFilter,
   Lanczos2Filter,
   Lanczos2SharpFilter,
-  MagicSharp2013Filter,
   RobidouxFilter,
   RobidouxSharpFilter,
   CosineFilter,
   SplineFilter,
   LanczosRadiusFilter,
   CubicSplineFilter,
+  MagicSharp2013Filter,
   SentinelFilter  /* a count of all the filters, not a real filter */
 } FilterType;
 
