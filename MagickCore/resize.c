@@ -414,24 +414,41 @@ static double Lagrange(const double x,const ResizeFilter *resize_filter)
   return(value);
 }
 
-static double MagicSharp2013(const double x,
-  const ResizeFilter *magick_unused(resize_filter))
+static double MagicKernelSharp(const double x,const ResizeFilter *resize_filter)
 {
-  magick_unreferenced(resize_filter);
-
   /*
-    Magic Kernel Sharp (2013)
+    Magic Kernel Sharp
 
     See: Solving the mystery of Magic Kernel Sharp (https://johncostella.com/magic/mks.pdf)
   */
-  const double x2 = x*x;
-  if (x < 0.5f)
-    return(1.0625f-1.75f*x2);
-  if (x < 1.5f)
-    return(1.75f-2.75f*x+x2);
-  if (x < 2.5f)
-    return(-0.78125f+0.625f*x-0.125f*x2);
-  return(0.0f);
+  if (resize_filter->support <= 2.5)
+    {
+      /*
+        Magic Kernel with Sharp2013 filter
+      */
+      if (x < 0.5)
+        return(0.625+1.75*(0.5-x)*(0.5+x));
+      if (x < 1.5)
+        return(-0.125+(1.5-x)*(1.25-x));
+      if (x < 2.5)
+        return(-0.125*(2.5-x)*(2.5-x));
+      return(0.0);
+    }
+
+  /*
+    Magic Kernel with Sharp2021 filter
+  */
+  if (x < 0.5)
+    return(169.0/288.0+239.0/144.0*(0.5-x)*(0.5+x));
+  if (x < 1.5)
+    return(-29.0/288.0+35.0/36.0*(1.5-x)*(169.0/140.0-x));
+  if (x < 2.5)
+    return(5.0/288.0-1.0/6.0*(2.5-x)*(53.0/24.0-x));
+  if (x < 3.5)
+    return(-1.0/288.0+1.0/36.0*(3.5-x)*(13.0/4.0-x));
+  if (x < 4.5)
+    return(-1.0/288.0*(4.5-x)*(4.5-x));
+  return(0.0);
 }
 
 static double Quadratic(const double x,
@@ -620,7 +637,7 @@ static double Welch(const double x,
 %
 %  Special Purpose Filters
 %      Cubic  SincFast  LanczosSharp  Lanczos2  Lanczos2Sharp
-%      Robidoux RobidouxSharp MagicSharp2013
+%      Robidoux RobidouxSharp MagicKernelSharp MagicKernelSharpPlus
 %
 %  The users "-filter" selection is used to lookup the default 'expert'
 %  settings for that filter from a internal table.  However any provided
@@ -847,7 +864,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { SplineFilter,        BoxFilter      },  /* Spline Cubic Filter          */
     { LanczosRadiusFilter, LanczosFilter  },  /* Lanczos with integer radius  */
     { CubicSplineFilter,   BoxFilter      },  /* CubicSpline (2/3/4 lobes)    */
-    { MagicSharp2013Filter, BoxFilter     },  /* Magic Kernal Sharp (2013)    */
+    { MagicKernelSharpFilter, BoxFilter   },  /* Magic Kernal Sharp           */
+    { MagicKernelSharpPlusFilter, BoxFilter }, /* Magic Kernal Sharp Plus     */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -912,7 +930,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { CubicBC,   2.0, 2.0, 1.0, 0.0, CubicBCWeightingFunction },  /* Cubic B-Spline (B=1,C=0)    */
     { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, Integer Radius    */
     { CubicSpline,2.0, 0.5, 0.0, 0.0, BoxWeightingFunction },  /* Spline Lobes 2-lobed */
-    { MagicSharp2013, 2.5, 1.0, 0.0, 0.0, MagicSharp2013WeightingFunction }, /* MagicKernel, Sharp2013 */
+    { MagicKernelSharp, 2.5, 1.0, 0.0, 0.0, MagicKernelSharpWeightingFunction }, /* MagicKernelSharp */
+    { MagicKernelSharp, 4.5, 1.0, 0.0, 0.0, MagicKernelSharpWeightingFunction }, /* MagicKernelSharpPlus */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)

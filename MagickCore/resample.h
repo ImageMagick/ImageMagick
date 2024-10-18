@@ -63,7 +63,8 @@ typedef enum
   SplineFilter,
   LanczosRadiusFilter,
   CubicSplineFilter,
-  MagicSharp2013Filter,
+  MagicKernelSharpFilter,
+  MagicKernelSharpPlusFilter,
   SentinelFilter  /* a count of all the filters, not a real filter */
 } FilterType;
 
