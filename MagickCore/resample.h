@@ -57,6 +57,7 @@ typedef enum
   LanczosSharpFilter,
   Lanczos2Filter,
   Lanczos2SharpFilter,
+  MagicSharp2013Filter,
   RobidouxFilter,
   RobidouxSharpFilter,
   CosineFilter,

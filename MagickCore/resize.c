@@ -414,6 +414,26 @@ static double Lagrange(const double x,const ResizeFilter *resize_filter)
   return(value);
 }
 
+static double MagicSharp2013(const double x,
+  const ResizeFilter *magick_unused(resize_filter))
+{
+  magick_unreferenced(resize_filter);
+
+  /*
+    Magic Kernel Sharp (2013)
+
+    See: Solving the mystery of Magic Kernel Sharp (https://johncostella.com/magic/mks.pdf)
+  */
+  const double x2 = x*x;
+  if (x < 0.5f)
+    return(1.0625f-1.75f*x2);
+  if (x < 1.5f)
+    return(1.75f-2.75f*x+x2);
+  if (x < 2.5f)
+    return(-0.78125f+0.625f*x-0.125f*x2);
+  return(0.0f);
+}
+
 static double Quadratic(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
@@ -600,7 +620,7 @@ static double Welch(const double x,
 %
 %  Special Purpose Filters
 %      Cubic  SincFast  LanczosSharp  Lanczos2  Lanczos2Sharp
-%      Robidoux RobidouxSharp
+%      Robidoux RobidouxSharp MagicSharp2013
 %
 %  The users "-filter" selection is used to lookup the default 'expert'
 %  settings for that filter from a internal table.  However any provided
@@ -821,6 +841,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { LanczosSharpFilter,  LanczosSharpFilter }, /* | these require */
     { Lanczos2Filter,      Lanczos2Filter },     /* | special handling */
     { Lanczos2SharpFilter, Lanczos2SharpFilter },
+    { MagicSharp2013Filter, BoxFilter },      /* Magic Kernal Sharp (2013)    */
     { RobidouxFilter,      BoxFilter      },  /* Cubic Keys tuned for EWA     */
     { RobidouxSharpFilter, BoxFilter      },  /* Sharper Cubic Keys for EWA   */
     { LanczosFilter,       CosineFilter   },  /* Cosine window (3 lobes)      */
@@ -881,6 +902,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, Sharpened          */
     { SincFast,  2.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, 2-lobed            */
     { SincFast,  2.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos2, sharpened         */
+    { MagicSharp2013, 2.5, 1.0, 0.0, 0.0, MagicSharp2013WeightingFunction }, /* MagicKernel, Sharp2013 */
     /* Robidoux: Keys cubic close to Lanczos2D sharpened */
     { CubicBC,   2.0, 1.1685777620836932,
                             0.37821575509399867, 0.31089212245300067, CubicBCWeightingFunction },
