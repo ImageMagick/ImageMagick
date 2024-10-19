@@ -414,29 +414,34 @@ static double Lagrange(const double x,const ResizeFilter *resize_filter)
   return(value);
 }
 
-static double MagicKernelSharp(const double x,const ResizeFilter *resize_filter)
+static double MagicKernelSharp2013(const double x,
+  const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
-    Magic Kernel Sharp
+    Magic Kernel with Sharp2013 filter
 
     See: Solving the mystery of Magic Kernel Sharp (https://johncostella.com/magic/mks.pdf)
   */
-  if (resize_filter->support <= 2.5)
-    {
-      /*
-        Magic Kernel with Sharp2013 filter
-      */
-      if (x < 0.5)
-        return(0.625+1.75*(0.5-x)*(0.5+x));
-      if (x < 1.5)
-        return((1.0-x)*(1.75-x));
-      if (x < 2.5)
-        return(-0.125*(2.5-x)*(2.5-x));
-      return(0.0);
-    }
+  if (x < 0.5)
+    return(0.625+1.75*(0.5-x)*(0.5+x));
+  if (x < 1.5)
+    return((1.0-x)*(1.75-x));
+  if (x < 2.5)
+    return(-0.125*(2.5-x)*(2.5-x));
+  return(0.0);
+}
+
+static double MagicKernelSharp2021(const double x,
+  const ResizeFilter *magick_unused(resize_filter))
+{
+  magick_unreferenced(resize_filter);
 
   /*
     Magic Kernel with Sharp2021 filter
+
+    See: Solving the mystery of Magic Kernel Sharp (https://johncostella.com/magic/mks.pdf)
   */
   if (x < 0.5)
     return(577.0/576.0-239.0/144.0*x*x);
@@ -930,8 +935,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { CubicBC,   2.0, 2.0, 1.0, 0.0, CubicBCWeightingFunction },  /* Cubic B-Spline (B=1,C=0)    */
     { SincFast,  3.0, 1.0, 0.0, 0.0, SincFastWeightingFunction }, /* Lanczos, Integer Radius    */
     { CubicSpline,2.0, 0.5, 0.0, 0.0, BoxWeightingFunction },  /* Spline Lobes 2-lobed */
-    { MagicKernelSharp, 2.5, 1.0, 0.0, 0.0, MagicKernelSharpWeightingFunction }, /* MagicKernelSharp2013 */
-    { MagicKernelSharp, 4.5, 1.0, 0.0, 0.0, MagicKernelSharpWeightingFunction }, /* MagicKernelSharp2021 */
+    { MagicKernelSharp2013, 2.5, 1.0, 0.0, 0.0, MagicKernelSharpWeightingFunction }, /* MagicKernelSharp2013 */
+    { MagicKernelSharp2021, 4.5, 1.0, 0.0, 0.0, MagicKernelSharpWeightingFunction }, /* MagicKernelSharp2021 */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
