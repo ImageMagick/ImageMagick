@@ -992,7 +992,11 @@ static inline unsigned int XTime(unsigned char alpha)
 
 static inline unsigned int RotateRight(const unsigned int x)
 {
-  return((x >> 8) | ((x & 0xff) << 24));
+  unsigned int leastSignificantByte = x & 0xFF;
+  unsigned int shiftedRight = x >> 8;
+  unsigned int rotatedByte = leastSignificantByte << 24;
+
+  return shiftedRight | rotatedByte;;
 }
 
 static void SetAESKey(AESInfo *aes_info,const StringInfo *key)
