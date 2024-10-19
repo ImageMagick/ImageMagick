@@ -414,8 +414,11 @@ static double Lagrange(const double x,const ResizeFilter *resize_filter)
   return(value);
 }
 
-static double MagicKernelSharp(const double x,const ResizeFilter *resize_filter)
+static double MagicKernelSharp(const double x,
+  const ResizeFilter *magick_unused(resize_filter))
 {
+  magick_unreferenced(resize_filter);
+
   /*
     Magic Kernel with Sharp2021 filter
 
