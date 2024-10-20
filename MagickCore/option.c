@@ -1543,6 +1543,8 @@ static const OptionInfo
     { "Lanczos2Sharp", Lanczos2SharpFilter, UndefinedOptionFlag, MagickFalse },
     { "LanczosRadius", LanczosRadiusFilter, UndefinedOptionFlag, MagickFalse },
     { "LanczosSharp", LanczosSharpFilter, UndefinedOptionFlag, MagickFalse },
+    { "MagicKernelSharp2013", MagicKernelSharp2013Filter, UndefinedOptionFlag, MagickFalse },
+    { "MagicKernelSharp2021", MagicKernelSharp2021Filter, UndefinedOptionFlag, MagickFalse },
     { "Mitchell", MitchellFilter, UndefinedOptionFlag, MagickFalse },
     { "Parzen", ParzenFilter, UndefinedOptionFlag, MagickFalse },
     { "Point", PointFilter, UndefinedOptionFlag, MagickFalse },

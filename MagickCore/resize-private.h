@@ -40,6 +40,7 @@ typedef enum
   BohmanWeightingFunction,
   LagrangeWeightingFunction,
   CosineWeightingFunction,
+  MagicKernelSharpWeightingFunction,
   LastWeightingFunction
 } ResizeWeightingFunctionType;
 
