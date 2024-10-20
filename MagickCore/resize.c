@@ -420,9 +420,10 @@ static double MagicKernelSharp2013(const double x,
   magick_unreferenced(resize_filter);
 
   /*
-    Magic Kernel with Sharp2013 filter
+    Magic Kernel with Sharp 2013 filter.
 
-    See: Solving the mystery of Magic Kernel Sharp (https://johncostella.com/magic/mks.pdf)
+    See "Solving the mystery of Magic Kernel Sharp"
+    (https://johncostella.com/magic/mks.pdf)
   */
   if (x < 0.5)
     return(0.625+1.75*(0.5-x)*(0.5+x));
@@ -439,9 +440,10 @@ static double MagicKernelSharp2021(const double x,
   magick_unreferenced(resize_filter);
 
   /*
-    Magic Kernel with Sharp2021 filter
+    Magic Kernel with Sharp 2021 filter.
 
-    See: Solving the mystery of Magic Kernel Sharp (https://johncostella.com/magic/mks.pdf)
+    See "Solving the mystery of Magic Kernel Sharp"
+    (https://johncostella.com/magic/mks.pdf)
   */
   if (x < 0.5)
     return(577.0/576.0-239.0/144.0*x*x);
