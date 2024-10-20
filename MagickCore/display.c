@@ -6441,6 +6441,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       if (undo_image == (Image *) NULL)
         {
           (void) XBell(display,0);
+          ThrowXWindowException(ImageError,"NoImagesWereFound",
+            (*image)->filename);
           return;
         }
       cache_image=undo_image;
@@ -9583,8 +9585,8 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
   status=XMakeImage(display,resource_info,&windows->pan,image,
     windows->pan.width,windows->pan.height,exception);
   if (status == MagickFalse)
-    ThrowXWindowException(ResourceLimitError,
-     "MemoryAllocationFailed",image->filename);
+    ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   (void) XSetWindowBackgroundPixmap(display,windows->pan.id,
     windows->pan.pixmap);
   (void) XClearWindow(display,windows->pan.id);
@@ -10268,8 +10270,8 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       filelist=(char **) AcquireQuantumMemory((size_t) count,sizeof(*filelist));
       if (filelist == (char **) NULL)
         {
-          ThrowXWindowException(ResourceLimitError,
-            "MemoryAllocationFailed","...");
+          ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
+            "...");
           (void) XFreeStringList(files);
           return((Image *) NULL);
         }
