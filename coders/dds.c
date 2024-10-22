@@ -4277,11 +4277,9 @@ static MagickBooleanType WriteDDSImage(const ImageInfo *image_info,
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   pixelFormat=DDPF_FOURCC;
   compression=FOURCC_DXT5;
-  if ((image->alpha_trait & BlendPixelTrait) == 0)
-    compression=FOURCC_DXT1;
-  if (LocaleCompare(image_info->magick,"dxt1") == 0)
-    compression=FOURCC_DXT1;
-  if (image_info->compression == DXT1Compression)
+  if (((image->alpha_trait & BlendPixelTrait) == 0) ||
+      (LocaleCompare(image_info->magick,"dxt1") == 0) ||
+      (image_info->compression == DXT1Compression))
     compression=FOURCC_DXT1;
   else if (image_info->compression == NoCompression)
     pixelFormat=DDPF_RGB;
