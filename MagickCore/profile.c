@@ -1143,8 +1143,10 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                     source_info.scale[0]=100.0;
                     source_info.scale[1]=255.0;
                     source_info.scale[2]=255.0;
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
                     source_info.translate[1]=(-0.5);
                     source_info.translate[2]=(-0.5);
+#endif
                   }
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
                 else
@@ -1237,8 +1239,10 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                     target_info.scale[0]=0.01;
                     target_info.scale[1]=1/255.0;
                     target_info.scale[2]=1/255.0;
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
                     target_info.translate[1]=0.5;
                     target_info.translate[2]=0.5;
+#endif
                   }
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
                 else
