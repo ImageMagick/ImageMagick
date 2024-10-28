@@ -2490,10 +2490,10 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
 #if defined(C_LOSSLESS_SUPPORTED)
   if (image_info->compression == LosslessJPEGCompression)
     {
-      if (image->depth > 8)
-        jpeg_info->data_precision=12;
       if (image->depth > 12)
         jpeg_info->data_precision=16;
+      else if (image->depth > 8)
+        jpeg_info->data_precision=12;
     }
 #endif
   jpeg_info->in_color_space=JCS_RGB;
