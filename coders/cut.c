@@ -384,7 +384,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (offset < 0)
         ThrowCUTReaderException(CorruptImageError,"ImproperImageHeader");
       if(EOFBlob(image) != MagickFalse) goto CUT_KO;  /*wrong data*/
-      EncodedByte=(size_t) ((ssize_t) EncodedByte-i+1);
+      EncodedByte-=(size_t)(i+1);
       ldblk+=(ssize_t) RunCountMasked;
 
       RunCount=(unsigned char) ReadBlobByte(image);
