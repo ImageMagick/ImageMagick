@@ -1092,6 +1092,11 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
       sans_exception=DestroyExceptionInfo(sans_exception);
     }
   if (type_info == (const TypeInfo *) NULL)
+    type_info=GetTypeInfoByFamily((const char *) NULL,draw_info->style,
+      draw_info->stretch,draw_info->weight,exception);
+  if (type_info == (const TypeInfo *) NULL)
+    type_info=GetTypeInfo("*",exception);
+  if (type_info == (const TypeInfo *) NULL)
     {
       status=RenderFreetype(image,draw_info,draw_info->encoding,offset,metrics,
         exception);
