@@ -3,34 +3,34 @@
 
 
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="dark">
 <head>
-  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Advanced Linux Source Installation</title>
-  <meta name="keywords" content="advanced, linux, source, installation, image processing, image manipulation, image conversion, graphic design tool, image editing" />
-  <meta name="description" content="Advanced Linux Source Installation" />
+  <meta name="keywords" content="Advanced Linux Source Installation, Image Processing, Digital Image Editing, Image Conversion, Open-Source Software, Image Manipulation, Command-Line Image Tools" />
+  <meta name="description" content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta name="application-name" content="ImageMagick" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="copyright" content="Copyright (c) 1999 ImageMagick Studio LLC" />
   <meta itemprop='url' content='../' />
   <meta itemprop='title' content='ImageMagick' />
-  <meta itemprop='description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
+  <meta itemprop='description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta property='og:url' content='../' />
   <meta property='og:name' content='ImageMagick' />
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
+  <meta property='og:description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="advanced-linux-installation.html" rel="canonical" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
   <link href="assets/magick.css" rel="stylesheet" />
+  <script src="assets/color-modes.js" ></script>
   <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
-  <script async src="https://cse.google.com/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
+  <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -155,7 +155,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-40</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-39</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure</span></code></pre></ul>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -587,7 +587,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms </samp></pre>
 
 	  <p><a href="download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="../archive/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar xvzf ImageMagick-7.1.1-40.tar.gz</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-40</span></code></pre></ul>	  <p>Configure ImageMagick:</p>
+		<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar xvzf ImageMagick-7.1.1-39.tar.gz</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-39</span></code></pre></ul>	  <p>Configure ImageMagick:</p>
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>./configure --prefix=/opt --with-quantum-depth=16 \
   --disable-dependency-tracking --with-x=yes \
   --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \
@@ -609,7 +609,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms </samp></pre>
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="../index.html">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar jxvf ImageMagick-7.1.1-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-40</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>sudo make install</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar jxvf ImageMagick-7.1.1-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-39</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>sudo make install</span></code></pre></ul>
 <h2><a class="anchor" id="problems"></a>Dealing with Unexpected Problems</h2>
 
 <p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick</p>
@@ -677,3 +677,4 @@ no encode delegate for this image format </samp></pre>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
+<!-- Magick Cache 3rd November 2024 17:13 -->

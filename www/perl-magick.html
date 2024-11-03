@@ -3,34 +3,34 @@
 
 
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="dark">
 <head>
-  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – PerlMagick, Perl API</title>
-  <meta name="keywords" content="perlmagick, perl, api, image processing, image manipulation, image conversion, graphic design tool, image editing" />
-  <meta name="description" content="Use PerlMagick to read, manipulate, or write an image or image sequence from within a Perl script." />
+  <meta name="keywords" content="PerlMagick, Perl API, Image Processing, Digital Image Editing, Image Conversion, Open-Source Software, Image Manipulation, Command-Line Image Tools" />
+  <meta name="description" content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta name="application-name" content="ImageMagick" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="copyright" content="Copyright (c) 1999 ImageMagick Studio LLC" />
   <meta itemprop='url' content='../' />
   <meta itemprop='title' content='ImageMagick' />
-  <meta itemprop='description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
+  <meta itemprop='description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta property='og:url' content='../' />
   <meta property='og:name' content='ImageMagick' />
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
+  <meta property='og:description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="perl-magick.html" rel="canonical" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
   <link href="assets/magick.css" rel="stylesheet" />
+  <script src="assets/color-modes.js" ></script>
   <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
-  <script async src="https://cse.google.com/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
+  <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -237,7 +237,7 @@ $image = Image::Magick::Q16-&gt;new;
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>$image = Image::Magick-&gt;new(size=&gt;'384x256');
 </samp></pre>
 
-<p>Next you will want to read an image or image sequence, manipulate it, and then display or write it. The input and output methods for PerlMagick are defined in <a href="#read">Read or Write an Image</a>. See <a href="#set-attribute">Set an Image Attribute</a> for methods that affect the way an image is read or written. Refer to <a href="#manipulate">Manipulate an Image</a> for a list of methods to transform an image. <a href="#get-attribute">Get an Image Attribute</a> describes how to retrieve an attribute for an image. Refer to <a href="#montage">Create an Image Montage</a> for details about tiling your images as thumbnails on a background. Finally, some methods do not neatly fit into any of the categories just mentioned. Review <a href="#misc">Miscellaneous Methods</a> for a list of these methods.</p>
+<p>Next you will want to read an image or image sequence, manipulate it, and then display or write it. The input and output methods for PerlMagick are defined in <a href="#read">Read or Write an Image</a>. See <a href="#set-attribute">Set an Image Attribute</a> for methods that affect the way an image is read or written. Refer to <a href="#manipulate">Manipulate an Image</a> for a list of methods to transform an image. <a href="#get-attribute">Get an Image Attribute</a> describes how to retrieve an attribute for an image. Refer to <a href="#montage">Create an Image Montage</a> for details about tiling your images as thumbnails on a background. Finally, some methods do not neatly fit into any of the categories just mentioned. Review <a href="#miscellaneous">Miscellaneous Methods</a> for a list of these methods.</p>
 
 <p>Once you are finished with a PerlMagick object you should consider destroying it. Each image in an image sequence is stored in virtual memory. This can potentially add up to mebibytes of memory. Upon destroying a PerlMagick object, the memory is returned for use by other Perl methods. The recommended way to destroy an object is with <samp>undef</samp>:</p>
 
@@ -497,7 +497,7 @@ $image-&gt;[$x]-&gt;Frame("100x200");
   <tr>
     <td>Annotate</td>
     <td>text=&gt;<i>string</i>, font=&gt;<i>string</i>, family=&gt;<i>string</i>, style=&gt;{Normal, Italic, Oblique, Any}, stretch=&gt;{Normal, UltraCondensed, ExtraCondensed, Condensed, SemiCondensed, SemiExpanded, Expanded, ExtraExpanded, UltraExpanded}, weight=&gt;<i>integer</i>, pointsize=&gt;<i>integer</i>, density=&gt;<i>geometry</i>, stroke=&gt;<i><a href="color.html">color name</a></i>, strokewidth=&gt;<i>integer</i>, fill=&gt;<i><a href="color.html">color name</a></i>, undercolor=&gt;<i><a href="color.html">color name</a></i>, kerning=&gt;<i>float</i>, geometry=&gt;<i>geometry</i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}, antialias=&gt;{true, false}, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt;<i>float, float</i>, rotate=&gt;<i>float</i>. skewX=&gt;<i>float</i>, skewY=&gt; <i>float</i>, align=&gt;{Left, Center, Right}, encoding=&gt;{UTF-8}, interline-spacing=&gt;<i>double</i>, interword-spacing=&gt;<i>double</i>, direction=&gt;{right-to-left, left-to-right}, decorate=&gt;{none, underline, overline, line-through}, word-break=&gt;{normal, break-word}</td>
-    <td>annotate an image with text. See <a href="#misc">QueryFontMetrics</a> to get font metrics without rendering any text.</td>
+    <td>annotate an image with text. See <a href="#miscellaneous">QueryFontMetrics</a> to get font metrics without rendering any text.</td>
   </tr>
 
   <tr>
@@ -2726,4 +2726,4 @@ XServerWarning
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 15th September 2024 23:19 -->
+<!-- Magick Cache 3rd November 2024 16:46 -->

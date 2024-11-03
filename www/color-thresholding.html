@@ -3,34 +3,34 @@
 
 
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="dark">
 <head>
-  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Color Thresholding</title>
-  <meta name="keywords" content="color, thresholding, image processing, image manipulation, image conversion, graphic design tool, image editing" />
-  <meta name="description" content="Color Thresholding" />
+  <meta name="keywords" content="Color Thresholding, Image Processing, Digital Image Editing, Image Conversion, Open-Source Software, Image Manipulation, Command-Line Image Tools" />
+  <meta name="description" content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta name="application-name" content="ImageMagick" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="copyright" content="Copyright (c) 1999 ImageMagick Studio LLC" />
   <meta itemprop='url' content='../' />
   <meta itemprop='title' content='ImageMagick' />
-  <meta itemprop='description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
+  <meta itemprop='description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta property='og:url' content='../' />
   <meta property='og:name' content='ImageMagick' />
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
+  <meta property='og:description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="color-thresholding.html" rel="canonical" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
   <link href="assets/magick.css" rel="stylesheet" />
+  <script src="assets/color-modes.js" ></script>
   <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
-  <script async src="https://cse.google.com/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
+  <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -146,7 +146,7 @@
 
 <p>The following are some typical examples of use:</p>
 
-<ul><img class="img-fluid border rounded-3 shadow-lg mb-4" src="../images/color-thresholding.jpg" alt="[Color Thresholding]" width="265" height="333" name="color-thresholding" /></ul>
+<ul><img class="img-fluid img-thumbnail" src="../images/color-thresholding.jpg" alt="[Color Thresholding]" width="265" height="333" name="color-thresholding" /></ul>
 
 <p>Start by choosing one sRGB color (somewhere on the image -- in this case the yellow of the flowers) and offset it low and high to form two sRGB colors. The lower values form the start color and the higher values form the stop color. Begin with <samp>sRGB(183,132,20)</samp>. Offset its values by +-20 to identify the start color (-) and the stop color (+); namely, R=183+-20, G=132+-20, and B=40+-20:</p>
 
@@ -154,13 +154,13 @@
 
 <p>this returns the outline of the yellow flower petals:</p>
 
-<ul><img class="img-fluid border rounded-3 shadow-lg mb-4" src="../images/color-thresholding-hsv.gif" alt="[Color Thresholding]" width="265" height="333" name="color-thresholding" /></ul>
+<ul><img class="img-fluid img-thumbnail" src="../images/color-thresholding-hsv.gif" alt="[Color Thresholding]" width="265" height="333" name="color-thresholding" /></ul>
 
 <p>Now, pick two RGB colors: <samp>sRGB(159,150,0)</samp> and <samp>sRGB(205,100,45):</samp></p>
 
 <pre class="code">magick monet.jpg -color-threshold 'sRGB(159,150,0)-sRGB(205,100,45)' monet.gif</samp></ul>
 
-<ul><img class="img-fluid border rounded-3 shadow-lg mb-4" src="../images/color-thresholding-rgb.gif" alt="[Color Thresholding]" width="265" height="333" name="color-thresholding" /></ul>
+<ul><img class="img-fluid img-thumbnail" src="../images/color-thresholding-rgb.gif" alt="[Color Thresholding]" width="265" height="333" name="color-thresholding" /></ul>
 
 <p>Next, select one sRGB color and convert it to HSV and offset its values low and high to generate the start and stop HSV colors. Use -colorspace HSV to convert the image to HSV. For our HSV example, we pick <samp>sRGB(183,132,20)</samp> and convert to HSV:</p>
 
@@ -174,7 +174,7 @@ magick xc:"srgb(183,132,20)" -colorspace HSV txt:
 
 <pre class="code">magick monet.jpg -colorspace HSV -color-threshold 'hsv(21,79%,62%)-hsv(61,99%,85%)' monet.gif</pre>
 
-<ul><img class="img-fluid border rounded-3 shadow-lg mb-4" src="../images/color-thresholding-rgb.gif" alt="[Color Thresholding]" width="265" height="333" name="color-thresholding" /></ul>
+<ul><img class="img-fluid img-thumbnail" src="../images/color-thresholding-rgb.gif" alt="[Color Thresholding]" width="265" height="333" name="color-thresholding" /></ul>
 
 <p>Next, pick two RGB colors. Use <samp>-colorspace HSV</samp> to convert the image to HSV, and apply the RGB start and stop colors.  Choose <samp>sRGB(158,77,33)</samp> and <samp>sRGB(213,217,2)</samp>:</p>
 
@@ -182,7 +182,7 @@ magick xc:"srgb(183,132,20)" -colorspace HSV txt:
 
 <p>Here is the expected results:</p>
 
-<ul><img class="img-fluid border rounded-3 shadow-lg mb-4" src="../images/color-thresholding-hsv-rgb.gif" alt="[Color Thresholding]" width="265" height="333" name="color-thresholding" /></ul>
+<ul><img class="img-fluid img-thumbnail" src="../images/color-thresholding-hsv-rgb.gif" alt="[Color Thresholding]" width="265" height="333" name="color-thresholding" /></ul>
 
 <p>Next, choose two sRGB colors and convert them to gray. Now convert the image to gray and use the gray thresholding colors.</p>
 
@@ -202,7 +202,7 @@ magick xc:"sRGB(205,100,45)" -colorspace gray txt:
 
 <p>Here is the results of the color thresholding operation:</p>
 
-<ul><img class="img-fluid border rounded-3 shadow-lg mb-4" src="../images/color-thresholding-gray.gif" alt="[Color Thresholding]" width="265" height="333" name="Color Thresholding" /></ul>
+<ul><img class="img-fluid img-thumbnail" src="../images/color-thresholding-gray.gif" alt="[Color Thresholding]" width="265" height="333" name="Color Thresholding" /></ul>
 </div>
   </div>
   </main><!-- /.container -->
@@ -233,4 +233,4 @@ magick xc:"sRGB(205,100,45)" -colorspace gray txt:
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 15th September 2024 23:05 -->
+<!-- Magick Cache 3rd November 2024 17:07 -->

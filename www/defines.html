@@ -3,34 +3,34 @@
 
 
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="dark">
 <head>
-  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Defines</title>
-  <meta name="keywords" content="defines, image processing, image manipulation, image conversion, graphic design tool, image editing" />
-  <meta name="description" content="Maximize image processing with the -define command-line option, tailor coders/decoders, and control operations with precision for optimal results." />
+  <meta name="keywords" content="Defines, Image Processing, Digital Image Editing, Image Conversion, Open-Source Software, Image Manipulation, Command-Line Image Tools" />
+  <meta name="description" content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta name="application-name" content="ImageMagick" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="copyright" content="Copyright (c) 1999 ImageMagick Studio LLC" />
   <meta itemprop='url' content='../' />
   <meta itemprop='title' content='ImageMagick' />
-  <meta itemprop='description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
+  <meta itemprop='description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta property='og:url' content='../' />
   <meta property='og:name' content='ImageMagick' />
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
+  <meta property='og:description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="defines.html" rel="canonical" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
   <link href="assets/magick.css" rel="stylesheet" />
+  <script src="assets/color-modes.js" ></script>
   <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
-  <script async src="https://cse.google.com/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
+  <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -1540,6 +1540,64 @@ use:</p>
   </tr>
 
   <tr>
+    <td>uhdr:hdr-color-gamut=<var>{bt709|display_p3|bt2100}</var></td>
+    <td>Set input HDR intent color gamut. Used during encoding. Required.</td>
+  </tr>
+
+  <tr>
+    <td>uhdr:hdr-color-transfer=<var>{hlg|pq|linear}</var></td>
+    <td>Set input HDR intent color transfer. Used during encoding. Required.</td>
+  </tr>
+
+  <tr>
+    <td>uhdr:sdr-color-gamut=<var>{bt709|display_p3|bt2100}</var></td>
+    <td>Set input SDR intent color gamut. Used during encoding. Required.</td>
+  </tr>
+
+  <tr>
+    <td>uhdr:gainmap-quality=<var>value</var></td>
+    <td>Set gainmap image encoding quality factor. The valid range is 1 to 100,
+        with 1 indicating lowest image quality or highest compression and 100
+        indicating best quality or least effective compression. Used during
+        encoding. Optional. Default value is 95.</td>
+  </tr>
+
+  <tr>
+    <td>uhdr:gainmap-gamma=<var>value</var></td>
+    <td>Set gainmap image encoding gamma. Must be greater than 0.0. Used during
+        encoding. Optional. Default value is 1.0.</td>
+  </tr>
+
+  <tr>
+    <td>uhdr:gainmap-min-content-boost=<var>value</var></td>
+    <td>Specify the minimum allowed ratio of the linear luminance for the target
+        HDR rendition relative to (divided by) that of the SDR image, at a given
+        pixel. In other words, this specifies how much darker a pixel can get,
+        when shown on an HDR display, relative to the SDR rendition. Must be
+        greater than 0.0. Used during encoding. Optional. If not configured,
+        this is computed dynamically based on the input.</td>
+  </tr>
+
+  <tr>
+    <td>uhdr:gainmap-max-content-boost=<var>value</var></td>
+    <td>Specify the maximum allowed ratio of the linear luminance for the target
+        HDR rendition relative to (divided by) that of the SDR image, at a given
+        pixel. In other words, this specifies how much brighter a pixel can get,
+        when shown on an HDR display, relative to the SDR rendition. Must be
+        greater than 0.0. Used during encoding. Optional. If not configured,
+        this is computed dynamically based on the input.</td>
+  </tr>
+
+  <tr>
+    <td>uhdr:output-color-transfer=<var>{hlg|pq|linear|srgb}</var></td>
+    <td>Set the target display transfer characteristics on which the
+        ultrahdr image is rendered. Used during decoding. Required.
+        If <em>srgb</em>, only sdr intent is decoded and sent as output,
+        otherwise, sdr intent and gainmap are decoded, combined into
+        hdr image and sent as output.</td>
+  </tr>
+  
+  <tr>
     <td>video:intermediate-format=<var>{pam,webp}</var></td>
     <td>Set the video intermediate format option of <samp>ffmpeg</samp>.</td>
   </tr>
@@ -1806,4 +1864,4 @@ use:</p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 15th September 2024 23:05 -->
+<!-- Magick Cache 3rd November 2024 17:14 -->

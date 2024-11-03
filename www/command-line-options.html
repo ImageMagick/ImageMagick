@@ -3,34 +3,34 @@
 
 
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="dark">
 <head>
-  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Command-line Options</title>
-  <meta name="keywords" content="command-line, options, image processing, image manipulation, image conversion, graphic design tool, image editing" />
-  <meta name="description" content="Influence the default behavior of ImageMagick tools with command-line options." />
+  <meta name="keywords" content="Command-line Options, Image Processing, Digital Image Editing, Image Conversion, Open-Source Software, Image Manipulation, Command-Line Image Tools" />
+  <meta name="description" content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta name="application-name" content="ImageMagick" />
   <meta name="application-url" content="https://imagemagick.org" />
   <meta name="copyright" content="Copyright (c) 1999 ImageMagick Studio LLC" />
   <meta itemprop='url' content='../' />
   <meta itemprop='title' content='ImageMagick' />
-  <meta itemprop='description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
+  <meta itemprop='description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta property='og:url' content='../' />
   <meta property='og:name' content='ImageMagick' />
   <meta property='og:image' content='../images/logo.png' />
   <meta property='og:type' content='website' />
   <meta property='og:site_name' content='ImageMagick' />
-  <meta property='og:description' content="ImageMagick is a free and open-source software suite used for editing and manipulating digital images. It provides a versatile set of tools for various image-related tasks. You can use ImageMagick to resize, convert, and apply various transformations to images. It supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR." />
+  <meta property='og:description' content="ImageMagick is a powerful, open-source software suite for creating, editing, converting, and manipulating images in over 200 formats. Ideal for web developers, graphic designers, and researchers, it offers versatile tools for image processing, including batch processing, format conversion, and complex image transformations." />
   <meta name="google-site-verification" content="_bMOCDpkx9ZAzBwb2kF3PRHbfUUdFj2uO8Jd1AXArz4" />
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="command-line-options.html" rel="canonical" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
   <link href="assets/magick.css" rel="stylesheet" />
+  <script src="assets/color-modes.js" ></script>
   <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
-  <script async src="https://cse.google.com/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
+  <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -581,7 +581,7 @@ coordinates (<var>x'</var>, <var>y'</var>) of a pixel at
 position (<var>x</var>, <var>y</var>) in the original
 image are calculated using the following matrix equation.</p>
 
-<p class="text-center"><img class="img-thumbnail" alt="affine transformation"  src="../images/affine.png"/> </p>
+<p class="text-center"><img class="img-fluid img-thumbnail" alt="affine transformation"  src="../images/affine.png"/> </p>
 
 <p> The size of the resulting image is that of the smallest rectangle that
 contains the transformed source image.  The parameters
@@ -761,7 +761,7 @@ conventionally considered to be <var>downward</var> for images.)</p>
 <p>The new (transformed) coordinates (<var>x'</var>, <var>y'</var>) of a pixel at position (<var>x</var>, <var>y</var>) in the image are calculated using the following matrix
 equation.</p>
 
-<p class="text-center"><img class="img-thumbnail" alt="annotate transformation"  src="../images/annotate.png"/></p>
+<p class="text-center"><img class="img-fluid img-thumbnail" alt="annotate transformation"  src="../images/annotate.png"/></p>
 
 <p>If <var>t<sub>x</sub></var> and <var>t<sub>y</sub></var> are omitted, they default to 0. This makes the
 bottom-left of the text becomes the upper-left corner of the image, which is
@@ -1078,7 +1078,7 @@ the background image is weighted by the exact opposite amount. That is a
 <p>Convolve the image with a Gaussian or normal distribution using the given
 <var >Sigma</var> value.  The formula is:</p>
 
-<p class="text-center"><img class="img-thumbnail" alt="gaussian distribution" width="243px" height="42px" src="../images/gaussian-blur.png"/></p>
+<p class="text-center"><img class="img-fluid img-thumbnail" alt="gaussian distribution" width="243px" height="42px" src="../images/gaussian-blur.png"/></p>
 
 <p>The <var>sigma</var> value is the important argument, and
 determines the actual amount of blurring that will take place. </p>
@@ -1629,7 +1629,7 @@ of a 3D color cube. </p>
   <h2><a class="anchor" id="coalesce"></a>-coalesce</h2>
 </div>
 
-<p class="magick-description">Fully define the look of each frame of an GIF animation sequence, to form a 'film strip' animation.</p>
+<p class="magick-description">Fully define the look of each frame of a GIF animation sequence, to form a 'film strip' animation.</p>
 
 <p>Overlay each image in an image sequence according to
 its <a href="#dispose">-dispose</a> meta-data, to reproduce the look of
@@ -4282,7 +4282,7 @@ chunk, use</p>
 <p>Convolve the image with a Gaussian or normal distribution using the given
 <var >Sigma</var> value.  The formula is:</p>
 
-<p class="text-center"><img class="img-thumbnail" alt="gaussian distribution" width="243px" height="42px" src="../images/gaussian-blur.png"/> </p>
+<p class="text-center"><img class="img-fluid img-thumbnail" alt="gaussian distribution" width="243px" height="42px" src="../images/gaussian-blur.png"/> </p>
 
 <p>The <var>sigma</var> value is the important argument, and
 determines the actual amount of blurring that will take place. </p>
@@ -5771,7 +5771,7 @@ argument determine how many images to interpolate between each image. </p>
   <h2><a class="anchor" id="mosaic"></a>-mosaic</h2>
 </div>
 
-<p class="magick-description">An simple alias for the <a href="#layers" >-layers</a> method "mosaic"</p>
+<p class="magick-description">A simple alias for the <a href="#layers" >-layers</a> method "mosaic"</p>
 
 
 <div style="margin: auto;">
@@ -6681,6 +6681,11 @@ light conditions. </p>
 <p class="magick-description">Set scene number.</p>
 
 <p>This option sets the scene number of an image or the first image in an image sequence.</p>
+
+
+<div style="margin: auto;">
+  <h2><a class="anchor" id="screen"></a>-screen</h2>
+</div>
 
 <p class="magick-description">Specify the screen to capture.</p>
 
@@ -8006,4 +8011,4 @@ but with strict boolean masking. </p>
   <script src="assets/magick.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 15th September 2024 22:07 -->
+<!-- Magick Cache 3rd November 2024 16:42 -->
