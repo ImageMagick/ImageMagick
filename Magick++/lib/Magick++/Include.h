@@ -32,7 +32,7 @@
 #include <errno.h>
 #include <stdint.h>
 
-void* operator new(std::size_t, void*) throw();
+void* operator new(size_t, void*) throw();
 
 //
 // Include ImageMagick headers into namespace "MagickCore". If
