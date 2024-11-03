@@ -32,8 +32,6 @@
 #include <errno.h>
 #include <stdint.h>
 
-void* operator new(size_t, void*) throw();
-
 //
 // Include ImageMagick headers into namespace "MagickCore". If
 // MAGICKCORE_IMPLEMENTATION is defined, include ImageMagick development
