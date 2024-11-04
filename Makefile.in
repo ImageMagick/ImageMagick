@@ -3572,6 +3572,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 type_include_files = @type_include_files@
 urw_base35_font_dir = @urw_base35_font_dir@
+urw_base35_type1_font_dir = @urw_base35_type1_font_dir@
 windows_font_dir = @windows_font_dir@
 topincludedir = @includedir@/MagickCore
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
@@ -3712,6 +3713,7 @@ configlib_DATA = \
   config/type-dejavu.xml \
   config/type-ghostscript.xml \
   config/type-urw-base35.xml \
+  config/type-urw-base35-type1.xml \
   config/type-windows.xml
 
 CONFIG_EXTRA_DIST = \
@@ -3740,6 +3742,7 @@ CONFIG_EXTRA_DIST = \
   config/type-dejavu.xml.in \
   config/type-ghostscript.xml.in \
   config/type-urw-base35.xml.in \
+  config/type-urw-base35-type1.xml.in \
   config/type-windows.xml.in \
   config/type.xml.in
 

@@ -44,6 +44,7 @@ configlib_DATA = \
   config/type-dejavu.xml \
   config/type-ghostscript.xml \
   config/type-urw-base35.xml \
+  config/type-urw-base35-type1.xml \
   config/type-windows.xml
 
 CONFIG_EXTRA_DIST = \
@@ -72,5 +73,6 @@ CONFIG_EXTRA_DIST = \
   config/type-dejavu.xml.in \
   config/type-ghostscript.xml.in \
   config/type-urw-base35.xml.in \
+  config/type-urw-base35-type1.xml.in \
   config/type-windows.xml.in \
   config/type.xml.in
