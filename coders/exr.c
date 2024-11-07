@@ -182,6 +182,12 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
   PixelChannel *pixel_channels,size_t *pixel_size,uint8_t **data,
   ExceptionInfo *exception)
 {
+  char
+    channel_name[MagickPathExtent];
+
+  const char
+    *prefix;
+
   exr_coding_channel_info_t
     *channel;
   
@@ -192,6 +198,7 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
     status;
 
   size_t
+    prefix_length,
     number_meta_channels;
   
   uint8_t
@@ -204,14 +211,38 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
         image->filename);
     }
   channel=decoder.channels;
+  prefix_length=0;
+  prefix=strrchr(decoder.channels[0].channel_name,'.');
+  if (prefix != (const char*) NULL)
+    {
+      /*
+      * When all channel names have the same prefix, we will skip that
+      * part when determining the channel type.
+      */
+      prefix_length=1+(size_t)(prefix-decoder.channels[0].channel_name);
+      if (prefix_length < MagickPathExtent)
+        {
+          CopyMagickString(channel_name,decoder.channels[0].channel_name
+            ,prefix_length+1);
+          channel=decoder.channels;
+          for (c = 0; c < decoder.channel_count; ++c)
+          {
+            if (strncmp(channel->channel_name,channel_name,
+                  prefix_length) != 0)
+              {
+                prefix_length=0;
+                break;
+              }
+            channel++;
+          }
+        }
+    }
+  channel=decoder.channels;
   *pixel_size=0;
   number_meta_channels=0;
   status=MagickTrue;
   for (c = 0; c < decoder.channel_count; ++c)
   {
-    char
-      channel_name[MagickPathExtent];
-
     if ((channel->data_type != EXR_PIXEL_HALF) &&
         (channel->data_type != EXR_PIXEL_FLOAT))
       {
@@ -222,18 +253,18 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
         break;
       }
     *pixel_size+=(size_t) channel->bytes_per_element;
-    if (LocaleNCompare(channel->channel_name,"R",1) == 0)
+    if (LocaleNCompare(channel->channel_name+prefix_length,"R",1) == 0)
       pixel_channels[c]=RedPixelChannel;
-    else if (LocaleNCompare(channel->channel_name,"G",1) == 0)
+    else if (LocaleNCompare(channel->channel_name+prefix_length,"G",1) == 0)
       pixel_channels[c]=GreenPixelChannel;
-    else if (LocaleNCompare(channel->channel_name,"B",1) == 0)
+    else if (LocaleNCompare(channel->channel_name+prefix_length,"B",1) == 0)
       pixel_channels[c]=BluePixelChannel;
-    else if (LocaleNCompare(channel->channel_name,"A",1) == 0)
+    else if (LocaleNCompare(channel->channel_name+prefix_length,"A",1) == 0)
       {
         pixel_channels[c]=AlphaPixelChannel;
         image->alpha_trait=BlendPixelTrait;
       }
-    else if (LocaleNCompare(channel->channel_name,"Y",1) == 0)
+    else if (LocaleNCompare(channel->channel_name+prefix_length,"Y",1) == 0)
       pixel_channels[c]=IndexPixelChannel; /* Gray channel */
     else
       {
