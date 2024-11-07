@@ -1354,7 +1354,7 @@ static void WritePDFValue(Image* image,const char *keyword,
       (void) WriteBlobString(image,"/");
       (void) WriteBlobString(image,keyword);
       (void) WriteBlobString(image," <FEFF");
-      for (i=0; i < (ssize_t) length; i++)
+      for (i=0; i < (ssize_t) length - 1; i++)
       {
         (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 12) & 0x0f]);
         (void) WriteBlobByte(image,hex_digits[(utf16[i] >> 8) & 0x0f]);
