@@ -32,7 +32,7 @@
 #include <errno.h>
 #include <stdint.h>
 
-#if __cplusplus >= 201703L && _GLIBCXX_USE_CXX11_ABI
+#if __cplusplus >= 201703L
 void* operator new(size_t, void*) throw();
 #endif
 
