@@ -86,7 +86,7 @@ namespace MagickCore
 #      endif
 #      define MagickPPPrivate extern __declspec(dllimport)
 #    else
-#      if defined(__BORLANDC__) || defined(__MINGW32__)
+#      if defined(__MINGW32__)
 #        define MagickPPExport __declspec(dllexport)
 #        define MagickPPPrivate __declspec(dllexport)
 #      else
