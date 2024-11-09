@@ -76,6 +76,22 @@
 #define OPJ_COMPUTE_NUMERIC_VERSION(major,minor,patch) ((major<<24) | (minor<<16) | (patch<<8) | 0)
 #define OPJ_NUMERIC_VERSION OPJ_COMPUTE_NUMERIC_VERSION(OPJ_VERSION_MAJOR,OPJ_VERSION_MINOR,OPJ_VERSION_BUILD)
 #endif
+
+/*
+  Typedef declarations.
+*/
+#if defined(MAGICKCORE_JPEG_DELEGATE)
+typedef struct _JP2CompsInfo
+{
+  double
+    scale;
+
+  ssize_t
+    addition,
+    pad,
+    y_index;
+} JP2CompsInfo;
+#endif
 
 /*
   Forward declarations.
@@ -276,6 +292,9 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     jp2_status;
+
+  JP2CompsInfo
+    comps_info[MaxPixelChannels];
 
   MagickBooleanType
     status;
@@ -525,6 +544,15 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       opj_image_destroy(jp2_image);
       return(DestroyImageList(image));
     }
+  memset(comps_info,0,MaxPixelChannels*sizeof(JP2CompsInfo));
+  for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
+  {
+    comps_info[i].scale=(double) QuantumRange/(double) 
+      ((MagickULLConstant(1) << jp2_image->comps[i].prec)-1);
+    comps_info[i].addition=(jp2_image->comps[i].sgnd ?
+      MagickULLConstant(1) << (jp2_image->comps[i].prec-1) : 0);
+    comps_info[i].pad=(ssize_t) image->columns % jp2_image->comps[i].dx;
+  }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     Quantum
@@ -533,6 +561,11 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     ssize_t
       x;
 
+    for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
+    {
+      comps_info[i].y_index=y/jp2_image->comps[i].dy*((ssize_t) image->columns+
+        comps_info[i].pad);
+    }
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
@@ -541,16 +574,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (ssize_t) jp2_image->numcomps; i++)
       {
         double
-          pixel,
-          scale;
+          pixel;
 
         ssize_t
-          index,
-          pad;
+          index;
 
-        pad=(ssize_t) image->columns % jp2_image->comps[i].dx;
-        index=y/jp2_image->comps[i].dy*((ssize_t) image->columns+pad)/
-          jp2_image->comps[i].dx+x/jp2_image->comps[i].dx;
+        index=comps_info[i].y_index/jp2_image->comps[i].dx+x/
+          jp2_image->comps[i].dx;
         if ((index < 0) ||
             (index >= (jp2_image->comps[i].h*jp2_image->comps[i].w)))
           {
@@ -559,11 +589,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(CoderError,
               "IrregularChannelGeometryNotSupported")
           }
-        scale=(double) QuantumRange/(double) ((MagickULLConstant(1) <<
-          jp2_image->comps[i].prec)-1);
-        pixel=scale*(jp2_image->comps[i].data[index]+(ssize_t) 
-          (jp2_image->comps[i].sgnd ? MagickULLConstant(1) <<
-          (jp2_image->comps[i].prec-1) : 0));
+        pixel=comps_info[i].scale*(jp2_image->comps[i].data[index]+
+          comps_info[i].addition);
         switch (i)
         {
           case 0:
