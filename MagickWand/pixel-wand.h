@@ -38,7 +38,6 @@ extern WandExport double
   PixelGetFuzz(const PixelWand *) magick_attribute((__pure__)),
   PixelGetGreen(const PixelWand *) magick_attribute((__pure__)),
   PixelGetMagenta(const PixelWand *) magick_attribute((__pure__)),
-  PixelGetAlpha(const PixelWand *) magick_attribute((__pure__)),
   PixelGetRed(const PixelWand *) magick_attribute((__pure__)),
   PixelGetYellow(const PixelWand *) magick_attribute((__pure__));
 
@@ -70,7 +69,6 @@ extern WandExport Quantum
   PixelGetGreenQuantum(const PixelWand *) magick_attribute((__pure__)),
   PixelGetIndex(const PixelWand *) magick_attribute((__pure__)),
   PixelGetMagentaQuantum(const PixelWand *) magick_attribute((__pure__)),
-  PixelGetAlphaQuantum(const PixelWand *) magick_attribute((__pure__)),
   PixelGetRedQuantum(const PixelWand *) magick_attribute((__pure__)),
   PixelGetYellowQuantum(const PixelWand *) magick_attribute((__pure__));
 
@@ -100,9 +98,6 @@ extern WandExport void
   PixelSetIndex(PixelWand *,const Quantum),
   PixelSetMagenta(PixelWand *,const double),
   PixelSetMagentaQuantum(PixelWand *,const Quantum),
-  PixelSetPixelColor(PixelWand *,const PixelInfo *),
-  PixelSetAlpha(PixelWand *,const double),
-  PixelSetAlphaQuantum(PixelWand *,const Quantum),
   PixelSetPixelColor(PixelWand *,const PixelInfo *),
   PixelSetQuantumPixel(const Image *,const Quantum *,PixelWand *),
   PixelSetRed(PixelWand *,const double),
