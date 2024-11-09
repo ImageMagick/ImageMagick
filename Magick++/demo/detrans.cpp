@@ -14,6 +14,7 @@
 //
 
 #include <Magick++.h>
+#include <cstdlib>
 #include <iostream>
 using namespace std; 
 using namespace Magick;

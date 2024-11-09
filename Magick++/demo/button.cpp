@@ -8,6 +8,7 @@
 // 
 
 #include <Magick++.h>
+#include <cstdlib>
 #include <string>
 #include <iostream>
 
