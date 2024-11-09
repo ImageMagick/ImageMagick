@@ -576,8 +576,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
             SetPixelRed(image,ClampToQuantum(pixel),q);
-            SetPixelGreen(image,ClampToQuantum(pixel),q);
-            SetPixelBlue(image,ClampToQuantum(pixel),q);
             break;
           }
           case 1:
