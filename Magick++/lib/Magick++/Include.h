@@ -32,10 +32,6 @@
 #include <errno.h>
 #include <stdint.h>
 
-#if __cplusplus >= 201703L
-void* operator new(size_t, void*) throw();
-#endif
-
 //
 // Include ImageMagick headers into namespace "MagickCore". If
 // MAGICKCORE_IMPLEMENTATION is defined, include ImageMagick development
