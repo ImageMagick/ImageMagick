@@ -120,7 +120,7 @@ jobs:
 
     - name: Install ImageMagick
       run: |
-        make install
+        sudo make install
 
   build_windows:
     name: Build Windows ${{matrix.platform}}
