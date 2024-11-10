@@ -381,7 +381,7 @@ static size_t EncodeImage(Image *image,const size_t bytes_per_line,
           break;
       *q++=(unsigned char) i;
       *q++=(*p);
-      p+=i;
+      p+=(ptrdiff_t) i;
     }
     /*
       End of line.

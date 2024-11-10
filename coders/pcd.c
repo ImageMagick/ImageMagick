@@ -460,9 +460,9 @@ static void Upsample(const size_t width,const size_t height,
       *q=(unsigned char) ((((size_t) *p)+((size_t) *r)+1) >> 1);
       *(q+1)=(unsigned char) ((((size_t) *p)+((size_t) *(p+2))+
         ((size_t) *r)+((size_t) *(r+2))+2) >> 2);
-      q+=2;
-      p+=2;
-      r+=2;
+      q+=(ptrdiff_t) 2;
+      p+=(ptrdiff_t) 2;
+      r+=(ptrdiff_t) 2;
     }
     *q++=(unsigned char) ((((size_t) *p++)+((size_t) *r++)+1) >> 1);
     *q++=(unsigned char) ((((size_t) *p++)+((size_t) *r++)+1) >> 1);

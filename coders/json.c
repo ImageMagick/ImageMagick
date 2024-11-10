@@ -300,7 +300,7 @@ static void JSONFormatLocaleFile(FILE *file,const char *format,
         if (((int) *p >= 0x00) && ((int) *p <= 0x1f))
           {
             (void) FormatLocaleString(q,7,"\\u%04X",(int) *p);
-            q+=6;
+            q+=(ptrdiff_t) 6;
             break;
           }
         *q++=(*p);

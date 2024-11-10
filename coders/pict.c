@@ -525,7 +525,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
             &number_pixels);
           if ((size_t) (q-pixels+(ssize_t) number_pixels) <= *extent)
             (void) memcpy(q,p,(size_t) number_pixels);
-          q+=number_pixels;
+          q+=(ptrdiff_t) number_pixels;
           j+=(ssize_t) (length*bytes_per_pixel+1);
         }
       else
@@ -538,7 +538,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
           {
             if ((size_t) (q-pixels+(ssize_t) number_pixels) <= *extent)
               (void) memcpy(q,p,(size_t) number_pixels);
-            q+=number_pixels;
+            q+=(ptrdiff_t) number_pixels;
           }
           j+=(ssize_t) bytes_per_pixel+1;
         }
@@ -1342,7 +1342,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               if ((tile_image->storage_class == DirectClass) &&
                   (pixmap.bits_per_pixel != 16))
                 {
-                  p+=(pixmap.component_count-1)*(ssize_t) tile_image->columns;
+                  p+=(ptrdiff_t) (pixmap.component_count-1)*(ssize_t) tile_image->columns;
                   if (p < pixels)
                     break;
                 }

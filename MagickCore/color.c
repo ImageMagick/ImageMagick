@@ -2250,7 +2250,7 @@ static MagickStatusType ParseCSSColor(const char *magick_restrict color,
         geometry_info->rho=intensity;
         flags|=RhoValue;
         if (LocaleNCompare(q,"deg",3) == 0)
-          q+=3;
+          q+=(ptrdiff_t) 3;
         break;
       }
       case 1:

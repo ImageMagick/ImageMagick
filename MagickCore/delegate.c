@@ -490,7 +490,7 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
     p=strstr(sanitize_command,"cmd.exe /c");
     if (p != (char*) NULL)
       {
-        p+=10;
+        p+=(ptrdiff_t) 10;
         for ( ; *p != '\0'; p++)
           if (*p == '/')
             *p=(*DirectorySeparator);
@@ -933,7 +933,7 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
         return((char *) NULL); \
       q=interpret_text+strlen(interpret_text); \
      } \
-   q+=FormatLocaleString(q,extent,"%s=%s\n",(key),(value)); \
+   q+=(ptrdiff_t) FormatLocaleString(q,extent,"%s=%s\n",(key),(value)); \
 }
 
 #define AppendString2Text(string) \
@@ -949,7 +949,7 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
       q=interpret_text+strlen(interpret_text); \
     } \
   (void) CopyMagickString(q,(string),extent); \
-  q+=length; \
+  q+=(ptrdiff_t) length; \
 }
 
   char
@@ -1041,19 +1041,19 @@ static char *InterpretDelegateProperties(ImageInfo *image_info,
         if (LocaleNCompare("&lt;",p,4) == 0)
           {
             *q++='<';
-            p+=3;
+            p+=(ptrdiff_t) 3;
           }
         else
           if (LocaleNCompare("&gt;",p,4) == 0)
             {
               *q++='>';
-              p+=3;
+              p+=(ptrdiff_t) 3;
             }
           else
             if (LocaleNCompare("&amp;",p,5) == 0)
               {
                 *q++='&';
-                p+=4;
+                p+=(ptrdiff_t) 4;
               }
             else
               *q++=(*p);

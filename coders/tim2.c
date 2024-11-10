@@ -398,7 +398,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
               SetPixelBlue(image,GetChannelValue(word,2,RGBA16),q);
               SetPixelAlpha(image,GetAlpha(word,RGBA16),q);
               q+=(ptrdiff_t) GetPixelChannels(image);
-              p+=sizeof(unsigned short);
+              p+=(ptrdiff_t) sizeof(unsigned short);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -437,7 +437,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
               SetPixelGreen(image,GetChannelValue(word,1,RGB24),q);
               SetPixelBlue(image,GetChannelValue(word,2,RGB24),q);
               q+=(ptrdiff_t) GetPixelChannels(image);
-              p+=3;
+              p+=(ptrdiff_t) 3;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -478,7 +478,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
               SetPixelBlue(image,GetChannelValue(word,2,RGBA32),q);
               SetPixelAlpha(image,GetAlpha(word,RGBA32),q);
               q+=(ptrdiff_t) GetPixelChannels(image);
-              p+=4;
+              p+=(ptrdiff_t) 4;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -550,7 +550,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
           image->colormap[i].green=GetChannelValue(word,1,RGBA16);
           image->colormap[i].blue=GetChannelValue(word,2,RGBA16);
           image->colormap[i].alpha=GetAlpha(word,RGBA16);
-          p+=2;
+          p+=(ptrdiff_t) 2;
         }
         break;
       }
@@ -565,7 +565,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
           image->colormap[i].red=GetChannelValue(word,0,RGB24);
           image->colormap[i].green=GetChannelValue(word,1,RGB24);
           image->colormap[i].blue=GetChannelValue(word,2,RGB24);
-          p+=3;
+          p+=(ptrdiff_t) 3;
         }
         break;
       }
@@ -582,7 +582,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
           image->colormap[i].green=GetChannelValue(word,1,RGBA32);
           image->colormap[i].blue=GetChannelValue(word,2,RGBA32);
           image->colormap[i].alpha=GetAlpha(word,RGBA32);
-          p+=4;
+          p+=(ptrdiff_t) 4;
         }
         break;
       }

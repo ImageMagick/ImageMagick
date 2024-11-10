@@ -1204,7 +1204,7 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
         status=MagickFalse;
         continue;
       }
-    p+=x_offset*(ssize_t) GetPixelChannels(image);
+    p+=(ptrdiff_t) x_offset*(ssize_t) GetPixelChannels(image);
     displacement=degrees*(double) (y-height/2.0);
     if (displacement == 0.0)
       continue;
@@ -1264,7 +1264,7 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
         /*
           Transfer pixels right-to-left.
         */
-        p+=width*GetPixelChannels(image);
+        p+=(ptrdiff_t) width*GetPixelChannels(image);
         q=p+step*(ssize_t) GetPixelChannels(image);
         for (i=0; i < (ssize_t) width; i++)
         {
@@ -1419,7 +1419,7 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
         status=MagickFalse;
         continue;
       }
-    p+=y_offset*(ssize_t) GetPixelChannels(image);
+    p+=(ptrdiff_t) y_offset*(ssize_t) GetPixelChannels(image);
     displacement=degrees*(double) (x-width/2.0);
     if (displacement == 0.0)
       continue;
@@ -1480,7 +1480,7 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
         /*
           Transfer pixels bottom-to-top.
         */
-        p+=height*GetPixelChannels(image);
+        p+=(ptrdiff_t) height*GetPixelChannels(image);
         q=p+step*(ssize_t) GetPixelChannels(image);
         for (i=0; i < (ssize_t) height; i++)
         {

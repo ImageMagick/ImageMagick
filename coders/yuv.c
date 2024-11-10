@@ -271,14 +271,14 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 SetPixelGreen(chroma_image,ScaleShortToQuantum(((*p) << 8) |
                   *(p+1)),chroma_pixels);
-                p+=2;
+                p+=(ptrdiff_t) 2;
               }
             if (quantum == 1)
               SetPixelRed(image,ScaleCharToQuantum(*p++),q);
             else
               {
                 SetPixelRed(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),q);
-                p+=2;
+                p+=(ptrdiff_t) 2;
               }
             SetPixelGreen(image,0,q);
             SetPixelBlue(image,0,q);
@@ -291,14 +291,14 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 SetPixelBlue(chroma_image,ScaleShortToQuantum(((*p) << 8) |
                   *(p+1)),chroma_pixels);
-                p+=2;
+                p+=(ptrdiff_t) 2;
               }
             if (quantum == 1)
               SetPixelRed(image,ScaleCharToQuantum(*p++),q);
             else
               {
                 SetPixelRed(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),q);
-                p+=2;
+                p+=(ptrdiff_t) 2;
               }
             chroma_pixels+=(ptrdiff_t) GetPixelChannels(chroma_image);
             q+=(ptrdiff_t) GetPixelChannels(image);
@@ -329,7 +329,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             else
               {
                 SetPixelRed(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),q);
-                p+=2;
+                p+=(ptrdiff_t) 2;
               }
             SetPixelGreen(image,0,q);
             SetPixelBlue(image,0,q);
@@ -389,7 +389,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 SetPixelGreen(chroma_image,ScaleShortToQuantum(((*p) << 8) |
                   *(p+1)),q);
-                p+=2;
+                p+=(ptrdiff_t) 2;
               }
             SetPixelBlue(chroma_image,0,q);
             q+=(ptrdiff_t) GetPixelChannels(chroma_image);
@@ -434,7 +434,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               SetPixelBlue(chroma_image,ScaleShortToQuantum(((*p) << 8) |
                 *(p+1)),q);
-              p+=2;
+              p+=(ptrdiff_t) 2;
             }
           q+=(ptrdiff_t) GetPixelChannels(chroma_image);
         }

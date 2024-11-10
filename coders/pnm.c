@@ -2104,7 +2104,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 q=pixels;
               }
             (void) memcpy((char *) q,buffer,extent);
-            q+=extent;
+            q+=(ptrdiff_t) extent;
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
           *q++='\n';
@@ -2180,7 +2180,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 q=pixels;
               }
             (void) memcpy((char *) q,buffer,extent);
-            q+=extent;
+            q+=(ptrdiff_t) extent;
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
           *q++='\n';

@@ -245,8 +245,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       break;
-    p+=x1*(ssize_t) GetPixelChannels(image);
-    q+=x1*(ssize_t) GetPixelChannels(floodplane_image);
+    p+=(ptrdiff_t) x1*(ssize_t) GetPixelChannels(image);
+    q+=(ptrdiff_t) x1*(ssize_t) GetPixelChannels(floodplane_image);
     for (x=x1; x >= 0; x--)
     {
       if (GetPixelGray(floodplane_image,q) != 0)

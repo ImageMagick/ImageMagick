@@ -220,14 +220,14 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           pixel->index=(MagickRealType) ConstrainColormapIndex(image,(ssize_t)
             (((size_t) *p << 24) | ((size_t) *(p+1) << 16) |
             ((size_t) *(p+2) << 8) | (size_t) *(p+3)),exception);
-          p+=4;
+          p+=(ptrdiff_t) 4;
           break;
         }
         case 16:
         {
           pixel->index=(MagickRealType) ConstrainColormapIndex(image,(ssize_t)
             (((size_t) *p << 8) | (size_t) *(p+1)),exception);
-          p+=2;
+          p+=(ptrdiff_t) 2;
           break;
         }
         case 8:

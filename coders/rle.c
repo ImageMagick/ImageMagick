@@ -455,7 +455,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((y < (ssize_t) image->rows) &&
                 ((x+i) < (ssize_t) image->columns))
               *p=pixel;
-            p+=number_planes;
+            p+=(ptrdiff_t) number_planes;
           }
           if (operand & 0x01)
             (void) ReadBlobByte(image);
@@ -487,7 +487,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((y < (ssize_t) image->rows) &&
                 ((x+i) < (ssize_t) image->columns))
               *p=pixel;
-            p+=number_planes;
+            p+=(ptrdiff_t) number_planes;
           }
           x+=operand;
           break;

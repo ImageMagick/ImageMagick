@@ -3105,7 +3105,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
         for (i=0; i < (ssize_t) (channels*magnification); i++)
           q[j*(ssize_t) channels*(ssize_t) magnify_image->columns+i]=
             r[j*magnification*(ssize_t) channels+i];
-      q+=magnification*GetPixelChannels(magnify_image);
+      q+=(ptrdiff_t) magnification*GetPixelChannels(magnify_image);
     }
     if (SyncCacheViewAuthenticPixels(magnify_view,exception) == MagickFalse)
       status=MagickFalse;

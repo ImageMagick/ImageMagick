@@ -1604,23 +1604,23 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
   {
     if (strncmp((const char *) p,"8BIM",4))
       break;
-    p+=4;
+    p+=(ptrdiff_t) 4;
     extent-=4;
     marker=(unsigned int) (*p) << 8 | *(p+1);
-    p+=2;
+    p+=(ptrdiff_t) 2;
     extent-=2;
     c=*p++;
     extent--;
     c|=0x01;
     if ((size_t) c >= extent)
       break;
-    p+=c;
+    p+=(ptrdiff_t) c;
     extent=(size_t) ((ssize_t) extent-c);
     if (extent < 4)
       break;
     tag_length=(((size_t) *p) << 24) | (((size_t) *(p+1)) << 16) |
       (((size_t) *(p+2)) << 8) | ((size_t) *(p+3));
-    p+=4;
+    p+=(ptrdiff_t) 4;
     extent-=4;
     if (tag_length > extent)
       break;
@@ -1631,7 +1631,7 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
       }
     if ((tag_length & 0x01) != 0)
       tag_length++;
-    p+=tag_length;
+    p+=(ptrdiff_t) tag_length;
     extent-=tag_length;
   }
   /*
@@ -1728,7 +1728,7 @@ iptc_find:
       }
     if (tag_length > (length+1))
       break;
-    p+=tag_length;
+    p+=(ptrdiff_t) tag_length;
     length-=tag_length;
     if (length == 0)
       break;

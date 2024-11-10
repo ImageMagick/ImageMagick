@@ -1938,7 +1938,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
             utf8=DestroyString(utf8);
             return(&root->root);
           }
-        p+=strcspn(p,XMLWhitespace "/>");
+        p+=(ptrdiff_t) strcspn(p,XMLWhitespace "/>");
         while (isspace((int) ((unsigned char) *p)) != 0)
           *p++='\0';
         if (((isalpha((int) ((unsigned char) *p)) != 0) || (*p == '_')) &&
@@ -1976,13 +1976,13 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
               attributes[l+2]=(char *) NULL;
               attributes[l+1]=(char *) NULL;
               attributes[l]=p;
-              p+=strcspn(p,XMLWhitespace "=/>");
+              p+=(ptrdiff_t) strcspn(p,XMLWhitespace "=/>");
               if ((*p != '=') && (isspace((int) ((unsigned char) *p)) == 0))
                 attributes[l]=ConstantString("");
               else
                 {
                   *p++='\0';
-                  p+=strspn(p,XMLWhitespace "=");
+                  p+=(ptrdiff_t) strspn(p,XMLWhitespace "=");
                   c=(*p);
                   if ((c == '"') || (c == '\''))
                     {
@@ -2084,7 +2084,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
             Close tag.
           */
           tag=p+1;
-          p+=strcspn(tag,XMLWhitespace ">")+1;
+          p+=(ptrdiff_t) strcspn(tag,XMLWhitespace ">")+1;
           c=(*p);
           if ((c == '\0') && (terminal != '>'))
             {
@@ -2104,7 +2104,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
             ignore_depth--;
           *p=c;
           if (isspace((int) ((unsigned char) *p)) != 0)
-            p+=strspn(p,XMLWhitespace);
+            p+=(ptrdiff_t) strspn(p,XMLWhitespace);
         }
       else
         if (strncmp(p,"!--",3) == 0)
@@ -2131,7 +2131,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
               p=strstr(p,"]]>");
               if (p != (char *) NULL)
                 {
-                  p+=2;
+                  p+=(ptrdiff_t) 2;
                   if (ignore_depth == 0)
                     ParseCharacterContent(root,tag+8,(size_t) (p-tag-10),'c');
                 }
@@ -2153,7 +2153,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                      ((l != 0) && ((*p != ']') ||
                      (*(p+strspn(p+1,XMLWhitespace)+1) != '>'))));
                   l=(ssize_t) ((*p == '[') ? 1 : l))
-                p+=strcspn(p+1,"[]>")+1;
+                p+=(ptrdiff_t) strcspn(p+1,"[]>")+1;
                 if ((*p == '\0') && (terminal != '>'))
                   {
                     (void) ThrowMagickException(exception,GetMagickModule(),

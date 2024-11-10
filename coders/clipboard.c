@@ -169,7 +169,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,
       ThrowReaderException(CoderError,"UnableToReadImageData");
     }
   p=(unsigned char *) clip_data;
-  p+=BMP_HEADER_SIZE;
+  p+=(ptrdiff_t) BMP_HEADER_SIZE;
   (void) memcpy(p,clip_mem,clip_size);
   (void) GlobalUnlock(clip_mem);
   (void) CloseClipboard();
@@ -351,7 +351,7 @@ static MagickBooleanType WriteCLIPBOARDImage(const ImageInfo *image_info,
       ThrowWriterException(CoderError,"UnableToWriteImageData");
     }
   p=(unsigned char *) clip_data;
-  p+=BMP_HEADER_SIZE;
+  p+=(ptrdiff_t) BMP_HEADER_SIZE;
   (void) memcpy(clip_mem,p,length-BMP_HEADER_SIZE);
   (void) GlobalUnlock(clip_mem);
   clip_data=RelinquishMagickMemory(clip_data);

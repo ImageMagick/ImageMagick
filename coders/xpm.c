@@ -327,7 +327,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       continue;
     if ((*p == '}') && (*(p+1) == ';'))
       break;
-    p+=strlen(p);
+    p+=(ptrdiff_t) strlen(p);
     offset=p-xpm_buffer;
     if ((size_t) (offset+MagickPathExtent) < length)
       continue;
@@ -501,7 +501,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->storage_class == PseudoClass)
             SetPixelIndex(image,(Quantum) j,r);
           SetPixelViaPixelInfo(image,image->colormap+j,r);
-          p+=count;
+          p+=(ptrdiff_t) count;
           r+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (x < (ssize_t) image->columns)

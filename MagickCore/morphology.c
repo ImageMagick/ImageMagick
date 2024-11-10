@@ -3489,8 +3489,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
         status=MagickFalse;
         continue;
       }
-    p+=(image->columns-1)*GetPixelChannels(image);
-    q+=(image->columns-1)*GetPixelChannels(image);
+    p+=(ptrdiff_t) (image->columns-1)*GetPixelChannels(image);
+    q+=(ptrdiff_t) (image->columns-1)*GetPixelChannels(image);
     for (x=(ssize_t) image->columns-1; x >= 0; x--)
     {
       ssize_t

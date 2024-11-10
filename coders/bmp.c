@@ -429,7 +429,7 @@ static size_t EncodeImage(Image *image,const size_t bytes_per_line,
           break;
       *q++=(unsigned char) i;
       *q++=(*p);
-      p+=i;
+      p+=(ptrdiff_t) i;
     }
     /*
       End of line.
@@ -1169,7 +1169,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     y=-1;
                     break;
                   }
-                p+=4;
+                p+=(ptrdiff_t) 4;
               }
             }
           }
@@ -2270,7 +2270,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
                   GetPixelBlue(image,p),31));
               }
             *((unsigned short *) q)=pixel;
-            q+=2;
+            q+=(ptrdiff_t) 2;
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
           for (x=2L*(ssize_t) image->columns; x < (ssize_t) bytes_per_line; x++)

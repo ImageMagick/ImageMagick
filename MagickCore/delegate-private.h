@@ -106,7 +106,7 @@ static inline char *SanitizeDelegateString(const char *source)
   sanitize_source=AcquireString(source);
   p=sanitize_source;
   q=sanitize_source+strlen(sanitize_source);
-  for (p+=strspn(p,allowlist); p != q; p+=strspn(p,allowlist))
+  for (p+=strspn(p,allowlist); p != q; p+=(ptrdiff_t) strspn(p,allowlist))
     *p='_';
   return(sanitize_source);
 }

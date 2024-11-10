@@ -683,7 +683,7 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
       EncipherAESBlock(aes_info,output_block,output_block);
       for (i=0; i < AESBlocksize; i++)
         p[i]^=output_block[i];
-      p+=AESBlocksize;
+      p+=(ptrdiff_t) AESBlocksize;
     }
     (void) memcpy(output_block,input_block,AESBlocksize*
       sizeof(*output_block));
@@ -903,7 +903,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
       EncipherAESBlock(aes_info,output_block,output_block);
       for (i=0; i < AESBlocksize; i++)
         p[i]^=output_block[i];
-      p+=AESBlocksize;
+      p+=(ptrdiff_t) AESBlocksize;
     }
     (void) memcpy(output_block,input_block,AESBlocksize*
       sizeof(*output_block));

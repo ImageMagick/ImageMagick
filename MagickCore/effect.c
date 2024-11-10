@@ -2140,7 +2140,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
       for (y=0; y < (ssize_t) image->rows+(2*width); y++)
       {
         *pix++=(float)GetPixelLuma(image,p);
-        p+=image->number_channels;
+        p+=(ptrdiff_t) image->number_channels;
       }
       out=interImage+x+width;
       for (y=0; y < (ssize_t) image->rows; y++)
@@ -2260,8 +2260,8 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
         if ((traits & UpdatePixelTrait) != 0)
           SetPixelBlue(contrast_image,ClampToQuantum((MagickRealType)
             GetPixelBlue(image,p)*mult),q);
-        p+=image->number_channels;
-        q+=contrast_image->number_channels;
+        p+=(ptrdiff_t) image->number_channels;
+        q+=(ptrdiff_t) contrast_image->number_channels;
       }
       if (SyncCacheViewAuthenticPixels(contrast_view,exception) == MagickFalse)
         status=MagickFalse;

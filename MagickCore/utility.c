@@ -525,7 +525,7 @@ MagickExport char *Base64Encode(const unsigned char *blob,
   if (encode == (char *) NULL)
     return((char *) NULL);
   i=0;
-  for (p=blob; p < (blob+blob_length-2); p+=3)
+  for (p=blob; p < (blob+blob_length-2); p+=(ptrdiff_t) 3)
   {
     encode[i++]=Base64[(int) (*p >> 2)];
     encode[i++]=Base64[(int) (((*p & 0x03) << 4)+(*(p+1) >> 4))];

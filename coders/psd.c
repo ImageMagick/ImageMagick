@@ -795,12 +795,12 @@ static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
   {
     if (LocaleNCompare((const char *) p,"8BIM",4) != 0)
       break;
-    p+=4;
+    p+=(ptrdiff_t) 4;
     p=PushShortPixel(MSBEndian,p,&id);
     p=PushCharPixel(p,&name_length);
     if ((name_length % 2) == 0)
       name_length++;
-    p+=name_length;
+    p+=(ptrdiff_t) name_length;
     if (p > (blocks+length-4))
       break;
     p=PushLongPixel(MSBEndian,p,&count);
@@ -840,12 +840,12 @@ static StringInfo *ParseImageResourceBlocks(PSDInfo *psd_info,Image *image,
       {
         if ((offset > 4) && (*(p+4) == 0))
           psd_info->has_merged_image=MagickFalse;
-        p+=offset;
+        p+=(ptrdiff_t) offset;
         break;
       }
       default:
       {
-        p+=offset;
+        p+=(ptrdiff_t) offset;
         break;
       }
     }
@@ -1226,9 +1226,9 @@ static void Unpredict16Bit(const Image *image,unsigned char *pixels,
     {
       p[2]+=p[0]+((p[1]+p[3]) >> 8);
       p[3]+=p[1];
-      p+=2;
+      p+=(ptrdiff_t) 2;
     }
-    p+=2;
+    p+=(ptrdiff_t) 2;
     remaining-=row_size;
   }
 }
@@ -1403,7 +1403,7 @@ static MagickBooleanType ReadPSDChannelZip(Image *image,
     if (status == MagickFalse)
       break;
 
-    p+=row_size;
+    p+=(ptrdiff_t) row_size;
   }
 
   compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);
@@ -1828,7 +1828,7 @@ static void ParseAdditionalInfo(LayerInfo *layer_info)
   while (remaining_length >= 12)
   {
     /* skip over signature */
-    p+=4;
+    p+=(ptrdiff_t) 4;
     key[0]=(char) (*p++);
     key[1]=(char) (*p++);
     key[2]=(char) (*p++);
@@ -1872,7 +1872,7 @@ static void ParseAdditionalInfo(LayerInfo *layer_info)
         break;
       }
     else
-      p+=size;
+      p+=(ptrdiff_t) size;
     remaining_length-=(size_t) size;
   }
 }
@@ -3487,7 +3487,7 @@ static void RemoveICCProfileFromResourceBlock(StringInfo *bim_profile)
           }
         break;
       }
-    p+=count;
+    p+=(ptrdiff_t) count;
     if ((count & 0x01) != 0)
       p++;
   }
@@ -3542,7 +3542,7 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
         SetStringInfoLength(bim_profile,(size_t) ((ssize_t) length-(cnt+12)));
         break;
       }
-    p+=count;
+    p+=(ptrdiff_t) count;
     if ((count & 0x01) != 0)
       p++;
   }
@@ -3607,7 +3607,7 @@ static const StringInfo *GetAdditionalInformation(const ImageInfo *image_info,
   while (remaining_length >= 12)
   {
     /* skip over signature */
-    p+=4;
+    p+=(ptrdiff_t) 4;
     key[0]=(char) (*p++);
     key[1]=(char) (*p++);
     key[2]=(char) (*p++);
@@ -3638,7 +3638,7 @@ static const StringInfo *GetAdditionalInformation(const ImageInfo *image_info,
         continue;
       }
     length+=(size_t) size+12;
-    p+=size;
+    p+=(ptrdiff_t) size;
   }
   profile=RemoveImageProfile(image,"psd:additional-info");
   if (length == 0)

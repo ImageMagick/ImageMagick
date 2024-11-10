@@ -798,7 +798,7 @@ static MagickBooleanType ClonePixelCacheRepository(
               *q=*(p+cache_info->channel_map[channel].offset);
             q++;
           }
-          p+=cache_info->number_channels;
+          p+=(ptrdiff_t) cache_info->number_channels;
         }
       }
     status=WritePixelCachePixels(clone_info,clone_nexus[id],exception);
@@ -3071,11 +3071,11 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
             break;
           (void) memcpy(q,p,(size_t) (cache_info->number_channels*length*
             sizeof(*p)));
-          q+=cache_info->number_channels;
+          q+=(ptrdiff_t) cache_info->number_channels;
           if ((s != (void *) NULL) && (r != (const void *) NULL))
             {
               (void) memcpy(s,r,(size_t) cache_info->metacontent_extent);
-              s+=cache_info->metacontent_extent;
+              s+=(ptrdiff_t) cache_info->metacontent_extent;
             }
           continue;
         }
@@ -3089,11 +3089,11 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
       r=GetVirtualMetacontentFromNexus(cache_info,virtual_nexus);
       (void) memcpy(q,p,(size_t) (cache_info->number_channels*length*
         sizeof(*p)));
-      q+=cache_info->number_channels*length;
+      q+=(ptrdiff_t) cache_info->number_channels*length;
       if ((r != (void *) NULL) && (s != (const void *) NULL))
         {
           (void) memcpy(s,r,(size_t) length);
-          s+=length*cache_info->metacontent_extent;
+          s+=(ptrdiff_t) length*cache_info->metacontent_extent;
         }
     }
     if (u < (ssize_t) columns)
@@ -4487,8 +4487,8 @@ static MagickBooleanType ReadPixelCacheMetacontent(
       for (y=0; y < (ssize_t) rows; y++)
       {
         (void) memcpy(q,p,(size_t) length);
-        p+=cache_info->metacontent_extent*cache_info->columns;
-        q+=cache_info->metacontent_extent*nexus_info->region.width;
+        p+=(ptrdiff_t) cache_info->metacontent_extent*cache_info->columns;
+        q+=(ptrdiff_t) cache_info->metacontent_extent*nexus_info->region.width;
       }
       break;
     }
@@ -4522,7 +4522,7 @@ static MagickBooleanType ReadPixelCacheMetacontent(
         if (count != (MagickOffsetType) length)
           break;
         offset+=(MagickOffsetType) cache_info->columns;
-        q+=cache_info->metacontent_extent*nexus_info->region.width;
+        q+=(ptrdiff_t) cache_info->metacontent_extent*nexus_info->region.width;
       }
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
@@ -4553,7 +4553,7 @@ static MagickBooleanType ReadPixelCacheMetacontent(
           cache_info->server_info,&region,length,(unsigned char *) q);
         if (count != (MagickOffsetType) length)
           break;
-        q+=cache_info->metacontent_extent*nexus_info->region.width;
+        q+=(ptrdiff_t) cache_info->metacontent_extent*nexus_info->region.width;
         region.y++;
       }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
@@ -4668,8 +4668,8 @@ static MagickBooleanType ReadPixelCachePixels(
       for (y=0; y < (ssize_t) rows; y++)
       {
         (void) memcpy(q,p,(size_t) length);
-        p+=cache_info->number_channels*cache_info->columns;
-        q+=cache_info->number_channels*nexus_info->region.width;
+        p+=(ptrdiff_t) cache_info->number_channels*cache_info->columns;
+        q+=(ptrdiff_t) cache_info->number_channels*nexus_info->region.width;
       }
       break;
     }
@@ -4700,7 +4700,7 @@ static MagickBooleanType ReadPixelCachePixels(
         if (count != (MagickOffsetType) length)
           break;
         offset+=(MagickOffsetType) cache_info->columns;
-        q+=cache_info->number_channels*nexus_info->region.width;
+        q+=(ptrdiff_t) cache_info->number_channels*nexus_info->region.width;
       }
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
@@ -4731,7 +4731,7 @@ static MagickBooleanType ReadPixelCachePixels(
           cache_info->server_info,&region,length,(unsigned char *) q);
         if (count != (MagickOffsetType) length)
           break;
-        q+=cache_info->number_channels*nexus_info->region.width;
+        q+=(ptrdiff_t) cache_info->number_channels*nexus_info->region.width;
         region.y++;
       }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
@@ -5668,8 +5668,8 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
       for (y=0; y < (ssize_t) rows; y++)
       {
         (void) memcpy(q,p,(size_t) length);
-        p+=nexus_info->region.width*cache_info->metacontent_extent;
-        q+=cache_info->columns*cache_info->metacontent_extent;
+        p+=(ptrdiff_t) nexus_info->region.width*cache_info->metacontent_extent;
+        q+=(ptrdiff_t) cache_info->columns*cache_info->metacontent_extent;
       }
       break;
     }
@@ -5702,7 +5702,7 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
           (const unsigned char *) p);
         if (count != (MagickOffsetType) length)
           break;
-        p+=cache_info->metacontent_extent*nexus_info->region.width;
+        p+=(ptrdiff_t) cache_info->metacontent_extent*nexus_info->region.width;
         offset+=(MagickOffsetType) cache_info->columns;
       }
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
@@ -5734,7 +5734,7 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
           cache_info->server_info,&region,length,(const unsigned char *) p);
         if (count != (MagickOffsetType) length)
           break;
-        p+=cache_info->metacontent_extent*nexus_info->region.width;
+        p+=(ptrdiff_t) cache_info->metacontent_extent*nexus_info->region.width;
         region.y++;
       }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
@@ -5841,8 +5841,8 @@ static MagickBooleanType WritePixelCachePixels(
       for (y=0; y < (ssize_t) rows; y++)
       {
         (void) memcpy(q,p,(size_t) length);
-        p+=cache_info->number_channels*nexus_info->region.width;
-        q+=cache_info->number_channels*cache_info->columns;
+        p+=(ptrdiff_t) cache_info->number_channels*nexus_info->region.width;
+        q+=(ptrdiff_t) cache_info->number_channels*cache_info->columns;
       }
       break;
     }
@@ -5872,7 +5872,7 @@ static MagickBooleanType WritePixelCachePixels(
           sizeof(*p),length,(const unsigned char *) p);
         if (count != (MagickOffsetType) length)
           break;
-        p+=cache_info->number_channels*nexus_info->region.width;
+        p+=(ptrdiff_t) cache_info->number_channels*nexus_info->region.width;
         offset+=(MagickOffsetType) cache_info->columns;
       }
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
@@ -5904,7 +5904,7 @@ static MagickBooleanType WritePixelCachePixels(
           cache_info->server_info,&region,length,(const unsigned char *) p);
         if (count != (MagickOffsetType) length)
           break;
-        p+=cache_info->number_channels*nexus_info->region.width;
+        p+=(ptrdiff_t) cache_info->number_channels*nexus_info->region.width;
         region.y++;
       }
       UnlockSemaphoreInfo(cache_info->file_semaphore);

@@ -574,20 +574,20 @@ MagickExport unsigned int GetMagickSignature(const StringInfo *nonce)
   p=GetStringInfoDatum(version);
   signature=MAGICKCORE_QUANTUM_DEPTH;
   (void) memcpy(p,&signature,sizeof(signature));
-  p+=sizeof(signature);
+  p+=(ptrdiff_t) sizeof(signature);
   signature=MAGICKCORE_HDRI_ENABLE;
   (void) memcpy(p,&signature,sizeof(signature));
-  p+=sizeof(signature);
+  p+=(ptrdiff_t) sizeof(signature);
   signature=MagickLibInterface;
   (void) memcpy(p,&signature,sizeof(signature));
-  p+=sizeof(signature);
+  p+=(ptrdiff_t) sizeof(signature);
   signature=1;  /* endianness */
   (void) memcpy(p,&signature,sizeof(signature));
-  p+=sizeof(signature);
+  p+=(ptrdiff_t) sizeof(signature);
 #if defined(MAGICKCORE_64BIT_CHANNEL_MASK_SUPPORT)
   signature=sizeof(ChannelType);
   (void) memcpy(p,&signature,sizeof(signature));
-  p+=sizeof(signature);
+  p+=(ptrdiff_t) sizeof(signature);
 #endif
   SetStringInfoLength(version,(size_t) (p-GetStringInfoDatum(version)));
   if (nonce != (const StringInfo *) NULL)

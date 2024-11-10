@@ -1533,7 +1533,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           index=(Quantum) ConstrainColormapIndex(image,pixel,exception);
           SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
           SetPixelIndex(image,index,q);
-          p+=bytes_per_pixel;
+          p+=(ptrdiff_t) bytes_per_pixel;
           q+=(ptrdiff_t) GetPixelChannels(image);
         }
         break;
@@ -1547,16 +1547,16 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         {
           SetPixelCyan(image,QuantumRange-ScaleShortToQuantum((unsigned short)
             (scale*JPEGGetSample(jpeg_info,p))),q);
-          p+=bytes_per_pixel;
+          p+=(ptrdiff_t) bytes_per_pixel;
           SetPixelMagenta(image,QuantumRange-ScaleShortToQuantum(
             (unsigned short) (scale*JPEGGetSample(jpeg_info,p))),q);
-          p+=bytes_per_pixel;
+          p+=(ptrdiff_t) bytes_per_pixel;
           SetPixelYellow(image,QuantumRange-ScaleShortToQuantum((unsigned short)
             (scale*JPEGGetSample(jpeg_info,p))),q);
-          p+=bytes_per_pixel;
+          p+=(ptrdiff_t) bytes_per_pixel;
           SetPixelBlack(image,QuantumRange-ScaleShortToQuantum((unsigned short)
             (scale*JPEGGetSample(jpeg_info,p))),q);
-          p+=bytes_per_pixel;
+          p+=(ptrdiff_t) bytes_per_pixel;
           SetPixelAlpha(image,OpaqueAlpha,q);
           q+=(ptrdiff_t) GetPixelChannels(image);
         }
@@ -1571,13 +1571,13 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
         {
           SetPixelRed(image,ScaleShortToQuantum((unsigned short) (scale*
             JPEGGetSample(jpeg_info,p))),q);
-          p+=bytes_per_pixel;
+          p+=(ptrdiff_t) bytes_per_pixel;
           SetPixelGreen(image,ScaleShortToQuantum((unsigned short) (scale*
             JPEGGetSample(jpeg_info,p))),q);
-          p+=bytes_per_pixel;
+          p+=(ptrdiff_t) bytes_per_pixel;
           SetPixelBlue(image,ScaleShortToQuantum((unsigned short) (scale*
             JPEGGetSample(jpeg_info,p))),q);
-          p+=bytes_per_pixel;
+          p+=(ptrdiff_t) bytes_per_pixel;
           SetPixelAlpha(image,OpaqueAlpha,q);
           q+=(ptrdiff_t) GetPixelChannels(image);
         }
@@ -3035,7 +3035,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
         {
           JPEGSetSample(jpeg_info,scale,ClampToQuantum(GetPixelLuma(image,p)),
             q);
-          q+=bytes_per_pixel;
+          q+=(ptrdiff_t) bytes_per_pixel;
           p+=(ptrdiff_t) GetPixelChannels(image);
         }
         break;
@@ -3052,16 +3052,16 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           */
           JPEGSetSample(jpeg_info,scale,(Quantum) ((QuantumRange-
             GetPixelCyan(image,p))),q);
-          q+=bytes_per_pixel;
+          q+=(ptrdiff_t) bytes_per_pixel;
           JPEGSetSample(jpeg_info,scale,(Quantum) ((QuantumRange-
             GetPixelMagenta(image,p))),q);
-          q+=bytes_per_pixel;
+          q+=(ptrdiff_t) bytes_per_pixel;
           JPEGSetSample(jpeg_info,scale,(Quantum) ((QuantumRange-
             GetPixelYellow(image,p))),q);
-          q+=bytes_per_pixel;
+          q+=(ptrdiff_t) bytes_per_pixel;
           JPEGSetSample(jpeg_info,scale,(Quantum) ((QuantumRange-
             GetPixelBlack(image,p))),q);
-          q+=bytes_per_pixel;
+          q+=(ptrdiff_t) bytes_per_pixel;
           p+=(ptrdiff_t) GetPixelChannels(image);
         }
         break;
@@ -3074,11 +3074,11 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           JPEGSetSample(jpeg_info,scale,GetPixelRed(image,p),q);
-          q+=bytes_per_pixel;
+          q+=(ptrdiff_t) bytes_per_pixel;
           JPEGSetSample(jpeg_info,scale,GetPixelGreen(image,p),q);
-          q+=bytes_per_pixel;
+          q+=(ptrdiff_t) bytes_per_pixel;
           JPEGSetSample(jpeg_info,scale,GetPixelBlue(image,p),q);
-          q+=bytes_per_pixel;
+          q+=(ptrdiff_t) bytes_per_pixel;
           p+=(ptrdiff_t) GetPixelChannels(image);
         }
         break;

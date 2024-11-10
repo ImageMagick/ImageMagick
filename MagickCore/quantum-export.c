@@ -259,7 +259,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelAlpha(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -276,7 +276,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelAlpha(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -285,7 +285,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelAlpha(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -300,7 +300,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelAlpha(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -309,7 +309,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelAlpha(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -321,7 +321,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelAlpha(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -335,7 +335,7 @@ static void ExportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelAlpha(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -365,7 +365,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopCharPixel(ScaleQuantumToChar(GetPixelGreen(image,p)),q);
         q=PopCharPixel(ScaleQuantumToChar(GetPixelRed(image,p)),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -385,7 +385,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
               ScaleQuantumToAny(GetPixelBlue(image,p),range) << 2);
             q=PopLongPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -401,7 +401,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(image,p),range);
             q=PopQuantumLongPixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -414,7 +414,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(image,p),range);
         q=PopQuantumPixel(quantum_info,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -478,7 +478,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
             }
             q=PopShortPixel(quantum_info->endian,(unsigned short) (pixel << 4),
               q);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           for (bit=0; bit < (ssize_t) (3*number_pixels % 2); bit++)
           {
@@ -507,7 +507,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
             }
             q=PopShortPixel(quantum_info->endian,(unsigned short) (pixel << 4),
               q);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           if (bit != 0)
             p+=(ptrdiff_t) GetPixelChannels(image);
@@ -525,7 +525,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(image,p),range);
             q=PopQuantumLongPixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -538,7 +538,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(image,p),range);
         q=PopQuantumPixel(quantum_info,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -561,7 +561,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelRed(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -574,7 +574,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelRed(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -591,7 +591,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelGreen(image,p),q);
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlue(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -604,7 +604,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelRed(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -618,7 +618,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelGreen(image,p),q);
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlue(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -636,7 +636,7 @@ static void ExportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelBlue(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -671,7 +671,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelAlpha(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -732,7 +732,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
               n++;
             }
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -751,7 +751,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
               range);
             q=PopQuantumLongPixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -766,7 +766,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=(unsigned int) ScaleQuantumToAny(GetPixelAlpha(image,p),range);
         q=PopQuantumPixel(quantum_info,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -792,7 +792,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelAlpha(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -807,7 +807,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelAlpha(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -829,7 +829,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
             float_pixel=(float) GetPixelAlpha(image,p);
             q=PopQuantumFloatPixel(quantum_info,float_pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -844,7 +844,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelAlpha(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -863,7 +863,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=(double) GetPixelAlpha(image,p);
             q=PopQuantumDoublePixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -883,7 +883,7 @@ static void ExportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelAlpha(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -918,7 +918,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelOpacity(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -979,7 +979,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
               n++;
             }
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -998,7 +998,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
               range);
             q=PopQuantumLongPixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1013,7 +1013,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=(unsigned int) ScaleQuantumToAny(GetPixelOpacity(image,p),range);
         q=PopQuantumPixel(quantum_info,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1039,7 +1039,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelOpacity(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1054,7 +1054,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelOpacity(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1076,7 +1076,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
             float_pixel=(float) GetPixelOpacity(image,p);
             q=PopQuantumFloatPixel(quantum_info,float_pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1091,7 +1091,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelOpacity(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1110,7 +1110,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=(double) GetPixelOpacity(image,p);
             q=PopQuantumDoublePixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1130,7 +1130,7 @@ static void ExportBGROQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelOpacity(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1167,7 +1167,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelBlack(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1184,7 +1184,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelBlack(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1193,7 +1193,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelBlack(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1208,7 +1208,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlack(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1217,7 +1217,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelBlack(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1229,7 +1229,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlack(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1243,7 +1243,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelBlack(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1272,7 +1272,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelBlue(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1289,7 +1289,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelBlue(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1298,7 +1298,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelBlue(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1313,7 +1313,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlue(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1322,7 +1322,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelBlue(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1334,7 +1334,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlue(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1348,7 +1348,7 @@ static void ExportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelBlue(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1416,7 +1416,7 @@ static void ExportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
               (cbcr[0]) << 12 | (size_t) (cbcr[2]) << 2);
             q=PopLongPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1461,7 +1461,7 @@ static void ExportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(cbcr[0],range),q);
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(cbcr[2],range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1501,7 +1501,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelBlack(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1527,7 +1527,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelBlack(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1542,7 +1542,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelBlack(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1560,7 +1560,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlue(image,p),q);
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlack(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1575,7 +1575,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelBlack(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1590,7 +1590,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlue(image,p),q);
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlack(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1613,7 +1613,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelBlack(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1655,7 +1655,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelAlpha(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1684,7 +1684,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelAlpha(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1701,7 +1701,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelAlpha(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1725,7 +1725,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
             q=PopQuantumFloatPixel(quantum_info,(float)
               GetPixelAlpha(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1742,7 +1742,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelAlpha(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1763,7 +1763,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
             q=PopQuantumDoublePixel(quantum_info,(double)
               GetPixelAlpha(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1788,7 +1788,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelAlpha(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1830,7 +1830,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelOpacity(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1859,7 +1859,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelOpacity(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1876,7 +1876,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelOpacity(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1899,7 +1899,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
             float_pixel=(float) (GetPixelOpacity(image,p));
             q=PopQuantumFloatPixel(quantum_info,float_pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1916,7 +1916,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelOpacity(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -1936,7 +1936,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=(double) (GetPixelOpacity(image,p));
             q=PopQuantumDoublePixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -1961,7 +1961,7 @@ static void ExportCMYKOQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelOpacity(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2067,7 +2067,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2087,8 +2087,8 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelChannels(image))),range) << 12 | ScaleQuantumToAny(
               ClampToQuantum(GetPixelLuma(image,p)),range) << 2);
             q=PopLongPixel(quantum_info->endian,pixel,q);
-            p+=3*GetPixelChannels(image);
-            q+=quantum_info->pad;
+            p+=(ptrdiff_t) 3*GetPixelChannels(image);
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           if (x < (ssize_t) number_pixels)
             {
@@ -2108,7 +2108,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(ClampToQuantum(
           GetPixelLuma(image,p)),range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2126,7 +2126,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
             q=PopShortPixel(quantum_info->endian,(unsigned short) (pixel >> 4),
               q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2135,7 +2135,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(ClampToQuantum(
           GetPixelLuma(image,p)),range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2152,7 +2152,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelLuma(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2161,7 +2161,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(ClampToQuantum(GetPixelLuma(image,p)));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2180,7 +2180,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
             float_pixel=(float) GetPixelLuma(image,p);
             q=PopQuantumFloatPixel(quantum_info,float_pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2189,7 +2189,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(ClampToQuantum(GetPixelLuma(image,p)));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2205,7 +2205,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=GetPixelLuma(image,p);
             q=PopQuantumDoublePixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2219,7 +2219,7 @@ static void ExportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(ClampToQuantum(
           GetPixelLuma(image,p)),range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2330,7 +2330,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelAlpha(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2350,7 +2350,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelAlpha(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2361,7 +2361,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelAlpha(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2382,7 +2382,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
             float_pixel=(float) (GetPixelAlpha(image,p));
             q=PopQuantumFloatPixel(quantum_info,float_pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2393,7 +2393,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelAlpha(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2411,7 +2411,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=(double) (GetPixelAlpha(image,p));
             q=PopQuantumDoublePixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2427,7 +2427,7 @@ static void ExportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelAlpha(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2456,7 +2456,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelGreen(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2473,7 +2473,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelGreen(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2482,7 +2482,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelGreen(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2497,7 +2497,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelGreen(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2506,7 +2506,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelGreen(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2518,7 +2518,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelGreen(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2532,7 +2532,7 @@ static void ExportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelGreen(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2633,7 +2633,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
       {
         q=PopCharPixel((unsigned char) ((ssize_t) GetPixelIndex(image,p)),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2646,7 +2646,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
             q=PopShortPixel(quantum_info->endian,SinglePrecisionToHalf(
               QuantumScale*(double) GetPixelIndex(image,p)),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2655,7 +2655,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopShortPixel(quantum_info->endian,(unsigned short)
           GetPixelIndex(image,p),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2667,7 +2667,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelIndex(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2676,7 +2676,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopLongPixel(quantum_info->endian,(unsigned int)
           GetPixelIndex(image,p),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2688,7 +2688,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelIndex(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2700,7 +2700,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
       {
         q=PopQuantumPixel(quantum_info,(QuantumAny) GetPixelIndex(image,p),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2803,7 +2803,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
         pixel=ScaleQuantumToChar(GetPixelAlpha(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2822,7 +2822,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
               GetPixelAlpha(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2833,7 +2833,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
         pixel=ScaleQuantumToShort(GetPixelAlpha(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2853,7 +2853,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
             float_pixel=(float) GetPixelAlpha(image,p);
             q=PopQuantumFloatPixel(quantum_info,float_pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2864,7 +2864,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
         pixel=ScaleQuantumToLong(GetPixelAlpha(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2881,7 +2881,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
             pixel=(double) GetPixelAlpha(image,p);
             q=PopQuantumDoublePixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2899,7 +2899,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelAlpha(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2936,7 +2936,7 @@ static void ExportMultispectralQuantum(const Image *image,
           q=PopCharPixel(pixel,q);
         }
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2955,7 +2955,7 @@ static void ExportMultispectralQuantum(const Image *image,
               q=PopShortPixel(quantum_info->endian,pixel,q);
             }
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2967,7 +2967,7 @@ static void ExportMultispectralQuantum(const Image *image,
           q=PopShortPixel(quantum_info->endian,pixel,q);
         }
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -2983,7 +2983,7 @@ static void ExportMultispectralQuantum(const Image *image,
             for (i=0; i < (ssize_t) GetImageChannels(image); i++)
               q=PopQuantumFloatPixel(quantum_info,(float) p[i],q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -2995,7 +2995,7 @@ static void ExportMultispectralQuantum(const Image *image,
           q=PopLongPixel(quantum_info->endian,pixel,q);
         }
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3008,7 +3008,7 @@ static void ExportMultispectralQuantum(const Image *image,
             for (i=0; i < (ssize_t) GetImageChannels(image); i++)
               q=PopQuantumDoublePixel(quantum_info,(double) p[i],q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3025,7 +3025,7 @@ static void ExportMultispectralQuantum(const Image *image,
         for (i=0; i < (ssize_t) GetImageChannels(image); i++)
           q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(p[i],range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3054,7 +3054,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelOpacity(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3071,7 +3071,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelOpacity(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3080,7 +3080,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelOpacity(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3095,7 +3095,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelOpacity(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3104,7 +3104,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelOpacity(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3116,7 +3116,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelOpacity(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3130,7 +3130,7 @@ static void ExportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(
           GetPixelOpacity(image,p),range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3159,7 +3159,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelRed(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3176,7 +3176,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelRed(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3185,7 +3185,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelRed(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3200,7 +3200,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelRed(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3209,7 +3209,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelRed(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3221,7 +3221,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelRed(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3235,7 +3235,7 @@ static void ExportRedQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelRed(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3265,7 +3265,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopCharPixel(ScaleQuantumToChar(GetPixelGreen(image,p)),q);
         q=PopCharPixel(ScaleQuantumToChar(GetPixelBlue(image,p)),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3285,7 +3285,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
               ScaleQuantumToAny(GetPixelBlue(image,p),range) << 2);
             q=PopLongPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3301,7 +3301,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(image,p),range);
             q=PopQuantumLongPixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3314,7 +3314,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(image,p),range);
         q=PopQuantumPixel(quantum_info,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3378,7 +3378,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
             }
             q=PopShortPixel(quantum_info->endian,(unsigned short) (pixel << 4),
               q);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           for (bit=0; bit < (ssize_t) (3*number_pixels % 2); bit++)
           {
@@ -3407,7 +3407,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
             }
             q=PopShortPixel(quantum_info->endian,(unsigned short) (pixel << 4),
               q);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           if (bit != 0)
             p+=(ptrdiff_t) GetPixelChannels(image);
@@ -3425,7 +3425,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(image,p),range);
             q=PopQuantumLongPixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3438,7 +3438,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(image,p),range);
         q=PopQuantumPixel(quantum_info,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3461,7 +3461,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelBlue(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3474,7 +3474,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelBlue(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3494,7 +3494,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
             q=PopQuantumFloatPixel(quantum_info,(float) GetPixelBlue(image,p),
               q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3507,7 +3507,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelBlue(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3521,7 +3521,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelGreen(image,p),q);
             q=PopQuantumDoublePixel(quantum_info,(double) GetPixelBlue(image,p),q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3539,7 +3539,7 @@ static void ExportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelBlue(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3574,7 +3574,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelAlpha(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3635,7 +3635,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
               n++;
             }
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3654,7 +3654,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
               range);
             q=PopQuantumLongPixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3669,7 +3669,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=(unsigned int) ScaleQuantumToAny(GetPixelAlpha(image,p),range);
         q=PopQuantumPixel(quantum_info,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3695,7 +3695,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelAlpha(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3710,7 +3710,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelAlpha(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3732,7 +3732,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
             float_pixel=(float) GetPixelAlpha(image,p);
             q=PopQuantumFloatPixel(quantum_info,float_pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3747,7 +3747,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelAlpha(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3766,7 +3766,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=(double) GetPixelAlpha(image,p);
             q=PopQuantumDoublePixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3786,7 +3786,7 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelAlpha(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3821,7 +3821,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToChar(GetPixelOpacity(image,p));
         q=PopCharPixel(pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3882,7 +3882,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
               n++;
             }
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3901,7 +3901,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
               range);
             q=PopQuantumLongPixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3916,7 +3916,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=(unsigned int) ScaleQuantumToAny(GetPixelOpacity(image,p),range);
         q=PopQuantumPixel(quantum_info,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3942,7 +3942,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
               GetPixelOpacity(image,p));
             q=PopShortPixel(quantum_info->endian,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3957,7 +3957,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToShort(GetPixelOpacity(image,p));
         q=PopShortPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -3982,7 +3982,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
             float_pixel=(float) GetPixelOpacity(image,p);
             q=PopQuantumFloatPixel(quantum_info,float_pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -3997,7 +3997,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
         pixel=ScaleQuantumToLong(GetPixelOpacity(image,p));
         q=PopLongPixel(quantum_info->endian,pixel,q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }
@@ -4019,7 +4019,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
             pixel=(double) GetPixelOpacity(image,p);
             q=PopQuantumDoublePixel(quantum_info,pixel,q);
             p+=(ptrdiff_t) GetPixelChannels(image);
-            q+=quantum_info->pad;
+            q+=(ptrdiff_t) quantum_info->pad;
           }
           break;
         }
@@ -4039,7 +4039,7 @@ static void ExportRGBOQuantum(const Image *image,QuantumInfo *quantum_info,
         q=PopQuantumPixel(quantum_info,ScaleQuantumToAny(GetPixelOpacity(image,p),
           range),q);
         p+=(ptrdiff_t) GetPixelChannels(image);
-        q+=quantum_info->pad;
+        q+=(ptrdiff_t) quantum_info->pad;
       }
       break;
     }

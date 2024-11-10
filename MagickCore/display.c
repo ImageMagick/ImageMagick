@@ -2421,7 +2421,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
                     x=annotate_info->x+(int) annotate_info->width;
                     y=annotate_info->y;
                     if (annotate_info->width != 0)
-                      p+=strlen(annotate_info->text);
+                      p+=(ptrdiff_t) strlen(annotate_info->text);
                     break;
                   }
               }

@@ -918,7 +918,7 @@ static MagickBooleanType LoadMimeCache(LinkedListInfo *cache,const char *xml,
                     *end;
 
                   *q++=(unsigned char) strtol(p,&end,8);
-                  p+=(end-p);
+                  p+=(ptrdiff_t) (end-p);
                   mime_info->length++;
                   continue;
                 }

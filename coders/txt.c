@@ -515,7 +515,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           if (LocaleNCompare(p,"sRGB(",5) == 0)
             {
-              p+=5;
+              p+=(ptrdiff_t) 5;
               n=2;
             }
           (void) GetNextToken(p,&p,MagickPathExtent,token);

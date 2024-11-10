@@ -300,7 +300,7 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
     channel->decode_to_ptr=p;
     channel->user_pixel_stride=(int32_t) *pixel_size;
     channel->user_line_stride=(int32_t) (columns*(*pixel_size));
-    p+=channel->bytes_per_element;
+    p+=(ptrdiff_t) channel->bytes_per_element;
     channel++;
   }
   return(MagickTrue);
@@ -338,13 +338,13 @@ static inline MagickBooleanType ReadEXRPixels(Image *image,
       else
         SetPixelChannel(image,pixel_channel,ClampToQuantum(
           (double) QuantumRange*value),q);
-      p+=channel->bytes_per_element;
+      p+=(ptrdiff_t) channel->bytes_per_element;
       channel++;
     }
     q+=(ptrdiff_t) GetPixelChannels(image);
     pixel_count--;
     if ((stride != 0) && (pixel_count % columns == 0))
-      p+=stride;
+      p+=(ptrdiff_t) stride;
   }
   return(SyncAuthenticPixels(image, exception));
 }

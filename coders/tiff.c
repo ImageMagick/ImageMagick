@@ -1882,7 +1882,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 (1.772*(double) *(p+1))-226.816)),q);
               SetPixelBlack(image,ScaleCharToQuantum((unsigned char) *(p+3)),q);
               q+=(ptrdiff_t) GetPixelChannels(image);
-              p+=4;
+              p+=(ptrdiff_t) 4;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -1973,7 +1973,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 }
               (void) ImportQuantumPixels(image,(CacheView *) NULL,
                 quantum_info,quantum_type,p,exception);
-              p+=stride;
+              p+=(ptrdiff_t) stride;
               rows_remaining--;
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -2089,7 +2089,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     break;
                   (void) ImportQuantumPixels(image,(CacheView *) NULL,
                     quantum_info,quantum_type,p,exception);
-                  p+=stride;
+                  p+=(ptrdiff_t) stride;
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
                     break;
                 }
@@ -2137,7 +2137,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               generic_info=RelinquishVirtualMemory(generic_info);
               break;
             }
-          p+=(image->columns*image->rows)-1;
+          p+=(ptrdiff_t) (image->columns*image->rows)-1;
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             ssize_t

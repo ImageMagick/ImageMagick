@@ -342,7 +342,7 @@ static ssize_t ReadRandom(int file,unsigned char *source,size_t length)
           continue;
         return(-1);
       }
-    q+=count;
+    q+=(ptrdiff_t) count;
     offset+=count;
   }
   return(offset);
@@ -903,7 +903,7 @@ MagickExport void SetRandomKey(RandomInfo *random_info,const size_t length,
     IncrementRandomNonce(random_info->nonce);
     (void) memcpy(p,GetStringInfoDatum(GetSignatureDigest(
       signature_info)),GetSignatureDigestsize(signature_info));
-    p+=GetSignatureDigestsize(signature_info);
+    p+=(ptrdiff_t) GetSignatureDigestsize(signature_info);
     i-=GetSignatureDigestsize(signature_info);
   }
   if (i != 0)

@@ -327,7 +327,7 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
         }
       (void) WriteBlobByte(image,(unsigned char) *q);
     }
-    p+=8;
+    p+=(ptrdiff_t) 8;
   }
   image->ascii85->offset=n;
   p-=4;

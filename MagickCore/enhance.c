@@ -363,7 +363,7 @@ static void ClipCLAHEHistogram(const double clip_limit,const size_t number_bins,
       step=(ssize_t) number_bins/cumulative_excess;
       if (step < 1)
         step=1;
-      for (p=histogram; (p < q) && (cumulative_excess != 0); p+=step)
+      for (p=histogram; (p < q) && (cumulative_excess != 0); p+=(ptrdiff_t) step)
         if ((double) *p < clip_limit)
           {
             (*p)++;
@@ -398,7 +398,7 @@ static void GenerateCLAHEHistogram(const RectangleInfo *clahe_info,
     q=p+tile_info->width;
     while (p < q)
       histogram[lut[*p++]]++;
-    q+=clahe_info->width;
+    q+=(ptrdiff_t) clahe_info->width;
     p=q-tile_info->width;
   }
 }
@@ -533,9 +533,9 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
       ClipCLAHEHistogram((double) limit,number_bins,histogram);
       MapCLAHEHistogram(range_info,number_bins,tile_info->width*
         tile_info->height,histogram);
-      p+=tile_info->width;
+      p+=(ptrdiff_t) tile_info->width;
     }
-    p+=clahe_info->width*(tile_info->height-1);
+    p+=(ptrdiff_t) clahe_info->width*(tile_info->height-1);
   }
   /*
     Interpolate greylevel mappings to get CLAHE image.
@@ -604,9 +604,9 @@ static MagickBooleanType CLAHE(const RectangleInfo *clahe_info,
         tiles+((ssize_t) number_bins*(offset.y*clahe_info->x+tile.x)), /* Q11 */
         tiles+((ssize_t) number_bins*(offset.y*clahe_info->x+offset.x)), /* Q21 */
         &tile,lut,p);
-      p+=tile.width;
+      p+=(ptrdiff_t) tile.width;
     }
-    p+=clahe_info->width*(tile.height-1);
+    p+=(ptrdiff_t) clahe_info->width*(tile.height-1);
   }
   lut=(unsigned short *) RelinquishMagickMemory(lut);
   tile_cache=RelinquishVirtualMemory(tile_cache);

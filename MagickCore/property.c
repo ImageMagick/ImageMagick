@@ -3679,7 +3679,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         } \
       q=interpret_text+strlen(interpret_text); \
      } \
-   q+=FormatLocaleString(q,extent,"%s=%s\n",(key),(value)); \
+   q+=(ptrdiff_t) FormatLocaleString(q,extent,"%s=%s\n",(key),(value)); \
 }
 
 #define AppendString2Text(string) \
@@ -3701,7 +3701,7 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
       q=interpret_text+strlen(interpret_text); \
     } \
   (void) CopyMagickString(q,(string),extent); \
-  q+=length; \
+  q+=(ptrdiff_t) length; \
 }
 
   char
@@ -3818,19 +3818,19 @@ MagickExport char *InterpretImageProperties(ImageInfo *image_info,Image *image,
         if (LocaleNCompare("&lt;",p,4) == 0)
           {
             *q++='<';
-            p+=3;
+            p+=(ptrdiff_t) 3;
           }
         else
           if (LocaleNCompare("&gt;",p,4) == 0)
             {
               *q++='>';
-              p+=3;
+              p+=(ptrdiff_t) 3;
             }
           else
             if (LocaleNCompare("&amp;",p,5) == 0)
               {
                 *q++='&';
-                p+=4;
+                p+=(ptrdiff_t) 4;
               }
             else
               *q++=(*p);

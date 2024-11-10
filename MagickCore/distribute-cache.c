@@ -562,24 +562,24 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,int file,
   */
   p=message;
   (void) memcpy(&image->storage_class,p,sizeof(image->storage_class));
-  p+=sizeof(image->storage_class);
+  p+=(ptrdiff_t) sizeof(image->storage_class);
   (void) memcpy(&image->colorspace,p,sizeof(image->colorspace));
-  p+=sizeof(image->colorspace);
+  p+=(ptrdiff_t) sizeof(image->colorspace);
   (void) memcpy(&image->alpha_trait,p,sizeof(image->alpha_trait));
-  p+=sizeof(image->alpha_trait);
+  p+=(ptrdiff_t) sizeof(image->alpha_trait);
   (void) memcpy(&image->channels,p,sizeof(image->channels));
-  p+=sizeof(image->channels);
+  p+=(ptrdiff_t) sizeof(image->channels);
   (void) memcpy(&image->columns,p,sizeof(image->columns));
-  p+=sizeof(image->columns);
+  p+=(ptrdiff_t) sizeof(image->columns);
   (void) memcpy(&image->rows,p,sizeof(image->rows));
-  p+=sizeof(image->rows);
+  p+=(ptrdiff_t) sizeof(image->rows);
   (void) memcpy(&image->number_channels,p,sizeof(image->number_channels));
-  p+=sizeof(image->number_channels);
+  p+=(ptrdiff_t) sizeof(image->number_channels);
   (void) memcpy(image->channel_map,p,MaxPixelChannels*
     sizeof(*image->channel_map));
-  p+=MaxPixelChannels*sizeof(*image->channel_map);
+  p+=(ptrdiff_t) MaxPixelChannels*sizeof(*image->channel_map);
   (void) memcpy(&image->metacontent_extent,p,sizeof(image->metacontent_extent));
-  p+=sizeof(image->metacontent_extent);
+  p+=(ptrdiff_t) sizeof(image->metacontent_extent);
   if (SyncImagePixelCache(image,exception) == MagickFalse)
     return(MagickFalse);
   status=AddValueToSplayTree(registry,(const void *) key,image);
@@ -627,15 +627,15 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
     return(MagickFalse);
   q=message;
   (void) memcpy(&region.width,q,sizeof(region.width));
-  q+=sizeof(region.width);
+  q+=(ptrdiff_t) sizeof(region.width);
   (void) memcpy(&region.height,q,sizeof(region.height));
-  q+=sizeof(region.height);
+  q+=(ptrdiff_t) sizeof(region.height);
   (void) memcpy(&region.x,q,sizeof(region.x));
-  q+=sizeof(region.x);
+  q+=(ptrdiff_t) sizeof(region.x);
   (void) memcpy(&region.y,q,sizeof(region.y));
-  q+=sizeof(region.y);
+  q+=(ptrdiff_t) sizeof(region.y);
   (void) memcpy(&length,q,sizeof(length));
-  q+=sizeof(length);
+  q+=(ptrdiff_t) sizeof(length);
   p=GetVirtualPixels(image,region.x,region.y,region.width,region.height,
     exception);
   if (p == (const Quantum *) NULL)
@@ -685,15 +685,15 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
     return(MagickFalse);
   q=message;
   (void) memcpy(&region.width,q,sizeof(region.width));
-  q+=sizeof(region.width);
+  q+=(ptrdiff_t) sizeof(region.width);
   (void) memcpy(&region.height,q,sizeof(region.height));
-  q+=sizeof(region.height);
+  q+=(ptrdiff_t) sizeof(region.height);
   (void) memcpy(&region.x,q,sizeof(region.x));
-  q+=sizeof(region.x);
+  q+=(ptrdiff_t) sizeof(region.x);
   (void) memcpy(&region.y,q,sizeof(region.y));
-  q+=sizeof(region.y);
+  q+=(ptrdiff_t) sizeof(region.y);
   (void) memcpy(&length,q,sizeof(length));
-  q+=sizeof(length);
+  q+=(ptrdiff_t) sizeof(length);
   p=GetVirtualPixels(image,region.x,region.y,region.width,region.height,
     exception);
   if (p == (const Quantum *) NULL)
@@ -750,15 +750,15 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
     return(MagickFalse);
   p=message;
   (void) memcpy(&region.width,p,sizeof(region.width));
-  p+=sizeof(region.width);
+  p+=(ptrdiff_t) sizeof(region.width);
   (void) memcpy(&region.height,p,sizeof(region.height));
-  p+=sizeof(region.height);
+  p+=(ptrdiff_t) sizeof(region.height);
   (void) memcpy(&region.x,p,sizeof(region.x));
-  p+=sizeof(region.x);
+  p+=(ptrdiff_t) sizeof(region.x);
   (void) memcpy(&region.y,p,sizeof(region.y));
-  p+=sizeof(region.y);
+  p+=(ptrdiff_t) sizeof(region.y);
   (void) memcpy(&length,p,sizeof(length));
-  p+=sizeof(length);
+  p+=(ptrdiff_t) sizeof(length);
   q=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
     exception);
   if (q == (Quantum *) NULL)
@@ -808,15 +808,15 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
     return(MagickFalse);
   p=message;
   (void) memcpy(&region.width,p,sizeof(region.width));
-  p+=sizeof(region.width);
+  p+=(ptrdiff_t) sizeof(region.width);
   (void) memcpy(&region.height,p,sizeof(region.height));
-  p+=sizeof(region.height);
+  p+=(ptrdiff_t) sizeof(region.height);
   (void) memcpy(&region.x,p,sizeof(region.x));
-  p+=sizeof(region.x);
+  p+=(ptrdiff_t) sizeof(region.x);
   (void) memcpy(&region.y,p,sizeof(region.y));
-  p+=sizeof(region.y);
+  p+=(ptrdiff_t) sizeof(region.y);
   (void) memcpy(&length,p,sizeof(length));
-  p+=sizeof(length);
+  p+=(ptrdiff_t) sizeof(length);
   q=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
     exception);
   if (q == (Quantum *) NULL)
@@ -1222,26 +1222,26 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
     Serialize image attributes (see ValidatePixelCacheMorphology()).
   */
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
-  p+=sizeof(server_info->session_key);
+  p+=(ptrdiff_t) sizeof(server_info->session_key);
   (void) memcpy(p,&image->storage_class,sizeof(image->storage_class));
-  p+=sizeof(image->storage_class);
+  p+=(ptrdiff_t) sizeof(image->storage_class);
   (void) memcpy(p,&image->colorspace,sizeof(image->colorspace));
-  p+=sizeof(image->colorspace);
+  p+=(ptrdiff_t) sizeof(image->colorspace);
   (void) memcpy(p,&image->alpha_trait,sizeof(image->alpha_trait));
-  p+=sizeof(image->alpha_trait);
+  p+=(ptrdiff_t) sizeof(image->alpha_trait);
   (void) memcpy(p,&image->channels,sizeof(image->channels));
-  p+=sizeof(image->channels);
+  p+=(ptrdiff_t) sizeof(image->channels);
   (void) memcpy(p,&image->columns,sizeof(image->columns));
-  p+=sizeof(image->columns);
+  p+=(ptrdiff_t) sizeof(image->columns);
   (void) memcpy(p,&image->rows,sizeof(image->rows));
-  p+=sizeof(image->rows);
+  p+=(ptrdiff_t) sizeof(image->rows);
   (void) memcpy(p,&image->number_channels,sizeof(image->number_channels));
-  p+=sizeof(image->number_channels);
+  p+=(ptrdiff_t) sizeof(image->number_channels);
   (void) memcpy(p,image->channel_map,MaxPixelChannels*
     sizeof(*image->channel_map));
-  p+=MaxPixelChannels*sizeof(*image->channel_map);
+  p+=(ptrdiff_t) MaxPixelChannels*sizeof(*image->channel_map);
   (void) memcpy(p,&image->metacontent_extent,sizeof(image->metacontent_extent));
-  p+=sizeof(image->metacontent_extent);
+  p+=(ptrdiff_t) sizeof(image->metacontent_extent);
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(MagickFalse);
@@ -1308,17 +1308,17 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
   p=message;
   *p++='R';
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
-  p+=sizeof(server_info->session_key);
+  p+=(ptrdiff_t) sizeof(server_info->session_key);
   (void) memcpy(p,&region->width,sizeof(region->width));
-  p+=sizeof(region->width);
+  p+=(ptrdiff_t) sizeof(region->width);
   (void) memcpy(p,&region->height,sizeof(region->height));
-  p+=sizeof(region->height);
+  p+=(ptrdiff_t) sizeof(region->height);
   (void) memcpy(p,&region->x,sizeof(region->x));
-  p+=sizeof(region->x);
+  p+=(ptrdiff_t) sizeof(region->x);
   (void) memcpy(p,&region->y,sizeof(region->y));
-  p+=sizeof(region->y);
+  p+=(ptrdiff_t) sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
-  p+=sizeof(length);
+  p+=(ptrdiff_t) sizeof(length);
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
@@ -1381,17 +1381,17 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   p=message;
   *p++='r';
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
-  p+=sizeof(server_info->session_key);
+  p+=(ptrdiff_t) sizeof(server_info->session_key);
   (void) memcpy(p,&region->width,sizeof(region->width));
-  p+=sizeof(region->width);
+  p+=(ptrdiff_t) sizeof(region->width);
   (void) memcpy(p,&region->height,sizeof(region->height));
-  p+=sizeof(region->height);
+  p+=(ptrdiff_t) sizeof(region->height);
   (void) memcpy(p,&region->x,sizeof(region->x));
-  p+=sizeof(region->x);
+  p+=(ptrdiff_t) sizeof(region->x);
   (void) memcpy(p,&region->y,sizeof(region->y));
-  p+=sizeof(region->y);
+  p+=(ptrdiff_t) sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
-  p+=sizeof(length);
+  p+=(ptrdiff_t) sizeof(length);
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
@@ -1443,7 +1443,7 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
   p=message;
   *p++='d';
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
-  p+=sizeof(server_info->session_key);
+  p+=(ptrdiff_t) sizeof(server_info->session_key);
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(MagickFalse);
@@ -1510,17 +1510,17 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
   p=message;
   *p++='W';
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
-  p+=sizeof(server_info->session_key);
+  p+=(ptrdiff_t) sizeof(server_info->session_key);
   (void) memcpy(p,&region->width,sizeof(region->width));
-  p+=sizeof(region->width);
+  p+=(ptrdiff_t) sizeof(region->width);
   (void) memcpy(p,&region->height,sizeof(region->height));
-  p+=sizeof(region->height);
+  p+=(ptrdiff_t) sizeof(region->height);
   (void) memcpy(p,&region->x,sizeof(region->x));
-  p+=sizeof(region->x);
+  p+=(ptrdiff_t) sizeof(region->x);
   (void) memcpy(p,&region->y,sizeof(region->y));
-  p+=sizeof(region->y);
+  p+=(ptrdiff_t) sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
-  p+=sizeof(length);
+  p+=(ptrdiff_t) sizeof(length);
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);
@@ -1584,17 +1584,17 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   p=message;
   *p++='w';
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
-  p+=sizeof(server_info->session_key);
+  p+=(ptrdiff_t) sizeof(server_info->session_key);
   (void) memcpy(p,&region->width,sizeof(region->width));
-  p+=sizeof(region->width);
+  p+=(ptrdiff_t) sizeof(region->width);
   (void) memcpy(p,&region->height,sizeof(region->height));
-  p+=sizeof(region->height);
+  p+=(ptrdiff_t) sizeof(region->height);
   (void) memcpy(p,&region->x,sizeof(region->x));
-  p+=sizeof(region->x);
+  p+=(ptrdiff_t) sizeof(region->x);
   (void) memcpy(p,&region->y,sizeof(region->y));
-  p+=sizeof(region->y);
+  p+=(ptrdiff_t) sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
-  p+=sizeof(length);
+  p+=(ptrdiff_t) sizeof(length);
   count=dpc_send(server_info->file,(MagickSizeType) (p-message),message);
   if (count != (MagickOffsetType) (p-message))
     return(-1);

@@ -1170,7 +1170,7 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
         Extract media type.
       */
       if (LocaleNCompare(++p,"x-",2) == 0)
-        p+=2;
+        p+=(ptrdiff_t) 2;
       (void) CopyMagickString(read_info->filename,"data.",MagickPathExtent);
       q=read_info->filename+5;
       for (i=0; (*p != ';') && (*p != '\0') && (i < (MagickPathExtent-6)); i++)
