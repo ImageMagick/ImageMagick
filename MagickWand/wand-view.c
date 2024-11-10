@@ -320,7 +320,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
       PixelSetQuantumPixel(source->image,pixels,source->pixel_wands[id][x]);
-      pixels+=GetPixelChannels(source->image);
+      pixels+=(ptrdiff_t) GetPixelChannels(source->image);
     }
     duplex_pixels=GetCacheViewVirtualPixels(duplex->view,duplex->extent.x,y,
       duplex->extent.width,1,duplex->exception);
@@ -333,7 +333,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     {
       PixelSetQuantumPixel(duplex->image,duplex_pixels,
         duplex->pixel_wands[id][x]);
-      duplex_pixels+=GetPixelChannels(duplex->image);
+      duplex_pixels+=(ptrdiff_t) GetPixelChannels(duplex->image);
     }
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
       destination->extent.x,y,destination->extent.width,1,
@@ -347,7 +347,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     {
       PixelSetQuantumPixel(destination->image,destination_pixels,
         destination->pixel_wands[id][x]);
-      destination_pixels+=GetPixelChannels(destination->image);
+      destination_pixels+=(ptrdiff_t) GetPixelChannels(destination->image);
     }
     if (transfer(source,duplex,destination,y,id,context) == MagickFalse)
       status=MagickFalse;
@@ -358,7 +358,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     {
       PixelGetQuantumPixel(destination->image,destination->pixel_wands[id][x],
         destination_pixels);
-      destination_pixels+=GetPixelChannels(destination->image);
+      destination_pixels+=(ptrdiff_t) GetPixelChannels(destination->image);
     }
     sync=SyncCacheViewAuthenticPixels(destination->view,destination->exception);
     if (sync == MagickFalse)
@@ -567,7 +567,7 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
       PixelSetQuantumPixel(source->image,pixels,source->pixel_wands[id][x]);
-      pixels+=GetPixelChannels(source->image);
+      pixels+=(ptrdiff_t) GetPixelChannels(source->image);
     }
     if (get(source,y,id,context) == MagickFalse)
       status=MagickFalse;
@@ -972,7 +972,7 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
     {
       PixelGetQuantumPixel(destination->image,destination->pixel_wands[id][x],
         pixels);
-      pixels+=GetPixelChannels(destination->image);
+      pixels+=(ptrdiff_t) GetPixelChannels(destination->image);
     }
     sync=SyncCacheViewAuthenticPixels(destination->view,destination->exception);
     if (sync == MagickFalse)
@@ -1110,7 +1110,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
       PixelSetQuantumPixel(source->image,pixels,source->pixel_wands[id][x]);
-      pixels+=GetPixelChannels(source->image);
+      pixels+=(ptrdiff_t) GetPixelChannels(source->image);
     }
     destination_pixels=GetCacheViewAuthenticPixels(destination->view,
       destination->extent.x,y,destination->extent.width,1,
@@ -1124,7 +1124,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
     {
       PixelSetQuantumPixel(destination->image,destination_pixels,
         destination->pixel_wands[id][x]);
-      destination_pixels+=GetPixelChannels(destination->image);
+      destination_pixels+=(ptrdiff_t) GetPixelChannels(destination->image);
     }
     if (transfer(source,destination,y,id,context) == MagickFalse)
       status=MagickFalse;
@@ -1135,7 +1135,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
     {
       PixelGetQuantumPixel(destination->image,destination->pixel_wands[id][x],
         destination_pixels);
-      destination_pixels+=GetPixelChannels(destination->image);
+      destination_pixels+=(ptrdiff_t) GetPixelChannels(destination->image);
     }
     sync=SyncCacheViewAuthenticPixels(destination->view,destination->exception);
     if (sync == MagickFalse)

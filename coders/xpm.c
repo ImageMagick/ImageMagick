@@ -502,7 +502,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelIndex(image,(Quantum) j,r);
           SetPixelViaPixelInfo(image,image->colormap+j,r);
           p+=count;
-          r+=GetPixelChannels(image);
+          r+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (x < (ssize_t) image->columns)
           break;

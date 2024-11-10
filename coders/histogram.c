@@ -304,7 +304,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
           SetPixelRed(histogram_image,QuantumRange,r);
-          r+=GetPixelChannels(histogram_image);
+          r+=(ptrdiff_t) GetPixelChannels(histogram_image);
         }
       }
     if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
@@ -315,7 +315,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
           SetPixelGreen(histogram_image,QuantumRange,r);
-          r+=GetPixelChannels(histogram_image);
+          r+=(ptrdiff_t) GetPixelChannels(histogram_image);
         }
       }
     if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
@@ -326,7 +326,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
           SetPixelBlue(histogram_image,QuantumRange,r);
-          r+=GetPixelChannels(histogram_image);
+          r+=(ptrdiff_t) GetPixelChannels(histogram_image);
         }
       }
     if (SyncAuthenticPixels(histogram_image,exception) == MagickFalse)

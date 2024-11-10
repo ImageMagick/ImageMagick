@@ -300,7 +300,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 SetPixelRed(image,ScaleShortToQuantum(((*p) << 8) | *(p+1)),q);
                 p+=2;
               }
-            chroma_pixels+=GetPixelChannels(chroma_image);
+            chroma_pixels+=(ptrdiff_t) GetPixelChannels(chroma_image);
             q+=(ptrdiff_t) GetPixelChannels(image);
           }
         }
@@ -468,7 +468,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         SetPixelGreen(image,GetPixelGreen(resize_image,chroma_pixels),q);
         SetPixelBlue(image,GetPixelBlue(resize_image,chroma_pixels),q);
-        chroma_pixels+=GetPixelChannels(resize_image);
+        chroma_pixels+=(ptrdiff_t) GetPixelChannels(resize_image);
         q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)

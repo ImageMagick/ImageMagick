@@ -408,7 +408,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                                                 if (bit == 8)
                                                         bit=0;
                                                 byte>>=1;
-                                          o+=GetPixelChannels(image);
+                                          o+=(ptrdiff_t) GetPixelChannels(image);
                                         }
                                 if (SyncAuthenticPixels(image,exception) == MagickFalse)
                                         break;
@@ -442,7 +442,7 @@ get_page_image(LoadContext *lc, ddjvu_page_t *page, int x, int y, int w, int h, 
                     SetPixelRed(image,ScaleCharToQuantum(*s++),r);
                     SetPixelGreen(image,ScaleCharToQuantum(*s++),r);
                     SetPixelBlue(image,ScaleCharToQuantum(*s++),r);
-                    r+=GetPixelChannels(image);
+                    r+=(ptrdiff_t) GetPixelChannels(image);
                   }
 
                               (void) SyncAuthenticPixels(image,exception);
