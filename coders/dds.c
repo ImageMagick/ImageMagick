@@ -1403,7 +1403,7 @@ static MagickBooleanType SetDXT1Pixels(Image *image,ssize_t x,ssize_t y,
           if ((colors.a[code] != 0) &&
               ((image->alpha_trait & BlendPixelTrait) == 0))
             return(MagickFalse);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
     }
   }
@@ -1703,7 +1703,7 @@ static MagickBooleanType ReadDXT3Pixels(Image *image,
               else
                 alpha = 17U * (unsigned char) ((a1 >> (4*(4*(j-2)+i))) & 0xf);
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) alpha),q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
         }
       }
@@ -1818,7 +1818,7 @@ static MagickBooleanType ReadDXT5Pixels(Image *image,
               else
                 alpha = (((6-alpha_code) * a0 + (alpha_code-1) * a1) / 5);
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) alpha),q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
         }
       }
@@ -2127,7 +2127,7 @@ static MagickBooleanType ReadBC5Pixels(Image *image,
           &start_bit_g,3)]),q);
         SetPixelBlue(image,(Quantum) 0,q);
 
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image, exception) == MagickFalse)
         return(MagickFalse);
@@ -2344,7 +2344,7 @@ static MagickBooleanType ReadBC7Pixels(Image *image,
         SetPixelBlue(image,ScaleCharToQuantum((unsigned char)b),q);
         SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)a),q);
 
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         return(MagickFalse);
@@ -2416,7 +2416,7 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
               dds_info->extFormat == DXGI_FORMAT_B8G8R8X8_UNORM)
             (void) ReadBlobByte(image);
         }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       return(MagickFalse);
@@ -2610,7 +2610,7 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
           SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
             ReadBlobByte(image)),q);
         }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       return(MagickFalse);
@@ -3983,7 +3983,7 @@ static void WriteFourCC(Image *image, const size_t compression,
           point.y = (float)ScaleQuantumToChar(GetPixelGreen(image,p)) / 255.0f;
           point.z = (float)ScaleQuantumToChar(GetPixelBlue(image,p)) / 255.0f;
           point.w = weightByAlpha ? (float)(alpha + 1) / 256.0f : 1.0f;
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
 
           match = MagickFalse;
           for (i=0; i < (ssize_t) count; i++)
@@ -4050,7 +4050,7 @@ static void WriteUncompressed(Image *image, ExceptionInfo *exception)
       (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(image,p)));
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelAlpha(image,p)));
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
 }

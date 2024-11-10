@@ -363,7 +363,7 @@ static MagickBooleanType CorrectPSDAlphaBlend(const ImageInfo *image_info,
                 QuantumRange))/gamma);
           }
         }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       status=MagickFalse;
@@ -432,7 +432,7 @@ static MagickBooleanType ApplyPSDLayerOpacity(Image *image,
       else if (opacity > 0)
         SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*(double)
           GetPixelAlpha(image,q)/(double) opacity),q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       status=MagickFalse;
@@ -515,8 +515,8 @@ static MagickBooleanType ApplyPSDOpacityMask(Image *image,const Image *mask,
         if (intensity > 0)
           SetPixelAlpha(image,ClampToQuantum((alpha/intensity)*(double)
             QuantumRange),q);
-      q+=GetPixelChannels(image);
-      p+=GetPixelChannels(complete_mask);
+      q+=(ptrdiff_t) GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(complete_mask);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       status=MagickFalse;
@@ -1012,7 +1012,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,const ssize_t row,
     if (image->depth > 1)
       {
         SetPSDPixel(image,channel,packet_size,pixel,q,exception);
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
     else
       {
@@ -1028,7 +1028,7 @@ static MagickBooleanType ReadPSDChannelPixels(Image *image,const ssize_t row,
           SetPSDPixel(image,channel,packet_size,(((unsigned char)
             ((ssize_t) pixel)) & (0x01 << (7-bit))) != 0 ? 0 :
             (double) QuantumRange,q,exception);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
           x++;
         }
         if (x != (ssize_t) image->columns)

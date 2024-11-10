@@ -1617,7 +1617,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               }
             if (image->alpha_trait != UndefinedPixelTrait)
               SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           extent=(size_t) x;
           break;
@@ -2710,7 +2710,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         {
           length=0;
           GetPixelInfoPixel(image,p,&pixel);
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
           for (x=1; x < (ssize_t) image->columns; x++)
           {
             GetPixelInfoPixel(image,p,&target);
@@ -2723,7 +2723,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
                 length=0;
               }
             GetPixelInfoPixel(image,p,&pixel);
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
           q=PopRunlengthPacket(image,q,length,&pixel);
           length=(size_t) (q-pixels);

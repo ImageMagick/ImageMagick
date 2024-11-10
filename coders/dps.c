@@ -393,7 +393,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelGreen(image,ScaleShortToQuantum(colors[index].green),q);
             index=(pixel >> blue_shift) & blue_mask;
             SetPixelBlue(image,ScaleShortToQuantum(colors[index].blue),q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -418,7 +418,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             color=(pixel >> blue_shift) & blue_mask;
             color=(color*65535L)/blue_mask;
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) color),q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -460,7 +460,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           SetPixelIndex(image,(unsigned short) XGetPixel(dps_image,x,y),q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -509,7 +509,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   SetPixelAlpha(image,OpaqueAlpha,q);
                   if (XGetPixel(matte_image,x,y) == 0)
                     SetPixelAlpha(image,TransparentAlpha,q);
-                  q+=GetPixelChannels(image);
+                  q+=(ptrdiff_t) GetPixelChannels(image);
                 }
                 if (SyncAuthenticPixels(image,exception) == MagickFalse)
                   break;

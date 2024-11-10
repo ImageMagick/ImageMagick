@@ -645,7 +645,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               SetPixelBlue(image,quantum == 0 ? 0 : QuantumRange,q);
               if (image->storage_class == PseudoClass)
                 SetPixelIndex(image,(Quantum) quantum,q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
             p++;
           }
@@ -659,7 +659,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                 SetPixelBlue(image,quantum == 0 ? 0 : QuantumRange,q);
                 if (image->storage_class == PseudoClass)
                   SetPixelIndex(image,(Quantum) quantum,q);
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               p++;
             }
@@ -684,7 +684,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             SetPixelIndex(image,*p++,q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -730,7 +730,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               SetPixelAlpha(image,image->alpha_trait != UndefinedPixelTrait ?
                 ScaleCharToQuantum(*(p+number_pixels*3)) : OpaqueAlpha,q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -1122,7 +1122,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             if (image->alpha_trait != UndefinedPixelTrait)
               *(q+number_pixels*3)=ScaleQuantumToChar((Quantum)
                 (GetPixelAlpha(image,p)));
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
             q++;
           }
           if (image->previous == (Image *) NULL)
@@ -1168,7 +1168,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
-              p+=GetPixelChannels(image);
+              p+=(ptrdiff_t) GetPixelChannels(image);
             }
             if (image->previous == (Image *) NULL)
               {
@@ -1208,7 +1208,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
                     bit=0;
                     byte=0;
                   }
-                p+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (bit != 0)
                 *q++=byte >> (8-bit);
@@ -1234,7 +1234,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 *q++=(unsigned char) ClampToQuantum(GetPixelLuma(image,p));
-                p+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)
                 {

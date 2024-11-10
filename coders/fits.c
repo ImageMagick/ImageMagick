@@ -487,7 +487,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
               (unsigned char *) &pixel);
           SetPixelGray(image,ClampToQuantum(scale*(fits_info.scale*(pixel-
             fits_info.min_data)+fits_info.zero)),q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;

@@ -282,8 +282,8 @@ static Image *BlendMagnitudeImage(const Image *dx_image,const Image *dy_image,
         r[i]=ClampToQuantum(hypot((double) p[i],(double)
           GetPixelChannel(dy_image,channel,q)));
       }
-      p+=GetPixelChannels(dx_image);
-      q+=GetPixelChannels(dy_image);
+      p+=(ptrdiff_t) GetPixelChannels(dx_image);
+      q+=(ptrdiff_t) GetPixelChannels(dy_image);
       r+=GetPixelChannels(magnitude_image);
     }
     if (SyncCacheViewAuthenticPixels(magnitude_view,exception) == MagickFalse)
@@ -381,8 +381,8 @@ static Image *BlendMaxMagnitudeImage(const Image *alpha_image,
         else
           t[i]=GetPixelChannel(dy_image,channel,s);
       }
-      p+=GetPixelChannels(alpha_image);
-      q+=GetPixelChannels(beta_image);
+      p+=(ptrdiff_t) GetPixelChannels(alpha_image);
+      q+=(ptrdiff_t) GetPixelChannels(beta_image);
       r+=GetPixelChannels(dx_image);
       s+=GetPixelChannels(dy_image);
       t+=GetPixelChannels(magnitude_image);
@@ -472,8 +472,8 @@ static Image *BlendSumImage(const Image *alpha_image,const Image *beta_image,
         r[i]=ClampToQuantum(attenuate*((double) p[i]+sign*
           (double) GetPixelChannel(beta_image,channel,q)));
       }
-      p+=GetPixelChannels(alpha_image);
-      q+=GetPixelChannels(beta_image);
+      p+=(ptrdiff_t) GetPixelChannels(alpha_image);
+      q+=(ptrdiff_t) GetPixelChannels(beta_image);
       r+=GetPixelChannels(sum_image);
     }
     if (SyncCacheViewAuthenticPixels(sum_view,exception) == MagickFalse)
@@ -667,8 +667,8 @@ static MagickBooleanType BlendMaskAlphaChannel(Image *image,
 
       if (fabs((double) alpha) >= MagickEpsilon)
         q[i]=(Quantum) 0;
-      p+=GetPixelChannels(mask_image);
-      q+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(mask_image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -729,7 +729,7 @@ static Image *BlendMeanImage(Image *image,const Image *mask_image,
           continue;
         mean[i]+=QuantumScale*(double) p[i];
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   alpha_view=DestroyCacheView(alpha_view);
@@ -792,8 +792,8 @@ static Image *BlendMeanImage(Image *image,const Image *mask_image,
           if (fabs((double) alpha) >= MagickEpsilon)
             q[i]=ClampToQuantum(mean[i]);
       }
-      p+=GetPixelChannels(mask_image);
-      q+=GetPixelChannels(mean_image);
+      p+=(ptrdiff_t) GetPixelChannels(mask_image);
+      q+=(ptrdiff_t) GetPixelChannels(mean_image);
     }
     if (SyncCacheViewAuthenticPixels(mean_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -869,8 +869,8 @@ static MagickBooleanType BlendRMSEResidual(const Image *alpha_image,
       if ((GetPixelReadMask(alpha_image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(beta_image,q) <= (QuantumRange/2)))
         {
-          p+=GetPixelChannels(alpha_image);
-          q+=GetPixelChannels(beta_image);
+          p+=(ptrdiff_t) GetPixelChannels(alpha_image);
+          q+=(ptrdiff_t) GetPixelChannels(beta_image);
           continue;
         }
       Sa=QuantumScale*(double) GetPixelAlpha(alpha_image,p);
@@ -896,8 +896,8 @@ static MagickBooleanType BlendRMSEResidual(const Image *alpha_image,
         channel_residual+=distance*distance;
       }
       local_area++;
-      p+=GetPixelChannels(alpha_image);
-      q+=GetPixelChannels(beta_image);
+      p+=(ptrdiff_t) GetPixelChannels(alpha_image);
+      q+=(ptrdiff_t) GetPixelChannels(beta_image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp critical (MagickCore_BlendRMSEResidual)
@@ -1033,7 +1033,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
         {
           if (x < x_offset)
             {
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               continue;
             }
           if ((x-(double) x_offset) >= (double) source_image->columns)
@@ -1072,7 +1072,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
             q[i]=clamp != MagickFalse ? ClampPixel(pixel) :
               ClampToQuantum(pixel);
           }
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
           continue;
         }
       /*
@@ -1131,11 +1131,11 @@ static MagickBooleanType CompositeOverImage(Image *image,
         pixel=(double) QuantumRange*gamma*(Sca+Dca*(1.0-Sa));
         q[i]=clamp != MagickFalse ? ClampPixel(pixel) : ClampToQuantum(pixel);
       }
-      p+=GetPixelChannels(source_image);
+      p+=(ptrdiff_t) GetPixelChannels(source_image);
       channels=GetPixelChannels(source_image);
       if (p >= (pixels+channels*source_image->columns))
         p=pixels;
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1591,8 +1591,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
           if (GetPixelReadMask(source_image,p) <= (QuantumRange/2))
             {
-              p+=GetPixelChannels(source_image);
-              q+=GetPixelChannels(image);
+              p+=(ptrdiff_t) GetPixelChannels(source_image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               continue;
             }
           for (i=0; i < (ssize_t) GetPixelChannels(source_image); i++)
@@ -1606,8 +1606,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               continue;
             SetPixelChannel(image,channel,p[i],q);
           }
-          p+=GetPixelChannels(source_image);
-          q+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(source_image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1672,15 +1672,15 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         {
           if (GetPixelReadMask(source_image,p) <= (QuantumRange/2))
             {
-              p+=GetPixelChannels(source_image);
-              q+=GetPixelChannels(image);
+              p+=(ptrdiff_t) GetPixelChannels(source_image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               continue;
             }
           SetPixelAlpha(image,clamp != MagickFalse ?
             ClampPixel(GetPixelIntensity(source_image,p)) :
             ClampToQuantum(GetPixelIntensity(source_image,p)),q);
-          p+=GetPixelChannels(source_image);
-          q+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(source_image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
         if (sync == MagickFalse)
@@ -1841,7 +1841,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
-              p+=GetPixelChannels(source_image);
+              p+=(ptrdiff_t) GetPixelChannels(source_image);
               continue;
             }
           if (fabs(angle_range) > MagickEpsilon)
@@ -1864,8 +1864,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel,exception);
           SetPixelViaPixelInfo(canvas_image,&pixel,q);
-          p+=GetPixelChannels(source_image);
-          q+=GetPixelChannels(canvas_image);
+          p+=(ptrdiff_t) GetPixelChannels(source_image);
+          q+=(ptrdiff_t) GetPixelChannels(canvas_image);
         }
         sync=SyncCacheViewAuthenticPixels(canvas_view,exception);
         if (sync == MagickFalse)
@@ -2012,7 +2012,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         {
           if (((x_offset+x) < 0) || ((x_offset+x) >= (ssize_t) image->columns))
             {
-              p+=GetPixelChannels(source_image);
+              p+=(ptrdiff_t) GetPixelChannels(source_image);
               continue;
             }
           /*
@@ -2037,8 +2037,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           pixel.alpha=(MagickRealType) QuantumRange*(QuantumScale*pixel.alpha)*
             (QuantumScale*(double) GetPixelAlpha(source_image,p));
           SetPixelViaPixelInfo(canvas_image,&pixel,q);
-          p+=GetPixelChannels(source_image);
-          q+=GetPixelChannels(canvas_image);
+          p+=(ptrdiff_t) GetPixelChannels(source_image);
+          q+=(ptrdiff_t) GetPixelChannels(canvas_image);
         }
         if (x < (ssize_t) source_image->columns)
           break;
@@ -2300,7 +2300,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         {
           if (x < x_offset)
             {
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               continue;
             }
           if ((x-(double) x_offset) >= (double) source_image->columns)
@@ -2380,7 +2380,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             q[i]=clamp != MagickFalse ? ClampPixel(pixel) :
               ClampToQuantum(pixel);
           }
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
           continue;
         }
       /*
@@ -3561,11 +3561,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         }
         q[i]=clamp != MagickFalse ? ClampPixel(pixel) : ClampToQuantum(pixel);
       }
-      p+=GetPixelChannels(source_image);
+      p+=(ptrdiff_t) GetPixelChannels(source_image);
       channels=GetPixelChannels(source_image);
       if (p >= (pixels+channels*source_image->columns))
         p=pixels;
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3760,8 +3760,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
             continue;
           SetPixelChannel(image,channel,p[i],q);
         }
-        p+=GetPixelChannels(texture_image);
-        q+=GetPixelChannels(image);
+        p+=(ptrdiff_t) GetPixelChannels(texture_image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
     }
     sync=SyncCacheViewAuthenticPixels(image_view,exception);

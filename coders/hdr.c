@@ -493,7 +493,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelBlue(image,ClampToQuantum((double) QuantumRange*gamma*
             (double) pixel[2]),q);
         }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -816,7 +816,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
           pixels[i++]=pixel[2];
           pixels[i++]=pixel[3];
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if ((image->columns >= 8) && (image->columns <= 0x7ffff))
       {

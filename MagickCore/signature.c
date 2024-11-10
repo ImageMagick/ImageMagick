@@ -533,7 +533,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
 
       if (GetPixelReadMask(image,p) <= (QuantumRange/2))
         {
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
           continue;
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -553,7 +553,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
           for (j=0; j < (ssize_t) sizeof(pixel); j++)
             *q++=(unsigned char) ((unsigned char *) &pixel)[j];
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     SetStringInfoLength(signature,(size_t) (q-pixels));
     UpdateSignature(signature_info,signature);

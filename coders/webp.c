@@ -333,7 +333,7 @@ static int ReadSingleWEBPImage(const ImageInfo *image_info,Image *image,
           SetPixelBlue(image,(Quantum) 0,q);
           SetPixelAlpha(image,(Quantum) 0,q);
         }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -857,7 +857,7 @@ static MagickBooleanType WriteSingleWEBPPicture(const ImageInfo *image_info,
         ((uint32_t) ScaleQuantumToChar(GetPixelRed(image,p)) << 16) |
         ((uint32_t) ScaleQuantumToChar(GetPixelGreen(image,p)) << 8) |
         ((uint32_t) ScaleQuantumToChar(GetPixelBlue(image,p)));
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       image->rows);

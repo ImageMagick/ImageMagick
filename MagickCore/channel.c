@@ -182,8 +182,8 @@ static MagickBooleanType ChannelImage(Image *destination_image,
       else
         SetPixelChannel(destination_image,destination_channel,
           GetPixelChannel(source_image,source_channel,p),q);
-      p+=GetPixelChannels(source_image);
-      q+=GetPixelChannels(destination_image);
+      p+=(ptrdiff_t) GetPixelChannels(source_image);
+      q+=(ptrdiff_t) GetPixelChannels(destination_image);
     }
     if (SyncCacheViewAuthenticPixels(destination_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -623,9 +623,9 @@ MagickExport Image *CombineImages(const Image *image,
         if (x < (ssize_t) next->columns)
           {
             q[i]=GetPixelIntensity(next,p);
-            p+=GetPixelChannels(next);
+            p+=(ptrdiff_t) GetPixelChannels(next);
           }
-        q+=GetPixelChannels(combine_image);
+        q+=(ptrdiff_t) GetPixelChannels(combine_image);
       }
       image_view=DestroyCacheView(image_view);
       next=GetNextImageInList(next);
@@ -803,8 +803,8 @@ MagickExport Image *SeparateImage(const Image *image,
           continue;
         SetPixelChannel(separate_image,GrayPixelChannel,p[i],q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(separate_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(separate_image);
     }
     if (SyncCacheViewAuthenticPixels(separate_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1054,7 +1054,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
               continue;
             q[i]=ClampToQuantum(gamma*(double) q[i]);
           }
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           status=MagickFalse;
@@ -1102,7 +1102,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
               SetPixelViaPixelInfo(image,&image->background_color,q);
               SetPixelChannel(image,AlphaPixelChannel,TransparentAlpha,q);
             }
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           status=MagickFalse;
@@ -1176,7 +1176,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
               continue;
             q[i]=ClampToQuantum(gamma*(double) q[i]);
           }
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           status=MagickFalse;
@@ -1244,7 +1244,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
               opaque=MagickFalse;
               break;
             }
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
         }
       }
       image_view=DestroyCacheView(image_view);
@@ -1300,7 +1300,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         {
           FlattenPixelInfo(image,&image->background_color,
             image->background_color.alpha,q,(double) GetPixelAlpha(image,q),q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           status=MagickFalse;
@@ -1359,7 +1359,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         {
           pixel.alpha=GetPixelIntensity(image,q);
           SetPixelViaPixelInfo(image,&pixel,q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           status=MagickFalse;

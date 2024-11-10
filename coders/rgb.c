@@ -274,8 +274,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 SetPixelAlpha(image,OpaqueAlpha,q);
                 if (image->alpha_trait != UndefinedPixelTrait)
                   SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
-                p+=GetPixelChannels(canvas_image);
-                q+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -382,8 +382,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     default:
                       break;
                   }
-                  p+=GetPixelChannels(canvas_image);
-                  q+=GetPixelChannels(image);
+                  p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+                  q+=(ptrdiff_t) GetPixelChannels(image);
                 }
                 if (SyncAuthenticPixels(image,exception) == MagickFalse)
                   break;
@@ -448,8 +448,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 SetPixelRed(image,GetPixelRed(canvas_image,p),q);
-                p+=GetPixelChannels(canvas_image);
-                q+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -500,8 +500,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
-                p+=GetPixelChannels(canvas_image);
-                q+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -552,8 +552,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
-                p+=GetPixelChannels(canvas_image);
-                q+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -606,8 +606,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
                     SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
-                    p+=GetPixelChannels(canvas_image);
-                    q+=GetPixelChannels(image);
+                    p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+                    q+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
                     break;
@@ -696,8 +696,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 SetPixelRed(image,GetPixelRed(canvas_image,p),q);
-                p+=GetPixelChannels(canvas_image);
-                q+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -767,8 +767,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
-                p+=GetPixelChannels(canvas_image);
-                q+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -838,8 +838,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
-                p+=GetPixelChannels(canvas_image);
-                q+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -911,8 +911,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
                     SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
-                    p+=GetPixelChannels(canvas_image);
-                    q+=GetPixelChannels(image);
+                    p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+                    q+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   if (SyncAuthenticPixels(image,exception) == MagickFalse)
                     break;
@@ -1160,8 +1160,8 @@ static Image *ReadRGB565Image(const ImageInfo *image_info,
             SetPixelRed(image,(Quantum) (((pixel >> 11) & 0x1f) << 11),q);
             SetPixelGreen(image,(Quantum) (((pixel >> 5) & 0x3f) << 10),q);
             SetPixelBlue(image,(Quantum) ((pixel & 0x1f) << 11),q);
-            p+=GetPixelChannels(canvas_image);
-            q+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;

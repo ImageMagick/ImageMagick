@@ -213,7 +213,7 @@ static MagickBooleanType WriteKERNELImage(const ImageInfo *image_info,
             GetMagickPrecision(),QuantumScale*GetPixelIntensity(image,p));
           (void) WriteBlobString(image,buffer);
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (image->previous == (Image *) NULL)
       {

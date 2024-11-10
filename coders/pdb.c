@@ -478,7 +478,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           index=(Quantum) (*p & (0x80 >> bit) ? 0x00 : 0x01);
           SetPixelIndex(image,index,q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
           bit++;
           if (bit == 8)
             {
@@ -516,7 +516,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           index=ConstrainColormapIndex(image,3UL-((*p >> shift) & 0x03),
             exception);
           SetPixelIndex(image,index,q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
           if (shift == 0)
             {
               shift=8;
@@ -553,7 +553,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           index=ConstrainColormapIndex(image,15UL-((*p >> shift) & 0x0f),
             exception);
           SetPixelIndex(image,index,q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
           if (shift == 0)
             {
               shift=8;

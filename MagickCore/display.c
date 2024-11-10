@@ -3745,7 +3745,7 @@ static MagickBooleanType XColorEditImage(Display *display,
                         SetPixelBlue(*image,ScaleShortToQuantum(
                           color.blue),q);
                       }
-                    q+=GetPixelChannels(*image);
+                    q+=(ptrdiff_t) GetPixelChannels(*image);
                   }
                   if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                     break;
@@ -3819,7 +3819,7 @@ static MagickBooleanType XColorEditImage(Display *display,
                 SetPixelRed(*image,ScaleShortToQuantum(color.red),q);
                 SetPixelGreen(*image,ScaleShortToQuantum(color.green),q);
                 SetPixelBlue(*image,ScaleShortToQuantum(color.blue),q);
-                q+=GetPixelChannels(*image);
+                q+=(ptrdiff_t) GetPixelChannels(*image);
               }
               if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                 break;
@@ -4305,7 +4305,7 @@ static MagickBooleanType XCompositeImage(Display *display,
         for (x=0; x < (int) image->columns; x++)
         {
           SetPixelAlpha(image,opacity,q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           break;
@@ -5332,7 +5332,7 @@ static MagickBooleanType XCropImage(Display *display,
     for (x=0; x < (int) crop_info.width; x++)
     {
       SetPixelAlpha(image,TransparentAlpha,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       break;
@@ -10107,7 +10107,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
                 GetPixelInfoPixel(*image,q,&pixel);
                 if (IsFuzzyEquivalencePixelInfo(&pixel,&target))
                   SetPixelAlpha(*image,(Quantum) StringToLong(matte),q);
-                q+=GetPixelChannels(*image);
+                q+=(ptrdiff_t) GetPixelChannels(*image);
               }
               if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                 break;
@@ -10169,7 +10169,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               for (x=0; x < (int) (*image)->columns; x++)
               {
                 SetPixelAlpha(*image,(Quantum) StringToLong(matte),q);
-                q+=GetPixelChannels(*image);
+                q+=(ptrdiff_t) GetPixelChannels(*image);
               }
               if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
                 break;

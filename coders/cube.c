@@ -305,7 +305,7 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
           cube[FlattenCube(cube_level,index.b,index.g,index.r)].b+scale.b*(
           cube[FlattenCube(cube_level,next.b,index.g,index.r)].b-
           cube[FlattenCube(cube_level,index.b,index.g,index.r)].b))),q);
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         status=MagickFalse;

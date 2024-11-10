@@ -2879,7 +2879,7 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
               SetPixelViaPixelInfo(distort_image,&pixel,q);
             }
         }
-        q+=GetPixelChannels(distort_image);
+        q+=(ptrdiff_t) GetPixelChannels(distort_image);
       }
       sync=SyncCacheViewAuthenticPixels(distort_view,exception);
       if (sync == MagickFalse)
@@ -3418,7 +3418,7 @@ MagickExport Image *SparseColorImage(const Image *image,
           pixel.alpha=(MagickRealType) ClampPixel((double) QuantumRange*
             pixel.alpha);
         SetPixelViaPixelInfo(sparse_image,&pixel,q);
-        q+=GetPixelChannels(sparse_image);
+        q+=(ptrdiff_t) GetPixelChannels(sparse_image);
       }
       sync=SyncCacheViewAuthenticPixels(sparse_view,exception);
       if (sync == MagickFalse)

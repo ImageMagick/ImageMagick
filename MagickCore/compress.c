@@ -615,7 +615,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
       index=(Quantum) (*p++);
       SetPixelIndex(image,index,q);
       SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       break;
@@ -788,7 +788,7 @@ RestoreMSCWarning \
     {
       *q++=(unsigned char) (GetPixelIntensity(huffman_image,p) >=
         ((double) QuantumRange/2.0) ? 0 : 1);
-      p+=GetPixelChannels(huffman_image);
+      p+=(ptrdiff_t) GetPixelChannels(huffman_image);
     }
     /*
       Huffman encode scanline.

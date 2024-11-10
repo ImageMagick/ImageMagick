@@ -2000,7 +2000,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           if (GetPixelAlpha(composite_image,q) == OpaqueAlpha)
                             SetPixelAlpha(composite_image,
                               ClampToQuantum(opacity),q);
-                          q+=GetPixelChannels(composite_image);
+                          q+=(ptrdiff_t) GetPixelChannels(composite_image);
                         }
                         if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
                           break;

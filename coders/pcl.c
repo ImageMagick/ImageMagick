@@ -903,7 +903,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
                 bit=0;
                 byte=0;
               }
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (bit != 0)
             *q++=byte << (8-bit);
@@ -917,7 +917,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
           break;
         }
@@ -932,7 +932,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
             *q++=ScaleQuantumToChar(GetPixelRed(image,p));
             *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
             *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
           break;
         }

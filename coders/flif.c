@@ -224,7 +224,7 @@ static Image *ReadFLIFImage(const ImageInfo *image_info,
         SetPixelGreen(image,ScaleShortToQuantum(*p++),q);
         SetPixelBlue(image,ScaleShortToQuantum(*p++),q);
         SetPixelAlpha(image,ScaleShortToQuantum(*p++),q);
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
@@ -487,7 +487,7 @@ static MagickBooleanType WriteFLIFImage(const ImageInfo *image_info,
               *qs++=ScaleQuantumToShort(GetPixelAlpha(image,p));
             else
               *qs++=0xFFFF;
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
           flif_image_write_row_RGBA16(flifimage,y,pixels,length);
         }
@@ -503,7 +503,7 @@ static MagickBooleanType WriteFLIFImage(const ImageInfo *image_info,
               *qc++=ScaleQuantumToChar(GetPixelAlpha(image,p));
             else
               *qc++=0xFF;
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
           flif_image_write_row_RGBA8(flifimage,y,pixels,length);
         }

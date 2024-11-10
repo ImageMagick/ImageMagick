@@ -634,7 +634,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->alpha_trait != UndefinedPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum(*r++),q);
           }
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
@@ -1050,7 +1050,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                 for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
                 {
                   *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-                  p+=GetPixelChannels(image);
+                  p+=(ptrdiff_t) GetPixelChannels(image);
                 }
                 break;
               }
@@ -1059,7 +1059,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                 for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
                 {
                   *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
-                  p+=GetPixelChannels(image);
+                  p+=(ptrdiff_t) GetPixelChannels(image);
                 }
                 break;
               }
@@ -1068,7 +1068,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                 for (x=0; x < (ssize_t) pcx_info.bytes_per_line; x++)
                 {
                   *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-                  p+=GetPixelChannels(image);
+                  p+=(ptrdiff_t) GetPixelChannels(image);
                 }
                 break;
               }
@@ -1078,7 +1078,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                 for (x=(ssize_t) pcx_info.bytes_per_line; x != 0; x--)
                 {
                   *q++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
-                  p+=GetPixelChannels(image);
+                  p+=(ptrdiff_t) GetPixelChannels(image);
                 }
                 break;
               }
@@ -1107,7 +1107,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
-              p+=GetPixelChannels(image);
+              p+=(ptrdiff_t) GetPixelChannels(image);
             }
             if (PCXWritePixels(&pcx_info,pixels,image) == MagickFalse)
               break;
@@ -1148,7 +1148,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
                     bit=0;
                     byte=0;
                   }
-                p+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (bit != 0)
                 *q++=byte << (8-bit);

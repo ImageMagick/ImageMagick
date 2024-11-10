@@ -144,7 +144,7 @@ MagickExport double GetImageTotalInkDensity(Image *image,
           if (density > total_ink_density)
             total_ink_density=density;
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);

@@ -281,7 +281,7 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
         *q++=ScaleQuantumToChar(GetPixelRed(image,p));
         *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
         *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-        p+=GetPixelChannels(image);
+        p+=(ptrdiff_t) GetPixelChannels(image);
       }
     else
       for (x=0; x < (ssize_t) image->columns; x++)
@@ -290,7 +290,7 @@ static MagickBooleanType SerializeImage(const ImageInfo *image_info,
         *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
         *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
         *q++=ScaleQuantumToChar(GetPixelBlack(image,p));
-        p+=GetPixelChannels(image);
+        p+=(ptrdiff_t) GetPixelChannels(image);
       }
     if (image->previous == (Image *) NULL)
       {
@@ -352,7 +352,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         *q++=ScaleQuantumToChar(ClampToQuantum(GetPixelLuma(image,p)));
-        p+=GetPixelChannels(image);
+        p+=(ptrdiff_t) GetPixelChannels(image);
       }
     else
       {
@@ -369,7 +369,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
               *q++=code;
               code='\0';
             }
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
         }
       }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -418,7 +418,7 @@ static MagickBooleanType SerializeImageIndexes(const ImageInfo *image_info,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (image->previous == (Image *) NULL)
       {

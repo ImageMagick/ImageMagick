@@ -266,7 +266,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         histogram[ScaleQuantumToChar(GetPixelGreen(image,p))].green++;
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         histogram[ScaleQuantumToChar(GetPixelBlue(image,p))].blue++;
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   maximum=histogram[0].red;

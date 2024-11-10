@@ -271,7 +271,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
       q->rgbGreen = ScaleQuantumToChar(GetPixelGreen(image,p));
       q->rgbBlue = ScaleQuantumToChar(GetPixelBlue(image,p));
       q->rgbReserved = 0;
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
       q++;
     }
     proceed=SetImageProgress(image,CropImageTag,y,page.height);
@@ -381,7 +381,7 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
       q->rgbGreen=ScaleQuantumToChar(GetPixelGreen(image,p));
       q->rgbBlue=ScaleQuantumToChar(GetPixelBlue(image,p));
       q->rgbReserved=0;
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
       q++;
     }
   }

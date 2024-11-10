@@ -322,7 +322,7 @@ static HCubeInfo *ClassifyImageColors(const Image *image,
           node_info->number_unique++;
           cube_info->colors++;
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     proceed=SetImageProgress(image,EvaluateImageTag,(MagickOffsetType) y,
       image->rows);
@@ -784,7 +784,7 @@ static MagickBooleanType CheckImageColors(const Image *image,
           if (cube_info->colors > max_colors)
             break;
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (x < (ssize_t) image->columns)
       break;

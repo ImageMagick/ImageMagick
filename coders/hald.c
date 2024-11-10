@@ -178,7 +178,7 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
             image->colormap[index].alpha=OpaqueAlpha;
             SetPixelIndex(image,(Quantum) index++,q);
           }
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

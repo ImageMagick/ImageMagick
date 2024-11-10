@@ -1846,7 +1846,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
         if (status == MagickFalse)
           break;
       }
-      q+=GetPixelChannels(resize_image);
+      q+=(ptrdiff_t) GetPixelChannels(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1992,7 +1992,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         *q++=QuantumScale*(double) p[i];
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -3522,7 +3522,7 @@ static MagickBooleanType HorizontalFilter(
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
-      q+=GetPixelChannels(resize_image);
+      q+=(ptrdiff_t) GetPixelChannels(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3734,7 +3734,7 @@ static MagickBooleanType VerticalFilter(
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
-      q+=GetPixelChannels(resize_image);
+      q+=(ptrdiff_t) GetPixelChannels(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -4030,7 +4030,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
 
       if (GetPixelWriteMask(sample_image,q) <= (QuantumRange/2))
         {
-          q+=GetPixelChannels(sample_image);
+          q+=(ptrdiff_t) GetPixelChannels(sample_image);
           continue;
         }
       for (i=0; i < (ssize_t) GetPixelChannels(sample_image); i++)
@@ -4051,7 +4051,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
         SetPixelChannel(sample_image,channel,p[x_offset[x]*(ssize_t)
           GetPixelChannels(image)+i],q);
       }
-      q+=GetPixelChannels(sample_image);
+      q+=(ptrdiff_t) GetPixelChannels(sample_image);
     }
     if (SyncCacheViewAuthenticPixels(sample_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -4240,7 +4240,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         {
           if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
             {
-              p+=GetPixelChannels(image);
+              p+=(ptrdiff_t) GetPixelChannels(image);
               continue;
             }
           if (image->alpha_trait != UndefinedPixelTrait)
@@ -4256,7 +4256,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               }
             x_vector[x*(ssize_t) GetPixelChannels(image)+i]=alpha*(double) p[i];
           }
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
         }
       }
     else
@@ -4283,7 +4283,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               {
                 if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
                   {
-                    p+=GetPixelChannels(image);
+                    p+=(ptrdiff_t) GetPixelChannels(image);
                     continue;
                   }
                 if (image->alpha_trait != UndefinedPixelTrait)
@@ -4301,7 +4301,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                   x_vector[x*(ssize_t) GetPixelChannels(image)+i]=alpha*
                     (double) p[i];
                 }
-                p+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(image);
               }
               number_rows++;
             }
@@ -4329,7 +4329,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             {
               if (GetPixelWriteMask(image,p) <= (QuantumRange/2))
                 {
-                  p+=GetPixelChannels(image);
+                  p+=(ptrdiff_t) GetPixelChannels(image);
                   continue;
                 }
               if (image->alpha_trait != UndefinedPixelTrait)
@@ -4347,7 +4347,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                 x_vector[x*(ssize_t) GetPixelChannels(image)+i]=alpha*
                   (double) p[i];
               }
-              p+=GetPixelChannels(image);
+              p+=(ptrdiff_t) GetPixelChannels(image);
             }
             number_rows++;
             next_row=MagickFalse;
@@ -4379,7 +4379,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         {
           if (GetPixelWriteMask(scale_image,q) <= (QuantumRange/2))
             {
-              q+=GetPixelChannels(scale_image);
+              q+=(ptrdiff_t) GetPixelChannels(scale_image);
               continue;
             }
           if (image->alpha_trait != UndefinedPixelTrait)
@@ -4405,7 +4405,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             SetPixelChannel(scale_image,channel,ClampToQuantum(alpha*scanline[
               x*(ssize_t) GetPixelChannels(image)+i]),q);
           }
-          q+=GetPixelChannels(scale_image);
+          q+=(ptrdiff_t) GetPixelChannels(scale_image);
         }
       }
     else
@@ -4476,7 +4476,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
       {
         if (GetPixelWriteMask(scale_image,q) <= (QuantumRange/2))
           {
-            q+=GetPixelChannels(scale_image);
+            q+=(ptrdiff_t) GetPixelChannels(scale_image);
             continue;
           }
         if (image->alpha_trait != UndefinedPixelTrait)
@@ -4503,7 +4503,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           SetPixelChannel(scale_image,channel,ClampToQuantum(alpha*
             scale_scanline[x*(ssize_t) GetPixelChannels(image)+i]),q);
         }
-        q+=GetPixelChannels(scale_image);
+        q+=(ptrdiff_t) GetPixelChannels(scale_image);
       }
     }
     if (SyncCacheViewAuthenticPixels(scale_view,exception) == MagickFalse)

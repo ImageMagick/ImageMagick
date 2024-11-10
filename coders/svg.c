@@ -610,7 +610,7 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
 #endif
           CompositePixelOver(image,&fill_color,fill_color.alpha,q,(double)
             GetPixelAlpha(image,q),q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -4027,7 +4027,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
             trace->bitmap[i++]=GetPixelGreen(image,p);
             trace->bitmap[i++]=GetPixelBlue(image,p);
           }
-        p+=GetPixelChannels(image);
+        p+=(ptrdiff_t) GetPixelChannels(image);
       }
     }
     splines=at_splines_new_full(trace,fitting_options,NULL,NULL,NULL,NULL,NULL,

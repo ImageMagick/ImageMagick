@@ -254,7 +254,7 @@ static Image *ReadSCREENSHOTImage(const ImageInfo *image_info,
           SetPixelBlue(screen,ScaleCharToQuantum(p->rgbBlue),q);
           SetPixelAlpha(screen,OpaqueAlpha,q);
           p++;
-          q+=GetPixelChannels(screen);
+          q+=(ptrdiff_t) GetPixelChannels(screen);
         }
         if (SyncAuthenticPixels(screen,exception) == MagickFalse)
           break;

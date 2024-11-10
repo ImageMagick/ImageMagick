@@ -304,16 +304,16 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
             for (x=0; x < ((ssize_t) image->columns-1); x+=2)
             {
               SetPixelIndex(image,(*p >> 0) & 0x0F,q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               SetPixelIndex(image,(*p >> 4) & 0x0F,q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
             if ((image->columns % 2) != 0)
               {
                 SetPixelIndex(image,(*p >> 4) & 0x0F,q);
                 p++;
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -346,7 +346,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
             {
               SetPixelIndex(image,*p,q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
               break;
@@ -397,7 +397,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
               SetPixelGreen(image,GetChannelValue(word,1,RGBA16),q);
               SetPixelBlue(image,GetChannelValue(word,2,RGBA16),q);
               SetPixelAlpha(image,GetAlpha(word,RGBA16),q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               p+=sizeof(unsigned short);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -436,7 +436,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
               SetPixelRed(image,GetChannelValue(word,0,RGB24),q);
               SetPixelGreen(image,GetChannelValue(word,1,RGB24),q);
               SetPixelBlue(image,GetChannelValue(word,2,RGB24),q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               p+=3;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -477,7 +477,7 @@ static MagickBooleanType ReadTIM2ImageData(const ImageInfo *image_info,
               SetPixelGreen(image,GetChannelValue(word,1,RGBA32),q);
               SetPixelBlue(image,GetChannelValue(word,2,RGBA32),q);
               SetPixelAlpha(image,GetAlpha(word,RGBA32),q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               p+=4;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)

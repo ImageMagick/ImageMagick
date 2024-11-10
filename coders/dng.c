@@ -593,7 +593,7 @@ static Image *ReadDNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if ((raw_image->colors) == 2 || (raw_image->colors > 3))
           SetPixelAlpha(image,ScaleShortToQuantum(*p++),q);
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;

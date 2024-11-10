@@ -535,7 +535,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               0 ? QuantumRange : 0,q);
             if (EOFBlob(image) != MagickFalse)
               break;
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -579,7 +579,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (EOFBlob(image) != MagickFalse)
               break;
             SetPixelGray(image,intensity,q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -634,7 +634,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((is_mono != MagickFalse) &&
                 (IsPixelMonochrome(image,q) == MagickFalse))
               is_mono=MagickFalse;
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -789,7 +789,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     p=PushCharPixel(p,&pixel);
                     SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
-                    q+=GetPixelChannels(image);
+                    q+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   break;
                 }
@@ -808,7 +808,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     p=PushShortPixel(MSBEndian,p,&pixel);
                     SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
-                    q+=GetPixelChannels(image);
+                    q+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   break;
                 }
@@ -821,7 +821,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     p=PushLongPixel(MSBEndian,p,&pixel);
                     SetPixelGray(image,ScaleAnyToQuantum(pixel,max_value),q);
-                    q+=GetPixelChannels(image);
+                    q+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   break;
                 }
@@ -912,7 +912,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if ((is_mono != MagickFalse) &&
                     (IsPixelMonochrome(image,q) == MagickFalse))
                   is_mono=MagickFalse;
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               break;
             }
@@ -930,7 +930,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if ((is_mono != MagickFalse) &&
                     (IsPixelMonochrome(image,q) == MagickFalse))
                   is_mono=MagickFalse;
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               break;
             }
@@ -960,7 +960,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if ((is_mono != MagickFalse) &&
                     (IsPixelMonochrome(image,q) == MagickFalse))
                   is_mono=MagickFalse;
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               break;
             }
@@ -984,7 +984,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if ((is_mono != MagickFalse) &&
                     (IsPixelMonochrome(image,q) == MagickFalse))
                   is_mono=MagickFalse;
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               break;
             }
@@ -1008,7 +1008,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if ((is_mono != MagickFalse) &&
                     (IsPixelMonochrome(image,q) == MagickFalse))
                   is_mono=MagickFalse;
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               break;
             }
@@ -1032,7 +1032,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if ((is_mono != MagickFalse) &&
                     (IsPixelMonochrome(image,q) == MagickFalse))
                   is_mono=MagickFalse;
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               break;
             }
@@ -1165,7 +1165,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                               SetPixelAlpha(image,QuantumRange-
                                 ScaleAnyToQuantum(pixel,max_value),q);
                           }
-                        q+=GetPixelChannels(image);
+                        q+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -1193,7 +1193,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
                               max_value),q);
                           }
-                        q+=GetPixelChannels(image);
+                        q+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -1214,7 +1214,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
                               max_value),q);
                           }
-                        q+=GetPixelChannels(image);
+                        q+=(ptrdiff_t) GetPixelChannels(image);
                       }
                     }
                   }
@@ -1257,7 +1257,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
                               max_value),q);
                           }
-                        q+=GetPixelChannels(image);
+                        q+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -1293,7 +1293,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
                               max_value),q);
                           }
-                        q+=GetPixelChannels(image);
+                        q+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -1323,7 +1323,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
                               max_value),q);
                           }
-                        q+=GetPixelChannels(image);
+                        q+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -1363,7 +1363,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
                               max_value),q);
                           }
-                        q+=GetPixelChannels(image);
+                        q+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -1396,7 +1396,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
                               max_value),q);
                           }
-                        q+=GetPixelChannels(image);
+                        q+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -1423,7 +1423,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                             SetPixelAlpha(image,ScaleAnyToQuantum(pixel,
                               max_value),q);
                           }
-                        q+=GetPixelChannels(image);
+                        q+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -2036,7 +2036,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 q=pixels;
               }
             *q++=' ';
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
           *q++='\n';
           (void) WriteBlob(image,(size_t) (q-pixels),pixels);
@@ -2105,7 +2105,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
               }
             (void) memcpy((char *) q,buffer,extent);
             q+=extent;
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
           *q++='\n';
           (void) WriteBlob(image,(size_t) (q-pixels),pixels);
@@ -2181,7 +2181,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
               }
             (void) memcpy((char *) q,buffer,extent);
             q+=extent;
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
           *q++='\n';
           (void) WriteBlob(image,(size_t) (q-pixels),pixels);
@@ -2300,7 +2300,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                             max_value);
                       }
                     q=PopCharPixel((unsigned char) pixel,q);
-                    p+=GetPixelChannels(image);
+                    p+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   extent=(size_t) (q-pixels);
                   break;
@@ -2321,7 +2321,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                             max_value);
                       }
                     q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                    p+=GetPixelChannels(image);
+                    p+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   extent=(size_t) (q-pixels);
                   break;
@@ -2339,7 +2339,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                       pixel=ScaleQuantumToAny(GetPixelRed(image,p),max_value);
                   }
                 q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
-                p+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(image);
               }
               extent=(size_t) (q-pixels);
               break;
@@ -2414,7 +2414,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                     q=PopCharPixel((unsigned char) pixel,q);
                     pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
                     q=PopCharPixel((unsigned char) pixel,q);
-                    p+=GetPixelChannels(image);
+                    p+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   extent=(size_t) (q-pixels);
                   break;
@@ -2429,7 +2429,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                     q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                     pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
                     q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                    p+=GetPixelChannels(image);
+                    p+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   extent=(size_t) (q-pixels);
                   break;
@@ -2442,7 +2442,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                 q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
                 pixel=ScaleQuantumToAny(GetPixelBlue(image,p),max_value);
                 q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
-                p+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(image);
               }
               extent=(size_t) (q-pixels);
               break;
@@ -2519,7 +2519,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                               GetPixelAlpha(image,p),max_value);
                             q=PopCharPixel((unsigned char) pixel,q);
                           }
-                        p+=GetPixelChannels(image);
+                        p+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -2536,7 +2536,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                               GetPixelAlpha(image,p),max_value);
                             q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                           }
-                        p+=GetPixelChannels(image);
+                        p+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -2551,7 +2551,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                           GetPixelAlpha(image,p),max_value);
                         q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
                       }
-                    p+=GetPixelChannels(image);
+                    p+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   break;
                 }
@@ -2579,7 +2579,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                               max_value);
                             q=PopCharPixel((unsigned char) pixel,q);
                           }
-                        p+=GetPixelChannels(image);
+                        p+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -2604,7 +2604,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                               max_value);
                             q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                           }
-                        p+=GetPixelChannels(image);
+                        p+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -2624,7 +2624,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                           max_value);
                         q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
                       }
-                    p+=GetPixelChannels(image);
+                    p+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   break;
                 }
@@ -2648,7 +2648,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                               max_value);
                             q=PopCharPixel((unsigned char) pixel,q);
                           }
-                        p+=GetPixelChannels(image);
+                        p+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -2670,7 +2670,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                               max_value);
                             q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                           }
-                        p+=GetPixelChannels(image);
+                        p+=(ptrdiff_t) GetPixelChannels(image);
                       }
                       break;
                     }
@@ -2688,7 +2688,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                           max_value);
                         q=PopLongPixel(MSBEndian,(unsigned int) pixel,q);
                       }
-                    p+=GetPixelChannels(image);
+                    p+=(ptrdiff_t) GetPixelChannels(image);
                   }
                   break;
                 }

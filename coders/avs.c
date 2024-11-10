@@ -184,7 +184,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelRed(image,ScaleCharToQuantum(*p++),q);
         SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
         SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
         break;
@@ -396,7 +396,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image,
         *q++=ScaleQuantumToChar(GetPixelRed(image,p));
         *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
         *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-        p+=GetPixelChannels(image);
+        p+=(ptrdiff_t) GetPixelChannels(image);
       }
       count=WriteBlob(image,(size_t) (q-pixels),pixels);
       if (count != (ssize_t) (q-pixels))

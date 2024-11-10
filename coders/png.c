@@ -814,7 +814,7 @@ LosslessReduceDepthOK(Image *image,ExceptionInfo *exception)
                 if (ok_to_reduce == MagickFalse)
                   break;
 
-                p+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (x >= 0)
                 break;
@@ -3299,7 +3299,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
                     found_transparent_pixel = MagickTrue;
                     break;
                   }
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
             }
 
@@ -3392,7 +3392,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
                 if (alpha != OpaqueAlpha)
                   found_transparent_pixel = MagickTrue;
 
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
 
             else
@@ -3435,7 +3435,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
                   if (alpha != OpaqueAlpha)
                     found_transparent_pixel = MagickTrue;
 
-                  q+=GetPixelChannels(image);
+                  q+=(ptrdiff_t) GetPixelChannels(image);
                 }
 
 #else /* MAGICKCORE_QUANTUM_DEPTH == 8 */
@@ -3450,7 +3450,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
                     found_transparent_pixel = MagickTrue;
 
                   p++;
-                  q+=GetPixelChannels(image);
+                  q+=(ptrdiff_t) GetPixelChannels(image);
                 }
 #endif
             }
@@ -3482,7 +3482,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
           SetPixelBlue(image,ClampToQuantum(image->colormap[index].blue),q);
           SetPixelIndex(image,index,q);
           r++;
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
 
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3629,7 +3629,7 @@ static Image *ReadOnePNGImage(MngReadInfo *mng_info,
                   SetPixelAlpha(image,OpaqueAlpha,q);
                 }
 
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
 
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -4730,7 +4730,7 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
       SetPixelRed(image,GetPixelRed(jng_image,s),q);
       SetPixelGreen(image,GetPixelGreen(jng_image,s),q);
       SetPixelBlue(image,GetPixelBlue(jng_image,s),q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
       s+=GetPixelChannels(jng_image);
     }
 
@@ -4791,7 +4791,7 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
             for (x=(ssize_t) image->columns; x != 0; x--)
             {
               SetPixelAlpha(image,GetPixelRed(jng_image,s),q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               s+=GetPixelChannels(jng_image);
             }
 
@@ -4805,7 +4805,7 @@ static Image *ReadOneJNGImage(MngReadInfo *mng_info,
               SetPixelAlpha(image,alpha,q);
               if (alpha != OpaqueAlpha)
                 image->alpha_trait=BlendPixelTrait;
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               s+=GetPixelChannels(jng_image);
             }
 
@@ -6529,7 +6529,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                             GetPixelBlue(image,q)),q);
                           SetPixelAlpha(image,ScaleQuantumToShort(
                             GetPixelAlpha(image,q)),q);
-                          q+=GetPixelChannels(image);
+                          q+=(ptrdiff_t) GetPixelChannels(image);
                        }
 
                        if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -6741,7 +6741,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                             }
                         }
                       n+=GetPixelChannels(image);
-                      q+=GetPixelChannels(large_image);
+                      q+=(ptrdiff_t) GetPixelChannels(large_image);
                       pixels+=GetPixelChannels(image);
                     } /* x */
 
@@ -6901,7 +6901,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                                  +GetPixelAlpha(image,pixels)),q);
                             }
                         }
-                      q+=GetPixelChannels(image);
+                      q+=(ptrdiff_t) GetPixelChannels(image);
                     }
                     n+=GetPixelChannels(image);
                   }
@@ -6932,7 +6932,7 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                           GetPixelBlue(image,q)),q);
                         SetPixelAlpha(image,ScaleShortToQuantum(
                           GetPixelAlpha(image,q)),q);
-                        q+=GetPixelChannels(image);
+                        q+=(ptrdiff_t) GetPixelChannels(image);
                      }
 
                      if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -8900,7 +8900,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                     break;
                   }
                 }
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
 
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -9013,7 +9013,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                 }
               else
                   SetPixelAlpha(image,OpaqueAlpha,q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
           }
 
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -9061,7 +9061,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
             {
               if (GetPixelAlpha(image,q) == OpaqueAlpha)
                   LBR04PixelRGB(q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
 
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -9111,7 +9111,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
             {
               if (GetPixelAlpha(image,q) == OpaqueAlpha)
                   LBR03RGB(q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
 
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -9164,7 +9164,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
             {
               if (GetPixelAlpha(image,q) == OpaqueAlpha)
                   LBR02PixelBlue(q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
 
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -9226,7 +9226,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
               {
                 SetPixelRed(image,ScaleCharToQuantum(0x24),q);
               }
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
 
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -9315,7 +9315,7 @@ static MagickBooleanType WriteOnePNGImage(MngWriteInfo *mng_info,
                      break;
                    }
 
-                 q+=GetPixelChannels(image);
+                 q+=(ptrdiff_t) GetPixelChannels(image);
              }
 
              if (ping_have_cheap_transparency == MagickFalse)

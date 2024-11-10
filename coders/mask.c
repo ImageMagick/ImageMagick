@@ -295,8 +295,8 @@ static Image *MaskImage(const Image *image,const PixelChannel mask_channel,
           break;
         }
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(mask_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(mask_image);
     }
     if (SyncCacheViewAuthenticPixels(mask_view,exception) == MagickFalse)
       status=MagickFalse;

@@ -792,7 +792,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
                 transparent=MagickTrue;
               else
                 SetPixelAlpha(picon,OpaqueAlpha,q);
-              q+=GetPixelChannels(picon);
+              q+=(ptrdiff_t) GetPixelChannels(picon);
             }
             if (SyncAuthenticPixels(picon,exception) == MagickFalse)
               break;
@@ -821,7 +821,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
         {
           if (GetPixelAlpha(picon,q) == (Quantum) TransparentAlpha)
             SetPixelIndex(picon,(Quantum) picon->colors,q);
-          q+=GetPixelChannels(picon);
+          q+=(ptrdiff_t) GetPixelChannels(picon);
         }
         if (SyncAuthenticPixels(picon,exception) == MagickFalse)
           break;
@@ -899,7 +899,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
       symbol[j]='\0';
       (void) CopyMagickString(buffer,symbol,MagickPathExtent);
       (void) WriteBlobString(image,buffer);
-      p+=GetPixelChannels(picon);
+      p+=(ptrdiff_t) GetPixelChannels(picon);
     }
     (void) FormatLocaleString(buffer,MagickPathExtent,"\"%.1024s\n",
       y == (ssize_t) (picon->rows-1) ? "" : ",");
@@ -1140,7 +1140,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
       symbol[j]='\0';
       (void) CopyMagickString(buffer,symbol,MagickPathExtent);
       (void) WriteBlobString(image,buffer);
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     (void) FormatLocaleString(buffer,MagickPathExtent,"\"%.1024s\n",
       (y == (ssize_t) (image->rows-1) ? "" : ","));

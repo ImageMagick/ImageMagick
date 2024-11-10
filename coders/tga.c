@@ -451,7 +451,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (q == (Quantum *) NULL)
       break;
     if (flip_x != MagickFalse)
-      q+=GetPixelChannels(image)*(image->columns-1);
+      q+=(ptrdiff_t) GetPixelChannels(image)*(image->columns-1);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((tga_info.image_type == TGARLEColormap) ||
@@ -586,7 +586,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (flip_x != MagickFalse)
         q-=GetPixelChannels(image);
       else
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
     }
     offset+=offset_stepsize;
     if (offset >= (ssize_t) image->rows)

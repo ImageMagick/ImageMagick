@@ -249,7 +249,7 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
           else
             if (GetPixelIndex(image,q) != 0x01)
               SetPixelIndex(image,index,q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -563,7 +563,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 {
                   SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
                     0x00),q);
-                  q+=GetPixelChannels(image);
+                  q+=(ptrdiff_t) GetPixelChannels(image);
                 }
               }
               if ((image->columns % 8) != 0)
@@ -573,7 +573,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                   {
                     SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
                       0x00),q);
-                    q+=GetPixelChannels(image);
+                    q+=(ptrdiff_t) GetPixelChannels(image);
                   }
                 }
               for (x=0; x < (ssize_t) scanline_pad; x++)
@@ -604,15 +604,15 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               {
                 byte=(size_t) ReadBlobByte(image);
                 SetPixelIndex(image,((byte >> 4) & 0xf),q);
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
                 SetPixelIndex(image,((byte) & 0xf),q);
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if ((image->columns % 2) != 0)
                 {
                   byte=(size_t) ReadBlobByte(image);
                   SetPixelIndex(image,((byte >> 4) & 0xf),q);
-                  q+=GetPixelChannels(image);
+                  q+=(ptrdiff_t) GetPixelChannels(image);
                 }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -642,7 +642,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               {
                 byte=(size_t) ReadBlobByte(image);
                 SetPixelIndex(image,(Quantum) byte,q);
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -673,7 +673,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 byte=(size_t) ReadBlobByte(image);
                 byte|=((size_t) ReadBlobByte(image) << 8);
                 SetPixelIndex(image,(Quantum) byte,q);
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               for (x=0; x < (ssize_t) scanline_pad; x++)
                 (void) ReadBlobByte(image);
@@ -711,7 +711,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 if (bits_per_pixel == 32)
                   SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                     ReadBlobByte(image)),q);
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (bits_per_pixel == 24)
                 for (x=0; x < (ssize_t) scanline_pad; x++)
@@ -751,7 +751,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 {
                   SetPixelAlpha(image,(((byte & (0x80 >> bit)) != 0) ?
                     TransparentAlpha : OpaqueAlpha),q);
-                  q+=GetPixelChannels(image);
+                  q+=(ptrdiff_t) GetPixelChannels(image);
                 }
               }
               if ((image->columns % 8) != 0)
@@ -761,7 +761,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                   {
                     SetPixelAlpha(image,(((byte & (0x80 >> bit)) != 0) ?
                       TransparentAlpha : OpaqueAlpha),q);
-                    q+=GetPixelChannels(image);
+                    q+=(ptrdiff_t) GetPixelChannels(image);
                   }
                 }
               if ((image->columns % 32) != 0)
@@ -1257,7 +1257,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                     bit=0;
                     byte=0;
                   }
-                p+=GetPixelChannels(next);
+                p+=(ptrdiff_t) GetPixelChannels(next);
               }
               if (bit != 0)
                 *q++=(unsigned char) (byte << (8-bit));
@@ -1298,7 +1298,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                     nibble=0;
                     byte=0;
                   }
-                p+=GetPixelChannels(next);
+                p+=(ptrdiff_t) GetPixelChannels(next);
               }
               if (nibble != 0)
                 *q++=(unsigned char) (byte << 4);
@@ -1325,7 +1325,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) next->columns; x++)
               {
                 *q++=(unsigned char) GetPixelIndex(next,p);
-                p+=GetPixelChannels(next);
+                p+=(ptrdiff_t) GetPixelChannels(next);
               }
               if (next->previous == (Image *) NULL)
                 {
@@ -1357,7 +1357,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                   *q++=ScaleQuantumToChar(QuantumRange);
                 else
                   *q++=ScaleQuantumToChar(GetPixelAlpha(next,p));
-                p+=GetPixelChannels(next);
+                p+=(ptrdiff_t) GetPixelChannels(next);
               }
               if (bits_per_pixel == 24)
                 for (x=3L*(ssize_t) next->columns; x < (ssize_t) bytes_per_line; x++)
@@ -1457,7 +1457,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                 bit=0;
                 byte=0;
               }
-            p+=GetPixelChannels(next);
+            p+=(ptrdiff_t) GetPixelChannels(next);
           }
           if (bit != 0)
             (void) WriteBlobByte(image,(unsigned char) (byte << (8-bit)));

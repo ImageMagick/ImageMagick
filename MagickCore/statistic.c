@@ -651,7 +651,7 @@ MagickExport Image *EvaluateImages(const Image *images,
               continue;
             q[i]=ClampToQuantum(evaluate_pixel[number_images/2].channel[i]);
           }
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         p=(const Quantum **) RelinquishMagickMemory((void *) p);
         if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
@@ -796,7 +796,7 @@ MagickExport Image *EvaluateImages(const Image *images,
               continue;
             q[i]=ClampToQuantum(evaluate_pixel[x].channel[i]);
           }
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         p=(const Quantum **) RelinquishMagickMemory((void *) p);
         if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
@@ -918,7 +918,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
           result/=2.0;
         q[i]=clamp != MagickFalse ? ClampPixel(result) : ClampToQuantum(result);
       }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1143,7 +1143,7 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
         q[i]=ApplyFunction(q[i],function,number_parameters,parameters,
           exception);
       }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1536,7 +1536,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
         M01[channel]+=y*QuantumScale*(double) p[i];
         M01[MaxPixelChannels]+=y*QuantumScale*(double) p[i];
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   for (c=0; c <= MaxPixelChannels; c++)
@@ -1609,7 +1609,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
         M03[MaxPixelChannels]+=(y-centroid[channel].y)*(y-centroid[channel].y)*
           (y-centroid[channel].y)*QuantumScale*(double) p[i];
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   channels=(double) GetImageChannels(image);
@@ -1924,7 +1924,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
               row_maxima=(double) p[i];
          }
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp critical (MagickCore_GetImageRange)
@@ -2138,7 +2138,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     {
       if (GetPixelReadMask(image,p) <= (QuantumRange/2))
         {
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
           continue;
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -2207,7 +2207,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           cs->M1+=delta_n;
         }
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -2324,11 +2324,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           {
             if (GetPixelReadMask(image,p) <= (QuantumRange/2))
               {
-                p+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(image);
                 continue;
               }
             median[n++]=p[i];
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
         }
         channel_statistics[channel].median=(double) median[
@@ -2564,7 +2564,7 @@ MagickExport Image *PolynomialImage(const Image *images,
           polynomial_pixel[x].channel[i]+=coefficient*
             pow(QuantumScale*(double) GetPixelChannel(image,channel,p),degree);
         }
-        p+=GetPixelChannels(next);
+        p+=(ptrdiff_t) GetPixelChannels(next);
       }
       image_view=DestroyCacheView(image_view);
       next=GetNextImageInList(next);
@@ -2582,7 +2582,7 @@ MagickExport Image *PolynomialImage(const Image *images,
         q[i]=ClampToQuantum((double) QuantumRange*
           polynomial_pixel[x].channel[i]);
       }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(polynomial_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3152,8 +3152,8 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         }
         SetPixelChannel(statistic_image,channel,pixel,q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(statistic_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(statistic_image);
     }
     if (SyncCacheViewAuthenticPixels(statistic_view,exception) == MagickFalse)
       status=MagickFalse;

@@ -2777,8 +2777,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
               pixel),q);
           }
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(morphology_image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(morphology_image);
         }
         if (SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
           status=MagickFalse;
@@ -3199,8 +3199,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         if (fabs(pixel-(double) p[center+i]) >= MagickEpsilon)
           changes[id]++;
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(morphology_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(morphology_image);
     }
     if (SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3434,8 +3434,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           changed++;
         q[i]=ClampToQuantum(pixel);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)
       status=MagickFalse;

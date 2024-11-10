@@ -969,7 +969,7 @@ MagickExport Image *MatrixToImage(const MatrixInfo *matrix_info,
         continue;
       value=scale_factor*(value-min_value);
       *q=ClampToQuantum(value);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;

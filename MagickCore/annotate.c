@@ -1995,7 +1995,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
               {
                 if (q != (Quantum *) NULL)
-                  q+=GetPixelChannels(image);
+                  q+=(ptrdiff_t) GetPixelChannels(image);
                 continue;
               }
             fill_opacity=1.0;
@@ -2041,7 +2041,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 if (sync == MagickFalse)
                   status=MagickFalse;
               }
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           sync=SyncCacheViewAuthenticPixels(image_view,exception);
           if (sync == MagickFalse)
@@ -2426,7 +2426,7 @@ static MagickBooleanType RenderPostscript(Image *image,
           SetPixelRed(annotate_image,fill_color.red,q);
           SetPixelGreen(annotate_image,fill_color.green,q);
           SetPixelBlue(annotate_image,fill_color.blue,q);
-          q+=GetPixelChannels(annotate_image);
+          q+=(ptrdiff_t) GetPixelChannels(annotate_image);
         }
         sync=SyncCacheViewAuthenticPixels(annotate_view,exception);
         if (sync == MagickFalse)

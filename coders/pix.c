@@ -201,7 +201,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelGreen(image,green,q);
         SetPixelRed(image,red,q);
         length--;
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (x < (ssize_t) image->columns)
         break;

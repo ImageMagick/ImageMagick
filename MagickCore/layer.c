@@ -123,7 +123,7 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
     for (x=0; x < (ssize_t) bounds->width; x++)
     {
       SetPixelAlpha(image,TransparentAlpha,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -190,8 +190,8 @@ static MagickBooleanType IsBoundsCleared(const Image *image1,
       if ((GetPixelAlpha(image1,p) >= (Quantum) (QuantumRange/2)) &&
           (GetPixelAlpha(image2,q) < (Quantum) (QuantumRange/2)))
         break;
-      p+=GetPixelChannels(image1);
-      q+=GetPixelChannels(image2);
+      p+=(ptrdiff_t) GetPixelChannels(image1);
+      q+=(ptrdiff_t) GetPixelChannels(image2);
     }
     if (x < (ssize_t) bounds->width)
       break;
@@ -653,8 +653,8 @@ static RectangleInfo CompareImagesBounds(const Image *alpha_image,
       GetPixelInfoPixel(beta_image,q,&beta_pixel);
       if (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse)
         break;
-      p+=GetPixelChannels(alpha_image);
-      q+=GetPixelChannels(beta_image);
+      p+=(ptrdiff_t) GetPixelChannels(alpha_image);
+      q+=(ptrdiff_t) GetPixelChannels(beta_image);
     }
     if (y < (ssize_t) alpha_image->rows)
       break;
@@ -683,8 +683,8 @@ static RectangleInfo CompareImagesBounds(const Image *alpha_image,
       GetPixelInfoPixel(beta_image,q,&beta_pixel);
       if (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse)
         break;
-      p+=GetPixelChannels(alpha_image);
-      q+=GetPixelChannels(beta_image);
+      p+=(ptrdiff_t) GetPixelChannels(alpha_image);
+      q+=(ptrdiff_t) GetPixelChannels(beta_image);
     }
     if (y < (ssize_t) alpha_image->rows)
       break;
@@ -702,8 +702,8 @@ static RectangleInfo CompareImagesBounds(const Image *alpha_image,
       GetPixelInfoPixel(beta_image,q,&beta_pixel);
       if (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse)
         break;
-      p+=GetPixelChannels(alpha_image);
-      q+=GetPixelChannels(beta_image);
+      p+=(ptrdiff_t) GetPixelChannels(alpha_image);
+      q+=(ptrdiff_t) GetPixelChannels(beta_image);
     }
     if (x < (ssize_t) alpha_image->columns)
       break;
@@ -721,8 +721,8 @@ static RectangleInfo CompareImagesBounds(const Image *alpha_image,
       GetPixelInfoPixel(beta_image,q,&beta_pixel);
       if (ComparePixels(method,&alpha_pixel,&beta_pixel) != MagickFalse)
         break;
-      p+=GetPixelChannels(alpha_image);
-      q+=GetPixelChannels(beta_image);
+      p+=(ptrdiff_t) GetPixelChannels(alpha_image);
+      q+=(ptrdiff_t) GetPixelChannels(beta_image);
     }
     if (x < (ssize_t) alpha_image->columns)
       break;

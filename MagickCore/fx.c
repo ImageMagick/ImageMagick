@@ -4344,8 +4344,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
 
         q[i] = ClampToQuantum ((MagickRealType) (QuantumRange*result));
       }
-      p+=GetPixelChannels (image);
-      q+=GetPixelChannels (fx_image);
+      p+=(ptrdiff_t) GetPixelChannels (image);
+      q+=(ptrdiff_t) GetPixelChannels (fx_image);
     }
     if (SyncCacheViewAuthenticPixels(fx_view, pfx->exception) == MagickFalse)
       status=MagickFalse;

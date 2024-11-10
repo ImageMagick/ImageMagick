@@ -1267,7 +1267,7 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
       PixelSetQuantumPixel(source->image,p,source->pixel_wands[id][x]);
-      p+=GetPixelChannels(source->image);
+      p+=(ptrdiff_t) GetPixelChannels(source->image);
     }
     if (update(source,y,id,context) == MagickFalse)
       status=MagickFalse;
@@ -1275,7 +1275,7 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
     for (x=0; x < (ssize_t) source->extent.width; x++)
     {
       PixelGetQuantumPixel(source->image,source->pixel_wands[id][x],q);
-      q+=GetPixelChannels(source->image);
+      q+=(ptrdiff_t) GetPixelChannels(source->image);
     }
     sync=SyncCacheViewAuthenticPixels(source->view,source->exception);
     if (sync == MagickFalse)

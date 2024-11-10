@@ -209,7 +209,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
       bit++;
       if (bit == 8)
         bit=0;
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -412,7 +412,7 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
           bit=0;
           byte=0;
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (bit != 0)
       (void) WriteBlobByte(image,byte);

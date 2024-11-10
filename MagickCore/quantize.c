@@ -622,7 +622,7 @@ static MagickBooleanType AssignImageColors(Image *image,QCubeInfo *cube_info,
                   SetPixelAlpha(image,ClampToQuantum(
                     image->colormap[index].alpha),q);
               }
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2292,7 +2292,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image,
       mean_error+=distance*distance;
       if (distance > maximum_error)
         maximum_error=distance;
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -2708,7 +2708,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
         kmeans_pixels[id][k].count++;
         kmeans_pixels[id][k].distortion+=min_distance;
         SetPixelIndex(image,(Quantum) k,q);
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
         status=MagickFalse;
@@ -2953,7 +2953,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
                 remainder=(remainder-value)/levels;
               }
           }
-          q+=GetPixelChannels(map_image);
+          q+=(ptrdiff_t) GetPixelChannels(map_image);
         }
         if (SyncCacheViewAuthenticPixels(map_image_view,exception) == MagickFalse)
           {
@@ -3047,7 +3047,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
               continue;
             SetPixelChannel(image,channel,PosterizePixel(q[i],levels),q);
           }
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           status=MagickFalse;
@@ -3998,7 +3998,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
                }
             }
           SetPixelIndex(image,(Quantum) colormap_index[intensity],q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           status=MagickFalse;
@@ -4057,7 +4057,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
     {
       SetPixelIndex(image,(Quantum) colormap_index[ScaleQuantumToMap(
         GetPixelIndex(image,q))],q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;

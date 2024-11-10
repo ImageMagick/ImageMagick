@@ -301,7 +301,7 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
             SetPixelIndex(image,index,q);
             if (index < image->colors)
               SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           p++;
         }
@@ -313,7 +313,7 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
               SetPixelIndex(image,index,q);
               if (index < image->colors)
                 SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
             p++;
           }
@@ -327,22 +327,22 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
             SetPixelIndex(image,index,q);
             if (index < image->colors)
               SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x3,exception);
             SetPixelIndex(image,index,q);
             if (index < image->colors)
               SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
             index=ConstrainColormapIndex(image,(*p >> 2) & 0x3,exception);
             SetPixelIndex(image,index,q);
             if (index < image->colors)
               SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
             index=ConstrainColormapIndex(image,(*p) & 0x3,exception);
             SetPixelIndex(image,index,q);
             if (index < image->colors)
               SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
             p++;
         }
        if ((image->columns % 4) != 0)
@@ -351,14 +351,14 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
             SetPixelIndex(image,index,q);
             if (index < image->colors)
               SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
             if ((image->columns % 4) > 1)
               {
                 index=ConstrainColormapIndex(image,(*p >> 4) & 0x3,exception);
                 SetPixelIndex(image,index,q);
                 if (index < image->colors)
                   SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
                 if ((image->columns % 4) > 2)
                   {
                     index=ConstrainColormapIndex(image,(*p >> 2) & 0x3,
@@ -367,7 +367,7 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
                     if (index < image->colors)
                       SetPixelViaPixelInfo(image,image->colormap+(ssize_t)
                         index,q);
-                    q+=GetPixelChannels(image);
+                    q+=(ptrdiff_t) GetPixelChannels(image);
                   }
               }
             p++;
@@ -383,13 +383,13 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
             SetPixelIndex(image,index,q);
             if (index < image->colors)
               SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
             index=ConstrainColormapIndex(image,(*p) & 0x0f,exception);
             SetPixelIndex(image,index,q);
             if (index < image->colors)
               SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
         if ((image->columns % 2) != 0)
           {
@@ -398,7 +398,7 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
             if (index < image->colors)
               SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
         break;
       }
@@ -411,7 +411,7 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
             if (index < image->colors)
               SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
             p++;
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
       }
       break;
@@ -422,7 +422,7 @@ static MagickBooleanType InsertRow(Image *image,unsigned char *p,ssize_t y,
           SetPixelRed(image,ScaleCharToQuantum(*p++),q);
           SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
           SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
       break;
     default:

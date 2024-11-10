@@ -1534,7 +1534,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
           SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
           SetPixelIndex(image,index,q);
           p+=bytes_per_pixel;
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         break;
       }
@@ -1558,7 +1558,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
             (scale*JPEGGetSample(jpeg_info,p))),q);
           p+=bytes_per_pixel;
           SetPixelAlpha(image,OpaqueAlpha,q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         break;
       }
@@ -1579,7 +1579,7 @@ static Image *ReadOneJPEGImage(const ImageInfo *image_info,
             JPEGGetSample(jpeg_info,p))),q);
           p+=bytes_per_pixel;
           SetPixelAlpha(image,OpaqueAlpha,q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         break;
       }
@@ -3036,7 +3036,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           JPEGSetSample(jpeg_info,scale,ClampToQuantum(GetPixelLuma(image,p)),
             q);
           q+=bytes_per_pixel;
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
         }
         break;
       }
@@ -3062,7 +3062,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           JPEGSetSample(jpeg_info,scale,(Quantum) ((QuantumRange-
             GetPixelBlack(image,p))),q);
           q+=bytes_per_pixel;
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
         }
         break;
       }
@@ -3079,7 +3079,7 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
           q+=bytes_per_pixel;
           JPEGSetSample(jpeg_info,scale,GetPixelBlue(image,p),q);
           q+=bytes_per_pixel;
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
         }
         break;
       }

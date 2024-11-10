@@ -244,8 +244,8 @@ static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,GetPixelRed(canvas_image,p),q);
             SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
             SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
-            p+=GetPixelChannels(canvas_image);
-            q+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;

@@ -410,7 +410,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         }
       if (SetMatrixElement(canny_cache,x,y,&pixel) == MagickFalse)
         continue;
-      p+=GetPixelChannels(edge_image);
+      p+=(ptrdiff_t) GetPixelChannels(edge_image);
     }
   }
   edge_view=DestroyCacheView(edge_view);
@@ -507,7 +507,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
           max=pixel.intensity;
       }
       *q=0;
-      q+=GetPixelChannels(edge_image);
+      q+=(ptrdiff_t) GetPixelChannels(edge_image);
     }
     if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -730,7 +730,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
       if (image->alpha_trait != UndefinedPixelTrait)
         grays[ScaleQuantumToMap(GetPixelAlpha(image,p))].alpha=
           ScaleQuantumToMap(GetPixelAlpha(image,p));
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -981,7 +981,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
             cooccurrence[v][u].direction[i].alpha++;
           }
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   grays=(PixelPacket *) RelinquishMagickMemory(grays);
@@ -1943,7 +1943,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
               MagickRound(radius+hough_height),&count);
           }
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -2317,8 +2317,8 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
       SetPixelGreen(mean_image,ClampToQuantum(mean_pixel.green),q);
       SetPixelBlue(mean_image,ClampToQuantum(mean_pixel.blue),q);
       SetPixelAlpha(mean_image,ClampToQuantum(mean_pixel.alpha),q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(mean_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(mean_image);
     }
     if (SyncCacheViewAuthenticPixels(mean_view,exception) == MagickFalse)
       status=MagickFalse;

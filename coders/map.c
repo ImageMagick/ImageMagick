@@ -242,7 +242,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       SetPixelIndex(image,index,q);
       SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -452,7 +452,7 @@ static MagickBooleanType WriteMAPImage(const ImageInfo *image_info,Image *image,
       if (image->colors > 256)
         *q++=(unsigned char) ((size_t) GetPixelIndex(image,p) >> 8);
       *q++=(unsigned char) ((ssize_t) GetPixelIndex(image,p));
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     (void) WriteBlob(image,(size_t) (q-pixels),pixels);
   }

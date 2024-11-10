@@ -276,7 +276,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
         }
-        q+=GetPixelChannels(image);
+        q+=(ptrdiff_t) GetPixelChannels(image);
       }
       if (x < (ssize_t) image->columns)
         break;

@@ -206,7 +206,7 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 byte<<=1;
                 if (bit == 8)
                   bit=0;
-                q+=GetPixelChannels(image);
+                q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
                 break;
@@ -241,7 +241,7 @@ static Image *ReadMACImage(const ImageInfo *image_info,ExceptionInfo *exception)
             byte<<=1;
             if (bit == 8)
               bit=0;
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;

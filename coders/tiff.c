@@ -534,7 +534,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
         b-=1.0;
       SetPixela(image,(double) QuantumRange*a,q);
       SetPixelb(image,(double) QuantumRange*b,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       {
@@ -1881,7 +1881,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               SetPixelYellow(image,ScaleCharToQuantum(ClampYCC((double) *p+
                 (1.772*(double) *(p+1))-226.816)),q);
               SetPixelBlack(image,ScaleCharToQuantum((unsigned char) *(p+3)),q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
               p+=4;
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -2149,7 +2149,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
             if (q == (Quantum *) NULL)
               break;
-            q+=GetPixelChannels(image)*(image->columns-1);
+            q+=(ptrdiff_t) GetPixelChannels(image)*(image->columns-1);
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               SetPixelRed(image,ScaleCharToQuantum((unsigned char)
@@ -2959,7 +2959,7 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
         b+=1.0;
       SetPixela(image,(double) QuantumRange*a,q);
       SetPixelb(image,(double) QuantumRange*b,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       {

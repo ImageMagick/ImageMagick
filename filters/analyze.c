@@ -198,7 +198,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
         s*=(double) QuantumRange;
         for (i=1; i <= 4; i++)
           local_saturation.sum[i]+=pow(s,(double) i);
-        p+=GetPixelChannels(image);
+        p+=(ptrdiff_t) GetPixelChannels(image);
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp critical (analyzeImage)

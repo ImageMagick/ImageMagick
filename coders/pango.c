@@ -472,7 +472,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       fill_color.red*=gamma;
       CompositePixelOver(image,&fill_color,fill_color.alpha,q,(double)
         GetPixelAlpha(image,q),q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;

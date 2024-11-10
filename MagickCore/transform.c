@@ -298,9 +298,9 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
               continue;
             SetPixelChannel(chop_image,channel,p[i],q);
           }
-          q+=GetPixelChannels(chop_image);
+          q+=(ptrdiff_t) GetPixelChannels(chop_image);
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(chop_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -364,9 +364,9 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
               continue;
             SetPixelChannel(chop_image,channel,p[i],q);
           }
-          q+=GetPixelChannels(chop_image);
+          q+=(ptrdiff_t) GetPixelChannels(chop_image);
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(chop_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -492,8 +492,8 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
             case 3: SetPixelBlack(cmyk_image,pixel,q);  break;
             default: break;
           }
-          p+=GetPixelChannels(images);
-          q+=GetPixelChannels(cmyk_image);
+          p+=(ptrdiff_t) GetPixelChannels(images);
+          q+=(ptrdiff_t) GetPixelChannels(cmyk_image);
         }
         if (SyncCacheViewAuthenticPixels(cmyk_view,exception) == MagickFalse)
           break;
@@ -719,8 +719,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
           continue;
         SetPixelChannel(crop_image,channel,p[i],q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(crop_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(crop_image);
     }
     if (SyncCacheViewAuthenticPixels(crop_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1068,8 +1068,8 @@ MagickExport Image *ExcerptImage(const Image *image,
           continue;
         SetPixelChannel(excerpt_image,channel,p[i],q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(excerpt_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(excerpt_image);
     }
     if (SyncCacheViewAuthenticPixels(excerpt_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1267,8 +1267,8 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
           continue;
         SetPixelChannel(flip_image,channel,p[i],q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(flip_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(flip_image);
     }
     if (SyncCacheViewAuthenticPixels(flip_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1387,7 +1387,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
         status=MagickFalse;
         continue;
       }
-    q+=GetPixelChannels(flop_image)*flop_image->columns;
+    q+=(ptrdiff_t) GetPixelChannels(flop_image)*flop_image->columns;
     for (x=0; x < (ssize_t) flop_image->columns; x++)
     {
       ssize_t
@@ -1404,7 +1404,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
           continue;
         SetPixelChannel(flop_image,channel,p[i],q);
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(flop_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1527,8 +1527,8 @@ static MagickBooleanType CopyImageRegion(Image *destination,const Image *source,
           continue;
         SetPixelChannel(destination,channel,p[i],q);
       }
-      p+=GetPixelChannels(source);
-      q+=GetPixelChannels(destination);
+      p+=(ptrdiff_t) GetPixelChannels(source);
+      q+=(ptrdiff_t) GetPixelChannels(destination);
     }
     sync=SyncCacheViewAuthenticPixels(destination_view,exception);
     if (sync == MagickFalse)
@@ -1853,11 +1853,11 @@ MagickExport Image *SpliceImage(const Image *image,
       SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
       SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
       SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(splice_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(splice_image);
     }
     for ( ; x < (splice_geometry.x+(ssize_t) splice_geometry.width); x++)
-      q+=GetPixelChannels(splice_image);
+      q+=(ptrdiff_t) GetPixelChannels(splice_image);
     for ( ; x < (ssize_t) splice_image->columns; x++)
     {
       ssize_t
@@ -1877,8 +1877,8 @@ MagickExport Image *SpliceImage(const Image *image,
       SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
       SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
       SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(splice_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(splice_image);
     }
     if (SyncCacheViewAuthenticPixels(splice_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1944,11 +1944,11 @@ MagickExport Image *SpliceImage(const Image *image,
       SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
       SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
       SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(splice_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(splice_image);
     }
     for ( ; x < (splice_geometry.x+(ssize_t) splice_geometry.width); x++)
-      q+=GetPixelChannels(splice_image);
+      q+=(ptrdiff_t) GetPixelChannels(splice_image);
     for ( ; x < (ssize_t) splice_image->columns; x++)
     {
       ssize_t
@@ -1968,8 +1968,8 @@ MagickExport Image *SpliceImage(const Image *image,
       SetPixelGreen(splice_image,GetPixelGreen(image,p),q);
       SetPixelBlue(splice_image,GetPixelBlue(image,p),q);
       SetPixelAlpha(splice_image,GetPixelAlpha(image,p),q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(splice_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(splice_image);
     }
     if (SyncCacheViewAuthenticPixels(splice_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2202,8 +2202,8 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
           continue;
         SetPixelChannel(transpose_image,channel,p[i],q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(transpose_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(transpose_image);
     }
     if (SyncCacheViewAuthenticPixels(transpose_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2326,7 +2326,7 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
         status=MagickFalse;
         continue;
       }
-    q+=GetPixelChannels(transverse_image)*image->columns;
+    q+=(ptrdiff_t) GetPixelChannels(transverse_image)*image->columns;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -2344,7 +2344,7 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
           continue;
         SetPixelChannel(transverse_image,channel,p[i],q);
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     sync=SyncCacheViewAuthenticPixels(transverse_view,exception);
     if (sync == MagickFalse)

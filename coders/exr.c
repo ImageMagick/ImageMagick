@@ -341,7 +341,7 @@ static inline MagickBooleanType ReadEXRPixels(Image *image,
       p+=channel->bytes_per_element;
       channel++;
     }
-    q+=GetPixelChannels(image);
+    q+=(ptrdiff_t) GetPixelChannels(image);
     pixel_count--;
     if ((stride != 0) && (pixel_count % columns == 0))
       p+=stride;
@@ -826,7 +826,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           SetPixelViaPixelInfo(image,&image->background_color,q);
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
@@ -862,7 +862,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelAlpha(image,ClampToQuantum((double) QuantumRange*
             (double) ImfHalfToFloat(scanline[xx].a)),q);
         }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -1191,7 +1191,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
         ImfFloatToHalf(QuantumScale*(double) GetPixelAlpha(image,p),
           &half_quantum);
       scanline[x].a=half_quantum;
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     ImfOutputSetFrameBuffer(file,scanline-(y*(ssize_t) image->columns),1,
       image->columns);

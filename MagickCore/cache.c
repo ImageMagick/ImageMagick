@@ -472,8 +472,8 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
           }
           SetPixelAlpha(image,GetPixelAlpha(image,p),q);
         }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   return(MagickTrue);
@@ -3462,8 +3462,8 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
           continue;
         q[i]=ApplyPixelCompositeMask(q[i],alpha,p[i],GetPixelAlpha(image,p));
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   return(MagickTrue);
@@ -5261,7 +5261,7 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelAlpha(image,alpha,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     status=SyncCacheViewAuthenticPixels(image_view,exception);
   }

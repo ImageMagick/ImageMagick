@@ -249,7 +249,7 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
           }
         (void) WriteBlobString(image,tuple);
         (void) WriteBlobString(image,"\n");
-        p+=GetPixelChannels(image);
+        p+=(ptrdiff_t) GetPixelChannels(image);
       }
       status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
         image->rows);

@@ -320,7 +320,7 @@ static Image *ReadQOIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (channels == 4)
             SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) px.rgba.a),q);
         }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
       i++;
     } while (run-- > 0);
     status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) i,
@@ -519,7 +519,7 @@ static MagickBooleanType WriteQOIImage(const ImageInfo *image_info,Image *image,
     px.rgba.b=ScaleQuantumToChar(GetPixelBlue(image,p));
     if (channels == 4)
       px.rgba.a=ScaleQuantumToChar(GetPixelAlpha(image,p));
-    p+=GetPixelChannels(image);
+    p+=(ptrdiff_t) GetPixelChannels(image);
 
     if (pp.v == px.v)
       {

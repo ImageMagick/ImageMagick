@@ -229,7 +229,7 @@ static double GetEdgeBackgroundCensus(const Image *image,
       GetPixelInfoPixel(edge_image,p,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,&background) == MagickFalse)
         census++;
-      p+=GetPixelChannels(edge_image);
+      p+=(ptrdiff_t) GetPixelChannels(edge_image);
     }
   }
   census/=((double) edge_image->columns*edge_image->rows);
@@ -533,7 +533,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
           bounding_box.width=(size_t) x;
           bounding_box.height=(size_t) y;
         }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #  pragma omp critical (MagickCore_GetImageBoundingBox)
@@ -711,7 +711,7 @@ static PixelInfo GetEdgeBackgroundColor(const Image *image,
         GetPixelInfoPixel(edge_image,p,&pixel);
         if (IsFuzzyEquivalencePixelInfo(&pixel,background+i) == MagickFalse)
           census[i]++;
-        p+=GetPixelChannels(edge_image);
+        p+=(ptrdiff_t) GetPixelChannels(edge_image);
       }
     }
     edge_view=DestroyCacheView(edge_view);
@@ -845,7 +845,7 @@ MagickExport PointInfo *GetImageConvexHull(const Image *image,
           vertices[n].y=(double) y;
           n++;
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -1028,7 +1028,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
             if (depth_map[ScaleQuantumToMap(p[j])] > current_depth[id])
               current_depth[id]=depth_map[ScaleQuantumToMap(p[j])];
           }
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (current_depth[id] == MAGICKCORE_QUANTUM_DEPTH)
           status=MagickFalse;
@@ -1094,7 +1094,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           current_depth[id]++;
         }
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (current_depth[id] == MAGICKCORE_QUANTUM_DEPTH)
       status=MagickFalse;
@@ -1614,7 +1614,7 @@ MagickExport ImageType IdentifyImageGray(const Image *image,
         }
       if ((type == BilevelType) && (IsPixelMonochrome(image,p) == MagickFalse))
         type=GrayscaleType;
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -1700,7 +1700,7 @@ MagickExport MagickBooleanType IdentifyImageMonochrome(const Image *image,
           type=UndefinedType;
           break;
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -1909,7 +1909,7 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
           opaque=MagickFalse;
           break;
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -2052,7 +2052,7 @@ static MagickBooleanType FloydSteinbergImageDepth(Image *image,
         u++;
         v++;
       }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       {
@@ -2186,7 +2186,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
               continue;
             q[j]=depth_map[ScaleQuantumToMap(q[j])];
           }
-          q+=GetPixelChannels(image);
+          q+=(ptrdiff_t) GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
           {
@@ -2244,7 +2244,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
         q[i]=ScaleAnyToQuantum(ScaleQuantumToAny(ClampPixel((MagickRealType)
           q[i]),range),range);
       }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       {

@@ -379,7 +379,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
-      q+=GetPixelChannels(blur_image);
+      q+=(ptrdiff_t) GetPixelChannels(blur_image);
       r+=GetPixelChannels(edge_image);
     }
     if (SyncCacheViewAuthenticPixels(blur_view,exception) == MagickFalse)
@@ -698,7 +698,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(sharp_image,channel,ClampToQuantum(gamma*pixel),q);
       }
-      q+=GetPixelChannels(sharp_image);
+      q+=(ptrdiff_t) GetPixelChannels(sharp_image);
       r+=GetPixelChannels(edge_image);
     }
     if (SyncCacheViewAuthenticPixels(sharp_view,exception) == MagickFalse)
@@ -1025,7 +1025,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
         MagickMax(height,1),exception);
       if (p == (const Quantum *) NULL)
         break;
-      p+=(ssize_t) (GetPixelChannels(image)*MagickMax(width,1)*(size_t) mid.y+
+      p+=(ptrdiff_t) (GetPixelChannels(image)*MagickMax(width,1)*(size_t) mid.y+
         GetPixelChannels(image)*(size_t) mid.x);
       n=0;
       for (v=0; v < (ssize_t) MagickMax(height,1); v++)
@@ -1114,7 +1114,7 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
         SetPixelChannel(blur_image,channel,ClampToQuantum(
           PerceptibleReciprocal(gamma)*pixel),q);
       }
-      q+=GetPixelChannels(blur_image);
+      q+=(ptrdiff_t) GetPixelChannels(blur_image);
     }
     if (SyncCacheViewAuthenticPixels(blur_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1430,7 +1430,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixels[j++]=p[i];
-        p+=GetPixelChannels(image);
+        p+=(ptrdiff_t) GetPixelChannels(image);
       }
       j++;
     }
@@ -1462,7 +1462,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         SetPixelChannel(despeckle_image,channel,pixels[j++],q);
-        q+=GetPixelChannels(despeckle_image);
+        q+=(ptrdiff_t) GetPixelChannels(despeckle_image);
       }
       sync=SyncCacheViewAuthenticPixels(despeckle_view,exception);
       if (sync == MagickFalse)
@@ -1953,7 +1953,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         target.y+target.height/2.0,q,exception);
       if (status == MagickFalse)
         break;
-      q+=GetPixelChannels(kuwahara_image);
+      q+=(ptrdiff_t) GetPixelChannels(kuwahara_image);
     }
     if (SyncCacheViewAuthenticPixels(kuwahara_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2537,8 +2537,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(blur_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(blur_image);
     }
     if (SyncCacheViewAuthenticPixels(blur_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3341,8 +3341,8 @@ MagickExport Image *RotationalBlurImage(const Image *image,const double angle,
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(blur_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(blur_image);
     }
     if (SyncCacheViewAuthenticPixels(blur_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3679,9 +3679,9 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
       l+=GetPixelChannels(luminance_image);
-      q+=GetPixelChannels(blur_image);
+      q+=(ptrdiff_t) GetPixelChannels(blur_image);
     }
     sync=SyncCacheViewAuthenticPixels(blur_view,exception);
     if (sync == MagickFalse)
@@ -3925,8 +3925,8 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
         SetPixelChannel(shade_image,channel,ClampToQuantum(QuantumScale*
           shade*(double) center[i]),q);
       }
-      p+=GetPixelChannels(linear_image);
-      q+=GetPixelChannels(shade_image);
+      p+=(ptrdiff_t) GetPixelChannels(linear_image);
+      q+=(ptrdiff_t) GetPixelChannels(shade_image);
     }
     if (SyncCacheViewAuthenticPixels(shade_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -4190,7 +4190,7 @@ MagickExport Image *SpreadImage(const Image *image,
         exception);
       if (status == MagickFalse)
         break;
-      q+=GetPixelChannels(spread_image);
+      q+=(ptrdiff_t) GetPixelChannels(spread_image);
     }
     if (SyncCacheViewAuthenticPixels(spread_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -4365,8 +4365,8 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
           pixel=(double) p[i]+gain*pixel;
         SetPixelChannel(unsharp_image,channel,ClampToQuantum(pixel),q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(unsharp_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(unsharp_image);
     }
     if (SyncCacheViewAuthenticPixels(unsharp_view,exception) == MagickFalse)
       status=MagickFalse;

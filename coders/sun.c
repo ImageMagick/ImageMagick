@@ -521,7 +521,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             SetPixelIndex(image,(Quantum) ((*p) & (0x01 << bit) ? 0x00 : 0x01),
               q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           p++;
         }
@@ -531,7 +531,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               SetPixelIndex(image,(Quantum) ((*p) & (0x01 << bit) ? 0x00 :
                 0x01),q);
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
             p++;
           }
@@ -559,7 +559,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               SetPixelIndex(image,ConstrainColormapIndex(image,*p,exception),q);
               p++;
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
             if ((image->columns % 2) != 0)
               p++;
@@ -614,7 +614,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   SetPixelBlue(image,ClampToQuantum(image->colormap[(ssize_t)
                     GetPixelBlue(image,q)].blue),q);
                 }
-              q+=GetPixelChannels(image);
+              q+=(ptrdiff_t) GetPixelChannels(image);
             }
             if (((bytes_per_pixel*image->columns) % 2) != 0)
               p++;
@@ -929,7 +929,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
             *q++=ScaleQuantumToChar(GetPixelRed(image,p));
             *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
             *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-            p+=GetPixelChannels(image);
+            p+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (((bytes_per_pixel*image->columns) & 0x01) != 0)
             *q++='\0';  /* pad scanline */
@@ -974,7 +974,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
                   bit=0;
                   byte=0;
                 }
-              p+=GetPixelChannels(image);
+              p+=(ptrdiff_t) GetPixelChannels(image);
             }
             if (bit != 0)
               (void) WriteBlobByte(image,(unsigned char) (byte << (8-bit)));
@@ -1016,7 +1016,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
             {
               (void) WriteBlobByte(image,(unsigned char)
                 GetPixelIndex(image,p));
-              p+=GetPixelChannels(image);
+              p+=(ptrdiff_t) GetPixelChannels(image);
             }
             if (image->columns & 0x01)
               (void) WriteBlobByte(image,0);  /* pad scanline */

@@ -1818,7 +1818,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                     (void) WriteBlob(image,(size_t) (q-pixels),pixels);
                     q=pixels;
                   }
-                p+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (image->previous == (Image *) NULL)
                 {
@@ -1873,7 +1873,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                     bit=0;
                     byte=0;
                   }
-                p+=GetPixelChannels(image);
+                p+=(ptrdiff_t) GetPixelChannels(image);
               }
               if (bit != 0)
                 {
@@ -1950,7 +1950,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                       length=0;
                     }
                   GetPixelInfoPixel(image,p,&pixel);
-                  p+=GetPixelChannels(image);
+                  p+=(ptrdiff_t) GetPixelChannels(image);
                 }
                 WriteRunlengthPacket(image,pixel,length,p);
                 if ((q-pixels+10) >= 80)
@@ -2010,7 +2010,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                       (void) WriteBlob(image,(size_t) (q-pixels),pixels);
                       q=pixels;
                     }
-                  p+=GetPixelChannels(image);
+                  p+=(ptrdiff_t) GetPixelChannels(image);
                 }
                 if (image->previous == (Image *) NULL)
                   {
@@ -2096,7 +2096,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                   pixel.green=(MagickRealType) GetPixelGreen(image,p);
                   pixel.blue=(MagickRealType) GetPixelBlue(image,p);
                   pixel.alpha=(MagickRealType) GetPixelAlpha(image,p);
-                  p+=GetPixelChannels(image);
+                  p+=(ptrdiff_t) GetPixelChannels(image);
                 }
                 q=PopHexPixel(hex_digits,(size_t) index,q);
                 q=PopHexPixel(hex_digits,(size_t) MagickMin(length,0xff),q);
@@ -2142,7 +2142,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
                       (void) WriteBlob(image,(size_t) (q-pixels),pixels);
                       q=pixels;
                     }
-                  p+=GetPixelChannels(image);
+                  p+=(ptrdiff_t) GetPixelChannels(image);
                 }
                 if (image->previous == (Image *) NULL)
                   {

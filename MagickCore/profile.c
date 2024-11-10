@@ -543,7 +543,7 @@ static void TransformDoublePixels(const int id,const Image* image,
       }
     if (source_info->channels > 3)
       *p++=GetLCMSPixel(source_info,GetPixelBlack(image,q),3);
-    q+=GetPixelChannels(image);
+    q+=(ptrdiff_t) GetPixelChannels(image);
   }
   cmsDoTransform(transform[id],source_info->pixels[id],target_info->pixels[id],
     (unsigned int) image->columns);
@@ -568,7 +568,7 @@ static void TransformDoublePixels(const int id,const Image* image,
         SetPixelBlack(image,SetLCMSPixel(target_info,*p,3),q);
         p++;
       }
-    q+=GetPixelChannels(image);
+    q+=(ptrdiff_t) GetPixelChannels(image);
   }
 }
 
@@ -593,7 +593,7 @@ static void TransformQuantumPixels(const int id,const Image* image,
       }
     if (source_info->channels > 3)
       *p++=GetPixelBlack(image,q);
-    q+=GetPixelChannels(image);
+    q+=(ptrdiff_t) GetPixelChannels(image);
   }
   cmsDoTransform(transform[id],source_info->pixels[id],target_info->pixels[id],
     (unsigned int) image->columns);
@@ -612,7 +612,7 @@ static void TransformQuantumPixels(const int id,const Image* image,
       }
     if (target_info->channels > 3)
       SetPixelBlack(image,*p++,q);
-    q+=GetPixelChannels(image);
+    q+=(ptrdiff_t) GetPixelChannels(image);
   }
 }
 

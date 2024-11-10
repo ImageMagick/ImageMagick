@@ -581,8 +581,8 @@ MagickExport Image *AppendImages(const Image *images,
       {
         GetPixelInfoPixel(next,p,&pixel);
         SetPixelViaPixelInfo(append_image,&pixel,q);
-        p+=GetPixelChannels(next);
-        q+=GetPixelChannels(append_image);
+        p+=(ptrdiff_t) GetPixelChannels(next);
+        q+=(ptrdiff_t) GetPixelChannels(append_image);
       }
       sync=SyncCacheViewAuthenticPixels(append_view,exception);
       if (sync == MagickFalse)
@@ -1134,8 +1134,8 @@ MagickExport MagickBooleanType CopyImagePixels(Image *image,
           continue;
         SetPixelChannel(image,channel,p[i],q);
       }
-      p+=GetPixelChannels(source_image);
-      q+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(source_image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     sync=SyncCacheViewAuthenticPixels(image_view,exception);
     if (sync == MagickFalse)
@@ -1530,8 +1530,8 @@ MagickExport Image *GetImageMask(const Image *image,const PixelMask type,
           break;
         }
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(mask_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(mask_image);
     }
     if (SyncCacheViewAuthenticPixels(mask_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1870,7 +1870,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
       }
       if (hdri != MagickFalse)
         break;
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -2098,7 +2098,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelViaPixelInfo(image,background,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2298,7 +2298,7 @@ MagickExport MagickBooleanType ResetImagePixels(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       (void) memset(q,0,GetPixelChannels(image)*sizeof(Quantum));
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2378,7 +2378,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
     {
       if (GetPixelWriteMask(image,q) > (QuantumRange/2))
         SetPixelAlpha(image,alpha,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2467,7 +2467,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelViaPixelInfo(image,&background,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2581,7 +2581,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelViaPixelInfo(image,color,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3326,8 +3326,8 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const PixelMask type,
           break;
         }
       }
-      p+=GetPixelChannels(mask);
-      q+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(mask);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3482,7 +3482,7 @@ MagickExport MagickBooleanType SetImageRegionMask(Image *image,
           break;
         }
       }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3967,7 +3967,7 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
     {
       index=PushColormapIndex(image,GetPixelIndex(image,q),&range_exception);
       SetPixelViaPixelInfo(image,image->colormap+(ssize_t) index,q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;

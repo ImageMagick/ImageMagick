@@ -475,7 +475,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SetPixelAlpha(image,OpaqueAlpha,q);
       if (image->alpha_trait != UndefinedPixelTrait)
         SetPixelAlpha(image,ScaleCharToQuantum(*a),q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
       r+=red_component->columnStride;
       g+=green_component->columnStride;
       b+=blue_component->columnStride;

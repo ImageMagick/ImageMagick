@@ -693,7 +693,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,ScaleCharToQuantum(*yy++),q);
             SetPixelGreen(image,ScaleCharToQuantum(*c1++),q);
             SetPixelBlue(image,ScaleCharToQuantum(*c2++),q);
-            q+=GetPixelChannels(image);
+            q+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
             break;
@@ -803,7 +803,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SetPixelRed(image,ScaleCharToQuantum(*yy++),q);
       SetPixelGreen(image,ScaleCharToQuantum(*c1++),q);
       SetPixelBlue(image,ScaleCharToQuantum(*c2++),q);
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
@@ -1057,7 +1057,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     for (x=0; x < (ssize_t) (tile_image->columns << 1); x++)
     {
       (void) WriteBlobByte(image,ScaleQuantumToChar(GetPixelRed(tile_image,p)));
-      p+=GetPixelChannels(tile_image);
+      p+=(ptrdiff_t) GetPixelChannels(tile_image);
     }
     q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,1,
       exception);
@@ -1067,7 +1067,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     {
       (void) WriteBlobByte(image,ScaleQuantumToChar(
         GetPixelGreen(tile_image,q)));
-      q+=GetPixelChannels(tile_image);
+      q+=(ptrdiff_t) GetPixelChannels(tile_image);
     }
     q=GetVirtualPixels(downsample_image,0,y >> 1,downsample_image->columns,1,
       exception);
@@ -1077,7 +1077,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
     {
       (void) WriteBlobByte(image,ScaleQuantumToChar(
         GetPixelBlue(tile_image,q)));
-      q+=GetPixelChannels(tile_image);
+      q+=(ptrdiff_t) GetPixelChannels(tile_image);
     }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
       tile_image->rows);

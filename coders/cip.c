@@ -242,7 +242,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
          (((size_t) (3*ClampToQuantum(GetPixelLuma(image,p+0*GetPixelChannels(image)))/QuantumRange) & 0x03) << 0));
       (void) FormatLocaleString(buffer,MagickPathExtent,"%02x",byte);
       (void) WriteBlobString(image,buffer);
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if ((image->columns % 4) != 0)
       {

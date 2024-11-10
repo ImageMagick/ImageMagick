@@ -185,7 +185,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
     {
       if (GetPixelReadMask(image,p) <= (QuantumRange/2))
         {
-          p+=GetPixelChannels(image);
+          p+=(ptrdiff_t) GetPixelChannels(image);
           continue;
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -211,7 +211,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
           }
         }
       }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
   return(channel_statistics);
@@ -339,7 +339,7 @@ static ssize_t PrintChannelLocations(FILE *file,const Image *image,
           (void) FormatLocaleFile(file," %.20g,%.20g",(double) x,(double) y);
           n++;
         }
-      p+=GetPixelChannels(image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (x < (ssize_t) image->columns)
       break;
@@ -1157,7 +1157,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                   found=MagickTrue;
                   break;
                 }
-              p+=GetPixelChannels(image);
+              p+=(ptrdiff_t) GetPixelChannels(image);
             }
             if (found != MagickFalse)
               break;

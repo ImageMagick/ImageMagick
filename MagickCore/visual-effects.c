@@ -243,8 +243,8 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
           GenerateDifferentialNoise(random_info[id],p[i],noise_type,attenuate)),
           q);
       }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(noise_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(noise_image);
     }
     sync=SyncCacheViewAuthenticPixels(noise_view,exception);
     if (sync == MagickFalse)
@@ -399,8 +399,8 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
       SetPixelRed(shift_image,ClampToQuantum(pixel.red),q);
       SetPixelGreen(shift_image,ClampToQuantum(pixel.green),q);
       SetPixelBlue(shift_image,ClampToQuantum(pixel.blue),q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(shift_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(shift_image);
     }
     sync=SyncCacheViewAuthenticPixels(shift_view,exception);
     if (sync == MagickFalse)
@@ -650,7 +650,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
           Colorize(q[i],GetPixelInfoChannel(&blend_percentage,(PixelChannel) i),
           GetPixelInfoChannel(colorize,(PixelChannel) i))),q);
       }
-      q+=GetPixelChannels(colorize_image);
+      q+=(ptrdiff_t) GetPixelChannels(colorize_image);
     }
     sync=SyncCacheViewAuthenticPixels(image_view,exception);
     if (sync == MagickFalse)
@@ -873,8 +873,8 @@ MagickExport Image *ColorMatrixImage(const Image *image,
         }
       }
       SetPixelViaPixelInfo(color_image,&pixel,q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(color_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(color_image);
     }
     if (SyncCacheViewAuthenticPixels(color_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1098,8 +1098,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           if (status == MagickFalse)
             break;
         }
-      p+=GetPixelChannels(canvas_image);
-      q+=GetPixelChannels(implode_image);
+      p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+      q+=(ptrdiff_t) GetPixelChannels(implode_image);
     }
     if (SyncCacheViewAuthenticPixels(implode_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1315,8 +1315,8 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
             SetPixelChannel(morph_image,channel,ClampToQuantum(alpha*(double)
               GetPixelChannel(morph_images,channel,q)+beta*(double) p[i]),q);
           }
-          p+=GetPixelChannels(morph_image);
-          q+=GetPixelChannels(morph_images);
+          p+=(ptrdiff_t) GetPixelChannels(morph_image);
+          q+=(ptrdiff_t) GetPixelChannels(morph_images);
         }
         sync=SyncCacheViewAuthenticPixels(morph_view,exception);
         if (sync == MagickFalse)
@@ -1963,8 +1963,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
       if ((double) GetPixelBlue(image,q) < tone)
         SetPixelBlue(sepia_image,ClampToQuantum(tone),q);
       SetPixelAlpha(sepia_image,GetPixelAlpha(image,p),q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(sepia_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(sepia_image);
     }
     if (SyncCacheViewAuthenticPixels(sepia_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2110,7 +2110,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
         background_color.alpha=(double) GetPixelAlpha(border_image,q)*alpha/
           100.0;
       SetPixelViaPixelInfo(border_image,&background_color,q);
-      q+=GetPixelChannels(border_image);
+      q+=(ptrdiff_t) GetPixelChannels(border_image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2255,7 +2255,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
           continue;
         q[i]=ClampToQuantum((double) QuantumRange*value);
       }
-      q+=GetPixelChannels(random_image);
+      q+=(ptrdiff_t) GetPixelChannels(random_image);
     }
     if (SyncCacheViewAuthenticPixels(random_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2419,7 +2419,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
         if ((double) q[i] > threshold)
           q[i]=QuantumRange-q[i];
       }
-      q+=GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -2732,8 +2732,8 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       if ((GetPixelAlphaTraits(stereo_image) & CopyPixelTrait) != 0)
         SetPixelAlpha(stereo_image,(GetPixelAlpha(left_image,p)+
           GetPixelAlpha(right_image,q))/2,r);
-      p+=GetPixelChannels(left_image);
-      q+=GetPixelChannels(right_image);
+      p+=(ptrdiff_t) GetPixelChannels(left_image);
+      q+=(ptrdiff_t) GetPixelChannels(right_image);
       r+=GetPixelChannels(stereo_image);
     }
     if (SyncAuthenticPixels(stereo_image,exception) == MagickFalse)
@@ -2940,8 +2940,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
           if (status == MagickFalse)
             break;
         }
-      p+=GetPixelChannels(canvas_image);
-      q+=GetPixelChannels(swirl_image);
+      p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+      q+=(ptrdiff_t) GetPixelChannels(swirl_image);
     }
     if (SyncCacheViewAuthenticPixels(swirl_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3139,8 +3139,8 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
         (1.0-(4.0*(weight*weight)));
       pixel.alpha=(MagickRealType) GetPixelAlpha(image,p);
       SetPixelViaPixelInfo(tint_image,&pixel,q);
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(tint_image);
+      p+=(ptrdiff_t) GetPixelChannels(image);
+      q+=(ptrdiff_t) GetPixelChannels(tint_image);
     }
     if (SyncCacheViewAuthenticPixels(tint_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3411,8 +3411,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
         wave_image,method,(double) x,(double) (y-sine_map[x]),q,exception);
       if (status == MagickFalse)
         break;
-      p+=GetPixelChannels(canvas_image);
-      q+=GetPixelChannels(wave_image);
+      p+=(ptrdiff_t) GetPixelChannels(canvas_image);
+      q+=(ptrdiff_t) GetPixelChannels(wave_image);
     }
     if (SyncCacheViewAuthenticPixels(wave_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -3633,7 +3633,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixels[i++]=(float) p[channel];
-        p+=GetPixelChannels(image);
+        p+=(ptrdiff_t) GetPixelChannels(image);
       }
     }
     /*
@@ -3755,7 +3755,7 @@ MagickExport Image *WaveletDenoiseImage(const Image *image,
           pixels[(ssize_t) low_pass+i];
         q[offset]=ClampToQuantum(pixel);
         i++;
-        q+=GetPixelChannels(noise_image);
+        q+=(ptrdiff_t) GetPixelChannels(noise_image);
       }
       sync=SyncCacheViewAuthenticPixels(noise_view,exception);
       if (sync == MagickFalse)
