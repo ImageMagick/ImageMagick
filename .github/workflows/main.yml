@@ -52,9 +52,16 @@ jobs:
 
     - name: Build ImageMagick
       run: |
-        set -e
         make
-        make check
+
+    - name: Test ImageMagick
+      run: |
+        make check || exit_code=$?
+        if [ "$exit_code" != "0" ] ; then cat ./test-suite.log ; fi
+        exit $exit_code
+
+    - name: Install ImageMagick
+      run: |
         make install
 
   build_macos:
@@ -103,10 +110,17 @@ jobs:
 
     - name: Build ImageMagick
       run: |
-        set -e
         make
-        make check
-        sudo make install
+
+    - name: Test ImageMagick
+      run: |
+        make check || exit_code=$?
+        if [ "$exit_code" != "0" ] ; then cat ./test-suite.log ; fi
+        exit $exit_code
+
+    - name: Install ImageMagick
+      run: |
+        make install
 
   build_windows:
     name: Build Windows ${{matrix.platform}}
