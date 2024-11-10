@@ -1683,59 +1683,56 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    tiff_status=TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
-      &sample_info,sans);
-    if (tiff_status == 1)
+    if (extra_samples == 0)
       {
-        (void) SetImageProperty(image,"tiff:alpha","unspecified",exception);
-        if (extra_samples == 0)
+        if ((samples_per_pixel == 4) && (photometric == PHOTOMETRIC_RGB))
+          image->alpha_trait=BlendPixelTrait;
+      }
+    else
+      {
+        for (i=0; i < extra_samples; i++)
+        {
+          if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
+            {
+              image->alpha_trait=BlendPixelTrait;
+              SetQuantumAlphaType(quantum_info,AssociatedQuantumAlpha);
+              (void) SetImageProperty(image,"tiff:alpha","associated",
+                exception);
+              break;
+            }
+          else
+            if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
+              {
+                image->alpha_trait=BlendPixelTrait;
+                SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
+                (void) SetImageProperty(image,"tiff:alpha","unassociated",
+                  exception);
+                break;
+              }
+        }
+        if ((image->alpha_trait == UndefinedPixelTrait) && (extra_samples >= 1))
           {
-            if ((samples_per_pixel == 4) && (photometric == PHOTOMETRIC_RGB))
+            const char
+              *option;
+
+            option=GetImageOption(image_info,"tiff:assume-alpha");
+            if (IsStringTrue(option) != MagickFalse)
               image->alpha_trait=BlendPixelTrait;
           }
-        else
+        if (image->alpha_trait != UndefinedPixelTrait)
+          extra_samples--;
+        if (extra_samples > 0)
           {
-            for (i=0; i < extra_samples; i++)
-            {
-              if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
-                {
-                  image->alpha_trait=BlendPixelTrait;
-                  SetQuantumAlphaType(quantum_info,AssociatedQuantumAlpha);
-                  (void) SetImageProperty(image,"tiff:alpha","associated",
-                    exception);
-                  break;
-                }
-              else
-                if (sample_info[i] == EXTRASAMPLE_UNASSALPHA)
-                  {
-                    image->alpha_trait=BlendPixelTrait;
-                    SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
-                    (void) SetImageProperty(image,"tiff:alpha","unassociated",
-                      exception);
-                    break;
-                  }
-            }
-            if ((image->alpha_trait == UndefinedPixelTrait) &&
-                 (extra_samples >= 1))
-              {
-                const char
-                  *option;
-
-                option=GetImageOption(image_info,"tiff:assume-alpha");
-                if (IsStringTrue(option) != MagickFalse)
-                  image->alpha_trait=BlendPixelTrait;
-              }
-            if (image->alpha_trait != UndefinedPixelTrait)
-              extra_samples--;
-            if (extra_samples > 0)
-              {
-                if (SetPixelMetaChannels(image,extra_samples,exception) == MagickFalse)
-                  ThrowTIFFException(OptionError,"SetPixelMetaChannelsFailure");
-              }
+            if (SetPixelMetaChannels(image,extra_samples,exception) == MagickFalse)
+              ThrowTIFFException(OptionError,"SetPixelMetaChannelsFailure");
           }
       }
     if (image->alpha_trait != UndefinedPixelTrait)
-      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+      {
+        if (quantum_info->alpha_type == UndefinedQuantumAlpha)
+          (void) SetImageProperty(image,"tiff:alpha","unspecified",exception);
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+      }
     method=ReadGenericMethod;
     rows_per_strip=(uint32) image->rows;
     if (TIFFGetField(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip) == 1)
