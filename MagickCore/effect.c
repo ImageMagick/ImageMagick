@@ -304,6 +304,12 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         ((width-(size_t) j)/2L)+GetPixelChannels(image)*((width-(size_t) j)/2));
       for (i=0; i < (ssize_t) GetPixelChannels(blur_image); i++)
       {
+        const double
+          *magick_restrict k;
+
+        const Quantum
+          *magick_restrict pixels;
+
         double
           alpha,
           gamma,
@@ -316,16 +322,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
           blur_traits,
           traits;
 
-        const double
-          *magick_restrict k;
-
-        const Quantum
-          *magick_restrict pixels;
-
         ssize_t
-          u;
-
-        ssize_t
+          u,
           v;
 
         channel=GetPixelChannelChannel(image,i);
