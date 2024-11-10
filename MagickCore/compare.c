@@ -256,7 +256,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
           SetPixelViaPixelInfo(highlight_image,&masklight,r);
           p+=(ptrdiff_t) GetPixelChannels(image);
           q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
-          r+=GetPixelChannels(highlight_image);
+          r+=(ptrdiff_t) GetPixelChannels(highlight_image);
           continue;
         }
       difference=MagickFalse;
@@ -295,7 +295,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
         SetPixelViaPixelInfo(highlight_image,&highlight,r);
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
-      r+=GetPixelChannels(highlight_image);
+      r+=(ptrdiff_t) GetPixelChannels(highlight_image);
     }
     sync=SyncCacheViewAuthenticPixels(highlight_view,exception);
     if (sync == MagickFalse)
@@ -1482,11 +1482,11 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
             xy_sigma[i]+=(*k)*x_pixel*y_pixel;
           }
           k++;
-          reference+=GetPixelChannels(image);
-          target+=GetPixelChannels(reconstruct_image);
+          reference+=(ptrdiff_t) GetPixelChannels(image);
+          target+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
         }
-        reference+=GetPixelChannels(image)*columns;
-        target+=GetPixelChannels(reconstruct_image)*columns;
+        reference+=(ptrdiff_t) GetPixelChannels(image)*columns;
+        target+=(ptrdiff_t) GetPixelChannels(reconstruct_image)*columns;
       }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {

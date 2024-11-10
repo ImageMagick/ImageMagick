@@ -637,7 +637,7 @@ MagickExport Image *EvaluateImages(const Image *images,
                 random_info[id],GetPixelChannel(next,channel,p[j]),op,
                 evaluate_pixel[j].channel[i]);
             }
-            p[j]+=GetPixelChannels(next);
+            p[j]+=(ptrdiff_t) GetPixelChannels(next);
             next=GetNextImageInList(next);
           }
           qsort((void *) evaluate_pixel,number_images,sizeof(*evaluate_pixel),
@@ -751,7 +751,7 @@ MagickExport Image *EvaluateImages(const Image *images,
                 random_info[id],GetPixelChannel(next,channel,p[j]),j == 0 ?
                 AddEvaluateOperator : op,evaluate_pixel[x].channel[i]);
             }
-            p[j]+=GetPixelChannels(next);
+            p[j]+=(ptrdiff_t) GetPixelChannels(next);
           }
           next=GetNextImageInList(next);
         }
@@ -3081,7 +3081,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
                 (type == NonpeakStatistic))
               {
                 InsertPixelList(pixels[i],pixel_list[id]);
-                pixels+=GetPixelChannels(image);
+                pixels+=(ptrdiff_t) GetPixelChannels(image);
                 continue;
               }
             area++;
@@ -3091,9 +3091,9 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
               maximum=(double) pixels[i];
             sum+=(double) pixels[i];
             sum_squared+=(double) pixels[i]*(double) pixels[i];
-            pixels+=GetPixelChannels(image);
+            pixels+=(ptrdiff_t) GetPixelChannels(image);
           }
-          pixels+=GetPixelChannels(image)*image->columns;
+          pixels+=(ptrdiff_t) GetPixelChannels(image)*image->columns;
         }
         switch (type)
         {

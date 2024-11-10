@@ -13305,7 +13305,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
           for (j=0; j < (int) width; j++)
           {
             SetPixelViaPixelInfo(image,&pixel,s);
-            s+=GetPixelChannels(image);
+            s+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
             break;

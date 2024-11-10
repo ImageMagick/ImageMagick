@@ -1870,7 +1870,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       aggregate.alpha+=(weight)*(double) GetPixelAlpha(image,r); \
       total_weight+=(weight); \
     } \
-  r+=GetPixelChannels(image);
+  r+=(ptrdiff_t) GetPixelChannels(image);
 
   CacheView
     *enhance_view,

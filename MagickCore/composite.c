@@ -284,7 +284,7 @@ static Image *BlendMagnitudeImage(const Image *dx_image,const Image *dy_image,
       }
       p+=(ptrdiff_t) GetPixelChannels(dx_image);
       q+=(ptrdiff_t) GetPixelChannels(dy_image);
-      r+=GetPixelChannels(magnitude_image);
+      r+=(ptrdiff_t) GetPixelChannels(magnitude_image);
     }
     if (SyncCacheViewAuthenticPixels(magnitude_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -383,9 +383,9 @@ static Image *BlendMaxMagnitudeImage(const Image *alpha_image,
       }
       p+=(ptrdiff_t) GetPixelChannels(alpha_image);
       q+=(ptrdiff_t) GetPixelChannels(beta_image);
-      r+=GetPixelChannels(dx_image);
-      s+=GetPixelChannels(dy_image);
-      t+=GetPixelChannels(magnitude_image);
+      r+=(ptrdiff_t) GetPixelChannels(dx_image);
+      s+=(ptrdiff_t) GetPixelChannels(dy_image);
+      t+=(ptrdiff_t) GetPixelChannels(magnitude_image);
     }
     if (SyncCacheViewAuthenticPixels(magnitude_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -474,7 +474,7 @@ static Image *BlendSumImage(const Image *alpha_image,const Image *beta_image,
       }
       p+=(ptrdiff_t) GetPixelChannels(alpha_image);
       q+=(ptrdiff_t) GetPixelChannels(beta_image);
-      r+=GetPixelChannels(sum_image);
+      r+=(ptrdiff_t) GetPixelChannels(sum_image);
     }
     if (SyncCacheViewAuthenticPixels(sum_view,exception) == MagickFalse)
       status=MagickFalse;

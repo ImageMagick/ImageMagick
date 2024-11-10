@@ -642,7 +642,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
 #else
       }
 #endif
-      pixels+=GetPixelChannels(resample_filter->image);
+      pixels+=(ptrdiff_t) GetPixelChannels(resample_filter->image);
       Q += DQ;
       DQ += DDQ;
     }

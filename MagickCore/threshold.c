@@ -294,9 +294,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           if (u == (ssize_t) (width-1))
             channel_bias[channel]+=(double) pixels[i];
           channel_sum[channel]+=(double) pixels[i];
-          pixels+=GetPixelChannels(image);
+          pixels+=(ptrdiff_t) GetPixelChannels(image);
         }
-        pixels+=GetPixelChannels(image)*image->columns;
+        pixels+=(ptrdiff_t) GetPixelChannels(image)*image->columns;
       }
     }
     for (x=0; x < (ssize_t) image->columns; x++)
@@ -326,7 +326,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           channel_bias[channel]+=(double) pixels[i];
           pixels+=(width-1)*GetPixelChannels(image);
           channel_sum[channel]+=(double) pixels[i];
-          pixels+=GetPixelChannels(image)*(image->columns+1);
+          pixels+=(ptrdiff_t) GetPixelChannels(image)*(image->columns+1);
         }
         mean=(double) (channel_sum[channel]/number_pixels+bias);
         SetPixelChannel(threshold_image,channel,(Quantum) ((double)

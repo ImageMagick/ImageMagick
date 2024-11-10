@@ -2734,7 +2734,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
           GetPixelAlpha(right_image,q))/2,r);
       p+=(ptrdiff_t) GetPixelChannels(left_image);
       q+=(ptrdiff_t) GetPixelChannels(right_image);
-      r+=GetPixelChannels(stereo_image);
+      r+=(ptrdiff_t) GetPixelChannels(stereo_image);
     }
     if (SyncAuthenticPixels(stereo_image,exception) == MagickFalse)
       break;

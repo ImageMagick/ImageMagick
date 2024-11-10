@@ -4113,7 +4113,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
             continue;
           r[i]=ClampToQuantum(Sa*(double) r[i]);
         }
-        r+=GetPixelChannels(image);
+        r+=(ptrdiff_t) GetPixelChannels(image);
       }
     }
   if ((quantum_type == CbYCrQuantum) || (quantum_type == CbYCrAQuantum))
@@ -4133,7 +4133,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         quantum=GetPixelRed(image,r);
         SetPixelRed(image,GetPixelGreen(image,r),r);
         SetPixelGreen(image,quantum,r);
-        r+=GetPixelChannels(image);
+        r+=(ptrdiff_t) GetPixelChannels(image);
       }
     }
   q=pixels;
@@ -4271,7 +4271,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         quantum=GetPixelRed(image,r);
         SetPixelRed(image,GetPixelGreen(image,r),r);
         SetPixelGreen(image,quantum,r);
-        r+=GetPixelChannels(image);
+        r+=(ptrdiff_t) GetPixelChannels(image);
       }
     }
   return(extent);

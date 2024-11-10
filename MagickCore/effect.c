@@ -355,7 +355,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
                 pixel+=(*k)*(double) pixels[i];
                 gamma+=(*k);
                 k++;
-                pixels+=GetPixelChannels(image);
+                pixels+=(ptrdiff_t) GetPixelChannels(image);
               }
             }
             gamma=PerceptibleReciprocal(gamma);
@@ -373,14 +373,14 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
             pixel+=(*k)*alpha*(double) pixels[i];
             gamma+=(*k)*alpha;
             k++;
-            pixels+=GetPixelChannels(image);
+            pixels+=(ptrdiff_t) GetPixelChannels(image);
           }
         }
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=(ptrdiff_t) GetPixelChannels(blur_image);
-      r+=GetPixelChannels(edge_image);
+      r+=(ptrdiff_t) GetPixelChannels(edge_image);
     }
     if (SyncCacheViewAuthenticPixels(blur_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -674,7 +674,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
                 pixel+=(*k)*(double) pixels[i];
                 gamma+=(*k);
                 k++;
-                pixels+=GetPixelChannels(image);
+                pixels+=(ptrdiff_t) GetPixelChannels(image);
               }
             }
             gamma=PerceptibleReciprocal(gamma);
@@ -692,14 +692,14 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
             pixel+=(*k)*alpha*(double) pixels[i];
             gamma+=(*k)*alpha;
             k++;
-            pixels+=GetPixelChannels(image);
+            pixels+=(ptrdiff_t) GetPixelChannels(image);
           }
         }
         gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(sharp_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=(ptrdiff_t) GetPixelChannels(sharp_image);
-      r+=GetPixelChannels(edge_image);
+      r+=(ptrdiff_t) GetPixelChannels(edge_image);
     }
     if (SyncCacheViewAuthenticPixels(sharp_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1921,7 +1921,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
         {
           for (j=0; j < (ssize_t) GetPixelChannels(gaussian_image); j++)
             mean[j]+=(double) k[j];
-          k+=GetPixelChannels(gaussian_image);
+          k+=(ptrdiff_t) GetPixelChannels(gaussian_image);
         }
         for (j=0; j < (ssize_t) GetPixelChannels(gaussian_image); j++)
           mean[j]/=(double) (width*width);
@@ -1935,7 +1935,7 @@ MagickExport Image *KuwaharaImage(const Image *image,const double radius,
           luma=GetPixelLuma(gaussian_image,k);
           variance+=(luma-GetMeanLuma(gaussian_image,mean))*
             (luma-GetMeanLuma(gaussian_image,mean));
-          k+=GetPixelChannels(gaussian_image);
+          k+=(ptrdiff_t) GetPixelChannels(gaussian_image);
         }
         if (variance < min_variance)
           {
@@ -3636,11 +3636,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
                     gamma+=(*k);
                   }
                 k++;
-                pixels+=GetPixelChannels(image);
-                luminance_pixels+=GetPixelChannels(luminance_image);
+                pixels+=(ptrdiff_t) GetPixelChannels(image);
+                luminance_pixels+=(ptrdiff_t) GetPixelChannels(luminance_image);
               }
-              pixels+=GetPixelChannels(image)*image->columns;
-              luminance_pixels+=GetPixelChannels(luminance_image)*
+              pixels+=(ptrdiff_t) GetPixelChannels(image)*image->columns;
+              luminance_pixels+=(ptrdiff_t) GetPixelChannels(luminance_image)*
                 luminance_image->columns;
             }
             if (fabs((double) gamma) < MagickEpsilon)
@@ -3664,11 +3664,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
                 gamma+=(*k)*alpha;
               }
             k++;
-            pixels+=GetPixelChannels(image);
-            luminance_pixels+=GetPixelChannels(luminance_image);
+            pixels+=(ptrdiff_t) GetPixelChannels(image);
+            luminance_pixels+=(ptrdiff_t) GetPixelChannels(luminance_image);
           }
-          pixels+=GetPixelChannels(image)*image->columns;
-          luminance_pixels+=GetPixelChannels(luminance_image)*
+          pixels+=(ptrdiff_t) GetPixelChannels(image)*image->columns;
+          luminance_pixels+=(ptrdiff_t) GetPixelChannels(luminance_image)*
             luminance_image->columns;
         }
         if (fabs((double) gamma) < MagickEpsilon)
@@ -3680,7 +3680,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
-      l+=GetPixelChannels(luminance_image);
+      l+=(ptrdiff_t) GetPixelChannels(luminance_image);
       q+=(ptrdiff_t) GetPixelChannels(blur_image);
     }
     sync=SyncCacheViewAuthenticPixels(blur_view,exception);

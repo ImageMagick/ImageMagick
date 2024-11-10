@@ -343,12 +343,12 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
         Cr[i]=(double) QuantumRange*cr;
         Ci[i]=(double) QuantumRange*ci;
       }
-      Ar+=GetPixelChannels(Ar_image);
-      Ai+=GetPixelChannels(Ai_image);
-      Br+=GetPixelChannels(Br_image);
-      Bi+=GetPixelChannels(Bi_image);
-      Cr+=GetPixelChannels(Cr_image);
-      Ci+=GetPixelChannels(Ci_image);
+      Ar+=(ptrdiff_t) GetPixelChannels(Ar_image);
+      Ai+=(ptrdiff_t) GetPixelChannels(Ai_image);
+      Br+=(ptrdiff_t) GetPixelChannels(Br_image);
+      Bi+=(ptrdiff_t) GetPixelChannels(Bi_image);
+      Cr+=(ptrdiff_t) GetPixelChannels(Cr_image);
+      Ci+=(ptrdiff_t) GetPixelChannels(Ci_image);
     }
     if (SyncCacheViewAuthenticPixels(Ci_view,exception) == MagickFalse)
       status=MagickFalse;
