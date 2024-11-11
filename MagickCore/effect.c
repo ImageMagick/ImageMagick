@@ -1228,9 +1228,9 @@ static void Hull(const Image *image,const ssize_t x_offset,
   assert(columns <= (MAGICK_SSIZE_MAX-2));
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  p=f+(columns+2);
-  q=g+(columns+2);
-  r=p+(y_offset*((ssize_t) columns+2)+x_offset);
+  p=f+(ptrdiff_t) (columns+2);
+  q=g+(ptrdiff_t) (columns+2);
+  r=p+(ptrdiff_t) (y_offset*((ssize_t) columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
     magick_number_threads(image,image,rows,2)
@@ -1264,8 +1264,8 @@ static void Hull(const Image *image,const ssize_t x_offset,
         i++;
       }
   }
-  p=f+(columns+2);
-  q=g+(columns+2);
+  p=f+(ptrdiff_t) (columns+2);
+  q=g+(ptrdiff_t) (columns+2);
   r=q+(ptrdiff_t) (y_offset*((ssize_t) columns+2)+x_offset);
   s=q-(ptrdiff_t) (y_offset*((ssize_t) columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
