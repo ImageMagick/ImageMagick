@@ -1266,8 +1266,8 @@ static void Hull(const Image *image,const ssize_t x_offset,
   }
   p=f+(columns+2);
   q=g+(columns+2);
-  r=q+(y_offset*((ssize_t) columns+2)+x_offset);
-  s=q-(y_offset*((ssize_t) columns+2)+x_offset);
+  r=q+(ptrdiff_t) (y_offset*((ssize_t) columns+2)+x_offset);
+  s=q-(ptrdiff_t) (y_offset*((ssize_t) columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
     magick_number_threads(image,image,rows,2)
@@ -1327,11 +1327,11 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     *magick_restrict buffer,
     *magick_restrict pixels;
 
-  ssize_t
-    i;
-
   size_t
     length;
+
+  ssize_t
+    i;
 
   static const ssize_t
     X[4] = {0, 1, 1,-1},
