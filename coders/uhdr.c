@@ -885,6 +885,15 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     }
 
     if (status != MagickFalse)
+    {
+      option = GetImageOption(image_info, "uhdr:target-display-peak-brightness");
+      float targetDispPeakBrightness = option != (const char *)NULL ? atof(option) : -1.0f;
+
+      if (targetDispPeakBrightness != -1.0f)
+        CHECK_IF_ERR(uhdr_enc_set_target_display_peak_brightness(handle, targetDispPeakBrightness))
+    }
+
+    if (status != MagickFalse)
       CHECK_IF_ERR(uhdr_encode(handle))
 
     if (status != MagickFalse)
