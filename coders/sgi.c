@@ -871,7 +871,7 @@ static size_t SGIEncode(unsigned char *pixels,size_t length,
     p+=(ptrdiff_t) 8;
     while ((p < limit) && ((*(p-8) != *(p-4)) || (*(p-4) != *p)))
       p+=(ptrdiff_t) 4;
-    p-=8;
+    p-=(ptrdiff_t)8;
     length=(size_t) (p-mark) >> 2;
     while (length != 0)
     {

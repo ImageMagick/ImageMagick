@@ -255,7 +255,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) == invert)
         break;
       SetPixelGray(floodplane_image,QuantumRange,q);
-      p-=GetPixelChannels(image);
+      p-=(ptrdiff_t)GetPixelChannels(image);
       q-=GetPixelChannels(floodplane_image);
     }
     if (SyncCacheViewAuthenticPixels(floodplane_view,exception) == MagickFalse)

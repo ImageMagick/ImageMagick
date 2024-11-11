@@ -3598,7 +3598,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
           changed++;
         q[i]=ClampToQuantum(pixel);
       }
-      p-=GetPixelChannels(image);
+      p-=(ptrdiff_t)GetPixelChannels(image);
       q-=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(morphology_view,exception) == MagickFalse)

@@ -330,7 +330,7 @@ MagickExport void Ascii85Encode(Image *image,const unsigned char code)
     p+=(ptrdiff_t) 8;
   }
   image->ascii85->offset=n;
-  p-=4;
+  p-=(ptrdiff_t)4;
   for (n=0; n < 4; n++)
     image->ascii85->buffer[n]=(*p++);
 }

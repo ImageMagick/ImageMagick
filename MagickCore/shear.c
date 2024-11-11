@@ -1268,7 +1268,7 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
         q=p+step*(ssize_t) GetPixelChannels(image);
         for (i=0; i < (ssize_t) width; i++)
         {
-          p-=GetPixelChannels(image);
+          p-=(ptrdiff_t)GetPixelChannels(image);
           q-=GetPixelChannels(image);
           if ((size_t) (x_offset+(ssize_t) width+step-i) > image->columns)
             continue;
@@ -1484,7 +1484,7 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
         q=p+step*(ssize_t) GetPixelChannels(image);
         for (i=0; i < (ssize_t) height; i++)
         {
-          p-=GetPixelChannels(image);
+          p-=(ptrdiff_t)GetPixelChannels(image);
           q-=GetPixelChannels(image);
           if ((size_t) (y_offset+(ssize_t) height+step-i) > image->rows)
             continue;
