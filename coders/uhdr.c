@@ -238,7 +238,12 @@ static Image *ReadUHDRImage(const ImageInfo *image_info,
     image->gamma = 1.0;
 
   image->compression = JPEGCompression;
-  image->depth = (decoded_img_fmt == UHDR_IMG_FMT_32bppRGBA8888) ? 8 : 10;
+  if (decoded_img_fmt == UHDR_IMG_FMT_32bppRGBA8888)
+    image->depth = 8;
+  else if (decoded_img_fmt == UHDR_IMG_FMT_32bppRGBA1010102)
+    image->depth = 10;
+  else if (decoded_img_fmt == UHDR_IMG_FMT_64bppRGBAHalfFloat)
+    image->depth = 16;
   switch (dst->cg)
   {
   case UHDR_CG_BT_709:
@@ -532,7 +537,7 @@ static uhdr_mem_block_t GetExifProfile(Image *image, ExceptionInfo *exception)
 }
 
 static void fillRawImageDescriptor(uhdr_raw_image_t *imgDescriptor, const ImageInfo *image_info,
-                                   Image *image, uhdr_img_fmt_t fmt)
+                                   Image *image, uhdr_img_fmt_t fmt, uhdr_color_transfer_t ct)
 {
   const char
     *option;
@@ -544,22 +549,17 @@ static void fillRawImageDescriptor(uhdr_raw_image_t *imgDescriptor, const ImageI
     option = GetImageOption(image_info, "uhdr:hdr-color-gamut");
     imgDescriptor->cg = (option != (const char *)NULL) ? map_cg_to_uhdr_cg(option)
                                                        : getImageColorGamut(&image->chromaticity);
-
-    option = GetImageOption(image_info, "uhdr:hdr-color-transfer");
-    imgDescriptor->ct =
-        (option != (const char *)NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_UNSPECIFIED;
   }
   else if (image->depth == 8)
   {
     option = GetImageOption(image_info, "uhdr:sdr-color-gamut");
     imgDescriptor->cg = (option != (const char *)NULL) ? map_cg_to_uhdr_cg(option)
                                                        : getImageColorGamut(&image->chromaticity);
-
-    imgDescriptor->ct = UHDR_CT_SRGB;
   }
 
   imgDescriptor->range = imgDescriptor->fmt == UHDR_IMG_FMT_24bppYCbCrP010 ? UHDR_CR_LIMITED_RANGE
                                                                            : UHDR_CR_FULL_RANGE;
+  imgDescriptor->ct = ct;
   imgDescriptor->w = image->columns;
   imgDescriptor->h = image->rows;
 }
@@ -590,10 +590,32 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return (status);
 
+  const char
+    *option = GetImageOption(image_info, "uhdr:hdr-color-transfer");
+
+  uhdr_color_transfer_t
+    hdr_ct = (option != (const char *)NULL) ? map_ct_to_uhdr_ct(option) : UHDR_CT_UNSPECIFIED;
+
+  if (hdr_ct == UHDR_CT_UNSPECIFIED)
+  {
+    (void)ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
+                               "invalid hdr color transfer received, ", "%s", "exiting ... ");
+    return (MagickFalse);
+  }
+
+  // hdr intent
+  // color transfer linear, MUST be rgba half float - bitdepth is ATLEAST 16
+  // color transfer hlg or pq, MUST be rgba1010102/p010 - bitdepth is ATLEAST 10
+  // sdr intent
+  // color transfer sRGB MUST be rgba8888/yuv420 - bitdepth MUST be 8
+  int
+    hdrIntentMinDepth = hdr_ct == UHDR_CT_LINEAR ? 16 : 10;
+
   for (int i = 0; i < GetImageListLength(image); i++)
   {
+    // classify image as hdr/sdr intent basing on depth
     int
-      bpp = (image->depth >= 10) ? 2 : 1;
+      bpp = image->depth >= hdrIntentMinDepth ? 2 : 1;
 
     int
       aligned_width = image->columns + (image->columns & 1);
@@ -607,19 +629,39 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     void
       *crBuffer = NULL, *cbBuffer = NULL, *yBuffer = NULL;
 
-    if (image->colorspace == RGBColorspace || image->colorspace == sRGBColorspace)
+    if (IssRGBCompatibleColorspace(image->colorspace) && !IsGrayColorspace(image->colorspace))
     {
-      bpp = 4;
+      if (image->depth >= hdrIntentMinDepth && hdr_ct == UHDR_CT_LINEAR)
+        bpp = 8; // rgbahalf float
+      else
+        bpp = 4; // rgba1010102 or rgba8888
       picSize = aligned_width * aligned_height * bpp;
     }
-    else if (image->colorspace != YCbCrColorspace)
+    else if (IsYCbCrCompatibleColorspace(image->colorspace))
     {
-      status = TransformImageColorspace(image, YCbCrColorspace, exception);
-      if (status == MagickFalse)
-        break;
+      if (image->depth >= hdrIntentMinDepth && hdr_ct == UHDR_CT_LINEAR)
+      {
+        (void) ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
+          "linear color transfer inputs MUST be compatible with RGB Colorspace, ", "%s",
+          "ignoring ...");
+        goto next_image;
+      }
+    }
+    else
+    {
+      (void) ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
+        "Received image with color space incompatible with RGB/YCbCr, ","%s","ignoring ...");
+      goto next_image;
     }
 
-    if (image->depth >= 10 && hdrImgDescriptor.planes[UHDR_PLANE_Y] != NULL)
+    if (image->depth < hdrIntentMinDepth && image->depth != 8)
+    {
+      (void) ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
+        "Received image with unexpected bit depth","%s","ignoring ...");
+      goto next_image;
+    }
+
+    if (image->depth >= hdrIntentMinDepth && hdrImgDescriptor.planes[UHDR_PLANE_Y] != NULL)
     {
       (void) ThrowMagickException(exception, GetMagickModule(), ConfigureWarning,
         "Received multiple hdr intent resources, ","%s","overwriting ...");
@@ -641,14 +683,15 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       break;
     }
 
-    if (image->depth >= 10)
+    if (image->depth >= hdrIntentMinDepth)
     {
-      if (image->colorspace == YCbCrColorspace)
+      if (IsYCbCrCompatibleColorspace(image->colorspace))
       {
         cbBuffer = ((uint16_t *) yBuffer) + aligned_width * aligned_height;
         crBuffer = ((uint16_t *) cbBuffer) + 1;
 
-        fillRawImageDescriptor(&hdrImgDescriptor, image_info, image, UHDR_IMG_FMT_24bppYCbCrP010);
+        fillRawImageDescriptor(&hdrImgDescriptor, image_info, image, UHDR_IMG_FMT_24bppYCbCrP010,
+                               hdr_ct);
 
         hdrImgDescriptor.planes[UHDR_PLANE_Y] = yBuffer;
         hdrImgDescriptor.planes[UHDR_PLANE_UV] = cbBuffer;
@@ -660,7 +703,10 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       }
       else
       {
-        fillRawImageDescriptor(&hdrImgDescriptor, image_info, image, UHDR_IMG_FMT_32bppRGBA1010102);
+        fillRawImageDescriptor(&hdrImgDescriptor, image_info, image,
+                               hdr_ct == UHDR_CT_LINEAR ? UHDR_IMG_FMT_64bppRGBAHalfFloat
+                                                        : UHDR_IMG_FMT_32bppRGBA1010102,
+                               hdr_ct);
 
         hdrImgDescriptor.planes[UHDR_PLANE_PACKED] = yBuffer;
         hdrImgDescriptor.planes[UHDR_PLANE_U] = NULL;
@@ -675,12 +721,13 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     }
     else if (image->depth == 8)
     {
-      if (image->colorspace == YCbCrColorspace)
+      if (IsYCbCrCompatibleColorspace(image->colorspace))
       {
         cbBuffer = ((uint8_t *) yBuffer) + aligned_width * aligned_height;
         crBuffer = ((uint8_t *) cbBuffer) + ((aligned_width / 2) * (aligned_height / 2));
 
-        fillRawImageDescriptor(&sdrImgDescriptor, image_info, image, UHDR_IMG_FMT_12bppYCbCr420);
+        fillRawImageDescriptor(&sdrImgDescriptor, image_info, image, UHDR_IMG_FMT_12bppYCbCr420,
+                               UHDR_CT_SRGB);
 
         sdrImgDescriptor.planes[UHDR_PLANE_Y] = yBuffer;
         sdrImgDescriptor.planes[UHDR_PLANE_U] = cbBuffer;
@@ -692,7 +739,8 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
       }
       else
       {
-        fillRawImageDescriptor(&sdrImgDescriptor, image_info, image, UHDR_IMG_FMT_32bppRGBA8888);
+        fillRawImageDescriptor(&sdrImgDescriptor, image_info, image, UHDR_IMG_FMT_32bppRGBA8888,
+                               UHDR_CT_SRGB);
 
         sdrImgDescriptor.planes[UHDR_PLANE_PACKED] = yBuffer;
         sdrImgDescriptor.planes[UHDR_PLANE_U] = NULL;
@@ -723,7 +771,7 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
 
       for (x = 0; x < (ssize_t) image->columns; x++)
       {
-        if (image->depth >= 10)
+        if (image->depth >= hdrIntentMinDepth)
         {
           if (hdrImgDescriptor.fmt == UHDR_IMG_FMT_24bppYCbCrP010)
           {
@@ -739,6 +787,22 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
               crBase[y / 2 * hdrImgDescriptor.stride[UHDR_PLANE_UV] + x] =
                 ScaleQuantumToShort(GetPixelCr(image, p)) & 0xFFC0;
             }
+          }
+          else if (hdrImgDescriptor.fmt == UHDR_IMG_FMT_64bppRGBAHalfFloat)
+          {
+            uint64_t
+              *rgbaBase = yBuffer;
+
+            unsigned short
+              r, g, b, a;
+
+            r = SinglePrecisionToHalf((float)QuantumScale * GetPixelRed(image, p));
+            g = SinglePrecisionToHalf((float)QuantumScale * GetPixelGreen(image, p));
+            b = SinglePrecisionToHalf((float)QuantumScale * GetPixelBlue(image, p));
+            a = SinglePrecisionToHalf((float)QuantumScale * GetPixelAlpha(image, p));
+
+            rgbaBase[y * hdrImgDescriptor.stride[UHDR_PLANE_PACKED] + x] =
+                ((uint64_t)a << 48) | ((uint64_t)b << 32) | (g << 16) | (r);
           }
           else
           {
@@ -791,6 +855,8 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
         p += GetPixelChannels(image);
       }
     }
+
+next_image:
     if (i != GetImageListLength(image) - 1)
     {
       if (GetNextImageInList(image) == (Image *) NULL)
