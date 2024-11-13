@@ -85,19 +85,11 @@ Obsoletes:      %{name}7            < %{epoch}:%{version}-%{release}
 Provides:       %{name}7            = %{epoch}:%{version}-%{release}
 
 %description
-ImageMagick is a free and open-source software suite used for creating,
-editing, converting, and displaying raster image files. It can read and write
-over 200 different image file formats. ImageMagick is a powerful tool for
-working with images on the command line or through programming interfaces. It
-supports a wide range of image processing operations, including resizing,
-cropping, rotating, and various color manipulations.
+ImageMagick® is a free, open-source software suite, used for editing and manipulating digital images. It can be used to create, edit, compose, or convert bitmap images, and supports a wide range of file formats, including JPEG, PNG, GIF, TIFF, and Ultra HDR.
 
-ImageMagick is widely used in web development, graphic design, and other
-areas where image processing is required. It provides a versatile and
-efficient way to handle a variety of image-related tasks. Additionally,
-ImageMagick has bindings for various programming languages, making it easy
-to integrate into software applications
-and workflows.
+ImageMagick is widely used in industries such as web development, graphic design, and video editing, as well as in scientific research, medical imaging, and astronomy. Its versatile and customizable nature, along with its robust image processing capabilities, make it a popular choice for a wide range of image-related tasks.
+
+ImageMagick includes a command-line interface for executing complex image processing tasks, as well as APIs for integrating its features into software applications. It is written in C and can be used on a variety of operating systems, including Linux, Windows, and macOS.
 
 
 %package devel
@@ -218,10 +210,6 @@ however.
 %prep
 %autosetup -p1 -n %{name}-%{Version}-%{Patchlevel}
 
-# for %%doc
-mkdir Magick++/examples
-cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
-
 
 %build
 autoconf -f -i -v
@@ -248,6 +236,7 @@ export CFLAGS="%{optflags} -DIMPNG_SETJMP_IS_THREAD_SAFE"
         --with-xml \
         --with-urw-base35-font-dir="%{urw_base35_fontpath}" \
         --without-dps \
+        --enable-openmp \
         --without-gcc-arch \
         --with-jbig \
         --with-jxl \
@@ -259,7 +248,7 @@ export CFLAGS="%{optflags} -DIMPNG_SETJMP_IS_THREAD_SAFE"
         --with-gvc \
         --with-raqm \
 %if %{with libheif}
-           --with-heic \
+        --with-heic \
 %endif
 
 # Do *NOT* use %%{?_smp_mflags}, this causes PerlMagick to be silently misbuild
@@ -275,11 +264,12 @@ make html-local
 ln -sr %{buildroot}%{_includedir}/%{name}-7/MagickCore %{buildroot}%{_includedir}/%{name}-7/magick
 ln -sr %{buildroot}%{_includedir}/%{name}-7/MagickWand %{buildroot}%{_includedir}/%{name}-7/wand
 
-cp -a www/source %{buildroot}%{_datadir}/doc/%{name}-%{Version}
 # Do NOT remove .la files for codecs
 rm %{buildroot}%{_libdir}/*.la
 
 %if %{with perl}
+chmod 755 %{buildroot}%{perl_vendorarch}/auto/Image/Magick/Q16HDRI/Q16HDRI.so
+
 # perlmagick: fix perl path of demo files
 %{__perl} -MExtUtils::MakeMaker -e 'MY->fixin(@ARGV)' PerlMagick/demo/*.pl
 
@@ -289,11 +279,12 @@ find %{buildroot} -name ".packlist" |xargs rm -f
 find %{buildroot} -name "perllocal.pod" |xargs rm -f
 
 # perlmagick: build files list
-echo "%defattr(-,root,root,-)" > perl-pkg-files
-mv %{buildroot}/%{_prefix}/man/man3 %{buildroot}/%{_prefix}/share/man
-mv %{buildroot}/%{_prefix}/lib/perl* %{buildroot}/%{_libdir} 
 find %{buildroot}/%{_libdir}/perl* -type f -print \
         | sed "s@^%{buildroot}@@g" > perl-pkg-files
+find %{buildroot}%{perl_vendorarch} -type d -print \
+        | sed "s@^%{buildroot}@%dir @g" \
+        | grep -v '^%dir %{perl_vendorarch}$' \
+        | grep -v '/auto$' >> perl-pkg-files
 if [ -z perl-pkg-files ] ; then
         echo "ERROR: EMPTY FILE LIST"
         exit -1
@@ -332,9 +323,6 @@ export LD_LIBRARY_PATH=%{buildroot}/%{_libdir}
 %make_build check
 %endif
 rm PerlMagick/demo/Generic.ttf
-
-%ldconfig_scriptlets libs
-%ldconfig_scriptlets c++
 
 %files
 %doc NOTICE AUTHORS.txt
@@ -383,16 +371,14 @@ rm PerlMagick/demo/Generic.ttf
 
 %files doc
 %doc %{_datadir}/doc/%{name}-7
-%doc %{_datadir}/doc/%{name}-%{Version}
-%doc LICENSE
 
 %files c++
-%doc Magick++/AUTHORS Magick++/LICENSE
-%doc www/Magick++/COPYING
+%doc Magick++/AUTHORS
+%license Magick++/LICENSE
 %{_libdir}/libMagick++-7.Q16HDRI.so.%{libcxxsover}{,.*}
 
 %files c++-devel
-%doc Magick++/examples
+%doc Magick++/demo
 %{_bindir}/Magick++-config
 %{_includedir}/%{name}-7/Magick++/
 %{_includedir}/%{name}-7/Magick++.h
