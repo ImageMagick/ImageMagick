@@ -503,7 +503,7 @@ MagickExport const char *GetMagickReleaseDate(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetMagickSignature() returns a signature that uniquely encodes the
-%  MagickCore library version, quantum depth, HDRI status, OS word size, 
+%  MagickCore library version, quantum depth, HDRI status, OS word size,
 %  channel type, and endianness.
 %
 %  The format of the GetMagickSignature method is:
@@ -663,12 +663,12 @@ MagickExport void ListMagickVersion(FILE *file)
 #if defined(MAGICKCORE_MSC_VER)
   (void) FormatLocaleFile(file,"Compiler: Visual Studio %d (%d)\n",
     MAGICKCORE_MSC_VER,_MSC_FULL_VER);
-#elif defined(__GNUC__)
-  (void) FormatLocaleFile(file,"Compiler: gcc (%d.%d)\n",__GNUC__,
-    __GNUC_MINOR__);
 #elif defined(__clang__)
   (void) FormatLocaleFile(file,"Compiler: clang (%d.%d.%d)\n",__clang_major__,
     __clang_minor__,__clang_patchlevel__);
+#elif defined(__GNUC__)
+  (void) FormatLocaleFile(file,"Compiler: gcc (%d.%d)\n",__GNUC__,
+    __GNUC_MINOR__);
 #elif defined(__MINGW32_MAJOR_VERSION)
   (void) FormatLocaleFile(file,"Compiler: MinGW (%d.%d)\n",
     __MINGW32_MAJOR_VERSION,__MINGW32_MINOR_VERSION);
