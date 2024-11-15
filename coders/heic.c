@@ -641,7 +641,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
     *image_handle;
 
   unsigned char
-    magic[12];
+    magic[128];
 
   /*
     Open image file.
