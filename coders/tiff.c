@@ -1791,60 +1791,61 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     quantum_type=GrayQuantum;
     if (image->storage_class == PseudoClass)
       quantum_type=IndexQuantum;
-    if (interlace != PLANARCONFIG_SEPARATE)
-      {
-        ssize_t
-          pad;
-
-        pad=(ssize_t) samples_per_pixel-extra_samples;
-        if (samples_per_pixel > 2)
-          {
-            if (image->colorspace == CMYKColorspace)
-              {
-                pad-=4;
-                quantum_type=CMYKQuantum;
-                if (image->alpha_trait != UndefinedPixelTrait)
-                  quantum_type=CMYKAQuantum;
-              }
-            else
-              {
-                pad-=3;
-                quantum_type=RGBQuantum;
-                if (image->alpha_trait != UndefinedPixelTrait)
-                  quantum_type=RGBAQuantum;
-              }
-          }
-        else
-          {
-            pad--;
-            if (image->alpha_trait != UndefinedPixelTrait)
-              {
-                if (image->storage_class == PseudoClass)
-                  quantum_type=IndexAlphaQuantum;
-                else if (samples_per_pixel == 1)
-                  quantum_type=AlphaQuantum;
-                else
-                  {
-                    quantum_type=GrayAlphaQuantum;
-                    pad--;
-                  }
-              }
-          }
-        if (pad < 0)
-          ThrowTIFFException(CorruptImageError,"CorruptImage");
-        if (pad > 0)
-          {
-            status=SetQuantumPad(image,quantum_info,(size_t) pad*
-              ((bits_per_sample+7) >> 3));
-            if (status == MagickFalse)
-              ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-          }
-      }
     if (image->number_meta_channels != 0)
       {
         quantum_type=MultispectralQuantum;
         (void) SetQuantumPad(image,quantum_info,0);
       }
+    else
+      if (interlace != PLANARCONFIG_SEPARATE)
+        {
+          ssize_t
+            pad;
+
+          pad=(ssize_t) samples_per_pixel-extra_samples;
+          if (samples_per_pixel > 2)
+            {
+              if (image->colorspace == CMYKColorspace)
+                {
+                  pad-=4;
+                  quantum_type=CMYKQuantum;
+                  if (image->alpha_trait != UndefinedPixelTrait)
+                    quantum_type=CMYKAQuantum;
+                }
+              else
+                {
+                  pad-=3;
+                  quantum_type=RGBQuantum;
+                  if (image->alpha_trait != UndefinedPixelTrait)
+                    quantum_type=RGBAQuantum;
+                }
+            }
+          else
+            {
+              pad--;
+              if (image->alpha_trait != UndefinedPixelTrait)
+                {
+                  if (image->storage_class == PseudoClass)
+                    quantum_type=IndexAlphaQuantum;
+                  else if (samples_per_pixel == 1)
+                    quantum_type=AlphaQuantum;
+                  else
+                    {
+                      quantum_type=GrayAlphaQuantum;
+                      pad--;
+                    }
+                }
+            }
+          if (pad < 0)
+            ThrowTIFFException(CorruptImageError,"CorruptImage");
+          if (pad > 0)
+            {
+              status=SetQuantumPad(image,quantum_info,(size_t) pad*
+                ((bits_per_sample+7) >> 3));
+              if (status == MagickFalse)
+                ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
+            }
+        }
     if (exception->severity < ErrorException)
       switch (method)
       {
