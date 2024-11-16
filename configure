@@ -5257,7 +5257,7 @@ MAGICK_PATCHLEVEL_VERSION=42
 
 MAGICK_VERSION=7.1.1-42
 
-MAGICK_GIT_REVISION=bbdcbf78a:20241116
+MAGICK_GIT_REVISION=8c781e209:20241116
 
 
 # Substitute library versioning
@@ -34416,8 +34416,6 @@ fi
 #
 # Check for google libultrahdr delegate library
 #
-# Test for ultrahdr_api.h & test for uhdr_create_decoder in -luhdr
-#
 
 # Check whether --with-uhdr was given.
 if test ${with_uhdr+y}
@@ -34434,32 +34432,27 @@ if test "$with_uhdr" != 'yes'; then
 fi
 
 have_uhdr='no'
+UHDR_CFLAGS=""
 UHDR_LIBS=""
+UHDR_PKG=""
 if test "$with_uhdr" != 'no'; then
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 printf "%s\n" "-------------------------------------------------------------" >&6; }
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for google ultrahdr" >&5
-printf %s "checking for google ultrahdr... " >&6; }
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: " >&5
-printf "%s\n" "" >&6; }
-    failed=0
-    passed=0
-
 
 pkg_failed=no
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libuhdr >= 1.2.0" >&5
-printf %s "checking for libuhdr >= 1.2.0... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for libuhdr >= 1.3.0" >&5
+printf %s "checking for libuhdr >= 1.3.0... " >&6; }
 
 if test -n "$UHDR_CFLAGS"; then
     pkg_cv_UHDR_CFLAGS="$UHDR_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libuhdr >= 1.2.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libuhdr >= 1.2.0") 2>&5
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libuhdr >= 1.3.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libuhdr >= 1.3.0") 2>&5
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_UHDR_CFLAGS=`$PKG_CONFIG --cflags "libuhdr >= 1.2.0" 2>/dev/null`
+  pkg_cv_UHDR_CFLAGS=`$PKG_CONFIG --cflags "libuhdr >= 1.3.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -34471,12 +34464,12 @@ if test -n "$UHDR_LIBS"; then
     pkg_cv_UHDR_LIBS="$UHDR_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libuhdr >= 1.2.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libuhdr >= 1.2.0") 2>&5
+    { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libuhdr >= 1.3.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libuhdr >= 1.3.0") 2>&5
   ac_status=$?
   printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_UHDR_LIBS=`$PKG_CONFIG --libs "libuhdr >= 1.2.0" 2>/dev/null`
+  pkg_cv_UHDR_LIBS=`$PKG_CONFIG --libs "libuhdr >= 1.3.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -34497,9 +34490,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        UHDR_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libuhdr >= 1.2.0" 2>&1`
+	        UHDR_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libuhdr >= 1.3.0" 2>&1`
         else
-	        UHDR_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libuhdr >= 1.2.0" 2>&1`
+	        UHDR_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libuhdr >= 1.3.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$UHDR_PKG_ERRORS" >&5
@@ -34516,91 +34509,15 @@ else
 printf "%s\n" "yes" >&6; }
 	have_uhdr=yes
 fi
-    CFLAGS="$CFLAGS $UHDR_CFLAGS"
-    LIBS="$LIBS $UHDR_LIBS"
-    ac_fn_c_check_header_compile "$LINENO" "ultrahdr_api.h" "ac_cv_header_ultrahdr_api_h" "$ac_includes_default"
-if test "x$ac_cv_header_ultrahdr_api_h" = xyes
-then :
-  passed=`expr $passed + 1`
-else case e in #(
-  e) failed=`expr $failed + 1` ;;
-esac
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: " >&5
+printf "%s\n" "" >&6; }
 fi
 
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for uhdr_create_decoder in -luhdr" >&5
-printf %s "checking for uhdr_create_decoder in -luhdr... " >&6; }
-if test ${ac_cv_lib_uhdr_uhdr_create_decoder+y}
-then :
-  printf %s "(cached) " >&6
-else case e in #(
-  e) ac_check_lib_save_LIBS=$LIBS
-LIBS="-luhdr  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.
-   The 'extern "C"' is for builds by C++ compilers;
-   although this is not generally supported in C code supporting it here
-   has little cost and some practical benefit (sr 110532).  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char uhdr_create_decoder (void);
-int
-main (void)
-{
-return uhdr_create_decoder ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"
-then :
-  ac_cv_lib_uhdr_uhdr_create_decoder=yes
-else case e in #(
-  e) ac_cv_lib_uhdr_uhdr_create_decoder=no ;;
-esac
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.beam \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS ;;
-esac
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_uhdr_uhdr_create_decoder" >&5
-printf "%s\n" "$ac_cv_lib_uhdr_uhdr_create_decoder" >&6; }
-if test "x$ac_cv_lib_uhdr_uhdr_create_decoder" = xyes
-then :
-  passed=`expr $passed + 1`
-else case e in #(
-  e) failed=`expr $failed + 1` ;;
-esac
-fi
-
-
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if google ultrahdr package is complete" >&5
-printf %s "checking if google ultrahdr package is complete... " >&6; }
-
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-printf "%s\n" "no -- some components failed test" >&6; }
-            have_uhdr='no (failed tests)'
-        else
-            UHDR_LIBS='-luhdr'
-            LIBS="$UHDR_LIBS $LIBS"
+if test "$have_uhdr" = 'yes'; then
 
 printf "%s\n" "#define UHDR_DELEGATE 1" >>confdefs.h
 
-            { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-            have_uhdr='yes'
-        fi
-    else
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-    fi
+  CFLAGS="$UHDR_CFLAGS $CFLAGS"
 fi
 
  if test "$have_uhdr" = 'yes'; then
