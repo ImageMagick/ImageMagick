@@ -603,17 +603,20 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     return (MagickFalse);
   }
 
-  // hdr intent
-  // color transfer linear, MUST be rgba half float - bitdepth is ATLEAST 16
-  // color transfer hlg or pq, MUST be rgba1010102/p010 - bitdepth is ATLEAST 10
-  // sdr intent
-  // color transfer sRGB MUST be rgba8888/yuv420 - bitdepth MUST be 8
+  /*
+    HDR intent:
+      color transfer linear, MUST be rgba half float - bitdepth is ATLEAST 16
+      color transfer hlg or pq, MUST be rgba1010102/p010-bitdepth is ATLEAST 10
+
+    SDR intent
+      color transfer sRGB MUST be rgba8888/yuv420 - bitdepth MUST be 8
+  */
   int
     hdrIntentMinDepth = hdr_ct == UHDR_CT_LINEAR ? 16 : 10;
 
   for (int i = 0; i < GetImageListLength(image); i++)
   {
-    // classify image as hdr/sdr intent basing on depth
+    /* Classify image as hdr/sdr intent basing on depth */
     int
       bpp = image->depth >= hdrIntentMinDepth ? 2 : 1;
 
@@ -632,9 +635,9 @@ static MagickBooleanType WriteUHDRImage(const ImageInfo *image_info,
     if (IssRGBCompatibleColorspace(image->colorspace) && !IsGrayColorspace(image->colorspace))
     {
       if (image->depth >= hdrIntentMinDepth && hdr_ct == UHDR_CT_LINEAR)
-        bpp = 8; // rgbahalf float
+        bpp = 8; /* rgbahalf float */
       else
-        bpp = 4; // rgba1010102 or rgba8888
+        bpp = 4; /* rgba1010102 or rgba8888 */
       picSize = aligned_width * aligned_height * bpp;
     }
     else if (IsYCbCrCompatibleColorspace(image->colorspace))
@@ -892,7 +895,7 @@ next_image:
     }                                                                                         \
   }
 
-    // configure hdr and sdr intents
+    /* Configure hdr and sdr intents */
     if (status != MagickFalse && hdrImgDescriptor.planes[UHDR_PLANE_Y])
     {
       CHECK_IF_ERR(uhdr_enc_set_raw_image(handle, &hdrImgDescriptor, UHDR_HDR_IMG))
@@ -907,7 +910,7 @@ next_image:
         CHECK_IF_ERR(uhdr_enc_set_exif_data(handle, &sdr_profile))
     }
 
-    // Configure encoding settings
+    /* Configure encoding settings */
     if (status != MagickFalse && image->quality > 0 && image->quality <= 100)
       CHECK_IF_ERR(uhdr_enc_set_quality(handle, image->quality, UHDR_BASE_IMG))
 
@@ -930,7 +933,7 @@ next_image:
     if (status != MagickFalse)
       CHECK_IF_ERR(uhdr_enc_set_preset(handle, UHDR_USAGE_BEST_QUALITY))
 
-    // Configure gainmap metadata
+    /* Configure gainmap metadata */
     if (status != MagickFalse)
     {
       option = GetImageOption(image_info, "uhdr:gainmap-gamma");
