@@ -2872,8 +2872,6 @@ dnl ===========================================================================
 #
 # Check for google libultrahdr delegate library
 #
-# Test for ultrahdr_api.h & test for uhdr_create_decoder in -luhdr
-#
 AC_ARG_WITH([uhdr],
     [AS_HELP_STRING([--with-uhdr],
                     [enable google ultrahdr support])],
@@ -2885,36 +2883,18 @@ if test "$with_uhdr" != 'yes'; then
 fi
 
 have_uhdr='no'
+UHDR_CFLAGS=""
 UHDR_LIBS=""
+UHDR_PKG=""
 if test "$with_uhdr" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING([for google ultrahdr])
+    PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.3.0],[have_uhdr=yes],[have_uhdr=no])
     AC_MSG_RESULT([])
-    failed=0
-    passed=0
+fi
 
-    PKG_CHECK_MODULES([UHDR],[libuhdr >= 1.2.0],[have_uhdr=yes],[have_uhdr=no])
-    CFLAGS="$CFLAGS $UHDR_CFLAGS"
-    LIBS="$LIBS $UHDR_LIBS"
-    AC_CHECK_HEADER([ultrahdr_api.h],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`])
-    AC_CHECK_LIB([uhdr],[uhdr_create_decoder],[passed=`expr $passed + 1`],[failed=`expr $failed + 1`],[])
-
-    AC_MSG_CHECKING([if google ultrahdr package is complete])
-
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            AC_MSG_RESULT([no -- some components failed test])
-            have_uhdr='no (failed tests)'
-        else
-            UHDR_LIBS='-luhdr'
-            LIBS="$UHDR_LIBS $LIBS"
-            AC_DEFINE([UHDR_DELEGATE],[1],[Define if you have google ultrahdr library])
-            AC_MSG_RESULT([yes])
-            have_uhdr='yes'
-        fi
-    else
-        AC_MSG_RESULT([no])
-    fi
+if test "$have_uhdr" = 'yes'; then
+  AC_DEFINE([UHDR_DELEGATE],[1],[Define if you have google ultrahdr library])
+  CFLAGS="$UHDR_CFLAGS $CFLAGS"
 fi
 
 AM_CONDITIONAL([UHDR_DELEGATE],[test "$have_uhdr" = 'yes'])
