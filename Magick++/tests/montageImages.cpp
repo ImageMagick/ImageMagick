@@ -15,12 +15,11 @@ using namespace std;
 
 using namespace Magick;
 
-int main( int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** argv)
 {
 
   // Initialize ImageMagick install location for Windows
-  // InitializeMagick(*argv);
-  InitializeMagick("");
+  MagickPlusPlusGenesis genesis(*argv);
 
   const char *const p = getenv("MAGICK_FONT");
   const string MAGICK_FONT(p ? p : "");

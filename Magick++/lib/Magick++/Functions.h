@@ -36,7 +36,28 @@ namespace Magick
   // Set the ImageMagick security policy.
   MagickPPExport bool SetSecurityPolicy(const std::string &policy_);
 
-  // C library initialization routine
+  // C library de-initialize routine
   MagickPPExport void TerminateMagick();
+
+  // Constructor to initialize the Magick++ environment
+  class MagickPPExport MagickPlusPlusGenesis
+  {
+  public:
+
+    // Constructor to initialize Magick++
+    MagickPlusPlusGenesis(const char *path_)
+    {
+      InitializeMagick( path_ );
+    }
+
+    // Destructor to de-initialize Magick++
+    ~MagickPlusPlusGenesis()
+    {
+      TerminateMagick();
+    }
+
+  private:
+
+  };
 }
 #endif // Magick_Functions_header

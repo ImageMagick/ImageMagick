@@ -16,7 +16,7 @@ using namespace Magick;
 int main( int /*argc*/, char ** argv)
 {
   // Initialize ImageMagick install location for Windows
-  InitializeMagick(*argv);
+  MagickPlusPlusGenesis genesis(*argv);
       
   volatile int failures=0;
       

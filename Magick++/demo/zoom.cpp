@@ -38,7 +38,7 @@ static void ParseError (int position, char **argv)
 int main(int argc,char **argv) 
 {
   // Initialize ImageMagick install location for Windows
-  InitializeMagick(*argv);
+  MagickPlusPlusGenesis genesis(*argv);
 
   if ( argc < 2 )
     Usage(argv);
