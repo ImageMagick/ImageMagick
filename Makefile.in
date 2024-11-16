@@ -304,18 +304,18 @@ CONFIG_CLEAN_FILES = app-image/AppRun common.shi config/policy.xml \
 	config/MagickWand.dox config/Magick++.dox \
 	config/type-apple.xml config/type-dejavu.xml \
 	config/type-ghostscript.xml config/type-urw-base35.xml \
-	config/type-windows.xml config/type.xml ImageMagick.spec \
-	Magick++/bin/Magick++-config MagickCore/ImageMagick.pc \
-	Magick++/lib/Magick++.pc MagickCore/MagickCore-config \
-	MagickCore/MagickCore.pc MagickCore/version.h magick.sh \
-	PerlMagick/check.sh PerlMagick/default/Magick.pm \
-	PerlMagick/Makefile.PL PerlMagick/default/Makefile.PL \
-	PerlMagick/quantum/Makefile.PL PerlMagick/quantum/quantum.pm \
-	PerlMagick/quantum/quantum.xs PerlMagick/quantum/typemap \
-	utilities/animate.1 utilities/compare.1 utilities/composite.1 \
-	utilities/conjure.1 utilities/convert.1 utilities/display.1 \
-	utilities/identify.1 utilities/ImageMagick.1 \
-	utilities/import.1 utilities/magick.1 \
+	config/type-urw-base35-type1.xml config/type-windows.xml \
+	config/type.xml ImageMagick.spec Magick++/bin/Magick++-config \
+	MagickCore/ImageMagick.pc Magick++/lib/Magick++.pc \
+	MagickCore/MagickCore-config MagickCore/MagickCore.pc \
+	MagickCore/version.h magick.sh PerlMagick/check.sh \
+	PerlMagick/default/Magick.pm PerlMagick/Makefile.PL \
+	PerlMagick/default/Makefile.PL PerlMagick/quantum/Makefile.PL \
+	PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs \
+	PerlMagick/quantum/typemap utilities/animate.1 \
+	utilities/compare.1 utilities/composite.1 utilities/conjure.1 \
+	utilities/convert.1 utilities/display.1 utilities/identify.1 \
+	utilities/ImageMagick.1 utilities/import.1 utilities/magick.1 \
 	utilities/magick-script.1 utilities/mogrify.1 \
 	utilities/montage.1 utilities/stream.1 \
 	MagickWand/MagickWand-config MagickWand/MagickWand.pc
@@ -3114,6 +3114,7 @@ am__DIST_COMMON = $(srcdir)/ImageMagick.spec.in \
 	$(top_srcdir)/config/type-apple.xml.in \
 	$(top_srcdir)/config/type-dejavu.xml.in \
 	$(top_srcdir)/config/type-ghostscript.xml.in \
+	$(top_srcdir)/config/type-urw-base35-type1.xml.in \
 	$(top_srcdir)/config/type-urw-base35.xml.in \
 	$(top_srcdir)/config/type-windows.xml.in \
 	$(top_srcdir)/config/type.xml.in \
@@ -6340,6 +6341,8 @@ config/type-dejavu.xml: $(top_builddir)/config.status $(top_srcdir)/config/type-
 config/type-ghostscript.xml: $(top_builddir)/config.status $(top_srcdir)/config/type-ghostscript.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/type-urw-base35.xml: $(top_builddir)/config.status $(top_srcdir)/config/type-urw-base35.xml.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+config/type-urw-base35-type1.xml: $(top_builddir)/config.status $(top_srcdir)/config/type-urw-base35-type1.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/type-windows.xml: $(top_builddir)/config.status $(top_srcdir)/config/type-windows.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
