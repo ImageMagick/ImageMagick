@@ -93,9 +93,6 @@
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
 #include "MagickCore/xwindow-private.h"
-#if defined(MAGICKCORE_XML_DELEGATE)
-#  include <libxml/parser.h>
-#endif
 
 /*
   Define declarations.
@@ -1646,9 +1643,6 @@ MagickExport void MagickCoreTerminus(void)
     }
   MonitorComponentTerminus();
   RegistryComponentTerminus();
-#if defined(MAGICKCORE_XML_DELEGATE)
-  xmlCleanupParser();
-#endif
   AnnotateComponentTerminus();
   MimeComponentTerminus();
   TypeComponentTerminus();

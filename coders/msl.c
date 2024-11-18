@@ -138,14 +138,6 @@ typedef struct _MSLInfo
 
   MSLGroupInfo
     *group_info;
-
-#if defined(MAGICKCORE_XML_DELEGATE)
-  xmlParserCtxtPtr
-    parser;
-
-  xmlDocPtr
-    document;
-#endif
 } MSLInfo;
 
 /*
@@ -238,324 +230,6 @@ static int IsPathDirectory(const char *path)
   if (S_ISDIR(attributes.st_mode) == 0)
     return(0);
   return(1);
-}
-
-static int MSLIsStandalone(void *context)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    Is this document tagged standalone?
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.MSLIsStandalone()");
-  msl_info=(MSLInfo *) context;
-  return(msl_info->document->standalone == 1);
-}
-
-static int MSLHasInternalSubset(void *context)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    Does this document has an internal subset?
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.MSLHasInternalSubset()");
-  msl_info=(MSLInfo *) context;
-  return(msl_info->document->intSubset != NULL);
-}
-
-static int MSLHasExternalSubset(void *context)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    Does this document has an external subset?
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.MSLHasExternalSubset()");
-  msl_info=(MSLInfo *) context;
-  return(msl_info->document->extSubset != NULL);
-}
-
-static void MSLInternalSubset(void *context,const xmlChar *name,
-  const xmlChar *external_id,const xmlChar *system_id)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    Does this document has an internal subset?
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.internalSubset(%s %s %s)",name,
-    (external_id != (const xmlChar *) NULL ? (const char *) external_id : " "),
-    (system_id != (const xmlChar *) NULL ? (const char *) system_id : " "));
-  msl_info=(MSLInfo *) context;
-  (void) xmlCreateIntSubset(msl_info->document,name,external_id,system_id);
-}
-
-static xmlParserInputPtr MSLResolveEntity(void *context,
-  const xmlChar *public_id,const xmlChar *system_id)
-{
-  MSLInfo
-    *msl_info;
-
-  xmlParserInputPtr
-    stream;
-
-  /*
-    Special entity resolver, better left to the parser, it has more
-    context than the application layer.  The default behaviour is to
-    not resolve the entities, in that case the ENTITY_REF nodes are
-    built in the structure (and the parameter values).
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.resolveEntity(%s, %s)",
-    (public_id != (const xmlChar *) NULL ? (const char *) public_id : "none"),
-    (system_id != (const xmlChar *) NULL ? (const char *) system_id : "none"));
-  msl_info=(MSLInfo *) context;
-  stream=xmlLoadExternalEntity((const char *) system_id,(const char *)
-    public_id,msl_info->parser);
-  return(stream);
-}
-
-static xmlEntityPtr MSLGetEntity(void *context,const xmlChar *name)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    Get an entity by name.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.MSLGetEntity(%s)",(const char *) name);
-  msl_info=(MSLInfo *) context;
-  return(xmlGetDocEntity(msl_info->document,name));
-}
-
-static xmlEntityPtr MSLGetParameterEntity(void *context,const xmlChar *name)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    Get a parameter entity by name.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.getParameterEntity(%s)",(const char *) name);
-  msl_info=(MSLInfo *) context;
-  return(xmlGetParameterEntity(msl_info->document,name));
-}
-
-static void MSLError(void *,const char *,...)
-  magick_attribute((__format__ (__printf__,2,3)));
-
-static void MSLEntityDeclaration(void *context,const xmlChar *name,int type,
-  const xmlChar *public_id,const xmlChar *system_id,xmlChar *content)
-{
-  MSLInfo
-    *msl_info;
-
-  xmlEntityPtr
-    entity;
-
-  /*
-    An entity definition has been parsed.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.entityDecl(%s, %d, %s, %s, %s)",name,type,
-    public_id != (const xmlChar *) NULL ? (const char *) public_id : "none",
-    system_id != (const xmlChar *) NULL ? (const char *) system_id : "none",
-    content);
-  msl_info=(MSLInfo *) context;
-  if (msl_info->parser->inSubset == 1)
-    entity=xmlAddDocEntity(msl_info->document,name,type,public_id,system_id,
-      content);
-  else
-    if (msl_info->parser->inSubset == 2)
-      entity=xmlAddDtdEntity(msl_info->document,name,type,public_id,system_id,
-        content);
-    else
-      return;
-  if (entity == (xmlEntityPtr) NULL)
-    MSLError(msl_info,"NULL entity");
-}
-
-static void MSLAttributeDeclaration(void *context,const xmlChar *element,
-  const xmlChar *name,int type,int value,const xmlChar *default_value,
-  xmlEnumerationPtr tree)
-{
-  MSLInfo
-    *msl_info;
-
-  xmlChar
-    *fullname,
-    *prefix;
-
-  xmlParserCtxtPtr
-    parser;
-
-  /*
-    An attribute definition has been parsed.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.attributeDecl(%s, %s, %d, %d, %s, ...)\n",element,name,type,value,
-    default_value);
-  msl_info=(MSLInfo *) context;
-  fullname=(xmlChar *) NULL;
-  prefix=(xmlChar *) NULL;
-  parser=msl_info->parser;
-  fullname=(xmlChar *) xmlSplitQName(parser,name,&prefix);
-  if (parser->inSubset == 1)
-    (void) xmlAddAttributeDecl(&parser->vctxt,msl_info->document->intSubset,
-      element,fullname,prefix,(xmlAttributeType) type,
-      (xmlAttributeDefault) value,default_value,tree);
-  else
-    if (parser->inSubset == 2)
-      (void) xmlAddAttributeDecl(&parser->vctxt,msl_info->document->extSubset,
-        element,fullname,prefix,(xmlAttributeType) type,
-        (xmlAttributeDefault) value,default_value,tree);
-  if (prefix != (xmlChar *) NULL)
-    xmlFree(prefix);
-  if (fullname != (xmlChar *) NULL)
-    xmlFree(fullname);
-}
-
-static void MSLElementDeclaration(void *context,const xmlChar *name,int type,
-  xmlElementContentPtr content)
-{
-  MSLInfo
-    *msl_info;
-
-  xmlParserCtxtPtr
-    parser;
-
-  /*
-    An element definition has been parsed.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.elementDecl(%s, %d, ...)",name,type);
-  msl_info=(MSLInfo *) context;
-  parser=msl_info->parser;
-  if (parser->inSubset == 1)
-    (void) xmlAddElementDecl(&parser->vctxt,msl_info->document->intSubset,
-      name,(xmlElementTypeVal) type,content);
-  else
-    if (parser->inSubset == 2)
-      (void) xmlAddElementDecl(&parser->vctxt,msl_info->document->extSubset,
-        name,(xmlElementTypeVal) type,content);
-}
-
-static void MSLNotationDeclaration(void *context,const xmlChar *name,
-  const xmlChar *public_id,const xmlChar *system_id)
-{
-  MSLInfo
-    *msl_info;
-
-  xmlParserCtxtPtr
-    parser;
-
-  /*
-    What to do when a notation declaration has been parsed.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.notationDecl(%s, %s, %s)",name,
-    public_id != (const xmlChar *) NULL ? (const char *) public_id : "none",
-    system_id != (const xmlChar *) NULL ? (const char *) system_id : "none");
-  msl_info=(MSLInfo *) context;
-  parser=msl_info->parser;
-  if (parser->inSubset == 1)
-    (void) xmlAddNotationDecl(&parser->vctxt,msl_info->document->intSubset,
-      name,public_id,system_id);
-  else
-    if (parser->inSubset == 2)
-      (void) xmlAddNotationDecl(&parser->vctxt,msl_info->document->intSubset,
-        name,public_id,system_id);
-}
-
-static void MSLUnparsedEntityDeclaration(void *context,const xmlChar *name,
-  const xmlChar *public_id,const xmlChar *system_id,const xmlChar *notation)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    What to do when an unparsed entity declaration is parsed.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.unparsedEntityDecl(%s, %s, %s, %s)",name,
-    public_id != (const xmlChar *) NULL ? (const char *) public_id : "none",
-    system_id != (const xmlChar *) NULL ? (const char *) system_id : "none",
-    notation);
-  msl_info=(MSLInfo *) context;
-  (void) xmlAddDocEntity(msl_info->document,name,
-    XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,public_id,system_id,notation);
-
-}
-
-static void MSLSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    Receive the document locator at startup, actually xmlDefaultSAXLocator.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.setDocumentLocator()\n");
-  (void) location;
-  msl_info=(MSLInfo *) context;
-  (void) msl_info;
-}
-
-static void MSLStartDocument(void *context)
-{
-  MSLInfo
-    *msl_info;
-
-  xmlParserCtxtPtr
-    parser;
-
-  /*
-    Called when the document start being processed.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.startDocument()");
-  msl_info=(MSLInfo *) context;
-  parser=msl_info->parser;
-  msl_info->document=xmlNewDoc(parser->version);
-  if (msl_info->document == (xmlDocPtr) NULL)
-    return;
-  if (parser->encoding == NULL)
-    msl_info->document->encoding=NULL;
-  else
-    msl_info->document->encoding=xmlStrdup(parser->encoding);
-  msl_info->document->standalone=parser->standalone;
-}
-
-static void MSLEndDocument(void *context)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    Called when the document end has been detected.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.endDocument()");
-  msl_info=(MSLInfo *) context;
-  if (msl_info->content != (char *) NULL)
-    msl_info->content=DestroyString(msl_info->content);
-#if defined(MAGICKCORE_XML_DELEGATE)
-  if (msl_info->document != (xmlDocPtr) NULL)
-    {
-      xmlFreeDoc(msl_info->document);
-      msl_info->document=(xmlDocPtr) NULL;
-    }
-#endif
 }
 
 static void MSLPushImage(MSLInfo *msl_info,Image *image)
@@ -667,13 +341,17 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     height,
     width;
 
+  xmlParserCtxtPtr
+    parser;
+
   /*
     Called when an opening tag has been processed.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.startElement(%s",tag);
   exception=AcquireExceptionInfo();
-  msl_info=(MSLInfo *) context;
+  parser=(xmlParserCtxtPtr) context;
+  msl_info=(MSLInfo *) parser->_private;
   n=msl_info->n;
   keyword=(const char *) NULL;
   value=(char *) NULL;
@@ -7385,12 +7063,16 @@ static void MSLEndElement(void *context,const xmlChar *tag)
   MSLInfo
     *msl_info;
 
+  xmlParserCtxtPtr
+    parser;
+
   /*
     Called when the end of an element has been detected.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.endElement(%s)",
     tag);
-  msl_info=(MSLInfo *) context;
+  parser=(xmlParserCtxtPtr) context;
+  msl_info=(MSLInfo *) parser->_private;
   n=msl_info->n;
   switch (*tag)
   {
@@ -7483,6 +7165,9 @@ static void MSLCharacters(void *context,const xmlChar *c,int length)
   MSLInfo
     *msl_info;
 
+  xmlParserCtxtPtr
+    parser;
+
   char
     *p;
 
@@ -7494,7 +7179,8 @@ static void MSLCharacters(void *context,const xmlChar *c,int length)
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.characters(%s,%d)",c,length);
-  msl_info=(MSLInfo *) context;
+  parser=(xmlParserCtxtPtr) context;
+  msl_info=(MSLInfo *) parser->_private;
   if (msl_info->content != (char *) NULL)
     msl_info->content=(char *) ResizeQuantumMemory(msl_info->content,
       strlen(msl_info->content)+(size_t) length+MagickPathExtent,
@@ -7516,75 +7202,6 @@ static void MSLCharacters(void *context,const xmlChar *c,int length)
   *p='\0';
 }
 
-static void MSLReference(void *context,const xmlChar *name)
-{
-  MSLInfo
-    *msl_info;
-
-  xmlParserCtxtPtr
-    parser;
-
-  /*
-    Called when an entity reference is detected.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.reference(%s)",name);
-  msl_info=(MSLInfo *) context;
-  parser=msl_info->parser;
-  if (parser == (xmlParserCtxtPtr) NULL)
-    return;
-  if (parser->node == (xmlNodePtr) NULL)
-    return;
-  if (*name == '#')
-    (void) xmlAddChild(parser->node,xmlNewCharRef(msl_info->document,name));
-  else
-    (void) xmlAddChild(parser->node,xmlNewReference(msl_info->document,name));
-}
-
-static void MSLIgnorableWhitespace(void *context,const xmlChar *c,int length)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    Receiving some ignorable whitespaces from the parser.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.ignorableWhitespace(%.30s, %d)",c,length);
-  msl_info=(MSLInfo *) context;
-  (void) msl_info;
-}
-
-static void MSLProcessingInstructions(void *context,const xmlChar *target,
-  const xmlChar *data)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    A processing instruction has been parsed.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.processingInstruction(%s, %s)",
-    target,data);
-  msl_info=(MSLInfo *) context;
-  (void) msl_info;
-}
-
-static void MSLComment(void *context,const xmlChar *value)
-{
-  MSLInfo
-    *msl_info;
-
-  /*
-    A comment has been parsed.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.comment(%s)",value);
-  msl_info=(MSLInfo *) context;
-  (void) msl_info;
-}
-
 static void MSLWarning(void *context,const char *format,...)
   magick_attribute((__format__ (__printf__,2,3)));
 
@@ -7597,6 +7214,9 @@ static void MSLWarning(void *context,const char *format,...)
   MSLInfo
     *msl_info;
 
+  xmlParserCtxtPtr
+    parser;
+
   va_list
     operands;
 
@@ -7607,7 +7227,8 @@ static void MSLWarning(void *context,const char *format,...)
   va_start(operands,format);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.warning: ");
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),format,operands);
-  msl_info=(MSLInfo *) context;
+  parser=(xmlParserCtxtPtr) context;
+  msl_info=(MSLInfo *) parser->_private;
   (void) msl_info;
 #if !defined(MAGICKCORE_HAVE_VSNPRINTF)
   (void) vsprintf(reason,format,operands);
@@ -7631,6 +7252,9 @@ static void MSLError(void *context,const char *format,...)
   MSLInfo
     *msl_info;
 
+  xmlParserCtxtPtr
+    parser;
+
   va_list
     operands;
 
@@ -7641,7 +7265,8 @@ static void MSLError(void *context,const char *format,...)
   va_start(operands,format);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.error: ");
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),format,operands);
-  msl_info=(MSLInfo *) context;
+  parser=(xmlParserCtxtPtr) context;
+  msl_info=(MSLInfo *) parser->_private;
   (void) msl_info;
 #if !defined(MAGICKCORE_HAVE_VSNPRINTF)
   (void) vsprintf(reason,format,operands);
@@ -7650,104 +7275,7 @@ static void MSLError(void *context,const char *format,...)
 #endif
   ThrowMSLException(DelegateFatalError,reason,"SAX error");
   va_end(operands);
-  xmlStopParser(msl_info->parser);
-}
-
-static void MSLCDataBlock(void *context,const xmlChar *value,int length)
-{
-  MSLInfo
-    *msl_info;
-
-  xmlNodePtr
-    child;
-
-  xmlParserCtxtPtr
-    parser;
-
-  /*
-    Called when a pcdata block has been parsed.
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.pcdata(%s, %d)",value,length);
-  msl_info=(MSLInfo *) context;
-  (void) msl_info;
-  parser=msl_info->parser;
-  child=xmlGetLastChild(parser->node);
-  if ((child != (xmlNodePtr) NULL) && (child->type == XML_CDATA_SECTION_NODE))
-    {
-      xmlTextConcat(child,value,length);
-      return;
-    }
-  child=xmlNewCDataBlock(parser->myDoc,value,length);
-  if (xmlAddChild(parser->node,child) == (xmlNodePtr) NULL)
-    xmlFreeNode(child);
-}
-
-static void MSLExternalSubset(void *context,const xmlChar *name,
-  const xmlChar *external_id,const xmlChar *system_id)
-{
-  MSLInfo
-    *msl_info;
-
-  xmlParserCtxt
-    parser_context;
-
-  xmlParserCtxtPtr
-    parser;
-
-  xmlParserInputPtr
-    input;
-
-  /*
-    Does this document has an external subset?
-  */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "  SAX.externalSubset(%s %s %s)",name,
-    (external_id != (const xmlChar *) NULL ? (const char *) external_id : " "),
-    (system_id != (const xmlChar *) NULL ? (const char *) system_id : " "));
-  msl_info=(MSLInfo *) context;
-  (void) msl_info;
-  parser=msl_info->parser;
-  if (((external_id == NULL) && (system_id == NULL)) ||
-      ((parser->validate == 0) || (parser->wellFormed == 0) ||
-      (msl_info->document == 0)))
-    return;
-  input=MSLResolveEntity(context,external_id,system_id);
-  if (input == NULL)
-    return;
-  (void) xmlNewDtd(msl_info->document,name,external_id,system_id);
-  parser_context=(*parser);
-  parser->inputTab=(xmlParserInputPtr *) xmlMalloc(5*sizeof(*parser->inputTab));
-  if (parser->inputTab == (xmlParserInputPtr *) NULL)
-    {
-      parser->errNo=XML_ERR_NO_MEMORY;
-      parser->input=parser_context.input;
-      parser->inputNr=parser_context.inputNr;
-      parser->inputMax=parser_context.inputMax;
-      parser->inputTab=parser_context.inputTab;
-      return;
-  }
-  parser->inputNr=0;
-  parser->inputMax=5;
-  parser->input=NULL;
-  xmlPushInput(parser,input);
-  (void) xmlSwitchEncoding(parser,xmlDetectCharEncoding(parser->input->cur,4));
-  if (input->filename == (char *) NULL)
-    input->filename=(char *) xmlStrdup(system_id);
-  input->line=1;
-  input->col=1;
-  input->base=parser->input->cur;
-  input->cur=parser->input->cur;
-  input->free=NULL;
-  xmlParseExternalSubset(parser,external_id,system_id);
-  while (parser->inputNr > 1)
-    (void) xmlPopInput(parser);
-  xmlFreeInputStream(parser->input);
-  xmlFree(parser->inputTab);
-  parser->input=parser_context.input;
-  parser->inputNr=parser_context.inputNr;
-  parser->inputMax=parser_context.inputMax;
-  parser->inputTab=parser_context.inputTab;
+  xmlStopParser(parser);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -7777,6 +7305,9 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
 
   xmlSAXHandlerPtr
     sax_handler;
+
+  xmlParserCtxtPtr
+    parser;
 
   /*
     Open image file.
@@ -7829,71 +7360,58 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
   if (*image != (Image *) NULL)
     MSLPushImage(&msl_info,*image);
   xmlInitParser();
-  (void) memset(&sax_modules,0,sizeof(sax_modules));
-  sax_modules.internalSubset=MSLInternalSubset;
-  sax_modules.isStandalone=MSLIsStandalone;
-  sax_modules.hasInternalSubset=MSLHasInternalSubset;
-  sax_modules.hasExternalSubset=MSLHasExternalSubset;
-  sax_modules.resolveEntity=MSLResolveEntity;
-  sax_modules.getEntity=MSLGetEntity;
-  sax_modules.entityDecl=MSLEntityDeclaration;
-  sax_modules.notationDecl=MSLNotationDeclaration;
-  sax_modules.attributeDecl=MSLAttributeDeclaration;
-  sax_modules.elementDecl=MSLElementDeclaration;
-  sax_modules.unparsedEntityDecl=MSLUnparsedEntityDeclaration;
-  sax_modules.setDocumentLocator=MSLSetDocumentLocator;
-  sax_modules.startDocument=MSLStartDocument;
-  sax_modules.endDocument=MSLEndDocument;
+  /*
+    TODO: Upgrade to SAX version 2 (startElementNs/endElementNs)
+  */
+  xmlSAXVersion(&sax_modules,1);
   sax_modules.startElement=MSLStartElement;
   sax_modules.endElement=MSLEndElement;
-  sax_modules.reference=MSLReference;
+  sax_modules.reference=(referenceSAXFunc) NULL;
   sax_modules.characters=MSLCharacters;
-  sax_modules.ignorableWhitespace=MSLIgnorableWhitespace;
-  sax_modules.processingInstruction=MSLProcessingInstructions;
-  sax_modules.comment=MSLComment;
+  sax_modules.ignorableWhitespace=(ignorableWhitespaceSAXFunc) NULL;
+  sax_modules.processingInstruction=(processingInstructionSAXFunc) NULL;
+  sax_modules.comment=(commentSAXFunc) NULL;
   sax_modules.warning=MSLWarning;
   sax_modules.error=MSLError;
   sax_modules.fatalError=MSLError;
-  sax_modules.getParameterEntity=MSLGetParameterEntity;
-  sax_modules.cdataBlock=MSLCDataBlock;
-  sax_modules.externalSubset=MSLExternalSubset;
+  sax_modules.cdataBlock=MSLCharacters;
   sax_handler=(&sax_modules);
-  msl_info.parser=xmlCreatePushParserCtxt(sax_handler,&msl_info,(char *) NULL,0,
-    msl_image->filename);
-  if (msl_info.parser != (xmlParserCtxtPtr) NULL)
+  parser=xmlCreatePushParserCtxt(sax_handler,(void *) NULL,(char *) NULL,
+    0,msl_image->filename);
+  if (parser != (xmlParserCtxtPtr) NULL)
     {
-      const char *option = GetImageOption(image_info,"msl:parse-huge");
+      const char *option;
+      parser->_private=(MSLInfo *) &msl_info;
+      option = GetImageOption(image_info,"msl:parse-huge");
       if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
-        (void) xmlCtxtUseOptions(msl_info.parser,XML_PARSE_HUGE);
+        (void) xmlCtxtUseOptions(parser,XML_PARSE_HUGE);
       option=GetImageOption(image_info,"msl:substitute-entities");
       if ((option != (char *) NULL) && (IsStringTrue(option) != MagickFalse))
-        (void) xmlCtxtUseOptions(msl_info.parser,XML_PARSE_NOENT);
+        (void) xmlCtxtUseOptions(parser,XML_PARSE_NOENT);
     }
   while (ReadBlobString(msl_image,message) != (char *) NULL)
   {
     n=(ssize_t) strlen(message);
     if (n == 0)
       continue;
-    status=(MagickStatusType) xmlParseChunk(msl_info.parser,message,(int) n,
+    status=(MagickStatusType) xmlParseChunk(parser,message,(int) n,
       MagickFalse);
     if (status != 0)
       break;
-    status=(MagickStatusType) xmlParseChunk(msl_info.parser," ",1,MagickFalse);
+    status=(MagickStatusType) xmlParseChunk(parser," ",1,MagickFalse);
     if (status != 0)
       break;
     if (msl_info.exception->severity >= ErrorException)
       break;
   }
   if (msl_info.exception->severity == UndefinedException)
-    (void) xmlParseChunk(msl_info.parser," ",1,MagickTrue);
+    (void) xmlParseChunk(parser," ",1,MagickTrue);
   /*
     Free resources.
   */
-  MSLEndDocument(&msl_info);
-  if (msl_info.parser->myDoc != (xmlDocPtr) NULL)
-    xmlFreeDoc(msl_info.parser->myDoc);
-  xmlFreeParserCtxt(msl_info.parser);
-  xmlFreeDoc(msl_info.document);
+  if (parser->myDoc != (xmlDocPtr) NULL)
+    xmlFreeDoc(parser->myDoc);
+  xmlFreeParserCtxt(parser);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
   if (*image == (Image *) NULL)
     *image=CloneImage(*msl_info.image,0,0,MagickTrue,exception);
@@ -7916,6 +7434,8 @@ static MagickBooleanType ProcessMSLScript(const ImageInfo *image_info,
     msl_info.image_info);
   msl_info.group_info=(MSLGroupInfo *) RelinquishMagickMemory(
     msl_info.group_info);
+  if (msl_info.content != (char *) NULL)
+    msl_info.content=DestroyString(msl_info.content);
   if (msl_info.exception->severity != UndefinedException)
     return(MagickFalse);
   return(MagickTrue);

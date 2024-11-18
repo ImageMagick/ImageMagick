@@ -58,16 +58,6 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/utility.h"
-#if defined(MAGICKCORE_XML_DELEGATE)
-#  include <libxml/parser.h>
-#  include <libxml/xmlmemory.h>
-#if defined(LIBXML_FTP_ENABLED)
-#  include <libxml/nanoftp.h>
-#endif
-#if defined(LIBXML_HTTP_ENABLED)
-#  include <libxml/nanohttp.h>
-#endif
-#endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 #  include <urlmon.h>
 #  if !defined(__MINGW32__)
@@ -101,33 +91,6 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-#if defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_FTP_ENABLED)
-static void GetFTPData(void *userdata,const char *data,int size)
-{
-  FILE
-    *file;
-
-  size_t
-    length;
-
-  file=(FILE *) userdata;
-  if (file == (FILE *) NULL)
-    return;
-  if (size <= 0)
-    return;
-  length=fwrite(data,1,(size_t) size,file);
-  (void) length;
-}
-#endif
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -219,53 +182,6 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
 #else
-#if defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_FTP_ENABLED)
-  if (LocaleCompare(read_info->magick,"ftp") == 0)
-    {
-      void
-        *context;
-
-      xmlNanoFTPInit();
-      context=xmlNanoFTPNewCtxt(filename);
-      if (context != (void *) NULL)
-        {
-          if (xmlNanoFTPConnect(context) >= 0)
-            (void) xmlNanoFTPGet(context,GetFTPData,(void *) file,
-              (char *) NULL);
-          (void) xmlNanoFTPClose(context);
-        }
-    }
-#endif
-#if defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_HTTP_ENABLED)
-  if (LocaleCompare(read_info->magick,"http") == 0)
-    {
-      char
-        buffer[8192],
-        *type;
-
-      int
-        bytes;
-
-      void
-        *context;
-
-      type=(char *) NULL;
-      context=xmlNanoHTTPMethod(filename,(const char *) NULL,
-        (const char *) NULL,&type,(const char *) NULL,0);
-      if (context != (void *) NULL)
-        {
-          ssize_t
-            count;
-
-          while ((bytes=xmlNanoHTTPRead(context,buffer,sizeof(buffer))) > 0)
-            count=(ssize_t) fwrite(buffer,1,(size_t) bytes,file);
-          (void) count;
-          xmlNanoHTTPClose(context);
-          xmlFree(type);
-          xmlNanoHTTPCleanup();
-        }
-    }
-#endif
   (void) fclose(file);
 #endif
   *read_info->magick='\0';
@@ -316,8 +232,7 @@ ModuleExport size_t RegisterURLImage(void)
     *entry;
 
   entry=AcquireMagickInfo("URL","HTTP","Uniform Resource Locator (http://)");
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || \
-    (defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_HTTP_ENABLED))
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
 #endif
   entry->format_type=ImplicitFormatType;
@@ -327,8 +242,7 @@ ModuleExport size_t RegisterURLImage(void)
   entry->format_type=ImplicitFormatType;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("URL","FTP","Uniform Resource Locator (ftp://)");
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || \
-    (defined(MAGICKCORE_XML_DELEGATE) && defined(LIBXML_FTP_ENABLED))
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
   entry->decoder=(DecodeImageHandler *) ReadURLImage;
 #endif
   entry->format_type=ImplicitFormatType;
