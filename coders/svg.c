@@ -1824,7 +1824,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
 
               GetAffineMatrix(&transform);
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  ");
-              tokens=SVGKeyValuePairs(context,'(',')',value,&number_tokens);
+              tokens=SVGKeyValuePairs(svg_info,'(',')',value,&number_tokens);
               if (tokens == (char **) NULL)
                 break;
               for (j=0; j < (ssize_t) (number_tokens-1); j+=2)
@@ -2224,7 +2224,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
 
               GetAffineMatrix(&transform);
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  ");
-              tokens=SVGKeyValuePairs(context,'(',')',value,&number_tokens);
+              tokens=SVGKeyValuePairs(svg_info,'(',')',value,&number_tokens);
               if (tokens == (char **) NULL)
                 break;
               for (j=0; j < (ssize_t) (number_tokens-1); j+=2)
@@ -2779,7 +2779,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
           /*
             Find style definitions in svg_info->text.
           */
-          tokens=SVGKeyValuePairs(context,'{','}',svg_info->text,
+          tokens=SVGKeyValuePairs(svg_info,'{','}',svg_info->text,
             &number_tokens);
           if (tokens == (char **) NULL)
             break;
