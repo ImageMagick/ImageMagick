@@ -2870,7 +2870,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
     *similarity_view;
 
   Image
-    *similarity_image;
+    *similarity_image = (Image *) NULL;
 
   MagickBooleanType
     status;
@@ -2905,8 +2905,10 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
         }
     }
 #endif
-  similarity_image=CloneImage(image,image->columns-reference->columns+1,
-    image->rows-reference->rows+1,MagickTrue,exception);
+  if ((image->columns >= reference->columns) &&
+      (image->rows >= reference->rows))
+    similarity_image=CloneImage(image,image->columns-reference->columns+1,
+      image->rows-reference->rows+1,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
   status=SetImageStorageClass(similarity_image,DirectClass,exception);
