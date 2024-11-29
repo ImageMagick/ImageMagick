@@ -795,7 +795,7 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
     else
       status=SetImageProfile(image,"app1",client_info->profiles[marker],
         exception);
-  return(status);
+  return(status == MagickFalse ? FALSE : TRUE);
 }
 
 static void SkipInputData(j_decompress_ptr compress_info,long number_bytes)
