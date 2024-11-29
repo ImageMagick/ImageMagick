@@ -534,8 +534,8 @@ static MagickBooleanType ReadEXRTiledImage(exr_context_t ctxt,int part_index,
         result=exr_decoding_run(ctxt,part_index,&decoder);
       if (result != EXR_ERR_SUCCESS)
         break;
-      columns=(size_t)MagickMin(tile_width,image->columns-x);
-      rows=(size_t)MagickMin(tile_height,image->rows-y);
+      columns=MagickMin((size_t) tile_width,(size_t) image->columns-x);
+      rows=MagickMin((size_t) tile_height,(size_t) image->rows-y);
       pixel_count=columns*rows;
       q=QueueAuthenticPixels(image,x,y,columns,rows,exception);
       if (q == (Quantum *) NULL)
