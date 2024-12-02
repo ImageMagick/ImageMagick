@@ -2217,7 +2217,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
            jpeg_write_marker(jpeg_info,marker,GetStringInfoDatum(profile)+i,
              MagickMin((unsigned int) length-i,65533L));
       }
-    if ((LocaleCompare(name,"EXIF") == 0) && (length < 65533L))
+    if (LocaleCompare(name,"EXIF") == 0)
       {
         if (length > 65533L)
           (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
