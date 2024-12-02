@@ -2217,7 +2217,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
            jpeg_write_marker(jpeg_info,marker,GetStringInfoDatum(profile)+i,
              MagickMin((unsigned int) length-i,65533L));
       }
-    if (LocaleCompare(name,"EXIF") == 0)
+    else if (LocaleCompare(name,"EXIF") == 0)
       {
         if (length > 65533L)
           (void) ThrowMagickException(exception,GetMagickModule(),CoderWarning,
@@ -2226,7 +2226,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
           jpeg_write_marker(jpeg_info,APP_MARKER+1,GetStringInfoDatum(profile),
             (unsigned int) length);
       }
-    if (LocaleCompare(name,"ICC") == 0)
+    else if (LocaleCompare(name,"ICC") == 0)
       {
         unsigned char
           *p;
@@ -2247,7 +2247,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
             custom_profile),(unsigned int) (length+tag_length+3));
         }
       }
-    if (((LocaleCompare(name,"IPTC") == 0) ||
+    else if (((LocaleCompare(name,"IPTC") == 0) ||
         (LocaleCompare(name,"8BIM") == 0)) && (iptc == MagickFalse))
       {
         size_t
@@ -2283,7 +2283,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
             custom_profile),(unsigned int) (length+tag_length+roundup));
         }
       }
-    if (LocaleCompare(name,"XMP") == 0)
+    else if (LocaleCompare(name,"XMP") == 0)
       {
         StringInfo
           *xmp_profile;
