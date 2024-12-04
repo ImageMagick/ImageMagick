@@ -2535,10 +2535,10 @@ static MagickBooleanType WriteJPEGImage_(const ImageInfo *image_info,
       break;
     }
   }
+  jpeg_set_defaults(jpeg_info);
   option=GetImageOption(image_info,"jpeg:restart-interval");
   if (option != (const char *) NULL)
     jpeg_info->restart_interval=StringToInteger(option);
-  jpeg_set_defaults(jpeg_info);
   if (jpeg_info->in_color_space == JCS_CMYK)
     jpeg_set_colorspace(jpeg_info,JCS_YCCK);
   if (image->debug != MagickFalse)
