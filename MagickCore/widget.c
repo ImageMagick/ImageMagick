@@ -1171,7 +1171,8 @@ static void XEditText(Display *display,XWidgetInfo *text_info,
           q=text_info->text+Extent(text_info->text)+strlen(text);
           for (i=0; i <= Extent(text_info->cursor); i++)
           {
-            *q=(*(q-Extent(text)));
+            if ((q-Extent(text)) > text_info->text)
+              *q=(*(q-Extent(text)));
             q--;
           }
           p=text;
