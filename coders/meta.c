@@ -641,6 +641,9 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
     savedolen = 0L,
     outputlen = 0L;
 
+  MagickBooleanType
+    status;
+
   MagickOffsetType
     savedpos,
     currentpos;
@@ -656,6 +659,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
   newstr = name = token = (char *) NULL;
   savedpos = 0;
   token_info=AcquireTokenInfo();
+  status=MagickTrue;
   while (super_fgets_w(&line,&inputlen,ifile) != NULL)
   {
     state=0;
@@ -748,14 +752,23 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                     ssize_t diff = outputlen - savedolen;
                     currentpos = TellBlob(ofile);
                     if (currentpos < 0)
-                      return(-1);
+                      {
+                        status=MagickFalse;
+                        break;
+                      }
                     offset=SeekBlob(ofile,savedpos,SEEK_SET);
                     if (offset < 0)
-                      return(-1);
+                      {
+                        status=MagickFalse;
+                        break;
+                      }
                     (void) WriteBlobMSBLong(ofile,(unsigned int) diff);
                     offset=SeekBlob(ofile,currentpos,SEEK_SET);
                     if (offset < 0)
-                      return(-1);
+                      {
+                        status=MagickFalse;
+                        break;
+                      }
                     savedolen = 0L;
                   }
                 if (outputlen & 1)
@@ -799,7 +812,10 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
                     /* patch in a fake length for now and fix it later */
                     savedpos = TellBlob(ofile);
                     if (savedpos < 0)
-                      return(-1);
+                      {
+                        status=MagickFalse;
+                        break;
+                      }
                     (void) WriteBlobMSBLong(ofile,0xFFFFFFFFU);
                     outputlen += 4;
                     savedolen = outputlen;
@@ -829,6 +845,8 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
       newstr=DestroyString(newstr);
     if (name != (char *) NULL)
       name=DestroyString(name);
+    if (status == MagickFalse)
+      break;
   }
   token_info=DestroyTokenInfo(token_info);
   if (token != (char *) NULL)
@@ -857,7 +875,7 @@ static ssize_t parse8BIMW(Image *ifile, Image *ofile)
         return(-1);
       savedolen = 0L;
     }
-  return(outputlen);
+  return(status == MagickFalse ? -1 : outputlen);
 }
 
 /* some defines for the different JPEG block types */
