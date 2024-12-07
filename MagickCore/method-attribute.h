@@ -107,7 +107,11 @@ extern "C" {
 #else
 #  define magick_alloc_size(x)  /* nothing */
 #  define magick_alloc_sizes(x,y)  /* nothing */
-#  define magick_fallthrough /* nothing */
+#  if defined(_MSC_VER)
+#    define magick_fallthrough [[fallthrough]]
+#  else
+#    define magick_fallthrough  /* nothing */
+#  endif
 #endif
 
 #if defined(__clang__) || (defined(__GNUC__) && (__GNUC__) > 4)
