@@ -1881,7 +1881,8 @@ static void PatchCorruptProfile(const char *name,StringInfo *profile)
         }
       return;
     }
-  if (LocaleCompare(name,"exif") == 0)
+  if (((LocaleCompare(name, "exif") == 0) || (LocaleCompare(name, "app1") == 0)) &&
+      (GetStringInfoLength(profile) > 2))
     {
       /*
         Check if profile starts with byte order marker instead of Exif.
@@ -1982,18 +1983,27 @@ static MagickBooleanType SetImageProfileInternal(Image *image,const char *name,
     image->profiles=NewSplayTree(CompareSplayTreeString,RelinquishMagickMemory,
       DestroyProfile);
   (void) CopyMagickString(key,name,MagickPathExtent);
-  LocaleLower(key);
+  /*
+   * When an app1 profile starts with an exif header then store it as an exif
+   * profile instead. The PatchCorruptProfile method already ensures that the
+   * profile starts with exif instead of MM or II.
+   */
+  if ((length > 4) && (LocaleCompare(key,"app1") == 0) && 
+      (LocaleNCompare((const char *) GetStringInfoDatum(profile),"exif",4) == 0))
+    (void) CopyMagickString(key,"exif",MagickPathExtent);
+  else
+    LocaleLower(key);
   status=AddValueToSplayTree((SplayTreeInfo *) image->profiles,
     ConstantString(key),profile);
   if (status == MagickFalse)
     profile=DestroyStringInfo(profile);
   else
     {
-      if (LocaleCompare(name,"8bim") == 0)
+      if (LocaleCompare(key,"8bim") == 0)
         GetProfilesFromResourceBlock(image,profile,exception);
       else
         if (recursive == MagickFalse)
-          WriteTo8BimProfile(image,name,profile);
+          WriteTo8BimProfile(image,key,profile);
     }
   return(status);
 }

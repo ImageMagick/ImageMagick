@@ -770,31 +770,8 @@ static boolean ReadAPPProfiles(j_decompress_ptr jpeg_info)
         }
     }
   else
-    if (length > 4)
-      {
-        if ((LocaleNCompare((char *) p,"exif",4) == 0) ||
-            (LocaleNCompare((char *) p,"MM",2) == 0) ||
-            (LocaleNCompare((char *) p,"II",2) == 0))
-          {
-            /*
-              Extract EXIF profile.
-            */
-            profile=AcquireProfileStringInfo("exif",length,exception);
-            if (profile != (StringInfo*) NULL)
-              {
-                (void) memcpy(GetStringInfoDatum(profile),p,length);
-                status=SetImageProfilePrivate(image,profile,exception);
-              }
-            client_info->profiles[marker]=DestroyStringInfo(
-              client_info->profiles[marker]);
-          }
-        else
-          status=SetImageProfile(image,"app1",client_info->profiles[marker],
-            exception);
-      }
-    else
-      status=SetImageProfile(image,"app1",client_info->profiles[marker],
-        exception);
+    status=SetImageProfile(image,"app1",client_info->profiles[marker],
+      exception);
   return(status == MagickFalse ? FALSE : TRUE);
 }
 
