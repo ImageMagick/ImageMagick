@@ -841,6 +841,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bmp_info.blue_mask=ReadBlobLSBLong(image);
             if (bmp_info.compression == BI_ALPHABITFIELDS)
               bmp_info.alpha_mask=ReadBlobLSBLong(image);
+            if ((bmp_info.size == 40) ||
+                (bmp_info.compression == BI_ALPHABITFIELDS))
+              if ((bmp_info.bits_per_pixel != 16) &&
+                  (bmp_info.bits_per_pixel != 32))
+                ThrowReaderException(CorruptImageError,
+                  "UnsupportedBitsPerPixel");
           }
         if (bmp_info.size > 40)
           {
