@@ -1139,17 +1139,17 @@ static MagickBooleanType MagickCommandUsage(void)
     "       %s [ {option} | {image} ... ] -script {filename} [ {script_args} ...]\n",
     GetClientName());
   (void) FormatLocaleFile(stdout,"\nImage Settings:\n");
-  (void) FormatLocaleFile(stdout,"%s",settings);
+  (void) FormatLocaleFile(stdout,"%s\n",settings);
   (void) FormatLocaleFile(stdout,"\nImage Operators:\n");
-  (void) FormatLocaleFile(stdout,"%s",operators);
+  (void) FormatLocaleFile(stdout,"%s\n",operators);
   (void) FormatLocaleFile(stdout,"\nImage Channel Operators:\n");
-  (void) FormatLocaleFile(stdout,"%s",channel_operators);
+  (void) FormatLocaleFile(stdout,"%s\n",channel_operators);
   (void) FormatLocaleFile(stdout,"\nImage Sequence Operators:\n");
-  (void) FormatLocaleFile(stdout,"%s",sequence_operators);
+  (void) FormatLocaleFile(stdout,"%s\n",sequence_operators);
   (void) FormatLocaleFile(stdout,"\nImage Stack Operators:\n");
-  (void) FormatLocaleFile(stdout,"%s",stack_operators);
+  (void) FormatLocaleFile(stdout,"%s\n",stack_operators);
   (void) FormatLocaleFile(stdout,"\nMiscellaneous Options:\n");
-  (void) FormatLocaleFile(stdout,"%s",miscellaneous);
+  (void) FormatLocaleFile(stdout,"%s\n",miscellaneous);
   (void) FormatLocaleFile(stdout,
     "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) FormatLocaleFile(stdout,
