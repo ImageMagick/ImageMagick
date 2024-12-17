@@ -428,7 +428,7 @@ static double MagicKernelSharp2013(const double x,
   if (x < 0.5)
     return(0.625+1.75*(0.5-x)*(0.5+x));
   if (x < 1.5)
-    return((1.0-x)*(1.75-x));
+    return((1.5-x)*(1.75-x));
   if (x < 2.5)
     return(-0.125*(2.5-x)*(2.5-x));
   return(0.0);
