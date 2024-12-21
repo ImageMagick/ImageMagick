@@ -1341,8 +1341,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         TIFFClose(tiff);
         ThrowReaderException(CorruptImageError,"UnsupportedBitsPerPixel");
       }
-    tiff_status=TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
-      &sample_info,sans);
     if (samples_per_pixel > MaxPixelChannels)
       {
         TIFFClose(tiff);
@@ -1676,6 +1674,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
+    tiff_status=TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
+      &sample_info,sans);
     if (extra_samples == 0)
       {
         if ((samples_per_pixel == 4) && (photometric == PHOTOMETRIC_RGB))
