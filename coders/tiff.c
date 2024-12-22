@@ -379,6 +379,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  (void) SetMagickThreadValue(tiff_exception,exception);
   /*
     Write raw CCITT Group 4 wrapped as a TIFF image file.
   */
