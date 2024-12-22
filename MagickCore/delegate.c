@@ -97,7 +97,7 @@
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   #define qoute "&quot;"
 #else
-  #define qoute "&apos"
+  #define qoute "&apos;"
 #endif
 static const char
   *DelegateMap = (const char *)
