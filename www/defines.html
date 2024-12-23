@@ -5,6 +5,7 @@
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
 <head>
+  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Defines</title>
@@ -26,13 +27,11 @@
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="defines.html" rel="canonical" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
-  <link href="assets/magick.css" rel="stylesheet" />
-  <script src="assets/color-modes.js" ></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+  <link href="assets/bootstrap.min.css" rel="stylesheet" />
   <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
+  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
     <symbol id="check2" viewBox="0 0 16 16">
       <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
@@ -130,7 +129,7 @@
 <div class="col-lg-8 mx-auto p-4 py-md-5 text-body-secondary">
   <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
     <a href="../index.html" class="d-flex align-items-center text-decoration-none">
-      <h1 class="fs-4">Defines</h1>
+      <h1 class="mt-5 fs-3">Defines</h1>
     </a>
   </header>
 
@@ -1088,6 +1087,11 @@ use:</p>
   </tr>
 
   <tr>
+    <td>jpeg:restart-interval=<var>value</var></td>
+    <td>Set the restart interval to `interval` MCU blocks.</td>
+  </tr>
+
+  <tr>
     <td>jpeg:sampling-factor=<var>sampling-factor-string</var></td>
     <td> </td>
   </tr>
@@ -1540,18 +1544,9 @@ use:</p>
   </tr>
 
   <tr>
-    <td>uhdr:hdr-color-gamut=<var>{bt709|display_p3|bt2100}</var></td>
-    <td>Set input HDR intent color gamut. Used during encoding. Required.</td>
-  </tr>
-
-  <tr>
-    <td>uhdr:hdr-color-transfer=<var>{hlg|pq|linear}</var></td>
-    <td>Set input HDR intent color transfer. Used during encoding. Required.</td>
-  </tr>
-
-  <tr>
-    <td>uhdr:sdr-color-gamut=<var>{bt709|display_p3|bt2100}</var></td>
-    <td>Set input SDR intent color gamut. Used during encoding. Required.</td>
+    <td>uhdr:gainmap-gamma=<var>value</var></td>
+    <td>Set gainmap image encoding gamma. Must be greater than 0.0. Used during
+        encoding. Optional. Default value is 1.0.</td>
   </tr>
 
   <tr>
@@ -1560,22 +1555,6 @@ use:</p>
         with 1 indicating lowest image quality or highest compression and 100
         indicating best quality or least effective compression. Used during
         encoding. Optional. Default value is 95.</td>
-  </tr>
-
-  <tr>
-    <td>uhdr:gainmap-gamma=<var>value</var></td>
-    <td>Set gainmap image encoding gamma. Must be greater than 0.0. Used during
-        encoding. Optional. Default value is 1.0.</td>
-  </tr>
-
-  <tr>
-    <td>uhdr:gainmap-min-content-boost=<var>value</var></td>
-    <td>Specify the minimum allowed ratio of the linear luminance for the target
-        HDR rendition relative to (divided by) that of the SDR image, at a given
-        pixel. In other words, this specifies how much darker a pixel can get,
-        when shown on an HDR display, relative to the SDR rendition. Must be
-        greater than 0.0. Used during encoding. Optional. If not configured,
-        this is computed dynamically based on the input.</td>
   </tr>
 
   <tr>
@@ -1589,6 +1568,26 @@ use:</p>
   </tr>
 
   <tr>
+    <td>uhdr:gainmap-min-content-boost=<var>value</var></td>
+    <td>Specify the minimum allowed ratio of the linear luminance for the target
+        HDR rendition relative to (divided by) that of the SDR image, at a given
+        pixel. In other words, this specifies how much darker a pixel can get,
+        when shown on an HDR display, relative to the SDR rendition. Must be
+        greater than 0.0. Used during encoding. Optional. If not configured,
+        this is computed dynamically based on the input.</td>
+  </tr>
+
+  <tr>
+    <td>uhdr:hdr-color-gamut=<var>{bt709|display_p3|bt2100}</var></td>
+    <td>Set input HDR intent color gamut. Used during encoding. Required.</td>
+  </tr>
+
+  <tr>
+    <td>uhdr:hdr-color-transfer=<var>{hlg|pq|linear}</var></td>
+    <td>Set input HDR intent color transfer. Used during encoding. Required.</td>
+  </tr>
+
+  <tr>
     <td>uhdr:output-color-transfer=<var>{hlg|pq|linear|srgb}</var></td>
     <td>Set the target display transfer characteristics on which the
         ultrahdr image is rendered. Used during decoding. Required.
@@ -1597,6 +1596,16 @@ use:</p>
         hdr image and sent as output.</td>
   </tr>
   
+  <tr>
+    <td>uhdr:sdr-color-gamut=<var>{bt709|display_p3|bt2100}</var></td>
+    <td>Set input SDR intent color gamut. Used during encoding. Required.</td>
+  </tr>
+
+  <tr>
+    <td>uhdr:uhdr:target-display-peak-brightness=<var>value</var></td>
+    <td>Peak brightness refers to the maximum brightness level that a display can achieve.  This is important for accurately representing bright highlights in HDR content.</td>
+  </tr>
+
   <tr>
     <td>video:intermediate-format=<var>{pam,webp}</var></td>
     <td>Set the video intermediate format option of <samp>ffmpeg</samp>.</td>
@@ -1861,7 +1870,6 @@ use:</p>
 </div>
 
   <!-- Javascript assets -->
-  <script src="assets/magick.js" ></script>
+  <script src="assets/bootstrap.bundle.min.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 3rd November 2024 17:14 -->

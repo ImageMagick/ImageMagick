@@ -5,6 +5,7 @@
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
 <head>
+  <script src="assets/color-modes.js" ></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ImageMagick – Advanced Linux Source Installation</title>
@@ -26,13 +27,11 @@
   <link type="images/png" sizes="64x64" href="../images/wand.png" rel="icon" />
   <link type="images/icon" sizes="16x16" href="../images/wand.ico" rel="shortcut icon" />
   <link href="advanced-linux-installation.html" rel="canonical" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
-  <link href="assets/magick.css" rel="stylesheet" />
-  <script src="assets/color-modes.js" ></script>
-  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
+  <link href="assets/bootstrap.min.css" rel="stylesheet" />
   <script async src="https://localhost/cse.js?cx=006134137889097767902:turn9fku95u"> </script>
 </head>
 <body>
+  <script async src="https://localhost/pagead/js/adsbygoogle.js?client=ca-pub-3129977114552745" crossorigin="anonymous"></script>
   <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
     <symbol id="check2" viewBox="0 0 16 16">
       <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
@@ -130,7 +129,7 @@
 <div class="col-lg-8 mx-auto p-4 py-md-5 text-body-secondary">
   <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
     <a href="../index.html" class="d-flex align-items-center text-decoration-none">
-      <h1 class="fs-4">Advanced Linux Source Installation</h1>
+      <h1 class="mt-5 fs-3">Advanced Linux Source Installation</h1>
     </a>
   </header>
 
@@ -155,7 +154,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-39</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-43</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure</span></code></pre></ul>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -587,7 +586,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms </samp></pre>
 
 	  <p><a href="download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="../archive/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar xvzf ImageMagick-7.1.1-39.tar.gz</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-39</span></code></pre></ul>	  <p>Configure ImageMagick:</p>
+		<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar xvzf ImageMagick-7.1.1-43.tar.gz</span><span class='crtout'></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-43</span></code></pre></ul>	  <p>Configure ImageMagick:</p>
 <pre class="p-3 mb-2 text-body-secondary bg-body-tertiary"><samp>./configure --prefix=/opt --with-quantum-depth=16 \
   --disable-dependency-tracking --with-x=yes \
   --x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \
@@ -609,7 +608,7 @@ sudo port -v install graphviz +gs +wmf +jbig +jpeg2 +lcms </samp></pre>
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="../index.html">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar jxvf ImageMagick-7.1.1-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-39</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>sudo make install</span></code></pre></ul>
+<ul><pre class="bg-light text-dark"><code><span class="crtprompt"><br/>$ </span><span class='crtin'>tar jxvf ImageMagick-7.1.1-?.tar.bz2</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>cd ImageMagick-7.1.1-43</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>make</span><span class='crtout'><br/></span><span class="crtprompt"><br/>$ </span><span class='crtin'>sudo make install</span></code></pre></ul>
 <h2><a class="anchor" id="problems"></a>Dealing with Unexpected Problems</h2>
 
 <p>Chances are the download, configure, build, and install of ImageMagick went flawlessly as it is intended, however, certain systems and environments may cause one or more steps to fail.  We discuss a few problems we've run across and how to take corrective action to ensure you have a working release of ImageMagick</p>
@@ -674,7 +673,6 @@ no encode delegate for this image format </samp></pre>
 </div>
 
   <!-- Javascript assets -->
-  <script src="assets/magick.js" ></script>
+  <script src="assets/bootstrap.bundle.min.js" ></script>
   </body>
 </html>
-<!-- Magick Cache 3rd November 2024 17:13 -->
