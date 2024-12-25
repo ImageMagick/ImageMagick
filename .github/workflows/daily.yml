@@ -100,7 +100,7 @@ jobs:
         CFLAGS: ${{ matrix.compiler_flags }}
         CXXFLAGS: ${{ matrix.compiler_flags }}
       run: |
-        ./configure --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
+        ./configure --with-perl --with-quantum-depth=${{matrix.quantum}} --enable-hdri=${{matrix.hdri}} --${{matrix.modules}}
 
     - name: Build ImageMagick
       run: |
