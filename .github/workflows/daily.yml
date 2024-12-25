@@ -104,13 +104,18 @@ jobs:
 
     - name: Build ImageMagick
       run: |
-        make
+        make install
 
     - name: Test ImageMagick
       run: |
         make check || exit_code=$?
         if [ "$exit_code" != "0" ] ; then cat ./test-suite.log ; fi
         exit $exit_code
+
+    - name: Test PerlMagick
+      run: |
+        cd PerlMagick
+        make test TEST_VERBOSE=1
 
   build_windows:
     name: 'Windows Q${{matrix.quantum}}-${{matrix.platform}} hdri=${{matrix.hdri}} (${{matrix.buildType}})'
