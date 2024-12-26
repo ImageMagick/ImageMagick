@@ -15,7 +15,7 @@ name: release
 jobs:
   create_app_image:
     name: Create AppImage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container:
       image: ubuntu:20.04
 
@@ -252,7 +252,7 @@ jobs:
     needs:
       - create_app_image
       - create_msix
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: write

@@ -17,7 +17,7 @@ name: daily
 jobs:
   change_log:
     name: 'Create ChangeLog.md'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout
@@ -46,7 +46,7 @@ jobs:
     name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}}) (${{ matrix.compiler }})'
     container:
       image: ubuntu:20.04
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false

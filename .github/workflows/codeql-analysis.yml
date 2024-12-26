@@ -7,7 +7,7 @@ name: codeql analysis
 jobs:
   scan_linux:
     name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}})'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       security-events: write
