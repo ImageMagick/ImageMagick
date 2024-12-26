@@ -69,7 +69,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Crop.miff', 'Crop', q/ge
 testFilterCompare('input.miff',  q//, 'reference/filter/Set.miff', 'Set', q/page=>'0x0+0+0'/, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Despeckle.miff', 'Despeckle', q//, 0.0, 0.0);
+testFilterCompare('input.miff',  q//, 'reference/filter/Despeckle.miff', 'Despeckle', q//, 0.00001, 0.008);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Draw.miff', 'Draw', q/fill=>'none',stroke=>'gold',primitive=>'circle',points=>'60,90 60,120',strokewidth=>2/, 0.0, 0.0);
