@@ -2,6 +2,11 @@ on:
   workflow_dispatch:
   schedule:
   - cron: 0 6 * * *
+  push:
+    branches:
+    - main
+    paths:
+    - '.github/workflows/codeql-analysis.yml'
 
 name: codeql analysis
 jobs:
@@ -23,6 +28,13 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 2
+
+    - name: Install dependencies
+      run: |
+        set -e
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get update -y
+        apt-get install -y libltdl-dev
 
     - name: Configure ImageMagick
       run: |
