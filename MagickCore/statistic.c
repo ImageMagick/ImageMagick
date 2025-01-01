@@ -1854,7 +1854,6 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
     *image_view;
 
   MagickBooleanType
-    initialize,
     status;
 
   ssize_t
@@ -1865,22 +1864,18 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  initialize=MagickTrue;
-  *maxima=0.0;
-  *minima=0.0;
+  *maxima=MagickMinimumValue;
+  *minima=MagickMaximumValue;
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status,initialize) \
+  #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     double
-      row_maxima = 0.0,
-      row_minima = 0.0;
-
-    MagickBooleanType
-      row_initialize;
+      row_maxima = MagickMinimumValue,
+      row_minima = MagickMaximumValue;
 
     const Quantum
       *magick_restrict p;
@@ -1896,7 +1891,8 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         status=MagickFalse;
         continue;
       }
-    row_initialize=MagickTrue;
+    row_maxima=(double) p[0];
+    row_minima=(double) p[0];
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -1910,39 +1906,21 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
           continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-				if (row_initialize != MagickFalse)
-          {
-            row_minima=(double) p[i];
-            row_maxima=(double) p[i];
-            row_initialize=MagickFalse;
-          }
-        else
-          {
-            if ((double) p[i] < row_minima)
-              row_minima=(double) p[i];
-            if ((double) p[i] > row_maxima)
-              row_maxima=(double) p[i];
-         }
+        if ((double) p[i] < row_minima)
+          row_minima=(double) p[i];
+        if ((double) p[i] > row_maxima)
+          row_maxima=(double) p[i];
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp critical (MagickCore_GetImageRange)
+    #pragma omp critical (MagickCore_GetImageRange)
 #endif
     {
-      if (initialize != MagickFalse)
-        {
-          *minima=row_minima;
-          *maxima=row_maxima;
-          initialize=MagickFalse;
-        }
-      else
-        {
-          if (row_minima < *minima)
-            *minima=row_minima;
-          if (row_maxima > *maxima)
-            *maxima=row_maxima;
-        }
+      if (row_minima < *minima)
+        *minima=row_minima;
+      if (row_maxima > *maxima)
+        *maxima=row_maxima;
     }
   }
   image_view=DestroyCacheView(image_view);
