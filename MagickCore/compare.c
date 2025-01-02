@@ -2825,7 +2825,6 @@ static Image *MSESimilarityImage(const Image *image,const Image *reference,
 
   /*
     Accelerated MSE correlation-based image similary using FFT local statistics.
-    Contributed by Fred Weinhaus.
   */
   square_image=SIMSquareImage(image,exception);
   if (square_image == (Image *) NULL)
@@ -2840,7 +2839,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reference,
   square_image=DestroyImage(square_image);
   if (mse_image == (Image *) NULL)
     ThrowMSESIMException();
-  status=SIMMultiplyImage(mse_image,1.0/reference->columns/(double)
+  status=SIMMultiplyImage(mse_image,1.0*QuantumRange/reference->columns/(double)
     reference->rows,(const ChannelStatistics *) NULL,exception);
   if (status == MagickFalse)
     ThrowMSESIMException();
@@ -2856,8 +2855,8 @@ static Image *MSESimilarityImage(const Image *image,const Image *reference,
   unity_image=DestroyImage(unity_image);
   if (gamma_image == (Image *) NULL)
     ThrowMSESIMException();
-  status=SIMMultiplyImage(gamma_image,-2.0/reference->columns/(double)
-    reference->rows,(const ChannelStatistics *) NULL,exception);
+  status=SIMMultiplyImage(gamma_image,-2.0*QuantumRange/reference->columns/
+    (double) reference->rows,(const ChannelStatistics *) NULL,exception);
   if (status == MagickFalse)
     ThrowMSESIMException();
   /*
@@ -2866,7 +2865,8 @@ static Image *MSESimilarityImage(const Image *image,const Image *reference,
   channel_statistics=GetImageStatistics(reference,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
     ThrowMSESIMException();
-  status=SIMMultiplyImage(gamma_image,1.0,channel_statistics,exception);
+  status=SIMMultiplyImage(gamma_image,QuantumRange,channel_statistics,
+    exception);
   if (status == MagickFalse)
     ThrowMSESIMException();
   normalize_image=SIMSubtractImageMean(image,reference,channel_statistics,
@@ -2980,8 +2980,8 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reference,
   square_image=DestroyImage(square_image);
   if (ncc_image == (Image *) NULL)
     ThrowNCCSIMException();
-  status=SIMMultiplyImage(ncc_image,(double) reference->columns*reference->rows,
-    (const ChannelStatistics *) NULL,exception);
+  status=SIMMultiplyImage(ncc_image,(double) QuantumRange*reference->columns*
+    reference->rows,(const ChannelStatistics *) NULL,exception);
   if (status == MagickFalse)
     ThrowNCCSIMException();
   /*
@@ -2993,8 +2993,8 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reference,
     ThrowNCCSIMException();
   square_image=SIMSquareImage(gamma_image,exception);
   gamma_image=DestroyImage(gamma_image);
-  status=SIMMultiplyImage(square_image,1.0,(const ChannelStatistics *) NULL,
-    exception);
+  status=SIMMultiplyImage(square_image,(double) QuantumRange,
+    (const ChannelStatistics *) NULL,exception);
   if (status == MagickFalse)
     ThrowNCCSIMException();
   /*
@@ -3057,6 +3057,289 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reference,
     }
   *similarity_metric=1.0-QuantumScale*maxima;
   DestroyNCCSIMResources();
+  return(correlation_image);
+}
+
+static Image *RMSESimilarityImage(const Image *image,const Image *reference,
+  RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
+{
+#define DestroyRMSESIMResources() \
+{ \
+  if (channel_statistics != (ChannelStatistics *) NULL) \
+    channel_statistics=(ChannelStatistics *) \
+      RelinquishMagickMemory(channel_statistics); \
+  if (beta_image != (Image *) NULL) \
+    beta_image=DestroyImage(beta_image); \
+  if (gamma_image != (Image *) NULL) \
+    gamma_image=DestroyImage(gamma_image); \
+  if (rmse_image != (Image *) NULL) \
+    rmse_image=DestroyImage(rmse_image); \
+  if (normalize_image != (Image *) NULL) \
+    normalize_image=DestroyImage(normalize_image); \
+  if (square_image != (Image *) NULL) \
+    square_image=DestroyImage(square_image); \
+  if (unity_image != (Image *) NULL) \
+    unity_image=DestroyImage(unity_image); \
+}
+#define ThrowRMSESIMException() \
+{ \
+  DestroyRMSESIMResources() \
+  return((Image *) NULL); \
+}
+
+  ChannelStatistics
+    *channel_statistics = (ChannelStatistics *) NULL;
+
+  double
+    minima = 0.0;
+
+  Image
+    *beta_image = (Image *) NULL,
+    *correlation_image = (Image *) NULL,
+    *gamma_image = (Image *) NULL,
+    *rmse_image = (Image *) NULL,
+    *normalize_image = (Image *) NULL,
+    *square_image = (Image *) NULL,
+    *unity_image = (Image *) NULL;
+
+  MagickBooleanType
+    status;
+
+  RectangleInfo
+    geometry;
+
+  /*
+    Accelerated RMSE correlation-based image similary using FFT local
+    statistics.
+  */
+  square_image=SIMSquareImage(image,exception);
+  if (square_image == (Image *) NULL)
+    ThrowRMSESIMException();
+  unity_image=SIMUnityImage(image,reference,exception);
+  if (unity_image == (Image *) NULL)
+    ThrowRMSESIMException();
+  /*
+    Compute the cross correlation of the square and unity images.
+  */
+  rmse_image=SIMCrossCorrelationImage(square_image,unity_image,exception);
+  square_image=DestroyImage(square_image);
+  if (rmse_image == (Image *) NULL)
+    ThrowRMSESIMException();
+  status=SIMMultiplyImage(rmse_image,1.0*QuantumRange/reference->columns/
+    (double) reference->rows,(const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowRMSESIMException();
+  /*
+    Compute the cross correlation of the refererence and square images.
+  */
+  (void) CompositeImage(unity_image,reference,CopyCompositeOp,MagickTrue,0,0,
+    exception);
+  square_image=SIMSquareImage(image,exception);
+  if (square_image == (Image *) NULL)
+    ThrowRMSESIMException();
+  gamma_image=SIMCrossCorrelationImage(square_image,unity_image,exception);
+  unity_image=DestroyImage(unity_image);
+  if (gamma_image == (Image *) NULL)
+    ThrowRMSESIMException();
+  status=SIMMultiplyImage(gamma_image,-2.0*QuantumRange/reference->columns/
+    (double) reference->rows,(const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowRMSESIMException();
+  /*
+    Subtract the image mean.
+  */
+  channel_statistics=GetImageStatistics(reference,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    ThrowRMSESIMException();
+  status=SIMMultiplyImage(gamma_image,QuantumRange,channel_statistics,
+    exception);
+  if (status == MagickFalse)
+    ThrowRMSESIMException();
+  normalize_image=SIMSubtractImageMean(image,reference,channel_statistics,
+    exception);
+  if (normalize_image == (Image *) NULL)
+    ThrowRMSESIMException();
+  rmse_image=SIMCrossCorrelationImage(image,normalize_image,exception);
+  normalize_image=DestroyImage(normalize_image);
+  if (rmse_image == (Image *) NULL)
+    ThrowRMSESIMException();
+  /*
+    Divide the two images.
+  */
+  beta_image=SIMDivideImage(rmse_image,gamma_image,exception);
+  rmse_image=DestroyImage(rmse_image);
+  gamma_image=DestroyImage(gamma_image);
+  if (beta_image == (Image *) NULL)
+    ThrowRMSESIMException();
+  (void) ResetImagePage(beta_image,"0x0+0+0");
+  SetGeometry(image,&geometry);
+  geometry.width=image->columns-reference->columns;
+  geometry.height=image->rows-reference->rows;
+  /*
+    Crop padding.
+  */
+  correlation_image=CropImage(beta_image,&geometry,exception);
+  beta_image=DestroyImage(beta_image);
+  if (correlation_image == (Image *) NULL)
+    ThrowRMSESIMException();
+  (void) ResetImagePage(correlation_image,"0x0+0+0");
+  /*
+    Identify the minima value in the image and its location.
+  */
+  status=GrayscaleImage(correlation_image,AveragePixelIntensityMethod,
+    exception);
+  if (status == MagickFalse)
+    ThrowRMSESIMException();
+  status=SIMMinimaImage(correlation_image,&minima,offset,exception);
+  if (status == MagickFalse)
+    {
+      correlation_image=DestroyImage(correlation_image);
+      ThrowRMSESIMException();
+    }
+  *similarity_metric=sqrt(QuantumScale*minima);
+  DestroyRMSESIMResources();
+  return(correlation_image);
+}
+
+static Image *PSNRSimilarityImage(const Image *image,const Image *reference,
+  RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
+{
+#define DestroyPSNRSIMResources() \
+{ \
+  if (channel_statistics != (ChannelStatistics *) NULL) \
+    channel_statistics=(ChannelStatistics *) \
+      RelinquishMagickMemory(channel_statistics); \
+  if (beta_image != (Image *) NULL) \
+    beta_image=DestroyImage(beta_image); \
+  if (gamma_image != (Image *) NULL) \
+    gamma_image=DestroyImage(gamma_image); \
+  if (psnr_image != (Image *) NULL) \
+    psnr_image=DestroyImage(psnr_image); \
+  if (normalize_image != (Image *) NULL) \
+    normalize_image=DestroyImage(normalize_image); \
+  if (square_image != (Image *) NULL) \
+    square_image=DestroyImage(square_image); \
+  if (unity_image != (Image *) NULL) \
+    unity_image=DestroyImage(unity_image); \
+}
+#define ThrowPSNRSIMException() \
+{ \
+  DestroyPSNRSIMResources() \
+  return((Image *) NULL); \
+}
+
+  ChannelStatistics
+    *channel_statistics = (ChannelStatistics *) NULL;
+
+  double
+    minima = 0.0;
+
+  Image
+    *beta_image = (Image *) NULL,
+    *correlation_image = (Image *) NULL,
+    *gamma_image = (Image *) NULL,
+    *psnr_image = (Image *) NULL,
+    *normalize_image = (Image *) NULL,
+    *square_image = (Image *) NULL,
+    *unity_image = (Image *) NULL;
+
+  MagickBooleanType
+    status;
+
+  RectangleInfo
+    geometry;
+
+  /*
+    Accelerated PSNR correlation-based image similary using FFT local
+    statistics.
+  */
+  square_image=SIMSquareImage(image,exception);
+  if (square_image == (Image *) NULL)
+    ThrowPSNRSIMException();
+  unity_image=SIMUnityImage(image,reference,exception);
+  if (unity_image == (Image *) NULL)
+    ThrowPSNRSIMException();
+  /*
+    Compute the cross correlation of the square and unity images.
+  */
+  psnr_image=SIMCrossCorrelationImage(square_image,unity_image,exception);
+  square_image=DestroyImage(square_image);
+  if (psnr_image == (Image *) NULL)
+    ThrowPSNRSIMException();
+  status=SIMMultiplyImage(psnr_image,1.0*QuantumRange/reference->columns/
+    (double) reference->rows,(const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowPSNRSIMException();
+  /*
+    Compute the cross correlation of the refererence and square images.
+  */
+  (void) CompositeImage(unity_image,reference,CopyCompositeOp,MagickTrue,0,0,
+    exception);
+  square_image=SIMSquareImage(image,exception);
+  if (square_image == (Image *) NULL)
+    ThrowPSNRSIMException();
+  gamma_image=SIMCrossCorrelationImage(square_image,unity_image,exception);
+  unity_image=DestroyImage(unity_image);
+  if (gamma_image == (Image *) NULL)
+    ThrowPSNRSIMException();
+  status=SIMMultiplyImage(gamma_image,-2.0*QuantumRange/reference->columns/
+    (double) reference->rows,(const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowPSNRSIMException();
+  /*
+    Subtract the image mean.
+  */
+  channel_statistics=GetImageStatistics(reference,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    ThrowPSNRSIMException();
+  status=SIMMultiplyImage(gamma_image,QuantumRange,channel_statistics,
+    exception);
+  if (status == MagickFalse)
+    ThrowPSNRSIMException();
+  normalize_image=SIMSubtractImageMean(image,reference,channel_statistics,
+    exception);
+  if (normalize_image == (Image *) NULL)
+    ThrowPSNRSIMException();
+  psnr_image=SIMCrossCorrelationImage(image,normalize_image,exception);
+  normalize_image=DestroyImage(normalize_image);
+  if (psnr_image == (Image *) NULL)
+    ThrowPSNRSIMException();
+  /*
+    Divide the two images.
+  */
+  beta_image=SIMDivideImage(psnr_image,gamma_image,exception);
+  psnr_image=DestroyImage(psnr_image);
+  gamma_image=DestroyImage(gamma_image);
+  if (beta_image == (Image *) NULL)
+    ThrowPSNRSIMException();
+  (void) ResetImagePage(beta_image,"0x0+0+0");
+  SetGeometry(image,&geometry);
+  geometry.width=image->columns-reference->columns;
+  geometry.height=image->rows-reference->rows;
+  /*
+    Crop padding.
+  */
+  correlation_image=CropImage(beta_image,&geometry,exception);
+  beta_image=DestroyImage(beta_image);
+  if (correlation_image == (Image *) NULL)
+    ThrowPSNRSIMException();
+  (void) ResetImagePage(correlation_image,"0x0+0+0");
+  /*
+    Identify the minima value in the image and its location.
+  */
+  status=GrayscaleImage(correlation_image,AveragePixelIntensityMethod,
+    exception);
+  if (status == MagickFalse)
+    ThrowPSNRSIMException();
+  status=SIMMinimaImage(correlation_image,&minima,offset,exception);
+  if (status == MagickFalse)
+    {
+      correlation_image=DestroyImage(correlation_image);
+      ThrowPSNRSIMException();
+    }
+  *similarity_metric=20.0*log((double) QuantumRange)*10.0*
+    log(QuantumScale*minima);
+  DestroyPSNRSIMResources();
   return(correlation_image);
 }
 #endif
@@ -3124,19 +3407,33 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
   *similarity_metric=MagickMaximumValue;
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
   if ((image->channels & ReadMaskChannel) == 0)
+    switch (metric)
     {
-      if (metric == NormalizedCrossCorrelationErrorMetric)
-        {
-          similarity_image=NCCSimilarityImage(image,reference,offset,
-            similarity_metric,exception);
-          return(similarity_image);
-        }
-      if (metric == MeanSquaredErrorMetric)
-        {
-          similarity_image=MSESimilarityImage(image,reference,offset,
-            similarity_metric,exception);
-          return(similarity_image);
-        }
+      case NormalizedCrossCorrelationErrorMetric:
+      {
+        similarity_image=NCCSimilarityImage(image,reference,offset,
+          similarity_metric,exception);
+        return(similarity_image);
+      }
+      case MeanSquaredErrorMetric:
+      {
+        similarity_image=MSESimilarityImage(image,reference,offset,
+          similarity_metric,exception);
+        return(similarity_image);
+      }
+      case RootMeanSquaredErrorMetric:
+      {
+        similarity_image=RMSESimilarityImage(image,reference,offset,
+          similarity_metric,exception);
+        return(similarity_image);
+      }
+      case PeakSignalToNoiseRatioErrorMetric:
+      {
+        similarity_image=PSNRSimilarityImage(image,reference,offset,
+          similarity_metric,exception);
+        return(similarity_image);
+      }
+      default: break;
     }
 #endif
   if ((image->columns >= reference->columns) &&
