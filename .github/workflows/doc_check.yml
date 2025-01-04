@@ -1,0 +1,33 @@
+name: Doxygen Documentation Check for Magick++
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  #schedule: # Weekly cron job
+  #  - cron: "0 0 * * 0"
+
+jobs:
+  doxygen-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+
+    - name: Install Doxygen
+      run: sudo apt-get install -y doxygen
+
+    - name: Compare documentation
+      run: |
+        cd config && doxygen test &> /dev/null
+        cd .. && diff -rq www/api/ docs-test/  > diff.log || true
+        if [ -s diff.log ]; then
+          echo "Documentation is outdated. Please update!"
+          cat diff.log
+          exit 1
+        else
+          echo "Documentation is up to date."
+        fi
