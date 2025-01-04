@@ -3059,6 +3059,151 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reference,
   DestroyNCCSIMResources();
   return(correlation_image);
 }
+
+static Image *PhaseSimilarityImage(const Image *image,const Image *reference,
+  RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
+{
+#define DestroyPhaseSIMResources() \
+{ \
+  if (channel_statistics != (ChannelStatistics *) NULL) \
+    channel_statistics=(ChannelStatistics *) \
+      RelinquishMagickMemory(channel_statistics); \
+  if (beta_image != (Image *) NULL) \
+    beta_image=DestroyImage(beta_image); \
+  if (gamma_image != (Image *) NULL) \
+    gamma_image=DestroyImage(gamma_image); \
+  if (phase_image != (Image *) NULL) \
+    phase_image=DestroyImage(phase_image); \
+  if (normalize_image != (Image *) NULL) \
+    normalize_image=DestroyImage(normalize_image); \
+  if (square_image != (Image *) NULL) \
+    square_image=DestroyImage(square_image); \
+  if (unity_image != (Image *) NULL) \
+    unity_image=DestroyImage(unity_image); \
+}
+#define ThrowPhaseSIMException() \
+{ \
+  DestroyPhaseSIMResources() \
+  return((Image *) NULL); \
+}
+
+  ChannelStatistics
+    *channel_statistics = (ChannelStatistics *) NULL;
+
+  double
+    maxima = 0.0;
+
+  Image
+    *beta_image = (Image *) NULL,
+    *correlation_image = (Image *) NULL,
+    *gamma_image = (Image *) NULL,
+    *phase_image = (Image *) NULL,
+    *normalize_image = (Image *) NULL,
+    *square_image = (Image *) NULL,
+    *unity_image = (Image *) NULL;
+
+  MagickBooleanType
+    status;
+
+  RectangleInfo
+    geometry;
+
+  /*
+    Accelerated Phase correlation-based image similary using FFT local statistics.
+    Contributed by Fred Weinhaus.
+  */
+  square_image=SIMSquareImage(image,exception);
+  if (square_image == (Image *) NULL)
+    ThrowPhaseSIMException();
+  unity_image=SIMUnityImage(image,reference,exception);
+  if (unity_image == (Image *) NULL)
+    ThrowPhaseSIMException();
+  /*
+    Compute the cross correlation of the square and unity images.
+  */
+  phase_image=SIMCrossCorrelationImage(square_image,unity_image,exception);
+  square_image=DestroyImage(square_image);
+  if (phase_image == (Image *) NULL)
+    ThrowPhaseSIMException();
+  status=SIMMultiplyImage(phase_image,(double) QuantumRange*reference->columns*
+    reference->rows,(const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowPhaseSIMException();
+  /*
+    Compute the cross correlation of the source and unity images.
+  */
+  gamma_image=SIMCrossCorrelationImage(image,unity_image,exception);
+  unity_image=DestroyImage(unity_image);
+  if (gamma_image == (Image *) NULL)
+    ThrowPhaseSIMException();
+  square_image=SIMSquareImage(gamma_image,exception);
+  gamma_image=DestroyImage(gamma_image);
+  status=SIMMultiplyImage(square_image,(double) QuantumRange,
+    (const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowPhaseSIMException();
+  /*
+    Compute the variance of the two images.
+  */
+  gamma_image=SIMVarianceImage(phase_image,square_image,exception);
+  square_image=DestroyImage(square_image);
+  phase_image=DestroyImage(phase_image);
+  if (gamma_image == (Image *) NULL)
+    ThrowPhaseSIMException();
+  /*
+    Subtract the image mean.
+  */
+  channel_statistics=GetImageStatistics(reference,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    ThrowPhaseSIMException();
+  status=SIMMultiplyImage(gamma_image,1.0,channel_statistics,exception);
+  if (status == MagickFalse)
+    ThrowPhaseSIMException();
+  normalize_image=SIMSubtractImageMean(image,reference,channel_statistics,
+    exception);
+  if (normalize_image == (Image *) NULL)
+    ThrowPhaseSIMException();
+  phase_image=SIMCrossCorrelationImage(image,normalize_image,exception);
+  normalize_image=DestroyImage(normalize_image);
+  if (phase_image == (Image *) NULL)
+    ThrowPhaseSIMException();
+  /*
+    Divide the two images.
+  */
+  beta_image=SIMDivideImage(phase_image,gamma_image,exception);
+  phase_image=DestroyImage(phase_image);
+  gamma_image=DestroyImage(gamma_image);
+  if (beta_image == (Image *) NULL)
+    ThrowPhaseSIMException();
+  (void) ResetImagePage(beta_image,"0x0+0+0");
+  SetGeometry(image,&geometry);
+  geometry.width=image->columns-reference->columns;
+  geometry.height=image->rows-reference->rows;
+  /*
+    Crop padding.
+  */
+  correlation_image=CropImage(beta_image,&geometry,exception);
+  beta_image=DestroyImage(beta_image);
+  if (correlation_image == (Image *) NULL)
+    ThrowPhaseSIMException();
+  (void) ResetImagePage(correlation_image,"0x0+0+0");
+  /*
+    Identify the maxima value in the image and its location.
+  */
+  status=GrayscaleImage(correlation_image,AveragePixelIntensityMethod,
+    exception);
+  if (status == MagickFalse)
+    ThrowPhaseSIMException();
+  status=SIMMaximaImage(correlation_image,&maxima,offset,exception);
+  if (status == MagickFalse)
+    {
+      correlation_image=DestroyImage(correlation_image);
+      ThrowPhaseSIMException();
+    }
+  *similarity_metric=1.0-QuantumScale*maxima;
+  DestroyPhaseSIMResources();
+  return(correlation_image);
+}
 #endif
 
 static double GetSimilarityMetric(const Image *image,const Image *reference,
@@ -3138,13 +3283,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
           similarity_metric,exception);
         return(similarity_image);
       }
-      case RootMeanSquaredErrorMetric:
-      {
-        similarity_image=MSESimilarityImage(image,reference,offset,
-          similarity_metric,exception);
-        *similarity_metric=sqrt(*similarity_metric);
-        return(similarity_image);
-      }
       case PeakSignalToNoiseRatioErrorMetric:
       {
         similarity_image=MSESimilarityImage(image,reference,offset,
@@ -3152,8 +3290,29 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reference,
         *similarity_metric=0.0*MagickLog10(*similarity_metric);
         return(similarity_image);
       }
+      case PhaseCorrelationErrorMetric:
+      {
+        similarity_image=PhaseSimilarityImage(image,reference,offset,
+          similarity_metric,exception);
+        return(similarity_image);
+      }
+      case RootMeanSquaredErrorMetric:
+      {
+        similarity_image=MSESimilarityImage(image,reference,offset,
+          similarity_metric,exception);
+        *similarity_metric=sqrt(*similarity_metric);
+        return(similarity_image);
+      }
       default: break;
     }
+#else
+    if (metric == PhaseCorrelationErrorMetric)
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
+          "'%s' (HDRI, FFT)",image->filename);
+        return((Image *) NULL);
+      }
 #endif
   if ((image->columns >= reference->columns) &&
       (image->rows >= reference->rows))

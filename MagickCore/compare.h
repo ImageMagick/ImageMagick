@@ -38,7 +38,8 @@ typedef enum
   PerceptualHashErrorMetric,
   RootMeanSquaredErrorMetric,
   StructuralSimilarityErrorMetric,
-  StructuralDissimilarityErrorMetric
+  StructuralDissimilarityErrorMetric,
+  PhaseCorrelationErrorMetric
 } MetricType;
 
 extern MagickExport double

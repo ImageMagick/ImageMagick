@@ -1267,6 +1267,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case AbsoluteErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
             case PerceptualHashErrorMetric:
+            case PhaseCorrelationErrorMetric:
             case StructuralSimilarityErrorMetric:
             case StructuralDissimilarityErrorMetric:
             {
@@ -1390,6 +1391,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioErrorMetric:
             case PerceptualHashErrorMetric:
+            case PhaseCorrelationErrorMetric:
             case StructuralSimilarityErrorMetric:
             case StructuralDissimilarityErrorMetric:
             {
