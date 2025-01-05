@@ -1246,7 +1246,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case MeanAbsoluteErrorMetric:
             case MeanSquaredErrorMetric:
             case PeakAbsoluteErrorMetric:
-            case PhaseCorrelationErrorMetric:
             case RootMeanSquaredErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
@@ -1263,6 +1262,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case AbsoluteErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
             case PerceptualHashErrorMetric:
+            case PhaseCorrelationErrorMetric:
             case StructuralSimilarityErrorMetric:
             case StructuralDissimilarityErrorMetric:
             {
