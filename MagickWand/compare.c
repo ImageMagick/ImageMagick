@@ -1243,6 +1243,12 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           switch (metric)
           {
             case FuzzErrorMetric:
+            case AbsoluteErrorMetric:
+            case NormalizedCrossCorrelationErrorMetric:
+            case PerceptualHashErrorMetric:
+            case PhaseCorrelationErrorMetric:
+            case StructuralSimilarityErrorMetric:
+            case StructuralDissimilarityErrorMetric:
             case MeanAbsoluteErrorMetric:
             case MeanSquaredErrorMetric:
             case PeakAbsoluteErrorMetric:
@@ -1256,18 +1262,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case PeakSignalToNoiseRatioErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
-                distortion,GetMagickPrecision(),0.01*distortion);
-              break;
-            }
-            case AbsoluteErrorMetric:
-            case NormalizedCrossCorrelationErrorMetric:
-            case PerceptualHashErrorMetric:
-            case PhaseCorrelationErrorMetric:
-            case StructuralSimilarityErrorMetric:
-            case StructuralDissimilarityErrorMetric:
-            {
-              (void) FormatLocaleFile(stderr,"%.*g",GetMagickPrecision(),
-                distortion);
+                (double) QuantumRange*distortion,GetMagickPrecision(),
+                0.01*distortion);
               break;
             }
             case MeanErrorPerPixelErrorMetric:
