@@ -2825,7 +2825,8 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     geometry;
 
   /*
-    Accelerated MSE correlation-based image similarity using FFT local statistics.
+    Accelerated MSE correlation-based image similarity using FFT local
+    statistics.
   */
   test_image=SIMSquareImage(image,exception);
   if (test_image == (Image *) NULL)
@@ -2842,6 +2843,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     ThrowMSESIMException();
   status=SIMMultiplyImage(mse_image,1.0*QuantumRange/reconstruct->columns/
     (double) reconstruct->rows,(const ChannelStatistics *) NULL,exception);
+  mse_image=DestroyImage(mse_image);
   if (status == MagickFalse)
     ThrowMSESIMException();
   /*
@@ -3213,7 +3215,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   test_magnitude=CloneImage(fft_images,0,0,MagickTrue,exception);
   if (test_magnitude == (Image *) NULL)
     ThrowPhaseSIMException();
-  fft_images=DestroyImage(fft_images);
+  fft_images=DestroyImageList(fft_images);
   (void) SetImageArtifact(reconstruct_image,"fourier:normalize","inverse");
   fft_images=ForwardFourierTransformImage(reconstruct_image,MagickTrue,
     exception);
@@ -3222,7 +3224,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   reconstruct_magnitude=CloneImage(fft_images,0,0,MagickTrue,exception);
   if (reconstruct_magnitude == (Image *) NULL)
     ThrowPhaseSIMException();
-  fft_images=DestroyImage(fft_images);
+  fft_images=DestroyImageList(fft_images);
   magnitude_image=CloneImage(reconstruct_magnitude,0,0,MagickTrue,
     exception);
   if (magnitude_image == (Image *) NULL)
