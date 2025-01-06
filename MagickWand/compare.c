@@ -1230,6 +1230,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           similarity_image=(Image *) NULL;
         }
     }
+  if (metric == NormalizedCrossCorrelationErrorMetric)
+    {
+      distortion=1.0-distortion;
+      similarity_metric=1.0-similarity_metric;
+    }
   if (difference_image == (Image *) NULL)
     status=0;
   else
@@ -1454,8 +1459,12 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           channel_distortion=(double *) RelinquishMagickMemory(
             channel_distortion);
           if (subimage_search != MagickFalse)
-            (void) FormatLocaleFile(stderr,"   Offset: %.20g,%.20g\n",(double)
-              difference_image->page.x,(double) difference_image->page.y);
+            {
+              (void) FormatLocaleFile(stderr,"   Offset: %.20g,%.20g\n",(double)
+                difference_image->page.x,(double) difference_image->page.y);
+              (void) FormatLocaleFile(stderr,"   Similarity metric: %*g\n",
+                GetMagickPrecision(),similarity_metric);
+            }
         }
       (void) ResetImagePage(difference_image,"0x0+0+0");
       if (difference_image->next != (Image *) NULL)
