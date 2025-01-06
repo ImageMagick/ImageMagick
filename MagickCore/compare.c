@@ -2155,6 +2155,7 @@ static Image *SIMCrossCorrelationImage(const Image *alpha_image,
     Do complex multiplication.
   */
   DisableCompositeClampUnlessSpecified(complex_conjugate);
+  DisableCompositeClampUnlessSpecified(complex_conjugate->next);
   complex_multiplication=ComplexImages(complex_conjugate,
     MultiplyComplexOperator,exception);
   complex_conjugate=DestroyImageList(complex_conjugate);
@@ -2910,7 +2911,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
       correlation_image=DestroyImage(correlation_image);
       ThrowMSESIMException();
     }
-  *similarity_metric=QuantumScale*minima;
+  *similarity_metric=MagickMax(QuantumScale*minima,0.0);
   DestroyMSESIMResources();
   return(correlation_image);
 }
