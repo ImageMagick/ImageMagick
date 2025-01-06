@@ -3237,6 +3237,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   */
   correlation_image=PhaseCrossCorrelationImage(test_image,reconstruct_image,
     magnitude_image,exception);
+  reconstruct_image=DestroyImage(reconstruct_image);
   test_image=DestroyImage(test_image);
   if (correlation_image == (Image *) NULL)
     ThrowPhaseSIMException();
