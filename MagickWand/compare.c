@@ -1166,6 +1166,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   reconstruct_image=GetImageFromList(image,1);
   offset.x=0;
   offset.y=0;
+  similarity_metric=0;
   if (subimage_search != MagickFalse)
     {
       similarity_image=SimilarityImage(image,reconstruct_image,metric,
