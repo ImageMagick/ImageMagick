@@ -1229,7 +1229,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           similarity_image=(Image *) NULL;
         }
     }
-  if (metric == NormalizedCrossCorrelationErrorMetric)
+  if ((metric == NormalizedCrossCorrelationErrorMetric) ||
+      (metric == PhaseCorrelationErrorMetric))
     {
       distortion=1.0-distortion;
       similarity_metric=1.0-similarity_metric;
