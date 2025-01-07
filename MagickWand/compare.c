@@ -303,6 +303,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   dissimilarity_threshold=DefaultDissimilarityThreshold;
   similarity_threshold=DefaultSimilarityThreshold;
   distortion=0.0;
+  similarity_metric=0.0;
   format=(char *) NULL;
   j=1;
   k=0;
