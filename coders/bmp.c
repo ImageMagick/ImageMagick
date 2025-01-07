@@ -2333,20 +2333,10 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
           q=pixels+((ssize_t) image->rows-y-1)*(ssize_t) bytes_per_line;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            Quantum alpha=GetPixelAlpha(image,p);
-            if ((type == 3) && alpha == TransparentAlpha)
-              {
-                *q++=255;
-                *q++=255;
-                *q++=255;
-              }
-            else
-              {
-                *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-                *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
-                *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-              }
-            *q++=ScaleQuantumToChar(alpha);
+            *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
+            *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
+            *q++=ScaleQuantumToChar(GetPixelRed(image,p));
+            *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
           if (image->previous == (Image *) NULL)
