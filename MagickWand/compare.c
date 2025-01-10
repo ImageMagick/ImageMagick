@@ -1236,6 +1236,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       distortion=1.0-distortion;
       similarity_metric=1.0-similarity_metric;
     }
+  if (metric == PeakSignalToNoiseRatioErrorMetric)
+    {
+      distortion*=QuantumScale;
+      similarity_metric=(-1.0*similarity_metric);
+    }
   if (difference_image == (Image *) NULL)
     status=0;
   else
