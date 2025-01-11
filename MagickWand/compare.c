@@ -1230,17 +1230,27 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           similarity_image=(Image *) NULL;
         }
     }
-  if ((metric == NormalizedCrossCorrelationErrorMetric) ||
-      (metric == PhaseCorrelationErrorMetric))
+  switch (metric)
+  {
+    case NormalizedCrossCorrelationErrorMetric:
     {
       distortion=1.0-distortion;
-      similarity_metric=1.0-similarity_metric;
+      similarity_metric=(-1.0*similarity_metric);
+      break;
     }
-  if (metric == PeakSignalToNoiseRatioErrorMetric)
+    case PhaseCorrelationErrorMetric:
+    {
+      distortion=1.0-distortion;
+      break;
+    }
+    case PeakSignalToNoiseRatioErrorMetric:
     {
       distortion*=QuantumScale;
       similarity_metric=(-1.0*similarity_metric);
+      break;
     }
+    default: break;
+  }
   if (difference_image == (Image *) NULL)
     status=0;
   else

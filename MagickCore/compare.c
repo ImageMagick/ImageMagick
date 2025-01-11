@@ -73,6 +73,7 @@
 #include "MagickCore/statistic-private.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
+#include "MagickCore/threshold.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
@@ -3033,13 +3034,15 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   /*
     Locate minimum.
   */
+  (void) ClampImage(mse_image,exception);
   status=SIMMinimaImage(mse_image,&minima,offset,exception);
   if (status == MagickFalse)
     {
       mse_image=DestroyImage(mse_image);
       ThrowMSESIMException();
     }
-  *similarity_metric=MagickMin(MagickMax(QuantumScale*minima,0.0),1.0);
+  (void) NegateImage(mse_image,MagickFalse,exception);
+  *similarity_metric=QuantumScale*minima;
   DestroyMSESIMResources();
   return(mse_image);
 }
