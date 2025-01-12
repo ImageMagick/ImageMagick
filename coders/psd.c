@@ -3195,7 +3195,7 @@ static unsigned char *AcquireCompactPixels(const Image *image,
 }
 
 static size_t WritePSDChannels(const PSDInfo *psd_info,
-  const ImageInfo *image_info,Image *image,Image *next_image,
+  const ImageInfo *image_info,Image *image,Image *layer,
   MagickOffsetType size_offset,const MagickBooleanType separate,
   ExceptionInfo *exception)
 {
@@ -3210,134 +3210,134 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
 
   size_t
     channels,
-    count,
     length,
-    offset_length;
+    offset_length,
+    total_length;
 
   unsigned char
     *compact_pixels;
 
-  count=0;
+  total_length=0;
   offset_length=0;
   rows_offset=0;
   compact_pixels=(unsigned char *) NULL;
-  compression=next_image->compression;
+  compression=layer->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
   if (compression == RLECompression)
     {
-      compact_pixels=AcquireCompactPixels(next_image,exception);
+      compact_pixels=AcquireCompactPixels(layer,exception);
       if (compact_pixels == (unsigned char *) NULL)
         return(0);
     }
   channels=1;
   if (separate == MagickFalse)
     {
-      if ((next_image->storage_class != PseudoClass) ||
-          (IsImageGray(next_image) != MagickFalse))
+      if ((layer->storage_class != PseudoClass) ||
+          (IsImageGray(layer) != MagickFalse))
         {
-          if (IsImageGray(next_image) == MagickFalse)
-            channels=(size_t) (next_image->colorspace == CMYKColorspace ? 4 :
+          if (IsImageGray(layer) == MagickFalse)
+            channels=(size_t) (layer->colorspace == CMYKColorspace ? 4 :
               3);
-          if (next_image->alpha_trait != UndefinedPixelTrait)
+          if (layer->alpha_trait != UndefinedPixelTrait)
             channels++;
         }
       rows_offset=TellBlob(image)+2;
-      count+=WriteCompressionStart(psd_info,image,next_image,compression,
+      total_length+=WriteCompressionStart(psd_info,image,layer,compression,
         (ssize_t) channels);
-      offset_length=(next_image->rows*(psd_info->version == 1 ? 2 : 4));
+      offset_length=(layer->rows*(psd_info->version == 1 ? 2 : 4));
     }
   size_offset+=2;
-  if ((next_image->storage_class == PseudoClass) &&
-      (IsImageGray(next_image) == MagickFalse))
+  if ((layer->storage_class == PseudoClass) &&
+      (IsImageGray(layer) == MagickFalse))
     {
-      length=WritePSDChannel(psd_info,image_info,image,next_image,
+      length=WritePSDChannel(psd_info,image_info,image,layer,
         IndexQuantum,compact_pixels,rows_offset,separate,compression,
         exception);
       if (separate != MagickFalse)
         size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
       else
         rows_offset+=(MagickOffsetType) offset_length;
-      count+=length;
+      total_length+=length;
     }
   else
     {
-      if (IsImageGray(next_image) != MagickFalse)
+      if (IsImageGray(layer) != MagickFalse)
         {
-          length=WritePSDChannel(psd_info,image_info,image,next_image,
+          length=WritePSDChannel(psd_info,image_info,image,layer,
             GrayQuantum,compact_pixels,rows_offset,separate,compression,
             exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
             rows_offset+=(MagickOffsetType) offset_length;
-          count+=length;
+          total_length+=length;
         }
       else
         {
-          if (next_image->colorspace == CMYKColorspace)
-            (void) NegateCMYK(next_image,exception);
+          if (layer->colorspace == CMYKColorspace)
+            (void) NegateCMYK(layer,exception);
 
-          length=WritePSDChannel(psd_info,image_info,image,next_image,
+          length=WritePSDChannel(psd_info,image_info,image,layer,
             RedQuantum,compact_pixels,rows_offset,separate,compression,
             exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
             rows_offset+=(MagickOffsetType) offset_length;
-          count+=length;
+          total_length+=length;
 
-          length=WritePSDChannel(psd_info,image_info,image,next_image,
+          length=WritePSDChannel(psd_info,image_info,image,layer,
             GreenQuantum,compact_pixels,rows_offset,separate,compression,
             exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
             rows_offset+=(MagickOffsetType) offset_length;
-          count+=length;
+          total_length+=length;
 
-          length=WritePSDChannel(psd_info,image_info,image,next_image,
+          length=WritePSDChannel(psd_info,image_info,image,layer,
             BlueQuantum,compact_pixels,rows_offset,separate,compression,
             exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
             rows_offset+=(MagickOffsetType) offset_length;
-          count+=length;
+          total_length+=length;
 
-          if (next_image->colorspace == CMYKColorspace)
+          if (layer->colorspace == CMYKColorspace)
             {
-              length=WritePSDChannel(psd_info,image_info,image,next_image,
+              length=WritePSDChannel(psd_info,image_info,image,layer,
                 BlackQuantum,compact_pixels,rows_offset,separate,compression,
                 exception);
               if (separate != MagickFalse)
                 size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
               else
                 rows_offset+=(MagickOffsetType) offset_length;
-              count+=length;
+              total_length+=length;
             }
         }
-      if (next_image->alpha_trait != UndefinedPixelTrait)
+      if (layer->alpha_trait != UndefinedPixelTrait)
         {
-          length=WritePSDChannel(psd_info,image_info,image,next_image,
+          length=WritePSDChannel(psd_info,image_info,image,layer,
             AlphaQuantum,compact_pixels,rows_offset,separate,compression,
             exception);
           if (separate != MagickFalse)
             size_offset+=WritePSDSize(psd_info,image,length,size_offset)+2;
           else
             rows_offset+=(MagickOffsetType) offset_length;
-          count+=length;
+          total_length+=length;
         }
     }
   compact_pixels=(unsigned char *) RelinquishMagickMemory(compact_pixels);
-  if (next_image->colorspace == CMYKColorspace)
-    (void) NegateCMYK(next_image,exception);
+  if (layer->colorspace == CMYKColorspace)
+    (void) NegateCMYK(layer,exception);
   if (separate != MagickFalse)
     {
       const char
         *property;
 
-      property=GetImageArtifact(next_image,"psd:opacity-mask");
+      property=GetImageArtifact(layer,"psd:opacity-mask");
       if (property != (const char *) NULL)
         {
           mask=(Image *) GetImageRegistry(ImageRegistryType,property,
@@ -3354,13 +3354,13 @@ static size_t WritePSDChannels(const PSDInfo *psd_info,
                 RedQuantum,compact_pixels,rows_offset,MagickTrue,compression,
                 exception);
               (void) WritePSDSize(psd_info,image,length,size_offset);
-              count+=length;
+              total_length+=length;
               compact_pixels=(unsigned char *) RelinquishMagickMemory(
                 compact_pixels);
             }
         }
     }
-  return(count);
+  return(total_length);
 }
 
 static size_t WritePascalString(Image *image,const char *value,size_t padding)
