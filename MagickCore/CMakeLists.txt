@@ -739,6 +739,11 @@ else()
   target_link_options(${MAGICKCORE_BINARY_NAME} PUBLIC ${IMAGEMAGICK_DELEGATES_LDFLAGS})
 endif()
 
+if(MSVC)
+  # for [[fallthrough]]
+  target_compile_options(${MAGICKCORE_BINARY_NAME} PRIVATE /std:clatest)
+endif()
+
 set_target_properties(${MAGICKCORE_BINARY_NAME} PROPERTIES PUBLIC_HEADER "${MAGICKCORE_PUBLIC_HEADERS}")
 target_include_directories(${MAGICKCORE_BINARY_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
