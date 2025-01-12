@@ -3018,8 +3018,7 @@ static size_t PSDPackbitsEncodeImage(Image *image,const size_t length,
 }
 
 static size_t WriteCompressionStart(const PSDInfo *psd_info,Image *image,
-  const Image *next_image,const CompressionType compression,
-  const ssize_t channels)
+  const Image *layer,const CompressionType compression,const ssize_t channels)
 {
   size_t
     length;
@@ -3032,7 +3031,7 @@ static size_t WriteCompressionStart(const PSDInfo *psd_info,Image *image,
     {
       length=(size_t) WriteBlobShort(image,RLE);
       for (i=0; i < channels; i++)
-        for (y=0; y < (ssize_t) next_image->rows; y++)
+        for (y=0; y < (ssize_t) layer->rows; y++)
           length=(size_t) ((ssize_t) length+SetPSDOffset(psd_info,image,0));
     }
 #ifdef MAGICKCORE_ZLIB_DELEGATE
@@ -3045,7 +3044,7 @@ static size_t WriteCompressionStart(const PSDInfo *psd_info,Image *image,
 }
 
 static size_t WritePSDChannel(const PSDInfo *psd_info,
-  const ImageInfo *image_info,Image *image,Image *next_image,
+  const ImageInfo *image_info,Image *image,Image *layer,
   const QuantumType quantum_type, unsigned char *compact_pixels,
   MagickOffsetType size_offset,const MagickBooleanType separate,
   const CompressionType compression,ExceptionInfo *exception)
@@ -3089,14 +3088,14 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
   if (separate != MagickFalse)
     {
       size_offset=TellBlob(image)+2;
-      count+=(ssize_t) WriteCompressionStart(psd_info,image,next_image,
+      count+=(ssize_t) WriteCompressionStart(psd_info,image,layer,
         compression,1);
     }
-  if (next_image->depth > 8)
-    next_image->depth=16;
+  if (layer->depth > 8)
+    layer->depth=16;
   monochrome=IsImageMonochrome(image) && (image->depth == 1) ?
     MagickTrue : MagickFalse;
-  quantum_info=AcquireQuantumInfo(image_info,next_image);
+  quantum_info=AcquireQuantumInfo(image_info,layer);
   if (quantum_info == (QuantumInfo *) NULL)
     return(0);
   pixels=(unsigned char *) GetQuantumPixels(quantum_info);
@@ -3124,12 +3123,12 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
         }
     }
 #endif
-  for (y=0; y < (ssize_t) next_image->rows; y++)
+  for (y=0; y < (ssize_t) layer->rows; y++)
   {
-    p=GetVirtualPixels(next_image,0,y,next_image->columns,1,exception);
+    p=GetVirtualPixels(layer,0,y,layer->columns,1,exception);
     if (p == (const Quantum *) NULL)
       break;
-    length=ExportQuantumPixels(next_image,(CacheView *) NULL,quantum_info,
+    length=ExportQuantumPixels(layer,(CacheView *) NULL,quantum_info,
       quantum_type,pixels,exception);
     if (monochrome != MagickFalse)
       for (i=0; i < (ssize_t) length; i++)
@@ -3146,7 +3145,7 @@ static size_t WritePSDChannel(const PSDInfo *psd_info,
       {
         stream.avail_in=(uInt) length;
         stream.next_in=(Bytef *) pixels;
-        if (y == (ssize_t) next_image->rows-1)
+        if (y == (ssize_t) layer->rows-1)
           flush=Z_FINISH;
         do {
             stream.avail_out=(uInt) MagickMinBufferExtent;
