@@ -126,13 +126,13 @@ class ImageMagickDelegates(ConanFile):
         self.requires('libde265/1.0.12', force=True)
 
       if self.options.heif:
-        self.requires('libheif/1.13.0', force=True)
+        self.requires('libheif/1.19.5', force=True)
 
       if self.options.jbig:
         self.requires('jbig/20160605', force=True)
 
       if self.options.exr:
-        self.requires('openexr/3.1.5', force=True)
+        self.requires('openexr/3.3.2', force=True)
 
       if self.options.png:
         self.requires('libpng/1.6.42', force=True)

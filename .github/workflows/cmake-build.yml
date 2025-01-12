@@ -58,7 +58,7 @@ jobs:
       - name: Install all delegates
         run: |
           conan profile detect || echo ok
-          conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }}
+          conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }} --settings compiler.cppstd=20
           echo 'CONAN_TOOLCHAIN=-DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/build/conan_toolchain.cmake"' >> $GITHUB_ENV
         shell: bash
 
@@ -116,13 +116,13 @@ jobs:
       uses: actions/cache/restore@v4
       with:
         path: ~/.conan2
-        key: ${{ runner.os }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
+        key: ${{ runner.os }}-${{ runner.arch }}-${{ matrix.libtype }}-${{ matrix.buildtype }}
       if: matrix.provider == 'conan' || matrix.provider == 'pkgconf'
 
     - name: Install all delegates (conan)
       run: |
         conan profile detect || echo ok
-        conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }}
+        conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }} --settings compiler.cppstd=20
         echo 'CONAN_TOOLCHAIN=-DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/build/conan_toolchain.cmake"' >> $GITHUB_ENV
       shell: bash
       if: matrix.provider == 'conan'
@@ -132,7 +132,7 @@ jobs:
     - name: Install all delegates (pkgconf)
       run: |
         conan profile detect || echo ok
-        conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }}
+        conan install . -of build --build=missing -o libtype=${{ matrix.libtype }} --settings=build_type=${{ matrix.buildtype }} --settings compiler.cppstd=20
         echo "PKG_CONFIG_PATH=${{ github.workspace }}/build" >> $GITHUB_ENV
       shell: bash
       env:
@@ -191,8 +191,9 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake .. ${{ env.CONAN_TOOLCHAIN }} -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} ${{ env.LIBTYPE }} \
-          -DCMAKE_INSTALL_PREFIX="${{ env.INSTALL_PREFIX }}" ${{ env.ZERO_CONF }} ${{ env.CUSTOM_DELEGATES }}
+        cmake .. ${{ env.CONAN_TOOLCHAIN }} -DCMAKE_BUILD_TYPE=${{ matrix.buildtype }} ${{ env.LIBTYPE }}     \
+          -DCMAKE_INSTALL_PREFIX="${{ env.INSTALL_PREFIX }}" ${{ env.ZERO_CONF }} ${{ env.CUSTOM_DELEGATES }} \
+          -DCMAKE_VERBOSE_MAKEFILE=ON
 
     - name: Build
       run: cmake --build build --config ${{ matrix.buildtype }}
@@ -255,7 +256,7 @@ jobs:
       shell: bash
       run: |
         conan profile detect || echo ok
-        conan install . -of build -pr:b=default -pr:h=./emscripten.profile --build=missing
+        conan install . -of build -pr:b=default -pr:h=./emscripten.profile --build=missing --settings compiler.cppstd=20
 
     - name: Generate CMake build (conan)
       run: |
