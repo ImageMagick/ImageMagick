@@ -22,12 +22,4 @@ jobs:
 
     - name: Compare documentation
       run: |
-        cd config && doxygen test &> /dev/null
-        cd .. && diff -rq www/api/ docs-test/  > diff.log || true
-        if [ -s diff.log ]; then
-          echo "Documentation is outdated. Please update!"
-          cat diff.log
-          exit 1
-        else
-          echo "Documentation is up to date."
-        fi
+        bash scripts/check_docs.sh
