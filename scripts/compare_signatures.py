@@ -1,171 +1,98 @@
 import re
 from bs4 import BeautifulSoup # it is a python library to parse HTML
 import sys
+import pandas as pd
+from io import StringIO
+
 
 """
-- search for:
----IN CODERINFO
-<tr>
-<td>
-<p align="center"><b>Method</b></p></td>
-<td>
-<p align="center"><b>Returns</b></p></td>
-<td>
-<p align="center"><b>Signature</b></p></td>
-<td>
-<p align="center"><b>Description</b></p></td></tr>
-<tr>
-
-OR : 
-
-<tr>
-    <td>
-        <center><b>Method</b></center>
-    </td>
-    <td>
-        <center><b>Returns</b></center>
-    </td>
-    <td>
-        <center><b>Signature</b></center>
-    </td>
-    <td>
-        <center><b>Description</b></center>
-    </td>
-</tr>
-                
-- then for each row:
-- check the signature with the doxugen output (!! there could be many signatures for the same function)
+Extracts the signatures from the html file of the manually written documentation
 """
-
-def clean_string(s):
-    return ' '.join(s.replace("\n", "").replace("\t", "").replace("\xa0", " ").split())
-
-def extract_signatures(html_file):
-    with open(html_file, 'r', encoding='utf-8') as file:
+def extract_signatures(doc_file):
+    with open(doc_file, 'r', encoding='utf-8') as file:
         html_content = file.read()
 
     soup = BeautifulSoup(html_content, 'html.parser')
     tables = soup.find_all('table')
 
+    signatures = {}
     for table in tables:
-        rows = table.find_all('tr')
-        if rows and len(rows[0].find_all('td')) == 4:
-            signatures = {}
-            current_method = None
-            for row in rows:
-                cols = row.find_all('td')
-                if len(cols) == 4:
-                    method = clean_string(cols[0].text.strip())
-                    returns = clean_string(cols[1].text.strip())
-                    signature = clean_string(cols[2].text.strip())
+        header = table.find('tr')
+        if header and len(header.find_all('td')) == 4:
+            headers = [td.text.strip() for td in header.find_all('td')]
+            if headers == ['Method', 'Returns', 'Signature', 'Description'] or headers == ['Method', 'Return Type', 'Signature(s)', 'Description']:
+                df = pd.read_html(StringIO(str(table)))[0]      # using pandas to make sure there are no skipped cells
+                for index, row in df.iterrows():
+                    method = str(row[0]) if not pd.isna(row[0]) else ""
+                    returns = normalize(str(row[1])) if not pd.isna(row[1]) else ""
+                    signature = normalize(str(row[2])) if not pd.isna(row[2]) else ""
                     if method not in signatures:
-                        signatures[method] = {
-                            'returns': [],
-                            'signatures': [],
-                        }
+                        signatures[method] = {'returns': [], 'signatures': []}
                     signatures[method]['returns'].append(returns)
-                    signatures[method]['signatures'].append(method + " (" + signature + ")")
-                    current_method = method
-                elif len(cols) == 3 and current_method:
-                    returns = clean_string(cols[0].text.strip())
-                    signature = clean_string(cols[1].text.strip())
-                    signatures[current_method]['returns'].append(returns)
-                    signatures[current_method]['signatures'].append(current_method + " (" + signature + ")")
-                elif len(cols) == 2 and current_method:
-                    signature = clean_string(cols[0].text.strip())
-                    signatures[current_method]['signatures'].append(current_method + " (" + signature + ")")
+                    signatures[method]['signatures'].append(f"{method} ({signature})")
             return signatures
-    print("No matching table found")
     return {}
 
-def extract_doxygen_signatures(doxygen_file):
+"""
+This function checks if the signatures in the doxygen file match the signatures collected from the html file
+"""
+def check_signatures(doxygen_file, doc_signatures):
     with open(doxygen_file, 'r', encoding='utf-8') as file:
         doxygen_content = file.read()
 
     soup = BeautifulSoup(doxygen_content, 'html.parser')
-    signatures = {}
 
     for table in soup.find_all('table', class_='memberdecls'):
         rows = table.find_all('tr')
         for row in rows:
             cols = row.find_all('td')
             if len(cols) == 2:
-                return_type = clean_string(cols[0].text.strip())
-                method_signature = clean_string(cols[1].text.strip())
-                method_name_match = re.match(r'(\w+)\s*\(', method_signature)
+                return_type = normalize(cols[0].text.strip())
+                method_signature = normalize(cols[1].text.strip())
+                match = re.match(r'([^)]+\))', method_signature) # making sure we don't have any extra information after the ) like const
+                if match:
+                    method_signature = match.group(1)
+                method_name_match = re.match(r'(\w+)\s*\(', method_signature)   # extract method name
                 if method_name_match:
                     method_name = method_name_match.group(1)
-                    if method_name not in signatures:
-                        signatures[method_name] = {
-                            'returns': set(),
-                            'signatures': set()
-                        }
-                    signatures[method_name]['returns'].add(return_type)
-                    signatures[method_name]['signatures'].add(method_signature)
 
-    for method in signatures:
-        signatures[method]['returns'] = list(signatures[method]['returns'])
-        signatures[method]['signatures'] = list(signatures[method]['signatures'])
+                    # check if signature is in html file
+                    if method_name in doc_signatures.keys():
+                        if return_type not in doc_signatures[method_name]['returns']:
+                            print(f"- Return type mismatch for method \"{method_name}\"")
+                            print(f"Doxygen return type   : {return_type}")
+                            print(f"Documentation returns : {doc_signatures[method_name]['returns']} \n")
+                        if method_signature not in doc_signatures[method_name]['signatures']:
+                            print(f"- Signature mismatch for method \"{method_name}\" ")
+                            print(f"Doxygen signature        : {method_signature}")
+                            print(f"Documentation signatures : {doc_signatures[method_name]['signatures']} \n")
 
-    return signatures
-
-def normalize_signature(signature):
-    signature = re.sub(r'\s*\*\s*', '*', signature)
-    signature = re.sub(r'\s*,\s*', ', ', signature)
-    return signature
-
-def compare_signatures(html_signatures, doxygen_signatures):
-    # TODO rather check in the doxygen for the html but directly => avoid too much loops
-    for method, html_details in html_signatures.items():
-        if method in doxygen_signatures:
-            doxygen_details = doxygen_signatures[method]
-
-            html_sigs = set(normalize_signature(sig) for sig in html_details['signatures'])
-            doxygen_sigs = set(normalize_signature(sig) for sig in doxygen_details['signatures'])
-            html_returns = set(html_details['returns'])
-            doxygen_returns = set(doxygen_details['returns'])
-
-            if html_sigs != doxygen_sigs:
-                print(f"Mismatch in signatures for method {method}:")
-                print(f"HTML: {html_sigs}")
-                print(f"Doxygen: {doxygen_sigs}")
-
-            if html_returns != doxygen_returns:
-                print(f"Mismatch in return types for method {method}:")
-                print(f"HTML: {html_returns}")
-                print(f"Doxygen: {doxygen_returns}")
-        else:
-            print(f"Method {method} not found in Doxygen signatures")
-
-    for method in doxygen_signatures:
-        if method not in html_signatures:
-            print(f"Method {method} found in Doxygen signatures but not in HTML signatures")
-
+"""
+Used to normalize the text by removing extra spaces, new lines, tabs, etc.
+"""
+def normalize(text):
+    ' '.join(text.replace("\n", "").replace("\t", "").replace("\xa0", " ").split())
+    text = re.sub(r'\s*\*\s*', '* ', text)      # make sure * is followed by a space and doesn't have space before it
+    text = re.sub(r'\s*&\s*', '& ', text)
+    text = re.sub(r'\s*,\s*', ', ', text)
+    text = re.sub(r'::', '', text)          # remove ::
+    text = re.sub(r'\s+', ' ', text)
+    return text
 
 def main(argv):
     if len(argv) != 2:
-        print("Usage: python3 compare_signatures.py <html_file> <doxygen_file>")
+        print("Usage: python3 compare_signatures.py <doc_file> <doxygen_file>")
         sys.exit(1)
 
-    html_file = argv[0]
+    doc_file = argv[0]
     doxygen_file = argv[1]
-    print("Checking signatures for html file: ", html_file, "and doxygen file: ", doxygen_file)
+    print("Checking function signatures for \n  Documentation file: ", doc_file, "\n  Doxygen file: ", doxygen_file, "\n")
 
-    signatures = extract_signatures(html_file)
-    """for signature in signatures:
-        print(signature)
-        print(signatures[signature])
-
-    print('---------------------')"""
-
-    signatures2 = extract_doxygen_signatures(doxygen_file)
-    """for signature in signatures2:
-        print(signature)
-        print(signatures2[signature])
-
-    print('---------------------')"""
-    compare_signatures(signatures, signatures2)
-
+    signatures = extract_signatures(doc_file)
+    if not signatures:
+        print("No matching table found in the documentation")
+        sys.exit(1)
+    check_signatures(doxygen_file, signatures)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

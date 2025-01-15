@@ -1,15 +1,18 @@
-name: Doxygen Documentation Check for Magick++
+name: Documentation Check for Magick++
 
 on:
   push:
     branches:
       - main
+    paths:
+        - '.github/workflows/doc_check.yml'
   workflow_dispatch:
-  #schedule: # Weekly cron job
-  #  - cron: "0 0 * * 0"
+  schedule:
+    - cron: 0 6 * * *
 
 jobs:
   doxygen-check:
+    name: 'Documentation Check'
     runs-on: ubuntu-latest
 
     steps:
@@ -18,7 +21,7 @@ jobs:
         fetch-depth: 2
 
     - name: Install Doxygen
-      run: sudo apt-get install -y doxygen
+      run: sudo apt-get install -y doxygen python3-pip && pip3 install pyarrow beautifulsoup4 pandas lxml
 
     - name: Compare documentation
       run: |
