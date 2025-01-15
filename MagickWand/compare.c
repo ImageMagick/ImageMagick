@@ -1235,7 +1235,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     case NormalizedCrossCorrelationErrorMetric:
     {
       distortion=1.0-distortion;
-      similarity_metric=(-1.0*similarity_metric);
+      similarity_metric=1.0-similarity_metric;
       break;
     }
     case PhaseCorrelationErrorMetric:
@@ -1246,7 +1246,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     case PeakSignalToNoiseRatioErrorMetric:
     {
       distortion*=QuantumScale;
-      similarity_metric=(-1.0*similarity_metric);
       break;
     }
     default: break;
