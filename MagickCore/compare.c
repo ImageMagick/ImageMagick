@@ -2112,59 +2112,59 @@ static Image *SIMCrossCorrelationImage(const Image *alpha_image,
   const Image *beta_image,ExceptionInfo *exception)
 {
   Image
-    *clone_image,
-    *complex_conjugate,
-    *complex_multiplication,
-    *cross_correlation,
-    *fft_images;
+    *alpha_fft = (Image *) NULL,
+    *beta_fft = (Image *) NULL,
+    *complex_conjugate = (Image *) NULL,
+    *complex_multiplication = (Image *) NULL,
+    *cross_correlation = (Image *) NULL,
+    *temp_image = (Image *) NULL;
 
   /*
-    Take the FFT of reconstruction image.
+    Take the FFT of beta (reconstruction) image.
   */
-  clone_image=CloneImage(beta_image,0,0,MagickTrue,exception);
-  if (clone_image == (Image *) NULL)
-    return(clone_image);
-  (void) SetImageArtifact(clone_image,"fourier:normalize","inverse");
-  fft_images=ForwardFourierTransformImage(clone_image,MagickFalse,exception);
-  clone_image=DestroyImageList(clone_image);
-  if (fft_images == (Image *) NULL)
-    return(fft_images);
+  temp_image=CloneImage(beta_image,0,0,MagickTrue,exception);
+  if (temp_image == (Image *) NULL)
+    return((Image *) NULL);
+  (void) SetImageArtifact(temp_image,"fourier:normalize","inverse");
+  beta_fft=ForwardFourierTransformImage(temp_image,MagickFalse,exception);
+  temp_image=DestroyImageList(temp_image);
+  if (beta_fft == (Image *) NULL)
+    return((Image *) NULL);
   /*
-    Take the complex conjugate of reconstruction image.
+    Take the complex conjugate of beta_fft.
   */
-  complex_conjugate=ComplexImages(fft_images,ConjugateComplexOperator,
-    exception);
-  fft_images=DestroyImageList(fft_images);
+  complex_conjugate=ComplexImages(beta_fft,ConjugateComplexOperator,exception);
+  beta_fft=DestroyImageList(beta_fft);
   if (complex_conjugate == (Image *) NULL)
-    return(complex_conjugate);
+    return((Image *) NULL);
   /*
-    Take the FFT of the test image.
+    Take the FFT of the alpha (test) image.
   */
-  clone_image=CloneImage(alpha_image,0,0,MagickTrue,exception);
-  if (clone_image == (Image *) NULL)
+  temp_image=CloneImage(alpha_image,0,0,MagickTrue,exception);
+  if (temp_image == (Image *) NULL)
     {
       complex_conjugate=DestroyImageList(complex_conjugate);
-      return(clone_image);
+      return((Image *) NULL);
     }
-  (void) SetImageArtifact(clone_image,"fourier:normalize","inverse");
-  fft_images=ForwardFourierTransformImage(clone_image,MagickFalse,exception);
-  clone_image=DestroyImageList(clone_image);
-  if (fft_images == (Image *) NULL)
+  (void) SetImageArtifact(temp_image,"fourier:normalize","inverse");
+  alpha_fft=ForwardFourierTransformImage(temp_image,MagickFalse,exception);
+  temp_image=DestroyImageList(temp_image);
+  if (alpha_fft == (Image *) NULL)
     {
       complex_conjugate=DestroyImageList(complex_conjugate);
-      return(fft_images);
+      return((Image *) NULL);
     }
-  complex_conjugate->next->next=fft_images;
   /*
     Do complex multiplication.
   */
   DisableCompositeClampUnlessSpecified(complex_conjugate);
   DisableCompositeClampUnlessSpecified(complex_conjugate->next);
+  complex_conjugate->next->next=alpha_fft;
   complex_multiplication=ComplexImages(complex_conjugate,
     MultiplyComplexOperator,exception);
   complex_conjugate=DestroyImageList(complex_conjugate);
-  if (fft_images == (Image *) NULL)
-    return(fft_images);
+  if (complex_multiplication == (Image *) NULL)
+    return((Image *) NULL);
   /*
     Do the IFT and return the cross-correlation result.
   */
