@@ -2478,59 +2478,57 @@ static Image *SIMPhaseCorrelationImage(const Image *alpha_image,
   const Image *beta_image,const Image *magnitude_image,ExceptionInfo *exception)
 {
   Image
-    *clone_image,
-    *complex_conjugate,
-    *complex_multiplication,
-    *cross_correlation,
-    *fft_images;
+    *alpha_fft = (Image *) NULL,
+    *beta_fft = (Image *) NULL,
+    *complex_multiplication = (Image *) NULL,
+    *cross_correlation = (Image *) NULL;
 
   /*
-    Take the FFT of reconstruction image.
+    Take the FFT of the beta (reconstruction) image.
   */
-  clone_image=CloneImage(beta_image,0,0,MagickTrue,exception);
-  if (clone_image == (Image *) NULL)
-    return(clone_image);
-  (void) SetImageArtifact(clone_image,"fourier:normalize","inverse");
-  fft_images=ForwardFourierTransformImage(clone_image,MagickFalse,exception);
-  clone_image=DestroyImageList(clone_image);
-  if (fft_images == (Image *) NULL)
-    return(fft_images);
+  beta_fft=CloneImage(beta_image,0,0,MagickTrue,exception);
+  if (beta_fft == NULL)
+    return((Image *) NULL);
+  (void) SetImageArtifact(beta_fft,"fourier:normalize","inverse");
+  beta_fft = ForwardFourierTransformImage(beta_fft, MagickFalse, exception);
+  if (beta_fft == NULL)
+    return((Image *) NULL);
   /*
-    Take the complex conjugate of reconstruction image.
+    Take the FFT of the alpha (test) image.
   */
-  complex_conjugate=ComplexImages(fft_images,ConjugateComplexOperator,
-    exception);
-  fft_images=DestroyImageList(fft_images);
-  if (complex_conjugate == (Image *) NULL)
-    return(complex_conjugate);
+  alpha_fft=CloneImage(alpha_image,0,0,MagickTrue,exception);
+  if (alpha_fft == (Image *) NULL)
+    {
+      beta_fft=DestroyImageList(beta_fft);
+      return((Image *) NULL);
+    }
+  (void) SetImageArtifact(alpha_fft,"fourier:normalize","inverse");
+  alpha_fft=ForwardFourierTransformImage(alpha_fft,MagickFalse,exception);
+  if (alpha_fft == (Image *) NULL)
+    {
+      beta_fft=DestroyImageList(beta_fft);
+      return((Image *) NULL);
+    }
   /*
-    Take the FFT of the test image.
+    Take the complex conjugate of the beta FFT.
   */
-  clone_image=CloneImage(alpha_image,0,0,MagickTrue,exception);
-  if (clone_image == (Image *) NULL)
+  beta_fft=ComplexImages(beta_fft,ConjugateComplexOperator,exception);
+  if (beta_fft == (Image *) NULL)
     {
-      complex_conjugate=DestroyImageList(complex_conjugate);
-      return(clone_image);
+      alpha_fft=DestroyImageList(alpha_fft);
+      return((Image *) NULL);
     }
-  (void) SetImageArtifact(clone_image,"fourier:normalize","inverse");
-  fft_images=ForwardFourierTransformImage(clone_image,MagickFalse,exception);
-  clone_image=DestroyImageList(clone_image);
-  if (fft_images == (Image *) NULL)
-    {
-      complex_conjugate=DestroyImageList(complex_conjugate);
-      return(fft_images);
-    }
-  complex_conjugate->next->next=fft_images;
   /*
     Do complex multiplication.
   */
-  DisableCompositeClampUnlessSpecified(complex_conjugate);
-  DisableCompositeClampUnlessSpecified(complex_conjugate->next);
-  complex_multiplication=ComplexImages(complex_conjugate,
-    MultiplyComplexOperator,exception);
-  complex_conjugate=DestroyImageList(complex_conjugate);
-  if (fft_images == (Image *) NULL)
-    return(fft_images);
+  beta_fft->next->next=alpha_fft;
+  DisableCompositeClampUnlessSpecified(beta_fft);
+  DisableCompositeClampUnlessSpecified(beta_fft->next);
+  complex_multiplication=ComplexImages(beta_fft,MultiplyComplexOperator,
+    exception);
+  beta_fft=DestroyImageList(beta_fft);
+  if (complex_multiplication == (Image *) NULL)
+    return((Image *) NULL);
   /*
     Divide the results.
   */
@@ -2539,7 +2537,7 @@ static Image *SIMPhaseCorrelationImage(const Image *alpha_image,
   /*
     Do the IFT and return the cross-correlation result.
   */
-  (void) SetImageArtifact(complex_multiplication,"fourier:normalize","inverse");
+  (void)SetImageArtifact(complex_multiplication,"fourier:normalize","inverse");
   cross_correlation=InverseFourierTransformImage(complex_multiplication,
     complex_multiplication->next,MagickFalse,exception);
   complex_multiplication=DestroyImageList(complex_multiplication);
@@ -3202,29 +3200,6 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
 static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
-#define DestroyPhaseSIMResources() \
-{ \
-  if (correlation_image != (Image *) NULL) \
-    correlation_image=DestroyImage(correlation_image); \
-  if (gamma_image != (Image *) NULL) \
-    gamma_image=DestroyImage(gamma_image); \
-  if (magnitude_image != (Image *) NULL) \
-    magnitude_image=DestroyImage(magnitude_image); \
-  if (test_image != (Image *) NULL) \
-    test_image=DestroyImage(test_image); \
-  if (test_magnitude != (Image *) NULL) \
-    test_magnitude=DestroyImage(test_magnitude); \
-  if (reconstruct_image != (Image *) NULL) \
-    reconstruct_image=DestroyImage(reconstruct_image); \
-  if (reconstruct_magnitude != (Image *) NULL) \
-    reconstruct_magnitude=DestroyImage(reconstruct_magnitude); \
-}
-#define ThrowPhaseSIMException() \
-{ \
-  DestroyPhaseSIMResources() \
-  return((Image *) NULL); \
-}
-
   double
     maxima = 0.0;
 
@@ -3246,53 +3221,86 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     geometry;
 
   /*
-    Phase correlation-based image similarity using FFT local statistics.
-    Contributed by Fred Weinhaus.
+   Phase correlation-based image similarity using FFT local statistics.
+   Contributed by Fred Weinhaus.
   */
   test_image=CloneImage(image,0,0,MagickTrue,exception);
   if (test_image == (Image *) NULL)
-    ThrowPhaseSIMException();
-  GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);  
-  (void) ResetImagePage(test_image,"0x0+0+0");
+    return((Image *) NULL);
+  GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
+  ResetImagePage(test_image,"0x0+0+0");
   status=SetImageExtent(test_image,2*(size_t) ceil(image->columns/2.0),
     2*(size_t) ceil(image->rows/2.0),exception);
   if (status == MagickFalse)
-    ThrowPhaseSIMException();
+    {
+      test_image=DestroyImage(test_image);
+      return((Image *) NULL);
+    }
   (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
-  reconstruct_image=CloneImage(reconstruct,0,0,MagickTrue,exception);
-  if (reconstruct_image == (Image *) NULL)
-    ThrowPhaseSIMException();
-  GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);  
-  (void) ResetImagePage(reconstruct_image,"0x0+0+0");
-  status=SetImageExtent(reconstruct_image,2*(size_t) ceil(image->columns/2.0),
-    2*(size_t) ceil(image->rows/2.0),exception);
-  (void) SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
-  if (status == MagickFalse)
-    ThrowPhaseSIMException();
   /*
     Compute the cross correlation of the test and reconstruct magnitudes.
   */
-  (void) SetImageArtifact(test_image,"fourier:normalize","inverse");
+  reconstruct_image=CloneImage(reconstruct,0,0,MagickTrue,exception);
+  if (reconstruct_image == (Image *) NULL)
+    {
+      test_image=DestroyImage(test_image);
+      return((Image *) NULL);
+    }
+  GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
+  ResetImagePage(reconstruct_image,"0x0+0+0");
+  status=SetImageExtent(reconstruct_image,2*(size_t) ceil(image->columns/2.0),
+    2*(size_t) ceil(image->rows/2.0),exception);
+  if (status == MagickFalse)
+    {
+      test_image=DestroyImage(test_image);
+      reconstruct_image=DestroyImage(reconstruct_image);
+      return((Image *) NULL);
+    }
+  SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
+  SetImageArtifact(test_image, "fourier:normalize", "inverse");
   fft_images=ForwardFourierTransformImage(test_image,MagickTrue,exception);
   if (fft_images == (Image *) NULL)
-    ThrowPhaseSIMException();
+    {
+      test_image=DestroyImage(test_image);
+      reconstruct_image=DestroyImage(reconstruct_image);
+      return((Image *) NULL);
+    }
   test_magnitude=CloneImage(fft_images,0,0,MagickTrue,exception);
-  if (test_magnitude == (Image *) NULL)
-    ThrowPhaseSIMException();
   fft_images=DestroyImageList(fft_images);
+  if (test_magnitude == (Image *) NULL)
+    {
+      test_image=DestroyImage(test_image);
+      reconstruct_image=DestroyImage(reconstruct_image);
+      return((Image *) NULL);
+    }
   (void) SetImageArtifact(reconstruct_image,"fourier:normalize","inverse");
   fft_images=ForwardFourierTransformImage(reconstruct_image,MagickTrue,
     exception);
   if (fft_images == (Image *) NULL)
-    ThrowPhaseSIMException();
+    {
+      test_image=DestroyImage(test_image);
+      reconstruct_image=DestroyImage(reconstruct_image);
+      test_magnitude=DestroyImage(test_magnitude);
+      return((Image *) NULL);
+    }
   reconstruct_magnitude=CloneImage(fft_images,0,0,MagickTrue,exception);
-  if (reconstruct_magnitude == (Image *) NULL)
-    ThrowPhaseSIMException();
   fft_images=DestroyImageList(fft_images);
-  magnitude_image=CloneImage(reconstruct_magnitude,0,0,MagickTrue,
-    exception);
-  if (magnitude_image == (Image *) NULL)
-    ThrowPhaseSIMException();
+  if (reconstruct_magnitude == (Image *) NULL)
+    {
+      test_image=DestroyImage(test_image);
+      reconstruct_image=DestroyImage(reconstruct_image);
+      test_magnitude=DestroyImage(test_magnitude);
+      return((Image *) NULL);
+    }
+    magnitude_image=CloneImage(reconstruct_magnitude,0,0,MagickTrue,exception);
+    if (magnitude_image == (Image *) NULL)
+      {
+        test_image=DestroyImage(test_image);
+        reconstruct_image=DestroyImage(reconstruct_image);
+        test_magnitude=DestroyImage(test_magnitude);
+        reconstruct_magnitude=DestroyImage(reconstruct_magnitude);
+        return((Image *) NULL);
+      }
   DisableCompositeClampUnlessSpecified(magnitude_image);
   (void) CompositeImage(magnitude_image,test_magnitude,MultiplyCompositeOp,
     MagickTrue,0,0,exception);
@@ -3301,47 +3309,60 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   */
   correlation_image=SIMPhaseCorrelationImage(test_image,reconstruct_image,
     magnitude_image,exception);
-  reconstruct_image=DestroyImage(reconstruct_image);
   test_image=DestroyImage(test_image);
+  reconstruct_image=DestroyImage(reconstruct_image);
+  test_magnitude=DestroyImage(test_magnitude);
+  reconstruct_magnitude=DestroyImage(reconstruct_magnitude);
   if (correlation_image == (Image *) NULL)
-    ThrowPhaseSIMException();
+    {
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
+    }
   /*
     Identify the maxima value in the image and its location.
   */
-  gamma_image=CloneImage(correlation_image,0,0,MagickTrue,exception);
+  gamma_image=CloneImage(correlation_image,0,0,MagickTrue, exception);
   correlation_image=DestroyImage(correlation_image);
   if (gamma_image == (Image *) NULL)
-    return((Image *) NULL);
-  (void) ResetImagePage(gamma_image,"0x0+0+0");
-  SetGeometry(image,&geometry);
+    {
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
+    }
+  ResetImagePage(gamma_image,"0x0+0+0");
+  SetGeometry(image, &geometry);
   geometry.width=image->columns-reconstruct->columns;
   geometry.height=image->rows-reconstruct->rows;
   /*
     Crop padding.
   */
-  (void) ResetImagePage(gamma_image,"0x0+0+0");
+  ResetImagePage(gamma_image,"0x0+0+0");
   phase_image=CropImage(gamma_image,&geometry,exception);
   gamma_image=DestroyImage(gamma_image);
   if (phase_image == (Image *) NULL)
-    ThrowPhaseSIMException();
-  (void) ResetImagePage(phase_image,"0x0+0+0");
+    {
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
+    }
+  ResetImagePage(phase_image,"0x0+0+0");
+  /*
+    Identify the maxima value in the image and its location.
+  */
   status=GrayscaleImage(phase_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
     {
       phase_image=DestroyImage(phase_image);
-      ThrowPhaseSIMException();
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
     }
-  /*
-    Identify the maxima value in the image and its location.
-  */
   status=SIMMaximaImage(phase_image,&maxima,offset,exception);
   if (status == MagickFalse)
     {
       phase_image=DestroyImage(phase_image);
-      ThrowPhaseSIMException();
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
     }
-  *similarity_metric=QuantumScale*maxima;
-  DestroyPhaseSIMResources();
+  *similarity_metric=QuantumScale * maxima;
+  magnitude_image=DestroyImage(magnitude_image);
   return(phase_image);
 }
 #endif
@@ -3427,7 +3448,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       {
         similarity_image=MSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
-        *similarity_metric=MagickLog10(*similarity_metric);
+        *similarity_metric=10.0*log10(MagickMax(QuantumRange*
+          *similarity_metric,1.0));
         return(similarity_image);
       }
       case PhaseCorrelationErrorMetric:
