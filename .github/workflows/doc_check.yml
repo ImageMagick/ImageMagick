@@ -14,20 +14,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 2
+      - name: Checkout repository content
+        uses: actions/checkout@v4
 
-    - name: Install Doxygen
-      run: sudo apt-get install -y doxygen python3-pip && pip3 install pyarrow beautifulsoup4 pandas lxml
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
 
-    - name: Compare documentation
-      run: |
-        cd ..
-        cd config && doxygen Magick++.dox &> /dev/null
-        DOC_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image++.html" "Montage.html" "Pixels.html")
-        DOXY_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image.html" "Montage.html" "Pixels.html")  # Image.html is the only one that differs from the doxygen file
-        for i in "${!DOC_HTML[@]}"; do
-          python3 scripts/compare_signatures.py www/Magick++/"${DOC_HTML[$i]}" www/api/Magick++/classMagick_1_1"${DOXY_HTML[$i]}"
-          echo ""
-        done
+      - name: Install Python dependencies
+        run: python -m pip install --user pyarrow beautifulsoup4 pandas lxml
+
+      - name: Install Doxygen
+        run: sudo apt-get update && sudo apt-get install -y doxygen
+
+      - name: Compare documentation
+        run: |          
+          # first generate the Magick++ documentation to be up to date with the current code
+          cd config && doxygen Magick++.dox.in &> /dev/null
+          cd ..
+          
+          # documentation files with function signatures that we can compare with their corresponding doxygen file (currently)
+          DOC_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image++.html" "Montage.html" "Pixels.html")
+          DOXY_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image.html" "Montage.html" "Pixels.html")  # Image.html is the only one that differs from the doxygen file
+          for i in "${!DOC_HTML[@]}"; do
+            python3 scripts/compare_signatures.py www/Magick++/"${DOC_HTML[$i]}" www/api/Magick++/classMagick_1_1"${DOXY_HTML[$i]}"
+            echo ""
+          done
