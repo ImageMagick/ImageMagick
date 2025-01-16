@@ -1273,6 +1273,48 @@ static void LogPNGChunk(MagickBooleanType logging, const png_byte *type,
 extern "C" {
 #endif
 
+typedef struct _PNGErrorInfo
+{
+  Image
+    *image;
+
+  ExceptionInfo
+    *exception;
+} PNGErrorInfo;
+
+static void MagickPNGError(png_struct *ping,const ExceptionType severity,
+  png_const_charp message)
+{
+  ExceptionInfo
+    *exception;
+
+  Image
+    *image;
+
+  PNGErrorInfo
+    *error_info;
+
+  error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
+  image=error_info->image;
+  exception=error_info->exception;
+
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  libpng-%s error: %s", png_get_libpng_ver(NULL),message);
+
+  (void) ThrowMagickException(exception,GetMagickModule(),severity,message,
+    "`%s'",image->filename);
+
+#if (PNG_LIBPNG_VER < 10500)
+  /* A warning about deprecated use of jmpbuf here is unavoidable if you
+   * are building with libpng-1.4.x and can be ignored.
+   */
+  longjmp(ping->jmpbuf,1);
+#else
+  png_longjmp(ping,1);
+#endif
+}
+
 /*
   This the function that does the actual reading of data.  It is
   the same as the one supplied in libpng, except that it receives the
@@ -1301,7 +1343,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
             "Expected %.20g bytes; found %.20g bytes",(double) length,
             (double) check);
           png_warning(png_ptr,msg);
-          png_error(png_ptr,"Read Exception");
+          MagickPNGError(png_ptr,CorruptImageError,"UnexpectedEndOfFile");
         }
     }
 }
@@ -1320,7 +1362,7 @@ static void png_put_data(png_structp png_ptr,png_bytep data,png_size_t length)
       check=(png_size_t) WriteBlob(image,(size_t) length,data);
 
       if (check != length)
-        png_error(png_ptr,"WriteBlob Failed");
+        MagickPNGError(png_ptr,BlobError,"UnableToWriteBlob");
     }
 }
 
@@ -1460,45 +1502,9 @@ static MngPair mng_read_pair(MngPair previous_pair,int delta_type,
   return(pair);
 }
 
-typedef struct _PNGErrorInfo
-{
-  Image
-    *image;
-
-  ExceptionInfo
-    *exception;
-} PNGErrorInfo;
-
 static void MagickPNGErrorHandler(png_struct *ping,png_const_charp message)
 {
-  ExceptionInfo
-    *exception;
-
-  Image
-    *image;
-
-  PNGErrorInfo
-    *error_info;
-
-  error_info=(PNGErrorInfo *) png_get_error_ptr(ping);
-  image=error_info->image;
-  exception=error_info->exception;
-
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  libpng-%s error: %s", png_get_libpng_ver(NULL),message);
-
-  (void) ThrowMagickException(exception,GetMagickModule(),CoderError,message,
-    "`%s'",image->filename);
-
-#if (PNG_LIBPNG_VER < 10500)
-  /* A warning about deprecated use of jmpbuf here is unavoidable if you
-   * are building with libpng-1.4.x and can be ignored.
-   */
-  longjmp(ping->jmpbuf,1);
-#else
-  png_longjmp(ping,1);
-#endif
+  MagickPNGError(ping,CoderError,message);
 }
 
 static void MagickPNGWarningHandler(png_struct *ping,png_const_charp message)
