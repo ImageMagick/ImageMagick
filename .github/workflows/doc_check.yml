@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-        - '.github/workflows/doc_check.yml'
   workflow_dispatch:
   schedule:
     - cron: 0 6 * * *
@@ -25,4 +23,11 @@ jobs:
 
     - name: Compare documentation
       run: |
-        bash scripts/check_docs.sh
+        cd ..
+        cd config && doxygen Magick++.dox &> /dev/null
+        DOC_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image++.html" "Montage.html" "Pixels.html")
+        DOXY_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image.html" "Montage.html" "Pixels.html")  # Image.html is the only one that differs from the doxygen file
+        for i in "${!DOC_HTML[@]}"; do
+          python3 scripts/compare_signatures.py www/Magick++/"${DOC_HTML[$i]}" www/api/Magick++/classMagick_1_1"${DOXY_HTML[$i]}"
+          echo ""
+        done
