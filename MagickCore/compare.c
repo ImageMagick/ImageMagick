@@ -2253,6 +2253,64 @@ static Image *SIMDivideImage(const Image *alpha_image,const Image *beta_image,
   return(divide_image);
 }
 
+static MagickBooleanType SIMLogImage(Image *image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Multiply each pixel by a log factor.
+  */
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,image,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(image,i);
+        PixelTrait traits = GetPixelChannelTraits(image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=(Quantum) (10.0*MagickLog10((double) q[i]));
+      }
+      q+=(ptrdiff_t) GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
 static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
   RectangleInfo *offset,ExceptionInfo *exception)
 {
@@ -3423,6 +3481,197 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   magnitude_image=DestroyImage(magnitude_image);
   return(phase_image);
 }
+
+static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
+  RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
+{
+  ChannelStatistics
+    *channel_statistics = (ChannelStatistics *) NULL;
+
+  double
+    minima = 0.0;
+
+  Image
+    *alpha_image = (Image *) NULL,
+    *beta_image = (Image *) NULL,
+    *mean_image = (Image *) NULL,
+    *psnr_image = (Image *) NULL,
+    *reconstruct_image = (Image *) NULL,
+    *sum_image = (Image *) NULL,
+    *test_image = (Image *) NULL;
+
+  MagickBooleanType
+    status;
+
+  RectangleInfo
+    geometry;
+
+  /*
+    MSE correlation-based image similarity using FFT local statistics.
+  */
+  test_image=SIMSquareImage(image, exception);
+  if (test_image == (Image *) NULL)
+    return((Image *) NULL);
+  reconstruct_image=SIMUnityImage(image, reconstruct, exception);
+  if (reconstruct_image == (Image *) NULL)
+    {
+      DestroyImage(test_image);
+      return((Image *) NULL);
+    }
+  /*
+    Create (U * test)/# pixels.
+  */
+  alpha_image=SIMCrossCorrelationImage(test_image,reconstruct_image,exception);
+  DestroyImage(test_image);
+  if (alpha_image == (Image *) NULL)
+    {
+      DestroyImage(reconstruct_image);
+      return((Image *) NULL);
+    }
+  status=SIMMultiplyImage(alpha_image,1.0/reconstruct->columns/(double)
+    reconstruct->rows,(const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    {
+      DestroyImage(reconstruct_image);
+      DestroyImage(alpha_image);
+      return((Image *) NULL);
+    }
+  /*
+    Create 2*(text * reconstruction)# pixels.
+  */
+  (void) CompositeImage(reconstruct_image,reconstruct,CopyCompositeOp,
+    MagickTrue,0,0,exception);
+  beta_image=SIMCrossCorrelationImage(image,reconstruct_image,exception);
+  DestroyImage(reconstruct_image);
+  if (beta_image == (Image *) NULL)
+    {
+      DestroyImage(alpha_image);
+      return((Image *) NULL);
+    }
+  status=SIMMultiplyImage(beta_image,-2.0/reconstruct->columns/(double)
+    reconstruct->rows,(const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      return((Image *) NULL);
+    }
+  /*
+    Mean of reconstruction squared.
+  */
+  sum_image=SIMSquareImage(reconstruct,exception);
+  if (sum_image == (Image *) NULL)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      return((Image *) NULL);
+    }
+  channel_statistics=GetImageStatistics(sum_image,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      DestroyImage(sum_image);
+      return((Image *) NULL);
+    }
+  status=SetImageExtent(sum_image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      DestroyImage(sum_image);
+      if (channel_statistics != (ChannelStatistics *) NULL)
+        channel_statistics=(ChannelStatistics *)
+          RelinquishMagickMemory(channel_statistics);
+      return((Image *) NULL);
+    }
+  status=SetImageStorageClass(sum_image,DirectClass,exception);
+  if (status == MagickFalse)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      DestroyImage(sum_image);
+      if (channel_statistics != (ChannelStatistics *) NULL)
+        channel_statistics=(ChannelStatistics *)
+          RelinquishMagickMemory(channel_statistics);
+      return((Image *) NULL);
+    }
+  status=SIMSetImageMean(sum_image,channel_statistics,exception);
+  if (status == MagickFalse)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      DestroyImage(sum_image);
+      if (channel_statistics != (ChannelStatistics *) NULL)
+        channel_statistics=(ChannelStatistics *)
+          RelinquishMagickMemory(channel_statistics);
+      return((Image *) NULL);
+    }
+  channel_statistics=(ChannelStatistics *)
+    RelinquishMagickMemory(channel_statistics);
+  /*
+    Create mean image.
+  */
+  AppendImageToList(&sum_image,alpha_image);
+  AppendImageToList(&sum_image,beta_image);
+  mean_image=EvaluateImages(sum_image,SumEvaluateOperator,exception);
+  if (mean_image == (Image *) NULL)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      DestroyImage(sum_image);
+      return((Image *) NULL);
+    }
+  sum_image=DestroyImage(sum_image);
+  status=SIMLogImage(mean_image,exception);
+  if (status == MagickFalse)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      DestroyImage(mean_image);
+      return((Image *) NULL);
+    }
+  status=GrayscaleImage(mean_image,AveragePixelIntensityMethod,exception);
+  if (status == MagickFalse)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      DestroyImage(mean_image);
+      return((Image *) NULL);
+    }
+  /*
+    Crop to difference of reconstruction and test images.
+  */
+  SetGeometry(image,&geometry);
+  geometry.width=image->columns-reconstruct->columns;
+  geometry.height=image->rows-reconstruct->rows;
+  (void) ResetImagePage(mean_image,"0x0+0+0");
+  psnr_image=CropImage(mean_image,&geometry,exception);
+  mean_image=DestroyImage(mean_image);
+  if (psnr_image == (Image *) NULL)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      return((Image *) NULL);
+    }
+  /*
+    Locate minimum.
+  */
+  (void) ResetImagePage(psnr_image,"0x0+0+0");
+  (void) EvaluateImage(psnr_image,MaxEvaluateOperator,0.0,exception);
+  status=SIMMinimaImage(psnr_image,&minima,offset,exception);
+  if (status == MagickFalse)
+    {
+      DestroyImage(alpha_image);
+      DestroyImage(beta_image);
+      DestroyImage(psnr_image);
+      return((Image *) NULL);
+    }
+  *similarity_metric=QuantumScale*minima;
+  DestroyImage(alpha_image);
+  DestroyImage(beta_image);
+  return(psnr_image);
+}
 #endif
 
 static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
@@ -3504,10 +3753,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case PeakSignalToNoiseRatioErrorMetric:
       {
-        similarity_image=MSESimilarityImage(image,reconstruct,offset,
+        similarity_image=PSNRSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
-        *similarity_metric=10.0*log10(MagickMax(QuantumRange*
-          *similarity_metric,1.0));
         return(similarity_image);
       }
       case PhaseCorrelationErrorMetric:
