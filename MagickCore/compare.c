@@ -2300,7 +2300,7 @@ static MagickBooleanType SIMLogImage(Image *image,ExceptionInfo *exception)
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=(Quantum) (10.0*MagickLog10((double) q[i]));
+        q[i]=(Quantum) (QuantumRange*10.0*MagickLog10((double) q[i]));
       }
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
@@ -3667,6 +3667,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
       DestroyImage(psnr_image);
       return((Image *) NULL);
     }
+  (void) NegateImage(psnr_image,MagickFalse,exception);
   *similarity_metric=QuantumScale*minima;
   DestroyImage(alpha_image);
   DestroyImage(beta_image);
