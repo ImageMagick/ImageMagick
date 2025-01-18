@@ -2967,6 +2967,174 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
   return(variance_image);
 }
 
+static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
+  RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
+{
+  double
+    maxima = 0.0;
+
+  Image
+    *correlation_image = (Image *) NULL,
+    *dpc_image = (Image *) NULL,
+    *fft_images = (Image *) NULL,
+    *gamma_image = (Image *) NULL,
+    *magnitude_image = (Image *) NULL,
+    *reconstruct_image = (Image *) NULL,
+    *reconstruct_magnitude = (Image *) NULL,
+    *test_image = (Image *) NULL,
+    *test_magnitude = (Image *) NULL;
+
+  MagickBooleanType
+    status;
+
+  RectangleInfo
+    geometry;
+
+  /*
+    Phase correlation-based image similarity using FFT local statistics.
+  */
+  test_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (test_image == (Image *) NULL)
+    return((Image *) NULL);
+  GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
+  ResetImagePage(test_image,"0x0+0+0");
+  status=SetImageExtent(test_image,2*(size_t) ceil(image->columns/2.0),
+    2*(size_t) ceil(image->rows/2.0),exception);
+  if (status == MagickFalse)
+    {
+      test_image=DestroyImage(test_image);
+      return((Image *) NULL);
+    }
+  (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
+  /*
+    Compute the cross correlation of the test and reconstruct magnitudes.
+  */
+  reconstruct_image=CloneImage(reconstruct,0,0,MagickTrue,exception);
+  if (reconstruct_image == (Image *) NULL)
+    {
+      test_image=DestroyImage(test_image);
+      return((Image *) NULL);
+    }
+  GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
+  ResetImagePage(reconstruct_image,"0x0+0+0");
+  status=SetImageExtent(reconstruct_image,2*(size_t) ceil(image->columns/2.0),
+    2*(size_t) ceil(image->rows/2.0),exception);
+  if (status == MagickFalse)
+    {
+      test_image=DestroyImage(test_image);
+      reconstruct_image=DestroyImage(reconstruct_image);
+      return((Image *) NULL);
+    }
+  SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
+  SetImageArtifact(test_image, "fourier:normalize", "inverse");
+  fft_images=ForwardFourierTransformImage(test_image,MagickTrue,exception);
+  if (fft_images == (Image *) NULL)
+    {
+      test_image=DestroyImage(test_image);
+      reconstruct_image=DestroyImage(reconstruct_image);
+      return((Image *) NULL);
+    }
+  test_magnitude=CloneImage(fft_images,0,0,MagickTrue,exception);
+  fft_images=DestroyImageList(fft_images);
+  if (test_magnitude == (Image *) NULL)
+    {
+      test_image=DestroyImage(test_image);
+      reconstruct_image=DestroyImage(reconstruct_image);
+      return((Image *) NULL);
+    }
+  (void) SetImageArtifact(reconstruct_image,"fourier:normalize","inverse");
+  fft_images=ForwardFourierTransformImage(reconstruct_image,MagickTrue,
+    exception);
+  if (fft_images == (Image *) NULL)
+    {
+      test_image=DestroyImage(test_image);
+      reconstruct_image=DestroyImage(reconstruct_image);
+      test_magnitude=DestroyImage(test_magnitude);
+      return((Image *) NULL);
+    }
+  reconstruct_magnitude=CloneImage(fft_images,0,0,MagickTrue,exception);
+  fft_images=DestroyImageList(fft_images);
+  if (reconstruct_magnitude == (Image *) NULL)
+    {
+      test_image=DestroyImage(test_image);
+      reconstruct_image=DestroyImage(reconstruct_image);
+      test_magnitude=DestroyImage(test_magnitude);
+      return((Image *) NULL);
+    }
+    magnitude_image=CloneImage(reconstruct_magnitude,0,0,MagickTrue,exception);
+    if (magnitude_image == (Image *) NULL)
+      {
+        test_image=DestroyImage(test_image);
+        reconstruct_image=DestroyImage(reconstruct_image);
+        test_magnitude=DestroyImage(test_magnitude);
+        reconstruct_magnitude=DestroyImage(reconstruct_magnitude);
+        return((Image *) NULL);
+      }
+  DisableCompositeClampUnlessSpecified(magnitude_image);
+  (void) CompositeImage(magnitude_image,test_magnitude,MultiplyCompositeOp,
+    MagickTrue,0,0,exception);
+  /*
+    Compute the cross correlation of the test and reconstruction images.
+  */
+  correlation_image=SIMPhaseCorrelationImage(test_image,reconstruct_image,
+    magnitude_image,exception);
+  test_image=DestroyImage(test_image);
+  reconstruct_image=DestroyImage(reconstruct_image);
+  test_magnitude=DestroyImage(test_magnitude);
+  reconstruct_magnitude=DestroyImage(reconstruct_magnitude);
+  if (correlation_image == (Image *) NULL)
+    {
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
+    }
+  /*
+    Identify the maxima value in the image and its location.
+  */
+  gamma_image=CloneImage(correlation_image,0,0,MagickTrue, exception);
+  correlation_image=DestroyImage(correlation_image);
+  if (gamma_image == (Image *) NULL)
+    {
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
+    }
+  ResetImagePage(gamma_image,"0x0+0+0");
+  SetGeometry(image, &geometry);
+  geometry.width=image->columns-reconstruct->columns;
+  geometry.height=image->rows-reconstruct->rows;
+  /*
+    Crop padding.
+  */
+  ResetImagePage(gamma_image,"0x0+0+0");
+  dpc_image=CropImage(gamma_image,&geometry,exception);
+  gamma_image=DestroyImage(gamma_image);
+  if (dpc_image == (Image *) NULL)
+    {
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
+    }
+  ResetImagePage(dpc_image,"0x0+0+0");
+  /*
+    Identify the maxima value in the image and its location.
+  */
+  status=GrayscaleImage(dpc_image,AveragePixelIntensityMethod,exception);
+  if (status == MagickFalse)
+    {
+      dpc_image=DestroyImage(dpc_image);
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
+    }
+  status=SIMMaximaImage(dpc_image,&maxima,offset,exception);
+  if (status == MagickFalse)
+    {
+      dpc_image=DestroyImage(dpc_image);
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
+    }
+  *similarity_metric=QuantumScale * maxima;
+  magnitude_image=DestroyImage(magnitude_image);
+  return(dpc_image);
+}
+
 static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
@@ -3740,15 +3908,21 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   if ((image->channels & ReadMaskChannel) == 0)
     switch (metric)
     {
-      case NormalizedCrossCorrelationErrorMetric:
+      case DotProductCorrelationErrorMetric:
       {
-        similarity_image=NCCSimilarityImage(image,reconstruct,offset,
+        similarity_image=DPCSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
       }
       case MeanSquaredErrorMetric:
       {
         similarity_image=MSESimilarityImage(image,reconstruct,offset,
+          similarity_metric,exception);
+        return(similarity_image);
+      }
+      case NormalizedCrossCorrelationErrorMetric:
+      {
+        similarity_image=NCCSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
       }
@@ -3774,7 +3948,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       default: break;
     }
 #else
-    if (metric == PhaseCorrelationErrorMetric)
+    if ((metric == DotProductCorrelationErrorMetric) ||
+        (metric == PhaseCorrelationErrorMetric))
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
           MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",

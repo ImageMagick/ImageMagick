@@ -1232,15 +1232,16 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
   switch (metric)
   {
+    case DotProductCorrelationErrorMetric:
+    case PhaseCorrelationErrorMetric:
+    {
+      distortion=1.0-distortion;
+      break;
+    }
     case NormalizedCrossCorrelationErrorMetric:
     {
       distortion=1.0-distortion;
       similarity_metric=1.0-similarity_metric;
-      break;
-    }
-    case PhaseCorrelationErrorMetric:
-    {
-      distortion=1.0-distortion;
       break;
     }
     case PeakSignalToNoiseRatioErrorMetric:
@@ -1263,8 +1264,9 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         {
           switch (metric)
           {
-            case FuzzErrorMetric:
             case AbsoluteErrorMetric:
+            case DotProductCorrelationErrorMetric:
+            case FuzzErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
             case PerceptualHashErrorMetric:
             case PhaseCorrelationErrorMetric:
@@ -1401,6 +1403,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               break;
             }
             case AbsoluteErrorMetric:
+            case DotProductCorrelationErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioErrorMetric:
             case PerceptualHashErrorMetric:

@@ -1844,6 +1844,7 @@ static const OptionInfo
   {
     { "Undefined", UndefinedErrorMetric, UndefinedOptionFlag, MagickTrue },
     { "AE", AbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },
+    { "DPC", DotProductCorrelationErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "DSSIM", StructuralDissimilarityErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "Fuzz", FuzzErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "MAE", MeanAbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },
