@@ -321,19 +321,6 @@ static MagickBooleanType IsTIFF(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline size_t WriteLSBLong(FILE *file,const unsigned int value)
-{
-  unsigned char
-    buffer[4];
-
-  buffer[0]=(unsigned char) value;
-  buffer[1]=(unsigned char) (value >> 8);
-  buffer[2]=(unsigned char) (value >> 16);
-  buffer[3]=(unsigned char) (value >> 24);
-  return(fwrite(buffer,1,4,file));
-}
-
 static Image *ReadGROUP4Image(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -3530,6 +3517,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               (void) SetImageDepth(image,1,exception);
           }
         image->depth=1;
+        if (GetPixelChannels(image) != 1)
+          compression=UndefinedCompression;
         break;
       }
       case JPEGCompression:
