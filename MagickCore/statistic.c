@@ -377,12 +377,13 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case PowEvaluateOperator:
     {
-      if (((double) pixel < 0) && ((value-floor(value)) > MagickEpsilon))
+      if (PerceptibleReciprocal(value) <= MagickEpsilon)
+        break;
+      if (((double) pixel < 0.0) && ((value-floor(value)) > MagickEpsilon))
         result=(double) -((double) QuantumRange*pow(-(QuantumScale*(double)
-          pixel),(double) value));
+          pixel),value));
       else
-        result=(double) QuantumRange*pow(QuantumScale*(double) pixel,
-          (double) value);
+        result=(double) QuantumRange*pow(QuantumScale*(double) pixel,value);
       break;
     }
     case RightShiftEvaluateOperator:
