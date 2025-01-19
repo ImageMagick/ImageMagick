@@ -2477,14 +2477,15 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           constant=StringToDouble(arg1,(char **) NULL);
-#if 1
+#if 0
           /* Using Gamma, via a cache */
           if (IfPlusOp)
             constant=PerceptibleReciprocal(constant);
           (void) GammaImage(_image,constant,_exception);
 #else
           /* Using Evaluate POW, direct update of values - more accurate */
-          if (IfNormalOp)
+          if (IfNormalOp && (fabs(constant) <= MagickEpsilon) &&
+             ((constant-1.0) > MagickEpsilon))
             constant=PerceptibleReciprocal(constant);
           (void) EvaluateImage(_image,PowEvaluateOperator,constant,_exception);
           _image->gamma*=StringToDouble(arg1,(char **) NULL);
