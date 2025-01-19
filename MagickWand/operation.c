@@ -2477,7 +2477,7 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           constant=StringToDouble(arg1,(char **) NULL);
-#if 0
+#if 1
           /* Using Gamma, via a cache */
           if (IfPlusOp)
             constant=PerceptibleReciprocal(constant);
