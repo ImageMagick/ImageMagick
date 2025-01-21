@@ -1232,6 +1232,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
   switch (metric)
   {
+    case DotProductCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
     {
       distortion=1.0-distortion;
