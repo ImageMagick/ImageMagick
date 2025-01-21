@@ -53,6 +53,7 @@
 #include "MagickCore/compare.h"
 #include "MagickCore/composite-private.h"
 #include "MagickCore/constitute.h"
+#include "MagickCore/distort.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/enhance.h"
 #include "MagickCore/fourier.h"
@@ -2108,6 +2109,131 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
 */
 
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
+static Image *SIMComputeDerivatives(const Image *image,const char *kernel,
+  ExceptionInfo *exception)
+{
+  Image
+    *derivative_image;
+
+  KernelInfo
+    *kernel_info;
+
+  kernel_info=AcquireKernelInfo(kernel,exception);
+  if (kernel_info == (KernelInfo *) NULL)
+    return((Image *) NULL);
+  derivative_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
+    exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  return(derivative_image);
+}
+
+static Image *SIMSquareImage(const Image *image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  Image
+    *square_image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Square each pixel in the image.
+  */
+  square_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (square_image == (Image *) NULL)
+    return(square_image);
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(square_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(square_image,square_image,square_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) square_image->rows; y++)
+  {
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,square_image->columns,1,
+      exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) square_image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(square_image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(square_image,i);
+        PixelTrait traits = GetPixelChannelTraits(square_image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=(Quantum) ((double) q[i]*QuantumScale*(double) q[i]);
+      }
+      q+=(ptrdiff_t) GetPixelChannels(square_image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    square_image=DestroyImage(square_image);
+  return(square_image);
+}
+
+static Image *SIMComputeMagnitude(Image *rx_image,Image *ry_image,
+  ExceptionInfo *exception)
+{
+  Image
+    *magnitude_image,
+    *xsq_image,
+    *ysq_image;
+
+  MagickBooleanType
+    status;
+
+  (void) SetImageArtifact(rx_image,"compose:clamp","False");
+  xsq_image=SIMSquareImage(rx_image,exception);
+  if (xsq_image == (Image *) NULL)
+    return((Image *) NULL);
+  (void) SetImageArtifact(ry_image,"compose:clamp","False");
+  ysq_image=SIMSquareImage(ry_image, exception);
+  if (ysq_image == (Image *) NULL)
+    {
+      xsq_image=DestroyImage(xsq_image);
+      return((Image *) NULL);
+    }
+  status=CompositeImage(xsq_image,ysq_image,PlusCompositeOp,MagickTrue,0,
+    0,exception);
+  magnitude_image=xsq_image;
+  ysq_image=DestroyImage(ysq_image);
+  if (status == MagickFalse)
+    {
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
+    }
+  status=EvaluateImage(magnitude_image,PowEvaluateOperator,0.5,exception);
+  if (status == MagickFalse)
+    {
+      magnitude_image=DestroyImage(magnitude_image);
+      return (Image *) NULL;
+    }
+  return(magnitude_image);
+}
+
 static Image *SIMCrossCorrelationImage(const Image *alpha_image,
   const Image *beta_image,ExceptionInfo *exception)
 {
@@ -2174,12 +2300,12 @@ static Image *SIMCrossCorrelationImage(const Image *alpha_image,
   return(cross_correlation);
 }
 
-static Image *SIMDivideImage(const Image *alpha_image,const Image *beta_image,
-  ExceptionInfo *exception)
+static Image *SIMDivideImage(const Image *numerator_image,
+  const Image *denominator_image,ExceptionInfo *exception)
 {
   CacheView
-    *alpha_view,
-    *beta_view;
+    *denominator_view,
+    *numerator_view;
 
   Image
     *divide_image;
@@ -2193,15 +2319,15 @@ static Image *SIMDivideImage(const Image *alpha_image,const Image *beta_image,
   /*
     Divide one image into another.
   */
-  divide_image=CloneImage(alpha_image,0,0,MagickTrue,exception);
+  divide_image=CloneImage(numerator_image,0,0,MagickTrue,exception);
   if (divide_image == (Image *) NULL)
     return(divide_image);
   status=MagickTrue;
-  alpha_view=AcquireAuthenticCacheView(divide_image,exception);
-  beta_view=AcquireVirtualCacheView(beta_image,exception);
+  numerator_view=AcquireAuthenticCacheView(divide_image,exception);
+  denominator_view=AcquireVirtualCacheView(denominator_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(beta_image,divide_image,divide_image->rows,1)
+    magick_number_threads(denominator_image,divide_image,divide_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) divide_image->rows; y++)
   {
@@ -2216,9 +2342,9 @@ static Image *SIMDivideImage(const Image *alpha_image,const Image *beta_image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(beta_view,0,y,beta_image->columns,1,
-      exception);
-    q=GetCacheViewAuthenticPixels(alpha_view,0,y,divide_image->columns,1,
+    p=GetCacheViewVirtualPixels(denominator_view,0,y,
+      denominator_image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(numerator_view,0,y,divide_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -2240,17 +2366,39 @@ static Image *SIMDivideImage(const Image *alpha_image,const Image *beta_image,
           q[i]=(Quantum) ((double) q[i]*PerceptibleReciprocal(QuantumScale*
             (double) p[i]));
       }
-      p+=(ptrdiff_t) GetPixelChannels(beta_image);
+      p+=(ptrdiff_t) GetPixelChannels(denominator_image);
       q+=(ptrdiff_t) GetPixelChannels(divide_image);
     }
-    if (SyncCacheViewAuthenticPixels(alpha_view,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(numerator_view,exception) == MagickFalse)
       status=MagickFalse;
   }
-  beta_view=DestroyCacheView(beta_view);
-  alpha_view=DestroyCacheView(alpha_view);
+  denominator_view=DestroyCacheView(denominator_view);
+  numerator_view=DestroyCacheView(numerator_view);
   if (status == MagickFalse)
     divide_image=DestroyImage(divide_image);
   return(divide_image);
+}
+
+static Image *SIMDivideByMagnitude(Image *image,Image *magnitude_image,
+  const Image *source_image,ExceptionInfo *exception)
+{
+  Image
+    *divide_image,
+    *result_image;
+
+  RectangleInfo
+    geometry;
+
+  divide_image=SIMDivideImage(image,magnitude_image,exception);
+  if (divide_image == (Image *) NULL)
+    return((Image *) NULL);
+  GetPixelInfoRGBA(0,0,0,0,&divide_image->background_color);
+  SetGeometry(source_image,&geometry);
+  geometry.width=MagickMax(source_image->columns,divide_image->columns);
+  geometry.height=MagickMax(source_image->rows,divide_image->rows);
+  result_image=ExtentImage(divide_image,&geometry,exception);
+  divide_image=DestroyImage(divide_image);
+  return(result_image);
 }
 
 static MagickBooleanType SIMLogImage(Image *image,ExceptionInfo *exception)
@@ -2551,7 +2699,7 @@ static Image *SIMPhaseCorrelationImage(const Image *alpha_image,
   if (beta_fft == NULL)
     return((Image *) NULL);
   (void) SetImageArtifact(beta_fft,"fourier:normalize","inverse");
-  beta_fft = ForwardFourierTransformImage(beta_fft, MagickFalse, exception);
+  beta_fft=ForwardFourierTransformImage(beta_fft,MagickFalse,exception);
   if (beta_fft == NULL)
     return((Image *) NULL);
   /*
@@ -2598,78 +2746,11 @@ static Image *SIMPhaseCorrelationImage(const Image *alpha_image,
   /*
     Do the IFT and return the cross-correlation result.
   */
-  (void)SetImageArtifact(complex_multiplication,"fourier:normalize","inverse");
+  (void) SetImageArtifact(complex_multiplication,"fourier:normalize","inverse");
   cross_correlation=InverseFourierTransformImage(complex_multiplication,
     complex_multiplication->next,MagickFalse,exception);
   complex_multiplication=DestroyImageList(complex_multiplication);
   return(cross_correlation);
-}
-
-static Image *SIMSquareImage(const Image *image,ExceptionInfo *exception)
-{
-  CacheView
-    *image_view;
-
-  Image
-    *square_image;
-
-  MagickBooleanType
-    status;
-
-  ssize_t
-    y;
-
-  /*
-    Square each pixel in the image.
-  */
-  square_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (square_image == (Image *) NULL)
-    return(square_image);
-  status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(square_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(square_image,square_image,square_image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) square_image->rows; y++)
-  {
-    Quantum
-      *magick_restrict q;
-
-    ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,square_image->columns,1,
-      exception);
-    if (q == (Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) square_image->columns; x++)
-    {
-      ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(square_image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(square_image,i);
-        PixelTrait traits = GetPixelChannelTraits(square_image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[i]=(Quantum) ((double) q[i]*QuantumScale*(double) q[i]);
-      }
-      q+=(ptrdiff_t) GetPixelChannels(square_image);
-    }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      status=MagickFalse;
-  }
-  image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
-    square_image=DestroyImage(square_image);
-  return(square_image);
 }
 
 static MagickBooleanType SIMSetImageMean(const Image *image,
@@ -2970,19 +3051,52 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
 static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
+#define ThrowDPCSimilarityException() \
+{ \
+  if (dot_product_image != (Image *) NULL) \
+    dot_product_image=DestroyImage(dot_product_image); \
+  if (magnitude_image != (Image *) NULL) \
+    magnitude_image=DestroyImage(magnitude_image); \
+  if (reconstruct_image != (Image *) NULL) \
+    reconstruct_image=DestroyImage(reconstruct_image); \
+  if (rx_image != (Image *) NULL) \
+    rx_image=DestroyImage(rx_image); \
+  if (ry_image != (Image *) NULL) \
+    ry_image=DestroyImage(ry_image); \
+  if (test_image != (Image *) NULL) \
+    test_image=DestroyImage(test_image); \
+  if (threshold_image != (Image *) NULL) \
+    threshold_image=DestroyImage(threshold_image); \
+  if (trx_image != (Image *) NULL) \
+    trx_image=DestroyImage(trx_image); \
+  if (try_image != (Image *) NULL) \
+    try_image=DestroyImage(try_image); \
+  if (tx_image != (Image *) NULL) \
+    tx_image=DestroyImage(tx_image); \
+  if (ty_image != (Image *) NULL) \
+    ty_image=DestroyImage(ty_image); \
+  return((Image *) NULL); \
+}
+
   double
-    maxima = 0.0;
+    edge_factor = 0.0,
+    maxima = 0.0,
+    mean = 0.0,
+    standard_deviation = 0.0;
 
   Image
-    *correlation_image = (Image *) NULL,
-    *dpc_image = (Image *) NULL,
-    *fft_images = (Image *) NULL,
-    *gamma_image = (Image *) NULL,
+    *dot_product_image = (Image *) NULL,
     *magnitude_image = (Image *) NULL,
     *reconstruct_image = (Image *) NULL,
-    *reconstruct_magnitude = (Image *) NULL,
+    *rx_image = (Image *) NULL,
+    *ry_image = (Image *) NULL,
+    *trx_image = (Image *) NULL,
+    *temp_image = (Image *) NULL,
     *test_image = (Image *) NULL,
-    *test_magnitude = (Image *) NULL;
+    *threshold_image = (Image *) NULL,
+    *try_image = (Image *) NULL,
+    *tx_image = (Image *) NULL,
+    *ty_image = (Image *) NULL;
 
   MagickBooleanType
     status;
@@ -2991,7 +3105,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     geometry;
 
   /*
-    Phase correlation-based image similarity using FFT local statistics.
+    Dot product correlation-based image similarity using FFT local statistics.
   */
   test_image=CloneImage(image,0,0,MagickTrue,exception);
   if (test_image == (Image *) NULL)
@@ -3001,143 +3115,172 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SetImageExtent(test_image,2*(size_t) ceil(image->columns/2.0),
     2*(size_t) ceil(image->rows/2.0),exception);
   if (status == MagickFalse)
-    {
-      test_image=DestroyImage(test_image);
-      return((Image *) NULL);
-    }
+    ThrowDPCSimilarityException();
   (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
   /*
     Compute the cross correlation of the test and reconstruct magnitudes.
   */
   reconstruct_image=CloneImage(reconstruct,0,0,MagickTrue,exception);
   if (reconstruct_image == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      return((Image *) NULL);
-    }
+    ThrowDPCSimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
   ResetImagePage(reconstruct_image,"0x0+0+0");
-  status=SetImageExtent(reconstruct_image,2*(size_t) ceil(image->columns/2.0),
-    2*(size_t) ceil(image->rows/2.0),exception);
-  if (status == MagickFalse)
-    {
-      test_image=DestroyImage(test_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      return((Image *) NULL);
-    }
   SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
-  SetImageArtifact(test_image, "fourier:normalize", "inverse");
-  fft_images=ForwardFourierTransformImage(test_image,MagickTrue,exception);
-  if (fft_images == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      return((Image *) NULL);
-    }
-  test_magnitude=CloneImage(fft_images,0,0,MagickTrue,exception);
-  fft_images=DestroyImageList(fft_images);
-  if (test_magnitude == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      return((Image *) NULL);
-    }
-  (void) SetImageArtifact(reconstruct_image,"fourier:normalize","inverse");
-  fft_images=ForwardFourierTransformImage(reconstruct_image,MagickTrue,
+  /*
+    Compute X and Y derivatives of reference image.
+  */
+  (void) SetImageVirtualPixelMethod(reconstruct_image,EdgeVirtualPixelMethod,
     exception);
-  if (fft_images == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      test_magnitude=DestroyImage(test_magnitude);
-      return((Image *) NULL);
-    }
-  reconstruct_magnitude=CloneImage(fft_images,0,0,MagickTrue,exception);
-  fft_images=DestroyImageList(fft_images);
-  if (reconstruct_magnitude == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      test_magnitude=DestroyImage(test_magnitude);
-      return((Image *) NULL);
-    }
-    magnitude_image=CloneImage(reconstruct_magnitude,0,0,MagickTrue,exception);
-    if (magnitude_image == (Image *) NULL)
-      {
-        test_image=DestroyImage(test_image);
-        reconstruct_image=DestroyImage(reconstruct_image);
-        test_magnitude=DestroyImage(test_magnitude);
-        reconstruct_magnitude=DestroyImage(reconstruct_magnitude);
-        return((Image *) NULL);
-      }
-  DisableCompositeClampUnlessSpecified(magnitude_image);
-  (void) CompositeImage(magnitude_image,test_magnitude,MultiplyCompositeOp,
-    MagickTrue,0,0,exception);
-  /*
-    Compute the cross correlation of the test and reconstruction images.
-  */
-  correlation_image=SIMPhaseCorrelationImage(test_image,reconstruct_image,
-    magnitude_image,exception);
-  test_image=DestroyImage(test_image);
+  rx_image=SIMComputeDerivatives(reconstruct_image,"Sobel",exception);
+  if (rx_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  ry_image=SIMComputeDerivatives(reconstruct_image,"Sobel:90",exception);
   reconstruct_image=DestroyImage(reconstruct_image);
-  test_magnitude=DestroyImage(test_magnitude);
-  reconstruct_magnitude=DestroyImage(reconstruct_magnitude);
-  if (correlation_image == (Image *) NULL)
-    {
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
+  if (ry_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
   /*
-    Identify the maxima value in the image and its location.
+    Compute magnitude of derivatives.
   */
-  gamma_image=CloneImage(correlation_image,0,0,MagickTrue, exception);
-  correlation_image=DestroyImage(correlation_image);
-  if (gamma_image == (Image *) NULL)
-    {
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
-  ResetImagePage(gamma_image,"0x0+0+0");
-  SetGeometry(image, &geometry);
+  magnitude_image=SIMComputeMagnitude(rx_image,ry_image,exception);
+  if (magnitude_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  /*
+    Compute an edge normalization correction.
+  */
+  threshold_image=CloneImage(magnitude_image,0,0,MagickTrue,exception);
+  if (threshold_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  status=BilevelImage(threshold_image,0.0,exception);
+  if (status == MagickFalse)
+    ThrowDPCSimilarityException();
+  status=GetImageMean(threshold_image,&mean,&standard_deviation,exception);
+  threshold_image=DestroyImage(threshold_image);
+  if (status == MagickFalse)
+    ThrowDPCSimilarityException();
+  edge_factor=1.0/(QuantumScale*mean)/reconstruct->columns/reconstruct->rows;
+  /*
+    Divide X and Y derivitives of reference image by magnitude.
+  */
+  temp_image=SIMDivideByMagnitude(rx_image,magnitude_image,image,exception);
+  rx_image=DestroyImage(rx_image);
+  if (temp_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  rx_image=temp_image;
+  try_image=SIMDivideByMagnitude(ry_image,magnitude_image,image,exception);
+  magnitude_image=DestroyImage(magnitude_image);
+  ry_image=DestroyImage(ry_image);
+  if (try_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  ry_image=try_image;
+  /*
+    Compute X and Y derivatives of image.
+  */
+  (void) SetImageVirtualPixelMethod(test_image,EdgeVirtualPixelMethod,
+    exception);
+  tx_image=SIMComputeDerivatives(test_image,"Sobel",exception);
+  if (tx_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  ty_image=SIMComputeDerivatives(test_image,"Sobel:90",exception);
+  test_image=DestroyImage(test_image);
+  if (ty_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  /*
+    Compute magnitude of derivatives.
+  */
+  magnitude_image=SIMComputeMagnitude(tx_image,ty_image,exception);
+  if (magnitude_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  /*
+    Divide Lx and Ly by magnitude.
+  */
+  temp_image=SIMDivideByMagnitude(tx_image,magnitude_image,image,exception);
+  tx_image=DestroyImage(tx_image);
+  if (temp_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  tx_image=temp_image;
+  try_image=SIMDivideByMagnitude(ty_image,magnitude_image,image,exception);
+  ty_image=DestroyImage(ty_image);
+  magnitude_image=DestroyImage(magnitude_image);
+  if (try_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  ty_image=try_image;
+  /*
+    Compute the cross correlation of the test and reference images.
+  */
+  trx_image=SIMCrossCorrelationImage(tx_image,rx_image,exception);
+  rx_image=DestroyImage(rx_image);
+  tx_image=DestroyImage(tx_image);
+  if (trx_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  try_image=SIMCrossCorrelationImage(ty_image,ry_image,exception);
+  ry_image=DestroyImage(ry_image);
+  ty_image=DestroyImage(ty_image);
+  if (try_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  /*
+    Evaluate dot product correlation image.
+  */
+  (void) SetImageArtifact(try_image,"compose:clamp","False");
+  status=CompositeImage(trx_image,try_image,PlusCompositeOp,MagickTrue,0,0,
+    exception);
+  try_image=DestroyImage(try_image);
+  if (status == MagickFalse)
+    ThrowDPCSimilarityException();
+  status=SIMMultiplyImage(trx_image,edge_factor,
+    (const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowDPCSimilarityException();
+  /*
+    Crop results.
+  */
+  ResetImagePage(trx_image,"0x0+0+0");
+  SetGeometry(image,&geometry);
   geometry.width=image->columns-reconstruct->columns;
   geometry.height=image->rows-reconstruct->rows;
-  /*
-    Crop padding.
-  */
-  ResetImagePage(gamma_image,"0x0+0+0");
-  dpc_image=CropImage(gamma_image,&geometry,exception);
-  gamma_image=DestroyImage(gamma_image);
-  if (dpc_image == (Image *) NULL)
-    {
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
-  ResetImagePage(dpc_image,"0x0+0+0");
+  dot_product_image=CropImage(trx_image,&geometry,exception);
+  trx_image=DestroyImage(trx_image);
+  if (dot_product_image == (Image *) NULL)
+    ThrowDPCSimilarityException();
+  ResetImagePage(dot_product_image,"0x0+0+0");
   /*
     Identify the maxima value in the image and its location.
   */
-  status=GrayscaleImage(dpc_image,AveragePixelIntensityMethod,exception);
+  status=GrayscaleImage(dot_product_image,AveragePixelIntensityMethod,
+    exception);
   if (status == MagickFalse)
-    {
-      dpc_image=DestroyImage(dpc_image);
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
-  status=SIMMaximaImage(dpc_image,&maxima,offset,exception);
+    ThrowDPCSimilarityException();
+  status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
-    {
-      dpc_image=DestroyImage(dpc_image);
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
-  *similarity_metric=QuantumScale * maxima;
-  magnitude_image=DestroyImage(magnitude_image);
-  return(dpc_image);
+    ThrowDPCSimilarityException();
+  *similarity_metric=QuantumScale*maxima;
+  return(dot_product_image);
 }
 
 static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
+#define ThrowMSESimilarityException() \
+{ \
+  if (alpha_image != (Image *) NULL) \
+    alpha_image=DestroyImage(alpha_image); \
+  if (beta_image != (Image *) NULL) \
+    beta_image=DestroyImage(beta_image); \
+  if (channel_statistics != (ChannelStatistics *) NULL) \
+    channel_statistics=(ChannelStatistics *) \
+      RelinquishMagickMemory(channel_statistics); \
+  if (mean_image != (Image *) NULL) \
+    mean_image=DestroyImage(mean_image); \
+  if (mse_image != (Image *) NULL) \
+    mse_image=DestroyImage(mse_image); \
+  if (reconstruct_image != (Image *) NULL) \
+    reconstruct_image=DestroyImage(reconstruct_image); \
+  if (sum_image != (Image *) NULL) \
+    sum_image=DestroyImage(sum_image); \
+  if (alpha_image != (Image *) NULL) \
+    alpha_image=DestroyImage(alpha_image); \
+  return((Image *) NULL); \
+}
+
   ChannelStatistics
     *channel_statistics = (ChannelStatistics *) NULL;
 
@@ -3162,33 +3305,23 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   /*
     MSE correlation-based image similarity using FFT local statistics.
   */
-  test_image=SIMSquareImage(image, exception);
+  test_image=SIMSquareImage(image,exception);
   if (test_image == (Image *) NULL)
-    return((Image *) NULL);
-  reconstruct_image=SIMUnityImage(image, reconstruct, exception);
+    ThrowMSESimilarityException();
+  reconstruct_image=SIMUnityImage(image,reconstruct,exception);
   if (reconstruct_image == (Image *) NULL)
-    {
-      DestroyImage(test_image);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   /*
     Create (U * test)/# pixels.
   */
   alpha_image=SIMCrossCorrelationImage(test_image,reconstruct_image,exception);
   DestroyImage(test_image);
   if (alpha_image == (Image *) NULL)
-    {
-      DestroyImage(reconstruct_image);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   status=SIMMultiplyImage(alpha_image,1.0/reconstruct->columns/(double)
     reconstruct->rows,(const ChannelStatistics *) NULL,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(reconstruct_image);
-      DestroyImage(alpha_image);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   /*
     Create 2*(text * reconstruction)# pixels.
   */
@@ -3197,71 +3330,31 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   beta_image=SIMCrossCorrelationImage(image,reconstruct_image,exception);
   DestroyImage(reconstruct_image);
   if (beta_image == (Image *) NULL)
-    {
-      DestroyImage(alpha_image);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   status=SIMMultiplyImage(beta_image,-2.0/reconstruct->columns/(double)
     reconstruct->rows,(const ChannelStatistics *) NULL,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   /*
     Mean of reconstruction squared.
   */
   sum_image=SIMSquareImage(reconstruct,exception);
   if (sum_image == (Image *) NULL)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   channel_statistics=GetImageStatistics(sum_image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(sum_image);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   status=SetImageExtent(sum_image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(sum_image);
-      if (channel_statistics != (ChannelStatistics *) NULL)
-        channel_statistics=(ChannelStatistics *)
-          RelinquishMagickMemory(channel_statistics);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   status=SetImageStorageClass(sum_image,DirectClass,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(sum_image);
-      if (channel_statistics != (ChannelStatistics *) NULL)
-        channel_statistics=(ChannelStatistics *)
-          RelinquishMagickMemory(channel_statistics);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   status=SIMSetImageMean(sum_image,channel_statistics,exception);
-  if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(sum_image);
-      if (channel_statistics != (ChannelStatistics *) NULL)
-        channel_statistics=(ChannelStatistics *)
-          RelinquishMagickMemory(channel_statistics);
-      return((Image *) NULL);
-    }
   channel_statistics=(ChannelStatistics *)
     RelinquishMagickMemory(channel_statistics);
+  if (status == MagickFalse)
+    ThrowMSESimilarityException();
   /*
     Create mean image.
   */
@@ -3269,21 +3362,11 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   AppendImageToList(&sum_image,beta_image);
   mean_image=EvaluateImages(sum_image,SumEvaluateOperator,exception);
   if (mean_image == (Image *) NULL)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(sum_image);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   sum_image=DestroyImage(sum_image);
   status=GrayscaleImage(mean_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(mean_image);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   /*
     Crop to difference of reconstruction and test images.
   */
@@ -3294,11 +3377,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   mse_image=CropImage(mean_image,&geometry,exception);
   mean_image=DestroyImage(mean_image);
   if (mse_image == (Image *) NULL)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      return((Image *) NULL);
-    }
+    ThrowMSESimilarityException();
   /*
     Locate minimum.
   */
@@ -3306,13 +3385,10 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   (void) ClampImage(mse_image,exception);
   status=SIMMinimaImage(mse_image,&minima,offset,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(mse_image);
-      return((Image *) NULL);
-    }
-  (void) NegateImage(mse_image,MagickFalse,exception);
+    ThrowMSESimilarityException();
+  status=NegateImage(mse_image,MagickFalse,exception);
+  if (status == MagickFalse)
+    ThrowMSESimilarityException();
   *similarity_metric=QuantumScale*minima;
   DestroyImage(alpha_image);
   DestroyImage(beta_image);
@@ -3322,6 +3398,32 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
 static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
+#define ThrowNCCSimilarityException() \
+{ \
+  if (alpha_image != (Image *) NULL) \
+    alpha_image=DestroyImage(alpha_image); \
+  if (beta_image != (Image *) NULL) \
+    beta_image=DestroyImage(beta_image); \
+  if (channel_statistics != (ChannelStatistics *) NULL) \
+    channel_statistics=(ChannelStatistics *) \
+      RelinquishMagickMemory(channel_statistics); \
+  if (correlation_image != (Image *) NULL) \
+    correlation_image=DestroyImage(correlation_image); \
+  if (divide_image != (Image *) NULL) \
+    divide_image=DestroyImage(divide_image); \
+  if (ncc_image != (Image *) NULL) \
+    ncc_image=DestroyImage(ncc_image); \
+  if (normalize_image != (Image *) NULL) \
+    normalize_image=DestroyImage(normalize_image); \
+  if (reconstruct_image != (Image *) NULL) \
+    reconstruct_image=DestroyImage(reconstruct_image); \
+  if (test_image != (Image *) NULL) \
+    test_image=DestroyImage(test_image); \
+  if (variance_image != (Image *) NULL) \
+    variance_image=DestroyImage(variance_image); \
+  return((Image *) NULL); \
+}
+
   ChannelStatistics
     *channel_statistics = (ChannelStatistics *) NULL;
 
@@ -3350,57 +3452,37 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   */
   test_image=SIMSquareImage(image,exception);
   if (test_image == (Image *) NULL)
-    return((Image *) NULL);
+    ThrowNCCSimilarityException();
   reconstruct_image=SIMUnityImage(image,reconstruct,exception);
   if (reconstruct_image == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   /*
     Compute the cross correlation of the test and reconstruction images.
   */
   alpha_image=SIMCrossCorrelationImage(test_image,reconstruct_image,exception);
   test_image=DestroyImage(test_image);
   if (alpha_image == (Image *) NULL)
-    {
-      reconstruct_image=DestroyImage(reconstruct_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   status=SIMMultiplyImage(alpha_image,(double) QuantumRange*
     reconstruct->columns*reconstruct->rows,(const ChannelStatistics *) NULL,
     exception);
   if (status == MagickFalse)
-    {
-      alpha_image=DestroyImage(alpha_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   /*
-   Compute the cross correlation of the source and reconstruction images.
+    Compute the cross correlation of the source and reconstruction images.
   */
   beta_image=SIMCrossCorrelationImage(image,reconstruct_image,exception);
   reconstruct_image=DestroyImage(reconstruct_image);
   if (beta_image == (Image *) NULL)
-    {
-      alpha_image=DestroyImage(alpha_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   test_image=SIMSquareImage(beta_image,exception);
   beta_image=DestroyImage(beta_image);
   if (test_image == (Image *) NULL)
-    {
-      alpha_image=DestroyImage(alpha_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   status=SIMMultiplyImage(test_image,(double) QuantumRange,
     (const ChannelStatistics *) NULL,exception);
   if (status == MagickFalse)
-    {
-      test_image=DestroyImage(test_image);
-      alpha_image=DestroyImage(alpha_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   /*
     Compute the variance of the two images.
   */
@@ -3408,40 +3490,26 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   test_image=DestroyImage(test_image);
   alpha_image=DestroyImage(alpha_image);
   if (variance_image == (Image *) NULL)
-    return((Image *) NULL);
+    ThrowNCCSimilarityException();
   /*
     Subtract the image mean.
   */
   channel_statistics=GetImageStatistics(reconstruct,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
-    {
-      variance_image=DestroyImage(variance_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   status=SIMMultiplyImage(variance_image,1.0,channel_statistics,exception);
   if (status == MagickFalse)
-    {
-      variance_image=DestroyImage(variance_image);
-      channel_statistics=(ChannelStatistics *)
-        RelinquishMagickMemory(channel_statistics);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   normalize_image=SIMSubtractImageMean(image,reconstruct,channel_statistics,
     exception);
   channel_statistics=(ChannelStatistics *)
      RelinquishMagickMemory(channel_statistics);
   if (normalize_image == (Image *) NULL)
-    {
-      variance_image=DestroyImage(variance_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   correlation_image=SIMCrossCorrelationImage(image,normalize_image,exception);
   normalize_image=DestroyImage(normalize_image);
   if (correlation_image == (Image *) NULL)
-    {
-      variance_image=DestroyImage(variance_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   /*
     Divide the two images.
   */
@@ -3449,7 +3517,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   correlation_image=DestroyImage(correlation_image);
   variance_image=DestroyImage(variance_image);
   if (divide_image == (Image *) NULL)
-    return((Image *) NULL);
+    ThrowNCCSimilarityException();
   (void) ResetImagePage(divide_image,"0x0+0+0");
   SetGeometry(image,&geometry);
   geometry.width=image->columns-reconstruct->columns;
@@ -3461,23 +3529,17 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   ncc_image=CropImage(divide_image,&geometry,exception);
   divide_image=DestroyImage(divide_image);
   if (ncc_image == (Image *) NULL)
-    return((Image *) NULL);
+    ThrowNCCSimilarityException();
   /*
     Identify the maxima value in the image and its location.
   */
   (void) ResetImagePage(ncc_image,"0x0+0+0");
   status=GrayscaleImage(ncc_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
-    {
-      ncc_image=DestroyImage(ncc_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   status=SIMMaximaImage(ncc_image,&maxima,offset,exception);
   if (status == MagickFalse)
-    {
-      ncc_image=DestroyImage(ncc_image);
-      return((Image *) NULL);
-    }
+    ThrowNCCSimilarityException();
   *similarity_metric=1.0-QuantumScale*maxima;
   return(ncc_image);
 }
@@ -3485,6 +3547,29 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
 static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
+#define ThrowPhaseSimilarityException() \
+{ \
+  if (correlation_image != (Image *) NULL) \
+    correlation_image=DestroyImage(correlation_image); \
+  if (fft_images != (Image *) NULL) \
+    fft_images=DestroyImageList(fft_images); \
+  if (gamma_image != (Image *) NULL) \
+    gamma_image=DestroyImage(gamma_image); \
+  if (magnitude_image != (Image *) NULL) \
+    magnitude_image=DestroyImage(magnitude_image); \
+  if (phase_image != (Image *) NULL) \
+    phase_image=DestroyImage(phase_image); \
+  if (reconstruct_image != (Image *) NULL) \
+    reconstruct_image=DestroyImage(reconstruct_image); \
+  if (reconstruct_magnitude != (Image *) NULL) \
+    reconstruct_magnitude=DestroyImage(reconstruct_magnitude); \
+  if (test_image != (Image *) NULL) \
+    test_image=DestroyImage(test_image); \
+  if (test_magnitude != (Image *) NULL) \
+    test_magnitude=DestroyImage(test_magnitude); \
+  return((Image *) NULL); \
+}
+
   double
     maxima = 0.0;
 
@@ -3510,81 +3595,47 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   */
   test_image=CloneImage(image,0,0,MagickTrue,exception);
   if (test_image == (Image *) NULL)
-    return((Image *) NULL);
+    ThrowPhaseSimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
   ResetImagePage(test_image,"0x0+0+0");
   status=SetImageExtent(test_image,2*(size_t) ceil(image->columns/2.0),
     2*(size_t) ceil(image->rows/2.0),exception);
   if (status == MagickFalse)
-    {
-      test_image=DestroyImage(test_image);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
   /*
     Compute the cross correlation of the test and reconstruct magnitudes.
   */
   reconstruct_image=CloneImage(reconstruct,0,0,MagickTrue,exception);
   if (reconstruct_image == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
   ResetImagePage(reconstruct_image,"0x0+0+0");
   status=SetImageExtent(reconstruct_image,2*(size_t) ceil(image->columns/2.0),
     2*(size_t) ceil(image->rows/2.0),exception);
   if (status == MagickFalse)
-    {
-      test_image=DestroyImage(test_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
-  SetImageArtifact(test_image, "fourier:normalize", "inverse");
+  (void) SetImageArtifact(test_image,"fourier:normalize","inverse");
   fft_images=ForwardFourierTransformImage(test_image,MagickTrue,exception);
   if (fft_images == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   test_magnitude=CloneImage(fft_images,0,0,MagickTrue,exception);
   fft_images=DestroyImageList(fft_images);
   if (test_magnitude == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   (void) SetImageArtifact(reconstruct_image,"fourier:normalize","inverse");
   fft_images=ForwardFourierTransformImage(reconstruct_image,MagickTrue,
     exception);
   if (fft_images == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      test_magnitude=DestroyImage(test_magnitude);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   reconstruct_magnitude=CloneImage(fft_images,0,0,MagickTrue,exception);
   fft_images=DestroyImageList(fft_images);
   if (reconstruct_magnitude == (Image *) NULL)
-    {
-      test_image=DestroyImage(test_image);
-      reconstruct_image=DestroyImage(reconstruct_image);
-      test_magnitude=DestroyImage(test_magnitude);
-      return((Image *) NULL);
-    }
-    magnitude_image=CloneImage(reconstruct_magnitude,0,0,MagickTrue,exception);
-    if (magnitude_image == (Image *) NULL)
-      {
-        test_image=DestroyImage(test_image);
-        reconstruct_image=DestroyImage(reconstruct_image);
-        test_magnitude=DestroyImage(test_magnitude);
-        reconstruct_magnitude=DestroyImage(reconstruct_magnitude);
-        return((Image *) NULL);
-      }
+    ThrowPhaseSimilarityException();
+  magnitude_image=CloneImage(reconstruct_magnitude,0,0,MagickTrue,exception);
+  if (magnitude_image == (Image *) NULL)
+    ThrowPhaseSimilarityException();
   DisableCompositeClampUnlessSpecified(magnitude_image);
   (void) CompositeImage(magnitude_image,test_magnitude,MultiplyCompositeOp,
     MagickTrue,0,0,exception);
@@ -3598,22 +3649,16 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   test_magnitude=DestroyImage(test_magnitude);
   reconstruct_magnitude=DestroyImage(reconstruct_magnitude);
   if (correlation_image == (Image *) NULL)
-    {
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   /*
     Identify the maxima value in the image and its location.
   */
-  gamma_image=CloneImage(correlation_image,0,0,MagickTrue, exception);
+  gamma_image=CloneImage(correlation_image,0,0,MagickTrue,exception);
   correlation_image=DestroyImage(correlation_image);
   if (gamma_image == (Image *) NULL)
-    {
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   ResetImagePage(gamma_image,"0x0+0+0");
-  SetGeometry(image, &geometry);
+  SetGeometry(image,&geometry);
   geometry.width=image->columns-reconstruct->columns;
   geometry.height=image->rows-reconstruct->rows;
   /*
@@ -3623,28 +3668,17 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   phase_image=CropImage(gamma_image,&geometry,exception);
   gamma_image=DestroyImage(gamma_image);
   if (phase_image == (Image *) NULL)
-    {
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   ResetImagePage(phase_image,"0x0+0+0");
   /*
     Identify the maxima value in the image and its location.
   */
   status=GrayscaleImage(phase_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
-    {
-      phase_image=DestroyImage(phase_image);
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   status=SIMMaximaImage(phase_image,&maxima,offset,exception);
   if (status == MagickFalse)
-    {
-      phase_image=DestroyImage(phase_image);
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
+    ThrowPhaseSimilarityException();
   *similarity_metric=QuantumScale * maxima;
   magnitude_image=DestroyImage(magnitude_image);
   return(phase_image);
@@ -3653,6 +3687,28 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
 static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
+#define ThrowPSNRSimilarityException() \
+{ \
+  if (alpha_image != (Image *) NULL) \
+    alpha_image=DestroyImage(alpha_image); \
+  if (beta_image != (Image *) NULL) \
+    beta_image=DestroyImage(beta_image); \
+  if (channel_statistics != (ChannelStatistics *) NULL) \
+    channel_statistics=(ChannelStatistics *) \
+      RelinquishMagickMemory(channel_statistics); \
+  if (mean_image != (Image *) NULL) \
+    mean_image=DestroyImage(mean_image); \
+  if (psnr_image != (Image *) NULL) \
+    psnr_image=DestroyImage(psnr_image); \
+  if (reconstruct_image != (Image *) NULL) \
+    reconstruct_image=DestroyImage(reconstruct_image); \
+  if (sum_image != (Image *) NULL) \
+    sum_image=DestroyImage(sum_image); \
+  if (test_image != (Image *) NULL) \
+    test_image=DestroyImage(test_image); \
+  return((Image *) NULL); \
+}
+
   ChannelStatistics
     *channel_statistics = (ChannelStatistics *) NULL;
 
@@ -3677,33 +3733,23 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   /*
     MSE correlation-based image similarity using FFT local statistics.
   */
-  test_image=SIMSquareImage(image, exception);
+  test_image=SIMSquareImage(image,exception);
   if (test_image == (Image *) NULL)
-    return((Image *) NULL);
-  reconstruct_image=SIMUnityImage(image, reconstruct, exception);
+    ThrowPSNRSimilarityException();
+  reconstruct_image=SIMUnityImage(image,reconstruct,exception);
   if (reconstruct_image == (Image *) NULL)
-    {
-      DestroyImage(test_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   /*
     Create (U * test)/# pixels.
   */
   alpha_image=SIMCrossCorrelationImage(test_image,reconstruct_image,exception);
   DestroyImage(test_image);
   if (alpha_image == (Image *) NULL)
-    {
-      DestroyImage(reconstruct_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   status=SIMMultiplyImage(alpha_image,1.0/reconstruct->columns/(double)
     reconstruct->rows,(const ChannelStatistics *) NULL,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(reconstruct_image);
-      DestroyImage(alpha_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   /*
     Create 2*(text * reconstruction)# pixels.
   */
@@ -3712,71 +3758,31 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   beta_image=SIMCrossCorrelationImage(image,reconstruct_image,exception);
   DestroyImage(reconstruct_image);
   if (beta_image == (Image *) NULL)
-    {
-      DestroyImage(alpha_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   status=SIMMultiplyImage(beta_image,-2.0/reconstruct->columns/(double)
     reconstruct->rows,(const ChannelStatistics *) NULL,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   /*
     Mean of reconstruction squared.
   */
   sum_image=SIMSquareImage(reconstruct,exception);
   if (sum_image == (Image *) NULL)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   channel_statistics=GetImageStatistics(sum_image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(sum_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   status=SetImageExtent(sum_image,image->columns,image->rows,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(sum_image);
-      if (channel_statistics != (ChannelStatistics *) NULL)
-        channel_statistics=(ChannelStatistics *)
-          RelinquishMagickMemory(channel_statistics);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   status=SetImageStorageClass(sum_image,DirectClass,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(sum_image);
-      if (channel_statistics != (ChannelStatistics *) NULL)
-        channel_statistics=(ChannelStatistics *)
-          RelinquishMagickMemory(channel_statistics);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   status=SIMSetImageMean(sum_image,channel_statistics,exception);
-  if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(sum_image);
-      if (channel_statistics != (ChannelStatistics *) NULL)
-        channel_statistics=(ChannelStatistics *)
-          RelinquishMagickMemory(channel_statistics);
-      return((Image *) NULL);
-    }
   channel_statistics=(ChannelStatistics *)
     RelinquishMagickMemory(channel_statistics);
+  if (status == MagickFalse)
+    ThrowPSNRSimilarityException();
   /*
     Create mean image.
   */
@@ -3784,29 +3790,14 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   AppendImageToList(&sum_image,beta_image);
   mean_image=EvaluateImages(sum_image,SumEvaluateOperator,exception);
   if (mean_image == (Image *) NULL)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(sum_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   sum_image=DestroyImage(sum_image);
   status=SIMLogImage(mean_image,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(mean_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   status=GrayscaleImage(mean_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(mean_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   /*
     Crop to difference of reconstruction and test images.
   */
@@ -3817,11 +3808,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   psnr_image=CropImage(mean_image,&geometry,exception);
   mean_image=DestroyImage(mean_image);
   if (psnr_image == (Image *) NULL)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      return((Image *) NULL);
-    }
+    ThrowPSNRSimilarityException();
   /*
     Locate minimum.
   */
@@ -3829,13 +3816,10 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   (void) EvaluateImage(psnr_image,MaxEvaluateOperator,0.0,exception);
   status=SIMMinimaImage(psnr_image,&minima,offset,exception);
   if (status == MagickFalse)
-    {
-      DestroyImage(alpha_image);
-      DestroyImage(beta_image);
-      DestroyImage(psnr_image);
-      return((Image *) NULL);
-    }
-  (void) NegateImage(psnr_image,MagickFalse,exception);
+    ThrowPSNRSimilarityException();
+  status=NegateImage(psnr_image,MagickFalse,exception);
+  if (status == MagickFalse)
+    ThrowPSNRSimilarityException();
   *similarity_metric=QuantumScale*minima;
   DestroyImage(alpha_image);
   DestroyImage(beta_image);
