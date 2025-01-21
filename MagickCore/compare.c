@@ -2109,131 +2109,6 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
 */
 
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
-static Image *SIMComputeDerivatives(const Image *image,const char *kernel,
-  ExceptionInfo *exception)
-{
-  Image
-    *derivative_image;
-
-  KernelInfo
-    *kernel_info;
-
-  kernel_info=AcquireKernelInfo(kernel,exception);
-  if (kernel_info == (KernelInfo *) NULL)
-    return((Image *) NULL);
-  derivative_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
-    exception);
-  kernel_info=DestroyKernelInfo(kernel_info);
-  return(derivative_image);
-}
-
-static Image *SIMSquareImage(const Image *image,ExceptionInfo *exception)
-{
-  CacheView
-    *image_view;
-
-  Image
-    *square_image;
-
-  MagickBooleanType
-    status;
-
-  ssize_t
-    y;
-
-  /*
-    Square each pixel in the image.
-  */
-  square_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (square_image == (Image *) NULL)
-    return(square_image);
-  status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(square_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(square_image,square_image,square_image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) square_image->rows; y++)
-  {
-    Quantum
-      *magick_restrict q;
-
-    ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,square_image->columns,1,
-      exception);
-    if (q == (Quantum *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) square_image->columns; x++)
-    {
-      ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(square_image); i++)
-      {
-        PixelChannel channel = GetPixelChannelChannel(square_image,i);
-        PixelTrait traits = GetPixelChannelTraits(square_image,channel);
-        if ((traits & UpdatePixelTrait) == 0)
-          continue;
-        q[i]=(Quantum) ((double) q[i]*QuantumScale*(double) q[i]);
-      }
-      q+=(ptrdiff_t) GetPixelChannels(square_image);
-    }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      status=MagickFalse;
-  }
-  image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
-    square_image=DestroyImage(square_image);
-  return(square_image);
-}
-
-static Image *SIMComputeMagnitude(Image *rx_image,Image *ry_image,
-  ExceptionInfo *exception)
-{
-  Image
-    *magnitude_image,
-    *xsq_image,
-    *ysq_image;
-
-  MagickBooleanType
-    status;
-
-  (void) SetImageArtifact(rx_image,"compose:clamp","False");
-  xsq_image=SIMSquareImage(rx_image,exception);
-  if (xsq_image == (Image *) NULL)
-    return((Image *) NULL);
-  (void) SetImageArtifact(ry_image,"compose:clamp","False");
-  ysq_image=SIMSquareImage(ry_image, exception);
-  if (ysq_image == (Image *) NULL)
-    {
-      xsq_image=DestroyImage(xsq_image);
-      return((Image *) NULL);
-    }
-  status=CompositeImage(xsq_image,ysq_image,PlusCompositeOp,MagickTrue,0,
-    0,exception);
-  magnitude_image=xsq_image;
-  ysq_image=DestroyImage(ysq_image);
-  if (status == MagickFalse)
-    {
-      magnitude_image=DestroyImage(magnitude_image);
-      return((Image *) NULL);
-    }
-  status=EvaluateImage(magnitude_image,PowEvaluateOperator,0.5,exception);
-  if (status == MagickFalse)
-    {
-      magnitude_image=DestroyImage(magnitude_image);
-      return (Image *) NULL;
-    }
-  return(magnitude_image);
-}
-
 static Image *SIMCrossCorrelationImage(const Image *alpha_image,
   const Image *beta_image,ExceptionInfo *exception)
 {
@@ -2298,6 +2173,24 @@ static Image *SIMCrossCorrelationImage(const Image *alpha_image,
     complex_multiplication->next,MagickFalse,exception);
   complex_multiplication=DestroyImageList(complex_multiplication);
   return(cross_correlation);
+}
+
+static Image *SIMDerivativeImage(const Image *image,const char *kernel,
+  ExceptionInfo *exception)
+{
+  Image
+    *derivative_image;
+
+  KernelInfo
+    *kernel_info;
+
+  kernel_info=AcquireKernelInfo(kernel,exception);
+  if (kernel_info == (KernelInfo *) NULL)
+    return((Image *) NULL);
+  derivative_image=MorphologyImage(image,ConvolveMorphology,1,kernel_info,
+    exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
+  return(derivative_image);
 }
 
 static Image *SIMDivideImage(const Image *numerator_image,
@@ -2457,6 +2350,113 @@ static MagickBooleanType SIMLogImage(Image *image,ExceptionInfo *exception)
   }
   image_view=DestroyCacheView(image_view);
   return(status);
+}
+
+static Image *SIMSquareImage(const Image *image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  Image
+    *square_image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Square each pixel in the image.
+  */
+  square_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (square_image == (Image *) NULL)
+    return(square_image);
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(square_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(square_image,square_image,square_image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) square_image->rows; y++)
+  {
+    Quantum
+      *magick_restrict q;
+
+    ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,square_image->columns,1,
+      exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) square_image->columns; x++)
+    {
+      ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(square_image); i++)
+      {
+        PixelChannel channel = GetPixelChannelChannel(square_image,i);
+        PixelTrait traits = GetPixelChannelTraits(square_image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=(Quantum) ((double) q[i]*QuantumScale*(double) q[i]);
+      }
+      q+=(ptrdiff_t) GetPixelChannels(square_image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    square_image=DestroyImage(square_image);
+  return(square_image);
+}
+
+static Image *SIMMagnitudeImage(Image *alpha_image,Image *beta_image,
+  ExceptionInfo *exception)
+{
+  Image
+    *magnitude_image,
+    *xsq_image,
+    *ysq_image;
+
+  MagickBooleanType
+    status;
+
+  (void) SetImageArtifact(alpha_image,"compose:clamp","False");
+  xsq_image=SIMSquareImage(alpha_image,exception);
+  if (xsq_image == (Image *) NULL)
+    return((Image *) NULL);
+  (void) SetImageArtifact(beta_image,"compose:clamp","False");
+  ysq_image=SIMSquareImage(beta_image, exception);
+  if (ysq_image == (Image *) NULL)
+    {
+      xsq_image=DestroyImage(xsq_image);
+      return((Image *) NULL);
+    }
+  status=CompositeImage(xsq_image,ysq_image,PlusCompositeOp,MagickTrue,0,0,
+    exception);
+  magnitude_image=xsq_image;
+  ysq_image=DestroyImage(ysq_image);
+  if (status == MagickFalse)
+    {
+      magnitude_image=DestroyImage(magnitude_image);
+      return((Image *) NULL);
+    }
+  status=EvaluateImage(magnitude_image,PowEvaluateOperator,0.5,exception);
+  if (status == MagickFalse)
+    {
+      magnitude_image=DestroyImage(magnitude_image);
+      return (Image *) NULL;
+    }
+  return(magnitude_image);
 }
 
 static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
@@ -3131,17 +3131,17 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   */
   (void) SetImageVirtualPixelMethod(reconstruct_image,EdgeVirtualPixelMethod,
     exception);
-  rx_image=SIMComputeDerivatives(reconstruct_image,"Sobel",exception);
+  rx_image=SIMDerivativeImage(reconstruct_image,"Sobel",exception);
   if (rx_image == (Image *) NULL)
     ThrowDPCSimilarityException();
-  ry_image=SIMComputeDerivatives(reconstruct_image,"Sobel:90",exception);
+  ry_image=SIMDerivativeImage(reconstruct_image,"Sobel:90",exception);
   reconstruct_image=DestroyImage(reconstruct_image);
   if (ry_image == (Image *) NULL)
     ThrowDPCSimilarityException();
   /*
     Compute magnitude of derivatives.
   */
-  magnitude_image=SIMComputeMagnitude(rx_image,ry_image,exception);
+  magnitude_image=SIMMagnitudeImage(rx_image,ry_image,exception);
   if (magnitude_image == (Image *) NULL)
     ThrowDPCSimilarityException();
   /*
@@ -3177,17 +3177,17 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   */
   (void) SetImageVirtualPixelMethod(test_image,EdgeVirtualPixelMethod,
     exception);
-  tx_image=SIMComputeDerivatives(test_image,"Sobel",exception);
+  tx_image=SIMDerivativeImage(test_image,"Sobel",exception);
   if (tx_image == (Image *) NULL)
     ThrowDPCSimilarityException();
-  ty_image=SIMComputeDerivatives(test_image,"Sobel:90",exception);
+  ty_image=SIMDerivativeImage(test_image,"Sobel:90",exception);
   test_image=DestroyImage(test_image);
   if (ty_image == (Image *) NULL)
     ThrowDPCSimilarityException();
   /*
     Compute magnitude of derivatives.
   */
-  magnitude_image=SIMComputeMagnitude(tx_image,ty_image,exception);
+  magnitude_image=SIMMagnitudeImage(tx_image,ty_image,exception);
   if (magnitude_image == (Image *) NULL)
     ThrowDPCSimilarityException();
   /*
