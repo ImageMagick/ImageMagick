@@ -111,7 +111,6 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   const MetricType metric,double *distortion,ExceptionInfo *exception)
 {
@@ -2306,7 +2305,7 @@ static MagickBooleanType SIMLogImage(Image *image,ExceptionInfo *exception)
     y;
 
   /*
-    Multiply each pixel by a log factor.
+    Take the log of each pixel.
   */
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -2435,7 +2434,7 @@ static Image *SIMMagnitudeImage(Image *alpha_image,Image *beta_image,
   if (xsq_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageArtifact(beta_image,"compose:clamp","False");
-  ysq_image=SIMSquareImage(beta_image, exception);
+  ysq_image=SIMSquareImage(beta_image,exception);
   if (ysq_image == (Image *) NULL)
     {
       xsq_image=DestroyImage(xsq_image);
