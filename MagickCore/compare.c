@@ -3963,7 +3963,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
     shared(progress,status,similarity_metric) \
-    magick_number_threads(image,image,image->rows-reconstruct->rows+1,1)
+    magick_number_threads(image,image,(image->rows-reconstruct->rows+1) << 3,1)
 #endif
   for (y=0; y < (ssize_t) (image->rows-reconstruct->rows+1); y++)
   {
