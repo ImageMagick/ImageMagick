@@ -343,9 +343,6 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  size_t
-    length;
-
   TIFF
     *tiff;
 
@@ -401,7 +398,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
     }
   status=MagickTrue;
   c=ReadBlobByte(image);
-  for (length=0; c != EOF; length++)
+  while (c != EOF)
   {
     unsigned char byte = (unsigned char) c;
     if (TIFFWriteRawStrip(tiff,0,&byte,1) < 0)
@@ -411,7 +408,6 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
       }
     c=ReadBlobByte(image);
   }
-  TIFFSetField(tiff,TIFFTAG_STRIPBYTECOUNTS,(uint32) length);
   TIFFClose(tiff);
   (void) CloseBlob(image);
   image=DestroyImage(image);
