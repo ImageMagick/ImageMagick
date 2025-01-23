@@ -3961,9 +3961,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   progress=0;
   similarity_view=AcquireAuthenticCacheView(similarity_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) \
-    shared(progress,status,similarity_metric) \
-    magick_number_threads(image,image,(image->rows-reconstruct->rows+1) << 3,1)
+  #pragma omp parallel for schedule(static,1) \
+    shared(progress,status,similarity_metric)
 #endif
   for (y=0; y < (ssize_t) (image->rows-reconstruct->rows+1); y++)
   {
