@@ -411,6 +411,11 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   TIFFClose(tiff);
   (void) CloseBlob(image);
   image=DestroyImage(image);
+  if (status == MagickFalse)
+    {
+      (void) RelinquishUniqueFileResource(filename);
+      return((Image*) NULL);
+    }
   /*
     Read TIFF image.
   */
