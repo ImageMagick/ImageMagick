@@ -3676,7 +3676,11 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(phase_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
-  *similarity_metric=QuantumScale * maxima;
+  status=SIMMultiplyImage(phase_image,QuantumRange,
+    (const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowPhaseSimilarityException();
+  *similarity_metric=QuantumScale*maxima;
   magnitude_image=DestroyImage(magnitude_image);
   return(phase_image);
 }

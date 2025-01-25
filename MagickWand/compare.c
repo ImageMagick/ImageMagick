@@ -44,6 +44,7 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/mogrify-private.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/string-private.h"
 
 /*
@@ -1178,7 +1179,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           case PhaseCorrelationErrorMetric:
           case PeakSignalToNoiseRatioErrorMetric:
           {
-            dissimilarity_threshold*=2.2;
+            dissimilarity_threshold*=MagickPI;
             break;
           }
           default:
