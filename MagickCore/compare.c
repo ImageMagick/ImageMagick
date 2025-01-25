@@ -3817,7 +3817,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   status=NegateImage(psnr_image,MagickFalse,exception);
   if (status == MagickFalse)
     ThrowPSNRSimilarityException();
-  *similarity_metric=0.01*QuantumScale*minima;
+  *similarity_metric=QuantumScale*minima/48.1647;
   DestroyImage(alpha_image);
   DestroyImage(beta_image);
   return(psnr_image);
@@ -4000,7 +4000,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         break;
       similarity=GetSimilarityMetric(image,reconstruct,metric,x,y,exception);
       if (metric == PeakSignalToNoiseRatioErrorMetric)
-        similarity*=0.01;
+        similarity/=48.1647;
       if ((metric == DotProductCorrelationErrorMetric) ||
           (metric == PhaseCorrelationErrorMetric) ||
           (metric == NormalizedCrossCorrelationErrorMetric) ||

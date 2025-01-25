@@ -1172,12 +1172,21 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     {
       similarity_image=SimilarityImage(image,reconstruct_image,metric,
         similarity_threshold,&offset,&similarity_metric,exception);
-      if (similarity_metric > dissimilarity_threshold)
+      if (dissimilarity_threshold == DefaultDissimilarityThreshold)
+        switch (metric)
         {
-          similar=MagickFalse;
-          (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-            "ImagesTooDissimilar","`%s'",image->filename);
+          case PhaseCorrelationErrorMetric:
+          case PeakSignalToNoiseRatioErrorMetric:
+          {
+            dissimilarity_threshold*=2.2;
+            break;
+          }
+          default:
+            break;
         }
+      if (similarity_metric > dissimilarity_threshold)
+        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+          "ImagesTooDissimilar","`%s'",image->filename);
     }
   if (similarity_image == (Image *) NULL)
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
