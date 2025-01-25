@@ -3510,6 +3510,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case FaxCompression:
       case Group4Compression:
       {
+        size_t
+          channels;
+
         if (IsImageMonochrome(image) == MagickFalse)
           {
             if (IsImageGray(image) == MagickFalse)
@@ -3518,7 +3521,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               (void) SetImageDepth(image,1,exception);
           }
         image->depth=1;
-        if (GetPixelChannels(image) != 1)
+        channels=GetPixelChannels(image);
+        if (channels != 1 && (channels != 2 || image->storage_class != PseudoClass))
           compression=UndefinedCompression;
         break;
       }
