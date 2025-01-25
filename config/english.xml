@@ -521,9 +521,6 @@
         <message name="ImageSizeDiffers">
           image size differs
         </message>
-        <message name="ImagesTooDissimilar">
-          images too dissimilar
-        </message>
         <message name="LeftAndRightImageSizesDiffer">
           left and right image sizes differ
         </message>
@@ -549,6 +546,9 @@
       <warning>
         <message name="AssociateProfile">
           associate profile with image, a source and destination color profile required for transform
+        </message>
+        <message name="ImagesTooDissimilar">
+          images too dissimilar
         </message>
         <message name="UnableToTransformColorspace">
           unable to transform colorspace

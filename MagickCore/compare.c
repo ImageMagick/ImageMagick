@@ -1341,14 +1341,12 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   MagickBooleanType
     status;
 
-  ssize_t
-    j;
-
   size_t
     columns,
     rows;
 
   ssize_t
+    j,
     y;
 
   /*
@@ -3251,7 +3249,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
-  *similarity_metric=QuantumScale*maxima;
+  *similarity_metric=1.0-QuantumScale*maxima;
   return(dot_product_image);
 }
 
@@ -3819,7 +3817,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   status=NegateImage(psnr_image,MagickFalse,exception);
   if (status == MagickFalse)
     ThrowPSNRSimilarityException();
-  *similarity_metric=QuantumScale*minima;
+  *similarity_metric=0.01*QuantumScale*minima;
   DestroyImage(alpha_image);
   DestroyImage(beta_image);
   return(psnr_image);
@@ -3961,8 +3959,9 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   progress=0;
   similarity_view=AcquireAuthenticCacheView(similarity_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) \
-    shared(progress,status,similarity_metric)
+  #pragma omp parallel for schedule(static) \
+    shared(progress,status,similarity_metric) \
+    magick_number_threads(image,image,(image->rows-reconstruct->rows+1) << 3,1)
 #endif
   for (y=0; y < (ssize_t) (image->rows-reconstruct->rows+1); y++)
   {
@@ -4002,7 +4001,9 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       similarity=GetSimilarityMetric(image,reconstruct,metric,x,y,exception);
       if (metric == PeakSignalToNoiseRatioErrorMetric)
         similarity*=0.01;
-      if ((metric == NormalizedCrossCorrelationErrorMetric) ||
+      if ((metric == DotProductCorrelationErrorMetric) ||
+          (metric == PhaseCorrelationErrorMetric) ||
+          (metric == NormalizedCrossCorrelationErrorMetric) ||
           (metric == UndefinedErrorMetric))
         similarity=1.0-similarity;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

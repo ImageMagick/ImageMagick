@@ -255,6 +255,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     fire,
     pend,
     respect_parentheses,
+    similar = MagickTrue,
     subimage_search;
 
   MagickStatusType
@@ -1172,7 +1173,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       similarity_image=SimilarityImage(image,reconstruct_image,metric,
         similarity_threshold,&offset,&similarity_metric,exception);
       if (similarity_metric > dissimilarity_threshold)
-        ThrowCompareException(ImageError,"ImagesTooDissimilar",image->filename);
+        {
+          similar=MagickFalse;
+          (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+            "ImagesTooDissimilar","`%s'",image->filename);
+        }
     }
   if (similarity_image == (Image *) NULL)
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
@@ -1233,24 +1238,21 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   switch (metric)
   {
     case DotProductCorrelationErrorMetric:
-    case PhaseCorrelationErrorMetric:
-    {
-      distortion=1.0-distortion;
-      break;
-    }
     case NormalizedCrossCorrelationErrorMetric:
     {
       distortion=1.0-distortion;
       similarity_metric=1.0-similarity_metric;
       break;
     }
-    case PeakSignalToNoiseRatioErrorMetric:
+    case PhaseCorrelationErrorMetric:
     {
-      distortion*=QuantumScale;
+      distortion=1.0-distortion;
       break;
     }
     default: break;
   }
+  if (fabs(distortion) > CompareEpsilon)
+    similar=MagickFalse;
   if (difference_image == (Image *) NULL)
     status=0;
   else
@@ -1286,7 +1288,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             {
               (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
                 (double) QuantumRange*distortion,GetMagickPrecision(),
-                0.01*distortion);
+                distortion);
               break;
             }
             case MeanErrorPerPixelErrorMetric:
@@ -1505,15 +1507,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       difference_image=DestroyImageList(difference_image);
     }
   DestroyCompare();
-  if ((metric == NormalizedCrossCorrelationErrorMetric) ||
-      (metric == StructuralSimilarityErrorMetric) ||
-      (metric == UndefinedErrorMetric))
-    {
-      if (fabs(distortion-1.0) > CompareEpsilon)
-        (void) SetImageOption(image_info,"compare:dissimilar","true");
-    }
-  else
-    if (fabs(distortion) > CompareEpsilon)
-      (void) SetImageOption(image_info,"compare:dissimilar","true");
+  if (similar == MagickFalse)
+    (void) SetImageOption(image_info,"compare:dissimilar","true");
   return(status != 0 ? MagickTrue : MagickFalse);
 }
