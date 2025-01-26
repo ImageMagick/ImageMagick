@@ -1179,13 +1179,13 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           case PhaseCorrelationErrorMetric:
           case PeakSignalToNoiseRatioErrorMetric:
           {
-            dissimilarity_threshold*=MagickPI;
+            dissimilarity_threshold=1.0;
             break;
           }
           default:
             break;
         }
-      if (similarity_metric > dissimilarity_threshold)
+      if (similarity_metric > (dissimilarity_threshold+MagickEpsilon))
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
           "ImagesTooDissimilar","`%s'",image->filename);
     }
