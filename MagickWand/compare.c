@@ -201,7 +201,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define CompareEpsilon  (1.0e-06)
-#define DefaultDissimilarityThreshold  0.31830988618379067154
+#define DefaultDissimilarityThreshold  (1.0/MagickPI)
 #define DefaultSimilarityThreshold  (-1.0)
 #define DestroyCompare() \
 { \
