@@ -1081,8 +1081,10 @@ namespace Magick
     // Magnify image by integral size
     void magnify(void);
 
-    // Remap image colors with closest color from reference image
+    // backwards compatibility
     void map(const Image &mapImage_,const bool dither_=false);
+    // Remap image colors with closest color from reference image
+    void map(const Image &mapImage_,const DitherMethod ditherMethod_);
 
     // Delineate arbitrarily shaped clusters in the image.
     void meanShift(const size_t width_,const size_t height_,
