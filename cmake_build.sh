@@ -1,23 +1,39 @@
 #!/bin/bash
 
 # Build and test the cmake build
+# Should work out of the box on Linux and macOS
+# Windows requires a bash shell, e.g. Git Bash
+# conan requires that conan is installed
 #
 # Before:
-# rm -rf build && cd build 
+# rm -rf build && cd build
+#
+# Then:
+# bash ../cmake_build.sh <lib-source> <build-type> <Release|Debug>
+#
 #
 # Usage examples:
+#
+# Retrieve all dependencies from conan and build a static library in Release mode
 # bash ../cmake_build.sh conan static Release
+#
+# Use conan w/ pkg-config to find dependencies and build a static library in Debug mode
+# (this is mostly for testing pkg-config support and is not supported on Windows)
 # bash ../cmake_build.sh pkg static Debug
+#
+# Use system-installed libraries available to CMake and build a shared library in Release mode
 # bash ../cmake_build.sh system shared Release
 #
-# Exports a CMake config file to ${HOME}/tmp/im
 #
-# This works on all OS but requires bash
-#
+# Exports a CMake config file to ${CMAKE_INSTALL_PREFIX} (or ${HOME}/tmp/im by default)
+# and builds a small test program using the exported config file and the ImageMagick library
 
 CONAN=$1
 STATIC=$2
 RELEASE=$3
+if [ -z "${CMAKE_INSTALL_PREFIX}" ]; then
+  CMAKE_INSTALL_PREFIX=${HOME}/tmp/im
+fi
 
 case ${STATIC} in
   static)
@@ -46,7 +62,7 @@ shift
 
 case ${CONAN} in
   conan)
-    conan install .. -of . --build=missing -o libtype=${STATIC} --settings=build_type=${RELEASE} $@
+    conan install .. -of . --build=missing -o libtype=${STATIC} --settings=build_type=${RELEASE} --settings compiler.cppstd=20 $@
     CMAKE_CONAN=-DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
     CMAKE_CONAN_TESTS=-DCMAKE_TOOLCHAIN_FILE="../conan_toolchain.cmake"
     case ${STATIC} in
@@ -59,7 +75,7 @@ case ${CONAN} in
     esac
     ;;
   pkg)
-    CONAN_GENERATOR=PkgConfigDeps conan install .. -of . --build=missing -o libtype=${STATIC} --settings=build_type=${RELEASE} ${PROFILE}
+    CONAN_GENERATOR=PkgConfigDeps conan install .. -of . --build=missing -o libtype=${STATIC} --settings=build_type=${RELEASE} --settings compiler.cppstd=20 ${PROFILE}
     export PKG_CONFIG_PATH=$(pwd)
     ;;
   system)
@@ -71,14 +87,14 @@ case ${CONAN} in
 esac
 
 # Main ImageMagick build
-cmake .. -DCMAKE_BUILD_TYPE=${RELEASE} ${CMAKE_CONAN} ${CMAKE_STATIC} ${CMAKE_NOSYS} -DCMAKE_INSTALL_PREFIX=${HOME}/tmp/im/ -DZERO_CONFIGURATION_SUPPORT=ON
+cmake .. -DCMAKE_BUILD_TYPE=${RELEASE} ${CMAKE_CONAN} ${CMAKE_STATIC} ${CMAKE_NOSYS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DZERO_CONFIGURATION_SUPPORT=ON
 cmake --build . -j 4
 cmake --install .
 
 # Build a client program using the exported CMake config file
 mkdir -p delegates
 cd delegates
-ImageMagick_ROOT=${HOME}/tmp/im/lib/cmake cmake ../../tests -DCMAKE_BUILD_TYPE=Release ${CMAKE_CONAN_TESTS}
+ImageMagick_ROOT=${CMAKE_INSTALL_PREFIX}/lib/cmake cmake ../../tests -DCMAKE_BUILD_TYPE=Release ${CMAKE_CONAN_TESTS}
 cmake --build .
 ./delegates
 case `uname` in
