@@ -163,7 +163,7 @@ jobs:
 
     - name: Set expected delegates (conan/pkgconfig)
       shell: bash
-      run: echo "EXPECTED_DELEGATES=bzlib cairo fftw fontconfig freetype heic jbig jng jp2 jpeg jxl lcms lzma openexr png raw tiff webp xml zlib zstd" >> $GITHUB_ENV
+      run: echo "EXPECTED_DELEGATES=bzlib cairo fftw fontconfig freetype heic jbig jng jp2 jpeg jxl lcms lzma openexr pangocairo png raw tiff webp xml zlib zstd" >> $GITHUB_ENV
       if: matrix.provider == 'conan' || matrix.provider == 'pkgconf'
 
     - name: Set custom delegates
