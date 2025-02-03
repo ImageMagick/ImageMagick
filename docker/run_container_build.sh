@@ -17,6 +17,6 @@ USER="--user `id -u`:`id -g`"
   cd ${DIRNAME}/..
   SOURCES="-v `pwd`:/src"
   cd docker
-  docker build -t magick-${CONTAINER} -f Dockerfile.fedora . $@
+  docker build -t magick-${CONTAINER} -f Dockerfile.${CONTAINER} . $@
   docker run ${SOURCES} ${USER} magick-${CONTAINER}
 )
