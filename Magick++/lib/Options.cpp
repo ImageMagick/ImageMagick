@@ -475,16 +475,15 @@ void Magick::Options::quantizeDither(const bool ditherFlag_)
   quantizeDither(ditherFlag_ ? RiemersmaDitherMethod : NoDitherMethod);
 }
 
+bool Magick::Options::quantizeDither(void) const
+{
+  return(static_cast<bool>(_imageInfo->dither));
+}
+
 void Magick::Options::quantizeDither(const DitherMethod ditherMethod_)
 {
   _imageInfo->dither=(MagickBooleanType) (ditherMethod_ != NoDitherMethod);
   _quantizeInfo->dither_method=ditherMethod_;
-}
-
-
-bool Magick::Options::quantizeDither(void) const
-{
-  return(static_cast<bool>(_imageInfo->dither));
 }
 
 void Magick::Options::quantizeDitherMethod(const DitherMethod ditherMethod_)

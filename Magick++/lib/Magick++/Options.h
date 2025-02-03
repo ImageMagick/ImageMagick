@@ -165,11 +165,10 @@ namespace Magick
     void quantizeColorSpace(const ColorspaceType colorSpace_);
     ColorspaceType quantizeColorSpace(void) const;
 
-    // backwards compatibility
-    void quantizeDither(const bool ditherFlag_);
     // Dither image during quantization.
-    void quantizeDither(const DitherMethod ditherMethod_);
+    void quantizeDither(const bool ditherFlag_);
     bool quantizeDither(void) const;
+    void quantizeDither(const DitherMethod ditherMethod_);
 
     // Dither method
     void quantizeDitherMethod(const DitherMethod ditherMethod_);
