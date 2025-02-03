@@ -81,9 +81,12 @@ endmacro()
 # This is the centralized dependency resolution procedure
 #
 macro(magick_find_delegate)
-  cmake_parse_arguments(MAGICK_FIND "" "DELEGATE;NAME;DEFAULT;PKGCONFIG" "TARGETS" ${ARGN})
+  cmake_parse_arguments(MAGICK_FIND "" "DELEGATE;NAME;DEFAULT;PKGCONFIG;DISPLAYNAME" "TARGETS" ${ARGN})
 
   unset(MAGICK_FIND_SEARCH_TARGET)
+  if(NOT DEFINED MAGICK_FIND_DISPLAYNAME)
+    set(MAGICK_FIND_DISPLAYNAME ${MAGICK_FIND_NAME})
+  endif()
   if((NOT DEFINED ${MAGICK_FIND_DELEGATE} AND ${MAGICK_FIND_DEFAULT}) OR ${MAGICK_FIND_DELEGATE})
     # package is enabled by default or explicitly enabled
     set(${MAGICK_FIND_NAME}_FOUND FALSE)
@@ -99,13 +102,13 @@ macro(magick_find_delegate)
 
     # First attempt, user-supplied CMake config file (or user-suppied <pkg>_ROOT variable)
     find_package(${MAGICK_FIND_NAME} QUIET NO_CMAKE_SYSTEM_PATH)
-    handle_cmake_dep("-- Found CMake user config ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
+    handle_cmake_dep("-- Found CMake user config ${MAGICK_FIND_DISPLAYNAME} ${${MAGICK_FIND_NAME}_VERSION}")
 
     # Second attempt, pkg-config with a user-supplied path
     if(DEFINED ENV{PKG_CONFIG_PATH} AND NOT ${MAGICK_FIND_NAME}_FOUND AND DEFINED PkgConfig_FOUND)
       set(PKG_CONFIG_LIBDIR_SAVE $ENV{PKG_CONFIG_LIBDIR})
       set(ENV{PKG_CONFIG_LIBDIR} "no-system-wide-packages")
-      try_handle_pkgconfig_dep("-- Found pkg-config user config ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
+      try_handle_pkgconfig_dep("-- Found pkg-config user config ${MAGICK_FIND_DISPLAYNAME} ${${MAGICK_FIND_NAME}_VERSION}")
       set(ENV{PKG_CONFIG_LIBDIR} ${PKG_CONFIG_LIBDIR_SAVE})
       unset(PKG_CONFIG_LIBDIR_SAVE)
     endif()
@@ -113,19 +116,19 @@ macro(magick_find_delegate)
     # Third attempt, built-in CMake find module
     if(NOT ${MAGICK_FIND_NAME}_FOUND)
       find_package(${MAGICK_FIND_NAME} QUIET)
-      handle_cmake_dep("-- Found CMake system config ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
+      handle_cmake_dep("-- Found CMake system config ${MAGICK_FIND_DISPLAYNAME} ${${MAGICK_FIND_NAME}_VERSION}")
     endif()
 
     # Fourth attempt, system-wide pkg-config module
     if(NOT ${MAGICK_FIND_NAME}_FOUND AND DEFINED PkgConfig_FOUND)
-      try_handle_pkgconfig_dep("-- Found pkg-config system config ${MAGICK_FIND_NAME} ${${MAGICK_FIND_NAME}_VERSION}")
+      try_handle_pkgconfig_dep("-- Found pkg-config system config ${MAGICK_FIND_DISPLAYNAME} ${${MAGICK_FIND_NAME}_VERSION}")
     endif()
   endif()
 
   if(${MAGICK_FIND_DELEGATE})
-    message("Delegate ${MAGICK_FIND_NAME} enabled")
+    message("Delegate ${MAGICK_FIND_DISPLAYNAME} enabled")
   else()
-    message("Delegate ${MAGICK_FIND_NAME} not found or disabled")
+    message("Delegate ${MAGICK_FIND_DISPLAYNAME} not found or disabled")
   endif()
 endmacro()
 
@@ -496,6 +499,10 @@ if (LTDL_FOUND)
   endif()
 endif()
 
+magick_find_delegate(DELEGATE PANGO_DELEGATE NAME pango DEFAULT TRUE)
+magick_find_delegate(DELEGATE PANGOCAIRO_DELEGATE NAME pango DEFAULT TRUE
+    TARGETS pango::pangocairo PKGCONFIG pangocairo DISPLAYNAME pangocairo)
+
 # TODO
 # These are absent from conan
 magick_find_delegate(DELEGATE AUTOTRACE_DELEGATE NAME AUTOTRACE DEFAULT TRUE)
@@ -505,8 +512,6 @@ magick_find_delegate(DELEGATE FLIF_DELEGATE NAME FLIF DEFAULT TRUE)
 magick_find_delegate(DELEGATE FPX_DELEGATE NAME FlashPIX DEFAULT TRUE)
 magick_find_delegate(DELEGATE GS_DELEGATE NAME Ghostscript DEFAULT TRUE)
 magick_find_delegate(DELEGATE GVC_DELEGATE NAME GVC DEFAULT TRUE)
-magick_find_delegate(DELEGATE PANGO_DELEGATE NAME Pango DEFAULT TRUE)
-magick_find_delegate(DELEGATE PANGOCAIRO_DELEGATE NAME PangoCairo DEFAULT TRUE)
 magick_find_delegate(DELEGATE RAQM_DELEGATE NAME RAQM DEFAULT TRUE)
 magick_find_delegate(DELEGATE WMF_DELEGATE NAME WMF DEFAULT TRUE)
 magick_find_delegate(DELEGATE LQR NAME Lqr DEFAULT TRUE)
