@@ -486,6 +486,7 @@ static MagickBooleanType ReadEXRTiledImage(exr_context_t ctxt,int part_index,
       (void) ThrowMagickException(exception,GetMagickModule(),
         CorruptImageError,"Unsupported number of levels","`%d %d'",
         levels_x,levels_y);
+      return(MagickFalse);
     }
   pixel_count=(size_t)tile_width*tile_height;
   status=InitializeEXRChannels(image,ctxt,decoder,pixel_count,tile_width,
