@@ -35,6 +35,7 @@ class ImageMagickDelegates(ConanFile):
       'xz': [ True, False ],
       'lzma': [ True, False ],
       'cairo': [ True, False ],
+      'pango': [ True, False ],
       'jemalloc': [ True, False ],
       'simd': [ True, False ],
       'opencl': [ True, False ],
@@ -67,6 +68,7 @@ class ImageMagickDelegates(ConanFile):
       'xz': True,
       'lzma': True,
       'cairo': True,
+      'pango': True,
       'jemalloc': True,
       'simd': True,
       'opencl': False,
@@ -159,6 +161,9 @@ class ImageMagickDelegates(ConanFile):
         self.requires('cairo/1.17.8', force=True)
         self.requires('expat/2.6.0', force=True)
 
+      if self.options.pango and self.settings.arch != 'wasm':
+        self.requires('pango/1.54.0', force=True)
+
       if (self.options.openmp and self.settings.arch != 'wasm' and self.settings.os != 'Windows' and
           self.settings.os != 'Macos' and self.settings.arch != 'armv8' and self.settings.get_safe("build_type", default="Release") != 'Debug') :
         self.requires('llvm-openmp/17.0.6', force=True)
@@ -202,6 +207,13 @@ class ImageMagickDelegates(ConanFile):
         self.options['cairo'].with_zlib = self.options.gzip
         self.options['cairo'].with_freetype = self.settings.arch != 'wasm' and self.options.fonts
         self.options['cairo'].with_fontconfig = self.settings.arch != 'wasm' and self.options.fonts
+
+      if self.options.pango and self.settings.arch != 'wasm':
+        # Pango on conan seems to be incompatible with cairo + fontconfig on Windows
+        self.options['pango'].with_fontconfig = self.settings.arch != 'wasm' and self.options.fonts and self.settings.os != 'Windows'
+        self.options['pango'].with_freetype = self.settings.arch != 'wasm' and self.options.fonts
+        self.options['pango'].with_cairo = self.settings.arch != 'wasm' and self.options.cairo
+        self.options['pango'].with_xft = False
 
       # While Emscripten supports SIMD, Node.js does not and cannot run the resulting WASM bundle
       # The performance gain is not very significant and it has a huge compatibility issue
