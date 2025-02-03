@@ -204,7 +204,7 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
   uint8_t
     *p;
 
-  *data=(uint8_t) NULL;
+  *data=(uint8_t *) NULL;
   if (decoder.channel_count >= (MaxPixelChannels-MetaPixelChannels))
       ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
         image->filename);
