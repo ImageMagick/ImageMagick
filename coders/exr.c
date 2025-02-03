@@ -212,29 +212,32 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
     }
   channel=decoder.channels;
   prefix_length=0;
-  prefix=strrchr(decoder.channels[0].channel_name,'.');
-  if (prefix != (const char*) NULL)
+  if (decoder.channel_count > 0)
     {
-      /*
-      * When all channel names have the same prefix, we will skip that
-      * part when determining the channel type.
-      */
-      prefix_length=1+(size_t)(prefix-decoder.channels[0].channel_name);
-      if (prefix_length < MagickPathExtent)
+      prefix=strrchr(decoder.channels[0].channel_name,'.');
+      if (prefix != (const char*) NULL)
         {
-          CopyMagickString(channel_name,decoder.channels[0].channel_name
-            ,prefix_length+1);
-          channel=decoder.channels;
-          for (c = 0; c < decoder.channel_count; ++c)
-          {
-            if (strncmp(channel->channel_name,channel_name,
-                  prefix_length) != 0)
+          /*
+          * When all channel names have the same prefix, we will skip that
+          * part when determining the channel type.
+          */
+          prefix_length=1+(size_t)(prefix-decoder.channels[0].channel_name);
+          if (prefix_length < MagickPathExtent)
+            {
+              CopyMagickString(channel_name,decoder.channels[0].channel_name
+                ,prefix_length+1);
+              channel=decoder.channels;
+              for (c = 0; c < decoder.channel_count; ++c)
               {
-                prefix_length=0;
-                break;
+                if (strncmp(channel->channel_name,channel_name,
+                      prefix_length) != 0)
+                  {
+                    prefix_length=0;
+                    break;
+                  }
+                channel++;
               }
-            channel++;
-          }
+            }
         }
     }
   channel=decoder.channels;
