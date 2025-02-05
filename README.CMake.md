@@ -140,8 +140,19 @@ It tends to break many built-in find modules that search for the libraries in th
 
 When used in an environment where all the delegates are provided via user-supplied CMake config files or `pkg-config` modules - such as when using `conan` - it allows to include statically the system libraries - and especially X11. It is used for the generation of the prebuilt universal binaries.
 
+Disabling hard-coding of identified font directories can be configured with:
 
-# Using The Library
+```
+cmake .. -DCMAKE_BUILD_TYPE=Release       \
+          -DMAGICK_APPLE_FONT_DIR=OFF     \
+          -DMAGICK_DEJAVU_FONT_DIR=OFF    \
+          -DGHOSTSCRIPT_FONT_DIR          \
+          -DMAGICK_URW_FONT_DIR=OFF       \
+          -DMAGICK_URW_TYPE1_FONT_DIR=OFF \
+          -DMAGICK_TT_FONT_DIR=OFF
+```
+
+# Using the Library
 
 For `CMake` projects, the build exports three targets - `ImageMagick::Magick++`, `ImageMagick::MagickCore` and `ImageMagick::MagickWand`.
 
