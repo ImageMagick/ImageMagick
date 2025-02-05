@@ -7,8 +7,8 @@ RUN apt update
 RUN apt install -y rsync cmake g++
 RUN apt install -y librsvg2-dev libwmf-dev libraqm-dev libgraphviz-dev libghc-graphviz-dev \  
     libdjvulibre-dev liblqr-1-0-dev
-RUN apt install -y ghostscript
+RUN apt install -y ghostscript libgs-dev
 RUN mkdir -p /build && chmod 777 /build
 COPY build_image_magick.sh /
-ENV EXPECTED_DELEGATES="rsvg wmf raqm gvc djvu lqr"
+ENV EXPECTED_DELEGATES="rsvg wmf raqm gvc djvu lqr gslib"
 ENTRYPOINT [ "/build_image_magick.sh" ]
