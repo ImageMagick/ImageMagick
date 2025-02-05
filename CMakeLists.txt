@@ -16,6 +16,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(ImageMagick)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(cmake/checks.cmake)
 find_package(PkgConfig)
 set(CMAKE_TRY_COMPILE_CONFIGURATION ${CMAKE_BUILD_TYPE})
@@ -517,13 +518,22 @@ magick_find_delegate(DELEGATE DJVU_DELEGATE NAME DJVU DEFAULT TRUE
 magick_find_delegate(DELEGATE LQR_DELEGATE NAME Lqr DEFAULT TRUE
     PKGCONFIG lqr-1)
 
+# This comes from https://github.com/lbaehren/CMakeModules/blob/master/FindGhostscript.cmake
+# As this module does not create a proper CMake target everything is manual
+# TODO: Make a real modern CMake module out of it
+find_package(GHOSTSCRIPT)
+if(GHOSTSCRIPT_FOUND)
+  set(GS_DELEGATE ON)
+  set(IMAGEMAGICK_DELEGATES_INCLUDE_DIRS ${IMAGEMAGICK_DELEGATES_INCLUDE_DIRS} ${GHOSTSCRIPT_INCLUDES})
+  set(IMAGEMAGICK_DELEGATES_LIBRARIES ${IMAGEMAGICK_DELEGATES_LIBRARIES} ${GHOSTSCRIPT_LIBRARIES})
+endif()
+
 # TODO
 magick_find_delegate(DELEGATE AUTOTRACE_DELEGATE NAME AUTOTRACE DEFAULT TRUE)
 
 magick_find_delegate(DELEGATE DPS_DELEGATE NAME DPS DEFAULT TRUE)
 magick_find_delegate(DELEGATE FLIF_DELEGATE NAME FLIF DEFAULT TRUE)
 magick_find_delegate(DELEGATE FPX_DELEGATE NAME FlashPIX DEFAULT TRUE)
-magick_find_delegate(DELEGATE GS_DELEGATE NAME Ghostscript DEFAULT TRUE)
 
 magick_find_delegate(DELEGATE HASUMEM NAME UMEM DEFAULT TRUE)
 
