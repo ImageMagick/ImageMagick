@@ -148,5 +148,5 @@ install(FILES
 
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/configure.xml
-  DESTINATION lib/ImageMagick-${MAGICK_MAJOR_VERSION}/config-${MAGICK_ABI_SUFFIX}
+  DESTINATION share/ImageMagick-${MAGICK_MAJOR_VERSION}
 )

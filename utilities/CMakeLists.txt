@@ -25,6 +25,13 @@ target_include_directories(${MAGICK_BINARY_NAME} PRIVATE ${IMAGEMAGICK_BASE_PATH
 target_compile_definitions(${MAGICK_BINARY_NAME} PRIVATE ${MAGICK_BUILD_DEFINES})
 target_link_libraries(${MAGICK_BINARY_NAME} PRIVATE ${MAGICKWAND_BINARY_NAME})
 
+# After installation utilities go to bin, while libs go to bin/../lib/
+if(APPLE)
+  set_target_properties(${MAGICK_BINARY_NAME} PROPERTIES INSTALL_RPATH "@loader_path/../lib/")
+else()
+  set_target_properties(${MAGICK_BINARY_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN/../lib/")
+endif()
+
 if(MINGW)
   # Magick uses the new unicode wmain entrypoint and URLDownloadToFile
   # (MSVC gets them from pragmas inside the code)
