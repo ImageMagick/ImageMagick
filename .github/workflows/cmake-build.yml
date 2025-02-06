@@ -198,8 +198,19 @@ jobs:
     - name: Build
       run: cmake --build build --config ${{ matrix.buildtype }}
 
+    - name: Test running the CLI from the build tree (POSIX)
+      run: ./build/utilities/Magick -list Configure
+      if: runner.os != 'Windows'
+
+    - name: Test running the CLI from the build tree (Windows)
+      run: build\utilities\${{ matrix.buildtype }}\Magick.exe -list Configure
+      if: runner.os == 'Windows' && matrix.libtype == 'static'
+
     - name: Install
       run: cmake --install build --config ${{ matrix.buildtype }}
+
+    - name: Test the installed CLI
+      run: ${{ env.INSTALL_PREFIX }}/bin/Magick -list Configure
 
     - name: Build a simple program
       shell: bash
@@ -285,17 +296,30 @@ jobs:
       run: |
         echo "HDRI=-DMAGICK_HDRI_ENABLE=${{ matrix.hdri && 'ON' || 'OFF' }}" >> $GITHUB_ENV
         echo "QUANT=-DMAGICKCORE_QUANTUM_DEPTH=${{ matrix.quant }}" >> $GITHUB_ENV
+        echo "ABI=-DIMAGEMAGICK_ABI=Q${{ matrix.quant }}${{ matrix.hdri && 'HDRI' || '' }}" >> $GITHUB_ENV
 
     - name: Generate CMake build
       shell: bash
       run: |
         mkdir -p build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release ${{ env.HDRI }} ${{ env.QUANT }}
+        cmake .. -DCMAKE_BUILD_TYPE=Release ${{ env.HDRI }} ${{ env.QUANT }} -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/install"
 
     - name: Build
       run: cmake --build build --config Release -j 4
 
+    - name: Install
+      run: cmake --install build --config Release
+
+    - name: Build a simple program
+      shell: bash
+      run: |
+        mkdir -p build-test
+        cd build-test
+        cmake ../tests ${{ env.CONAN_TOOLCHAIN }} -DCMAKE_BUILD_TYPE=Release ${{ env.ABI }}
+        cmake --build . --config Release -j 4
+      env:
+        ImageMagick_ROOT: ${{ github.workspace }}/install/lib/cmake
 
   containers:
 

@@ -7,19 +7,13 @@ function title {
 }
 
 export HOME=/build
-cd ${HOME}
 
-
-title "Copying sources"
-rsync -lr /src/ ${HOME}
-rm -rf ${HOME}/build
-
-PREFIX=/build/install
+PREFIX=/${HOME}/install
 
 title "Generating CMake build"
-mkdir -p build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${PREFIX}
+mkdir -p ${HOME}
+cd ${HOME}
+cmake /src -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${PREFIX}
 
 title "Building ImageMagick"
 cmake --build . --config Release -j 4
@@ -27,10 +21,9 @@ ls -al
 cmake --install . --config Release 
 
 title "Build test_delegates"
-cd ${HOME}
 export ImageMagick_ROOT=${PREFIX}/lib/cmake
-mkdir -p build_test
-cd build_test
-cmake ../tests -DCMAKE_BUILD_TYPE=Release 
+mkdir -p ${HOME}/build_test
+cd ${HOME}/build_test
+cmake /src/tests -DCMAKE_BUILD_TYPE=Release 
 cmake --build . --config Release
 ./delegates ${EXPECTED_DELEGATES}
