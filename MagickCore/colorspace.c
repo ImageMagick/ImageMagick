@@ -121,146 +121,157 @@ static MagickBooleanType
 */
 MagickPrivate void ConvertGenericToRGB(const ColorspaceType colorspace,
   const double X,const double Y,const double Z,const double white_luminance,
-  const IlluminantType illuminant,double *red,double *green,double *blue)
+  const IlluminantType illuminant,double *R,double *G,double *B)
 {
   switch (colorspace)
   {
     case Adobe98Colorspace:
     {
-      ConvertAdobe98ToRGB(X,Y,Z,red,green,blue);
+      ConvertAdobe98ToRGB(X,Y,Z,R,G,B);
+      break;
+    }
+    case CAT02LMSColorspace:
+    {
+      double
+        L,
+        M,
+        S;
+
+      ConvertXYZToCAT02LMS(X,Y,Z,&L,&M,&S);
+      ConvertCAT02LMSToRGB(L,M,S,R,G,B);
       break;
     }
     case CMYColorspace:
     {
-      ConvertCMYToRGB(X,Y,Z,red,green,blue);
+      ConvertCMYToRGB(X,Y,Z,R,G,B);
       break;
     }
     case DisplayP3Colorspace:
     {
-      ConvertDisplayP3ToRGB(X,Y,Z,red,green,blue);
+      ConvertDisplayP3ToRGB(X,Y,Z,R,G,B);
       break;
     }
     case HCLColorspace:
     {
-      ConvertHCLToRGB(X,Y,Z,red,green,blue);
+      ConvertHCLToRGB(X,Y,Z,R,G,B);
       break;
     }
     case HCLpColorspace:
     {
-      ConvertHCLpToRGB(X,Y,Z,red,green,blue);
+      ConvertHCLpToRGB(X,Y,Z,R,G,B);
       break;
     }
     case HSBColorspace:
     {
-      ConvertHSBToRGB(X,Y,Z,red,green,blue);
+      ConvertHSBToRGB(X,Y,Z,R,G,B);
       break;
     }
     case HSIColorspace:
     {
-      ConvertHSIToRGB(X,Y,Z,red,green,blue);
+      ConvertHSIToRGB(X,Y,Z,R,G,B);
       break;
     }
     case HSLColorspace:
     {
-      ConvertHSLToRGB(X,Y,Z,red,green,blue);
+      ConvertHSLToRGB(X,Y,Z,R,G,B);
       break;
     }
     case HSVColorspace:
     {
-      ConvertHSVToRGB(X,Y,Z,red,green,blue);
+      ConvertHSVToRGB(X,Y,Z,R,G,B);
       break;
     }
     case HWBColorspace:
     {
-      ConvertHWBToRGB(X,Y,Z,red,green,blue);
+      ConvertHWBToRGB(X,Y,Z,R,G,B);
       break;
     }
     case JzazbzColorspace:
     {
-      ConvertJzazbzToRGB(X,Y,Z,white_luminance,red,green,blue);
+      ConvertJzazbzToRGB(X,Y,Z,white_luminance,R,G,B);
       break;
     }
     case LabColorspace:
     {
-      ConvertLabToRGB(X,Y,Z,illuminant,red,green,blue);
+      ConvertLabToRGB(X,Y,Z,illuminant,R,G,B);
       break;
     }
     case LCHColorspace:
     case LCHabColorspace:
     {
-      ConvertLCHabToRGB(X,Y,Z,illuminant,red,green,blue);
+      ConvertLCHabToRGB(X,Y,Z,illuminant,R,G,B);
       break;
     }
     case LCHuvColorspace:
     {
-      ConvertLCHuvToRGB(X,Y,Z,illuminant,red,green,blue);
+      ConvertLCHuvToRGB(X,Y,Z,illuminant,R,G,B);
       break;
     }
     case LMSColorspace:
     {
-      ConvertLMSToRGB(X,Y,Z,red,green,blue);
+      ConvertLMSToRGB(X,Y,Z,R,G,B);
       break;
     }
     case LuvColorspace:
     {
-      ConvertLuvToRGB(X,Y,Z,illuminant,red,green,blue);
+      ConvertLuvToRGB(X,Y,Z,illuminant,R,G,B);
       break;
     }
     case OklabColorspace:
     {
-      ConvertOklabToRGB(X,Y,Z,red,green,blue);
+      ConvertOklabToRGB(X,Y,Z,R,G,B);
       break;
     }
     case OklchColorspace:
     {
-      ConvertOklchToRGB(X,Y,Z,red,green,blue);
+      ConvertOklchToRGB(X,Y,Z,R,G,B);
       break;
     }
     case ProPhotoColorspace:
     {
-      ConvertProPhotoToRGB(X,Y,Z,red,green,blue);
+      ConvertProPhotoToRGB(X,Y,Z,R,G,B);
       break;
     }
     case xyYColorspace:
     {
-      ConvertxyYToRGB(X,Y,Z,red,green,blue);
+      ConvertxyYToRGB(X,Y,Z,R,G,B);
       break;
     }
     case XYZColorspace:
     {
-      ConvertXYZToRGB(X,Y,Z,red,green,blue);
+      ConvertXYZToRGB(X,Y,Z,R,G,B);
       break;
     }
     case YCbCrColorspace:
     {
-      ConvertYCbCrToRGB(X,Y,Z,red,green,blue);
+      ConvertYCbCrToRGB(X,Y,Z,R,G,B);
       break;
     }
     case YDbDrColorspace:
     {
-      ConvertYDbDrToRGB(X,Y,Z,red,green,blue);
+      ConvertYDbDrToRGB(X,Y,Z,R,G,B);
       break;
     }
     case YIQColorspace:
     {
-      ConvertYIQToRGB(X,Y,Z,red,green,blue);
+      ConvertYIQToRGB(X,Y,Z,R,G,B);
       break;
     }
     case YPbPrColorspace:
     {
-      ConvertYPbPrToRGB(X,Y,Z,red,green,blue);
+      ConvertYPbPrToRGB(X,Y,Z,R,G,B);
       break;
     }
     case YUVColorspace:
     {
-      ConvertYUVToRGB(X,Y,Z,red,green,blue);
+      ConvertYUVToRGB(X,Y,Z,R,G,B);
       break;
     }
     default:
     {
-      *red=(double) QuantumRange*X;
-      *green=(double) QuantumRange*Y;
-      *blue=(double) QuantumRange*Z;
+      *R=(double) QuantumRange*X;
+      *G=(double) QuantumRange*Y;
+      *B=(double) QuantumRange*Z;
       break;
     }
   }
@@ -398,148 +409,158 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
 %
 */
 MagickPrivate void ConvertRGBToGeneric(const ColorspaceType colorspace,
-  const double red,const double green,const double blue,
-  const double white_luminance,const IlluminantType illuminant,double *X,
-  double *Y,double *Z)
+  const double R,const double G,const double B,const double white_luminance,
+  const IlluminantType illuminant,double *X,double *Y,double *Z)
 {
   switch (colorspace)
   {
     case Adobe98Colorspace:
     {
-      ConvertRGBToAdobe98(red,green,blue,X,Y,Z);
+      ConvertRGBToAdobe98(R,G,B,X,Y,Z);
+      break;
+    }
+    case CAT02LMSColorspace:
+    {
+      double
+        L,
+        M,
+        S;
+
+      ConvertRGBToCAT02LMS(R,G,B,&L,&M,&S);
+      ConvertCAT02LMSToXYZ(L,M,S,X,Y,Z);
       break;
     }
     case CMYColorspace:
     {
-      ConvertRGBToCMY(red,green,blue,X,Y,Z);
+      ConvertRGBToCMY(R,G,B,X,Y,Z);
       break;
     }
     case DisplayP3Colorspace:
     {
-      ConvertRGBToDisplayP3(red,green,blue,X,Y,Z);
+      ConvertRGBToDisplayP3(R,G,B,X,Y,Z);
       break;
     }
     case HCLColorspace:
     {
-      ConvertRGBToHCL(red,green,blue,X,Y,Z);
+      ConvertRGBToHCL(R,G,B,X,Y,Z);
       break;
     }
     case HCLpColorspace:
     {
-      ConvertRGBToHCLp(red,green,blue,X,Y,Z);
+      ConvertRGBToHCLp(R,G,B,X,Y,Z);
       break;
     }
     case HSBColorspace:
     {
-      ConvertRGBToHSB(red,green,blue,X,Y,Z);
+      ConvertRGBToHSB(R,G,B,X,Y,Z);
       break;
     }
     case HSIColorspace:
     {
-      ConvertRGBToHSI(red,green,blue,X,Y,Z);
+      ConvertRGBToHSI(R,G,B,X,Y,Z);
       break;
     }
     case HSLColorspace:
     {
-      ConvertRGBToHSL(red,green,blue,X,Y,Z);
+      ConvertRGBToHSL(R,G,B,X,Y,Z);
       break;
     }
     case HSVColorspace:
     {
-      ConvertRGBToHSV(red,green,blue,X,Y,Z);
+      ConvertRGBToHSV(R,G,B,X,Y,Z);
       break;
     }
     case HWBColorspace:
     {
-      ConvertRGBToHWB(red,green,blue,X,Y,Z);
+      ConvertRGBToHWB(R,G,B,X,Y,Z);
       break;
     }
     case JzazbzColorspace:
     {
-      ConvertRGBToJzazbz(red,green,blue,white_luminance,X,Y,Z);
+      ConvertRGBToJzazbz(R,G,B,white_luminance,X,Y,Z);
       break;
     }
     case LabColorspace:
     {
-      ConvertRGBToLab(red,green,blue,illuminant,X,Y,Z);
+      ConvertRGBToLab(R,G,B,illuminant,X,Y,Z);
       break;
     }
     case LCHColorspace:
     case LCHabColorspace:
     {
-      ConvertRGBToLCHab(red,green,blue,illuminant,X,Y,Z);
+      ConvertRGBToLCHab(R,G,B,illuminant,X,Y,Z);
       break;
     }
     case LCHuvColorspace:
     {
-      ConvertRGBToLCHuv(red,green,blue,illuminant,X,Y,Z);
+      ConvertRGBToLCHuv(R,G,B,illuminant,X,Y,Z);
       break;
     }
     case LMSColorspace:
     {
-      ConvertRGBToLMS(red,green,blue,X,Y,Z);
+      ConvertRGBToLMS(R,G,B,X,Y,Z);
       break;
     }
     case LuvColorspace:
     {
-      ConvertRGBToLuv(red,green,blue,illuminant,X,Y,Z);
+      ConvertRGBToLuv(R,G,B,illuminant,X,Y,Z);
       break;
     }
     case OklabColorspace:
     {
-      ConvertRGBToOklab(red,green,blue,X,Y,Z);
+      ConvertRGBToOklab(R,G,B,X,Y,Z);
       break;
     }
     case OklchColorspace:
     {
-      ConvertRGBToOklch(red,green,blue,X,Y,Z);
+      ConvertRGBToOklch(R,G,B,X,Y,Z);
       break;
     }
     case ProPhotoColorspace:
     {
-      ConvertRGBToProPhoto(red,green,blue,X,Y,Z);
+      ConvertRGBToProPhoto(R,G,B,X,Y,Z);
       break;
     }
     case xyYColorspace:
     {
-      ConvertRGBToxyY(red,green,blue,X,Y,Z);
+      ConvertRGBToxyY(R,G,B,X,Y,Z);
       break;
     }
     case XYZColorspace:
     {
-      ConvertRGBToXYZ(red,green,blue,X,Y,Z);
+      ConvertRGBToXYZ(R,G,B,X,Y,Z);
       break;
     }
     case YCbCrColorspace:
     {
-      ConvertRGBToYCbCr(red,green,blue,X,Y,Z);
+      ConvertRGBToYCbCr(R,G,B,X,Y,Z);
       break;
     }
     case YDbDrColorspace:
     {
-      ConvertRGBToYDbDr(red,green,blue,X,Y,Z);
+      ConvertRGBToYDbDr(R,G,B,X,Y,Z);
       break;
     }
     case YIQColorspace:
     {
-      ConvertRGBToYIQ(red,green,blue,X,Y,Z);
+      ConvertRGBToYIQ(R,G,B,X,Y,Z);
       break;
     }
     case YPbPrColorspace:
     {
-      ConvertRGBToYPbPr(red,green,blue,X,Y,Z);
+      ConvertRGBToYPbPr(R,G,B,X,Y,Z);
       break;
     }
     case YUVColorspace:
     {
-      ConvertRGBToYUV(red,green,blue,X,Y,Z);
+      ConvertRGBToYUV(R,G,B,X,Y,Z);
       break;
     }
     default:
     {
-      *X=QuantumScale*red;
-      *Y=QuantumScale*green;
-      *Z=QuantumScale*blue;
+      *X=QuantumScale*R;
+      *Y=QuantumScale*G;
+      *Z=QuantumScale*B;
       break;
     }
   }
@@ -936,6 +957,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
     }
     case CMYColorspace:
     case Adobe98Colorspace:
+    case CAT02LMSColorspace:
     case DisplayP3Colorspace:
     case HCLColorspace:
     case HCLpColorspace:
@@ -2269,6 +2291,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
     }
     case Adobe98Colorspace:
     case CMYColorspace:
+    case CAT02LMSColorspace:
     case DisplayP3Colorspace:
     case HCLColorspace:
     case HCLpColorspace:
