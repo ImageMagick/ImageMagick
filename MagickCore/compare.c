@@ -3246,6 +3246,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
+  dot_product_image->depth=MAGICKCORE_QUANTUM_DEPTH;
   status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
@@ -3364,6 +3365,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   status=GrayscaleImage(mean_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
+  mean_image->depth=MAGICKCORE_QUANTUM_DEPTH;
   /*
     Crop to difference of reconstruction and test images.
   */
@@ -3534,6 +3536,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   status=GrayscaleImage(ncc_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
+  ncc_image->depth=MAGICKCORE_QUANTUM_DEPTH;
   status=SIMMaximaImage(ncc_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
@@ -3673,6 +3676,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   status=GrayscaleImage(phase_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
+  phase_image->depth=MAGICKCORE_QUANTUM_DEPTH;
   status=SIMMaximaImage(phase_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
@@ -3795,6 +3799,11 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   status=GrayscaleImage(mean_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
     ThrowPSNRSimilarityException();
+  mean_image->depth=MAGICKCORE_QUANTUM_DEPTH;
+  status=SIMMultiplyImage(mean_image,1.0/48.1647,
+    (const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowPSNRSimilarityException();
   /*
     Crop to difference of reconstruction and test images.
   */
@@ -3817,7 +3826,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   status=NegateImage(psnr_image,MagickFalse,exception);
   if (status == MagickFalse)
     ThrowPSNRSimilarityException();
-  *similarity_metric=QuantumScale*minima/48.1647;
+  *similarity_metric=QuantumScale*minima;
   DestroyImage(alpha_image);
   DestroyImage(beta_image);
   return(psnr_image);

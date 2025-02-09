@@ -1767,7 +1767,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
   if (perceptual_hash == (ChannelPerceptualHash *) NULL)
     return((ChannelPerceptualHash *) NULL);
   artifact=GetImageArtifact(image,"phash:colorspaces");
-  if (artifact != NULL)
+  if (artifact != (const char *) NULL)
     colorspaces=AcquireString(artifact);
   else
     colorspaces=AcquireString("xyY,HSB");
