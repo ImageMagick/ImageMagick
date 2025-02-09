@@ -3895,7 +3895,13 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   SetGeometry(reconstruct,offset);
   *similarity_metric=MagickMaximumValue;
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
-  if ((image->channels & ReadMaskChannel) == 0)
+{
+  const char *artifact = GetImageArtifact(image,"compare:accelerate");
+  if (artifact == (char *) NULL)
+    artifact=GetImageArtifact(image,"compare:accelerate-ncc");
+  MagickBooleanType accelerate=(artifact != (const char *) NULL) &&
+    (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
+  if (((image->channels & ReadMaskChannel) == 0) && (accelerate != MagickFalse))
     switch (metric)
     {
       case DotProductCorrelationErrorMetric:
@@ -3912,11 +3918,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case NormalizedCrossCorrelationErrorMetric:
       {
-        const char *artifact = GetImageArtifact(image,"compare:accelerate-ncc");
-        MagickBooleanType accelerate = (artifact != (const char *) NULL) &&
-          (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
-        if (accelerate == MagickFalse)
-          break;
         similarity_image=NCCSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
@@ -3942,6 +3943,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       default: break;
     }
+}
 #else
     if ((metric == DotProductCorrelationErrorMetric) ||
         (metric == PhaseCorrelationErrorMetric))
