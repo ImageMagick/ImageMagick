@@ -3896,11 +3896,10 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   *similarity_metric=MagickMaximumValue;
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
 {
-  const char *artifact = GetImageArtifact(image,"compare:accelerate");
-  if (artifact == (const char *) NULL)
-    artifact=GetImageArtifact(image,"compare:accelerate-ncc");
-  if (((image->channels & ReadMaskChannel) == 0) &&
-       (IsStringFalse(artifact) != MagickTrue))
+  const char *artifact = GetImageArtifact(image,"compare:accelerate-ncc");
+  if (artifact == (char *) NULL)
+    artifact=GetImageArtifact(image,"compare:frequency-domain");
+  if ((image->channels & ReadMaskChannel) == 0)
     switch (metric)
     {
       case DotProductCorrelationErrorMetric:
@@ -3911,18 +3910,27 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case MeanSquaredErrorMetric:
       {
+        if ((artifact != (const char *) NULL) &&
+            (IsStringTrue(artifact) == MagickFalse))
+          break;
         similarity_image=MSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
       }
       case NormalizedCrossCorrelationErrorMetric:
       {
+        if ((artifact != (const char *) NULL) &&
+            (IsStringTrue(artifact) == MagickFalse))
+          break;
         similarity_image=NCCSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
       }
       case PeakSignalToNoiseRatioErrorMetric:
       {
+        if ((artifact != (const char *) NULL) &&
+            (IsStringTrue(artifact) == MagickFalse))
+          break;
         similarity_image=PSNRSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
@@ -3935,6 +3943,9 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case RootMeanSquaredErrorMetric:
       {
+        if ((artifact != (const char *) NULL) &&
+            (IsStringTrue(artifact) == MagickFalse))
+          break;
         similarity_image=MSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         *similarity_metric=sqrt(*similarity_metric);
