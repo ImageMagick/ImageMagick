@@ -1210,7 +1210,7 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
   for (i=0; i <= MaxPixelChannels; i++)
     if (fabs(distortion[i]) >= MagickEpsilon)
-      distortion[i]=(-10.0*MagickLog10(distortion[i]));
+      distortion[i]=(-10.0*MagickLog10(distortion[i]))/48.1647;
   return(status);
 }
 
@@ -3896,9 +3896,9 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   *similarity_metric=MagickMaximumValue;
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
 {
-  const char *artifact = GetImageArtifact(image,"compare:accelerate-ncc");
-  if (artifact == (char *) NULL)
-    artifact=GetImageArtifact(image,"compare:frequency-domain");
+  const char *artifact = GetImageArtifact(image,"compare:frequency-domain");
+  if (artifact == (const char *) NULL)
+    artifact=GetImageArtifact(image,"compare:accelerate-ncc");
   if ((image->channels & ReadMaskChannel) == 0)
     switch (metric)
     {
@@ -4025,8 +4025,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       if (*similarity_metric <= similarity_threshold)
         break;
       similarity=GetSimilarityMetric(image,reconstruct,metric,x,y,exception);
-      if (metric == PeakSignalToNoiseRatioErrorMetric)
-        similarity/=48.1647;
       if ((metric == DotProductCorrelationErrorMetric) ||
           (metric == PhaseCorrelationErrorMetric) ||
           (metric == NormalizedCrossCorrelationErrorMetric) ||
