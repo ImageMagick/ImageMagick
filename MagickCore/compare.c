@@ -3912,6 +3912,11 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case NormalizedCrossCorrelationErrorMetric:
       {
+        const char *artifact = GetImageArtifact(image,"compare:accelerate-ncc");
+        MagickBooleanType accelerate = (artifact != (const char *) NULL) &&
+          (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
+        if (accelerate == MagickFalse)
+          break;
         similarity_image=NCCSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
