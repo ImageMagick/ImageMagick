@@ -3970,14 +3970,10 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       image->rows-reconstruct->rows+1,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
-  status=SetImageStorageClass(similarity_image,DirectClass,exception);
-  if (status == MagickFalse)
-    {
-      similarity_image=DestroyImage(similarity_image);
-      return((Image *) NULL);
-    }
   (void) SetImageAlphaChannel(similarity_image,DeactivateAlphaChannel,
     exception);
+  (void) SetImageType(similarity_image,GrayscaleType,exception);
+  similarity_image->depth=MAGICKCORE_QUANTUM_DEPTH;  
   /*
     Measure similarity of reconstruction image against image.
   */
@@ -4051,8 +4047,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
             (similarity_traits == UndefinedPixelTrait) ||
             ((similarity_traits & UpdatePixelTrait) == 0))
           continue;
-        SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
-          QuantumRange-(double) QuantumRange*similarity),q);
+        SetPixelChannel(similarity_image,channel,(double) QuantumRange*
+          similarity,q);
       }
       q+=(ptrdiff_t) GetPixelChannels(similarity_image);
     }
