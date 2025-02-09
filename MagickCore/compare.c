@@ -3897,11 +3897,10 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
 #if defined(MAGICKCORE_HDRI_SUPPORT) && defined(MAGICKCORE_FFTW_DELEGATE)
 {
   const char *artifact = GetImageArtifact(image,"compare:accelerate");
-  if (artifact == (char *) NULL)
+  if (artifact == (const char *) NULL)
     artifact=GetImageArtifact(image,"compare:accelerate-ncc");
-  MagickBooleanType accelerate=(artifact != (const char *) NULL) &&
-    (IsStringTrue(artifact) == MagickFalse) ? MagickFalse : MagickTrue;
-  if (((image->channels & ReadMaskChannel) == 0) && (accelerate != MagickFalse))
+  if (((image->channels & ReadMaskChannel) == 0) &&
+       (IsStringFalse(artifact) != MagickTrue))
     switch (metric)
     {
       case DotProductCorrelationErrorMetric:
