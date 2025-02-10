@@ -3517,13 +3517,12 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   variance_image=DestroyImage(variance_image);
   if (divide_image == (Image *) NULL)
     ThrowNCCSimilarityException();
-  (void) ResetImagePage(divide_image,"0x0+0+0");
-  SetGeometry(image,&geometry);
-  geometry.width=image->columns-reconstruct->columns;
-  geometry.height=image->rows-reconstruct->rows;
   /*
     Crop padding.
   */
+  SetGeometry(image,&geometry);
+  geometry.width=image->columns-reconstruct->columns;
+  geometry.height=image->rows-reconstruct->rows;
   (void) ResetImagePage(divide_image,"0x0+0+0");
   ncc_image=CropImage(divide_image,&geometry,exception);
   divide_image=DestroyImage(divide_image);
@@ -3657,13 +3656,12 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   correlation_image=DestroyImage(correlation_image);
   if (gamma_image == (Image *) NULL)
     ThrowPhaseSimilarityException();
-  ResetImagePage(gamma_image,"0x0+0+0");
-  SetGeometry(image,&geometry);
-  geometry.width=image->columns-reconstruct->columns;
-  geometry.height=image->rows-reconstruct->rows;
   /*
     Crop padding.
   */
+  SetGeometry(image,&geometry);
+  geometry.width=image->columns-reconstruct->columns;
+  geometry.height=image->rows-reconstruct->rows;
   ResetImagePage(gamma_image,"0x0+0+0");
   phase_image=CropImage(gamma_image,&geometry,exception);
   gamma_image=DestroyImage(gamma_image);
@@ -3964,10 +3962,11 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         return((Image *) NULL);
       }
 #endif
-  if ((image->columns >= reconstruct->columns) &&
-      (image->rows >= reconstruct->rows))
-    similarity_image=CloneImage(image,image->columns-reconstruct->columns+1,
-      image->rows-reconstruct->rows+1,MagickTrue,exception);
+  if ((image->columns < reconstruct->columns) ||
+      (image->rows < reconstruct->rows))
+    return((Image *) NULL);
+  similarity_image=CloneImage(image,image->columns-reconstruct->columns,
+    image->rows-reconstruct->rows,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageAlphaChannel(similarity_image,DeactivateAlphaChannel,
@@ -3981,11 +3980,10 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   progress=0;
   similarity_view=AcquireAuthenticCacheView(similarity_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) \
-    shared(progress,status,similarity_metric) \
-    magick_number_threads(image,image,(image->rows-reconstruct->rows+1) << 3,1)
+  #pragma omp parallel for schedule(static,1) \
+    shared(progress,status,similarity_metric)
 #endif
-  for (y=0; y < (ssize_t) (image->rows-reconstruct->rows+1); y++)
+  for (y=0; y < (ssize_t) similarity_image->rows; y++)
   {
     double
       similarity;
@@ -4010,7 +4008,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) (image->columns-reconstruct->columns+1); x++)
+    for (x=0; x < (ssize_t) similarity_image->columns; x++)
     {
       ssize_t
         i;
