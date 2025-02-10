@@ -3313,7 +3313,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     Create (U * test)/# pixels.
   */
   alpha_image=SIMCrossCorrelationImage(test_image,reconstruct_image,exception);
-  DestroyImage(test_image);
+  test_image=DestroyImage(test_image);
   if (alpha_image == (Image *) NULL)
     ThrowMSESimilarityException();
   status=SIMMultiplyImage(alpha_image,1.0/reconstruct->columns/(double)
@@ -3326,7 +3326,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   (void) CompositeImage(reconstruct_image,reconstruct,CopyCompositeOp,
     MagickTrue,0,0,exception);
   beta_image=SIMCrossCorrelationImage(image,reconstruct_image,exception);
-  DestroyImage(reconstruct_image);
+  reconstruct_image=DestroyImage(reconstruct_image);
   if (beta_image == (Image *) NULL)
     ThrowMSESimilarityException();
   status=SIMMultiplyImage(beta_image,-2.0/reconstruct->columns/(double)
@@ -3389,8 +3389,8 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowMSESimilarityException();
   *similarity_metric=QuantumScale*minima;
-  DestroyImage(alpha_image);
-  DestroyImage(beta_image);
+  alpha_image=DestroyImage(alpha_image);
+  beta_image=DestroyImage(beta_image);
   return(mse_image);
 }
 
@@ -3742,7 +3742,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
     Create (U * test)/# pixels.
   */
   alpha_image=SIMCrossCorrelationImage(test_image,reconstruct_image,exception);
-  DestroyImage(test_image);
+  test_image=DestroyImage(test_image);
   if (alpha_image == (Image *) NULL)
     ThrowPSNRSimilarityException();
   status=SIMMultiplyImage(alpha_image,1.0/reconstruct->columns/(double)
@@ -3755,7 +3755,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   (void) CompositeImage(reconstruct_image,reconstruct,CopyCompositeOp,
     MagickTrue,0,0,exception);
   beta_image=SIMCrossCorrelationImage(image,reconstruct_image,exception);
-  DestroyImage(reconstruct_image);
+  reconstruct_image=DestroyImage(reconstruct_image);
   if (beta_image == (Image *) NULL)
     ThrowPSNRSimilarityException();
   status=SIMMultiplyImage(beta_image,-2.0/reconstruct->columns/(double)
@@ -3825,8 +3825,8 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPSNRSimilarityException();
   *similarity_metric=QuantumScale*minima;
-  DestroyImage(alpha_image);
-  DestroyImage(beta_image);
+  alpha_image=DestroyImage(alpha_image);
+  beta_image=DestroyImage(beta_image);
   return(psnr_image);
 }
 #endif
@@ -3964,7 +3964,11 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
 #endif
   if ((image->columns < reconstruct->columns) ||
       (image->rows < reconstruct->rows))
-    return((Image *) NULL);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "GeometryDoesNotContainImage","`%s'",image->filename);
+      return((Image *) NULL);
+    }
   similarity_image=CloneImage(image,image->columns-reconstruct->columns,
     image->rows-reconstruct->rows,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
