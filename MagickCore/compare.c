@@ -1527,7 +1527,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
 #endif
     {
       area+=local_area;
-      for (i=0; i < MaxPixelChannels; i++)
+      for (i=0; i <= MaxPixelChannels; i++)
         distortion[i]+=channel_distortion[i];
     }
   }
@@ -1558,7 +1558,7 @@ static MagickBooleanType GetStructuralDisimilarityDistortion(const Image *image,
 
   status=GetStructuralSimilarityDistortion(image,reconstruct_image,
     distortion,exception);
-  for (i=0; i < MaxPixelChannels; i++)
+  for (i=0; i <= MaxPixelChannels; i++)
     distortion[i]=(1.0-(distortion[i]))/2.0;
   return(status);
 }
