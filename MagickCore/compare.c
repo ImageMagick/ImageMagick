@@ -1208,7 +1208,7 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
     i;
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
-  for (i=0; i <= MaxPixelChannels; i++)
+  for (i=0; i < MaxPixelChannels; i++)
     if (fabs(distortion[i]) >= MagickEpsilon)
       distortion[i]=(-10.0*MagickLog10(distortion[i]))/48.1647;
   return(status);
@@ -1303,7 +1303,7 @@ static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
     i;
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
-  for (i=0; i <= MaxPixelChannels; i++)
+  for (i=0; i < MaxPixelChannels; i++)
     distortion[i]=sqrt(distortion[i]);
   return(status);
 }
@@ -1527,7 +1527,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
 #endif
     {
       area+=local_area;
-      for (i=0; i <= MaxPixelChannels; i++)
+      for (i=0; i < MaxPixelChannels; i++)
         distortion[i]+=channel_distortion[i];
     }
   }
@@ -1558,7 +1558,7 @@ static MagickBooleanType GetStructuralDisimilarityDistortion(const Image *image,
 
   status=GetStructuralSimilarityDistortion(image,reconstruct_image,
     distortion,exception);
-  for (i=0; i <= MaxPixelChannels; i++)
+  for (i=0; i < MaxPixelChannels; i++)
     distortion[i]=(1.0-(distortion[i]))/2.0;
   return(status);
 }
