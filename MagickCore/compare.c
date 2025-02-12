@@ -3230,10 +3230,10 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   /*
     Crop results.
   */
-  ResetImagePage(trx_image,"0x0+0+0");
   SetGeometry(image,&geometry);
-  geometry.width=image->columns-reconstruct->columns;
-  geometry.height=image->rows-reconstruct->rows;
+  geometry.width=image->columns;
+  geometry.height=image->rows;
+  ResetImagePage(trx_image,"0x0+0+0");
   dot_product_image=CropImage(trx_image,&geometry,exception);
   trx_image=DestroyImage(trx_image);
   if (dot_product_image == (Image *) NULL)
@@ -3370,8 +3370,8 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     Crop to difference of reconstruction and test images.
   */
   SetGeometry(image,&geometry);
-  geometry.width=image->columns-reconstruct->columns;
-  geometry.height=image->rows-reconstruct->rows;
+  geometry.width=image->columns;
+  geometry.height=image->rows;
   (void) ResetImagePage(mean_image,"0x0+0+0");
   mse_image=CropImage(mean_image,&geometry,exception);
   mean_image=DestroyImage(mean_image);
@@ -3521,8 +3521,8 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
     Crop padding.
   */
   SetGeometry(image,&geometry);
-  geometry.width=image->columns-reconstruct->columns;
-  geometry.height=image->rows-reconstruct->rows;
+  geometry.width=image->columns;
+  geometry.height=image->rows;
   (void) ResetImagePage(divide_image,"0x0+0+0");
   ncc_image=CropImage(divide_image,&geometry,exception);
   divide_image=DestroyImage(divide_image);
@@ -3806,8 +3806,8 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
     Crop to difference of reconstruction and test images.
   */
   SetGeometry(image,&geometry);
-  geometry.width=image->columns-reconstruct->columns;
-  geometry.height=image->rows-reconstruct->rows;
+  geometry.width=image->columns;
+  geometry.height=image->rows;
   (void) ResetImagePage(mean_image,"0x0+0+0");
   psnr_image=CropImage(mean_image,&geometry,exception);
   mean_image=DestroyImage(mean_image);
@@ -3969,8 +3969,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         "GeometryDoesNotContainImage","`%s'",image->filename);
       return((Image *) NULL);
     }
-  similarity_image=CloneImage(image,image->columns-reconstruct->columns,
-    image->rows-reconstruct->rows,MagickTrue,exception);
+  similarity_image=CloneImage(image,0,0,MagickTrue,exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageAlphaChannel(similarity_image,DeactivateAlphaChannel,
