@@ -2484,7 +2484,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) GammaImage(_image,constant,_exception);
 #else
           /* Using Evaluate POW, direct update of values - more accurate */
-          if (IfNormalOp)
+          if (IfNormalOp && (fabs(constant) <= MagickEpsilon) &&
+             ((constant-1.0) > MagickEpsilon))
             constant=PerceptibleReciprocal(constant);
           (void) EvaluateImage(_image,PowEvaluateOperator,constant,_exception);
           _image->gamma*=StringToDouble(arg1,(char **) NULL);

@@ -321,19 +321,6 @@ static MagickBooleanType IsTIFF(const unsigned char *magick,const size_t length)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline size_t WriteLSBLong(FILE *file,const unsigned int value)
-{
-  unsigned char
-    buffer[4];
-
-  buffer[0]=(unsigned char) value;
-  buffer[1]=(unsigned char) (value >> 8);
-  buffer[2]=(unsigned char) (value >> 16);
-  buffer[3]=(unsigned char) (value >> 24);
-  return(fwrite(buffer,1,4,file));
-}
-
 static Image *ReadGROUP4Image(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -355,9 +342,6 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
 
   MagickBooleanType
     status;
-
-  size_t
-    length;
 
   TIFF
     *tiff;
@@ -414,7 +398,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
     }
   status=MagickTrue;
   c=ReadBlobByte(image);
-  for (length=0; c != EOF; length++)
+  while (c != EOF)
   {
     unsigned char byte = (unsigned char) c;
     if (TIFFWriteRawStrip(tiff,0,&byte,1) < 0)
@@ -424,10 +408,14 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
       }
     c=ReadBlobByte(image);
   }
-  TIFFSetField(tiff,TIFFTAG_STRIPBYTECOUNTS,(uint32) length);
   TIFFClose(tiff);
   (void) CloseBlob(image);
   image=DestroyImage(image);
+  if (status == MagickFalse)
+    {
+      (void) RelinquishUniqueFileResource(filename);
+      return((Image*) NULL);
+    }
   /*
     Read TIFF image.
   */
@@ -3522,6 +3510,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       case FaxCompression:
       case Group4Compression:
       {
+        size_t
+          channels;
+
         if (IsImageMonochrome(image) == MagickFalse)
           {
             if (IsImageGray(image) == MagickFalse)
@@ -3530,6 +3521,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               (void) SetImageDepth(image,1,exception);
           }
         image->depth=1;
+        channels=GetPixelChannels(image);
+        if (channels != 1 && (channels != 2 || image->storage_class != PseudoClass))
+          compression=UndefinedCompression;
         break;
       }
       case JPEGCompression:

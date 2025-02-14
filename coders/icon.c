@@ -1413,7 +1413,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
               *q++=ScaleQuantumToChar(next->colormap[i].blue);
               *q++=ScaleQuantumToChar(next->colormap[i].green);
               *q++=ScaleQuantumToChar(next->colormap[i].red);
-              *q++=(unsigned char) 0x0;
+              *q++=(unsigned char) 0x00;
             }
             for ( ; i < (ssize_t) 1UL << bits_per_pixel; i++)
             {

@@ -563,6 +563,7 @@ static const OptionInfo
   {
     { "Undefined", UndefinedColorspace, UndefinedOptionFlag, MagickTrue },
     { "Adobe98", Adobe98Colorspace, UndefinedOptionFlag, MagickFalse },
+    { "CAT02LMS", CAT02LMSColorspace, UndefinedOptionFlag, MagickFalse },
     { "CIELab", LabColorspace, UndefinedOptionFlag, MagickFalse },
     { "CMY", CMYColorspace, UndefinedOptionFlag, MagickFalse },
     { "CMYK", CMYKColorspace, UndefinedOptionFlag, MagickFalse },
@@ -1844,6 +1845,7 @@ static const OptionInfo
   {
     { "Undefined", UndefinedErrorMetric, UndefinedOptionFlag, MagickTrue },
     { "AE", AbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },
+    { "DPC", DotProductCorrelationErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "DSSIM", StructuralDissimilarityErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "Fuzz", FuzzErrorMetric, UndefinedOptionFlag, MagickFalse },
     { "MAE", MeanAbsoluteErrorMetric, UndefinedOptionFlag, MagickFalse },

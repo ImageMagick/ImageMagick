@@ -377,12 +377,13 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     }
     case PowEvaluateOperator:
     {
-      if (((double) pixel < 0) && ((value-floor(value)) > MagickEpsilon))
+      if (fabs(value) <= MagickEpsilon)
+        break;
+      if (((double) pixel < 0.0) && ((value-floor(value)) > MagickEpsilon))
         result=(double) -((double) QuantumRange*pow(-(QuantumScale*(double)
-          pixel),(double) value));
+          pixel),value));
       else
-        result=(double) QuantumRange*pow(QuantumScale*(double) pixel,
-          (double) value);
+        result=(double) QuantumRange*pow(QuantumScale*(double) pixel,value);
       break;
     }
     case RightShiftEvaluateOperator:
@@ -1766,7 +1767,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
   if (perceptual_hash == (ChannelPerceptualHash *) NULL)
     return((ChannelPerceptualHash *) NULL);
   artifact=GetImageArtifact(image,"phash:colorspaces");
-  if (artifact != NULL)
+  if (artifact != (const char *) NULL)
     colorspaces=AcquireString(artifact);
   else
     colorspaces=AcquireString("xyY,HSB");

@@ -1083,6 +1083,7 @@ namespace Magick
 
     // Remap image colors with closest color from reference image
     void map(const Image &mapImage_,const bool dither_=false);
+    void map(const Image &mapImage_,const DitherMethod ditherMethod_);
 
     // Delineate arbitrarily shaped clusters in the image.
     void meanShift(const size_t width_,const size_t height_,

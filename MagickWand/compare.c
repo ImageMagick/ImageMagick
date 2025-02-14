@@ -44,6 +44,7 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/mogrify-private.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/string-private.h"
 
 /*
@@ -200,7 +201,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define CompareEpsilon  (1.0e-06)
-#define DefaultDissimilarityThreshold  0.31830988618379067154
+#define DefaultDissimilarityThreshold  (1.0/MagickPI)
 #define DefaultSimilarityThreshold  (-1.0)
 #define DestroyCompare() \
 { \
@@ -255,6 +256,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     fire,
     pend,
     respect_parentheses,
+    similar = MagickTrue,
     subimage_search;
 
   MagickStatusType
@@ -1171,8 +1173,21 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     {
       similarity_image=SimilarityImage(image,reconstruct_image,metric,
         similarity_threshold,&offset,&similarity_metric,exception);
-      if (similarity_metric > dissimilarity_threshold)
-        ThrowCompareException(ImageError,"ImagesTooDissimilar",image->filename);
+      if (dissimilarity_threshold == DefaultDissimilarityThreshold)
+        switch (metric)
+        {
+          case PhaseCorrelationErrorMetric:
+          case PeakSignalToNoiseRatioErrorMetric:
+          {
+            dissimilarity_threshold=1.0;
+            break;
+          }
+          default:
+            break;
+        }
+      if (similarity_metric > (dissimilarity_threshold+MagickEpsilon))
+        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+          "ImagesTooDissimilar","`%s'",image->filename);
     }
   if (similarity_image == (Image *) NULL)
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
@@ -1232,6 +1247,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
   switch (metric)
   {
+    case DotProductCorrelationErrorMetric:
     case NormalizedCrossCorrelationErrorMetric:
     {
       distortion=1.0-distortion;
@@ -1243,13 +1259,10 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       distortion=1.0-distortion;
       break;
     }
-    case PeakSignalToNoiseRatioErrorMetric:
-    {
-      distortion*=QuantumScale;
-      break;
-    }
     default: break;
   }
+  if (fabs(distortion) > CompareEpsilon)
+    similar=MagickFalse;
   if (difference_image == (Image *) NULL)
     status=0;
   else
@@ -1263,8 +1276,9 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         {
           switch (metric)
           {
-            case FuzzErrorMetric:
             case AbsoluteErrorMetric:
+            case DotProductCorrelationErrorMetric:
+            case FuzzErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
             case PerceptualHashErrorMetric:
             case PhaseCorrelationErrorMetric:
@@ -1284,7 +1298,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             {
               (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
                 (double) QuantumRange*distortion,GetMagickPrecision(),
-                0.01*distortion);
+                distortion);
               break;
             }
             case MeanErrorPerPixelErrorMetric:
@@ -1401,6 +1415,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               break;
             }
             case AbsoluteErrorMetric:
+            case DotProductCorrelationErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
             case PeakSignalToNoiseRatioErrorMetric:
             case PerceptualHashErrorMetric:
@@ -1502,15 +1517,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       difference_image=DestroyImageList(difference_image);
     }
   DestroyCompare();
-  if ((metric == NormalizedCrossCorrelationErrorMetric) ||
-      (metric == StructuralSimilarityErrorMetric) ||
-      (metric == UndefinedErrorMetric))
-    {
-      if (fabs(distortion-1.0) > CompareEpsilon)
-        (void) SetImageOption(image_info,"compare:dissimilar","true");
-    }
-  else
-    if (fabs(distortion) > CompareEpsilon)
-      (void) SetImageOption(image_info,"compare:dissimilar","true");
+  if (similar == MagickFalse)
+    (void) SetImageOption(image_info,"compare:dissimilar","true");
   return(status != 0 ? MagickTrue : MagickFalse);
 }

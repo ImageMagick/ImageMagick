@@ -2168,9 +2168,8 @@ static MagickBooleanType HasOpenCLDevices(MagickCLEnv clEnv,
 
   /* Get additional options */
   (void) FormatLocaleString(options,MagickPathExtent,CLOptions,
-    (float)QuantumRange,(float)QuantumScale,(float)CLCharQuantumScale,
-    (float)MagickEpsilon,(float)MagickPI,(unsigned int)MaxMap,
-    (unsigned int)MAGICKCORE_QUANTUM_DEPTH);
+    (float)QuantumRange,(float)CLCharQuantumScale,(float)MagickEpsilon,
+    (float)MagickPI,(unsigned int)MaxMap,(unsigned int)MAGICKCORE_QUANTUM_DEPTH);
 
   signature=StringSignature(options);
   accelerateKernelsBuffer=(char*) AcquireQuantumMemory(1,

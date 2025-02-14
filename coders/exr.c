@@ -204,12 +204,10 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
   uint8_t
     *p;
 
+  *data=(uint8_t *) NULL;
   if (decoder.channel_count >= (MaxPixelChannels-MetaPixelChannels))
-    {
-      exr_decoding_destroy(ctxt,&decoder);
       ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
         image->filename);
-    }
   channel=decoder.channels;
   prefix_length=0;
   prefix=strrchr(decoder.channels[0].channel_name,'.');
@@ -281,10 +279,7 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
   if ((status != MagickFalse) && (number_meta_channels > 0))
     status=SetPixelMetaChannels(image,number_meta_channels,exception);
   if (status == MagickFalse)
-    {
-      exr_decoding_destroy(ctxt,&decoder);
-      return(status);
-    }
+    return(status);
   *data=(uint8_t *) AcquireQuantumMemory(*pixel_size,pixel_count);
   if (*data == (uint8_t*)NULL)
     {
@@ -491,6 +486,7 @@ static MagickBooleanType ReadEXRTiledImage(exr_context_t ctxt,int part_index,
       (void) ThrowMagickException(exception,GetMagickModule(),
         CorruptImageError,"Unsupported number of levels","`%d %d'",
         levels_x,levels_y);
+      return(MagickFalse);
     }
   pixel_count=(size_t)tile_width*tile_height;
   status=InitializeEXRChannels(image,ctxt,decoder,pixel_count,tile_width,

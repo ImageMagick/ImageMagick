@@ -1,12 +1,12 @@
 /*
   Copyright @ 1999 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-  
+
   You may not use this file except in compliance with the License.  You may
   obtain a copy of the License at
-  
+
     https://imagemagick.org/script/license.php
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,14 +52,14 @@ extern "C" {
 
 static inline void ConvertAdobe98ToXYZ(const double red,const double green,
   const double blue,double *X,double *Y,double *Z)
-{ 
+{
   double
     b,
     g,
     r;
 
   /*
-    Convert Adobe '98 to XYZ colorspace. 
+    Convert Adobe '98 to XYZ colorspace.
   */
   r=QuantumScale*DecodePixelGamma((double) QuantumRange*red);
   g=QuantumScale*DecodePixelGamma((double) QuantumRange*green);
@@ -67,7 +67,7 @@ static inline void ConvertAdobe98ToXYZ(const double red,const double green,
   *X=0.57666904291013050*r+0.18555823790654630*g+0.18822864623499470*b;
   *Y=0.29734497525053605*r+0.62736356625546610*g+0.07529145849399788*b;
   *Z=0.02703136138641234*r+0.07068885253582723*g+0.99133753683763880*b;
-} 
+}
 
 static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
   double *red,double *green,double *blue)
@@ -75,11 +75,19 @@ static inline void ConvertXYZToRGB(const double X,const double Y,const double Z,
   double
     b,
     g,
+    min,
     r;
 
-  r=3.2404542*X-1.5371385*Y-0.4985314*Z;
-  g=(-0.9692660)*X+1.8760108*Y+0.0415560*Z;
-  b=0.0556434*X-0.2040259*Y+1.0572252*Z;
+  r=(3.240969941904521*X)+(-1.537383177570093*Y)+(-0.498610760293*Z);
+  g=(-0.96924363628087*X)+(1.87596750150772*Y)+(0.041555057407175*Z);
+  b=(0.055630079696993*X)+(-0.20397695888897*Y)+(1.056971514242878*Z);
+  min=MagickMin(r,MagickMin(g,b));
+  if (min < 0.0)
+    {
+      r-=min;
+      g-=min;
+      b-=min;
+    }
   *red=EncodePixelGamma((double) QuantumRange*r);
   *green=EncodePixelGamma((double) QuantumRange*g);
   *blue=EncodePixelGamma((double) QuantumRange*b);
@@ -95,6 +103,29 @@ static inline void ConvertAdobe98ToRGB(const double r,const double g,
 
   ConvertAdobe98ToXYZ(r,g,b,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
+}
+
+static inline void ConvertCAT02LMSToXYZ(const double L,const double M,
+  const double S,double *X,double *Y,double *Z)
+{
+  /*
+    Convert CAT02LMS to XYZ colorspace.
+  */
+  *X=1.096123820835514*L-0.278869000218287*M+0.182745179382773*S;
+  *Y=0.454369041975359*L+0.473533154307412*M+0.072097803717229*S;
+  *Z=(-0.009627608738429)*L-0.005698031216113*M+1.015325639954543*S;
+}
+
+static inline void ConvertCAT02LMSToRGB(const double L,const double M,
+  const double S,double *R,double *G,double *B)
+{
+  double
+    X,
+    Y,
+    Z;
+
+  ConvertCAT02LMSToXYZ(L,M,S,&X,&Y,&Z);
+  ConvertXYZToRGB(X,Y,Z,R,G,B);
 }
 
 static inline void ConvertCMYKToRGB(PixelInfo *pixel)
@@ -499,12 +530,12 @@ static inline void ConvertHWBToRGB(const double hue,const double whiteness,
 
 static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   const IlluminantType illuminant,double *X,double *Y,double *Z)
-{   
+{
   double
     x,
     y,
     z;
-    
+
   y=(L+16.0)/116.0;
   x=y+a/500.0;
   z=y-b/200.0;
@@ -643,7 +674,7 @@ static inline void ConvertLMSToRGB(const double L,const double M,
 
 static inline void ConvertDisplayP3ToXYZ(const double red,const double green,
   const double blue,double *X,double *Y,double *Z)
-{ 
+{
   double
     b,
     g,
@@ -687,12 +718,12 @@ static inline void ConvertLuvToRGB(const double L,const double u,
 
 static inline void ConvertProPhotoToXYZ(const double red,const double green,
   const double blue,double *X,double *Y,double *Z)
-{   
+{
   double
     b,
     g,
     r;
-  
+
   /*
     Convert ProPhoto to XYZ colorspace.
   */
@@ -715,6 +746,48 @@ static inline void ConvertProPhotoToRGB(const double r,const double g,
 
   ConvertProPhotoToXYZ(r,g,b,&X,&Y,&Z);
   ConvertXYZToRGB(X,Y,Z,red,green,blue);
+}
+
+static inline void ConvertXYZToCAT02LMS(const double X,const double Y,
+  const double Z,double *L,double *M,double *S)
+{
+  *L=0.7328*X+0.4296*Y-0.1624*Z;
+  *M=(-0.7036)*X+1.6975*Y+0.0061*Z;
+  *S=0.0030*X+0.0136*Y+0.9834*Z; 
+}
+
+static inline void ConvertRGBToXYZ(const double red,const double green,
+  const double blue,double *X,double *Y,double *Z)
+{
+  double
+    b,
+    g,
+    r;
+
+  /*
+    Convert RGB to XYZ colorspace.
+  */
+  r=QuantumScale*DecodePixelGamma(red);
+  g=QuantumScale*DecodePixelGamma(green);
+  b=QuantumScale*DecodePixelGamma(blue);
+  *X=(0.4123955889674142161*r)+(0.3575834307637148171*g)+
+    (0.1804926473817015735*b);
+  *Y=(0.2125862307855955516*r)+(0.7151703037034108499*g)+
+    (0.07220049864333622685*b);
+  *Z=(0.01929721549174694484*r)+(0.1191838645808485318*g)+
+    (0.9504971251315797660*b);
+}
+
+static inline void ConvertRGBToCAT02LMS(const double R,const double G,
+  const double B,double *L,double *M,double *S)
+{
+  double
+    X,
+    Y,
+    Z;
+
+  ConvertRGBToXYZ(R,G,B,&X,&Y,&Z);
+  ConvertXYZToCAT02LMS(X,Y,Z,L,M,S);
 }
 
 static inline void ConvertRGBToCMY(const double red,const double green,
@@ -860,25 +933,6 @@ static inline void ConvertRGBToHSI(const double red,const double green,
   *hue=atan2(beta,alpha)*(180.0/MagickPI)/360.0;
   if (*hue < 0.0)
     *hue+=1.0;
-}
-
-static inline void ConvertRGBToXYZ(const double red,const double green,
-  const double blue,double *X,double *Y,double *Z)
-{
-  double
-    b,
-    g,
-    r;
-
-  /*
-    Convert RGB to XYZ colorspace.
-  */
-  r=QuantumScale*DecodePixelGamma(red);
-  g=QuantumScale*DecodePixelGamma(green);
-  b=QuantumScale*DecodePixelGamma(blue);
-  *X=0.4124564*r+0.3575761*g+0.1804375*b;
-  *Y=0.2126729*r+0.7151522*g+0.0721750*b;
-  *Z=0.0193339*r+0.1191920*g+0.9503041*b;
 }
 
 static inline void ConvertXYZToAdobe98(const double X,const double Y,
@@ -1512,7 +1566,7 @@ static inline void ConvertYDbDrToRGB(const double Y,const double Db,
     0.26789932820759876*(Dr-0.5));
   *blue=(double) QuantumRange*(Y+0.66467905997895482*(Db-0.5)-
     7.9202543533108e-05*(Dr-0.5));
-}   
+}
 
 static inline void ConvertYIQToRGB(const double Y,const double I,const double Q,
   double *red,double *green,double *blue)
