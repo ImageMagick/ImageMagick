@@ -5,15 +5,11 @@ on:
     branches:
       - main
     paths:
-      - 'config/'
-      - '.github/scripts/compare_signatures.py'
       - '.github/workflows/doc_check.yml'
   pull_request:
     branches:
       - main
     paths:
-      - 'config/'
-      - '.github/scripts/compare_signatures.py'
       - '.github/workflows/doc_check.yml'
   workflow_dispatch:
   schedule:
@@ -22,7 +18,7 @@ on:
 jobs:
   doxygen-check:
     name: 'Documentation Check'
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-24.01 
 
     steps:
       - name: Checkout repository content
@@ -45,7 +41,6 @@ jobs:
             cd config && doxygen Magick++.dox.in &> /dev/null
             cd ..
 
-            echo "PWD : ${PWD}"
             # documentation files with function signatures that we can compare with their corresponding doxygen file (currently)
             DOC_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image++.html" "Montage.html" "Pixels.html")
             DOXY_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image.html" "Montage.html" "Pixels.html")  # Image.html is the only one that differs from the doxygen file
@@ -58,7 +53,7 @@ jobs:
             done
 
             if [ $diff ]; then
-               exit 1
+               echo "Mismatches detected!" && exit 1
             fi
             exit 0
 
