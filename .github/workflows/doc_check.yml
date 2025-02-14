@@ -35,24 +35,26 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y doxygen
 
       - name: Compare documentation
-        run: | 
-          differences_found=false         
-          # first generate the Magick++ documentation to be up to date with the current code
-          cd config && doxygen Magick++.dox.in &> /dev/null
-          cd ..
-          
-          # documentation files with function signatures that we can compare with their corresponding doxygen file (currently)
-          DOC_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image++.html" "Montage.html" "Pixels.html")
-          DOXY_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image.html" "Montage.html" "Pixels.html")  # Image.html is the only one that differs from the doxygen file
-          for i in "${!DOC_HTML[@]}"; do
-            python3 .github/scripts/compare_signatures.py www/Magick++/"${DOC_HTML[$i]}" www/api/Magick++/classMagick_1_1"${DOXY_HTML[$i]}"
-            if [ $? -eq -1]; then
-             differences_found=true
+        run: |
+            diff=false
+            # first generate the Magick++ documentation to be up to date with the current code
+            cd ../..
+            cd config && doxygen Magick++.dox.in &> /dev/null
+            cd ..
+
+            # documentation files with function signatures that we can compare with their corresponding doxygen file (currently)
+            DOC_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image++.html" "Montage.html" "Pixels.html")
+            DOXY_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image.html" "Montage.html" "Pixels.html")  # Image.html is the only one that differs from the doxygen file
+            for i in "${!DOC_HTML[@]}"; do
+                python3 .github/scripts/compare_signatures.py www/Magick++/"${DOC_HTML[$i]}" www/api/Magick++/classMagick_1_1"${DOXY_HTML[$i]}"
+                if [ $? -eq -1 ]; then
+                    diff=true
+                fi
+                echo ""
+            done
+
+            if [ $diff ]; then
+               exit 1
             fi
-            echo ""
-          done
-          
-          if [ $differences_found ]; then
-            exit -1
-          fi
-          exit 0
+            exit 0
+
