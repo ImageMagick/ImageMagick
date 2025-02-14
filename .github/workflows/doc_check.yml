@@ -5,11 +5,15 @@ on:
     branches:
       - main
     paths:
+      - 'config/'
+      - '.github/scripts/compare_signatures.py'
       - '.github/workflows/doc_check.yml'
   pull_request:
     branches:
       - main
     paths:
+      - 'config/'
+      - '.github/scripts/compare_signatures.py'
       - '.github/workflows/doc_check.yml'
   workflow_dispatch:
   schedule:
@@ -18,7 +22,7 @@ on:
 jobs:
   doxygen-check:
     name: 'Documentation Check'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest 
 
     steps:
       - name: Checkout repository content
@@ -38,10 +42,10 @@ jobs:
         run: |
             diff=false
             # first generate the Magick++ documentation to be up to date with the current code
-            cd ../..
             cd config && doxygen Magick++.dox.in &> /dev/null
             cd ..
 
+            echo "PWD : ${PWD}"
             # documentation files with function signatures that we can compare with their corresponding doxygen file (currently)
             DOC_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image++.html" "Montage.html" "Pixels.html")
             DOXY_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image.html" "Montage.html" "Pixels.html")  # Image.html is the only one that differs from the doxygen file

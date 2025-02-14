@@ -4,6 +4,7 @@ import sys
 import pandas as pd
 from io import StringIO
 
+DIFF_FOUND=False
 
 """
 Extracts the signatures from the html file of the manually written documentation
@@ -58,6 +59,7 @@ def check_signatures(doxygen_file, doc_signatures):
 
                     # check if signature is in html file
                     if method_name in doc_signatures.keys():
+                        DIFF_FOUND = True
                         if return_type not in doc_signatures[method_name]['returns']:
                             print(f"- Return type mismatch for method \"{method_name}\"")
                             print(f"Doxygen return type   : {return_type}")
@@ -86,13 +88,15 @@ def main(argv):
 
     doc_file = argv[0]
     doxygen_file = argv[1]
-    print("Checking function signatures for \n  Documentation file: ", doc_file, "\n  Doxygen file: ", doxygen_file, "\n")
+    print("Checking function signatures for \n  Doxygen file: ", doxygen_file, "\n  Documentation file: ", doc_file, "\n")
 
     signatures = extract_signatures(doc_file)
     if not signatures:
         print("No matching table found in the documentation")
         sys.exit(1)
     check_signatures(doxygen_file, signatures)
+    if DIFF_FOUND:
+        exit(-1)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
