@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/doc_check.yml'
-  pull-request:
+  pull_request:
     branches:
       - main
     paths:
