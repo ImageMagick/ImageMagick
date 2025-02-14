@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/doc_check.yml'
+  pull-request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/doc_check.yml'
   workflow_dispatch:
   schedule:
     - cron: 0 6 * * *
@@ -11,7 +18,7 @@ on:
 jobs:
   doxygen-check:
     name: 'Documentation Check'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository content
@@ -28,7 +35,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y doxygen
 
       - name: Compare documentation
-        run: |          
+        run: | 
+          differences_found=false         
           # first generate the Magick++ documentation to be up to date with the current code
           cd config && doxygen Magick++.dox.in &> /dev/null
           cd ..
@@ -37,6 +45,14 @@ jobs:
           DOC_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image++.html" "Montage.html" "Pixels.html")
           DOXY_HTML=("Blob.html" "CoderInfo.html" "Geometry.html" "Image.html" "Montage.html" "Pixels.html")  # Image.html is the only one that differs from the doxygen file
           for i in "${!DOC_HTML[@]}"; do
-            python3 scripts/compare_signatures.py www/Magick++/"${DOC_HTML[$i]}" www/api/Magick++/classMagick_1_1"${DOXY_HTML[$i]}"
+            python3 .github/scripts/compare_signatures.py www/Magick++/"${DOC_HTML[$i]}" www/api/Magick++/classMagick_1_1"${DOXY_HTML[$i]}"
+            if [ $? -eq -1]; then
+             differences_found=true
+            fi
             echo ""
           done
+          
+          if [ $differences_found ]; then
+            exit -1
+          fi
+          exit 0
