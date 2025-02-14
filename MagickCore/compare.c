@@ -3385,9 +3385,6 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMinimaImage(mse_image,&minima,offset,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
-  status=NegateImage(mse_image,MagickFalse,exception);
-  if (status == MagickFalse)
-    ThrowMSESimilarityException();
   *similarity_metric=QuantumScale*minima;
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
@@ -3660,8 +3657,8 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     Crop padding.
   */
   SetGeometry(image,&geometry);
-  geometry.width=image->columns-reconstruct->columns;
-  geometry.height=image->rows-reconstruct->rows;
+  geometry.width=image->columns;
+  geometry.height=image->rows;
   ResetImagePage(gamma_image,"0x0+0+0");
   phase_image=CropImage(gamma_image,&geometry,exception);
   gamma_image=DestroyImage(gamma_image);
