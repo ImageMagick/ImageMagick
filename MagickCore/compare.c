@@ -4045,8 +4045,14 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
             (similarity_traits == UndefinedPixelTrait) ||
             ((similarity_traits & UpdatePixelTrait) == 0))
           continue;
-        SetPixelChannel(similarity_image,channel,(double) QuantumRange*
-          similarity,q);
+        if (metric == NormalizedCrossCorrelationErrorMetric)
+          {
+            SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
+              QuantumRange-QuantumRange*similarity),q);
+            continue;
+          }
+        SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
+          QuantumRange*similarity),q);
       }
       q+=(ptrdiff_t) GetPixelChannels(similarity_image);
     }
