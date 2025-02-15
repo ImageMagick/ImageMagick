@@ -3385,6 +3385,9 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMinimaImage(mse_image,&minima,offset,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
+  status=NegateImage(mse_image,MagickFalse,exception);
+  if (status == MagickFalse)
+    ThrowMSESimilarityException();
   *similarity_metric=QuantumScale*minima;
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
@@ -4045,7 +4048,9 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
             (similarity_traits == UndefinedPixelTrait) ||
             ((similarity_traits & UpdatePixelTrait) == 0))
           continue;
-        if (metric == NormalizedCrossCorrelationErrorMetric)
+        if ((metric == MeanSquaredErrorMetric) ||
+            (metric == NormalizedCrossCorrelationErrorMetric) ||
+            (metric == RootMeanSquaredErrorMetric))
           {
             SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
               QuantumRange-QuantumRange*similarity),q);
