@@ -1303,9 +1303,9 @@ static inline void ConvertXYZToJzazbz(const double X,const double Y,
       /*
         Check for NaNs and compensate.
       */
-      *Jz=NAN;
-      *az=NAN;
-      *bz=NAN;
+      *Jz=0.0;
+      *az=0.0;
+      *bz=0.0;
       return;
     }
   Xp=(Jzazbz_b*X-(Jzazbz_b-1)*Z);
@@ -1346,9 +1346,9 @@ static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
 
   if ((IsNaN(bz) != 0) || (IsNaN(white_luminance) != 0))
     {
-      *X=NAN;
-      *Y=NAN;
-      *Z=NAN;
+      *X=0.0;
+      *Y=0.0;
+      *Z=0.0;
       return;
     }
   gamma=Jz+Jzazbz_d0;
