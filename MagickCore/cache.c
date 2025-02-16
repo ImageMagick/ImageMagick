@@ -203,8 +203,6 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
   cache_info->number_threads=number_threads;
   if (GetOpenMPMaximumThreads() > cache_info->number_threads)
     cache_info->number_threads=GetOpenMPMaximumThreads();
-  if (GetMagickResourceLimit(ThreadResource) > cache_info->number_threads)
-    cache_info->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   if (cache_info->number_threads == 0)
     cache_info->number_threads=1;
   cache_info->nexus_info=AcquirePixelCacheNexus(cache_info->number_threads);
