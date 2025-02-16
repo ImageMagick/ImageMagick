@@ -3831,6 +3831,24 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
 }
 #endif
 
+static Image *RMSESimilarityImage(const Image *image,const Image *reconstruct,
+  RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
+{
+  Image
+    *similarity_image;
+
+  MagickBooleanType
+    status;
+
+  similarity_image=MSESimilarityImage(image,reconstruct,offset,
+    similarity_metric,exception);
+  status=EvaluateImage(similarity_image,PowEvaluateOperator,0.5,exception);
+  if (status == MagickFalse)
+    similarity_image=DestroyImage(similarity_image);
+  *similarity_metric=sqrt(*similarity_metric);
+  return(similarity_image);
+}
+
 static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
   const MetricType metric,const ssize_t x_offset,const ssize_t y_offset,
   ExceptionInfo *exception)
@@ -3947,9 +3965,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         if ((artifact != (const char *) NULL) &&
             (IsStringTrue(artifact) == MagickFalse))
           break;
-        similarity_image=MSESimilarityImage(image,reconstruct,offset,
+        similarity_image=RMSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
-        *similarity_metric=sqrt(*similarity_metric);
         return(similarity_image);
       }
       default: break;
