@@ -3833,20 +3833,145 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
 static Image *RMSESimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
+#define ThrowRMSESimilarityException() \
+{ \
+  if (alpha_image != (Image *) NULL) \
+    alpha_image=DestroyImage(alpha_image); \
+  if (beta_image != (Image *) NULL) \
+    beta_image=DestroyImage(beta_image); \
+  if (channel_statistics != (ChannelStatistics *) NULL) \
+    channel_statistics=(ChannelStatistics *) \
+      RelinquishMagickMemory(channel_statistics); \
+  if (mean_image != (Image *) NULL) \
+    mean_image=DestroyImage(mean_image); \
+  if (rmse_image != (Image *) NULL) \
+    rmse_image=DestroyImage(rmse_image); \
+  if (reconstruct_image != (Image *) NULL) \
+    reconstruct_image=DestroyImage(reconstruct_image); \
+  if (sum_image != (Image *) NULL) \
+    sum_image=DestroyImage(sum_image); \
+  if (alpha_image != (Image *) NULL) \
+    alpha_image=DestroyImage(alpha_image); \
+  return((Image *) NULL); \
+}
+
+  ChannelStatistics
+    *channel_statistics = (ChannelStatistics *) NULL;
+
+  double
+    minima = 0.0;
+
   Image
-    *similarity_image;
+    *alpha_image = (Image *) NULL,
+    *beta_image = (Image *) NULL,
+    *mean_image = (Image *) NULL,
+    *reconstruct_image = (Image *) NULL,
+    *rmse_image = (Image *) NULL,
+    *sum_image = (Image *) NULL,
+    *test_image = (Image *) NULL;
 
   MagickBooleanType
     status;
 
-  similarity_image=MSESimilarityImage(image,reconstruct,offset,
-    similarity_metric,exception);
-  status=EvaluateImage(similarity_image,PowEvaluateOperator,2.0,exception);
+  RectangleInfo
+    geometry;
+
+  /*
+    RMSE correlation-based image similarity using FFT local statistics.
+  */
+  test_image=SIMSquareImage(image,exception);
+  if (test_image == (Image *) NULL)
+    ThrowRMSESimilarityException();
+  reconstruct_image=SIMUnityImage(image,reconstruct,exception);
+  if (reconstruct_image == (Image *) NULL)
+    ThrowRMSESimilarityException();
+  /*
+    Create (U * test)/# pixels.
+  */
+  alpha_image=SIMCrossCorrelationImage(test_image,reconstruct_image,exception);
+  test_image=DestroyImage(test_image);
+  if (alpha_image == (Image *) NULL)
+    ThrowRMSESimilarityException();
+  status=SIMMultiplyImage(alpha_image,1.0/reconstruct->columns/(double)
+    reconstruct->rows,(const ChannelStatistics *) NULL,exception);
   if (status == MagickFalse)
-    similarity_image=DestroyImage(similarity_image);
-  *similarity_metric=sqrt(*similarity_metric);
-  return(similarity_image);
+    ThrowRMSESimilarityException();
+  /*
+    Create 2*(text * reconstruction)# pixels.
+  */
+  (void) CompositeImage(reconstruct_image,reconstruct,CopyCompositeOp,
+    MagickTrue,0,0,exception);
+  beta_image=SIMCrossCorrelationImage(image,reconstruct_image,exception);
+  reconstruct_image=DestroyImage(reconstruct_image);
+  if (beta_image == (Image *) NULL)
+    ThrowRMSESimilarityException();
+  status=SIMMultiplyImage(beta_image,-2.0/reconstruct->columns/(double)
+    reconstruct->rows,(const ChannelStatistics *) NULL,exception);
+  if (status == MagickFalse)
+    ThrowRMSESimilarityException();
+  /*
+    Mean of reconstruction squared.
+  */
+  sum_image=SIMSquareImage(reconstruct,exception);
+  if (sum_image == (Image *) NULL)
+    ThrowRMSESimilarityException();
+  channel_statistics=GetImageStatistics(sum_image,exception);
+  if (channel_statistics == (ChannelStatistics *) NULL)
+    ThrowRMSESimilarityException();
+  status=SetImageExtent(sum_image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    ThrowRMSESimilarityException();
+  status=SetImageStorageClass(sum_image,DirectClass,exception);
+  if (status == MagickFalse)
+    ThrowRMSESimilarityException();
+  status=SIMSetImageMean(sum_image,channel_statistics,exception);
+  channel_statistics=(ChannelStatistics *)
+    RelinquishMagickMemory(channel_statistics);
+  if (status == MagickFalse)
+    ThrowRMSESimilarityException();
+  /*
+    Create mean image.
+  */
+  AppendImageToList(&sum_image,alpha_image);
+  AppendImageToList(&sum_image,beta_image);
+  mean_image=EvaluateImages(sum_image,SumEvaluateOperator,exception);
+  if (mean_image == (Image *) NULL)
+    ThrowRMSESimilarityException();
+  status=EvaluateImage(mean_image,PowEvaluateOperator,0.5,exception);
+  if (mean_image == (Image *) NULL)
+    ThrowRMSESimilarityException();
+  sum_image=DestroyImage(sum_image);
+  status=GrayscaleImage(mean_image,AveragePixelIntensityMethod,exception);
+  if (status == MagickFalse)
+    ThrowRMSESimilarityException();
+  mean_image->depth=MAGICKCORE_QUANTUM_DEPTH;
+  /*
+    Crop to difference of reconstruction and test images.
+  */
+  SetGeometry(image,&geometry);
+  geometry.width=image->columns;
+  geometry.height=image->rows;
+  (void) ResetImagePage(mean_image,"0x0+0+0");
+  rmse_image=CropImage(mean_image,&geometry,exception);
+  mean_image=DestroyImage(mean_image);
+  if (rmse_image == (Image *) NULL)
+    ThrowRMSESimilarityException();
+  /*
+    Locate minimum.
+  */
+  (void) ResetImagePage(rmse_image,"0x0+0+0");
+  status=SIMMinimaImage(rmse_image,&minima,offset,exception);
+  if (status == MagickFalse)
+    ThrowRMSESimilarityException();
+  status=NegateImage(rmse_image,MagickFalse,exception);
+  if (status == MagickFalse)
+    ThrowRMSESimilarityException();
+  *similarity_metric=QuantumScale*minima;
+  alpha_image=DestroyImage(alpha_image);
+  beta_image=DestroyImage(beta_image);
+  return(rmse_image);
 }
+
 #endif
 
 static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
