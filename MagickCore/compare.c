@@ -3842,7 +3842,7 @@ static Image *RMSESimilarityImage(const Image *image,const Image *reconstruct,
 
   similarity_image=MSESimilarityImage(image,reconstruct,offset,
     similarity_metric,exception);
-  status=EvaluateImage(similarity_image,PowEvaluateOperator,0.5,exception);
+  status=EvaluateImage(similarity_image,PowEvaluateOperator,2.0,exception);
   if (status == MagickFalse)
     similarity_image=DestroyImage(similarity_image);
   *similarity_metric=sqrt(*similarity_metric);
