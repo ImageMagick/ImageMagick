@@ -2,7 +2,7 @@
 
 # build zlib
 pushd "$SRC/zlib"
-./configure --static --prefix="$WORK"
+cmake . -DZLIB_BUILD_SHARED=off --prefix="$WORK"
 make -j$(nproc) CFLAGS="$CFLAGS -fPIC"
 make install
 popd
