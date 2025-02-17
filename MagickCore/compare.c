@@ -3829,7 +3829,6 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   beta_image=DestroyImage(beta_image);
   return(psnr_image);
 }
-#endif
 
 static Image *RMSESimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
@@ -3848,6 +3847,7 @@ static Image *RMSESimilarityImage(const Image *image,const Image *reconstruct,
   *similarity_metric=sqrt(*similarity_metric);
   return(similarity_image);
 }
+#endif
 
 static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
   const MetricType metric,const ssize_t x_offset,const ssize_t y_offset,
