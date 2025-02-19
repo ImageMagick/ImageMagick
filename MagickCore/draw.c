@@ -2755,10 +2755,10 @@ static MagickBooleanType RenderMVGContent(Image *image,
             /*
               Identify recursion.
             */
-            for (i=0; i < n; i++)
+            for (i=0; i <= n; i++)
               if (LocaleCompare(token,graphic_context[i]->id) == 0)
                 break;
-            if (i < n)
+            if (i <= n)
               break;
             mvg_class=(const char *) GetValueFromSplayTree(macros,token);
             if ((graphic_context[n]->render != MagickFalse) &&
@@ -2773,6 +2773,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 /*
                   Inject class elements in stream.
                 */
+                (void) CloneString(&graphic_context[n]->id,token);
                 offset=(ssize_t) (p-primitive);
                 elements=AcquireString(primitive);
                 elements[offset]='\0';
