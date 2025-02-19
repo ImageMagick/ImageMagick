@@ -4119,13 +4119,16 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         "GeometryDoesNotContainImage","`%s'",image->filename);
       return((Image *) NULL);
     }
-  similarity_image=CloneImage(image,0,0,MagickTrue,exception);
+  similarity_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageAlphaChannel(similarity_image,DeactivateAlphaChannel,
-    exception);
-  (void) SetImageType(similarity_image,GrayscaleType,exception);
   similarity_image->depth=MAGICKCORE_QUANTUM_DEPTH;  
+  similarity_image->alpha_trait=UndefinedPixelTrait;
+  similarity_image->type=GrayscaleType;
+  status=SetImageStorageClass(similarity_image,DirectClass,exception);
+  if (status == MagickFalse)
+    return(DestroyImage(similarity_image));
   /*
     Measure similarity of reconstruction image against image.
   */
@@ -4156,8 +4159,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
 #endif
     if (*similarity_metric <= similarity_threshold)
       continue;
-    q=GetCacheViewAuthenticPixels(similarity_view,0,y,similarity_image->columns,
-      1,exception);
+    q=QueueCacheViewAuthenticPixels(similarity_view,0,y,
+      similarity_image->columns,1,exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
