@@ -1295,19 +1295,11 @@ static inline void ConvertXYZToJzazbz(const double X,const double Y,
     Sp,
     Xp,
     Yp,
-    Zp;
+    Zp,
+    J,
+    a,
+    b;
 
-  if ((IsNaN(X) != 0) || (IsNaN(Y) != 0) || (IsNaN(Z) != 0) ||
-     (IsNaN(white_luminance) != 0))
-    {
-      /*
-        Check for NaNs and compensate.
-      */
-      *Jz=0.0;
-      *az=0.0;
-      *bz=0.0;
-      return;
-    }
   Xp=(Jzazbz_b*X-(Jzazbz_b-1)*Z);
   Yp=(Jzazbz_g*Y-(Jzazbz_g-1)*X);
   Zp=Z;
@@ -1321,9 +1313,18 @@ static inline void ConvertXYZToJzazbz(const double X,const double Y,
   gamma=pow(S*PerceptibleReciprocal(white_luminance),Jzazbz_n);
   Sp=pow((Jzazbz_c1+Jzazbz_c2*gamma)/(1.0+Jzazbz_c3*gamma),Jzazbz_p);
   Iz=0.5*Lp+0.5*Mp;
-  *az=3.52400*Lp-4.066708*Mp+0.542708*Sp+0.5;
-  *bz=0.199076*Lp+1.096799*Mp-1.295875*Sp+0.5;
-  *Jz=((Jzazbz_d+1.0)*Iz)/(Jzazbz_d*Iz+1.0)-Jzazbz_d0;
+  J=((Jzazbz_d+1.0)*Iz)/(Jzazbz_d*Iz+1.0)-Jzazbz_d0;
+  if (IsNaN(J) != 0)
+    J=0.0;
+  a=3.52400*Lp-4.066708*Mp+0.542708*Sp+0.5;
+  if (IsNaN(a) != 0)
+    a=0.5;
+  b=0.199076*Lp+1.096799*Mp-1.295875*Sp+0.5;
+  if (IsNaN(b) != 0)
+    b=0.5;
+  *Jz=J;
+  *az=a;
+  *bz=b;
 }
 
 static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
@@ -1344,13 +1345,6 @@ static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
     Yp,
     Zp;
 
-  if ((IsNaN(bz) != 0) || (IsNaN(white_luminance) != 0))
-    {
-      *X=0.0;
-      *Y=0.0;
-      *Z=0.0;
-      return;
-    }
   gamma=Jz+Jzazbz_d0;
   Iz=gamma/(Jzazbz_d-Jzazbz_d*gamma+1.0);
   azz=az-0.5;
@@ -1370,8 +1364,16 @@ static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
   Xp=1.92422643578761*L-1.00479231259537*M+0.037651404030618*S;
   Yp=0.350316762094999*L+0.726481193931655*M-0.065384422948085*S;
   Zp=(-0.0909828109828476)*L-0.312728290523074*M+1.52276656130526*S;
-  *X=(Xp+(Jzazbz_b-1.0)*Zp)/Jzazbz_b;
-  *Y=(Yp+(Jzazbz_g-1.0)**X)/Jzazbz_g;
+  if (IsNaN(Zp) != 0)
+    Zp=0.0;
+  Xp=(Xp+(Jzazbz_b-1.0)*Zp)/Jzazbz_b;
+  if (IsNaN(Xp) != 0)
+    Xp=0.0;
+  Yp=(Yp+(Jzazbz_g-1.0)*Xp)/Jzazbz_g;
+  if (IsNaN(Yp) != 0)
+    Yp=0.0;
+  *X=Xp;
+  *Y=Yp;
   *Z=Zp;
 }
 
