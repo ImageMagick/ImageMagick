@@ -3113,9 +3113,9 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   if (test_image == (Image *) NULL)
     return((Image *) NULL);
   GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
-  ResetImagePage(test_image,"0x0+0+0");
-  status=SetImageExtent(test_image,2*(size_t) ceil(image->columns/2.0),
-    2*(size_t) ceil(image->rows/2.0),exception);
+  (void) ResetImagePage(test_image,"0x0+0+0");
+  status=SetImageExtent(test_image,2*(size_t) ceil((double) image->columns/2.0),
+    2*(size_t) ceil((double) image->rows/2.0),exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
   (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
@@ -3126,8 +3126,8 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   if (reconstruct_image == (Image *) NULL)
     ThrowDPCSimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
-  ResetImagePage(reconstruct_image,"0x0+0+0");
-  SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
+  (void) ResetImagePage(reconstruct_image,"0x0+0+0");
+  (void) SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
   /*
     Compute X and Y derivatives of reference image.
   */
@@ -3238,12 +3238,12 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   SetGeometry(image,&geometry);
   geometry.width=image->columns;
   geometry.height=image->rows;
-  ResetImagePage(trx_image,"0x0+0+0");
+  (void) ResetImagePage(trx_image,"0x0+0+0");
   dot_product_image=CropImage(trx_image,&geometry,exception);
   trx_image=DestroyImage(trx_image);
   if (dot_product_image == (Image *) NULL)
     ThrowDPCSimilarityException();
-  ResetImagePage(dot_product_image,"0x0+0+0");
+  (void) ResetImagePage(dot_product_image,"0x0+0+0");
   /*
     Identify the maxima value in the image and its location.
   */
@@ -3601,9 +3601,9 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (test_image == (Image *) NULL)
     ThrowPhaseSimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
-  ResetImagePage(test_image,"0x0+0+0");
-  status=SetImageExtent(test_image,2*(size_t) ceil(image->columns/2.0),
-    2*(size_t) ceil(image->rows/2.0),exception);
+  (void) ResetImagePage(test_image,"0x0+0+0");
+  status=SetImageExtent(test_image,2*(size_t) ceil((double) image->columns/2.0),
+    2*(size_t) ceil((double) image->rows/2.0),exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
@@ -3614,12 +3614,12 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (reconstruct_image == (Image *) NULL)
     ThrowPhaseSimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
-  ResetImagePage(reconstruct_image,"0x0+0+0");
-  status=SetImageExtent(reconstruct_image,2*(size_t) ceil(image->columns/2.0),
-    2*(size_t) ceil(image->rows/2.0),exception);
+  (void) ResetImagePage(reconstruct_image,"0x0+0+0");
+  status=SetImageExtent(reconstruct_image,2*(size_t) ceil((double)
+    image->columns/2.0),2*(size_t) ceil((double) image->rows/2.0),exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
-  SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
+  (void) SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
   (void) SetImageArtifact(test_image,"fourier:normalize","inverse");
   fft_images=ForwardFourierTransformImage(test_image,MagickTrue,exception);
   if (fft_images == (Image *) NULL)
@@ -3667,12 +3667,12 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   SetGeometry(image,&geometry);
   geometry.width=image->columns;
   geometry.height=image->rows;
-  ResetImagePage(gamma_image,"0x0+0+0");
+  (void) ResetImagePage(gamma_image,"0x0+0+0");
   phase_image=CropImage(gamma_image,&geometry,exception);
   gamma_image=DestroyImage(gamma_image);
   if (phase_image == (Image *) NULL)
     ThrowPhaseSimilarityException();
-  ResetImagePage(phase_image,"0x0+0+0");
+  (void) ResetImagePage(phase_image,"0x0+0+0");
   /*
     Identify the maxima value in the image and its location.
   */
