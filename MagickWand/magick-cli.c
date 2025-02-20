@@ -395,11 +395,11 @@ RestoreMSCWarning
     do { /* use break to loop to exception handler and loop */
 
       /* save option details */
-      CloneString(&option,token_info->token);
+      (void) CloneString(&option,token_info->token);
 
       /* get option, its argument count, and option type */
       cli_wand->command = GetCommandOptionInfo(option);
-      count=cli_wand->command->type;
+      count=(int) cli_wand->command->type;
       option_type=(CommandOptionFlags) cli_wand->command->flags;
 #if 0
       (void) FormatLocaleFile(stderr, "Script: %u,%u: \"%s\" matched \"%s\"\n",
@@ -426,18 +426,18 @@ RestoreMSCWarning
       if ( count >= 1 ) {
         if (GetScriptToken(token_info) == MagickFalse)
           CLIWandException(OptionFatalError,"MissingArgument",option);
-        CloneString(&arg1,token_info->token);
+        (void) CloneString(&arg1,token_info->token);
       }
       else
-        CloneString(&arg1,(char *) NULL);
+        (void) CloneString(&arg1,(char *) NULL);
 
       if ( count >= 2 ) {
         if (GetScriptToken(token_info) == MagickFalse)
           CLIWandExceptionBreak(OptionFatalError,"MissingArgument",option);
-        CloneString(&arg2,token_info->token);
+        (void) CloneString(&arg2,token_info->token);
       }
       else
-        CloneString(&arg2,(char *) NULL);
+        (void) CloneString(&arg2,(char *) NULL);
 
       /*
         Process Options
@@ -534,9 +534,9 @@ loop_exit:
   /* Clean up */
   token_info = DestroyScriptTokenInfo(token_info);
 
-  CloneString(&option,(char *) NULL);
-  CloneString(&arg1,(char *) NULL);
-  CloneString(&arg2,(char *) NULL);
+  (void) CloneString(&option,(char *) NULL);
+  (void) CloneString(&arg1,(char *) NULL);
+  (void) CloneString(&arg2,(char *) NULL);
 
   return;
 }
@@ -633,7 +633,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
 
       /* get option, its argument count, and option type */
       cli_wand->command = GetCommandOptionInfo(argv[i]);
-      count=cli_wand->command->type;
+      count=(int) cli_wand->command->type;
       option_type=(CommandOptionFlags) cli_wand->command->flags;
 #if 0
       (void) FormatLocaleFile(stderr, "CLI %d: \"%s\" matched \"%s\"\n",
@@ -1175,7 +1175,7 @@ static void MagickUsage(MagickBooleanType verbose)
 
   if (verbose == MagickFalse)
     {
-      MagickCommandUsage();
+      (void) MagickCommandUsage();
       return;
     }
 
@@ -1307,8 +1307,8 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
 
 
   GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
-  SetClientName(cli_wand->wand.name);
-  ConcatenateMagickString(cli_wand->wand.name,"-CLI",MagickPathExtent);
+  (void) SetClientName(cli_wand->wand.name);
+  (void) ConcatenateMagickString(cli_wand->wand.name,"-CLI",MagickPathExtent);
 
   len=strlen(argv[0]);  /* precaution */
 
@@ -1366,7 +1366,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
     if (cli_wand->wand.debug != MagickFalse)
         (void) CLILogEvent(cli_wand,CommandEvent,GetMagickModule(),
             "- Special Option \"%s\"", argv[1]);
-    ConcatenateImages(argc,argv,exception);
+    (void) ConcatenateImages(argc,argv,exception);
     goto Magick_Command_Exit;
   }
 
@@ -1427,7 +1427,7 @@ Magick_Command_Cleanup:
       text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
         exception);
       if (text == (char *) NULL)
-        ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
+        (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
           "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
       else
         {
