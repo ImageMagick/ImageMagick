@@ -60,7 +60,7 @@ extern "C" {
 #define SaveImagesTag  "Save/Images"
 #define SaveImageTag  "Save/Image"
 #define TransparentColor  "#00000000"  /* transparent black */
-#define TransparentColorRGBA  0,0,0,TransparentAlpha
+#define TransparentColorRGBA  (Quantum) 0,(Quantum) 0,(Quantum) 0,TransparentAlpha
 #define UndefinedCompressionQuality  0UL
 #define UndefinedTicksPerSecond  100L
 
