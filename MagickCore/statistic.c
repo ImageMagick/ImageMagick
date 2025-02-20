@@ -2085,7 +2085,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   {
     ChannelStatistics *cs = channel_statistics+i;
     cs->area=0.0;
-    cs->depth=1.0;
+    cs->depth=1;
     cs->maxima=(-MagickMaximumValue);
     cs->minima=MagickMaximumValue;
     cs->sum=0.0;
@@ -2203,7 +2203,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     cs->mean=0.0;
     if (cs->area > 0)
       {
-        cs->mean=cs->sumLD/(long double) cs->area;
+        cs->mean=(double) (cs->sumLD/(long double) cs->area);
         if (cs->area > 1.0)
           AdjArea=cs->area/(cs->area-1.0);
       }
@@ -2218,12 +2218,12 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     else
       {
         if (cs->area > 1.0)
-          cs->standard_deviation=sqrtl(cs->M2/((long double) cs->area-1.0));
+          cs->standard_deviation=(double) sqrtl(cs->M2/((long double) cs->area-1.0));
         else
-          cs->standard_deviation=sqrtl(cs->M2/((long double) cs->area));
+          cs->standard_deviation=(double) sqrtl(cs->M2/((long double) cs->area));
         cs->variance=cs->standard_deviation*cs->standard_deviation;
-        cs->skewness=sqrtl(cs->area)*cs->M3/powl(cs->M2*AdjArea,1.5);
-        cs->kurtosis=cs->area*cs->M4/(cs->M2*cs->M2*AdjArea*AdjArea)-3.0;
+        cs->skewness=(double) (sqrtl(cs->area)*cs->M3/powl(cs->M2*AdjArea,1.5));
+        cs->kurtosis=(double) (cs->area*cs->M4/(cs->M2*cs->M2*AdjArea*AdjArea)-3.0);
       }
   }
 
@@ -2257,7 +2257,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       double
         count;
 
-      count=area*histogram[(ssize_t) GetPixelChannels(image)*j+i];
+      count=(fouble) (area*histogram[(ssize_t) GetPixelChannels(image)*j+i]);
       channel_statistics[channel].entropy+=((long double) -count*
         MagickLog10(count)*PerceptibleReciprocalLD((long double)
         MagickLog10(number_bins)));
