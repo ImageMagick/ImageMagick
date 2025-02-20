@@ -6180,7 +6180,7 @@ MagickPrivate MagickBooleanType ResetPixelChannelMap(Image *image,
       ssize_t
         i;
 
-      if (image->number_meta_channels >= (MaxPixelChannels-MetaPixelChannels))
+      if (image->number_meta_channels >= (size_t) (MaxPixelChannels-MetaPixelChannels))
         {
           image->number_channels=(size_t) n;
           image->number_meta_channels=0;
@@ -6425,7 +6425,7 @@ MagickExport MagickBooleanType SetPixelMetaChannels(Image *image,
   MagickBooleanType
     status;
 
-  if (number_meta_channels >= (MaxPixelChannels-MetaPixelChannels))
+  if (number_meta_channels >= (size_t) (MaxPixelChannels-MetaPixelChannels))
    ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
      image->filename);
   image->number_meta_channels=number_meta_channels;
