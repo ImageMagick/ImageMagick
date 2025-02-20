@@ -292,7 +292,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
       return(-1);
     }
   nonce=StringToStringInfo(shared_secret);
-  if (GetMagickSignature(nonce) != *session_key)
+  if ((size_t) GetMagickSignature(nonce) != *session_key)
     {
       CLOSE_SOCKET(client_socket);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
@@ -487,7 +487,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-    count=(MagickOffsetType) send(file,(char *) message+i,(LENGTH_TYPE)
+    count=(ssize_t) send(file,(char *) message+i,(LENGTH_TYPE)
       MagickMin(length-(MagickSizeType) i,(MagickSizeType) MagickMaxBufferExtent),
       MSG_NOSIGNAL);
     if (count <= 0)

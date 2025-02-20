@@ -5048,15 +5048,15 @@ static MagickBooleanType XCropImage(Display *display,
             }
           if ((x < (int) (crop_info.x+RoiDelta)) &&
               (x > (int) (crop_info.x-RoiDelta)) &&
-              (y < (crop_info.y+(int) crop_info.height+RoiDelta)) &&
-              (y > (crop_info.y+(int) crop_info.height-RoiDelta)))
+              (y < (int) (crop_info.y+(int) crop_info.height+RoiDelta)) &&
+              (y > (int) (crop_info.y+(int) crop_info.height-RoiDelta)))
             {
               crop_info.x=(crop_info.x+(int) crop_info.width);
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (crop_info.x+(int) crop_info.width+RoiDelta)) &&
-              (x > (crop_info.x+(int) crop_info.width-RoiDelta)) &&
+          if ((x < (int) (crop_info.x+(int) crop_info.width+RoiDelta)) &&
+              (x > (int) (crop_info.x+(int) crop_info.width-RoiDelta)) &&
               (y < (int) (crop_info.y+RoiDelta)) &&
               (y > (int) (crop_info.y-RoiDelta)))
             {
@@ -5064,10 +5064,10 @@ static MagickBooleanType XCropImage(Display *display,
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (crop_info.x+(int) crop_info.width+RoiDelta)) &&
-              (x > (crop_info.x+(int) crop_info.width-RoiDelta)) &&
-              (y < (crop_info.y+(int) crop_info.height+RoiDelta)) &&
-              (y > (crop_info.y+(int) crop_info.height-RoiDelta)))
+          if ((x < (int) (crop_info.x+(int) crop_info.width+RoiDelta)) &&
+              (x > (int) (crop_info.x+(int) crop_info.width-RoiDelta)) &&
+              (y < (int) (crop_info.y+(int) crop_info.height+RoiDelta)) &&
+              (y > (int) (crop_info.y+(int) crop_info.height-RoiDelta)))
             {
               state|=UpdateConfigurationState;
               break;
@@ -7001,8 +7001,8 @@ static DisplayCommand XImageWindowCommand(Display *display,
             }
           if ((key_symbol == XK_Down) || (key_symbol == XK_KP_Down))
             {
-              if (resource_info->quantum >= ((int) crop_info.height-crop_info.y))
-                resource_info->quantum=(int) crop_info.height-crop_info.y-1;
+              if (resource_info->quantum >= (int) (crop_info.height-(ssize_t) crop_info.y))
+                resource_info->quantum=(int) (crop_info.height-(ssize_t) crop_info.y-1);
               crop_info.y+=resource_info->quantum;
               crop_info.height-=(size_t) resource_info->quantum;
             }
@@ -7014,8 +7014,8 @@ static DisplayCommand XImageWindowCommand(Display *display,
             }
           if ((key_symbol == XK_Right) || (key_symbol == XK_KP_Right))
             {
-              if (resource_info->quantum >= ((int) crop_info.width-crop_info.x))
-                resource_info->quantum=(int) crop_info.width-crop_info.x-1;
+              if (resource_info->quantum >= (int) (crop_info.width-(ssize_t) crop_info.x))
+                resource_info->quantum=(int) (crop_info.width-(ssize_t) crop_info.x-1);
               crop_info.x+=resource_info->quantum;
               crop_info.width-=(size_t) resource_info->quantum;
             }
@@ -10491,24 +10491,24 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event,
         if (pan_info.x < (ssize_t) (pan_info.width/2))
           pan_info.x=0;
         else
-          pan_info.x=(x_factor*(pan_info.x-((int) pan_info.width/2)));
+          pan_info.x=(ssize_t) (x_factor*(pan_info.x-((int) pan_info.width/2)));
         if (pan_info.x < 0)
           pan_info.x=0;
         else
           if ((int) (pan_info.x+windows->image.width) >
               windows->image.ximage->width)
-            pan_info.x=windows->image.ximage->width-(int) windows->image.width;
+            pan_info.x=(ssize_t) (windows->image.ximage->width-(int) windows->image.width);
         if (pan_info.y < (ssize_t) (pan_info.height/2))
           pan_info.y=0;
         else
-          pan_info.y=(y_factor*(pan_info.y-((int) pan_info.height/2)));
+          pan_info.y=(ssize_t) (y_factor*(pan_info.y-((int) pan_info.height/2)));
         if (pan_info.y < 0)
           pan_info.y=0;
         else
           if ((int) (pan_info.y+windows->image.height) >
               windows->image.ximage->height)
-            pan_info.y=windows->image.ximage->height-(int)
-              windows->image.height;
+            pan_info.y=(ssize_t) (windows->image.ximage->height-(int)
+              windows->image.height);
         if ((windows->image.x != (int) pan_info.x) ||
             (windows->image.y != (int) pan_info.y))
           {
@@ -11765,15 +11765,15 @@ static MagickBooleanType XROIImage(Display *display,
             }
           if ((x < (int) (roi_info.x+RoiDelta)) &&
               (x > (int) (roi_info.x-RoiDelta)) &&
-              (y < (roi_info.y+(int) roi_info.height+RoiDelta)) &&
-              (y > (roi_info.y+(int) roi_info.height-RoiDelta)))
+              (y < (int) (roi_info.y+(int) roi_info.height+RoiDelta)) &&
+              (y > (int) (roi_info.y+(int) roi_info.height-RoiDelta)))
             {
               roi_info.x=roi_info.x+(int) roi_info.width;
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (roi_info.x+(int) roi_info.width+RoiDelta)) &&
-              (x > (roi_info.x+(int) roi_info.width-RoiDelta)) &&
+          if ((x < (int) (roi_info.x+(int) roi_info.width+RoiDelta)) &&
+              (x > (int) (roi_info.x+(int) roi_info.width-RoiDelta)) &&
               (y < (int) (roi_info.y+RoiDelta)) &&
               (y > (int) (roi_info.y-RoiDelta)))
             {
@@ -11781,10 +11781,10 @@ static MagickBooleanType XROIImage(Display *display,
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (roi_info.x+(int) roi_info.width+RoiDelta)) &&
-              (x > (roi_info.x+(int) roi_info.width-RoiDelta)) &&
-              (y < (roi_info.y+(int) roi_info.height+RoiDelta)) &&
-              (y > (roi_info.y+(int) roi_info.height-RoiDelta)))
+          if ((x < (int) (roi_info.x+(int) roi_info.width+RoiDelta)) &&
+              (x > (int) (roi_info.x+(int) roi_info.width-RoiDelta)) &&
+              (y < (int) (roi_info.y+(int) roi_info.height+RoiDelta)) &&
+              (y > (int) (roi_info.y+(int) roi_info.height-RoiDelta)))
             {
               state|=UpdateConfigurationState;
               break;

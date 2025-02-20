@@ -506,7 +506,7 @@ MagickExport Image *CannyEdgeImage(const Image *image,const double radius,
         if (pixel.intensity > max)
           max=pixel.intensity;
       }
-      *q=0;
+      *q=(Quantum) 0;
       q+=(ptrdiff_t) GetPixelChannels(edge_image);
     }
     if (SyncCacheViewAuthenticPixels(edge_view,exception) == MagickFalse)

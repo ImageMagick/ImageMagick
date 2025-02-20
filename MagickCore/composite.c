@@ -978,7 +978,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
       {
         if (y < y_offset)
           continue;
-        if ((y-(double) y_offset) >= (double) source_image->rows)
+        if ((y-y_offset) >= (ssize_t) source_image->rows)
           continue;
       }
     /*
@@ -987,10 +987,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
     pixels=(Quantum *) NULL;
     p=(Quantum *) NULL;
     if ((y >= y_offset) &&
-        ((y-(double) y_offset) < (double) source_image->rows))
+        ((y-y_offset) < (ssize_t) source_image->rows))
       {
         p=GetCacheViewVirtualPixels(source_view,0,
-          CastDoubleToLong(y-(double) y_offset),source_image->columns,1,
+          CastDoubleToLong((double) y-y_offset),source_image->columns,1,
           exception);
         if (p == (const Quantum *) NULL)
           {
@@ -1036,11 +1036,11 @@ static MagickBooleanType CompositeOverImage(Image *image,
               q+=(ptrdiff_t) GetPixelChannels(image);
               continue;
             }
-          if ((x-(double) x_offset) >= (double) source_image->columns)
+          if ((x-x_offset) >= (ssize_t) source_image->columns)
             break;
         }
       if ((pixels == (Quantum *) NULL) || (x < x_offset) ||
-          ((x-(double) x_offset) >= (double) source_image->columns))
+          ((x-x_offset) >= (ssize_t) source_image->columns))
         {
           Quantum
             source[MaxPixelChannels];
@@ -1051,8 +1051,8 @@ static MagickBooleanType CompositeOverImage(Image *image,
               Dc: canvas color.
           */
           (void) GetOneVirtualPixel(source_image,
-            CastDoubleToLong(x-(double) x_offset),
-            CastDoubleToLong(y-(double) y_offset),source,exception);
+            CastDoubleToLong((double) x-x_offset),
+            CastDoubleToLong((double) y-y_offset),source,exception);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             MagickRealType
@@ -1184,7 +1184,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
       y_offset
     };
 
-  size_t
+  ssize_t
     i;
 
   /*
@@ -1236,7 +1236,7 @@ static MagickBooleanType SaliencyBlendImage(Image *image,
   verbose=IsStringTrue(GetImageArtifact(image,"verbose"));
   if (verbose != MagickFalse)
     (void) FormatLocaleFile(stderr,"saliency blending:\n");
-  for (i=0; i < iterations; i++)
+  for (i=0; i < (ssize_t) iterations; i++)
   {
     double
       residual = 1.0;
@@ -1316,7 +1316,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
       y_offset
     };
 
-  size_t
+  ssize_t
     i;
 
   /*
@@ -1369,7 +1369,7 @@ static MagickBooleanType SeamlessBlendImage(Image *image,
   verbose=IsStringTrue(GetImageArtifact(image,"verbose"));
   if (verbose != MagickFalse)
     (void) FormatLocaleFile(stderr,"seamless blending:\n");
-  for (i=0; i < iterations; i++)
+  for (i=0; i < (ssize_t) iterations; i++)
   {
     double
       residual = 1.0;
@@ -2241,7 +2241,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       {
         if (y < y_offset)
           continue;
-        if ((y-(double) y_offset) >= (double) source_image->rows)
+        if ((y-y_offset) >= (ssize_t) source_image->rows)
           continue;
       }
     /*
@@ -2250,10 +2250,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     pixels=(Quantum *) NULL;
     p=(Quantum *) NULL;
     if ((y >= y_offset) &&
-        ((y-(double) y_offset) < (double) source_image->rows))
+        ((y-y_offset) < (ssize_t) source_image->rows))
       {
         p=GetCacheViewVirtualPixels(source_view,0,
-          CastDoubleToLong(y-(double) y_offset),source_image->columns,1,
+          CastDoubleToLong((double) y-y_offset),source_image->columns,1,
           exception);
         if (p == (const Quantum *) NULL)
           {
@@ -2262,7 +2262,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
         pixels=p;
         if (x_offset < 0)
-          p-=(ptrdiff_t)CastDoubleToLong((double) x_offset*GetPixelChannels(source_image));
+          p-=(ptrdiff_t) CastDoubleToLong((double) x_offset*GetPixelChannels(source_image));
       }
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
@@ -2303,11 +2303,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               q+=(ptrdiff_t) GetPixelChannels(image);
               continue;
             }
-          if ((x-(double) x_offset) >= (double) source_image->columns)
+          if ((x-x_offset) >= (ssize_t) source_image->columns)
             break;
         }
       if ((pixels == (Quantum *) NULL) || (x < x_offset) ||
-          ((x-(double) x_offset) >= (double) source_image->columns))
+          ((x-x_offset) >= (ssize_t) source_image->columns))
         {
           Quantum
             source[MaxPixelChannels];
@@ -2318,8 +2318,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               Dc: canvas color.
           */
           (void) GetOneVirtualPixel(source_image,
-            CastDoubleToLong(x-(double) x_offset),
-            CastDoubleToLong(y-(double) y_offset),source,exception);
+            CastDoubleToLong((double) x-x_offset),
+            CastDoubleToLong((double) y-y_offset),source,exception);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             MagickRealType

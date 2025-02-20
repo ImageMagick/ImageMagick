@@ -1155,7 +1155,7 @@ MagickPrivate XVisualInfo *XBestVisualInfo(Display *display,
   XStandardColormap *map_info,XResourceInfo *resource_info)
 {
 #define MaxStandardColormaps  7
-#define XVisualColormapSize(visual_info) MagickMin((unsigned int) (\
+#define XVisualColormapSize(visual_info) MagickMin((unsigned long int) (\
   (visual_info->klass == TrueColor) || (visual_info->klass == DirectColor) ? \
    visual_info->red_mask | visual_info->green_mask | visual_info->blue_mask : \
    (unsigned long) visual_info->colormap_size),1UL << visual_info->depth)
@@ -4084,10 +4084,10 @@ static Image *XGetWindowImage(Display *display,const Window window,
       crop_info.y=0;
     }
   display_width=XDisplayWidth(display,XDefaultScreen(display));
-  if ((crop_info.x+(int) crop_info.width) > display_width)
+  if ((int) (crop_info.x+(int) crop_info.width) > display_width)
     crop_info.width=(size_t) (display_width-crop_info.x);
   display_height=XDisplayHeight(display,XDefaultScreen(display));
-  if ((crop_info.y+(int) crop_info.height) > display_height)
+  if ((int) (crop_info.y+(int) crop_info.height) > display_height)
     crop_info.height=(size_t) (display_height-crop_info.y);
   /*
     Initialize window info attributes.
@@ -7816,16 +7816,16 @@ MagickPrivate void XMakeStandardColormap(Display *display,
               {
                 for (i=0; i < (ssize_t) number_colors; i++)
                 {
-                  SetPixelRed(affinity_image,0,q);
+                  SetPixelRed(affinity_image,(Quantum) 0,q);
                   if (map_info->red_max != 0)
                     SetPixelRed(affinity_image,ScaleXToQuantum((size_t)
                       (i/(ssize_t) map_info->red_mult),map_info->red_max),q);
-                  SetPixelGreen(affinity_image,0,q);
+                  SetPixelGreen(affinity_image,(Quantum) 0,q);
                   if (map_info->green_max != 0)
                     SetPixelGreen(affinity_image,ScaleXToQuantum((size_t)
                       ((i/(ssize_t) map_info->green_mult) % (ssize_t)
                       (map_info->green_max+1)),map_info->green_max),q);
-                  SetPixelBlue(affinity_image,0,q);
+                  SetPixelBlue(affinity_image,(Quantum) 0,q);
                   if (map_info->blue_max != 0)
                     SetPixelBlue(affinity_image,ScaleXToQuantum((size_t)
                       (i % (ssize_t) map_info->green_mult),map_info->blue_max),

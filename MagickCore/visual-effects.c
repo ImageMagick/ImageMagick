@@ -1091,8 +1091,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
               PerceptibleReciprocal(radius)/2.0),-amount);
           offset.x=factor*delta.x*PerceptibleReciprocal(scale.x)+center.x;
           offset.y=factor*delta.y*PerceptibleReciprocal(scale.y)+center.y;
-          if ((IsValidPixelOffset(offset.x,image->columns) != MagickFalse) &&
-              (IsValidPixelOffset(offset.y,image->rows) != MagickFalse))
+          if ((IsValidPixelOffset((ssize_t) offset.x,image->columns) != MagickFalse) &&
+              (IsValidPixelOffset((ssize_t) offset.y,image->rows) != MagickFalse))
             status=InterpolatePixelChannels(canvas_image,interpolate_view,
               implode_image,method,offset.x,offset.y,q,exception);
           if (status == MagickFalse)

@@ -426,7 +426,7 @@ MagickExport int ExternalDelegateCommand(const MagickBooleanType asynchronous,
             offset = 0;
 
           while ((offset < MagickPathExtent) &&
-                 (fgets(message+offset,MagickPathExtent-offset,file) != NULL))
+                 (fgets(message+offset,(int) (MagickPathExtent-offset),file) != NULL))
             offset+=strlen(message);
           status=pclose(file);
         }
