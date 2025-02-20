@@ -2854,7 +2854,7 @@ static inline double MagickRound(double x)
 static inline Quantum PosterizePixel(const Quantum pixel,const size_t levels)
 {
   double posterize_pixel = QuantumRange*MagickRound(QuantumScale*(double) pixel*
-    (levels-1.0))/MagickMax(levels-1.0,1.0);
+    ((double) levels-1.0))/MagickMax((double) levels-1.0,1.0);
   return(ClampToQuantum((MagickRealType) posterize_pixel));
 }
 
@@ -2901,7 +2901,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
         if ((traits & UpdatePixelTrait) != 0)
           channels++;
       }
-      number_columns=(size_t) pow(levels,channels);
+      number_columns=(size_t) pow((double) levels,(double) channels);
       map_image=CloneImage(image,number_columns,1,MagickTrue,exception);
       if (map_image == (Image *) NULL)
         {
@@ -2918,7 +2918,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
           *map_image_view;
 
         MagickRealType
-          scale = QuantumRange/(levels-1.0);
+          scale = (MagickRealType) QuantumRange/(levels-1.0);
 
         Quantum
           *magick_restrict q;

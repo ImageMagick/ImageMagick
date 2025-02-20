@@ -1238,8 +1238,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   inverse_affine=InverseAffineMatrix(affine);
   if (edge.y1 < 0.0)
     edge.y1=0.0;
-  if (edge.y2 > (image->rows-1.0))
-    edge.y2=image->rows-1.0;
+  if (edge.y2 > ((double) image->rows-1.0))
+    edge.y2=(double) image->rows-1.0;
   GetPixelInfo(image,&zero);
   start=CastDoubleToLong(ceil(edge.y1-0.5));
   stop=CastDoubleToLong(floor(edge.y2+0.5));
@@ -1274,8 +1274,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
       continue;
     if (inverse_edge.x1 < 0.0)
       inverse_edge.x1=0.0;
-    if (inverse_edge.x2 > image->columns-1.0)
-      inverse_edge.x2=image->columns-1.0;
+    if (inverse_edge.x2 > ((double) image->columns-1.0))
+      inverse_edge.x2=(double) image->columns-1.0;
     q=GetCacheViewAuthenticPixels(image_view,CastDoubleToLong(
       ceil(inverse_edge.x1-0.5)),y,(size_t) CastDoubleToLong(floor(
       inverse_edge.x2+0.5)-ceil(inverse_edge.x1-0.5)+1),1,exception);

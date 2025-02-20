@@ -2678,11 +2678,11 @@ static inline ssize_t EdgeY(const ssize_t y,const size_t rows)
   return(y);
 }
 
-static inline MagickBooleanType IsOffsetOverflow(const ssize_t x,
-  const ssize_t y)
+static inline MagickBooleanType IsOffsetOverflow(const MagickOffsetType x,
+  const MagickOffsetType y)
 {
-  if (((y > 0) && (x > (MAGICK_SSIZE_MAX-y))) ||
-      ((y < 0) && (x < (MAGICK_SSIZE_MIN-y))))
+  if (((y > 0) && (x > ((MagickOffsetType) MAGICK_SSIZE_MAX-y))) ||
+      ((y < 0) && (x < ((MagickOffsetType) MAGICK_SSIZE_MIN-y))))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -2780,7 +2780,7 @@ MagickPrivate const Quantum *GetVirtualPixelCacheNexus(const Image *image,
   if (IsValidPixelOffset(nexus_info->region.y,cache_info->columns) == MagickFalse)
     return((const Quantum *) NULL);
   offset=nexus_info->region.y*(MagickOffsetType) cache_info->columns;
-  if (IsOffsetOverflow(offset,nexus_info->region.x) == MagickFalse)
+  if (IsOffsetOverflow(offset,(MagickOffsetType) nexus_info->region.x) == MagickFalse)
     return((const Quantum *) NULL);
   offset+=nexus_info->region.x;
   length=(MagickSizeType) (nexus_info->region.height-1L)*cache_info->columns+
@@ -4628,7 +4628,7 @@ static MagickBooleanType ReadPixelCachePixels(
   if (IsValidPixelOffset(nexus_info->region.y,cache_info->columns) == MagickFalse)
     return(MagickFalse);
   offset=nexus_info->region.y*(MagickOffsetType) cache_info->columns;
-  if ((offset/(MagickOffsetType) cache_info->columns) != nexus_info->region.y)
+  if ((ssize_t) (offset/cache_info->columns) != nexus_info->region.y)
     return(MagickFalse);
   offset+=nexus_info->region.x;
   number_channels=cache_info->number_channels;
