@@ -2257,7 +2257,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       double
         count;
 
-      count=(fouble) (area*histogram[(ssize_t) GetPixelChannels(image)*j+i]);
+      count=(double) (area*histogram[(ssize_t) GetPixelChannels(image)*j+i]);
       channel_statistics[channel].entropy+=((long double) -count*
         MagickLog10(count)*PerceptibleReciprocalLD((long double)
         MagickLog10(number_bins)));
