@@ -331,7 +331,7 @@ static inline QuantumAny ScaleQuantumToAny(const Quantum quantum,
 #else
   if ((IsNaN(quantum) != 0) || (quantum <= 0.0f))
     return((QuantumAny) 0UL);
-  if ((range*(double) quantum/(double) QuantumRange) >= 18446744073709551615.0)
+  if (((double) range*quantum/(double) QuantumRange) >= 18446744073709551615.0)
     return((QuantumAny) MagickULLConstant(18446744073709551615));
   return((QuantumAny) (range*(double) quantum/(double) QuantumRange+0.5));
 #endif
