@@ -328,11 +328,13 @@ ModuleExport size_t RegisterVIDEOImage(void)
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
   entry->encoder=(EncodeImageHandler *) WriteVIDEOImage;
   entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->mime_type=ConstantString("image/apng");
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("VIDEO","AVI","Microsoft Audio/Visual Interleaved");
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
+  entry->mime_type=ConstantString("image/avif-sequenc");
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);

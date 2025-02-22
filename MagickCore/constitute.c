@@ -861,6 +861,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       next->magick_columns=next->columns;
     if (next->magick_rows == 0)
       next->magick_rows=next->rows;
+    if ((magick_info != (const MagickInfo *) NULL) &&
+        (magick_info->mime_type != (const char *) NULL))
+      (void) SetImageProperty(next,"mime:type",magick_info->mime_type,
+        exception);
     (void) GetImageProperty(next,"exif:*",exception);
     (void) GetImageProperty(next,"icc:*",exception);
     (void) GetImageProperty(next,"iptc:*",exception);
