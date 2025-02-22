@@ -3677,7 +3677,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
 #else
           (void) ThrowMagickException(exception,GetMagickModule(),
             MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
-            "'%s' (policy requires anonymous memory mapping)",image->filename);
+            "`%s' (policy requires anonymous memory mapping)",image->filename);
 #endif
         }
       value=DestroyString(value);
@@ -3688,8 +3688,13 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   assert(cache_info->signature == MagickCoreSignature);
   if (((MagickSizeType) image->columns > cache_info->width_limit) ||
       ((MagickSizeType) image->rows > cache_info->height_limit))
-    ThrowBinaryException(ImageError,"WidthOrHeightExceedsLimit",
-      image->filename);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ImageError,"WidthOrHeightExceedsLimit",
+        "`%s' (%" MagickSizeFormat "x%" MagickSizeFormat ")",image->filename,
+        cache_info->width_limit,cache_info->height_limit);
+      return(MagickFalse);
+    }
   if (GetMagickResourceLimit(ListLengthResource) != MagickResourceInfinity)
     {
       length=GetImageListLength(image);
