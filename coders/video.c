@@ -334,7 +334,7 @@ ModuleExport size_t RegisterVIDEOImage(void)
   (void) RegisterMagickInfo(entry);
   entry=AcquireMagickInfo("VIDEO","AVI","Microsoft Audio/Visual Interleaved");
   entry->decoder=(DecodeImageHandler *) ReadVIDEOImage;
-  entry->mime_type=ConstantString("image/avif-sequenc");
+  entry->mime_type=ConstantString("image/avif-sequence");
   entry->flags^=CoderBlobSupportFlag;
   entry->flags|=CoderDecoderSeekableStreamFlag;
   (void) RegisterMagickInfo(entry);
