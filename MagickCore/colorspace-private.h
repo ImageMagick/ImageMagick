@@ -1274,8 +1274,8 @@ static inline void ConvertRGBToxyY(const double red,const double green,
 static inline void ConvertXYZToJzazbz(const double X,const double Y,
   const double Z,const double white_luminance,double *Jz,double *az,double *bz)
 {
-#define Jzazbz_b  1.15  /* https://observablehq.com/@jrus/jzazbz */
-#define Jzazbz_g  0.66
+#define Jzazbz_b  (1.15)  /* https://observablehq.com/@jrus/jzazbz */
+#define Jzazbz_g  (0.66)  /* refactored by N. Robidoux */
 #define Jzazbz_c1  (3424.0/4096.0)
 #define Jzazbz_c2  (2413.0/128.0)
 #define Jzazbz_c3  (2392.0/128.0)
@@ -1283,98 +1283,73 @@ static inline void ConvertXYZToJzazbz(const double X,const double Y,
 #define Jzazbz_p  (1.7*2523.0/32.0)
 #define Jzazbz_d  (-0.56)
 #define Jzazbz_d0  (1.6295499532821566e-11)
+#define Jzazbz_LX  (0.41478972)
+#define Jzazbz_LY  (0.579999)
+#define Jzazbz_LZ  (0.0146480)
+#define Jzazbz_MX  (-0.2015100)
+#define Jzazbz_MY  (1.120649)
+#define Jzazbz_MZ  (0.0531008)
+#define Jzazbz_SX  (-0.0166008)
+#define Jzazbz_SY  (0.264800)
+#define Jzazbz_SZ  (0.6684799)
+#define Jzazbz_aL  (3.52400)
+#define Jzazbz_aM  (-4.066708)
+#define Jzazbz_aS  (0.542708)
+#define Jzazbz_bL  (0.199076)
+#define Jzazbz_bM  (1.096799)
+#define Jzazbz_bS  (-1.295875)
 
   double
-    gamma,
-    Iz,
-    L,
-    Lp,
-    M,
-    Mp,
-    S,
-    Sp,
-    Xp,
-    Yp,
-    Zp,
-    J,
     a,
-    b;
-
-  Xp=(Jzazbz_b*X-(Jzazbz_b-1)*Z);
-  Yp=(Jzazbz_g*Y-(Jzazbz_g-1)*X);
-  Zp=Z;
-  L=0.41478972*Xp+0.579999*Yp+0.0146480*Zp;
-  M=(-0.2015100)*Xp+1.120649*Yp+0.0531008*Zp;
-  S=(-0.0166008)*Xp+0.264800*Yp+0.6684799*Zp;
-  gamma=pow(L*PerceptibleReciprocal(white_luminance),Jzazbz_n);
-  Lp=pow((Jzazbz_c1+Jzazbz_c2*gamma)/(1.0+Jzazbz_c3*gamma),Jzazbz_p);
-  gamma=pow(M*PerceptibleReciprocal(white_luminance),Jzazbz_n);
-  Mp=pow((Jzazbz_c1+Jzazbz_c2*gamma)/(1.0+Jzazbz_c3*gamma),Jzazbz_p);
-  gamma=pow(S*PerceptibleReciprocal(white_luminance),Jzazbz_n);
-  Sp=pow((Jzazbz_c1+Jzazbz_c2*gamma)/(1.0+Jzazbz_c3*gamma),Jzazbz_p);
-  Iz=0.5*Lp+0.5*Mp;
-  J=((Jzazbz_d+1.0)*Iz)/(Jzazbz_d*Iz+1.0)-Jzazbz_d0;
-  if (IsNaN(J) != 0)
-    J=0.0;
-  a=3.52400*Lp-4.066708*Mp+0.542708*Sp+0.5;
-  if (IsNaN(a) != 0)
-    a=0.5;
-  b=0.199076*Lp+1.096799*Mp-1.295875*Sp+0.5;
-  if (IsNaN(b) != 0)
-    b=0.5;
-  *Jz=J;
-  *az=a;
-  *bz=b;
-}
-
-static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
-  const double bz,const double white_luminance,double *X,double *Y,double *Z)
-{
-  double
-    azz,
-    bzz,
-    gamma,
+    b,
+    gL,
+    gM,
+    gS,
     Iz,
+    J,
+    JdI,
     L,
     Lp,
     M,
     Mp,
     S,
     Sp,
+    WLr,
     Xp,
-    Yp,
-    Zp;
+    Yp;
 
-  gamma=Jz+Jzazbz_d0;
-  Iz=gamma/(Jzazbz_d-Jzazbz_d*gamma+1.0);
-  azz=az-0.5;
-  bzz=bz-0.5;
-  Lp=Iz+0.138605043271539*azz+0.0580473161561189*bzz;
-  Mp=Iz-0.138605043271539*azz-0.0580473161561189*bzz;
-  Sp=Iz-0.0960192420263189*azz-0.811891896056039*bzz;
-  gamma=pow(Lp,1.0/Jzazbz_p);
-  L=white_luminance*pow((Jzazbz_c1-gamma)/(Jzazbz_c3*gamma-Jzazbz_c2),1.0/
-    Jzazbz_n);
-  gamma=pow(Mp,1.0/Jzazbz_p);
-  M=white_luminance*pow((Jzazbz_c1-gamma)/(Jzazbz_c3*gamma-Jzazbz_c2),1.0/
-    Jzazbz_n);
-  gamma=pow(Sp,1.0/Jzazbz_p);
-  S=white_luminance*pow((Jzazbz_c1-gamma)/(Jzazbz_c3*gamma-Jzazbz_c2),1.0/
-    Jzazbz_n);
-  Xp=1.92422643578761*L-1.00479231259537*M+0.037651404030618*S;
-  Yp=0.350316762094999*L+0.726481193931655*M-0.065384422948085*S;
-  Zp=(-0.0909828109828476)*L-0.312728290523074*M+1.52276656130526*S;
-  if (IsNaN(Zp) != 0)
-    Zp=0.0;
-  Xp=(Xp+(Jzazbz_b-1.0)*Zp)/Jzazbz_b;
-  if (IsNaN(Xp) != 0)
-    Xp=0.0;
-  Yp=(Yp+(Jzazbz_g-1.0)*Xp)/Jzazbz_g;
-  if (IsNaN(Yp) != 0)
-    Yp=0.0;
-  *X=Xp;
-  *Y=Yp;
-  *Z=Zp;
+  WLr=PerceptibleReciprocal(white_luminance);
+  Xp=Z+Jzazbz_b*(X-Z);
+  Yp=X+Jzazbz_g*(Y-X);
+  L=Jzazbz_LZ*Z;
+  M=Jzazbz_MZ*Z;
+  S=Jzazbz_SZ*Z;
+  L+=Jzazbz_LX*Xp;
+  M+=Jzazbz_MX*Xp;
+  S+=Jzazbz_SX*Xp;
+  L+=Jzazbz_LY*Yp;
+  M+=Jzazbz_MY*Yp;
+  S+=Jzazbz_SY*Yp;
+  gL=pow(L*WLr,Jzazbz_n);
+  gM=pow(M*WLr,Jzazbz_n);
+  gS=pow(S*WLr,Jzazbz_n);
+  Lp=pow((Jzazbz_c1+Jzazbz_c2*gL)/(1.0+Jzazbz_c3*gL),Jzazbz_p);
+  Mp=pow((Jzazbz_c1+Jzazbz_c2*gM)/(1.0+Jzazbz_c3*gM),Jzazbz_p);
+  Sp=pow((Jzazbz_c1+Jzazbz_c2*gS)/(1.0+Jzazbz_c3*gS),Jzazbz_p);
+  Iz=(Lp+Mp)*0.5;
+  JdI=Jzazbz_d*Iz;
+  J=(JdI+Iz)/(JdI+1.0)-Jzazbz_d0;
+  a=0.5;
+  b=0.5;
+  a+=Jzazbz_aL*Lp;
+  b+=Jzazbz_bL*Lp;
+  a+=Jzazbz_aM*Mp;
+  b+=Jzazbz_bM*Mp;
+  a+=Jzazbz_aS*Sp;
+  b+=Jzazbz_bS*Sp;
+  *Jz=IsNaN(J) != 0 ? 0.0 : J;
+  *az=IsNaN(a) != 0 ? 0.5 : a;
+  *bz=IsNaN(b) != 0 ? 0.5 : b;
 }
 
 static inline void ConvertRGBToJzazbz(const double red,const double green,
@@ -1388,6 +1363,84 @@ static inline void ConvertRGBToJzazbz(const double red,const double green,
 
   ConvertRGBToXYZ(red,blue,green,&X,&Y,&Z);
   ConvertXYZToJzazbz(X,Y,Z,white_luminance,Jz,az,bz);
+}
+
+static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
+  const double bz,const double white_luminance,double *X,double *Y,double *Z)
+{
+#define Jzazbz_Ca  (0.138605043271539)
+#define Jzazbz_Cb  (0.0580473161561189)
+#define Jzazbz_Sa  (-0.0960192420263189)
+#define Jzazbz_Sb  (-0.811891896056039)
+#define Jzazbz_XL  (1.92422643578761)
+#define Jzazbz_XM  (-1.00479231259537)
+#define Jzazbz_XS  (0.037651404030618)
+#define Jzazbz_YL  (0.350316762094999)
+#define Jzazbz_YM  (0.726481193931655)
+#define Jzazbz_YS  (-0.065384422948085)
+#define Jzazbz_ZL  (-0.0909828109828476)
+#define Jzazbz_ZM  (-0.312728290523074)
+#define Jzazbz_ZS  (1.52276656130526)
+#define mJzazbz_c3 (-2392.0/128.0)
+
+  double
+    azz,
+    bzz,
+    C,
+    g,
+    gL,
+    gM,
+    gS,
+    Jnr,
+    Jpr,
+    L,
+    Lp,
+    M,
+    Mp,
+    S,
+    Sp,
+    Xp,
+    Zp,
+    Yp;
+
+  g=Jz+Jzazbz_d0;
+  Sp=g/(1.0+Jzazbz_d*(1.0-g));
+  azz=az-0.5;
+  bzz=bz-0.5;
+  C=Jzazbz_Ca*azz;
+  C+=Jzazbz_Cb*bzz;
+  Lp=Sp+C;
+  Mp=Sp-C;
+  Sp+=Jzazbz_Sa*azz;
+  Sp+=Jzazbz_Sb*bzz;
+  Jpr=1.0/Jzazbz_p;
+  Jnr=1.0/Jzazbz_n;
+  gL=pow(Lp,Jpr);
+  gM=pow(Mp,Jpr);
+  gS=pow(Sp,Jpr);
+  L=pow((gL-Jzazbz_c1)/(Jzazbz_c2+mJzazbz_c3*gL),Jnr);
+  M=pow((gM-Jzazbz_c1)/(Jzazbz_c2+mJzazbz_c3*gM),Jnr);
+  S=pow((gS-Jzazbz_c1)/(Jzazbz_c2+mJzazbz_c3*gS),Jnr);
+  L*=white_luminance;
+  M*=white_luminance;
+  S*=white_luminance;
+  Zp=Jzazbz_ZL*L;
+  Xp=Jzazbz_XL*L;
+  Yp=Jzazbz_YL*L;
+  Zp+=Jzazbz_ZM*M;
+  Xp+=Jzazbz_XM*M;
+  Yp+=Jzazbz_YM*M;
+  Zp+=Jzazbz_ZS*S;
+  Xp+=Jzazbz_XS*S;
+  Yp+=Jzazbz_YS*S;
+  Zp=IsNaN(Zp) != 0 ? 0.0 : Zp;
+  Xp=Zp+(Xp-Zp)/Jzazbz_b;
+  Xp=IsNaN(Xp) != 0 ? 0.0 : Xp;
+  Yp=Xp+(Yp-Xp)/Jzazbz_g;
+  Yp=IsNaN(Yp) != 0 ? 0.0 : Yp;
+  *Z=Zp;
+  *X=Xp;
+  *Y=Yp;
 }
 
 static inline void ConvertJzazbzToRGB(const double Jz,const double az,
