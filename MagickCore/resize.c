@@ -4575,8 +4575,7 @@ static void url_encode(const char *uri,char *encode_uri)
   const char
     *hex = "0123456789ABCDEF";
 
-  for (p=encode_uri; *uri != '0'; )
-  {
+  for (p=encode_uri; *uri != '\0'; uri++)
     if ((('a' <= *uri) && (*uri <= 'z')) || (('A' <= *uri) && (*uri <= 'Z')) ||
         (('0' <= *uri) && (*uri <= '9')) || (strchr("-_.~",*uri) != 0))
       *p++=(*uri);
@@ -4586,8 +4585,6 @@ static void url_encode(const char *uri,char *encode_uri)
         *p++=hex[(*uri >> 4) & 0xF];
         *p++=hex[*uri & 0xF];
       }
-    uri++;
-  }
   *p='\0';
 }
 
@@ -4597,7 +4594,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
 #define SampleFactor  5
 
   char
-    encode_uri[4*MagickPathExtent+1];
+    encode_uri[3*MagickPathExtent+1] = "/0";
 
   const char
     *name,
