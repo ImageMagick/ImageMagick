@@ -4567,7 +4567,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
 %
 */
 
-static void url_encode(const char *uri,char *encoded)
+static void url_encode(const char *uri,char *encode_uri)
 {
   char
     *p;
@@ -4575,7 +4575,7 @@ static void url_encode(const char *uri,char *encoded)
   const char
     *hex = "0123456789ABCDEF";
 
-  for (p=encoded; *uri != '0'; )
+  for (p=encode_uri; *uri != '0'; )
   {
     if ((('a' <= *uri) && (*uri <= 'z')) || (('A' <= *uri) && (*uri <= 'Z')) ||
         (('0' <= *uri) && (*uri <= '9')) || (strchr("-_.~",*uri) != 0))
@@ -4597,9 +4597,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
 #define SampleFactor  5
 
   char
-    filename[MagickPathExtent],
-    uri[3*MagickPathExtent+1],
-    value[MagickPathExtent];
+    encode_uri[4*MagickPathExtent+1];
 
   const char
     *name,
@@ -4673,21 +4671,17 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     name=GetNextImageProfile(thumbnail_image);
   }
   (void) DeleteImageProperty(thumbnail_image,"comment");
-  url_encode(image->magick_filename,uri);
+  url_encode(image->magick_filename,encode_uri);
   if (strstr(image->magick_filename,"//") != (char *) NULL)
-    (void) FormatImageProperty(thumbnail_image,"Thumb::URI","file://%s",uri);
+    (void) FormatImageProperty(thumbnail_image,"Thumb::URI","file://%s",encode_uri);
   else
-    (void) FormatImageProperty(thumbnail_image,"Thumb::URI","./%s",uri);
-  GetPathComponent(image->magick_filename,TailPath,filename);
-  (void) CopyMagickString(value,filename,MagickPathExtent);
+    (void) FormatImageProperty(thumbnail_image,"Thumb::URI","./%s",encode_uri);
   if (GetPathAttributes(image->filename,&attributes) != MagickFalse )
     (void) FormatImageProperty(thumbnail_image,"Thumb::MTime","%.20g",(double)
       attributes.st_mtime);
-  (void) FormatLocaleString(value,MagickPathExtent,"%.20g",(double)
-    attributes.st_mtime);
   (void) FormatImageProperty(thumbnail_image,"Thumb::Size","%.20g",
     (double) GetBlobSize(image));
-  mime_type=GetImageProperty(thumbnail_image,"mime:type",exception);
+  mime_type=GetImageProperty(image,"mime:type",exception);
   if (mime_type != (const char *) NULL)
     (void) SetImageProperty(thumbnail_image,"Thumb::Mimetype",mime_type,
       exception);
