@@ -1302,9 +1302,15 @@ static inline void ConvertXYZToJzazbz(const double X,const double Y,
   double
     a,
     b,
+    dL,
+    dM,
+    dS,
     gL,
     gM,
     gS,
+    nL,
+    nM,
+    nS,
     Iz,
     J,
     JdI,
@@ -1319,8 +1325,8 @@ static inline void ConvertXYZToJzazbz(const double X,const double Y,
     Yp;
 
   WLr=PerceptibleReciprocal(white_luminance);
-  Xp=Z+Jzazbz_b*(X-Z);
-  Yp=X+Jzazbz_g*(Y-X);
+  Xp=Z+Jzazbz_b*(X-Z); /* If X and Z are vectorized, better done */
+  Yp=X+Jzazbz_g*(Y-X); /* as Xp=Jzazbz_b*X+(1.0-Jzazbz_b)*Z; etc. */
   L=Jzazbz_LZ*Z;
   M=Jzazbz_MZ*Z;
   S=Jzazbz_SZ*Z;
@@ -1333,16 +1339,20 @@ static inline void ConvertXYZToJzazbz(const double X,const double Y,
   gL=pow(L*WLr,Jzazbz_n);
   gM=pow(M*WLr,Jzazbz_n);
   gS=pow(S*WLr,Jzazbz_n);
-  Lp=pow((Jzazbz_c1+Jzazbz_c2*gL)/(1.0+Jzazbz_c3*gL),Jzazbz_p);
-  Mp=pow((Jzazbz_c1+Jzazbz_c2*gM)/(1.0+Jzazbz_c3*gM),Jzazbz_p);
-  Sp=pow((Jzazbz_c1+Jzazbz_c2*gS)/(1.0+Jzazbz_c3*gS),Jzazbz_p);
+  nL=Jzazbz_c1+Jzazbz_c2*gL;
+  nM=Jzazbz_c1+Jzazbz_c2*gM;
+  nS=Jzazbz_c1+Jzazbz_c2*gS;
+  dL=1.0+Jzazbz_c3*gL;
+  dM=1.0+Jzazbz_c3*gM;
+  dS=1.0+Jzazbz_c3*gS;
+  Lp=pow(nL/dL,Jzazbz_p);
+  Mp=pow(nM/dM,Jzazbz_p);
+  Sp=pow(nS/dS,Jzazbz_p);
   Iz=(Lp+Mp)*0.5;
   JdI=Jzazbz_d*Iz;
   J=(JdI+Iz)/(JdI+1.0)-Jzazbz_d0;
-  a=0.5;
-  b=0.5;
-  a+=Jzazbz_aL*Lp;
-  b+=Jzazbz_bL*Lp;
+  a=0.5+Jzazbz_aL*Lp;
+  b=0.5+Jzazbz_bL*Lp;
   a+=Jzazbz_aM*Mp;
   b+=Jzazbz_bM*Mp;
   a+=Jzazbz_aS*Sp;
@@ -1381,12 +1391,15 @@ static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
 #define Jzazbz_ZL  (-0.0909828109828476)
 #define Jzazbz_ZM  (-0.312728290523074)
 #define Jzazbz_ZS  (1.52276656130526)
-#define mJzazbz_c3 (-2392.0/128.0)
+#define mJzazbz_c3  (-2392.0/128.0)
 
   double
     azz,
     bzz,
     C,
+    dL,
+    dM,
+    dS,
     g,
     gL,
     gM,
@@ -1399,28 +1412,36 @@ static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
     Mp,
     S,
     Sp,
+    nL,
+    nM,
+    nS,
     Xp,
     Zp,
     Yp;
 
   g=Jz+Jzazbz_d0;
-  Sp=g/(1.0+Jzazbz_d*(1.0-g));
   azz=az-0.5;
   bzz=bz-0.5;
-  C=Jzazbz_Ca*azz;
-  C+=Jzazbz_Cb*bzz;
+  C=Jzazbz_Ca*azz+Jzazbz_Cb*bzz;
+  Sp=g/(1.0+Jzazbz_d*(1.0-g));
   Lp=Sp+C;
   Mp=Sp-C;
   Sp+=Jzazbz_Sa*azz;
   Sp+=Jzazbz_Sb*bzz;
   Jpr=1.0/Jzazbz_p;
-  Jnr=1.0/Jzazbz_n;
   gL=pow(Lp,Jpr);
   gM=pow(Mp,Jpr);
   gS=pow(Sp,Jpr);
-  L=pow((gL-Jzazbz_c1)/(Jzazbz_c2+mJzazbz_c3*gL),Jnr);
-  M=pow((gM-Jzazbz_c1)/(Jzazbz_c2+mJzazbz_c3*gM),Jnr);
-  S=pow((gS-Jzazbz_c1)/(Jzazbz_c2+mJzazbz_c3*gS),Jnr);
+  Jnr=1.0/Jzazbz_n;
+  nL=gL-Jzazbz_c1;
+  nM=gM-Jzazbz_c1;
+  nS=gS-Jzazbz_c1;
+  dL=Jzazbz_c2+mJzazbz_c3*gL;
+  dM=Jzazbz_c2+mJzazbz_c3*gM;
+  dS=Jzazbz_c2+mJzazbz_c3*gS;
+  L=pow(nL/dL,Jnr);
+  M=pow(nM/dM,Jnr);
+  S=pow(nS/dS,Jnr);
   L*=white_luminance;
   M*=white_luminance;
   S*=white_luminance;
@@ -1434,9 +1455,9 @@ static inline void ConvertJzazbzToXYZ(const double Jz,const double az,
   Xp+=Jzazbz_XS*S;
   Yp+=Jzazbz_YS*S;
   Zp=IsNaN(Zp) != 0 ? 0.0 : Zp;
-  Xp=Zp+(Xp-Zp)/Jzazbz_b;
-  Xp=IsNaN(Xp) != 0 ? 0.0 : Xp;
-  Yp=Xp+(Yp-Xp)/Jzazbz_g;
+  Xp=Zp+(Xp-Zp)/Jzazbz_b;  /* If Xp and Zp are vectorized, better done */
+  Xp=IsNaN(Xp) != 0 ? 0.0 : Xp;  /* as rJzazbz_b = 1.0/Jzazbz_b; */
+  Yp=Xp+(Yp-Xp)/Jzazbz_g;  /* Xp=rJzazbz_b*Xp+(1.0-rJzazbz_b)*Zp; etc. */
   Yp=IsNaN(Yp) != 0 ? 0.0 : Yp;
   *Z=Zp;
   *X=Xp;
