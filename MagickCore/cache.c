@@ -3690,7 +3690,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       ((MagickSizeType) image->rows > cache_info->height_limit))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "WidthOrHeightExceedsLimit","`%s' (%.20gx%.20g)",image->filename,
+        "WidthOrHeightExceedsLimit","`%s' (%.20gx%.20g) > (%.20gx%.20g)",
+        image->filename, (double) image->columns, (double) image->rows,
         (double) cache_info->width_limit,(double) cache_info->height_limit);
       return(MagickFalse);
     }
