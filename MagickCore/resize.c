@@ -4669,8 +4669,9 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   }
   (void) DeleteImageProperty(thumbnail_image,"comment");
   url_encode(image->magick_filename,encode_uri);
-  if (strstr(image->magick_filename,"//") != (char *) NULL)
-    (void) FormatImageProperty(thumbnail_image,"Thumb::URI","file://%s",encode_uri);
+  if (*image->magick_filename == '/')
+    (void) FormatImageProperty(thumbnail_image,"Thumb::URI","file://%s",
+      encode_uri);
   else
     (void) FormatImageProperty(thumbnail_image,"Thumb::URI","./%s",encode_uri);
   if (GetPathAttributes(image->filename,&attributes) != MagickFalse )
