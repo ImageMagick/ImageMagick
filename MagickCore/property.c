@@ -3222,6 +3222,18 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
             GetMagickPrecision(),median);
           break;
         }
+      if (LocaleCompare("mime:type",property) == 0)
+        {
+          const MagickInfo
+            *magick_info;
+
+          magick_info=GetMagickInfo(image->magick,exception);
+          if ((magick_info != (const MagickInfo *) NULL) &&
+              (GetMagickMimeType(magick_info) != (const char *) NULL))
+            (void) CopyMagickString(value,GetMagickMimeType(magick_info),
+              MagickPathExtent);
+          break;
+        }
       if ((LocaleCompare("minima",property) == 0) ||
           (LocaleCompare("min",property) == 0))
         {
