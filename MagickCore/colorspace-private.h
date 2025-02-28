@@ -1480,48 +1480,64 @@ static inline void ConvertJzazbzToRGB(const double Jz,const double az,
 static inline void ConvertOklabToRGB(const double L,const double a,
   const double b,double *red,double *green,double *blue)
 {
+#define Oklab_la  (0.3963377774)
+#define Oklab_lb  (0.2158037573)
+#define Oklab_ma  (-0.1055613458)
+#define Oklab_mb  (-0.0638541728)
+#define Oklab_sa  (-0.0894841775)
+#define Oklab_sb  (-1.2914855480)
+#define Oklab_Rl  (4.0767416621)
+#define Oklab_Rm  (-3.3077115913)
+#define Oklab_Rs  (0.2309699292)
+#define Oklab_Gl  (-1.2684380046)
+#define Oklab_Gm  (2.6097574011)
+#define Oklab_Gs  (-0.3413193965)
+#define Oklab_Bl  (-0.0041960863)
+#define Oklab_Bm  (-0.7034186147)
+#define Oklab_Bs  (1.7076147010)
+
   double
+    aa,
     B,
+    bb,
+    Bl,
+    Bm,
+    Bs,
     G,
+    Gl,
+    Gm,
+    Gs,
     l,
     m,
     R,
+    Rl,
+    Rm,
+    Rs,
     s;
 
-  l=L+0.3963377774*(a-0.5)+0.2158037573*(b-0.5);
-  m=L-0.1055613458*(a-0.5)-0.0638541728*(b-0.5);
-  s=L-0.0894841775*(a-0.5)-1.2914855480*(b-0.5);
+  aa=a-0.5;
+  bb=b-0.5;
+  l=L+Oklab_la*aa+Oklab_lb*bb;
+  m=L+Oklab_ma*aa+Oklab_mb*bb;
+  s=L+Oklab_sa*aa+Oklab_sb*bb;
   l*=l*l;
   m*=m*m;
   s*=s*s;
-  R=4.0767416621*l-3.3077115913*m+0.2309699292*s;
-  G=(-1.2684380046)*l+2.6097574011*m-0.3413193965*s;
-  B=(-0.0041960863)*l-0.7034186147*m+1.7076147010*s;
-  *red=EncodePixelGamma((double) QuantumRange*R);
-  *green=EncodePixelGamma((double) QuantumRange*G);
-  *blue=EncodePixelGamma((double) QuantumRange*B);
-}
-
-static inline void ConvertRGBToOklab(const double red,const double green,
-  const double blue,double *L,double *a,double *b)
-{
-  double
-    B,
-    G,
-    l,
-    m,
-    R,
-    s;
-
-  R=QuantumScale*DecodePixelGamma(red);
-  G=QuantumScale*DecodePixelGamma(green);
-  B=QuantumScale*DecodePixelGamma(blue);
-  l=cbrt(0.4122214708*R+0.5363325363*G+0.0514459929*B);
-  m=cbrt(0.2119034982*R+0.6806995451*G+0.1073969566*B);
-  s=cbrt(0.0883024619*R+0.2817188376*G+0.6299787005*B);
-  *L=0.2104542553*l+0.7936177850*m-0.0040720468*s;
-  *a=1.9779984951*l-2.4285922050*m+0.4505937099*s+0.5;
-  *b=0.0259040371*l+0.7827717662*m-0.8086757660*s+0.5;
+  Rl=Oklab_Rl*(double) QuantumRange;  /* constant folding */
+  Rm=Oklab_Rm*(double) QuantumRange;
+  Rs=Oklab_Rs*(double) QuantumRange;
+  Gl=Oklab_Gl*(double) QuantumRange;
+  Gm=Oklab_Gm*(double) QuantumRange;
+  Gs=Oklab_Gs*(double) QuantumRange;
+  Bl=Oklab_Bl*(double) QuantumRange;
+  Bm=Oklab_Bm*(double) QuantumRange;
+  Bs=Oklab_Bs*(double) QuantumRange;
+  R=Rl*l+Rm*m+Rs*s;
+  G=Gl*l+Gm*m+Gs*s;
+  B=Bl*l+Bm*m+Bs*s;
+  *red=EncodePixelGamma(R);
+  *green=EncodePixelGamma(G);
+  *blue=EncodePixelGamma(B);
 }
 
 static inline void ConvertOklchToRGB(const double L,const double C,
@@ -1534,6 +1550,68 @@ static inline void ConvertOklchToRGB(const double L,const double C,
   a=C*cos(2.0*MagickPI*h);
   b=C*sin(2.0*MagickPI*h);
   ConvertOklabToRGB(L,a,b,red,green,blue);
+}
+
+static inline void ConvertRGBToOklab(const double red,const double green,
+  const double blue,double *L,double *a,double *b)
+{
+#define Oklab_lR  (0.4122214708)
+#define Oklab_lG  (0.5363325363)
+#define Oklab_lB  (0.0514459929)
+#define Oklab_mR  (0.2119034982)
+#define Oklab_mG  (0.6806995451)
+#define Oklab_mB  (0.1073969566)
+#define Oklab_sR  (0.0883024619)
+#define Oklab_sG  (0.2817188376)
+#define Oklab_sB  (0.6299787005)
+#define Oklab_Ll  (0.2104542553)
+#define Oklab_Lm  (0.7936177850)
+#define Oklab_Ls  (-0.0040720468)
+#define Oklab_al  (1.9779984951)
+#define Oklab_am  (-2.4285922050)
+#define Oklab_as  (0.4505937099)
+#define Oklab_bl  (0.0259040371)
+#define Oklab_bm  (0.7827717662)
+#define Oklab_bs  (-0.8086757660)
+
+  double
+    B,
+    G,
+    l,
+    lR,
+    lG,
+    lB,
+    m,
+    mR,
+    mG,
+    mB,
+    R,
+    s,
+    sR,
+    sG,
+    sB;
+
+  R=DecodePixelGamma(red);
+  G=DecodePixelGamma(green);
+  B=DecodePixelGamma(blue);
+  lR=Oklab_lR*QuantumScale;  /* constant folding */
+  lG=Oklab_lG*QuantumScale;
+  lB=Oklab_lB*QuantumScale;
+  mR=Oklab_mR*QuantumScale;
+  mG=Oklab_mG*QuantumScale;
+  mB=Oklab_mB*QuantumScale;
+  sR=Oklab_sR*QuantumScale;
+  sG=Oklab_sG*QuantumScale;
+  sB=Oklab_sB*QuantumScale;
+  l=lR*R+lG*G+lB*B;
+  m=mR*R+mG*G+mB*B;
+  s=sR*R+sG*G+sB*B;
+  l=cbrt(l);
+  m=cbrt(m);
+  s=cbrt(s);
+  *L=Oklab_Ll*l+Oklab_Lm*m+Oklab_Ls*s;
+  *a=Oklab_al*l+Oklab_am*m+Oklab_as*s+0.5;
+  *b=Oklab_bl*l+Oklab_bm*m+Oklab_bs*s+0.5;
 }
 
 static inline void ConvertRGBToOklch(const double red,const double green,
