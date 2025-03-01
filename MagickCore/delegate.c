@@ -1742,7 +1742,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         "NotAuthorized","`%s'",encode);
       return(MagickFalse);
     }
-  temporary=*image->filename == '\0' ? MagickTrue : MagickFalse;
+  temporary=(*image->filename == '\0') ? MagickTrue : MagickFalse;
   if ((temporary != MagickFalse) && (AcquireUniqueFilename(image->filename) ==
       MagickFalse))
     {

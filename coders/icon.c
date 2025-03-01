@@ -41,6 +41,7 @@
 */
 #include "MagickCore/studio.h"
 #include "MagickCore/artifact.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/cache.h"
@@ -1117,9 +1118,10 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         write_info=CloneImageInfo(image_info);
         length=0;
         /*
-          Don't write any ancillary chunks except for gAMA.
+          Don't write any ancillary chunks except for gAMA,tRNS.
         */
-        (void) SetImageArtifact(write_image,"png:include-chunk","none,gama");
+        (void) SetImageArtifact(write_image,"png:include-chunk",
+          "none,gama,tRNS");
         /*
           Only write PNG32 formatted PNG (32-bit RGBA), 8 bits per channel.
         */
