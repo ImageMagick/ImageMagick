@@ -726,6 +726,7 @@ PSDelegate
 PCLDelegate
 MVDelegate
 MrSIDDecodeDelegate
+MKDIRDelegate
 VIDEOEncodeDelegate
 VIDEODecodeDelegate
 MogrifyDelegate
@@ -5257,7 +5258,7 @@ MAGICK_PATCHLEVEL_VERSION=45
 
 MAGICK_VERSION=7.1.1-45
 
-MAGICK_GIT_REVISION=76f853c02:20250222
+MAGICK_GIT_REVISION=57ca4c766:20250302
 
 
 # Substitute library versioning
@@ -5291,7 +5292,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,45
 
-PACKAGE_RELEASE_DATE=2025-02-22
+PACKAGE_RELEASE_DATE=2025-03-02
 
 
 # Ensure that make can run correctly
@@ -36020,6 +36021,7 @@ LEPDelegateDefault='lepton'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
 LaunchDelegateDefault='gimp'
+MKDIRDelegateDefault='mkdir'
 MrSIDDecodeDelegateDefault='mrsidgeodecode'
 MVDelegateDefault='mv'
 PCLDelegateDefault='pcl6'
@@ -37222,6 +37224,53 @@ VIDEOEncodeDelegate=$ac_cv_path_VIDEOEncodeDelegate
 if test -n "$VIDEOEncodeDelegate"; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $VIDEOEncodeDelegate" >&5
 printf "%s\n" "$VIDEOEncodeDelegate" >&6; }
+else
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }
+fi
+
+
+# Extract the first word of ""$MKDIRDelegateDefault"", so it can be a program name with args.
+set dummy "$MKDIRDelegateDefault"; ac_word=$2
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+printf %s "checking for $ac_word... " >&6; }
+if test ${ac_cv_path_MKDIRDelegate+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) case $MKDIRDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MKDIRDelegate="$MKDIRDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  case $as_dir in #(((
+    '') as_dir=./ ;;
+    */) ;;
+    *) as_dir=$as_dir/ ;;
+  esac
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir$ac_word$ac_exec_ext"; then
+    ac_cv_path_MKDIRDelegate="$as_dir$ac_word$ac_exec_ext"
+    printf "%s\n" "$as_me:${as_lineno-$LINENO}: found $as_dir$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_MKDIRDelegate" && ac_cv_path_MKDIRDelegate=""$MKDIRDelegateDefault""
+  ;;
+esac ;;
+esac
+fi
+MKDIRDelegate=$ac_cv_path_MKDIRDelegate
+if test -n "$MKDIRDelegate"; then
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $MKDIRDelegate" >&5
+printf "%s\n" "$MKDIRDelegate" >&6; }
 else
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }

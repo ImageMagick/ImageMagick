@@ -3307,6 +3307,7 @@ LEPDelegateDefault='lepton'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
 LaunchDelegateDefault='gimp'
+MKDIRDelegateDefault='mkdir'
 MrSIDDecodeDelegateDefault='mrsidgeodecode'
 MVDelegateDefault='mv'
 PCLDelegateDefault='pcl6'
@@ -3355,6 +3356,7 @@ AC_PATH_PROG([LaunchDelegate],["$LaunchDelegateDefault"],["$LaunchDelegateDefaul
 AC_PATH_PROG([MogrifyDelegate],["$MogrifyDelegateDefault"],["$MogrifyDelegateDefault"])
 AC_PATH_PROG([VIDEODecodeDelegate],["$VIDEODecodeDelegateDefault"],["$VIDEODecodeDelegateDefault"])
 AC_PATH_PROG([VIDEOEncodeDelegate],["$VIDEOEncodeDelegateDefault"],["$VIDEOEncodeDelegateDefault"])
+AC_PATH_PROG([MKDIRDelegate],["$MKDIRDelegateDefault"],["$MKDIRDelegateDefault"])
 AC_PATH_PROG([MrSIDDecodeDelegate],["$MrSIDDecodeDelegateDefault"],["$MrSIDDecodeDelegateDefault"])
 AC_PATH_PROG([MVDelegate],["$MVDelegateDefault"],["$MVDelegateDefault"])
 AC_PATH_PROG([PCLDelegate],["$PCLDelegateDefault"],["$PCLDelegateDefault"])

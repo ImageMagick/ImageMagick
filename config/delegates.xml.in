@@ -67,7 +67,7 @@
   <delegate decode="https:decode" command="&apos;@WWWDecodeDelegate@&apos; -s -L -o &apos;%u.dat&apos; &apos;https:%M&apos;"/>
   <delegate decode="doc" command="&apos;@DOCDecodeDelegate@&apos; --convert-to pdf --outdir `dirname &apos;%i&apos;` &apos;%i&apos; 2&gt; &apos;%u&apos;; @MVDelegate@ &apos;%i.pdf&apos; &apos;%o&apos;"/>
   <delegate decode="docx" command="&apos;@DOCDecodeDelegate@&apos; --convert-to pdf --outdir `dirname &apos;%i&apos;` &apos;%i&apos; 2&gt; &apos;%u&apos;; @MVDelegate@ &apos;%i.pdf&apos; &apos;%o&apos;"/>
-  <delegate decode="dng:decode" command="@MVDelegate@ &apos;%i&apos; &apos;%i.%e&apos;; &apos;@DNGDecodeDelegate@&apos; --import &apos;%i.%e&apos; &apos;%u.tif&apos; &gt; &apos;%u&apos;"/>
+  <delegate decode="dng:decode" command="@MKDIRDelegate@ &apos;%u-config&apos;;@MVDelegate@ &apos;%i&apos; &apos;%i.%e&apos;; &apos;@DNGDecodeDelegate@&apos; --import &apos;%i.%e&apos; &apos;%u.tif&apos; --core --configdir &apos;%u-config&apos; &gt; &apos;%u&apos;;@RMDelegate@ -r &apos;%u-config&apos;"/>
   <delegate decode="dot" command="&apos;@GVCDecodeDelegate@&apos; -Tsvg &apos;%i&apos; -o &apos;%o&apos;" />
   <delegate decode="dvi" command="&apos;@DVIDecodeDelegate@&apos; -sstdout=%%stderr -o &apos;%o&apos; &apos;%i&apos;"/>
   <delegate decode="edit" stealth="True" command="&apos;@EditorDelegate@&apos; -title &apos;Edit Image Comment&apos; -e vi &apos;%o&apos;"/>
