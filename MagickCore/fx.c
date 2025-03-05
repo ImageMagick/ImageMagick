@@ -108,6 +108,8 @@
 #define MinValStackSize 100
 #define InitNumUserSymbols 50
 
+#define SECONDS_ERR -FLT_MAX
+
 typedef long double fxFltType;
 
 typedef enum {
@@ -272,6 +274,7 @@ typedef enum {
 #if defined(MAGICKCORE_HAVE_ERF)
   fErf,
 #endif
+  fEpoch,
   fExp,
   fFloor,
   fGauss,
@@ -291,6 +294,7 @@ typedef enum {
   fLn,
   fLogtwo,
   fLog,
+  fMagickTime,
   fMax,
   fMin,
   fMod,
@@ -363,6 +367,7 @@ static const FunctionT Functions[] = {
 #if defined(MAGICKCORE_HAVE_ERF)
   {fErf,     "erf"   , 1},
 #endif
+  {fEpoch,   "epoch" , 1}, /* Special case: needs a string date from a property eg %[date:modify] */
   {fExp,     "exp"   , 1},
   {fFloor,   "floor" , 1},
   {fGauss,   "gauss" , 1},
@@ -382,6 +387,7 @@ static const FunctionT Functions[] = {
   {fLn,      "ln"    , 1},
   {fLogtwo,  "logtwo", 1},
   {fLog,     "log"   , 1},
+  {fMagickTime,"magicktime", 0},
   {fMax,     "max"   , 2},
   {fMin,     "min"   , 2},
   {fMod,     "mod"   , 2},
@@ -1540,12 +1546,15 @@ static MagickBooleanType IsQualifier (FxInfo * pfx)
   return MagickFalse;
 }
 
-static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
-/* returns number of character to swallow.
-   "-1" means invalid input
-   "0" means no relevant input (don't swallow, but not an error)
+static ssize_t GetProperty (FxInfo * pfx, fxFltType *val, fxFltType *seconds)
+/* Returns number of characters to swallow.
+   Returns "-1" means invalid input.
+   Returns "0" means no relevant input (don't swallow, but not an error).
+   If *seconds is not null, sets that from assumed date-time, or SECONDS_ERR if error.
 */
 {
+  if (seconds != NULL) *seconds = SECONDS_ERR;
+
   if (PeekStr (pfx, "%[")) {
     int level = 0;
     size_t len;
@@ -1594,16 +1603,32 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val)
         return -1;
       }
 
-      *val = strtold (text, &tailptr);
-      if (text == tailptr) {
-        text = DestroyString(text);
-        (void) ThrowMagickException (
-          pfx->exception, GetMagickModule(), OptionError,
-          "Property", "'%s' text '%s' is not a number at '%s'",
-          sProperty, text, SetShortExp(pfx));
-        return -1;
+      if (seconds != NULL) {
+        struct tm tp;
+        memset (&tp, '\0', sizeof (tp));
+        if (!strptime (text, "%FT%T", &tp)) {
+          (void) ThrowMagickException (
+            pfx->exception, GetMagickModule(), OptionError,
+            "Function 'epoch' expected date property, found ", "'%s' at '%s'",
+            text, SetShortExp(pfx));
+          text = DestroyString(text);
+          *seconds = SECONDS_ERR;
+          return -1;
+        }
+        *seconds = (fxFltType)mktime (&tp);
+        *val = *seconds;
+      } else {
+        *val = strtold (text, &tailptr);
+        if (text == tailptr) {
+          text = DestroyString(text);
+          (void) ThrowMagickException (
+            pfx->exception, GetMagickModule(), OptionError,
+            "Property", "'%s' text '%s' is not a number at '%s'",
+            sProperty, text, SetShortExp(pfx));
+          text = DestroyString(text);
+          return -1;
+        }
       }
-
       text = DestroyString(text);
     }
     return ((ssize_t) len);
@@ -1826,6 +1851,30 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
   if (fe==fDo) {
     (void) AddAddressingElement (pfx, rGoto, NULL_ADDRESS); /* address will be ndx1+1 */
   }
+  if (fe==fEpoch) {
+    fxFltType
+      val,
+      seconds;
+    ssize_t
+      lenOptArt = GetProperty (pfx, &val, &seconds);
+    if (seconds == SECONDS_ERR) {
+      /* Exception may not have been raised. */
+      (void) ThrowMagickException (
+        pfx->exception, GetMagickModule(), OptionError,
+        "Function 'epoch' expected date property", "at '%s'",
+        SetShortExp(pfx));
+      return MagickFalse;
+    }
+    if (lenOptArt < 0) return MagickFalse;
+    if (lenOptArt > 0) {
+      (void) AddElement (pfx, seconds, oNull);
+      pfx->pex += lenOptArt;
+      if (!ExpectChar (pfx, ')')) return MagickFalse;
+      if (!PopOprOpenParen (pfx, pushOp)) return MagickFalse;
+      return MagickTrue;
+    }
+  }
+
   while (nArgs > 0) {
     int FndOne = 0;
     if (TranslateStatementList (pfx, strLimit, &chLimit)) {
@@ -2251,7 +2300,7 @@ static MagickBooleanType GetOperand (
       }
 
       val = (fxFltType) 0;
-      lenOptArt = GetProperty (pfx, &val);
+      lenOptArt = GetProperty (pfx, &val, NULL);
       if (lenOptArt < 0) return MagickFalse;
       if (lenOptArt > 0) {
         (void) AddElement (pfx, val, oNull);
@@ -3485,6 +3534,9 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = erf ((double) regA);
           break;
 #endif
+        case fEpoch:
+          /* Do nothing. */
+          break;
         case fExp:
           regA = exp ((double) regA);
           break;
@@ -3531,6 +3583,9 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           break;
         case fLog:
           regA = MagickLog10 ((double) regA);
+          break;
+        case fMagickTime:
+          regA = GetMagickTime ();
           break;
         case fMax:
           regA = (regA > regB) ? regA : regB;
