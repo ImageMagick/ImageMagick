@@ -1546,6 +1546,29 @@ static MagickBooleanType IsQualifier (FxInfo * pfx)
   return MagickFalse;
 }
 
+static MagickBooleanType ParseISO860(const char* text,struct tm* tp)
+{
+  int
+    year,
+    month,
+    day,
+    hour,
+    min,
+    sec;
+
+  memset(tp,0,sizeof(tp));
+  if (sscanf(text,"%d-%d-%dT%d:%d:%d",&year,&month,&day,&hour,&min,&sec) != 6)
+    return(MagickFalse);
+  tp->tm_year=year-1900;
+  tp->tm_mon=month-1;
+  tp->tm_mday=day;
+  tp->tm_hour=hour;
+  tp->tm_min=min;
+  tp->tm_sec=sec;
+  tp->tm_isdst=-1;
+  return(MagickTrue);
+}
+
 static ssize_t GetProperty (FxInfo * pfx, fxFltType *val, fxFltType *seconds)
 /* Returns number of characters to swallow.
    Returns "-1" means invalid input.
@@ -1605,8 +1628,7 @@ static ssize_t GetProperty (FxInfo * pfx, fxFltType *val, fxFltType *seconds)
 
       if (seconds != NULL) {
         struct tm tp;
-        memset (&tp, '\0', sizeof (tp));
-        if (!strptime (text, "%FT%T", &tp)) {
+        if (ParseISO860(text,&tp) == MagickFalse) {
           (void) ThrowMagickException (
             pfx->exception, GetMagickModule(), OptionError,
             "Function 'epoch' expected date property, found ", "'%s' at '%s'",
