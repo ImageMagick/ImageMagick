@@ -1556,7 +1556,7 @@ static MagickBooleanType ParseISO860(const char* text,struct tm* tp)
     min,
     sec;
 
-  memset(tp,0,sizeof(tp));
+  memset(tp,0,sizeof(struct tm));
   if (sscanf(text,"%d-%d-%dT%d:%d:%d",&year,&month,&day,&hour,&min,&sec) != 6)
     return(MagickFalse);
   tp->tm_year=year-1900;
