@@ -118,6 +118,67 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
+#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,19,0)
+static inline void HEICSetUint32SecurityLimit(const ImageInfo *image_info,
+  const char *name,uint32_t *value)
+{
+  const char
+    *option;
+
+  option=GetImageOption(image_info,name);
+  if (option == (const char*) NULL)
+    return;
+  *value=strtoul(option,(char **) NULL,10);
+}
+
+static inline void HEICSetUint64SecurityLimit(const ImageInfo *image_info,
+  const char *name,uint64_t *value)
+{
+  const char
+    *option;
+
+  option=GetImageOption(image_info,name);
+  if (option == (const char*) NULL)
+    return;
+  *value=strtoull(option,(char **) NULL,10);
+}
+
+static inline void HEICSecurityLimits(const ImageInfo *image_info,
+  struct heif_context *heif_context)
+{
+  int
+    max_size;
+
+  struct heif_security_limits
+    *security_limits;
+
+  max_size=(int) MagickMin(MagickMin(GetMagickResourceLimit(WidthResource),
+    GetMagickResourceLimit(HeightResource)),INT_MAX);
+  if (max_size != INT_MAX)
+    heif_context_set_maximum_image_size_limit(heif_context,max_size);
+  security_limits=heif_context_get_security_limits(heif_context);
+  HEICSetUint64SecurityLimit(image_info,"heic:max-image-size-pixels",
+    &security_limits->max_image_size_pixels);
+  HEICSetUint64SecurityLimit(image_info,"heic:max-number-of-tiles",
+    &security_limits->max_number_of_tiles);
+  HEICSetUint32SecurityLimit(image_info,"heic:max-bayer-pattern-pixels",
+    &security_limits->max_bayer_pattern_pixels);
+  HEICSetUint32SecurityLimit(image_info,"heic:max-items",
+    &security_limits->max_items);
+  HEICSetUint32SecurityLimit(image_info,"heic:max-color-profile-size",
+    &security_limits->max_color_profile_size);
+  HEICSetUint64SecurityLimit(image_info,"heic:max-memory-block-size",
+    &security_limits->max_memory_block_size);
+  HEICSetUint32SecurityLimit(image_info,"heic:max-components",
+    &security_limits->max_components);
+  HEICSetUint32SecurityLimit(image_info,"heic:max-iloc-extents-per-item",
+    &security_limits->max_iloc_extents_per_item);
+  HEICSetUint32SecurityLimit(image_info,"heic:max-size-entity-group",
+    &security_limits->max_size_entity_group);
+  HEICSetUint32SecurityLimit(image_info,"heic:max-children-per-box",
+    &security_limits->max_children_per_box);
+}
+#endif
 
 static inline MagickBooleanType HEICSkipImage(const ImageInfo *image_info,
   Image *image)
@@ -622,9 +683,6 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
-    max_size;
-
   MagickBooleanType
     status;
 
@@ -673,11 +731,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
   heif_context=heif_context_alloc();
   if (heif_context == (struct heif_context *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  max_size=(int) MagickMin(MagickMin(GetMagickResourceLimit(WidthResource),
-    GetMagickResourceLimit(HeightResource)),INT_MAX);
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,19,0)
-  if (max_size != INT_MAX)
-    heif_context_set_maximum_image_size_limit(heif_context,max_size);
+  HEICSecurityLimits(image_info,heif_context);
 #endif
   error=heif_context_read_from_file(heif_context,image->filename,
     (const struct heif_reading_options *) NULL);
