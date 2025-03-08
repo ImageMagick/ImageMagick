@@ -1563,7 +1563,7 @@ static MagickBooleanType GetStructuralDisimilarityDistortion(const Image *image,
   status=GetStructuralSimilarityDistortion(image,reconstruct_image,
     distortion,exception);
   for (i=0; i <= MaxPixelChannels; i++)
-    distortion[i]=(1.0-(distortion[i]))/2.0;
+    distortion[i]=(1.0-distortion[i])/2.0;
   return(status);
 }
 
@@ -4196,23 +4196,33 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait similarity_traits=GetPixelChannelTraits(similarity_image,
+        PixelTrait similarity_traits = GetPixelChannelTraits(similarity_image,
           channel);
         if ((traits == UndefinedPixelTrait) ||
             (similarity_traits == UndefinedPixelTrait) ||
             ((similarity_traits & UpdatePixelTrait) == 0))
           continue;
-        if ((metric == MeanAbsoluteErrorMetric) ||
-            (metric == MeanSquaredErrorMetric) ||
-            (metric == NormalizedCrossCorrelationErrorMetric) ||
-            (metric == RootMeanSquaredErrorMetric))
+        switch (metric)
+        {
+          case FuzzErrorMetric:
+          case MeanAbsoluteErrorMetric:
+          case MeanSquaredErrorMetric:
+          case NormalizedCrossCorrelationErrorMetric:
+          case PerceptualHashErrorMetric:
+          case RootMeanSquaredErrorMetric:
+          case StructuralDissimilarityErrorMetric:
           {
             SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
               QuantumRange-QuantumRange*similarity),q);
-            continue;
+            break;
+					}
+          default:
+          {
+            SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
+              QuantumRange*similarity),q);
+            break;
           }
-        SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
-          QuantumRange*similarity),q);
+        }
       }
       q+=(ptrdiff_t) GetPixelChannels(similarity_image);
     }
