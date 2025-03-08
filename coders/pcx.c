@@ -484,6 +484,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   256 color images have their color map at the end of the file.
                 */
+                offset=SeekBlob(image,(MagickOffsetType) GetBlobSize(image)-3*
+                  image->colors-1,SEEK_SET);
                 pcx_info.colormap_signature=(unsigned char) ReadBlobByte(image);
                 count=ReadBlob(image,3*image->colors,pcx_colormap);
                 p=pcx_colormap;
