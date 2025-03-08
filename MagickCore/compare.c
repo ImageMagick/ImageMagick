@@ -1387,17 +1387,17 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+  #pragma omp parallel for schedule(static,1) shared(area,distortion,status) \
     magick_number_threads(image,reconstruct_image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    double
-      channel_distortion[MaxPixelChannels+1];
-
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
+
+    double
+      channel_distortion[MaxPixelChannels+1];
 
     size_t
       local_area = 0;
@@ -1422,16 +1422,16 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
+      const Quantum
+        *magick_restrict reconstruct,
+        *magick_restrict test;
+
       double
         x_pixel_mu[MaxPixelChannels+1],
         x_pixel_sigma_squared[MaxPixelChannels+1],
         xy_sigma[MaxPixelChannels+1],
         y_pixel_mu[MaxPixelChannels+1],
         y_pixel_sigma_squared[MaxPixelChannels+1];
-
-      const Quantum
-        *magick_restrict reconstruct,
-        *magick_restrict test;
 
       MagickRealType
         *k;
@@ -1449,7 +1449,6 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
       (void) memset(x_pixel_mu,0,sizeof(x_pixel_mu));
       (void) memset(x_pixel_sigma_squared,0,sizeof(x_pixel_sigma_squared));
       (void) memset(xy_sigma,0,sizeof(xy_sigma));
-      (void) memset(x_pixel_sigma_squared,0,sizeof(y_pixel_sigma_squared));
       (void) memset(y_pixel_mu,0,sizeof(y_pixel_mu));
       (void) memset(y_pixel_sigma_squared,0,sizeof(y_pixel_sigma_squared));
       k=kernel_info->values;
@@ -1544,9 +1543,9 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if ((traits == UndefinedPixelTrait) || ((traits & UpdatePixelTrait) == 0))
       continue;
-    distortion[j]/=area;
+    distortion[j]*=PerceptibleReciprocal(area);
   }
-  distortion[CompositePixelChannel]/=area;
+  distortion[CompositePixelChannel]*=PerceptibleReciprocal(area);
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(status);
@@ -4203,7 +4202,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
             (similarity_traits == UndefinedPixelTrait) ||
             ((similarity_traits & UpdatePixelTrait) == 0))
           continue;
-        if ((metric == MeanSquaredErrorMetric) ||
+        if ((metric == MeanAbsoluteErrorMetric) ||
+            (metric == MeanSquaredErrorMetric) ||
             (metric == NormalizedCrossCorrelationErrorMetric) ||
             (metric == RootMeanSquaredErrorMetric))
           {
