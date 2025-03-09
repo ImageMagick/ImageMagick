@@ -4216,6 +4216,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
           case NormalizedCrossCorrelationErrorMetric:
           case PerceptualHashErrorMetric:
           case RootMeanSquaredErrorMetric:
+          case StructuralSimilarityErrorMetric:
           case StructuralDissimilarityErrorMetric:
           {
             SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
