@@ -3238,6 +3238,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   geometry.width=image->columns;
   geometry.height=image->rows;
   (void) ResetImagePage(trx_image,"0x0+0+0");
+puts("a");
   dot_product_image=CropImage(trx_image,&geometry,exception);
   trx_image=DestroyImage(trx_image);
   if (dot_product_image == (Image *) NULL)
@@ -3734,7 +3735,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
     geometry;
 
   /*
-    MSE correlation-based image similarity using FFT local statistics.
+    PSNR correlation-based image similarity using FFT local statistics.
   */
   test_image=SIMSquareImage(image,exception);
   if (test_image == (Image *) NULL)
@@ -3985,6 +3986,9 @@ static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
   double
     distortion;
 
+  ExceptionInfo
+    *sans_exception = AcquireExceptionInfo();
+
   Image
     *similarity_image;
 
@@ -3997,7 +4001,8 @@ static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
   SetGeometry(reconstruct,&geometry);
   geometry.x=x_offset;
   geometry.y=y_offset;
-  similarity_image=CropImage(image,&geometry,exception);
+  similarity_image=CropImage(image,&geometry,sans_exception);
+  sans_exception=DestroyExceptionInfo(sans_exception);
   if (similarity_image == (Image *) NULL)
     return(0.0);
   distortion=0.0;
@@ -4153,7 +4158,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
 
     if (status == MagickFalse)
       continue;
-#if defined(MMAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp flush(similarity_metric)
 #endif
     if (*similarity_metric <= similarity_threshold)
