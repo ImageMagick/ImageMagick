@@ -1,4 +1,4 @@
-  /*
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -80,7 +80,7 @@
 /*
   Typedef declarations.
 */
-#if defined(MAGICKCORE_JPEG_DELEGATE)
+#if defined(MAGICKCORE_LIBOPENJP2_DELEGATE)
 typedef struct _JP2CompsInfo
 {
   double
