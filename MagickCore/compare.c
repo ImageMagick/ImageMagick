@@ -4184,6 +4184,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       if ((metric == DotProductCorrelationErrorMetric) ||
           (metric == PhaseCorrelationErrorMetric) ||
           (metric == NormalizedCrossCorrelationErrorMetric) ||
+          (metric == StructuralSimilarityErrorMetric) ||
           (metric == UndefinedErrorMetric))
         similarity=1.0-similarity;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
