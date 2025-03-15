@@ -4193,9 +4193,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp critical (MagickCore_SimilarityImage)
 #endif
-      if ((similarity < *similarity_metric) &&
-          (x <= (image->columns-reconstruct->columns)) &&
-          (y <= (image->rows-reconstruct->rows)))
+      if (similarity < *similarity_metric)
         {
           offset->x=x;
           offset->y=y;
