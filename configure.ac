@@ -3864,6 +3864,8 @@ if test $have_gs = 'yes'; then
     AC_MSG_CHECKING([for gs alpha device])
     if $PSDelegate -q -dBATCH -sDEVICE=$GSAlphaDevice -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
         :
+    elif $PSDelegate -q -dBATCH -sDEVICE=pngalpha -sOutputFile=/dev/null < /dev/null 1>&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD; then
+        GSAlphaDevice=pngalpha
     else
         GSAlphaDevice=$GSColorDevice
     fi
