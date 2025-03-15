@@ -4577,7 +4577,7 @@ static void url_encode(const char *uri,char *encode_uri)
 
   for (p=encode_uri; *uri != '\0'; uri++)
     if ((('a' <= *uri) && (*uri <= 'z')) || (('A' <= *uri) && (*uri <= 'Z')) ||
-        (('0' <= *uri) && (*uri <= '9')) || (strchr("-_.~",*uri) != 0))
+        (('0' <= *uri) && (*uri <= '9')) || (strchr("/-_.~",*uri) != 0))
       *p++=(*uri);
     else
       {
