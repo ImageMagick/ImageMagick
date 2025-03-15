@@ -4196,7 +4196,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       if ((similarity < *similarity_metric) &&
           (x <= (image->columns-reconstruct->columns)) &&
           (y <= (image->rows-reconstruct->rows)))
-/* cristy: also need to normalize results, 0.58 rather than 38131 */
         {
           offset->x=x;
           offset->y=y;
