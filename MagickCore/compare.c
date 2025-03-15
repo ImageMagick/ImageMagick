@@ -170,6 +170,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     return((Image *) NULL);
   (void) SetImageMask(clone_image,ReadPixelMask,(Image *) NULL,exception);
   difference_image=ExtentImage(clone_image,&geometry,exception);
+(void) ResetImagePage(difference_image,"0x0+0+0");
   clone_image=DestroyImage(clone_image);
   if (difference_image == (Image *) NULL)
     return((Image *) NULL);
@@ -4142,7 +4143,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   rows=similarity_image->rows;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,1) \
-    shared(progress,status,similarity_metric) \
+    shared(progress,similarity_metric,status) \
     magick_number_threads(similarity_image,similarity_image,rows << 3,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
@@ -4187,17 +4188,20 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
           (metric == StructuralSimilarityErrorMetric) ||
           (metric == UndefinedErrorMetric))
         similarity=1.0-similarity;
+      if (metric == PerceptualHashErrorMetric)
+        similarity=MagickMin(0.01*similarity,1.0);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp critical (MagickCore_SimilarityImage)
 #endif
-      if (similarity < *similarity_metric)
+      if ((similarity < *similarity_metric) &&
+          (x <= (image->columns-reconstruct->columns)) &&
+          (y <= (image->rows-reconstruct->rows)))
+/* cristy: also need to normalize results, 0.58 rather than 38131 */
         {
           offset->x=x;
           offset->y=y;
           *similarity_metric=similarity;
         }
-      if (metric == PerceptualHashErrorMetric)
-        similarity=MagickMin(0.01*similarity,1.0);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
