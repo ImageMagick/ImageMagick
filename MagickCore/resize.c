@@ -4668,12 +4668,12 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     name=GetNextImageProfile(thumbnail_image);
   }
   (void) DeleteImageProperty(thumbnail_image,"comment");
-  url_encode(image->magick_filename,encode_uri);
-  if (*image->magick_filename == '/')
+  url_encode(image->filename,encode_uri);
+  if (*image->filename != '/')
+    (void) FormatImageProperty(thumbnail_image,"Thumb::URI","./%s",encode_uri);
+  else
     (void) FormatImageProperty(thumbnail_image,"Thumb::URI","file://%s",
       encode_uri);
-  else
-    (void) FormatImageProperty(thumbnail_image,"Thumb::URI","./%s",encode_uri);
   if (GetPathAttributes(image->filename,&attributes) != MagickFalse )
     (void) FormatImageProperty(thumbnail_image,"Thumb::MTime","%.20g",(double)
       attributes.st_mtime);
