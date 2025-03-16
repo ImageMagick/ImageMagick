@@ -351,7 +351,7 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
   }
   (void) ReadBlobByte(image);  /* end of line */
   (void) ReadBlobByte(image);
-  return((q-pixels) < (ssize_t) number_pixels ? MagickFalse : MagickTrue);
+  return((p-pixels) < (ssize_t) number_pixels ? MagickFalse : MagickTrue);
 }
 
 /*
