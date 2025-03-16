@@ -1241,24 +1241,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         }
       if (difference_image != (Image *) NULL)
         {
-          if ((image->columns == reconstruct_image->columns) &&
-              (image->rows == reconstruct_image->rows))
-            {
-              Image
-                *roll_image;
-
-              /*
-                Special case where target and reconstruction are same size.
-              */
-              roll_image=RollImage(difference_image,-offset.x,-offset.y,
-                exception);
-              if (roll_image != (Image *) NULL)
-                {
-                  (void) ResetImagePage(roll_image,"0x0+0+0");
-                  difference_image=DestroyImageList(difference_image);
-                  difference_image=roll_image;
-                }
-            }
           AppendImageToList(&difference_image,similarity_image);
           similarity_image=(Image *) NULL;
         }
@@ -1271,6 +1253,13 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     {
       distortion=1.0-distortion;
       similarity_metric=1.0-similarity_metric;
+      break;
+    }
+    case PeakSignalToNoiseRatioErrorMetric:
+    {
+printf("%g %g\n",distortion,similarity_metric);
+      distortion=fabs(distortion);
+      similarity_metric+=1.0;
       break;
     }
     case PhaseCorrelationErrorMetric:

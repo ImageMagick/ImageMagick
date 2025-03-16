@@ -1209,14 +1209,9 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
     i;
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
-  for (i=0; i < MaxPixelChannels; i++)
+  for (i=0; i <= MaxPixelChannels; i++)
     if (fabs(distortion[i]) >= MagickEpsilon)
-      distortion[i]=(-10.0*MagickLog10(distortion[i]))/48.1647;
-  distortion[CompositePixelChannel]=0.0;
-  for (i=0; i < MaxPixelChannels; i++)
-    if (fabs(distortion[i]) >= MagickEpsilon)
-      distortion[CompositePixelChannel]+=distortion[i];
-  distortion[CompositePixelChannel]/=GetImageChannels(image);
+      distortion[i]=(10.0*MagickLog10(distortion[i]))/48.1647;
   return(status);
 }
 
@@ -3830,7 +3825,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   status=NegateImage(psnr_image,MagickFalse,exception);
   if (status == MagickFalse)
     ThrowPSNRSimilarityException();
-  *similarity_metric=QuantumScale*minima;
+  *similarity_metric=(-1.0+QuantumScale*minima);
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
   return(psnr_image);
