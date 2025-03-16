@@ -2824,8 +2824,6 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
-  if (IsStringTrue(GetImageOption(image_info,"filename:literal")) != MagickFalse)
-    return(MagickTrue);
   *component='\0';
   GetPathComponent(image_info->filename,SubimagePath,component);
   if (*component != '\0')
