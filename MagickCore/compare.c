@@ -170,7 +170,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     return((Image *) NULL);
   (void) SetImageMask(clone_image,ReadPixelMask,(Image *) NULL,exception);
   difference_image=ExtentImage(clone_image,&geometry,exception);
-(void) ResetImagePage(difference_image,"0x0+0+0");
+  (void) ResetImagePage(difference_image,"0x0+0+0");
   clone_image=DestroyImage(clone_image);
   if (difference_image == (Image *) NULL)
     return((Image *) NULL);
