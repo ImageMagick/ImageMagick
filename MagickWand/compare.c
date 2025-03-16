@@ -1257,7 +1257,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
     case PeakSignalToNoiseRatioErrorMetric:
     {
-printf("%g %g\n",distortion,similarity_metric);
       distortion=fabs(distortion);
       similarity_metric+=1.0;
       break;
