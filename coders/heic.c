@@ -148,6 +148,7 @@ static inline void HEICSecurityLimits(const ImageInfo *image_info,
 {
   int
     height_limit,
+    max_profile_size,
     width_limit;
 
   struct heif_security_limits
@@ -158,14 +159,15 @@ static inline void HEICSecurityLimits(const ImageInfo *image_info,
   height_limit=(int) MagickMin(GetMagickResourceLimit(WidthResource),INT_MAX);
   if (width_limit != INT_MAX || height_limit != INT_MAX)
     security_limits->max_image_size_pixels=(uint64_t) width_limit*height_limit;
+  max_profile_size=MagickMin(GetMaxProfileSize(),INT_MAX);
+  if (max_profile_size != INT_MAX)
+    security_limits->max_color_profile_size=max_profile_size;
   HEICSetUint64SecurityLimit(image_info,"heic:max-number-of-tiles",
     &security_limits->max_number_of_tiles);
   HEICSetUint32SecurityLimit(image_info,"heic:max-bayer-pattern-pixels",
     &security_limits->max_bayer_pattern_pixels);
   HEICSetUint32SecurityLimit(image_info,"heic:max-items",
     &security_limits->max_items);
-  HEICSetUint32SecurityLimit(image_info,"heic:max-color-profile-size",
-    &security_limits->max_color_profile_size);
   HEICSetUint64SecurityLimit(image_info,"heic:max-memory-block-size",
     &security_limits->max_memory_block_size);
   HEICSetUint32SecurityLimit(image_info,"heic:max-components",
