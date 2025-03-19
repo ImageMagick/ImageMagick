@@ -825,6 +825,9 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
+/* Define if you have PANGO library */
+#undef PANGO_DELEGATE
+
 /* Define if you have PANGOCAIRO library */
 #undef PANGOCAIRO_DELEGATE
 
