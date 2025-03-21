@@ -1078,7 +1078,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     distortion[i]/=sqrt(alpha_variance[i]*beta_variance[i]);
-    if (fabs(distortion[i]) > MagickEpsilon)
+    if (fabs(distortion[i]) >= MagickEpsilon)
       distortion[CompositePixelChannel]+=distortion[i];
   }
   distortion[CompositePixelChannel]=distortion[CompositePixelChannel]/
@@ -1210,8 +1210,11 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
   for (i=0; i <= MaxPixelChannels; i++)
-    if (fabs(distortion[i]) >= MagickEpsilon)
-      distortion[i]=(10.0*MagickLog10(distortion[i]))/48.1647;
+    if ((fabs(distortion[i]) < MagickEpsilon) || (fabs(distortion[i]) >= 1.0))
+      distortion[i]=1.0-distortion[i];
+    else
+      distortion[i]=(-10.0*MagickLog10(PerceptibleReciprocal(distortion[i])))/
+        48.1647;
   return(status);
 }
 
@@ -2338,7 +2341,8 @@ static MagickBooleanType SIMLogImage(Image *image,ExceptionInfo *exception)
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=(Quantum) (QuantumRange*10.0*MagickLog10((double) q[i]));
+        q[i]=(Quantum) (-10.0*QuantumRange*MagickLog10(PerceptibleReciprocal(
+          (double) q[i])))/48.1647;
       }
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
@@ -3234,7 +3238,6 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   geometry.width=image->columns;
   geometry.height=image->rows;
   (void) ResetImagePage(trx_image,"0x0+0+0");
-puts("a");
   dot_product_image=CropImage(trx_image,&geometry,exception);
   trx_image=DestroyImage(trx_image);
   if (dot_product_image == (Image *) NULL)
@@ -3799,8 +3802,8 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPSNRSimilarityException();
   mean_image->depth=MAGICKCORE_QUANTUM_DEPTH;
-  status=SIMMultiplyImage(mean_image,1.0/48.1647,
-    (const ChannelStatistics *) NULL,exception);
+  status=SIMMultiplyImage(mean_image,1.0,(const ChannelStatistics *) NULL,
+    exception);
   if (status == MagickFalse)
     ThrowPSNRSimilarityException();
   /*
