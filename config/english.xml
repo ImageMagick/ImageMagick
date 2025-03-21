@@ -692,7 +692,6 @@
           missing required argument
         </message>
         <message name="MissingAnImageFilename">
-        <!-- FUTURE: Depreciate using MissingOutputFilename -->
           missing an image filename
         </message>
         <message name="MissingExpression">
