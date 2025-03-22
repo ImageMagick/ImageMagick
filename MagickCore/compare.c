@@ -4128,7 +4128,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     return((Image *) NULL);
   similarity_image->depth=MAGICKCORE_QUANTUM_DEPTH;  
   similarity_image->alpha_trait=UndefinedPixelTrait;
-  similarity_image->type=GrayscaleType;
   status=SetImageStorageClass(similarity_image,DirectClass,exception);
   if (status == MagickFalse)
     return(DestroyImage(similarity_image));
@@ -4209,10 +4208,13 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
           continue;
         switch (metric)
         {
+          case AbsoluteErrorMetric:
           case FuzzErrorMetric:
           case MeanAbsoluteErrorMetric:
+          case MeanErrorPerPixelErrorMetric:
           case MeanSquaredErrorMetric:
           case NormalizedCrossCorrelationErrorMetric:
+          case PeakAbsoluteErrorMetric:
           case PerceptualHashErrorMetric:
           case RootMeanSquaredErrorMetric:
           case StructuralSimilarityErrorMetric:
@@ -4249,6 +4251,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
   }
   similarity_view=DestroyCacheView(similarity_view);
+  (void) SetImageType(similarity_image,GrayscaleType,exception);
   if (status == MagickFalse)
     similarity_image=DestroyImage(similarity_image);
   return(similarity_image);
