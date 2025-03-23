@@ -108,6 +108,7 @@ static MagickBooleanType CompareUsage(void)
     sequence_operators[] =
       "  -crop geometry       cut out a rectangular region of the image",
     settings[] =
+      "  -adjoin              join images into a single multi-image file\n"
       "  -alpha option        on, activate, off, deactivate, set, opaque, copy\n"
       "                       transparent, extract, background, or shape\n"
       "  -authenticate password\n"
@@ -370,6 +371,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     {
       case 'a':
       {
+        if (LocaleCompare("adjoin",option+1) == 0)
+          break;
         if (LocaleCompare("alpha",option+1) == 0)
           {
             ssize_t
