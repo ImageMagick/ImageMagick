@@ -5258,7 +5258,7 @@ MAGICK_PATCHLEVEL_VERSION=47
 
 MAGICK_VERSION=7.1.1-47
 
-MAGICK_GIT_REVISION=8209e844c:20250318
+MAGICK_GIT_REVISION=32103ff9a:20250325
 
 
 # Substitute library versioning
@@ -5292,7 +5292,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,47
 
-PACKAGE_RELEASE_DATE=2025-03-18
+PACKAGE_RELEASE_DATE=2025-03-25
 
 
 # Ensure that make can run correctly
@@ -39154,6 +39154,9 @@ if test "$have_openexr"    = 'yes' ; then
 fi
 if test "$have_pangocairo" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES pangocairo"
+fi
+if test "$have_pcl"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES pcl"
 fi
 if test "$have_png"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES png"

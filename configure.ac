@@ -4055,6 +4055,9 @@ fi
 if test "$have_pangocairo" = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES pangocairo"
 fi
+if test "$have_pcl"    = 'yes' ; then
+   MAGICK_DELEGATES="$MAGICK_DELEGATES pcl"
+fi
 if test "$have_png"    = 'yes' ; then
    MAGICK_DELEGATES="$MAGICK_DELEGATES png"
 fi
