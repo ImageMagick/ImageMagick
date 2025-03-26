@@ -3739,7 +3739,7 @@ AM_CONDITIONAL([ZIP_DELEGATE],[test "x$ZIP" != "x"])
 #
 # GhostPCL related configuration.
 #
-PCLColorDevice=ppmraw
+PCLColorDevice=png16malpha
 PCLCMYKDevice=pamcmyk32
 PCLMonoDevice=pbmraw
 if test -z "$PCLVersion"; then
@@ -3785,8 +3785,8 @@ AC_SUBST([PCLVersion])
 #
 # GhostXPS related configuration.
 #
-XPSColorDevice=ppmraw
-XPSCMYKDevice=bmpsep8
+XPSColorDevice=png16malpha
+XPSCMYKDevice=pamcmyk32
 XPSMonoDevice=pbmraw
 if test -z "$XPSVersion"; then
     XPSVersion='unknown'

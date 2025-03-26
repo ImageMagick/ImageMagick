@@ -5258,7 +5258,7 @@ MAGICK_PATCHLEVEL_VERSION=47
 
 MAGICK_VERSION=7.1.1-47
 
-MAGICK_GIT_REVISION=32103ff9a:20250325
+MAGICK_GIT_REVISION=034355417:20250326
 
 
 # Substitute library versioning
@@ -5292,7 +5292,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,47
 
-PACKAGE_RELEASE_DATE=2025-03-25
+PACKAGE_RELEASE_DATE=2025-03-26
 
 
 # Ensure that make can run correctly
@@ -38645,7 +38645,7 @@ fi
 #
 # GhostPCL related configuration.
 #
-PCLColorDevice=ppmraw
+PCLColorDevice=png16malpha
 PCLCMYKDevice=pamcmyk32
 PCLMonoDevice=pbmraw
 if test -z "$PCLVersion"; then
@@ -38700,8 +38700,8 @@ fi
 #
 # GhostXPS related configuration.
 #
-XPSColorDevice=ppmraw
-XPSCMYKDevice=bmpsep8
+XPSColorDevice=png16malpha
+XPSCMYKDevice=pamcmyk32
 XPSMonoDevice=pbmraw
 if test -z "$XPSVersion"; then
     XPSVersion='unknown'
