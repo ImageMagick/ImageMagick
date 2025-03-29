@@ -7444,9 +7444,9 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   offset.x=primitive_info[number_vertices-1].point.x-primitive_info[0].point.x;
   offset.y=primitive_info[number_vertices-1].point.y-primitive_info[0].point.y;
   closed_path=(fabs(offset.x) < MagickEpsilon) &&
-    (fabs(offset.y) < MagickEpsilon) ?  MagickTrue : MagickFalse;
-  if (((draw_info->linejoin == RoundJoin) ||
-       (draw_info->linejoin == MiterJoin)) && (closed_path != MagickFalse))
+    (fabs(offset.y) < MagickEpsilon) ? MagickTrue : MagickFalse;
+  if ((draw_info->linejoin == RoundJoin) ||
+      ((draw_info->linejoin == MiterJoin) && (closed_path != MagickFalse)))
     {
       polygon_primitive[number_vertices]=primitive_info[1];
       number_vertices++;
@@ -7455,6 +7455,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   /*
     Compute the slope for the first line segment, p.
   */
+  closed_path=primitive_info[0].closed_subpath;
   dx.p=0.0;
   dy.p=0.0;
   for (n=1; n < (ssize_t) number_vertices; n++)
