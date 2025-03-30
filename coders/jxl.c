@@ -896,7 +896,7 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
     {
       jxl_status = JxlEncoderSetICCProfile(
         jxl_info,
-        (const uint8_t *)GetStringInfoDatum(icc_profile),
+        (const uint8_t *) GetStringInfoDatum(icc_profile),
         GetStringInfoLength(icc_profile));
       return(jxl_status);
     }
