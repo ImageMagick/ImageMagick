@@ -1042,9 +1042,8 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     }
   if (image_info->quality == 100)
     {
+      basic_info.uses_original_profile=JXL_TRUE;
       icc_profile = GetImageProfile(image, "icc");
-      if (icc_profile != (StringInfo *) NULL)
-        basic_info.uses_original_profile=JXL_TRUE;
     }
   if ((image_info->adjoin != MagickFalse) &&
       (GetNextImageInList(image) != (Image *) NULL))
