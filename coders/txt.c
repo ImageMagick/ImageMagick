@@ -234,10 +234,10 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
   /*
     Initialize Image structure.
   */
-  image->columns=(size_t) floor((((double) page.width*image->resolution.x)/
-    delta.x)+0.5);
-  image->rows=(size_t) floor((((double) page.height*image->resolution.y)/
-    delta.y)+0.5);
+  image->columns=CastDoubleToSizeT(floor((((double) page.width*
+    image->resolution.x)/delta.x)+0.5));
+  image->rows=CastDoubleToSizeT(floor((((double) page.height*
+    image->resolution.y)/delta.y)+0.5));
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status != MagickFalse)
     status=ResetImagePixels(image,exception);
