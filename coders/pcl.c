@@ -298,8 +298,8 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Set PCL render geometry.
     */
-    width=(size_t) CastDoubleToLong(floor(bounds.x2-bounds.x1+0.5));
-    height=(size_t) CastDoubleToLong(floor(bounds.y2-bounds.y1+0.5));
+    width=(size_t) CastDoubleToSsizeT(floor(bounds.x2-bounds.x1+0.5));
+    height=(size_t) CastDoubleToSsizeT(floor(bounds.y2-bounds.y1+0.5));
     if (width > page.width)
       page.width=width;
     if (height > page.height)

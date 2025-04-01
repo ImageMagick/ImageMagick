@@ -1443,8 +1443,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
       */
       depth--;
       attenuate++;
-      x_mid=CastDoubleToLong(ceil((segment->x1+segment->x2)/2-0.5));
-      y_mid=CastDoubleToLong(ceil((segment->y1+segment->y2)/2-0.5));
+      x_mid=CastDoubleToSsizeT(ceil((segment->x1+segment->x2)/2-0.5));
+      y_mid=CastDoubleToSsizeT(ceil((segment->y1+segment->y2)/2-0.5));
       local_info=(*segment);
       local_info.x2=(double) x_mid;
       local_info.y2=(double) y_mid;
@@ -1467,8 +1467,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
         v_view,random_info,&local_info,attenuate,depth,exception);
       return(status == 0 ? MagickFalse : MagickTrue);
     }
-  x_mid=CastDoubleToLong(ceil((segment->x1+segment->x2)/2-0.5));
-  y_mid=CastDoubleToLong(ceil((segment->y1+segment->y2)/2-0.5));
+  x_mid=CastDoubleToSsizeT(ceil((segment->x1+segment->x2)/2-0.5));
+  y_mid=CastDoubleToSsizeT(ceil((segment->y1+segment->y2)/2-0.5));
   if ((fabs(segment->x1-x_mid) < MagickEpsilon) &&
       (fabs(segment->x2-x_mid) < MagickEpsilon) &&
       (fabs(segment->y1-y_mid) < MagickEpsilon) &&
@@ -1485,10 +1485,10 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
       /*
         Left pixel.
       */
-      x=CastDoubleToLong(ceil(segment->x1-0.5));
-      u=GetCacheViewVirtualPixels(u_view,x,CastDoubleToLong(ceil(
+      x=CastDoubleToSsizeT(ceil(segment->x1-0.5));
+      u=GetCacheViewVirtualPixels(u_view,x,CastDoubleToSsizeT(ceil(
         segment->y1-0.5)),1,1,exception);
-      v=GetCacheViewVirtualPixels(v_view,x,CastDoubleToLong(ceil(
+      v=GetCacheViewVirtualPixels(v_view,x,CastDoubleToSsizeT(ceil(
         segment->y2-0.5)),1,1,exception);
       q=QueueCacheViewAuthenticPixels(image_view,x,y_mid,1,1,exception);
       if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
@@ -1508,10 +1508,10 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
           /*
             Right pixel.
           */
-          x=CastDoubleToLong(ceil(segment->x2-0.5));
-          u=GetCacheViewVirtualPixels(u_view,x,CastDoubleToLong(ceil(
+          x=CastDoubleToSsizeT(ceil(segment->x2-0.5));
+          u=GetCacheViewVirtualPixels(u_view,x,CastDoubleToSsizeT(ceil(
             segment->y1-0.5)),1,1,exception);
-          v=GetCacheViewVirtualPixels(v_view,x,CastDoubleToLong(ceil(
+          v=GetCacheViewVirtualPixels(v_view,x,CastDoubleToSsizeT(ceil(
             segment->y2-0.5)),1,1,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x,y_mid,1,1,exception);
           if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
@@ -1538,10 +1538,10 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
           /*
             Bottom pixel.
           */
-          y=CastDoubleToLong(ceil(segment->y2-0.5));
-          u=GetCacheViewVirtualPixels(u_view,CastDoubleToLong(ceil(
+          y=CastDoubleToSsizeT(ceil(segment->y2-0.5));
+          u=GetCacheViewVirtualPixels(u_view,CastDoubleToSsizeT(ceil(
             segment->x1-0.5)),y,1,1,exception);
-          v=GetCacheViewVirtualPixels(v_view,CastDoubleToLong(ceil(
+          v=GetCacheViewVirtualPixels(v_view,CastDoubleToSsizeT(ceil(
             segment->x2-0.5)),y,1,1,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x_mid,y,1,1,exception);
           if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
@@ -1563,10 +1563,10 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
           /*
             Top pixel.
           */
-          y=CastDoubleToLong(ceil(segment->y1-0.5));
-          u=GetCacheViewVirtualPixels(u_view,CastDoubleToLong(ceil(
+          y=CastDoubleToSsizeT(ceil(segment->y1-0.5));
+          u=GetCacheViewVirtualPixels(u_view,CastDoubleToSsizeT(ceil(
             segment->x1-0.5)),y,1,1,exception);
-          v=GetCacheViewVirtualPixels(v_view,CastDoubleToLong(ceil(
+          v=GetCacheViewVirtualPixels(v_view,CastDoubleToSsizeT(ceil(
             segment->x2-0.5)),y,1,1,exception);
           q=QueueCacheViewAuthenticPixels(image_view,x_mid,y,1,1,exception);
           if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
@@ -1590,11 +1590,11 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
       /*
         Middle pixel.
       */
-      x=CastDoubleToLong(ceil(segment->x1-0.5));
-      y=CastDoubleToLong(ceil(segment->y1-0.5));
+      x=CastDoubleToSsizeT(ceil(segment->x1-0.5));
+      y=CastDoubleToSsizeT(ceil(segment->y1-0.5));
       u=GetCacheViewVirtualPixels(u_view,x,y,1,1,exception);
-      x=CastDoubleToLong(ceil(segment->x2-0.5));
-      y=CastDoubleToLong(ceil(segment->y2-0.5));
+      x=CastDoubleToSsizeT(ceil(segment->x2-0.5));
+      y=CastDoubleToSsizeT(ceil(segment->y2-0.5));
       v=GetCacheViewVirtualPixels(v_view,x,y,1,1,exception);
       q=QueueCacheViewAuthenticPixels(image_view,x_mid,y_mid,1,1,exception);
       if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||

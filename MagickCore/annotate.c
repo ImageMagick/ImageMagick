@@ -1975,8 +1975,8 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
 
           if (status == MagickFalse)
             continue;
-          x_offset=CastDoubleToLong(ceil(point.x-0.5));
-          y_offset=CastDoubleToLong(ceil(point.y+y-0.5));
+          x_offset=CastDoubleToSsizeT(ceil(point.x-0.5));
+          y_offset=CastDoubleToSsizeT(ceil(point.y+y-0.5));
           if ((y_offset < 0) || (y_offset >= (ssize_t) image->rows))
             continue;
           q=(Quantum *) NULL;
@@ -1991,7 +1991,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           n=y*bitmap->bitmap.pitch;
           for (x=0; x < (ssize_t) bitmap->bitmap.width; x++, n++)
           {
-            x_offset=CastDoubleToLong(ceil(point.x+x-0.5));
+            x_offset=CastDoubleToSsizeT(ceil(point.x+x-0.5));
             if ((x_offset < 0) || (x_offset >= (ssize_t) image->columns))
               {
                 if (q != (Quantum *) NULL)
@@ -2348,7 +2348,7 @@ static MagickBooleanType RenderPostscript(Image *image,
       crop_info=GetImageBoundingBox(annotate_image,exception);
       crop_info.height=(size_t) ((resolution.y/DefaultResolution)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize+0.5);
-      crop_info.y=CastDoubleToLong(ceil((resolution.y/DefaultResolution)*
+      crop_info.y=CastDoubleToSsizeT(ceil((resolution.y/DefaultResolution)*
         extent.y/8.0-0.5));
       (void) FormatLocaleString(geometry,MagickPathExtent,
         "%.20gx%.20g%+.20g%+.20g",(double) crop_info.width,(double)

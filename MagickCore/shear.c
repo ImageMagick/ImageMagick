@@ -163,10 +163,10 @@ static MagickBooleanType CropToFitImage(Image **image,
     if (max.y < extent[i].y)
       max.y=extent[i].y;
   }
-  geometry.x=CastDoubleToLong(ceil(min.x-0.5));
-  geometry.y=CastDoubleToLong(ceil(min.y-0.5));
-  geometry.width=(size_t) CastDoubleToLong(floor(max.x-min.x+0.5));
-  geometry.height=(size_t) CastDoubleToLong(floor(max.y-min.y+0.5));
+  geometry.x=CastDoubleToSsizeT(ceil(min.x-0.5));
+  geometry.y=CastDoubleToSsizeT(ceil(min.y-0.5));
+  geometry.width=(size_t) CastDoubleToSsizeT(floor(max.x-min.x+0.5));
+  geometry.height=(size_t) CastDoubleToSsizeT(floor(max.y-min.y+0.5));
   page=(*image)->page;
   (void) ParseAbsoluteGeometry("0x0+0+0",&(*image)->page);
   crop_image=CropImage(*image,&geometry,exception);
@@ -1215,7 +1215,7 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
         displacement*=(-1.0);
         direction=LEFT;
       }
-    step=CastDoubleToLong(floor((double) displacement));
+    step=CastDoubleToSsizeT(floor((double) displacement));
     area=(double) (displacement-step);
     step++;
     pixel=background;
@@ -1430,7 +1430,7 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
         displacement*=(-1.0);
         direction=UP;
       }
-    step=CastDoubleToLong(floor((double) displacement));
+    step=CastDoubleToSsizeT(floor((double) displacement));
     area=(double) (displacement-step);
     step++;
     pixel=background;
@@ -1613,11 +1613,11 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   /*
     Compute image size.
   */
-  bounds.width=(size_t) ((ssize_t) image->columns+
-    CastDoubleToLong(floor(fabs(shear.x)*image->rows+0.5)));
-  bounds.x=CastDoubleToLong(ceil((double) image->columns+((fabs(shear.x)*
+  bounds.width=(size_t) ((ssize_t) image->columns+CastDoubleToSsizeT(floor(
+    fabs(shear.x)*image->rows+0.5)));
+  bounds.x=CastDoubleToSsizeT(ceil((double) image->columns+((fabs(shear.x)*
     image->rows)-image->columns)/2.0-0.5));
-  bounds.y=CastDoubleToLong(ceil((double) image->rows+((fabs(shear.y)*
+  bounds.y=CastDoubleToSsizeT(ceil((double) image->rows+((fabs(shear.y)*
     bounds.width)-image->rows)/2.0-0.5));
   /*
     Surround image with border.
@@ -1766,9 +1766,9 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
   bounds.height=CastDoubleToSizeT(fabs((double) bounds.width*shear.y)+height+0.5);
   shear_width=CastDoubleToSizeT(fabs((double) bounds.height*shear.x)+
     bounds.width+0.5);
-  bounds.x=CastDoubleToLong(floor((double) ((shear_width > bounds.width) ?
+  bounds.x=CastDoubleToSsizeT(floor((double) ((shear_width > bounds.width) ?
     width : bounds.width-shear_width+2)/2.0+0.5));
-  bounds.y=CastDoubleToLong(floor(((double) bounds.height-height+2)/2.0+0.5));
+  bounds.y=CastDoubleToSsizeT(floor(((double) bounds.height-height+2)/2.0+0.5));
   /*
     Surround image with a border.
   */

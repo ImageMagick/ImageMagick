@@ -298,7 +298,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
       break;
     if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
       {
-        y=CastDoubleToLong(ceil((double) histogram_image->rows-scale*
+        y=CastDoubleToSsizeT(ceil((double) histogram_image->rows-scale*
           histogram[x].red-0.5));
         r=q+y*(ssize_t) GetPixelChannels(histogram_image);
         for ( ; y < (ssize_t) histogram_image->rows; y++)
@@ -309,7 +309,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
       }
     if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
       {
-        y=CastDoubleToLong(ceil((double) histogram_image->rows-scale*
+        y=CastDoubleToSsizeT(ceil((double) histogram_image->rows-scale*
           histogram[x].green-0.5));
         r=q+y*(ssize_t) GetPixelChannels(histogram_image);
         for ( ; y < (ssize_t) histogram_image->rows; y++)
@@ -320,7 +320,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
       }
     if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
       {
-        y=CastDoubleToLong(ceil((double) histogram_image->rows-scale*
+        y=CastDoubleToSsizeT(ceil((double) histogram_image->rows-scale*
           histogram[x].blue-0.5));
         r=q+y*(ssize_t) GetPixelChannels(histogram_image);
         for ( ; y < (ssize_t) histogram_image->rows; y++)

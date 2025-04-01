@@ -273,7 +273,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,
       draw_info=DestroyDrawInfo(draw_info);
       ThrowReaderException(TypeError,"UnableToGetTypeMetrics");
     }
-  page.y=CastDoubleToLong(ceil((double) page.y+metrics.ascent-0.5));
+  page.y=CastDoubleToSsizeT(ceil((double) page.y+metrics.ascent-0.5));
   (void) FormatLocaleString(geometry,MagickPathExtent,"%gx%g%+g%+g",(double)
     image->columns,(double) image->rows,(double) page.x,(double) page.y);
   (void) CloneString(&draw_info->geometry,geometry);
@@ -531,8 +531,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
               n++;
             }
         }
-        q=GetAuthenticPixels(image,CastDoubleToLong(channels[0]),
-          CastDoubleToLong(channels[1]),1,1,exception);
+        q=GetAuthenticPixels(image,CastDoubleToSsizeT(channels[0]),
+          CastDoubleToSsizeT(channels[1]),1,1,exception);
         if (q == (Quantum *) NULL)
           break;
         for (i=0; i < (ssize_t) GetImageChannels(image); i++)

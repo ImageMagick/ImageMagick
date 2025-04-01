@@ -286,21 +286,19 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
       if ((flags & GreaterValue) != 0)
         {
           if ((double) image->delay > floor(geometry_info.rho+0.5))
-            image->delay=(size_t) CastDoubleToLong(floor(
-              geometry_info.rho+0.5));
+            image->delay=(size_t) CastDoubleToSsizeT(floor(geometry_info.rho+0.5));
         }
       else
         if ((flags & LessValue) != 0)
           {
             if ((double) image->delay < floor(geometry_info.rho+0.5))
-              image->ticks_per_second=CastDoubleToLong(floor(
+              image->ticks_per_second=CastDoubleToSsizeT(floor(
                 geometry_info.sigma+0.5));
           }
         else
-          image->delay=(size_t) CastDoubleToLong(floor(geometry_info.rho+0.5));
+          image->delay=(size_t) CastDoubleToSsizeT(floor(geometry_info.rho+0.5));
       if ((flags & SigmaValue) != 0)
-        image->ticks_per_second=CastDoubleToLong(floor(
-          geometry_info.sigma+0.5));
+        image->ticks_per_second=CastDoubleToSsizeT(floor(geometry_info.sigma+0.5));
     }
   option=GetImageOption(image_info,"dispose");
   if (option != (const char *) NULL)
@@ -899,17 +897,17 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
     scale_x=(double) columns/(double) image->columns;
   if (image->rows != 0)
     scale_y=(double) rows/(double) image->rows;
-  clone_image->page.width=(size_t) CastDoubleToLong(floor(scale_x*
+  clone_image->page.width=(size_t) CastDoubleToSsizeT(floor(scale_x*
     image->page.width+0.5));
-  clone_image->page.height=(size_t) CastDoubleToLong(floor(scale_y*
+  clone_image->page.height=(size_t) CastDoubleToSsizeT(floor(scale_y*
     image->page.height+0.5));
   if (MagickAbsoluteValue(scale_x-scale_y) < 2.0)
     scale_x=scale_y=MagickMin(scale_x,scale_y);
-  clone_image->page.x=CastDoubleToLong(ceil(scale_x*image->page.x-0.5));
-  clone_image->tile_offset.x=CastDoubleToLong(ceil(scale_x*
+  clone_image->page.x=CastDoubleToSsizeT(ceil(scale_x*image->page.x-0.5));
+  clone_image->tile_offset.x=CastDoubleToSsizeT(ceil(scale_x*
     image->tile_offset.x-0.5));
-  clone_image->page.y=CastDoubleToLong(ceil(scale_y*image->page.y-0.5));
-  clone_image->tile_offset.y=CastDoubleToLong(ceil(scale_y*
+  clone_image->page.y=CastDoubleToSsizeT(ceil(scale_y*image->page.y-0.5));
+  clone_image->tile_offset.y=CastDoubleToSsizeT(ceil(scale_y*
     image->tile_offset.y-0.5));
   clone_image->cache=ClonePixelCache(image->cache);
   if (SetImageExtent(clone_image,columns,rows,exception) == MagickFalse)

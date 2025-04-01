@@ -390,12 +390,12 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       }
       q=p;
       if (x != (ssize_t *) NULL)
-        *x=CastDoubleToLong(StringToDouble(p,&p));
+        *x=CastDoubleToSsizeT(StringToDouble(p,&p));
       if (p != q)
         {
           flags|=XValue;
           if (((flags & XNegative) != 0) && (x != (ssize_t *) NULL))
-            *x=CastDoubleToLong(-1.0**x);
+            *x=CastDoubleToSsizeT(-1.0**x);
         }
     }
   if ((*p == '+') || (*p == '-'))
@@ -411,12 +411,12 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       }
       q=p;
       if (y != (ssize_t *) NULL)
-        *y=CastDoubleToLong(StringToDouble(p,&p));
+        *y=CastDoubleToSsizeT(StringToDouble(p,&p));
       if (p != q)
         {
           flags|=YValue;
           if (((flags & YNegative) != 0) && (y != (ssize_t *) NULL))
-            *y=CastDoubleToLong(-1.0**y);
+            *y=CastDoubleToSsizeT(-1.0**y);
         }
     }
   if ((flags & PercentValue) != 0)
@@ -557,14 +557,14 @@ MagickExport void GravityAdjustGeometry(const size_t width,
     case EastGravity:
     case SouthEastGravity:
     {
-      region->x=CastDoubleToLong((double) width-region->width-region->x);
+      region->x=CastDoubleToSsizeT((double) width-region->width-region->x);
       break;
     }
     case NorthGravity:
     case SouthGravity:
     case CenterGravity:
     {
-      region->x=CastDoubleToLong((double) width/2.0-region->width/2.0+
+      region->x=CastDoubleToSsizeT((double) width/2.0-region->width/2.0+
         region->x);
       break;
     }
@@ -581,14 +581,14 @@ MagickExport void GravityAdjustGeometry(const size_t width,
     case SouthGravity:
     case SouthEastGravity:
     {
-      region->y=CastDoubleToLong((double) height-region->height-region->y);
+      region->y=CastDoubleToSsizeT((double) height-region->height-region->y);
       break;
     }
     case EastGravity:
     case WestGravity:
     case CenterGravity:
     {
-      region->y=CastDoubleToLong((double) height/2.0-region->height/2.0+
+      region->y=CastDoubleToSsizeT((double) height/2.0-region->height/2.0+
         region->y);
       break;
     }

@@ -780,8 +780,8 @@ static inline ssize_t PixelRoundOffset(double x)
     Round the fraction to nearest integer.
   */
   if ((x-floor(x)) < (ceil(x)-x))
-    return(CastDoubleToLong(floor(x)));
-  return(CastDoubleToLong(ceil(x)));
+    return(CastDoubleToSsizeT(floor(x)));
+  return(CastDoubleToSsizeT(ceil(x)));
 }
 
 MagickExport Image *CropImageToTiles(const Image *image,
