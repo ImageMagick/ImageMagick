@@ -3543,14 +3543,14 @@ static MagickBooleanType RenderMVGContent(Image *image,
                 (void) GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
-                region.width=CastDoubleToUnsigned(floor(GetDrawValue(
-                  token,&next_token)+0.5));
+                region.width=CastDoubleToSizeT(floor(GetDrawValue(token,
+                  &next_token)+0.5));
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
                 (void) GetNextToken(q,&q,extent,token);
                 if (*token == ',')
                   (void) GetNextToken(q,&q,extent,token);
-                region.height=CastDoubleToUnsigned(GetDrawValue(token,
+                region.height=CastDoubleToSizeT(GetDrawValue(token,
                   &next_token)+0.5);
                 if (token == next_token)
                   ThrowPointExpectedException(token,exception);
@@ -3980,15 +3980,15 @@ static MagickBooleanType RenderMVGContent(Image *image,
             (void) GetNextToken(q,&q,extent,token);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
-            graphic_context[n]->viewbox.width=CastDoubleToUnsigned(
-              floor(GetDrawValue(token,&next_token)+0.5));
+            graphic_context[n]->viewbox.width=CastDoubleToSizeT(floor(
+              GetDrawValue(token,&next_token)+0.5));
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             (void) GetNextToken(q,&q,extent,token);
             if (*token == ',')
               (void) GetNextToken(q,&q,extent,token);
-            graphic_context[n]->viewbox.height=(size_t) CastDoubleToUnsigned(
-              floor(GetDrawValue(token,&next_token)+0.5));
+            graphic_context[n]->viewbox.height=CastDoubleToSizeT(floor(
+              GetDrawValue(token,&next_token)+0.5));
             if (token == next_token)
               ThrowPointExpectedException(token,exception);
             break;

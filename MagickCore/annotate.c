@@ -342,10 +342,10 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     (void) CloneString(&annotate->text,textlist[i]);
     if ((metrics.width == 0) || (annotate->gravity != NorthWestGravity))
       (void) GetTypeMetrics(image,annotate,&metrics,exception);
-    height=CastDoubleToUnsigned(metrics.ascent-metrics.descent+0.5);
+    height=CastDoubleToSizeT(metrics.ascent-metrics.descent+0.5);
     if (height == 0)
       height=draw_info->pointsize;
-    height=CastDoubleToUnsigned(floor((double) height+
+    height=CastDoubleToSizeT(floor((double) height+
       draw_info->interline_spacing+0.5));
     switch (annotate->gravity)
     {
@@ -680,7 +680,7 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
     status=GetTypeMetrics(image,draw_info,metrics,exception);
     if (status == MagickFalse)
       break;
-    width=CastDoubleToUnsigned(metrics->width+draw_info->stroke_width+0.5);
+    width=CastDoubleToSizeT(metrics->width+draw_info->stroke_width+0.5);
     if (width <= image->columns)
       continue;
     if (s != (char *) NULL)

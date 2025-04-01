@@ -115,7 +115,7 @@ static inline QuantumAny CastDoubleToQuantumAny(const double x)
   return((QuantumAny) (x+0.5));
 }
 
-static inline size_t CastDoubleToUnsigned(const double x)
+static inline size_t CastDoubleToSizeT(const double x)
 {
   double
     value;

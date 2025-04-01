@@ -985,9 +985,9 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     (void) ParseMetaGeometry(page_geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     scale.x=PerceptibleReciprocal(resolution.x)*geometry.width*delta.x;
-    geometry.width=CastDoubleToUnsigned(scale.x+0.5);
+    geometry.width=CastDoubleToSizeT(scale.x+0.5);
     scale.y=PerceptibleReciprocal(resolution.y)*geometry.height*delta.y;
-    geometry.height=CastDoubleToUnsigned(scale.y+0.5);
+    geometry.height=CastDoubleToSizeT(scale.y+0.5);
     (void) ParseAbsoluteGeometry(page_geometry,&media_info);
     (void) ParseGravityGeometry(image,page_geometry,&page_info,exception);
     if (image->gravity != UndefinedGravity)

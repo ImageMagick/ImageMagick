@@ -615,28 +615,24 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     }
   if ((page.x < 0) && (bounding_box.x >= 0))
     {
-      page.width=CastDoubleToUnsigned((double) page.width+page.x-
-        bounding_box.x);
+      page.width=CastDoubleToSizeT((double) page.width+page.x-bounding_box.x);
       page.x=0;
     }
   else
     {
-      page.width=CastDoubleToUnsigned((double) page.width-(bounding_box.x-
-        page.x));
+      page.width=CastDoubleToSizeT((double) page.width-(bounding_box.x-page.x));
       page.x-=bounding_box.x;
       if (page.x < 0)
         page.x=0;
     }
   if ((page.y < 0) && (bounding_box.y >= 0))
     {
-      page.height=CastDoubleToUnsigned((double) page.height+page.y-
-        bounding_box.y);
+      page.height=CastDoubleToSizeT((double) page.height+page.y-bounding_box.y);
       page.y=0;
     }
   else
     {
-      page.height=CastDoubleToUnsigned((double) page.height-(bounding_box.y-
-        page.y));
+      page.height=CastDoubleToSizeT((double) page.height-(bounding_box.y-page.y));
       page.y-=bounding_box.y;
       if (page.y < 0)
         page.y=0;

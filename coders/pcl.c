@@ -337,8 +337,8 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->resolution.x,image->resolution.y);
   if (image_info->ping != MagickFalse)
     (void) FormatLocaleString(density,MagickPathExtent,"2.0x2.0");
-  page.width=CastDoubleToUnsigned(page.width*image->resolution.x/delta.x+0.5);
-  page.height=CastDoubleToUnsigned(page.height*image->resolution.y/delta.y+0.5);
+  page.width=CastDoubleToSizeT(page.width*image->resolution.x/delta.x+0.5);
+  page.height=CastDoubleToSizeT(page.height*image->resolution.y/delta.y+0.5);
   (void) FormatLocaleString(options,MagickPathExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);
   image=DestroyImage(image);

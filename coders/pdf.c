@@ -1867,9 +1867,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     (void) ParseMetaGeometry(temp,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
     scale.x=(double) (geometry.width*delta.x)/resolution.x;
-    geometry.width=CastDoubleToUnsigned(scale.x+0.5);
+    geometry.width=CastDoubleToSizeT(scale.x+0.5);
     scale.y=(double) (geometry.height*delta.y)/resolution.y;
-    geometry.height=CastDoubleToUnsigned(scale.y+0.5);
+    geometry.height=CastDoubleToSizeT(scale.y+0.5);
     (void) ParseAbsoluteGeometry(temp,&media_info);
     (void) ParseGravityGeometry(image,temp,&page_info,exception);
     if (image->gravity != UndefinedGravity)

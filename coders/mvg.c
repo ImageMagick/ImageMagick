@@ -177,8 +177,8 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           &bounds.x2,&bounds.y2);
         if (count != 4)
           continue;
-        image->columns=CastDoubleToUnsigned(floor((bounds.x2-bounds.x1)+0.5));
-        image->rows=CastDoubleToUnsigned(floor((bounds.y2-bounds.y1)+0.5));
+        image->columns=CastDoubleToSizeT(floor((bounds.x2-bounds.x1)+0.5));
+        image->rows=CastDoubleToSizeT(floor((bounds.y2-bounds.y1)+0.5));
         break;
       }
     }
@@ -191,8 +191,8 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     96.0;
   draw_info->affine.sy=image->resolution.y == 0.0 ? 1.0 : image->resolution.y/
     96.0;
-  image->columns=CastDoubleToUnsigned(draw_info->affine.sx*image->columns);
-  image->rows=CastDoubleToUnsigned(draw_info->affine.sy*image->rows);
+  image->columns=CastDoubleToSizeT(draw_info->affine.sx*image->columns);
+  image->rows=CastDoubleToSizeT(draw_info->affine.sy*image->rows);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     {

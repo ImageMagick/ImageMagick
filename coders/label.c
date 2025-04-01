@@ -151,7 +151,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     return(DestroyImageList(image));
   (void) SetImageProperty(image,"label",label,exception);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  width=CastDoubleToUnsigned(0.5*draw_info->pointsize*strlen(label)+0.5);
+  width=CastDoubleToSizeT(0.5*draw_info->pointsize*strlen(label)+0.5);
   if (AcquireMagickResource(WidthResource,width) == MagickFalse)
     {
       label=DestroyString(label);
@@ -214,10 +214,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
               if (status == MagickFalse)
                 break;
               AdjustTypeMetricBounds(&metrics);
-              width=CastDoubleToUnsigned(metrics.width+draw_info->stroke_width+
-                0.5);
-              height=CastDoubleToUnsigned(
-                metrics.height-metrics.underline_position+
+              width=CastDoubleToSizeT(metrics.width+draw_info->stroke_width+0.5);
+              height=CastDoubleToSizeT(metrics.height-metrics.underline_position+
                 draw_info->stroke_width+0.5);
               if ((image->columns != 0) && (image->rows != 0))
                 {
@@ -251,8 +249,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           if (status == MagickFalse)
             break;
           AdjustTypeMetricBounds(&metrics);
-          width=CastDoubleToUnsigned(metrics.width+draw_info->stroke_width+0.5);
-          height=CastDoubleToUnsigned(metrics.height-metrics.underline_position+
+          width=CastDoubleToSizeT(metrics.width+draw_info->stroke_width+0.5);
+          height=CastDoubleToSizeT(metrics.height-metrics.underline_position+
             draw_info->stroke_width+0.5);
           if ((image->columns != 0) && (image->rows != 0))
             {

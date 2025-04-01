@@ -1762,10 +1762,9 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
   */
   width=integral_image->columns;
   height=integral_image->rows;
-  bounds.width=CastDoubleToUnsigned(fabs((double) height*shear.x)+width+0.5);
-  bounds.height=CastDoubleToUnsigned(fabs((double) bounds.width*shear.y)+
-    height+0.5);
-  shear_width=CastDoubleToUnsigned(fabs((double) bounds.height*shear.x)+
+  bounds.width=CastDoubleToSizeT(fabs((double) height*shear.x)+width+0.5);
+  bounds.height=CastDoubleToSizeT(fabs((double) bounds.width*shear.y)+height+0.5);
+  shear_width=CastDoubleToSizeT(fabs((double) bounds.height*shear.x)+
     bounds.width+0.5);
   bounds.x=CastDoubleToLong(floor((double) ((shear_width > bounds.width) ?
     width : bounds.width-shear_width+2)/2.0+0.5));

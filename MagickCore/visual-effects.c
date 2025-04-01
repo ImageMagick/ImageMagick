@@ -2067,8 +2067,8 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
     (void) SetImageColorspace(clone_image,sRGBColorspace,exception);
   (void) SetImageVirtualPixelMethod(clone_image,EdgeVirtualPixelMethod,
     exception);
-  border_info.width=CastDoubleToUnsigned(2.0*sigma+0.5);
-  border_info.height=CastDoubleToUnsigned(2.0*sigma+0.5);
+  border_info.width=CastDoubleToSizeT(2.0*sigma+0.5);
+  border_info.height=CastDoubleToSizeT(2.0*sigma+0.5);
   border_info.x=0;
   border_info.y=0;
   (void) QueryColorCompliance("none",AllCompliance,&clone_image->border_color,

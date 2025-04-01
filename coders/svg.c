@@ -2499,10 +2499,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
             svg_info->view_box=svg_info->bounds;
           svg_info->width=0;
           if (svg_info->bounds.width >= MagickEpsilon)
-            svg_info->width=CastDoubleToUnsigned(svg_info->bounds.width+0.5);
+            svg_info->width=CastDoubleToSizeT(svg_info->bounds.width+0.5);
           svg_info->height=0;
           if (svg_info->bounds.height >= MagickEpsilon)
-            svg_info->height=CastDoubleToUnsigned(svg_info->bounds.height+0.5);
+            svg_info->height=CastDoubleToSizeT(svg_info->bounds.height+0.5);
           (void) FormatLocaleFile(svg_info->file,"viewbox 0 0 %.20g %.20g\n",
             (double) svg_info->width,(double) svg_info->height);
           sx=PerceptibleReciprocal(svg_info->view_box.width)*svg_info->width;
