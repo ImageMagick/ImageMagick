@@ -949,16 +949,14 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
       case PixelsPerInchResolution:
       default:
       {
-        pcx_info.horizontal_resolution=(unsigned short) image->resolution.x;
-        pcx_info.vertical_resolution=(unsigned short) image->resolution.y;
+        pcx_info.horizontal_resolution=CastDoubleToUShort(image->resolution.x);
+        pcx_info.vertical_resolution=CastDoubleToUShort(image->resolution.y);
         break;
       }
       case PixelsPerCentimeterResolution:
       {
-        pcx_info.horizontal_resolution=(unsigned short)
-          (2.54*image->resolution.x+0.5);
-        pcx_info.vertical_resolution=(unsigned short)
-          (2.54*image->resolution.y+0.5);
+        pcx_info.horizontal_resolution=CastDoubleToUShort(2.54*image->resolution.x+0.5);
+        pcx_info.vertical_resolution=CastDoubleToUShort(2.54*image->resolution.y+0.5);
         break;
       }
     }
