@@ -1181,14 +1181,14 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
     case UndefinedResolution:
     case PixelsPerInchResolution:
     {
-      dib_info.x_pixels=(unsigned int) (100.0*image->resolution.x/2.54);
-      dib_info.y_pixels=(unsigned int) (100.0*image->resolution.y/2.54);
+      dib_info.x_pixels=CastDoubleToUInt(100.0*image->resolution.x/2.54);
+      dib_info.y_pixels=CastDoubleToUInt(100.0*image->resolution.y/2.54);
       break;
     }
     case PixelsPerCentimeterResolution:
     {
-      dib_info.x_pixels=(unsigned int) (100.0*image->resolution.x);
-      dib_info.y_pixels=(unsigned int) (100.0*image->resolution.y);
+      dib_info.x_pixels=CastDoubleToUInt(100.0*image->resolution.x);
+      dib_info.y_pixels=CastDoubleToUInt(100.0*image->resolution.y);
       break;
     }
   }

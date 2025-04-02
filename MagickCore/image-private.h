@@ -52,6 +52,7 @@ extern "C" {
 #define MAGICK_SIZE_MAX  (SIZE_MAX)
 #define MAGICK_SSIZE_MAX  (SSIZE_MAX)
 #define MAGICK_SSIZE_MIN  (-SSIZE_MAX-1)
+#define MAGICK_UINT_MAX  (UINT_MAX)
 #define MatteColor  "#bdbdbd"  /* gray */
 #define MatteColorRGBA  ScaleShortToQuantum(0xbdbd),\
   ScaleShortToQuantum(0xbdbd),ScaleShortToQuantum(0xbdbd),OpaqueAlpha
@@ -137,6 +138,30 @@ static inline ssize_t CastDoubleToSsizeT(const double x)
         }
     }
   return((ssize_t) value);
+}
+
+static inline unsigned int CastDoubleToUInt(const double x)
+{
+  double
+    value;
+
+  if (IsNaN(x) != 0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  value=floor(x);
+  if (value >= ((double) MAGICK_UINT_MAX))
+    {
+      errno=ERANGE;
+      return((unsigned int) MAGICK_UINT_MAX);
+    }
+  if (value < 0.0)
+    {
+      errno=ERANGE;
+      return(0);
+    }
+  return((unsigned int) value);
 }
 
 static inline double DegreesToRadians(const double degrees)
