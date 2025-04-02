@@ -1795,8 +1795,8 @@ static Image *RenderHoughLines(const ImageInfo *image_info,const size_t columns,
     DefaultResolution;
   draw_info->affine.sy=image->resolution.y == 0.0 ? 1.0 : image->resolution.y/
     DefaultResolution;
-  image->columns=(size_t) (draw_info->affine.sx*image->columns);
-  image->rows=(size_t) (draw_info->affine.sy*image->rows);
+  image->columns=CastDoubleToSizeT(draw_info->affine.sx*image->columns);
+  image->rows=CastDoubleToSizeT(draw_info->affine.sy*image->rows);
   status=SetImageExtent(image,image->columns,image->rows,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));

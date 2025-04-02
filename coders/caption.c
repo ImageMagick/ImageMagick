@@ -197,7 +197,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         (void) CloneString(&draw_info->geometry,geometry);
       status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
       AdjustTypeMetricBounds(&metrics);
-      image->columns=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
+      image->columns=CastDoubleToSizeT(floor(metrics.width+draw_info->stroke_width+0.5));
     }
   if (image->rows == 0)
     {
@@ -213,8 +213,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         (void) CloneString(&draw_info->geometry,geometry);
       status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
       AdjustTypeMetricBounds(&metrics);
-      image->rows=(size_t) ((i+1)*(metrics.ascent-metrics.descent+
-        draw_info->interline_spacing+draw_info->stroke_width)+0.5);
+      image->rows=CastDoubleToSizeT(((i+1)*(metrics.ascent-metrics.descent+
+        draw_info->interline_spacing+draw_info->stroke_width)+0.5));
     }
   if (status != MagickFalse)
     status=SetImageExtent(image,image->columns,image->rows,exception);
