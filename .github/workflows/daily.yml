@@ -233,7 +233,7 @@ jobs:
 
   build_msys2:
     name: 'Windows Q16-${{matrix.toolchain}} hdri=yes (MSYS2)'
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     strategy:
       matrix:

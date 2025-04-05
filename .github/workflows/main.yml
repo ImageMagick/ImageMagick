@@ -172,7 +172,7 @@ jobs:
 
   build_msys2:
     name: Build MSYS2
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - name: Prepare git
