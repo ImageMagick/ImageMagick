@@ -240,7 +240,6 @@ jobs:
         include: [
           { msystem: ucrt64, toolchain: ucrt-x86_64 },
           { msystem: mingw64, toolchain: x86_64 },
-          { msystem: mingw32, toolchain: i686 }
         ]
       fail-fast: false
 
