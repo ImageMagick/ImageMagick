@@ -120,7 +120,16 @@ static int MagickMain(int argc,char **argv)
 
   ssize_t
     i;
-
+  
+#if defined(MAGICKCORE_EXCLUDE_DEPRECATED)
+  if ((argc > 1) &&
+      (LocaleNCompare("magick",argv[0],sizeof("magick")-1) == 0) &&
+      (LocaleNCompare("convert",argv[1],sizeof("convert")-1) == 0))
+    {
+      (void) fprintf(stderr,"Use \"magick\" instead of the deprecated command \"magick convert\".\n");
+      exit(1);
+    }
+#endif
   MagickCoreGenesis(*argv,MagickTrue);
   MagickWandGenesis();
   exception=AcquireExceptionInfo();
