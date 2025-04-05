@@ -894,10 +894,8 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
 
   if (icc_profile != (StringInfo *) NULL)
     {
-      jxl_status = JxlEncoderSetICCProfile(
-        jxl_info,
-        (const uint8_t *) GetStringInfoDatum(icc_profile),
-        GetStringInfoLength(icc_profile));
+      jxl_status=JxlEncoderSetICCProfile(jxl_info,(const uint8_t *)
+        GetStringInfoDatum(icc_profile),GetStringInfoLength(icc_profile));
       return(jxl_status);
     }
   (void) memset(&color_encoding,0,sizeof(color_encoding));
@@ -1043,7 +1041,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   if (image_info->quality == 100)
     {
       basic_info.uses_original_profile=JXL_TRUE;
-      icc_profile = GetImageProfile(image, "icc");
+      icc_profile=GetImageProfile(image,"icc");
     }
   if ((image_info->adjoin != MagickFalse) &&
       (GetNextImageInList(image) != (Image *) NULL))
