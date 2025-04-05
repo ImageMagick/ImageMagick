@@ -238,8 +238,9 @@ jobs:
     strategy:
       matrix:
         include: [
-          { msystem: ucrt64, toolchain: ucrt-x86_64 },
+          { msystem: clang64, toolchain: clang-x86_64 },
           { msystem: mingw64, toolchain: x86_64 },
+          { msystem: ucrt64, toolchain: ucrt-x86_64 },
         ]
       fail-fast: false
 
