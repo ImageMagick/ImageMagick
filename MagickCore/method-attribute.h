@@ -107,7 +107,7 @@ extern "C" {
 #else
 #  define magick_alloc_size(x)  /* nothing */
 #  define magick_alloc_sizes(x,y)  /* nothing */
-#  if defined(_MSC_VER)
+#  if defined(_MSC_VER) && (__STDC_VERSION__) >= 202311L
 #    define magick_fallthrough [[fallthrough]]
 #  else
 #    define magick_fallthrough  /* nothing */
