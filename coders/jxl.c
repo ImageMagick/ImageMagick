@@ -884,7 +884,7 @@ ModuleExport void UnregisterJXLImage(void)
 */
 
 static JxlEncoderStatus JXLWriteMetadata(const Image *image,
-  JxlEncoder *jxl_info)
+  JxlEncoder *jxl_info, const StringInfo *icc_profile)
 {
   JxlColorEncoding
     color_encoding;
@@ -892,6 +892,14 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
   JxlEncoderStatus
     jxl_status;
 
+  if (icc_profile != (StringInfo *) NULL)
+    {
+      jxl_status = JxlEncoderSetICCProfile(
+        jxl_info,
+        (const uint8_t *) GetStringInfoDatum(icc_profile),
+        GetStringInfoLength(icc_profile));
+      return(jxl_status);
+    }
   (void) memset(&color_encoding,0,sizeof(color_encoding));
   color_encoding.color_space=JXL_COLOR_SPACE_RGB;
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -920,6 +928,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     *option;
 
   const StringInfo
+    *icc_profile = (StringInfo *) NULL,
     *exif_profile = (StringInfo *) NULL,
     *xmp_profile = (StringInfo *) NULL;
 
@@ -1032,7 +1041,10 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       basic_info.num_extra_channels=1;
     }
   if (image_info->quality == 100)
-    basic_info.uses_original_profile=JXL_TRUE;
+    {
+      basic_info.uses_original_profile=JXL_TRUE;
+      icc_profile = GetImageProfile(image, "icc");
+    }
   if ((image_info->adjoin != MagickFalse) &&
       (GetNextImageInList(image) != (Image *) NULL))
     {
@@ -1108,7 +1120,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
         }
       (void) JxlEncoderCloseBoxes(jxl_info);
     }
-  jxl_status=JXLWriteMetadata(image,jxl_info);
+  jxl_status=JXLWriteMetadata(image,jxl_info,icc_profile);
   if (jxl_status != JXL_ENC_SUCCESS)
     {
       JxlThreadParallelRunnerDestroy(runner);
