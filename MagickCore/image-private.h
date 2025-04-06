@@ -189,7 +189,6 @@ static inline unsigned short CastDoubleToUShort(const double x)
   return((unsigned short) value);
 }
 
-
 static inline double DegreesToRadians(const double degrees)
 {
   return((double) (MagickPI*degrees/180.0));
