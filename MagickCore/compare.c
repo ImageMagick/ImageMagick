@@ -160,8 +160,14 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     exception);
   if (status == MagickFalse)
     return((Image *) NULL);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
-  rows=MagickMax(image->rows,reconstruct_image->rows);
+  columns=MagickMin(image->columns,reconstruct_image->columns);
+  rows=MagickMin(image->rows,reconstruct_image->rows);
+  artifact=GetImageArtifact(image,"compare:virtual-pixels");
+  if (IsStringTrue(artifact) != MagickFalse)
+    {
+      columns=MagickMax(image->columns,reconstruct_image->columns);
+      rows=MagickMax(image->rows,reconstruct_image->rows);
+    }
   SetGeometry(image,&geometry);
   geometry.width=columns;
   geometry.height=rows;
@@ -1281,8 +1287,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     distortion[CompositePixelChannel]+=difference;
   }
   artifact=GetImageArtifact(image,"phash:normalize");
-  if ((artifact != (const char *) NULL) &&
-      (IsStringTrue(artifact) != MagickFalse))
+  if (IsStringTrue(artifact) != MagickFalse)
     {
       ssize_t
         j;
@@ -4064,8 +4069,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case MeanSquaredErrorMetric:
       {
-        if ((artifact != (const char *) NULL) &&
-            (IsStringTrue(artifact) == MagickFalse))
+        if (IsStringTrue(artifact) == MagickFalse)
           break;
         similarity_image=MSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
@@ -4073,8 +4077,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case NormalizedCrossCorrelationErrorMetric:
       {
-        if ((artifact != (const char *) NULL) &&
-            (IsStringTrue(artifact) == MagickFalse))
+        if (IsStringTrue(artifact) == MagickFalse)
           break;
         similarity_image=NCCSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
@@ -4082,8 +4085,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case PeakSignalToNoiseRatioErrorMetric:
       {
-        if ((artifact != (const char *) NULL) &&
-            (IsStringTrue(artifact) == MagickFalse))
+        if (IsStringTrue(artifact) == MagickFalse)
           break;
         similarity_image=PSNRSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
@@ -4097,8 +4099,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case RootMeanSquaredErrorMetric:
       {
-        if ((artifact != (const char *) NULL) &&
-            (IsStringTrue(artifact) == MagickFalse))
+        if (IsStringTrue(artifact) == MagickFalse)
           break;
         similarity_image=RMSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
