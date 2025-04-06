@@ -88,6 +88,7 @@
 #define DDPF_LUMINANCE    0x00020000
 
 #define FOURCC_ATI2       0x32495441
+#define FOURCC_BC5U       0x55354342
 #define FOURCC_DXT1       0x31545844
 #define FOURCC_DXT3       0x33545844
 #define FOURCC_DXT5       0x35545844
@@ -2759,6 +2760,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       switch (dds_info.pixelformat.fourcc)
       {
         case FOURCC_ATI2:
+        case FOURCC_BC5U:
         {
           alpha_trait=UndefinedPixelTrait;
           compression=BC5Compression;
