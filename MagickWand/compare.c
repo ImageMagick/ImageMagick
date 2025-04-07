@@ -1252,14 +1252,14 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   {
     case DotProductCorrelationErrorMetric:
     case NormalizedCrossCorrelationErrorMetric:
-    case StructuralSimilarityErrorMetric:
-    case StructuralDissimilarityErrorMetric:
     case UndefinedErrorMetric:
     {
       distortion=1.0-distortion;
       similarity_metric=1.0-similarity_metric;
       break;
     }
+    case StructuralSimilarityErrorMetric:
+    case StructuralDissimilarityErrorMetric:
     case PeakSignalToNoiseRatioErrorMetric:
     {
       distortion=fabs(distortion);
