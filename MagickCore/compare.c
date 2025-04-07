@@ -163,7 +163,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   columns=MagickMax(image->columns,reconstruct_image->columns);
   rows=MagickMax(image->rows,reconstruct_image->rows);
   artifact=GetImageArtifact(image,"compare:virtual-pixels");
-  if (IsStringTrue(artifact) == MagickFalse)
+  if ((artifact != (const char *) NULL) &&
+      (IsStringTrue(artifact) == MagickFalse))
     {
       columns=MagickMin(image->columns,reconstruct_image->columns);
       rows=MagickMin(image->rows,reconstruct_image->rows);
@@ -4069,7 +4070,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case MeanSquaredErrorMetric:
       {
-        if (IsStringTrue(artifact) == MagickFalse)
+        if ((artifact != (const char *) NULL) &&
+            (IsStringTrue(artifact) == MagickFalse))
           break;
         similarity_image=MSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
@@ -4077,7 +4079,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case NormalizedCrossCorrelationErrorMetric:
       {
-        if (IsStringTrue(artifact) == MagickFalse)
+        if ((artifact != (const char *) NULL) &&
+            (IsStringTrue(artifact) == MagickFalse))
           break;
         similarity_image=NCCSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
@@ -4085,7 +4088,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case PeakSignalToNoiseRatioErrorMetric:
       {
-        if (IsStringTrue(artifact) == MagickFalse)
+        if ((artifact != (const char *) NULL) &&
+            (IsStringTrue(artifact) == MagickFalse))
           break;
         similarity_image=PSNRSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
@@ -4099,7 +4103,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case RootMeanSquaredErrorMetric:
       {
-        if (IsStringTrue(artifact) == MagickFalse)
+        if ((artifact != (const char *) NULL) &&
+            (IsStringTrue(artifact) == MagickFalse))
           break;
         similarity_image=RMSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
