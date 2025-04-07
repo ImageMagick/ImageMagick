@@ -111,6 +111,24 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static void SetImageDistortionBounds(const Image *image,
+  const Image *reconstruct_image,size_t *columns,size_t *rows)
+{
+  const char
+    *artifact;
+
+  *columns=MagickMax(image->columns,reconstruct_image->columns);
+  *rows=MagickMax(image->rows,reconstruct_image->rows);
+  artifact=GetImageArtifact(image,"compare:virtual-pixels");
+  if ((artifact != (const char *) NULL) &&
+      (IsStringTrue(artifact) == MagickFalse))
+    {
+      *columns=MagickMin(image->columns,reconstruct_image->columns);
+      *rows=MagickMin(image->rows,reconstruct_image->rows);
+    }
+}
+
 MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   const MetricType metric,double *distortion,ExceptionInfo *exception)
 {
@@ -160,15 +178,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     exception);
   if (status == MagickFalse)
     return((Image *) NULL);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
-  rows=MagickMax(image->rows,reconstruct_image->rows);
-  artifact=GetImageArtifact(image,"compare:virtual-pixels");
-  if ((artifact != (const char *) NULL) &&
-      (IsStringTrue(artifact) == MagickFalse))
-    {
-      columns=MagickMin(image->columns,reconstruct_image->columns);
-      rows=MagickMin(image->rows,reconstruct_image->rows);
-    }
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   SetGeometry(image,&geometry);
   geometry.width=columns;
   geometry.height=rows;
@@ -380,8 +390,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   */
   status=MagickTrue;
   fuzz=GetFuzzyColorDistance(image,reconstruct_image);
-  rows=MagickMax(image->rows,reconstruct_image->rows);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -500,9 +509,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  rows=MagickMax(image->rows,reconstruct_image->rows);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
   area=0.0;
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -621,9 +629,8 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  rows=MagickMax(image->rows,reconstruct_image->rows);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
   area=0.0;
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -743,8 +750,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   area=0.0;
   maximum_error=0.0;
   mean_error=0.0;
-  rows=MagickMax(image->rows,reconstruct_image->rows);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   for (y=0; y < (ssize_t) rows; y++)
@@ -842,9 +848,8 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  rows=MagickMax(image->rows,reconstruct_image->rows);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
   area=0.0;
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -991,8 +996,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   (void) memset(beta_variance,0,(MaxPixelChannels+1)*sizeof(*beta_variance));
   status=MagickTrue;
   progress=0;
-  columns=MagickMax(image->columns,reconstruct_image->columns);
-  rows=MagickMax(image->rows,reconstruct_image->rows);
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   for (y=0; y < (ssize_t) rows; y++)
@@ -1119,8 +1123,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
 
   status=MagickTrue;
   (void) memset(distortion,0,(MaxPixelChannels+1)*sizeof(*distortion));
-  rows=MagickMax(image->rows,reconstruct_image->rows);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1389,8 +1392,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     c2=pow(StringToDouble(artifact,(char **) NULL)*SSIML,2.0);
   status=MagickTrue;
   area=0.0;
-  rows=MagickMax(image->rows,reconstruct_image->rows);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1700,6 +1702,9 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImageDistortions() compares the pixel channels of an image to a
+
+  const char
+    *artifact;
 %  reconstructed image and returns the specified distortion metric for each
 %  channel.
 %
@@ -1880,8 +1885,7 @@ MagickExport MagickBooleanType IsImagesEqual(const Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(reconstruct_image != (const Image *) NULL);
   assert(reconstruct_image->signature == MagickCoreSignature);
-  rows=MagickMax(image->rows,reconstruct_image->rows);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   for (y=0; y < (ssize_t) rows; y++)
@@ -2013,8 +2017,7 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
   maximum_error=0.0;
   mean_error_per_pixel=0.0;
   mean_error=0.0;
-  rows=MagickMax(image->rows,reconstruct_image->rows);
-  columns=MagickMax(image->columns,reconstruct_image->columns);
+  SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   for (y=0; y < (ssize_t) rows; y++)
