@@ -1600,11 +1600,11 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
       return(MagickFalse);
     }
   /* look for newline */
-  while ((*sp != '\n') && extent--)
+  while ((extent != 0) && (*sp != '\n') && extent--)
     sp++;
 
   /* look for length */
-  while (((*sp == '\0' || *sp == ' ' || *sp == '\n')) && extent--)
+  while ((extent != 0) && ((*sp == '\0' || *sp == ' ' || *sp == '\n')) && extent--)
      sp++;
 
   if (extent == 0)
@@ -1619,7 +1619,7 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
          "      length: %lu",(unsigned long) length);
 
-  while ((*sp != ' ' && *sp != '\n') && extent--)
+  while ((extent != 0) && (*sp != ' ' && *sp != '\n') && extent--)
     sp++;
 
   if (extent == 0)
