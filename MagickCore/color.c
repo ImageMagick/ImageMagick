@@ -2294,6 +2294,9 @@ static MagickStatusType ParseCSSColor(const char *magick_restrict color,
 MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   const ComplianceType compliance,PixelInfo *color,ExceptionInfo *exception)
 {
+  const char
+    *q;
+
   const ColorInfo
     *p;
 
@@ -2421,7 +2424,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       color->black=0.0;
       return(MagickTrue);
     }
-  if (strchr(name,'(') != (char *) NULL)
+  q=strchr(name,'(');
+  if (q != (char *) NULL)
     {
       char
         colorspace[2*MagickPathExtent];
@@ -2432,11 +2436,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       /*
         Parse color of the form rgb(100,255,0).
       */
-      (void) memset(colorspace,0,sizeof(colorspace));
+      i=(ssize_t) (q-name);
       (void) CopyMagickString(colorspace,name,MagickPathExtent);
-      for (i=0; colorspace[i] != '\0'; i++)
-        if (colorspace[i] == '(')
-          break;
       colorspace[i--]='\0';
       scale=(double) ScaleCharToQuantum(1);
       icc_color=MagickFalse;
