@@ -1578,7 +1578,7 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
     nibbles;
 
   ssize_t
-    length;
+    length=0;
 
   StringInfo
     *profile;
@@ -1613,7 +1613,8 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
       return(MagickFalse);
     }
 
-  length=StringToLong(sp);
+  if (extent >= 8)
+    length=StringToLong(sp);
 
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1647,7 +1648,7 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
 
   for (i=0; i < (ssize_t) nibbles; i++)
   {
-    while (*sp < '0' || (*sp > '9' && *sp < 'a') || *sp > 'f')
+    while ((extent != 0) && (*sp < '0' || (*sp > '9' && *sp < 'a') || *sp > 'f'))
     {
       if (*sp == '\0')
         {
@@ -1656,12 +1657,18 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
           return(MagickFalse);
         }
       sp++;
+      extent--;
     }
-
-    if (i%2 == 0)
-      *dp=(unsigned char) (16*unhex[(int) *sp++]);
-    else
-      (*dp++)+=unhex[(int) *sp++];
+    if (extent != 0)
+      {
+        if (i % 2 == 0)
+          *dp=(unsigned char) (16*unhex[(int) *sp++]);
+        else
+          (*dp++)+=unhex[(int) *sp++];
+        extent--;
+      }
+    if (extent == 0)
+      break;
   }
   /*
     We have already read "Raw profile type.
