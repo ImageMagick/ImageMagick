@@ -1660,7 +1660,6 @@ Magick_png_read_raw_profile(png_struct *ping,Image *image,
 
     if (i%2 == 0)
       *dp=(unsigned char) (16*unhex[(int) *sp++]);
-
     else
       (*dp++)+=unhex[(int) *sp++];
   }
