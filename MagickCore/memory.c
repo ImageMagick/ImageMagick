@@ -1347,29 +1347,6 @@ MagickExport void *ResetMagickMemory(void *memory,int c,const size_t size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e s e t M a x M e m o r y R e q u e s t                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ResetMaxMemoryRequest() resets the max_memory_request value.
-%
-%  The format of the ResetMaxMemoryRequest method is:
-%
-%      void ResetMaxMemoryRequest(void)
-%
-*/
-MagickPrivate void ResetMaxMemoryRequest(void)
-{
-  max_memory_request=0;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   R e s e t V i r t u a l A n o n y m o u s M e m o r y                     %
 %                                                                             %
 %                                                                             %

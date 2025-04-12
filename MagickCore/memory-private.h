@@ -61,7 +61,6 @@ extern MagickPrivate MagickBooleanType
   ShredMagickMemory(void *,const size_t);
 
 extern MagickPrivate void
-  ResetMaxMemoryRequest(void),
   ResetVirtualAnonymousMemory(void),
   SetMaxMemoryRequest(const MagickSizeType),
   SetMaxProfileSize(const MagickSizeType);
