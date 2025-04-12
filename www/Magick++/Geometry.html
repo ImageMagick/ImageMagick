@@ -495,24 +495,38 @@ table:
 		</td>
 	</tr>
 	<tr>
-		<td rowspan="3" width="10%"> 
+		<td rowspan="4" width="10%"> 
 			<p>Geometry</p>
 		</td>
-		<td rowspan="3" width="10%" bgcolor="#666666">
+		<td rowspan="4" width="10%" bgcolor="#666666">
 			<p>&#160;</p>
 		</td>
 		<td width="44%">
-			<p>size_t width_, size_t height_, ssize_t xOff_ =
-			0, ssize_t yOff_ = 0, bool xNegative_ = false, bool
-			yNegative_ = false</p>
+			<p></p>
 		</td>
 		<td width="37%">
-			<p>Construct geometry via explicit parameters.</p>
+			<p>Default constructor</p>
 		</td>
 	</tr>
 	<tr>
 		<td width="44%">
-			<p>const string geometry_</p>
+			<p>const char *geometry_</p>
+		</td>
+		<td width="37%">
+			<p>Construct geometry from C string</p>
+		</td>
+	</tr>
+	<tr>
+		<td width="44%">
+			<p>const Geometry &geometry_</p>
+		</td>
+		<td width="37%">
+			<p>Copy constructor</p>
+		</td>
+	</tr>
+	<tr>
+		<td width="44%">
+			<p>const std::string &geometry_</p>
 		</td>
 		<td width="37%">
 			<p>Construct geometry from C++ string</p>
@@ -520,10 +534,11 @@ table:
 	</tr>
 	<tr>
 		<td width="44%">
-			<p>const char * geometry_</p>
+			<p>size_t width_, size_t height_, ssize_t xOff_ =
+			0, ssize_t yOff_ = 0</p>
 		</td>
 		<td width="37%">
-			<p>Construct geometry from C string</p>
+			<p>Construct geometry via explicit parameters</p>
 		</td>
 	</tr>
 	<tr>
