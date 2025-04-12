@@ -1068,7 +1068,14 @@ static size_t GetMaxMemoryRequestFromPolicy(void)
 MagickExport size_t GetMaxMemoryRequest(void)
 {
   if (max_memory_request == 0)
-    max_memory_request=GetMaxMemoryRequestFromPolicy();
+    {
+      /*
+        Setting this to unlimited before we check the policy value to avoid
+        recursive calls to GetMaxMemoryRequestFromPolicy()
+      */
+      max_memory_request=(size_t) MAGICK_SSIZE_MAX;
+      max_memory_request=GetMaxMemoryRequestFromPolicy();
+    } 
   return(max_memory_request);
 }
 
