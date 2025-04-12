@@ -1504,6 +1504,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 difference_image->page.x,(double) difference_image->page.y);
               (void) FormatLocaleFile(stderr,"   Similarity metric: %*g\n",
                 GetMagickPrecision(),similarity_metric);
+              (void) FormatLocaleFile(stderr,"   Similarity threshold: %*g\n",
+                GetMagickPrecision(),similarity_threshold);
+              (void) FormatLocaleFile(stderr,
+                "   Dissimilarity threshold: %*g\n",GetMagickPrecision(),
+                dissimilarity_threshold);
             }
         }
       (void) ResetImagePage(difference_image,"0x0+0+0");
