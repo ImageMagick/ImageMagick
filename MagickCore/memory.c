@@ -1072,6 +1072,7 @@ MagickExport size_t GetMaxMemoryRequest(void)
     max_memory_request=GetMaxMemoryRequestFromPolicy();
   return(MagickMin(max_memory_request,(size_t) MAGICK_SSIZE_MAX));
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1090,24 +1091,30 @@ MagickExport size_t GetMaxMemoryRequest(void)
 %      size_t GetMaxProfileSize(void)
 %
 */
+static size_t GetMaxProfileSizeFromPolicy(void)
+{
+  char
+    *value;
+
+  size_t
+    max=(size_t) MAGICK_SSIZE_MAX;
+
+  value=GetPolicyValue("system:max-profile-size");
+  if (value != (char *) NULL)
+    {
+      /*
+        The security policy sets a max profile size limit.
+      */
+      max=StringToSizeType(value,100.0);
+      value=DestroyString(value);
+    }
+  return(max);
+}
+
 MagickExport size_t GetMaxProfileSize(void)
 {
   if (max_profile_size == 0)
-    {
-      char
-        *value;
-
-      max_profile_size=(size_t) MAGICK_SSIZE_MAX;
-      value=GetPolicyValue("system:max-profile-size");
-      if (value != (char *) NULL)
-        {
-          /*
-            The security policy sets a max profile size limit.
-          */
-          max_profile_size=StringToSizeType(value,100.0);
-          value=DestroyString(value);
-        }
-    }
+    max_profile_size=GetMaxProfileSizeFromPolicy();
   return(MagickMin(max_profile_size,(size_t) MAGICK_SSIZE_MAX));
 }
 
@@ -1628,7 +1635,7 @@ MagickPrivate void SetMaxMemoryRequest(const MagickSizeType limit)
 */
 MagickPrivate void SetMaxProfileSize(const MagickSizeType limit)
 {
-  max_profile_size=(size_t) MagickMin(limit,GetMaxProfileSize());
+  max_profile_size=(size_t) MagickMin(limit,GetMaxProfileSizeFromPolicy());
 }
 
 /*
