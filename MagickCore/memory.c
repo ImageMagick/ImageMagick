@@ -1062,15 +1062,14 @@ static size_t GetMaxMemoryRequestFromPolicy(void)
         MinMemoryRequest,100.0));
       value=DestroyString(value);
     }
-  return(max);
+  return(MagickMin(max,(size_t) MAGICK_SSIZE_MAX));
 }
 
 MagickExport size_t GetMaxMemoryRequest(void)
 {
-
   if (max_memory_request == 0)
     max_memory_request=GetMaxMemoryRequestFromPolicy();
-  return(MagickMin(max_memory_request,(size_t) MAGICK_SSIZE_MAX));
+  return(max_memory_request);
 }
 
 /*
@@ -1108,14 +1107,14 @@ static size_t GetMaxProfileSizeFromPolicy(void)
       max=StringToSizeType(value,100.0);
       value=DestroyString(value);
     }
-  return(max);
+  return(MagickMin(max,(size_t) MAGICK_SSIZE_MAX));
 }
 
 MagickExport size_t GetMaxProfileSize(void)
 {
   if (max_profile_size == 0)
     max_profile_size=GetMaxProfileSizeFromPolicy();
-  return(MagickMin(max_profile_size,(size_t) MAGICK_SSIZE_MAX));
+  return(max_profile_size);
 }
 
 /*
