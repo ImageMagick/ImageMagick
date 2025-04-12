@@ -608,7 +608,7 @@ WandExport void DrawAffine(DrawingWand *wand,const AffineMatrix *affine)
   assert(affine != (const AffineMatrix *) NULL);
   AdjustAffine(wand,affine);
   (void) MVGPrintf(wand,"affine %.20g %.20g %.20g %.20g %.20g %.20g\n",
-    affine->sx,affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
+    affine->sx,affine->ry,affine->rx,affine->sy,affine->tx,affine->ty);
 }
 
 /*
