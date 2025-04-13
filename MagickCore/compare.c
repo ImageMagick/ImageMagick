@@ -3837,7 +3837,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
   status=NegateImage(psnr_image,MagickFalse,exception);
   if (status == MagickFalse)
     ThrowPSNRSimilarityException();
-  *similarity_metric=(-1.0+QuantumScale*minima);
+  *similarity_metric=QuantumScale*minima;
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
   return(psnr_image);
