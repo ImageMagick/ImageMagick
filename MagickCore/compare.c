@@ -227,7 +227,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   highlight_view=AcquireAuthenticCacheView(highlight_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MMAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(image,highlight_image,rows,1)
 #endif
@@ -1221,10 +1221,8 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
     i;
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
-  for (i=0; i < MaxPixelChannels; i++)
-    if ((fabs(distortion[i]) < MagickEpsilon) || (fabs(distortion[i]) >= 1.0))
-      distortion[i]=fabs(distortion[i]) < MagickEpsilon ? 0.0 : 1.0;
-    else
+  for (i=0; i <= MaxPixelChannels; i++)
+    if (fabs(distortion[i]) >= MagickEpsilon)
       distortion[i]=fabs(-10.0*MagickLog10(PerceptibleReciprocal(
         distortion[i])))/48.1647;
   return(status);
