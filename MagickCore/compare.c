@@ -3981,7 +3981,7 @@ static Image *RMSESimilarityImage(const Image *image,const Image *reconstruct,
   status=NegateImage(rmse_image,MagickFalse,exception);
   if (status == MagickFalse)
     ThrowRMSESimilarityException();
-  *similarity_metric=QuantumScale*minima;
+  *similarity_metric=1.0-fabs(QuantumScale*minima);
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
   return(rmse_image);
