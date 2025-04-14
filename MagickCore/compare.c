@@ -1221,7 +1221,7 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
     i;
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
-  for (i=0; i < MaxPixelChannels; i++)
+  for (i=0; i <= MaxPixelChannels; i++)
     if (fabs(distortion[i]) >= MagickEpsilon)
       distortion[i]=fabs(-10.0*MagickLog10(PerceptibleReciprocal(
         distortion[i])))/48.1647;
@@ -2350,8 +2350,9 @@ static MagickBooleanType SIMLogImage(Image *image,ExceptionInfo *exception)
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=(Quantum) (-10.0*QuantumRange*MagickLog10(PerceptibleReciprocal(
-          (double) q[i])))/48.1647;
+        if (q[i] >= MagickEpsilon)
+          q[i]=(Quantum) (-10.0*QuantumRange*MagickLog10(PerceptibleReciprocal(
+            (double) q[i])))/48.1647;
       }
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
