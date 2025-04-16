@@ -4132,6 +4132,14 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         "GeometryDoesNotContainImage","`%s'",image->filename);
       return((Image *) NULL);
     }
+  if ((metric == DotProductCorrelationErrorMetric) ||
+      (metric == PeakAbsoluteErrorMetric) ||
+      (metric == PhaseCorrelationErrorMetric))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+        "InvalidUseOfOption","`%s'",image->filename);
+      return((Image *) NULL);
+    }
   similarity_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (similarity_image == (Image *) NULL)
