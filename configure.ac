@@ -2509,6 +2509,7 @@ fi
 
 if test "$have_jxl" = 'yes'; then
   AC_DEFINE([JXL_DELEGATE],[1],[Define if you have jpeg-xl library])
+  CFLAGS="$JXL_CFLAGS $CFLAGS"
 fi
 
 AM_CONDITIONAL([JXL_DELEGATE],[test "$have_jxl" = 'yes'])

@@ -1107,6 +1107,8 @@ MAGICK_TARGET_CPU
 CONFIGURE_ARGS
 DISTCHECK_CONFIG_FLAGS
 CONFIGURE_DEPENDENCIES
+am__xargs_n
+am__rm_f_notfound
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
@@ -4430,7 +4432,7 @@ test -n "$target_alias" &&
     NONENONEs,x,x, &&
   program_prefix=${target_alias}-
 
-am__api_version='1.16'
+am__api_version='1.17'
 
 
   # Find a good install program.  We prefer a C program (faster),
@@ -4532,6 +4534,165 @@ test -z "$INSTALL_SCRIPT" && INSTALL_SCRIPT='${INSTALL}'
 
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether sleep supports fractional seconds" >&5
+printf %s "checking whether sleep supports fractional seconds... " >&6; }
+if test ${am_cv_sleep_fractional_seconds+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) if sleep 0.001 2>/dev/null
+then :
+  am_cv_sleep_fractional_seconds=yes
+else case e in #(
+  e) am_cv_sleep_fractional_seconds=no ;;
+esac
+fi
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $am_cv_sleep_fractional_seconds" >&5
+printf "%s\n" "$am_cv_sleep_fractional_seconds" >&6; }
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking filesystem timestamp resolution" >&5
+printf %s "checking filesystem timestamp resolution... " >&6; }
+if test ${am_cv_filesystem_timestamp_resolution+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) # Default to the worst case.
+am_cv_filesystem_timestamp_resolution=2
+
+# Only try to go finer than 1 sec if sleep can do it.
+# Don't try 1 sec, because if 0.01 sec and 0.1 sec don't work,
+# - 1 sec is not much of a win compared to 2 sec, and
+# - it takes 2 seconds to perform the test whether 1 sec works.
+#
+# Instead, just use the default 2s on platforms that have 1s resolution,
+# accept the extra 1s delay when using $sleep in the Automake tests, in
+# exchange for not incurring the 2s delay for running the test for all
+# packages.
+#
+am_try_resolutions=
+if test "$am_cv_sleep_fractional_seconds" = yes; then
+  # Even a millisecond often causes a bunch of false positives,
+  # so just try a hundredth of a second. The time saved between .001 and
+  # .01 is not terribly consequential.
+  am_try_resolutions="0.01 0.1 $am_try_resolutions"
+fi
+
+# In order to catch current-generation FAT out, we must *modify* files
+# that already exist; the *creation* timestamp is finer.  Use names
+# that make ls -t sort them differently when they have equal
+# timestamps than when they have distinct timestamps, keeping
+# in mind that ls -t prints the *newest* file first.
+rm -f conftest.ts?
+: > conftest.ts1
+: > conftest.ts2
+: > conftest.ts3
+
+# Make sure ls -t actually works.  Do 'set' in a subshell so we don't
+# clobber the current shell's arguments. (Outer-level square brackets
+# are removed by m4; they're present so that m4 does not expand
+# <dollar><star>; be careful, easy to get confused.)
+if (
+     set X `ls -t conftest.ts[12]` &&
+     {
+       test "$*" != "X conftest.ts1 conftest.ts2" ||
+       test "$*" != "X conftest.ts2 conftest.ts1";
+     }
+); then :; else
+  # If neither matched, then we have a broken ls.  This can happen
+  # if, for instance, CONFIG_SHELL is bash and it inherits a
+  # broken ls alias from the environment.  This has actually
+  # happened.  Such a system could not be considered "sane".
+  printf "%s\n" ""Bad output from ls -t: \"`ls -t conftest.ts[12]`\""" >&5
+  { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in '$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in '$ac_pwd':" >&2;}
+as_fn_error $? "ls -t produces unexpected output.
+Make sure there is not a broken ls alias in your environment.
+See 'config.log' for more details" "$LINENO" 5; }
+fi
+
+for am_try_res in $am_try_resolutions; do
+  # Any one fine-grained sleep might happen to cross the boundary
+  # between two values of a coarser actual resolution, but if we do
+  # two fine-grained sleeps in a row, at least one of them will fall
+  # entirely within a coarse interval.
+  echo alpha > conftest.ts1
+  sleep $am_try_res
+  echo beta > conftest.ts2
+  sleep $am_try_res
+  echo gamma > conftest.ts3
+
+  # We assume that 'ls -t' will make use of high-resolution
+  # timestamps if the operating system supports them at all.
+  if (set X `ls -t conftest.ts?` &&
+      test "$2" = conftest.ts3 &&
+      test "$3" = conftest.ts2 &&
+      test "$4" = conftest.ts1); then
+    #
+    # Ok, ls -t worked. If we're at a resolution of 1 second, we're done,
+    # because we don't need to test make.
+    make_ok=true
+    if test $am_try_res != 1; then
+      # But if we've succeeded so far with a subsecond resolution, we
+      # have one more thing to check: make. It can happen that
+      # everything else supports the subsecond mtimes, but make doesn't;
+      # notably on macOS, which ships make 3.81 from 2006 (the last one
+      # released under GPLv2). https://bugs.gnu.org/68808
+      #
+      # We test $MAKE if it is defined in the environment, else "make".
+      # It might get overridden later, but our hope is that in practice
+      # it does not matter: it is the system "make" which is (by far)
+      # the most likely to be broken, whereas if the user overrides it,
+      # probably they did so with a better, or at least not worse, make.
+      # https://lists.gnu.org/archive/html/automake/2024-06/msg00051.html
+      #
+      # Create a Makefile (real tab character here):
+      rm -f conftest.mk
+      echo 'conftest.ts1: conftest.ts2' >conftest.mk
+      echo '	touch conftest.ts2' >>conftest.mk
+      #
+      # Now, running
+      #   touch conftest.ts1; touch conftest.ts2; make
+      # should touch ts1 because ts2 is newer. This could happen by luck,
+      # but most often, it will fail if make's support is insufficient. So
+      # test for several consecutive successes.
+      #
+      # (We reuse conftest.ts[12] because we still want to modify existing
+      # files, not create new ones, per above.)
+      n=0
+      make=${MAKE-make}
+      until test $n -eq 3; do
+        echo one > conftest.ts1
+        sleep $am_try_res
+        echo two > conftest.ts2 # ts2 should now be newer than ts1
+        if $make -f conftest.mk | grep 'up to date' >/dev/null; then
+          make_ok=false
+          break # out of $n loop
+        fi
+        n=`expr $n + 1`
+      done
+    fi
+    #
+    if $make_ok; then
+      # Everything we know to check worked out, so call this resolution good.
+      am_cv_filesystem_timestamp_resolution=$am_try_res
+      break # out of $am_try_res loop
+    fi
+    # Otherwise, we'll go on to check the next resolution.
+  fi
+done
+rm -f conftest.ts?
+# (end _am_filesystem_timestamp_resolution)
+ ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $am_cv_filesystem_timestamp_resolution" >&5
+printf "%s\n" "$am_cv_filesystem_timestamp_resolution" >&6; }
+
+# This check should not be cached, as it may vary across builds of
+# different projects.
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether build environment is sane" >&5
 printf %s "checking whether build environment is sane... " >&6; }
 # Reject unsafe characters in $srcdir or the absolute working directory
@@ -4552,49 +4713,45 @@ esac
 # symlink; some systems play weird games with the mod time of symlinks
 # (eg FreeBSD returns the mod time of the symlink's containing
 # directory).
-if (
-   am_has_slept=no
-   for am_try in 1 2; do
-     echo "timestamp, slept: $am_has_slept" > conftest.file
-     set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
-     if test "$*" = "X"; then
-	# -L didn't work.
-	set X `ls -t "$srcdir/configure" conftest.file`
-     fi
-     if test "$*" != "X $srcdir/configure conftest.file" \
-	&& test "$*" != "X conftest.file $srcdir/configure"; then
+am_build_env_is_sane=no
+am_has_slept=no
+rm -f conftest.file
+for am_try in 1 2; do
+  echo "timestamp, slept: $am_has_slept" > conftest.file
+  if (
+    set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
+    if test "$*" = "X"; then
+      # -L didn't work.
+      set X `ls -t "$srcdir/configure" conftest.file`
+    fi
+    test "$2" = conftest.file
+  ); then
+    am_build_env_is_sane=yes
+    break
+  fi
+  # Just in case.
+  sleep "$am_cv_filesystem_timestamp_resolution"
+  am_has_slept=yes
+done
 
-	# If neither matched, then we have a broken ls.  This can happen
-	# if, for instance, CONFIG_SHELL is bash and it inherits a
-	# broken ls alias from the environment.  This has actually
-	# happened.  Such a system could not be considered "sane".
-	as_fn_error $? "ls -t appears to fail.  Make sure there is not a broken
-  alias in your environment" "$LINENO" 5
-     fi
-     if test "$2" = conftest.file || test $am_try -eq 2; then
-       break
-     fi
-     # Just in case.
-     sleep 1
-     am_has_slept=yes
-   done
-   test "$2" = conftest.file
-   )
-then
-   # Ok.
-   :
-else
-   as_fn_error $? "newly created file is older than distributed files!
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $am_build_env_is_sane" >&5
+printf "%s\n" "$am_build_env_is_sane" >&6; }
+if test "$am_build_env_is_sane" = no; then
+  as_fn_error $? "newly created file is older than distributed files!
 Check your system clock" "$LINENO" 5
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
+
 # If we didn't sleep, we still need to ensure time stamps of config.status and
 # generated files are strictly newer.
 am_sleep_pid=
-if grep 'slept: no' conftest.file >/dev/null 2>&1; then
-  ( sleep 1 ) &
+if test -e conftest.file || grep 'slept: no' conftest.file >/dev/null 2>&1
+then :
+
+else case e in #(
+  e)   ( sleep "$am_cv_filesystem_timestamp_resolution" ) &
   am_sleep_pid=$!
+ ;;
+esac
 fi
 
 rm -f conftest.file
@@ -4884,17 +5041,13 @@ else
 fi
 rmdir .tst 2>/dev/null
 
+AM_DEFAULT_VERBOSITY=1
 # Check whether --enable-silent-rules was given.
 if test ${enable_silent_rules+y}
 then :
   enableval=$enable_silent_rules;
 fi
 
-case $enable_silent_rules in # (((
-  yes) AM_DEFAULT_VERBOSITY=0;;
-   no) AM_DEFAULT_VERBOSITY=1;;
-    *) AM_DEFAULT_VERBOSITY=1;;
-esac
 am_make=${MAKE-make}
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether $am_make supports nested variables" >&5
 printf %s "checking whether $am_make supports nested variables... " >&6; }
@@ -4917,14 +5070,44 @@ esac
 fi
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $am_cv_make_support_nested_variables" >&5
 printf "%s\n" "$am_cv_make_support_nested_variables" >&6; }
-if test $am_cv_make_support_nested_variables = yes; then
-    AM_V='$(V)'
-  AM_DEFAULT_V='$(AM_DEFAULT_VERBOSITY)'
-else
-  AM_V=$AM_DEFAULT_VERBOSITY
-  AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
-fi
 AM_BACKSLASH='\'
+
+am__rm_f_notfound=
+if (rm -f && rm -fr && rm -rf) 2>/dev/null
+then :
+
+else case e in #(
+  e) am__rm_f_notfound='""' ;;
+esac
+fi
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking xargs -n works" >&5
+printf %s "checking xargs -n works... " >&6; }
+if test ${am_cv_xargs_n_works+y}
+then :
+  printf %s "(cached) " >&6
+else case e in #(
+  e) if test "`echo 1 2 3 | xargs -n2 echo`" = "1 2
+3"
+then :
+  am_cv_xargs_n_works=yes
+else case e in #(
+  e) am_cv_xargs_n_works=no ;;
+esac
+fi ;;
+esac
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $am_cv_xargs_n_works" >&5
+printf "%s\n" "$am_cv_xargs_n_works" >&6; }
+if test "$am_cv_xargs_n_works" = yes
+then :
+  am__xargs_n='xargs -n'
+else case e in #(
+  e)   am__xargs_n='am__xargs_n () { shift; sed "s/ /\\n/g" | while read am__xargs_n_arg; do "" "$am__xargs_n_arg"; done; }'
+ ;;
+esac
+fi
 
 if test "`cd $srcdir && pwd`" != "`pwd`"; then
   # Use -I$(srcdir) only when $(srcdir) != ., so that make's output
@@ -4997,18 +5180,24 @@ _am_tools='gnutar plaintar pax cpio none'
       am_gid=`id -g || echo unknown`
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether UID '$am_uid' is supported by ustar format" >&5
 printf %s "checking whether UID '$am_uid' is supported by ustar format... " >&6; }
-      if test $am_uid -le $am_max_uid; then
-         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+      if test x$am_uid = xunknown; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: ancient id detected; assuming current UID is ok, but dist-ustar might not work" >&5
+printf "%s\n" "$as_me: WARNING: ancient id detected; assuming current UID is ok, but dist-ustar might not work" >&2;}
+      elif test $am_uid -le $am_max_uid; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
       else
-         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
 printf "%s\n" "no" >&6; }
-         _am_tools=none
+        _am_tools=none
       fi
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether GID '$am_gid' is supported by ustar format" >&5
 printf %s "checking whether GID '$am_gid' is supported by ustar format... " >&6; }
-      if test $am_gid -le $am_max_gid; then
-         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+      if test x$gm_gid = xunknown; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: ancient id detected; assuming current GID is ok, but dist-ustar might not work" >&5
+printf "%s\n" "$as_me: WARNING: ancient id detected; assuming current GID is ok, but dist-ustar might not work" >&2;}
+      elif test $am_gid -le $am_max_gid; then
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
       else
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -5122,91 +5311,13 @@ fi
 
 
 
-# POSIX will say in a future version that running "rm -f" with no argument
-# is OK; and we want to be able to make that assumption in our Makefile
-# recipes.  So use an aggressive probe to check that the usage we want is
-# actually supported "in the wild" to an acceptable degree.
-# See automake bug#10828.
-# To make any issue more visible, cause the running configure to be aborted
-# by default if the 'rm' program in use doesn't match our expectations; the
-# user can still override this though.
-if rm -f && rm -fr && rm -rf; then : OK; else
-  cat >&2 <<'END'
-Oops!
-
-Your 'rm' program seems unable to run without file operands specified
-on the command line, even when the '-f' option is present.  This is contrary
-to the behaviour of most rm programs out there, and not conforming with
-the upcoming POSIX standard: <http://austingroupbugs.net/view.php?id=542>
-
-Please tell bug-automake@gnu.org about your system, including the value
-of your $PATH and any error possibly output before this message.  This
-can help us improve future automake versions.
-
-END
-  if test x"$ACCEPT_INFERIOR_RM_PROGRAM" = x"yes"; then
-    echo 'Configuration will proceed anyway, since you have set the' >&2
-    echo 'ACCEPT_INFERIOR_RM_PROGRAM variable to "yes"' >&2
-    echo >&2
-  else
-    cat >&2 <<'END'
-Aborting the configuration process, to ensure you take notice of the issue.
-
-You can download and install GNU coreutils to get an 'rm' implementation
-that behaves properly: <https://www.gnu.org/software/coreutils/>.
-
-If you want to complete the configuration process using your problematic
-'rm' anyway, export the environment variable ACCEPT_INFERIOR_RM_PROGRAM
-to "yes", and re-run configure.
-
-END
-    as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
-  fi
-fi
 
 
-# Check whether --enable-silent-rules was given.
-if test ${enable_silent_rules+y}
-then :
-  enableval=$enable_silent_rules;
-fi
 
-case $enable_silent_rules in # (((
-  yes) AM_DEFAULT_VERBOSITY=0;;
-   no) AM_DEFAULT_VERBOSITY=1;;
-    *) AM_DEFAULT_VERBOSITY=0;;
-esac
-am_make=${MAKE-make}
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether $am_make supports nested variables" >&5
-printf %s "checking whether $am_make supports nested variables... " >&6; }
-if test ${am_cv_make_support_nested_variables+y}
-then :
-  printf %s "(cached) " >&6
-else case e in #(
-  e) if printf "%s\n" 'TRUE=$(BAR$(V))
-BAR0=false
-BAR1=true
-V=1
-am__doit:
-	@$(TRUE)
-.PHONY: am__doit' | $am_make -f - >/dev/null 2>&1; then
-  am_cv_make_support_nested_variables=yes
-else
-  am_cv_make_support_nested_variables=no
-fi ;;
-esac
-fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $am_cv_make_support_nested_variables" >&5
-printf "%s\n" "$am_cv_make_support_nested_variables" >&6; }
-if test $am_cv_make_support_nested_variables = yes; then
-    AM_V='$(V)'
-  AM_DEFAULT_V='$(AM_DEFAULT_VERBOSITY)'
-else
-  AM_V=$AM_DEFAULT_VERBOSITY
-  AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
-fi
-AM_BACKSLASH='\'
 
+
+
+AM_DEFAULT_VERBOSITY=0
 CONFIGURE_DEPENDENCIES="$CONFIGURE_DEPENDENCIES \$(top_srcdir)/m4/version.m4"
 
 
@@ -5258,7 +5369,7 @@ MAGICK_PATCHLEVEL_VERSION=48
 
 MAGICK_VERSION=7.1.1-48
 
-MAGICK_GIT_REVISION=82572afc8:20250329
+MAGICK_GIT_REVISION=e02330c7e:20250416
 
 
 # Substitute library versioning
@@ -5292,10 +5403,13 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,48
 
-PACKAGE_RELEASE_DATE=2025-03-29
+PACKAGE_RELEASE_DATE=2025-04-16
 
 
 # Ensure that make can run correctly
+
+# This check should not be cached, as it may vary across builds of
+# different projects.
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether build environment is sane" >&5
 printf %s "checking whether build environment is sane... " >&6; }
 # Reject unsafe characters in $srcdir or the absolute working directory
@@ -5316,49 +5430,45 @@ esac
 # symlink; some systems play weird games with the mod time of symlinks
 # (eg FreeBSD returns the mod time of the symlink's containing
 # directory).
-if (
-   am_has_slept=no
-   for am_try in 1 2; do
-     echo "timestamp, slept: $am_has_slept" > conftest.file
-     set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
-     if test "$*" = "X"; then
-	# -L didn't work.
-	set X `ls -t "$srcdir/configure" conftest.file`
-     fi
-     if test "$*" != "X $srcdir/configure conftest.file" \
-	&& test "$*" != "X conftest.file $srcdir/configure"; then
+am_build_env_is_sane=no
+am_has_slept=no
+rm -f conftest.file
+for am_try in 1 2; do
+  echo "timestamp, slept: $am_has_slept" > conftest.file
+  if (
+    set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
+    if test "$*" = "X"; then
+      # -L didn't work.
+      set X `ls -t "$srcdir/configure" conftest.file`
+    fi
+    test "$2" = conftest.file
+  ); then
+    am_build_env_is_sane=yes
+    break
+  fi
+  # Just in case.
+  sleep "$am_cv_filesystem_timestamp_resolution"
+  am_has_slept=yes
+done
 
-	# If neither matched, then we have a broken ls.  This can happen
-	# if, for instance, CONFIG_SHELL is bash and it inherits a
-	# broken ls alias from the environment.  This has actually
-	# happened.  Such a system could not be considered "sane".
-	as_fn_error $? "ls -t appears to fail.  Make sure there is not a broken
-  alias in your environment" "$LINENO" 5
-     fi
-     if test "$2" = conftest.file || test $am_try -eq 2; then
-       break
-     fi
-     # Just in case.
-     sleep 1
-     am_has_slept=yes
-   done
-   test "$2" = conftest.file
-   )
-then
-   # Ok.
-   :
-else
-   as_fn_error $? "newly created file is older than distributed files!
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $am_build_env_is_sane" >&5
+printf "%s\n" "$am_build_env_is_sane" >&6; }
+if test "$am_build_env_is_sane" = no; then
+  as_fn_error $? "newly created file is older than distributed files!
 Check your system clock" "$LINENO" 5
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
+
 # If we didn't sleep, we still need to ensure time stamps of config.status and
 # generated files are strictly newer.
 am_sleep_pid=
-if grep 'slept: no' conftest.file >/dev/null 2>&1; then
-  ( sleep 1 ) &
+if test -e conftest.file || grep 'slept: no' conftest.file >/dev/null 2>&1
+then :
+
+else case e in #(
+  e)   ( sleep "$am_cv_filesystem_timestamp_resolution" ) &
   am_sleep_pid=$!
+ ;;
+esac
 fi
 
 rm -f conftest.file
@@ -6745,7 +6855,7 @@ else case e in #(
       # icc doesn't choke on unknown options, it will just issue warnings
       # or remarks (even with -Werror).  So we grep stderr for any message
       # that says an option was ignored or not supported.
-      # When given -MP, icc 7.0 and 7.1 complain thusly:
+      # When given -MP, icc 7.0 and 7.1 complain thus:
       #   icc: Command line warning: ignoring option '-M'; no argument required
       # The diagnosis changed in icc 8.0:
       #   icc: Command line remark: option '-MP' not supported
@@ -7076,6 +7186,7 @@ esac
 fi
 
 : ${AR=ar}
+: ${ARFLAGS=cr}
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking the archiver ($AR) interface" >&5
 printf %s "checking the archiver ($AR) interface... " >&6; }
@@ -7096,7 +7207,7 @@ int some_variable = 0;
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"
 then :
-  am_ar_try='$AR cru libconftest.a conftest.$ac_objext >&5'
+  am_ar_try='$AR $ARFLAGS libconftest.a conftest.$ac_objext >&5'
       { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$am_ar_try\""; } >&5
   (eval $am_ar_try) 2>&5
   ac_status=$?
@@ -8059,7 +8170,7 @@ else case e in #(
       # icc doesn't choke on unknown options, it will just issue warnings
       # or remarks (even with -Werror).  So we grep stderr for any message
       # that says an option was ignored or not supported.
-      # When given -MP, icc 7.0 and 7.1 complain thusly:
+      # When given -MP, icc 7.0 and 7.1 complain thus:
       #   icc: Command line warning: ignoring option '-M'; no argument required
       # The diagnosis changed in icc 8.0:
       #   icc: Command line remark: option '-MP' not supported
@@ -8577,7 +8688,7 @@ else case e in #(
       # icc doesn't choke on unknown options, it will just issue warnings
       # or remarks (even with -Werror).  So we grep stderr for any message
       # that says an option was ignored or not supported.
-      # When given -MP, icc 7.0 and 7.1 complain thusly:
+      # When given -MP, icc 7.0 and 7.1 complain thus:
       #   icc: Command line warning: ignoring option '-M'; no argument required
       # The diagnosis changed in icc 8.0:
       #   icc: Command line remark: option '-MP' not supported
@@ -27678,7 +27789,7 @@ else case e in #(
       # icc doesn't choke on unknown options, it will just issue warnings
       # or remarks (even with -Werror).  So we grep stderr for any message
       # that says an option was ignored or not supported.
-      # When given -MP, icc 7.0 and 7.1 complain thusly:
+      # When given -MP, icc 7.0 and 7.1 complain thus:
       #   icc: Command line warning: ignoring option '-M'; no argument required
       # The diagnosis changed in icc 8.0:
       #   icc: Command line remark: option '-MP' not supported
@@ -33034,6 +33145,7 @@ if test "$have_jxl" = 'yes'; then
 
 printf "%s\n" "#define JXL_DELEGATE 1" >>confdefs.h
 
+  CFLAGS="$JXL_CFLAGS $CFLAGS"
 fi
 
  if test "$have_jxl" = 'yes'; then
@@ -39573,6 +39685,18 @@ printf %s "checking that generated files are newer than configure... " >&6; }
    fi
    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: done" >&5
 printf "%s\n" "done" >&6; }
+case $enable_silent_rules in # (((
+  yes) AM_DEFAULT_VERBOSITY=0;;
+   no) AM_DEFAULT_VERBOSITY=1;;
+esac
+if test $am_cv_make_support_nested_variables = yes; then
+    AM_V='$(V)'
+  AM_DEFAULT_V='$(AM_DEFAULT_VERBOSITY)'
+else
+  AM_V=$AM_DEFAULT_VERBOSITY
+  AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
+fi
+
  if test -n "$EXEEXT"; then
   am__EXEEXT_TRUE=
   am__EXEEXT_FALSE='#'
