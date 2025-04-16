@@ -4132,12 +4132,20 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         "GeometryDoesNotContainImage","`%s'",image->filename);
       return((Image *) NULL);
     }
+  else
+    if ((image->columns == reconstruct->columns) &&
+        (image->rows == reconstruct->rows) &&
+        (metric == PeakAbsoluteErrorMetric))
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+          "InvalidUseOfOption","(PAE) `%s'",image->filename);
+        return((Image *) NULL);
+      }
   if ((metric == DotProductCorrelationErrorMetric) ||
-      (metric == PeakAbsoluteErrorMetric) ||
       (metric == PhaseCorrelationErrorMetric))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "InvalidUseOfOption","`%s'",image->filename);
+        "InvalidUseOfOption","(DPC|Phase) `%s'",image->filename);
       return((Image *) NULL);
     }
   similarity_image=CloneImage(image,image->columns,image->rows,MagickTrue,
