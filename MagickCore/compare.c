@@ -801,10 +801,10 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=fabs((double) p[i]-(double)
+          distance=QuantumScale*fabs((double) p[i]-(double)
             GetPixelChannel(reconstruct_image,channel,q));
         else
-          distance=fabs(Sa*(double) p[i]-Da*(double)
+          distance=QuantumScale*fabs(Sa*(double) p[i]-Da*(double)
             GetPixelChannel(reconstruct_image,channel,q));
         distortion[i]+=distance;
         distortion[CompositePixelChannel]+=distance;
@@ -4132,15 +4132,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         "GeometryDoesNotContainImage","`%s'",image->filename);
       return((Image *) NULL);
     }
-  else
-    if ((image->columns == reconstruct->columns) &&
-        (image->rows == reconstruct->rows) &&
-        (metric == PeakAbsoluteErrorMetric))
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "InvalidUseOfOption","(PAE) `%s'",image->filename);
-        return((Image *) NULL);
-      }
   if ((metric == DotProductCorrelationErrorMetric) ||
       (metric == PhaseCorrelationErrorMetric))
     {
