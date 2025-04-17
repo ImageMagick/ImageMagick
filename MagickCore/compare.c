@@ -806,9 +806,10 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
         else
           distance=QuantumScale*fabs(Sa*(double) p[i]-Da*(double)
             GetPixelChannel(reconstruct_image,channel,q));
+        distance*=QuantumScale;
         distortion[i]+=distance;
         distortion[CompositePixelChannel]+=distance;
-        mean_error+=distance*distance;
+        mean_error+=QuantumScale*distance*distance;
         if (distance > maximum_error)
           maximum_error=distance;
         area++;
@@ -821,8 +822,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   image_view=DestroyCacheView(image_view);
   area=PerceptibleReciprocal(area);
   image->error.mean_error_per_pixel=area*distortion[CompositePixelChannel];
-  image->error.normalized_mean_error=area*QuantumScale*QuantumScale*mean_error;
-  image->error.normalized_maximum_error=QuantumScale*maximum_error;
+  image->error.normalized_mean_error=area*mean_error;
+  image->error.normalized_maximum_error=maximum_error;
   return(status);
 }
 
