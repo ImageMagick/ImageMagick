@@ -1315,7 +1315,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case MeanErrorPerPixelErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%.*g (%.*g, %.*g)",
-                GetMagickPrecision(),distortion,
+                GetMagickPrecision(),QuantumRange*distortion,
                 GetMagickPrecision(),image->error.normalized_mean_error,
                 GetMagickPrecision(),image->error.normalized_maximum_error);
               break;

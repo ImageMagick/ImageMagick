@@ -618,14 +618,12 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   MagickBooleanType
     status;
 
-  ssize_t
-    j;
-
   size_t
     columns,
     rows;
 
   ssize_t
+    j,
     y;
 
   status=MagickTrue;
@@ -731,44 +729,54 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
     *image_view,
     *reconstruct_view;
 
-  MagickBooleanType
-    status;
-
   double
-    area,
-    maximum_error,
-    mean_error;
+    area = 0.0,
+    maximum_error = MagickMinimumValue;
+
+  MagickBooleanType
+    status = MagickTrue;
 
   size_t
     columns,
     rows;
 
   ssize_t
+    j,
     y;
 
-  status=MagickTrue;
-  area=0.0;
-  maximum_error=0.0;
-  mean_error=0.0;
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status) \
+    magick_number_threads(image,image,rows,1)
+#endif
   for (y=0; y < (ssize_t) rows; y++)
   {
+    double
+      channel_distortion[MaxPixelChannels+1],
+      local_maximum = MagickMinimumValue;
+
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
 
+    size_t
+      local_area = 0;
+
     ssize_t
       x;
 
+    if (status == MagickFalse)
+      continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
     q=GetCacheViewVirtualPixels(reconstruct_view,0,y,columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
       {
         status=MagickFalse;
-        break;
+        continue;
       }
+    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -806,23 +814,35 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
         else
           distance=QuantumScale*fabs(Sa*(double) p[i]-Da*(double)
             GetPixelChannel(reconstruct_image,channel,q));
-        distortion[i]+=distance;
-        distortion[CompositePixelChannel]+=distance;
-        mean_error+=distance*distance;
-        if (distance > maximum_error)
-          maximum_error=distance;
-        area++;
+        channel_distortion[i]+=distance;
+        channel_distortion[CompositePixelChannel]+=distance;
+        if (distance > local_maximum)
+          local_maximum=distance;
       }
+      local_area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
+    }
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+    #pragma omp critical (MagickCore_GetMeanAbsoluteError)
+#endif
+    {
+      area+=local_area;
+      for (j=0; j <= MaxPixelChannels; j++)
+        distortion[j]+=channel_distortion[j];
+      if (local_maximum > maximum_error)
+        maximum_error=local_maximum;
     }
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
   area=PerceptibleReciprocal(area);
-  image->error.mean_error_per_pixel=area*distortion[CompositePixelChannel];
-  image->error.normalized_mean_error=area*QuantumScale*QuantumScale*mean_error;
-  image->error.normalized_maximum_error=QuantumScale*maximum_error;
+  for (j=0; j <= MaxPixelChannels; j++)
+    distortion[j]*=area;
+  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
+  image->error.mean_error_per_pixel=distortion[CompositePixelChannel];
+  image->error.normalized_mean_error=distortion[CompositePixelChannel];
+  image->error.normalized_maximum_error=maximum_error;
   return(status);
 }
 
