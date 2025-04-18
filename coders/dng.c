@@ -331,10 +331,8 @@ static void SetLibRawParams(const ImageInfo *image_info,Image *image,
 #endif
 }
 
-#define MAGICK_RAW_DEVELVERSION Devel202502
-
 static void LibRawDataError(void *data,const char *magick_unused(file),
-#if defined(LIBRAW_VERSION_TAIL) && LIBRAW_VERSION_TAIL == MAGICK_RAW_DEVELVERSION
+#if defined(_MSC_VER)
   const INT64 offset)
 #else
   const int offset)
