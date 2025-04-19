@@ -4175,11 +4175,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   progress=0;
   similarity_view=AcquireAuthenticCacheView(similarity_image,exception);
   rows=similarity_image->rows;
-#if defined(MMAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) \
-    shared(offset,progress,similarity_metric,status) \
-    magick_number_threads(similarity_image,similarity_image,rows << 3,1)
-#endif
   for (y=0; y < (ssize_t) rows; y++)
   {
     double
@@ -4193,9 +4188,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
 
     if (status == MagickFalse)
       continue;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp flush(similarity_metric)
-#endif
     if (*similarity_metric <= similarity_threshold)
       continue;
     q=QueueCacheViewAuthenticPixels(similarity_view,0,y,
@@ -4210,9 +4202,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       ssize_t
         i;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp flush(similarity_metric)
-#endif
       if (*similarity_metric <= similarity_threshold)
         break;
       similarity=GetSimilarityMetric(image,reconstruct,metric,x,y,exception);
@@ -4224,9 +4213,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         similarity=1.0-similarity;
       if (metric == PerceptualHashErrorMetric)
         similarity=MagickMin(0.01*similarity,1.0);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp critical (MagickCore_SimilarityImage)
-#endif
       if (similarity < *similarity_metric)
         {
           offset->x=x;
@@ -4281,9 +4267,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp atomic
-#endif
         progress++;
         proceed=SetImageProgress(image,SimilarityImageTag,progress,image->rows);
         if (proceed == MagickFalse)
