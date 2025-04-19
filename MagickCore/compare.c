@@ -4135,16 +4135,15 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       default: break;
     }
 }
-#else
-    if ((metric == DotProductCorrelationErrorMetric) ||
-        (metric == PhaseCorrelationErrorMetric))
-      {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-          MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
-          "'%s' (HDRI, FFT)",image->filename);
-        return((Image *) NULL);
-      }
 #endif
+  if ((metric == DotProductCorrelationErrorMetric) ||
+      (metric == PhaseCorrelationErrorMetric))
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
+        "'%s' (HDRI, FFT)",image->filename);
+      return((Image *) NULL);
+    }
   if ((image->columns < reconstruct->columns) ||
       (image->rows < reconstruct->rows))
     {
