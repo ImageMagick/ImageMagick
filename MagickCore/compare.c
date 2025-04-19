@@ -597,10 +597,10 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   area=PerceptibleReciprocal(area);
   for (j=0; j <= MaxPixelChannels; j++)
     distortion[j]*=area;
-  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]);
   return(status);
 }
@@ -715,10 +715,10 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   area=PerceptibleReciprocal(area);
   for (j=0; j <= MaxPixelChannels; j++)
     distortion[j]*=area;
-  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   return(status);
 }
 
@@ -836,10 +836,10 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   area=PerceptibleReciprocal(area);
   for (j=0; j <= MaxPixelChannels; j++)
     distortion[j]*=area;
-  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   image->error.mean_error_per_pixel=distortion[CompositePixelChannel];
   image->error.normalized_mean_error=distortion[CompositePixelChannel];
   image->error.normalized_maximum_error=maximum_error;
@@ -956,10 +956,10 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  distortion[CompositePixelChannel]/=GetImageChannels(image);
   area=PerceptibleReciprocal(area);
   for (j=0; j <= MaxPixelChannels; j++)
     distortion[j]*=area;
-  distortion[CompositePixelChannel]/=GetImageChannels(image);
   return(status);
 }
 
@@ -1572,8 +1572,8 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
       continue;
     distortion[j]*=PerceptibleReciprocal(area);
   }
-  distortion[CompositePixelChannel]*=PerceptibleReciprocal(area);
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
+  distortion[CompositePixelChannel]*=PerceptibleReciprocal(area);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(status);
 }
@@ -4175,9 +4175,9 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   progress=0;
   similarity_view=AcquireAuthenticCacheView(similarity_image,exception);
   rows=similarity_image->rows;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MMAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,1) \
-    shared(progress,similarity_metric,status) \
+    shared(offset,progress,similarity_metric,status) \
     magick_number_threads(similarity_image,similarity_image,rows << 3,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
