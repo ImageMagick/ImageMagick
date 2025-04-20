@@ -1176,6 +1176,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     {
       similarity_image=SimilarityImage(image,reconstruct_image,metric,
         similarity_threshold,&offset,&similarity_metric,exception);
+      if (similarity_image == (Image *) NULL)
+        return(MagickFalse);
       if (dissimilarity_threshold == DefaultDissimilarityThreshold)
         switch (metric)
         {
@@ -1250,8 +1252,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
   switch (metric)
   {
-    case DotProductCorrelationErrorMetric:
-    case NormalizedCrossCorrelationErrorMetric:
     case StructuralSimilarityErrorMetric:
     case UndefinedErrorMetric:
     {
@@ -1264,11 +1264,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     {
       distortion=fabs(distortion);
       similarity_metric=fabs(similarity_metric);
-      break;
-    }
-    case PhaseCorrelationErrorMetric:
-    {
-      distortion=1.0-distortion;
       break;
     }
     default: break;

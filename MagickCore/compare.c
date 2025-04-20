@@ -3712,7 +3712,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(phase_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
-  *similarity_metric=QuantumScale*maxima;
+  *similarity_metric=1.0-QuantumScale*maxima;
   magnitude_image=DestroyImage(magnitude_image);
   return(phase_image);
 }
@@ -4081,7 +4081,9 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   const char *artifact = GetImageArtifact(image,"compare:frequency-domain");
   if (artifact == (const char *) NULL)
     artifact=GetImageArtifact(image,"compare:accelerate-ncc");
-  if ((image->channels & ReadMaskChannel) == 0)
+  if (((artifact == (const char *) NULL) ||
+       (IsStringTrue(artifact) != MagickFalse)) &&
+      ((image->channels & ReadMaskChannel) == 0))
     switch (metric)
     {
       case DotProductCorrelationErrorMetric:
@@ -4092,27 +4094,18 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case MeanSquaredErrorMetric:
       {
-        if ((artifact != (const char *) NULL) &&
-            (IsStringTrue(artifact) == MagickFalse))
-          break;
         similarity_image=MSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
       }
       case NormalizedCrossCorrelationErrorMetric:
       {
-        if ((artifact != (const char *) NULL) &&
-            (IsStringTrue(artifact) == MagickFalse))
-          break;
         similarity_image=NCCSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
       }
       case PeakSignalToNoiseRatioErrorMetric:
       {
-        if ((artifact != (const char *) NULL) &&
-            (IsStringTrue(artifact) == MagickFalse))
-          break;
         similarity_image=PSNRSimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
@@ -4125,9 +4118,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       case RootMeanSquaredErrorMetric:
       {
-        if ((artifact != (const char *) NULL) &&
-            (IsStringTrue(artifact) == MagickFalse))
-          break;
         similarity_image=RMSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
         return(similarity_image);
@@ -4149,13 +4139,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
         "GeometryDoesNotContainImage","`%s'",image->filename);
-      return((Image *) NULL);
-    }
-  if ((metric == DotProductCorrelationErrorMetric) ||
-      (metric == PhaseCorrelationErrorMetric))
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "InvalidUseOfOption","(DPC|Phase) `%s'",image->filename);
       return((Image *) NULL);
     }
   similarity_image=CloneImage(image,image->columns,image->rows,MagickTrue,
