@@ -4197,14 +4197,25 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       if (*similarity_metric <= similarity_threshold)
         break;
       similarity=GetSimilarityMetric(image,reconstruct,metric,x,y,exception);
-      if ((metric == DotProductCorrelationErrorMetric) ||
-          (metric == PhaseCorrelationErrorMetric) ||
-          (metric == NormalizedCrossCorrelationErrorMetric) ||
-          (metric == StructuralSimilarityErrorMetric) ||
-          (metric == UndefinedErrorMetric))
-        similarity=1.0-similarity;
-      if (metric == PerceptualHashErrorMetric)
-        similarity=MagickMin(0.01*similarity,1.0);
+      switch (metric)
+      {
+        case DotProductCorrelationErrorMetric:
+        case PhaseCorrelationErrorMetric:
+        case NormalizedCrossCorrelationErrorMetric:
+        case StructuralSimilarityErrorMetric:
+        case UndefinedErrorMetric:
+        {
+          similarity=1.0-similarity;
+          break;
+        }
+        case PerceptualHashErrorMetric:
+        {
+          similarity=MagickMin(0.01*similarity,1.0);
+          break;
+        }
+        default:
+          break;
+      }
       if (similarity < *similarity_metric)
         {
           offset->x=x;
