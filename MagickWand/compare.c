@@ -1252,7 +1252,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
   switch (metric)
   {
-    case PerceptualHashErrorMetric:
     case StructuralSimilarityErrorMetric:
     case UndefinedErrorMetric:
     {
