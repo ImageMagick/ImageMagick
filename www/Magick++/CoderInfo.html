@@ -55,12 +55,12 @@ cout &lt;&lt; endl;
           </td>
         </tr>
         <tr>
-          <td>
+          <td rowspan="3">
             <p align="center"><a name="CoderInfo"></a>
               <font size="2">CoderInfo</font>
             </p>
           </td>
-          <td bgcolor="#999999"></td>
+          <td rowspan="3" bgcolor="#999999"></td>
           <td>
             <p>
               <font size="2">void</font>
@@ -68,7 +68,31 @@ cout &lt;&lt; endl;
           </td>
           <td>
             <p>
-              <font size="2">Construct object corresponding to named format (e.g. "GIF"). An exception is thrown if the format is not supported.</font>
+              <font size="2">Default constructor</font>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>
+              <font size="2">const CoderInfo &coder_</font>
+            </p>
+          </td>
+          <td>
+            <p>
+              <font size="2">Copy constructor</font>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>
+              <font size="2">const std::string &name_</font>
+            </p>
+          </td>
+          <td>
+            <p>
+              <font size="2">Construct with coder name</font>
             </p>
           </td>
         </tr>

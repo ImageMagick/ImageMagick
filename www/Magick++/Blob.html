@@ -147,7 +147,7 @@
                     <p><font size="2">void</font></p>
                 </td>
                 <td>
-                    <p><font size="2">void* data_, const size_t length_, const Allocator allocator_ = NewAllocator</font></p>
+                    <p><font size="2">void* data_, const size_t length_, const Allocator allocator_=NewAllocator</font></p>
                 </td>
                 <td>
                     <p><font size="2">Update object contents, using supplied pointer directly (no copy) Any existing data in the object is deallocated. The user must ensure that the pointer supplied is not deleted or otherwise modified after it has been supplied to this method. The optional allocator_ parameter allows the user to specify if the C (MallocAllocator) or C++ (NewAllocator) memory allocation system was used to allocate the memory. The default is to use the C++ memory allocator.</font></p>
