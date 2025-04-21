@@ -931,7 +931,7 @@ ModuleExport void UnregisterICONImage(void)
 static Image *AutoResizeImage(const Image *image,const char *option,
   MagickOffsetType *count,ExceptionInfo *exception)
 {
-#define MAX_SIZES 11
+#define MAX_SIZES 16
 
   char
     *q;
