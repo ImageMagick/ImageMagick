@@ -340,8 +340,8 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
             break;
           }
         }
-        Cr[i]=(double) QuantumRange*cr;
-        Ci[i]=(double) QuantumRange*ci;
+        Cr[i]=ClampToQuantum((double) QuantumRange*cr);
+        Ci[i]=ClampToQuantum((double) QuantumRange*ci);
       }
       Ar+=(ptrdiff_t) GetPixelChannels(Ar_image);
       Ai+=(ptrdiff_t) GetPixelChannels(Ai_image);
