@@ -174,14 +174,6 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   *distortion=0.0;
-  if ((metric == DotProductCorrelationErrorMetric) ||
-      (metric == PhaseCorrelationErrorMetric))
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
-        "'%s' (DPC/Phase metrics require HDRI/FFT delegates)",image->filename);
-      return((Image *) NULL);
-    }
   status=GetImageDistortion(image,reconstruct_image,metric,distortion,
     exception);
   if (status == MagickFalse)
