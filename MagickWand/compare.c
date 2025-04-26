@@ -1269,15 +1269,17 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     case PeakAbsoluteErrorMetric:
     case PerceptualHashErrorMetric:
     {
-      if ((subimage_search != MagickFalse) &&
-          (image->columns == reconstruct_image->columns) &&
-          (image->rows == reconstruct_image->rows))
+      double
+        maxima = 0.0,
+        minima = 0.0;
+
+      (void) GetImageRange(reconstruct_image,&minima,&maxima,exception);
+      if (fabs(maxima-minima) < MagickEpsilon)
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
           "subimage search is not sufficiently robust for PAE/PHASH metrics",
           "`%s'",image->filename);
       if (distortion == INFINITY)
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          "images have no discernible similarity","`%s'",image->filename);
+        distortion=1.0;
       break;
     }
     default: break;
