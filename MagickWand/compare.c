@@ -1283,6 +1283,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           "`%s'",image->filename);
       if (distortion == INFINITY)
         distortion=1.0;
+      break;
     }
     case PeakAbsoluteErrorMetric:
     {
