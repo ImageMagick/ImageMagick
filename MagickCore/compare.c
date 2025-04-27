@@ -1722,9 +1722,6 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImageDistortions() compares the pixel channels of an image to a
-
-  const char
-    *artifact;
 %  reconstructed image and returns the specified distortion metric for each
 %  channel.
 %
@@ -3996,18 +3993,18 @@ static Image *RMSESimilarityImage(const Image *image,const Image *reconstruct,
     Locate minimum.
   */
   (void) ResetImagePage(rmse_image,"0x0+0+0");
+  (void) ClampImage(rmse_image,exception);
   status=SIMMinimaImage(rmse_image,&minima,offset,exception);
   if (status == MagickFalse)
     ThrowRMSESimilarityException();
   status=NegateImage(rmse_image,MagickFalse,exception);
   if (status == MagickFalse)
     ThrowRMSESimilarityException();
-  *similarity_metric=1.0-fabs(QuantumScale*minima);
+  *similarity_metric=sqrt(QuantumScale*minima);
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
   return(rmse_image);
 }
-
 #endif
 
 static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
