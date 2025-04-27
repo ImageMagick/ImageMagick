@@ -24,6 +24,8 @@
 extern "C" {
 #endif
 
+#define MaxPSNRDistortion  (10.0*log10((double) QuantumRange))
+
 typedef enum
 {
   UndefinedErrorMetric,

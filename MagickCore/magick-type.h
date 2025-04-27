@@ -116,7 +116,6 @@ typedef MagickDoubleType Quantum;
 #define MagickMinimumValue   2.22507385850720140E-308
 #define MagickStringify(macro_or_string)  MagickStringifyArg(macro_or_string)
 #define MagickStringifyArg(contents)  #contents
-#define MaxPSNRDistortion  (10.0*log10((double) QuantumRange))
 #define QuantumScale  ((double) 1.0/(double) QuantumRange)
 
 /*
