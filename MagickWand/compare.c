@@ -1286,7 +1286,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           CommandOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
       break;
     }
-    case PeakSignalToNoiseRatioErrorMetric:
     case StructuralDissimilarityErrorMetric:
     {
       distortion=fabs(distortion);
@@ -1338,7 +1337,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case PeakSignalToNoiseRatioErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
-                MagickPSNRDistortion*distortion,GetMagickPrecision(),distortion);
+                MagickPSNRDistortion*distortion,GetMagickPrecision(),
+                distortion);
               break;
             }
             case MeanErrorPerPixelErrorMetric:
