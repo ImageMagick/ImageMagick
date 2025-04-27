@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-#define MagickPSNRDistortion  (10.0*log10((double) QuantumRange))
+#define MagickPSNRDistortion  (10.0*log10((double) QuantumRange*QuantumRange))
 
 typedef enum
 {
