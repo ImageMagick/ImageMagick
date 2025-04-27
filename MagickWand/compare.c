@@ -1252,20 +1252,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
   switch (metric)
   {
-    case StructuralSimilarityErrorMetric:
-    case UndefinedErrorMetric:
-    {
-      distortion=1.0-distortion;
-      similarity_metric=1.0-similarity_metric;
-      break;
-    }
-    case StructuralDissimilarityErrorMetric:
-    case PeakSignalToNoiseRatioErrorMetric:
-    {
-      distortion=fabs(distortion);
-      similarity_metric=fabs(similarity_metric);
-      break;
-    }
     case DotProductCorrelationErrorMetric:
     case NormalizedCrossCorrelationErrorMetric:
     case PerceptualHashErrorMetric:
@@ -1298,6 +1284,20 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
           "metric for subimage search is not sufficiently robust","(%s)",
           CommandOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
+      break;
+    }
+    case PeakSignalToNoiseRatioErrorMetric:
+    case StructuralDissimilarityErrorMetric:
+    {
+      distortion=fabs(distortion);
+      similarity_metric=fabs(similarity_metric);
+      break;
+    }
+    case StructuralSimilarityErrorMetric:
+    case UndefinedErrorMetric:
+    {
+      distortion=1.0-distortion;
+      similarity_metric=1.0-similarity_metric;
       break;
     }
     default: break;
@@ -1338,7 +1338,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             case PeakSignalToNoiseRatioErrorMetric:
             {
               (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
-                48.1647*distortion,GetMagickPrecision(),distortion);
+                MaxPSNRDistortion*distortion,GetMagickPrecision(),distortion);
               break;
             }
             case MeanErrorPerPixelErrorMetric:

@@ -24,10 +24,8 @@ extern "C" {
 
 static inline double MagickLog10(const double x)
 {
-  if (x < 0.0)
-    return(-DBL_MAX);
   if (x < MagickEpsilon)
-    return(-DBL_MAX);
+    return(NAN);
   if ((x-1.0) < MagickEpsilon)
     return(0.0);
   return(log10(x));
