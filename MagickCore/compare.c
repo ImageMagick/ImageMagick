@@ -3917,6 +3917,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
           case MeanSquaredErrorMetric:
           case NormalizedCrossCorrelationErrorMetric:
           case PeakAbsoluteErrorMetric:
+          case PeakSignalToNoiseRatioErrorMetric:
           case PerceptualHashErrorMetric:
           case RootMeanSquaredErrorMetric:
           case StructuralSimilarityErrorMetric:
