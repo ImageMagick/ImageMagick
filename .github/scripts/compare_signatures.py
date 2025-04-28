@@ -43,6 +43,7 @@ def check_signatures(doxygen_file, doc_signatures):
 
     soup = BeautifulSoup(doxygen_content, 'html.parser')
 
+    correct = True
     for table in soup.find_all('table', class_='memberdecls'):
         rows = table.find_all('tr')
         for row in rows:
@@ -59,15 +60,17 @@ def check_signatures(doxygen_file, doc_signatures):
 
                     # check if signature is in html file
                     if method_name in doc_signatures.keys():
-                        DIFF_FOUND = True
                         if return_type not in doc_signatures[method_name]['returns']:
                             print(f"- Return type mismatch for method \"{method_name}\"")
                             print(f"Doxygen return type   : {return_type}")
                             print(f"Documentation returns : {doc_signatures[method_name]['returns']} \n")
+                            correct = False
                         if method_signature not in doc_signatures[method_name]['signatures']:
                             print(f"- Signature mismatch for method \"{method_name}\" ")
                             print(f"Doxygen signature        : {method_signature}")
                             print(f"Documentation signatures : {doc_signatures[method_name]['signatures']} \n")
+                            correct = False
+    return correct
 
 """
 Used to normalize the text by removing extra spaces, new lines, tabs, etc.
@@ -94,9 +97,9 @@ def main(argv):
     if not signatures:
         print("No matching table found in the documentation")
         sys.exit(1)
-    check_signatures(doxygen_file, signatures)
-    if DIFF_FOUND:
-        exit(-1)
+
+    if not check_signatures(doxygen_file, signatures):
+        sys.exit(1)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
