@@ -3877,6 +3877,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         case DotProductCorrelationErrorMetric:
         case PhaseCorrelationErrorMetric:
         case NormalizedCrossCorrelationErrorMetric:
+        case PeakSignalToNoiseRatioErrorMetric:
         case StructuralSimilarityErrorMetric:
         case UndefinedErrorMetric:
         {
@@ -3897,9 +3898,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
           offset->y=y;
           *similarity_metric=similarity;
         }
-      if ((metric == PeakSignalToNoiseRatioErrorMetric) &&
-          (fabs(similarity) < MagickEpsilon))
-        similarity=1.0-similarity;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
