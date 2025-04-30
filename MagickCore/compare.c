@@ -1244,9 +1244,9 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
   for (i=0; i <= MaxPixelChannels; i++)
-    if (fabs(distortion[i]) >= MagickEpsilon)
+    if (distortion[i] >= MagickEpsilon)
       {
-        if (fabs(distortion[i]-1.0) <= MagickEpsilon)
+        if (distortion[i] >= 1.0)
           distortion[i]=1.0;
         else
           distortion[i]=10.0*MagickLog10(PerceptibleReciprocal(
@@ -3669,9 +3669,9 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
 
   psnr_image=MSESimilarityImage(image,reconstruct,offset,similarity_metric,
     exception);
-  if (fabs(*similarity_metric) >= MagickEpsilon)
+  if (*similarity_metric >= MagickEpsilon)
     {
-      if (fabs(*similarity_metric-1.0) <= MagickEpsilon)
+      if (*similarity_metric >= 1.0)
         *similarity_metric=1.0;
       else
         *similarity_metric=10.0*MagickLog10(PerceptibleReciprocal(
