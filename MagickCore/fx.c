@@ -3601,10 +3601,10 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = log ((double) regA);
           break;
         case fLogtwo:
-          regA = MagickLog10((double) regA) / log10(2.0);
+          regA = log10((double) regA) / log10(2.0);
           break;
         case fLog:
-          regA = MagickLog10 ((double) regA);
+          regA = log10 ((double) regA);
           break;
         case fMagickTime:
           regA = GetMagickTime ();
