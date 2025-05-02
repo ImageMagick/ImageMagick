@@ -1247,7 +1247,12 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
   {
     PixelChannel channel = GetPixelChannelChannel(image,i);
     PixelTrait traits = GetPixelChannelTraits(image,channel);
-    if ((traits != UndefinedPixelTrait) || (i == CompositePixelChannel))
+    PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
+      channel);
+    if (((traits == UndefinedPixelTrait) ||
+         (reconstruct_traits == UndefinedPixelTrait) ||
+         ((reconstruct_traits & UpdatePixelTrait) == 0)) ||
+        (i == CompositePixelChannel))
       {
         if (distortion[i] <= MagickEpsilon)
           distortion[i]=1.0;
@@ -1354,7 +1359,12 @@ static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
   {
     PixelChannel channel = GetPixelChannelChannel(image,i);
     PixelTrait traits = GetPixelChannelTraits(image,channel);
-    if ((traits != UndefinedPixelTrait) || (i == CompositePixelChannel))
+    PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
+      channel);
+    if (((traits == UndefinedPixelTrait) ||
+         (reconstruct_traits == UndefinedPixelTrait) ||
+         ((reconstruct_traits & UpdatePixelTrait) == 0)) ||
+        (i == CompositePixelChannel))
       distortion[i]=sqrt(distortion[i]);
    }
   return(status);
@@ -1612,7 +1622,12 @@ static MagickBooleanType GetStructuralDisimilarityDistortion(const Image *image,
   {
     PixelChannel channel = GetPixelChannelChannel(image,i);
     PixelTrait traits = GetPixelChannelTraits(image,channel);
-    if ((traits != UndefinedPixelTrait) || (i == CompositePixelChannel))
+    PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
+      channel);
+    if (((traits == UndefinedPixelTrait) ||
+         (reconstruct_traits == UndefinedPixelTrait) ||
+         ((reconstruct_traits & UpdatePixelTrait) == 0)) ||
+        (i == CompositePixelChannel))
       distortion[i]=1.0-distortion[i];
   }
   return(status);
@@ -3894,6 +3909,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         case DotProductCorrelationErrorMetric:
         case PhaseCorrelationErrorMetric:
         case NormalizedCrossCorrelationErrorMetric:
+        case PeakSignalToNoiseRatioErrorMetric:
         case StructuralSimilarityErrorMetric:
         case UndefinedErrorMetric:
         {
