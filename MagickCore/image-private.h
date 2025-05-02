@@ -53,6 +53,7 @@ extern "C" {
 #define MAGICK_SSIZE_MAX  (SSIZE_MAX)
 #define MAGICK_SSIZE_MIN  (-SSIZE_MAX-1)
 #define MAGICK_UINT_MAX  (UINT_MAX)
+#define MAGICK_ULONG_MAX  (ULONG_MAX)
 #define MAGICK_USHORT_MAX  (USHRT_MAX)
 #define MatteColor  "#bdbdbd"  /* gray */
 #define MatteColorRGBA  ScaleShortToQuantum(0xbdbd),\

@@ -2571,6 +2571,17 @@ static void GetXmpNumeratorAndDenominator(double value,
   *denominator=1;
   if (value <= MagickEpsilon)
     return;
+  if (value > (double) MAGICK_ULONG_MAX)
+    {
+      *numerator = MAGICK_ULONG_MAX;
+      *denominator = 1;
+      return;
+    }
+  if (floor(value) == value)
+    {
+      *numerator = (unsigned long) value;
+      *denominator = 1;
+    }
   *numerator=1;
   df=1.0;
   while(fabs(df - value) > MagickEpsilon)
