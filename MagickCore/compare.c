@@ -1244,14 +1244,21 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
   for (i=0; i <= MaxPixelChannels; i++)
-    if (distortion[i] >= MagickEpsilon)
+  {
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    if ((traits != UndefinedPixelTrait) || (i == CompositePixelChannel))
       {
-        if (distortion[i] >= 1.0)
+        if (distortion[i] <= MagickEpsilon)
           distortion[i]=1.0;
         else
-          distortion[i]=10.0*MagickLog10(PerceptibleReciprocal(
-            distortion[i]))/MagickPSNRDistortion;
+          if (distortion[i] >= 1.0)
+            distortion[i]=0.0;
+          else
+            distortion[i]=10.0*log10(PerceptibleReciprocal(
+              distortion[i]))/MagickPSNRDistortion;
       }
+  }
   return(status);
 }
 
@@ -1344,7 +1351,12 @@ static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
 
   status=GetMeanSquaredDistortion(image,reconstruct_image,distortion,exception);
   for (i=0; i <= MaxPixelChannels; i++)
-    distortion[i]=sqrt(distortion[i]);
+  {
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    if ((traits != UndefinedPixelTrait) || (i == CompositePixelChannel))
+      distortion[i]=sqrt(distortion[i]);
+   }
   return(status);
 }
 
@@ -1597,7 +1609,12 @@ static MagickBooleanType GetStructuralDisimilarityDistortion(const Image *image,
   status=GetStructuralSimilarityDistortion(image,reconstruct_image,
     distortion,exception);
   for (i=0; i <= MaxPixelChannels; i++)
-    distortion[i]=1.0-distortion[i];
+  {
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    if ((traits != UndefinedPixelTrait) || (i == CompositePixelChannel))
+      distortion[i]=1.0-distortion[i];
+  }
   return(status);
 }
 
@@ -3669,14 +3686,14 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
 
   psnr_image=MSESimilarityImage(image,reconstruct,offset,similarity_metric,
     exception);
-  if (*similarity_metric >= MagickEpsilon)
-    {
-      if (*similarity_metric >= 1.0)
-        *similarity_metric=1.0;
-      else
-        *similarity_metric=10.0*MagickLog10(PerceptibleReciprocal(
-          *similarity_metric))/MagickPSNRDistortion;
-    }
+  if (*similarity_metric <= MagickEpsilon)
+    *similarity_metric=1.0;
+  else
+    if (*similarity_metric >= 1.0)
+      *similarity_metric=0.0;
+    else
+      *similarity_metric=10.0*log10(PerceptibleReciprocal(
+        *similarity_metric))/MagickPSNRDistortion;
   return(psnr_image);
 }
 
