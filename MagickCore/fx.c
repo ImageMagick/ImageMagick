@@ -3355,7 +3355,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (pfxrt->UserSymVals[pel->element_index] *= regA);
           break;
         case oDivideEq:
-          regA = (pfxrt->UserSymVals[pel->element_index] *= PerceptibleReciprocal((double)regA));
+          regA = (pfxrt->UserSymVals[pel->element_index] /= regA);
           break;
         case oPlusPlus:
           regA = pfxrt->UserSymVals[pel->element_index]++;
@@ -3373,7 +3373,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA *= regB;
           break;
         case oDivide:
-          regA *= PerceptibleReciprocal((double)regB);
+          regA /= regB;
           break;
         case oModulus:
           regA = fmod ((double) regA, fabs(floor((double) regB+0.5)));
@@ -3616,7 +3616,11 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = (regA < regB) ? regA : regB;
           break;
         case fMod:
-          regA = regA - floor((double) (regA*PerceptibleReciprocal((double) regB)))*regB;
+          if (regB == 0) {
+            regA = 0;
+          } else {
+            regA = regA - floor((double) (regA/regB))*regB;
+          }
           break;
         case fNot:
           regA = (fxFltType) (regA < MagickEpsilon);
