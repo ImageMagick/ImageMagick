@@ -1235,14 +1235,14 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
       for (j=0; j < (ssize_t) channel_phash[0].number_colorspaces; j++)
       {
         double
-          difference;
+          distance;
 
         alpha=channel_phash[channel].phash[j][i];
         beta=reconstruct_phash[channel].phash[j][i];
-        difference=beta-alpha;
-        if (IsNaN(difference) != 0)
-          difference=0.0;
-        difference+=difference*difference;
+        distance=beta-alpha;
+        if (IsNaN(distance) != 0)
+          distance=0.0;
+        difference+=distance*distance;
       }
     }
     distortion[channel]+=difference;
