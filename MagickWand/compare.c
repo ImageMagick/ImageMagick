@@ -1262,13 +1262,10 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         minima = 0.0;
 
       (void) GetImageRange(reconstruct_image,&minima,&maxima,exception);
-      if (fabs(maxima-minima) < MagickEpsilon)
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          "metric is not sufficiently robust","(%s)",
-          CommandOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
-      if ((subimage_search != MagickFalse) &&
+      if (((subimage_search != MagickFalse) &&
            (image->columns == reconstruct_image->columns) &&
-           (image->rows == reconstruct_image->rows))
+           (image->rows == reconstruct_image->rows)) &&
+          (fabs(maxima-minima) < MagickEpsilon))
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
           "metric for subimage search is not sufficiently robust","(%s)",
           CommandOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
