@@ -1254,7 +1254,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   {
     case DotProductCorrelationErrorMetric:
     case NormalizedCrossCorrelationErrorMetric:
-    case PerceptualHashErrorMetric:
     case PhaseCorrelationErrorMetric:
     {
       double
@@ -1265,13 +1264,24 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       if (((subimage_search != MagickFalse) &&
            (image->columns == reconstruct_image->columns) &&
            (image->rows == reconstruct_image->rows)) &&
-          ((fabs(maxima-minima) < MagickEpsilon) ||
-           (metric == PerceptualHashErrorMetric)))
+          (fabs(maxima-minima) < MagickEpsilon))
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
           "metric for subimage search is not sufficiently robust","(%s)",
           CommandOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
       if (distortion == INFINITY)
         distortion=1.0;
+      distortion=1.0-distortion;
+      similarity_metric=1.0-similarity_metric;
+      break;
+    }
+    case PerceptualHashErrorMetric:
+    {
+      if ((subimage_search != MagickFalse) &&
+          (image->columns == reconstruct_image->columns) &&
+          (image->rows == reconstruct_image->rows))
+        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+          "metric for subimage search is not sufficiently robust","(%s)",
+          CommandOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
       break;
     }
     case PeakAbsoluteErrorMetric:
