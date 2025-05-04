@@ -359,8 +359,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
         images=ReadImages(image_info,filename,exception);
-        status&=(MagickStatusType) (images != (Image *) NULL) &&
-          (exception->severity < ErrorException);
+        status&=(MagickStatusType) ((images != (Image *) NULL) &&
+          (exception->severity < ErrorException));
         if (images == (Image *) NULL)
           continue;
         AppendImageStack(images);
