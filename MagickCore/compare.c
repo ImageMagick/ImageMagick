@@ -227,7 +227,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   highlight_view=AcquireAuthenticCacheView(highlight_image,exception);
-#if defined(MMAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(image,highlight_image,rows,1)
 #endif
@@ -393,21 +393,18 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
+    reduction(+:distortion[:MaxPixelChannels+1]) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    double
-      channel_distortion[MaxPixelChannels+1];
-
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
 
     ssize_t
-      j,
       x;
 
     if (status == MagickFalse)
@@ -419,15 +416,11 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
         Da,
         Sa;
-
-      MagickBooleanType
-        difference;
 
       ssize_t
         i;
@@ -439,7 +432,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
           q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
           continue;
         }
-      difference=MagickFalse;
       Sa=QuantumScale*(double) GetPixelAlpha(image,p);
       Da=QuantumScale*(double) GetPixelAlpha(reconstruct_image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -465,23 +457,17 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         distance=pixel*pixel;
         if (distance >= fuzz)
           {
-            channel_distortion[i]++;
-            difference=MagickTrue;
+            distortion[i]++;
+            distortion[CompositePixelChannel]++;
           }
       }
-      if (difference != MagickFalse)
-        channel_distortion[CompositePixelChannel]++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetAbsoluteDistortion)
-#endif
-    for (j=0; j <= MaxPixelChannels; j++)
-      distortion[j]+=channel_distortion[j];
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   return(status);
 }
 
@@ -513,21 +499,16 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
+    reduction(+:area) reduction(+:distortion[:MaxPixelChannels+1]) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    double
-      channel_distortion[MaxPixelChannels+1];
-
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
-
-    size_t
-      local_area = 0;
 
     ssize_t
       x;
@@ -541,7 +522,6 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -579,20 +559,12 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
         else
           distance=QuantumScale*(Sa*(double) p[i]-Da*(double) GetPixelChannel(
             reconstruct_image,channel,q));
-        channel_distortion[i]+=distance*distance;
-        channel_distortion[CompositePixelChannel]+=distance*distance;
+        distortion[i]+=distance*distance;
+        distortion[CompositePixelChannel]+=distance*distance;
       }
-      local_area++;
+      area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
-    }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetFuzzDistortion)
-#endif
-    {
-      area+=local_area;
-      for (j=0; j <= MaxPixelChannels; j++)
-        distortion[j]+=channel_distortion[j];
     }
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
@@ -631,21 +603,16 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
+    reduction(+:area) reduction(+:distortion[:MaxPixelChannels+1]) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    double
-      channel_distortion[MaxPixelChannels+1];
-
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
-
-    size_t
-      local_area = 0;
 
     ssize_t
       x;
@@ -659,7 +626,6 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -697,20 +663,12 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
         else
           distance=QuantumScale*fabs(Sa*(double) p[i]-Da*(double)
             GetPixelChannel(reconstruct_image,channel,q));
-        channel_distortion[i]+=distance;
-        channel_distortion[CompositePixelChannel]+=distance;
+        distortion[i]+=distance;
+        distortion[CompositePixelChannel]+=distance;
       }
-      local_area++;
+      area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
-    }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetMeanAbsoluteError)
-#endif
-    {
-      area+=local_area;
-      for (j=0; j <= MaxPixelChannels; j++)
-        distortion[j]+=channel_distortion[j];
     }
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
@@ -747,22 +705,17 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
+    reduction(+:area) reduction(+:maximum_error) \
+    reduction(+:distortion[:MaxPixelChannels+1]) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    double
-      channel_distortion[MaxPixelChannels+1],
-      local_maximum = MagickMinimumValue;
-
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
-
-    size_t
-      local_area = 0;
 
     ssize_t
       x;
@@ -776,7 +729,6 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -814,24 +766,14 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
         else
           distance=QuantumScale*fabs(Sa*(double) p[i]-Da*(double)
             GetPixelChannel(reconstruct_image,channel,q));
-        channel_distortion[i]+=distance;
-        channel_distortion[CompositePixelChannel]+=distance;
-        if (distance > local_maximum)
-          local_maximum=distance;
+        distortion[i]+=distance;
+        distortion[CompositePixelChannel]+=distance;
+        if (distance > maximum_error)
+          maximum_error=distance;
       }
-      local_area++;
+      area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
-    }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetMeanAbsoluteError)
-#endif
-    {
-      area+=local_area;
-      for (j=0; j <= MaxPixelChannels; j++)
-        distortion[j]+=channel_distortion[j];
-      if (local_maximum > maximum_error)
-        maximum_error=local_maximum;
     }
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
@@ -872,8 +814,9 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
+    reduction(+:area) reduction(+:distortion[:MaxPixelChannels+1]) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
@@ -881,12 +824,6 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
-
-    double
-      channel_distortion[MaxPixelChannels+1];
-
-    size_t
-      local_area = 0;
 
     ssize_t
       x;
@@ -900,7 +837,6 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -938,20 +874,12 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
         else
           distance=QuantumScale*(Sa*(double) p[i]-Da*(double) GetPixelChannel(
             reconstruct_image,channel,q));
-        channel_distortion[i]+=distance*distance;
-        channel_distortion[CompositePixelChannel]+=distance*distance;
+        distortion[i]+=distance*distance;
+        distortion[CompositePixelChannel]+=distance*distance;
       }
-      local_area++;
+      area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
-    }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetMeanSquaredError)
-#endif
-    {
-      area+=local_area;
-      for (j=0; j <= MaxPixelChannels; j++)
-        distortion[j]+=channel_distortion[j];
     }
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
@@ -1091,7 +1019,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
         #pragma omp atomic
 #endif
         progress++;
@@ -1148,21 +1076,18 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
+    reduction(+:distortion[:MaxPixelChannels+1]) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    double
-      channel_distortion[MaxPixelChannels+1];
-
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
 
     ssize_t
-      j,
       x;
 
     if (status == MagickFalse)
@@ -1174,8 +1099,6 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) memset(channel_distortion,0,(MaxPixelChannels+1)*
-      sizeof(*channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       double
@@ -1213,20 +1136,14 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
         else
           distance=QuantumScale*fabs(Sa*(double) p[i]-Da*(double)
             GetPixelChannel(reconstruct_image,channel,q));
-        if (distance > channel_distortion[i])
-          channel_distortion[i]=distance;
-        if (distance > channel_distortion[CompositePixelChannel])
-          channel_distortion[CompositePixelChannel]=distance;
+        if (distance > distortion[i])
+          distortion[i]=distance;
+        if (distance > distortion[CompositePixelChannel])
+          distortion[CompositePixelChannel]=distance;
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetPeakAbsoluteError)
-#endif
-    for (j=0; j <= MaxPixelChannels; j++)
-      if (channel_distortion[j] > distortion[j])
-        distortion[j]=channel_distortion[j];
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
@@ -1293,8 +1210,9 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         channel_phash);
       return(MagickFalse);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
+  #pragma omp parallel for schedule(static) \
+    reduction(+:distortion[:MaxPixelChannels+1])
 #endif
   for (channel=0; channel < MaxPixelChannels; channel++)
   {
@@ -1316,15 +1234,18 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
 
       for (j=0; j < (ssize_t) channel_phash[0].number_colorspaces; j++)
       {
+        double
+          difference;
+
         alpha=channel_phash[channel].phash[j][i];
         beta=reconstruct_phash[channel].phash[j][i];
-        difference+=(beta-alpha)*(beta-alpha);
+        difference=beta-alpha;
+        if (IsNaN(difference) != 0)
+          difference=0.0;
+        difference+=difference*difference;
       }
     }
     distortion[channel]+=difference;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetPerceptualHashDistortion)
-#endif
     distortion[CompositePixelChannel]+=difference;
   }
   artifact=GetImageArtifact(image,"phash:normalize");
@@ -1442,8 +1363,9 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(area,distortion,status) \
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
+  #pragma omp parallel for schedule(static,1) shared(status) \
+    reduction(+:area) reduction(+:distortion[:MaxPixelChannels+1]) \
     magick_number_threads(image,reconstruct_image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
@@ -1451,12 +1373,6 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
-
-    double
-      channel_distortion[MaxPixelChannels+1];
-
-    size_t
-      local_area = 0;
 
     ssize_t
       i,
@@ -1475,7 +1391,6 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         status=MagickFalse;
         continue;
       }
-    (void) memset(channel_distortion,0,sizeof(channel_distortion));
     for (x=0; x < (ssize_t) columns; x++)
     {
       const Quantum
@@ -1575,20 +1490,12 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         ssim=((2.0*xy_mu+c1)*(2.0*xy_sigmas+c2))/
           ((x_pixel_mu_squared+y_pixel_mu_squared+c1)*
            (x_pixel_sigmas_squared+y_pixel_sigmas_squared+c2));
-        channel_distortion[i]+=ssim;
-        channel_distortion[CompositePixelChannel]+=ssim;
+        distortion[i]+=ssim;
+        distortion[CompositePixelChannel]+=ssim;
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
-      local_area++;
-    }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetStructuralSimilarityDistortion)
-#endif
-    {
-      area+=local_area;
-      for (i=0; i <= MaxPixelChannels; i++)
-        distortion[i]+=channel_distortion[i];
+      area++;
     }
   }
   image_view=DestroyCacheView(image_view);
@@ -1806,8 +1713,7 @@ MagickExport double *GetImageDistortions(Image *image,
     sizeof(*channel_distortion));
   if (channel_distortion == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) memset(channel_distortion,0,length*
-    sizeof(*channel_distortion));
+  (void) memset(channel_distortion,0,length*sizeof(*channel_distortion));
   status=MagickTrue;
   switch (metric)
   {
@@ -2283,7 +2189,7 @@ static Image *SIMDivideImage(const Image *numerator_image,
   status=MagickTrue;
   numerator_view=AcquireAuthenticCacheView(divide_image,exception);
   denominator_view=AcquireVirtualCacheView(denominator_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(denominator_image,divide_image,divide_image->rows,1)
 #endif
@@ -2381,7 +2287,7 @@ static Image *SIMSquareImage(const Image *image,ExceptionInfo *exception)
     return(square_image);
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(square_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(square_image,square_image,square_image->rows,1)
 #endif
@@ -2469,11 +2375,24 @@ static Image *SIMMagnitudeImage(Image *alpha_image,Image *beta_image,
 static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
   RectangleInfo *offset,ExceptionInfo *exception)
 {
+  typedef struct
+  {
+    double
+      maxima;
+
+    ssize_t
+      x,
+      y;
+  } MaximaInfo;
+
   CacheView
     *image_view;
 
   MagickBooleanType
     status;
+
+  MaximaInfo
+    maxima_info = { MagickMinimumValue, 0, 0 };
 
   ssize_t
     y;
@@ -2482,12 +2401,13 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
     Identify the maxima value in the image and its location.
   */
   status=MagickTrue;
-  *maxima=MagickMinimumValue;
-  offset->x=0;
-  offset->y=0;
   image_view=AcquireVirtualCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
+  #pragma omp declare reduction(maxima:MaximaInfo: \
+    omp_out = omp_out.maxima > omp_in.maxima ? omp_out : omp_in) \
+    initializer(omp_priv = {MagickMinimumValue, 0, 0})
   #pragma omp parallel for schedule(static) shared(status) \
+    reduction(maxima:maxima_info) \
     magick_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -2495,11 +2415,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
     const Quantum
       *magick_restrict p;
 
-    double
-      row_maxima;
-
     ssize_t
-      row_x,
       x;
 
     if (status == MagickFalse)
@@ -2510,8 +2426,6 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
         status=MagickFalse;
         continue;
       }
-    row_maxima=(double) p[0];
-    row_x=0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -2523,38 +2437,46 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if ((double) p[i] > row_maxima)
+        if ((double) p[i] > maxima_info.maxima)
           {
-  					row_maxima=(double) p[i];
-  					row_x=x;
+  					maxima_info.maxima=(double) p[i];
+  					maxima_info.x=x;
+  					maxima_info.y=y;
           }
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_SIMMaximaImage)
-#endif
-    if (row_maxima > *maxima)
-      {
-        *maxima=row_maxima;
-        offset->x=row_x;
-        offset->y=y;
-      }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
   image_view=DestroyCacheView(image_view);
+  *maxima=maxima_info.maxima;
+  offset->x=maxima_info.x;
+  offset->y=maxima_info.y;
   return(status);
 }
 
 static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
   RectangleInfo *offset,ExceptionInfo *exception)
 {
+  typedef struct
+  {
+    double
+      minima;
+
+    ssize_t
+      x,
+      y;
+  } MinimaInfo;
+
   CacheView
     *image_view;
 
   MagickBooleanType
     status;
+
+  MinimaInfo
+    minima_info = { MagickMaximumValue, 0, 0 };
 
   ssize_t
     y;
@@ -2563,12 +2485,13 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
     Identify the minima value in the image and its location.
   */
   status=MagickTrue;
-  *minima=MagickMaximumValue;
-  offset->x=0;
-  offset->y=0;
   image_view=AcquireVirtualCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
+  #pragma omp declare reduction(minima:MinimaInfo: \
+    omp_out = omp_out.minima < omp_in.minima ? omp_out : omp_in) \
+    initializer(omp_priv = {MagickMaximumValue, 0, 0})
   #pragma omp parallel for schedule(static) shared(status) \
+    reduction(minima:minima_info) \
     magick_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -2576,11 +2499,7 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
     const Quantum
       *magick_restrict p;
 
-    double
-      row_minima;
-
     ssize_t
-      row_x,
       x;
 
     if (status == MagickFalse)
@@ -2591,8 +2510,6 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
         status=MagickFalse;
         continue;
       }
-    row_minima=(double) p[0];
-    row_x=0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -2604,27 +2521,22 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if ((double) p[i] < row_minima)
+        if ((double) p[i] < minima_info.minima)
           {
-  					row_minima=(double) p[i];
-  					row_x=x;
+  					minima_info.minima=(double) p[i];
+  					minima_info.x=x;
+  					minima_info.y=y;
           }
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_SIMMinimaImage)
-#endif
-    if (row_minima < *minima)
-      {
-        *minima=row_minima;
-        offset->x=row_x;
-        offset->y=y;
-      }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
       status=MagickFalse;
   }
   image_view=DestroyCacheView(image_view);
+  *minima=minima_info.minima;
+  offset->x=minima_info.x;
+  offset->y=minima_info.y;
   return(status);
 }
 
@@ -2645,7 +2557,7 @@ static MagickBooleanType SIMMultiplyImage(Image *image,const double factor,
   */
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(image,image,image->rows,1)
 #endif
@@ -2777,7 +2689,7 @@ static MagickBooleanType SIMSetImageMean(const Image *image,
   */
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(image,image,image->rows,1)
 #endif
@@ -2846,7 +2758,7 @@ static Image *SIMSubtractImageMean(const Image *alpha_image,
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(subtract_image,exception);
   beta_view=AcquireVirtualCacheView(beta_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(beta_image,subtract_image,subtract_image->rows,1)
 #endif
@@ -2927,7 +2839,7 @@ static Image *SIMUnityImage(const Image *alpha_image,const Image *beta_image,
     return(DestroyImage(unity_image));
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(unity_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(unity_image,unity_image,unity_image->rows,1)
 #endif
@@ -3001,7 +2913,7 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(variance_image,exception);
   beta_view=AcquireVirtualCacheView(beta_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_aSUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(beta_image,variance_image,variance_image->rows,1)
 #endif
@@ -3863,7 +3775,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
-  similarity_image->depth=MAGICKCORE_QUANTUM_DEPTH;  
+  similarity_image->depth=MAGICKCORE_QUANTUM_DEPTH;
   similarity_image->alpha_trait=UndefinedPixelTrait;
   status=SetImageStorageClass(similarity_image,DirectClass,exception);
   if (status == MagickFalse)
