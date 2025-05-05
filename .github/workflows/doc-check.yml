@@ -19,7 +19,7 @@ jobs:
   doxygen-check:
     name: 'Documentation check'
     runs-on: ubuntu-24.04
-    
+
     steps:
     - name: Checkout repository content
       uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
 
     - name: Compare documentation
       run: |
-        diff=false
+        diff=""
         # first generate the Magick++ documentation to be up to date with the current code
         cd config && doxygen Magick++.dox.in &> /dev/null
         cd ..
@@ -47,12 +47,11 @@ jobs:
         for i in "${!DOC_HTML[@]}"; do
             python3 .github/scripts/compare_signatures.py www/Magick++/"${DOC_HTML[$i]}" www/api/Magick++/classMagick_1_1"${DOXY_HTML[$i]}"
             if [ $? -eq -1 ]; then
-                diff=true
+                diff="true"
             fi
-            echo ""
         done
 
-        if [ $diff ]; then
+        if [ -n "$diff" ]; then
             echo "Mismatches detected!" && exit 1
         fi
         exit 0
