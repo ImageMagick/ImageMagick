@@ -1812,7 +1812,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     for (channel=0; channel <= MaxPixelChannels; channel++)
       for (j=0; j < MaximumNumberOfImageMoments; j++)
         perceptual_hash[channel].phash[i][j]=
-          (-PerceptibleLog10(moments[channel].invariant[j]));
+          (-log10(moments[channel].invariant[j]));
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   }
   colorspaces=DestroyString(colorspaces);
@@ -2250,7 +2250,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       if (histogram[(ssize_t) GetPixelChannels(image)*j+i] > 0.0)
         number_bins++;
     area=PerceptibleReciprocalLD(channel_statistics[channel].area);
-    number_bins=PerceptibleReciprocalLD((long double) PerceptibleLog10(number_bins));
+    number_bins=PerceptibleReciprocalLD((long double) log10(number_bins));
     for (j=0; j <= (ssize_t) MaxMap; j++)
     {
       double
@@ -2258,7 +2258,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         count;
 
       count=(double) (area*histogram[(ssize_t) GetPixelChannels(image)*j+i]);
-      entropy=-count*PerceptibleLog10(count)*number_bins;
+      entropy=-count*log10(count)*number_bins;
       channel_statistics[channel].entropy+=(long double) entropy;
       channel_statistics[CompositePixelChannel].entropy+=((long double) entropy/
         GetPixelChannels(image));
