@@ -2250,18 +2250,18 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       if (histogram[(ssize_t) GetPixelChannels(image)*j+i] > 0.0)
         number_bins++;
     area=PerceptibleReciprocalLD(channel_statistics[channel].area);
+    number_bins=PerceptibleReciprocalLD((long double) PerceptibleLog10(number_bins));
     for (j=0; j <= (ssize_t) MaxMap; j++)
     {
       double
+        entropy,
         count;
 
       count=(double) (area*histogram[(ssize_t) GetPixelChannels(image)*j+i]);
-      channel_statistics[channel].entropy+=((long double) -count*
-        PerceptibleLog10(count)*PerceptibleReciprocalLD((long double)
-        PerceptibleLog10(number_bins)));
-      channel_statistics[CompositePixelChannel].entropy+=((long double) -count*
-        PerceptibleLog10(count)*PerceptibleReciprocalLD((long double)
-        PerceptibleLog10(number_bins))/GetPixelChannels(image));
+      entropy=-count*PerceptibleLog10(count)*number_bins;
+      channel_statistics[channel].entropy+=(long double) entropy;
+      channel_statistics[CompositePixelChannel].entropy+=((long double) entropy/
+        GetPixelChannels(image));
     }
   }
   histogram=(double *) RelinquishMagickMemory(histogram);
