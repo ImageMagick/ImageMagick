@@ -88,6 +88,7 @@
 #include "MagickCore/semaphore.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/statistic.h"
+#include "MagickCore/statistic-private.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/timer.h"
@@ -1811,7 +1812,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     for (channel=0; channel <= MaxPixelChannels; channel++)
       for (j=0; j < MaximumNumberOfImageMoments; j++)
         perceptual_hash[channel].phash[i][j]=
-          (-log10(moments[channel].invariant[j]));
+          (-PerceptibleLog10(moments[channel].invariant[j]));
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   }
   colorspaces=DestroyString(colorspaces);
@@ -2256,11 +2257,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 
       count=(double) (area*histogram[(ssize_t) GetPixelChannels(image)*j+i]);
       channel_statistics[channel].entropy+=((long double) -count*
-        log10(count)*PerceptibleReciprocalLD((long double)
-        log10(number_bins)));
+        PerceptibleLog10(count)*PerceptibleReciprocalLD((long double)
+        PerceptibleLog10(number_bins)));
       channel_statistics[CompositePixelChannel].entropy+=((long double) -count*
-        log10(count)*PerceptibleReciprocalLD((long double)
-        log10(number_bins))/GetPixelChannels(image));
+        PerceptibleLog10(count)*PerceptibleReciprocalLD((long double)
+        PerceptibleLog10(number_bins))/GetPixelChannels(image));
     }
   }
   histogram=(double *) RelinquishMagickMemory(histogram);
