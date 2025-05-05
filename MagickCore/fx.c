@@ -90,7 +90,6 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/statistic.h"
-#include "MagickCore/statistic-private.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
@@ -878,7 +877,7 @@ static char * SetPtrShortExp (FxInfo * pfx, char * pExp, size_t len)
 
   if (pExp && len) {
     slen = CopyMagickString (pfx->ShortExp, pExp, len);
-    if (slen > MaxLen) { 
+    if (slen > MaxLen) {
       (void) CopyMagickString (pfx->ShortExp+MaxLen, "...", 4);
     }
     p = strchr (pfx->ShortExp, '\n');
@@ -1291,7 +1290,7 @@ static MagickBooleanType AddAddressingElement (FxInfo * pfx, int oprNum, int Ele
   if (!AddElement (pfx, (fxFltType) 0, oprNum)) return MagickFalse;
   pel = &pfx->Elements[pfx->usedElements-1];
   pel->element_index = EleNdx;
-  if (oprNum == rGoto || oprNum == rGotoChk || oprNum == rIfZeroGoto || oprNum == rIfNotZeroGoto 
+  if (oprNum == rGoto || oprNum == rGotoChk || oprNum == rIfZeroGoto || oprNum == rIfNotZeroGoto
    || oprNum == rZerStk)
   {
     pel->do_push = MagickFalse;
@@ -1329,7 +1328,7 @@ static inline char PeekChar (FxInfo * pfx)
 static inline MagickBooleanType PeekStr (FxInfo * pfx, const char * str)
 {
   SkipSpaces (pfx);
-  
+
   return (LocaleNCompare (pfx->pex, str, strlen(str))==0 ? MagickTrue : MagickFalse);
 }
 
@@ -1469,7 +1468,7 @@ static int GetCoordQualifier (FxInfo * pfx, int op)
 
 static PixelChannel GetChannelQualifier (FxInfo * pfx, int op)
 {
-  if (op == fU || op == fV || op == fP || 
+  if (op == fU || op == fV || op == fP ||
       op == fUP || op == fVP ||
       op == fS || (op >= (int) FirstImgAttr && op <= aNull)
      )
@@ -1914,7 +1913,7 @@ static MagickBooleanType GetFunction (FxInfo * pfx, FunctionE fe)
       if (fe == fP || fe == fS|| fe == fIf) {
         (void) AddElement (pfx, (fxFltType) 0, oNull);
         FndOne = 1;
-      } 
+      }
     }
 
     if (strchr (strLimit, chLimit)==NULL) {
@@ -2589,7 +2588,7 @@ static MagickBooleanType GetOperator (
   */
 
   while (pfx->usedOprStack > 0) {
-    OperatorE top = pfx->OperatorStack[pfx->usedOprStack-1]; 
+    OperatorE top = pfx->OperatorStack[pfx->usedOprStack-1];
     int precTop, precNew;
     if (top == oOpenParen || top == oAssign || OprInPlace ((int) top)) break;
     precTop = Operators[top].precedence;
@@ -2890,7 +2889,7 @@ static MagickBooleanType TranslateStatement (FxInfo * pfx, char * strLimit, char
   }
   if (pfx->usedElements && *chLimit==';') {
     /* FIXME: not necessarily the last element,
-       but the last _executed_ element, eg "goto" in a "for()"., 
+       but the last _executed_ element, eg "goto" in a "for()".,
        Pending a fix, we will use rZerStk.
     */
     ElementT * pel = &pfx->Elements[pfx->usedElements-1];
@@ -3569,7 +3568,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = exp((double) (-regA*regA/2.0))/sqrt(2.0*MagickPI);
           break;
         case fGcd:
-          if (!IsNaN(regA)) 
+          if (!IsNaN(regA))
             regA = FxGcd (regA, regB, 0);
           break;
         case fHypot:
@@ -4105,7 +4104,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
             (int)pel->operator_index, OprStr(pel->operator_index));
           break;
     }
-    if (pel->do_push) 
+    if (pel->do_push)
       if (!PushVal (pfx, pfxrt, regA, i)) break;
   }
 

@@ -507,7 +507,7 @@ am__MagickCore_libMagickCore_@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURC
 	MagickCore/signature.h MagickCore/signature-private.h \
 	MagickCore/splay-tree.c MagickCore/splay-tree.h \
 	MagickCore/static.c MagickCore/static.h MagickCore/statistic.c \
-	MagickCore/statistic.h MagickCore/statistic-private.h \
+	MagickCore/statistic.h \
 	MagickCore/stream.c MagickCore/stream.h \
 	MagickCore/stream-private.h MagickCore/string.c \
 	MagickCore/string_.h MagickCore/string-private.h \
@@ -5458,7 +5458,6 @@ MAGICKCORE_BASE_SRCS = \
   MagickCore/static.h \
   MagickCore/statistic.c \
   MagickCore/statistic.h \
-  MagickCore/statistic-private.h \
   MagickCore/stream.c \
   MagickCore/stream.h \
   MagickCore/stream-private.h \
@@ -5666,7 +5665,6 @@ MAGICKCORE_NOINST_HDRS = \
   MagickCore/semaphore-private.h \
   MagickCore/semaphore-private.h \
   MagickCore/signature-private.h \
-  MagickCore/statistic-private.h \
   MagickCore/stream-private.h \
   MagickCore/string-private.h \
   MagickCore/thread_.h \
