@@ -3767,7 +3767,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
       size+=(size_t) WriteBlobByte(image,255);
     size+=(size_t) WriteBlobByte(image,0);
     size+=(size_t) WriteBlobByte(image,(unsigned char) (next_image->compose ==
-      NoCompositeOp ? 1 << 0x02 : 1)); /* layer properties - visible, etc. */
+      NoCompositeOp ? 0 : 1)); /* bit 1 = visible; */
     size+=(size_t) WriteBlobByte(image,0);
     info=GetAdditionalInformation(image_info,next_image,exception);
     property=(const char *) GetImageProperty(next_image,"label",exception);
@@ -3804,7 +3804,7 @@ static MagickBooleanType WritePSDLayersInternal(Image *image,
           mask->columns+mask->page.x));
         size+=(size_t) WriteBlobByte(image,default_color);
         size+=(size_t) WriteBlobByte(image,(unsigned char) (mask->compose ==
-          NoCompositeOp ? 2 : 0));
+          NoCompositeOp ? 1 : 0)); /* bit 1 = layer mask disabled */
         size+=(size_t) WriteBlobMSBShort(image,0);
       }
     size+=(size_t) WriteBlobLong(image,0);
