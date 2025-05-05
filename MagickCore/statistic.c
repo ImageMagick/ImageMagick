@@ -2259,6 +2259,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 
       count=(double) (area*histogram[(ssize_t) GetPixelChannels(image)*j+i]);
       entropy=-count*log10(count)*number_bins;
+      if (IsNaN(entropy) != 0)
+        continue;
       channel_statistics[channel].entropy+=(long double) entropy;
       channel_statistics[CompositePixelChannel].entropy+=((long double) entropy/
         GetPixelChannels(image));
