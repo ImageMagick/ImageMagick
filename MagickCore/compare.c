@@ -3022,6 +3022,9 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo
     geometry;
 
+  size_t
+    extent;
+
   /*
     Dot product correlation-based image similarity using FFT local statistics.
   */
@@ -3030,8 +3033,9 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     return((Image *) NULL);
   GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
   (void) ResetImagePage(test_image,"0x0+0+0");
-  status=SetImageExtent(test_image,2*(size_t) ceil((double) image->columns/2.0),
-    2*(size_t) ceil((double) image->rows/2.0),exception);
+  extent=MagickMax(image->columns,image->rows);
+  status=SetImageExtent(test_image,2*(size_t) ceil((double) extent/2.0),
+    2*(size_t) ceil((double) extent/2.0),exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
   (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
@@ -3138,7 +3142,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   /*
     Evaluate dot product correlation image.
   */
-  (void) SetImageArtifact(try_image,"compose:clamp","False");
+  (void) SetImageArtifact(try_image,"compose:clamp","false");
   status=CompositeImage(trx_image,try_image,PlusCompositeOp,MagickTrue,0,0,
     exception);
   try_image=DestroyImage(try_image);
