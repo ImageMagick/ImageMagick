@@ -1253,8 +1253,26 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   switch (metric)
   {
     case DotProductCorrelationErrorMetric:
-    case NormalizedCrossCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
+    {
+      double
+        maxima = 0.0,
+        minima = 0.0;
+
+      (void) GetImageRange(reconstruct_image,&minima,&maxima,exception);
+      if (((image->columns == reconstruct_image->columns) &&
+           (image->rows == reconstruct_image->rows)) &&
+          (fabs(maxima-minima) < MagickEpsilon))
+        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+          "metric for subimage search is not sufficiently robust","(%s)",
+          CommandOptionToMnemonic(MagickMetricOptions,(ssize_t) metric));
+      if (distortion == INFINITY)
+        distortion=1.0;
+      distortion=1.0-distortion;
+      similarity_metric=1.0-similarity_metric;
+      break;
+    }
+    case NormalizedCrossCorrelationErrorMetric:
     {
       double
         maxima = 0.0,
