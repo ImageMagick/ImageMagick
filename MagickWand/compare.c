@@ -202,8 +202,10 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
 #define CompareEpsilon  (1.0e-06)
-#define CompareRobustExceptionMessage \
+#define CompareConstantColorException \
   "subimage search metric is unreliable for constant-color images"
+#define CompareEqualSizedException \
+  "subimage search metric is unreliable for equal-sized images"
 #define DefaultDissimilarityThreshold  (1.0/MagickPI)
 #define DefaultSimilarityThreshold  (-1.0)
 #define DestroyCompare() \
@@ -1277,7 +1279,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
            (image->rows == reconstruct_image->rows)) &&
           (fabs(maxima-minima) < MagickEpsilon))
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          CompareRobustExceptionMessage,"(%s)",CommandOptionToMnemonic(
+          CompareConstantColorException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
       if (distortion == INFINITY)
         distortion=1.0;
@@ -1297,7 +1299,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
            (image->rows == reconstruct_image->rows)) &&
           (fabs(maxima-minima) < MagickEpsilon))
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          CompareRobustExceptionMessage,"(%s)",CommandOptionToMnemonic(
+          CompareConstantColorException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
       if (distortion == INFINITY)
         distortion=1.0;
@@ -1311,7 +1313,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           (image->columns == reconstruct_image->columns) &&
           (image->rows == reconstruct_image->rows))
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          "subimage search metric is unreliable","(%s)",CommandOptionToMnemonic(
+          CompareEqualSizedException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
       break;
     }
@@ -1321,7 +1323,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           (image->columns == reconstruct_image->columns) &&
           (image->rows == reconstruct_image->rows))
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          "subimage search metric is unreliable","(%s)",CommandOptionToMnemonic(
+          CompareEqualSizedException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
       break;
     }
@@ -1493,7 +1495,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                   if (image->alpha_trait != UndefinedPixelTrait)
                     (void) FormatLocaleFile(stderr,"    alpha: %.*g\n",
                       GetMagickPrecision(),
-                       channel_distortion[AlphaPixelChannel]);
+                      channel_distortion[AlphaPixelChannel]);
                   break;
                 }
                 case CMYKColorspace:
