@@ -813,7 +813,8 @@ static MagickBooleanType BlendRMSEResidual(const Image *alpha_image,
     *beta_view;
 
   double
-    area = 0.0;
+    area = 0.0,
+    channel_residual = 0.0;
 
   MagickBooleanType
     status = MagickTrue;
@@ -825,11 +826,11 @@ static MagickBooleanType BlendRMSEResidual(const Image *alpha_image,
   ssize_t
     y;
 
-  *residual=0.0;
   alpha_view=AcquireVirtualCacheView(alpha_image,exception);
   beta_view=AcquireVirtualCacheView(beta_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
+    reduction(+:area) reduction(+:channel_residual) \
     magick_number_threads(alpha_image,alpha_image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
@@ -837,12 +838,6 @@ static MagickBooleanType BlendRMSEResidual(const Image *alpha_image,
     const Quantum
       *magick_restrict p,
       *magick_restrict q;
-
-    double
-      channel_residual;
-
-    size_t
-      local_area = 0;
 
     ssize_t
       x;
@@ -895,22 +890,15 @@ static MagickBooleanType BlendRMSEResidual(const Image *alpha_image,
             beta_image,channel,q));
         channel_residual+=distance*distance;
       }
-      local_area++;
+      area++;
       p+=(ptrdiff_t) GetPixelChannels(alpha_image);
       q+=(ptrdiff_t) GetPixelChannels(beta_image);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_BlendRMSEResidual)
-#endif
-    {
-      area+=local_area;
-      *residual+=channel_residual;
-    }
   }
-  area=PerceptibleReciprocal(area);
   beta_view=DestroyCacheView(beta_view);
   alpha_view=DestroyCacheView(alpha_view);
-  *residual=sqrt(*residual*area/(double) GetImageChannels(alpha_image));
+  area=PerceptibleReciprocal(area);
+  *residual=sqrt(area*channel_residual/(double) GetImageChannels(alpha_image));
   return(status);
 }
 
