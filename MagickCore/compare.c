@@ -388,6 +388,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   /*
     Compute the absolute difference in pixels between two images.
   */
+  area=0;
   status=MagickTrue;
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
