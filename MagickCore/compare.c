@@ -372,7 +372,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     *reconstruct_view;
 
   double
-    fuzz;
+    area;
 
   MagickBooleanType
     status;
@@ -382,13 +382,13 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     rows;
 
   ssize_t
+    j,
     y;
 
   /*
     Compute the absolute difference in pixels between two images.
   */
   status=MagickTrue;
-  fuzz=GetFuzzyColorDistance(image,reconstruct_image);
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -436,8 +436,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
-          distance,
-          pixel;
+          delta;
 
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
@@ -448,18 +447,15 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          pixel=(double) p[i]-(double) GetPixelChannel(reconstruct_image,
-            channel,q);
+          delta=QuantumScale*((double) p[i]-(double) GetPixelChannel(
+            reconstruct_image,channel,q));
         else
-          pixel=Sa*(double) p[i]-Da*(double) GetPixelChannel(reconstruct_image,
-            channel,q);
-        distance=pixel*pixel;
-        if (distance >= fuzz)
-          {
-            distortion[i]++;
-            distortion[CompositePixelChannel]++;
-          }
+          delta=QuantumScale*(Sa*(double) p[i]-Da*(double) GetPixelChannel(
+            reconstruct_image,channel,q));
+        distortion[i]+=fabs(delta);
+        distortion[CompositePixelChannel]+=fabs(delta);
       }
+      area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
@@ -467,6 +463,9 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
+  area=PerceptibleReciprocal((double) image->columns*image->rows);
+  for (j=0; j <= MaxPixelChannels; j++)
+    distortion[j]*=area;
   return(status);
 }
 
@@ -478,7 +477,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     *reconstruct_view;
 
   double
-    area;
+    area = 0.0;
 
   MagickBooleanType
     status;
@@ -494,7 +493,6 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  area=0.0;
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);

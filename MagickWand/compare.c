@@ -1343,6 +1343,12 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           switch (metric)
           {
             case AbsoluteErrorMetric:
+            {
+              (void) FormatLocaleFile(stderr,"%.*g (%.*g)",GetMagickPrecision(),
+                round((double) image->columns*image->rows*distortion),
+                GetMagickPrecision(),distortion);
+              break;
+            }
             case DotProductCorrelationErrorMetric:
             case FuzzErrorMetric:
             case NormalizedCrossCorrelationErrorMetric:
