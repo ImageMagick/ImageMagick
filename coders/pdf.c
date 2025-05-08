@@ -3269,7 +3269,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     root_id);
   (void) WriteBlobString(image,buffer);
   option=GetImageOption(image_info,"pdf:no-identifier");
-  if (IsStringFalse(option) != MagickFalse)
+  if ((IsStringFalse(option) != MagickFalse) || (is_pdfa != MagickFalse))
     {
       (void) SignatureImage(image,exception);
       (void) FormatLocaleString(buffer,MagickPathExtent,"/ID [<%s> <%s>]\n",
