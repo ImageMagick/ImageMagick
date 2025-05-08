@@ -1615,7 +1615,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       preferred_version=StringToDouble(option,(char**) NULL);
       version=MagickMax(version,MagickMin(1.7,preferred_version));
     }
-  (void) FormatLocaleString(buffer,MagickPathExtent,"%%PDF-%.2g \n",version);
+  (void) FormatLocaleString(buffer,MagickPathExtent,"%%PDF-%.2g\n",version);
   (void) WriteBlobString(image,buffer);
   if (is_pdfa != MagickFalse)
     {
