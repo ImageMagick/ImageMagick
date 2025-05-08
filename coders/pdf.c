@@ -1486,7 +1486,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     compression;
 
   const char
-    *colorspace,
     *device,
     *option,
     *value;
@@ -2482,12 +2481,10 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       object);
     (void) WriteBlobString(image,buffer);
     device="DeviceRGB";
-    colorspace="DefaultRGB";
     channels=0;
     if (image->colorspace == CMYKColorspace)
       {
         device="DeviceCMYK";
-        colorspace="DefaultCMYK";
         channels=4;
       }
     else
@@ -2496,7 +2493,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
           (IsImageGray(image) != MagickFalse))
         {
           device="DeviceGray";
-          colorspace="DefaultGray";
           channels=1;
         }
       else
@@ -2507,13 +2503,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     if (icc_profile == (StringInfo *) NULL)
       {
         if (channels != 0)
-          (void) FormatLocaleString(buffer,MagickPathExtent,"/%s\n",
-            (is_pdfa == MagickFalse) ? device : colorspace);
+          (void) FormatLocaleString(buffer,MagickPathExtent,"/%s\n",device);
         else
           (void) FormatLocaleString(buffer,MagickPathExtent,
-            "[ /Indexed /%s %.20g %.20g 0 R ]\n",
-            (is_pdfa == MagickFalse) ? device : colorspace,
-            (double) image->colors-1,(double) object+3);
+            "[ /Indexed /%s %.20g %.20g 0 R ]\n",device,(double) image->colors-1,
+            (double) object+3);
         (void) WriteBlobString(image,buffer);
       }
     else
