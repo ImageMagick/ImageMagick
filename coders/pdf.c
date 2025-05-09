@@ -3242,7 +3242,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   /*
     Write Xref object.
   */
-  offset=TellBlob(image)-xref[0]+((is_pdfa != MagickFalse) ? 6 : 0)+10;
+  offset=TellBlob(image)-xref[0]+((is_pdfa != MagickFalse) ? 6 : 0)+9;
   (void) WriteBlobString(image,"xref\n");
   (void) FormatLocaleString(buffer,MagickPathExtent,"0 %.20g\n",(double)
     object+1);
