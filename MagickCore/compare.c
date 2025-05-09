@@ -3170,7 +3170,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
-  dot_product_image->depth=MAGICKCORE_QUANTUM_DEPTH;
+  dot_product_image->depth=32;
   status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
@@ -3289,7 +3289,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   status=GrayscaleImage(mean_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
-  mean_image->depth=MAGICKCORE_QUANTUM_DEPTH;
+  mean_image->depth=32;
   /*
     Crop to difference of reconstruction and test images.
   */
@@ -3459,7 +3459,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   status=GrayscaleImage(ncc_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
-  ncc_image->depth=MAGICKCORE_QUANTUM_DEPTH;
+  ncc_image->depth=32;
   status=SIMMaximaImage(ncc_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
@@ -3598,7 +3598,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   status=GrayscaleImage(phase_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
-  phase_image->depth=MAGICKCORE_QUANTUM_DEPTH;
+  phase_image->depth=32;
   status=SIMMaximaImage(phase_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
@@ -3777,7 +3777,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     exception);
   if (similarity_image == (Image *) NULL)
     return((Image *) NULL);
-  similarity_image->depth=MAGICKCORE_QUANTUM_DEPTH;
+  similarity_image->depth=32;
   similarity_image->alpha_trait=UndefinedPixelTrait;
   status=SetImageStorageClass(similarity_image,DirectClass,exception);
   if (status == MagickFalse)
