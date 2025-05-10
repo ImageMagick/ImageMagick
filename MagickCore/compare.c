@@ -382,7 +382,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     rows;
 
   ssize_t
-    k,
+    j,
     y;
 
   /*
@@ -479,8 +479,8 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   image_view=DestroyCacheView(image_view);
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   area=PerceptibleReciprocal((double) image->columns*image->rows);
-  for (k=0; k <= MaxPixelChannels; k++)
-    distortion[k]*=area;
+  for (j=0; j <= MaxPixelChannels; j++)
+    distortion[j]*=area;
   return(status);
 }
 
@@ -497,12 +497,14 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   MagickBooleanType
     status;
 
+  ssize_t
+    j;
+
   size_t
     columns,
     rows;
 
   ssize_t
-    k,
     y;
 
   status=MagickTrue;
@@ -595,8 +597,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   image_view=DestroyCacheView(image_view);
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   area=PerceptibleReciprocal(area);
-  for (k=0; k <= MaxPixelChannels; k++)
-    distortion[k]*=area;
+  for (j=0; j <= MaxPixelChannels; j++)
+    distortion[j]*=area;
   distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]);
   return(status);
 }
@@ -619,7 +621,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
     rows;
 
   ssize_t
-    k,
+    j,
     y;
 
   status=MagickTrue;
@@ -713,8 +715,8 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   image_view=DestroyCacheView(image_view);
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   area=PerceptibleReciprocal(area);
-  for (k=0; k <= MaxPixelChannels; k++)
-    distortion[k]*=area;
+  for (j=0; j <= MaxPixelChannels; j++)
+    distortion[j]*=area;
   return(status);
 }
 
@@ -737,7 +739,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
     rows;
 
   ssize_t
-    k,
+    j,
     y;
 
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
@@ -833,8 +835,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   image_view=DestroyCacheView(image_view);
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   area=PerceptibleReciprocal(area);
-  for (k=0; k <= MaxPixelChannels; k++)
-    distortion[k]*=area;
+  for (j=0; j <= MaxPixelChannels; j++)
+    distortion[j]*=area;
   image->error.mean_error_per_pixel=distortion[CompositePixelChannel];
   image->error.normalized_mean_error=distortion[CompositePixelChannel];
   image->error.normalized_maximum_error=maximum_error;
@@ -859,7 +861,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     rows;
 
   ssize_t
-    k,
+    j,
     y;
 
   status=MagickTrue;
@@ -953,8 +955,8 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
   image_view=DestroyCacheView(image_view);
   area=PerceptibleReciprocal(area);
   distortion[CompositePixelChannel]/=GetImageChannels(image);
-  for (k=0; k <= MaxPixelChannels; k++)
-    distortion[k]*=area;
+  for (j=0; j <= MaxPixelChannels; j++)
+    distortion[j]*=area;
   return(status);
 }
 
@@ -988,7 +990,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     rows;
 
   ssize_t
-    i,
+    k,
     y;
 
   /*
@@ -1047,6 +1049,9 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         Da,
         Sa;
 
+      ssize_t
+        i;
+
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
         {
@@ -1086,11 +1091,8 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
               reconstruct_statistics[channel].mean);
           }
         channel_distortion[i]+=alpha*beta;
-        channel_distortion[CompositePixelChannel]+=alpha*beta;
         channel_alpha_variance[i]+=alpha*alpha;
-        channel_alpha_variance[CompositePixelChannel]+=alpha*alpha;
         channel_beta_variance[i]+=beta*beta;
-        channel_beta_variance[CompositePixelChannel]+=beta*beta;
       }
       channel_area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
@@ -1104,7 +1106,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         j;
 
       area+=channel_area;
-      for (j=0; j <= MaxPixelChannels; j++)
+      for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         distortion[j]+=channel_distortion[j];
         alpha_variance[j]+=channel_alpha_variance[j];
@@ -1134,17 +1136,15 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     Compute normalized cross correlation: divide by standard deviation.
   */
   area=PerceptibleReciprocal(area);
-  distortion[CompositePixelChannel]/=GetImageChannels(image);
-  alpha_variance[CompositePixelChannel]/=GetImageChannels(image);
-  beta_variance[CompositePixelChannel]/=GetImageChannels(image);
-  for (i=0; i <= MaxPixelChannels; i++)
+  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
   {
-    distortion[i]*=area;
-    alpha_variance[i]*=area;
-    beta_variance[i]*=area;
+    distortion[k]*=area;
+    alpha_variance[k]*=area;
+    beta_variance[k]*=area;
+    distortion[k]/=sqrt(alpha_variance[k]*beta_variance[k]);
+    distortion[CompositePixelChannel]+=distortion[k];
   }
-  for (i=0; i <= (ssize_t) GetPixelChannels(image); i++)
-    distortion[i]/=sqrt(alpha_variance[i]*beta_variance[i]);
+  distortion[CompositePixelChannel]/=GetImageChannels(image);
   /*
     Free resources.
   */
@@ -1444,7 +1444,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     rows;
 
   ssize_t
-    k,
+    j,
     y;
 
   /*
@@ -1629,13 +1629,13 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   }
   image_view=DestroyCacheView(image_view);
   reconstruct_view=DestroyCacheView(reconstruct_view);
-  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+  for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
   {
-    PixelChannel channel = GetPixelChannelChannel(image,k);
+    PixelChannel channel = GetPixelChannelChannel(image,j);
     PixelTrait traits = GetPixelChannelTraits(image,channel);
     if ((traits == UndefinedPixelTrait) || ((traits & UpdatePixelTrait) == 0))
       continue;
-    distortion[k]*=PerceptibleReciprocal(area);
+    distortion[j]*=PerceptibleReciprocal(area);
   }
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   distortion[CompositePixelChannel]*=PerceptibleReciprocal(area);
