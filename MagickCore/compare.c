@@ -975,9 +975,9 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     *reconstruct_statistics;
 
   double
-    alpha_variance[MaxPixelChannels+1],
-    area,
-    beta_variance[MaxPixelChannels+1];
+    alpha_variance[MaxPixelChannels+1] = { 0.0 },
+    area = 0.0,
+    beta_variance[MaxPixelChannels+1] = { 0.0 };
 
   MagickBooleanType
     status;
