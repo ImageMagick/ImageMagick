@@ -57,7 +57,7 @@ static inline int MagickReadDirectory(DIR *directory,struct dirent *entry,
   Windows UTF8 compatibility methods.
 */
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 static inline wchar_t *create_wchar_path(const char *utf8)
 {
   int
