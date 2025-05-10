@@ -2536,7 +2536,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
         for (i=0; i < (ssize_t) GetStringInfoLength(icc_profile); i++)
           Ascii85Encode(image,(unsigned char) *r++);
         Ascii85Flush(image);
-        offset=TellBlob(image)-offset;
+        offset=TellBlob(image)-offset-1;
         (void) WriteBlobString(image,"endstream\n");
         (void) WriteBlobString(image,"endobj\n");
         /*
