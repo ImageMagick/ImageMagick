@@ -2013,7 +2013,7 @@ static MagickBooleanType ReadPSDLayersInternal(Image *image,
     layer_info[i].page.width=(size_t) (right-left);
     layer_info[i].page.height=(size_t) (bottom-top);
     layer_info[i].channels=ReadBlobShort(image);
-    if (layer_info[i].channels > MaxPSDChannels)
+    if (layer_info[i].channels > (unsigned short) MaxPSDChannels)
       {
         layer_info=DestroyLayerInfo(layer_info,number_layers);
         ThrowBinaryException(CorruptImageError,"MaximumChannelsExceeded",
