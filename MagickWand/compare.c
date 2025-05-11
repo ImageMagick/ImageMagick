@@ -1309,11 +1309,18 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     } 
     case PerceptualHashErrorMetric:
     {
-      if ((subimage_search != MagickFalse) &&
-          (image->columns == reconstruct_image->columns) &&
-          (image->rows == reconstruct_image->rows))
+      double
+        maxima = 0.0,
+        minima = 0.0;
+
+      scale=1.0;
+      (void) GetImageRange(reconstruct_image,&minima,&maxima,exception);
+      if (((subimage_search != MagickFalse) &&
+           (image->columns == reconstruct_image->columns) &&
+           (image->rows == reconstruct_image->rows)) &&
+          (fabs(maxima-minima) < MagickEpsilon))
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          CompareEqualSizedException,"(%s)",CommandOptionToMnemonic(
+          CompareConstantColorException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
       break;
     }

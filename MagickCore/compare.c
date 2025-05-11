@@ -1453,6 +1453,13 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     ssize_t
       i;
 
+    PixelChannel channel = GetPixelChannelChannel(image,k);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
+      channel);
+    if (((traits & UpdatePixelTrait) == 0) ||
+        ((reconstruct_traits & UpdatePixelTrait) == 0))
+      continue;
     difference=0.0;
     for (i=0; i < MaximumNumberOfImageMoments; i++)
     {
@@ -1473,7 +1480,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         delta=beta-alpha;
         if (IsNaN(delta) != 0)
           delta=0.0;
-        difference+=QuantumScale*delta*delta;
+        difference+=delta*delta;
       }
     }
     distortion[k]+=difference;
