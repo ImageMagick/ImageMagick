@@ -630,9 +630,8 @@ MagickExport Image *EvaluateImages(const Image *images,
               PixelChannel channel = GetPixelChannelChannel(image,i);
               PixelTrait traits = GetPixelChannelTraits(next,channel);
               PixelTrait evaluate_traits = GetPixelChannelTraits(image,channel);
-              if ((traits == UndefinedPixelTrait) ||
-                  (evaluate_traits == UndefinedPixelTrait) ||
-                  ((traits & UpdatePixelTrait) == 0))
+              if (((traits & UpdatePixelTrait) == 0) ||
+                  ((evaluate_traits & UpdatePixelTrait) == 0))
                 continue;
               evaluate_pixel[j].channel[i]=ApplyEvaluateOperator(
                 random_info[id],GetPixelChannel(next,channel,p[j]),op,
@@ -647,8 +646,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           {
             PixelChannel channel = GetPixelChannelChannel(image,i);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
-            if ((traits == UndefinedPixelTrait) ||
-                ((traits & UpdatePixelTrait) == 0))
+            if ((traits & UpdatePixelTrait) == 0)
               continue;
             q[i]=ClampToQuantum(evaluate_pixel[number_images/2].channel[i]);
           }
@@ -743,10 +741,8 @@ MagickExport Image *EvaluateImages(const Image *images,
               PixelChannel channel = GetPixelChannelChannel(image,i);
               PixelTrait traits = GetPixelChannelTraits(next,channel);
               PixelTrait evaluate_traits = GetPixelChannelTraits(image,channel);
-              if ((traits == UndefinedPixelTrait) ||
-                  (evaluate_traits == UndefinedPixelTrait))
-                continue;
-              if ((traits & UpdatePixelTrait) == 0)
+              if (((traits & UpdatePixelTrait) == 0) ||
+                  ((evaluate_traits & UpdatePixelTrait) == 0))
                 continue;
               evaluate_pixel[x].channel[i]=ApplyEvaluateOperator(
                 random_info[id],GetPixelChannel(next,channel,p[j]),j == 0 ?
@@ -792,8 +788,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           {
             PixelChannel channel = GetPixelChannelChannel(image,i);
             PixelTrait traits = GetPixelChannelTraits(image,channel);
-            if ((traits == UndefinedPixelTrait) ||
-                ((traits & UpdatePixelTrait) == 0))
+            if ((traits & UpdatePixelTrait) == 0)
               continue;
             q[i]=ClampToQuantum(evaluate_pixel[x].channel[i]);
           }
@@ -908,10 +903,6 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        if ((traits & CopyPixelTrait) != 0)
-          continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         result=ApplyEvaluateOperator(random_info[id],q[i],op,value);
@@ -1137,8 +1128,6 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=ApplyFunction(q[i],function,number_parameters,parameters,
@@ -1526,8 +1515,6 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         M00[channel]+=QuantumScale*(double) p[i];
@@ -1571,8 +1558,6 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         M11[channel]+=(x-centroid[channel].x)*(y-centroid[channel].y)*
@@ -1901,8 +1886,6 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if ((double) p[i] < row_minima)
@@ -2125,15 +2108,15 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
+        if ((traits & UpdatePixelTrait) == 0)
           continue;
         cs=channel_statistics+channel;
         if (cs->depth != MAGICKCORE_QUANTUM_DEPTH)
           {
             depth=cs->depth;
             range=GetQuantumRange(depth);
-            status=p[i] != ScaleAnyToQuantum(ScaleQuantumToAny(p[i],range),range) ?
-              MagickTrue : MagickFalse;
+            status=p[i] != ScaleAnyToQuantum(ScaleQuantumToAny(p[i],range),
+              range) ? MagickTrue : MagickFalse;
             if (status != MagickFalse)
               {
                 cs->depth++;
@@ -2192,12 +2175,14 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     ChannelStatistics
       *cs;
 
+    double
+      AdjArea = 1.0;
+
     PixelChannel channel = GetPixelChannelChannel(image,i);
     PixelTrait traits = GetPixelChannelTraits(image,channel);
-    double AdjArea = 1.0;
-    if (traits == UndefinedPixelTrait)
+    if ((traits & UpdatePixelTrait) == 0)
       continue;
-    cs=channel_statistics+channel;
+    cs=channel_statistics+(ssize_t) channel;
     cs->mean=0.0;
     if (cs->area > 0)
       {
@@ -2216,17 +2201,22 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     else
       {
         if (cs->area > 1.0)
-          cs->standard_deviation=(double) sqrtl(cs->M2/((long double) cs->area-1.0));
+          cs->standard_deviation=(double) sqrtl(cs->M2/((long double)
+            cs->area-1.0));
         else
-          cs->standard_deviation=(double) sqrtl(cs->M2/((long double) cs->area));
+          cs->standard_deviation=(double) sqrtl(cs->M2/((long double)
+            cs->area));
         cs->variance=cs->standard_deviation*cs->standard_deviation;
         cs->skewness=(double) (sqrtl(cs->area)*cs->M3/powl(cs->M2*AdjArea,1.5));
-        cs->kurtosis=(double) (cs->area*cs->M4/(cs->M2*cs->M2*AdjArea*AdjArea)-3.0);
+        cs->kurtosis=(double) (cs->area*cs->M4/(cs->M2*cs->M2*AdjArea*AdjArea)-
+          3.0);
       }
   }
-
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
+    ChannelStatistics
+      *cs;
+
     double
       number_bins;
 
@@ -2234,7 +2224,10 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       j;
 
     PixelChannel channel = GetPixelChannelChannel(image,i);
-    ChannelStatistics *cs = channel_statistics+channel;
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    if ((traits & UpdatePixelTrait) == 0)
+      continue;
+    cs=channel_statistics+(ssize_t) channel;
     if (cs->area > 0.0)
       {
         cs->sum/=cs->area;
@@ -2250,7 +2243,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       if (histogram[(ssize_t) GetPixelChannels(image)*j+i] > 0.0)
         number_bins++;
     area=PerceptibleReciprocalLD(channel_statistics[channel].area);
-    number_bins=PerceptibleReciprocalLD((long double) log10(number_bins));
+    number_bins=PerceptibleReciprocalLD((long double) log2(number_bins));
     for (j=0; j <= (ssize_t) MaxMap; j++)
     {
       double
@@ -2258,7 +2251,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         count;
 
       count=(double) (area*histogram[(ssize_t) GetPixelChannels(image)*j+i]);
-      entropy=-count*log10(count)*number_bins;
+      entropy=-count*log2(count)*number_bins;
       if (IsNaN(entropy) != 0)
         continue;
       channel_statistics[channel].entropy+=(long double) entropy;
@@ -2284,8 +2277,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         */
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         for (y=0; y < (ssize_t) image->rows; y++)
@@ -2338,8 +2329,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 
       PixelChannel channel = GetPixelChannelChannel(image,i);
       PixelTrait traits = GetPixelChannelTraits(image,channel);
-      if (traits == UndefinedPixelTrait)
-        continue;
       if ((traits & UpdatePixelTrait) == 0)
         continue;
       cs=channel_statistics+channel;
@@ -2532,11 +2521,9 @@ MagickExport Image *PolynomialImage(const Image *images,
 
           PixelChannel channel = GetPixelChannelChannel(image,i);
           PixelTrait traits = GetPixelChannelTraits(next,channel);
-          PixelTrait polynomial_traits=GetPixelChannelTraits(image,channel);
-          if ((traits == UndefinedPixelTrait) ||
-              (polynomial_traits == UndefinedPixelTrait))
-            continue;
-          if ((traits & UpdatePixelTrait) == 0)
+          PixelTrait polynomial_traits = GetPixelChannelTraits(image,channel);
+          if (((traits & UpdatePixelTrait) == 0) ||
+              ((polynomial_traits & UpdatePixelTrait) == 0))
             continue;
           coefficient=(MagickRealType) terms[2*j];
           degree=(MagickRealType) terms[(j << 1)+1];
@@ -2554,8 +2541,6 @@ MagickExport Image *PolynomialImage(const Image *images,
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=ClampToQuantum((double) QuantumRange*
@@ -3034,8 +3019,8 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         PixelTrait statistic_traits=GetPixelChannelTraits(statistic_image,
           channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (statistic_traits == UndefinedPixelTrait))
+        if (((traits & UpdatePixelTrait) == 0) ||
+            ((statistic_traits & UpdatePixelTrait) == 0))
           continue;
         if (((statistic_traits & CopyPixelTrait) != 0) ||
             (GetPixelWriteMask(image,p) <= (QuantumRange/2)))
@@ -3043,8 +3028,6 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
             SetPixelChannel(statistic_image,channel,p[center+i],q);
             continue;
           }
-        if ((statistic_traits & UpdatePixelTrait) == 0)
-          continue;
         pixels=p;
         area=0.0;
         minimum=pixels[i];
