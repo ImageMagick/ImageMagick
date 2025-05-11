@@ -1409,23 +1409,12 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
     if (((traits & UpdatePixelTrait) == 0) ||
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
-    if (distortion[i] < MagickEpsilon)
-      distortion[i]=1.0;
-    else
-      if (distortion[i] >= 1.0)
-        distortion[i]=0.0;
-      else
-        distortion[i]=10.0*log10(PerceptibleReciprocal(distortion[i]))/
-          MagickPSNRDistortion;
+    distortion[i]=10.0*PerceptibleLog10(PerceptibleReciprocal(distortion[i]))/
+      MagickPSNRDistortion;
   }
   if (distortion[CompositePixelChannel] < MagickEpsilon)
-    distortion[CompositePixelChannel]=1.0;
-  else
-    if (distortion[CompositePixelChannel] >= 1.0)
-      distortion[CompositePixelChannel]=0.0;
-    else
-      distortion[CompositePixelChannel]=10.0*log10(PerceptibleReciprocal(
-        distortion[CompositePixelChannel]))/MagickPSNRDistortion;
+  distortion[CompositePixelChannel]=10.0*PerceptibleLog10(PerceptibleReciprocal(
+    distortion[CompositePixelChannel]))/MagickPSNRDistortion;
   return(status);
 }
 
@@ -1483,7 +1472,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         delta=beta-alpha;
         if (IsNaN(delta) != 0)
           delta=0.0;
-        difference+=delta*delta;
+        difference+=QuantumScale*delta*delta;
       }
     }
     distortion[k]+=difference;

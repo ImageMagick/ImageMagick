@@ -24,9 +24,11 @@ extern "C" {
 
 static inline double PerceptibleLog10(const double x)
 {
-  if (fabs(x) < MagickEpsilon)
+  if (x < MagickEpsilon)
     return(log10(MagickEpsilon));
-  return(log10(fabs(x)));
+  if (fabs(x-1.0) < MagickEpsilon)
+    return(0.0);
+  return(log10(x));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
