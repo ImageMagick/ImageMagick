@@ -1446,7 +1446,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     rows;
 
   ssize_t
-    k,
+    l,
     y;
 
   /*
@@ -1634,8 +1634,8 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   image_view=DestroyCacheView(image_view);
   reconstruct_view=DestroyCacheView(reconstruct_view);
   area=PerceptibleReciprocal(area);
-  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
-    distortion[k]*=area;
+  for (l=0; l < (ssize_t) GetPixelChannels(image); l++)
+    distortion[l]*=area;
   distortion[CompositePixelChannel]*=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   kernel_info=DestroyKernelInfo(kernel_info);
