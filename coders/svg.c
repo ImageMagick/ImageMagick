@@ -3752,14 +3752,11 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
   /*
     Write SVG header.
   */
-  (void) WriteBlobString(image,"<?xml version=\"1.0\" standalone=\"no\"?>\n");
   (void) WriteBlobString(image,
-    "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n");
-  (void) WriteBlobString(image,
-    "  \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
   (void) FormatLocaleString(message,MagickPathExtent,
-    "<svg width=\"%.20g\" height=\"%.20g\">\n",(double) image->columns,(double)
-    image->rows);
+    "<svg width=\"%.20g\" height=\"%.20g\" xmlns=\"http://www.w3.org/2000/svg\">\n",
+    (double) image->columns,(double) image->rows);
   (void) WriteBlobString(image,message);
   /*
     Allocate primitive info memory.
