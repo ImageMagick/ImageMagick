@@ -1480,7 +1480,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         delta=beta-alpha;
         if (IsNaN(delta) != 0)
           delta=0.0;
-        difference+=delta*delta;
+        difference+=delta*delta/389.3738;
       }
     }
     distortion[k]+=difference;

@@ -1313,7 +1313,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         maxima = 0.0,
         minima = 0.0;
 
-      scale=1.0;
       (void) GetImageRange(reconstruct_image,&minima,&maxima,exception);
       if (((subimage_search != MagickFalse) &&
            (image->columns == reconstruct_image->columns) &&
