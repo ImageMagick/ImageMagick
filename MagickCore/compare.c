@@ -1435,7 +1435,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     *artifact;
 
   ssize_t
-    channel;
+    k;
 
   /*
     Compute perceptual hash in the sRGB colorspace.
@@ -1450,7 +1450,7 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         channel_phash);
       return(MagickFalse);
     }
-  for (channel=0; channel < MaxPixelChannels; channel++)
+  for (k=0; k < MaxPixelChannels; k++)
   {
     double
       difference;
@@ -1473,15 +1473,15 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         double
           delta;
 
-        alpha=channel_phash[channel].phash[j][i];
-        beta=reconstruct_phash[channel].phash[j][i];
+        alpha=channel_phash[k].phash[j][i];
+        beta=reconstruct_phash[k].phash[j][i];
         delta=beta-alpha;
         if (IsNaN(delta) != 0)
           delta=0.0;
         difference+=delta*delta;
       }
     }
-    distortion[channel]+=difference;
+    distortion[k]+=difference;
     distortion[CompositePixelChannel]+=difference;
   }
   artifact=GetImageArtifact(image,"phash:normalize");
