@@ -628,7 +628,6 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   area=PerceptibleReciprocal(area);
   for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
   {
@@ -642,6 +641,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     distortion[k]*=area;
   }
   distortion[CompositePixelChannel]*=area;
+  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]);
   return(status);
 }
@@ -1059,7 +1059,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     distortion[k]*=area;
   }
   distortion[CompositePixelChannel]*=area;
-  distortion[CompositePixelChannel]/=GetImageChannels(image);
+  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   return(status);
 }
 
@@ -1257,10 +1257,11 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     distortion[k]*=area;
     alpha_variance[k]*=area;
     beta_variance[k]*=area;
-    distortion[k]/=sqrt(alpha_variance[k]*beta_variance[k]);
+    distortion[k]*=PerceptibleReciprocal(sqrt(alpha_variance[k]*
+      beta_variance[k]));
     distortion[CompositePixelChannel]+=distortion[k];
   }
-  distortion[CompositePixelChannel]/=GetImageChannels(image);
+  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   /*
     Free resources.
   */
@@ -4087,9 +4088,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   progress=0;
   similarity_view=AcquireAuthenticCacheView(similarity_image,exception);
   rows=similarity_image->rows;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) 
-#endif
   for (y=0; y < (ssize_t) rows; y++)
   {
     double
@@ -4106,7 +4104,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
 
     if (status == MagickFalse)
       continue;
-    if (*similarity_metric <= similarity_threshold)
+    if (similarity_info.similarity <= similarity_threshold)
       continue;
     q=QueueCacheViewAuthenticPixels(similarity_view,0,y,
       similarity_image->columns,1,exception);
@@ -4120,7 +4118,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       ssize_t
         i;
 
-      if (*similarity_metric <= similarity_threshold)
+      if (similarity_info.similarity <= similarity_threshold)
         break;
       similarity=GetSimilarityMetric(image,reconstruct,MeanSquaredErrorMetric,
         x,y,exception);
@@ -4182,9 +4180,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
       q+=(ptrdiff_t) GetPixelChannels(similarity_image);
     }
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (SimilarityImage)
-#endif
     if (channel_similarity.similarity < similarity_info.similarity)
       similarity_info=channel_similarity;
     if (SyncCacheViewAuthenticPixels(similarity_view,exception) == MagickFalse)
