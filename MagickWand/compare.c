@@ -203,9 +203,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
 {
 #define CompareEpsilon  (1.0e-06)
 #define CompareConstantColorException \
-  "subimage search metric is unreliable for constant-color images"
+  "search metric is unreliable for constant-color images"
 #define CompareEqualSizedException \
   "subimage search metric is unreliable for equal-sized images"
+#define CompareSpatialEquivalentException \
+  "search metric has no spatial equivalent"
 #define DefaultDissimilarityThreshold  (1.0/MagickPI)
 #define DefaultSimilarityThreshold  (-1.0)
 #define DestroyCompare() \
@@ -1257,31 +1259,16 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
   switch (metric)
   {
-    case AbsoluteErrorMetric:
+    case DotProductCorrelationErrorMetric:
+    case PhaseCorrelationErrorMetric:
     {
-      scale=(double) image->columns*image->rows;
+      if (subimage_search == MagickFalse)
+        (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+          CompareSpatialEquivalentException,"(%s)",CommandOptionToMnemonic(
+          MagickMetricOptions,(ssize_t) metric));
       break;
     }
     case NormalizedCrossCorrelationErrorMetric:
-    {
-      double
-        maxima = 0.0,
-        minima = 0.0;
-
-      (void) GetImageRange(reconstruct_image,&minima,&maxima,exception);
-      if (((subimage_search != MagickFalse) &&
-           (image->columns == reconstruct_image->columns) &&
-           (image->rows == reconstruct_image->rows)) &&
-          (fabs(maxima-minima) < MagickEpsilon))
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          CompareConstantColorException,"(%s)",CommandOptionToMnemonic(
-          MagickMetricOptions,(ssize_t) metric));
-      if (distortion == INFINITY)
-        distortion=1.0;
-      distortion=1.0-distortion;
-      similarity_metric=1.0-similarity_metric;
-      break;
-    } 
     case PerceptualHashErrorMetric:
     {
       double
@@ -1289,47 +1276,26 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         minima = 0.0;
 
       (void) GetImageRange(reconstruct_image,&minima,&maxima,exception);
-      if (((subimage_search != MagickFalse) &&
-           (image->columns == reconstruct_image->columns) &&
-           (image->rows == reconstruct_image->rows)) &&
-          (fabs(maxima-minima) < MagickEpsilon))
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+      if (fabs(maxima-minima) < MagickEpsilon)
+        (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
           CompareConstantColorException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
-      break;
-    }
-    case PeakAbsoluteErrorMetric:
-    {
       if ((subimage_search != MagickFalse) &&
           (image->columns == reconstruct_image->columns) &&
           (image->rows == reconstruct_image->rows))
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
+        (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
           CompareEqualSizedException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
       break;
-    }
-    case PeakSignalToNoiseRatioErrorMetric:
-    {
-      scale=MagickPSNRDistortion;
+    } 
+    default:
       break;
-    }
-    case PhaseCorrelationErrorMetric:
+  }
+  switch (metric)
+  {
+    case AbsoluteErrorMetric:
     {
-      double
-        maxima = 0.0,
-        minima = 0.0;
-
-      (void) GetImageRange(reconstruct_image,&minima,&maxima,exception);
-      if (((image->columns == reconstruct_image->columns) &&
-           (image->rows == reconstruct_image->rows)) &&
-          (fabs(maxima-minima) < MagickEpsilon))
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-          CompareConstantColorException,"(%s)",CommandOptionToMnemonic(
-          MagickMetricOptions,(ssize_t) metric));
-      if (distortion == INFINITY)
-        distortion=1.0;
-      distortion=1.0-distortion;
-      similarity_metric=1.0-similarity_metric;
+      scale=(double) image->columns*image->rows;
       break;
     }
     case DotProductCorrelationErrorMetric:
@@ -1339,11 +1305,18 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       similarity_metric=fabs(similarity_metric);
       break;
     }
+    case NormalizedCrossCorrelationErrorMetric:
+    case PhaseCorrelationErrorMetric:
     case StructuralSimilarityErrorMetric:
     case UndefinedErrorMetric:
     {
       distortion=1.0-distortion;
       similarity_metric=1.0-similarity_metric;
+      break;
+    } 
+    case PeakSignalToNoiseRatioErrorMetric:
+    {
+      scale=MagickPSNRDistortion;
       break;
     }
     default: break;
