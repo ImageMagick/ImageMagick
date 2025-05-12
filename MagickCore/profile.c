@@ -2581,6 +2581,7 @@ static void GetXmpNumeratorAndDenominator(double value,
     {
       *numerator = (unsigned long) value;
       *denominator = 1;
+      return;
     }
   *numerator=1;
   df=1.0;
