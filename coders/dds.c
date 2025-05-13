@@ -2517,6 +2517,9 @@ static MagickBooleanType ReadUncompressedRGB(const ImageInfo *image_info,
 static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
   const DDSInfo *dds_info,ExceptionInfo *exception)
 {
+  MagickBooleanType
+    is_rgba;
+
   Quantum
     *q;
 
@@ -2549,6 +2552,7 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
   if (dds_info->extFormat == DXGI_FORMAT_B5G5R5A1_UNORM)
     alphaBits=1;
 
+  is_rgba=IsBitMask(dds_info->pixelformat,0x000000ff,0x0000ff00,0x00ff0000,0xff00000) ? MagickTrue : MagickFalse;
   for (y = 0; y < (ssize_t) image->rows; y++)
   {
     q = QueueAuthenticPixels(image, 0, y, image->columns, 1,exception);
@@ -2604,8 +2608,8 @@ static MagickBooleanType ReadUncompressedRGBAPixels(Image *image,
           SetPixelAlpha(image,ScaleShortToQuantum((unsigned short)
             (((pixel >> 30) & 3)/3.0)*65535),q);
         }
-      else if (dds_info->extFormat == DXGI_FORMAT_R8G8B8A8_UNORM ||
-          IsBitMask(dds_info->pixelformat,0x000000ff,0x0000ff00,0x00ff0000,0xff000000))
+      else if ((dds_info->extFormat == DXGI_FORMAT_R8G8B8A8_UNORM) ||
+               (is_rgba != MagickFalse))
         {
           SetPixelRed(image,ScaleCharToQuantum((unsigned char)
             ReadBlobByte(image)),q);
