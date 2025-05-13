@@ -4122,8 +4122,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       {
         case DotProductCorrelationErrorMetric:
         case PhaseCorrelationErrorMetric:
-        case NormalizedCrossCorrelationErrorMetric:
-        case StructuralSimilarityErrorMetric:
         case UndefinedErrorMetric:
         {
           similarity=1.0-similarity;
