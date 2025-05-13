@@ -1423,6 +1423,8 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
 static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
   const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
+#define PHASHNormalizationFactor  389.373723242
+
   ChannelPerceptualHash
     *channel_phash,
     *reconstruct_phash;
@@ -1481,13 +1483,15 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         delta=beta-alpha;
         if (IsNaN(delta) != 0)
           delta=0.0;
-        difference+=delta*delta/389.3738;
+        difference+=delta*delta/PHASHNormalizationFactor;
       }
     }
     distortion[k]+=difference;
     distortion[CompositePixelChannel]+=difference;
   }
   artifact=GetImageArtifact(image,"phash:normalize");
+  for (k=0; k <= MaxPixelChannels; k++)
+    distortion[k]/=PHASHNormalizationFactor;
   if (IsStringTrue(artifact) != MagickFalse)
     {
       ssize_t
