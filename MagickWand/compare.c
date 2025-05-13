@@ -1277,7 +1277,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
 
       (void) GetImageRange(reconstruct_image,&minima,&maxima,exception);
       if (fabs(maxima-minima) < MagickEpsilon)
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
           CompareConstantColorException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
       if ((subimage_search != MagickFalse) &&
