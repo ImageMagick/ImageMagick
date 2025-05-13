@@ -1266,6 +1266,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
           CompareSpatialEquivalentException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
+      magick_fallthrough;
     }
     case NormalizedCrossCorrelationErrorMetric:
     {
