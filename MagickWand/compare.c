@@ -1266,10 +1266,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
           CompareSpatialEquivalentException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
-      break;
     }
     case NormalizedCrossCorrelationErrorMetric:
-    case PerceptualHashErrorMetric:
     {
       double
         maxima = 0.0,
@@ -1280,6 +1278,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
           CompareConstantColorException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
+      break;
+    } 
+    case PeakAbsoluteErrorMetric:
+    case PerceptualHashErrorMetric:
+    {
       if ((subimage_search != MagickFalse) &&
           (image->columns == reconstruct_image->columns) &&
           (image->rows == reconstruct_image->rows))
@@ -1287,7 +1290,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           CompareEqualSizedException,"(%s)",CommandOptionToMnemonic(
           MagickMetricOptions,(ssize_t) metric));
       break;
-    } 
+    }
     default:
       break;
   }
