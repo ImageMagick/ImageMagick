@@ -1244,8 +1244,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               Image
                 *sans_image;
 
-              sans_image=CompareImages(distort_image,reconstruct_image,metric,
-                &distortion,exception);
+              sans_image=CompareImages(distort_image,reconstruct_image,
+                MeanSquaredErrorMetric,&distortion,exception);
               distort_image=DestroyImage(distort_image);
               if (sans_image != (Image *) NULL)
                 sans_image=DestroyImage(sans_image);
@@ -1303,7 +1303,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       break;
     }
     case DotProductCorrelationErrorMetric:
-    case StructuralDissimilarityErrorMetric:
     {
       distortion=fabs(distortion);
       similarity_metric=fabs(similarity_metric);
@@ -1311,7 +1310,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
     case NormalizedCrossCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
-    case StructuralSimilarityErrorMetric:
+    case StructuralDissimilarityErrorMetric:
     case UndefinedErrorMetric:
     {
       distortion=1.0-distortion;
