@@ -79,7 +79,7 @@ jobs:
 
     - name: Configure ImageMagick
       run: |
-        export CFLAGS="-Wall -Wextra -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-parameter -Wno-unused-function"
+        export CFLAGS="-Wall -Wextra -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-function -Wno-unused-parameter"
         autoreconf -fiv
         ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --with-fftw --with-flif
 
@@ -103,7 +103,7 @@ jobs:
 
     - name: Configure ImageMagick
       run: |
-        export CFLAGS="-Wall -Wextra -Werror -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-parameter -Wno-unused-function"
+        export CFLAGS="-Wall -Wextra -Werror -Wdeclaration-after-statement -Wno-deprecated-declarations -Wno-incompatible-library-redeclaration -Wno-incompatible-pointer-types-discards-qualifiers -Wno-missing-declarations -Wno-unused-function -Wno-unused-parameter"
         export LDFLAGS=$(pkg-config --libs libjpeg)
         autoreconf -fiv
         ./configure --with-quantum-depth=16 --enable-hdri=no --without-perl --with-fftw --with-flif --with-rsvg
