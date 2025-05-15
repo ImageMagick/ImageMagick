@@ -383,7 +383,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     rows;
 
   ssize_t
-    k,
     y;
 
   /*
@@ -457,7 +456,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         else
           delta=QuantumScale*(Sa*(double) p[i]-Da*(double) GetPixelChannel(
             reconstruct_image,channel,q));
-        if ((delta*delta) >= fuzz)
+        if ((delta*delta) >= (QuantumScale*fuzz))
           {
             channel_distortion[i]++;
             channel_distortion[CompositePixelChannel]++;
@@ -492,19 +491,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  area=PerceptibleReciprocal((double) image->columns*image->rows);
-  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
-  {
-    PixelChannel channel = GetPixelChannelChannel(image,k);
-    PixelTrait traits = GetPixelChannelTraits(image,channel);
-    PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
-      channel);
-    if (((traits & UpdatePixelTrait) == 0) ||
-        ((reconstruct_traits & UpdatePixelTrait) == 0))
-      continue;
-    distortion[k]*=area;
-  }
-  distortion[CompositePixelChannel]*=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   return(status);
 }
@@ -4128,6 +4114,11 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       similarity=GetSimilarityMetric(image,reconstruct,metric,x,y,exception);
       switch (metric)
       {
+        case AbsoluteErrorMetric:
+        {
+          similarity/=(image->columns*image->rows);
+          break;
+        }
         case DotProductCorrelationErrorMetric:
         case NormalizedCrossCorrelationErrorMetric:
         case PeakSignalToNoiseRatioErrorMetric:
