@@ -1300,6 +1300,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     case AbsoluteErrorMetric:
     {
       scale=(double) image->columns*image->rows;
+      similarity_metric=1.0-similarity_metric;
       break;
     }
     case DotProductCorrelationErrorMetric:
