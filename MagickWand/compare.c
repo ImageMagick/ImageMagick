@@ -1310,7 +1310,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       break;
     }
     case NormalizedCrossCorrelationErrorMetric:
-    case StructuralDissimilarityErrorMetric:
+    case StructuralSimilarityErrorMetric:
     {
       similarity_metric=1.0-similarity_metric;
       break;
