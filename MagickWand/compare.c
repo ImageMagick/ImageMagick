@@ -1202,8 +1202,13 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           "ImagesTooDissimilar","`%s'",image->filename);
     }
   if (similarity_image == (Image *) NULL)
-    difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
-      exception);
+    {
+      difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
+        exception);
+      if ((metric == StructuralDissimilarityErrorMetric) ||
+          (metric == StructuralSimilarityErrorMetric))
+        distortion=1.0-distortion;
+    }
   else
     {
       Image
@@ -1310,7 +1315,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       break;
     }
     case NormalizedCrossCorrelationErrorMetric:
-    case StructuralSimilarityErrorMetric:
+    case StructuralDissimilarityErrorMetric:
     {
       similarity_metric=1.0-similarity_metric;
       break;
