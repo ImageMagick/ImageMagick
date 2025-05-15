@@ -301,7 +301,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
           pixel=Sa*(double) p[i]-Da*(double)
             GetPixelChannel(reconstruct_image,channel,q);
         distance=pixel*pixel;
-        if (distance >= fuzz)
+        if (distance > fuzz)
           {
             difference=MagickTrue;
             break;
@@ -455,12 +455,12 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          delta=QuantumScale*((double) p[i]-(double) GetPixelChannel(
-            reconstruct_image,channel,q));
+          delta=(double) p[i]-(double) GetPixelChannel(
+            reconstruct_image,channel,q);
         else
-          delta=QuantumScale*(Sa*(double) p[i]-Da*(double) GetPixelChannel(
-            reconstruct_image,channel,q));
-        if ((delta*delta) >= (QuantumScale*fuzz))
+          delta=Sa*(double) p[i]-Da*(double) GetPixelChannel(
+            reconstruct_image,channel,q);
+        if ((delta*delta) > fuzz)
           {
             channel_distortion[i]++;
             count++;
