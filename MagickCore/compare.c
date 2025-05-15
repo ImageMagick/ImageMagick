@@ -427,8 +427,10 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         Da,
         Sa;
 
+      size_t
+        count = 0;
+
       ssize_t
-        count = 0,
         i;
 
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
