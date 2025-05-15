@@ -428,6 +428,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         Sa;
 
       ssize_t
+        count = 0,
         i;
 
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
@@ -460,9 +461,11 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         if ((delta*delta) >= (QuantumScale*fuzz))
           {
             channel_distortion[i]++;
-            channel_distortion[CompositePixelChannel]++;
+            count++;
           }
       }
+      if (count != 0)
+        channel_distortion[CompositePixelChannel]++;
       channel_area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
@@ -505,7 +508,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     distortion[k]*=area;
   }
   distortion[CompositePixelChannel]*=area;
-  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   return(status);
 }
 
