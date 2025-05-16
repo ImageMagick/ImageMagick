@@ -59,7 +59,7 @@
   will it read any output image.
 -->
 <delegatemap>
-  <delegate decode="bpg" command="&apos;@BPGDecodeDelegate@&apos; -b 16 -o &apos;%o.png&apos; &apos;%i&apos;; @MVDelegate@ &apos;%o.png&apos; &apos;%o&apos;"/>
+  <delegate decode="bpg" command="&apos;@BPGDecodeDelegate@&apos; -b 16 -o &apos;%o&apos; &apos;%i&apos;"/>
   <delegate decode="png" encode="bpg" command="&apos;@BPGEncodeDelegate@&apos; -b 12 -q &apos;%~&apos; -o &apos;%o&apos; &apos;%i&apos;"/>
   <delegate decode="blender" command="&apos;@BlenderDecodeDelegate@&apos; -b &apos;%i&apos; -F PNG -o &apos;%o&apos;&apos;\n&apos;@ConvertDelegate@&apos; -concatenate &apos;%o*.png&apos; &apos;%o&apos;"/>
   <delegate decode="browse" stealth="True" spawn="True" command="&apos;@BrowseDelegate@&apos; https://imagemagick.org/; @RMDelegate@ &apos;%i&apos;"/>
