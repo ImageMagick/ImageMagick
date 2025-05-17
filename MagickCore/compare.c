@@ -1478,9 +1478,10 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
     distortion[k]+=difference;
     distortion[CompositePixelChannel]+=difference;
   }
-  artifact=GetImageArtifact(image,"phash:normalize");
+  distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   for (k=0; k <= MaxPixelChannels; k++)
     distortion[k]/=PHASHNormalizationFactor;
+  artifact=GetImageArtifact(image,"phash:normalize");
   if (IsStringTrue(artifact) != MagickFalse)
     {
       ssize_t
