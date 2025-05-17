@@ -1244,7 +1244,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 case NormalizedCrossCorrelationErrorMetric:
                 case PeakSignalToNoiseRatioErrorMetric:
                 case PhaseCorrelationErrorMetric:
-                case StructuralDissimilarityErrorMetric:
                 {
                   similarity_metric=1.0-similarity_metric;
                   break;
@@ -1273,6 +1272,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
 
       SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
       scale=(double) columns*rows;
+      break;
+    }
+    case StructuralDissimilarityErrorMetric:
+    {
+      distortion=MagickMax(distortion,0.0);
       break;
     }
     case DotProductCorrelationErrorMetric:

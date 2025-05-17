@@ -1772,11 +1772,9 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
     distortion[l]*=area;
-    distortion[l]=1.0-distortion[l];
   }
   distortion[CompositePixelChannel]*=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
-  distortion[CompositePixelChannel]=1.0-distortion[CompositePixelChannel];
   kernel_info=DestroyKernelInfo(kernel_info);
   return(status);
 }
@@ -4119,7 +4117,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         case NormalizedCrossCorrelationErrorMetric:
         case PeakSignalToNoiseRatioErrorMetric:
         case PhaseCorrelationErrorMetric:
-        case StructuralDissimilarityErrorMetric:
         {
           if (similarity > channel_info.similarity)
             update=MagickTrue;
@@ -4153,7 +4150,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
           case NormalizedCrossCorrelationErrorMetric:
           case PeakSignalToNoiseRatioErrorMetric:
           case PhaseCorrelationErrorMetric:
-          case StructuralDissimilarityErrorMetric:
           {
             SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
               QuantumRange*similarity),q);
@@ -4178,7 +4174,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       case NormalizedCrossCorrelationErrorMetric:
       case PeakSignalToNoiseRatioErrorMetric:
       case PhaseCorrelationErrorMetric:
-      case StructuralDissimilarityErrorMetric:
       {
         if (similarity_threshold != DefaultSimilarityThreshold)
           if (channel_info.similarity >= similarity_threshold)
