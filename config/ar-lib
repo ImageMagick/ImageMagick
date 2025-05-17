@@ -2,9 +2,9 @@
 # Wrapper for Microsoft lib.exe
 
 me=ar-lib
-scriptversion=2019-07-04.01; # UTC
+scriptversion=2024-06-19.01; # UTC
 
-# Copyright (C) 2010-2021 Free Software Foundation, Inc.
+# Copyright (C) 2010-2024 Free Software Foundation, Inc.
 # Written by Peter Rosin <peda@lysator.liu.se>.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -105,11 +105,15 @@ case $1 in
 Usage: $me [--help] [--version] PROGRAM ACTION ARCHIVE [MEMBER...]
 
 Members may be specified in a file named with @FILE.
+
+Report bugs to <bug-automake@gnu.org>.
+GNU Automake home page: <https://www.gnu.org/software/automake/>.
+General help using GNU software: <https://www.gnu.org/gethelp/>.
 EOF
     exit $?
     ;;
   -v | --v*)
-    echo "$me, version $scriptversion"
+    echo "$me (GNU Automake) $scriptversion"
     exit $?
     ;;
 esac
@@ -133,6 +137,10 @@ do
     | -verbose | -VERBOSE \
     | -wx* | -WX* )
       AR="$AR $1"
+      shift
+      ;;
+    -nologo | -NOLOGO)
+      # We always invoke AR with -nologo, so don't need to add it again.
       shift
       ;;
     *)

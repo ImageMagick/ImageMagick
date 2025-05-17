@@ -1,7 +1,7 @@
 #! /bin/sh
 # mkinstalldirs --- make directory hierarchy
 
-scriptversion=2020-07-26.22; # UTC
+scriptversion=2024-06-19.01; # UTC
 
 # Original author: Noah Friedman <friedman@prep.ai.mit.edu>
 # Created: 1993-05-16
@@ -23,7 +23,9 @@ Usage: mkinstalldirs [-h] [--help] [--version] [-m MODE] DIR ...
 Create each directory DIR (with mode MODE, if specified), including all
 leading file name components.
 
-Report bugs to <bug-automake@gnu.org>."
+Report bugs to <bug-automake@gnu.org>.
+GNU Automake home page: <https://www.gnu.org/software/automake/>.
+General help using GNU software: <https://www.gnu.org/gethelp/>."
 
 # process command line arguments
 while test $# -gt 0 ; do
@@ -39,7 +41,7 @@ while test $# -gt 0 ; do
       shift
       ;;
     --version)
-      echo "$0 $scriptversion"
+      echo "$0 (GNU Automake) $scriptversion"
       exit $?
       ;;
     --)                         # stop option processing
