@@ -2555,18 +2555,6 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
           }
           break;
         }
-      if (quantum_info->format == SignedQuantumFormat)
-        {
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            p=PushShortPixel(quantum_info->endian,p,&pixel);
-            pixel=(unsigned short) (((unsigned int) pixel+32768) % 65536);
-            SetPixelGray(image,ScaleShortToQuantum(pixel),q);
-            p+=(ptrdiff_t) quantum_info->pad;
-            q+=(ptrdiff_t) GetPixelChannels(image);
-          }
-          break;
-        }
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushShortPixel(quantum_info->endian,p,&pixel);
