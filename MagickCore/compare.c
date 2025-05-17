@@ -1539,9 +1539,8 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
 {
 #define SSIMRadius  5.0
 #define SSIMSigma  1.5
-#define SSIMBlocksize  8
-#define SSIMK1  0.01
-#define SSIMK2  0.03
+#define SSIMK1  0.0001
+#define SSIMK2  0.0003
 #define SSIML  1.0
 
   CacheView
