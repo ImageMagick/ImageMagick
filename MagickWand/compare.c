@@ -245,11 +245,11 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     *format;
 
   double
-    dissimilarity_threshold,
-    distortion,
+    dissimilarity_threshold = DefaultDissimilarityThreshold,
+    distortion = 0.0 ,
     scale = QuantumRange,
-    similarity_metric,
-    similarity_threshold;
+    similarity_metric = 0.0,
+    similarity_threshold = DefaultSimilarityThreshold;
 
   Image
     *difference_image,
@@ -271,7 +271,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     status;
 
   MetricType
-    metric;
+    distortion_metric = MeanSquaredErrorMetric,
+    metric = UndefinedErrorMetric;
 
   RectangleInfo
     offset;
@@ -310,14 +311,9 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
   difference_image=NewImageList();
   similarity_image=NewImageList();
-  dissimilarity_threshold=DefaultDissimilarityThreshold;
-  similarity_threshold=DefaultSimilarityThreshold;
-  distortion=0.0;
-  similarity_metric=0.0;
   format=(char *) NULL;
   j=1;
   k=0;
-  metric=UndefinedErrorMetric;
   NewImageStack();
   option=(char *) NULL;
   pend=MagickFalse;
@@ -1175,6 +1171,9 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   FinalizeImageSettings(image_info,image,MagickTrue);
   if ((image == (Image *) NULL) || (GetImageListLength(image) < 2))
     ThrowCompareException(OptionError,"MissingAnImageFilename",argv[i]);
+  if ((metric == MeanSquaredErrorMetric) ||
+      (metric == PeakSignalToNoiseRatioErrorMetric))
+    distortion_metric=metric;
   image=GetImageFromList(image,0);
   reconstruct_image=GetImageFromList(image,1);
   offset.x=0;
@@ -1190,8 +1189,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
           "ImagesTooDissimilar","`%s'",image->filename);
     }
   if (similarity_image == (Image *) NULL)
-    difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
-      exception);
+    difference_image=CompareImages(image,reconstruct_image,distortion_metric,
+      &distortion,exception);
   else
     {
       Image
@@ -1202,8 +1201,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       */
       composite_image=CloneImage(image,0,0,MagickTrue,exception);
       if (composite_image == (Image *) NULL)
-        difference_image=CompareImages(image,reconstruct_image,metric,
-          &distortion,exception);
+        difference_image=CompareImages(image,reconstruct_image,
+          distortion_metric,&distortion,exception);
       else
         {
           Image
@@ -1214,8 +1213,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
 
           (void) CompositeImage(composite_image,reconstruct_image,
             CopyCompositeOp,MagickTrue,offset.x,offset.y,exception);
-          difference_image=CompareImages(image,composite_image,metric,
-            &distortion,exception);
+          difference_image=CompareImages(image,composite_image,
+            distortion_metric,&distortion,exception);
           if (difference_image != (Image *) NULL)
             {
               difference_image->page.x=offset.x;
@@ -1232,22 +1231,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               Image
                 *sans_image;
 
-              switch (metric)
-              {
-                case AbsoluteErrorMetric:
-                case PeakSignalToNoiseRatioErrorMetric:
-                {
-                  sans_image=CompareImages(distort_image,reconstruct_image,
-                    metric,&distortion,exception);
-                  break;
-                }
-                default:
-                {
-                  sans_image=CompareImages(distort_image,reconstruct_image,
-                    MeanSquaredErrorMetric,&distortion,exception);
-                  break;
-                }
-              }
+              sans_image=CompareImages(distort_image,reconstruct_image,
+                distortion_metric,&distortion,exception);
               if (sans_image != (Image *) NULL)
                 sans_image=DestroyImage(sans_image);
               distort_image=DestroyImage(distort_image);
