@@ -3502,9 +3502,6 @@ Compare(ref,...)
         }
       }
     }
-    if ((metric != AbsoluteErrorMetric) &&
-        (metric != PeakSignalToNoiseRatioErrorMetric))
-      metric=MeanSquaredErrorMetric;
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
       exception);
     if (difference_image != (Image *) NULL)
