@@ -1232,24 +1232,21 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
               Image
                 *sans_image;
 
-              sans_image=CompareImages(distort_image,reconstruct_image,metric,
-                &distortion,exception);
-              if (sans_image != (Image *) NULL)
-                sans_image=DestroyImage(sans_image);
-              sans_image=CompareImages(distort_image,reconstruct_image,
-                MeanSquaredErrorMetric,&similarity_metric,exception);
               switch (metric)
               {
-                case DotProductCorrelationErrorMetric:
-                case NormalizedCrossCorrelationErrorMetric:
+                case AbsoluteErrorMetric:
                 case PeakSignalToNoiseRatioErrorMetric:
-                case PhaseCorrelationErrorMetric:
                 {
-                  similarity_metric=1.0-similarity_metric;
+                  sans_image=CompareImages(distort_image,reconstruct_image,
+                    metric,&distortion,exception);
                   break;
                 }
                 default:
+                {
+                  sans_image=CompareImages(distort_image,reconstruct_image,
+                    MeanSquaredErrorMetric,&distortion,exception);
                   break;
+                }
               }
               if (sans_image != (Image *) NULL)
                 sans_image=DestroyImage(sans_image);
@@ -1272,11 +1269,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
 
       SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
       scale=(double) columns*rows;
-      break;
-    }
-    case StructuralDissimilarityErrorMetric:
-    {
-      distortion=MagickMax(distortion,0.0);
       break;
     }
     case DotProductCorrelationErrorMetric:

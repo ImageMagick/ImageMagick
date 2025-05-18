@@ -4117,6 +4117,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         case NormalizedCrossCorrelationErrorMetric:
         case PeakSignalToNoiseRatioErrorMetric:
         case PhaseCorrelationErrorMetric:
+        case StructuralSimilarityErrorMetric:
         {
           if (similarity > channel_info.similarity)
             update=MagickTrue;
@@ -4150,6 +4151,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
           case NormalizedCrossCorrelationErrorMetric:
           case PeakSignalToNoiseRatioErrorMetric:
           case PhaseCorrelationErrorMetric:
+          case StructuralSimilarityErrorMetric:
           {
             SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
               QuantumRange*similarity),q);
@@ -4174,6 +4176,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       case NormalizedCrossCorrelationErrorMetric:
       case PeakSignalToNoiseRatioErrorMetric:
       case PhaseCorrelationErrorMetric:
+      case StructuralSimilarityErrorMetric:
       {
         if (similarity_threshold != DefaultSimilarityThreshold)
           if (channel_info.similarity >= similarity_threshold)
