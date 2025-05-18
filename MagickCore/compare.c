@@ -1869,7 +1869,6 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
       break;
     }
     case NormalizedCrossCorrelationErrorMetric:
-    default:
     {
       status=GetNormalizedCrossCorrelationDistortion(image,reconstruct_image,
         channel_distortion,exception);
@@ -1894,6 +1893,8 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
       break;
     }
     case RootMeanSquaredErrorMetric:
+    case UndefinedErrorMetric:
+    default:
     {
       status=GetRootMeanSquaredDistortion(image,reconstruct_image,
         channel_distortion,exception);
@@ -2013,7 +2014,6 @@ MagickExport double *GetImageDistortions(Image *image,
       break;
     }
     case NormalizedCrossCorrelationErrorMetric:
-    default:
     {
       status=GetNormalizedCrossCorrelationDistortion(image,reconstruct_image,
         channel_distortion,exception);
@@ -2038,6 +2038,8 @@ MagickExport double *GetImageDistortions(Image *image,
       break;
     }
     case RootMeanSquaredErrorMetric:
+    case UndefinedErrorMetric:
+    default:
     {
       status=GetRootMeanSquaredDistortion(image,reconstruct_image,
         channel_distortion,exception);
@@ -4027,6 +4029,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         return(similarity_image);
       }
       case RootMeanSquaredErrorMetric:
+      case UndefinedErrorMetric:
       {
         similarity_image=RMSESimilarityImage(image,reconstruct,offset,
           similarity_metric,exception);
