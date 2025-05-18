@@ -3508,6 +3508,9 @@ Compare(ref,...)
         }
       }
     }
+    if ((metric != AbsoluteErrorMetric) &&
+        (metric != PeakSignalToNoiseRatioErrorMetric))
+      metric=MeanSquaredErrorMetric;
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
       exception);
     if (difference_image != (Image *) NULL)
@@ -5641,10 +5644,10 @@ Get(ref,...)
               continue;
             }
           if (LocaleNCompare(attribute,"registry:",9) == 0)
-            {   
+            {
               const char
                 *value;
-        
+ 
               value=(const char *) GetImageRegistry(StringRegistryType,
                 attribute+9,exception);
               if (value != (const char *) NULL)

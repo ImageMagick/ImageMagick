@@ -1996,7 +1996,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
       if (LocaleNCompare(attribute,"registry:",9) == 0)
         {
           (void) SetImageRegistry(StringRegistryType,attribute+9,SvPV(sval,na),
-            exception); 
+            exception);
           break;
         }
       if (LocaleCompare(attribute,"render") == 0)
@@ -3502,6 +3502,9 @@ Compare(ref,...)
         }
       }
     }
+    if ((metric != AbsoluteErrorMetric) &&
+        (metric != PeakSignalToNoiseRatioErrorMetric))
+      metric=MeanSquaredErrorMetric;
     difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
       exception);
     if (difference_image != (Image *) NULL)
@@ -13933,7 +13936,7 @@ Read(ref,...)
       **keep,
       **list,
       **p;
-    
+
     ExceptionInfo
       *exception;
 
