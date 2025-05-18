@@ -1168,16 +1168,16 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
           continue;
         if (channel == AlphaPixelChannel)
           {
-            alpha=QuantumScale*fabs((double) p[i]-
+            alpha=QuantumScale*((double) p[i]-
               image_statistics[channel].mean);
-            beta=QuantumScale*fabs((double) GetPixelChannel(reconstruct_image,
+            beta=QuantumScale*((double) GetPixelChannel(reconstruct_image,
               channel,q)-reconstruct_statistics[channel].mean);
           }
         else
           {
-            alpha=QuantumScale*fabs(Sa*(double) p[i]-
+            alpha=QuantumScale*(Sa*(double) p[i]-
               image_statistics[channel].mean);
-            beta=QuantumScale*fabs(Da*(double)
+            beta=QuantumScale*(Da*(double)
               GetPixelChannel(reconstruct_image,channel,q)-
               reconstruct_statistics[channel].mean);
           }
