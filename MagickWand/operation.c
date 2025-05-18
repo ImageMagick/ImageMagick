@@ -4003,6 +4003,9 @@ static MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           if (option != (const char *) NULL)
             metric=(MetricType) ParseCommandOption(MagickMetricOptions,
               MagickFalse,option);
+          if ((metric != MeanSquaredErrorMetric) &&
+              (metric != PeakSignalToNoiseRatioErrorMetric))
+            metric=MeanSquaredErrorMetric;
           new_images=CompareImages(image,reconstruct_image,metric,&distortion,
             _exception);
           (void) distortion;
