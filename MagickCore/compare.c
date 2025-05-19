@@ -442,7 +442,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         else
           delta=Sa*(double) p[i]-Da*(double) GetPixelChannel(
             reconstruct_image,channel,q);
-        if ((delta*delta) > fuzz)
+        if ((delta*delta) >= fuzz)
           {
             channel_distortion[i]++;
             count++;
@@ -3740,7 +3740,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(ncc_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
-  *similarity_metric=1.0-QuantumScale*maxima;
+  *similarity_metric=QuantumScale*maxima;
   return(ncc_image);
 }
 
