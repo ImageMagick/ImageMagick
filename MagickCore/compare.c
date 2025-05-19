@@ -3451,7 +3451,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
-  *similarity_metric=uantumScale*maxima;
+  *similarity_metric=QuantumScale*maxima;
   return(dot_product_image);
 }
 
