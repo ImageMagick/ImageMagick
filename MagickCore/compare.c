@@ -3451,7 +3451,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
-  *similarity_metric=1.0-QuantumScale*maxima;
+  *similarity_metric=uantumScale*maxima;
   return(dot_product_image);
 }
 
@@ -3879,7 +3879,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(phase_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
-  *similarity_metric=1.0-QuantumScale*maxima;
+  *similarity_metric=QuantumScale*maxima;
   magnitude_image=DestroyImage(magnitude_image);
   return(phase_image);
 }
