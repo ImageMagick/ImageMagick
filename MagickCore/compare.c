@@ -3880,6 +3880,8 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   *similarity_metric=QuantumScale*maxima;
+  if (maxima == MagickMinimumValue)
+    *similarity_metric=1.0;
   magnitude_image=DestroyImage(magnitude_image);
   return(phase_image);
 }
