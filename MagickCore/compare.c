@@ -2773,7 +2773,7 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
   if (q != (const Quantum *) NULL)
     minima_info.minima=(double) q[0];
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+  #pragma omp parallel for schedule(static) shared(minima_info,status) \
     magick_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
