@@ -1836,11 +1836,24 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
 MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   double *maxima,ExceptionInfo *exception)
 {
+  typedef struct
+  {
+    double
+      maxima,
+      minima;
+  } RangeInfo;
+
   CacheView
     *image_view;
 
+  const Quantum
+    *magick_restrict q;
+
   MagickBooleanType
     status;
+
+  RangeInfo
+    range_info = { MagickMinimumValue, MagickMaximumValue };
 
   ssize_t
     y;
@@ -1850,21 +1863,24 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  *maxima=MagickMinimumValue;
-  *minima=MagickMaximumValue;
   image_view=AcquireVirtualCacheView(image,exception);
+  q=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
+  if (q != (const Quantum *) NULL)
+    {
+      range_info.maxima=(double) q[0];
+      range_info.minima=(double) q[0];
+    }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+  #pragma omp parallel for schedule(static) shared(range_info,status) \
     magick_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    double
-      row_maxima = MagickMinimumValue,
-      row_minima = MagickMaximumValue;
-
     const Quantum
       *magick_restrict p;
+
+    RangeInfo
+      channel_range;
 
     ssize_t
       x;
@@ -1877,6 +1893,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         status=MagickFalse;
         continue;
       }
+    channel_range=range_info;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -1888,10 +1905,10 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if ((double) p[i] < row_minima)
-          row_minima=(double) p[i];
-        if ((double) p[i] > row_maxima)
-          row_maxima=(double) p[i];
+        if ((double) p[i] > channel_range.maxima)
+          channel_range.maxima=(double) p[i];
+        if ((double) p[i] < channel_range.minima)
+          channel_range.minima=(double) p[i];
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
@@ -1899,13 +1916,15 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
     #pragma omp critical (MagickCore_GetImageRange)
 #endif
     {
-      if (row_minima < *minima)
-        *minima=row_minima;
-      if (row_maxima > *maxima)
-        *maxima=row_maxima;
+      if (channel_range.maxima > range_info.maxima)
+        range_info.maxima=channel_range.maxima;
+      if (channel_range.minima < range_info.minima)
+        range_info.minima=channel_range.minima;
     }
   }
   image_view=DestroyCacheView(image_view);
+  *maxima=range_info.maxima;
+  *minima=range_info.minima;
   return(status);
 }
 
