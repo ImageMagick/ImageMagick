@@ -2655,6 +2655,9 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
   CacheView
     *image_view;
 
+  const Quantum
+    *magick_restrict q;
+
   MagickBooleanType
     status;
 
@@ -2669,8 +2672,12 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
   */
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
+  q=GetCacheViewVirtualPixels(image_view,maxima_info.x,maxima_info.y,1,1,
+    exception);
+  if (q != (const Quantum *) NULL)
+    maxima_info.maxima=(double) q[0];
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+  #pragma omp parallel for schedule(static) shared(maxima_info,status) \
     magick_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -2692,6 +2699,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
         status=MagickFalse;
         continue;
       }
+    channel_maxima=maxima_info;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -2743,6 +2751,9 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
   CacheView
     *image_view;
 
+  const Quantum
+    *magick_restrict q;
+
   MagickBooleanType
     status;
 
@@ -2757,6 +2768,10 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
   */
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
+  q=GetCacheViewVirtualPixels(image_view,minima_info.x,minima_info.y,1,1,
+    exception);
+  if (q != (const Quantum *) NULL)
+    minima_info.minima=(double) q[0];
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     magick_number_threads(image,image,image->rows,1)
@@ -2780,6 +2795,7 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
         status=MagickFalse;
         continue;
       }
+    channel_minima=minima_info;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       ssize_t
@@ -3579,7 +3595,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   if (mse_image == (Image *) NULL)
     ThrowMSESimilarityException();
   /*
-    Locate minimum.
+    Identify the minima value in the correlation image and its location.
   */
   (void) ResetImagePage(mse_image,"0x0+0+0");
   (void) ClampImage(mse_image,exception);
@@ -3590,6 +3606,8 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowMSESimilarityException();
   *similarity_metric=QuantumScale*minima;
+  if (IsNaN(minima) != 0)
+    *similarity_metric=0.0;
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
   return(mse_image);
@@ -3870,7 +3888,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     ThrowPhaseSimilarityException();
   (void) ResetImagePage(phase_image,"0x0+0+0");
   /*
-    Identify the maxima value in the image and its location.
+    Identify the maxima value in the correlation image and its location.
   */
   status=GrayscaleImage(phase_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
@@ -3880,7 +3898,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   *similarity_metric=QuantumScale*maxima;
-  if (maxima == MagickMinimumValue)
+  if (IsNaN(maxima) != 0)
     *similarity_metric=1.0;
   magnitude_image=DestroyImage(magnitude_image);
   return(phase_image);
