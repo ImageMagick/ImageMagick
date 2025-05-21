@@ -3315,7 +3315,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     geometry;
 
   size_t
-    extent;
+    extent = MagickMax(image->columns,image->rows);
 
   /*
     Dot product correlation-based image similarity using FFT local statistics.
@@ -3325,9 +3325,9 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     return((Image *) NULL);
   GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
   (void) ResetImagePage(test_image,"0x0+0+0");
-  extent=MagickMax(image->columns,image->rows);
-  status=SetImageExtent(test_image,2*(size_t) ceil((double) extent/2.0),
-    2*(size_t) ceil((double) extent/2.0),exception);
+  if ((extent % 2) != 0)
+    extent++;
+  status=SetImageExtent(test_image,extent,extent,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
   (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
@@ -3339,6 +3339,9 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     ThrowDPCSimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
   (void) ResetImagePage(reconstruct_image,"0x0+0+0");
+  status=SetImageExtent(reconstruct_image,extent,extent,exception);
+  if (status == MagickFalse)
+    ThrowDPCSimilarityException();
   (void) SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
   /*
     Compute X and Y derivatives of reference image.
@@ -3468,6 +3471,8 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
   *similarity_metric=QuantumScale*maxima;
+  if (IsNaN(maxima) != 0)
+    *similarity_metric=1.0;
   return(dot_product_image);
 }
 
@@ -3808,6 +3813,9 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo
     geometry;
 
+  size_t
+    extent = MagickMax(image->columns,image->rows);
+
   /*
     Phase correlation-based image similarity using FFT local statistics.
   */
@@ -3816,8 +3824,10 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     ThrowPhaseSimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
   (void) ResetImagePage(test_image,"0x0+0+0");
-  status=SetImageExtent(test_image,2*(size_t) ceil((double) image->columns/2.0),
-    2*(size_t) ceil((double) image->rows/2.0),exception);
+  extent=MagickMax(image->columns,image->rows);
+  if ((extent % 2) != 0)
+    extent++;
+  status=SetImageExtent(test_image,extent,extent,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
@@ -3829,8 +3839,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     ThrowPhaseSimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
   (void) ResetImagePage(reconstruct_image,"0x0+0+0");
-  status=SetImageExtent(reconstruct_image,2*(size_t) ceil((double)
-    image->columns/2.0),2*(size_t) ceil((double) image->rows/2.0),exception);
+  status=SetImageExtent(reconstruct_image,extent,extent,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   (void) SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
