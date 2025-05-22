@@ -1775,6 +1775,8 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   }
   distortion[CompositePixelChannel]*=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
+  if (distortion[CompositePixelChannel] < 0.0)
+    distortion[CompositePixelChannel]=0.0;
   kernel_info=DestroyKernelInfo(kernel_info);
   return(status);
 }
