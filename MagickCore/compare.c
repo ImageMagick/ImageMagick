@@ -1772,11 +1772,9 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
     distortion[l]*=area;
-    distortion[l]=1.0-distortion[l];
   }
   distortion[CompositePixelChannel]*=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
-  distortion[CompositePixelChannel]=1.0-distortion[CompositePixelChannel];
   kernel_info=DestroyKernelInfo(kernel_info);
   return(status);
 }
@@ -1835,7 +1833,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   */
   length=MaxPixelChannels+1UL;
   channel_distortion=(double *) AcquireQuantumMemory(length,
-    sizeof(*channel_distortion));
+    sizeof(*distortion));
   if (channel_distortion == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) memset(channel_distortion,0,length*
@@ -1906,8 +1904,13 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     }
     case StructuralSimilarityErrorMetric:
     {
+      ssize_t
+        i;
+
       status=GetStructuralSimilarityDistortion(image,reconstruct_image,
         channel_distortion,exception);
+      for (i=0; i <= MaxPixelChannels; i++)
+        channel_distortion[i]=1.0-channel_distortion[i];
       break;
     }
     case StructuralDissimilarityErrorMetric:
@@ -1961,7 +1964,7 @@ MagickExport double *GetImageDistortions(Image *image,
   ExceptionInfo *exception)
 {
   double
-    *channel_distortion;
+    *distortion;
 
   MagickBooleanType
     status;
@@ -1979,66 +1982,66 @@ MagickExport double *GetImageDistortions(Image *image,
     Get image distortion.
   */
   length=MaxPixelChannels+1UL;
-  channel_distortion=(double *) AcquireQuantumMemory(length,
-    sizeof(*channel_distortion));
-  if (channel_distortion == (double *) NULL)
+  distortion=(double *) AcquireQuantumMemory(length,
+    sizeof(*distortion));
+  if (distortion == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) memset(channel_distortion,0,length*sizeof(*channel_distortion));
+  (void) memset(distortion,0,length*sizeof(*distortion));
   status=MagickTrue;
   switch (metric)
   {
     case AbsoluteErrorMetric:
     {
-      status=GetAbsoluteDistortion(image,reconstruct_image,channel_distortion,
+      status=GetAbsoluteDistortion(image,reconstruct_image,distortion,
         exception);
       break;
     }
     case FuzzErrorMetric:
     {
-      status=GetFuzzDistortion(image,reconstruct_image,channel_distortion,
+      status=GetFuzzDistortion(image,reconstruct_image,distortion,
         exception);
       break;
     }
     case MeanAbsoluteErrorMetric:
     {
       status=GetMeanAbsoluteDistortion(image,reconstruct_image,
-        channel_distortion,exception);
+        distortion,exception);
       break;
     }
     case MeanErrorPerPixelErrorMetric:
     {
-      status=GetMeanErrorPerPixel(image,reconstruct_image,channel_distortion,
+      status=GetMeanErrorPerPixel(image,reconstruct_image,distortion,
         exception);
       break;
     }
     case MeanSquaredErrorMetric:
     {
       status=GetMeanSquaredDistortion(image,reconstruct_image,
-        channel_distortion,exception);
+        distortion,exception);
       break;
     }
     case NormalizedCrossCorrelationErrorMetric:
     {
       status=GetNormalizedCrossCorrelationDistortion(image,reconstruct_image,
-        channel_distortion,exception);
+        distortion,exception);
       break;
     }
     case PeakAbsoluteErrorMetric:
     {
       status=GetPeakAbsoluteDistortion(image,reconstruct_image,
-        channel_distortion,exception);
+        distortion,exception);
       break;
     }
     case PeakSignalToNoiseRatioErrorMetric:
     {
       status=GetPeakSignalToNoiseRatio(image,reconstruct_image,
-        channel_distortion,exception);
+        distortion,exception);
       break;
     }
     case PerceptualHashErrorMetric:
     {
       status=GetPerceptualHashDistortion(image,reconstruct_image,
-        channel_distortion,exception);
+        distortion,exception);
       break;
     }
     case RootMeanSquaredErrorMetric:
@@ -2046,28 +2049,33 @@ MagickExport double *GetImageDistortions(Image *image,
     default:
     {
       status=GetRootMeanSquaredDistortion(image,reconstruct_image,
-        channel_distortion,exception);
+        distortion,exception);
       break;
     }
     case StructuralSimilarityErrorMetric:
     {
+      ssize_t
+        i;
+
       status=GetStructuralSimilarityDistortion(image,reconstruct_image,
-        channel_distortion,exception);
+        distortion,exception);
+      for (i=0; i <= MaxPixelChannels; i++)
+        distortion[i]=1.0-distortion[i];
       break;
     }
     case StructuralDissimilarityErrorMetric:
     {
       status=GetStructuralDisimilarityDistortion(image,reconstruct_image,
-        channel_distortion,exception);
+        distortion,exception);
       break;
     }
   }
   if (status == MagickFalse)
     {
-      channel_distortion=(double *) RelinquishMagickMemory(channel_distortion);
+      distortion=(double *) RelinquishMagickMemory(distortion);
       return((double *) NULL);
     }
-  return(channel_distortion);
+  return(distortion);
 }
 
 /*
@@ -4153,7 +4161,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         case NormalizedCrossCorrelationErrorMetric:
         case PeakSignalToNoiseRatioErrorMetric:
         case PhaseCorrelationErrorMetric:
-        case StructuralDissimilarityErrorMetric:
         {
           if (similarity > channel_info.similarity)
             update=MagickTrue;
@@ -4187,7 +4194,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
           case NormalizedCrossCorrelationErrorMetric:
           case PeakSignalToNoiseRatioErrorMetric:
           case PhaseCorrelationErrorMetric:
-          case StructuralDissimilarityErrorMetric:
           {
             SetPixelChannel(similarity_image,channel,ClampToQuantum((double)
               QuantumRange*similarity),q);
@@ -4212,7 +4218,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       case NormalizedCrossCorrelationErrorMetric:
       case PeakSignalToNoiseRatioErrorMetric:
       case PhaseCorrelationErrorMetric:
-      case StructuralDissimilarityErrorMetric:
       {
         if (similarity_threshold != DefaultSimilarityThreshold)
           if (channel_info.similarity >= similarity_threshold)
@@ -4245,6 +4250,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
   }
   similarity_view=DestroyCacheView(similarity_view);
+  if (metric == StructuralSimilarityErrorMetric)
+    similarity_info.similarity=1.0-similarity_info.similarity;
   *similarity_metric=similarity_info.similarity;
   offset->x=similarity_info.x;
   offset->y=similarity_info.y;
