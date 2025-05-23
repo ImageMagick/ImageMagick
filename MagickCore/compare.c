@@ -1803,8 +1803,6 @@ static MagickBooleanType GetStructuralDisimilarityDistortion(const Image *image,
     distortion[i]=1.0-distortion[i];
   }
   distortion[CompositePixelChannel]=1.0-distortion[CompositePixelChannel];
-  if (fabs(distortion[CompositePixelChannel]) < MagickEpsilon)
-    distortion[CompositePixelChannel]=0.0;
   return(status);
 }
 
