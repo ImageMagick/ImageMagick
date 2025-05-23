@@ -1803,6 +1803,8 @@ static MagickBooleanType GetStructuralDisimilarityDistortion(const Image *image,
     distortion[i]=1.0-distortion[i];
   }
   distortion[CompositePixelChannel]=1.0-distortion[CompositePixelChannel];
+  if (fabs(distortion[CompositePixelChannel]) < MagickEpsilon)
+    distortion[CompositePixelChannel]=0.0;
   return(status);
 }
 
@@ -1810,6 +1812,8 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   const Image *reconstruct_image,const MetricType metric,double *distortion,
   ExceptionInfo *exception)
 {
+#define CompareMetricNotSupportedException  "metric not supported"
+
   double
     *channel_distortion;
 
@@ -1843,6 +1847,15 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     {
       status=GetAbsoluteDistortion(image,reconstruct_image,channel_distortion,
         exception);
+      break;
+    }
+    case DotProductCorrelationErrorMetric:
+    case PhaseCorrelationErrorMetric:
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        CompareMetricNotSupportedException,"(%s)",CommandOptionToMnemonic(
+        MagickMetricOptions,(ssize_t) metric));
+      status=MagickFalse;
       break;
     }
     case FuzzErrorMetric:
@@ -1993,6 +2006,15 @@ MagickExport double *GetImageDistortions(Image *image,
     {
       status=GetAbsoluteDistortion(image,reconstruct_image,distortion,
         exception);
+      break;
+    }
+    case DotProductCorrelationErrorMetric:
+    case PhaseCorrelationErrorMetric:
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        CompareMetricNotSupportedException,"(%s)",CommandOptionToMnemonic(
+        MagickMetricOptions,(ssize_t) metric));
+      status=MagickFalse;
       break;
     }
     case FuzzErrorMetric:
@@ -4083,9 +4105,9 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   if ((metric == DotProductCorrelationErrorMetric) ||
       (metric == PhaseCorrelationErrorMetric))
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),
-        MissingDelegateError,"DelegateLibrarySupportNotBuiltIn",
-        "'%s' (DPC/Phase metrics require HDRI/FFT delegates)",image->filename);
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        CompareMetricNotSupportedException,"(%s)",CommandOptionToMnemonic(
+        MagickMetricOptions,(ssize_t) metric));
       return((Image *) NULL);
     }
   if ((image->columns < reconstruct->columns) ||

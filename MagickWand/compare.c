@@ -207,8 +207,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
   "search metric is unreliable for constant-color images"
 #define CompareEqualSizedException \
   "subimage search metric is unreliable for equal-sized images"
-#define CompareSpatialEquivalentException \
-  "search metric has no spatial equivalent"
 #define DefaultDissimilarityThreshold  (1.0/MagickPI)
 #define DestroyCompare() \
 { \
@@ -1259,13 +1257,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
     case DotProductCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
-    {
-      if (subimage_search == MagickFalse)
-        (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          CompareSpatialEquivalentException,"(%s)",CommandOptionToMnemonic(
-          MagickMetricOptions,(ssize_t) metric));
-      magick_fallthrough;
-    }
     case NormalizedCrossCorrelationErrorMetric:
     {
       double
