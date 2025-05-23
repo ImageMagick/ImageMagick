@@ -778,7 +778,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
 
   double
     area = 0.0,
-    maximum_error = MagickMinimumValue,
+    maximum_error = -MagickMaximumValue,
     mean_error = 0.0;
 
   MagickBooleanType
@@ -891,7 +891,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       distortion[CompositePixelChannel]+=
         channel_distortion[CompositePixelChannel];
       mean_error+=channel_mean_error;
-      maximum_error+=channel_maximum_error;
+      if (channel_maximum_error > maximum_error)
+        maximum_error=channel_maximum_error;
     }
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
@@ -1723,7 +1724,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         x_pixel_mu_squared=x_pixel_mu[i]*x_pixel_mu[i];
         y_pixel_mu_squared=y_pixel_mu[i]*y_pixel_mu[i];
         xy_mu=x_pixel_mu[i]*y_pixel_mu[i];
-        xy_sigmas=xy_sigma[i]-xy_mu;
+        xy_sigmas=fabs(xy_sigma[i]-xy_mu);
         x_pixel_sigmas_squared=x_pixel_sigma_squared[i]-x_pixel_mu_squared;
         y_pixel_sigmas_squared=y_pixel_sigma_squared[i]-y_pixel_mu_squared;
         ssim=((2.0*xy_mu+c1)*(2.0*xy_sigmas+c2))/
@@ -1775,8 +1776,6 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   }
   distortion[CompositePixelChannel]*=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
-  if (distortion[CompositePixelChannel] < 0.0)
-    distortion[CompositePixelChannel]=0.0;
   kernel_info=DestroyKernelInfo(kernel_info);
   return(status);
 }
