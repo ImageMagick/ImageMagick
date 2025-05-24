@@ -2524,9 +2524,8 @@ static Image *SIMDivideImage(const Image *numerator_image,
         PixelTrait traits = GetPixelChannelTraits(divide_image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (fabs(p[i]) >= MagickEpsilon)
-          q[i]=(Quantum) ((double) q[i]*PerceptibleReciprocal(QuantumScale*
-            (double) p[i]));
+        q[i]=(Quantum) ((double) q[i]*PerceptibleReciprocal(QuantumScale*
+          (double) p[i]));
       }
       p+=(ptrdiff_t) GetPixelChannels(denominator_image);
       q+=(ptrdiff_t) GetPixelChannels(divide_image);
@@ -3498,6 +3497,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
   dot_product_image->depth=32;
+  (void) ClampImage(dot_product_image,exception);
   status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
@@ -3634,6 +3634,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     Identify the minima value in the correlation image and its location.
   */
   (void) ResetImagePage(mse_image,"0x0+0+0");
+  mse_image->depth=32;
   (void) ClampImage(mse_image,exception);
   status=SIMMinimaImage(mse_image,&minima,offset,exception);
   if (status == MagickFalse)
@@ -3791,6 +3792,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
   ncc_image->depth=32;
+  (void) ClampImage(ncc_image,exception);
   status=SIMMaximaImage(ncc_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
@@ -3934,6 +3936,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   phase_image->depth=32;
+  (void) ClampImage(phase_image,exception);
   status=SIMMaximaImage(phase_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
