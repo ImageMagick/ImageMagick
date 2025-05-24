@@ -2470,7 +2470,9 @@ if test "$with_jpeg" != 'no'; then
             AC_MSG_RESULT([no -- some components failed test])
             have_jpeg='no (failed tests)'
         else
-            JPEG_LIBS='-ljpeg'
+            if test -z "$JPEG_LIBS"; then
+              JPEG_LIBS='-ljpeg'
+            fi
             LIBS="$JPEG_LIBS $LIBS"
             AC_DEFINE([JPEG_DELEGATE],[1],[Define if you have JPEG library])
             AC_MSG_RESULT([yes])

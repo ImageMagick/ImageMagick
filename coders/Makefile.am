@@ -1025,7 +1025,7 @@ coders_json_la_LIBADD      = $(MAGICKCORE_LIBS)
 
 # JXL coder module
 coders_jxl_la_SOURCES      = coders/jxl.c
-coders_jxl_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS)
+coders_jxl_la_CPPFLAGS     = $(MAGICK_CODER_CPPFLAGS) $(JXL_CFLAGS)
 coders_jxl_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 coders_jxl_la_LIBADD       = $(MAGICKCORE_LIBS) $(JXL_LIBS)
 
