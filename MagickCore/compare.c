@@ -3291,6 +3291,8 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
 static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
+#define CompareImageExtent(columns,rows) \
+  ((((rows) > (columns) ? (rows) : (columns))+7) & ~7)
 #define ThrowDPCSimilarityException() \
 { \
   if (dot_product_image != (Image *) NULL) \
@@ -3345,7 +3347,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     geometry;
 
   size_t
-    extent = MagickMax(image->columns,image->rows);
+    extent = CompareImageExtent(image->columns,image->rows);
 
   /*
     Dot product correlation-based image similarity using FFT local statistics.
@@ -3355,8 +3357,6 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     return((Image *) NULL);
   GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
   (void) ResetImagePage(test_image,"0x0+0+0");
-  if ((extent % 2) != 0)
-    extent++;
   status=SetImageExtent(test_image,extent,extent,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
@@ -3553,14 +3553,29 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo
     geometry;
 
+  size_t
+    extent = CompareImageExtent(image->columns,image->rows);
+
   /*
     MSE correlation-based image similarity using FFT local statistics.
   */
   test_image=SIMSquareImage(image,exception);
   if (test_image == (Image *) NULL)
     ThrowMSESimilarityException();
+  GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
+  (void) ResetImagePage(test_image,"0x0+0+0");
+  status=SetImageExtent(test_image,extent,extent,exception);
+  if (status == MagickFalse)
+    ThrowMSESimilarityException();
   reconstruct_image=SIMUnityImage(image,reconstruct,exception);
   if (reconstruct_image == (Image *) NULL)
+    ThrowMSESimilarityException();
+  GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
+  (void) ResetImagePage(reconstruct_image,"0x0+0+0");
+  if ((extent % 2) != 0)
+    extent++;
+  status=SetImageExtent(reconstruct_image,extent,extent,exception);
+  if (status == MagickFalse)
     ThrowMSESimilarityException();
   /*
     Create (U * test)/# pixels.
@@ -3595,7 +3610,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   channel_statistics=GetImageStatistics(sum_image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
     ThrowMSESimilarityException();
-  status=SetImageExtent(sum_image,image->columns,image->rows,exception);
+  status=SetImageExtent(sum_image,extent,extent,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
   status=SetImageStorageClass(sum_image,DirectClass,exception);
@@ -3847,7 +3862,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     geometry;
 
   size_t
-    extent = MagickMax(image->columns,image->rows);
+    extent = CompareImageExtent(image->columns,image->rows);
 
   /*
     Phase correlation-based image similarity using FFT local statistics.
@@ -3857,9 +3872,6 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     ThrowPhaseSimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
   (void) ResetImagePage(test_image,"0x0+0+0");
-  extent=MagickMax(image->columns,image->rows);
-  if ((extent % 2) != 0)
-    extent++;
   status=SetImageExtent(test_image,extent,extent,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
@@ -3876,6 +3888,9 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   (void) SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
+  /*
+    Evaluate phase coorelation image and divide by the product magnitude.
+  */
   (void) SetImageArtifact(test_image,"fourier:normalize","inverse");
   fft_images=ForwardFourierTransformImage(test_image,MagickTrue,exception);
   if (fft_images == (Image *) NULL)
