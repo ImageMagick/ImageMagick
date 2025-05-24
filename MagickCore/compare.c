@@ -1249,9 +1249,6 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     beta_variance[k]*=area;
     distortion[k]*=PerceptibleReciprocal(sqrt(alpha_variance[k]*
       beta_variance[k]));
-    distortion[k]=1.0-distortion[k];
-    if (fabs(distortion[k]) < MagickEpsilon)
-      distortion[k]=0.0;
     distortion[CompositePixelChannel]+=distortion[k];
   }
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
@@ -1826,6 +1823,9 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   size_t
     length;
 
+  ssize_t
+    i;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(reconstruct_image != (const Image *) NULL);
@@ -1889,6 +1889,8 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     {
       status=GetNormalizedCrossCorrelationDistortion(image,reconstruct_image,
         channel_distortion,exception);
+      for (i=0; i <= MaxPixelChannels; i++)
+        channel_distortion[i]=1.0-channel_distortion[i];
       break;
     }
     case PeakAbsoluteErrorMetric:
@@ -1919,9 +1921,6 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     }
     case StructuralSimilarityErrorMetric:
     {
-      ssize_t
-        i;
-
       status=GetStructuralSimilarityDistortion(image,reconstruct_image,
         channel_distortion,exception);
       for (i=0; i <= MaxPixelChannels; i++)
@@ -1987,6 +1986,9 @@ MagickExport double *GetImageDistortions(Image *image,
   size_t
     length;
 
+  ssize_t
+    i;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickCoreSignature);
   assert(reconstruct_image != (const Image *) NULL);
@@ -2048,6 +2050,8 @@ MagickExport double *GetImageDistortions(Image *image,
     {
       status=GetNormalizedCrossCorrelationDistortion(image,reconstruct_image,
         distortion,exception);
+      for (i=0; i <= MaxPixelChannels; i++)
+        distortion[i]=1.0-distortion[i];
       break;
     }
     case PeakAbsoluteErrorMetric:
@@ -2078,9 +2082,6 @@ MagickExport double *GetImageDistortions(Image *image,
     }
     case StructuralSimilarityErrorMetric:
     {
-      ssize_t
-        i;
-
       status=GetStructuralSimilarityDistortion(image,reconstruct_image,
         distortion,exception);
       for (i=0; i <= MaxPixelChannels; i++)
@@ -3658,7 +3659,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowMSESimilarityException();
   *similarity_metric=QuantumScale*minima;
-  if (IsNaN(minima) != 0)
+  if ((IsNaN(minima) != 0) || (*similarity_metric <= FLT_EPSILON))
     *similarity_metric=0.0;
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
@@ -3717,14 +3718,27 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo
     geometry;
 
+  size_t
+    extent = MagickMax(image->columns,image->rows);
+
   /*
     NCC correlation-based image similarity with FFT local statistics.
   */
   test_image=SIMSquareImage(image,exception);
   if (test_image == (Image *) NULL)
     ThrowNCCSimilarityException();
+  GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
+  (void) ResetImagePage(test_image,"0x0+0+0");
+  status=SetImageExtent(test_image,extent,extent,exception);
+  if (status == MagickFalse)
+    ThrowNCCSimilarityException();
   reconstruct_image=SIMUnityImage(image,reconstruct,exception);
   if (reconstruct_image == (Image *) NULL)
+    ThrowNCCSimilarityException();
+  GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
+  (void) ResetImagePage(reconstruct_image,"0x0+0+0");
+  status=SetImageExtent(reconstruct_image,extent,extent,exception);
+  if (status == MagickFalse)
     ThrowNCCSimilarityException();
   /*
     Compute the cross correlation of the test and reconstruction images.
@@ -4197,7 +4211,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       switch (metric)
       {
         case DotProductCorrelationErrorMetric:
-        case NormalizedCrossCorrelationErrorMetric:
         case PeakSignalToNoiseRatioErrorMetric:
         case PhaseCorrelationErrorMetric:
         {
@@ -4230,7 +4243,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         switch (metric)
         {
           case DotProductCorrelationErrorMetric:
-          case NormalizedCrossCorrelationErrorMetric:
           case PeakSignalToNoiseRatioErrorMetric:
           case PhaseCorrelationErrorMetric:
           {
@@ -4254,7 +4266,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     switch (metric)
     {
       case DotProductCorrelationErrorMetric:
-      case NormalizedCrossCorrelationErrorMetric:
       case PeakSignalToNoiseRatioErrorMetric:
       case PhaseCorrelationErrorMetric:
       {
