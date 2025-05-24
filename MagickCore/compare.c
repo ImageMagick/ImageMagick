@@ -1401,10 +1401,10 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
     if (((traits & UpdatePixelTrait) == 0) ||
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
-    distortion[i]=10.0*PerceptibleLog10(PerceptibleReciprocal(
+    distortion[i]=10.0*MagickLog10(PerceptibleReciprocal(
       distortion[i]))/MagickPSNRDistortion;
   }
-  distortion[CompositePixelChannel]=10.0*PerceptibleLog10(
+  distortion[CompositePixelChannel]=10.0*MagickLog10(
     PerceptibleReciprocal(distortion[CompositePixelChannel]))/
     MagickPSNRDistortion;
   return(status);
@@ -3984,7 +3984,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
 
   psnr_image=MSESimilarityImage(image,reconstruct,offset,similarity_metric,
     exception);
-  *similarity_metric=10.0*PerceptibleLog10(PerceptibleReciprocal(
+  *similarity_metric=10.0*MagickLog10(PerceptibleReciprocal(
     *similarity_metric))/MagickPSNRDistortion;
   return(psnr_image);
 }
