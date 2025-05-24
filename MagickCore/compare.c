@@ -3499,13 +3499,15 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
   dot_product_image->depth=32;
-  (void) ClampImage(dot_product_image,exception);
   status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
   *similarity_metric=QuantumScale*maxima;
   if (IsNaN(maxima) != 0)
     *similarity_metric=1.0;
+  else
+    if (*similarity_metric > 1.0)
+      *similarity_metric=1.0;
   return(dot_product_image);
 }
 
@@ -3651,7 +3653,6 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   */
   (void) ResetImagePage(mse_image,"0x0+0+0");
   mse_image->depth=32;
-  (void) ClampImage(mse_image,exception);
   status=SIMMinimaImage(mse_image,&minima,offset,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
@@ -3661,6 +3662,9 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   *similarity_metric=QuantumScale*minima;
   if ((IsNaN(minima) != 0) || (*similarity_metric <= FLT_EPSILON))
     *similarity_metric=0.0;
+  else
+    if (*similarity_metric > 1.0)
+      *similarity_metric=1.0;
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
   return(mse_image);
@@ -3821,7 +3825,6 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
   ncc_image->depth=32;
-  (void) ClampImage(ncc_image,exception);
   status=SIMMaximaImage(ncc_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
@@ -3965,13 +3968,15 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   phase_image->depth=32;
-  (void) ClampImage(phase_image,exception);
   status=SIMMaximaImage(phase_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   *similarity_metric=QuantumScale*maxima;
   if (IsNaN(maxima) != 0)
     *similarity_metric=1.0;
+  else
+    if (*similarity_metric > 1.0)
+      *similarity_metric=1.0;
   magnitude_image=DestroyImage(magnitude_image);
   return(phase_image);
 }
