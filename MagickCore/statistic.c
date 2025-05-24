@@ -1617,15 +1617,16 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     */
     channel_moments[c].centroid=centroid[c];
     channel_moments[c].ellipse_axis.x=sqrt((2.0*PerceptibleReciprocal(M00[c]))*
-      ((M20[c]+M02[c])+sqrt(4.0*M11[c]*M11[c]+(M20[c]-M02[c])*(M20[c]-M02[c]))));
+      ((M20[c]+M02[c])+sqrt(4.0*M11[c]*M11[c]+(M20[c]-M02[c])*
+       (M20[c]-M02[c]))));
     channel_moments[c].ellipse_axis.y=sqrt((2.0*PerceptibleReciprocal(M00[c]))*
-      ((M20[c]+M02[c])-sqrt(4.0*M11[c]*M11[c]+(M20[c]-M02[c])*(M20[c]-M02[c]))));
+      ((M20[c]+M02[c])-sqrt(4.0*M11[c]*M11[c]+(M20[c]-M02[c])*
+       (M20[c]-M02[c]))));
     channel_moments[c].ellipse_angle=RadiansToDegrees(1.0/2.0*atan(2.0*
       M11[c]*PerceptibleReciprocal(M20[c]-M02[c])));
     if (fabs(M11[c]) < 0.0)
       {
-        if ((fabs(M20[c]-M02[c]) >= 0.0) &&
-            ((M20[c]-M02[c]) < 0.0))
+        if ((fabs(M20[c]-M02[c]) >= 0.0) && ((M20[c]-M02[c]) < 0.0))
           channel_moments[c].ellipse_angle+=90.0;
       }
     else
@@ -1727,6 +1728,13 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+static inline double PerceptibleLog(const double x)
+{
+  if (x < MagickEpsilon)
+    return(log(MagickEpsilon));
+  return(log(x));
+}
+
 MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1797,7 +1805,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     for (channel=0; channel <= MaxPixelChannels; channel++)
       for (j=0; j < MaximumNumberOfImageMoments; j++)
         perceptual_hash[channel].phash[i][j]=
-          (-PerceptibleLog10(moments[channel].invariant[j]));
+          (-PerceptibleLog(moments[channel].invariant[j]));
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   }
   colorspaces=DestroyString(colorspaces);
