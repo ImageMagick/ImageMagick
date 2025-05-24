@@ -1249,6 +1249,9 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     beta_variance[k]*=area;
     distortion[k]*=PerceptibleReciprocal(sqrt(alpha_variance[k]*
       beta_variance[k]));
+    distortion[k]=1.0-distortion[k];
+    if (fabs(distortion[k]) < MagickEpsilon)
+      distortion[k]=0.0;
     distortion[CompositePixelChannel]+=distortion[k];
   }
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
@@ -3291,8 +3294,6 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
 static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo *offset,double *similarity_metric,ExceptionInfo *exception)
 {
-#define CompareImageExtent(columns,rows) \
-  ((((rows) > (columns) ? (rows) : (columns))+7) & ~7)
 #define ThrowDPCSimilarityException() \
 { \
   if (dot_product_image != (Image *) NULL) \
@@ -3347,7 +3348,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     geometry;
 
   size_t
-    extent = CompareImageExtent(image->columns,image->rows);
+    extent = MagickMax(image->columns,image->rows);
 
   /*
     Dot product correlation-based image similarity using FFT local statistics.
@@ -3554,7 +3555,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     geometry;
 
   size_t
-    extent = CompareImageExtent(image->columns,image->rows);
+    extent = MagickMax(image->columns,image->rows);
 
   /*
     MSE correlation-based image similarity using FFT local statistics.
@@ -3572,8 +3573,6 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     ThrowMSESimilarityException();
   GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
   (void) ResetImagePage(reconstruct_image,"0x0+0+0");
-  if ((extent % 2) != 0)
-    extent++;
   status=SetImageExtent(reconstruct_image,extent,extent,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
@@ -3610,6 +3609,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   channel_statistics=GetImageStatistics(sum_image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
     ThrowMSESimilarityException();
+  GetPixelInfoRGBA(0,0,0,0,&sum_image->background_color);
   status=SetImageExtent(sum_image,extent,extent,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
@@ -3862,7 +3862,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     geometry;
 
   size_t
-    extent = CompareImageExtent(image->columns,image->rows);
+    extent = MagickMax(image->columns,image->rows);
 
   /*
     Phase correlation-based image similarity using FFT local statistics.
