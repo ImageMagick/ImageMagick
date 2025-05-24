@@ -1728,13 +1728,6 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static inline double PerceptibleLog(const double x)
-{
-  if (x < MagickEpsilon)
-    return(log(MagickEpsilon));
-  return(log(x));
-}
-
 MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
   ExceptionInfo *exception)
 {
@@ -1805,7 +1798,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     for (channel=0; channel <= MaxPixelChannels; channel++)
       for (j=0; j < MaximumNumberOfImageMoments; j++)
         perceptual_hash[channel].phash[i][j]=
-          (-PerceptibleLog(moments[channel].invariant[j]));
+          (-PerceptibleLog10(moments[channel].invariant[j]));
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   }
   colorspaces=DestroyString(colorspaces);
