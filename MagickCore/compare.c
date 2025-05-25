@@ -1935,7 +1935,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     }
   }
   for (i=0; i <= MaxPixelChannels; i++)
-    channel_distortion[i]=MagickMax(MagickMin(channel_distortion[i],0.0),1.0);
+    channel_distortion[i]=MagickMin(MagickMax(channel_distortion[i],0.0),1.0);
   *distortion=channel_distortion[CompositePixelChannel];
   channel_distortion=(double *) RelinquishMagickMemory(channel_distortion);
   (void) FormatImageProperty(image,"distortion","%.*g",GetMagickPrecision(),
@@ -2102,7 +2102,7 @@ MagickExport double *GetImageDistortions(Image *image,
       return((double *) NULL);
     }
   for (i=0; i <= MaxPixelChannels; i++)
-    distortion[i]=MagickMax(MagickMin(distortion[i],0.0),1.0);
+    distortion[i]=MagickMin(MagickMax(distortion[i],0.0),1.0);
   return(distortion);
 }
 
