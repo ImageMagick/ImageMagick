@@ -1934,6 +1934,8 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
       break;
     }
   }
+  for (i=0; i <= MaxPixelChannels; i++)
+    channel_distortion[i]=MagickMax(MagickMin(channel_distortion[i],0.0),1.0);
   *distortion=channel_distortion[CompositePixelChannel];
   channel_distortion=(double *) RelinquishMagickMemory(channel_distortion);
   (void) FormatImageProperty(image,"distortion","%.*g",GetMagickPrecision(),
@@ -1999,8 +2001,7 @@ MagickExport double *GetImageDistortions(Image *image,
     Get image distortion.
   */
   length=MaxPixelChannels+1UL;
-  distortion=(double *) AcquireQuantumMemory(length,
-    sizeof(*distortion));
+  distortion=(double *) AcquireQuantumMemory(length,sizeof(*distortion));
   if (distortion == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) memset(distortion,0,length*sizeof(*distortion));
@@ -2100,6 +2101,8 @@ MagickExport double *GetImageDistortions(Image *image,
       distortion=(double *) RelinquishMagickMemory(distortion);
       return((double *) NULL);
     }
+  for (i=0; i <= MaxPixelChannels; i++)
+    distortion[i]=MagickMax(MagickMin(distortion[i],0.0),1.0);
   return(distortion);
 }
 
@@ -3791,7 +3794,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   normalize_image=SIMSubtractImageMean(image,reconstruct,channel_statistics,
     exception);
   channel_statistics=(ChannelStatistics *)
-    RelinquishMagickMemory(channel_statistics);
+     RelinquishMagickMemory(channel_statistics);
   if (normalize_image == (Image *) NULL)
     ThrowNCCSimilarityException();
   correlation_image=SIMCrossCorrelationImage(image,normalize_image,exception);
@@ -3829,11 +3832,6 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
   *similarity_metric=QuantumScale*maxima;
-  if (IsNaN(maxima) != 0)
-    *similarity_metric=1.0;
-  else
-    if (*similarity_metric > 1.0)
-      *similarity_metric=1.0;
   return(ncc_image);
 }
 
