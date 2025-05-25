@@ -3659,14 +3659,14 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   status=NegateImage(mse_image,MagickFalse,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
+  alpha_image=DestroyImage(alpha_image);
+  beta_image=DestroyImage(beta_image);
   *similarity_metric=QuantumScale*minima;
   if ((IsNaN(minima) != 0) || (*similarity_metric <= FLT_EPSILON))
     *similarity_metric=0.0;
   else
     if (*similarity_metric > 1.0)
       *similarity_metric=1.0;
-  alpha_image=DestroyImage(alpha_image);
-  beta_image=DestroyImage(beta_image);
   return(mse_image);
 }
 
@@ -3791,7 +3791,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   normalize_image=SIMSubtractImageMean(image,reconstruct,channel_statistics,
     exception);
   channel_statistics=(ChannelStatistics *)
-     RelinquishMagickMemory(channel_statistics);
+    RelinquishMagickMemory(channel_statistics);
   if (normalize_image == (Image *) NULL)
     ThrowNCCSimilarityException();
   correlation_image=SIMCrossCorrelationImage(image,normalize_image,exception);
@@ -3829,6 +3829,11 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
   *similarity_metric=QuantumScale*maxima;
+  if (IsNaN(maxima) != 0)
+    *similarity_metric=1.0;
+  else
+    if (*similarity_metric > 1.0)
+      *similarity_metric=1.0;
   return(ncc_image);
 }
 
@@ -3971,13 +3976,13 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(phase_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
+  magnitude_image=DestroyImage(magnitude_image);
   *similarity_metric=QuantumScale*maxima;
   if (IsNaN(maxima) != 0)
     *similarity_metric=1.0;
   else
     if (*similarity_metric > 1.0)
       *similarity_metric=1.0;
-  magnitude_image=DestroyImage(magnitude_image);
   return(phase_image);
 }
 
@@ -4307,10 +4312,10 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   similarity_view=DestroyCacheView(similarity_view);
   if (metric == StructuralSimilarityErrorMetric)
     similarity_info.similarity=1.0-similarity_info.similarity;
+  if (status == MagickFalse)
+    similarity_image=DestroyImage(similarity_image);
   *similarity_metric=similarity_info.similarity;
   offset->x=similarity_info.x;
   offset->y=similarity_info.y;
-  if (status == MagickFalse)
-    similarity_image=DestroyImage(similarity_image);
   return(similarity_image);
 }
