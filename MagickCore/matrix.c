@@ -771,11 +771,11 @@ MagickPrivate MagickBooleanType LowerUpperMatrixDecomposition(double **matrix,
     ssize_t
       max_row = i;
 
-    for (j=i+1; j < rank; j++)
+    for (j=i+1; j < (ssize_t) rank; j++)
       if (fabs(matrix[j][i]) > fabs(matrix[max_row][i]))
         max_row=j;
     if (max_row != i)
-      for (k = 0; k < rank; k++)
+      for (k=0; k < (ssize_t) rank; k++)
         LUDecompositionSwap(matrix[i][k],matrix[max_row][k]);
     /*
       LU factorization.
@@ -806,7 +806,7 @@ MagickPrivate MagickBooleanType LowerUpperMatrixDecomposition(double **matrix,
   */
   for (i=(ssize_t) rank; i-- > 0; )
   {
-    for (j=0; j < number_vectors; j++)
+    for (j=0; j < (ssize_t) number_vectors; j++)
     {
       sum=vectors[j][i];
       for (k=i+1; k < (ssize_t) rank; k++)
