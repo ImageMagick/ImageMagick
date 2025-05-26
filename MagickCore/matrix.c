@@ -298,7 +298,7 @@ MagickExport MatrixInfo *AcquireMatrixInfo(const size_t columns,
 %  array of pointers to an array of doubles, with all values pre-set to zero.
 %
 %  This used to generate the two dimensional matrix, and vectors required
-%  for the GaussJordanElimination() method below, solving some system of
+%  for the LowerUpperMatrixDecomposition() method below, solving some system of
 %  simultaneous equations.
 %
 %  The format of the AcquireMagickMatrix method is:
@@ -407,183 +407,6 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
   UnlockSemaphoreInfo(matrix_info->semaphore);
   RelinquishSemaphoreInfo(&matrix_info->semaphore);
   return((MatrixInfo *) RelinquishMagickMemory(matrix_info));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G a u s s J o r d a n E l i m i n a t i o n                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GaussJordanElimination() returns a matrix in reduced row echelon form,
-%  while simultaneously reducing and thus solving the augmented results
-%  matrix.
-%
-%  See also  http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
-%
-%  The format of the GaussJordanElimination method is:
-%
-%      MagickBooleanType GaussJordanElimination(double **matrix,
-%        double **vectors,const size_t rank,const size_t number_vectors)
-%
-%  A description of each parameter follows:
-%
-%    o matrix: the matrix to be reduced, as an 'array of row pointers'.
-%
-%    o vectors: the additional matrix argumenting the matrix for row reduction.
-%             Producing an 'array of column vectors'.
-%
-%    o rank:  The size of the matrix (both rows and columns).
-%             Also represents the number terms that need to be solved.
-%
-%    o number_vectors: Number of vectors columns, argumenting the above matrix.
-%             Usually 1, but can be more for more complex equation solving.
-%
-%  Note that the 'matrix' is given as a 'array of row pointers' of rank size.
-%  That is values can be assigned as   matrix[row][column]   where 'row' is
-%  typically the equation, and 'column' is the term of the equation.
-%  That is the matrix is in the form of a 'row first array'.
-%
-%  However 'vectors' is a 'array of column pointers' which can have any number
-%  of columns, with each column array the same 'rank' size as 'matrix'.
-%
-%  This allows for simpler handling of the results, especially is only one
-%  column 'vector' is all that is required to produce the desired solution.
-%
-%  For example, the 'vectors' can consist of a pointer to a simple array of
-%  doubles.  when only one set of simultaneous equations is to be solved from
-%  the given set of coefficient weighted terms.
-%
-%     double **matrix = AcquireMagickMatrix(8UL,8UL);
-%     double coefficients[8];
-%     ...
-%     GaussJordanElimination(matrix, &coefficients, 8UL, 1UL);
-%
-%  However by specifying more 'columns' (as an 'array of vector columns',
-%  you can use this function to solve a set of 'separable' equations.
-%
-%  For example a distortion function where    u = U(x,y)   v = V(x,y)
-%  And the functions U() and V() have separate coefficients, but are being
-%  generated from a common x,y->u,v  data set.
-%
-%  Another example is generation of a color gradient from a set of colors at
-%  specific coordinates, such as a list x,y -> r,g,b,a.
-%
-%  You can also use the 'vectors' to generate an inverse of the given 'matrix'
-%  though as a 'column first array' rather than a 'row first array'. For
-%  details see http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
-%
-*/
-MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
-  double **vectors,const size_t rank,const size_t number_vectors)
-{
-#define GaussJordanSwap(x,y) \
-{ \
-  if ((x) != (y)) \
-    { \
-      (x)+=(y); \
-      (y)=(x)-(y); \
-      (x)=(x)-(y); \
-    } \
-}
-
-  double
-    max,
-    scale;
-
-  ssize_t
-    i,
-    j,
-    k;
-
-  ssize_t
-    column,
-    *columns,
-    *pivots,
-    row,
-    *rows;
-
-  columns=(ssize_t *) AcquireQuantumMemory(rank,sizeof(*columns));
-  rows=(ssize_t *) AcquireQuantumMemory(rank,sizeof(*rows));
-  pivots=(ssize_t *) AcquireQuantumMemory(rank,sizeof(*pivots));
-  if ((rows == (ssize_t *) NULL) || (columns == (ssize_t *) NULL) ||
-      (pivots == (ssize_t *) NULL))
-    {
-      if (pivots != (ssize_t *) NULL)
-        pivots=(ssize_t *) RelinquishMagickMemory(pivots);
-      if (columns != (ssize_t *) NULL)
-        columns=(ssize_t *) RelinquishMagickMemory(columns);
-      if (rows != (ssize_t *) NULL)
-        rows=(ssize_t *) RelinquishMagickMemory(rows);
-      return(MagickFalse);
-    }
-  (void) memset(columns,0,rank*sizeof(*columns));
-  (void) memset(rows,0,rank*sizeof(*rows));
-  (void) memset(pivots,0,rank*sizeof(*pivots));
-  column=0;
-  row=0;
-  for (i=0; i < (ssize_t) rank; i++)
-  {
-    max=0.0;
-    for (j=0; j < (ssize_t) rank; j++)
-      if (pivots[j] != 1)
-        {
-          for (k=0; k < (ssize_t) rank; k++)
-            if (pivots[k] != 0)
-              {
-                if (pivots[k] > 1)
-                  return(MagickFalse);
-              }
-            else
-              if (fabs(matrix[j][k]) >= max)
-                {
-                  max=fabs(matrix[j][k]);
-                  row=j;
-                  column=k;
-                }
-        }
-    pivots[column]++;
-    if (row != column)
-      {
-        for (k=0; k < (ssize_t) rank; k++)
-          GaussJordanSwap(matrix[row][k],matrix[column][k]);
-        for (k=0; k < (ssize_t) number_vectors; k++)
-          GaussJordanSwap(vectors[k][row],vectors[k][column]);
-      }
-    rows[i]=row;
-    columns[i]=column;
-    if (matrix[column][column] == 0.0)
-      return(MagickFalse);  /* singularity */
-    scale=PerceptibleReciprocal(matrix[column][column]);
-    matrix[column][column]=1.0;
-    for (j=0; j < (ssize_t) rank; j++)
-      matrix[column][j]*=scale;
-    for (j=0; j < (ssize_t) number_vectors; j++)
-      vectors[j][column]*=scale;
-    for (j=0; j < (ssize_t) rank; j++)
-      if (j != column)
-        {
-          scale=matrix[j][column];
-          matrix[j][column]=0.0;
-          for (k=0; k < (ssize_t) rank; k++)
-            matrix[j][k]-=scale*matrix[column][k];
-          for (k=0; k < (ssize_t) number_vectors; k++)
-            vectors[k][j]-=scale*vectors[k][column];
-        }
-  }
-  for (j=(ssize_t) rank-1; j >= 0; j--)
-    if (columns[j] != rows[j])
-      for (i=0; i < (ssize_t) rank; i++)
-        GaussJordanSwap(matrix[i][rows[j]],matrix[i][columns[j]]);
-  pivots=(ssize_t *) RelinquishMagickMemory(pivots);
-  rows=(ssize_t *) RelinquishMagickMemory(rows);
-  columns=(ssize_t *) RelinquishMagickMemory(columns);
-  return(MagickTrue);
 }
 
 /*
@@ -814,7 +637,7 @@ MagickExport size_t GetMatrixRows(const MatrixInfo *matrix_info)
 %        results[1] = v;
 %        LeastSquaresAddTerms(matrix,vectors,terms,results,3UL,2UL);
 %     ...
-%     if ( GaussJordanElimination(matrix,vectors,3UL,2UL) ) {
+%     if ( LowerUpperMatrixDecomposition(matrix,vectors,3UL,2UL) ) {
 %       c0 = vectors[0][0];
 %       c2 = vectors[0][1];
 %       c4 = vectors[0][2];
@@ -843,6 +666,156 @@ MagickPrivate void LeastSquaresAddTerms(double **matrix,double **vectors,
     for (i=0; i < (ssize_t) number_vectors; i++)
       vectors[i][j]+=results[i]*terms[j];
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   L o w e r U p p e r M a t r i x D e c o m p o s i t i o n                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  LowerUpperMatrixDecomposition() returns a matrix in reduced row echelon form,
+%  while simultaneously reducing and thus solving the augmented results
+%  matrix.
+%
+%  The format of the LowerUpperMatrixDecomposition method is:
+%
+%      MagickBooleanType LowerUpperMatrixDecomposition(double **matrix,
+%        double **vectors,const size_t rank,const size_t number_vectors)
+%
+%  A description of each parameter follows:
+%
+%    o matrix: the matrix to be reduced, as an 'array of row pointers'.
+%
+%    o vectors: the additional matrix argumenting the matrix for row reduction.
+%             Producing an 'array of column vectors'.
+%
+%    o rank:  The size of the matrix (both rows and columns).
+%             Also represents the number terms that need to be solved.
+%
+%    o number_vectors: Number of vectors columns, argumenting the above matrix.
+%             Usually 1, but can be more for more complex equation solving.
+%
+%  Note that the 'matrix' is given as a 'array of row pointers' of rank size.
+%  That is values can be assigned as   matrix[row][column]   where 'row' is
+%  typically the equation, and 'column' is the term of the equation.
+%  That is the matrix is in the form of a 'row first array'.
+%
+%  However 'vectors' is a 'array of column pointers' which can have any number
+%  of columns, with each column array the same 'rank' size as 'matrix'.
+%
+%  This allows for simpler handling of the results, especially is only one
+%  column 'vector' is all that is required to produce the desired solution.
+%
+%  For example, the 'vectors' can consist of a pointer to a simple array of
+%  doubles.  when only one set of simultaneous equations is to be solved from
+%  the given set of coefficient weighted terms.
+%
+%     double **matrix = AcquireMagickMatrix(8UL,8UL);
+%     double coefficients[8];
+%     ...
+%     LowerUpperMatrixDecomposition(matrix,&coefficients,8UL,1UL);
+%
+%  However by specifying more 'columns' (as an 'array of vector columns', you
+%  can use this function to solve a set of 'separable' equations.
+%
+%  For example a distortion function where u = U(x,y) v = V(x,y)
+%  And the functions U() and V() have separate coefficients, but are being
+%  generated from a common x,y->u,v  data set.
+%
+%  Another example is generation of a color gradient from a set of colors at
+%  specific coordinates, such as a list x,y -> r,g,b,a.
+%
+%  You can also use the 'vectors' to generate an inverse of the given 'matrix'
+%  though as a 'column first array' rather than a 'row first array'. For
+%  details see http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
+%
+*/
+MagickPrivate MagickBooleanType LowerUpperMatrixDecomposition(double **matrix,
+  double **vectors,const size_t rank,const size_t number_vectors)
+{
+#define LUDecompositionSwap(x,y) \
+{ \
+  if ((x) != (y)) \
+    { \
+      (x)+=(y); \
+      (y)=(x)-(y); \
+      (x)=(x)-(y); \
+    } \
+}
+
+  double
+    scale,
+    sum;
+
+  ssize_t
+    i,
+    j,
+    k,
+    *pivot = (ssize_t *) AcquireQuantumMemory(rank,sizeof(*pivot));
+
+  /*
+    LU Decomposition with partial pivoting.
+  */
+  if (pivot == (ssize_t *) NULL)
+    return(MagickFalse);
+  for (i=0; i < (ssize_t) rank; i++)
+    pivot[i]=i;
+  for (i=0; i < (ssize_t) rank; i++)
+  {
+    ssize_t
+      max_row = i;
+
+    for (j=i+1; j < rank; j++)
+      if (fabs(matrix[j][i]) > fabs(matrix[max_row][i]))
+        max_row=j;
+    if (max_row != i)
+      for (k = 0; k < rank; k++)
+        LUDecompositionSwap(matrix[i][k],matrix[max_row][k]);
+    /*
+      LU factorization.
+    */
+    for (j=i+1; j < (ssize_t) rank; j++)
+    {
+      scale=matrix[j][i]/matrix[i][i];
+      matrix[j][i]=scale;
+      for (k=i+1; k < (ssize_t) rank; k++)
+        matrix[j][k]-=scale*matrix[i][k];
+    }
+  }
+  /*
+    Solve Ly=b using forward substitution.
+  */
+  for (i=0; i < (ssize_t) rank; i++)
+  {
+    for (j=0; j < (ssize_t) number_vectors; j++)
+    {
+      sum=vectors[j][i];
+      for (k=0; k < i; k++)
+        sum-=matrix[i][k]*vectors[j][k];
+      vectors[j][i]=sum;
+    }
+  }
+  /*
+    Solve Ux=y using back substitution.
+  */
+  for (i=(ssize_t) rank; i-- > 0; )
+  {
+    for (j=0; j < number_vectors; j++)
+    {
+      sum=vectors[j][i];
+      for (k=i+1; k < (ssize_t) rank; k++)
+        sum-=matrix[i][k]*vectors[j][k];
+      vectors[j][i]=sum/matrix[i][i];
+    }
+  }
+  pivot=(ssize_t *) RelinquishMagickMemory(pivot);
+  return(MagickTrue);
 }
 
 /*

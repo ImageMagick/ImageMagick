@@ -5371,7 +5371,7 @@ MAGICK_PATCHLEVEL_VERSION=48
 
 MAGICK_VERSION=7.1.1-48
 
-MAGICK_GIT_REVISION=c3a66fdc2:20250516
+MAGICK_GIT_REVISION=bb454aeb6:20250526
 
 
 # Substitute library versioning
@@ -5405,7 +5405,7 @@ PACKAGE_LIB_VERSION=0x711
 
 PACKAGE_LIB_VERSION_NUMBER=7,1,1,48
 
-PACKAGE_RELEASE_DATE=2025-05-16
+PACKAGE_RELEASE_DATE=2025-05-26
 
 
 # Ensure that make can run correctly
@@ -34164,7 +34164,9 @@ printf %s "checking if JPEG package is complete... " >&6; }
 printf "%s\n" "no -- some components failed test" >&6; }
             have_jpeg='no (failed tests)'
         else
-            JPEG_LIBS='-ljpeg'
+            if test -z "$JPEG_LIBS"; then
+              JPEG_LIBS='-ljpeg'
+            fi
             LIBS="$JPEG_LIBS $LIBS"
 
 printf "%s\n" "#define JPEG_DELEGATE 1" >>confdefs.h

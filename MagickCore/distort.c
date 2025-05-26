@@ -595,7 +595,7 @@ static double *GenerateCoefficients(const Image *image,
           }
         }
         /* Solve for LeastSquares Coefficients */
-        status=GaussJordanElimination(matrix,vectors,3UL,number_values);
+        status=LowerUpperMatrixDecomposition(matrix,vectors,3UL,number_values);
         matrix = RelinquishMagickMatrix(matrix, 3UL);
         vectors = (double **) RelinquishMagickMemory(vectors);
         if ( status == MagickFalse ) {
@@ -664,7 +664,7 @@ static double *GenerateCoefficients(const Image *image,
       /*
         Solve for least-squares coefficients.
       */
-      status=GaussJordanElimination(matrix,vectors,4UL,1UL);
+      status=LowerUpperMatrixDecomposition(matrix,vectors,4UL,1UL);
       matrix=RelinquishMagickMatrix(matrix,4UL);
       if (status == MagickFalse)
         {
@@ -911,7 +911,7 @@ static double *GenerateCoefficients(const Image *image,
             8UL,1UL);
       }
       /* Solve for LeastSquares Coefficients */
-      status=GaussJordanElimination(matrix,vectors,8UL,1UL);
+      status=LowerUpperMatrixDecomposition(matrix,vectors,8UL,1UL);
       matrix = RelinquishMagickMatrix(matrix, 8UL);
       if ( status == MagickFalse ) {
         coeff = (double *) RelinquishMagickMemory(coeff);
@@ -1019,7 +1019,7 @@ static double *GenerateCoefficients(const Image *image,
              &(arguments[i+cp_values]),4UL,number_values);
       }
       /* Solve for LeastSquares Coefficients */
-      status=GaussJordanElimination(matrix,vectors,4UL,number_values);
+      status=LowerUpperMatrixDecomposition(matrix,vectors,4UL,number_values);
       matrix  = RelinquishMagickMatrix(matrix, 4UL);
       vectors = (double **) RelinquishMagickMemory(vectors);
       if ( status == MagickFalse ) {
@@ -1162,7 +1162,7 @@ static double *GenerateCoefficients(const Image *image,
       }
       terms = (double *) RelinquishMagickMemory(terms);
       /* Solve for LeastSquares Coefficients */
-      status=GaussJordanElimination(matrix,vectors,nterms,number_values);
+      status=LowerUpperMatrixDecomposition(matrix,vectors,nterms,number_values);
       matrix  = RelinquishMagickMatrix(matrix, nterms);
       vectors = (double **) RelinquishMagickMemory(vectors);
       if ( status == MagickFalse ) {
