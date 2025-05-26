@@ -4175,7 +4175,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     similarity_info.x,similarity_info.y,exception);
   progress=0;
   similarity_view=AcquireAuthenticCacheView(similarity_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MMAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(similarity_info,status) \
     magick_number_threads(image,reconstruct,similarity_image->rows << 2,1)
 #endif
@@ -4308,8 +4308,17 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
   }
   similarity_view=DestroyCacheView(similarity_view);
-  if (metric == StructuralSimilarityErrorMetric)
-    similarity_info.similarity=1.0-similarity_info.similarity;
+  switch (metric)
+  {
+    case NormalizedCrossCorrelationErrorMetric:
+    case StructuralSimilarityErrorMetric:
+    {
+      similarity_info.similarity=1.0-similarity_info.similarity;
+      break;
+    }
+    default:
+      break;
+  }
   if (status == MagickFalse)
     similarity_image=DestroyImage(similarity_image);
   *similarity_metric=similarity_info.similarity;
