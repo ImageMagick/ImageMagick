@@ -244,8 +244,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
 
   double
     dissimilarity_threshold = DefaultDissimilarityThreshold,
-    distortion = 0.0 ,
-    scale = QuantumRange,
+    distortion = 0.0,
+    scale = (double) QuantumRange,
     similarity_metric = 0.0,
     similarity_threshold = DefaultSimilarityThreshold;
 

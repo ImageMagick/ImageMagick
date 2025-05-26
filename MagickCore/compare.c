@@ -4074,7 +4074,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     progress;
 
   SimilarityInfo
-    similarity_info = { 0 };
+    similarity_info = { 0.0 };
 
   ssize_t
     y;
