@@ -188,7 +188,7 @@ static MagickOffsetType GetFITSPixelExtrema(Image *image,
     return(-1);
   number_pixels=(MagickSizeType) image->columns*image->rows;
   *minima=MagickMaximumValue;
-  *maxima=MagickMinimumValue;
+  *maxima=(-MagickMaximumValue);
   for (i=0; i < (MagickOffsetType) number_pixels; i++)
   {
     pixel=GetFITSPixel(image,bits_per_pixel);
