@@ -1854,7 +1854,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
     status;
 
   RangeInfo
-    range_info = { MagickMinimumValue, MagickMaximumValue };
+    range_info = { -MagickMaximumValue, MagickMaximumValue };
 
   ssize_t
     y;

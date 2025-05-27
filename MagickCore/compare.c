@@ -808,7 +808,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
     double
       channel_area = 0.0,
       channel_distortion[MaxPixelChannels+1] = { 0.0 },
-      channel_maximum_error = MagickMinimumValue,
+      channel_maximum_error = maximum_error,
       channel_mean_error = 0.0;
 
     ssize_t
@@ -2699,7 +2699,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
     status;
 
   MaximaInfo
-    maxima_info = { MagickMinimumValue, 0, 0 };
+    maxima_info = { -MagickMaximumValue, 0, 0 };
 
   ssize_t
     y;
@@ -2723,7 +2723,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
       *magick_restrict p;
 
     MaximaInfo
-      channel_maxima = { MagickMinimumValue, 0, 0 };
+      channel_maxima = { -MagickMaximumValue, 0, 0 };
 
     ssize_t
       x;
