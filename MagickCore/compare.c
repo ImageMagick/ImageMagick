@@ -1345,9 +1345,9 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
         else
           distance=QuantumScale*fabs(Sa*(double) p[i]-Da*(double)
             GetPixelChannel(reconstruct_image,channel,q));
-        if (distance > distortion[i])
+        if (distance > channel_distortion[i])
           channel_distortion[i]=distance;
-        if (distance > distortion[CompositePixelChannel])
+        if (distance > channel_distortion[CompositePixelChannel])
           channel_distortion[CompositePixelChannel]=distance;
       }
       p+=(ptrdiff_t) GetPixelChannels(image);
