@@ -233,6 +233,7 @@ jobs:
         move Configure Source
         move Dependencies Source
         move ImageMagick Source
+        move Installer Source
         move OptionalDependencies Source
         move Artifacts Source
         move Projects Source
