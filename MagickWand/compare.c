@@ -1333,11 +1333,15 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             }
             case MeanErrorPerPixelErrorMetric:
             {
-              (void) FormatLocaleFile(stderr,"%.*g (%.*g, %.*g)",
-                GetMagickPrecision(),scale*distortion,
-                GetMagickPrecision(),distortion,GetMagickPrecision(),
-                image->error.normalized_maximum_error);
-              break;
+              if (subimage_search == MagickFalse)
+                {
+                  (void) FormatLocaleFile(stderr,"%.*g (%.*g, %.*g)",
+                    GetMagickPrecision(),scale*distortion,
+                    GetMagickPrecision(),distortion,GetMagickPrecision(),
+                    image->error.normalized_maximum_error);
+                  break;
+                }
+              magick_fallthrough;
             }
             default:
             {
