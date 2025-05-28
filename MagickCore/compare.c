@@ -304,8 +304,9 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   highlight_view=DestroyCacheView(highlight_view);
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  (void) CompositeImage(difference_image,highlight_image,image->compose,
-    MagickTrue,0,0,exception);
+  if (status != MagickFalse)
+    status=CompositeImage(difference_image,highlight_image,image->compose,
+      MagickTrue,0,0,exception);
   highlight_image=DestroyImage(highlight_image);
   if (status == MagickFalse)
     difference_image=DestroyImage(difference_image);
@@ -913,7 +914,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
   image->error.mean_error_per_pixel=QuantumRange*
     distortion[CompositePixelChannel];
-  image->error.normalized_mean_error=mean_error;
+  image->error.normalized_mean_error=mean_error*area;
   image->error.normalized_maximum_error=maximum_error;
   return(status);
 }
