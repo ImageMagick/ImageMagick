@@ -351,7 +351,7 @@ extern "C" {
 #define FxImage  PrependMagickMethod(FxImage)
 #define GammaImage  PrependMagickMethod(GammaImage)
 #define GaussianBlurImage  PrependMagickMethod(GaussianBlurImage)
-#define LowerUpperMatrixDecomposition  PrependMagickMethod(LowerUpperMatrixDecomposition)
+#define GaussJordanElimination  PrependMagickMethod(GaussJordanElimination)
 #define GenerateDifferentialNoise  PrependMagickMethod(GenerateDifferentialNoise)
 #define GetAffineMatrix  PrependMagickMethod(GetAffineMatrix)
 #define GetAuthenticMetacontent  PrependMagickMethod(GetAuthenticMetacontent)

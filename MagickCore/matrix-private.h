@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 extern MagickPrivate MagickBooleanType
-  LowerUpperMatrixDecomposition(double **,double **,const size_t,const size_t);
+  GaussJordanElimination(double **,double **,const size_t,const size_t);
 
 extern MagickPrivate void
   LeastSquaresAddTerms(double **,double **,const double *,const double *,
