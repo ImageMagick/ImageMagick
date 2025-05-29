@@ -370,7 +370,8 @@ static MagickBooleanType ReadHEICXMPProfile(Image *image,
 }
 
 static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
-  Image *image,struct heif_image_handle *image_handle,ExceptionInfo *exception)
+  Image *image,struct heif_context *heif_context,
+  struct heif_image_handle *image_handle,ExceptionInfo *exception)
 {
   const uint8_t
     *p,
@@ -430,10 +431,6 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
       int
         count;
 
-      struct heif_context
-        *heif_context;
-
-      heif_context=heif_image_handle_get_context(image_handle);
       item_id=heif_image_handle_get_item_id(image_handle);
       count=heif_item_get_transformation_properties(heif_context,item_id,
         transforms,1);
@@ -629,7 +626,8 @@ static MagickBooleanType ReadHEICImageHandle(const ImageInfo *image_info,
 }
 
 static void ReadHEICDepthImage(const ImageInfo *image_info,Image *image,
-  struct heif_image_handle *image_handle,ExceptionInfo *exception)
+  struct heif_context *heif_context,struct heif_image_handle *image_handle,
+  ExceptionInfo *exception)
 {
   const char
     *option;
@@ -666,7 +664,7 @@ static void ReadHEICDepthImage(const ImageInfo *image_info,Image *image,
   if (GetNextImageInList(image) != (Image *) NULL)
     {
       image=SyncNextImageInList(image);
-      (void) ReadHEICImageHandle(image_info,image,depth_handle,exception);
+      (void) ReadHEICImageHandle(image_info,image,heif_context,depth_handle,exception);
     }
   heif_image_handle_release(depth_handle);
 }
@@ -754,7 +752,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       heif_context_free(heif_context);
       return(DestroyImageList(image));
     }
-  status=ReadHEICImageHandle(image_info,image,image_handle,exception);
+  status=ReadHEICImageHandle(image_info,image,heif_context,image_handle,
+    exception);
   heif_image_handle_release(image_handle);
   count=(ssize_t) heif_context_get_number_of_top_level_images(heif_context);
   if ((status != MagickFalse) && (count > 1))
@@ -793,7 +792,8 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
             status=MagickFalse;
             break;
           }
-        status=ReadHEICImageHandle(image_info,image,image_handle,exception);
+        status=ReadHEICImageHandle(image_info,image,heif_context,image_handle,
+          exception);
         heif_image_handle_release(image_handle);
         if (status == MagickFalse)
           break;
@@ -810,7 +810,7 @@ static Image *ReadHEICImage(const ImageInfo *image_info,
       heif_context_free(heif_context);
       return(DestroyImageList(image));
     }
-  ReadHEICDepthImage(image_info,image,image_handle,exception);
+  ReadHEICDepthImage(image_info,image,heif_context,image_handle,exception);
   heif_image_handle_release(image_handle);
   heif_context_free(heif_context);
   if (status == MagickFalse)
