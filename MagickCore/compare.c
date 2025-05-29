@@ -1498,10 +1498,10 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
         if (((traits & UpdatePixelTrait) == 0) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        distortion[j]=sqrt(distortion[j]/channel_phash[0].number_channels);
+        distortion[j]=sqrt(distortion[j]/channel_phash[0].number_colorspaces);
       }
       distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]/
-        channel_phash[0].number_channels);
+        channel_phash[0].number_colorspaces);
     }
   /*
     Free resources.
@@ -1515,6 +1515,8 @@ static MagickBooleanType GetPerceptualHashDistortion(const Image *image,
 static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
   const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
+#define RMSESquareRoot(x)  sqrt((x) < 0.0 ? 0.0 : (x))
+
   MagickBooleanType
     status;
 
@@ -1531,9 +1533,10 @@ static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
     if (((traits & UpdatePixelTrait) == 0) ||
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
-    distortion[i]=sqrt(distortion[i]);
+    distortion[i]=RMSESquareRoot(distortion[i]);
   }
-  distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]);
+  distortion[CompositePixelChannel]=RMSESquareRoot(
+    distortion[CompositePixelChannel]);
   return(status);
 }
 
@@ -1666,8 +1669,8 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
           continue;
         }
       k=kernel_info->values;
-      reconstruct=p;
-      test=q;
+      test=p;
+      reconstruct=q;
       for (v=0; v < (ssize_t) kernel_info->height; v++)
       {
         ssize_t
@@ -1688,21 +1691,21 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
             if (((traits & UpdatePixelTrait) == 0) ||
                 ((reconstruct_traits & UpdatePixelTrait) == 0))
               continue;
-            x_pixel=QuantumScale*(double) reconstruct[i];
+            x_pixel=QuantumScale*(double) test[i];
             x_pixel_mu[i]+=(*k)*x_pixel;
             x_pixel_sigma_squared[i]+=(*k)*x_pixel*x_pixel;
             y_pixel=QuantumScale*(double)
-              GetPixelChannel(reconstruct_image,channel,test);
+              GetPixelChannel(reconstruct_image,channel,reconstruct);
             y_pixel_mu[i]+=(*k)*y_pixel;
             y_pixel_sigma_squared[i]+=(*k)*y_pixel*y_pixel;
             xy_sigma[i]+=(*k)*x_pixel*y_pixel;
           }
           k++;
-          reconstruct+=(ptrdiff_t) GetPixelChannels(image);
-          test+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
+          test+=(ptrdiff_t) GetPixelChannels(image);
+          reconstruct+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
         }
-        reconstruct+=(ptrdiff_t) GetPixelChannels(image)*columns;
-        test+=(ptrdiff_t) GetPixelChannels(reconstruct_image)*columns;
+        test+=(ptrdiff_t) GetPixelChannels(image)*columns;
+        reconstruct+=(ptrdiff_t) GetPixelChannels(reconstruct_image)*columns;
       }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
