@@ -138,9 +138,7 @@ static ChannelStatistics *GetLocationStatistics(const Image *image,
     *channel_statistics;
 
   ssize_t
-    i;
-
-  ssize_t
+    i,
     y;
 
   assert(image != (Image *) NULL);
