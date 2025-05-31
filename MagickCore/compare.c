@@ -1906,7 +1906,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     }
   }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-    channel_distortion[i]=MagickMin(MagickMax(channel_distortion[i],0.0),1.0);\
+    channel_distortion[i]=MagickMin(MagickMax(channel_distortion[i],0.0),1.0);
   channel_distortion[CompositePixelChannel]=MagickMin(MagickMax(
     channel_distortion[CompositePixelChannel],0.0),1.0);
   *distortion=channel_distortion[CompositePixelChannel];
