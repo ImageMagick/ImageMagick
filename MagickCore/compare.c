@@ -205,7 +205,6 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   /*
     Generate difference image.
   */
-  status=MagickTrue;
   fuzz=GetFuzzyColorDistance(image,reconstruct_image);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -624,7 +623,6 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
     k,
     y;
 
-  status=MagickTrue;
   (void) memset(distortion,0,(MaxPixelChannels+1)*sizeof(*distortion));
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -1524,7 +1522,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     *artifact;
 
   double
-    area,
+    area = 0.0,
     c1,
     c2,
     radius,
@@ -1570,8 +1568,6 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   artifact=GetImageArtifact(image,"compare:ssim-k2");
   if (artifact != (const char *) NULL)
     c2=pow(StringToDouble(artifact,(char **) NULL)*SSIML,2.0);
-  status=MagickTrue;
-  area=0.0;
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -1978,7 +1974,6 @@ MagickExport double *GetImageDistortions(Image *image,
   if (distortion == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) memset(distortion,0,length*sizeof(*distortion));
-  status=MagickTrue;
   switch (metric)
   {
     case AbsoluteErrorMetric:
@@ -3114,18 +3109,14 @@ static Image *SIMUnityImage(const Image *alpha_image,const Image *beta_image,
   MagickBooleanType
     status = MagickTrue;
 
-  size_t
-    columns,
-    rows;
-
   ssize_t
     y;
 
   /*
     Create a padded unity image.
   */
-  SetImageDistortionBounds(alpha_image,beta_image,&columns,&rows);
-  unity_image=CloneImage(alpha_image,columns,rows,MagickTrue,exception);
+  unity_image=CloneImage(alpha_image,alpha_image->columns,alpha_image->rows,
+    MagickTrue,exception);
   if (unity_image == (Image *) NULL)
     return(unity_image);
   if (SetImageStorageClass(unity_image,DirectClass,exception) == MagickFalse)
@@ -3133,9 +3124,9 @@ static Image *SIMUnityImage(const Image *alpha_image,const Image *beta_image,
   image_view=AcquireAuthenticCacheView(unity_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    magick_number_threads(unity_image,unity_image,rows,1)
+    magick_number_threads(unity_image,unity_image,unity_image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) unity_image->rows; y++)
   {
     Quantum
       *magick_restrict q;
@@ -3145,13 +3136,14 @@ static Image *SIMUnityImage(const Image *alpha_image,const Image *beta_image,
 
     if (status == MagickFalse)
       continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,unity_image->columns,1,
+      exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) unity_image->columns; x++)
     {
       ssize_t
         i;
@@ -3162,7 +3154,11 @@ static Image *SIMUnityImage(const Image *alpha_image,const Image *beta_image,
         PixelTrait traits = GetPixelChannelTraits(unity_image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=QuantumRange;
+        if ((x >= (ssize_t) beta_image->columns) ||
+            (y >= (ssize_t) beta_image->rows))
+          q[i]=(Quantum) 0;
+        else
+          q[i]=QuantumRange;
       }
       q+=(ptrdiff_t) GetPixelChannels(unity_image);
     }
@@ -3613,6 +3609,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     Identify the minima value in the correlation image and its location.
   */
   (void) ResetImagePage(mse_image,"0x0+0+0");
+  (void) ClampImage(mse_image,exception);
   mse_image->depth=32;
   status=SIMMinimaImage(mse_image,&minima,offset,exception);
   if (status == MagickFalse)
@@ -4033,7 +4030,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     status = MagickTrue;
 
   MagickOffsetType
-    progress;
+    progress = 0;
 
   SimilarityInfo
     similarity_info = { 0 };
@@ -4132,10 +4129,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   /*
     Measure similarity of reconstruction image against image.
   */
-  status=MagickTrue;
   similarity_info.similarity=GetSimilarityMetric(image,reconstruct,metric,
     similarity_info.x,similarity_info.y,exception);
-  progress=0;
   similarity_view=AcquireAuthenticCacheView(similarity_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(similarity_info,status) \
