@@ -132,7 +132,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     *highlight_image;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   PixelInfo
     highlight,
@@ -304,7 +304,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   highlight_view=DestroyCacheView(highlight_view);
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  if (status != MagickFalse)
+  if ((status != MagickFalse) && (difference_image != (Image *) NULL))
     status=CompositeImage(difference_image,highlight_image,image->compose,
       MagickTrue,0,0,exception);
   highlight_image=DestroyImage(highlight_image);
@@ -355,31 +355,28 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     *reconstruct_view;
 
   double
-    area,
     fuzz;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   size_t
     columns,
     rows;
 
   ssize_t
-    k,
     y;
 
   /*
     Compute the absolute difference in pixels between two images.
   */
-  area=0;
-  status=MagickTrue;
   fuzz=GetFuzzyColorDistance(image,reconstruct_image);
+  (void) memset(distortion,0,(MaxPixelChannels+1)*sizeof(*distortion));
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(area,distortion,status) \
+  #pragma omp parallel for schedule(static) shared(distortion,status) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
@@ -389,7 +386,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       *magick_restrict q;
 
     double
-      channel_area = 0.0,
       channel_distortion[MaxPixelChannels+1] = { 0.0 };
 
     ssize_t
@@ -438,11 +434,11 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          delta=(double) p[i]-(double) GetPixelChannel(
-            reconstruct_image,channel,q);
+          delta=(double) p[i]-(double) GetPixelChannel(reconstruct_image,
+            channel,q);
         else
-          delta=Sa*(double) p[i]-Da*(double) GetPixelChannel(
-            reconstruct_image,channel,q);
+          delta=Sa*(double) p[i]-Da*(double) GetPixelChannel(reconstruct_image,
+            channel,q);
         if ((delta*delta) >= fuzz)
           {
             channel_distortion[i]++;
@@ -451,7 +447,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       }
       if (count != 0)
         channel_distortion[CompositePixelChannel]++;
-      channel_area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
@@ -462,7 +457,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       ssize_t
         j;
 
-      area+=channel_area;
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,j);
@@ -480,19 +474,6 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  area=PerceptibleReciprocal(area);
-  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
-  {
-    PixelChannel channel = GetPixelChannelChannel(image,k);
-    PixelTrait traits = GetPixelChannelTraits(image,channel);
-    PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
-      channel);
-    if (((traits & UpdatePixelTrait) == 0) ||
-        ((reconstruct_traits & UpdatePixelTrait) == 0))
-      continue;
-    distortion[k]*=area;
-  }
-  distortion[CompositePixelChannel]*=area;
   return(status);
 }
 
@@ -504,10 +485,11 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     *reconstruct_view;
 
   double
-    area = 0.0;
+    area = 0.0,
+    fuzz;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   size_t
     columns,
@@ -517,8 +499,9 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     k,
     y;
 
-  status=MagickTrue;
+  (void) memset(distortion,0,(MaxPixelChannels+1)*sizeof(*distortion));
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
+  fuzz=GetFuzzyColorDistance(image,reconstruct_image);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -583,8 +566,11 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
         else
           distance=QuantumScale*(Sa*(double) p[i]-Da*(double) GetPixelChannel(
             reconstruct_image,channel,q));
-        channel_distortion[i]+=distance*distance;
-        channel_distortion[CompositePixelChannel]+=distance*distance;
+        if ((distance*distance) >= fuzz)
+          {
+            channel_distortion[i]+=distance*distance;
+            channel_distortion[CompositePixelChannel]+=distance*distance;
+         }
       }
       channel_area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
@@ -626,9 +612,14 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
     distortion[k]*=area;
+    if (distortion[k] < 0.0)
+      distortion[k]=0.0; 
+    distortion[k]=sqrt(distortion[k]);
   }
   distortion[CompositePixelChannel]*=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
+  if (distortion[CompositePixelChannel] < 0.0)
+    distortion[CompositePixelChannel]=0.0;
   distortion[CompositePixelChannel]=sqrt(distortion[CompositePixelChannel]);
   return(status);
 }
@@ -641,10 +632,10 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
     *reconstruct_view;
 
   double
-    area;
+    area = 0.0;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   size_t
     columns,
@@ -655,7 +646,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  area=0.0;
+  (void) memset(distortion,0,(MaxPixelChannels+1)*sizeof(*distortion));
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -927,10 +918,10 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     *reconstruct_view;
 
   double
-    area;
+    area = 0.0;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   size_t
     columns,
@@ -940,8 +931,6 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     k,
     y;
 
-  status=MagickTrue;
-  area=0.0;
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -1076,10 +1065,10 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     beta_variance[MaxPixelChannels+1] = { 0.0 };
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   MagickOffsetType
-    progress;
+    progress = 0;
 
   size_t
     columns,
@@ -1106,8 +1095,6 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
       return(MagickFalse);
     }
   (void) memset(distortion,0,(MaxPixelChannels+1)*sizeof(*distortion));
-  status=MagickTrue;
-  progress=0;
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -1271,7 +1258,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
     *reconstruct_view;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   size_t
     columns,
@@ -1280,7 +1267,6 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
   ssize_t
     y;
 
-  status=MagickTrue;
   (void) memset(distortion,0,(MaxPixelChannels+1)*sizeof(*distortion));
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -1387,7 +1373,7 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
   const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
 {
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     i;
@@ -1518,7 +1504,7 @@ static MagickBooleanType GetRootMeanSquaredDistortion(const Image *image,
 #define RMSESquareRoot(x)  sqrt((x) < 0.0 ? 0.0 : (x))
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     i;
@@ -1570,7 +1556,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
     *kernel_info;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   size_t
     columns,
@@ -1789,7 +1775,7 @@ static MagickBooleanType GetStructuralDissimilarityDistortion(
   ExceptionInfo *exception)
 {
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     i;
@@ -1823,7 +1809,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     *channel_distortion;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   size_t
     length;
@@ -1988,7 +1974,7 @@ MagickExport double *GetImageDistortions(Image *image,
     *distortion;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   size_t
     length;
@@ -2271,7 +2257,7 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
     mean_error_per_pixel = 0.0;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   size_t
     columns,
@@ -2483,7 +2469,7 @@ static Image *SIMDivideImage(const Image *numerator_image,
     *divide_image;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     y;
@@ -2494,7 +2480,6 @@ static Image *SIMDivideImage(const Image *numerator_image,
   divide_image=CloneImage(numerator_image,0,0,MagickTrue,exception);
   if (divide_image == (Image *) NULL)
     return(divide_image);
-  status=MagickTrue;
   numerator_view=AcquireAuthenticCacheView(divide_image,exception);
   denominator_view=AcquireVirtualCacheView(denominator_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -2581,7 +2566,7 @@ static Image *SIMSquareImage(const Image *image,ExceptionInfo *exception)
     *square_image;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     y;
@@ -2592,7 +2577,6 @@ static Image *SIMSquareImage(const Image *image,ExceptionInfo *exception)
   square_image=CloneImage(image,0,0,MagickTrue,exception);
   if (square_image == (Image *) NULL)
     return(square_image);
-  status=MagickTrue;
   image_view=AcquireAuthenticCacheView(square_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
@@ -2648,7 +2632,7 @@ static Image *SIMMagnitudeImage(Image *alpha_image,Image *beta_image,
     *ysq_image;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   (void) SetImageArtifact(alpha_image,"compose:clamp","False");
   xsq_image=SIMSquareImage(alpha_image,exception);
@@ -2699,7 +2683,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
     *magick_restrict q;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   MaximaInfo
     maxima_info = { -MagickMaximumValue, 0, 0 };
@@ -2710,7 +2694,6 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
   /*
     Identify the maxima value in the image and its location.
   */
-  status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
   q=GetCacheViewVirtualPixels(image_view,maxima_info.x,maxima_info.y,1,1,
     exception);
@@ -2795,7 +2778,7 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
     *magick_restrict q;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   MinimaInfo
     minima_info = { MagickMaximumValue, 0, 0 };
@@ -2806,7 +2789,6 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
   /*
     Identify the minima value in the image and its location.
   */
-  status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
   q=GetCacheViewVirtualPixels(image_view,minima_info.x,minima_info.y,1,1,
     exception);
@@ -2878,7 +2860,7 @@ static MagickBooleanType SIMMultiplyImage(Image *image,const double factor,
     *image_view;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     y;
@@ -2886,7 +2868,6 @@ static MagickBooleanType SIMMultiplyImage(Image *image,const double factor,
   /*
     Multiply each pixel by a factor.
   */
-  status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
@@ -3010,7 +2991,7 @@ static MagickBooleanType SIMSetImageMean(const Image *image,
     *image_view;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     y;
@@ -3018,7 +2999,6 @@ static MagickBooleanType SIMSetImageMean(const Image *image,
   /*
     Set image mean.
   */
-  status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
@@ -3074,7 +3054,7 @@ static Image *SIMSubtractImageMean(const Image *alpha_image,
     *subtract_image;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     y;
@@ -3086,7 +3066,6 @@ static Image *SIMSubtractImageMean(const Image *alpha_image,
     MagickTrue,exception);
   if (subtract_image == (Image *) NULL)
     return(subtract_image);
-  status=MagickTrue;
   image_view=AcquireAuthenticCacheView(subtract_image,exception);
   beta_view=AcquireVirtualCacheView(beta_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3154,7 +3133,7 @@ static Image *SIMUnityImage(const Image *alpha_image,const Image *beta_image,
     *unity_image;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     y;
@@ -3168,7 +3147,6 @@ static Image *SIMUnityImage(const Image *alpha_image,const Image *beta_image,
     return(unity_image);
   if (SetImageStorageClass(unity_image,DirectClass,exception) == MagickFalse)
     return(DestroyImage(unity_image));
-  status=MagickTrue;
   image_view=AcquireAuthenticCacheView(unity_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
@@ -3230,7 +3208,7 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
     *variance_image;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   ssize_t
     y;
@@ -3241,7 +3219,6 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
   variance_image=CloneImage(alpha_image,0,0,MagickTrue,exception);
   if (variance_image == (Image *) NULL)
     return(variance_image);
-  status=MagickTrue;
   image_view=AcquireAuthenticCacheView(variance_image,exception);
   beta_view=AcquireVirtualCacheView(beta_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3349,7 +3326,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     *ty_image = (Image *) NULL;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   RectangleInfo
     geometry;
@@ -3558,7 +3535,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     *test_image = (Image *) NULL;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   RectangleInfo
     geometry;
@@ -3723,7 +3700,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
     *variance_image = (Image *) NULL;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   RectangleInfo
     geometry;
@@ -3879,7 +3856,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
     *test_magnitude = (Image *) NULL;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   RectangleInfo
     geometry;
@@ -4027,7 +4004,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
     *similarity_image;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   RectangleInfo
     geometry;
@@ -4071,7 +4048,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     *similarity_image = (Image *) NULL;
 
   MagickBooleanType
-    status;
+    status = MagickTrue;
 
   MagickOffsetType
     progress;
