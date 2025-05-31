@@ -1728,7 +1728,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         x_pixel_mu_squared=x_pixel_mu[i]*x_pixel_mu[i];
         y_pixel_mu_squared=y_pixel_mu[i]*y_pixel_mu[i];
         xy_mu=x_pixel_mu[i]*y_pixel_mu[i];
-        xy_sigmas=fabs(xy_sigma[i]-xy_mu);
+        xy_sigmas=xy_sigma[i]-xy_mu;
         x_pixel_sigmas_squared=x_pixel_sigma_squared[i]-x_pixel_mu_squared;
         y_pixel_sigmas_squared=y_pixel_sigma_squared[i]-y_pixel_mu_squared;
         ssim=((2.0*xy_mu+c1)*(2.0*xy_sigmas+c2))/
@@ -1784,8 +1784,9 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   return(status);
 }
 
-static MagickBooleanType GetStructuralDisimilarityDistortion(const Image *image,
-  const Image *reconstruct_image,double *distortion,ExceptionInfo *exception)
+static MagickBooleanType GetStructuralDissimilarityDistortion(
+  const Image *image,const Image *reconstruct_image,double *distortion,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -1933,7 +1934,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     }
     case StructuralDissimilarityErrorMetric:
     {
-      status=GetStructuralDisimilarityDistortion(image,reconstruct_image,
+      status=GetStructuralDissimilarityDistortion(image,reconstruct_image,
         channel_distortion,exception);
       break;
     }
@@ -2095,7 +2096,7 @@ MagickExport double *GetImageDistortions(Image *image,
     }
     case StructuralDissimilarityErrorMetric:
     {
-      status=GetStructuralDisimilarityDistortion(image,reconstruct_image,
+      status=GetStructuralDissimilarityDistortion(image,reconstruct_image,
         distortion,exception);
       break;
     }
@@ -2264,10 +2265,10 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
     *reconstruct_view;
 
   double
-    area,
-    maximum_error,
-    mean_error,
-    mean_error_per_pixel;
+    area = 0.0,
+    maximum_error = (-MagickMaximumValue),
+    mean_error = 0.0,
+    mean_error_per_pixel = 0.0;
 
   MagickBooleanType
     status;
@@ -2283,10 +2284,6 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
   assert(image->signature == MagickCoreSignature);
   assert(reconstruct_image != (const Image *) NULL);
   assert(reconstruct_image->signature == MagickCoreSignature);
-  area=0.0;
-  maximum_error=0.0;
-  mean_error_per_pixel=0.0;
-  mean_error=0.0;
   SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -2320,8 +2317,8 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
         if (((traits & UpdatePixelTrait) == 0) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        distance=fabs((double) p[i]-(double) GetPixelChannel(reconstruct_image,
-          channel,q));
+        distance=QuantumScale*fabs((double) p[i]-(double)
+          GetPixelChannel(reconstruct_image,channel,q));
         if (distance >= MagickEpsilon)
           {
             mean_error_per_pixel+=distance;
@@ -2329,19 +2326,21 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
             if (distance > maximum_error)
               maximum_error=distance;
           }
-        area++;
       }
+      area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  image->error.mean_error_per_pixel=(double) (mean_error_per_pixel/area);
-  image->error.normalized_mean_error=(double) (QuantumScale*QuantumScale*
-    mean_error/area);
-  image->error.normalized_maximum_error=(double) (QuantumScale*maximum_error);
-  status=image->error.mean_error_per_pixel == 0.0 ? MagickTrue : MagickFalse;
+  area=PerceptibleReciprocal(area);
+  image->error.mean_error_per_pixel=(double) QuantumRange*
+    (mean_error_per_pixel*area);
+  image->error.normalized_mean_error=mean_error*area;
+  image->error.normalized_maximum_error=maximum_error;
+  status=fabs(image->error.mean_error_per_pixel) < MagickEpsilon ?
+    MagickTrue : MagickFalse;
   return(status);
 }
 
