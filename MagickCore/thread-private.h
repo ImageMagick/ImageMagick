@@ -50,23 +50,29 @@ extern "C" {
 static inline int GetMagickNumberThreads(const Image *source,
   const Image *destination,const size_t chunk,const int factor)
 {
-#define WorkLoadFactor  (64UL << factor)
-
   const CacheType
     destination_type = (CacheType) GetImagePixelCacheType(destination),
     source_type = (CacheType) GetImagePixelCacheType(source);
 
-  int
-    number_threads;
+  int 
+    max_threads = GetMagickResourceLimit(ThreadResource),
+    number_threads = 1;
+
+  size_t 
+    workload_factor = 64UL << factor;
 
   /*
-    Return number of threads dependent on cache type and work load.
+    Determine number of threads based on workload.
   */
-  number_threads=(int) MagickMax(MagickMin((MagickSizeType) chunk/
-    WorkLoadFactor,GetMagickResourceLimit(ThreadResource)),1);
+  number_threads=(chunk <= workload_factor) ? 1 : 
+    (chunk >= (workload_factor << 6)) ? max_threads :
+    1+(chunk-workload_factor)*(max_threads-1)/(((workload_factor << 6))-1);
+  /*
+    Limit threads for non-memory or non-map cache sources/destinations.
+  */
   if (((source_type != MemoryCache) && (source_type != MapCache)) ||
       ((destination_type != MemoryCache) && (destination_type != MapCache)))
-    number_threads=MagickMin(number_threads,2);
+    number_threads=MagickMin(number_threads,4);
   return(number_threads);
 }
 
