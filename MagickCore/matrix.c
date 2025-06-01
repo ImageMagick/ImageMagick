@@ -741,12 +741,15 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
 {
 #define GaussJordanSwap(x,y) \
 { \
-  double temp = (x); \
+  long double temp = (x); \
   (x)=(y); \
   (y)=temp; \
 }
-#define ThrowGaussJordanSwapException() \
+#define ThrowGaussJordanException() \
 { \
+  for (i=0; i < (ssize_t) rank; i++) \
+    hp_matrix[i]=(long double *) RelinquishMagickMemory(hp_matrix[i]); \
+  hp_matrix=(long double **) RelinquishMagickMemory(hp_matrix); \
   if (pivots != (ssize_t *) NULL) \
     pivots=(ssize_t *) RelinquishMagickMemory(pivots); \
   if (rows != (ssize_t *) NULL) \
@@ -756,81 +759,115 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
   return(MagickFalse); \
 }
 
-  double
+  long double
+    **hp_matrix = (long double **) NULL,
     scale;
 
   ssize_t
     column,
-    *columns,
+    *columns = (ssize_t *) NULL,
     i,
     j,
-    *pivots,
+    *pivots = (ssize_t *) NULL,
     row,
-    *rows;
+    *rows = (ssize_t *) NULL;
 
+  /*
+    Allocate high precision matrix.
+  */
+  hp_matrix=(long double **) AcquireQuantumMemory(rank,sizeof(*hp_matrix));
+  if (hp_matrix == (long double **) NULL)
+    return(MagickFalse);
+  for (i=0; i < (ssize_t) rank; i++)
+  {
+    hp_matrix[i]=(long double *) AcquireQuantumMemory(rank,
+      sizeof(*hp_matrix[i]));
+    if (hp_matrix[i] == (long double *) NULL)
+      ThrowGaussJordanException();
+    for (j=0; j < (ssize_t) rank; j++)
+      hp_matrix[i][j]=(long double)matrix[i][j];
+  }
   columns=(ssize_t *) AcquireQuantumMemory(rank,sizeof(*columns));
   rows=(ssize_t *) AcquireQuantumMemory(rank,sizeof(*rows));
   pivots=(ssize_t *) AcquireQuantumMemory(rank,sizeof(*pivots));
   if ((columns == (ssize_t *) NULL) || (rows == (ssize_t *) NULL) ||
       (pivots == (ssize_t *) NULL))
-    ThrowGaussJordanSwapException();
+    ThrowGaussJordanException();
   (void) memset(columns,0,rank*sizeof(*columns));
   (void) memset(rows,0,rank*sizeof(*rows));
   (void) memset(pivots,0,rank*sizeof(*pivots));
   for (i=0; i < (ssize_t) rank; i++)
   {
-    double
+    long double
       max = 0.0;
 
     ssize_t
       k;
 
+    /*
+      Partial pivoting: find the largest absolute value in the unreduced
+      submatrix.
+    */
     column=(-1);
     row=(-1);
     for (j=0; j < (ssize_t) rank; j++)
       if (pivots[j] != 1)
-        for (k = 0; k < (ssize_t) rank; k++)
-          if ((pivots[k] == 0) && (fabs(matrix[j][k]) > max))
+        for (k=0; k < (ssize_t) rank; k++)
+          if ((pivots[k] == 0) && (fabsl(hp_matrix[j][k]) > max))
             {
-              max=fabs(matrix[j][k]);
+              max=fabsl(hp_matrix[j][k]);
               row=j;
               column=k;
             }
-    if ((column == -1) || (row == -1))
-      ThrowGaussJordanSwapException();  /* Singular matrix */
+    if ((column == -1) || (row == -1) ||
+        ((fabsl(max) > 0.0L) && (fabsl(max) <= LDBL_MIN)))
+      ThrowGaussJordanException();  /* Singular or nearly singular matrix */
     pivots[column]++;
     if (row != column)
       {
         for (k=0; k < (ssize_t) rank; k++)
-          GaussJordanSwap(matrix[row][k],matrix[column][k]);
+          GaussJordanSwap(hp_matrix[row][k],hp_matrix[column][k]);
         for (k=0; k < (ssize_t) number_vectors; k++)
           GaussJordanSwap(vectors[k][row],vectors[k][column]);
       }
     rows[i]=row;
     columns[i]=column;
-    if (fabs(matrix[column][column]) < MagickEpsilon)
-      ThrowGaussJordanSwapException();  /* Singular matrix */
-    scale=1.0/matrix[column][column];
-    matrix[column][column]=1.0;
+    if ((fabsl(hp_matrix[column][column]) > 0.0L) &&
+        (fabsl(hp_matrix[column][column]) <= LDBL_MIN))
+      ThrowGaussJordanException();  /* Singular matrix */
+    scale=1.0L/hp_matrix[column][column];
+    hp_matrix[column][column]=1.0;
     for (j=0; j < (ssize_t) rank; j++)
-      matrix[column][j]*=scale;
+      hp_matrix[column][j]*=scale;
     for (j=0; j < (ssize_t) number_vectors; j++)
-      vectors[j][column]*=scale;
+      vectors[j][column]*=(double) scale;
     for (j=0; j < (ssize_t) rank; j++)
       if (j != column)
         {
-          scale=matrix[j][column];
-          matrix[j][column]=0.0;
+          scale=hp_matrix[j][column];
+          hp_matrix[j][column]=0.0;
           for (k=0; k < (ssize_t) rank; k++)
-            matrix[j][k]-=scale*matrix[column][k];
+            hp_matrix[j][k]-=scale*hp_matrix[column][k];
           for (k=0; k < (ssize_t) number_vectors; k++)
-            vectors[k][j]-=scale*vectors[k][column];
+            vectors[k][j]-=(double)(scale*(long double) vectors[k][column]);
         }
   }
   for (j=(ssize_t) rank-1; j >= 0; j--)
     if (columns[j] != rows[j])
       for (i=0; i < (ssize_t) rank; i++)
-        GaussJordanSwap(matrix[i][rows[j]],matrix[i][columns[j]]);
+        GaussJordanSwap(hp_matrix[i][columns[j]],hp_matrix[i][rows[j]]);
+  /*
+    Copy back the result to the original matrix.
+  */
+  for (i=0; i < (ssize_t) rank; i++)
+    for (j=0; j < (ssize_t) rank; j++)
+      matrix[i][j]=(double)hp_matrix[i][j];
+  /*
+    Free resources.
+  */
+  for (i=0; i < (ssize_t) rank; i++)
+    hp_matrix[i]=(long double *) RelinquishMagickMemory(hp_matrix[i]);
+  hp_matrix=(long double **) RelinquishMagickMemory(hp_matrix);
   pivots=(ssize_t *) RelinquishMagickMemory(pivots);
   rows=(ssize_t *) RelinquishMagickMemory(rows);
   columns=(ssize_t *) RelinquishMagickMemory(columns);
