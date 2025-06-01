@@ -3779,6 +3779,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
     Identify the maxima value in the image and its location.
   */
   (void) ResetImagePage(ncc_image,"0x0+0+0");
+  (void) ClampImage(ncc_image,exception);
   status=GrayscaleImage(ncc_image,AveragePixelIntensityMethod,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();

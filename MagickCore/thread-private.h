@@ -54,11 +54,9 @@ static inline int GetMagickNumberThreads(const Image *source,
     destination_type = (CacheType) GetImagePixelCacheType(destination),
     source_type = (CacheType) GetImagePixelCacheType(source);
 
-  int 
-    max_threads = GetMagickResourceLimit(ThreadResource),
-    number_threads = 1;
-
-  size_t 
+  size_t
+    max_threads = (size_t) GetMagickResourceLimit(ThreadResource),
+    number_threads = 1,
     workload_factor = 64UL << factor;
 
   /*
@@ -73,7 +71,7 @@ static inline int GetMagickNumberThreads(const Image *source,
   if (((source_type != MemoryCache) && (source_type != MapCache)) ||
       ((destination_type != MemoryCache) && (destination_type != MapCache)))
     number_threads=MagickMin(number_threads,4);
-  return(number_threads);
+  return((int) number_threads);
 }
 
 static inline MagickThreadType GetMagickThreadId(void)

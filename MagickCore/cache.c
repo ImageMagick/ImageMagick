@@ -655,11 +655,9 @@ static MagickBooleanType ClonePixelCacheOnDisk(
 static inline int GetCacheNumberThreads(const CacheInfo *source,
   const CacheInfo *destination,const size_t chunk,const int factor)
 {
-  int
-    max_threads = GetMagickResourceLimit(ThreadResource),
-    number_threads = 1;
-
   size_t
+    max_threads = (size_t) GetMagickResourceLimit(ThreadResource),
+    number_threads = 1,
     workload_factor = 64UL << factor;
   
   /*
@@ -674,7 +672,7 @@ static inline int GetCacheNumberThreads(const CacheInfo *source,
   if (((source->type != MemoryCache) && (source->type != MapCache)) ||
       ((destination->type != MemoryCache) && (destination->type != MapCache)))
     number_threads=MagickMin(number_threads,4);
-  return(number_threads);
+  return((int) number_threads);
 }
 
 static MagickBooleanType ClonePixelCacheRepository(
