@@ -13,7 +13,7 @@ jobs:
   build_linux:
     name: Build Linux
     container:
-      image: ubuntu:20.04
+      image: ubuntu:22.04
     runs-on: ubuntu-24.04
 
     strategy:

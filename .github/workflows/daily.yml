@@ -45,7 +45,7 @@ jobs:
   build_linux:
     name: 'Linux Q${{matrix.quantum}}-x64 hdri=${{matrix.hdri}} (${{matrix.modules}}) (${{ matrix.compiler }})'
     container:
-      image: ubuntu:20.04
+      image: ubuntu:22.04
     runs-on: ubuntu-24.04
 
     strategy:
