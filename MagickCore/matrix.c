@@ -737,7 +737,7 @@ MagickPrivate void LeastSquaresAddTerms(double **matrix,double **vectors,
 %
 */
 MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
-  double **vectors, const size_t rank, const size_t number_vectors)
+  double **vectors,const size_t rank,const size_t number_vectors)
 {
 #define GaussJordanSwap(x,y) \
 { \
