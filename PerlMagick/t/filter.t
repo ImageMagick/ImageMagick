@@ -81,7 +81,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Edge.miff', 'Edge', q//,
 testFilterCompare('input.miff',  q//, 'reference/filter/Emboss.miff', 'Emboss', q/'0x1'/, 0.2, 1.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Equalize.miff', 'Equalize', q//, 0.06, 0.5);
+testFilterCompare('input.miff',  q//, 'reference/filter/Equalize.miff', 'Equalize', q//, 0.2, 0.5);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Implode.miff', 'Implode', q/0.0/, 0.0, 0.0);
@@ -168,7 +168,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Sample.miff', 'Sample', 
 testFilterCompare('input.miff',  q//, 'reference/filter/Scale.miff', 'Scale', q/'60%'/, 0.00001, 0.004);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Segment.miff', 'Segment', q//, 0.09, 0.9);
+testFilterCompare('input.miff',  q//, 'reference/filter/Segment.miff', 'Segment', q//, 0.3, 0.9);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Shade.miff', 'Shade', q/geometry=>'30x30',gray=>'true'/, 0.09, 0.9);

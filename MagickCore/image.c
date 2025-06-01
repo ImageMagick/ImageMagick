@@ -188,7 +188,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->blob=CloneBlobInfo((BlobInfo *) NULL);
   image->timestamp=GetMagickTime();
   time_limit=(int) GetMagickResourceLimit(TimeResource);
-  if (time_limit > 0)
+  if (time_limit != MagickResourceInfinity)
     image->ttl=image->timestamp+time_limit;
   image->debug=(GetLogEventMask() & (ImageEvent | TransformEvent | CoderEvent))
     != 0 ? MagickTrue : MagickFalse;
