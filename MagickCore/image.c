@@ -140,7 +140,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
+  MagickSizeType
     time_limit;
 
   MagickStatusType
@@ -187,9 +187,9 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->channel_map=AcquirePixelChannelMap();
   image->blob=CloneBlobInfo((BlobInfo *) NULL);
   image->timestamp=GetMagickTime();
-  time_limit=(int) GetMagickResourceLimit(TimeResource);
+  time_limit=GetMagickResourceLimit(TimeResource);
   if (time_limit != MagickResourceInfinity)
-    image->ttl=image->timestamp+time_limit;
+    image->ttl=image->timestamp+(time_t) time_limit;
   image->debug=(GetLogEventMask() & (ImageEvent | TransformEvent | CoderEvent))
     != 0 ? MagickTrue : MagickFalse;
   image->reference_count=1;
