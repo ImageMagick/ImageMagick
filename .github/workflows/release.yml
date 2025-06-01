@@ -132,18 +132,11 @@ jobs:
         cd ImageMagick-Windows
         CloneRepositories.IM7.cmd
 
-    - name: Build configure
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"
-        cd ImageMagick-Windows\Configure
-        msbuild Configure.sln /m /t:Rebuild /p:Configuration=Release,Platform=x64
-
     - name: Configure ImageMagick
       shell: cmd
       run: |
         cd ImageMagick-Windows\Configure
-        Configure.exe /VS2022 /noWizard /noAliases /${{ matrix.hdri }} /${{ matrix.quantum }} /${{ matrix.platform }} /smtd
+        Configure.Release.x64.exe /VS2022 /noWizard /noAliases /${{ matrix.hdri }} /${{ matrix.quantum }} /${{ matrix.platform }} /smtd
 
     - name: Build ImageMagick (${{ matrix.platform }})
       shell: cmd
