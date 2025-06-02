@@ -55,7 +55,6 @@
     %d   domain
     %e   event
     %f   function
-    %g   generation
     %i   thread id
     %l   line
     %m   module
@@ -75,6 +74,6 @@
   <log output="console"/>
   <log filename="Magick-%g.log"/>
   <log generations="3"/>
-  <log limit="2000"/>
+  <log limit="2GiB"/>
   <log format="%t %r %u %v %d %c[%p]: %m/%f/%l/%d\n  %e"/>
 </logmap>
