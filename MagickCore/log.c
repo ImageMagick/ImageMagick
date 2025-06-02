@@ -833,13 +833,9 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
     if ((path == (const char *) NULL) ||
         (LocaleCompare(path,log_info[i]->path) != 0))
       {
-        size_t
-          length;
-
         if (log_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\nHandler: ",
             log_info[i]->path);
-        length=0;
         for (j=0; j < (ssize_t) (8*sizeof(LogHandlerType)); j++)
         {
           size_t
@@ -850,10 +846,7 @@ MagickExport MagickBooleanType ListLogInfo(FILE *file,ExceptionInfo *exception)
           mask=1;
           mask<<=j;
           if (((size_t) log_info[i]->handler_mask & mask) != 0)
-            {
-              (void) FormatLocaleFile(file,"%s ",LogHandlers[j].name);
-              length+=strlen(LogHandlers[j].name);
-            }
+            (void) FormatLocaleFile(file,"%s ",LogHandlers[j].name);
         }
         (void) FormatLocaleFile(file,"\n\n");
       }
