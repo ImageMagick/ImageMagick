@@ -2342,7 +2342,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               case ClearCompositeOp:
               case CopyCompositeOp:
               case ReplaceCompositeOp:
-              case SrcCompositeOp:
               {
                 if (channel == AlphaPixelChannel)
                   pixel=(MagickRealType) TransparentAlpha;
@@ -2759,7 +2758,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case CopyCompositeOp:
           case ReplaceCompositeOp:
-          case SrcCompositeOp:
           {
             pixel=(double) QuantumRange*Sca;
             break;
@@ -2767,6 +2765,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case BlurCompositeOp:
           case DisplaceCompositeOp:
           case DistortCompositeOp:
+          case SrcCompositeOp:
           {
             pixel=Sc;
             break;
@@ -2847,6 +2846,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             break;
           }
           case CopyAlphaCompositeOp:
+          case DstCompositeOp:
           {
             pixel=Dc;
             break;
@@ -2974,12 +2974,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case DstAtopCompositeOp:
           {
             pixel=(double) QuantumRange*(Dca*Sa+Sca*(1.0-Da));
-            break;
-          }
-          case DstCompositeOp:
-          case NoCompositeOp:
-          {
-            pixel=(double) QuantumRange*Dca;
             break;
           }
           case DstInCompositeOp:
@@ -3288,6 +3282,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case NegateCompositeOp:
           {
             pixel=(double) QuantumRange*(1.0-fabs(1.0-Sca-Dca));
+            break;
+          }
+          case NoCompositeOp:
+          {
+            pixel=(double) QuantumRange*Dca;
             break;
           }
           case OutCompositeOp:
