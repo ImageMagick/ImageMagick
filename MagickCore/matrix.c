@@ -741,6 +741,12 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
 {
 #define GaussJordanSwap(x,y) \
 { \
+  double temp = (x); \
+  (x)=(y); \
+  (y)=temp; \
+}
+#define GaussJordanSwapLD(x,y) \
+{ \
   long double temp = (x); \
   (x)=(y); \
   (y)=temp; \
@@ -819,21 +825,19 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
               row=j;
               column=k;
             }
-    if ((column == -1) || (row == -1) ||
-        ((fabsl(max) > 0.0L) && (fabsl(max) <= LDBL_MIN)))
+    if ((column == -1) || (row == -1) || (fabsl(max) < LDBL_MIN))
       ThrowGaussJordanException();  /* Singular or nearly singular matrix */
     pivots[column]++;
     if (row != column)
       {
         for (k=0; k < (ssize_t) rank; k++)
-          GaussJordanSwap(hp_matrix[row][k],hp_matrix[column][k]);
+          GaussJordanSwapLD(hp_matrix[row][k],hp_matrix[column][k]);
         for (k=0; k < (ssize_t) number_vectors; k++)
           GaussJordanSwap(vectors[k][row],vectors[k][column]);
       }
     rows[i]=row;
     columns[i]=column;
-    if ((fabsl(hp_matrix[column][column]) > 0.0L) &&
-        (fabsl(hp_matrix[column][column]) <= LDBL_MIN))
+    if (fabsl(hp_matrix[column][column]) < LDBL_MIN)
       ThrowGaussJordanException();  /* Singular matrix */
     scale=1.0L/hp_matrix[column][column];
     hp_matrix[column][column]=1.0;
@@ -855,7 +859,7 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
   for (j=(ssize_t) rank-1; j >= 0; j--)
     if (columns[j] != rows[j])
       for (i=0; i < (ssize_t) rank; i++)
-        GaussJordanSwap(hp_matrix[i][columns[j]],hp_matrix[i][rows[j]]);
+        GaussJordanSwapLD(hp_matrix[i][columns[j]],hp_matrix[i][rows[j]]);
   /*
     Copy back the result to the original matrix.
   */
