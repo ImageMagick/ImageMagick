@@ -64,7 +64,7 @@ extern "C" {
 #include <sys/types.h>
 #include <time.h>
 
-#if defined(WIN32) || defined(WIN64)
+#if defined(WIN32) || defined(WIN64) || defined(_WIN32_WINNT)
 #  define MAGICKWAND_WINDOWS_SUPPORT
 #else
 #  define MAGICKWAND_POSIX_SUPPORT

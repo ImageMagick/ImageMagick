@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#if defined(WIN32) || defined(WIN64)
+#if defined(WIN32) || defined(WIN64) || defined(_WIN32_WINNT)
 #  define MAGICKWAND_WINDOWS_SUPPORT
 #else
 #  define MAGICKWAND_POSIX_SUPPORT
