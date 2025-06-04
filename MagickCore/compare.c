@@ -3689,18 +3689,8 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   test_image=SIMSquareImage(image,exception);
   if (test_image == (Image *) NULL)
     ThrowNCCSimilarityException();
-  GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
-  (void) ResetImagePage(test_image,"0x0+0+0");
-  status=SetImageExtent(test_image,extent,extent,exception);
-  if (status == MagickFalse)
-    ThrowNCCSimilarityException();
   reconstruct_image=SIMUnityImage(image,reconstruct,exception);
   if (reconstruct_image == (Image *) NULL)
-    ThrowNCCSimilarityException();
-  GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
-  (void) ResetImagePage(reconstruct_image,"0x0+0+0");
-  status=SetImageExtent(reconstruct_image,extent,extent,exception);
-  if (status == MagickFalse)
     ThrowNCCSimilarityException();
   /*
     Compute the cross correlation of the test and reconstruction images.
