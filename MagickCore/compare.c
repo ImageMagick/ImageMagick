@@ -3680,9 +3680,6 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo
     geometry;
 
-  size_t
-    extent = MagickMax(image->columns,image->rows);
-
   /*
     NCC correlation-based image similarity with FFT local statistics.
   */
