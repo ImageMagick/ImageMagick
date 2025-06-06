@@ -341,10 +341,8 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
 
   cl_uint
     colorspace,
+    i,
     method;
-
-  ssize_t
-    i;
 
   size_t
     global_work_size[2];
@@ -364,7 +362,7 @@ static MagickBooleanType LaunchHistogramKernel(MagickCLEnv clEnv,
   }
 
   /* set the kernel arguments */
-  i = 0;
+  i=0;
   clStatus=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_mem),(void *)&imageBuffer);
   clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_int),&channel_mask);
   clStatus|=clEnv->library->clSetKernelArg(histogramKernel,i++,sizeof(cl_uint),&colorspace);
