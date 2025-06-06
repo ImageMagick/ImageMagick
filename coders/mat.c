@@ -581,7 +581,7 @@ DblBreak:
   RelinquishMagickMemory(decompress_block);
   *Size = TotalSize;
 
-  if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL) goto UnlinkFile;
+  if((clone_info->file=fopen_utf8(clone_info->filename,"rb"))==NULL) goto UnlinkFile;
   if( (image2 = AcquireImage(clone_info,exception))==NULL ) goto EraseFile;
   image2->columns=0;
   image2->rows=0;

@@ -208,7 +208,7 @@ static inline MagickBooleanType MagickCreateDirectory(const char *path)
     status;
 
 #ifdef MAGICKCORE_WINDOWS_SUPPORT
-  status=mkdir(path);
+  status=_mkdir(path);
 #else
   status=mkdir(path,0777);
 #endif
@@ -914,7 +914,7 @@ static MagickBooleanType CanWriteProfileToFile(const char *filename)
   FILE
     *profileFile;
 
-  profileFile=fopen(filename,"ab");
+  profileFile=fopen_utf8(filename,"ab");
 
   if (profileFile == (FILE *) NULL)
     {
