@@ -112,8 +112,8 @@
 #define __j0 _j0
 #define __j1 _j1
 #else
-#define __j0 _j0
-#define __j1 _j1
+#define __j0 j0
+#define __j1 j1
 #endif
 
 #define SECONDS_ERR -FLT_MAX
