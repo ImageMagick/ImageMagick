@@ -1991,7 +1991,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
         i;
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        *q++=QuantumScale*(double) p[i];
+        *q++=(gfloat) (QuantumScale*(double) p[i]);
       p+=(ptrdiff_t) GetPixelChannels(image);
     }
   }
@@ -2004,8 +2004,8 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   lqr_carver_set_preserve_input_image(carver);
-  lqr_status=lqr_carver_init(carver,(int) delta_x,rigidity);
-  lqr_status=lqr_carver_resize(carver,(int) columns,(int) rows);
+  lqr_status=lqr_carver_init(carver,(gint) delta_x,(gfloat) rigidity);
+  lqr_status=lqr_carver_resize(carver,(gint) columns,(gint) rows);
   (void) lqr_status;
   rescale_image=CloneImage(image,(size_t) lqr_carver_get_width(carver),
     (size_t) lqr_carver_get_height(carver),MagickTrue,exception);
@@ -2133,7 +2133,7 @@ static inline void MixPixels(const Quantum *source,const ssize_t *source_offset,
       sum = 0;
 
     for (j=0; j < (ssize_t) source_size; j++)
-      sum+=source[source_offset[j]*(ssize_t) channels+i];
+      sum+=(ssize_t) source[source_offset[j]*(ssize_t) channels+i];
     destination[(ssize_t) channels*destination_offset+i]=(Quantum) (sum/
       (ssize_t) source_size);
   }
@@ -2488,7 +2488,8 @@ static void Fish2X(const Image *source,const Quantum *pixels,Quantum *result,
     i;
 
   for (i=0; i < 9; i++)
-    intensities[i]=GetPixelIntensity(source,pixels+i*(ssize_t) channels);
+    intensities[i]=(MagickFloatType) GetPixelIntensity(source,pixels+
+      i*(ssize_t) channels);
   CopyPixels(pixels,0,result,0,channels);
   CopyPixels(pixels,(ssize_t) (intensities[0] > intensities[1] ? 0 : 1),result,
     1,channels);

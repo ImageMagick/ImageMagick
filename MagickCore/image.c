@@ -1694,7 +1694,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         (void) FormatLocaleString(filename+(p-format-offset),(size_t)
           (MagickPathExtent-(p-format-offset)),p,value);
         offset+=(4-field_width);
-        *q=c;
+        *q=(char) c;
         (void) ConcatenateMagickString(filename,q,MagickPathExtent);
         canonical=MagickTrue;
         if (*(q-1) != '%')
@@ -1755,7 +1755,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         (void) CopyMagickString(filename+(p-format-offset),option,(size_t)
           (MagickPathExtent-(p-format-offset)));
         offset+=(ssize_t) strlen(pattern)-(ssize_t) strlen(option)+3;
-        *q=c;
+        *q=(char) c;
         (void) ConcatenateMagickString(filename,r+1,MagickPathExtent);
         canonical=MagickTrue;
         if (*(q-1) != '%')

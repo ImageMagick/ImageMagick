@@ -606,9 +606,9 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
             GetMontageGeometry(montage_info->tile,number_images,&x_offset,&y,
               &sans,&sans);
           height=concatenate != MagickFalse ? max_height : extract_info.height;
-          y_offset+=((ssize_t) height+(extract_info.y+(ssize_t) border_width)*2+
-            (metrics.ascent-metrics.descent+4)*(ssize_t) number_lines+
-            (montage_info->shadow != MagickFalse ? 4 : 0));
+          y_offset+=(ssize_t) ((ssize_t) height+(extract_info.y+
+            (ssize_t) border_width)*2+(metrics.ascent-metrics.descent+4)*
+            (ssize_t) number_lines+(montage_info->shadow != MagickFalse ? 4 : 0));
           if (y_offset > (ssize_t) bounds.height)
             bounds.height=(size_t) y_offset;
           max_height=0;
@@ -853,9 +853,9 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           (((tile+1) % (ssize_t) tiles_per_row) == 0))
         {
           x_offset=extract_info.x;
-          y_offset+=((ssize_t) height+(extract_info.y+(ssize_t) border_width)*2+
-            (metrics.ascent-metrics.descent+4)*number_lines+
-            (montage_info->shadow != MagickFalse ? 4 : 0));
+          y_offset+=(ssize_t) ((ssize_t) height+(extract_info.y+
+            (ssize_t) border_width)*2+(metrics.ascent-metrics.descent+4)*
+            number_lines+(montage_info->shadow != MagickFalse ? 4 : 0));
           max_height=0;
         }
       if (images->progress_monitor != (MagickProgressMonitor) NULL)

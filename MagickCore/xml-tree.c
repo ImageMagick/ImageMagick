@@ -1256,7 +1256,7 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
       }
     if (c < 0x80)
       {
-        utf8[j]=c;
+        utf8[j]=(char) c;
         j++;
         continue;
       }
@@ -1267,7 +1267,7 @@ static char *ConvertUTF16ToUTF8(const char *content,size_t *length)
     for (bits=0; byte != 0; byte/=2)
       bits++;
     bits=(bits-2)/5;
-    utf8[j++]=(0xFF << (7-bits)) | (c >> (6*bits));
+    utf8[j++]=(char) ((0xFF << (7-bits)) | (c >> (6*bits)));
     while (bits != 0)
     {
       bits--;
@@ -1346,7 +1346,7 @@ static char *ParseEntities(char *xml,char **entities,int state)
             continue;
           }
         if (c < 0x80)
-          *(xml++)=c;
+          *(xml++)=(char) c;
         else
           {
             /*
@@ -2064,7 +2064,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
                     ignore_depth++;
                     (void) DestroyXMLTreeAttributes(attributes);
                   }
-                *p=c;
+                *p=(char) c;
               }
             else
               {
@@ -2102,7 +2102,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
             }
           if (ignore_depth > 0)
             ignore_depth--;
-          *p=c;
+          *p=(char) c;
           if (isspace((int) ((unsigned char) *p)) != 0)
             p+=(ptrdiff_t) strspn(p,XMLWhitespace);
         }

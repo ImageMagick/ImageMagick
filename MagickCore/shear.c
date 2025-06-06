@@ -287,7 +287,7 @@ static void RadonProjection(MatrixInfo *source_matrices,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
-    num_threads(GetMagickResourceLimit(ThreadResource))
+    num_threads((int) GetMagickResourceLimit(ThreadResource))
 #endif
   for (x=0; x < (ssize_t) GetMatrixColumns(p); x++)
   {

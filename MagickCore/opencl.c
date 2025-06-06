@@ -2780,10 +2780,10 @@ MagickPrivate MagickBooleanType RecordProfileData(MagickCLDevice device,
       device->profile_records[i+1]=(KernelProfileRecord) NULL;
     }
   if ((elapsed < profile_record->min) || (profile_record->count == 0))
-    profile_record->min=elapsed;
+    profile_record->min=(unsigned long) elapsed;
   if (elapsed > profile_record->max)
-    profile_record->max=elapsed;
-  profile_record->total+=elapsed;
+    profile_record->max=(unsigned long) elapsed;
+  profile_record->total+=(unsigned long) elapsed;
   profile_record->count+=1;
   UnlockSemaphoreInfo(device->lock);
   return(MagickTrue);
@@ -3023,7 +3023,7 @@ static MagickCLEnv RelinquishMagickCLEnv(MagickCLEnv clEnv)
       ssize_t
         i;
 
-      for (i=0; i < clEnv->number_contexts; i++)
+      for (i=0; i < (ssize_t) clEnv->number_contexts; i++)
         if (clEnv->contexts[i] != (cl_context) NULL)
           (void) openCL_library->clReleaseContext(clEnv->contexts[i]);
       clEnv->contexts=(cl_context *) RelinquishMagickMemory(clEnv->contexts);
