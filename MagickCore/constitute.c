@@ -485,7 +485,7 @@ static void InitializeConstituteInfo(const ImageInfo *image_info,
       constitute_info->delay_flags=ParseGeometry(option,&geometry_info);
       if (constitute_info->delay_flags != NoValue)
         {
-          constitute_info->delay=floor(geometry_info.rho+0.5);
+          constitute_info->delay=(size_t) floor(geometry_info.rho+0.5);
           if ((constitute_info->delay_flags & SigmaValue) != 0)
             constitute_info->ticks_per_second=CastDoubleToSsizeT(floor(
               geometry_info.sigma+0.5));

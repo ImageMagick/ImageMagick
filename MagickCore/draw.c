@@ -4203,7 +4203,7 @@ static MagickBooleanType RenderMVGContent(Image *image,
         /*
           Resize based on speculative points required by primitive.
         */
-        number_points+=coordinates+1;
+        number_points+=(size_t) coordinates+1;
         if (number_points < (size_t) coordinates)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),

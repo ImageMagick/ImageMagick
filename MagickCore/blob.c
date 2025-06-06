@@ -4968,7 +4968,7 @@ MagickExport char *ReadBlobString(Image *image,char *string)
             blob_info->eof=MagickTrue;
             break;
           }
-        string[i++]=c;
+        string[i++]=(char) c;
         if (c == '\n')
           break;
       } while (i < (MaxTextExtent-2));
@@ -5089,7 +5089,7 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
     case ZipStream:
     {
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
-      if (gzseek(blob_info->file_info.gzfile,offset,whence) < 0)
+      if (gzseek(blob_info->file_info.gzfile,(long) offset,whence) < 0)
         return(-1);
 #endif
       blob_info->offset=TellBlob(image);

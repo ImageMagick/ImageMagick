@@ -1036,8 +1036,8 @@ MagickExport Image *BilateralBlurImage(const Image *image,const size_t width,
 
           r=p+(ssize_t) (GetPixelChannels(image)*MagickMax(width,1)*
             (size_t) (mid.y-v)+GetPixelChannels(image)*(size_t) (mid.x-u));
-          intensity=ScaleQuantumToChar(GetPixelIntensity(image,r))-
-            (double) ScaleQuantumToChar(GetPixelIntensity(image,p));
+          intensity=ScaleQuantumToChar((const Quantum) GetPixelIntensity(image,r))-
+            (double) ScaleQuantumToChar((const Quantum) GetPixelIntensity(image,p));
           if ((intensity >= -MaxIntensity) && (intensity <= MaxIntensity))
             weights[id][n]=intensity_gaussian[(ssize_t) intensity+MaxIntensity]*
               spatial_gaussian[n];
@@ -2066,7 +2066,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
   image_view=AcquireVirtualCacheView(image,exception);
   contrast_view=AcquireAuthenticCacheView(contrast_image,exception);
   scanLineSize=(ssize_t) MagickMax(image->columns,image->rows);
-  width=(ssize_t) scanLineSize*0.002*fabs(radius);
+  width=(ssize_t) (scanLineSize*0.002*fabs(radius));
   scanLineSize+=(2*width);
   scanline_info=AcquireVirtualMemory(GetOpenMPMaximumThreads()*
     (size_t) scanLineSize,sizeof(*scanline));
@@ -2162,7 +2162,7 @@ MagickExport Image *LocalContrastImage(const Image *image,const double radius,
           weight-=1.0;
         }
         /* write to output */
-        *out=sum/totalWeight;
+        *out=(float) (sum/totalWeight);
         /* mirror into padding */
         if ((x <= width) && (x != 0))
           *(out-(x*2))=*out;

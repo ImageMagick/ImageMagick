@@ -344,7 +344,7 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
       (void) GetTypeMetrics(image,annotate,&metrics,exception);
     height=CastDoubleToSizeT(metrics.ascent-metrics.descent+0.5);
     if (height == 0)
-      height=draw_info->pointsize;
+      height=(size_t) draw_info->pointsize;
     height=CastDoubleToSizeT(floor((double) height+
       draw_info->interline_spacing+0.5));
     switch (annotate->gravity)
@@ -2033,7 +2033,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 Sa=fill_opacity;
                 fill_opacity=(1.0-RoundToUnity(Sa+Da-Sa*Da))*(double)
                   QuantumRange;
-                SetPixelAlpha(image,fill_opacity,q);
+                SetPixelAlpha(image,(const Quantum) fill_opacity,q);
               }
             if (active == MagickFalse)
               {
@@ -2066,7 +2066,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       }
     if ((fabs(draw_info->interword_spacing) >= MagickEpsilon) &&
         (IsUTFSpace(GetUTFCode(p+grapheme[i].cluster)) != MagickFalse) &&
-        (IsUTFSpace(code) == MagickFalse))
+        (IsUTFSpace((int) code) == MagickFalse))
       origin.x+=(FT_Pos) (64.0*draw_info->interword_spacing);
     else
       if (i == last_character)
@@ -2423,9 +2423,9 @@ static MagickBooleanType RenderPostscript(Image *image,
           GetFillColor(draw_info,x,y,&fill_color,exception);
           SetPixelAlpha(annotate_image,ClampToQuantum((((double) QuantumScale*
             GetPixelIntensity(annotate_image,q)*fill_color.alpha))),q);
-          SetPixelRed(annotate_image,fill_color.red,q);
-          SetPixelGreen(annotate_image,fill_color.green,q);
-          SetPixelBlue(annotate_image,fill_color.blue,q);
+          SetPixelRed(annotate_image,(const Quantum) fill_color.red,q);
+          SetPixelGreen(annotate_image,(const Quantum) fill_color.green,q);
+          SetPixelBlue(annotate_image,(const Quantum) fill_color.blue,q);
           q+=(ptrdiff_t) GetPixelChannels(annotate_image);
         }
         sync=SyncCacheViewAuthenticPixels(annotate_view,exception);
