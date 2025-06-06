@@ -1167,42 +1167,42 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
   char
     component[MagickPathExtent];
 
-  float
+  double
     color,
     scale;
 
-  color=0.0f;
+  color=0.0;
   scale=QuantumRange;
   if ((compliance != NoCompliance) || (pixel->depth <= 8))
-    scale=255.0f;
+    scale=255.0;
   if ((compliance != NoCompliance) &&
       (IssRGBCompatibleColorspace(pixel->colorspace) != MagickFalse) &&
       (IsSVGCompliant(pixel) == MagickFalse))
-    scale=100.0f;
+    scale=100.0;
   switch (channel)
   {
     case RedPixelChannel:
     {
       color=pixel->red;
       if (IsHueCompatibleColorspace(pixel->colorspace) != MagickFalse)
-        scale=360.0f;
+        scale=360.0;
       if ((compliance != NoCompliance) &&
           (IsLabCompatibleColorspace(pixel->colorspace) != MagickFalse))
-        scale=100.0f;
+        scale=100.0;
       if (pixel->colorspace == XYZColorspace)
-        color/=2.55f;
+        color/=2.55;
       break;
     }
     case GreenPixelChannel:
     {
       color=pixel->green;
       if (IsHueCompatibleColorspace(pixel->colorspace) != MagickFalse)
-        scale=100.0f;
+        scale=100.0;
       if ((compliance != NoCompliance) &&
           (IsLabCompatibleColorspace(pixel->colorspace) != MagickFalse))
-        color-=QuantumRange/2.0f;
+        color-=QuantumRange/2.0;
       if (pixel->colorspace == XYZColorspace)
-        color/=2.55f;
+        color/=2.55;
       break;
     }
     case BluePixelChannel:
@@ -1211,20 +1211,20 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
       if (IsHueCompatibleColorspace(pixel->colorspace) != MagickFalse)
         scale=100.0f;
       if (pixel->colorspace == LabColorspace)
-        color-=QuantumRange/2.0f;
+        color-=QuantumRange/2.0;
       if ((pixel->colorspace == LCHColorspace) ||
           (pixel->colorspace == LCHabColorspace) ||
           (pixel->colorspace == LCHuvColorspace))
-        color*=360.0f/255.0f;
+        color*=360.0/255.0;
       if (pixel->colorspace == XYZColorspace)
-        color/=2.55f;
+        color/=2.55;
       break;
     }
     case AlphaPixelChannel:
     {
       color=pixel->alpha;
       if (compliance != NoCompliance)
-        scale=1.0f;
+        scale=1.0;
       break;
     }
     case BlackPixelChannel:
@@ -1240,13 +1240,13 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
     default:
       break;
   }
-  if ((scale != 100.0f) ||
+  if ((scale != 100.0) ||
       (IsLabCompatibleColorspace(pixel->colorspace) != MagickFalse))
     (void) FormatLocaleString(component,MagickPathExtent,"%.*g",
-      GetMagickPrecision(),(double) scale*QuantumScale*(double) color);
+      GetMagickPrecision(),scale*QuantumScale*color);
   else
     (void) FormatLocaleString(component,MagickPathExtent,"%.*g%%",
-      GetMagickPrecision(),(double) scale*QuantumScale*(double) color);
+      GetMagickPrecision(),scale*QuantumScale*color);
   (void) ConcatenateMagickString(tuple,component,MagickPathExtent);
 }
 
