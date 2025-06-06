@@ -65,6 +65,7 @@
 #include "MagickCore/montage.h"
 #include "MagickCore/morphology.h"
 #include "MagickCore/morphology-private.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/opencl-private.h"
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel-accessor.h"
