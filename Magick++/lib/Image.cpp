@@ -3968,7 +3968,7 @@ void Magick::Image::process(std::string name_,const ssize_t argc,
   modifyImage();
 
   GetPPException;
-  (void) InvokeDynamicImageFilter(name_.c_str(),&image(),(const int) argc,argv,
+  (void) InvokeDynamicImageFilter(name_.c_str(),&image(),(int) argc,argv,
     exceptionInfo);
   ThrowImageException;
 }
