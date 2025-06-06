@@ -2949,7 +2949,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
             if ((traits & UpdatePixelTrait) != 0)
               {
                 size_t value = remainder % levels;
-                SetPixelChannel(map_image,channel,scale*value,q);
+                SetPixelChannel(map_image,channel,(const Quantum) (scale*value),q);
                 remainder=(remainder-value)/levels;
               }
           }
@@ -2995,17 +2995,17 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
               Posterize colormap.
             */
             if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-              image->colormap[i].red=(double)
-                PosterizePixel(image->colormap[i].red,levels);
+              image->colormap[i].red=(MagickRealType)
+                PosterizePixel((const Quantum) image->colormap[i].red,levels);
             if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-              image->colormap[i].green=(double)
-                PosterizePixel(image->colormap[i].green,levels);
+              image->colormap[i].green=(MagickRealType)
+                PosterizePixel((const Quantum) image->colormap[i].green,levels);
             if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-              image->colormap[i].blue=(double)
-                PosterizePixel(image->colormap[i].blue,levels);
+              image->colormap[i].blue=(MagickRealType)
+                PosterizePixel((const Quantum) image->colormap[i].blue,levels);
             if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-              image->colormap[i].alpha=(double)
-                PosterizePixel(image->colormap[i].alpha,levels);
+              image->colormap[i].alpha=(MagickRealType)
+                PosterizePixel((const Quantum) image->colormap[i].alpha,levels);
           }
         }
       /*

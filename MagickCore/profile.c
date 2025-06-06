@@ -2115,12 +2115,12 @@ static inline signed short ReadProfileShort(const EndianType endian,
       value=(unsigned short) buffer[1] << 8;
       value|=(unsigned short) buffer[0];
       quantum.unsigned_value=value & 0xffff;
-      return(quantum.signed_value);
+      return((signed short) quantum.signed_value);
     }
   value=(unsigned short) buffer[0] << 8;
   value|=(unsigned short) buffer[1];
   quantum.unsigned_value=value & 0xffff;
-  return(quantum.signed_value);
+  return((signed short) quantum.signed_value);
 }
 
 static inline signed int ReadProfileLong(const EndianType endian,

@@ -169,7 +169,7 @@ static inline float ScaleFloatPixel(const QuantumInfo *quantum_info,
     return(-FLT_MAX);
   if (pixel > (double) FLT_MAX)
     return(FLT_MAX);
-  return(pixel);
+  return((float) pixel);
 }
 
 static inline const unsigned char *PushQuantumFloatPixel(

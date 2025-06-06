@@ -2262,7 +2262,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       if (histogram[(ssize_t) GetPixelChannels(image)*j+i] > 0.0)
         number_bins++;
     area=PerceptibleReciprocalLD(channel_statistics[channel].area);
-    number_bins=PerceptibleReciprocalLD((long double) log2(number_bins));
+    number_bins=(double) PerceptibleReciprocalLD((long double) log2(number_bins));
     for (j=0; j <= (ssize_t) MaxMap; j++)
     {
       double
@@ -2273,8 +2273,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
       entropy=-count*log2(count)*number_bins;
       if (IsNaN(entropy) != 0)
         continue;
-      channel_statistics[channel].entropy+=(long double) entropy;
-      channel_statistics[CompositePixelChannel].entropy+=((long double) entropy/
+      channel_statistics[channel].entropy+=(double) entropy;
+      channel_statistics[CompositePixelChannel].entropy+=((double) entropy/
         GetPixelChannels(image));
     }
   }

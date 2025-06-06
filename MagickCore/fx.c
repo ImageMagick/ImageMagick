@@ -3489,7 +3489,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         case fAiry:
           if (regA==0) regA = 1.0;
           else {
-            fxFltType gamma = 2.0 * j1 ((MagickPI*regA)) / (MagickPI*regA);
+            fxFltType gamma = 2.0 * j1((double) (MagickPI*regA)) / (MagickPI*regA);
             regA = gamma * gamma;
           }
           break;
@@ -3568,7 +3568,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = exp((double) (-regA*regA/2.0))/sqrt(2.0*MagickPI);
           break;
         case fGcd:
-          if (!IsNaN(regA))
+          if (!IsNaN((double) regA))
             regA = FxGcd (regA, regB, 0);
           break;
         case fHypot:
@@ -3578,7 +3578,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = floor ((double) regA);
           break;
         case fIsnan:
-          regA = (fxFltType) (!!IsNaN (regA));
+          regA = (fxFltType) (!!IsNaN ((double) regA));
           break;
 #if defined(MAGICKCORE_HAVE_J0)
         case fJ0:
@@ -3593,7 +3593,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
 #if defined(MAGICKCORE_HAVE_J1)
         case fJinc:
           if (regA==0) regA = 1.0;
-          else regA = 2.0 * j1 ((MagickPI*regA))/(MagickPI*regA);
+          else regA = 2.0 * j1((double) (MagickPI*regA))/(MagickPI*regA);
           break;
 #endif
         case fLn:
@@ -3606,7 +3606,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           regA = log10 ((double) regA);
           break;
         case fMagickTime:
-          regA = GetMagickTime ();
+          regA = (fxFltType) GetMagickTime();
           break;
         case fMax:
           regA = (regA > regB) ? regA : regB;

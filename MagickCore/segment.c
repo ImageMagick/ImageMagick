@@ -615,17 +615,17 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             sum=0.0;
             p=image->colormap+j;
             distance_squared=
-              squares[(ssize_t) (pixel.red-ScaleQuantumToChar(p->red))]+
-              squares[(ssize_t) (pixel.green-ScaleQuantumToChar(p->green))]+
-              squares[(ssize_t) (pixel.blue-ScaleQuantumToChar(p->blue))];
+              squares[(ssize_t) (pixel.red-ScaleQuantumToChar((const Quantum) p->red))]+
+              squares[(ssize_t) (pixel.green-ScaleQuantumToChar((const Quantum) p->green))]+
+              squares[(ssize_t) (pixel.blue-ScaleQuantumToChar((const Quantum) p->blue))];
             numerator=distance_squared;
             for (k=0; k < (ssize_t) image->colors; k++)
             {
               p=image->colormap+k;
               distance_squared=
-                squares[(ssize_t) (pixel.red-ScaleQuantumToChar(p->red))]+
-                squares[(ssize_t) (pixel.green-ScaleQuantumToChar(p->green))]+
-                squares[(ssize_t) (pixel.blue-ScaleQuantumToChar(p->blue))];
+                squares[(ssize_t) (pixel.red-ScaleQuantumToChar((const Quantum) p->red))]+
+                squares[(ssize_t) (pixel.green-ScaleQuantumToChar((const Quantum) p->green))]+
+                squares[(ssize_t) (pixel.blue-ScaleQuantumToChar((const Quantum) p->blue))];
               ratio=numerator/distance_squared;
               sum+=SegmentPower(ratio);
             }
