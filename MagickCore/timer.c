@@ -76,6 +76,12 @@ static void
 */
 static ssize_t
   date_precision = -1;
+
+static time_t
+  magick_epoch = (time_t) 0;
+
+static MagickBooleanType
+  epoch_initialized = MagickFalse;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -347,14 +353,8 @@ MagickExport double GetElapsedTime(TimerInfo *time_info)
 %      time_t GetElapsedTime(void)
 %
 */
-MagickExport time_t GetMagickTime(void)
+static void InitializeEpoch(void)
 {
-  static time_t
-    magick_epoch = (time_t) 0;
-
-  static MagickBooleanType
-    epoch_initialized = MagickFalse;
-
   if (epoch_initialized == MagickFalse)
     {
       char
@@ -373,6 +373,11 @@ MagickExport time_t GetMagickTime(void)
         }
       epoch_initialized=MagickTrue;
     }
+}
+
+MagickExport time_t GetMagickTime(void)
+{
+  InitializeEpoch();
   if (magick_epoch != 0)
     return(magick_epoch);
   return(time((time_t *) NULL));
@@ -445,6 +450,33 @@ MagickExport double GetUserTime(TimerInfo *time_info)
   if (time_info->state == RunningTimerState)
     StopTimer(time_info);
   return(time_info->user.total);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I s S o u r c e D a t a E p o c h S e t                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsSourceDataEpochSet() returns true when the SOURCE_DATE_EPOCH environment
+%  variable is set. This variable is used to set the epoch time for the
+%  GetMagickTime() method. If the variable is not set, then the current time is
+%  returned.
+%
+%  The format of the IsSourceDataEpochSet method is:
+%
+%      MagickBooleanType IsSourceDataEpochSet(void)
+%
+*/
+MagickExport MagickBooleanType IsSourceDataEpochSet(void)
+{
+  InitializeEpoch();
+  return(magick_epoch != 0 ? MagickTrue : MagickFalse);
 }
 
 /*

@@ -60,6 +60,9 @@ static inline void GetMagickLocaltime(const time_t *timep,struct tm *result)
 #endif
 }
 
+extern MagickExport MagickBooleanType
+  IsSourceDataEpochSet(void);
+
 extern MagickExport time_t
   GetMagickTime(void);
 
