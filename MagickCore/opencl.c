@@ -605,7 +605,7 @@ static MagickCLDevice AcquireMagickCLDevice()
 
 static MagickCLEnv AcquireMagickCLEnv(void)
 {
-  const char
+  char
     *option;
 
   MagickCLEnv
@@ -618,13 +618,14 @@ static MagickCLEnv AcquireMagickCLEnv(void)
     ActivateSemaphoreInfo(&clEnv->lock);
     clEnv->cpu_score=MAGICKCORE_OPENCL_UNDEFINED_SCORE;
     clEnv->enabled=MagickFalse;
-    option=getenv("MAGICK_OCL_DEVICE");
+    option=GetEnvironmentValue("MAGICK_OCL_DEVICE");
     if (option != (const char *) NULL)
       {
         if ((IsStringTrue(option) != MagickFalse) ||
             (strcmp(option,"GPU") == 0) ||
             (strcmp(option,"CPU") == 0))
           clEnv->enabled=MagickTrue;
+        option=DestroyString(option);
       }
   }
   return clEnv;
@@ -966,7 +967,7 @@ static MagickBooleanType LoadOpenCLBenchmarks(MagickCLEnv clEnv)
 
 static void AutoSelectOpenCLDevices(MagickCLEnv clEnv)
 {
-  const char
+  char
     *option;
 
   double
@@ -978,13 +979,14 @@ static void AutoSelectOpenCLDevices(MagickCLEnv clEnv)
   size_t
     i;
 
-  option=getenv("MAGICK_OCL_DEVICE");
+  option=GetEnvironmentValue("MAGICK_OCL_DEVICE");
   if (option != (const char *) NULL)
     {
       if (strcmp(option,"GPU") == 0)
         SelectOpenCLDevice(clEnv,CL_DEVICE_TYPE_GPU);
       else if (strcmp(option,"CPU") == 0)
         SelectOpenCLDevice(clEnv,CL_DEVICE_TYPE_CPU);
+      option=DestroyString(option);
     }
 
   if (LoadOpenCLBenchmarks(clEnv) == MagickFalse)

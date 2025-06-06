@@ -357,10 +357,10 @@ MagickExport time_t GetMagickTime(void)
 
   if (epoch_initialized == MagickFalse)
     {
-      const char
+      char
         *source_date_epoch;
 
-      source_date_epoch=getenv("SOURCE_DATE_EPOCH");
+      source_date_epoch=GetEnvironmentValue("SOURCE_DATE_EPOCH");
       if (source_date_epoch != (const char *) NULL)
         {
           time_t
@@ -369,6 +369,7 @@ MagickExport time_t GetMagickTime(void)
           epoch=(time_t) StringToMagickOffsetType(source_date_epoch,100.0);
           if ((epoch > 0) && (epoch <= time((time_t *) NULL)))
             magick_epoch=epoch;
+          source_date_epoch=DestroyString(source_date_epoch);
         }
       epoch_initialized=MagickTrue;
     }
