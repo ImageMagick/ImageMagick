@@ -52,6 +52,7 @@
 #include "MagickWand/wand.h"
 #include "MagickWand/pixel-wand-private.h"
 #include "MagickCore/image-private.h"
+#include "MagickCore/nt-base-private.h"
 
 /*
   Define declarations.
