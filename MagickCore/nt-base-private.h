@@ -64,12 +64,16 @@ extern "C" {
 #  define write(fd,buffer,count)  _write(fd,buffer,(unsigned int) count)
 #endif
 #if !defined(__MINGW32__)
-#  define fseek  _fseeki64
-#  define ftell  _ftelli64
-#  define lseek  _lseeki64
-#  define fstat  _fstat64
-#  define stat  _stat64
-#  define tell  _telli64
+#  define fdopen  _fdopen
+#  define fileno  _fileno
+#  define fseek   _fseeki64
+#  define ftell   _ftelli64
+#  define getpid  _getpid
+#  define lseek   _lseeki64
+#  define fstat   _fstat64
+#  define setmode _setmode
+#  define stat    _stat64
+#  define tell    _telli64
 #endif
 
 #if !defined(XS_VERSION)
