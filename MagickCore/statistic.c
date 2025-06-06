@@ -2035,11 +2035,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     *channel_statistics;
 
   double
+    channels,
     *histogram;
 
   long double
-    area,
-    channels;
+    area;
 
   MagickStatusType
     status;
