@@ -55,6 +55,7 @@
 #include "MagickCore/semaphore.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 
 /*
   Typedef declaration.
@@ -396,7 +397,7 @@ MagickExport MatrixInfo *DestroyMatrixInfo(MatrixInfo *matrix_info)
     case DiskCache:
     {
       if (matrix_info->file != -1)
-        (void) close(matrix_info->file);
+        (void) close_utf8(matrix_info->file);
       (void) RelinquishUniqueFileResource(matrix_info->path);
       RelinquishMagickResource(DiskResource,matrix_info->length);
       break;

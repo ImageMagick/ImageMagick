@@ -116,7 +116,7 @@ MagickExport MagickBooleanType AcquireUniqueFilename(char *path)
   file=AcquireUniqueFileResource(path);
   if (file == -1)
     return(MagickFalse);
-  file=close(file)-1;
+  file=close_utf8(file)-1;
   return(MagickTrue);
 }
 
@@ -215,7 +215,7 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
   if (source_file == -1)
     {
-      (void) close(destination_file);
+      (void) close_utf8(destination_file);
       (void) RelinquishUniqueFileResource(destination);
       return(MagickFalse);
     }
@@ -225,8 +225,8 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
   buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     {
-      (void) close(source_file);
-      (void) close(destination_file);
+      (void) close_utf8(source_file);
+      (void) close_utf8(destination_file);
       (void) RelinquishUniqueFileResource(destination);
       return(MagickFalse);
     }
@@ -245,8 +245,8 @@ MagickExport MagickBooleanType AcquireUniqueSymbolicLink(const char *source,
         break;
       }
   }
-  (void) close(destination_file);
-  (void) close(source_file);
+  (void) close_utf8(destination_file);
+  (void) close_utf8(source_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   return(status);
 }
@@ -1939,6 +1939,6 @@ MagickPrivate MagickBooleanType ShredFile(const char *path)
   }
   key=DestroyStringInfo(key);
   random_info=DestroyRandomInfo(random_info);
-  status=close(file);
+  status=close_utf8(file);
   return((status == -1 || i < passes) ? MagickFalse : MagickTrue);
 }

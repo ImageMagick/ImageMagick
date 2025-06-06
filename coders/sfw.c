@@ -331,7 +331,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   extent=fwrite(offset+1,1,(size_t) (data-offset),file);
   status=ferror(file) != 0 ? MagickFalse : MagickTrue;
   (void) fclose(file);
-  (void) close(unique_file);
+  (void) close_utf8(unique_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   if (status == MagickFalse)
     {

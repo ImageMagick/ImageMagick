@@ -90,6 +90,7 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/threshold.h"
+#include "MagickCore/utility-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3010,7 +3011,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           preview_info->quality);
         file=AcquireUniqueFileResource(filename);
         if (file != -1)
-          file=close(file)-1;
+          file=close_utf8(file)-1;
         (void) FormatLocaleString(preview_image->filename,MagickPathExtent,
           "jpeg:%s",filename);
         status=WriteImage(preview_info,preview_image,exception);

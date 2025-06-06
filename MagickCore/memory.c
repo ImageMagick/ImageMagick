@@ -791,7 +791,7 @@ MagickExport MemoryInfo *AcquireVirtualMemory(const size_t count,
                       *memory_info->filename='\0';
                     }
                 }
-              (void) close(file);
+              (void) close_utf8(file);
             }
         }
     }

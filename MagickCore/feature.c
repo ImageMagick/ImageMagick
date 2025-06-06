@@ -94,6 +94,7 @@
 #include "MagickCore/thread-private.h"
 #include "MagickCore/timer.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
 
 /*
@@ -2075,7 +2076,7 @@ MagickExport Image *HoughLineImage(const Image *image,const size_t width,
         }
     }
   }
-  (void) close(file);
+  (void) close_utf8(file);
   /*
     Render lines to image canvas.
   */

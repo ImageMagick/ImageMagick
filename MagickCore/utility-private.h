@@ -151,6 +151,12 @@ static inline int access_utf8(const char *path,int mode)
 #endif
 }
 
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+#define close_utf8 _close
+#else
+#define close_utf8 close
+#endif
+
 static inline FILE *fopen_utf8(const char *path,const char *mode)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)

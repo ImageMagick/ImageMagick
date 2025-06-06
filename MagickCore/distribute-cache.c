@@ -72,6 +72,7 @@
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/version.h"
 #include "MagickCore/version-private.h"
 #undef MAGICKCORE_HAVE_DISTRIBUTE_CACHE
@@ -81,7 +82,7 @@
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#define CLOSE_SOCKET(socket) (void) close(socket)
+#define CLOSE_SOCKET(socket) (void) close_utf8(socket)
 #define HANDLER_RETURN_TYPE void *
 #define HANDLER_RETURN_VALUE (void *) NULL
 #define SOCKET_TYPE int

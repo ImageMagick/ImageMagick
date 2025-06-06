@@ -56,6 +56,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/utility-private.h"
 #include "MagickCore/module.h"
 
 /*
@@ -269,7 +270,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   if (unique_file != -1)
-    (void) close(unique_file);
+    (void) close_utf8(unique_file);
   (void) RelinquishUniqueFileResource(filename);
   read_info=DestroyImageInfo(read_info);
   if (image != (Image *) NULL)

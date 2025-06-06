@@ -1664,7 +1664,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   source_file=open_utf8(source,O_RDONLY | O_BINARY,0);
   if (source_file == -1)
     {
-      (void) close(destination_file);
+      (void) close_utf8(destination_file);
       return(MagickFalse);
     }
   quantum=(size_t) MagickMaxBufferExtent;
@@ -1673,8 +1673,8 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   buffer=(unsigned char *) AcquireQuantumMemory(quantum,sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     {
-      (void) close(source_file);
-      (void) close(destination_file);
+      (void) close_utf8(source_file);
+      (void) close_utf8(destination_file);
       return(MagickFalse);
     }
   length=0;
@@ -1688,8 +1688,8 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     if ((size_t) count != length)
       break;
   }
-  (void) close(destination_file);
-  (void) close(source_file);
+  (void) close_utf8(destination_file);
+  (void) close_utf8(source_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
   return(i != 0 ? MagickTrue : MagickFalse);
 }
