@@ -613,8 +613,13 @@ static void Get8BIMProperty(const Image *image,const char *key,
   profile=GetImageProfile(image,"8bim");
   if (profile == (StringInfo *) NULL)
     return;
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__MINGW32__)
+  count=(ssize_t) sscanf(key,"8BIM:%ld,%ld:%1024[^\n]\n%1024[^\n]",&start,&stop,
+    name,(unsigned int) sizeof(name),format,(unsigned int) sizeof(format));
+#else
   count=(ssize_t) sscanf(key,"8BIM:%ld,%ld:%1024[^\n]\n%1024[^\n]",&start,&stop,
     name,format);
+#endif
   if ((count != 2) && (count != 3) && (count != 4))
     return;
   if (count < 4)
