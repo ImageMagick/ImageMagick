@@ -97,6 +97,8 @@
 #define MAGICKCORE_HAVE_DISTRIBUTE_CACHE 1
 #define MAGICKCORE_HAVE_WINSOCK2 1
 #endif
+#else
+#define SOCKET_TYPE SOCKET
 #endif
 
 /*
