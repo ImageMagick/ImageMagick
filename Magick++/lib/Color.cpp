@@ -230,11 +230,11 @@ const Magick::Color& Magick::Color::operator=(const std::string &color_)
   if (QueryColorCompliance(color_.c_str(),AllCompliance,&target_color,
       exceptionInfo))
     {
-      quantumAlpha(target_color.alpha);
-      quantumBlack(target_color.black);
-      quantumBlue(target_color.blue);
-      quantumGreen(target_color.green);
-      quantumRed(target_color.red);
+      quantumAlpha((Magick::Quantum ) target_color.alpha);
+      quantumBlack((Magick::Quantum ) target_color.black);
+      quantumBlue((Magick::Quantum ) target_color.blue);
+      quantumGreen((Magick::Quantum ) target_color.green);
+      quantumRed((Magick::Quantum ) target_color.red);
 
       setPixelType(target_color);
     }
@@ -327,7 +327,7 @@ void Magick::Color::quantumAlpha(const Magick::Quantum alpha_)
 
 Magick::Quantum Magick::Color::quantumAlpha(void) const
 {
-  return(_pixel->alpha);
+  return((Magick::Quantum) _pixel->alpha);
 }
 
 void Magick::Color::quantumBlack(const Magick::Quantum black_)
@@ -338,7 +338,7 @@ void Magick::Color::quantumBlack(const Magick::Quantum black_)
 
 Magick::Quantum Magick::Color::quantumBlack(void) const
 {
-  return(_pixel->black);
+  return((Magick::Quantum) _pixel->black);
 }
 
 void Magick::Color::quantumBlue(const Magick::Quantum blue_)
@@ -349,7 +349,7 @@ void Magick::Color::quantumBlue(const Magick::Quantum blue_)
 
 Magick::Quantum Magick::Color::quantumBlue(void) const
 {
-  return(_pixel->blue);
+  return((Magick::Quantum) _pixel->blue);
 }
 
 void Magick::Color::quantumGreen(const Magick::Quantum green_)
@@ -360,7 +360,7 @@ void Magick::Color::quantumGreen(const Magick::Quantum green_)
 
 Magick::Quantum Magick::Color::quantumGreen(void) const
 {
-  return(_pixel->green);
+  return((Magick::Quantum) _pixel->green);
 }
 
 void Magick::Color::quantumRed(const Magick::Quantum red_)
@@ -371,7 +371,7 @@ void Magick::Color::quantumRed(const Magick::Quantum red_)
 
 Magick::Quantum Magick::Color::quantumRed(void) const
 {
-  return _pixel->red;
+  return((Magick::Quantum) _pixel->red);
 }
 
 Magick::Color::Color(PixelType pixelType_)
@@ -615,9 +615,9 @@ Magick::ColorHSL::ColorHSL(const double hue_,const double saturation_,
 
   ConvertHSLToRGB(hue_,saturation_,lightness_,&red,&green,&blue);
 
-  quantumRed(red);
-  quantumGreen(green);
-  quantumBlue(blue);
+  quantumRed((Magick::Quantum) red);
+  quantumGreen((Magick::Quantum) green);
+  quantumBlue((Magick::Quantum) blue);
 }
 
 Magick::ColorHSL::~ColorHSL()
@@ -896,8 +896,9 @@ void Magick::ColorYUV::u(const double u_)
 
 double Magick::ColorYUV::u(void) const
 {
-  return(scaleQuantumToDouble((-0.14740 * (double) quantumRed()) - (0.28950 *
-    (double) quantumGreen()) + (0.43690 * (double) quantumBlue())));
+  return(scaleQuantumToDouble((Magick::Quantum) ((-0.14740 *
+    (double) quantumRed()) - (0.28950 * (double) quantumGreen()) + (0.43690 *
+    (double) quantumBlue()))));
 }
 
 void Magick::ColorYUV::v(const double v_)
@@ -907,8 +908,9 @@ void Magick::ColorYUV::v(const double v_)
 
 double Magick::ColorYUV::v(void) const
 {
-  return(scaleQuantumToDouble((0.61500 * (double) quantumRed()) - (0.51500 *
-    (double) quantumGreen()) - (0.10000 * (double) quantumBlue())));
+  return(scaleQuantumToDouble((Magick::Quantum) ((0.61500 *
+    (double) quantumRed()) - (0.51500 * (double) quantumGreen()) - (0.10000 *
+    (double) quantumBlue()))));
 }
 
 void Magick::ColorYUV::y(const double y_)
@@ -918,8 +920,9 @@ void Magick::ColorYUV::y(const double y_)
 
 double Magick::ColorYUV::y ( void ) const
 {
-  return(scaleQuantumToDouble((0.29900 * (double) quantumRed()) + (0.58700 *
-    (double) quantumGreen()) + (0.11400 * (double) quantumBlue())));
+  return(scaleQuantumToDouble((Magick::Quantum) ((0.29900 *
+    (double) quantumRed()) + (0.58700 * (double) quantumGreen()) + (0.11400 *
+    (double) quantumBlue()))));
 }
 
 void Magick::ColorYUV::convert(const double y_,const double u_,const double v_)

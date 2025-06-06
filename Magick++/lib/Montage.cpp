@@ -209,7 +209,7 @@ void Magick::Montage::updateMontageInfo(MontageInfo &montageInfo_ ) const
   // gravity
   montageInfo_.gravity=_gravity;
   // pointsize
-  montageInfo_.pointsize=_pointSize;
+  montageInfo_.pointsize=(double) _pointSize;
   // shadow
   montageInfo_.shadow=static_cast<MagickBooleanType>
     (_shadow ? MagickTrue : MagickFalse);

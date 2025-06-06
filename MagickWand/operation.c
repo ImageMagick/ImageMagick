@@ -3286,8 +3286,8 @@ static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
           if ((flags & PercentValue) != 0)
             {
-              geometry.x*=(double) _image->columns/100.0;
-              geometry.y*=(double) _image->rows/100.0;
+              geometry.x*=(ssize_t) (_image->columns/100.0);
+              geometry.y*=(ssize_t) (_image->rows/100.0);
             }
           new_image=RollImage(_image,geometry.x,geometry.y,_exception);
           break;
