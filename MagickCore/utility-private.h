@@ -77,6 +77,9 @@ static inline wchar_t *create_wchar_path(const char *utf8)
         shortPath[MAX_PATH],
         *longPath;
 
+      size_t
+        length;
+
       (void) FormatLocaleString(buffer,MagickPathExtent,"\\\\?\\%s",utf8);
       count+=4;
       longPath=(wchar_t *) NTAcquireQuantumMemory((size_t) count,
@@ -89,8 +92,9 @@ static inline wchar_t *create_wchar_path(const char *utf8)
       longPath=(wchar_t *) RelinquishMagickMemory(longPath);
       if ((count < 5) || (count >= MAX_PATH))
         return((wchar_t *) NULL);
-      wide=(wchar_t *) NTAcquireQuantumMemory((size_t) count-3,sizeof(*wide));
-      wcscpy(wide,shortPath+4);
+      length=(size_t) count-3;
+      wide=(wchar_t *) NTAcquireQuantumMemory(length,sizeof(*wide));
+      wcscpy_s(wide,length,shortPath+4);
       return(wide);
     }
   wide=(wchar_t *) NTAcquireQuantumMemory((size_t) count,sizeof(*wide));
@@ -168,7 +172,8 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
       path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
       return((FILE *) NULL);
     }
-  file=_wfopen(path_wide,mode_wide);
+  if (_wfopen_s(&file,path_wide,mode_wide) != 0)
+    return((FILE *) NULL);
   mode_wide=(wchar_t *) RelinquishMagickMemory(mode_wide);
   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
   return(file);
@@ -203,6 +208,7 @@ static inline int open_utf8(const char *path,int flags,mode_t mode)
   return(open(path,flags,mode));
 #else
   int
+    file_handle,
     status;
 
   wchar_t
@@ -212,9 +218,9 @@ static inline int open_utf8(const char *path,int flags,mode_t mode)
   if (path_wide == (wchar_t *) NULL)
     return(-1);
   /* O_NOINHERIT specifies that the file is not inherited by child processes */
-  status=_wopen(path_wide,flags | O_NOINHERIT,mode);
+  status=_wsopen_s(&file_handle,path_wide,flags | O_NOINHERIT,_SH_DENYNO,mode);
   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
-  return(status);
+  return(status == 0 ? file_handle : -1);
 #endif
 }
 

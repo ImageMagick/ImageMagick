@@ -28,6 +28,8 @@ static inline void GetMagickUTCTime(const time_t *timep,struct tm *result)
 {
 #if defined(MAGICKCORE_HAVE_GMTIME_R)
   (void) gmtime_r(timep,result);
+#elif defined(_MSC_VER)
+  (void) gmtime_s(result,timep);
 #else
   {
     struct tm
@@ -44,6 +46,8 @@ static inline void GetMagickLocaltime(const time_t *timep,struct tm *result)
 {
 #if defined(MAGICKCORE_HAVE_GMTIME_R)
   (void) localtime_r(timep,result);
+#elif defined(_MSC_VER)
+  (void) localtime_s(result,timep);
 #else
   {
     struct tm
