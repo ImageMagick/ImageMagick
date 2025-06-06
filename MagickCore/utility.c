@@ -386,27 +386,27 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
     {
       case 0:
       {
-        decode[i]=(q-Base64) << 2;
+        decode[i]=(unsigned char)((q-Base64) << 2);
         state++;
         break;
       }
       case 1:
       {
-        decode[i++]|=(q-Base64) >> 4;
-        decode[i]=((q-Base64) & 0x0f) << 4;
+        decode[i++]|=(unsigned char)((q-Base64) >> 4);
+        decode[i]=(unsigned char)(((q-Base64) & 0x0f) << 4);
         state++;
         break;
       }
       case 2:
       {
-        decode[i++]|=(q-Base64) >> 2;
-        decode[i]=((q-Base64) & 0x03) << 6;
+        decode[i++]|=(unsigned char)((q-Base64) >> 2);
+        decode[i]=(unsigned char)(((q-Base64) & 0x03) << 6);
         state++;
         break;
       }
       case 3:
       {
-        decode[i++]|=(q-Base64);
+        decode[i++]|=(unsigned char)(q-Base64);
         state=0;
         break;
       }
