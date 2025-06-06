@@ -98,7 +98,7 @@
 #define MAGICKCORE_HAVE_WINSOCK2 1
 #endif
 #else
-#define SOCKET_TYPE SOCKET
+#define SOCKET_TYPE int
 #endif
 
 /*
@@ -475,7 +475,7 @@ static inline MagickOffsetType dpc_send(SOCKET magick_unused(file),
   return(-1);
 }
 #else
-static inline MagickOffsetType dpc_send(SOCKET file,const MagickSizeType length,
+static inline MagickOffsetType dpc_send(SOCKET_TYPE file,const MagickSizeType length,
   const void *magick_restrict message)
 {
   MagickOffsetType
