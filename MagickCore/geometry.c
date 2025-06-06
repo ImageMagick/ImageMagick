@@ -45,6 +45,7 @@
 #include "MagickCore/geometry-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
