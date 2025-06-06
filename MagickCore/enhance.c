@@ -1544,7 +1544,6 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
 MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   const double black_point,const double white_point,ExceptionInfo *exception)
 {
-#define MaxRange(color)  ((double) ScaleQuantumToMap((Quantum) (color)))
 #define ContrastStretchImageTag  "ContrastStretch/Image"
 
   CacheView
@@ -1658,7 +1657,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       j;
 
     black[i]=0.0;
-    white[i]=MaxRange(QuantumRange);
+    white[i]=(Quantum) ScaleQuantumToMap(QuantumRange);
     intensity=0.0;
     for (j=0; j <= (ssize_t) MaxMap; j++)
     {
