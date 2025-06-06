@@ -108,6 +108,14 @@
 #define MinValStackSize 100
 #define InitNumUserSymbols 50
 
+#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+#define __j0 _j0
+#define __j1 _j1
+#else
+#define __j0 _j0
+#define __j1 _j1
+#endif
+
 #define SECONDS_ERR -FLT_MAX
 
 typedef long double fxFltType;
@@ -3490,7 +3498,7 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         case fAiry:
           if (regA==0) regA = 1.0;
           else {
-            fxFltType gamma = 2.0 * j1((double) (MagickPI*regA)) / (MagickPI*regA);
+            fxFltType gamma = 2.0 * __j1((double) (MagickPI*regA)) / (MagickPI*regA);
             regA = gamma * gamma;
           }
           break;
@@ -3583,18 +3591,18 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
           break;
 #if defined(MAGICKCORE_HAVE_J0)
         case fJ0:
-          regA = j0 ((double) regA);
+          regA = __j0((double) regA);
           break;
 #endif
 #if defined(MAGICKCORE_HAVE_J1)
         case fJ1:
-          regA = j1 ((double) regA);
+          regA = __j1((double) regA);
           break;
 #endif
 #if defined(MAGICKCORE_HAVE_J1)
         case fJinc:
           if (regA==0) regA = 1.0;
-          else regA = 2.0 * j1((double) (MagickPI*regA))/(MagickPI*regA);
+          else regA = 2.0 * __j1((double) (MagickPI*regA))/(MagickPI*regA);
           break;
 #endif
         case fLn:
