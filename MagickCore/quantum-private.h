@@ -697,7 +697,7 @@ static inline Quantum ScaleShortToQuantum(const unsigned short value)
 }
 #endif
 
-static inline unsigned short SinglePrecisionToHalf(const float value)
+static inline unsigned short SinglePrecisionToHalf(const double value)
 {
   typedef union _SinglePrecision
   {
@@ -728,7 +728,7 @@ static inline unsigned short SinglePrecisionToHalf(const float value)
       Exponent width: 5 bits
       Significand precision: 11 (10 explicitly stored)
   */
-  map.single_precision=value;
+  map.single_precision=(float) value;
   sign_bit=(map.fixed_point >> 16) & 0x00008000;
   exponent=(int) ((map.fixed_point >> ExponentShift) & 0x000000ff)-ExponentBias;
   significand=map.fixed_point & 0x007fffff;
