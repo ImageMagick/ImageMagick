@@ -3459,12 +3459,13 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
+  if (QuantumScale*maxima > 1.0)
+    {
+      status=SIMMultiplyImage(dot_product_image,1.0/(QuantumScale*maxima),
+        (const ChannelStatistics *) NULL,exception);
+      maxima=(double) QuantumRange;
+    }
   *similarity_metric=QuantumScale*maxima;
-  if (IsNaN(maxima) != 0)
-    *similarity_metric=1.0;
-  else
-    if (*similarity_metric > 1.0)
-      *similarity_metric=1.0;
   return(dot_product_image);
 }
 
@@ -3619,12 +3620,9 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     ThrowMSESimilarityException();
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
+  if (QuantumScale*minima < 0.0)
+    minima=0.0;
   *similarity_metric=QuantumScale*minima;
-  if ((IsNaN(minima) != 0) || (*similarity_metric <= FLT_EPSILON))
-    *similarity_metric=0.0;
-  else
-    if (*similarity_metric > 1.0)
-      *similarity_metric=1.0;
   return(mse_image);
 }
 
@@ -3773,7 +3771,13 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(ncc_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
-  *similarity_metric=MagickMin(QuantumScale*maxima,1.0);
+  if (QuantumScale*maxima > 1.0)
+    {
+      status=SIMMultiplyImage(ncc_image,1.0/(QuantumScale*maxima),
+        (const ChannelStatistics *) NULL,exception);
+      maxima=(double) QuantumRange;
+    }
+  *similarity_metric=QuantumScale*maxima;
   return(ncc_image);
 }
 
@@ -3917,12 +3921,13 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   magnitude_image=DestroyImage(magnitude_image);
+  if (QuantumScale*maxima > 1.0)
+    {
+      status=SIMMultiplyImage(phase_image,1.0/(QuantumScale*maxima),
+        (const ChannelStatistics *) NULL,exception);
+      maxima=(double) QuantumRange;
+    }
   *similarity_metric=QuantumScale*maxima;
-  if (IsNaN(maxima) != 0)
-    *similarity_metric=1.0;
-  else
-    if (*similarity_metric > 1.0)
-      *similarity_metric=1.0;
   return(phase_image);
 }
 
