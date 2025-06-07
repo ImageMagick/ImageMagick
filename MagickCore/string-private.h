@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 /* Custom implementation so we can use sscanf without defining _CRT_SECURE_NO_WARNINGS */
-inline int MagickSscanf(const char* buffer,const char* format, ...)
+static inline int MagickSscanf(const char* buffer,const char* format, ...)
 {
   int
     ret;
