@@ -3620,7 +3620,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     ThrowMSESimilarityException();
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
-  if (((QuantumScale*minima) < 0.0) || (IsNaN(minima) != 0))
+  if (((QuantumScale*minima) < FLT_EPSILON) || (IsNaN(minima) != 0))
     minima=0.0;
   *similarity_metric=QuantumScale*minima;
   return(mse_image);
