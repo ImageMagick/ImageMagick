@@ -25,6 +25,23 @@
 extern "C" {
 #endif
 
+/* Custom implementation so we can use sscanf without defining _CRT_SECURE_NO_WARNINGS */
+inline int MagickSscanf(const char* buffer,const char* format, ...)
+{
+  int
+    ret;
+
+  va_list
+    args;
+  va_start(args,format);
+  #pragma warning(push)
+  #pragma warning(disable:4996)
+  ret=vsscanf(buffer,format,args);
+  #pragma warning(pop)
+  va_end(args);
+  return(ret);
+}
+
 static inline double SiPrefixToDoubleInterval(const char *string,
   const double interval)
 {

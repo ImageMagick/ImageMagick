@@ -71,7 +71,6 @@ extern "C" {
 #  define getpid  _getpid
 #  define lseek   _lseeki64
 #  define fstat   _fstat64
-#  define sscanf  sscanf_s
 #  define setmode _setmode
 #  define stat    _stat64
 #  define tell    _telli64

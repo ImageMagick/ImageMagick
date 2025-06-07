@@ -45,7 +45,6 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/mogrify-private.h"
-#include "MagickCore/nt-base-private.h"
 #include "MagickCore/string-private.h"
 
 /*
@@ -1487,7 +1486,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageInvalidArgumentException(option,argv[i]);
             first_scene=StringToLong(argv[i]);
             last_scene=first_scene;
-            (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
+            (void) MagickSscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
             break;
           }
         if (LocaleCompare("seed",option+1) == 0)

@@ -65,7 +65,6 @@
 #include "MagickCore/montage.h"
 #include "MagickCore/morphology.h"
 #include "MagickCore/morphology-private.h"
-#include "MagickCore/nt-base-private.h"
 #include "MagickCore/opencl-private.h"
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel-accessor.h"
@@ -1122,7 +1121,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max area threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       for (i=0; i < (ssize_t) component_image->colors; i++)
         if (((object[i].area < min_threshold) ||
              (object[i].area >= max_threshold)) && (i != background_id))
@@ -1290,7 +1289,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max perimeter threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="perimeter";
       PerimeterThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -1304,7 +1303,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max circularity threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="circularity";
       CircularityThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -1318,7 +1317,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max diameter threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="diameter";
       for (i=0; i < (ssize_t) component_image->colors; i++)
       {
@@ -1334,7 +1333,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max ellipse major threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="major-axis";
       MajorAxisThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -1348,7 +1347,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max ellipse minor threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="minor-axis";
       MinorAxisThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -1362,7 +1361,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max eccentricity threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="eccentricity";
       EccentricityThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
@@ -1376,7 +1375,7 @@ MagickExport Image *ConnectedComponentsImage(const Image *image,
       /*
         Merge any object not within the min and max ellipse angle threshold.
       */
-      (void) sscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
+      (void) MagickSscanf(artifact,"%lf%*[ -]%lf",&min_threshold,&max_threshold);
       metrics[++n]="angle";
       AngleThreshold(component_image,object,n,exception);
       for (i=0; i < (ssize_t) component_image->colors; i++)
