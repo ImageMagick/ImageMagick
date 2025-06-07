@@ -3685,7 +3685,7 @@ static void ComputePrincipleComponent(const float *covariance,
     w.z = (row2.z * v.z) + w.z;
     w.w = (row2.w * v.z) + w.w;
 
-    a = (float) PerceptibleReciprocal(MagickMax(w.x,MagickMax(w.y,w.z)));
+    a = (float) MagickSafeReciprocal(MagickMax(w.x,MagickMax(w.y,w.z)));
 
     v.x = w.x * a;
     v.y = w.y * a;

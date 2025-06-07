@@ -1771,9 +1771,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   metrics->bounds.x2=metrics->ascent+metrics->descent;
   metrics->bounds.y2=metrics->ascent+metrics->descent;
   metrics->underline_position=face->underline_position*
-    (metrics->pixels_per_em.x*PerceptibleReciprocal(face->units_per_EM));
+    (metrics->pixels_per_em.x*MagickSafeReciprocal(face->units_per_EM));
   metrics->underline_thickness=face->underline_thickness*
-    (metrics->pixels_per_em.x*PerceptibleReciprocal(face->units_per_EM));
+    (metrics->pixels_per_em.x*MagickSafeReciprocal(face->units_per_EM));
   first_glyph_id=0;
   FT_Get_First_Char(face,&first_glyph_id);
   if ((draw_info->text == (char *) NULL) || (*draw_info->text == '\0') ||

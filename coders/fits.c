@@ -471,7 +471,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       /*
         Convert FITS pixels to pixel packets.
       */
-      scale=(double) QuantumRange*PerceptibleReciprocal(fits_info.max_data-
+      scale=(double) QuantumRange*MagickSafeReciprocal(fits_info.max_data-
         fits_info.min_data);
       for (y=(ssize_t) image->rows-1; y >= 0; y--)
       {

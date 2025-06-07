@@ -3094,11 +3094,11 @@ static inline fxFltType ImageStat (
       /* Do nothing */
       break;
     case aPrintsizeX:
-      ret = (fxFltType) PerceptibleReciprocal (pfx->Images[ImgNum]->resolution.x)
+      ret = (fxFltType) MagickSafeReciprocal (pfx->Images[ImgNum]->resolution.x)
                         * pfx->Images[ImgNum]->columns;
       break;
     case aPrintsizeY:
-      ret = (fxFltType) PerceptibleReciprocal (pfx->Images[ImgNum]->resolution.y)
+      ret = (fxFltType) MagickSafeReciprocal (pfx->Images[ImgNum]->resolution.y)
                         * pfx->Images[ImgNum]->rows;
       break;
     case aQuality:
@@ -3976,10 +3976,10 @@ static MagickBooleanType ExecuteRPN (FxInfo * pfx, fxRtT * pfxrt, fxFltType *res
         case aPrintsize:
           break;
         case aPrintsizeX:
-          regA = (fxFltType) PerceptibleReciprocal (img->resolution.x) * img->columns;
+          regA = (fxFltType) MagickSafeReciprocal (img->resolution.x) * img->columns;
           break;
         case aPrintsizeY:
-          regA = (fxFltType) PerceptibleReciprocal (img->resolution.y) * img->rows;
+          regA = (fxFltType) MagickSafeReciprocal (img->resolution.y) * img->rows;
           break;
         case aQuality:
           regA = (fxFltType) img->quality;

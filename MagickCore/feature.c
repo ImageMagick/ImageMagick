@@ -1046,7 +1046,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         break;
       }
     }
-    normalize=PerceptibleReciprocal(normalize);
+    normalize=MagickSafeReciprocal(normalize);
     for (y=0; y < (ssize_t) number_grays; y++)
     {
       ssize_t
@@ -2294,7 +2294,7 @@ MagickExport Image *MeanShiftImage(const Image *image,const size_t width,
           }
         }
         if (count != 0)
-          gamma=PerceptibleReciprocal((double) count);
+          gamma=MagickSafeReciprocal((double) count);
         mean_location.x=gamma*sum_location.x;
         mean_location.y=gamma*sum_location.y;
         mean_pixel.red=gamma*sum_pixel.red;

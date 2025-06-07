@@ -1140,7 +1140,7 @@ static AffineMatrix InverseAffineMatrix(const AffineMatrix *affine)
   double
     determinant;
 
-  determinant=PerceptibleReciprocal(affine->sx*affine->sy-affine->rx*
+  determinant=MagickSafeReciprocal(affine->sx*affine->sy-affine->rx*
     affine->ry);
   inverse_affine.sx=determinant*affine->sy;
   inverse_affine.rx=determinant*(-affine->rx);
@@ -1851,9 +1851,9 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
           dash_polygon[0]=primitive_info[0];
           dash_polygon[0].closed_subpath=MagickFalse;
           dash_polygon[0].point.x=(double) (primitive_info[i-1].point.x+dx*
-            total_length*PerceptibleReciprocal(maximum_length));
+            total_length*MagickSafeReciprocal(maximum_length));
           dash_polygon[0].point.y=(double) (primitive_info[i-1].point.y+dy*
-            total_length*PerceptibleReciprocal(maximum_length));
+            total_length*MagickSafeReciprocal(maximum_length));
           j=1;
         }
       else
@@ -1863,9 +1863,9 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
           dash_polygon[j]=primitive_info[i-1];
           dash_polygon[j].closed_subpath=MagickFalse;
           dash_polygon[j].point.x=(double) (primitive_info[i-1].point.x+dx*
-            total_length*PerceptibleReciprocal(maximum_length));
+            total_length*MagickSafeReciprocal(maximum_length));
           dash_polygon[j].point.y=(double) (primitive_info[i-1].point.y+dy*
-            total_length*PerceptibleReciprocal(maximum_length));
+            total_length*MagickSafeReciprocal(maximum_length));
           dash_polygon[j].coordinates=1;
           j++;
           dash_polygon[0].coordinates=(size_t) j;
@@ -1965,7 +1965,7 @@ static inline double GetStopColorOffset(const GradientInfo *gradient,
       q.y=(double) y-gradient_vector->y1;
       length=sqrt(q.x*q.x+q.y*q.y);
       gamma=sqrt(p.x*p.x+p.y*p.y)*length;
-      gamma=PerceptibleReciprocal(gamma);
+      gamma=MagickSafeReciprocal(gamma);
       scale=p.x*q.x+p.y*q.y;
       offset=gamma*scale*length;
       return(offset);
@@ -1983,10 +1983,10 @@ static inline double GetStopColorOffset(const GradientInfo *gradient,
         }
       v.x=(double) (((x-gradient->center.x)*cos(DegreesToRadians(
         gradient->angle)))+((y-gradient->center.y)*sin(DegreesToRadians(
-        gradient->angle))))*PerceptibleReciprocal(gradient->radii.x);
+        gradient->angle))))*MagickSafeReciprocal(gradient->radii.x);
       v.y=(double) (((x-gradient->center.x)*sin(DegreesToRadians(
         gradient->angle)))-((y-gradient->center.y)*cos(DegreesToRadians(
-        gradient->angle))))*PerceptibleReciprocal(gradient->radii.y);
+        gradient->angle))))*MagickSafeReciprocal(gradient->radii.y);
       return(sqrt(v.x*v.x+v.y*v.y));
     }
   }
@@ -2099,7 +2099,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
     composite=zero;
     offset=GetStopColorOffset(gradient,0,y);
     if (gradient->type != RadialGradient)
-      offset*=PerceptibleReciprocal(length);
+      offset*=MagickSafeReciprocal(length);
     width=(size_t) (bounding_box.x+(ssize_t) bounding_box.width);
     for (x=bounding_box.x; x < (ssize_t) width; x++)
     {
@@ -2114,7 +2114,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
             {
               offset=GetStopColorOffset(gradient,x,y);
               if (gradient->type != RadialGradient)
-                offset*=PerceptibleReciprocal(length);
+                offset*=MagickSafeReciprocal(length);
             }
           for (i=0; i < (ssize_t) gradient->number_stops; i++)
             if (offset < gradient->stops[i].offset)
@@ -2142,7 +2142,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
             {
               offset=GetStopColorOffset(gradient,x,y);
               if (gradient->type != RadialGradient)
-                offset*=PerceptibleReciprocal(length);
+                offset*=MagickSafeReciprocal(length);
             }
           if (offset < 0.0)
             offset=(-offset);
@@ -2192,7 +2192,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
                     repeat=fmod(offset,length);
                   antialias=(repeat < length) && ((repeat+1.0) > length) ?
                     MagickTrue : MagickFalse;
-                  offset=PerceptibleReciprocal(length)*repeat;
+                  offset=MagickSafeReciprocal(length)*repeat;
                 }
               else
                 {
@@ -2203,7 +2203,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
                     repeat=fmod(offset,gradient->radius);
                   antialias=repeat+1.0 > gradient->radius ? MagickTrue :
                     MagickFalse;
-                  offset=repeat*PerceptibleReciprocal(gradient->radius);
+                  offset=repeat*MagickSafeReciprocal(gradient->radius);
                 }
             }
           for (i=0; i < (ssize_t) gradient->number_stops; i++)
@@ -4892,7 +4892,7 @@ static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
               /*
                 Point is closest to point between q & q+1.
               */
-              alpha=PerceptibleReciprocal(alpha);
+              alpha=MagickSafeReciprocal(alpha);
               beta=delta.x*(y-q->y)-delta.y*(x-q->x);
               distance=alpha*beta*beta;
             }
@@ -6323,7 +6323,7 @@ static MagickBooleanType TraceArcPath(MVGInfo *mvg_info,const PointInfo start,
   beta=points[1].y-points[0].y;
   if (fabs(alpha*alpha+beta*beta) < MagickEpsilon)
     return(TraceLine(primitive_info,start,end));
-  factor=PerceptibleReciprocal(alpha*alpha+beta*beta)-0.25;
+  factor=MagickSafeReciprocal(alpha*alpha+beta*beta)-0.25;
   if (factor <= 0.0)
     factor=0.0;
   else
@@ -6590,8 +6590,8 @@ static MagickBooleanType TraceEllipse(MVGInfo *mvg_info,const PointInfo center,
   primitive_info->coordinates=0;
   if ((fabs(radii.x) < MagickEpsilon) || (fabs(radii.y) < MagickEpsilon))
     return(MagickTrue);
-  delta=PerceptibleReciprocal(MagickMax(radii.x,radii.y));
-  step=MagickPI/(MagickPI*PerceptibleReciprocal(delta))/8.0;
+  delta=MagickSafeReciprocal(MagickMax(radii.x,radii.y));
+  step=MagickPI/(MagickPI*MagickSafeReciprocal(delta))/8.0;
   angle.x=DegreesToRadians(arc.x);
   y=arc.y;
   while (y < arc.x)
@@ -7530,7 +7530,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     else
       {
         slope.p=dy.p/dx.p;
-        inverse_slope.p=(-1.0*PerceptibleReciprocal(slope.p));
+        inverse_slope.p=(-1.0*MagickSafeReciprocal(slope.p));
       }
   mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   miterlimit=(double) (draw_info->miterlimit*draw_info->miterlimit*mid*mid);
@@ -7597,7 +7597,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
       else
         {
           slope.q=dy.q/dx.q;
-          inverse_slope.q=(-1.0*PerceptibleReciprocal(slope.q));
+          inverse_slope.q=(-1.0*MagickSafeReciprocal(slope.q));
         }
     offset.x=sqrt((double) (mid*mid/(inverse_slope.q*inverse_slope.q+1.0)));
     offset.y=(double) (offset.x*inverse_slope.q);
@@ -7695,7 +7695,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           if (theta.q < theta.p)
             theta.q+=2.0*MagickPI;
           arc_segments=(size_t) CastDoubleToSsizeT(ceil((double) ((theta.q-
-            theta.p)/(2.0*sqrt(PerceptibleReciprocal(mid))))));
+            theta.p)/(2.0*sqrt(MagickSafeReciprocal(mid))))));
           DisableMSCWarning(4127)
           CheckPathExtent(MaxStrokePad,arc_segments+MaxStrokePad);
           RestoreMSCWarning
@@ -7770,7 +7770,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           if (theta.p < theta.q)
             theta.p+=2.0*MagickPI;
           arc_segments=(size_t) CastDoubleToSsizeT(ceil((double) ((theta.p-
-            theta.q)/(2.0*sqrt((double) (PerceptibleReciprocal(mid)))))));
+            theta.q)/(2.0*sqrt((double) (MagickSafeReciprocal(mid)))))));
           DisableMSCWarning(4127)
           CheckPathExtent(arc_segments+MaxStrokePad,MaxStrokePad);
           RestoreMSCWarning

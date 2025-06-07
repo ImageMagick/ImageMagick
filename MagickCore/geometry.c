@@ -1208,7 +1208,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
         Normalize sampling factor (e.g. 4:2:2 => 2x1).
       */
       if ((flags & SigmaValue) != 0)
-        geometry_info->rho*=PerceptibleReciprocal(geometry_info->sigma);
+        geometry_info->rho*=MagickSafeReciprocal(geometry_info->sigma);
       geometry_info->sigma=1.0;
       if (((flags & XiValue) != 0) && (geometry_info->xi == 0.0))
         geometry_info->sigma=2.0;
@@ -1536,17 +1536,17 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       */
       (void) ParseGeometry(geometry,&geometry_info);
       geometry_ratio=geometry_info.rho;
-      image_ratio=(double) stasis_width*PerceptibleReciprocal((double)
+      image_ratio=(double) stasis_width*MagickSafeReciprocal((double)
         stasis_height);
       if (geometry_ratio >= image_ratio)
         {
           *width=stasis_width;
-          *height=CastDoubleToSizeT((double) (PerceptibleReciprocal(
+          *height=CastDoubleToSizeT((double) (MagickSafeReciprocal(
             geometry_ratio)*stasis_height*image_ratio)+0.5);
         }
       else
         {
-          *width=CastDoubleToSizeT(PerceptibleReciprocal(image_ratio)*
+          *width=CastDoubleToSizeT(MagickSafeReciprocal(image_ratio)*
             stasis_width*geometry_ratio+0.5);
           *height=stasis_height;
         }
@@ -1631,16 +1631,16 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       (void) ParseGeometry(geometry,&geometry_info);
       area=geometry_info.rho+sqrt(MagickEpsilon);
       distance=sqrt((double) stasis_width*stasis_height);
-      scale.x=(double) stasis_width*PerceptibleReciprocal(distance*
-        PerceptibleReciprocal(sqrt(area)));
-      scale.y=(double) stasis_height*PerceptibleReciprocal(distance*
-        PerceptibleReciprocal(sqrt(area)));
+      scale.x=(double) stasis_width*MagickSafeReciprocal(distance*
+        MagickSafeReciprocal(sqrt(area)));
+      scale.y=(double) stasis_height*MagickSafeReciprocal(distance*
+        MagickSafeReciprocal(sqrt(area)));
       if ((scale.x < (double) *width) || (scale.y < (double) *height))
         {
-          *width=CastDoubleToSizeT((double) stasis_width*PerceptibleReciprocal(
-            distance*PerceptibleReciprocal(sqrt(area)))+0.5);
-          *height=CastDoubleToSizeT((double) stasis_height*PerceptibleReciprocal(
-            distance*PerceptibleReciprocal(sqrt(area)))+0.5);
+          *width=CastDoubleToSizeT((double) stasis_width*MagickSafeReciprocal(
+            distance*MagickSafeReciprocal(sqrt(area)))+0.5);
+          *height=CastDoubleToSizeT((double) stasis_height*MagickSafeReciprocal(
+            distance*MagickSafeReciprocal(sqrt(area)))+0.5);
         }
     }
   return(flags);

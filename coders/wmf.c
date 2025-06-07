@@ -2177,17 +2177,17 @@ static double util_pointsize(wmfAPI* API, wmfFont* font, char* str, double font_
       if (strlen(str) == 1)
         {
           pointsize = (font_height *
-                       (font_height *PerceptibleReciprocal(metrics.ascent + fabs(metrics.descent))));
+                       (font_height *MagickSafeReciprocal(metrics.ascent + fabs(metrics.descent))));
           draw_info->pointsize = pointsize;
           if (GetTypeMetrics(image, draw_info, &metrics, exception) != MagickFalse)
-            pointsize *= (font_height *PerceptibleReciprocal(metrics.ascent + fabs(metrics.descent)));
+            pointsize *= (font_height *MagickSafeReciprocal(metrics.ascent + fabs(metrics.descent)));
         }
       else
         {
-          pointsize = (font_height *(font_height *PerceptibleReciprocal(metrics.height)));
+          pointsize = (font_height *(font_height *MagickSafeReciprocal(metrics.height)));
           draw_info->pointsize = pointsize;
           if (GetTypeMetrics(image, draw_info, &metrics, exception) != MagickFalse)
-            pointsize *= (font_height *PerceptibleReciprocal((double) metrics.height));
+            pointsize *= (font_height *MagickSafeReciprocal((double) metrics.height));
 
         }
 #if 0

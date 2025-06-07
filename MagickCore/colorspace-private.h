@@ -607,17 +607,17 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
     *Y=(double) pow((L+16.0)/116.0,3.0);
   else
     *Y=L/CIEK;
-  gamma=PerceptibleReciprocal((((52.0*L*PerceptibleReciprocal(u+13.0*L*
+  gamma=MagickSafeReciprocal((((52.0*L*MagickSafeReciprocal(u+13.0*L*
     (4.0*illuminant_tristimulus[illuminant].x/
     (illuminant_tristimulus[illuminant].x+15.0*
     illuminant_tristimulus[illuminant].y+3.0*
     illuminant_tristimulus[illuminant].z))))-1.0)/3.0)-(-1.0/3.0));
-  *X=gamma*((*Y*((39.0*L*PerceptibleReciprocal(v+13.0*L*(9.0*
+  *X=gamma*((*Y*((39.0*L*MagickSafeReciprocal(v+13.0*L*(9.0*
     illuminant_tristimulus[illuminant].y/
     (illuminant_tristimulus[illuminant].x+15.0*
     illuminant_tristimulus[illuminant].y+3.0*
     illuminant_tristimulus[illuminant].z))))-5.0))+5.0*(*Y));
-  *Z=(*X*(((52.0*L*PerceptibleReciprocal(u+13.0*L*(4.0*
+  *Z=(*X*(((52.0*L*MagickSafeReciprocal(u+13.0*L*(4.0*
     illuminant_tristimulus[illuminant].x/
     (illuminant_tristimulus[illuminant].x+15.0*
     illuminant_tristimulus[illuminant].y+3.0*
@@ -1029,7 +1029,7 @@ static inline void ConvertRGBToHSV(const double red,const double green,
     else
       *hue=4.0+(QuantumScale*red-QuantumScale*green)/c;
   *hue*=60.0/360.0;
-  *saturation=c*PerceptibleReciprocal(max);
+  *saturation=c*MagickSafeReciprocal(max);
 }
 
 static inline void ConvertRGBToHWB(const double red,const double green,
@@ -1146,7 +1146,7 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
       1.0/3.0)-16.0);
   else
     *L=CIEK*(Y/illuminant_tristimulus[illuminant].y);
-  alpha=PerceptibleReciprocal(X+15.0*Y+3.0*Z);
+  alpha=MagickSafeReciprocal(X+15.0*Y+3.0*Z);
   *u=13.0*(*L)*((4.0*alpha*X)-(4.0*illuminant_tristimulus[illuminant].x/
     (illuminant_tristimulus[illuminant].x+15.0*
     illuminant_tristimulus[illuminant].y+3.0*
@@ -1265,7 +1265,7 @@ static inline void ConvertRGBToxyY(const double red,const double green,
     Z;
 
   ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
-  gamma=PerceptibleReciprocal(X+Y+Z);
+  gamma=MagickSafeReciprocal(X+Y+Z);
   *low_x=gamma*X;
   *low_y=gamma*Y;
   *cap_Y=Y;
@@ -1324,7 +1324,7 @@ static inline void ConvertXYZToJzazbz(const double X,const double Y,
     Xp,
     Yp;
 
-  WLr=PerceptibleReciprocal(white_luminance);
+  WLr=MagickSafeReciprocal(white_luminance);
   Xp=Z+Jzazbz_b*(X-Z); /* If X and Z are vectorized, better done */
   Yp=X+Jzazbz_g*(Y-X); /* as Xp=Jzazbz_b*X+(1.0-Jzazbz_b)*Z; etc. */
   L=Jzazbz_LZ*Z;
@@ -1702,9 +1702,9 @@ static inline void ConvertRGBToCMYK(PixelInfo *pixel)
     black=magenta;
   if (yellow < black)
     black=yellow;
-  cyan=(MagickRealType) (PerceptibleReciprocal(1.0-black)*(cyan-black));
-  magenta=(MagickRealType) (PerceptibleReciprocal(1.0-black)*(magenta-black));
-  yellow=(MagickRealType) (PerceptibleReciprocal(1.0-black)*(yellow-black));
+  cyan=(MagickRealType) (MagickSafeReciprocal(1.0-black)*(cyan-black));
+  magenta=(MagickRealType) (MagickSafeReciprocal(1.0-black)*(magenta-black));
+  yellow=(MagickRealType) (MagickSafeReciprocal(1.0-black)*(yellow-black));
   pixel->colorspace=CMYKColorspace;
   pixel->red=(MagickRealType) QuantumRange*cyan;
   pixel->green=(MagickRealType) QuantumRange*magenta;
@@ -1760,7 +1760,7 @@ static inline void ConvertxyYToRGB(const double low_x,const double low_y,
     Y,
     Z;
 
-  gamma=PerceptibleReciprocal(low_y);
+  gamma=MagickSafeReciprocal(low_y);
   X=gamma*cap_Y*low_x;
   Y=cap_Y;
   Z=gamma*cap_Y*(1.0-low_x-low_y);

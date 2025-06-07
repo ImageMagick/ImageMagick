@@ -272,21 +272,21 @@ static Image *ReadCUBEImage(const ImageInfo *image_info,
           offset,
           scale;
 
-        offset.r=(PerceptibleReciprocal((double) (hald_level*hald_level)-1.0)*
+        offset.r=(MagickSafeReciprocal((double) (hald_level*hald_level)-1.0)*
           r)*(cube_level-1.0);
         index.r=floor(offset.r);
         scale.r=offset.r-index.r;
         next.r=index.r+1;
         if ((size_t) index.r == (cube_level-1))
           next.r=index.r;
-        offset.g=(PerceptibleReciprocal(((double) hald_level*hald_level)-1.0)*
+        offset.g=(MagickSafeReciprocal(((double) hald_level*hald_level)-1.0)*
           g)*(cube_level-1.0);
         index.g=floor(offset.g);
         scale.g=offset.g-index.g;
         next.g=index.g+1;
         if ((size_t) index.g == (cube_level-1))
           next.g=index.g;
-        offset.b=(PerceptibleReciprocal(((double) hald_level*hald_level)-1.0)*
+        offset.b=(MagickSafeReciprocal(((double) hald_level*hald_level)-1.0)*
           b)*(cube_level-1.0);
         index.b=floor(offset.b);
         scale.b=offset.b-index.b;

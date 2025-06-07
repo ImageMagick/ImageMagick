@@ -1681,7 +1681,7 @@ static double OptimalTau(const ssize_t *histogram,const double max_tau,
   average_tau=0.0;
   for (i=0; i < number_nodes; i++)
     average_tau+=list[i]->tau;
-  average_tau*=PerceptibleReciprocal((double) number_nodes);
+  average_tau*=MagickSafeReciprocal((double) number_nodes);
   /*
     Relinquish resources.
   */
@@ -1731,8 +1731,8 @@ static void ScaleSpace(const ssize_t *histogram,const double tau,
   gamma=(double *) AcquireQuantumMemory(256,sizeof(*gamma));
   if (gamma == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"UnableToAllocateGammaMap");
-  alpha=PerceptibleReciprocal(tau*sqrt(2.0*MagickPI));
-  beta=(-1.0*PerceptibleReciprocal(2.0*tau*tau));
+  alpha=MagickSafeReciprocal(tau*sqrt(2.0*MagickPI));
+  beta=(-1.0*MagickSafeReciprocal(2.0*tau*tau));
   for (x=0; x <= 255; x++)
     gamma[x]=0.0;
   for (x=0; x <= 255; x++)

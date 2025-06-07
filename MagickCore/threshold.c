@@ -721,7 +721,7 @@ MagickExport MagickBooleanType AutoThresholdImage(Image *image,
   sum=0.0;
   for (i=0; i <= (ssize_t) MaxIntensity; i++)
     sum+=histogram[i];
-  gamma=PerceptibleReciprocal(sum);
+  gamma=MagickSafeReciprocal(sum);
   for (i=0; i <= (ssize_t) MaxIntensity; i++)
     histogram[i]=gamma*histogram[i];
   /*
@@ -2448,14 +2448,14 @@ MagickExport MagickBooleanType RangeThresholdImage(Image *image,
         else
           if ((pixel >= low_black) && (pixel < low_white))
             q[i]=ClampToQuantum((double) QuantumRange*
-              PerceptibleReciprocal(low_white-low_black)*(pixel-low_black));
+              MagickSafeReciprocal(low_white-low_black)*(pixel-low_black));
           else
             if ((pixel >= low_white) && (pixel <= high_white))
               q[i]=QuantumRange;
             else
               if ((pixel > high_white) && (pixel <= high_black))
                 q[i]=ClampToQuantum((double) QuantumRange*(double)
-                  PerceptibleReciprocal(high_black-high_white)*
+                  MagickSafeReciprocal(high_black-high_white)*
                   (high_black-pixel));
               else
                 if (pixel > high_black)

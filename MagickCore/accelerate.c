@@ -3518,7 +3518,7 @@ static MagickBooleanType resizeHorizontalFilter(MagickCLDevice device,
     support=(float) 0.5;
     scale=1.0;
   }
-  scale=(float) PerceptibleReciprocal(scale);
+  scale=(float) MagickSafeReciprocal(scale);
 
   if (resizedColumns < workgroupSize)
   {
@@ -3697,7 +3697,7 @@ static MagickBooleanType resizeVerticalFilter(MagickCLDevice device,
     support=(float) 0.5;
     scale=1.0;
   }
-  scale=(float) PerceptibleReciprocal(scale);
+  scale=(float) MagickSafeReciprocal(scale);
 
   if (resizedRows < workgroupSize)
   {

@@ -241,7 +241,7 @@ MagickExport MagickBooleanType BrightnessContrastImage(Image *image,
   assert(image->signature == MagickCoreSignature);
   if (IsEventLogging() != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  slope=100.0*PerceptibleReciprocal(100.0-contrast);
+  slope=100.0*MagickSafeReciprocal(100.0-contrast);
   if (contrast < 0.0)
     slope=0.01*contrast+1.0;
   intercept=(0.01*brightness-0.5)*slope+0.5;
@@ -424,7 +424,7 @@ static void InterpolateCLAHE(const RectangleInfo *clahe_info,const size_t *Q12,
     for (x=(ssize_t) tile->width; x > 0; x--)
     {
       intensity=lut[*pixels];
-      *pixels++=(unsigned short) (PerceptibleReciprocal((double) tile->width*
+      *pixels++=(unsigned short) (MagickSafeReciprocal((double) tile->width*
         tile->height)*(y*((double) x*Q12[intensity]+((double) tile->width-x)*
         Q22[intensity])+((double) tile->height-y)*((double) x*Q11[intensity]+
         ((double) tile->width-x)*Q21[intensity])));
@@ -1691,7 +1691,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       double
         gamma;
 
-      gamma=PerceptibleReciprocal(white[i]-black[i]);
+      gamma=MagickSafeReciprocal(white[i]-black[i]);
       if (j < (ssize_t) black[i])
         stretch_map[(ssize_t) GetPixelChannels(image)*j+i]=0.0;
       else
@@ -2358,7 +2358,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   if (gamma != 0.0)
     for (i=0; i <= (ssize_t) MaxMap; i++)
       gamma_map[i]=ScaleMapToQuantum((double) (MaxMap*pow((double) i/
-        MaxMap,PerceptibleReciprocal(gamma))));
+        MaxMap,MagickSafeReciprocal(gamma))));
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -2903,9 +2903,9 @@ static inline double LevelPixel(const double black_point,
     level_pixel,
     scale;
 
-  scale=PerceptibleReciprocal(white_point-black_point);
+  scale=MagickSafeReciprocal(white_point-black_point);
   level_pixel=(double) QuantumRange*gamma_pow(scale*((double) pixel-(double)
-    black_point),PerceptibleReciprocal(gamma));
+    black_point),MagickSafeReciprocal(gamma));
   return(level_pixel);
 }
 

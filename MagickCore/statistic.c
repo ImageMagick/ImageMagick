@@ -310,7 +310,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
     case InverseLogEvaluateOperator:
     {
       result=(double) QuantumRange*pow((value+1.0),QuantumScale*(double)
-        pixel-1.0)*PerceptibleReciprocal(value);
+        pixel-1.0)*MagickSafeReciprocal(value);
       break;
     }
     case LaplacianNoiseEvaluateOperator:
@@ -1028,7 +1028,7 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
       center=(number_parameters >= 2) ? parameters[1] : 0.5;
       range=(number_parameters >= 3) ? parameters[2] : 1.0;
       bias=(number_parameters >= 4) ? parameters[3] : 0.5;
-      result=2.0*PerceptibleReciprocal(width)*(QuantumScale*(double) pixel-
+      result=2.0*MagickSafeReciprocal(width)*(QuantumScale*(double) pixel-
         center);
       if (result <= -1.0)
         result=bias-range/2.0;
@@ -1532,8 +1532,8 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     /*
        Compute center of mass (centroid).
     */
-    centroid[c].x=M10[c]*PerceptibleReciprocal(M00[c]);
-    centroid[c].y=M01[c]*PerceptibleReciprocal(M00[c]);
+    centroid[c].x=M10[c]*MagickSafeReciprocal(M00[c]);
+    centroid[c].y=M01[c]*MagickSafeReciprocal(M00[c]);
   }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1616,14 +1616,14 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
       Compute elliptical angle, major and minor axes, eccentricity, & intensity.
     */
     channel_moments[c].centroid=centroid[c];
-    channel_moments[c].ellipse_axis.x=sqrt((2.0*PerceptibleReciprocal(M00[c]))*
+    channel_moments[c].ellipse_axis.x=sqrt((2.0*MagickSafeReciprocal(M00[c]))*
       ((M20[c]+M02[c])+sqrt(4.0*M11[c]*M11[c]+(M20[c]-M02[c])*
        (M20[c]-M02[c]))));
-    channel_moments[c].ellipse_axis.y=sqrt((2.0*PerceptibleReciprocal(M00[c]))*
+    channel_moments[c].ellipse_axis.y=sqrt((2.0*MagickSafeReciprocal(M00[c]))*
       ((M20[c]+M02[c])-sqrt(4.0*M11[c]*M11[c]+(M20[c]-M02[c])*
        (M20[c]-M02[c]))));
     channel_moments[c].ellipse_angle=RadiansToDegrees(1.0/2.0*atan(2.0*
-      M11[c]*PerceptibleReciprocal(M20[c]-M02[c])));
+      M11[c]*MagickSafeReciprocal(M20[c]-M02[c])));
     if (fabs(M11[c]) < 0.0)
       {
         if ((fabs(M20[c]-M02[c]) >= 0.0) && ((M20[c]-M02[c]) < 0.0))
@@ -1645,11 +1645,11 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
           channel_moments[c].ellipse_angle+=90.0;
     channel_moments[c].ellipse_eccentricity=sqrt(1.0-(
       channel_moments[c].ellipse_axis.y*
-      channel_moments[c].ellipse_axis.y*PerceptibleReciprocal(
+      channel_moments[c].ellipse_axis.y*MagickSafeReciprocal(
       channel_moments[c].ellipse_axis.x*
       channel_moments[c].ellipse_axis.x)));
     channel_moments[c].ellipse_intensity=M00[c]*
-      PerceptibleReciprocal(MagickPI*channel_moments[c].ellipse_axis.x*
+      MagickSafeReciprocal(MagickPI*channel_moments[c].ellipse_axis.x*
       channel_moments[c].ellipse_axis.y+MagickEpsilon);
   }
   for (c=0; c <= MaxPixelChannels; c++)
@@ -1659,14 +1659,14 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     */
     M10[c]=0.0;
     M01[c]=0.0;
-    M11[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(1.0+1.0)/2.0));
-    M20[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(2.0+0.0)/2.0));
-    M02[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(0.0+2.0)/2.0));
-    M21[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(2.0+1.0)/2.0));
-    M12[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(1.0+2.0)/2.0));
-    M22[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(2.0+2.0)/2.0));
-    M30[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(3.0+0.0)/2.0));
-    M03[c]*=PerceptibleReciprocal(pow(M00[c],1.0+(0.0+3.0)/2.0));
+    M11[c]*=MagickSafeReciprocal(pow(M00[c],1.0+(1.0+1.0)/2.0));
+    M20[c]*=MagickSafeReciprocal(pow(M00[c],1.0+(2.0+0.0)/2.0));
+    M02[c]*=MagickSafeReciprocal(pow(M00[c],1.0+(0.0+2.0)/2.0));
+    M21[c]*=MagickSafeReciprocal(pow(M00[c],1.0+(2.0+1.0)/2.0));
+    M12[c]*=MagickSafeReciprocal(pow(M00[c],1.0+(1.0+2.0)/2.0));
+    M22[c]*=MagickSafeReciprocal(pow(M00[c],1.0+(2.0+2.0)/2.0));
+    M30[c]*=MagickSafeReciprocal(pow(M00[c],1.0+(3.0+0.0)/2.0));
+    M03[c]*=MagickSafeReciprocal(pow(M00[c],1.0+(0.0+3.0)/2.0));
     M00[c]=1.0;
   }
   image_view=DestroyCacheView(image_view);
@@ -1798,7 +1798,7 @@ MagickExport ChannelPerceptualHash *GetImagePerceptualHash(const Image *image,
     for (channel=0; channel <= MaxPixelChannels; channel++)
       for (j=0; j < MaximumNumberOfImageMoments; j++)
         perceptual_hash[channel].phash[i][j]=
-          (-PerceptibleLog10(moments[channel].invariant[j]));
+          (-MagickSafeLog10(moments[channel].invariant[j]));
     moments=(ChannelMoments *) RelinquishMagickMemory(moments);
   }
   colorspaces=DestroyString(colorspaces);
@@ -2014,7 +2014,7 @@ static ssize_t GetMedianPixel(Quantum *pixels,const size_t n)
   }
 }
 
-static inline long double PerceptibleReciprocalLD(const long double x)
+static inline long double MagickSafeReciprocalLD(const long double x)
 {
   long double
     sign;
@@ -2261,8 +2261,8 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     for (j=0; j <= (ssize_t) MaxMap; j++)
       if (histogram[(ssize_t) GetPixelChannels(image)*j+i] > 0.0)
         number_bins++;
-    area=PerceptibleReciprocalLD(channel_statistics[channel].area);
-    number_bins=(double) PerceptibleReciprocalLD((long double) log2(number_bins));
+    area=MagickSafeReciprocalLD(channel_statistics[channel].area);
+    number_bins=(double) MagickSafeReciprocalLD((long double) log2(number_bins));
     for (j=0; j <= (ssize_t) MaxMap; j++)
     {
       double
@@ -3081,7 +3081,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
           case ContrastStatistic:
           {
             pixel=ClampToQuantum(MagickAbsoluteValue((maximum-minimum)*
-              PerceptibleReciprocal(maximum+minimum)));
+              MagickSafeReciprocal(maximum+minimum)));
             break;
           }
           case GradientStatistic:

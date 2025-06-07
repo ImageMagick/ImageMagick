@@ -311,8 +311,8 @@ MagickExport Image *ComplexImages(const Image *images,const ComplexOperator op,
           }
           case DivideComplexOperator:
           {
-            cr=PerceptibleReciprocal(br*br+bi*bi+snr)*(ar*br+ai*bi);
-            ci=PerceptibleReciprocal(br*br+bi*bi+snr)*(ai*br-ar*bi);
+            cr=MagickSafeReciprocal(br*br+bi*bi+snr)*(ar*br+ai*bi);
+            ci=MagickSafeReciprocal(br*br+bi*bi+snr)*(ai*br-ar*bi);
             break;
           }
           case MagnitudePhaseComplexOperator:
@@ -814,7 +814,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
         Normalize forward transform.
       */
       i=0L;
-      gamma=PerceptibleReciprocal((double) fourier_info->width*
+      gamma=MagickSafeReciprocal((double) fourier_info->width*
         fourier_info->height);
       for (y=0L; y < (ssize_t) fourier_info->height; y++)
         for (x=0L; x < (ssize_t) fourier_info->center; x++)
@@ -1371,7 +1371,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
         Normalize inverse transform.
       */
       i=0L;
-      gamma=PerceptibleReciprocal((double) fourier_info->width*
+      gamma=MagickSafeReciprocal((double) fourier_info->width*
         fourier_info->height);
       for (y=0L; y < (ssize_t) fourier_info->height; y++)
         for (x=0L; x < (ssize_t) fourier_info->center; x++)

@@ -935,7 +935,7 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
   Sa=QuantumScale*alpha;
   Da=QuantumScale*beta,
   gamma=Sa*(-Da)+Sa+Da;
-  gamma=PerceptibleReciprocal(gamma);
+  gamma=MagickSafeReciprocal(gamma);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1165,7 +1165,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
             i;
 
           Sa=QuantumScale*(double) GetPixelAlpha(image,q);
-          gamma=PerceptibleReciprocal(Sa);
+          gamma=MagickSafeReciprocal(Sa);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel channel = GetPixelChannelChannel(image,i);

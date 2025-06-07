@@ -1002,12 +1002,12 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   center.y=0.5*canvas_image->rows;
   radius=center.x;
   if (canvas_image->columns > canvas_image->rows)
-    scale.y=(double) canvas_image->columns*PerceptibleReciprocal((double)
+    scale.y=(double) canvas_image->columns*MagickSafeReciprocal((double)
       canvas_image->rows);
   else
     if (canvas_image->columns < canvas_image->rows)
       {
-        scale.x=(double) canvas_image->rows*PerceptibleReciprocal((double)
+        scale.x=(double) canvas_image->rows*MagickSafeReciprocal((double)
           canvas_image->columns);
         radius=center.y;
       }
@@ -1088,9 +1088,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           factor=1.0;
           if (distance > 0.0)
             factor=pow(sin(MagickPI*sqrt(distance)*
-              PerceptibleReciprocal(radius)/2.0),-amount);
-          offset.x=factor*delta.x*PerceptibleReciprocal(scale.x)+center.x;
-          offset.y=factor*delta.y*PerceptibleReciprocal(scale.y)+center.y;
+              MagickSafeReciprocal(radius)/2.0),-amount);
+          offset.x=factor*delta.x*MagickSafeReciprocal(scale.x)+center.x;
+          offset.y=factor*delta.y*MagickSafeReciprocal(scale.y)+center.y;
           if ((IsValidPixelOffset((ssize_t) offset.x,image->columns) != MagickFalse) &&
               (IsValidPixelOffset((ssize_t) offset.y,image->rows) != MagickFalse))
             status=InterpolatePixelChannels(canvas_image,interpolate_view,
@@ -3369,7 +3369,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     }
   for (i=0; i < (ssize_t) wave_image->columns; i++)
     sine_map[i]=(float) (fabs(amplitude)+amplitude*sin((double)
-      ((2.0*MagickPI*i)*(double) PerceptibleReciprocal(wave_length))));
+      ((2.0*MagickPI*i)*(double) MagickSafeReciprocal(wave_length))));
   /*
     Wave image.
   */

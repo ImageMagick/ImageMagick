@@ -215,7 +215,7 @@
 #define CacheShift  3
 #endif
 #define ErrorQueueLength  16
-#define ErrorRelativeWeight  PerceptibleReciprocal(16)
+#define ErrorRelativeWeight  MagickSafeReciprocal(16)
 #define MaxQNodes  266817
 #define MaxTreeDepth  8
 #define QNodesInAList  1920
@@ -1277,7 +1277,7 @@ static void DefineImageColormap(Image *image,QCubeInfo *cube_info,
       */
       q=image->colormap+image->colors;
       alpha=(double) ((MagickOffsetType) node_info->number_unique);
-      alpha=PerceptibleReciprocal(alpha);
+      alpha=MagickSafeReciprocal(alpha);
       if (cube_info->associate_alpha == MagickFalse)
         {
           q->red=(double) ClampToQuantum(alpha*(double) QuantumRange*
@@ -1311,7 +1311,7 @@ static void DefineImageColormap(Image *image,QCubeInfo *cube_info,
                 gamma;
 
               gamma=(double) (QuantumScale*q->alpha);
-              gamma=PerceptibleReciprocal(gamma);
+              gamma=MagickSafeReciprocal(gamma);
               q->red=(double) ClampToQuantum(alpha*gamma*(double) QuantumRange*
                 node_info->total_color.red);
               q->green=(double) ClampToQuantum(alpha*gamma*(double)
@@ -2108,7 +2108,7 @@ static QCubeInfo *GetQCubeInfo(const QuantizeInfo *quantize_info,
   weight=1.0;
   for (i=0; i < ErrorQueueLength; i++)
   {
-    cube_info->weights[i]=PerceptibleReciprocal(weight);
+    cube_info->weights[i]=MagickSafeReciprocal(weight);
     weight*=exp(log(1.0/ErrorRelativeWeight)/(ErrorQueueLength-1.0));
   }
   cube_info->diffusion=1.0;
@@ -2745,7 +2745,7 @@ MagickExport MagickBooleanType KmeansImage(Image *image,
       double
         gamma;
 
-      gamma=PerceptibleReciprocal((double) kmeans_pixels[0][j].count);
+      gamma=MagickSafeReciprocal((double) kmeans_pixels[0][j].count);
       image->colormap[j].red=gamma*(double) QuantumRange*
         kmeans_pixels[0][j].red;
       image->colormap[j].green=gamma*(double) QuantumRange*

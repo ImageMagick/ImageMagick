@@ -2771,7 +2771,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               }
             if (fabs(pixel-(double) p[center+i]) >= MagickEpsilon)
               changes[id]++;
-            gamma=PerceptibleReciprocal(gamma);
+            gamma=MagickSafeReciprocal(gamma);
             if (count != 0)
               gamma*=(double) kernel->height/count;
             SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*
@@ -3194,7 +3194,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             SetPixelChannel(morphology_image,channel,quantum_pixels[i],q);
             continue;
           }
-        gamma=PerceptibleReciprocal(gamma);
+        gamma=MagickSafeReciprocal(gamma);
         SetPixelChannel(morphology_image,channel,ClampToQuantum(gamma*pixel),q);
         if (fabs(pixel-(double) p[center+i]) >= MagickEpsilon)
           changes[id]++;

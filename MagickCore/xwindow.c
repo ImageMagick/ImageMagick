@@ -112,7 +112,7 @@
 */
 #define XBlueGamma(color) ClampToQuantum(blue_gamma == 1.0 ? (double) \
   (color) : ((pow((QuantumScale*(double) (color)),1.0* \
-  PerceptibleReciprocal((double) blue_gamma))*(double) QuantumRange)))
+  MagickSafeReciprocal((double) blue_gamma))*(double) QuantumRange)))
 #define XGammaPacket(map,color)  (size_t) (map->base_pixel+ \
   ((ScaleQuantumToShort(XRedGamma((color)->red))*map->red_max/65535L)* \
     map->red_mult)+ \
@@ -129,10 +129,10 @@
     map->blue_mult))
 #define XGreenGamma(color) ClampToQuantum(green_gamma == 1.0 ? (double) \
   (color) : ((pow((QuantumScale*(double) (color)),1.0* \
-  PerceptibleReciprocal((double) green_gamma))*(double) QuantumRange)))
+  MagickSafeReciprocal((double) green_gamma))*(double) QuantumRange)))
 #define XRedGamma(color) ClampToQuantum(red_gamma == 1.0 ? (double) \
   (color) : ((pow((QuantumScale*(double) (color)),1.0* \
-  PerceptibleReciprocal((double) red_gamma))*(double) QuantumRange)))
+  MagickSafeReciprocal((double) red_gamma))*(double) QuantumRange)))
 #define XStandardPixel(map,color)  (size_t) (map->base_pixel+ \
   (((color)->red*map->red_max/65535L)*map->red_mult)+ \
   (((color)->green*map->green_max/65535L)*map->green_mult)+ \

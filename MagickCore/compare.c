@@ -721,7 +721,7 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  area=PerceptibleReciprocal(area);
+  area=MagickSafeReciprocal(area);
   for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
   {
     PixelChannel channel = GetPixelChannelChannel(image,k);
@@ -866,7 +866,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  area=PerceptibleReciprocal(area);
+  area=MagickSafeReciprocal(area);
   for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
   {
     PixelChannel channel = GetPixelChannelChannel(image,k);
@@ -1005,7 +1005,7 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  area=PerceptibleReciprocal(area);
+  area=MagickSafeReciprocal(area);
   for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
   {
     PixelChannel channel = GetPixelChannelChannel(image,k);
@@ -1199,7 +1199,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   /*
     Compute normalized cross correlation: divide by standard deviation.
   */
-  area=PerceptibleReciprocal(area);
+  area=MagickSafeReciprocal(area);
   for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
   {
     PixelChannel channel = GetPixelChannelChannel(image,k);
@@ -1212,7 +1212,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     distortion[k]*=area;
     alpha_variance[k]*=area;
     beta_variance[k]*=area;
-    distortion[k]*=PerceptibleReciprocal(sqrt(alpha_variance[k]*
+    distortion[k]*=MagickSafeReciprocal(sqrt(alpha_variance[k]*
       beta_variance[k]));
     distortion[CompositePixelChannel]+=distortion[k];
   }
@@ -1365,11 +1365,11 @@ static MagickBooleanType GetPeakSignalToNoiseRatio(const Image *image,
     if (((traits & UpdatePixelTrait) == 0) ||
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
-    distortion[i]=10.0*PerceptibleLog10(PerceptibleReciprocal(
+    distortion[i]=10.0*MagickSafeLog10(MagickSafeReciprocal(
       distortion[i]))/MagickPSNRDistortion;
   }
-  distortion[CompositePixelChannel]=10.0*PerceptibleLog10(
-    PerceptibleReciprocal(distortion[CompositePixelChannel]))/
+  distortion[CompositePixelChannel]=10.0*MagickSafeLog10(
+    MagickSafeReciprocal(distortion[CompositePixelChannel]))/
     MagickPSNRDistortion;
   return(status);
 }
@@ -1692,7 +1692,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
         x_pixel_sigmas_squared=x_pixel_sigma_squared[i]-x_pixel_mu_squared;
         y_pixel_sigmas_squared=y_pixel_sigma_squared[i]-y_pixel_mu_squared;
         ssim=((2.0*xy_mu+c1)*(2.0*xy_sigmas+c2))*
-          PerceptibleReciprocal((x_pixel_mu_squared+y_pixel_mu_squared+c1)*
+          MagickSafeReciprocal((x_pixel_mu_squared+y_pixel_mu_squared+c1)*
            (x_pixel_sigmas_squared+y_pixel_sigmas_squared+c2));
         channel_distortion[i]+=ssim;
         channel_distortion[CompositePixelChannel]+=ssim;
@@ -1726,7 +1726,7 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   }
   image_view=DestroyCacheView(image_view);
   reconstruct_view=DestroyCacheView(reconstruct_view);
-  area=PerceptibleReciprocal(area);
+  area=MagickSafeReciprocal(area);
   for (l=0; l < (ssize_t) GetPixelChannels(image); l++)
   {
     PixelChannel channel = GetPixelChannelChannel(image,l);
@@ -2297,7 +2297,7 @@ MagickExport MagickBooleanType SetImageColorMetric(Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
-  area=PerceptibleReciprocal(area);
+  area=MagickSafeReciprocal(area);
   image->error.mean_error_per_pixel=(double) QuantumRange*
     (mean_error_per_pixel*area);
   image->error.normalized_mean_error=mean_error*area;
@@ -2496,7 +2496,7 @@ static Image *SIMDivideImage(const Image *numerator_image,
         PixelTrait traits = GetPixelChannelTraits(divide_image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=(Quantum) ((double) q[i]*PerceptibleReciprocal(QuantumScale*
+        q[i]=(Quantum) ((double) q[i]*MagickSafeReciprocal(QuantumScale*
           (double) p[i]));
       }
       p+=(ptrdiff_t) GetPixelChannels(denominator_image);
@@ -3362,7 +3362,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   threshold_image=DestroyImage(threshold_image);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
-  edge_factor=PerceptibleReciprocal(QuantumScale*mean*reconstruct->columns*
+  edge_factor=MagickSafeReciprocal(QuantumScale*mean*reconstruct->columns*
     reconstruct->rows);
   /*
     Divide X and Y derivitives of reference image by magnitude.
@@ -3941,7 +3941,7 @@ static Image *PSNRSimilarityImage(const Image *image,const Image *reconstruct,
     exception);
   if (psnr_image == (Image *) NULL)
     return(psnr_image);
-  *similarity_metric=10.0*PerceptibleLog10(PerceptibleReciprocal(
+  *similarity_metric=10.0*MagickSafeLog10(MagickSafeReciprocal(
     *similarity_metric))/MagickPSNRDistortion;
   return(psnr_image);
 }

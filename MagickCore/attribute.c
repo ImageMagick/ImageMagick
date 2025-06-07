@@ -1394,17 +1394,17 @@ MagickExport PointInfo *GetImageMinimumBoundingBox(Image *image,
 
         delta.x=bounding_box[(i+1) % 4].x-bounding_box[i].x;
         delta.y=bounding_box[(i+1) % 4].y-bounding_box[i].y;
-        slope=delta.y*PerceptibleReciprocal(delta.x);
+        slope=delta.y*MagickSafeReciprocal(delta.x);
         intercept=bounding_box[(i+1) % 4].y-slope*bounding_box[i].x;
         d=fabs((slope*bounding_box[i].x-bounding_box[i].y+intercept)*
-          PerceptibleReciprocal(sqrt(slope*slope+1.0)));
+          MagickSafeReciprocal(sqrt(slope*slope+1.0)));
         if ((i == 0) || (d < distance))
           {
             distance=d;
             point=delta;
           }
       }
-      angle=RadiansToDegrees(atan(point.y*PerceptibleReciprocal(point.x)));
+      angle=RadiansToDegrees(atan(point.y*MagickSafeReciprocal(point.x)));
       length=hypot(point.x,point.y);
       p_length=fabs((double) MagickMax(caliper_info.width,caliper_info.height)-
         length);

@@ -179,7 +179,7 @@ static void SetDNGProperties(Image *image,const libraw_data_t *raw_info,
     (void) SetImageProperty(image,"dng:serial.number",
       raw_info->shootinginfo.BodySerial,exception);
   (void) FormatImageProperty(image,"dng:exposure.time","1/%.0g",
-    (double) PerceptibleReciprocal(raw_info->other.shutter));
+    (double) MagickSafeReciprocal(raw_info->other.shutter));
   (void) FormatImageProperty(image,"dng:f.number","%0.1g",
     (double) raw_info->other.aperture);
   (void) FormatImageProperty(image,"dng:max.aperture.value","%0.1g",

@@ -975,7 +975,7 @@ static MagickBooleanType WriteAnimatedWEBPImage(const ImageInfo *image_info,
     if (memory_info != (MemoryInfo *) NULL)
       (void) AppendValueToLinkedList(memory_info_list,memory_info);
     WebPPictureFree(&picture);
-    effective_delta=frame->delay*1000*PerceptibleReciprocal(
+    effective_delta=frame->delay*1000*MagickSafeReciprocal(
       frame->ticks_per_second);
     if (effective_delta < 10)
       effective_delta=100; /* Consistent with gif2webp */

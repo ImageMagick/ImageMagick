@@ -22,6 +22,7 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/statistic-private.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -316,10 +317,10 @@ static inline Quantum ScaleAnyToQuantum(const QuantumAny quantum,
     return(QuantumRange);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) ((double) QuantumRange*(quantum*
-    PerceptibleReciprocal((double) range))+0.5));
+    MagickSafeReciprocal((double) range))+0.5));
 #else
   return((Quantum) ((double) QuantumRange*(quantum*
-    PerceptibleReciprocal((double) range))));
+    MagickSafeReciprocal((double) range))));
 #endif
 }
 

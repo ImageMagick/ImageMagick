@@ -3419,7 +3419,7 @@ static inline Quantum ApplyPixelCompositeMask(const Quantum p,
   if (fabs((double) (alpha-(double) TransparentAlpha)) < MagickEpsilon)
     return(q);
   gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
-  gamma=PerceptibleReciprocal(gamma);
+  gamma=MagickSafeReciprocal(gamma);
   return(ClampToQuantum(gamma*MagickOver_((double) p,alpha,(double) q,beta)));
 }
 

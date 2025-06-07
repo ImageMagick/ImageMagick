@@ -216,7 +216,7 @@ MagickPrivate double GenerateDifferentialNoise(RandomInfo *random_info,
         beta=GetPseudoRandomValue(random_info);
         alpha*=beta;
       }
-      noise=(double) QuantumRange*i*PerceptibleReciprocal(SigmaPoisson);
+      noise=(double) QuantumRange*i*MagickSafeReciprocal(SigmaPoisson);
       break;
     }
     case RandomNoise:
@@ -283,8 +283,8 @@ MagickPrivate size_t GetOptimalKernelWidth1D(const double radius,
   gamma=fabs(sigma);
   if (gamma <= MagickEpsilon)
     return(3UL);
-  alpha=PerceptibleReciprocal(2.0*gamma*gamma);
-  beta=(double) PerceptibleReciprocal((double) MagickSQ2PI*gamma);
+  alpha=MagickSafeReciprocal(2.0*gamma*gamma);
+  beta=(double) MagickSafeReciprocal((double) MagickSQ2PI*gamma);
   for (width=5; ; )
   {
     normalize=0.0;
@@ -324,8 +324,8 @@ MagickPrivate size_t GetOptimalKernelWidth2D(const double radius,
   gamma=fabs(sigma);
   if (gamma <= MagickEpsilon)
     return(3UL);
-  alpha=PerceptibleReciprocal(2.0*gamma*gamma);
-  beta=(double) PerceptibleReciprocal((double) Magick2PI*gamma*gamma);
+  alpha=MagickSafeReciprocal(2.0*gamma*gamma);
+  beta=(double) MagickSafeReciprocal((double) Magick2PI*gamma*gamma);
   for (width=5; ; )
   {
     normalize=0.0;

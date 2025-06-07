@@ -1920,13 +1920,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "/MediaBox [0 0 %g %g]\n",DefaultResolution*media_info.width*
-      (double) PerceptibleReciprocal(resolution.x),(double) (
-      DefaultResolution*media_info.height*PerceptibleReciprocal(resolution.y)));
+      (double) MagickSafeReciprocal(resolution.x),(double) (
+      DefaultResolution*media_info.height*MagickSafeReciprocal(resolution.y)));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,
       "/CropBox [0 0 %g %g]\n",DefaultResolution*media_info.width*(double)
-      PerceptibleReciprocal(resolution.x),(double) (DefaultResolution*
-      media_info.height*PerceptibleReciprocal(resolution.y)));
+      MagickSafeReciprocal(resolution.x),(double) (DefaultResolution*
+      media_info.height*MagickSafeReciprocal(resolution.y)));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MagickPathExtent,"/Contents %.20g 0 R\n",
       (double) object+1);

@@ -3376,7 +3376,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
-            GetMagickPrecision(),(double) PerceptibleReciprocal(
+            GetMagickPrecision(),(double) MagickSafeReciprocal(
               image->resolution.x)*image->columns);
           break;
         }
@@ -3384,7 +3384,7 @@ MagickExport const char *GetMagickProperty(ImageInfo *image_info,
         {
           WarnNoImageReturn("\"%%[%s]\"",property);
           (void) FormatLocaleString(value,MagickPathExtent,"%.*g",
-            GetMagickPrecision(),(double) PerceptibleReciprocal(
+            GetMagickPrecision(),(double) MagickSafeReciprocal(
               image->resolution.y)*image->rows);
           break;
         }
