@@ -353,6 +353,9 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     *image_view,
     *reconstruct_view;
 
+  double
+    area;
+
   MagickBooleanType
     status = MagickTrue;
 
@@ -361,6 +364,7 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     rows;
 
   ssize_t
+    k,
     y;
 
   /*
@@ -469,6 +473,10 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  area=MagickSafeReciprocal((double) columns*rows);
+  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+    distortion[k]*=area;
+  distortion[CompositePixelChannel]*=area;
   return(status);
 }
 
@@ -480,6 +488,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     *reconstruct_view;
 
   double
+    area,
     fuzz;
 
   MagickBooleanType
@@ -490,6 +499,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     rows;
 
   ssize_t
+    k,
     y;
 
   /*
@@ -599,6 +609,10 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
   }
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
+  area=MagickSafeReciprocal((double) columns*rows);
+  for (k=0; k < (ssize_t) GetPixelChannels(image); k++)
+    distortion[k]*=area;
+  distortion[CompositePixelChannel]*=area;
   return(status);
 }
 
@@ -1901,10 +1915,6 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
       break;
     }
   }
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-    channel_distortion[i]=MagickMin(MagickMax(channel_distortion[i],0.0),1.0);
-  channel_distortion[CompositePixelChannel]=MagickMin(MagickMax(
-    channel_distortion[CompositePixelChannel],0.0),1.0);
   *distortion=channel_distortion[CompositePixelChannel];
   channel_distortion=(double *) RelinquishMagickMemory(channel_distortion);
   (void) FormatImageProperty(image,"distortion","%.*g",GetMagickPrecision(),
