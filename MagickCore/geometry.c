@@ -45,7 +45,6 @@
 #include "MagickCore/geometry-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/nt-base-private.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
@@ -950,7 +949,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
     return(flags);
   if (strlen(geometry) >= (MagickPathExtent-1))
     return(flags);
-  c=sscanf(geometry,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",&coordinate.rho,
+  c=MagickSscanf(geometry,"%lf%*[ ,]%lf%*[ ,]%lf%*[ ,]%lf",&coordinate.rho,
     &coordinate.sigma,&coordinate.xi,&coordinate.psi);
   if (c == 4)
     {

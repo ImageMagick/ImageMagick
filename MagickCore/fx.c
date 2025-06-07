@@ -75,7 +75,6 @@
 #include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
-#include "MagickCore/nt-base-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
@@ -92,6 +91,7 @@
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/timer-private.h"
@@ -1565,7 +1565,7 @@ static MagickBooleanType ParseISO860(const char* text,struct tm* tp)
     sec;
 
   memset(tp,0,sizeof(struct tm));
-  if (sscanf(text,"%d-%d-%dT%d:%d:%d",&year,&month,&day,&hour,&min,&sec) != 6)
+  if (MagickSscanf(text,"%d-%d-%dT%d:%d:%d",&year,&month,&day,&hour,&min,&sec) != 6)
     return(MagickFalse);
   tp->tm_year=year-1900;
   tp->tm_mon=month-1;
