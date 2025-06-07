@@ -2402,7 +2402,7 @@ static Image *SIMCrossCorrelationImage(const Image *alpha_image,
   */
   DisableCompositeClampUnlessSpecified(complex_conjugate);
   DisableCompositeClampUnlessSpecified(complex_conjugate->next);
-  complex_conjugate->next->next=alpha_fft;
+  AppendImageToList(&complex_conjugate,alpha_fft);
   complex_multiplication=ComplexImages(complex_conjugate,
     MultiplyComplexOperator,exception);
   complex_conjugate=DestroyImageList(complex_conjugate);
@@ -2935,7 +2935,7 @@ static Image *SIMPhaseCorrelationImage(const Image *alpha_image,
   /*
     Do complex multiplication.
   */
-  beta_fft->next->next=alpha_fft;
+  AppendImageToList(&beta_fft,alpha_fft);
   DisableCompositeClampUnlessSpecified(beta_fft);
   DisableCompositeClampUnlessSpecified(beta_fft->next);
   complex_multiplication=ComplexImages(beta_fft,MultiplyComplexOperator,
@@ -3459,7 +3459,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
-  if (QuantumScale*maxima > 1.0)
+  if (((QuantumScale*maxima) > 1.0) || (IsNaN(maxima) != 0))
     {
       status=SIMMultiplyImage(dot_product_image,1.0/(QuantumScale*maxima),
         (const ChannelStatistics *) NULL,exception);
@@ -3620,7 +3620,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     ThrowMSESimilarityException();
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
-  if (QuantumScale*minima < 0.0)
+  if (((QuantumScale*minima) < 0.0) || (IsNaN(minima) != 0))
     minima=0.0;
   *similarity_metric=QuantumScale*minima;
   return(mse_image);
@@ -3771,7 +3771,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(ncc_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
-  if (QuantumScale*maxima > 1.0)
+  if (((QuantumScale*maxima) > 1.0) || (IsNaN(maxima) != 0))
     {
       status=SIMMultiplyImage(ncc_image,1.0/(QuantumScale*maxima),
         (const ChannelStatistics *) NULL,exception);
@@ -3921,7 +3921,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   magnitude_image=DestroyImage(magnitude_image);
-  if (QuantumScale*maxima > 1.0)
+  if (((QuantumScale*maxima) > 1.0) || (IsNaN(maxima) != 0))
     {
       status=SIMMultiplyImage(phase_image,1.0/(QuantumScale*maxima),
         (const ChannelStatistics *) NULL,exception);
