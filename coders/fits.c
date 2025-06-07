@@ -792,7 +792,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     (void) FormatLocaleString(header,FITSBlocksize,"HISTORY %.72s",
       MagickAuthoritativeURL);
     offset+=CopyFITSRecord(fits_info,header,offset);
-    (void) strncpy(header,"END",FITSBlocksize);
+    (void) CopyMagickString(header,"END",FITSBlocksize);
     offset+=CopyFITSRecord(fits_info,header,offset);
     (void) WriteBlob(image,FITSBlocksize,(unsigned char *) fits_info);
     /*
