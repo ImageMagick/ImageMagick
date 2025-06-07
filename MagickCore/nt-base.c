@@ -1107,8 +1107,8 @@ static int NTLocateGhostscript(DWORD flags,int *root_index,
             major=0;
             minor=0;
             patch=0;
-            if (sscanf(key,"%d.%d.%d",&major,&minor,&patch) != 3)
-              if (sscanf(key,"%d.%d",&major,&minor) != 2)
+            if (MagickSscanf(key,"%d.%d.%d",&major,&minor,&patch) != 3)
+              if (MagickSscanf(key,"%d.%d",&major,&minor) != 2)
                 continue;
             if ((major > *major_version) ||
                ((major == *major_version) && (minor > *minor_version)) ||

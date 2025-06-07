@@ -446,7 +446,7 @@ static void GetIPTCProperty(const Image *image,const char *key,
     profile=GetImageProfile(image,"8bim");
   if (profile == (StringInfo *) NULL)
     return;
-  count=sscanf(key,"IPTC:%ld:%ld",&dataset,&record);
+  count=MagickSscanf(key,"IPTC:%ld:%ld",&dataset,&record);
   if (count != 2)
     return;
   attribute=(char *) NULL;
