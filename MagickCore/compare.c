@@ -3292,7 +3292,6 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
     *rx_image = (Image *) NULL,
     *ry_image = (Image *) NULL,
     *trx_image = (Image *) NULL,
-    *temp_image = (Image *) NULL,
     *test_image = (Image *) NULL,
     *threshold_image = (Image *) NULL,
     *try_image = (Image *) NULL,
@@ -3363,15 +3362,16 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   threshold_image=DestroyImage(threshold_image);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
-  edge_factor=1.0/(QuantumScale*mean)/reconstruct->columns/reconstruct->rows;
+  edge_factor=PerceptibleReciprocal(QuantumScale*mean*reconstruct->columns*
+    reconstruct->rows);
   /*
     Divide X and Y derivitives of reference image by magnitude.
   */
-  temp_image=SIMDivideByMagnitude(rx_image,magnitude_image,image,exception);
+  trx_image=SIMDivideByMagnitude(rx_image,magnitude_image,image,exception);
   rx_image=DestroyImage(rx_image);
-  if (temp_image == (Image *) NULL)
+  if (trx_image == (Image *) NULL)
     ThrowDPCSimilarityException();
-  rx_image=temp_image;
+  rx_image=trx_image;
   try_image=SIMDivideByMagnitude(ry_image,magnitude_image,image,exception);
   magnitude_image=DestroyImage(magnitude_image);
   ry_image=DestroyImage(ry_image);
@@ -3399,11 +3399,11 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   /*
     Divide Lx and Ly by magnitude.
   */
-  temp_image=SIMDivideByMagnitude(tx_image,magnitude_image,image,exception);
+  trx_image=SIMDivideByMagnitude(tx_image,magnitude_image,image,exception);
   tx_image=DestroyImage(tx_image);
-  if (temp_image == (Image *) NULL)
+  if (trx_image == (Image *) NULL)
     ThrowDPCSimilarityException();
-  tx_image=temp_image;
+  tx_image=trx_image;
   try_image=SIMDivideByMagnitude(ty_image,magnitude_image,image,exception);
   ty_image=DestroyImage(ty_image);
   magnitude_image=DestroyImage(magnitude_image);
@@ -3459,7 +3459,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(dot_product_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
-  if (((QuantumScale*maxima) > 1.0) || (IsNaN(maxima) != 0))
+  if ((QuantumScale*maxima) > 1.0)
     {
       status=SIMMultiplyImage(dot_product_image,1.0/(QuantumScale*maxima),
         (const ChannelStatistics *) NULL,exception);
@@ -3620,7 +3620,7 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     ThrowMSESimilarityException();
   alpha_image=DestroyImage(alpha_image);
   beta_image=DestroyImage(beta_image);
-  if (((QuantumScale*minima) < FLT_EPSILON) || (IsNaN(minima) != 0))
+  if ((QuantumScale*minima) < FLT_EPSILON)
     minima=0.0;
   *similarity_metric=QuantumScale*minima;
   return(mse_image);
@@ -3771,7 +3771,7 @@ static Image *NCCSimilarityImage(const Image *image,const Image *reconstruct,
   status=SIMMaximaImage(ncc_image,&maxima,offset,exception);
   if (status == MagickFalse)
     ThrowNCCSimilarityException();
-  if (((QuantumScale*maxima) > 1.0) || (IsNaN(maxima) != 0))
+  if ((QuantumScale*maxima) > 1.0)
     {
       status=SIMMultiplyImage(ncc_image,1.0/(QuantumScale*maxima),
         (const ChannelStatistics *) NULL,exception);
@@ -3921,7 +3921,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   magnitude_image=DestroyImage(magnitude_image);
-  if (((QuantumScale*maxima) > 1.0) || (IsNaN(maxima) != 0))
+  if ((QuantumScale*maxima) > 1.0)
     {
       status=SIMMultiplyImage(phase_image,1.0/(QuantumScale*maxima),
         (const ChannelStatistics *) NULL,exception);
