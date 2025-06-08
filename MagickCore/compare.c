@@ -1531,8 +1531,8 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
 {
 #define SSIMRadius  5.0
 #define SSIMSigma  1.5
-#define SSIMK1  0.01
-#define SSIMK2  0.03
+#define SSIMK1  0.0001
+#define SSIMK2  0.0003
 #define SSIML  1.0
 
   CacheView
@@ -1764,6 +1764,8 @@ static MagickBooleanType GetStructuralSimilarityDistortion(const Image *image,
   }
   distortion[CompositePixelChannel]*=area;
   distortion[CompositePixelChannel]/=(double) GetImageChannels(image);
+  if (distortion[CompositePixelChannel] > 1.0)
+    distortion[CompositePixelChannel]=1.0;
   kernel_info=DestroyKernelInfo(kernel_info);
   return(status);
 }
