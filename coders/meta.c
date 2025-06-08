@@ -213,7 +213,7 @@ static size_t convertHTMLcodes(char *s)
       }
   if ((length == 0) || (s == (char *) NULL) || (*s == '\0'))
     return(0);
-  if ((length > 3) && (s[1] == '#') && (sscanf(s,"&#%d;",&value) == 1))
+  if ((length > 3) && (s[1] == '#') && (MagickSscanf(s,"&#%d;",&value) == 1))
     {
       size_t
         o;

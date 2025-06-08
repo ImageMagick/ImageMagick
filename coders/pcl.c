@@ -70,6 +70,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
@@ -276,10 +277,10 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Note region defined by crop box.
         */
-        count=(ssize_t) sscanf(command,"CropBox [%lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(command,"CropBox [%lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         if (count != 4)
-          count=(ssize_t) sscanf(command,"CropBox[%lf %lf %lf %lf",
+          count=(ssize_t) MagickSscanf(command,"CropBox[%lf %lf %lf %lf",
             &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
       }
     if (LocaleNCompare(MediaBox,command,strlen(MediaBox)) == 0)
@@ -287,10 +288,10 @@ static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Note region defined by media box.
         */
-        count=(ssize_t) sscanf(command,"MediaBox [%lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(command,"MediaBox [%lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         if (count != 4)
-          count=(ssize_t) sscanf(command,"MediaBox[%lf %lf %lf %lf",
+          count=(ssize_t) MagickSscanf(command,"MediaBox[%lf %lf %lf %lf",
             &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
       }
     if (count != 4)

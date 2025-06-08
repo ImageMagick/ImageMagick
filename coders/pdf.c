@@ -277,7 +277,7 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
     if (CompareMagickByteBuffer(&buffer,PDFRotate,strlen(PDFRotate)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        (void) sscanf(p,PDFRotate" %lf",&pdf_info->angle);
+        (void) MagickSscanf(p,PDFRotate" %lf",&pdf_info->angle);
       }
     if (pdf_info->cmyk == MagickFalse)
       {
@@ -330,10 +330,10 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
               Note region defined by crop box.
             */
             p=GetMagickByteBufferDatum(&buffer);
-            count=(ssize_t) sscanf(p,"CropBox [%lf %lf %lf %lf",&bounds.x1,
+            count=(ssize_t) MagickSscanf(p,"CropBox [%lf %lf %lf %lf",&bounds.x1,
               &bounds.y1,&bounds.x2,&bounds.y2);
             if (count != 4)
-              count=(ssize_t) sscanf(p,"CropBox[%lf %lf %lf %lf",&bounds.x1,
+              count=(ssize_t) MagickSscanf(p,"CropBox[%lf %lf %lf %lf",&bounds.x1,
                 &bounds.y1,&bounds.x2,&bounds.y2);
           }
       }
@@ -346,10 +346,10 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
                 Note region defined by trim box.
               */
               p=GetMagickByteBufferDatum(&buffer);
-              count=(ssize_t) sscanf(p,"TrimBox [%lf %lf %lf %lf",&bounds.x1,
+              count=(ssize_t) MagickSscanf(p,"TrimBox [%lf %lf %lf %lf",&bounds.x1,
                 &bounds.y1,&bounds.x2,&bounds.y2);
               if (count != 4)
-                count=(ssize_t) sscanf(p,"TrimBox[%lf %lf %lf %lf",&bounds.x1,
+                count=(ssize_t) MagickSscanf(p,"TrimBox[%lf %lf %lf %lf",&bounds.x1,
                   &bounds.y1,&bounds.x2,&bounds.y2);
             }
         }
@@ -360,10 +360,10 @@ static void ReadPDFInfo(const ImageInfo *image_info,Image *image,
               Note region defined by media box.
             */
             p=GetMagickByteBufferDatum(&buffer);
-            count=(ssize_t) sscanf(p,"MediaBox [%lf %lf %lf %lf",&bounds.x1,
+            count=(ssize_t) MagickSscanf(p,"MediaBox [%lf %lf %lf %lf",&bounds.x1,
               &bounds.y1,&bounds.x2,&bounds.y2);
             if (count != 4)
-              count=(ssize_t) sscanf(p,"MediaBox[%lf %lf %lf %lf",&bounds.x1,
+              count=(ssize_t) MagickSscanf(p,"MediaBox[%lf %lf %lf %lf",&bounds.x1,
                 &bounds.y1,&bounds.x2,&bounds.y2);
           }
     if (count != 4)

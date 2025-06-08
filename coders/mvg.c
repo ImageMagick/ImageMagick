@@ -56,6 +56,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 
 /*
   Forward declarations.
@@ -173,7 +174,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           count;
 
         for (p=primitive; (*p == ' ') || (*p == '\t'); p++) ;
-        count=sscanf(p,"viewbox %lf %lf %lf %lf",&bounds.x1,&bounds.y1,
+        count=MagickSscanf(p,"viewbox %lf %lf %lf %lf",&bounds.x1,&bounds.y1,
           &bounds.x2,&bounds.y2);
         if (count != 4)
           continue;

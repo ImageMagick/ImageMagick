@@ -67,6 +67,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
 #include "coders/txt.h"
 
@@ -119,8 +120,8 @@ static MagickBooleanType IsTXT(const unsigned char *magick,const size_t length)
   if (LocaleNCompare((const char *) magick,MagickTXTID,
         strlen(MagickTXTID)) != 0)
     return(MagickFalse);
-  count=(ssize_t) sscanf((const char *) magick+32,"%lu,%lu,%lu,%32s",&columns,
-    &rows,&depth,colorspace);
+  count=(ssize_t) MagickSscanf((const char *) magick+32,"%lu,%lu,%lu,%32s",
+    &columns,&rows,&depth,colorspace);
   if (count != 4)
     return(MagickFalse);
   return(MagickTrue);
@@ -437,12 +438,12 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       number_meta_channels = 0,
       width = 0;
 
-    count=(ssize_t) sscanf(text+32,"%lu,%lu,%lu,%lf,%32s",&width,&height,
+    count=(ssize_t) MagickSscanf(text+32,"%lu,%lu,%lu,%lf,%32s",&width,&height,
       &number_meta_channels,&max_value,colorspace);
     if (count < 5)
       {
         number_meta_channels=0;
-        count=(ssize_t) sscanf(text+32,"%lu,%lu,%lf,%32s",&width,&height,
+        count=(ssize_t) MagickSscanf(text+32,"%lu,%lu,%lf,%32s",&width,&height,
           &max_value,colorspace);
       }
     if ((count < 4) || (width == 0) || (height == 0) || (max_value == 0.0) ||

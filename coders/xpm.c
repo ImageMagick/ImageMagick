@@ -69,6 +69,7 @@
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/threshold.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
@@ -353,8 +354,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (*p != '"')
       continue;
     (void) GetNextToken(p,(const char **) NULL,MagickPathExtent,properties);
-    count=(ssize_t) sscanf(properties,"%lu %lu %lu %lu",&columns,&rows,&colors,
-      &width);
+    count=(ssize_t) MagickSscanf(properties,"%lu %lu %lu %lu",&columns,&rows,
+      &colors,&width);
     image->columns=columns;
     image->rows=rows;
     image->colors=colors;

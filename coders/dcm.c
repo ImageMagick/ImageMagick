@@ -3451,8 +3451,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   subtype=0;
                   if (strlen(transfer_syntax) > 17)
                     {
-                      count=(ssize_t) sscanf(transfer_syntax+17,".%d.%d",&type,
-                        &subtype);
+                      count=(ssize_t) MagickSscanf(transfer_syntax+17,".%d.%d",
+                        &type,&subtype);
                       if (count < 1)
                         ThrowDCMException(CorruptImageError,
                           "ImproperImageHeader")

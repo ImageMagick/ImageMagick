@@ -60,6 +60,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 
 /*
@@ -180,8 +181,8 @@ static Image *ReadPGXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (ReadBlobString(image,buffer) == (char *) NULL)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  count=(ssize_t) sscanf(buffer,"PG%[ \t]%2s%[ \t+-]%d%[ \t]%d%[ \t]%d",sans,
-    endian,sign,&precision,sans,&width,sans,&height);
+  count=(ssize_t) MagickSscanf(buffer,"PG%[ \t]%2s%[ \t+-]%d%[ \t]%d%[ \t]%d",
+    sans,endian,sign,&precision,sans,&width,sans,&height);
   if (count != 8)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   image->depth=(size_t) precision;

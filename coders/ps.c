@@ -356,7 +356,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
     if (CompareMagickByteBuffer(&buffer,ImageData,strlen(ImageData)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        (void) sscanf(p,ImageData " %lu %lu",&ps_info->columns,&ps_info->rows);
+        (void) MagickSscanf(p,ImageData " %lu %lu",&ps_info->columns,&ps_info->rows);
       }
     /*
       Is this a CMYK document?
@@ -473,7 +473,7 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
         */
         p=GetMagickByteBufferDatum(&buffer);
         extent=0;
-        count=(ssize_t) sscanf(p,PhotoshopProfile " %lu",&extent);
+        count=(ssize_t) MagickSscanf(p,PhotoshopProfile " %lu",&extent);
         if ((count != 1) || (extent == 0))
           continue;
         if ((MagickSizeType) extent > GetBlobSize(image))
@@ -509,35 +509,35 @@ static void ReadPSInfo(const ImageInfo *image_info,Image *image,PSInfo *ps_info,
     if (CompareMagickByteBuffer(&buffer,BoundingBox,strlen(BoundingBox)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        count=(ssize_t) sscanf(p,BoundingBox " %lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(p,BoundingBox " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=2;
       }
     if (CompareMagickByteBuffer(&buffer,DocumentMedia,strlen(DocumentMedia)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        count=(ssize_t) sscanf(p,DocumentMedia " %lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(p,DocumentMedia " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }
     if (CompareMagickByteBuffer(&buffer,HiResBoundingBox,strlen(HiResBoundingBox)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        count=(ssize_t) sscanf(p,HiResBoundingBox " %lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(p,HiResBoundingBox " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=3;
       }
     if (CompareMagickByteBuffer(&buffer,PageBoundingBox,strlen(PageBoundingBox)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        count=(ssize_t) sscanf(p,PageBoundingBox " %lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(p,PageBoundingBox " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }
     if (CompareMagickByteBuffer(&buffer,PageMedia,strlen(PageMedia)) != MagickFalse)
       {
         p=GetMagickByteBufferDatum(&buffer);
-        count=(ssize_t) sscanf(p,PageMedia " %lf %lf %lf %lf",
+        count=(ssize_t) MagickSscanf(p,PageMedia " %lf %lf %lf %lf",
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }

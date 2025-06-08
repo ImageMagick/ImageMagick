@@ -56,6 +56,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/utility.h"
@@ -1104,7 +1105,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
       /*
         Sampling factors, valid values are 1x1 or 2x2.
       */
-      if (sscanf(sampling_factor,"%d:%d:%d",factors,factors+1,factors+2) == 3)
+      if (MagickSscanf(sampling_factor,"%d:%d:%d",factors,factors+1,factors+2) == 3)
         {
           if ((factors[0] == factors[1]) && (factors[1] == factors[2]))
             factors[0]=1;
@@ -1113,7 +1114,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
               factors[0]=2;
         }
       else
-        if (sscanf(sampling_factor,"%dx%d",factors,factors+1) == 2)
+        if (MagickSscanf(sampling_factor,"%dx%d",factors,factors+1) == 2)
           {
             if (factors[0] != factors[1])
               factors[0]=0;

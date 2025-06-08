@@ -992,14 +992,14 @@ static void SVGProcessStyleElement(SVGInfo *svg_info,const xmlChar *name,
               font_size[MagickPathExtent],
               font_style[MagickPathExtent];
 
-            if (sscanf(value,"%2048s %2048s %2048s",font_style,font_size,
+            if (MagickSscanf(value,"%2048s %2048s %2048s",font_style,font_size,
                   font_family) != 3)
               break;
             if (GetUserSpaceCoordinateValue(svg_info,0,font_style) == 0)
               (void) FormatLocaleFile(svg_info->file,"font-style \"%s\"\n",
                 style);
             else
-              if (sscanf(value,"%2048s %2048s",font_size,font_family) != 2)
+              if (MagickSscanf(value,"%2048s %2048s",font_size,font_family) != 2)
                 break;
             (void) FormatLocaleFile(svg_info->file,"font-size \"%s\"\n",
               font_size);

@@ -316,7 +316,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"primaries") == 0)
                 {
-                  chromaticity_count=sscanf(value,"%g %g %g %g %g %g %g %g",
+                  chromaticity_count=MagickSscanf(value,"%g %g %g %g %g %g %g %g",
                     &chromaticity[0],&chromaticity[1],&chromaticity[2],
                     &chromaticity[3],&chromaticity[4],&chromaticity[5],
                     &white_point[0],&white_point[1]);
@@ -338,7 +338,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     height,
                     width;
 
-                  if (sscanf(value,"%d +X %d",&height,&width) == 2)
+                  if (MagickSscanf(value,"%d +X %d",&height,&width) == 2)
                     {
                       image->columns=(size_t) width;
                       image->rows=(size_t) height;

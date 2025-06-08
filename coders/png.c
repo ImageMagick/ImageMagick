@@ -7817,11 +7817,11 @@ static void write_tIME_chunk(Image *image,png_struct *ping,png_info *info,
   assert(timestamp != (const char *) NULL);
   LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Writing tIME chunk: timestamp property is %30s\n",timestamp);
-  ret=sscanf(timestamp,"%d-%d-%dT%d:%d:%d",&year,&month,&day,&hour,
+  ret=MagickSscanf(timestamp,"%d-%d-%dT%d:%d:%d",&year,&month,&day,&hour,
       &minute, &second);
   addhours=0;
   addminutes=0;
-  ret=sscanf(timestamp,"%d-%d-%dT%d:%d:%d%d:%d",&year,&month,&day,&hour,
+  ret=MagickSscanf(timestamp,"%d-%d-%dT%d:%d:%d%d:%d",&year,&month,&day,&hour,
       &minute, &second, &addhours, &addminutes);
     LogMagickEvent(CoderEvent,GetMagickModule(),
       "   Date format specified for png:tIME=%s" ,timestamp);
