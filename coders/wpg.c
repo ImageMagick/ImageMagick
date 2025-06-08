@@ -257,7 +257,7 @@ static int Rd_WP_DWORD(Image *image,size_t *d)
 
   b=ReadBlobByte(image);
   *d=b;
-  if (b < 0xFFU)
+  if (b < 0xff)
     return(1);
   b=ReadBlobByte(image);
   *d=(size_t) b;
@@ -265,7 +265,7 @@ static int Rd_WP_DWORD(Image *image,size_t *d)
   *d+=(size_t) b*256l;
   if (*d < 0x8000)
     return(3);
-  *d=(*d & 0x7FFF) << 16;
+  *d=(*d & 0x7fff) << 16;
   b=ReadBlobByte(image);
   *d+=(size_t) b;
   b=ReadBlobByte(image);
