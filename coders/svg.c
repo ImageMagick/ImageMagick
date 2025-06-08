@@ -492,10 +492,10 @@ static Image *RenderRSVGImage(const ImageInfo *image_info,Image *image,
     }
   if (apply_density != MagickFalse)
     {
-      image->columns=image->resolution.x*dimension_info.width/
-        DefaultSVGDensity;
-      image->rows=image->resolution.y*dimension_info.height/
-        DefaultSVGDensity;
+      image->columns=(size_t) (image->resolution.x*dimension_info.width/
+        DefaultSVGDensity);
+      image->rows=(size_t) (image->resolution.y*dimension_info.height/
+        DefaultSVGDensity);
     }
   else
     {
@@ -3082,8 +3082,8 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
   svg_info->exception=exception;
   svg_info->image=image;
   svg_info->image_info=image_info;
-  svg_info->bounds.width=image->columns;
-  svg_info->bounds.height=image->rows;
+  svg_info->bounds.width=(double) image->columns;
+  svg_info->bounds.height=(double) image->rows;
   svg_info->svgDepth=0;
   if (image_info->size != (char *) NULL)
     (void) CloneString(&svg_info->size,image_info->size);
@@ -3111,8 +3111,8 @@ static Image *RenderMSVGImage(const ImageInfo *image_info,Image *image,
   parser=(xmlParserCtxtPtr) NULL;
   if (n > 0)
     {
-      parser=xmlCreatePushParserCtxt(sax_handler,(void *) NULL,(char *)
-        message,n,image->filename);
+      parser=xmlCreatePushParserCtxt(sax_handler,(void *) NULL,(const char *)
+        message,(int) n,image->filename);
       if (parser != (xmlParserCtxtPtr) NULL)
         {
           const char *option;

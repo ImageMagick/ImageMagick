@@ -649,23 +649,23 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Image film information.
       */
-      cin.film.id=ReadBlobByte(image);
+      cin.film.id=(char) ReadBlobByte(image);
       offset++;
       c=cin.film.id;
       if (c != ~0)
         (void) FormatImageProperty(image,"dpx:film.id","%d",cin.film.id);
-      cin.film.type=ReadBlobByte(image);
+      cin.film.type=(char) ReadBlobByte(image);
       offset++;
       c=cin.film.type;
       if (c != ~0)
         (void) FormatImageProperty(image,"dpx:film.type","%d",cin.film.type);
-      cin.film.offset=ReadBlobByte(image);
+      cin.film.offset=(char) ReadBlobByte(image);
       offset++;
       c=cin.film.offset;
       if (c != ~0)
         (void) FormatImageProperty(image,"dpx:film.offset","%d",
           cin.film.offset);
-      cin.film.reserve1=ReadBlobByte(image);
+      cin.film.reserve1=(char) ReadBlobByte(image);
       offset++;
       cin.film.prefix=ReadBlobLong(image);
       offset+=4;
@@ -1044,14 +1044,14 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
     cin.image.channel[i].max_quantity=2.048f;
     offset+=WriteBlobFloat(image,cin.image.channel[0].max_quantity);
   }
-  offset+=WriteBlobFloat(image,image->chromaticity.white_point.x);
-  offset+=WriteBlobFloat(image,image->chromaticity.white_point.y);
-  offset+=WriteBlobFloat(image,image->chromaticity.red_primary.x);
-  offset+=WriteBlobFloat(image,image->chromaticity.red_primary.y);
-  offset+=WriteBlobFloat(image,image->chromaticity.green_primary.x);
-  offset+=WriteBlobFloat(image,image->chromaticity.green_primary.y);
-  offset+=WriteBlobFloat(image,image->chromaticity.blue_primary.x);
-  offset+=WriteBlobFloat(image,image->chromaticity.blue_primary.y);
+  offset+=WriteBlobFloat(image,(float) image->chromaticity.white_point.x);
+  offset+=WriteBlobFloat(image,(float) image->chromaticity.white_point.y);
+  offset+=WriteBlobFloat(image,(float) image->chromaticity.red_primary.x);
+  offset+=WriteBlobFloat(image,(float) image->chromaticity.red_primary.y);
+  offset+=WriteBlobFloat(image,(float) image->chromaticity.green_primary.x);
+  offset+=WriteBlobFloat(image,(float) image->chromaticity.green_primary.y);
+  offset+=WriteBlobFloat(image,(float) image->chromaticity.blue_primary.x);
+  offset+=WriteBlobFloat(image,(float) image->chromaticity.blue_primary.y);
   value=GetCINProperty(image_info,image,"dpx:image.label",exception);
   if (value != (const char *) NULL)
     (void) CopyMagickString(cin.image.label,value,sizeof(cin.image.label));
@@ -1131,14 +1131,14 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   cin.origination.x_pitch=0.0f;
   value=GetCINProperty(image_info,image,"dpx:origination.x_pitch",exception);
   if (value != (const char *) NULL)
-    cin.origination.x_pitch=StringToDouble(value,(char **) NULL);
+    cin.origination.x_pitch=StringToFloat(value,(char **) NULL);
   offset+=WriteBlobFloat(image,cin.origination.x_pitch);
   cin.origination.y_pitch=0.0f;
   value=GetCINProperty(image_info,image,"dpx:origination.y_pitch",exception);
   if (value != (const char *) NULL)
-    cin.origination.y_pitch=StringToDouble(value,(char **) NULL);
+    cin.origination.y_pitch=StringToFloat(value,(char **) NULL);
   offset+=WriteBlobFloat(image,cin.origination.y_pitch);
-  cin.origination.gamma=image->gamma;
+  cin.origination.gamma=(float) image->gamma;
   offset+=WriteBlobFloat(image,cin.origination.gamma);
   offset+=WriteBlob(image,sizeof(cin.origination.reserve),(unsigned char *)
     cin.origination.reserve);
@@ -1184,7 +1184,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   cin.film.frame_rate=0.0f;
   value=GetCINProperty(image_info,image,"dpx:film.frame_rate",exception);
   if (value != (const char *) NULL)
-    cin.film.frame_rate=StringToDouble(value,(char **) NULL);
+    cin.film.frame_rate=StringToFloat(value,(char **) NULL);
   offset+=WriteBlobFloat(image,cin.film.frame_rate);
   value=GetCINProperty(image_info,image,"dpx:film.frame_id",exception);
   if (value != (const char *) NULL)

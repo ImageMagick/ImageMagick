@@ -246,7 +246,7 @@ static char *PNMString(Image *image,char *string,const size_t extent)
           return((char *) NULL);
         break;
       }
-    string[i]=c;
+    string[i]=(char) c;
     if (c == '\n' || c == '\r')
       break;
   }
@@ -409,7 +409,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           do
           {
             if ((size_t) (p-keyword) < (MagickPathExtent-1))
-              *p++=c;
+              *p++=(char) c;
             c=ReadBlobByte(image);
           } while (isalnum((int) ((unsigned char) c)));
           *p='\0';
@@ -421,7 +421,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           while (isalnum((int) ((unsigned char) c)) || (c == '_'))
           {
             if ((size_t) (p-value) < (MagickPathExtent-1))
-              *p++=c;
+              *p++=(char) c;
             c=ReadBlobByte(image);
           }
           *p='\0';

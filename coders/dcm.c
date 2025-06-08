@@ -4109,25 +4109,25 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (map.red != (int *) NULL)
             for (i=0; i < (ssize_t) colors; i++)
             {
-              color=ScaleShortToQuantum(map.red[i]);
+              color=ScaleShortToQuantum((unsigned short) map.red[i]);
               image->colormap[i].red=(MagickRealType) color;
             }
           if (map.green != (int *) NULL)
             for (i=0; i < (ssize_t) colors; i++)
             {
-              color=ScaleShortToQuantum(map.green[i]);
+              color=ScaleShortToQuantum((unsigned short) map.green[i]);
               image->colormap[i].green=(MagickRealType) color;
             }
           if (map.blue != (int *) NULL)
             for (i=0; i < (ssize_t) colors; i++)
             {
-              color=ScaleShortToQuantum(map.blue[i]);
+              color=ScaleShortToQuantum((unsigned short) map.blue[i]);
               image->colormap[i].blue=(MagickRealType) color;
             }
           if (map.gray != (int *) NULL)
             for (i=0; i < (ssize_t) colors; i++)
             {
-              color=ScaleShortToQuantum(map.gray[i]);
+              color=ScaleShortToQuantum((unsigned short) map.gray[i]);
               image->colormap[i].red=(MagickRealType) color;
               image->colormap[i].green=(MagickRealType) color;
               image->colormap[i].blue=(MagickRealType) color;

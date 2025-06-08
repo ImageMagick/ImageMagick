@@ -1503,11 +1503,11 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
               {
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
-                  pixel=ScaleQuantumToChar(image->colormap[i].red);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].red);
                   (void) WriteBlobByte(image,(unsigned char) pixel);
-                  pixel=ScaleQuantumToChar(image->colormap[i].green);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].green);
                   (void) WriteBlobByte(image,(unsigned char) pixel);
-                  pixel=ScaleQuantumToChar(image->colormap[i].blue);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].blue);
                   (void) WriteBlobByte(image,(unsigned char) pixel);
                 }
               }
@@ -1516,11 +1516,11 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
                 Ascii85Initialize(image);
                 for (i=0; i < (ssize_t) image->colors; i++)
                 {
-                  pixel=ScaleQuantumToChar(image->colormap[i].red);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].red);
                   Ascii85Encode(image,(unsigned char) pixel);
-                  pixel=ScaleQuantumToChar(image->colormap[i].green);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].green);
                   Ascii85Encode(image,(unsigned char) pixel);
-                  pixel=ScaleQuantumToChar(image->colormap[i].blue);
+                  pixel=ScaleQuantumToChar((Quantum) image->colormap[i].blue);
                   Ascii85Encode(image,(unsigned char) pixel);
                 }
                 Ascii85Flush(image);

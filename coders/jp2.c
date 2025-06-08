@@ -1003,7 +1003,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   parameters->cp_disto_alloc=OPJ_TRUE;
   if ((image_info->quality != 0) && (image_info->quality != 100))
     {
-      parameters->tcp_distoratio[0]=(double) image_info->quality;
+      parameters->tcp_distoratio[0]=(float) image_info->quality;
       parameters->cp_fixed_quality=OPJ_TRUE;
       parameters->cp_disto_alloc=OPJ_FALSE;
     }
@@ -1025,9 +1025,9 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
       if ((flags & HeightValue) != 0)
         parameters->cp_tdy=(int) geometry.height;
       if ((flags & XValue) != 0)
-        parameters->cp_tx0=geometry.x;
+        parameters->cp_tx0=(int) geometry.x;
       if ((flags & YValue) != 0)
-        parameters->cp_ty0=geometry.y;
+        parameters->cp_ty0=(int) geometry.y;
       parameters->tile_size_on=OPJ_TRUE;
       parameters->numresolution=CalculateNumResolutions((size_t)
         parameters->cp_tdx,(size_t) parameters->cp_tdy);
@@ -1052,7 +1052,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
           break;
         p++;
       }
-      parameters->tcp_numlayers=i+1;
+      parameters->tcp_numlayers=(int) (i+1);
       parameters->cp_fixed_quality=OPJ_TRUE;
       parameters->cp_disto_alloc=OPJ_FALSE;
     }
@@ -1090,7 +1090,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
           break;
         p++;
       }
-      parameters->tcp_numlayers=i+1;
+      parameters->tcp_numlayers=(int) (i+1);
       parameters->cp_disto_alloc=OPJ_TRUE;
     }
   if (image_info->sampling_factor != (char *) NULL)

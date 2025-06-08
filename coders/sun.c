@@ -557,7 +557,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              SetPixelIndex(image,ConstrainColormapIndex(image,*p,exception),q);
+              SetPixelIndex(image,(Quantum) ConstrainColormapIndex(image,*p,exception),q);
               p++;
               q+=(ptrdiff_t) GetPixelChannels(image);
             }

@@ -178,10 +178,10 @@ static int stringnicmp(const char *p,const char *q,size_t n)
       break;
     i=(*p);
     if (islower((int) ((unsigned char) i)) != 0)
-      i=LocaleToUppercase(i);
+      i=LocaleToUppercase((int) i);
     j=(*q);
     if (islower((int) ((unsigned char) j)) != 0)
-      j=LocaleToUppercase(j);
+      j=LocaleToUppercase((int) j);
     if (i != j)
       break;
     n--;
@@ -227,7 +227,7 @@ static size_t convertHTMLcodes(char *s)
       }
       if (o < 6)
         (void) memmove(s+1,s+1+o,strlen(s+1+o)+1);
-      *s=value;
+      *s=(char) value;
       return(o);
     }
   for (i=0; i < (ssize_t) (sizeof(html_codes)/sizeof(html_codes[0])); i++)

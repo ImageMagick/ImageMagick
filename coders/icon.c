@@ -244,7 +244,7 @@ static Image *Read1XImage(Image *image,ExceptionInfo *exception)
           Quantum
             index;
 
-          index=((byte & (0x80 >> bit)) != 0 ? (i == 0 ? 0x01 : 0x02) : 0x00);
+          index=(Quantum) ((byte & (0x80 >> bit)) != 0 ? (i == 0 ? 0x01 : 0x02) : 0x00);
           if (i == 0)
             SetPixelIndex(image,index,q);
           else
@@ -562,8 +562,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                 byte=(size_t) ReadBlobByte(image);
                 for (bit=0; bit < 8; bit++)
                 {
-                  SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
-                    0x00),q);
+                  SetPixelIndex(image,(Quantum) ((byte & (0x80 >> bit)) != 0 ?
+                    0x01 : 0x00),q);
                   q+=(ptrdiff_t) GetPixelChannels(image);
                 }
               }
@@ -572,8 +572,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,
                   byte=(size_t) ReadBlobByte(image);
                   for (bit=0; bit < (image->columns % 8); bit++)
                   {
-                    SetPixelIndex(image,((byte & (0x80 >> bit)) != 0 ? 0x01 :
-                      0x00),q);
+                    SetPixelIndex(image,(Quantum) ((byte & (0x80 >> bit)) != 0 ?
+                      0x01 : 0x00),q);
                     q+=(ptrdiff_t) GetPixelChannels(image);
                   }
                 }
@@ -604,15 +604,15 @@ static Image *ReadICONImage(const ImageInfo *image_info,
               for (x=0; x < ((ssize_t) image->columns-1); x+=2)
               {
                 byte=(size_t) ReadBlobByte(image);
-                SetPixelIndex(image,((byte >> 4) & 0xf),q);
+                SetPixelIndex(image,(Quantum) ((byte >> 4) & 0xf),q);
                 q+=(ptrdiff_t) GetPixelChannels(image);
-                SetPixelIndex(image,((byte) & 0xf),q);
+                SetPixelIndex(image,(Quantum) ((byte) & 0xf),q);
                 q+=(ptrdiff_t) GetPixelChannels(image);
               }
               if ((image->columns % 2) != 0)
                 {
                   byte=(size_t) ReadBlobByte(image);
-                  SetPixelIndex(image,((byte >> 4) & 0xf),q);
+                  SetPixelIndex(image,(Quantum) ((byte >> 4) & 0xf),q);
                   q+=(ptrdiff_t) GetPixelChannels(image);
                 }
               for (x=0; x < (ssize_t) scanline_pad; x++)
@@ -1417,9 +1417,9 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
             q=icon_colormap;
             for (i=0; i < (ssize_t) next->colors; i++)
             {
-              *q++=ScaleQuantumToChar(next->colormap[i].blue);
-              *q++=ScaleQuantumToChar(next->colormap[i].green);
-              *q++=ScaleQuantumToChar(next->colormap[i].red);
+              *q++=ScaleQuantumToChar((Quantum) next->colormap[i].blue);
+              *q++=ScaleQuantumToChar((Quantum) next->colormap[i].green);
+              *q++=ScaleQuantumToChar((Quantum) next->colormap[i].red);
               *q++=(unsigned char) 0x00;
             }
             for ( ; i < (ssize_t) 1UL << bits_per_pixel; i++)

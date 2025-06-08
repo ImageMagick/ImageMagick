@@ -205,7 +205,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
           if (byte == EOF)
             ThrowReaderException(CorruptImageError,"CorruptImage");
         }
-      SetPixelIndex(image,(byte & (0x01 << (7-bit))) ? 1 : 0,q);
+      SetPixelIndex(image,(Quantum) ((byte & (0x01 << (7-bit))) ? 1 : 0),q);
       bit++;
       if (bit == 8)
         bit=0;
@@ -344,7 +344,7 @@ static void WBMPWriteInteger(Image *image,const size_t value)
     if ((flag == 0) && (octet != 0))
       {
         flag=MagickTrue;
-        n=i+1;
+        n=(int) (i+1);
       }
     buffer[4-i]=octet | (i && (flag || octet))*(0x01 << 7);
     bits-=7;

@@ -2397,7 +2397,7 @@ static MagickBooleanType ReadUncompressedRGBPixels(Image *image,
     {
       if ((dds_info->pixelformat.rgb_bitcount == 8) ||
           (dds_info->extFormat == DXGI_FORMAT_R8_UNORM))
-        SetPixelGray(image,ScaleCharToQuantum(ReadBlobByte(image)),q);
+        SetPixelGray(image,ScaleCharToQuantum((unsigned char) ReadBlobByte(image)),q);
       else if ((dds_info->pixelformat.rgb_bitcount == 16) ||
                (dds_info->extFormat == DXGI_FORMAT_B5G6R5_UNORM))
         {
@@ -3323,7 +3323,7 @@ static void CompressClusterFit(const size_t count,
   {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,1) \
-    num_threads(GetMagickResourceLimit(ThreadResource))
+    num_threads((int) GetMagickResourceLimit(ThreadResource))
 #endif
     for (i=0; i < (ssize_t) count; i++)
     {
@@ -4035,7 +4035,7 @@ static void WriteFourCC(Image *image, const size_t compression,
       }
 
       for (i=0; i < (ssize_t) count; i++)
-        points[i].w = sqrt(points[i].w);
+        points[i].w=sqrt(points[i].w);
 
       if (compression == FOURCC_DXT5)
         WriteAlphas(image,alphas,min5,max5,min7,max7);

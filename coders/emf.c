@@ -776,10 +776,10 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   graphics->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
   graphics->SetTextRenderingHint(Gdiplus::TextRenderingHintClearTypeGridFit);
   graphics->Clear(Gdiplus::Color((BYTE) ScaleQuantumToChar(
-    image->background_color.alpha),(BYTE) ScaleQuantumToChar(
-    image->background_color.red),(BYTE) ScaleQuantumToChar(
-    image->background_color.green),(BYTE) ScaleQuantumToChar(
-    image->background_color.blue)));
+    (Quantum) image->background_color.alpha),(BYTE) ScaleQuantumToChar(
+    (Quantum) image->background_color.red),(BYTE) ScaleQuantumToChar(
+    (Quantum) image->background_color.green),(BYTE) ScaleQuantumToChar(
+    (Quantum) image->background_color.blue)));
   graphics->DrawImage(source,0,0,(INT) image->columns,(INT) image->rows);
   delete graphics;
   delete source;

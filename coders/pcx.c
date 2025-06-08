@@ -1008,9 +1008,9 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     if ((image->storage_class == PseudoClass) && (image->colors <= 256))
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        *q++=ScaleQuantumToChar(image->colormap[i].red);
-        *q++=ScaleQuantumToChar(image->colormap[i].green);
-        *q++=ScaleQuantumToChar(image->colormap[i].blue);
+        *q++=ScaleQuantumToChar((Quantum) image->colormap[i].red);
+        *q++=ScaleQuantumToChar((Quantum) image->colormap[i].green);
+        *q++=ScaleQuantumToChar((Quantum) image->colormap[i].blue);
       }
     (void) WriteBlob(image,3*16,(const unsigned char *) pcx_colormap);
     (void) WriteBlobByte(image,pcx_info.reserved);

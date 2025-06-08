@@ -337,7 +337,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         {
           if (isspace((int) ((unsigned char) keyword[i])) != 0)
             break;
-          keyword[i]=LocaleToLowercase((int) ((unsigned char) keyword[i]));
+          keyword[i]=(char) LocaleToLowercase((int) ((unsigned char) keyword[i]));
         }
         keyword[i]='\0';
         count=ReadBlob(image,72,(unsigned char *) value);

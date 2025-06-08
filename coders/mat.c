@@ -201,7 +201,7 @@ static void InsertComplexDoubleRow(Image *image,double *p,int y,double MinVal,
         if ((f+(double) GetPixelRed(image,q)) >= (double) QuantumRange)
           SetPixelRed(image,QuantumRange,q);
         else
-          SetPixelRed(image,(double) GetPixelRed(image,q)+ClampToQuantum(f),q);
+          SetPixelRed(image,GetPixelRed(image,q)+ClampToQuantum(f),q);
         f=(double) GetPixelGreen(image,q)-f/2.0;
         if (IsNaN(f) != 0)      
           f=0.0;
@@ -497,7 +497,7 @@ int file;
 
 MagickBooleanType status;
 int zip_status;
-ssize_t TotalSize = 0;
+ssize_t total_size = 0;
 
   if(clone_info==NULL) return NULL;
   if(clone_info->file)    /* Close file opened from previous transaction. */
@@ -564,7 +564,7 @@ ssize_t TotalSize = 0;
         break;
       extent=fwrite(decompress_block,1,4096-zip_info.avail_out,mat_file);
       (void) extent;
-      TotalSize += 4096-zip_info.avail_out;
+      total_size += 4096-zip_info.avail_out;
 
       if(zip_status == Z_STREAM_END) goto DblBreak;
     }
@@ -579,7 +579,7 @@ DblBreak:
   (void)fclose(mat_file);
   RelinquishMagickMemory(cache_block);
   RelinquishMagickMemory(decompress_block);
-  *Size = TotalSize;
+  *Size = (unsigned int) total_size;
 
   if((clone_info->file=fopen_utf8(clone_info->filename,"rb"))==NULL) goto UnlinkFile;
   if( (image2 = AcquireImage(clone_info,exception))==NULL ) goto EraseFile;
@@ -791,9 +791,9 @@ static Image *ReadMATImageV4(const ImageInfo *image_info,Image *image,
         if (count == -1)
           break;
         if (HDR.Type[1] == 0)
-          InsertComplexDoubleRow(image,(double *) pixels,y,0,0,exception);
+          InsertComplexDoubleRow(image,(double *) pixels,(int) y,0,0,exception);
         else
-          InsertComplexFloatRow(image,(float *) pixels,y,0,0,exception);
+          InsertComplexFloatRow(image,(float *) pixels,(int) y,0,0,exception);
       }
     if (quantum_info != (QuantumInfo *) NULL)
       quantum_info=DestroyQuantumInfo(quantum_info);
@@ -1020,7 +1020,7 @@ MATLAB_KO:
     MATLAB_HDR.unknown1 = ReadBlobXXXLong(image2);
     MATLAB_HDR.unknown2 = ReadBlobXXXLong(image2);
 
-    MATLAB_HDR.unknown5 = ReadBlobXXXLong(image2);
+    MATLAB_HDR.unknown5 = (unsigned short) ReadBlobXXXLong(image2);
     MATLAB_HDR.StructureClass = MATLAB_HDR.unknown5 & 0xFF;
     MATLAB_HDR.StructureFlag = (MATLAB_HDR.unknown5>>8) & 0xFF;
 
@@ -1269,8 +1269,8 @@ RestoreMSCWarning
     if (CellType==miDOUBLE || CellType==miSINGLE)        /* Find Min and Max Values for floats */
       {
         CalcMinMax(image2,(int) image_info->endian,MATLAB_HDR.SizeX,
-          MATLAB_HDR.SizeY,CellType,ldblk,BImgBuff,&quantum_info->minimum,
-          &quantum_info->maximum);
+          MATLAB_HDR.SizeY,CellType,(unsigned int) ldblk,BImgBuff,
+          &quantum_info->minimum,&quantum_info->maximum);
       }
 
     /* Main loop for reading all scanlines */
@@ -1342,8 +1342,8 @@ ExitLoop:
 
       if (CellType==miDOUBLE || CellType==miSINGLE)
       {
-        CalcMinMax(image2,  (int) image_info->endian, MATLAB_HDR.SizeX,
-          MATLAB_HDR.SizeY, CellType, ldblk, BImgBuff, &MinVal, &MaxVal);
+        CalcMinMax(image2,(int) image_info->endian,MATLAB_HDR.SizeX,
+          MATLAB_HDR.SizeY,CellType,(unsigned int) ldblk,BImgBuff,&MinVal,&MaxVal);
       }
 
       if (CellType==miDOUBLE)
@@ -1352,7 +1352,7 @@ ExitLoop:
           ReadBlobDoublesXXX(image2, (size_t) ldblk, (double *)BImgBuff);
           if (EOFBlob(image) != MagickFalse)
             break;
-          InsertComplexDoubleRow(image, (double *)BImgBuff, i, MinVal, MaxVal,
+          InsertComplexDoubleRow(image,(double *)BImgBuff,(int) i,MinVal,MaxVal,
             exception);
         }
 
@@ -1362,7 +1362,7 @@ ExitLoop:
           ReadBlobFloatsXXX(image2, (size_t) ldblk, (float *)BImgBuff);
           if (EOFBlob(image) != MagickFalse)
             break;
-          InsertComplexFloatRow(image,(float *)BImgBuff,i,MinVal,MaxVal,
+          InsertComplexFloatRow(image,(float *)BImgBuff,(int) i,MinVal,MaxVal,
             exception);
         }
     }

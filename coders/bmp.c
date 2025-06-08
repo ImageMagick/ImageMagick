@@ -2450,7 +2450,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         profile_size=(MagickOffsetType) GetStringInfoLength(profile);
         if ((profile_size % 4) > 0)
           profile_size_pad=4-(profile_size%4);
-        bmp_info.file_size+=profile_size+profile_size_pad;
+        bmp_info.file_size+=(unsigned int) (profile_size+profile_size_pad);
       }
     (void) WriteBlob(image,2,(unsigned char *) "BM");
     (void) WriteBlobLSBLong(image,bmp_info.file_size);

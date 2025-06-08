@@ -1175,17 +1175,19 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ImfFloatToHalf(QuantumScale*(double) GetPixelRed(image,p),&half_quantum);
+      ImfFloatToHalf((float) (QuantumScale*(double) GetPixelRed(image,p)),
+        &half_quantum);
       scanline[x].r=half_quantum;
-      ImfFloatToHalf(QuantumScale*(double) GetPixelGreen(image,p),
+      ImfFloatToHalf((float) (QuantumScale*(double) GetPixelGreen(image,p)),
         &half_quantum);
       scanline[x].g=half_quantum;
-      ImfFloatToHalf(QuantumScale*(double) GetPixelBlue(image,p),&half_quantum);
+      ImfFloatToHalf((float) (QuantumScale*(double) GetPixelBlue(image,p)),
+        &half_quantum);
       scanline[x].b=half_quantum;
       if ((image->alpha_trait & BlendPixelTrait) == 0)
         ImfFloatToHalf(1.0,&half_quantum);
       else
-        ImfFloatToHalf(QuantumScale*(double) GetPixelAlpha(image,p),
+        ImfFloatToHalf((float) (QuantumScale*(double) GetPixelAlpha(image,p)),
           &half_quantum);
       scanline[x].a=half_quantum;
       p+=(ptrdiff_t) GetPixelChannels(image);

@@ -665,7 +665,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
                     {
-                      draw_info->stroke_width=(size_t) StringToLong(value);
+                      draw_info->stroke_width=(double) StringToLong(value);
                       break;
                     }
                   if (LocaleCompare(keyword,"style") == 0)
@@ -1677,7 +1677,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         {
                           if (GetPixelAlpha(composite_image,q) == OpaqueAlpha)
                             SetPixelAlpha(composite_image,
-                              ClampToQuantum(opacity),q);
+                              ClampToQuantum((MagickRealType) opacity),q);
                           q+=(ptrdiff_t) GetPixelChannels(composite_image);
                         }
                         if (SyncCacheViewAuthenticPixels(composite_view,exception) == MagickFalse)
@@ -2313,7 +2313,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
                     {
-                      draw_info->stroke_width=(size_t) StringToLong(value);
+                      draw_info->stroke_width=(double) StringToLong(value);
                       break;
                     }
                   if (LocaleCompare(keyword,"style") == 0)
@@ -4499,7 +4499,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"strokewidth") == 0)
                     {
-                      draw_info->stroke_width=(size_t) StringToLong(value);
+                      draw_info->stroke_width=(double) StringToLong(value);
                       break;
                     }
                   if (LocaleCompare(keyword,"style") == 0)
@@ -5823,10 +5823,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (value[len-1] == '%') {
                     char  tmp[100];
                     (void) CopyMagickString(tmp,value,(size_t) len);
-                    opac = StringToLong( tmp );
-                    opac = (int)(QuantumRange * ((float)opac/100));
+                    opac = (Quantum) StringToLong( tmp );
+                    opac = (Quantum)(QuantumRange * ((float)opac/100));
                   } else
-                    opac = StringToLong( value );
+                    opac = (Quantum) StringToLong( value );
                   (void) SetImageAlpha( msl_info->image[n], (Quantum) opac,
                     exception);
                   break;

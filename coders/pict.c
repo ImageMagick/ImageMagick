@@ -904,10 +904,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   /*
     Skip header : 512 for standard PICT and 4, ie "PICT" for OLE2.
   */
-  header_ole[0]=ReadBlobByte(image);
-  header_ole[1]=ReadBlobByte(image);
-  header_ole[2]=ReadBlobByte(image);
-  header_ole[3]=ReadBlobByte(image);
+  header_ole[0]=(char) ReadBlobByte(image);
+  header_ole[1]=(char) ReadBlobByte(image);
+  header_ole[2]=(char) ReadBlobByte(image);
+  header_ole[3]=(char) ReadBlobByte(image);
   if (!((header_ole[0] == 0x50) && (header_ole[1] == 0x49) &&
       (header_ole[2] == 0x43) && (header_ole[3] == 0x54 )))
     for (i=0; i < 508; i++)
@@ -1288,11 +1288,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       *p,exception);
                     SetPixelIndex(tile_image,index,q);
                     SetPixelRed(tile_image,
-                      tile_image->colormap[(ssize_t) index].red,q);
+                      (Quantum) tile_image->colormap[(ssize_t) index].red,q);
                     SetPixelGreen(tile_image,
-                      tile_image->colormap[(ssize_t) index].green,q);
+                      (Quantum) tile_image->colormap[(ssize_t) index].green,q);
                     SetPixelBlue(tile_image,
-                      tile_image->colormap[(ssize_t) index].blue,q);
+                      (Quantum) tile_image->colormap[(ssize_t) index].blue,q);
                   }
                 else
                   {
@@ -1981,11 +1981,11 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
       {
         (void) WriteBlobMSBShort(image,(unsigned short) i);
         (void) WriteBlobMSBShort(image,ScaleQuantumToShort(
-          image->colormap[i].red));
+          (Quantum) image->colormap[i].red));
         (void) WriteBlobMSBShort(image,ScaleQuantumToShort(
-          image->colormap[i].green));
+          (Quantum) image->colormap[i].green));
         (void) WriteBlobMSBShort(image,ScaleQuantumToShort(
-          image->colormap[i].blue));
+          (Quantum) image->colormap[i].blue));
       }
     }
   /*

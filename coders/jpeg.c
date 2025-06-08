@@ -2192,7 +2192,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
         marker=JPEG_APP0+StringToInteger(name+3);
         for (i=0; i < (ssize_t) length; i+=65533L)
            jpeg_write_marker(jpeg_info,marker,GetStringInfoDatum(profile)+i,
-             MagickMin((unsigned int) length-i,65533L));
+             MagickMin((unsigned int) (length-i),65533));
       }
     else if (LocaleCompare(name,"EXIF") == 0)
       {
@@ -2275,7 +2275,7 @@ static void WriteProfiles(j_compress_ptr jpeg_info,Image *image,
         length=GetStringInfoLength(xmp_profile);
         for (i=0; i < (ssize_t) length; i+=65533L)
           jpeg_write_marker(jpeg_info,APP_MARKER+1,GetStringInfoDatum(
-            xmp_profile)+i,MagickMin((unsigned int) length-i,65533L));
+            xmp_profile)+i,MagickMin((unsigned int) (length-i),65533));
         xmp_profile=DestroyStringInfo(xmp_profile);
       }
     if (image->debug != MagickFalse)
@@ -2348,7 +2348,7 @@ static inline void JPEGSetSample(const struct jpeg_compress_struct *jpeg_info,
   const unsigned int scale,const Quantum pixel,JSAMPLE *q)
 {
   if (jpeg_info->data_precision > 8)
-    (*(unsigned short *) q)=(ScaleQuantumToShort(pixel)/scale);
+    (*(unsigned short *) q)=(unsigned short) (ScaleQuantumToShort(pixel)/scale);
   *q=(JSAMPLE) ScaleQuantumToChar(pixel);
 }
 

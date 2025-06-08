@@ -709,14 +709,14 @@ static MagickBooleanType WriteVIPSImage(const ImageInfo *image_info,
   }
   if (image->units == PixelsPerCentimeterResolution)
     {
-      (void) WriteBlobFloat(image,(image->resolution.x/10));
-      (void) WriteBlobFloat(image,(image->resolution.y/10));
+      (void) WriteBlobFloat(image,(float) (image->resolution.x/10));
+      (void) WriteBlobFloat(image,(float) (image->resolution.y/10));
     }
   else
     if (image->units == PixelsPerInchResolution)
       {
-        (void) WriteBlobFloat(image,(image->resolution.x/25.4));
-        (void) WriteBlobFloat(image,(image->resolution.y/25.4));
+        (void) WriteBlobFloat(image,(float) (image->resolution.x/25.4));
+        (void) WriteBlobFloat(image,(float) (image->resolution.y/25.4));
       }
     else
       {

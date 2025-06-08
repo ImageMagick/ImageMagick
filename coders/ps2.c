@@ -1002,9 +1002,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
           for (i=0; i < (ssize_t) image->colors; i++)
           {
             (void) FormatLocaleString(buffer,MagickPathExtent,"%02X%02X%02X\n",
-              ScaleQuantumToChar(image->colormap[i].red),
-              ScaleQuantumToChar(image->colormap[i].green),
-              ScaleQuantumToChar(image->colormap[i].blue));
+              ScaleQuantumToChar((Quantum) image->colormap[i].red),
+              ScaleQuantumToChar((Quantum) image->colormap[i].green),
+              ScaleQuantumToChar((Quantum) image->colormap[i].blue));
             (void) WriteBlobString(image,buffer);
           }
           switch (compression)

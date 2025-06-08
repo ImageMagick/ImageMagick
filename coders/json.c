@@ -967,6 +967,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
 
   double
     elapsed_time,
+    scale,
     user_time,
     version;
 
@@ -978,8 +979,7 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
 
   size_t
     depth,
-    distance,
-    scale;
+    distance;
 
   ssize_t
     i,
@@ -1157,7 +1157,6 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   channel_moments=(ChannelMoments *) NULL;
   channel_phash=(ChannelPerceptualHash *) NULL;
   channel_features=(ChannelFeatures *) NULL;
-  scale=1;
   channel_statistics=GetImageStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
     return(MagickFalse);
@@ -1221,8 +1220,8 @@ static MagickBooleanType EncodeImageAttributes(Image *image,FILE *file,
   (void) FormatLocaleFile(file,"    },\n");
   scale=1;
   if (image->depth <= MAGICKCORE_QUANTUM_DEPTH)
-    scale=QuantumRange/((size_t) QuantumRange >> ((size_t)
-      MAGICKCORE_QUANTUM_DEPTH-image->depth));
+    scale=(double) (QuantumRange/((size_t) QuantumRange >> ((size_t)
+      MAGICKCORE_QUANTUM_DEPTH-image->depth)));
   if (channel_statistics != (ChannelStatistics *) NULL)
     {
       (void) FormatLocaleFile(file,"    \"pixels\": %.20g,\n",

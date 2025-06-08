@@ -213,7 +213,7 @@ static Image *ReadFLIFImage(const ImageInfo *image_info,
     image->dispose=BackgroundDispose;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      flif_image_read_row_RGBA16(flifimage,y,pixels,length);
+      flif_image_read_row_RGBA16(flifimage,(uint32_t) y,pixels,length);
       p=pixels;
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (Quantum *) NULL)
@@ -489,7 +489,7 @@ static MagickBooleanType WriteFLIFImage(const ImageInfo *image_info,
               *qs++=0xFFFF;
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
-          flif_image_write_row_RGBA16(flifimage,y,pixels,length);
+          flif_image_write_row_RGBA16(flifimage,(uint32_t) y,pixels,length);
         }
       else
         {
@@ -505,11 +505,11 @@ static MagickBooleanType WriteFLIFImage(const ImageInfo *image_info,
               *qc++=0xFF;
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
-          flif_image_write_row_RGBA8(flifimage,y,pixels,length);
+          flif_image_write_row_RGBA8(flifimage,(uint32_t) y,pixels,length);
         }
     }
-    flif_image_set_frame_delay(flifimage,(uint32_t) image->delay*100/
-      image->ticks_per_second);
+    flif_image_set_frame_delay(flifimage,(uint32_t) (image->delay*100/
+      image->ticks_per_second));
     flif_encoder_add_image(flifenc,flifimage);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;

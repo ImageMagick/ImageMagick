@@ -259,7 +259,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           do
           {
             if ((size_t) (p-keyword) < (MagickPathExtent-1))
-              *p++=c;
+              *p++=(char) c;
             c=ReadBlobByte(image);
           } while (isalnum((int) ((unsigned char) c)) || (c == '_'));
           *p='\0';
@@ -278,7 +278,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
           while ((c != '\n') && (c != '\0') && (c != EOF))
           {
             if ((size_t) (p-value) < (MagickPathExtent-1))
-              *p++=c;
+              *p++=(char) c;
             c=ReadBlobByte(image);
           }
           *p='\0';

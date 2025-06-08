@@ -1397,14 +1397,14 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].blue));
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].green));
             *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red));
-            *q++=(Quantum) 0x0;
+            *q++=(unsigned char) 0x0;
           }
           for ( ; i < (ssize_t) 1L << dib_info.bits_per_pixel; i++)
           {
-            *q++=(Quantum) 0x0;
-            *q++=(Quantum) 0x0;
-            *q++=(Quantum) 0x0;
-            *q++=(Quantum) 0x0;
+            *q++=(unsigned char) 0x0;
+            *q++=(unsigned char) 0x0;
+            *q++=(unsigned char) 0x0;
+            *q++=(unsigned char) 0x0;
           }
           (void) WriteBlob(image,(size_t) (4*(1 << dib_info.bits_per_pixel)),
             dib_colormap);

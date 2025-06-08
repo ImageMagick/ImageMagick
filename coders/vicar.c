@@ -236,7 +236,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
         do
         {
           if ((size_t) (p-keyword) < (MagickPathExtent-1))
-            *p++=c;
+            *p++=(char) c;
           c=ReadBlobByte(image);
           if (c == EOF)
             break;
@@ -265,7 +265,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
             while (c != '\'')
             {
               if ((size_t) (p-value) < (MagickPathExtent-1))
-                *p++=c;
+                *p++=(char) c;
               c=ReadBlobByte(image);
               if (c == EOF)
                 break;
@@ -280,7 +280,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
             while (c != '"')
             {
               if ((size_t) (p-value) < (MagickPathExtent-1))
-                *p++=c;
+                *p++=(char) c;
               c=ReadBlobByte(image);
               if (c == EOF)
                 break;
@@ -295,7 +295,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
             while (c != ')')
             {
               if ((size_t) (p-value) < (MagickPathExtent-1))
-                *p++=c;
+                *p++=(char) c;
               c=ReadBlobByte(image);
               if (c == EOF)
                 break;
@@ -308,7 +308,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
             while (isalnum((int) ((unsigned char) c)))
             {
               if ((size_t) (p-value) < (MagickPathExtent-1))
-                *p++=c;
+                *p++=(char) c;
               c=ReadBlobByte(image);
               if (c == EOF)
                 break;

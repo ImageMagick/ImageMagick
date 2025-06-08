@@ -515,8 +515,8 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
       b=QuantumScale*(double) GetPixelb(image,q)+0.5;
       if (b > 1.0)
         b-=1.0;
-      SetPixela(image,(double) QuantumRange*a,q);
-      SetPixelb(image,(double) QuantumRange*b,q);
+      SetPixela(image,(Quantum) (QuantumRange*a),q);
+      SetPixelb(image,(Quantum) (QuantumRange*b),q);
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1760,8 +1760,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     scanline_size=TIFFScanlineSize(tiff);
     if (scanline_size <= 0)
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
-    number_pixels=MagickMax((MagickSizeType) image->columns*samples_per_pixel*
-      pow(2.0,ceil(log(bits_per_sample)/log(2.0))),image->columns*
+    number_pixels=MagickMax((MagickSizeType) (image->columns*samples_per_pixel*
+      pow(2.0,ceil(log(bits_per_sample)/log(2.0)))),image->columns*
       rows_per_strip);
     if ((double) scanline_size > 1.5*number_pixels)
       ThrowTIFFException(CorruptImageError,"CorruptImage");
@@ -1954,8 +1954,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 break;
               if (rows_remaining == 0)
                 {
-                  size=TIFFReadEncodedStrip(tiff,strip_id,strip_pixels,
-                    strip_size);
+                  size=TIFFReadEncodedStrip(tiff,(uint32_t) strip_id,
+                    strip_pixels,strip_size);
                   if (size == -1)
                     break;
                   rows_remaining=rows_per_strip;
@@ -2064,8 +2064,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 columns_remaining=image->columns-(size_t) x;
                 if ((x+(ssize_t) columns) < (ssize_t) image->columns)
                   columns_remaining=columns;
-                size=TIFFReadTile(tiff,tile_pixels,(uint32) x,(uint32) y,
-                  0,i);
+                size=TIFFReadTile(tiff,tile_pixels,(uint32_t) x,(uint32_t) y,
+                  0,(uint16_t)i);
                 if (size == -1)
                   break;
                 p=tile_pixels;
@@ -2948,8 +2948,8 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
       b=QuantumScale*(double) GetPixelb(image,q)-0.5;
       if (b < 0.0)
         b+=1.0;
-      SetPixela(image,(double) QuantumRange*a,q);
-      SetPixelb(image,(double) QuantumRange*b,q);
+      SetPixela(image,(Quantum) (QuantumRange*a),q);
+      SetPixelb(image,(Quantum) (QuantumRange*b),q);
       q+=(ptrdiff_t) GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -3033,7 +3033,7 @@ static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,
   return(MagickTrue);
 }
 
-static tmsize_t TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
+static int TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
   tsample_t sample,Image *image)
 {
   tmsize_t
@@ -3107,7 +3107,7 @@ static tmsize_t TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
     if (status < 0)
       break;
   }
-  return(status);
+  return((int) status);
 }
 
 static ssize_t TIFFWriteCustomStream(unsigned char *data,const size_t count,
@@ -4256,9 +4256,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         (void) memset(blue,0,65536*sizeof(*blue));
         for (i=0; i < (ssize_t) image->colors; i++)
         {
-          red[i]=ScaleQuantumToShort(image->colormap[i].red);
-          green[i]=ScaleQuantumToShort(image->colormap[i].green);
-          blue[i]=ScaleQuantumToShort(image->colormap[i].blue);
+          red[i]=ScaleQuantumToShort((Quantum) image->colormap[i].red);
+          green[i]=ScaleQuantumToShort((Quantum) image->colormap[i].green);
+          blue[i]=ScaleQuantumToShort((Quantum) image->colormap[i].blue);
         }
         (void) TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
         red=(uint16 *) RelinquishMagickMemory(red);
