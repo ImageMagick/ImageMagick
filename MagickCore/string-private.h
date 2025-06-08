@@ -67,6 +67,12 @@ static inline double StringToDouble(const char *magick_restrict string,
   return(InterpretLocaleValue(string,sentinel));
 }
 
+static inline float StringToFloat(const char *magick_restrict string,
+  char *magick_restrict *sentinel)
+{
+  return((float) InterpretLocaleValue(string,sentinel));
+}
+
 static inline const char *StringLocateSubstring(const char *haystack,
   const char *needle)
 {
