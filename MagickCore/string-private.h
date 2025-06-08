@@ -34,10 +34,14 @@ static inline int MagickSscanf(const char* buffer,const char* format, ...)
   va_list
     args;
   va_start(args,format);
+#if _MSC_VER
   #pragma warning(push)
   #pragma warning(disable:4996)
+#endif
   ret=vsscanf(buffer,format,args);
+#if _MSC_VER
   #pragma warning(pop)
+#endif
   va_end(args);
   return(ret);
 }
