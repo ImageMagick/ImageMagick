@@ -24,8 +24,6 @@
 extern "C" {
 #endif
 
-#define MagickPSNRDistortion  (10.0*log10(1.0/MagickEpsilon))
-
 typedef enum
 {
   UndefinedErrorMetric,

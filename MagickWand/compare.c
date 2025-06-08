@@ -1251,7 +1251,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
         columns,
         rows;
 
-      SetImageDistortionBounds(image,reconstruct_image,&columns,&rows);
+      SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
       scale=(double) columns*rows;
       break;
     }
@@ -1304,7 +1304,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
     }
     case PeakSignalToNoiseRatioErrorMetric:
     {
-      scale=MagickPSNRDistortion;
+      scale=MagickSafePSNRRecipicol(10.0);
       break;
     }
     default:
