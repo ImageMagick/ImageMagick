@@ -18,7 +18,7 @@
 #include <iostream>
 using namespace std;
 
-extern class EncoderFormat
+class EncoderFormat
 {
 public:
   const string get()

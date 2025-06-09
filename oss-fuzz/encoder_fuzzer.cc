@@ -34,8 +34,10 @@
 #endif
 #define FUZZ_ENCODER_INITIALIZER FUZZ_ENCODER_STRING_LITERAL_X(FUZZ_IMAGEMAGICK_INITIALIZER)
 
-static ssize_t EncoderInitializer(const uint8_t *Data,const size_t Size,Magick::Image &image)
+static ssize_t EncoderInitializer(const uint8_t *Data,const size_t magick_unused(Size),Magick::Image &image)
 {
+  magick_unreferenced(Size);
+
   if (strcmp(FUZZ_ENCODER_INITIALIZER,"interlace") == 0)
     {
       Magick::InterlaceType
