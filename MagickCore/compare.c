@@ -2753,7 +2753,7 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
   q=GetCacheViewVirtualPixels(image_view,maxima_info.x,maxima_info.y,1,1,
     exception);
   if (q != (const Quantum *) NULL)
-    maxima_info.maxima=(double) q[0];
+    maxima_info.maxima=IsNaN((double) q[0]) != 0 ? 0.0 : (double) q[0];
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(maxima_info,status) \
     magick_number_threads(image,image,image->rows,1)
@@ -2785,11 +2785,17 @@ static MagickBooleanType SIMMaximaImage(const Image *image,double *maxima,
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        double
+          pixel;
+
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if ((double) p[i] > channel_maxima.maxima)
+        pixel=(double) p[i];
+        if (IsNaN(pixel) != 0)
+          pixel=0.0;
+        if (pixel > channel_maxima.maxima)
           {
             channel_maxima.maxima=(double) p[i];
             channel_maxima.x=x;
@@ -2846,7 +2852,7 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
   q=GetCacheViewVirtualPixels(image_view,minima_info.x,minima_info.y,1,1,
     exception);
   if (q != (const Quantum *) NULL)
-    minima_info.minima=(double) q[0];
+    minima_info.minima=IsNaN((double) q[0]) != 0 ? 0.0 : (double) q[0];
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(minima_info,status) \
     magick_number_threads(image,image,image->rows,1)
@@ -2878,13 +2884,19 @@ static MagickBooleanType SIMMinimaImage(const Image *image,double *minima,
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        double
+          pixel;
+
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if ((double) p[i] < channel_minima.minima)
+        pixel=(double) p[i];
+        if (IsNaN(pixel) != 0)
+          pixel=0.0;
+        if (pixel < channel_minima.minima)
           {
-            channel_minima.minima=(double) p[i];
+            channel_minima.minima=pixel;
             channel_minima.x=x;
             channel_minima.y=y;
           }
