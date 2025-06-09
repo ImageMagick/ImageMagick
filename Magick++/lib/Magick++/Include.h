@@ -51,7 +51,7 @@ namespace MagickCore
 // Provide appropriate DLL imports/exports for Visual C++,
 // Borland C++Builder and MinGW builds.
 //
-#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+#if (defined(WIN32) || defined(_WIN32_WINNT)) && !defined(__CYGWIN__) && !defined(__MINGW32__)
 #  define MagickCplusPlusDLLSupported
 #endif
 #if defined(MagickCplusPlusDLLSupported)
