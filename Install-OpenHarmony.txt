@@ -1,0 +1,3 @@
+Instructions on how to build ImageMagick on OpenHarmony can be found here:
+https://gitcode.com/openharmony-sig/tpc_c_cplusplus/blob/master/Cross_
+Compilation_Guide_for_Open_Source_Third_Party_Libraries_in_OpenHarmony_en.md
