@@ -297,10 +297,6 @@ namespace MagickCore
 #  endif
 #endif
 
-#if (defined(WIN32) || defined(WIN64)) && defined(_VISUALC_)
-#  pragma warning(disable : 4996) /* function deprecation warnings */
-#endif
-
 //
 // Import ImageMagick symbols and types which are used as part of the
 // Magick++ API definition into namespace "Magick".
