@@ -2543,7 +2543,8 @@ static Image *SIMDivideByMagnitude(Image *image,Image *magnitude_image,
   divide_image=SIMDivideImage(image,magnitude_image,exception);
   if (divide_image == (Image *) NULL)
     return((Image *) NULL);
-  GetPixelInfoRGBA(0,0,0,0,&divide_image->background_color);
+  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
+    &divide_image->background_color);
   SetGeometry(source_image,&geometry);
   geometry.width=MagickMax(source_image->columns,divide_image->columns);
   geometry.height=MagickMax(source_image->rows,divide_image->rows);
@@ -3331,7 +3332,8 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   test_image=CloneImage(image,0,0,MagickTrue,exception);
   if (test_image == (Image *) NULL)
     return((Image *) NULL);
-  GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
+  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
+    &test_image->background_color);
   (void) ResetImagePage(test_image,"0x0+0+0");
   status=SetImageExtent(test_image,extent,extent,exception);
   if (status == MagickFalse)
@@ -3343,7 +3345,8 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   reconstruct_image=CloneImage(reconstruct,0,0,MagickTrue,exception);
   if (reconstruct_image == (Image *) NULL)
     ThrowDPCSimilarityException();
-  GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
+  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
+    &reconstruct_image->background_color);
   (void) ResetImagePage(reconstruct_image,"0x0+0+0");
   status=SetImageExtent(reconstruct_image,extent,extent,exception);
   if (status == MagickFalse)
@@ -3542,7 +3545,8 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   test_image=SIMSquareImage(image,exception);
   if (test_image == (Image *) NULL)
     ThrowMSESimilarityException();
-  GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
+  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
+    &test_image->background_color);
   (void) ResetImagePage(test_image,"0x0+0+0");
   status=SetImageExtent(test_image,extent,extent,exception);
   if (status == MagickFalse)
@@ -3550,7 +3554,8 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   reconstruct_image=SIMUnityImage(image,reconstruct,exception);
   if (reconstruct_image == (Image *) NULL)
     ThrowMSESimilarityException();
-  GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
+  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
+    &reconstruct_image->background_color);
   (void) ResetImagePage(reconstruct_image,"0x0+0+0");
   status=SetImageExtent(reconstruct_image,extent,extent,exception);
   if (status == MagickFalse)
@@ -3588,7 +3593,8 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   channel_statistics=GetImageStatistics(sum_image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
     ThrowMSESimilarityException();
-  GetPixelInfoRGBA(0,0,0,0,&sum_image->background_color);
+  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
+    &sum_image->background_color);
   status=SetImageExtent(sum_image,extent,extent,exception);
   if (status == MagickFalse)
     ThrowMSESimilarityException();
@@ -3854,7 +3860,8 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   test_image=CloneImage(image,0,0,MagickTrue,exception);
   if (test_image == (Image *) NULL)
     ThrowPhaseSimilarityException();
-  GetPixelInfoRGBA(0,0,0,0,&test_image->background_color);
+  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
+    &test_image->background_color);
   (void) ResetImagePage(test_image,"0x0+0+0");
   status=SetImageExtent(test_image,extent,extent,exception);
   if (status == MagickFalse)
@@ -3866,7 +3873,8 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   reconstruct_image=CloneImage(reconstruct,0,0,MagickTrue,exception);
   if (reconstruct_image == (Image *) NULL)
     ThrowPhaseSimilarityException();
-  GetPixelInfoRGBA(0,0,0,0,&reconstruct_image->background_color);
+  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
+    &reconstruct_image->background_color);
   (void) ResetImagePage(reconstruct_image,"0x0+0+0");
   status=SetImageExtent(reconstruct_image,extent,extent,exception);
   if (status == MagickFalse)
@@ -4056,7 +4064,7 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
     progress = 0;
 
   SimilarityInfo
-    similarity_info = { 0 };
+    similarity_info = { 0.0, 0, 0 };
 
   ssize_t
     y;
