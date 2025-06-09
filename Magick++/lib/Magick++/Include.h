@@ -70,9 +70,8 @@ namespace MagickCore
 //
 #    if defined(_VISUALC_)
 #      define MagickDLLExplicitTemplate
-#      pragma warning( disable: 4275 )
-#      pragma warning( disable: 4273 )  /* Disable the stupid dll linkage warnings */
-#      pragma warning( disable: 4251 )
+#      pragma warning(disable: 4275) /* non - DLL-interface class 'class_1' used as base for DLL-interface class 'class_2' */
+#      pragma warning(disable: 4251) /* 'type': 'type1' needs to have dll-interface to be used by clients of 'type2' */
 #    endif
 #    if !defined(MAGICKCORE_IMPLEMENTATION)
 #      if defined(__GNUC__)
