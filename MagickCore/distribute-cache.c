@@ -465,7 +465,7 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 */
 
 #if !defined(MAGICKCORE_HAVE_DISTRIBUTE_CACHE)
-static inline MagickOffsetType dpc_send(SOCKET magick_unused(file),
+static inline MagickOffsetType dpc_send(SOCKET_TYPE magick_unused(file),
   const MagickSizeType magick_unused(length),
   const void *magick_restrict magick_unused(message))
 {
