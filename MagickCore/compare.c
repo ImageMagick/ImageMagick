@@ -3394,33 +3394,18 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo
     geometry;
 
-  size_t
-    extent = MagickMax(image->columns,image->rows);
-
   /*
     Dot product correlation-based image similarity using FFT local statistics.
   */
   test_image=CloneImage(image,0,0,MagickTrue,exception);
   if (test_image == (Image *) NULL)
     return((Image *) NULL);
-  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
-    &test_image->background_color);
-  (void) ResetImagePage(test_image,"0x0+0+0");
-  status=SetImageExtent(test_image,extent,extent,exception);
-  if (status == MagickFalse)
-    ThrowDPCSimilarityException();
   (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
   /*
     Compute the cross correlation of the test and reconstruct magnitudes.
   */
   reconstruct_image=CloneImage(reconstruct,0,0,MagickTrue,exception);
   if (reconstruct_image == (Image *) NULL)
-    ThrowDPCSimilarityException();
-  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
-    &reconstruct_image->background_color);
-  (void) ResetImagePage(reconstruct_image,"0x0+0+0");
-  status=SetImageExtent(reconstruct_image,extent,extent,exception);
-  if (status == MagickFalse)
     ThrowDPCSimilarityException();
   (void) SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
   /*
@@ -3610,29 +3595,14 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo
     geometry;
 
-  size_t
-    extent = MagickMax(image->columns,image->rows);
-
   /*
     MSE correlation-based image similarity using FFT local statistics.
   */
   test_image=SIMSquareImage(image,exception);
   if (test_image == (Image *) NULL)
     ThrowMSESimilarityException();
-  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
-    &test_image->background_color);
-  (void) ResetImagePage(test_image,"0x0+0+0");
-  status=SetImageExtent(test_image,extent,extent,exception);
-  if (status == MagickFalse)
-    ThrowMSESimilarityException();
   reconstruct_image=SIMUnityImage(image,reconstruct,exception);
   if (reconstruct_image == (Image *) NULL)
-    ThrowMSESimilarityException();
-  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
-    &reconstruct_image->background_color);
-  (void) ResetImagePage(reconstruct_image,"0x0+0+0");
-  status=SetImageExtent(reconstruct_image,extent,extent,exception);
-  if (status == MagickFalse)
     ThrowMSESimilarityException();
   /*
     Create (U * test)/# pixels.
@@ -3666,11 +3636,6 @@ static Image *MSESimilarityImage(const Image *image,const Image *reconstruct,
     ThrowMSESimilarityException();
   channel_statistics=GetImageStatistics(sum_image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
-    ThrowMSESimilarityException();
-  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
-    &sum_image->background_color);
-  status=SetImageExtent(sum_image,extent,extent,exception);
-  if (status == MagickFalse)
     ThrowMSESimilarityException();
   status=SetImageStorageClass(sum_image,DirectClass,exception);
   if (status == MagickFalse)
@@ -3925,20 +3890,11 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   RectangleInfo
     geometry;
 
-  size_t
-    extent = MagickMax(image->columns,image->rows);
-
   /*
     Phase correlation-based image similarity using FFT local statistics.
   */
   test_image=CloneImage(image,0,0,MagickTrue,exception);
   if (test_image == (Image *) NULL)
-    ThrowPhaseSimilarityException();
-  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
-    &test_image->background_color);
-  (void) ResetImagePage(test_image,"0x0+0+0");
-  status=SetImageExtent(test_image,extent,extent,exception);
-  if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   (void) SetImageAlphaChannel(test_image,OffAlphaChannel,exception);
   /*
@@ -3946,12 +3902,6 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   */
   reconstruct_image=CloneImage(reconstruct,0,0,MagickTrue,exception);
   if (reconstruct_image == (Image *) NULL)
-    ThrowPhaseSimilarityException();
-  GetPixelInfoRGBA((Quantum) 0,(Quantum) 0,(Quantum) 0,(Quantum) 0,
-    &reconstruct_image->background_color);
-  (void) ResetImagePage(reconstruct_image,"0x0+0+0");
-  status=SetImageExtent(reconstruct_image,extent,extent,exception);
-  if (status == MagickFalse)
     ThrowPhaseSimilarityException();
   (void) SetImageAlphaChannel(reconstruct_image,OffAlphaChannel,exception);
   /*
