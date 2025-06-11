@@ -1463,7 +1463,7 @@ MagickExport ChannelMoments *GetImageMoments(const Image *image,
     M30[2*MaxPixelChannels+1] = { 0.0 };
 
   PointInfo
-    centroid[2*MaxPixelChannels+1] = { 0.0 };
+    centroid[2*MaxPixelChannels+1] = { 0 };
 
   ssize_t
     c,
