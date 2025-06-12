@@ -36,8 +36,15 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
 
     image.ping(blob);
   }
+#if defined(BUILD_MAIN)
   catch (Magick::Exception &e)
   {
+    std::cout << "Exception when reading: " << e.what() << std::endl;
   }
+#else
+  catch (Magick::Exception)
+  {
+  }
+#endif
   return(0);
 }

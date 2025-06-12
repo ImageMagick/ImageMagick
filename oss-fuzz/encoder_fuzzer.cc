@@ -85,13 +85,18 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 
     image.read(blob);
   }
+#if defined(BUILD_MAIN)
   catch (Magick::Exception &e)
   {
-#if defined(BUILD_MAIN)
     std::cout << "Exception when reading: " << e.what() << std::endl;
-#endif
     return(0);
   }
+#else
+  catch (Magick::Exception)
+  {
+    return(0);
+  }
+#endif
 
 #if FUZZ_IMAGEMAGICK_ENCODER_WRITE || defined(BUILD_MAIN)
   try
@@ -101,12 +106,16 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data,size_t Size)
 
     image.write(&outBlob,encoder);
   }
+#if defined(BUILD_MAIN)
   catch (Magick::Exception &e)
   {
-#if defined(BUILD_MAIN)
     std::cout << "Exception when writing: " << e.what() << std::endl;
-#endif
   }
+#else
+  catch (Magick::Exception)
+  {
+  }
+#endif
 #endif
   return(0);
 }
