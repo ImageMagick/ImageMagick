@@ -1046,9 +1046,8 @@ static MagickBooleanType GetMSESimilarity(const Image *image,
   return(status);
 }
 
-static MagickBooleanType GetNCCSimilarity(
-  const Image *image,const Image *reconstruct_image,double *similarity,
-  ExceptionInfo *exception)
+static MagickBooleanType GetNCCSimilarity(const Image *image,
+  const Image *reconstruct_image,double *similarity,ExceptionInfo *exception)
 {
 #define SimilarityImageTag  "Similarity/Image"
 
