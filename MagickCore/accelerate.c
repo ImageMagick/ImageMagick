@@ -444,13 +444,11 @@ static Image *ComputeBlurImage(const Image* image,MagickCLEnv clEnv,
   MagickCLDevice
     device;
 
-  MagickSizeType
-    length;
-
   size_t
     chunkSize=256,
     gsize[2],
     i,
+    length,
     lsize[2];
 
   queue=NULL;
@@ -810,14 +808,12 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   MagickCLDevice
     device;
 
-  MagickSizeType
-    length;
-
   PixelPacket
     *stretch_map;
 
   size_t
-    global_work_size[2];
+    global_work_size[2],
+    length;
 
   void
     *hostPtr,
@@ -1067,10 +1063,10 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
   {
     if ((image->channel_mask & RedChannel) != 0)
     {
-      if (i < (ssize_t) black.x)
+      if (i < (cl_uint) black.x)
         stretch_map[i].red=0;
       else
-        if (i > (ssize_t) white.x)
+        if (i > (cl_uint) white.x)
           stretch_map[i].red=(unsigned int) QuantumRange;
         else
           if (black.x != white.x)
@@ -1079,10 +1075,10 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
     }
     if ((image->channel_mask & GreenChannel) != 0)
     {
-      if (i < (ssize_t) black.y)
+      if (i < (cl_uint) black.y)
         stretch_map[i].green=0;
       else
-        if (i > (ssize_t) white.y)
+        if (i > (cl_uint) white.y)
           stretch_map[i].green=(unsigned int) QuantumRange;
         else
           if (black.y != white.y)
@@ -1091,10 +1087,10 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
     }
     if ((image->channel_mask & BlueChannel) != 0)
     {
-      if (i < (ssize_t) black.z)
+      if (i < (cl_uint) black.z)
         stretch_map[i].blue=0;
       else
-        if (i > (ssize_t) white.z)
+        if (i > (cl_uint) white.z)
           stretch_map[i].blue=(unsigned int) QuantumRange;
         else
           if (black.z != white.z)
@@ -1103,10 +1099,10 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
     }
     if ((image->channel_mask & AlphaChannel) != 0)
     {
-      if (i < (ssize_t) black.w)
+      if (i < (cl_uint) black.w)
         stretch_map[i].alpha=0;
       else
-        if (i > (ssize_t) white.w)
+        if (i > (cl_uint) white.w)
           stretch_map[i].alpha=(unsigned int) QuantumRange;
         else
           if (black.w != white.w)
@@ -1126,7 +1122,7 @@ static MagickBooleanType ComputeContrastStretchImage(Image *image,
     /*
        Stretch colormap.
        */
-    for (i=0; i < (ssize_t) image->colors; i++)
+    for (i=0; i < (cl_uint) image->colors; i++)
     {
       if ((image->channel_mask & RedChannel) != 0)
       {
@@ -1375,11 +1371,9 @@ static Image *ComputeDespeckleImage(const Image *image,MagickCLEnv clEnv,
   MagickCLDevice
     device;
 
-  MagickSizeType
-    length;
-
   size_t
-    global_work_size[2];
+    global_work_size[2],
+    length;
 
   unsigned int
     imageHeight,
@@ -1781,14 +1775,12 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
   MagickCLDevice
     device;
 
-  MagickSizeType
-    length;
-
   PixelPacket
     *equalize_map;
 
   size_t
-    global_work_size[2];
+    global_work_size[2],
+    length;
 
   void
     *hostPtr,
@@ -1985,7 +1977,7 @@ static MagickBooleanType ComputeEqualizeImage(Image *image,MagickCLEnv clEnv,
     /*
        Equalize colormap.
        */
-    for (i=0; i < (ssize_t) image->colors; i++)
+    for (i=0; i < (cl_uint) image->colors; i++)
     {
       if ((image->channel_mask & SyncChannels) != 0)
       {
@@ -2530,7 +2522,7 @@ static Image *ComputeLocalContrastImage(const Image *image,MagickCLEnv clEnv,
   MagickCLDevice
     device;
 
-  MagickSizeType
+  size_t
     length;
 
   void
@@ -2885,7 +2877,7 @@ static MagickBooleanType ComputeModulateImage(Image *image,MagickCLEnv clEnv,
   MagickCLDevice
     device;
 
-  MagickSizeType
+  size_t
     length;
 
   void
@@ -3116,11 +3108,9 @@ static Image* ComputeMotionBlurImage(const Image *image,MagickCLEnv clEnv,
   PixelInfo
     bias;
 
-  MagickSizeType
-    length;
-
   size_t
     global_work_size[2],
+    length,
     local_work_size[2];
 
   unsigned int
@@ -3842,14 +3832,12 @@ static Image *ComputeResizeImage(const Image* image,MagickCLEnv clEnv,
   MagickCLDevice
     device;
 
-  MagickSizeType
-    length;
-
   Image
     *filteredImage;
 
   size_t
-    i;
+    i,
+    length;
 
   queue=NULL;
   filteredImage=NULL;
@@ -4278,12 +4266,10 @@ static Image *ComputeUnsharpMaskImage(const Image *image,MagickCLEnv clEnv,
   MagickCLDevice
     device;
 
-  MagickSizeType
-    length;
-
   size_t
     gsize[2],
     i,
+    length,
     lsize[2];
 
   queue=NULL;
