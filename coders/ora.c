@@ -199,7 +199,7 @@ static Image *ReadORAImage(const ImageInfo *image_info,
     else if (read_bytes == 0)
       {
         /* Write up to offset of image_data_buffer to temp file */
-        if (!fwrite(image_data_buffer,1,offset,file))
+        if (!fwrite(image_data_buffer,1,(size_t) offset,file))
           status=MagickFalse;
         break;
       }

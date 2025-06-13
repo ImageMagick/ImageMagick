@@ -730,7 +730,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
                 exception);
               if (exif_profile != (StringInfo *) NULL)
                 jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
-                  GetStringInfoDatum(exif_profile),size);
+                  GetStringInfoDatum(exif_profile),(size_t) size);
             }
           }
         if (LocaleNCompare(type,"xml ",sizeof(type)) == 0)
@@ -744,7 +744,7 @@ static Image *ReadJXLImage(const ImageInfo *image_info,
                   exception);
                 if (xmp_profile != (StringInfo *) NULL)
                   jxl_status=JxlDecoderSetBoxBuffer(jxl_info,
-                    GetStringInfoDatum(xmp_profile),size);
+                    GetStringInfoDatum(xmp_profile),(size_t) size);
               }
           }
         if (jxl_status == JXL_DEC_SUCCESS)

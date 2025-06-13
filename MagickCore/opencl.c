@@ -1515,7 +1515,8 @@ MagickPrivate MagickCLCacheInfo CopyMagickCLCacheInfo(MagickCLCacheInfo info)
     {
       queue=AcquireOpenCLCommandQueue(info->device);
       pixels=(Quantum *) openCL_library->clEnqueueMapBuffer(queue,info->buffer,
-        CL_TRUE,CL_MAP_READ | CL_MAP_WRITE,0,info->length,event_count,events,
+        CL_TRUE,CL_MAP_READ | CL_MAP_WRITE,0,(size_t) info->length,event_count,
+        events,
         (cl_event *) NULL,(cl_int *) NULL);
       assert(pixels == info->pixels);
       ReleaseOpenCLCommandQueue(info->device,queue);

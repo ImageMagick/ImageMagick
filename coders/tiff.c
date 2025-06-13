@@ -1766,11 +1766,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if ((double) scanline_size > 1.5*number_pixels)
       ThrowTIFFException(CorruptImageError,"CorruptImage");
     number_pixels=MagickMax((MagickSizeType) scanline_size,number_pixels);
-    pixel_info=AcquireVirtualMemory(number_pixels,sizeof(uint32));
+    pixel_info=AcquireVirtualMemory((size_t) number_pixels,sizeof(uint32));
     if (pixel_info == (MemoryInfo *) NULL)
       ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
     pixels=(unsigned char *) GetVirtualMemoryBlob(pixel_info);
-    (void) memset(pixels,0,number_pixels*sizeof(uint32));
+    (void) memset(pixels,0,(size_t) number_pixels*sizeof(uint32));
     quantum_type=GrayQuantum;
     if (image->storage_class == PseudoClass)
       quantum_type=IndexQuantum;
@@ -2117,7 +2117,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if (HeapOverflowSanityCheck(image->rows,sizeof(*pixels)) != MagickFalse)
             ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           number_pixels=(MagickSizeType) image->columns*image->rows;
-          generic_info=AcquireVirtualMemory(number_pixels,sizeof(uint32));
+          generic_info=AcquireVirtualMemory((size_t) number_pixels,sizeof(uint32));
           if (generic_info == (MemoryInfo *) NULL)
             ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           p=(uint32 *) GetVirtualMemoryBlob(generic_info);

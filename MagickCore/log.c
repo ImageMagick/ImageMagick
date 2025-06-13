@@ -122,8 +122,7 @@ struct _LogInfo
     *format;
 
   size_t
-    generations,
-    limit;
+    generations;
 
   FILE
     *file;
@@ -131,6 +130,9 @@ struct _LogInfo
   MagickBooleanType
     append,
     stealth;
+
+  MagickSizeType
+    limit;
 
   TimerInfo
     timer;

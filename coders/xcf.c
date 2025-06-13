@@ -1212,7 +1212,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=doc_info.width;
   image->rows=doc_info.height;
   image_type=doc_info.image_type;
-  doc_info.file_size=GetBlobSize(image);
+  doc_info.file_size=(size_t) GetBlobSize(image);
   image->compression=NoCompression;
   image->depth=8;
   status=SetImageExtent(image,image->columns,image->rows,exception);

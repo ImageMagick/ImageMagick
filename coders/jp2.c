@@ -582,7 +582,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         index=comps_info[i].y_index/jp2_image->comps[i].dx+x/
           jp2_image->comps[i].dx;
         if ((index < 0) ||
-            (index >= (jp2_image->comps[i].h*jp2_image->comps[i].w)))
+            (index >= (ssize_t) (jp2_image->comps[i].h*jp2_image->comps[i].w)))
           {
             opj_destroy_codec(jp2_codec);
             opj_image_destroy(jp2_image);

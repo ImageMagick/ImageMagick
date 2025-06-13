@@ -1205,7 +1205,7 @@ RestoreMSCWarning
     (void) sample_size;
     image->columns = MATLAB_HDR.SizeX;
     image->rows = MATLAB_HDR.SizeY;
-    image->colors = GetQuantumRange(image->depth);
+    image->colors = (size_t) GetQuantumRange(image->depth);
     if (image->columns == 0 || image->rows == 0)
       goto MATLAB_KO;
     if((size_t)ldblk*MATLAB_HDR.SizeY > MATLAB_HDR.ObjectSize)

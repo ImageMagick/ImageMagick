@@ -3908,7 +3908,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               stream_info->offsets[i]=(ssize_t) ReadBlobLSBSignedLong(image);
             offset=TellBlob(image);
             for (i=0; i < (ssize_t) stream_info->offset_count; i++)
-              stream_info->offsets[i]+=offset;
+              stream_info->offsets[i]+=(ssize_t) offset;
           }
         /*
           Handle non-native image formats.
@@ -4079,7 +4079,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             offset=TellBlob(image);
             for (i=0; i < (ssize_t) stream_info->offset_count; i++)
-              stream_info->offsets[i]+=offset;
+              stream_info->offsets[i]+=(ssize_t) offset;
           }
       }
     for (scene=0; scene < (ssize_t) number_scenes; scene++)

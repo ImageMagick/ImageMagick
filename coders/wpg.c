@@ -675,7 +675,7 @@ static int UnpackWPG2Raster(Image *image,int bpp,ExceptionInfo *exception)
 
           if(bbuf & 0x80)     /* REP */
             {
-              for(i=0; i < SampleSize; i++)
+              for(i=0; i < (ssize_t) SampleSize; i++)
                 SampleBuffer[i]=(unsigned char) ReadBlobByte(image);
               for(i=0;i<=RunCount;i++)
                 for(bbuf=0;bbuf<SampleSize;bbuf++)
