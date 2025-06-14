@@ -1843,10 +1843,17 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     case DotProductCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        CompareMetricNotSupportedException,"(%s)",CommandOptionToMnemonic(
-        MagickMetricOptions,(ssize_t) metric));
-      status=MagickFalse;
+      double
+        similarity_metric;
+
+      RectangleInfo
+        offset = { 0 };
+
+      Image *similarity_image=SimilarityImage(image,reconstruct_image,metric,
+        DefaultSimilarityThreshold,&offset,&similarity_metric,exception);
+      if (similarity_image == (Image *) NULL)
+        status=MagickFalse;
+      channel_similarity[CompositePixelChannel]=similarity_metric;
       break;
     }
     case FuzzErrorMetric:
@@ -1921,7 +1928,9 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   *distortion=channel_similarity[CompositePixelChannel];
   switch (metric)
   {
+    case DotProductCorrelationErrorMetric:
     case NormalizedCrossCorrelationErrorMetric:
+    case PhaseCorrelationErrorMetric:
     case StructuralSimilarityErrorMetric:
     {
       *distortion=1.0-(*distortion);
@@ -1972,7 +1981,7 @@ MagickExport double *GetImageDistortions(Image *image,
 {
   double
     *distortion,
-    *similarity;
+    *channel_similarity;
 
   MagickBooleanType
     status = MagickTrue;
@@ -1993,93 +2002,115 @@ MagickExport double *GetImageDistortions(Image *image,
     Get image distortion.
   */
   length=MaxPixelChannels+1UL;
-  similarity=(double *) AcquireQuantumMemory(length,sizeof(*similarity));
-  if (similarity == (double *) NULL)
+  channel_similarity=(double *) AcquireQuantumMemory(length,
+    sizeof(*channel_similarity));
+  if (channel_similarity == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) memset(similarity,0,length*sizeof(*similarity));
+  (void) memset(channel_similarity,0,length*sizeof(*channel_similarity));
   switch (metric)
   {
     case AbsoluteErrorMetric:
     {
-      status=GetAESimilarity(image,reconstruct_image,similarity,exception);
+      status=GetAESimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case DotProductCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
     {
-      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        CompareMetricNotSupportedException,"(%s)",CommandOptionToMnemonic(
-        MagickMetricOptions,(ssize_t) metric));
-      status=MagickFalse;
+      double
+        similarity_metric;
+
+      RectangleInfo
+        offset = { 0 };
+
+      Image *channel_similarity_image=SimilarityImage(image,reconstruct_image,
+        metric,DefaultSimilarityThreshold,&offset,&similarity_metric,exception);
+      if (channel_similarity_image == (Image *) NULL)
+        status=MagickFalse;
+      channel_similarity[CompositePixelChannel]=similarity_metric;
       break;
     }
     case FuzzErrorMetric:
     {
-      status=GetFUZZSimilarity(image,reconstruct_image,similarity,exception);
+      status=GetFUZZSimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case MeanAbsoluteErrorMetric:
     {
-      status=GetMAESimilarity(image,reconstruct_image,similarity,exception);
+      status=GetMAESimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case MeanErrorPerPixelErrorMetric:
     {
-      status=GetMEPPSimilarity(image,reconstruct_image,similarity,exception);
+      status=GetMEPPSimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case MeanSquaredErrorMetric:
     {
-      status=GetMSESimilarity(image,reconstruct_image,similarity,exception);
+      status=GetMSESimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case NormalizedCrossCorrelationErrorMetric:
     {
-      status=GetNCCSimilarity(image,reconstruct_image,similarity,exception);
+      status=GetNCCSimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case PeakAbsoluteErrorMetric:
     {
-      status=GetPASimilarity(image,reconstruct_image,similarity,exception);
+      status=GetPASimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case PeakSignalToNoiseRatioErrorMetric:
     {
-      status=GetPSNRSimilarity(image,reconstruct_image,similarity,exception);
+      status=GetPSNRSimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case PerceptualHashErrorMetric:
     {
-      status=GetPHASHSimilarity(image,reconstruct_image,similarity,exception);
+      status=GetPHASHSimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case RootMeanSquaredErrorMetric:
     case UndefinedErrorMetric:
     default:
     {
-      status=GetRMSESimilarity(image,reconstruct_image,similarity,exception);
+      status=GetRMSESimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case StructuralDissimilarityErrorMetric:
     {
-      status=GetDSSIMSimilarity(image,reconstruct_image,similarity,exception);
+      status=GetDSSIMSimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case StructuralSimilarityErrorMetric:
     {
-      status=GetSSIMSimularity(image,reconstruct_image,similarity,exception);
+      status=GetSSIMSimularity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
   }
   if (status == MagickFalse)
     {
-      similarity=(double *) RelinquishMagickMemory(similarity);
+      channel_similarity=(double *) RelinquishMagickMemory(channel_similarity);
       return((double *) NULL);
     }
-  distortion=similarity;
+  distortion=channel_similarity;
   switch (metric)
   {
+    case DotProductCorrelationErrorMetric:
     case NormalizedCrossCorrelationErrorMetric:
+    case PhaseCorrelationErrorMetric:
     case StructuralSimilarityErrorMetric:
     {
       for (i=0; i <= MaxPixelChannels; i++)
