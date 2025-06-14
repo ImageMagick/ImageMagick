@@ -3870,8 +3870,7 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
 }
 
   double
-    maxima = 0.0,
-    normalization = 0.0;
+    maxima = 0.0;
 
   Image
     *correlation_image = (Image *) NULL,
@@ -3973,10 +3972,6 @@ static Image *PhaseSimilarityImage(const Image *image,const Image *reconstruct,
   gamma_image=DestroyImage(gamma_image);
   if (phase_image == (Image *) NULL)
     ThrowPhaseSimilarityException();
-  normalization=((double) image->columns*image->rows)/((double)
-    reconstruct->columns*reconstruct->rows);
-  status=SIMMultiplyImage(phase_image,normalization,
-    (const ChannelStatistics *) NULL,exception);
   (void) ResetImagePage(phase_image,"0x0+0+0");
   /*
     Identify the maxima value in the correlation image and its location.
