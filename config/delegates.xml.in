@@ -97,8 +97,8 @@
   <delegate decode="clipboard" command="&apos;@ClipboardDelegate@&apos; -selection clipboard -o &gt; &apos;%o&apos;"/>
   <delegate decode="png" encode="webp" command="&apos;@WebPEncodeDelegate@&apos; -quiet -q %Q &apos;%i&apos; -o &apos;%o&apos;"/>
   <delegate decode="pnm" encode="ilbm" mode="encode" command="&apos;@ILBMEncodeDelegate@&apos; -24if &apos;%i&apos; &gt; &apos;%o&apos;"/>
-  <delegate decode="tiff" encode="jxr" command="@MVDelegate@ &apos;%i&apos; &apos;%i.tiff&apos;; &apos;@JXREncodeDelegate@&apos; -i &apos;%i.tiff&apos; -o &apos;%o.jxr&apos;; @MVDelegate@ &apos;%i.tiff&apos; &apos;%i&apos;; @MVDelegate@ &apos;%o.jxr&apos; &apos;%o&apos;"/>
-  <delegate decode="tiff" encode="wdp" command="@MVDelegate@ &apos;%i&apos; &apos;%i.tiff&apos;; &apos;@JXREncodeDelegate@&apos; -i &apos;%i.tiff&apos; -o &apos;%o.jxr&apos;; @MVDelegate@ &apos;%i.tiff&apos; &apos;%i&apos;; @MVDelegate@ &apos;%o.jxr&apos; &apos;%o&apos;"/>
+  <delegate decode="tiff" encode="jxr" command="@MVDelegate@ &apos;%i&apos; &apos;%i.tiff&apos;; &apos;@JXREncodeDelegate@&apos; -i &apos;%i.tiff&apos; -o &apos;%o.jxr&apos; -q %Q; @MVDelegate@ &apos;%i.tiff&apos; &apos;%i&apos;; @MVDelegate@ &apos;%o.jxr&apos; &apos;%o&apos;"/>
+  <delegate decode="tiff" encode="wdp" command="@MVDelegate@ &apos;%i&apos; &apos;%i.tiff&apos;; &apos;@JXREncodeDelegate@&apos; -i &apos;%i.tiff&apos; -o &apos;%o.jxr&apos; -q %Q; @MVDelegate@ &apos;%i.tiff&apos; &apos;%i&apos;; @MVDelegate@ &apos;%o.jxr&apos; &apos;%o&apos;"/>
   <delegate decode="ppt" command="&apos;@DOCDecodeDelegate@&apos; --convert-to pdf --outdir `dirname &apos;%i&apos;` &apos;%i&apos; 2&gt; &apos;%u&apos;; @MVDelegate@ &apos;%i.pdf&apos; &apos;%o&apos;"/>
   <delegate decode="pptx" command="&apos;@DOCDecodeDelegate@&apos; --convert-to pdf --outdir `dirname &apos;%i&apos;` &apos;%i&apos; 2&gt; &apos;%u&apos;; @MVDelegate@ &apos;%i.pdf&apos; &apos;%o&apos;"/>
   <delegate decode="ps" encode="prt" command="&apos;@LPRDelegate@&apos; &apos;%i&apos;"/>
