@@ -11689,6 +11689,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->colortype=4; /* 3 */
       mng_info->depth = 8;
       image->depth = 8;
+      if (image->alpha_trait != UndefinedPixelTrait)
+        (void) SetImageType(image,PaletteAlphaType,exception);
+      else
+        (void) SetImageType(image,PaletteType,exception);
     }
 
   if (mng_info->write_png24 != MagickFalse)
@@ -11699,7 +11703,6 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
       if (image->alpha_trait != UndefinedPixelTrait)
         (void) SetImageType(image,TrueColorAlphaType,exception);
-
       else
         (void) SetImageType(image,TrueColorType,exception);
 
