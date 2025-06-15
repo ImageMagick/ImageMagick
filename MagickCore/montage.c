@@ -840,9 +840,10 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
                 (metrics.ascent-metrics.descent+4)*MultilineCensus(value),
                 (double) (x_offset+(ssize_t) border_width),(double)
                 ((montage_info->frame ? y_offset+(ssize_t) height+(ssize_t)
-                border_width+4 : y_offset+(ssize_t) extract_info.height+
-                (ssize_t) border_width+
-                (montage_info->shadow != MagickFalse ? 4 : 0))+bevel_width));
+                border_width+4 : y_offset+(ssize_t)
+                (concatenate != MagickFalse ? max_height : extract_info.height)+
+                (ssize_t) border_width+(montage_info->shadow != MagickFalse ?
+                4 : 0))+bevel_width));
               (void) CloneString(&draw_info->geometry,tile_geometry);
               (void) CloneString(&draw_info->text,value);
               (void) AnnotateImage(montage,draw_info,exception);
