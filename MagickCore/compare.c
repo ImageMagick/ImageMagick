@@ -1849,7 +1849,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
       RectangleInfo
         offset = { 0 };
 
-      Image *similarity_image=SimilarityImage(image,reconstruct_image,metric,
+      Image *similarity_image = SimilarityImage(image,reconstruct_image,metric,
         DefaultSimilarityThreshold,&offset,&similarity_metric,exception);
       if (similarity_image == (Image *) NULL)
         status=MagickFalse;
@@ -1933,7 +1933,8 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     case PhaseCorrelationErrorMetric:
     case StructuralSimilarityErrorMetric:
     {
-      *distortion=1.0-(*distortion);
+      if (*distortion >= 0.0)
+        *distortion=1.0-(*distortion);
       break;
     }
     default: break;
@@ -2024,7 +2025,7 @@ MagickExport double *GetImageDistortions(Image *image,
       RectangleInfo
         offset = { 0 };
 
-      Image *channel_similarity_image=SimilarityImage(image,reconstruct_image,
+      Image *channel_similarity_image = SimilarityImage(image,reconstruct_image,
         metric,DefaultSimilarityThreshold,&offset,&similarity_metric,exception);
       if (channel_similarity_image == (Image *) NULL)
         status=MagickFalse;
@@ -2114,7 +2115,8 @@ MagickExport double *GetImageDistortions(Image *image,
     case StructuralSimilarityErrorMetric:
     {
       for (i=0; i <= MaxPixelChannels; i++)
-        distortion[i]=1.0-distortion[i];
+        if (*distortion >= 0.0)
+          distortion[i]=1.0-distortion[i];
       break;
     }
     default: break;
