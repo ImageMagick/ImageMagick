@@ -267,7 +267,7 @@ MagickExport const char *GetMagickFeatures(void)
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   "HDRI "
 #endif
-#if defined(MAGICKCORE_BUILD_MODULES) || defined(_DLL)
+#if defined(MAGICKCORE_BUILD_MODULES)
   "Modules "
 #endif
 #if defined(MAGICKCORE_OPENCL_SUPPORT)
