@@ -161,6 +161,8 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     exception);
   if (status == MagickFalse)
     return((Image *) NULL);
+  if ((metric == NormalizedCrossCorrelationErrorMetric) && (*distortion > 1.0))
+    *distortion=1.0-(*distortion);
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   SetGeometry(image,&geometry);
   geometry.width=columns;
@@ -1933,8 +1935,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     case PhaseCorrelationErrorMetric:
     case StructuralSimilarityErrorMetric:
     {
-      if (*distortion >= 0.0)
-        *distortion=1.0-(*distortion);
+      *distortion=1.0-(*distortion);
       break;
     }
     default: break;
@@ -2115,8 +2116,7 @@ MagickExport double *GetImageDistortions(Image *image,
     case StructuralSimilarityErrorMetric:
     {
       for (i=0; i <= MaxPixelChannels; i++)
-        if (*distortion >= 0.0)
-          distortion[i]=1.0-distortion[i];
+        distortion[i]=1.0-distortion[i];
       break;
     }
     default: break;
