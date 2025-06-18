@@ -1520,7 +1520,6 @@ static MagickBooleanType GetRMSESimilarity(const Image *image,
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
     similarity[i]=RMSESquareRoot(similarity[i]);
-    similarity[i]=MagickMin(MagickMax(similarity[i],0.0),1.0);
   }
   similarity[CompositePixelChannel]=RMSESquareRoot(
     similarity[CompositePixelChannel]);
@@ -3472,7 +3471,7 @@ static Image *DPCSimilarityImage(const Image *image,const Image *reconstruct,
   if (status == MagickFalse)
     ThrowDPCSimilarityException();
   edge_factor=MagickSafeReciprocal(QuantumScale*mean*reconstruct->columns*
-    reconstruct->rows);
+    reconstruct->rows)+QuantumScale;
   /*
     Divide X and Y derivitives of reference image by magnitude.
   */
