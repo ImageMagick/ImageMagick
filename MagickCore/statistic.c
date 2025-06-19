@@ -2223,8 +2223,10 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
           cs->standard_deviation=(double) sqrtl(cs->M2/((long double)
             cs->area));
         cs->variance=cs->standard_deviation*cs->standard_deviation;
-        cs->skewness=(double) (sqrtl(cs->area)*cs->M3/powl(cs->M2*adj_area,1.5));
-        cs->kurtosis=(double) (cs->area*cs->M4/(cs->M2*cs->M2*adj_area*adj_area)-3.0);
+        cs->skewness=(double) (sqrtl(cs->area)*cs->M3/powl(cs->M2*adj_area,
+          1.5));
+        cs->kurtosis=(double) (cs->area*cs->M4/(cs->M2*cs->M2*adj_area*
+          adj_area)-3.0);
       }
   }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
