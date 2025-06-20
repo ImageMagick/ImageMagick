@@ -441,7 +441,14 @@ MagickPrivate ssize_t FormatLocaleStringList(char *magick_restrict string,
       n=(ssize_t) vsnprintf(string,length,format,operands);
     else
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-      n=(ssize_t) _vsnprintf_s_l(string,length,_TRUNCATE,format,locale,operands);
+#if _MSC_VER
+  #pragma warning(push)
+  #pragma warning(disable:4996)
+#endif
+      n=(ssize_t) _vsnprintf_l(string,length,format,locale,operands);
+#if _MSC_VER
+  #pragma warning(pop)
+#endif
 #else
       n=(ssize_t) vsnprintf_l(string,length,locale,format,operands);
 #endif
