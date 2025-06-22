@@ -1470,15 +1470,31 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
 #if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
-    /*
-      Set BT.709 primaries, sRGB transfer, @ full range.
-    */
-    memset(&nclx_profile,0,sizeof(nclx_profile));
-    heif_nclx_color_profile_set_matrix_coefficients(&nclx_profile,1);
-    heif_nclx_color_profile_set_color_primaries(&nclx_profile,1);
-    heif_nclx_color_profile_set_transfer_characteristics(&nclx_profile,13);
-    nclx_profile.full_range_flag=1; 
-    heif_image_set_nclx_color_profile(heif_image,&nclx_profile);
+    option=GetImageOption(image_info,"heic:cicp");
+    if (option != (char *) NULL)
+      {
+        GeometryInfo
+          cicp;
+
+        /*
+          Set BT.709 primaries, sRGB transfer, @ full range.
+        */
+        SetGeometryInfo(&cicp);
+        cicp.rho=1;
+        cicp.sigma=13;
+        cicp.xi=6;
+        cicp.psi=1;
+        (void) ParseGeometry(option,&cicp);
+        memset(&nclx_profile,0,sizeof(nclx_profile));
+        heif_nclx_color_profile_set_color_primaries(&nclx_profile,
+          (uint16_t) cicp.rho);
+        heif_nclx_color_profile_set_transfer_characteristics(&nclx_profile,
+          (uint16_t) cicp.sigma);
+        heif_nclx_color_profile_set_matrix_coefficients(&nclx_profile,
+          (uint16_t) cicp.xi);
+        nclx_profile.full_range_flag=(uint16_t) cicp.psi; 
+        heif_image_set_nclx_color_profile(heif_image,&nclx_profile);
+      }
 #endif
     profile=GetImageProfile(image,"icc");
     if (profile != (StringInfo *) NULL)
