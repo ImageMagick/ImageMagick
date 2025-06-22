@@ -2258,85 +2258,16 @@ MagickExport MagickBooleanType IsImagesEqual(const Image *image,
 MagickExport MagickBooleanType SetImageColorMetric(Image *image,
   const Image *reconstruct_image,ExceptionInfo *exception)
 {
-  CacheView
-    *image_view,
-    *reconstruct_view;
-
   double
-    area = 0.0,
-    maximum_error = (-MagickMaximumValue),
-    mean_error = 0.0,
-    mean_error_per_pixel = 0.0;
+    channel_similarity[MaxPixelChannels+1] = { 0.0 };
 
   MagickBooleanType
-    status = MagickTrue;
+    status;
 
-  size_t
-    columns,
-    rows;
-
-  ssize_t
-    y;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickCoreSignature);
-  assert(reconstruct_image != (const Image *) NULL);
-  assert(reconstruct_image->signature == MagickCoreSignature);
-  SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-  for (y=0; y < (ssize_t) rows; y++)
-  {
-    const Quantum
-      *magick_restrict p,
-      *magick_restrict q;
-
-    ssize_t
-      x;
-
-    p=GetCacheViewVirtualPixels(image_view,0,y,columns,1,exception);
-    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,columns,1,exception);
-    if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
-      break;
-    for (x=0; x < (ssize_t) columns; x++)
-    {
-      ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        double
-          distance;
-
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
-          channel);
-        if (((traits & UpdatePixelTrait) == 0) ||
-            ((reconstruct_traits & UpdatePixelTrait) == 0))
-          continue;
-        distance=QuantumScale*fabs((double) p[i]-(double)
-          GetPixelChannel(reconstruct_image,channel,q));
-        if (distance >= MagickEpsilon)
-          {
-            mean_error_per_pixel+=distance;
-            mean_error+=distance*distance;
-            if (distance > maximum_error)
-              maximum_error=distance;
-          }
-      }
-      area++;
-      p+=(ptrdiff_t) GetPixelChannels(image);
-      q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
-    }
-  }
-  reconstruct_view=DestroyCacheView(reconstruct_view);
-  image_view=DestroyCacheView(image_view);
-  area=MagickSafeReciprocal(area);
-  image->error.mean_error_per_pixel=(double) QuantumRange*
-    (mean_error_per_pixel*area);
-  image->error.normalized_mean_error=mean_error*area;
-  image->error.normalized_maximum_error=maximum_error;
+  status=GetMEPPSimilarity(image,reconstruct_image,channel_similarity,
+    exception);
+  if (status == MagickFalse)
+    return(MagickFalse);
   status=fabs(image->error.mean_error_per_pixel) < MagickEpsilon ?
     MagickTrue : MagickFalse;
   return(status);
