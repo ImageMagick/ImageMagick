@@ -135,10 +135,10 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Negate.miff', 'Negate', 
 testFilterCompare('input.miff',  q//, 'reference/filter/Normalize.miff', 'Normalize', q//, 0.02, 0.2);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/OilPaint.miff', 'OilPaint', q//, 0.07, 1.0);
+testFilterCompare('input.miff',  q//, 'reference/filter/OilPaint.miff', 'OilPaint', q//, 0.08, 0.87);
 ++$test;
 
-testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/Opaque.miff', 'Opaque', q/color=>"#e23834", fill=>"green"/, 0.08, 0.87);
+testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/Opaque.miff', 'Opaque', q/color=>"#e23834", fill=>"green"/, 0.0, 0.0);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Quantize.miff', 'Quantize', q//, 0.2, 0.7);
