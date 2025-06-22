@@ -425,7 +425,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
-          delta;
+          error;
 
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
@@ -435,12 +435,12 @@ static MagickBooleanType GetAESimilarity(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          delta=(double) p[i]-(double) GetPixelChannel(reconstruct_image,
+          error=(double) p[i]-(double) GetPixelChannel(reconstruct_image,
             channel,q);
         else
-          delta=Sa*(double) p[i]-Da*(double) GetPixelChannel(reconstruct_image,
+          error=Sa*(double) p[i]-Da*(double) GetPixelChannel(reconstruct_image,
             channel,q);
-        if ((delta*delta) > fuzz)
+        if ((error*error) > fuzz)
           {
             channel_similarity[i]++;
             count++;
@@ -491,7 +491,7 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
 
   double
     area = 0.0,
-    fuzz;
+    fuzz = 0.0;
 
   MagickBooleanType
     status = MagickTrue;
@@ -504,9 +504,8 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
     k,
     y;
 
-  (void) memset(similarity,0,(MaxPixelChannels+1)*sizeof(*similarity));
-  SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   fuzz=GetFuzzyColorDistance(image,reconstruct_image);
+  SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -541,9 +540,6 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
         Da,
         Sa;
 
-      size_t
-        count = 0;
-
       ssize_t
         i;
 
@@ -559,7 +555,7 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
-          delta;
+          error;
 
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
@@ -569,25 +565,23 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          delta=(double) p[i]-(double)
-            GetPixelChannel(reconstruct_image,channel,q);
+          error=QuantumScale*((double) p[i]-(double) GetPixelChannel(
+            reconstruct_image,channel,q));
         else
-          delta=Sa*(double) p[i]-Da*(double)
-            GetPixelChannel(reconstruct_image,channel,q);
-        if ((delta*delta) > fuzz)
+          error=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(reconstruct_image,
+            channel,q));
+        if ((error*error) > fuzz)
           {
-            channel_similarity[i]+=QuantumScale*fabs(delta);
-            channel_similarity[CompositePixelChannel]+=QuantumScale*fabs(delta);
-            count++;
+            channel_similarity[i]+=error*error;
+            channel_similarity[CompositePixelChannel]+=error*error;
+            channel_area++;
           }
       }
-      if (count != 0)
-        channel_area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetFUZZSimilarity)
+    #pragma omp critical (MagickCore_GetMSESimilarity)
 #endif
     {
       ssize_t
@@ -624,7 +618,6 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
     similarity[k]*=area;
   }
   similarity[CompositePixelChannel]*=area;
-  similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
   return(status);
 }
 
@@ -984,7 +977,7 @@ static MagickBooleanType GetMSESimilarity(const Image *image,
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
-          distance;
+          error;
 
         PixelChannel channel = GetPixelChannelChannel(image,i);
         PixelTrait traits = GetPixelChannelTraits(image,channel);
@@ -994,13 +987,13 @@ static MagickBooleanType GetMSESimilarity(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          distance=QuantumScale*((double) p[i]-(double) GetPixelChannel(
+          error=QuantumScale*((double) p[i]-(double) GetPixelChannel(
             reconstruct_image,channel,q));
         else
-          distance=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(reconstruct_image,
+          error=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(reconstruct_image,
             channel,q));
-        channel_similarity[i]+=distance*distance;
-        channel_similarity[CompositePixelChannel]+=distance*distance;
+        channel_similarity[i]+=error*error;
+        channel_similarity[CompositePixelChannel]+=error*error;
       }
       channel_area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
@@ -1063,6 +1056,7 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
 
   double
     alpha_variance[MaxPixelChannels+1] = { 0.0 },
+    area = 0.0,
     beta_variance[MaxPixelChannels+1] = { 0.0 };
 
   MagickBooleanType
@@ -1100,7 +1094,7 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(alpha_variance,beta_variance,similarity,status) \
+  #pragma omp parallel for schedule(static) shared(alpha_variance,area,beta_variance,similarity,status) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
@@ -1111,6 +1105,7 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
 
     double
       channel_alpha_variance[MaxPixelChannels+1] = { 0.0 },
+      channel_area = 0.0,
       channel_beta_variance[MaxPixelChannels+1] = { 0.0 },
       channel_similarity[MaxPixelChannels+1] = { 0.0 };
 
@@ -1173,6 +1168,7 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
         channel_alpha_variance[i]+=alpha*alpha;
         channel_beta_variance[i]+=beta*beta;
       }
+      channel_area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
@@ -1183,6 +1179,7 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
       ssize_t
         j;
 
+      area+=channel_area;
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,j);
@@ -1450,14 +1447,14 @@ static MagickBooleanType GetPHASHSimilarity(const Image *image,
       for (j=0; j < (ssize_t) channel_phash[0].number_colorspaces; j++)
       {
         double
-          delta;
+          error;
 
         alpha=channel_phash[k].phash[j][i];
         beta=reconstruct_phash[k].phash[j][i];
-        delta=beta-alpha;
-        if (IsNaN(delta) != 0)
-          delta=0.0;
-        difference+=delta*delta/PHASHNormalizationFactor;
+        error=beta-alpha;
+        if (IsNaN(error) != 0)
+          error=0.0;
+        difference+=error*error/PHASHNormalizationFactor;
       }
     }
     similarity[k]+=difference;
@@ -3349,7 +3346,7 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
       for (i=0; i < (ssize_t) GetPixelChannels(variance_image); i++)
       {
         double
-          delta;
+          error;
 
         PixelChannel channel = GetPixelChannelChannel(variance_image,i);
         PixelTrait traits = GetPixelChannelTraits(variance_image,channel);
@@ -3357,9 +3354,9 @@ static Image *SIMVarianceImage(Image *alpha_image,const Image *beta_image,
         if (((traits & UpdatePixelTrait) == 0) ||
             ((beta_traits & UpdatePixelTrait) == 0))
           continue;
-        delta=(double) q[i]-(double) GetPixelChannel(beta_image,channel,p);
+        error=(double) q[i]-(double) GetPixelChannel(beta_image,channel,p);
         q[i]=(Quantum) ((double) ClampToQuantum((double) QuantumRange*
-          (sqrt(fabs(QuantumScale*delta))/sqrt((double) QuantumRange))));
+          (sqrt(fabs(QuantumScale*error))/sqrt((double) QuantumRange))));
       }
       p+=(ptrdiff_t) GetPixelChannels(beta_image);
       q+=(ptrdiff_t) GetPixelChannels(variance_image);
