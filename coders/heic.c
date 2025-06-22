@@ -1407,11 +1407,6 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
     MagickBooleanType
       lossless = image_info->quality >= 100 ? MagickTrue : MagickFalse;
 
-#if LIBHEIF_NUMERIC_VERSION >= HEIC_COMPUTE_NUMERIC_VERSION(1,17,0)
-    struct heif_color_profile_nclx
-      nclx_profile;
-#endif
-
     struct heif_encoding_options
       *options;
 
@@ -1476,24 +1471,26 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
         GeometryInfo
           cicp;
 
-        /*
-          Set BT.709 primaries, sRGB transfer, @ full range.
-        */
+        struct heif_color_profile_nclx
+          *nclx_profile;
+
         SetGeometryInfo(&cicp);
-        cicp.rho=1;
-        cicp.sigma=13;
-        cicp.xi=6;
-        cicp.psi=1;
+        nclx_profile=heif_nclx_color_profile_alloc();
+        cicp.rho=(double) nclx_profile->color_primaries;
+        cicp.sigma=(double) nclx_profile->transfer_characteristics;
+        cicp.xi=(double) nclx_profile->matrix_coefficients;
+        cicp.psi=(double) nclx_profile->full_range_flag;
         (void) ParseGeometry(option,&cicp);
         memset(&nclx_profile,0,sizeof(nclx_profile));
-        heif_nclx_color_profile_set_color_primaries(&nclx_profile,
+        heif_nclx_color_profile_set_color_primaries(nclx_profile,
           (uint16_t) cicp.rho);
-        heif_nclx_color_profile_set_transfer_characteristics(&nclx_profile,
+        heif_nclx_color_profile_set_transfer_characteristics(nclx_profile,
           (uint16_t) cicp.sigma);
-        heif_nclx_color_profile_set_matrix_coefficients(&nclx_profile,
+        heif_nclx_color_profile_set_matrix_coefficients(nclx_profile,
           (uint16_t) cicp.xi);
-        nclx_profile.full_range_flag=(uint16_t) cicp.psi; 
-        heif_image_set_nclx_color_profile(heif_image,&nclx_profile);
+        nclx_profile->full_range_flag=(uint16_t) cicp.psi; 
+        heif_image_set_nclx_color_profile(heif_image,nclx_profile);
+        heif_nclx_color_profile_free(nclx_profile);
       }
 #endif
     profile=GetImageProfile(image,"icc");
