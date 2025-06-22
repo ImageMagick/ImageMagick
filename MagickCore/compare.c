@@ -1111,7 +1111,6 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
 
     double
       channel_alpha_variance[MaxPixelChannels+1] = { 0.0 },
-      channel_area = 0.0,
       channel_beta_variance[MaxPixelChannels+1] = { 0.0 },
       channel_similarity[MaxPixelChannels+1] = { 0.0 };
 
@@ -1174,7 +1173,6 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
         channel_alpha_variance[i]+=alpha*alpha;
         channel_beta_variance[i]+=beta*beta;
       }
-      channel_area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
