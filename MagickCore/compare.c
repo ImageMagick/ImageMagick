@@ -1056,7 +1056,6 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
 
   double
     alpha_variance[MaxPixelChannels+1] = { 0.0 },
-    area = 0.0,
     beta_variance[MaxPixelChannels+1] = { 0.0 };
 
   MagickBooleanType
@@ -1094,7 +1093,7 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(alpha_variance,area,beta_variance,similarity,status) \
+  #pragma omp parallel for schedule(static) shared(alpha_variance,beta_variance,similarity,status) \
     magick_number_threads(image,image,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
@@ -1105,7 +1104,6 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
 
     double
       channel_alpha_variance[MaxPixelChannels+1] = { 0.0 },
-      channel_area = 0.0,
       channel_beta_variance[MaxPixelChannels+1] = { 0.0 },
       channel_similarity[MaxPixelChannels+1] = { 0.0 };
 
@@ -1168,7 +1166,6 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
         channel_alpha_variance[i]+=alpha*alpha;
         channel_beta_variance[i]+=beta*beta;
       }
-      channel_area++;
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
     }
@@ -1179,7 +1176,6 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
       ssize_t
         j;
 
-      area+=channel_area;
       for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,j);
