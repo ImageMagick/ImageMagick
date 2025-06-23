@@ -2030,7 +2030,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           {
             if (q != pixels)
               {
-                if ((q-pixels+(ssize_t) extent+1) < sizeof(pixels))
+                if ((size_t) (q-pixels+(ssize_t) extent+1) < sizeof(pixels))
                   *q++=' ';
                 else
                   {
