@@ -2007,12 +2007,13 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       case '1':
       {
         unsigned char
-          pixels[2048];
+          pixels[70];
 
         /*
           Convert image to a PBM image.
         */
         (void) SetImageType(image,BilevelType,exception);
+        extent=1;
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -2027,20 +2028,21 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
+            if (q != pixels)
+              {
+                if ((q-pixels+(ssize_t) extent+1) < sizeof(pixels))
+                  *q++=' ';
+                else
+                  {
+                    *q++='\n';
+                    (void) WriteBlob(image,(size_t) (q-pixels),pixels);
+                    q=pixels;
+                  }
+              }
             *q++=(unsigned char) (GetPixelLuma(image,p) >= ((double)
               QuantumRange/2.0) ? '0' : '1');
-            if ((q-pixels+2) >= (ssize_t) sizeof(pixels))
-              {
-                *q++='\n';
-                (void) WriteBlob(image,(size_t) (q-pixels),pixels);
-                q=pixels;
-              }
-            *q++=' ';
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
-          *q++='\n';
-          (void) WriteBlob(image,(size_t) (q-pixels),pixels);
-          q=pixels;
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2059,7 +2061,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       case '2':
       {
         unsigned char
-          pixels[2048];
+          pixels[70];
 
         /*
           Convert image to a PGM image.
@@ -2087,29 +2089,31 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           {
             index=ClampToQuantum(GetPixelLuma(image,p));
             if (image->depth <= 8)
-              count=(ssize_t) FormatLocaleString(buffer,MagickPathExtent,"%u ",
+              count=(ssize_t) FormatLocaleString(buffer,MagickPathExtent,"%u",
                 ScaleQuantumToChar(index));
             else
               if (image->depth <= 16)
                 count=(ssize_t) FormatLocaleString(buffer,MagickPathExtent,
-                  "%u ",ScaleQuantumToShort(index));
+                  "%u",ScaleQuantumToShort(index));
               else
                 count=(ssize_t) FormatLocaleString(buffer,MagickPathExtent,
-                  "%u ",ScaleQuantumToLong(index));
+                  "%u",ScaleQuantumToLong(index));
             extent=(size_t) count;
-            if ((size_t) (q-pixels+(ssize_t) extent+1) >= sizeof(pixels))
+            if (q != pixels)
               {
-                *q++='\n';
-                (void) WriteBlob(image,(size_t) (q-pixels),pixels);
-                q=pixels;
+                if ((size_t) (q-pixels+(ssize_t) extent+1) < sizeof(pixels))
+                  *q++=' ';
+                else
+                  {
+                    *q++='\n';
+                    (void) WriteBlob(image,(size_t) (q-pixels),pixels);
+                    q=pixels;
+                  }
               }
             (void) memcpy((char *) q,buffer,extent);
             q+=(ptrdiff_t) extent;
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
-          *q++='\n';
-          (void) WriteBlob(image,(size_t) (q-pixels),pixels);
-          q=pixels;
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
@@ -2128,7 +2132,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       case '3':
       {
         unsigned char
-          pixels[2048];
+          pixels[70];
 
         /*
           Convert image to a PNM image.
@@ -2158,34 +2162,36 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           {
             if (image->depth <= 8)
               count=(ssize_t) FormatLocaleString(buffer,MagickPathExtent,
-                "%u %u %u ",ScaleQuantumToChar(GetPixelRed(image,p)),
+                "%u %u %u",ScaleQuantumToChar(GetPixelRed(image,p)),
                 ScaleQuantumToChar(GetPixelGreen(image,p)),
                 ScaleQuantumToChar(GetPixelBlue(image,p)));
             else
               if (image->depth <= 16)
                 count=(ssize_t) FormatLocaleString(buffer,MagickPathExtent,
-                  "%u %u %u ",ScaleQuantumToShort(GetPixelRed(image,p)),
+                  "%u %u %u",ScaleQuantumToShort(GetPixelRed(image,p)),
                   ScaleQuantumToShort(GetPixelGreen(image,p)),
                   ScaleQuantumToShort(GetPixelBlue(image,p)));
               else
                 count=(ssize_t) FormatLocaleString(buffer,MagickPathExtent,
-                  "%u %u %u ",ScaleQuantumToLong(GetPixelRed(image,p)),
+                  "%u %u %u",ScaleQuantumToLong(GetPixelRed(image,p)),
                   ScaleQuantumToLong(GetPixelGreen(image,p)),
                   ScaleQuantumToLong(GetPixelBlue(image,p)));
             extent=(size_t) count;
-            if ((size_t) (q-pixels+(ssize_t) extent+2) >= sizeof(pixels))
+            if (q != pixels)
               {
-                *q++='\n';
-                (void) WriteBlob(image,(size_t) (q-pixels),pixels);
-                q=pixels;
+                if ((size_t) (q-pixels+(ssize_t) extent+1) < sizeof(pixels))
+                  *q++=' ';
+                else
+                  {
+                    *q++='\n';
+                    (void) WriteBlob(image,(size_t) (q-pixels),pixels);
+                    q=pixels;
+                  }
               }
             (void) memcpy((char *) q,buffer,extent);
             q+=(ptrdiff_t) extent;
             p+=(ptrdiff_t) GetPixelChannels(image);
           }
-          *q++='\n';
-          (void) WriteBlob(image,(size_t) (q-pixels),pixels);
-          q=pixels;
           if (image->previous == (Image *) NULL)
             {
               status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
