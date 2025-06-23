@@ -1779,11 +1779,11 @@ static MagickBooleanType GetDSSIMSimilarity(
     if (((traits & UpdatePixelTrait) == 0) ||
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
-    similarity[i]=1.0-similarity[i];
+    similarity[i]=(1.0-similarity[i])/2.0;
     if (fabs(similarity[i]) < MagickEpsilon)
       similarity[i]=0.0;
   }
-  similarity[CompositePixelChannel]=1.0-similarity[CompositePixelChannel];
+  similarity[CompositePixelChannel]=(1.0-similarity[CompositePixelChannel])/2.0;
   if (fabs(similarity[CompositePixelChannel]) < MagickEpsilon)
     similarity[CompositePixelChannel]=0.0;
   return(status);
