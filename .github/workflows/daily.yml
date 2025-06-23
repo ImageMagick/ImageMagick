@@ -84,7 +84,6 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: ImageMagick/msttcorefonts
-        ref: refs/heads/main
 
     - name: Install msttcorefonts
       run: |
