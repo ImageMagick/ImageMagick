@@ -69,7 +69,7 @@ jobs:
             packages: gcc g++
           - compiler: clang
             cxx_compiler: clang++
-            compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration
+            compiler_flags: -Wall -Wextra -Werror -Wno-unused-function -Wno-incompatible-library-redeclaration -Wno-compound-token-split-by-macro
             packages: clang
 
     steps:
