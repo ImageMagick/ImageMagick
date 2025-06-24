@@ -537,7 +537,7 @@ MagickPrivate int NTCloseDirectory(DIR *entry)
 */
 MagickPrivate int NTCloseLibrary(void *handle)
 {
-  return(!(FreeLibrary((HINSTANCE) handle)));
+  return(FreeLibrary((HINSTANCE) handle) ? 0 : 1);
 }
 
 
