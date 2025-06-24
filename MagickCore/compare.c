@@ -1752,8 +1752,6 @@ static MagickBooleanType GetSSIMSimularity(const Image *image,
   }
   similarity[CompositePixelChannel]*=area;
   similarity[CompositePixelChannel]/=(double) GetImageChannels(image);
-  if (similarity[CompositePixelChannel] > 1.0)
-    similarity[CompositePixelChannel]=1.0;
   kernel_info=DestroyKernelInfo(kernel_info);
   return(status);
 }
@@ -1919,9 +1917,14 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   {
     case DotProductCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
-    case StructuralSimilarityErrorMetric:
     {
       *distortion=1.0-(*distortion);
+      break;
+    }
+    case NormalizedCrossCorrelationErrorMetric:
+    case StructuralSimilarityErrorMetric:
+    {
+      *distortion=(1.0-(*distortion))/2.0;
       break;
     }
     default: break;
@@ -2098,10 +2101,16 @@ MagickExport double *GetImageDistortions(Image *image,
   {
     case DotProductCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
-    case StructuralSimilarityErrorMetric:
     {
       for (i=0; i <= MaxPixelChannels; i++)
         distortion[i]=1.0-distortion[i];
+      break;
+    }
+    case NormalizedCrossCorrelationErrorMetric:
+    case StructuralSimilarityErrorMetric:
+    {
+      for (i=0; i <= MaxPixelChannels; i++)
+        distortion[i]=(1.0-distortion[i])/2.0;
       break;
     }
     default: break;
