@@ -2074,8 +2074,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   Quantum
                     *magick_restrict q;
 
-                  q=GetAuthenticPixels(image,x,y+(ssize_t) row,columns_remaining,
-                    1,exception);
+                  q=GetAuthenticPixels(image,x,y+(ssize_t) row,
+                    columns_remaining,1,exception);
                   if (q == (Quantum *) NULL)
                     break;
                   (void) ImportQuantumPixels(image,(CacheView *) NULL,
@@ -2114,10 +2114,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           /*
             Convert generic TIFF image.
           */
+          (void) SetImageStorageClass(image,DirectClass,exception);
           if (HeapOverflowSanityCheck(image->rows,sizeof(*pixels)) != MagickFalse)
             ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           number_pixels=(MagickSizeType) image->columns*image->rows;
-          generic_info=AcquireVirtualMemory((size_t) number_pixels,sizeof(uint32));
+          generic_info=AcquireVirtualMemory((size_t) number_pixels,sizeof(*p));
           if (generic_info == (MemoryInfo *) NULL)
             ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
           p=(uint32 *) GetVirtualMemoryBlob(generic_info);
