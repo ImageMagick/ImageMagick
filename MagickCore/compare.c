@@ -1766,8 +1766,7 @@ static MagickBooleanType GetDSSIMSimilarity(
   ssize_t
     i;
 
-  status=GetSSIMSimularity(image,reconstruct_image,
-    similarity,exception);
+  status=GetSSIMSimularity(image,reconstruct_image,similarity,exception);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel channel = GetPixelChannelChannel(image,i);
@@ -1913,6 +1912,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   {
     case DotProductCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
+    case StructuralDissimilarityErrorMetric:
     {
       *distortion=1.0-(*distortion);
       break;
@@ -2099,6 +2099,7 @@ MagickExport double *GetImageDistortions(Image *image,
   {
     case DotProductCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
+    case StructuralDissimilarityErrorMetric:
     {
       for (i=0; i <= MaxPixelChannels; i++)
         distortion[i]=1.0-distortion[i];
