@@ -1778,12 +1778,8 @@ static MagickBooleanType GetDSSIMSimilarity(
         ((reconstruct_traits & UpdatePixelTrait) == 0))
       continue;
     similarity[i]=(1.0-similarity[i])/2.0;
-    if (fabs(similarity[i]) < MagickEpsilon)
-      similarity[i]=0.0;
   }
   similarity[CompositePixelChannel]=(1.0-similarity[CompositePixelChannel])/2.0;
-  if (fabs(similarity[CompositePixelChannel]) < MagickEpsilon)
-    similarity[CompositePixelChannel]=0.0;
   return(status);
 }
 
@@ -1929,6 +1925,8 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     }
     default: break;
   }
+  if (fabs(*distortion) < MagickEpsilon)
+    *distortion=0.0;
   channel_similarity=(double *) RelinquishMagickMemory(channel_similarity);
   (void) FormatImageProperty(image,"distortion","%.*g",GetMagickPrecision(),
     *distortion);
@@ -2115,6 +2113,9 @@ MagickExport double *GetImageDistortions(Image *image,
     }
     default: break;
   }
+  for (i=0; i <= MaxPixelChannels; i++)
+    if (fabs(distortion[i]) < MagickEpsilon)
+      distortion[i]=0.0;
   return(distortion);
 }
 
