@@ -221,7 +221,7 @@ static MagickBooleanType InitializeEXRChannels(Image *image,exr_context_t ctxt,
       prefix_length=1+(size_t)(prefix-decoder.channels[0].channel_name);
       if (prefix_length < MagickPathExtent)
         {
-          CopyMagickString(channel_name,decoder.channels[0].channel_name
+          (void) CopyMagickString(channel_name,decoder.channels[0].channel_name
             ,prefix_length+1);
           channel=decoder.channels;
           for (c = 0; c < decoder.channel_count; ++c)

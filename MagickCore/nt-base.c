@@ -2098,7 +2098,7 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
       error=NTGetLastErrorMessage(last_error); \
       if (error != (char *) NULL) \
         { \
-          CopyMagickString(output,error,MagickPathExtent); \
+          (void) CopyMagickString(output,error,MagickPathExtent); \
           error=DestroyString(error); \
         } \
     }
@@ -2212,7 +2212,7 @@ MagickPrivate int NTSystemCommand(const char *command,char *output)
             (size_t) bytes_read+1);
           if (count > 0)
             {
-              CopyMagickString(output+output_offset,buffer,count);
+              (void) CopyMagickString(output+output_offset,buffer,count);
               output_offset+=count-1;
             }
         }

@@ -623,8 +623,8 @@ static inline char *ReplaceSpaceWithNewline(char **caption,char *space)
       if (offset >= 0)
         {
           target=AcquireString(*caption);
-          CopyMagickString(target,*caption,(size_t) offset+2);
-          ConcatenateMagickString(target,space+octets,length);
+          (void) CopyMagickString(target,*caption,(size_t) offset+2);
+          (void) ConcatenateMagickString(target,space+octets,length);
           (void) DestroyString(*caption);
           *caption=target;
           space=(*caption)+offset;
@@ -698,9 +698,9 @@ MagickExport ssize_t FormatMagickCaption(Image *image,DrawInfo *draw_info,
                 *target;
 
               target=AcquireString(*caption);
-              CopyMagickString(target,*caption,(size_t) n+1);
-              ConcatenateMagickString(target,"\n",strlen(*caption)+1);
-              ConcatenateMagickString(target,p,strlen(*caption)+2);
+              (void) CopyMagickString(target,*caption,(size_t) n+1);
+              (void) ConcatenateMagickString(target,"\n",strlen(*caption)+1);
+              (void) ConcatenateMagickString(target,p,strlen(*caption)+2);
               (void) DestroyString(*caption);
               *caption=target;
               p=(*caption)+n;

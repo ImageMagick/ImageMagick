@@ -321,7 +321,7 @@ static const char *GetOpenCLCacheDirectory()
               if (status != MagickFalse)
                 {
                   temp=(char*) AcquireCriticalMemory(strlen(path)+1);
-                  CopyMagickString(temp,path,strlen(path)+1);
+                  (void) CopyMagickString(temp,path,strlen(path)+1);
                 }
               home=DestroyString(home);
             }
@@ -351,7 +351,7 @@ static const char *GetOpenCLCacheDirectory()
                   if (status != MagickFalse)
                     {
                       temp=(char*) AcquireCriticalMemory(strlen(path)+1);
-                      CopyMagickString(temp,path,strlen(path)+1);
+                      (void) CopyMagickString(temp,path,strlen(path)+1);
                     }
                   home=DestroyString(home);
                 }
@@ -1066,7 +1066,7 @@ static double RunOpenCLBenchmark(MagickBooleanType is_cpu)
   exception=AcquireExceptionInfo();
   imageInfo=AcquireImageInfo();
   CloneString(&imageInfo->size,"2048x1536");
-  CopyMagickString(imageInfo->filename,"xc:none",MagickPathExtent);
+  (void) CopyMagickString(imageInfo->filename,"xc:none",MagickPathExtent);
   inputImage=ReadImage(imageInfo,exception);
   if (inputImage == (Image *) NULL)
     return(0.0);
@@ -1602,7 +1602,7 @@ MagickPrivate void DumpOpenCLProfileData()
       profile=device->profile_records[j];
       (void) CopyMagickString(indent,"                              ",
         sizeof(indent));
-      CopyMagickString(indent,profile->kernel_name,MagickMin(strlen(
+      (void) CopyMagickString(indent,profile->kernel_name,MagickMin(strlen(
         profile->kernel_name),strlen(indent)));
       (void) FormatLocaleString(buf,sizeof(buf),"%s %7d %7d %7d %7d",indent,
         (int) (profile->total/profile->count),(int) profile->count,
