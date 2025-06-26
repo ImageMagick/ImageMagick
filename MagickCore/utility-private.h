@@ -179,7 +179,7 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
       return((FILE *) NULL);
     }
   if (_wfopen_s(&file,path_wide,mode_wide) != 0)
-    return((FILE *) NULL);
+    file=(FILE *) NULL;
   mode_wide=(wchar_t *) RelinquishMagickMemory(mode_wide);
   path_wide=(wchar_t *) RelinquishMagickMemory(path_wide);
   return(file);
