@@ -1679,18 +1679,13 @@ MagickPrivate MagickBooleanType IsEquivalentAlpha(const Image *image,
     fuzz,
     pixel;
 
-  double
-    distance;
-
   if ((image->alpha_trait & BlendPixelTrait) == 0)
     return(MagickTrue);
   if (p->alpha == q->alpha)
     return(MagickTrue);
-  fuzz=MagickMax(image->fuzz,MagickSQ1_2);
-  fuzz*=fuzz;
+  fuzz=p->fuzz*p->fuzz+q->fuzz*q->fuzz;
   pixel=(double) p->alpha-(double) q->alpha;
-  distance=pixel*pixel;
-  if (distance > fuzz)
+  if ((pixel*pixel) > fuzz)
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -1856,16 +1851,11 @@ MagickPrivate MagickBooleanType IsEquivalentIntensity(const Image *image,
     fuzz,
     pixel;
 
-  double
-    distance;
-
   if (GetPixelInfoIntensity(image,p) == GetPixelInfoIntensity(image,q))
     return(MagickTrue);
-  fuzz=MagickMax(image->fuzz,MagickSQ1_2);
-  fuzz*=fuzz;
+  fuzz=p->fuzz*p->fuzz+q->fuzz*q->fuzz;
   pixel=GetPixelInfoIntensity(image,p)-GetPixelInfoIntensity(image,q);
-  distance=pixel*pixel;
-  if (distance > fuzz)
+  if ((pixel*pixel) > fuzz)
     return(MagickFalse);
   return(MagickTrue);
 }

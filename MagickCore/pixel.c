@@ -6034,9 +6034,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
     pixel,
     scale;
 
-  fuzz=(double) MagickMax(MagickMax(p->fuzz,q->fuzz),(MagickRealType)
-    MagickSQ1_2);
-  fuzz*=fuzz;
+  fuzz=p->fuzz*p->fuzz+q->fuzz*q->fuzz;
   scale=1.0;
   distance=0.0;
   if ((p->alpha_trait != UndefinedPixelTrait) ||
