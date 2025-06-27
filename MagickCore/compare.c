@@ -123,9 +123,6 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   const char
     *artifact;
 
-  double
-    fuzz;
-
   Image
     *clone_image,
     *difference_image,
@@ -205,7 +202,6 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   /*
     Generate difference image.
   */
-  fuzz=image->fuzz*reconstruct_image->fuzz;
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   highlight_view=AcquireAuthenticCacheView(highlight_image,exception);
@@ -241,16 +237,6 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       }
     for (x=0; x < (ssize_t) columns; x++)
     {
-      double
-        Da,
-        Sa;
-
-      size_t
-        count = 0;
-
-      ssize_t
-        i;
-
       if ((GetPixelReadMask(image,p) <= (QuantumRange/2)) ||
           (GetPixelReadMask(reconstruct_image,q) <= (QuantumRange/2)))
         {
@@ -260,35 +246,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
           r+=(ptrdiff_t) GetPixelChannels(highlight_image);
           continue;
         }
-      Sa=QuantumScale*(double) GetPixelAlpha(image,p);
-      Da=QuantumScale*(double) GetPixelAlpha(reconstruct_image,q);
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        double
-          distance,
-          pixel;
-
-        PixelChannel channel = GetPixelChannelChannel(image,i);
-        PixelTrait traits = GetPixelChannelTraits(image,channel);
-        PixelTrait reconstruct_traits = GetPixelChannelTraits(reconstruct_image,
-          channel);
-        if (((traits & UpdatePixelTrait) == 0) ||
-            ((reconstruct_traits & UpdatePixelTrait) == 0))
-          continue;
-        if (channel == AlphaPixelChannel)
-          pixel=(double) p[i]-(double) GetPixelChannel(reconstruct_image,
-            channel,q);
-        else
-          pixel=Sa*(double) p[i]-Da*(double)
-            GetPixelChannel(reconstruct_image,channel,q);
-        distance=pixel*pixel;
-        if (distance > fuzz)
-          {
-            count++;
-            break;
-          }
-      }
-      if (count == 0)
+      if (IsFuzzyEquivalencePixel(image,p,reconstruct_image,q) == MagickFalse)
         SetPixelViaPixelInfo(highlight_image,&lowlight,r);
       else
         SetPixelViaPixelInfo(highlight_image,&highlight,r);
@@ -371,7 +329,8 @@ static MagickBooleanType GetAESimilarity(const Image *image,
   /*
     Compute the absolute difference in pixels between two images.
   */
-  fuzz=image->fuzz*reconstruct_image->fuzz;
+  fuzz=0.5*(image->fuzz,reconstruct_image->fuzz);
+  fuzz*=fuzz;
   (void) memset(similarity,0,(MaxPixelChannels+1)*sizeof(*similarity));
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -504,7 +463,8 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
     k,
     y;
 
-  fuzz=image->fuzz*reconstruct_image->fuzz;
+  fuzz=0.5*(image->fuzz,reconstruct_image->fuzz);
+  fuzz*=fuzz;
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
