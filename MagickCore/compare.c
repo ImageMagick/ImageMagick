@@ -205,7 +205,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   /*
     Generate difference image.
   */
-  fuzz=GetFuzzyColorDistance(image,reconstruct_image);
+  fuzz=image->fuzz*reconstruct_image->fuzz;
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   highlight_view=AcquireAuthenticCacheView(highlight_image,exception);
@@ -371,7 +371,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
   /*
     Compute the absolute difference in pixels between two images.
   */
-  fuzz=GetFuzzyColorDistance(image,reconstruct_image);
+  fuzz=image->fuzz*reconstruct_image->fuzz;
   (void) memset(similarity,0,(MaxPixelChannels+1)*sizeof(*similarity));
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -504,7 +504,7 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
     k,
     y;
 
-  fuzz=GetFuzzyColorDistance(image,reconstruct_image);
+  fuzz=image->fuzz*reconstruct_image->fuzz;
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -1756,9 +1756,8 @@ static MagickBooleanType GetSSIMSimularity(const Image *image,
   return(status);
 }
 
-static MagickBooleanType GetDSSIMSimilarity(
-  const Image *image,const Image *reconstruct_image,double *similarity,
-  ExceptionInfo *exception)
+static MagickBooleanType GetDSSIMSimilarity(const Image *image,
+  const Image *reconstruct_image,double *similarity,ExceptionInfo *exception)
 {
   MagickBooleanType
     status = MagickTrue;
