@@ -1321,7 +1321,8 @@ MagickExport Image *StreamImage(const ImageInfo *image_info,
       image_info->filename);
   read_info=CloneImageInfo(image_info);
   stream_info->image_info=image_info;
-  stream_info->quantum_info=AcquireQuantumInfo(image_info,(Image *) NULL);
+  if (stream_info->quantum_info == (QuantumInfo *) NULL)
+    stream_info->quantum_info=AcquireQuantumInfo(image_info,(Image *) NULL);
   if (stream_info->quantum_info == (QuantumInfo *) NULL)
     {
       read_info=DestroyImageInfo(read_info);
