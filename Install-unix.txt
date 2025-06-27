@@ -1,7 +1,7 @@
 Download & Unpack
   
   ImageMagick builds on a variety of Unix and Unix-like operating systems
-  including Linux, Ubuntu, FreeBSD, WIndows, Mac OS X, and others. A compiler
+  including Linux, Ubuntu, FreeBSD, WIndows, macOS, and others. A compiler
   is required and fortunately almost all modern Unix systems have one. Download
   https://imagemagick.org/archive/ImageMagick.tar.gz.
   
