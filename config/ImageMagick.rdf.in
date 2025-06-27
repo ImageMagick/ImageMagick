@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns="http://usefulinc.com/ns/doap#">
 
   <Project>
@@ -41,7 +41,7 @@ Introduction to ImageMagick
 
   ImageMagick is available from
   https://imagemagick.org/script/download.php.  It runs on Linux, Windows,
-  Mac Os X, iOS, Android OS, and others.
+  macOS, iOS, Android OS, and others.
 
   The authoritative ImageMagick web site is
   https://imagemagick.org. The authoritative source code repository is

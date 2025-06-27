@@ -11940,13 +11940,13 @@ printf "%s\n" "$as_me: WARNING: no OpenCL headers found" >&2;}
       CL_VERSION=0
     else
       #
-      # First we check for Mac OS X, since OpenCL is standard there
+      # First we check for macOS, since OpenCL is standard there
       #
       CL_LIBS=""
       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for OpenCL library" >&5
 printf %s "checking for OpenCL library... " >&6; }
       case "$host_os" in
-        darwin*) # On Mac OS X we check for installed frameworks
+        darwin*) # On macOS we check for installed frameworks
 
     case x"$host_os" in
     xdarwin*)
@@ -39333,7 +39333,7 @@ else
       ghostscript_font_dir=`echo "${PSDelegate}" | sed -e 's:/gs/.*:/gs:;s:^/::;s/./&:/;s:/:\\\\:g'`"\\fonts\\"
     fi
   else
-    # Linux / Mac OS X / Unix Build
+    # Linux / macOS / Unix Build
     for font_dir in "${prefix}/share/ghostscript/fonts/" '/usr/share/fonts/default/Type1/' '/usr/share/ghostscript/fonts/' '/usr/share/fonts/ghostscript/' '/usr/share/fonts/type1/gsfonts/' '/opt/local/share/ghostscript/fonts/' '/sw/share/ghostscript/fonts/' '/System/Library/Frameworks/Ghostscript.framework/Resources/fonts/'; do
       if test -f "${font_dir}a010013l.pfb"; then
         ghostscript_font_dir="${font_dir}"
@@ -43206,16 +43206,16 @@ need_locks=$lt_need_locks
 # Manifest tool.
 MANIFEST_TOOL=$lt_MANIFEST_TOOL
 
-# Tool to manipulate archived DWARF debug symbol files on Mac OS X.
+# Tool to manipulate archived DWARF debug symbol files on macOS.
 DSYMUTIL=$lt_DSYMUTIL
 
-# Tool to change global to local symbols on Mac OS X.
+# Tool to change global to local symbols on macOS.
 NMEDIT=$lt_NMEDIT
 
-# Tool to manipulate fat objects and archives on Mac OS X.
+# Tool to manipulate fat objects and archives on macOS.
 LIPO=$lt_LIPO
 
-# ldd/readelf like tool for Mach-O binaries on Mac OS X.
+# ldd/readelf like tool for Mach-O binaries on macOS.
 OTOOL=$lt_OTOOL
 
 # ldd/readelf like tool for 64 bit Mach-O binaries on Mac OS X 10.4.

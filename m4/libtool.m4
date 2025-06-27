@@ -986,13 +986,13 @@ m4_defun_once([_LT_REQUIRED_DARWIN_CHECKS],[
     AC_CHECK_TOOL([OTOOL], [otool], [:])
     AC_CHECK_TOOL([OTOOL64], [otool64], [:])
     _LT_DECL([], [DSYMUTIL], [1],
-      [Tool to manipulate archived DWARF debug symbol files on Mac OS X])
+      [Tool to manipulate archived DWARF debug symbol files on macOS])
     _LT_DECL([], [NMEDIT], [1],
-      [Tool to change global to local symbols on Mac OS X])
+      [Tool to change global to local symbols on macOS])
     _LT_DECL([], [LIPO], [1],
-      [Tool to manipulate fat objects and archives on Mac OS X])
+      [Tool to manipulate fat objects and archives on macOS])
     _LT_DECL([], [OTOOL], [1],
-      [ldd/readelf like tool for Mach-O binaries on Mac OS X])
+      [ldd/readelf like tool for Mach-O binaries on macOS])
     _LT_DECL([], [OTOOL64], [1],
       [ldd/readelf like tool for 64 bit Mach-O binaries on Mac OS X 10.4])
 
