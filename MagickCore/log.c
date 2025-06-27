@@ -1405,9 +1405,8 @@ static char *TranslateEvent(const char *module,const char *function,
     *q='\0';
     if ((size_t) (q-text+MagickPathExtent) >= extent)
       {
-        extent+=MagickPathExtent;
-        text=(char *) ResizeQuantumMemory(text,extent+MagickPathExtent,
-          sizeof(*text));
+        extent<<=1;
+        text=(char *) ResizeQuantumMemory(text,extent,sizeof(*text));
         if (text == (char *) NULL)
           return((char *) NULL);
         q=text+strlen(text);
@@ -1456,33 +1455,34 @@ static char *TranslateEvent(const char *module,const char *function,
     {
       case 'c':
       {
-        q+=(ptrdiff_t) CopyMagickString(q,GetClientName(),extent);
+        q+=(ptrdiff_t) CopyMagickString(q,GetClientName(),extent-(q-text));
         break;
       }
       case 'd':
       {
-        q+=(ptrdiff_t) CopyMagickString(q,domain,extent);
+        q+=(ptrdiff_t) CopyMagickString(q,domain,extent-(q-text));
         break;
       }
       case 'e':
       {
-        q+=(ptrdiff_t) CopyMagickString(q,event,extent);
+        q+=(ptrdiff_t) CopyMagickString(q,event,extent-(q-text));
         break;
       }
       case 'f':
       {
-        q+=(ptrdiff_t) CopyMagickString(q,function,extent);
+        q+=(ptrdiff_t) CopyMagickString(q,function,extent-(q-text));
         break;
       }
       case 'i':
       {
-        q+=(ptrdiff_t) FormatLocaleString(q,extent,"%.20g",(double)
+        q+=(ptrdiff_t) FormatLocaleString(q,extent-(q-text),"%.20g",(double)
           GetMagickThreadSignature());
         break;
       }
       case 'l':
       {
-        q+=(ptrdiff_t) FormatLocaleString(q,extent,"%.20g",(double) line);
+        q+=(ptrdiff_t) FormatLocaleString(q,extent-(q-text),"%.20g",(double)
+          line);
         break;
       }
       case 'm':
@@ -1496,39 +1496,41 @@ static char *TranslateEvent(const char *module,const char *function,
               r++;
               break;
             }
-        q+=(ptrdiff_t) CopyMagickString(q,r,extent);
+        q+=(ptrdiff_t) CopyMagickString(q,r,extent-(q-text));
         break;
       }
       case 'n':
       {
-        q+=(ptrdiff_t) CopyMagickString(q,GetLogName(),extent);
+        q+=(ptrdiff_t) CopyMagickString(q,GetLogName(),extent-(q-text));
         break;
       }
       case 'p':
       {
-        q+=(ptrdiff_t) FormatLocaleString(q,extent,"%.20g",(double) getpid());
+        q+=(ptrdiff_t) FormatLocaleString(q,extent-(q-text),"%.20g",(double)
+          getpid());
         break;
       }
       case 'r':
       {
-        q+=(ptrdiff_t) FormatLocaleString(q,extent,"%lu:%02lu.%03lu",(unsigned long)
-          (elapsed_time/60.0),(unsigned long) floor(fmod(elapsed_time,60.0)),
-          (unsigned long) (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
+        q+=(ptrdiff_t) FormatLocaleString(q,extent-(q-text),"%lu:%02lu.%03lu",
+          (unsigned long) (elapsed_time/60.0),(unsigned long) floor(fmod(
+          elapsed_time,60.0)),(unsigned long) (1000.0*(elapsed_time-floor(
+          elapsed_time))+0.5));
         break;
       }
       case 't':
       {
-        q+=(ptrdiff_t) FormatMagickTime(seconds,extent,q);
+        q+=(ptrdiff_t) FormatMagickTime(seconds,extent-(q-text),q);
         break;
       }
       case 'u':
       {
-        q+=(ptrdiff_t) FormatLocaleString(q,extent,"%0.3fu",user_time);
+        q+=(ptrdiff_t) FormatLocaleString(q,extent-(q-text),"%0.3fu",user_time);
         break;
       }
       case 'v':
       {
-        q+=(ptrdiff_t) CopyMagickString(q,MagickLibVersionText,extent);
+        q+=(ptrdiff_t) CopyMagickString(q,MagickLibVersionText,extent-(q-text));
         break;
       }
       case '%':
