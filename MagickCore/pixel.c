@@ -5903,16 +5903,16 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
 %
 %  The format of the IsFuzzyEquivalencePixel method is:
 %
-%      void IsFuzzyEquivalencePixel(const Image *source,const Quantum *p,
-%        const Image *destination,const Quantum *q)
+%      void IsFuzzyEquivalencePixel(const Image *image,const Quantum *p,
+%        const Image *target_image,const Quantum *q)
 %
 %  A description of each parameter follows:
 %
-%    o source: the source image.
+%    o image: the source image.
 %
 %    o p: Pixel p.
 %
-%    o destination: the destination image.
+%    o target: the target image.
 %
 %    o q: Pixel q.
 %
@@ -5928,6 +5928,9 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *image,
   ssize_t
     i;
 
+  /*
+    MSE metric for comparing two pixels.
+  */
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   { 
     double
