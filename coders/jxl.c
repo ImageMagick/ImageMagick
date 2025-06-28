@@ -910,7 +910,7 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
   return(jxl_status);
 }
 
-static float JXLGetDistance(float quality)
+static inline float JXLGetDistance(float quality)
 {
   return quality >= 100.0 ? 0.0
          : quality >= 30
@@ -918,6 +918,21 @@ static float JXLGetDistance(float quality)
              : 53.0 / 3000.0 * quality * quality - 23.0 / 20.0 * quality + 25.0;
 }
 
+static inline MagickBooleanType JXLSameFrameType(const Image *image,
+  const Image *next)
+{
+  if (image->columns != next->columns)
+    return(MagickFalse);
+  if (image->rows != next->rows)
+    return(MagickFalse);
+  if (image->depth != next->depth)
+    return(MagickFalse);
+  if (image->alpha_trait != next->alpha_trait)
+    return(MagickFalse);
+  if (image->colorspace != next->colorspace)
+    return(MagickFalse);
+  return(MagickTrue);
+}
 
 static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
@@ -1184,7 +1199,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
     next=GetNextImageInList(image);
     if (next == (Image*) NULL)
       break;
-    if ((next->columns != image->columns) || (next->rows != image->rows))
+    if (JXLSameFrameType(image,next) == MagickFalse)
       {
        (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
          "FramesNotSameDimensions","`%s'",image->filename);
