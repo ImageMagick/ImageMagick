@@ -1073,7 +1073,7 @@ static MagickBooleanType WriteJXLImage(const ImageInfo *image_info,Image *image,
       (void) JxlEncoderSetFrameDistance(frame_settings,0.f);
       (void) JxlEncoderSetFrameLossless(frame_settings,JXL_TRUE);
     }
-  else
+  else if (image_info->quality != 0)
     (void) JxlEncoderSetFrameDistance(frame_settings,
       JXLGetDistance((float) image_info->quality));
   option=GetImageOption(image_info,"jxl:effort");
