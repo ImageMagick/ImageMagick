@@ -1223,7 +1223,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     if ((next != (Image *) NULL) && (image_info->adjoin != MagickFalse))
       {
         Image
-          *coalesce_image=(Image *) NULL;;
+          *coalesce_image=(Image *) NULL;
 
         while(next != (Image *) NULL)
         {
