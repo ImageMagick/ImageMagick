@@ -5917,67 +5917,36 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
 %    o q: Pixel q.
 %
 */
-MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
-  const Quantum *p,const Image *destination,const Quantum *q)
+MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *image,
+  const Quantum *p,const Image *target_image,const Quantum *q)
 {
   double
-    distance,
-    fuzz,
-    pixel,
-    scale;
+    alpha = QuantumScale*(double) GetPixelAlpha(image,p),
+    fuzz = GetFuzzyColorDistance(image,target_image),
+    target_alpha = QuantumScale*(double) GetPixelAlpha(target_image,q);
 
-  fuzz=GetFuzzyColorDistance(source,destination);
-  scale=1.0;
-  distance=0.0;
-  if ((source->alpha_trait != UndefinedPixelTrait) ||
-      (destination->alpha_trait != UndefinedPixelTrait))
-    {
-      /*
-        Transparencies are involved - set alpha distance.
-      */
-      pixel=(double) GetPixelAlpha(source,p)-(double)
-        GetPixelAlpha(destination,q);
-      distance=pixel*pixel;
-      if (distance > fuzz)
-        return(MagickFalse);
-      /*
-        Generate a alpha scaling factor to generate a 4D cone on colorspace.
-        Note that if one color is transparent, distance has no color component.
-      */
-      if (source->alpha_trait != UndefinedPixelTrait)
-        scale*=QuantumScale*(double) GetPixelAlpha(source,p);
-      if (destination->alpha_trait != UndefinedPixelTrait)
-        scale*=QuantumScale*(double) GetPixelAlpha(destination,q);
-      if (scale <= MagickEpsilon)
-        return(MagickTrue);
-    }
-  /*
-    RGB or CMY color cube.
-  */
-  distance*=3.0;  /* rescale appropriately */
-  fuzz*=3.0;
-  pixel=(double) GetPixelRed(source,p)-(double) GetPixelRed(destination,q);
-  if (IsHueCompatibleColorspace(source->colorspace) != MagickFalse)
-    {
-      /*
-        Compute an arc distance for hue.  It should be a vector angle of
-        'S'/'W' length with 'L'/'B' forming appropriate cones.
-      */
-      if (fabs((double) pixel) > ((double) QuantumRange/2.0))
-        pixel-=(double) QuantumRange;
-      pixel*=2.0;
-    }
-  distance+=scale*pixel*pixel;
-  if (distance > fuzz)
-    return(MagickFalse);
-  pixel=(double) GetPixelGreen(source,p)-(double) GetPixelGreen(destination,q);
-  distance+=scale*pixel*pixel;
-  if (distance > fuzz)
-    return(MagickFalse);
-  pixel=(double) GetPixelBlue(source,p)-(double) GetPixelBlue(destination,q);
-  distance+=scale*pixel*pixel;
-  if (distance > fuzz)
-    return(MagickFalse);
+  ssize_t
+    i;
+
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  { 
+    double
+      error;
+
+    PixelChannel channel = GetPixelChannelChannel(image,i);
+    PixelTrait traits = GetPixelChannelTraits(image,channel);
+    PixelTrait target_traits = GetPixelChannelTraits(target_image,channel);
+    if (((traits & UpdatePixelTrait) == 0) ||
+        ((target_traits & UpdatePixelTrait) == 0))
+      continue;
+    if (channel == AlphaPixelChannel)
+      error=(double) p[i]-(double) GetPixelChannel(target_image,channel,q);
+    else
+      error=alpha*(double) p[i]-target_alpha*
+        GetPixelChannel(target_image,channel,q);
+    if ((error*error) > fuzz)
+      return(MagickFalse);
+  }
   return(MagickTrue);
 }
 

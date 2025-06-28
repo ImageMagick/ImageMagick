@@ -393,11 +393,10 @@ static MagickBooleanType GetAESimilarity(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          error=(double) p[i]-(double) GetPixelChannel(reconstruct_image,
-            channel,q);
+          error=(double) p[i]-(double)
+            GetPixelChannel(reconstruct_image,channel,q);
         else
-          error=Sa*(double) p[i]-Da*(double) GetPixelChannel(reconstruct_image,
-            channel,q);
+          error=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
         if ((error*error) > fuzz)
           {
             channel_similarity[i]++;
@@ -462,6 +461,9 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
     k,
     y;
 
+  /*
+    Compute the MSE difference in pixels between two images within tolerance.
+  */
   fuzz=GetFuzzyColorDistance(image,reconstruct_image);
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -523,15 +525,15 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
         if (channel == AlphaPixelChannel)
-          error=QuantumScale*((double) p[i]-(double) GetPixelChannel(
-            reconstruct_image,channel,q));
+          error=(double) p[i]-(double)
+            GetPixelChannel(reconstruct_image,channel,q);
         else
-          error=QuantumScale*(Sa*p[i]-Da*GetPixelChannel(reconstruct_image,
-            channel,q));
+          error=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
         if ((error*error) > fuzz)
           {
-            channel_similarity[i]+=error*error;
-            channel_similarity[CompositePixelChannel]+=error*error;
+            channel_similarity[i]+=QuantumScale*error*QuantumScale*error;
+            channel_similarity[CompositePixelChannel]+=QuantumScale*error*
+              QuantumScale*error;
             channel_area++;
           }
       }
