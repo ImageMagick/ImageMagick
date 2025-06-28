@@ -5944,7 +5944,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *image,
     else
       error=alpha*(double) p[i]-target_alpha*
         GetPixelChannel(target_image,channel,q);
-    if ((error*error) > fuzz)
+    if ((error*error) >= fuzz)
       return(MagickFalse);
   }
   return(MagickTrue);
@@ -6016,7 +6016,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
         (double) OpaqueAlpha)-(q->alpha_trait != UndefinedPixelTrait ?
         q->alpha : (double) OpaqueAlpha);
       distance=pixel*pixel;
-      if (distance > fuzz)
+      if (distance >= fuzz)
         return(MagickFalse);
       /*
         Generate a alpha scaling factor to generate a 4D cone on colorspace.
@@ -6036,7 +6036,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
     {
       pixel=p->black-q->black;
       distance+=pixel*pixel*scale;
-      if (distance > fuzz)
+      if (distance >= fuzz)
         return(MagickFalse);
       scale*=QuantumScale*((double) QuantumRange-(double) p->black);
       scale*=QuantumScale*((double) QuantumRange-(double) q->black);
@@ -6059,15 +6059,15 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
       pixel*=2.0;
     }
   distance+=pixel*pixel*scale;
-  if (distance > fuzz)
+  if (distance >= fuzz)
     return(MagickFalse);
   pixel=p->green-q->green;
   distance+=pixel*pixel*scale;
-  if (distance > fuzz)
+  if (distance >= fuzz)
     return(MagickFalse);
   pixel=p->blue-q->blue;
   distance+=pixel*pixel*scale;
-  if (distance > fuzz)
+  if (distance >= fuzz)
     return(MagickFalse);
   return(MagickTrue);
 }
