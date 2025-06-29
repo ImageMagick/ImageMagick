@@ -136,7 +136,7 @@ static ResourceInfo
     MagickULLConstant(768),            /* file limit */
     MagickULLConstant(1),              /* thread limit */
     MagickULLConstant(0),              /* throttle limit */
-    MagickULLConstant(0),              /* time limit */
+    MagickResourceInfinity,            /* time limit */
   };
 
 static SemaphoreInfo
