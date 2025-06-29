@@ -247,9 +247,9 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
           continue;
         }
       if (IsFuzzyEquivalencePixel(image,p,reconstruct_image,q) == MagickFalse)
-        SetPixelViaPixelInfo(highlight_image,&lowlight,r);
-      else
         SetPixelViaPixelInfo(highlight_image,&highlight,r);
+      else
+        SetPixelViaPixelInfo(highlight_image,&lowlight,r);
       p+=(ptrdiff_t) GetPixelChannels(image);
       q+=(ptrdiff_t) GetPixelChannels(reconstruct_image);
       r+=(ptrdiff_t) GetPixelChannels(highlight_image);
