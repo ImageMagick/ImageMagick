@@ -503,7 +503,7 @@ MagickExport MagickBooleanType GetPathTemplate(char *path)
     directory=ConstantString(P_tmpdir);
 #endif
   if (directory == (char *) NULL)
-    return(MagickTrue);
+    return(MagickFalse);
   value=GetPolicyValue("resource:temporary-path");
   if (value != (char *) NULL)
     {
