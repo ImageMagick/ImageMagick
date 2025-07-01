@@ -1763,6 +1763,8 @@ static MagickBooleanType WriteJSONImage(const ImageInfo *image_info,
       }
     (void) WriteBlobString(image,",\n");
     image=SyncNextImageInList(image);
+    if (image == NULL)
+      break;
     status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
     if (status == MagickFalse)
       break;
