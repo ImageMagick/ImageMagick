@@ -9708,7 +9708,8 @@ MagickPrivate void XWarning(const ExceptionType magick_unused(warning),
   (void) CopyMagickString(text,reason,MagickPathExtent);
   (void) ConcatenateMagickString(text,":",MagickPathExtent);
   windows=XSetWindows((XWindows *) ~0);
-  XNoticeWidget(windows->display,windows,text,(char *) description);
+  if (windows != (XWindows *) NULL)
+     XNoticeWidget(windows->display,windows,text,(char *) description);
 }
 
 /*
