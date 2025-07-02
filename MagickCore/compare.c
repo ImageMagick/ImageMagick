@@ -3996,6 +3996,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
   switch (metric)
   {
     case NormalizedCrossCorrelationErrorMetric:
+    case StructuralDissimilarityErrorMetric:
     case StructuralSimilarityErrorMetric:
     {
       similarity=1.0-similarity;
@@ -4168,9 +4169,6 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
       }
     for (x=0; x < (ssize_t) similarity_image->columns; x++)
     {
-      MagickBooleanType
-        update = MagickFalse;
-
       ssize_t
         i;
 
@@ -4183,23 +4181,23 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
         case PhaseCorrelationErrorMetric:
         case StructuralSimilarityErrorMetric:
         {
-          if (similarity > channel_info.similarity)
-            update=MagickTrue;
+          if (similarity <= channel_info.similarity)
+            break;
+          channel_info.similarity=similarity;
+          channel_info.x=x;
+          channel_info.y=y;
           break;
         }
         default:
         {
-          if (similarity < channel_info.similarity)
-            update=MagickTrue;
-          break;
-        }
-      }
-      if (update != MagickFalse)
-        {
+          if (similarity >= channel_info.similarity)
+            break;
           channel_info.similarity=similarity;
           channel_info.x=x;
           channel_info.y=y;
+          break;
         }
+      }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel channel = GetPixelChannelChannel(image,i);
