@@ -3994,7 +3994,6 @@ static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
   switch (metric)
   {
     case NormalizedCrossCorrelationErrorMetric:
-    case StructuralDissimilarityErrorMetric:
     case StructuralSimilarityErrorMetric:
     {
       similarity=1.0-similarity;
