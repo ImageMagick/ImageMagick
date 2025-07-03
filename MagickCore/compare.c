@@ -396,7 +396,8 @@ static MagickBooleanType GetAESimilarity(const Image *image,
           error=(double) p[i]-(double)
             GetPixelChannel(reconstruct_image,channel,q);
         else
-          error=Sa*p[i]-Da*GetPixelChannel(reconstruct_image,channel,q);
+          error=Sa*p[i]-Da*(double)
+            GetPixelChannel(reconstruct_image,channel,q);
         if ((error*error) > fuzz)
           {
             channel_similarity[i]++;
