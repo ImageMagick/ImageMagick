@@ -1195,8 +1195,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       */
       composite_image=CloneImage(image,0,0,MagickTrue,exception);
       if (composite_image == (Image *) NULL)
-        difference_image=CompareImages(image,reconstruct_image,metric,&distortion,
-          exception);
+        difference_image=CompareImages(image,reconstruct_image,metric,
+          &distortion,exception);
       else
         {
           Image
@@ -1207,8 +1207,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
 
           (void) CompositeImage(composite_image,reconstruct_image,
             CopyCompositeOp,MagickTrue,offset.x,offset.y,exception);
-          difference_image=CompareImages(image,composite_image,metric,&distortion,
-            exception);
+          difference_image=CompareImages(image,composite_image,metric,
+            &distortion,exception);
           if (difference_image != (Image *) NULL)
             {
               difference_image->page.x=offset.x;

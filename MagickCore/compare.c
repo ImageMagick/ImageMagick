@@ -1785,17 +1785,8 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
     case DotProductCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
     {
-      double
-        similarity_metric;
-
-      RectangleInfo
-        offset = { 0 };
-
-      Image *similarity_image = SimilarityImage(image,reconstruct_image,metric,
-        DefaultSimilarityThreshold,&offset,&similarity_metric,exception);
-      if (similarity_image == (Image *) NULL)
-        status=MagickFalse;
-      channel_similarity[CompositePixelChannel]=similarity_metric;
+      status=GetMSESimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case FuzzErrorMetric:
@@ -1965,17 +1956,8 @@ MagickExport double *GetImageDistortions(Image *image,
     case DotProductCorrelationErrorMetric:
     case PhaseCorrelationErrorMetric:
     {
-      double
-        similarity_metric;
-
-      RectangleInfo
-        offset = { 0 };
-
-      Image *channel_similarity_image = SimilarityImage(image,reconstruct_image,
-        metric,DefaultSimilarityThreshold,&offset,&similarity_metric,exception);
-      if (channel_similarity_image == (Image *) NULL)
-        status=MagickFalse;
-      channel_similarity[CompositePixelChannel]=similarity_metric;
+      status=GetMSESimilarity(image,reconstruct_image,channel_similarity,
+        exception);
       break;
     }
     case FuzzErrorMetric:
