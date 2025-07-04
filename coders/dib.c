@@ -608,7 +608,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->colors == 0)
         image->colors=one << dib_info.bits_per_pixel;
     }
-  if (image_info->size)
+  if (image_info->size != 0)
     {
       RectangleInfo
         geometry;
@@ -625,6 +625,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->rows=geometry.height;
     }
   status=SetImageExtent(image,image->columns,image->rows,exception);
+  if (status == MagickFalse)
+    return(DestroyImageList(image));
+  status=ResetImagePixels(image,exception);
   if (status == MagickFalse)
     return(DestroyImageList(image));
   if (image->storage_class == PseudoClass)
