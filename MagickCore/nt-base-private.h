@@ -69,7 +69,9 @@ extern "C" {
 #  define fseek   _fseeki64
 #  define ftell   _ftelli64
 #  define getpid  _getpid
+#if !defined(getcwd)
 #  define getcwd  _getcwd
+#endif
 #  define lseek   _lseeki64
 #  define fstat   _fstat64
 #  define setmode _setmode
