@@ -6936,13 +6936,13 @@ static Image *ReadOneMNGImage(MngReadInfo* mng_info,
                      for (x=(ssize_t) image->columns-1; x >= 0; x--)
                      {
                         SetPixelRed(image,ScaleShortToQuantum(
-                          GetPixelRed(image,q)),q);
+                          (unsigned short) GetPixelRed(image,q)),q);
                         SetPixelGreen(image,ScaleShortToQuantum(
-                          GetPixelGreen(image,q)),q);
+                          (unsigned short) GetPixelGreen(image,q)),q);
                         SetPixelBlue(image,ScaleShortToQuantum(
-                          GetPixelBlue(image,q)),q);
+                          (unsigned short) GetPixelBlue(image,q)),q);
                         SetPixelAlpha(image,ScaleShortToQuantum(
-                          GetPixelAlpha(image,q)),q);
+                          (unsigned short) GetPixelAlpha(image,q)),q);
                         q+=(ptrdiff_t) GetPixelChannels(image);
                      }
 
