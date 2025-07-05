@@ -912,10 +912,10 @@ static JxlEncoderStatus JXLWriteMetadata(const Image *image,
 
 static inline float JXLGetDistance(float quality)
 {
-  return quality >= 100.0 ? 0.0
+  return quality >= 100.0f ? 0.0f
          : quality >= 30
-             ? 0.1 + (100 - quality) * 0.09
-             : 53.0 / 3000.0 * quality * quality - 23.0 / 20.0 * quality + 25.0;
+             ? 0.1f + (100 - quality) * 0.09f
+             : 53.0f / 3000.0f * quality * quality - 23.0f / 20.0f * quality + 25.0f;
 }
 
 static inline MagickBooleanType JXLSameFrameType(const Image *image,
