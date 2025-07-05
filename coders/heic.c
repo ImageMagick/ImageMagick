@@ -1487,7 +1487,7 @@ static MagickBooleanType WriteHEICImage(const ImageInfo *image_info,
           (uint16_t) cicp.sigma);
         heif_nclx_color_profile_set_matrix_coefficients(nclx_profile,
           (uint16_t) cicp.xi);
-        nclx_profile->full_range_flag=(uint16_t) cicp.psi; 
+        nclx_profile->full_range_flag=(uint8_t) cicp.psi; 
         heif_image_set_nclx_color_profile(heif_image,nclx_profile);
         heif_nclx_color_profile_free(nclx_profile);
       }
