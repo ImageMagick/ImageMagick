@@ -2438,7 +2438,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           (pow(10.0,(1024.0*i/MaxMap-reference_white)*(gamma/density)*0.002*
           MagickSafeReciprocal(film_gamma))-black));
       for ( ; i <= (ssize_t) MaxMap; i++)
-        logmap[i]=(double) QuantumRange;
+        logmap[i]=QuantumRange;
       if (image->storage_class == PseudoClass)
         {
           if (SyncImage(image,exception) == MagickFalse)

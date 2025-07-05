@@ -1656,7 +1656,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     ssize_t
       j;
 
-    black[i]=0.0;
+    black[i]=(Quantum) 0;
     white[i]=(Quantum) ScaleQuantumToMap(QuantumRange);
     intensity=0.0;
     for (j=0; j <= (ssize_t) MaxMap; j++)
@@ -1693,7 +1693,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 
       gamma=MagickSafeReciprocal(white[i]-black[i]);
       if (j < (ssize_t) black[i])
-        stretch_map[(ssize_t) GetPixelChannels(image)*j+i]=0.0;
+        stretch_map[(ssize_t) GetPixelChannels(image)*j+i]=(Quantum) 0;
       else
         if (j > (ssize_t) white[i])
           stretch_map[(ssize_t) GetPixelChannels(image)*j+i]=QuantumRange;
