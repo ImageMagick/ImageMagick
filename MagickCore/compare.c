@@ -1868,6 +1868,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
       break;
     }
     case NormalizedCrossCorrelationErrorMetric:
+    case StructuralSimilarityErrorMetric:
     {
       *distortion=(1.0-(*distortion))/2.0;
       break;
@@ -2045,6 +2046,7 @@ MagickExport double *GetImageDistortions(Image *image,
       break;
     }
     case NormalizedCrossCorrelationErrorMetric:
+    case StructuralSimilarityErrorMetric:
     {
       for (i=0; i <= MaxPixelChannels; i++)
         distortion[i]=(1.0-distortion[i])/2.0;
@@ -3975,6 +3977,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reconstruct,
   switch (metric)
   {
     case NormalizedCrossCorrelationErrorMetric:
+    case StructuralSimilarityErrorMetric:
     {
       similarity=1.0-similarity;
       break;
