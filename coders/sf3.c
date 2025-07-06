@@ -173,8 +173,10 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
   QuantumType
     quantum_type;
 
+  ssize_t
+    count;
+  
   size_t
-    count,
     length;
 
   unsigned char
@@ -185,6 +187,8 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
     format;
 
   unsigned int
+    width,
+    height,
     layers;
 
   unsigned char
@@ -203,122 +207,156 @@ static Image *ReadSF3Image(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AcquireImage(image_info,exception);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
-    {
-      image=DestroyImageList(image);
-      return((Image *) NULL);
-    }
+    return(DestroyImageList(image));
   /*
     Read SF3 header information.
    */
-  image->endian=MSBEndian;
   count=ReadBlob(image,16,header);
-  if ((count != 16) || (memcmp(header,"\x81SF3\x00\xE0\xD0\r\n\n\x03",11) == 0))
+  if ((count != 16) || (memcmp(header,"\x81SF3\x00\xE0\xD0\r\n\n\x03",11) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  image->columns=(size_t) ReadBlobMSBLong(image);
-  image->rows=(size_t) ReadBlobMSBLong(image);
-  layers = ReadBlobMSBLong(image);
-  if (image->columns == 0 || image->rows == 0)
+  width=ReadBlobLSBLong(image);
+  height=ReadBlobLSBLong(image);
+  layers = ReadBlobLSBLong(image);
+  if (width == 0 || height == 0 || layers == 0)
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   channels=ReadBlobByte(image);
   format=ReadBlobByte(image);
-  switch(channels)
+  
+  for (unsigned int z=0; z<layers; ++z)
     {
-    case SF3_PIXEL_V:
-      (void) SetImageColorspace(image,GRAYColorspace,exception);
-      SetQuantumImageType(image,GrayQuantum);
-      break;
-    case SF3_PIXEL_VA:
-      (void) SetImageColorspace(image,GRAYColorspace,exception);
-      SetQuantumImageType(image,GrayAlphaQuantum);
-      break;
-    case SF3_PIXEL_RGB:
-      SetQuantumImageType(image,RGBQuantum);
-      break;
-    case SF3_PIXEL_RGBA:
-      SetQuantumImageType(image,RGBAQuantum);
-      break;
-    case SF3_PIXEL_AV:
-      SetQuantumImageType(image,GrayAlphaQuantum);
-      break;
-    case SF3_PIXEL_BGR:
-      SetQuantumImageType(image,BGRQuantum);
-      break;
-    case SF3_PIXEL_ABGR:
-      SetQuantumImageType(image,BGRAQuantum);
-      break;
-    case SF3_PIXEL_ARGB:
-      SetQuantumImageType(image,RGBAQuantum);
-      break;
-    case SF3_PIXEL_BGRA:
-      SetQuantumImageType(image,BGRAQuantum);
-      break;
-    case SF3_PIXEL_CMYK:
-      (void) SetImageColorspace(image,CMYKColorspace,exception);
-      SetQuantumImageType(image,CMYKQuantum);
-      break;
-    case SF3_PIXEL_KYMC:
-      (void) SetImageColorspace(image,CMYKColorspace,exception);
-      SetQuantumImageType(image,CMYKQuantum);
-      break;
-    default:
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    }
-  image->depth=(size_t)((format & 0xF)*8);
-  quantum_type=GetQuantumType(image,exception);
-  quantum_info=AcquireQuantumInfo(image_info,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  switch(format)
-    {
-    case SF3_PIXEL_INT8:
-    case SF3_PIXEL_INT16:
-    case SF3_PIXEL_INT32:
-    case SF3_PIXEL_INT64:
-      status=SetQuantumFormat(image,quantum_info,SignedQuantumFormat);
-      break;
-    case SF3_PIXEL_UINT8:
-    case SF3_PIXEL_UINT16:
-    case SF3_PIXEL_UINT32:
-    case SF3_PIXEL_UINT64:
-      status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
-      break;
-    case SF3_PIXEL_FLOAT16:
-    case SF3_PIXEL_FLOAT32:
-    case SF3_PIXEL_FLOAT64:
-      status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
-      break;
-    default:
-      quantum_info=DestroyQuantumInfo(quantum_info);
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    }
-  if (status == MagickFalse)
-    {
-      quantum_info=DestroyQuantumInfo(quantum_info);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  status=SetImageExtent(image,image->columns,image->rows,exception);
-  if (status == MagickFalse){
-    quantum_info=DestroyQuantumInfo(quantum_info);
-    return(DestroyImageList(image));
-  }
-  length=image->columns*(format & 0xF)*(channels & 0xF);
-  p=(unsigned char *) AcquireQuantumMemory(length, 1);
-  if (p == (unsigned char *) NULL)
-    {
-      quantum_info=DestroyQuantumInfo(quantum_info);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  for (unsigned int i=0; i<image->rows; ++i)
-    {
-      count=ReadBlob(image,length,p);
-      if (count<length)
+      image->endian=LSBEndian;
+      image->compression=NoCompression;
+      image->orientation=TopLeftOrientation;
+      image->columns=(size_t) width;
+      image->rows=(size_t) height;
+      image->depth=(size_t)((format & 0xF)*8);
+      status=SetImageExtent(image,image->columns,image->rows,exception);
+      if (status == MagickFalse)
+        return(DestroyImageList(image));
+      switch(channels)
         {
-          p=(unsigned char *) RelinquishMagickMemory(p);
-          quantum_info=DestroyQuantumInfo(quantum_info);
-          ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
+        case SF3_PIXEL_V:
+          (void) SetImageColorspace(image,GRAYColorspace,exception);
+          SetQuantumImageType(image,GrayQuantum);
+          break;
+        case SF3_PIXEL_VA:
+          (void) SetImageColorspace(image,GRAYColorspace,exception);
+          SetQuantumImageType(image,GrayAlphaQuantum);
+          break;
+        case SF3_PIXEL_RGB:
+          (void) SetImageColorspace(image,RGBColorspace,exception);
+          SetQuantumImageType(image,RGBQuantum);
+          break;
+        case SF3_PIXEL_RGBA:
+          (void) SetImageColorspace(image,RGBColorspace,exception);
+          SetQuantumImageType(image,RGBAQuantum);
+          break;
+        case SF3_PIXEL_AV:
+          (void) SetImageColorspace(image,GRAYColorspace,exception);
+          SetQuantumImageType(image,GrayAlphaQuantum);
+          break;
+        case SF3_PIXEL_BGR:
+          (void) SetImageColorspace(image,RGBColorspace,exception);
+          SetQuantumImageType(image,BGRQuantum);
+          break;
+        case SF3_PIXEL_ABGR:
+          (void) SetImageColorspace(image,RGBColorspace,exception);
+          SetQuantumImageType(image,BGRAQuantum);
+          break;
+        case SF3_PIXEL_ARGB:
+          (void) SetImageColorspace(image,RGBColorspace,exception);
+          SetQuantumImageType(image,RGBAQuantum);
+          break;
+        case SF3_PIXEL_BGRA:
+          (void) SetImageColorspace(image,RGBColorspace,exception);
+          SetQuantumImageType(image,BGRAQuantum);
+          break;
+        case SF3_PIXEL_CMYK:
+          (void) SetImageColorspace(image,CMYKColorspace,exception);
+          SetQuantumImageType(image,CMYKQuantum);
+          break;
+        case SF3_PIXEL_KYMC:
+          (void) SetImageColorspace(image,CMYKColorspace,exception);
+          SetQuantumImageType(image,CMYKQuantum);
+          break;
+        default:
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         }
-      (void) ImportQuantumPixels(image,(CacheView *) NULL,
-        quantum_info,quantum_type,p,exception);
+      quantum_type=GetQuantumType(image,exception);
+      quantum_info=AcquireQuantumInfo(image_info,image);
+      if (quantum_info == (QuantumInfo *) NULL)
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      switch(format)
+        {
+        case SF3_PIXEL_INT8:
+        case SF3_PIXEL_INT16:
+        case SF3_PIXEL_INT32:
+        case SF3_PIXEL_INT64:
+          status=SetQuantumFormat(image,quantum_info,SignedQuantumFormat);
+          break;
+        case SF3_PIXEL_UINT8:
+        case SF3_PIXEL_UINT16:
+        case SF3_PIXEL_UINT32:
+        case SF3_PIXEL_UINT64:
+          status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
+          break;
+        case SF3_PIXEL_FLOAT16:
+        case SF3_PIXEL_FLOAT32:
+        case SF3_PIXEL_FLOAT64:
+          status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
+          break;
+        default:
+          quantum_info=DestroyQuantumInfo(quantum_info);
+          ThrowReaderException(CorruptImageError,"ImproperImageHeader");
+        }
+      if (status == MagickFalse)
+        {
+          quantum_info=DestroyQuantumInfo(quantum_info);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
+      status=SetImageExtent(image,image->columns,image->rows,exception);
+      if (status == MagickFalse){
+        quantum_info=DestroyQuantumInfo(quantum_info);
+        return(DestroyImageList(image));
+      }
+      length=image->columns*(format & 0xF)*(channels & 0xF);
+      p=(unsigned char *) AcquireQuantumMemory(length, 1);
+      if (p == (unsigned char *) NULL)
+        {
+          quantum_info=DestroyQuantumInfo(quantum_info);
+          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        }
+      for (unsigned int y=0; y<image->rows; ++y)
+        {
+          count=ReadBlob(image,length,p);
+          if (count != (ssize_t) length)
+            {
+              p=(unsigned char *) RelinquishMagickMemory(p);
+              quantum_info=DestroyQuantumInfo(quantum_info);
+              ThrowReaderException(CorruptImageError,"NotEnoughPixelData");
+            }
+          (void) GetAuthenticPixels(image,0,y,image->columns,1,exception);
+          (void) ImportQuantumPixels(image,(CacheView *) NULL,
+                                     quantum_info,quantum_type,p,exception);
+          if (SyncAuthenticPixels(image,exception) == MagickFalse)
+            break;
+        }
+      if (image_info->number_scenes != 0)
+        if (image->scene >= (image_info->scene+image_info->number_scenes-1))
+          break;
+      if (z+1 == layers)
+        break;
+      AcquireNextImage(image_info,image,exception);
+      if (GetNextImageInList(image) == (Image *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      image=SyncNextImageInList(image);
+      status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
+                              GetBlobSize(image));
+      if (status == MagickFalse)
+        break;
     }
   p=(unsigned char *) RelinquishMagickMemory(p);
   quantum_info=DestroyQuantumInfo(quantum_info);
@@ -360,7 +398,7 @@ ModuleExport size_t RegisterSF3Image(void)
   entry->encoder=(EncodeImageHandler *) WriteSF3Image;
   entry->magick=(IsImageFormatHandler *) IsSF3;
   entry->flags|=CoderRawSupportFlag;
-  entry->flags^=CoderAdjoinFlag;
+  entry->flags|=CoderEncoderSeekableStreamFlag;
   entry->format_type=ImplicitFormatType;
   entry->mime_type=ConstantString("image/x.sf3");
   (void) RegisterMagickInfo(entry);
@@ -461,7 +499,7 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  (void) SetQuantumEndian(image,quantum_info,MSBEndian);
+  (void) SetQuantumEndian(image,quantum_info,LSBEndian);
   (void) SetQuantumPad(image,quantum_info,0);
   quantum_type=GetQuantumType(image,exception);
   switch (quantum_type)
@@ -581,11 +619,11 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
     Write SF3 header.
   */
   (void) WriteBlobString(image,"\x81SF3\x00\xE0\xD0\r\n\n\x03");
-  (void) WriteBlobMSBLong(image,(unsigned int) 0); // Zero CRC32 for now
+  (void) WriteBlobLSBLong(image,(unsigned int) 0); // Zero CRC32 for now
   (void) WriteBlobByte(image,(unsigned char) 0);
-  (void) WriteBlobMSBLong(image,image->columns);
-  (void) WriteBlobMSBLong(image,image->rows);
-  (void) WriteBlobMSBLong(image,(unsigned int) 1);
+  (void) WriteBlobLSBLong(image,image->columns);
+  (void) WriteBlobLSBLong(image,image->rows);
+  (void) WriteBlobLSBLong(image,(unsigned int) 1);
   (void) WriteBlobByte(image,channels);
   (void) WriteBlobByte(image,format);
   /*
