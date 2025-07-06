@@ -4186,8 +4186,8 @@ MagickExport Image *SimilarityImage(const Image *image,const Image *reconstruct,
   /*
     Measure similarity of reconstruction image against image.
   */
-  similarity_info.similarity=GetSimilarityMetric((Image *) image,reconstruct,
-    metric,similarity_info.x,similarity_info.y,exception);
+  similarity_info.similarity=GetSimilarityMetric(image,reconstruct,metric,
+    similarity_info.x,similarity_info.y,exception);
   similarity_view=AcquireAuthenticCacheView(similarity_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(similarity_info,status) \
