@@ -327,7 +327,7 @@ static MagickBooleanType GetAESimilarity(const Image *image,
     y;
 
   /*
-    Compute the absolute difference in pixels between two images.
+    Compute the absolute error similarity.
   */
   fuzz=GetFuzzyColorDistance(image,reconstruct_image);
   (void) memset(similarity,0,(MaxPixelChannels+1)*sizeof(*similarity));
@@ -467,7 +467,7 @@ static MagickBooleanType GetDPCSimilarity(const Image *image,
     y;
 
   /*
-    Dot product correlation similarity.
+    Compute the dot product correlation similarity.
   */
   image_statistics=GetImageStatistics(image,exception);
   reconstruct_statistics=GetImageStatistics(reconstruct_image,exception);
@@ -644,7 +644,7 @@ static MagickBooleanType GetFUZZSimilarity(const Image *image,
     y;
 
   /*
-    Compute the MSE difference in pixels between two images within tolerance.
+    Compute the MSE similarity within tolerance (fuzz).
   */
   fuzz=GetFuzzyColorDistance(image,reconstruct_image);
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
@@ -780,6 +780,9 @@ static MagickBooleanType GetMAESimilarity(const Image *image,
     k,
     y;
 
+  /*
+    Compute the mean absolute error similarity.
+  */
   (void) memset(similarity,0,(MaxPixelChannels+1)*sizeof(*similarity));
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -914,6 +917,9 @@ static MagickBooleanType GetMEPPSimilarity(Image *image,
     k,
     y;
 
+  /*
+    Compute the mean error per pixel similarity.
+  */
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -1057,6 +1063,9 @@ static MagickBooleanType GetMSESimilarity(const Image *image,
     k,
     y;
 
+  /*
+    Compute the mean sequared error similarity.
+  */
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -1197,7 +1206,7 @@ static MagickBooleanType GetNCCSimilarity(const Image *image,
     y;
 
   /*
-    Normalized cross correlation similarity.
+    Compute the normalized criss-correlation similarity.
   */
   image_statistics=GetImageStatistics(image,exception);
   reconstruct_statistics=GetImageStatistics(reconstruct_image,exception);
@@ -1371,6 +1380,9 @@ static MagickBooleanType GetPASimilarity(const Image *image,
   ssize_t
     y;
 
+  /*
+    Compute the peak absolute similarity.
+  */
   (void) memset(similarity,0,(MaxPixelChannels+1)*sizeof(*similarity));
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -1561,6 +1573,9 @@ static MagickBooleanType GetPHASESimilarity(const Image *image,
     k,
     y;
 
+  /*
+    Compute the phase congruency similarity.
+  */
   SetImageCompareBounds(image,reconstruct_image,&columns,&rows);
   image_view=AcquireVirtualCacheView(image,exception);
   reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
@@ -1684,6 +1699,9 @@ static MagickBooleanType GetPSNRSimilarity(const Image *image,
   ssize_t
     i;
 
+  /*
+    Compute the peak signal-to-noise ratio similarity.
+  */
   status=GetMSESimilarity(image,reconstruct_image,similarity,exception);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
@@ -1719,7 +1737,7 @@ static MagickBooleanType GetPHASHSimilarity(const Image *image,
     k;
 
   /*
-    Compute perceptual hash in the sRGB colorspace.
+    Compute the perceptual hash similarity.
   */
   channel_phash=GetImagePerceptualHash(image,exception);
   if (channel_phash == (ChannelPerceptualHash *) NULL)
@@ -1813,6 +1831,9 @@ static MagickBooleanType GetRMSESimilarity(const Image *image,
   ssize_t
     i;
 
+  /*
+    Compute the root mean-squared error similarity.
+  */
   status=GetMSESimilarity(image,reconstruct_image,similarity,exception);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
@@ -1871,8 +1892,7 @@ static MagickBooleanType GetSSIMSimularity(const Image *image,
     y;
 
   /*
-    Compute structural similarity index @
-    https://en.wikipedia.org/wiki/Structural_similarity.
+    Compute the structual similarity index similarity.
   */
   radius=SSIMRadius;
   artifact=GetImageArtifact(image,"compare:ssim-radius");
@@ -2081,6 +2101,9 @@ static MagickBooleanType GetDSSIMSimilarity(const Image *image,
   ssize_t
     i;
 
+  /*
+    Compute the structual dissimilarity index similarity.
+  */
   status=GetSSIMSimularity(image,reconstruct_image,similarity,exception);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
