@@ -393,14 +393,24 @@ ModuleExport size_t RegisterSF3Image(void)
   MagickInfo
     *entry;
 
-  entry=AcquireMagickInfo("SF3","SF3","Simple File Format Family");
+  static const char
+    SF3Note[] =
+    {
+      "See https://shirakumo.org/docs/sf3/ for information on the SF3 file"
+      " formats."
+    };
+
+  entry=AcquireMagickInfo("SF3","SF3","Simple File Format Family Images");
   entry->decoder=(DecodeImageHandler *) ReadSF3Image;
   entry->encoder=(EncodeImageHandler *) WriteSF3Image;
   entry->magick=(IsImageFormatHandler *) IsSF3;
+  entry->flags|=CoderAdjoinFlag;
   entry->flags|=CoderRawSupportFlag;
+  entry->flags|=CoderDecoderSeekableStreamFlag;
   entry->flags|=CoderEncoderSeekableStreamFlag;
   entry->format_type=ImplicitFormatType;
   entry->mime_type=ConstantString("image/x.sf3");
+  entry->note=ConstantString(SF3Note);
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -440,7 +450,7 @@ ModuleExport void UnregisterSF3Image(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteSF3Image() writes an image in the Simple File Fromat Family t image
+%  WriteSF3Image() writes an image in the Simple File Format Family image
 %  format.
 %
 %  The format of the WriteSF3Image method is:
@@ -467,17 +477,21 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
     channels,
     format;
 
-  const Quantum
-    *magick_restrict p;
-
   QuantumInfo
     *quantum_info;
 
   QuantumType
     quantum_type;
 
+  QuantumFormatType
+    quantum_format;
+
   size_t
-    length;
+    number_scenes,
+    scene,
+    length,
+    count,
+    y;
 
   unsigned char
     *pixels;
@@ -501,7 +515,9 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   (void) SetQuantumEndian(image,quantum_info,LSBEndian);
   (void) SetQuantumPad(image,quantum_info,0);
+  number_scenes=GetImageListLength(image);
   quantum_type=GetQuantumType(image,exception);
+  quantum_format=GetQuantumFormat(quantum_info);
   switch (quantum_type)
     {
     case GrayQuantum:
@@ -549,7 +565,7 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
       ThrowWriterException(CoderError,"ImageTypeNotSupported");
       break;
     }
-  switch (GetQuantumFormat(quantum_info))
+  switch (quantum_format)
     {
     case FloatingPointQuantumFormat:
       if (image->depth <= 16)
@@ -589,6 +605,8 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
           SetQuantumDepth(image,quantum_info,64);
         }
       break;
+    case UndefinedQuantumFormat:
+      SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
     case UnsignedQuantumFormat:
       if (image->depth <= 8)
         {
@@ -618,26 +636,41 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
   /*
     Write SF3 header.
   */
-  (void) WriteBlobString(image,"\x81SF3\x00\xE0\xD0\r\n\n\x03");
+  (void) WriteBlob(image,11,"\x81SF3\x00\xE0\xD0\r\n\n\x03");
   (void) WriteBlobLSBLong(image,(unsigned int) 0); // Zero CRC32 for now
   (void) WriteBlobByte(image,(unsigned char) 0);
   (void) WriteBlobLSBLong(image,image->columns);
   (void) WriteBlobLSBLong(image,image->rows);
-  (void) WriteBlobLSBLong(image,(unsigned int) 1);
+  (void) WriteBlobLSBLong(image,(unsigned int) number_scenes);
   (void) WriteBlobByte(image,channels);
   (void) WriteBlobByte(image,format);
   /*
     Write pixels.
-   */
-  p=GetVirtualPixels(image,0,0,image->columns,image->rows,exception);
-  if (p == (const Quantum *) NULL)
-    {
-      quantum_info=DestroyQuantumInfo(quantum_info);
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  pixels=(unsigned char *) GetQuantumPixels(quantum_info);
-  length=ExportQuantumPixels(image,(CacheView *)NULL,quantum_info,quantum_type,pixels,exception);
-  (void) WriteBlob(image,length,pixels);
+  */
+  scene=0;
+  do
+  {
+    const Quantum
+      *magick_restrict p;
+    pixels=(unsigned char *) GetQuantumPixels(quantum_info);
+    for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+        if (p == (const Quantum *) NULL)
+          break;
+        length=ExportQuantumPixels(image,(CacheView *)NULL,quantum_info,
+                                   quantum_type,pixels,exception);
+        count=WriteBlob(image,length,pixels);
+        if (count != (ssize_t) length)
+          break;
+      }
+    if (GetNextImageInList(image) == (Image *) NULL)
+      break;
+    image=SyncNextImageInList(image);
+    status=SetImageProgress(image,SaveImagesTag,scene++,number_scenes);
+    if (status == MagickFalse)
+      break;
+  }while (image_info->adjoin != MagickFalse);
   /*
     Finish up.
    */
