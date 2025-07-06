@@ -58,6 +58,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
+#include <zlib.h>
 
 /*
   Enumerated declarations.
@@ -486,6 +487,11 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
   QuantumFormatType
     quantum_format;
 
+  unsigned int
+    width,
+    height,
+    checksum;
+
   size_t
     number_scenes,
     scene,
@@ -495,6 +501,9 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
 
   unsigned char
     *pixels;
+
+  unsigned char
+    header[16];
   
   /*
     Open output image file.
@@ -518,6 +527,8 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
   number_scenes=GetImageListLength(image);
   quantum_type=GetQuantumType(image,exception);
   quantum_format=GetQuantumFormat(quantum_info);
+  width=image->columns;
+  height=image->rows;
   switch (quantum_type)
     {
     case GrayQuantum:
@@ -639,11 +650,17 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
   (void) WriteBlob(image,11,"\x81SF3\x00\xE0\xD0\r\n\n\x03");
   (void) WriteBlobLSBLong(image,(unsigned int) 0); // Zero CRC32 for now
   (void) WriteBlobByte(image,(unsigned char) 0);
-  (void) WriteBlobLSBLong(image,image->columns);
-  (void) WriteBlobLSBLong(image,image->rows);
+  checksum=0;
+  (void) WriteBlobLSBLong(image,(unsigned int) width);
+  (void) WriteBlobLSBLong(image,(unsigned int) height);
   (void) WriteBlobLSBLong(image,(unsigned int) number_scenes);
   (void) WriteBlobByte(image,channels);
   (void) WriteBlobByte(image,format);
+  if(IsBlobSeekable(image)){
+    (void) SeekBlob(image,16,SEEK_SET);
+    (void) ReadBlob(image,14,header);
+    checksum=crc32(checksum,header,14);
+  }
   /*
     Write pixels.
   */
@@ -660,6 +677,7 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
           break;
         length=ExportQuantumPixels(image,(CacheView *)NULL,quantum_info,
                                    quantum_type,pixels,exception);
+        checksum=crc32(checksum,pixels,length);
         count=WriteBlob(image,length,pixels);
         if (count != (ssize_t) length)
           break;
@@ -675,6 +693,10 @@ static MagickBooleanType WriteSF3Image(const ImageInfo *image_info,Image *image,
     Finish up.
    */
   quantum_info=DestroyQuantumInfo(quantum_info);
+  if(IsBlobSeekable(image)){
+    (void) SeekBlob(image,11,SEEK_SET);
+    (void) WriteBlobLSBLong(image,checksum);
+  }
   if (CloseBlob(image) == MagickFalse)
     status=MagickFalse;
   return(status);
