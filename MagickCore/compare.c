@@ -2221,6 +2221,7 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
   *distortion=channel_similarity[CompositePixelChannel];
   switch (metric)
   {
+    case DotProductCorrelationErrorMetric:
     case NormalizedCrossCorrelationErrorMetric:
     case StructuralDissimilarityErrorMetric:
     case StructuralSimilarityErrorMetric:
@@ -2398,6 +2399,7 @@ MagickExport double *GetImageDistortions(Image *image,
   distortion=channel_similarity;
   switch (metric)
   {
+    case DotProductCorrelationErrorMetric:
     case NormalizedCrossCorrelationErrorMetric:
     case StructuralDissimilarityErrorMetric:
     case StructuralSimilarityErrorMetric:
