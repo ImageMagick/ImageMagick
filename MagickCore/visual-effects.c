@@ -1853,7 +1853,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSepiaToneImage() applies a special effect to the image, similar to the
+%  SepiaToneImage() applies a special effect to the image, similar to the
 %  effect achieved in a photo darkroom by sepia toning.  Threshold ranges from
 %  0 to QuantumRange and is a measure of the extent of the sepia toning.  A
 %  threshold of 80% is a good starting point for a reasonable tone.

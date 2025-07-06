@@ -969,7 +969,7 @@ MagickExport Image *CropImageToTiles(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ExcerptImage() returns a excerpt of the image as defined by the geometry.
+%  ExcerptImage() returns an excerpt of the image as defined by the geometry.
 %
 %  The format of the ExcerptImage method is:
 %
