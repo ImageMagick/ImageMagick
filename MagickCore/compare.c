@@ -4344,6 +4344,9 @@ static double GetSimilarityMetric(const Image *image,
   size_t
     length = MaxPixelChannels+1UL;
 
+  ssize_t
+    i;
+
   SetGeometry(reconstruct_image,&geometry);
   geometry.x=x_offset;
   geometry.y=y_offset;
